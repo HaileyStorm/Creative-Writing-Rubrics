@@ -1,6 +1,7 @@
 {
   "format_version": 1,
-  "study_id": "the-part-that-arrives-first-established-rubrics-v2",
+  "study_id": "the-part-that-arrives-first-established-rubrics-v2-batch32",
+  "protocol_revision": "batch32_fresh_execution",
   "frozen_before_execution": true,
   "source": {
     "path": "../source.md",
@@ -26,11 +27,11 @@
     "kind": "five_block_near_latin",
     "execution": "serial_in_listed_order",
     "blocks": [
-      ["hbq_short_story_one_batch", "naplan_narrative_2022", "cambridge_igcse_0500_p2_mj_2024", "oregon_narrative_2017"],
-      ["naplan_narrative_2022", "cambridge_igcse_0500_p2_mj_2024", "oregon_narrative_2017", "hbq_short_story_one_batch"],
-      ["cambridge_igcse_0500_p2_mj_2024", "oregon_narrative_2017", "hbq_short_story_one_batch", "naplan_narrative_2022"],
-      ["oregon_narrative_2017", "hbq_short_story_one_batch", "naplan_narrative_2022", "cambridge_igcse_0500_p2_mj_2024"],
-      ["hbq_short_story_one_batch", "naplan_narrative_2022", "cambridge_igcse_0500_p2_mj_2024", "oregon_narrative_2017"]
+      ["hbq_short_story_batch32", "naplan_narrative_2022", "cambridge_igcse_0500_p2_mj_2024", "oregon_narrative_2017"],
+      ["naplan_narrative_2022", "cambridge_igcse_0500_p2_mj_2024", "oregon_narrative_2017", "hbq_short_story_batch32"],
+      ["cambridge_igcse_0500_p2_mj_2024", "oregon_narrative_2017", "hbq_short_story_batch32", "naplan_narrative_2022"],
+      ["oregon_narrative_2017", "hbq_short_story_batch32", "naplan_narrative_2022", "cambridge_igcse_0500_p2_mj_2024"],
+      ["hbq_short_story_batch32", "naplan_narrative_2022", "cambridge_igcse_0500_p2_mj_2024", "oregon_narrative_2017"]
     ],
     "maximum_position_imbalance": 1
   },
@@ -38,7 +39,8 @@
     "bundle_id": "prose.short_story",
     "question_count": 178,
     "question_id_sequence_sha256": "5bc1c7067a96acddc1513f8e69e0814f282856061e37129ec38cf6e91024d524",
-    "batch_size": 256,
+    "batch_size": 32,
+    "expected_batches_per_repetition": 6,
     "strict_ai": true,
     "registry_path": "../../../registry/all_modules.json",
     "bundle_index_path": "../../../bundles/all_bundles.json",
@@ -46,7 +48,7 @@
     "response_schema_path": "../../../schema/hbq_judge_response.schema.json"
   },
   "arms": [
-    {"arm_id": "hbq_short_story_one_batch", "kind": "hbq", "method": "HBQ-RS prose.short_story binary leaves with deterministic aggregation", "native_scale": "HBQ-RS observed score (0-100; report separately)"},
+    {"arm_id": "hbq_short_story_batch32", "kind": "hbq", "method": "HBQ-RS prose.short_story binary leaves with deterministic aggregation in six bounded checkpoints", "native_scale": "HBQ-RS observed score (0-100; report separately)"},
     {"arm_id": "naplan_narrative_2022", "kind": "native_rubric", "method": "Original implementation derived from NAPLAN Narrative Writing Marking Guide 2022", "official_url": "https://www.nap.edu.au/docs/default-source/naplan/narrative-writing-marking-guide.pdf?sfvrsn=c85435e_2", "official_version": "2022 Narrative Writing Marking Guide", "prompt": "arms/naplan-narrative-2022.prompt.md", "schema": "arms/naplan-narrative-2022.schema.json", "native_scale": "10 criterion ranges, total 0-47"},
     {"arm_id": "cambridge_igcse_0500_p2_mj_2024", "kind": "native_rubric", "method": "Original implementation derived from Cambridge IGCSE First Language English 0500 Paper 2 composition mark scheme, May/June 2024", "official_url": "https://www.cambridgeinternational.org/Images/521329-june-2024-mark-scheme-paper-21.pdf", "official_version": "0500/21 May/June 2024 mark scheme", "prompt": "arms/cambridge-igcse-0500-p2-mj-2024.prompt.md", "schema": "arms/cambridge-igcse-0500-p2-mj-2024.schema.json", "native_scale": "content and structure 0-16; style and accuracy 0-24; total 0-40"},
     {"arm_id": "oregon_narrative_2017", "kind": "native_rubric", "method": "Original implementation derived from Oregon DOE Revised Narrative Writing Scoring Guide (2017)", "official_url": "https://www.oregon.gov/ode/educator-resources/essentialskills/ScoringGuides/wriscorguide_narrative_eng.pdf", "official_version": "Revised Narrative Writing Scoring Guide, 2017", "prompt": "arms/oregon-narrative-2017.prompt.md", "schema": "arms/oregon-narrative-2017.schema.json", "native_scale": "six traits 1-6, total 6-36"}
@@ -69,7 +71,7 @@
     "scoring_core": "70b4cd16bd536f2f6ddb8e066f801090a037a39605652b14d6c7f6ff312446cb",
     "short_story_bundle": "74464c15d4ebc950c3f2db549788ac25beb992bd7eecb517fc9950ab162c5369",
     "structured_runner": "22df16b12794db3cf4db97a9c3cfafbdb869191fc45dc79966bd50c4f347ba2e",
-    "study_analyzer": "547ddef6ae0b28c27dbac8fd256beb590539ac6a9aed5a9950cd311232e6b53a",
+    "study_analyzer": "f8f932ffba1c045b3f6805979f6e6773b54052318a61f6df6f421e84791c493c",
     "study_runner": "60373bd7f8495317a414f8c74652a186b74a04c96fb07b35a8741e2697e9d92d",
     "verdict_schema": "2d176506edab164c71d42a73661bcd526e4331dbdce659dfae56168b708a4f19"
   },

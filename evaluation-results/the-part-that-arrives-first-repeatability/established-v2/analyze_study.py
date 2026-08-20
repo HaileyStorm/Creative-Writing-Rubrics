@@ -109,7 +109,7 @@ def _read_verdicts(path: Path) -> list[dict[str, Any]]:
 
 
 def _hbq_metrics(work: Path) -> tuple[dict[str, Any], list[dict[str, Any]]]:
-    arm = "hbq_short_story_one_batch"
+    arm = "hbq_short_story_batch32"
     runs = [_read_verdicts(work / arm / f"run-{number:02d}" / "verdicts.jsonl") for number in range(1, 6)]
     ids = [item["question_id"] for item in runs[0]]
     if any([item["question_id"] for item in run] != ids for run in runs[1:]):
@@ -197,8 +197,13 @@ def _expect_provider(record: dict[str, Any]) -> str:
     return _reported_session(record)
 
 
-def _validate_hbq_run(work: Path, number: int) -> tuple[list[dict[str, Any]], dict[str, Any], str]:
-    arm = "hbq_short_story_one_batch"
+def _require_unique_sessions(sessions: list[str], expected_count: int) -> None:
+    if len(sessions) != expected_count or len(set(sessions)) != expected_count:
+        raise ValueError("Study does not prove globally unique accepted provider sessions")
+
+
+def _validate_hbq_run(work: Path, number: int) -> tuple[list[dict[str, Any]], dict[str, Any], list[str]]:
+    arm = "hbq_short_story_batch32"
     path = work / arm / f"run-{number:02d}"
     manifest = _json(path / "run.json")
     configuration = manifest.get("configuration")
@@ -211,7 +216,7 @@ def _validate_hbq_run(work: Path, number: int) -> tuple[list[dict[str, Any]], di
     ids = configuration["question_ids"]
     if (len(ids), hashlib.sha256(("\n".join(ids) + "\n").encode("utf-8")).hexdigest()) != expected_ids:
         raise ValueError("HBQ run does not use the exact frozen 178-question order")
-    if configuration.get("artifact_id") != "the-part-that-arrives-first" or configuration.get("provider") != "codex" or configuration.get("model") != "gpt-5.6-sol" or configuration.get("reasoning") != "high" or configuration.get("batch_size") != 256 or configuration.get("strict_ai") is not True:
+    if configuration.get("artifact_id") != "the-part-that-arrives-first" or configuration.get("provider") != "codex" or configuration.get("model") != "gpt-5.6-sol" or configuration.get("reasoning") != "high" or configuration.get("batch_size") != hbq["batch_size"] or configuration.get("strict_ai") is not True:
         raise ValueError("HBQ run configuration drifted")
     artifact = configuration.get("artifact", {})
     if artifact.get("sha256") != CONTRACT["source"]["sha256"] or artifact.get("bytes") != CONTRACT["source"]["bytes"]:
@@ -221,15 +226,21 @@ def _validate_hbq_run(work: Path, number: int) -> tuple[list[dict[str, Any]], di
         raise ValueError("HBQ run prompt or response schema drifted")
     source = (HERE / CONTRACT["source"]["path"]).read_text(encoding="utf-8")
     checkpointed, checkpoint_count, _ = _load_checkpoints(path, artifact_text=source, context_texts=[])
-    if checkpoint_count != 1 or checkpointed != _read_verdicts(path / "verdicts.jsonl") or [item.get("question_id") for item in checkpointed] != ids:
+    expected_batches = hbq["expected_batches_per_repetition"]
+    if checkpoint_count != expected_batches or checkpointed != _read_verdicts(path / "verdicts.jsonl") or [item.get("question_id") for item in checkpointed] != ids:
         raise ValueError("HBQ checkpoints are incomplete, unordered, or disagree with verdicts.jsonl")
     responses = sorted((path / "responses").glob("batch-[0-9][0-9][0-9][0-9].json"))
-    if len(responses) != 1:
-        raise ValueError("One-batch HBQ arm must have exactly one response checkpoint")
-    checkpoint = _json(responses[0])
-    if checkpoint.get("format_version") != 2 or any(not verdict.get("evidence") for verdict in checkpointed):
+    if len(responses) != expected_batches:
+        raise ValueError("HBQ batch32 arm must have exactly six response checkpoints")
+    sessions: list[str] = []
+    for batch_number, response_path in enumerate(responses, start=1):
+        checkpoint = _json(response_path)
+        expected_chunk = ids[(batch_number - 1) * hbq["batch_size"] : batch_number * hbq["batch_size"]]
+        if checkpoint.get("format_version") != 2 or checkpoint.get("batch") != batch_number or checkpoint.get("question_ids") != expected_chunk:
+            raise ValueError("HBQ batch checkpoint does not bind to the frozen 32-leaf chunk order")
+        sessions.append(_expect_provider(checkpoint))
+    if any(not verdict.get("evidence") for verdict in checkpointed):
         raise ValueError("HBQ study requires format-version-2 checkpoints with nonempty typed evidence")
-    session = _expect_provider(checkpoint)
     score = _json(path / "score.json")
     score_schema = _json(schema_dir() / "hbq_score_report.schema.json")
     errors = sorted(Draft202012Validator(score_schema).iter_errors(score), key=lambda error: list(error.absolute_path))
@@ -240,7 +251,7 @@ def _validate_hbq_run(work: Path, number: int) -> tuple[list[dict[str, Any]], di
     persisted = {key: value for key, value in score.items() if key != "weight_profile"}
     if recomputed != persisted:
         raise ValueError("HBQ score.json does not match deterministic recomputation from verdicts")
-    return checkpointed, score, session
+    return checkpointed, score, sessions
 
 
 def _validate_native_run(work: Path, arm: dict[str, Any], number: int) -> tuple[dict[str, Any], str]:
@@ -288,10 +299,15 @@ def _copy_and_prove(work: Path, output: Path, arm: dict[str, Any]) -> list[dict[
             for name in ("verdicts.jsonl", "score.json"):
                 path = target / f"{run_id}-{name}"
                 path.write_bytes((source / name).read_bytes())
-            responses = [_provider(_json(path)) for path in sorted((source / "responses").glob("batch-*.json"))]
-            if not responses or len({json.dumps(item, sort_keys=True) for item in responses}) != 1:
+            response_paths = sorted((source / "responses").glob("batch-[0-9][0-9][0-9][0-9].json"))
+            responses = [_provider(_json(path)) for path in response_paths]
+            if len(responses) != CONTRACT["hbq_runtime"]["expected_batches_per_repetition"] or len({json.dumps(item, sort_keys=True) for item in responses}) != 1:
                 raise ValueError("HBQ provider provenance drift")
-            proofs.append({"run_id": run_id, "reported_provider": responses[0], "verdicts_sha256": _sha256(target / f"{run_id}-verdicts.jsonl"), "score_sha256": _sha256(target / f"{run_id}-score.json")})
+            chunks = []
+            for batch, response_path in enumerate(response_paths, start=1):
+                question_ids = _json(response_path)["question_ids"]
+                chunks.append({"batch": batch, "question_count": len(question_ids), "question_id_sequence_sha256": hashlib.sha256(("\n".join(question_ids) + "\n").encode("utf-8")).hexdigest()})
+            proofs.append({"run_id": run_id, "reported_provider": responses[0], "provider_batches": len(responses), "final_checkpoint_chain_sha256": _sha256(response_paths[-1]), "ordered_question_id_chunk_commitments": chunks, "verdicts_sha256": _sha256(target / f"{run_id}-verdicts.jsonl"), "score_sha256": _sha256(target / f"{run_id}-score.json")})
         else:
             path = target / f"{run_id}.json"
             _write_json(path, _json(source / "result.json"))
@@ -304,7 +320,7 @@ def _svg(title: str, description: str, body: str, height: int) -> str:
 
 
 def _charts(summary: dict[str, Any], output: Path) -> None:
-    panels = [("HBQ-RS observed score", summary["arms"]["hbq_short_story_one_batch"]["observed_score"]["values"], 100, "a"), ("NAPLAN implementation total", summary["arms"]["naplan_narrative_2022"]["total_score"]["values"], 47, "b"), ("Cambridge implementation total", summary["arms"]["cambridge_igcse_0500_p2_mj_2024"]["total_score"]["values"], 40, "c"), ("Oregon implementation total", summary["arms"]["oregon_narrative_2017"]["total_score"]["values"], 36, "d")]
+    panels = [("HBQ-RS observed score", summary["arms"]["hbq_short_story_batch32"]["observed_score"]["values"], 100, "a"), ("NAPLAN implementation total", summary["arms"]["naplan_narrative_2022"]["total_score"]["values"], 47, "b"), ("Cambridge implementation total", summary["arms"]["cambridge_igcse_0500_p2_mj_2024"]["total_score"]["values"], 40, "c"), ("Oregon implementation total", summary["arms"]["oregon_narrative_2017"]["total_score"]["values"], 36, "d")]
     body = ['<text x="40" y="42" font-size="26" font-weight="700">Five scores per native numeric scale</text>', '<text x="40" y="68" class="muted" font-size="15">Positions are not cross-rubric quality comparisons.</text>']
     for index, (label, values, high, css) in enumerate(panels):
         y = 120 + index * 105
@@ -313,7 +329,7 @@ def _charts(summary: dict[str, Any], output: Path) -> None:
             body.append(f'<circle cx="{320 + 540 * value / high:.1f}" cy="{y - 6 + (run - 3) * 5}" r="7" class="{css}"><title>run {run}: {value}</title></circle>')
         body.append(f'<text x="40" y="{y + 42}" class="muted" font-size="13">SD {statistics.stdev(values):.3f} · range {max(values) - min(values):.3f}</text>')
     _write_text(output / "score-distributions.svg", _svg("Native-scale repeatability", "Four separate numeric-scale panels show five scores each.", "".join(body), 540))
-    agreement = [("HBQ leaves", summary["arms"]["hbq_short_story_one_batch"]["exact_all_run_agreement_rate"], "a"), ("NAPLAN criteria", summary["arms"]["naplan_narrative_2022"]["criterion_exact_all_run_agreement_rate"], "b"), ("Cambridge components", summary["arms"]["cambridge_igcse_0500_p2_mj_2024"]["criterion_exact_all_run_agreement_rate"], "c"), ("Oregon traits", summary["arms"]["oregon_narrative_2017"]["criterion_exact_all_run_agreement_rate"], "d")]
+    agreement = [("HBQ leaves", summary["arms"]["hbq_short_story_batch32"]["exact_all_run_agreement_rate"], "a"), ("NAPLAN criteria", summary["arms"]["naplan_narrative_2022"]["criterion_exact_all_run_agreement_rate"], "b"), ("Cambridge components", summary["arms"]["cambridge_igcse_0500_p2_mj_2024"]["criterion_exact_all_run_agreement_rate"], "c"), ("Oregon traits", summary["arms"]["oregon_narrative_2017"]["criterion_exact_all_run_agreement_rate"], "d")]
     body = ['<text x="40" y="42" font-size="26" font-weight="700">Exact all-five-run agreement</text>', '<text x="40" y="68" class="muted" font-size="15">Coarser output designs can agree more easily.</text>']
     for index, (label, value, css) in enumerate(agreement):
         y = 120 + index * 75
@@ -339,16 +355,17 @@ def analyze(work: Path, output: Path) -> None:
         sessions: list[str] = []
         if arm["kind"] == "hbq":
             for number in range(1, 6):
-                _, _, session = _validate_hbq_run(work, number)
-                sessions.append(session)
+                _, _, run_sessions = _validate_hbq_run(work, number)
+                sessions.extend(run_sessions)
             metrics, details = _hbq_metrics(work)
         else:
             for number in range(1, 6):
                 _, session = _validate_native_run(work, arm, number)
                 sessions.append(session)
             metrics, details = _native_metrics(work, arm["arm_id"])
-        if len(sessions) != 5 or len(set(sessions)) != 5:
-            raise ValueError(f"{arm['arm_id']} does not prove five distinct fresh provider sessions")
+        expected_session_count = 5 * (CONTRACT["hbq_runtime"]["expected_batches_per_repetition"] if arm["kind"] == "hbq" else 1)
+        if len(sessions) != expected_session_count or len(set(sessions)) != expected_session_count:
+            raise ValueError(f"{arm['arm_id']} does not prove distinct accepted provider sessions")
         all_sessions.extend(sessions)
         if arm["kind"] == "hbq":
             leaves = details
@@ -358,10 +375,10 @@ def analyze(work: Path, output: Path) -> None:
         if any(item["reported_provider"] != expected for item in proofs):
             raise ValueError(f"Provider identity or reasoning drifted in {arm['arm_id']}")
         provenance["arms"][arm["arm_id"]] = {"native_scale": arm["native_scale"], "runs": proofs}
-    if len(all_sessions) != 20 or len(set(all_sessions)) != 20:
-        raise ValueError("Study does not prove 20 globally unique accepted provider sessions")
+    expected_global_sessions = 5 * (CONTRACT["hbq_runtime"]["expected_batches_per_repetition"] + sum(arm["kind"] == "native_rubric" for arm in CONTRACT["arms"]))
+    _require_unique_sessions(all_sessions, expected_global_sessions)
     session_hashes = sorted(hashlib.sha256(session.encode("utf-8")).hexdigest() for session in all_sessions)
-    provenance["fresh_session_commitment"] = {"session_count": 20, "unique_session_count": 20, "commitment_sha256": hashlib.sha256(("\n".join(session_hashes) + "\n").encode("utf-8")).hexdigest()}
+    provenance["fresh_session_commitment"] = {"session_count": expected_global_sessions, "unique_session_count": expected_global_sessions, "commitment_sha256": hashlib.sha256(("\n".join(session_hashes) + "\n").encode("utf-8")).hexdigest()}
     summary = {"format_version": 1, "study_id": CONTRACT["study_id"], "protocol_contract_sha256": contract_hash, "schedule_sha256": schedule_hash, "repetitions": 5, "native_scales_are_not_cross_compared": True, "arms": arms}
     _write_json(output / "summary.json", summary)
     _write_json(output / "hbq-leaf-repeatability.json", {"leaves": leaves})

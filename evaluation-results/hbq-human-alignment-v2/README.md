@@ -23,8 +23,8 @@ cross that boundary. Within each partition and source Model, stories are ranked
 by the published human-overall value and two are chosen from each
 partition-relative quartile: 88 development and 88 confirmatory stories.
 
-Every item uses the full `prose.short_story` bundle in one 179-leaf response
-batch. The HANNA prompt is context and creates the non-gating dynamic goal
+Every item uses the full 179-leaf `prose.short_story` bundle in ordered batches
+of 32 leaves. The HANNA prompt is context and creates the non-gating dynamic goal
 `hanna.prompt_response` (compiled as `task.contract.hanna.prompt_response`).
 Judging is provenance-blinded (`strict_ai=False`), with the package commit,
 compiler, runner, scoring core, prompts, schemas, mappings, and external inputs
@@ -43,7 +43,10 @@ three-rater slice. It is context, not a ceiling. The HANNA paper’s published
 ICC(2,k) range (approximately .29–.56) is cited separately.
 
 Repeatability uses one frozen development story per Model, each in five fresh run
-directories. It reports per-item score SD/range and aggregate within-item spread;
+directories. A repetition can span several Codex batch sessions; its session set
+must be nonempty and globally disjoint from every other repetition. Published
+repeatability output commits the per-repetition session counts and total distinct
+session count. It reports per-item score SD/range and aggregate within-item spread;
 it never pools scores across unrelated items. Typed evidence conformance,
 exact-quote grounding, summary prevalence, untyped entries, and empty entries are
 separate measures—summaries are not grounded-evidence proof.

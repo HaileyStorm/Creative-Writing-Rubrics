@@ -37,7 +37,8 @@ def test_contract_preflight_freezes_source_assets_and_runtime() -> None:
     assert contract["repetitions"] == 5
     assert contract["provider"]["model"] == "gpt-5.6-sol"
     assert contract["provider"]["reasoning"] == "high"
-    assert contract["hbq_runtime"]["batch_size"] == 256
+    assert contract["hbq_runtime"]["batch_size"] == 32
+    assert contract["hbq_runtime"]["expected_batches_per_repetition"] == 6
     assert set(contract["asset_hashes"]) >= {"binary_prompt", "response_schema", "verdict_schema", "score_report_schema", "runner", "structured_runner", "scoring_core", "paths", "study_runner", "study_analyzer"}
     positions = {arm["arm_id"]: [] for arm in contract["arms"]}
     for block in contract["schedule"]["blocks"]:
@@ -79,12 +80,12 @@ def test_analyzer_rejects_one_leaf_hbq_fixture_before_publish(tmp_path: Path) ->
         "provider": "codex",
         "model": "gpt-5.6-sol",
         "reasoning": "high",
-        "batch_size": 256,
+        "batch_size": 32,
         "strict_ai": True,
         "prompts": [{"sha256": contract["asset_hashes"]["binary_prompt"]}, {"sha256": contract["asset_hashes"]["judge_prefix"]}],
         "response_schema": {"sha256": contract["asset_hashes"]["response_schema"]},
     }
-    _write_json(work / "hbq_short_story_one_batch" / "run-01" / "run.json", {"format_version": 1, "run_id": "fake", "config_sha256": hashlib.sha256(analysis._runner_json_bytes(configuration)).hexdigest(), "configuration": configuration})
+    _write_json(work / "hbq_short_story_batch32" / "run-01" / "run.json", {"format_version": 1, "run_id": "fake", "config_sha256": hashlib.sha256(analysis._runner_json_bytes(configuration)).hexdigest(), "configuration": configuration})
     with pytest.raises(ValueError, match="exact frozen 178-question order"):
         analysis._validate_hbq_run(work, 1)
 
@@ -153,15 +154,15 @@ def test_native_response_content_tampering_is_rejected(tmp_path: Path) -> None:
         analysis._validate_native_run(tmp_path / "work", arm, 1)
 
 
-def test_hbq_rejects_legacy_checkpoint_even_with_full_question_set(tmp_path: Path) -> None:
+def test_hbq_rejects_incomplete_batch32_checkpoints_even_with_full_question_set(tmp_path: Path) -> None:
     analysis = _module("analyze_study")
     runner = _module("run_study")
     contract = analysis.CONTRACT
     bundle = __import__("hbqrs.core", fromlist=["compile_bundle"]).compile_bundle(__import__("hbqrs.core", fromlist=["load_modules"]).load_modules(__import__("hbqrs.paths", fromlist=["registry_path"]).registry_path()), __import__("hbqrs.core", fromlist=["resolve_bundle"]).resolve_bundle(__import__("hbqrs.core", fromlist=["load_bundles"]).load_bundles(__import__("hbqrs.paths", fromlist=["bundles_path"]).bundles_path()), "prose.short_story"))
     roles = {"hard_gate": 0, "domain": 1, "penalty": 2, "supplemental": 3}
     ids = [item["question"]["id"] for item in sorted(__import__("hbqrs.core", fromlist=["compiled_questions"]).compiled_questions(bundle), key=lambda item: roles.get(item["role"], 99))]
-    configuration = {"artifact": {"sha256": contract["source"]["sha256"], "bytes": contract["source"]["bytes"]}, "bundle_id": "prose.short_story", "question_ids": ids, "artifact_id": "the-part-that-arrives-first", "provider": "codex", "model": "gpt-5.6-sol", "reasoning": "high", "batch_size": 256, "strict_ai": True, "prompts": [{"sha256": contract["asset_hashes"]["binary_prompt"]}, {"sha256": contract["asset_hashes"]["judge_prefix"]}], "response_schema": {"sha256": contract["asset_hashes"]["response_schema"]}}
-    base = tmp_path / "work" / "hbq_short_story_one_batch" / "run-01"
+    configuration = {"artifact": {"sha256": contract["source"]["sha256"], "bytes": contract["source"]["bytes"]}, "bundle_id": "prose.short_story", "question_ids": ids, "artifact_id": "the-part-that-arrives-first", "provider": "codex", "model": "gpt-5.6-sol", "reasoning": "high", "batch_size": 32, "strict_ai": True, "prompts": [{"sha256": contract["asset_hashes"]["binary_prompt"]}, {"sha256": contract["asset_hashes"]["judge_prefix"]}], "response_schema": {"sha256": contract["asset_hashes"]["response_schema"]}}
+    base = tmp_path / "work" / "hbq_short_story_batch32" / "run-01"
     _write_json(base / "run.json", {"format_version": 1, "run_id": "run", "config_sha256": hashlib.sha256(analysis._runner_json_bytes(configuration)).hexdigest(), "configuration": configuration})
     verdicts = [{"artifact_id": "the-part-that-arrives-first", "bundle_id": "prose.short_story", "question_id": question_id, "verdict": "NO", "confidence": 0.9, "evidence": [{"reference": "story", "quote": "legacy"}], "judge_id": "codex:gpt-5.6-sol", "run_id": "run"} for question_id in ids]
     (base / "verdicts.jsonl").parent.mkdir(parents=True, exist_ok=True)
@@ -171,5 +172,75 @@ def test_hbq_rejects_legacy_checkpoint_even_with_full_question_set(tmp_path: Pat
     (base / "responses" / "batch-0001.prompt.txt.gz").write_bytes(gzip.compress(prompt, mtime=0))
     checkpoint = {"format_version": 1, "batch": 1, "question_ids": ids, "prompt_sha256": hashlib.sha256(prompt).hexdigest(), "response_sha256": "0" * 64, "previous_checkpoint_sha256": None, "verdicts_sha256": hashlib.sha256(analysis._verdicts_bytes(verdicts)).hexdigest(), "provider": {"reported": {"provider": "openai", "model": "gpt-5.6-sol", "reasoning_effort": "high", "session_id": "session-legacy"}}, "normalized_verdicts": verdicts}
     _write_json(base / "responses" / "batch-0001.json", checkpoint)
-    with pytest.raises(ValueError, match="format-version-2"):
+    with pytest.raises(ValueError, match="checkpoints are incomplete"):
         analysis._validate_hbq_run(tmp_path / "work", 1)
+
+
+def _valid_hbq_batch32(work: Path, *, run_number: int = 1) -> tuple[object, object, Path]:
+    analysis = _module("analyze_study")
+    contract = analysis.CONTRACT
+    core = __import__("hbqrs.core", fromlist=["compile_bundle", "compiled_questions", "load_bundles", "load_modules", "resolve_bundle", "score_bundle"])
+    paths = __import__("hbqrs.paths", fromlist=["bundles_path", "registry_path"])
+    bundle = core.resolve_bundle(core.load_bundles(paths.bundles_path()), "prose.short_story")
+    compiled = core.compile_bundle(core.load_modules(paths.registry_path()), bundle)
+    roles = {"hard_gate": 0, "domain": 1, "penalty": 2, "supplemental": 3}
+    ids = [item["question"]["id"] for item in sorted(core.compiled_questions(compiled), key=lambda item: roles.get(item["role"], 99))]
+    configuration = {"artifact": {"sha256": contract["source"]["sha256"], "bytes": contract["source"]["bytes"]}, "bundle_id": "prose.short_story", "question_ids": ids, "artifact_id": "the-part-that-arrives-first", "provider": "codex", "model": "gpt-5.6-sol", "reasoning": "high", "batch_size": 32, "strict_ai": True, "prompts": [{"sha256": contract["asset_hashes"]["binary_prompt"]}, {"sha256": contract["asset_hashes"]["judge_prefix"]}], "response_schema": {"sha256": contract["asset_hashes"]["response_schema"]}}
+    base = work / "hbq_short_story_batch32" / f"run-{run_number:02d}"
+    run_id = f"run-{run_number:02d}"
+    _write_json(base / "run.json", {"format_version": 1, "run_id": run_id, "config_sha256": hashlib.sha256(analysis._runner_json_bytes(configuration)).hexdigest(), "configuration": configuration})
+    all_verdicts = []
+    previous = None
+    for batch, start in enumerate(range(0, len(ids), 32), start=1):
+        chunk = ids[start : start + 32]
+        verdicts = [{"artifact_id": "the-part-that-arrives-first", "bundle_id": "prose.short_story", "question_id": question_id, "verdict": "NO", "confidence": 0.9, "evidence": [{"reference": "story", "exact_quote": "Mica always arrived first."}], "judge_id": "codex:gpt-5.6-sol", "run_id": run_id} for question_id in chunk]
+        all_verdicts.extend(verdicts)
+        prompt = f"batch-{batch}".encode()
+        (base / "responses").mkdir(parents=True, exist_ok=True)
+        (base / "responses" / f"batch-{batch:04d}.prompt.txt.gz").write_bytes(gzip.compress(prompt, mtime=0))
+        response = {"format_version": 2, "batch": batch, "question_ids": chunk, "prompt_sha256": hashlib.sha256(prompt).hexdigest(), "response_sha256": "0" * 64, "previous_checkpoint_sha256": previous, "verdicts_sha256": hashlib.sha256(analysis._verdicts_bytes(all_verdicts)).hexdigest(), "provider": {"reported": {"provider": "openai", "model": "gpt-5.6-sol", "reasoning_effort": "high", "session_id": f"hbq-{run_number}-{batch}"}}, "normalized_verdicts": verdicts}
+        response_path = base / "responses" / f"batch-{batch:04d}.json"
+        _write_json(response_path, response)
+        previous = hashlib.sha256(response_path.read_bytes()).hexdigest()
+    (base / "verdicts.jsonl").write_bytes(analysis._verdicts_bytes(all_verdicts))
+    _write_json(base / "score.json", core.score_bundle(core.load_modules(paths.registry_path()), bundle, all_verdicts, artifact_id="the-part-that-arrives-first"))
+    return analysis, core, base
+
+
+def test_hbq_valid_six_batch_path_and_privacy_safe_chunk_proof(tmp_path: Path) -> None:
+    analysis, _, base = _valid_hbq_batch32(tmp_path / "work")
+    for number in range(2, 6):
+        _valid_hbq_batch32(tmp_path / "work", run_number=number)
+    _, _, sessions = analysis._validate_hbq_run(tmp_path / "work", 1)
+    assert len(sessions) == 6
+    output = tmp_path / "output"
+    output.mkdir()
+    arm = next(item for item in analysis.CONTRACT["arms"] if item["kind"] == "hbq")
+    proof = analysis._copy_and_prove(tmp_path / "work", output, arm)[0]
+    assert proof["provider_batches"] == 6
+    assert [item["question_count"] for item in proof["ordered_question_id_chunk_commitments"]] == [32, 32, 32, 32, 32, 18]
+    assert proof["final_checkpoint_chain_sha256"] == hashlib.sha256((base / "responses" / "batch-0006.json").read_bytes()).hexdigest()
+
+
+def test_hbq_rejects_broken_chain_and_swapped_batch_chunk(tmp_path: Path) -> None:
+    analysis, _, base = _valid_hbq_batch32(tmp_path / "chain")
+    second = base / "responses" / "batch-0002.json"
+    record = json.loads(second.read_text(encoding="utf-8"))
+    record["previous_checkpoint_sha256"] = "0" * 64
+    _write_json(second, record)
+    with pytest.raises(Exception, match="chain"):
+        analysis._validate_hbq_run(tmp_path / "chain", 1)
+    analysis, _, base = _valid_hbq_batch32(tmp_path / "swap")
+    first = base / "responses" / "batch-0001.json"
+    record = json.loads(first.read_text(encoding="utf-8"))
+    record["question_ids"] = record["question_ids"][::-1]
+    _write_json(first, record)
+    with pytest.raises(Exception, match="question order"):
+        analysis._validate_hbq_run(tmp_path / "swap", 1)
+
+
+def test_global_45_session_duplicate_is_rejected() -> None:
+    analysis = _module("analyze_study")
+    sessions = [f"session-{number}" for number in range(44)] + ["session-0"]
+    with pytest.raises(ValueError, match="globally unique"):
+        analysis._require_unique_sessions(sessions, 45)

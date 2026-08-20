@@ -4,7 +4,7 @@ This is the pre-registered runnable follow-up to the public five-repeat case stu
 
 | Arm | Native output |
 | --- | --- |
-| HBQ-RS `prose.short_story` | 178 binary leaves, deterministic score, typed evidence |
+| HBQ-RS `prose.short_story` | 178 binary leaves in six checkpoints of up to 32 leaves (32×5 + 18), deterministic score, typed evidence |
 | NAPLAN Narrative Writing Marking Guide 2022 implementation | ten criterion ranges, total 0–47 |
 | Cambridge IGCSE 0500/21 May/June 2024 implementation | content/structure 0–16; style/accuracy 0–24; total 0–40 |
 | Oregon DOE Revised Narrative Writing Scoring Guide 2017 implementation | six traits 1–6, total 6–36 |
@@ -15,7 +15,7 @@ NZQA AS91101 was considered and deliberately excluded: its published standard as
 
 ## Frozen protocol
 
-`study-contract.json` pins the authorized source bytes, model (`gpt-5.6-sol`), high reasoning, five fresh repetitions, an explicit near-Latin serial schedule, HBQ question order, prompts, response schemas, registry, bundle, scoring/compiler code, and study-code hashes. `run_study.py` refuses to run if any of those values drift. It records all 20 planned slots before evaluation, then atomically appends each completion to a contract-bound schedule journal; the analyzer refuses a missing, duplicate, or reordered journal. Each comparator sees only its own prompt and the story; it never receives HBQ prompts, verdicts, scores, or reports.
+`study-contract.json` pins the authorized source bytes, model (`gpt-5.6-sol`), high reasoning, five fresh repetitions, an explicit near-Latin serial schedule, the complete 178-leaf HBQ order split into six checkpoints of up to 32 leaves (32×5 + 18), prompts, response schemas, registry, bundle, scoring/compiler code, and study-code hashes. `run_study.py` refuses to run if any of those values drift. It records all 20 planned slots before evaluation, then atomically appends each completion to a contract-bound schedule journal; the analyzer refuses a missing, duplicate, or reordered journal. Published HBQ provenance includes only the final checkpoint-chain SHA and ordered per-batch question-ID chunk commitments. Each comparator sees only its own prompt and the story; it never receives HBQ prompts, verdicts, scores, or reports.
 
 Run only in an external disposable directory:
 
@@ -25,6 +25,8 @@ python evaluation-results/the-part-that-arrives-first-repeatability/established-
 python evaluation-results/the-part-that-arrives-first-repeatability/established-v2/analyze_study.py --work-dir C:\path\outside-the-repo\established-v2-work --output-dir C:\path\outside-the-repo\established-v2-results
 ```
 
-The analyzer refuses stale protocol bytes, partial/checkpoint-mismatched HBQ runs, invalid native results, ungrounded exact quotations, reused provider sessions, model/reasoning drift, recomputation mismatch, or an existing output directory. It preserves raw native-scale outputs separately and publishes only one global 20-session uniqueness/count commitment, never session IDs. It reports HBQ leaf agreement/modal agreement/nominal alpha/score dispersion and typed-evidence denominators and coverage rates, alongside analytic-rubric criterion agreement/modal proportions and native-total dispersion. The generated score and agreement charts retain their scale labels; no raw scores are subtracted, averaged, normalized on the study story, or ranked across rubrics.
+The analyzer refuses stale protocol bytes, partial/checkpoint-mismatched HBQ runs, invalid native results, ungrounded exact quotations, reused provider sessions, model/reasoning drift, recomputation mismatch, or an existing output directory. It preserves raw native-scale outputs separately and publishes only one global 45-session uniqueness/count commitment, never session IDs. It reports HBQ leaf agreement/modal agreement/nominal alpha/score dispersion and typed-evidence denominators and coverage rates, alongside analytic-rubric criterion agreement/modal proportions and native-total dispersion. The generated score and agreement charts retain their scale labels; no raw scores are subtracted, averaged, normalized on the study story, or ranked across rubrics.
+
+Two earlier full-leaf attempts were rejected by the runner because each contained one non-verbatim exact quotation. They are excluded from this fresh batch-32 protocol and remain only as external failed-run context, not study observations.
 
 Results are intentionally absent until the exact frozen study has run. Any conclusion about HBQ diagnostic resolution alongside coarser-scale stability belongs in the generated post-run comparison and remains descriptive for this story/provider window.

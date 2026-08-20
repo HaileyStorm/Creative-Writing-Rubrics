@@ -19,6 +19,7 @@ def write_text(path: Path, value: str) -> None:
 def read_json(path: Path) -> dict[str, Any]: return json.loads(path.read_text(encoding="utf-8"))
 def read_verdicts(path: Path) -> list[dict[str, Any]]: return [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
 def verdict_bytes(rows: Sequence[Mapping[str, Any]]) -> bytes: return "".join(json.dumps(row, ensure_ascii=False, sort_keys=True)+"\n" for row in rows).encode()
+def checkpoint_files(folder: Path) -> list[Path]: return sorted((folder/"responses").glob("batch-[0-9][0-9][0-9][0-9].json"))
 
 def typed_evidence_metrics(rows: Sequence[Mapping[str, Any]], source: str, prompt: str) -> dict[str, Any]:
     result = Counter(total=0, typed_schema_conformant=0, exact_quote=0, exact_quote_grounded=0, summary=0, untyped=0, empty=0)
@@ -52,12 +53,15 @@ def verify_run(work: Path, frozen: Mapping[str, Any], phase: str, row: Mapping[s
     if [compact(item) for item in configuration.get("prompts",[])] != [frozen["package_files"]["BINARY_EVALUATION_PROMPT.md"]] or compact(configuration.get("response_schema")) != frozen["package_files"]["hbq_judge_response.schema.json"]: raise ValueError(f"Prompt/schema fingerprint mismatch for {row['item_id']}")
     if configuration.get("question_ids") != expected or [item.get("question_id") for item in rows] != expected: raise ValueError(f"Question order mismatch for {row['item_id']}")
     if configuration.get("provider") != frozen["provider"]["provider"] or configuration.get("model") != frozen["provider"]["model"] or configuration.get("reasoning") != frozen["provider"]["reasoning"] or configuration.get("strict_ai") is not False or configuration.get("batch_size") != frozen["runner"]["batch_size"]: raise ValueError(f"Run settings mismatch for {row['item_id']}")
-    checkpoints = sorted((folder/"responses").glob("batch-*.json")); previous=None; accumulated=[]
-    if len(checkpoints) != 1: raise ValueError(f"Expected one full-bundle checkpoint for {row['item_id']}")
+    checkpoints = checkpoint_files(folder); previous=None; accumulated=[]
+    expected_batches=(len(expected)+frozen["runner"]["batch_size"]-1)//frozen["runner"]["batch_size"]
+    if len(checkpoints) != expected_batches: raise ValueError(f"Expected {expected_batches} ordered checkpoints for {row['item_id']}")
     for number, checkpoint in enumerate(checkpoints, 1):
-        record=read_json(checkpoint); prompt=checkpoint.with_suffix(".prompt.txt.gz")
-        if record.get("format_version") != 2 or record.get("batch") != number or record.get("previous_checkpoint_sha256") != previous or record.get("question_ids") != expected or not prompt.is_file(): raise ValueError(f"Checkpoint chain mismatch for {row['item_id']}")
+        record=read_json(checkpoint); prompt=checkpoint.with_suffix(".prompt.txt.gz"); message=checkpoint.with_name(f"batch-{number:04d}.message.json")
+        expected_ids=expected[(number-1)*frozen["runner"]["batch_size"]:number*frozen["runner"]["batch_size"]]
+        if record.get("format_version") != 2 or record.get("batch") != number or record.get("previous_checkpoint_sha256") != previous or record.get("question_ids") != expected_ids or not prompt.is_file() or not message.is_file(): raise ValueError(f"Checkpoint chain mismatch for {row['item_id']}")
         if record.get("prompt_sha256") != hashlib.sha256(gzip.decompress(prompt.read_bytes())).hexdigest(): raise ValueError(f"Checkpoint prompt mismatch for {row['item_id']}")
+        if record.get("response_sha256") != hashlib.sha256(message.read_bytes()).hexdigest(): raise ValueError(f"Checkpoint response/message hash mismatch for {row['item_id']}")
         accumulated.extend(record.get("normalized_verdicts", []))
         if record.get("verdicts_sha256") != hashlib.sha256(verdict_bytes(accumulated)).hexdigest(): raise ValueError(f"Checkpoint verdict hash mismatch for {row['item_id']}")
         reported=record.get("provider", {}).get("reported", {})
@@ -70,18 +74,20 @@ def verify_run(work: Path, frozen: Mapping[str, Any], phase: str, row: Mapping[s
 
 def verify_phase_runs(work: Path, frozen: Mapping[str, Any], phase: str) -> None:
     source_rows = frozen["repeatability"]["items"] if phase == "repeatability" else frozen["partitions"][phase]
+    global_session_sets=[]
     for row in source_rows:
         repetitions = frozen["repeatability"]["repetitions"] if phase == "repeatability" else 1
         if phase == "repeatability":
             row = next(item for item in frozen["partitions"]["development"] if item["item_id"] == row["item_id"])
-        run_ids=[]; session_ids=[]
+        session_sets=[]
         for number in range(1, repetitions+1):
             verify_run(work, frozen, phase, row, number)
-            run_ids.append(read_json(work/"runs"/phase/row["item_id"]/f"run-{number:02d}"/"run.json")["run_id"])
-            checkpoint=read_json(work/"runs"/phase/row["item_id"]/f"run-{number:02d}"/"responses"/"batch-0001.json")
-            session=checkpoint.get("provider",{}).get("reported",{}).get("session_id")
-            session_ids.append(session)
-        if phase == "repeatability" and (len(set(run_ids)) != repetitions or any(not isinstance(item,str) or not item.strip() for item in session_ids) or len(set(session_ids)) != repetitions): raise ValueError(f"Repeatability requires five distinct nonblank Codex-reported session IDs for {row['item_id']}")
+            checkpoints=checkpoint_files(work/"runs"/phase/row["item_id"]/f"run-{number:02d}")
+            sessions={read_json(checkpoint).get("provider",{}).get("reported",{}).get("session_id") for checkpoint in checkpoints}
+            if not sessions or any(not isinstance(item,str) or not item.strip() for item in sessions): raise ValueError(f"Repeatability lacks a nonblank Codex session ID for {row['item_id']}")
+            session_sets.append(sessions)
+        global_session_sets.extend(session_sets)
+    if phase == "repeatability" and any(left & right for left,right in combinations(global_session_sets,2)): raise ValueError("Repeatability runs require globally disjoint Codex session sets")
 
 def derive_mapping(rows: Sequence[Mapping[str, Any]], mappings: Mapping[str, Sequence[str]]) -> dict[str, Any]:
     labels={str(row.get("question_id")):str(row.get("verdict")) for row in rows}; output={}
@@ -136,9 +142,11 @@ def repeatability_metrics(work: Path, frozen: Mapping[str,Any]) -> dict[str,Any]
     all_leaves=[]; per_item=[]; evidence=[]
     for repeat in frozen["repeatability"]["items"]:
         row=next(item for item in frozen["partitions"]["development"] if item["item_id"]==repeat["item_id"]); source=(work/"inputs"/"development"/row["item_id"]/"source.md").read_text(encoding="utf-8"); prompt=(work/"inputs"/"development"/row["item_id"]/"prompt.md").read_text(encoding="utf-8"); runs=[]; scores=[]
+        session_sets=[]
         for number in range(1,frozen["repeatability"]["repetitions"]+1):
             verdicts,score=verify_run(work,frozen,"repeatability",row,number); runs.append(verdicts); value=score_value(score); scores.extend([] if value is None else [value]); evidence.append(typed_evidence_metrics(verdicts,source,prompt))
-        columns=list(zip(*[[item["verdict"] for item in run] for run in runs])); all_leaves.extend(columns); per_item.append({"item_id":row["item_id"],"source_model":row["model"],"exact_all_five_leaf_agreement":statistics.fmean(len(set(column))==1 for column in columns),"score":{"values":scores,"standard_deviation":statistics.stdev(scores) if len(scores)>1 else 0.0,"range":max(scores)-min(scores) if scores else None}})
+            checkpoints=checkpoint_files(work/"runs"/"repeatability"/row["item_id"]/f"run-{number:02d}"); session_sets.append({read_json(checkpoint)["provider"]["reported"]["session_id"] for checkpoint in checkpoints})
+        columns=list(zip(*[[item["verdict"] for item in run] for run in runs])); all_leaves.extend(columns); per_item.append({"item_id":row["item_id"],"source_model":row["model"],"exact_all_five_leaf_agreement":statistics.fmean(len(set(column))==1 for column in columns),"score":{"values":scores,"standard_deviation":statistics.stdev(scores) if len(scores)>1 else 0.0,"range":max(scores)-min(scores) if scores else None},"session_commitment":{"repetition_session_counts":[len(value) for value in session_sets],"total_distinct_sessions":len(set().union(*session_sets)),"globally_disjoint":not any(left & right for left,right in combinations(session_sets,2))}})
     keys=("total","typed_schema_conformant","exact_quote","exact_quote_grounded","summary","untyped","empty"); sums={key:sum(item[key] for item in evidence) for key in keys}; total=sums["total"]
     deviations=[item["score"]["standard_deviation"] for item in per_item]; ranges=[item["score"]["range"] for item in per_item if item["score"]["range"] is not None]
     if len(per_item) != 11: raise ValueError("Frozen repeatability summary must contain exactly 11 items")

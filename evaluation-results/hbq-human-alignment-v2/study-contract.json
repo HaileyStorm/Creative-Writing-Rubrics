@@ -17,7 +17,7 @@
   },
   "selection": {"seed": 560820, "models": 11, "prompt_groups": 96, "partitions": ["development", "confirmatory"], "prompt_groups_per_partition": 48, "items_per_model_quartile_partition": 2, "stratification": "Hash and split unique prompt strings before inspecting ratings. Within partition and Model, rank by three-rater six-dimension mean then Story ID; choose two items per partition-relative rank quartile."},
   "provider": {"provider": "codex", "model": "gpt-5.6-sol", "reasoning": "high", "fresh_session": true},
-  "runner": {"bundle_id": "prose.short_story", "batch_size": 179, "maximum_workers": 4, "allow_remote": true, "resume": "Only an identical frozen existing run may resume; new repetitions always use new directories."},
+  "runner": {"bundle_id": "prose.short_story", "batch_size": 32, "maximum_workers": 4, "allow_remote": true, "resume": "Only an identical frozen existing run may resume; a fresh repetition may contain several batch sessions, but its complete session set must be globally disjoint from every other repetition."},
   "repeatability": {"seed": 560820, "repetitions": 5, "items": "One deterministic development story per Model, fixed before execution."},
   "metrics": {"primary": "Six confirmatory Spearman correlations and macro mean with 1,000 prompt-cluster bootstrap 95% intervals.", "secondary": ["Pearson", "coverage", "unresolved", "source-model strata", "selected-slice ordinal human agreement", "repeatability"], "no_test_set_fitting": true},
   "human_ratings_policy": "Use only already-published HANNA ratings and published agreement context. This study never recruits, contacts, or newly judges human readers.",
