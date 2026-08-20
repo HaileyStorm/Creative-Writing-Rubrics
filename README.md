@@ -4,6 +4,10 @@
 
 The package ships **277 modules**, **2,139 atomic leaves**, and **85 bundle presets**, plus deterministic scoring. A judge answers one yes/no leaf at a time. Aggregation is code, not another model call.
 
+## Current work
+
+Fresh-clone installation, CLI and Python workflows, wheel contents, schemas, and examples are being verified now. A headless runner for OpenAI-compatible endpoints and Codex CLI is also in development, with local endpoint tests and GPT-5.6 evaluation planned. A small, sanitized before/after novel excerpt and rubric case study will follow; private drafts will not be published. The completed update is expected by morning.
+
 ## Install
 
 ```bash
@@ -51,10 +55,6 @@ packet = compile_bundle(modules, bundle)
 report = score_bundle(modules, bundle, load_verdicts("examples/verdicts_example.jsonl"))
 print(report["status"], report["final_score"])
 ```
-
-## Work in progress
-
-This release is getting a real shakedown: fresh-clone installs, CLI and Python workflows, wheel packaging, schema validation, and the documented examples. A headless runner for OpenAI-compatible endpoints and Codex CLI is next, tested against a fake local endpoint before real GPT-5.6 runs (Luna Max for broad passes; Sol Medium/High for judgment and synthesis). A small, sanitized before/after novel excerpt case study will follow; private drafts stay private.
 
 ## How judging works
 
