@@ -10,7 +10,7 @@
   },
   "batch_count": 1,
   "accepted_verdict_count": 28,
-  "published_verdicts_sha256": "d00361851779c37739b4a6122bc683e26309a63ff2673330284cee7dd81d9d7a",
+  "published_verdicts_sha256": "0ef2b0e06dca1c97b65294aab42d6cd01ee201dc06f8532f2b807bc2a616e2a5",
   "batches": [
     {
       "batch": 1,
