@@ -1,0 +1,144 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: form.poetry.pantoum
+version: 1
+title: Pantoum
+kind: artifact_form
+description: Research-informed binary rubric for pantoum.
+origin: research_expansion
+owner_domains:
+- form.poetry.pantoum
+artifact_types:
+- poetry
+valid_scopes:
+- line
+- stanza
+- poem
+- collection
+activation: Attach when pantoum is the active form, asset, or evaluation concern.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: form.poetry.pantoum.quality
+  type: group
+  title: Pantoum checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: form.poetry.pantoum.quatrains
+    type: question
+    criterion_key: form.poetry.pantoum.quatrains
+    text: Is the poem built from quatrains under the selected pantoum convention?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: hard_gate
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.pantoum.repetition
+    type: question
+    criterion_key: form.poetry.pantoum.repetition
+    text: Do the second and fourth lines of each stanza recur as the first and third lines of the next?
+    pass_answer: 'YES'
+    weight: 2.5
+    question_type: hard_gate
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.pantoum.closure
+    type: question
+    criterion_key: form.poetry.pantoum.closure
+    text: Does the final stanza return the required opening lines or use a clearly defined contemporary variant?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: hard_gate
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.pantoum.recontext
+    type: question
+    criterion_key: form.poetry.pantoum.recontext
+    text: Does each repeated line change through new neighbors, punctuation, or accumulated knowledge?
+    pass_answer: 'YES'
+    weight: 3.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.pantoum.movement
+    type: question
+    criterion_key: form.poetry.pantoum.movement
+    text: Does recurrence produce progression, memory, obsession, argument, or transformation?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.pantoum.sound
+    type: question
+    criterion_key: form.poetry.pantoum.sound
+    text: Does the rhyme or sonic pattern, if used, support rather than constrain the movement?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.pantoum.no_duplication
+    type: question
+    criterion_key: form.poetry.pantoum.no_duplication
+    text: Does the poem avoid treating repeated lines as inert copy-paste?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- li_et_al_2026_poemetric
+- vaezi_rezaei_2018
+notes: []
+profile_overrides:
+  default_profile: traditional
+  profiles:
+    traditional:
+      stanza: quatrains
+      repetition: lines 2/4 recur as next 1/3
+      closure: selected traditional or contemporary profile

@@ -1,0 +1,159 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: form.poetry.poetry_sequence_or_collection
+version: 1
+title: Poetry sequence or collection
+kind: artifact_form
+description: Evaluates ordering, recurrence, variation, tonal range, thematic architecture, and the balance between
+  collection unity and individual-poem distinctiveness.
+origin: user_inventory_refined
+owner_domains:
+- form.poetry_sequence_or_collection
+artifact_types:
+- poetry
+valid_scopes:
+- line
+- stanza
+- poem
+- collection
+activation: Attach when poetry sequence or collection is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: form.poetry.poetry_sequence_or_collection.quality
+  type: group
+  title: Poetry sequence or collection checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: form.poetry.poetry_sequence_or_collection.ordering
+    type: question
+    criterion_key: form.poetry.poetry_sequence_or_collection.ordering
+    text: Does the order create a meaningful progression, tension, dialogue, or field of recurrence?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.poetry_sequence_or_collection.individual_strength
+    type: question
+    criterion_key: form.poetry.poetry_sequence_or_collection.individual_strength
+    text: Are individual poems independently worthwhile rather than included only to fill thematic gaps?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.poetry_sequence_or_collection.recurrence
+    type: question
+    criterion_key: form.poetry.poetry_sequence_or_collection.recurrence
+    text: Do recurring images, forms, voices, and themes develop rather than merely repeat?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.poetry_sequence_or_collection.variation
+    type: question
+    criterion_key: form.poetry.poetry_sequence_or_collection.variation
+    text: Does the collection provide sufficient formal, tonal, imagistic, or perspectival variation?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.poetry_sequence_or_collection.architecture
+    type: question
+    criterion_key: form.poetry.poetry_sequence_or_collection.architecture
+    text: Do sections, clusters, or sequences create a legible larger architecture?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.poetry_sequence_or_collection.voice_range
+    type: question
+    criterion_key: form.poetry.poetry_sequence_or_collection.voice_range
+    text: Does variation in voice remain compatible with the collection's identity?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.poetry_sequence_or_collection.opening_closing
+    type: question
+    criterion_key: form.poetry.poetry_sequence_or_collection.opening_closing
+    text: Do the first and last poems establish and resolve or productively reopen the collection's central field?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.poetry_sequence_or_collection.no_redundancy
+    type: question
+    criterion_key: form.poetry.poetry_sequence_or_collection.no_redundancy
+    text: Does the collection avoid multiple poems performing substantially the same work without development?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- li_et_al_2026_poemetric
+- vaezi_rezaei_2018
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates ordering, recurrence, variation, tonal range, thematic architecture, and the balance
+  between collection unity and individual-poem distinctiveness.

@@ -1,0 +1,156 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: op.ideation.title_generation
+version: 1
+title: Title generation
+kind: procedure
+description: Evaluates relation to the work, memorability, tone, intrigue, thematic resonance, and avoidance of
+  generic title patterns.
+origin: user_inventory_refined
+owner_domains:
+- procedure.title_generation
+artifact_types:
+- any
+valid_scopes:
+- operation
+activation: Attach when title generation is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: op.ideation.title_generation.quality
+  type: group
+  title: Title generation checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: op.ideation.title_generation.relation
+    type: question
+    criterion_key: op.ideation.title_generation.relation
+    text: Does each title bear a meaningful relation to the work rather than merely name its genre?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ideation.title_generation.tone
+    type: question
+    criterion_key: op.ideation.title_generation.tone
+    text: Does each title signal the intended tone and audience?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ideation.title_generation.intrigue
+    type: question
+    criterion_key: op.ideation.title_generation.intrigue
+    text: Does it create a proportionate reason to look closer without misleading the reader?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ideation.title_generation.memory
+    type: question
+    criterion_key: op.ideation.title_generation.memory
+    text: Is it memorable and reasonably easy to distinguish?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ideation.title_generation.resonance
+    type: question
+    criterion_key: op.ideation.title_generation.resonance
+    text: Does it gain additional meaning after encountering the work?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ideation.title_generation.sound
+    type: question
+    criterion_key: op.ideation.title_generation.sound
+    text: Does its sound, rhythm, and visual shape suit the project?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ideation.title_generation.no_generic
+    type: question
+    criterion_key: op.ideation.title_generation.no_generic
+    text: Does it avoid default title templates, vague abstract nouns, and interchangeable genre phrases?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ideation.title_generation.set_diversity
+    type: question
+    criterion_key: op.ideation.title_generation.set_diversity
+    text: When multiple titles are requested, do they represent genuinely different naming strategies?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- wu_et_al_2025_writingbench
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates relation to the work, memorability, tone, intrigue, thematic resonance, and avoidance
+  of generic title patterns.

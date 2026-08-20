@@ -1,0 +1,170 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: op.revision.structural_revision
+version: 1
+title: Structural revision
+kind: procedure
+description: Evaluates scene order, additions/deletions, arc changes, pacing, causality, and downstream consequences
+  across the manuscript.
+origin: user_inventory_refined
+owner_domains:
+- procedure.structural_revision
+artifact_types:
+- any
+valid_scopes:
+- operation
+activation: Attach when structural revision is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: op.revision.structural_revision.quality
+  type: group
+  title: Structural revision checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: op.revision.structural_revision.diagnosis
+    type: question
+    criterion_key: op.revision.structural_revision.diagnosis
+    text: Does the revision target identified structural causes rather than merely redistribute symptoms?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.structural_revision.order
+    type: question
+    criterion_key: op.revision.structural_revision.order
+    text: Does scene or section order improve causality, revelation, tension, or thematic movement?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.structural_revision.additions
+    type: question
+    criterion_key: op.revision.structural_revision.additions
+    text: Does each added unit perform necessary structural work?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.structural_revision.deletions
+    type: question
+    criterion_key: op.revision.structural_revision.deletions
+    text: Does each deletion preserve required setup, causality, and emotional continuity?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.structural_revision.arcs
+    type: question
+    criterion_key: op.revision.structural_revision.arcs
+    text: Do revised character and subplot arcs remain continuous and proportionate?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.structural_revision.pacing
+    type: question
+    criterion_key: op.revision.structural_revision.pacing
+    text: Does the revision improve macro pacing and variation?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.structural_revision.downstream
+    type: question
+    criterion_key: op.revision.structural_revision.downstream
+    text: Are downstream consequences and dependent artifacts updated?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.structural_revision.identity
+    type: question
+    criterion_key: op.revision.structural_revision.identity
+    text: Does the revision preserve the work's intended identity while changing structure?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.structural_revision.verify
+    type: question
+    criterion_key: op.revision.structural_revision.verify
+    text: Has the revised whole been re-evaluated rather than assuming local moves combine cleanly?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- wu_et_al_2025_writingbench
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates scene order, additions/deletions, arc changes, pacing, causality, and downstream consequences
+  across the manuscript.

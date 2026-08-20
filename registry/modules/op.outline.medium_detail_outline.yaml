@@ -1,0 +1,156 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: op.outline.medium_detail_outline
+version: 1
+title: Medium-detail outline
+kind: procedure
+description: Evaluates chapter or sequence functions, subplot coordination, information flow, character movement,
+  pacing distribution, and transitions between major turns.
+origin: user_inventory_refined
+owner_domains:
+- procedure.medium_detail_outline
+artifact_types:
+- any
+valid_scopes:
+- operation
+activation: Attach when medium-detail outline is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: op.outline.medium_detail_outline.quality
+  type: group
+  title: Medium-detail outline checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: op.outline.medium_detail_outline.unit_function
+    type: question
+    criterion_key: op.outline.medium_detail_outline.unit_function
+    text: Does each chapter, episode, or sequence have a distinct narrative function?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.outline.medium_detail_outline.causal_links
+    type: question
+    criterion_key: op.outline.medium_detail_outline.causal_links
+    text: Are transitions among units causally and emotionally legible?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.outline.medium_detail_outline.subplots
+    type: question
+    criterion_key: op.outline.medium_detail_outline.subplots
+    text: Are subplots coordinated with the central movement rather than clustered or forgotten?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.outline.medium_detail_outline.information
+    type: question
+    criterion_key: op.outline.medium_detail_outline.information
+    text: Is information and revelation distributed intentionally?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.outline.medium_detail_outline.character
+    type: question
+    criterion_key: op.outline.medium_detail_outline.character
+    text: Does each unit create cumulative character or relationship movement?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.outline.medium_detail_outline.pacing
+    type: question
+    criterion_key: op.outline.medium_detail_outline.pacing
+    text: Does the sequence vary intensity, mode, scale, and scene function?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.outline.medium_detail_outline.setup
+    type: question
+    criterion_key: op.outline.medium_detail_outline.setup
+    text: Are major setups and payoffs visible at the appropriate level?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.outline.medium_detail_outline.drafting
+    type: question
+    criterion_key: op.outline.medium_detail_outline.drafting
+    text: Is there enough information to produce fine scene plans without prescribing prose?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- wu_et_al_2025_writingbench
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates chapter or sequence functions, subplot coordination, information flow, character movement,
+  pacing distribution, and transitions between major turns.

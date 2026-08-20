@@ -1,0 +1,156 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: op.revision.revision_note_quality
+version: 1
+title: Revision-note quality
+kind: procedure
+description: Evaluates diagnosis, prioritization, specificity, feasibility, expected benefit, dependencies, and
+  fidelity to the user’s goals.
+origin: user_inventory_refined
+owner_domains:
+- procedure.revision_note_quality
+artifact_types:
+- any
+valid_scopes:
+- operation
+activation: Attach when revision-note quality is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: op.revision.revision_note_quality.quality
+  type: group
+  title: Revision-note quality checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: op.revision.revision_note_quality.diagnosis
+    type: question
+    criterion_key: op.revision.revision_note_quality.diagnosis
+    text: Does each note identify a real, consequential issue or opportunity?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.revision_note_quality.evidence
+    type: question
+    criterion_key: op.revision.revision_note_quality.evidence
+    text: Does each note cite enough evidence to locate and verify the issue?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.revision_note_quality.priority
+    type: question
+    criterion_key: op.revision.revision_note_quality.priority
+    text: Are notes prioritized by impact and dependency?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.revision_note_quality.goal
+    type: question
+    criterion_key: op.revision.revision_note_quality.goal
+    text: Does each note state the desired effect rather than prescribe arbitrary wording?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.revision_note_quality.feasible
+    type: question
+    criterion_key: op.revision.revision_note_quality.feasible
+    text: Is each proposed change feasible within the current phase and authorization?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.revision_note_quality.dependencies
+    type: question
+    criterion_key: op.revision.revision_note_quality.dependencies
+    text: Are downstream consequences and related passages identified?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.revision_note_quality.preservation
+    type: question
+    criterion_key: op.revision.revision_note_quality.preservation
+    text: Do notes identify what must be preserved?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.revision_note_quality.no_overedit
+    type: question
+    criterion_key: op.revision.revision_note_quality.no_overedit
+    text: Does the plan avoid line-level polishing while unresolved structural problems dominate?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- wu_et_al_2025_writingbench
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates diagnosis, prioritization, specificity, feasibility, expected benefit, dependencies,
+  and fidelity to the user’s goals.

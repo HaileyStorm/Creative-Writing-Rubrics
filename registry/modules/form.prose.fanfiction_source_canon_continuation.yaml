@@ -1,0 +1,156 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: form.prose.fanfiction_source_canon_continuation
+version: 1
+title: Fanfiction / source-canon continuation
+kind: artifact_form
+description: Adds source-canon fidelity, established-character voice, relationship history, setting rules, continuity
+  with the selected canon point, and intentional handling of alternate canon.
+origin: user_inventory_refined
+owner_domains:
+- form.fanfiction_source_canon_continuation
+artifact_types:
+- prose_fiction
+valid_scopes:
+- any
+activation: Attach when fanfiction / source-canon continuation is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: form.prose.fanfiction_source_canon_continuation.quality
+  type: group
+  title: Fanfiction / source-canon continuation checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: form.prose.fanfiction_source_canon_continuation.canon_point
+    type: question
+    criterion_key: form.prose.fanfiction_source_canon_continuation.canon_point
+    text: Is the selected source-canon point or alternate-universe premise clear and consistently applied?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.prose.fanfiction_source_canon_continuation.character_voice
+    type: question
+    criterion_key: form.prose.fanfiction_source_canon_continuation.character_voice
+    text: Do established characters retain recognizable voice, motives, knowledge, and relational history?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.prose.fanfiction_source_canon_continuation.world_rules
+    type: question
+    criterion_key: form.prose.fanfiction_source_canon_continuation.world_rules
+    text: Are source-setting rules and terminology preserved unless divergence is intentional?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.prose.fanfiction_source_canon_continuation.relationship_history
+    type: question
+    criterion_key: form.prose.fanfiction_source_canon_continuation.relationship_history
+    text: Does the work honor relevant prior relationship events and emotional states?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.prose.fanfiction_source_canon_continuation.new_material
+    type: question
+    criterion_key: form.prose.fanfiction_source_canon_continuation.new_material
+    text: Does the continuation add meaningful new material rather than merely reenact famous beats?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.prose.fanfiction_source_canon_continuation.divergence
+    type: question
+    criterion_key: form.prose.fanfiction_source_canon_continuation.divergence
+    text: Are canon divergences explicitly framed or causally established?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.prose.fanfiction_source_canon_continuation.source_style
+    type: question
+    criterion_key: form.prose.fanfiction_source_canon_continuation.source_style
+    text: If source-style fidelity is requested, are feature-level choices captured without copying source phrases?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.prose.fanfiction_source_canon_continuation.project_canon
+    type: question
+    criterion_key: form.prose.fanfiction_source_canon_continuation.project_canon
+    text: When the project defines its own canon, does the artifact treat that canon as authoritative?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- fein_et_al_2026_litbench
+- wu_et_al_2025_writingbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Adds source-canon fidelity, established-character voice, relationship history, setting rules,
+  continuity with the selected canon point, and intentional handling of alternate canon.

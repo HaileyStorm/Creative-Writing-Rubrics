@@ -1,0 +1,144 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: core.internal_logic_and_plausibility
+version: 1
+title: Internal logic and plausibility
+kind: base
+description: Covers causal logic, character motivation, physical and social plausibility, world-rule consistency,
+  and the credibility of consequences. Genre assumptions and project canon set the applicable standard.
+origin: user_inventory_refined
+owner_domains:
+- logic_plausibility
+artifact_types:
+- any
+valid_scopes:
+- any
+activation: Attach to every substantive execution.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: core.internal_logic_and_plausibility.quality
+  type: group
+  title: Internal logic and plausibility
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: core.internal_logic_and_plausibility.causality
+    type: question
+    criterion_key: core.internal_logic_and_plausibility.causality
+    text: Do causes, decisions, and consequences connect without unexplained convenience?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.internal_logic_and_plausibility.motivation
+    type: question
+    criterion_key: core.internal_logic_and_plausibility.motivation
+    text: Do character choices follow from established motives, knowledge, pressures, or credible change?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.internal_logic_and_plausibility.physical
+    type: question
+    criterion_key: core.internal_logic_and_plausibility.physical
+    text: Are physical actions and outcomes possible under the work's stated conditions?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.internal_logic_and_plausibility.social
+    type: question
+    criterion_key: core.internal_logic_and_plausibility.social
+    text: Are social responses credible for the people, institutions, culture, and stakes involved?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.internal_logic_and_plausibility.world_rules
+    type: question
+    criterion_key: core.internal_logic_and_plausibility.world_rules
+    text: Are invented rules applied consistently and with meaningful constraints?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.internal_logic_and_plausibility.consequences
+    type: question
+    criterion_key: core.internal_logic_and_plausibility.consequences
+    text: Do significant actions produce proportionate and remembered consequences?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.internal_logic_and_plausibility.genre_standard
+    type: question
+    criterion_key: core.internal_logic_and_plausibility.genre_standard
+    text: Is plausibility judged according to the work's genre and established premises rather than default realism?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- vaezi_rezaei_2018
+- carey_davidow_williams_2022
+- gomez_rodriguez_williams_2023
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Covers causal logic, character motivation, physical and social plausibility, world-rule consistency,
+  and the credibility of consequences. Genre assumptions and project canon set the applicable standard.

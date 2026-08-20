@@ -1,0 +1,129 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: data.eval.context_length_balance
+version: 1
+title: Context-length balance
+kind: dataset_eval
+description: Verifies the requested length distribution and sufficient representation of 32K–128K material without
+  overwhelming the primarily short-context workload.
+origin: user_inventory_refined
+owner_domains:
+- dataset.context_length_balance
+artifact_types:
+- dataset
+- evaluation_pipeline
+valid_scopes:
+- any
+activation: Attach when context-length balance is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: data.eval.context_length_balance.quality
+  type: group
+  title: Context-length balance checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: data.eval.context_length_balance.target
+    type: question
+    criterion_key: data.eval.context_length_balance.target
+    text: Is the target context-length distribution defined?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: data.eval.context_length_balance.bins
+    type: question
+    criterion_key: data.eval.context_length_balance.bins
+    text: Are short, medium, long, and very-long bins represented according to intended workload?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: data.eval.context_length_balance.long
+    type: question
+    criterion_key: data.eval.context_length_balance.long
+    text: Is there enough 32K–128K material to test long-context behavior?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: data.eval.context_length_balance.dominance
+    type: question
+    criterion_key: data.eval.context_length_balance.dominance
+    text: Are very long records prevented from overwhelming primarily short-context workloads?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: data.eval.context_length_balance.natural
+    type: question
+    criterion_key: data.eval.context_length_balance.natural
+    text: Are long contexts naturally coherent rather than mechanically concatenated?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: data.eval.context_length_balance.report
+    type: question
+    criterion_key: data.eval.context_length_balance.report
+    text: Are length statistics reported by records, tokens, and task category?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- rao_callison_burch_2026_autorubric
+- longjudgebench_2026
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Verifies the requested length distribution and sufficient representation of 32K–128K material
+  without overwhelming the primarily short-context workload.

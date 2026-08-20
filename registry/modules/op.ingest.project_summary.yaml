@@ -1,0 +1,142 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: op.ingest.project_summary
+version: 1
+title: Project summary
+kind: procedure
+description: Evaluates compression, completeness, emphasis, fidelity, and usefulness for subsequent model context.
+origin: user_inventory_refined
+owner_domains:
+- procedure.project_summary
+artifact_types:
+- any
+valid_scopes:
+- operation
+activation: Attach when project summary is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: op.ingest.project_summary.quality
+  type: group
+  title: Project summary checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: op.ingest.project_summary.fidelity
+    type: question
+    criterion_key: op.ingest.project_summary.fidelity
+    text: Is the summary faithful to authoritative project material?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ingest.project_summary.coverage
+    type: question
+    criterion_key: op.ingest.project_summary.coverage
+    text: Does it cover premise, current state, major characters, structure, setting, themes, and active threads
+      in proportion to their importance?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ingest.project_summary.compression
+    type: question
+    criterion_key: op.ingest.project_summary.compression
+    text: Does it compress without deleting load-bearing distinctions?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ingest.project_summary.emphasis
+    type: question
+    criterion_key: op.ingest.project_summary.emphasis
+    text: Does emphasis reflect current creative and workflow priorities?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ingest.project_summary.uncertainty
+    type: question
+    criterion_key: op.ingest.project_summary.uncertainty
+    text: Are uncertainties, conflicts, and alternate branches retained where they matter?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ingest.project_summary.utility
+    type: question
+    criterion_key: op.ingest.project_summary.utility
+    text: Can another model use the summary to continue work without reconstructing the project from scratch?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ingest.project_summary.no_lore_dump
+    type: question
+    criterion_key: op.ingest.project_summary.no_lore_dump
+    text: Does it avoid indiscriminate fact accumulation that obscures the active project state?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- wu_et_al_2025_writingbench
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates compression, completeness, emphasis, fidelity, and usefulness for subsequent model
+  context.

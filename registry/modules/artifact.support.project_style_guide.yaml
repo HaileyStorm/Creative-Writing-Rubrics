@@ -1,0 +1,137 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: artifact.support.project_style_guide
+version: 1
+title: Project style guide
+kind: support_artifact
+description: Research-informed binary rubric for project style guide.
+origin: research_expansion
+owner_domains:
+- support.project_style_guide
+artifact_types:
+- planning_artifact
+- reference_artifact
+valid_scopes:
+- artifact
+- project
+activation: Attach when project style guide is the active form, asset, or evaluation concern.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: artifact.support.project_style_guide.quality
+  type: group
+  title: Project style guide checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: artifact.support.project_style_guide.evidence
+    type: question
+    criterion_key: artifact.support.project_style_guide.evidence
+    text: Are style rules derived from approved project samples and explicit decisions?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.project_style_guide.features
+    type: question
+    criterion_key: artifact.support.project_style_guide.features
+    text: Does the guide cover voice, POV, distance, tense, syntax, diction, imagery, dialogue, exposition, rhythm,
+      and formatting as relevant?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.project_style_guide.examples
+    type: question
+    criterion_key: artifact.support.project_style_guide.examples
+    text: Does each important rule include positive and negative project-specific examples?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.project_style_guide.variation
+    type: question
+    criterion_key: artifact.support.project_style_guide.variation
+    text: Does it define allowed variation by character, mode, intensity, and artifact type?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.project_style_guide.priority
+    type: question
+    criterion_key: artifact.support.project_style_guide.priority
+    text: Does it distinguish hard invariants from preferences and tendencies?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.project_style_guide.usable
+    type: question
+    criterion_key: artifact.support.project_style_guide.usable
+    text: Can a model apply the guide without copying phrases or homogenizing the work?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.project_style_guide.version
+    type: question
+    criterion_key: artifact.support.project_style_guide.version
+    text: Is it versioned and linked to authoritative samples?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- wu_et_al_2025_writingbench
+- cho_et_al_2026_bineval
+notes: []

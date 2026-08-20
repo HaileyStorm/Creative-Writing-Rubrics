@@ -1,0 +1,142 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: op.draft.expansion
+version: 1
+title: Expansion
+kind: procedure
+description: Evaluates whether added material deepens scene, character, setting, tension, or meaning rather than
+  merely paraphrasing and slowing the text.
+origin: user_inventory_refined
+owner_domains:
+- procedure.expansion
+artifact_types:
+- any
+valid_scopes:
+- operation
+activation: Attach when expansion is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: op.draft.expansion.quality
+  type: group
+  title: Expansion checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: op.draft.expansion.purpose
+    type: question
+    criterion_key: op.draft.expansion.purpose
+    text: Does every substantial addition deepen scene, character, setting, tension, meaning, or reader orientation?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.draft.expansion.new_information
+    type: question
+    criterion_key: op.draft.expansion.new_information
+    text: Does added material contribute new experience or implication rather than paraphrase existing text?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.draft.expansion.proportion
+    type: question
+    criterion_key: op.draft.expansion.proportion
+    text: Is the expanded length proportionate to the importance of the moment?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.draft.expansion.voice
+    type: question
+    criterion_key: op.draft.expansion.voice
+    text: Does expansion preserve voice, pace, and emphasis?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.draft.expansion.continuity
+    type: question
+    criterion_key: op.draft.expansion.continuity
+    text: Does it preserve facts and state?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.draft.expansion.integration
+    type: question
+    criterion_key: op.draft.expansion.integration
+    text: Does new material integrate seamlessly with neighboring sentences and beats?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.draft.expansion.no_dilution
+    type: question
+    criterion_key: op.draft.expansion.no_dilution
+    text: Does it avoid diluting strong images, turns, jokes, or emotions through explanation?
+    pass_answer: 'YES'
+    weight: 2.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- wu_et_al_2025_writingbench
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates whether added material deepens scene, character, setting, tension, or meaning rather
+  than merely paraphrasing and slowing the text.

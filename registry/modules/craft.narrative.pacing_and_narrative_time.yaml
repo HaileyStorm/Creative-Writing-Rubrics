@@ -1,0 +1,169 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: craft.narrative.pacing_and_narrative_time
+version: 1
+title: Pacing and narrative time
+kind: craft
+description: Covers allocation of space, acceleration, deceleration, summary versus scene, reveal timing, pause,
+  repetition, and whether the pace suits both the local unit and the work’s larger rhythm.
+origin: user_inventory_refined
+owner_domains:
+- narrative.pacing_and_narrative_time
+artifact_types:
+- prose_fiction
+- creative_nonfiction
+- dramatic_writing
+- narrative_poetry
+- interactive_fiction
+valid_scopes:
+- beat
+- scene
+- chapter
+- sequence
+- act
+- manuscript
+- series
+activation: Attach when pacing and narrative time is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: craft.narrative.pacing_and_narrative_time.quality
+  type: group
+  title: Pacing and narrative time
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: craft.narrative.pacing_and_narrative_time.allocation
+    type: question
+    criterion_key: craft.narrative.pacing_and_narrative_time.allocation
+    text: Is narrative space allocated in proportion to the importance and experiential needs of events?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.pacing_and_narrative_time.acceleration
+    type: question
+    criterion_key: craft.narrative.pacing_and_narrative_time.acceleration
+    text: Does acceleration occur where compression, urgency, or transition benefits the work?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.pacing_and_narrative_time.deceleration
+    type: question
+    criterion_key: craft.narrative.pacing_and_narrative_time.deceleration
+    text: Does deceleration occur where perception, consequence, intimacy, suspense, or complexity needs room?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.pacing_and_narrative_time.scene_summary
+    type: question
+    criterion_key: craft.narrative.pacing_and_narrative_time.scene_summary
+    text: Is the choice between scene, summary, ellipsis, and reflection appropriate at each major passage?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.pacing_and_narrative_time.reveal_timing
+    type: question
+    criterion_key: craft.narrative.pacing_and_narrative_time.reveal_timing
+    text: Are revelations and explanations timed for maximum clarity and effect rather than mere delay?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.pacing_and_narrative_time.variation
+    type: question
+    criterion_key: craft.narrative.pacing_and_narrative_time.variation
+    text: Does the work vary pace enough to avoid monotony while preserving its intended mode?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.pacing_and_narrative_time.local_global
+    type: question
+    criterion_key: craft.narrative.pacing_and_narrative_time.local_global
+    text: Does local pacing support rather than distort the larger rhythm of the work?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.pacing_and_narrative_time.no_stall
+    type: question
+    criterion_key: craft.narrative.pacing_and_narrative_time.no_stall
+    text: Does repetition, exposition, description, or introspection avoid stalling movement without compensating
+      value?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- vaezi_rezaei_2018
+- carey_davidow_williams_2022
+- gomez_rodriguez_williams_2023
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Covers allocation of space, acceleration, deceleration, summary versus scene, reveal timing,
+  pause, repetition, and whether the pace suits both the local unit and the work’s larger rhythm.

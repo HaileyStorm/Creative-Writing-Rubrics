@@ -1,0 +1,156 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: modifier.genre.mystery_detective
+version: 1
+title: Mystery / detective
+kind: modifier
+description: Clue fairness, information control, investigation logic, suspect distinction, revelation timing, solution
+  coherence, and reader solvability at the intended level.
+origin: user_inventory_refined
+owner_domains:
+- genre.mystery_detective
+artifact_types:
+- creative_text
+valid_scopes:
+- any
+activation: Attach when mystery / detective is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: modifier.genre.mystery_detective.quality
+  type: group
+  title: Mystery / detective contract
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: modifier.genre.mystery_detective.central_question
+    type: question
+    criterion_key: modifier.genre.mystery_detective.central_question
+    text: Is the central mystery or investigative question clear enough to organize reader attention?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.mystery_detective.clue_fairness
+    type: question
+    criterion_key: modifier.genre.mystery_detective.clue_fairness
+    text: Are decisive clues available, interpretable, and not retroactively invented?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.mystery_detective.information_control
+    type: question
+    criterion_key: modifier.genre.mystery_detective.information_control
+    text: Does the narrative manage revelation without unfairly hiding viewpoint-accessible facts?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.mystery_detective.investigation
+    type: question
+    criterion_key: modifier.genre.mystery_detective.investigation
+    text: Do investigative steps follow credible reasoning, evidence, mistakes, and constraints?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.mystery_detective.suspects
+    type: question
+    criterion_key: modifier.genre.mystery_detective.suspects
+    text: Are suspects or competing hypotheses sufficiently distinct and plausible?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.mystery_detective.solution
+    type: question
+    criterion_key: modifier.genre.mystery_detective.solution
+    text: Does the solution explain the major evidence and causal chain?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.mystery_detective.solvability
+    type: question
+    criterion_key: modifier.genre.mystery_detective.solvability
+    text: Can the intended reader plausibly form or test hypotheses at the intended difficulty level?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.mystery_detective.no_convenient_confession
+    type: question
+    criterion_key: modifier.genre.mystery_detective.no_convenient_confession
+    text: Does the resolution avoid relying on an unearned confession or final information dump?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- fein_et_al_2026_litbench
+- wu_et_al_2025_writingbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Clue fairness, information control, investigation logic, suspect distinction, revelation timing,
+  solution coherence, and reader solvability at the intended level.

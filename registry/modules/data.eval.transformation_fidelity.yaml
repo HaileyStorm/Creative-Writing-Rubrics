@@ -1,0 +1,171 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: data.eval.transformation_fidelity
+version: 1
+title: Transformation fidelity
+kind: dataset_eval
+description: Checks that deterministic slicing, continuation creation, editing transforms, option construction,
+  and formatting preserve the original content and labels.
+origin: user_inventory_refined
+owner_domains:
+- dataset.transformation_fidelity
+artifact_types:
+- dataset
+- evaluation_pipeline
+valid_scopes:
+- any
+activation: Attach when transformation fidelity is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: data.eval.transformation_fidelity.quality
+  type: group
+  title: Transformation fidelity checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: data.eval.transformation_fidelity.source
+    type: question
+    criterion_key: data.eval.transformation_fidelity.source
+    text: Can every transformed item be traced to its original source and span?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: data.eval.transformation_fidelity.content
+    type: question
+    criterion_key: data.eval.transformation_fidelity.content
+    text: Does deterministic slicing preserve the intended content without accidental omission or contamination?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: data.eval.transformation_fidelity.continuation
+    type: question
+    criterion_key: data.eval.transformation_fidelity.continuation
+    text: Do continuation transforms preserve chronology, context, and target boundaries?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: data.eval.transformation_fidelity.editing
+    type: question
+    criterion_key: data.eval.transformation_fidelity.editing
+    text: Do editing transforms preserve unchanged content and requested labels?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: data.eval.transformation_fidelity.options
+    type: question
+    criterion_key: data.eval.transformation_fidelity.options
+    text: Do option and pair constructions preserve ground-truth preference or correctness?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: data.eval.transformation_fidelity.format
+    type: question
+    criterion_key: data.eval.transformation_fidelity.format
+    text: Does formatting preserve semantic content and parser compatibility?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: data.eval.transformation_fidelity.tokenization
+    type: question
+    criterion_key: data.eval.transformation_fidelity.tokenization
+    text: Are tokenization-dependent boundaries and length metadata reproducible?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: data.eval.transformation_fidelity.validation
+    type: question
+    criterion_key: data.eval.transformation_fidelity.validation
+    text: Are transformed outputs checked by deterministic tests and sampled human review?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: data.eval.transformation_fidelity.hashes
+    type: question
+    criterion_key: data.eval.transformation_fidelity.hashes
+    text: Are transformation code, parameters, seeds, and output hashes recorded?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- rao_callison_burch_2026_autorubric
+- longjudgebench_2026
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Checks that deterministic slicing, continuation creation, editing transforms, option construction,
+  and formatting preserve the original content and labels.

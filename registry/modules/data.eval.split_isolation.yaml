@@ -1,0 +1,130 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: data.eval.split_isolation
+version: 1
+title: Split isolation
+kind: dataset_eval
+description: Document/thread/project-level separation, near-duplicate removal, benchmark-overlap checks, and no
+  leakage between calibration, development, and locked final evaluation.
+origin: user_inventory_refined
+owner_domains:
+- dataset.split_isolation
+artifact_types:
+- dataset
+- evaluation_pipeline
+valid_scopes:
+- any
+activation: Attach when split isolation is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: data.eval.split_isolation.quality
+  type: group
+  title: Split isolation checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: data.eval.split_isolation.unit
+    type: question
+    criterion_key: data.eval.split_isolation.unit
+    text: Are documents, threads, projects, authors, or other leakage units kept wholly within one split?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: data.eval.split_isolation.near_dupe
+    type: question
+    criterion_key: data.eval.split_isolation.near_dupe
+    text: Are exact and near duplicates removed across splits?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: data.eval.split_isolation.benchmark
+    type: question
+    criterion_key: data.eval.split_isolation.benchmark
+    text: Is overlap with external benchmarks and evaluation corpora checked?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: data.eval.split_isolation.views
+    type: question
+    criterion_key: data.eval.split_isolation.views
+    text: Are transformed views of one source prevented from crossing calibration, development, and locked evaluation
+      splits?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: data.eval.split_isolation.locked
+    type: question
+    criterion_key: data.eval.split_isolation.locked
+    text: Is the final evaluation split access-controlled and immutable?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: data.eval.split_isolation.audit
+    type: question
+    criterion_key: data.eval.split_isolation.audit
+    text: Can split assignments be audited from stable IDs?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- rao_callison_burch_2026_autorubric
+- longjudgebench_2026
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Document/thread/project-level separation, near-duplicate removal, benchmark-overlap checks,
+  and no leakage between calibration, development, and locked final evaluation.

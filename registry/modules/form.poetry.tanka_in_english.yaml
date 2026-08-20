@@ -1,0 +1,151 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: form.poetry.tanka_in_english
+version: 1
+title: Tanka in English
+kind: artifact_form
+description: Research-informed binary rubric for tanka in english.
+origin: research_expansion
+owner_domains:
+- form.poetry.tanka_in_english
+artifact_types:
+- poetry
+valid_scopes:
+- line
+- stanza
+- poem
+- collection
+activation: Attach when tanka in english is the active form, asset, or evaluation concern.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: form.poetry.tanka_in_english.quality
+  type: group
+  title: Tanka in English checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: form.poetry.tanka_in_english.profile
+    type: question
+    criterion_key: form.poetry.tanka_in_english.profile
+    text: Is the selected English tanka profile explicit, including whether 5-7-5-7-7 is required or only a five-line
+      short-long-short-long-long movement?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: hard_gate
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.tanka_in_english.five
+    type: question
+    criterion_key: form.poetry.tanka_in_english.five
+    text: Does the poem contain five lines?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: hard_gate
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.tanka_in_english.count
+    type: question
+    criterion_key: form.poetry.tanka_in_english.count
+    text: If strict syllable counts were requested, does each line satisfy 5-7-5-7-7 under the configured pronunciation
+      policy?
+    pass_answer: 'YES'
+    weight: 2.5
+    question_type: hard_gate
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.tanka_in_english.pivot
+    type: question
+    criterion_key: form.poetry.tanka_in_english.pivot
+    text: Does the poem contain an effective pivot, hinge, or shift between image and response?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.tanka_in_english.image
+    type: question
+    criterion_key: form.poetry.tanka_in_english.image
+    text: Does it ground feeling or reflection in concrete perception?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.tanka_in_english.expansion
+    type: question
+    criterion_key: form.poetry.tanka_in_english.expansion
+    text: Do the final two lines deepen, turn, or widen the opening image rather than explain it?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.tanka_in_english.economy
+    type: question
+    criterion_key: form.poetry.tanka_in_english.economy
+    text: Is language compressed without becoming fragmentary by default?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- li_et_al_2026_poemetric
+- vaezi_rezaei_2018
+notes: []
+profile_overrides:
+  default_profile: traditional
+  profiles:
+    traditional:
+      line_count: 5
+      strict_syllables:
+      - 5
+      - 7
+      - 5
+      - 7
+      - 7
+      contemporary: short-long-short-long-long movement

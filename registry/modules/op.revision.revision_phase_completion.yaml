@@ -1,0 +1,170 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: op.revision.revision_phase_completion
+version: 1
+title: Revision-phase completion
+kind: procedure
+description: Determines whether the artifact is ready to advance from structural to scene, line, final, or proof
+  phase and whether unresolved higher-level problems make lower-level polishing premature.
+origin: user_inventory_refined
+owner_domains:
+- procedure.revision_phase_completion
+artifact_types:
+- any
+valid_scopes:
+- operation
+activation: Attach when revision-phase completion is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: op.revision.revision_phase_completion.quality
+  type: group
+  title: Revision-phase completion checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: op.revision.revision_phase_completion.structural
+    type: question
+    criterion_key: op.revision.revision_phase_completion.structural
+    text: Are unresolved structural defects minor enough that scene-level revision will not be invalidated?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.revision_phase_completion.scene
+    type: question
+    criterion_key: op.revision.revision_phase_completion.scene
+    text: Are scene-function and character-state defects minor enough to justify line editing?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.revision_phase_completion.line
+    type: question
+    criterion_key: op.revision.revision_phase_completion.line
+    text: Are line-level craft defects minor enough to justify a final preservation pass?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.revision_phase_completion.final
+    type: question
+    criterion_key: op.revision.revision_phase_completion.final
+    text: Are content and style stable enough for copy editing and proofing?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.revision_phase_completion.criteria
+    type: question
+    criterion_key: op.revision.revision_phase_completion.criteria
+    text: Are phase completion criteria explicit and satisfied?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.revision_phase_completion.deferred
+    type: question
+    criterion_key: op.revision.revision_phase_completion.deferred
+    text: Are intentionally deferred issues recorded with destination phases?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.revision_phase_completion.verification
+    type: question
+    criterion_key: op.revision.revision_phase_completion.verification
+    text: Has the artifact been evaluated at the scope appropriate to the phase?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.revision_phase_completion.no_premature
+    type: question
+    criterion_key: op.revision.revision_phase_completion.no_premature
+    text: Does the decision avoid polishing lower-level text while higher-level changes remain likely?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.revision_phase_completion.user
+    type: question
+    criterion_key: op.revision.revision_phase_completion.user
+    text: Has user approval or configured automation authority been respected?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- wu_et_al_2025_writingbench
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Determines whether the artifact is ready to advance from structural to scene, line, final, or
+  proof phase and whether unresolved higher-level problems make lower-level polishing premature.

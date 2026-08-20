@@ -1,0 +1,165 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: scope.long_context
+version: 1
+title: Long-context integrity overlay
+kind: scope_overlay
+description: Applied when evaluation depends on roughly 32K–128K+ context; explicitly tests retrieval, updates,
+  distractors, and conflict handling.
+origin: user_inventory_refined
+owner_domains:
+- scope.long_context
+artifact_types:
+- any
+valid_scopes:
+- long_context
+activation: Attach when the evaluated scope is long_context.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: scope.long_context.quality
+  type: group
+  title: Scope handling
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: scope.long_context.distant
+    type: question
+    criterion_key: scope.long_context.distant
+    text: Does the judgment retrieve relevant distant facts rather than relying only on nearby context?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: scope.long_context.distractors
+    type: question
+    criterion_key: scope.long_context.distractors
+    text: Does it distinguish the correct fact among similar characters, objects, places, or events?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: scope.long_context.multi
+    type: question
+    criterion_key: scope.long_context.multi
+    text: Does it integrate multiple dispersed evidence needles where the criterion requires them?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: scope.long_context.updates
+    type: question
+    criterion_key: scope.long_context.updates
+    text: Does it honor later state updates that supersede earlier facts?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: scope.long_context.documents
+    type: question
+    criterion_key: scope.long_context.documents
+    text: Does it synthesize across documents without silently mixing branches or versions?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: scope.long_context.uncertainty
+    type: question
+    criterion_key: scope.long_context.uncertainty
+    text: Does it identify conflicting or insufficient evidence?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: scope.long_context.no_first
+    type: question
+    criterion_key: scope.long_context.no_first
+    text: Does it avoid 'first mention wins' bias?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: scope.long_context.no_recent
+    type: question
+    criterion_key: scope.long_context.no_recent
+    text: Does it avoid recency-only bias?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: scope.long_context.overflow
+    type: question
+    criterion_key: scope.long_context.overflow
+    text: Does the execution confirm that the complete required evidence fit within the judge's context window?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: hard_gate
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions:
+- action: require_retrieval_trace
+  value: true
+research_basis:
+- cho_et_al_2026_bineval
+- longjudgebench_2026
+notes: []

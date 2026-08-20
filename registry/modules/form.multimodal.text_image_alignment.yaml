@@ -1,0 +1,128 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: form.multimodal.text_image_alignment
+version: 1
+title: Text-image alignment
+kind: multimodal_artifact
+description: Research-informed binary rubric for text-image alignment.
+origin: research_expansion
+owner_domains:
+- multimodal.text_image_alignment
+artifact_types:
+- multimodal_asset
+valid_scopes:
+- asset
+- scene
+- sequence
+- work
+- project
+activation: Attach when text-image alignment is the active form, asset, or evaluation concern.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 2
+  project_sources: source text, image references, audio references, timeline, and asset metadata
+  modalities_required:
+  - text
+  - image
+  - audio_as_applicable
+tree:
+- id: form.multimodal.text_image_alignment.quality
+  type: group
+  title: Text-image alignment checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: form.multimodal.text_image_alignment.facts
+    type: question
+    criterion_key: form.multimodal.text_image_alignment.facts
+    text: Does the image agree with the text's characters, actions, setting, objects, time, and state?
+    pass_answer: 'YES'
+    weight: 2.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.multimodal.text_image_alignment.focus
+    type: question
+    criterion_key: form.multimodal.text_image_alignment.focus
+    text: Does it visualize the intended narrative beat rather than a nearby but easier image?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.multimodal.text_image_alignment.tone
+    type: question
+    criterion_key: form.multimodal.text_image_alignment.tone
+    text: Do visual tone and style fit the passage?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.multimodal.text_image_alignment.inference
+    type: question
+    criterion_key: form.multimodal.text_image_alignment.inference
+    text: Are visually inferred details compatible with project canon?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.multimodal.text_image_alignment.complement
+    type: question
+    criterion_key: form.multimodal.text_image_alignment.complement
+    text: Does the image add useful embodiment or perspective rather than redundantly literalize every sentence?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.multimodal.text_image_alignment.no_conflict
+    type: question
+    criterion_key: form.multimodal.text_image_alignment.no_conflict
+    text: Is it free of visual details that create new canon conflicts?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- zhuang_et_al_2025_vistorybench
+- real_world_voice_eq_bench_2026
+notes: []

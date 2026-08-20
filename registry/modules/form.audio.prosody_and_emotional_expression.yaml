@@ -1,0 +1,140 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: form.audio.prosody_and_emotional_expression
+version: 1
+title: Prosody and emotional expression
+kind: audio_artifact
+description: Research-informed binary rubric for prosody and emotional expression.
+origin: research_expansion
+owner_domains:
+- audio.prosody_and_emotional_expression
+artifact_types:
+- audio_asset
+valid_scopes:
+- utterance
+- passage
+- scene
+- chapter
+- work
+activation: Attach when prosody and emotional expression is the active form, asset, or evaluation concern.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 1
+  project_sources: source text, pronunciation lexicon, voice references, and direction sheet when supplied
+  modalities_required:
+  - audio
+tree:
+- id: form.audio.prosody_and_emotional_expression.quality
+  type: group
+  title: Prosody and emotional expression checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: form.audio.prosody_and_emotional_expression.style
+    type: question
+    criterion_key: form.audio.prosody_and_emotional_expression.style
+    text: Does pitch, rate, intensity, and rhythm match the requested speaking style?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.audio.prosody_and_emotional_expression.meaning
+    type: question
+    criterion_key: form.audio.prosody_and_emotional_expression.meaning
+    text: Does prosodic emphasis mark information structure and intended meaning?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.audio.prosody_and_emotional_expression.emotion
+    type: question
+    criterion_key: form.audio.prosody_and_emotional_expression.emotion
+    text: Is perceived emotion aligned with the scene and direction?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.audio.prosody_and_emotional_expression.transition
+    type: question
+    criterion_key: form.audio.prosody_and_emotional_expression.transition
+    text: Are emotional transitions gradual or abrupt as the text requires?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.audio.prosody_and_emotional_expression.variation
+    type: question
+    criterion_key: form.audio.prosody_and_emotional_expression.variation
+    text: Is prosodic variation sufficient to sustain attention without becoming erratic?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.audio.prosody_and_emotional_expression.subtle
+    type: question
+    criterion_key: form.audio.prosody_and_emotional_expression.subtle
+    text: Can low-arousal and mixed emotions be conveyed without flattening or exaggeration?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.audio.prosody_and_emotional_expression.no_preset
+    type: question
+    criterion_key: form.audio.prosody_and_emotional_expression.no_preset
+    text: Does delivery avoid repeating one generic emotional contour across sentences?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- galdino_et_al_2025_prosody_review
+- real_world_voice_eq_bench_2026
+notes: []

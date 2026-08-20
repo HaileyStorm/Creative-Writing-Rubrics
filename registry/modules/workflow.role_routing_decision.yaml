@@ -1,0 +1,149 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: workflow.role_routing_decision
+version: 1
+title: Role-routing decision
+kind: workflow
+description: Research-informed binary rubric for role-routing decision.
+origin: user_inventory_refined
+owner_domains:
+- workflow.role_routing_decision
+artifact_types:
+- workflow_execution
+valid_scopes:
+- operation
+activation: Attach when role-routing decision is the active form, asset, or evaluation concern.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: workflow.role_routing_decision.quality
+  type: group
+  title: Role-routing decision checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: workflow.role_routing_decision.context
+    type: question
+    criterion_key: workflow.role_routing_decision.context
+    text: Does routing account for required context breadth and retrieval?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: workflow.role_routing_decision.judgment
+    type: question
+    criterion_key: workflow.role_routing_decision.judgment
+    text: Does it account for required judgment depth and reliability?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: workflow.role_routing_decision.diversity
+    type: question
+    criterion_key: workflow.role_routing_decision.diversity
+    text: Does it account for whether candidate diversity or one careful result is needed?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: workflow.role_routing_decision.latency
+    type: question
+    criterion_key: workflow.role_routing_decision.latency
+    text: Does it account for interactive latency and model residency?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: workflow.role_routing_decision.availability
+    type: question
+    criterion_key: workflow.role_routing_decision.availability
+    text: Does it account for actual model, modality, context, and runtime availability?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: workflow.role_routing_decision.override
+    type: question
+    criterion_key: workflow.role_routing_decision.override
+    text: Does it respect user routing overrides?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: workflow.role_routing_decision.same
+    type: question
+    criterion_key: workflow.role_routing_decision.same
+    text: Does it avoid redundant A/B routing when both roles use the same model instance?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: workflow.role_routing_decision.fallback
+    type: question
+    criterion_key: workflow.role_routing_decision.fallback
+    text: Is fallback behavior explicit when the preferred model is unavailable?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- wu_et_al_2025_writingbench
+- longjudgebench_2026
+notes: []

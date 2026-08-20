@@ -1,0 +1,158 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: form.prose.serial_or_episodic_fiction
+version: 1
+title: Serial or episodic fiction
+kind: artifact_form
+description: Evaluates episode satisfaction, continuing hooks, recurring structures, continuity, controlled repetition,
+  and balance between local closure and series movement.
+origin: user_inventory_refined
+owner_domains:
+- form.serial_or_episodic_fiction
+artifact_types:
+- prose_fiction
+valid_scopes:
+- any
+activation: Attach when serial or episodic fiction is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: form.prose.serial_or_episodic_fiction.quality
+  type: group
+  title: Serial or episodic fiction checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: form.prose.serial_or_episodic_fiction.episode_value
+    type: question
+    criterion_key: form.prose.serial_or_episodic_fiction.episode_value
+    text: Does each installment provide a satisfying local experience rather than functioning only as connective
+      setup?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.prose.serial_or_episodic_fiction.continuing_movement
+    type: question
+    criterion_key: form.prose.serial_or_episodic_fiction.continuing_movement
+    text: Does each installment materially advance or complicate continuing arcs?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.prose.serial_or_episodic_fiction.hooks
+    type: question
+    criterion_key: form.prose.serial_or_episodic_fiction.hooks
+    text: Do installment endings create legitimate reasons to return without arbitrary cliffhangers?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.prose.serial_or_episodic_fiction.recurrence
+    type: question
+    criterion_key: form.prose.serial_or_episodic_fiction.recurrence
+    text: Are recurring structures or rituals varied enough to remain productive?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.prose.serial_or_episodic_fiction.continuity
+    type: question
+    criterion_key: form.prose.serial_or_episodic_fiction.continuity
+    text: Is state carried correctly across episodes?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.prose.serial_or_episodic_fiction.accessibility
+    type: question
+    criterion_key: form.prose.serial_or_episodic_fiction.accessibility
+    text: Is necessary recap or reorientation concise and proportionate to release cadence?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.prose.serial_or_episodic_fiction.arc_balance
+    type: question
+    criterion_key: form.prose.serial_or_episodic_fiction.arc_balance
+    text: Does the work balance local closure with unresolved series movement?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.prose.serial_or_episodic_fiction.no_reset
+    type: question
+    criterion_key: form.prose.serial_or_episodic_fiction.no_reset
+    text: Does the serial avoid repeatedly resetting relationships, competence, or consequences to preserve the
+      premise?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- fein_et_al_2026_litbench
+- wu_et_al_2025_writingbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates episode satisfaction, continuing hooks, recurring structures, continuity, controlled
+  repetition, and balance between local closure and series movement.

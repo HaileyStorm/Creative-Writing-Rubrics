@@ -1,0 +1,156 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: form.drama.game_narrative_quest_writing
+version: 1
+title: Game narrative / quest writing
+kind: artifact_form
+description: Adds player agency, objective clarity, environmental storytelling, state-dependent dialogue, pacing
+  around gameplay, and repeatable interaction constraints.
+origin: user_inventory_refined
+owner_domains:
+- form.game_narrative_quest_writing
+artifact_types:
+- dramatic_writing
+valid_scopes:
+- any
+activation: Attach when game narrative / quest writing is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: form.drama.game_narrative_quest_writing.quality
+  type: group
+  title: Game narrative / quest writing checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: form.drama.game_narrative_quest_writing.player_agency
+    type: question
+    criterion_key: form.drama.game_narrative_quest_writing.player_agency
+    text: Does the narrative respect the player's available actions and authored agency?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.drama.game_narrative_quest_writing.objective
+    type: question
+    criterion_key: form.drama.game_narrative_quest_writing.objective
+    text: Is the current objective or decision space clear without excessive instruction?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.drama.game_narrative_quest_writing.gameplay_fit
+    type: question
+    criterion_key: form.drama.game_narrative_quest_writing.gameplay_fit
+    text: Does narrative pacing fit gameplay loops, traversal, combat, exploration, or systems?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.drama.game_narrative_quest_writing.environment
+    type: question
+    criterion_key: form.drama.game_narrative_quest_writing.environment
+    text: Is relevant story information embedded in spaces, objects, systems, or encounters?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.drama.game_narrative_quest_writing.state_dialogue
+    type: question
+    criterion_key: form.drama.game_narrative_quest_writing.state_dialogue
+    text: Does dialogue respond correctly to quest, world, relationship, and inventory state?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.drama.game_narrative_quest_writing.repeatability
+    type: question
+    criterion_key: form.drama.game_narrative_quest_writing.repeatability
+    text: Do repeated barks and interactions remain tolerable, varied, and state-appropriate?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.drama.game_narrative_quest_writing.reward
+    type: question
+    criterion_key: form.drama.game_narrative_quest_writing.reward
+    text: Do narrative and mechanical rewards align with the quest's stated stakes and choices?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.drama.game_narrative_quest_writing.no_ludonarrative_break
+    type: question
+    criterion_key: form.drama.game_narrative_quest_writing.no_ludonarrative_break
+    text: Does the writing avoid conspicuous conflict with what the player can actually do or observe?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- fein_et_al_2026_litbench
+- wu_et_al_2025_writingbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Adds player agency, objective clarity, environmental storytelling, state-dependent dialogue,
+  pacing around gameplay, and repeatable interaction constraints.

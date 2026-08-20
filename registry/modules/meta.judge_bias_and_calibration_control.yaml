@@ -1,0 +1,179 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: meta.judge_bias_and_calibration_control
+version: 1
+title: Judge bias and calibration control
+kind: meta_rubric
+description: Research-informed binary rubric for judge bias and calibration control.
+origin: research_synthesis
+owner_domains:
+- meta.judge_bias_and_calibration_control
+artifact_types:
+- evaluation_system
+valid_scopes:
+- operation
+- run
+activation: Attach when judge bias and calibration control is the active form, asset, or evaluation concern.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: meta.judge_bias_and_calibration_control.quality
+  type: group
+  title: Judge bias and calibration control checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: meta.judge_bias_and_calibration_control.position
+    type: question
+    criterion_key: meta.judge_bias_and_calibration_control.position
+    text: For pairwise judgments, were candidate positions permuted or otherwise controlled?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: meta.judge_bias_and_calibration_control.length
+    type: question
+    criterion_key: meta.judge_bias_and_calibration_control.length
+    text: Was the judge instructed not to prefer length, verbosity, detail volume, or polish unless relevant to
+      the task?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: meta.judge_bias_and_calibration_control.format
+    type: question
+    criterion_key: meta.judge_bias_and_calibration_control.format
+    text: Was irrelevant formatting advantage prevented from dominating the judgment?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: meta.judge_bias_and_calibration_control.identity
+    type: question
+    criterion_key: meta.judge_bias_and_calibration_control.identity
+    text: Were author/model identity and unrelated metadata hidden where possible?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: meta.judge_bias_and_calibration_control.criteria_order
+    type: question
+    criterion_key: meta.judge_bias_and_calibration_control.criteria_order
+    text: Was criterion-order sensitivity tested or randomized in calibration?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: meta.judge_bias_and_calibration_control.fewshot
+    type: question
+    criterion_key: meta.judge_bias_and_calibration_control.fewshot
+    text: When calibration examples are used, are they verdict-balanced and representative?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: meta.judge_bias_and_calibration_control.repeat
+    type: question
+    criterion_key: meta.judge_bias_and_calibration_control.repeat
+    text: Are repeated or ensemble judgments used for high-stakes or unstable decisions?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: meta.judge_bias_and_calibration_control.agreement
+    type: question
+    criterion_key: meta.judge_bias_and_calibration_control.agreement
+    text: Are agreement, calibration, and distributional reliability measured against human labels?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: meta.judge_bias_and_calibration_control.no_self_pref
+    type: question
+    criterion_key: meta.judge_bias_and_calibration_control.no_self_pref
+    text: Has same-model or self-style preference been checked?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: meta.judge_bias_and_calibration_control.drift
+    type: question
+    criterion_key: meta.judge_bias_and_calibration_control.drift
+    text: Is judge behavior monitored across model, prompt, runtime, and rubric versions?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- rao_callison_burch_2026_autorubric
+notes: []

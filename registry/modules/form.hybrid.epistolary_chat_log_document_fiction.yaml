@@ -1,0 +1,143 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: form.hybrid.epistolary_chat_log_document_fiction
+version: 1
+title: Epistolary / chat / log / document fiction
+kind: artifact_form
+description: Evaluates authenticity of the chosen document form, information limits, distinct writers, implied context,
+  chronology, and the meaning created by omissions or discrepancies.
+origin: user_inventory_refined
+owner_domains:
+- form.epistolary_chat_log_document_fiction
+artifact_types:
+- hybrid_writing
+- creative_nonfiction
+valid_scopes:
+- any
+activation: Attach when epistolary / chat / log / document fiction is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: form.hybrid.epistolary_chat_log_document_fiction.quality
+  type: group
+  title: Epistolary / chat / log / document fiction checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: form.hybrid.epistolary_chat_log_document_fiction.document_authenticity
+    type: question
+    criterion_key: form.hybrid.epistolary_chat_log_document_fiction.document_authenticity
+    text: Does each document sound and look plausible for its sender, medium, date, and purpose?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.hybrid.epistolary_chat_log_document_fiction.information_limits
+    type: question
+    criterion_key: form.hybrid.epistolary_chat_log_document_fiction.information_limits
+    text: Does each writer know only what their position and time permit?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.hybrid.epistolary_chat_log_document_fiction.voice_distinction
+    type: question
+    criterion_key: form.hybrid.epistolary_chat_log_document_fiction.voice_distinction
+    text: Are different document authors distinguishable?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.hybrid.epistolary_chat_log_document_fiction.chronology
+    type: question
+    criterion_key: form.hybrid.epistolary_chat_log_document_fiction.chronology
+    text: Can chronology be reconstructed to the degree the work intends?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.hybrid.epistolary_chat_log_document_fiction.omission
+    type: question
+    criterion_key: form.hybrid.epistolary_chat_log_document_fiction.omission
+    text: Do omissions, delays, edits, contradictions, and formatting create meaning?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.hybrid.epistolary_chat_log_document_fiction.implied_context
+    type: question
+    criterion_key: form.hybrid.epistolary_chat_log_document_fiction.implied_context
+    text: Does the reader infer relevant off-page action without excessive explanatory annotation?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.hybrid.epistolary_chat_log_document_fiction.form_necessity
+    type: question
+    criterion_key: form.hybrid.epistolary_chat_log_document_fiction.form_necessity
+    text: Does the document form create effects the same material would not achieve as ordinary narration?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- fein_et_al_2026_litbench
+- wu_et_al_2025_writingbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates authenticity of the chosen document form, information limits, distinct writers, implied
+  context, chronology, and the meaning created by omissions or discrepancies.

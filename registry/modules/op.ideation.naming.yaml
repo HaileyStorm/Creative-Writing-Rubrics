@@ -1,0 +1,157 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: op.ideation.naming
+version: 1
+title: Naming
+kind: procedure
+description: Evaluates fit, distinctiveness, pronounceability where relevant, cultural and world consistency, connotation,
+  cross-character confusion, and suitability to tone and genre.
+origin: user_inventory_refined
+owner_domains:
+- procedure.naming
+artifact_types:
+- any
+valid_scopes:
+- operation
+activation: Attach when naming is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: op.ideation.naming.quality
+  type: group
+  title: Naming checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: op.ideation.naming.fit
+    type: question
+    criterion_key: op.ideation.naming.fit
+    text: Does each name fit the entity, culture, period, genre, and tone?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ideation.naming.distinct
+    type: question
+    criterion_key: op.ideation.naming.distinct
+    text: Is each name distinguishable from other active names in sound, spelling, and silhouette?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ideation.naming.pronounce
+    type: question
+    criterion_key: op.ideation.naming.pronounce
+    text: Is pronunciation reasonably inferable where pronounceability matters?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ideation.naming.connotation
+    type: question
+    criterion_key: op.ideation.naming.connotation
+    text: Do connotations support rather than accidentally undermine the intended effect?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ideation.naming.system
+    type: question
+    criterion_key: op.ideation.naming.system
+    text: Does the set imply a coherent naming system without mechanical uniformity?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ideation.naming.memory
+    type: question
+    criterion_key: op.ideation.naming.memory
+    text: Are important names memorable enough for their role?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ideation.naming.no_generator
+    type: question
+    criterion_key: op.ideation.naming.no_generator
+    text: Does the set avoid generic fantasy-name, sci-fi-code, or placeholder-like generator patterns?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ideation.naming.research
+    type: question
+    criterion_key: op.ideation.naming.research
+    text: Where culturally specific names are used, are they supported by appropriate research or user-provided
+      canon?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- wu_et_al_2025_writingbench
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates fit, distinctiveness, pronounceability where relevant, cultural and world consistency,
+  connotation, cross-character confusion, and suitability to tone and genre.

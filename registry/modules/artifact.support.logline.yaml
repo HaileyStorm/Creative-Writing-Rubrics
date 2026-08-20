@@ -1,0 +1,141 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: artifact.support.logline
+version: 1
+title: Logline
+kind: support_artifact
+description: Evaluates clarity, protagonist, objective, opposition, stakes, distinctiveness, and compression without
+  overspecifying the entire plot.
+origin: user_inventory_refined
+owner_domains:
+- support.logline
+artifact_types:
+- planning_artifact
+- reference_artifact
+valid_scopes:
+- any
+activation: Attach when logline is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: artifact.support.logline.quality
+  type: group
+  title: Logline checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: artifact.support.logline.protagonist
+    type: question
+    criterion_key: artifact.support.logline.protagonist
+    text: Does the logline identify the central protagonist or agent?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: hard_gate
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.logline.objective
+    type: question
+    criterion_key: artifact.support.logline.objective
+    text: Does it identify the protagonist's central objective, need, or task?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.logline.opposition
+    type: question
+    criterion_key: artifact.support.logline.opposition
+    text: Does it identify the principal opposing force, obstacle, or complication?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.logline.stakes
+    type: question
+    criterion_key: artifact.support.logline.stakes
+    text: Does it make the important stakes or consequence legible?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.logline.distinctiveness
+    type: question
+    criterion_key: artifact.support.logline.distinctiveness
+    text: Does it communicate what distinguishes this work from generic examples of its genre?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.logline.compression
+    type: question
+    criterion_key: artifact.support.logline.compression
+    text: Is it concise enough to function as a logline without becoming vague?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.logline.accuracy
+    type: question
+    criterion_key: artifact.support.logline.accuracy
+    text: Does it represent the actual project rather than a more marketable but misleading version?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates clarity, protagonist, objective, opposition, stakes, distinctiveness, and compression
+  without overspecifying the entire plot.

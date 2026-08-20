@@ -1,0 +1,172 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: form.prose.novel
+version: 1
+title: Novel
+kind: artifact_form
+description: Emphasizes long-range causality, multiple arcs, pacing variation, structural integrity, character development,
+  thematic recurrence, and payoff over substantial length.
+origin: user_inventory_refined
+owner_domains:
+- form.novel
+artifact_types:
+- prose_fiction
+valid_scopes:
+- complete_work
+- manuscript
+activation: Attach when novel is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: form.prose.novel.quality
+  type: group
+  title: Novel checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: form.prose.novel.macro_structure
+    type: question
+    criterion_key: form.prose.novel.macro_structure
+    text: Does the novel possess a coherent large-scale structure rather than only a succession of locally competent
+      chapters?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.prose.novel.long_causality
+    type: question
+    criterion_key: form.prose.novel.long_causality
+    text: Do decisions and consequences remain causally connected across substantial distance?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.prose.novel.multiple_arcs
+    type: question
+    criterion_key: form.prose.novel.multiple_arcs
+    text: Are multiple character or plot arcs distinct, coordinated, and proportionately developed?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.prose.novel.pacing_variation
+    type: question
+    criterion_key: form.prose.novel.pacing_variation
+    text: Does the novel vary pace and mode while maintaining cumulative movement?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.prose.novel.development
+    type: question
+    criterion_key: form.prose.novel.development
+    text: Do central characters, relationships, and ideas change through accumulated experience?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.prose.novel.recurrence
+    type: question
+    criterion_key: form.prose.novel.recurrence
+    text: Do motifs, themes, and settings recur with development rather than mechanical repetition?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.prose.novel.payoff
+    type: question
+    criterion_key: form.prose.novel.payoff
+    text: Do distant setups, promises, and unresolved threads receive earned treatment?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.prose.novel.middle
+    type: question
+    criterion_key: form.prose.novel.middle
+    text: Does the middle generate new pressure, complication, and understanding rather than merely extend the premise?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.prose.novel.ending
+    type: question
+    criterion_key: form.prose.novel.ending
+    text: Does the ending respond to the novel's opening promises, major arcs, and accumulated consequences?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- fein_et_al_2026_litbench
+- wu_et_al_2025_writingbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Emphasizes long-range causality, multiple arcs, pacing variation, structural integrity, character
+  development, thematic recurrence, and payoff over substantial length.

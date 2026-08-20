@@ -1,0 +1,154 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: form.audio.audio_drama_production
+version: 1
+title: Audio drama production
+kind: audio_artifact
+description: Research-informed binary rubric for audio drama production.
+origin: research_expansion
+owner_domains:
+- audio.audio_drama_production
+artifact_types:
+- audio_asset
+valid_scopes:
+- utterance
+- passage
+- scene
+- chapter
+- work
+activation: Attach when audio drama production is the active form, asset, or evaluation concern.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 1
+  project_sources: source text, pronunciation lexicon, voice references, and direction sheet when supplied
+  modalities_required:
+  - audio
+tree:
+- id: form.audio.audio_drama_production.quality
+  type: group
+  title: Audio drama production checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: form.audio.audio_drama_production.intelligible
+    type: question
+    criterion_key: form.audio.audio_drama_production.intelligible
+    text: Can listeners follow dialogue, speakers, action, and location without visual support?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.audio.audio_drama_production.voices
+    type: question
+    criterion_key: form.audio.audio_drama_production.voices
+    text: Are speakers distinct and consistent?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.audio.audio_drama_production.blocking
+    type: question
+    criterion_key: form.audio.audio_drama_production.blocking
+    text: Do spatialization, movement, and sound cues make action intelligible?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.audio.audio_drama_production.sound
+    type: question
+    criterion_key: form.audio.audio_drama_production.sound
+    text: Do sound effects and ambience carry narrative information rather than decorate indiscriminately?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.audio.audio_drama_production.music
+    type: question
+    criterion_key: form.audio.audio_drama_production.music
+    text: Does music support structure and emotion without obscuring speech or dictating feeling?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.audio.audio_drama_production.pace
+    type: question
+    criterion_key: form.audio.audio_drama_production.pace
+    text: Do dialogue, silence, transitions, and sound create effective dramatic timing?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.audio.audio_drama_production.mix
+    type: question
+    criterion_key: form.audio.audio_drama_production.mix
+    text: Are levels, frequency balance, dynamics, and stereo field coherent and accessible?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.audio.audio_drama_production.no_as_you_know
+    type: question
+    criterion_key: form.audio.audio_drama_production.no_as_you_know
+    text: Does the script and performance avoid artificial exposition written only because listeners lack visuals?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- galdino_et_al_2025_prosody_review
+- real_world_voice_eq_bench_2026
+notes: []

@@ -1,0 +1,154 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: craft.narrative.setting_and_atmosphere
+version: 1
+title: Setting and atmosphere
+kind: craft
+description: Evaluates spatial clarity, sensory presence, atmosphere, meaningful interaction between setting and
+  action, and avoidance of setting as detached decorative inventory.
+origin: user_inventory_refined
+owner_domains:
+- narrative.setting_and_atmosphere
+artifact_types:
+- prose_fiction
+- creative_nonfiction
+- dramatic_writing
+- narrative_poetry
+- interactive_fiction
+valid_scopes:
+- beat
+- scene
+- chapter
+- sequence
+- act
+- manuscript
+- series
+activation: Attach when setting and atmosphere is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: craft.narrative.setting_and_atmosphere.quality
+  type: group
+  title: Setting and atmosphere
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: craft.narrative.setting_and_atmosphere.spatial
+    type: question
+    criterion_key: craft.narrative.setting_and_atmosphere.spatial
+    text: Can the reader understand the spatial relationships necessary for action and attention?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.setting_and_atmosphere.sensory
+    type: question
+    criterion_key: craft.narrative.setting_and_atmosphere.sensory
+    text: Does the setting possess selective sensory presence rather than detached inventory?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.setting_and_atmosphere.identity
+    type: question
+    criterion_key: craft.narrative.setting_and_atmosphere.identity
+    text: Does the place have distinguishing material, social, historical, or emotional characteristics?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.setting_and_atmosphere.atmosphere
+    type: question
+    criterion_key: craft.narrative.setting_and_atmosphere.atmosphere
+    text: Does atmosphere emerge from concrete conditions, language, and character perception?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.setting_and_atmosphere.interaction
+    type: question
+    criterion_key: craft.narrative.setting_and_atmosphere.interaction
+    text: Do characters and events materially interact with the setting?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.setting_and_atmosphere.function
+    type: question
+    criterion_key: craft.narrative.setting_and_atmosphere.function
+    text: Does setting constrain, enable, pressure, reveal, or transform something in the narrative?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.setting_and_atmosphere.no_inventory
+    type: question
+    criterion_key: craft.narrative.setting_and_atmosphere.no_inventory
+    text: Does the text avoid pausing for decorative setting inventory that has no current function?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- vaezi_rezaei_2018
+- carey_davidow_williams_2022
+- gomez_rodriguez_williams_2023
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates spatial clarity, sensory presence, atmosphere, meaningful interaction between setting
+  and action, and avoidance of setting as detached decorative inventory.

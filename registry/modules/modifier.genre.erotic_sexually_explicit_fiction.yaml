@@ -1,0 +1,174 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: modifier.genre.erotic_sexually_explicit_fiction
+version: 1
+title: Erotic / sexually explicit fiction
+kind: modifier
+description: Voice, physical and emotional specificity, character agency, pacing, continuity, tone, relational context,
+  and avoidance of mechanical repetition or generic euphemism. It remains an artistic rubric, not a censorship rubric.
+origin: user_inventory_refined
+owner_domains:
+- genre.erotic_sexually_explicit_fiction
+artifact_types:
+- creative_text
+valid_scopes:
+- any
+activation: Attach when erotic / sexually explicit fiction is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: modifier.genre.erotic_sexually_explicit_fiction.quality
+  type: group
+  title: Erotic / sexually explicit fiction contract
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: modifier.genre.erotic_sexually_explicit_fiction.agency
+    type: question
+    criterion_key: modifier.genre.erotic_sexually_explicit_fiction.agency
+    text: Do involved characters possess legible agency, desire, boundaries, and capacity for choice within the
+      story's intended dynamics?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.erotic_sexually_explicit_fiction.specificity
+    type: question
+    criterion_key: modifier.genre.erotic_sexually_explicit_fiction.specificity
+    text: Is physical description specific, spatially coherent, and responsive to the characters rather than generic
+      sequencing?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.erotic_sexually_explicit_fiction.emotion
+    type: question
+    criterion_key: modifier.genre.erotic_sexually_explicit_fiction.emotion
+    text: Does emotional and relational context affect the scene's meaning and pacing?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.erotic_sexually_explicit_fiction.voice
+    type: question
+    criterion_key: modifier.genre.erotic_sexually_explicit_fiction.voice
+    text: Does narration retain character and project voice during explicit material?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.erotic_sexually_explicit_fiction.pacing
+    type: question
+    criterion_key: modifier.genre.erotic_sexually_explicit_fiction.pacing
+    text: Does pacing vary with anticipation, attention, vulnerability, action, and aftermath?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.erotic_sexually_explicit_fiction.continuity
+    type: question
+    criterion_key: modifier.genre.erotic_sexually_explicit_fiction.continuity
+    text: Are bodies, clothing, position, action, and physical response coherent?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.erotic_sexually_explicit_fiction.tone
+    type: question
+    criterion_key: modifier.genre.erotic_sexually_explicit_fiction.tone
+    text: Is tone consistent with the requested erotic, romantic, comic, dark, or other mode?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.erotic_sexually_explicit_fiction.no_mechanical
+    type: question
+    criterion_key: modifier.genre.erotic_sexually_explicit_fiction.no_mechanical
+    text: Does the scene avoid mechanical repetition, generic euphemism, anatomical inventory, and interchangeable
+      reactions?
+    pass_answer: 'YES'
+    weight: 2.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.erotic_sexually_explicit_fiction.no_censorship_score
+    type: question
+    criterion_key: modifier.genre.erotic_sexually_explicit_fiction.no_censorship_score
+    text: Is the work judged for artistic execution without penalizing explicitness itself?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: diagnostic
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- fein_et_al_2026_litbench
+- wu_et_al_2025_writingbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Voice, physical and emotional specificity, character agency, pacing, continuity, tone, relational
+  context, and avoidance of mechanical repetition or generic euphemism. It remains an artistic rubric, not a censorship
+  rubric.

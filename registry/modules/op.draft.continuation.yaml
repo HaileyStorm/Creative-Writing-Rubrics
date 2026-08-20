@@ -1,0 +1,157 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: op.draft.continuation
+version: 1
+title: Continuation
+kind: procedure
+description: Evaluates immediate continuity of voice, syntax, state, POV, pacing, open actions, dialogue, and longer-term
+  direction. The final paragraph before the continuation carries special weight.
+origin: user_inventory_refined
+owner_domains:
+- procedure.continuation
+artifact_types:
+- any
+valid_scopes:
+- operation
+activation: Attach when continuation is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: op.draft.continuation.quality
+  type: group
+  title: Continuation checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: op.draft.continuation.immediate_state
+    type: question
+    criterion_key: op.draft.continuation.immediate_state
+    text: Does the continuation begin from the exact physical, emotional, informational, and grammatical state where
+      the source ends?
+    pass_answer: 'YES'
+    weight: 2.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.draft.continuation.last_paragraph
+    type: question
+    criterion_key: op.draft.continuation.last_paragraph
+    text: Does it respond closely to the unresolved syntax, image, action, or pressure in the final source paragraph?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.draft.continuation.voice
+    type: question
+    criterion_key: op.draft.continuation.voice
+    text: Does it continue the established narrative and character voices?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.draft.continuation.pov_tense
+    type: question
+    criterion_key: op.draft.continuation.pov_tense
+    text: Does it preserve POV, psychic distance, tense, person, and register?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.draft.continuation.pacing
+    type: question
+    criterion_key: op.draft.continuation.pacing
+    text: Does it continue or intentionally modulate the local pace without a reset?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.draft.continuation.trajectory
+    type: question
+    criterion_key: op.draft.continuation.trajectory
+    text: Does it advance the longer project trajectory rather than invent an unrelated direction?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.draft.continuation.no_recap
+    type: question
+    criterion_key: op.draft.continuation.no_recap
+    text: Does it avoid recapping information the immediate reader already knows?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.draft.continuation.no_restart
+    type: question
+    criterion_key: op.draft.continuation.no_restart
+    text: Does it avoid restarting the scene with a fresh establishing paragraph or generic transition?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- wu_et_al_2025_writingbench
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates immediate continuity of voice, syntax, state, POV, pacing, open actions, dialogue,
+  and longer-term direction. The final paragraph before the continuation carries special weight.

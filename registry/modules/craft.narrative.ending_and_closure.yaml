@@ -1,0 +1,169 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: craft.narrative.ending_and_closure
+version: 1
+title: Ending and closure
+kind: craft
+description: Evaluates local or global resolution, resonance, changed state, final emphasis, fulfilled or intentionally
+  unfulfilled expectations, and avoidance of summary-like overclosure.
+origin: user_inventory_refined
+owner_domains:
+- narrative.ending_and_closure
+artifact_types:
+- prose_fiction
+- creative_nonfiction
+- dramatic_writing
+- narrative_poetry
+- interactive_fiction
+valid_scopes:
+- beat
+- scene
+- chapter
+- sequence
+- act
+- manuscript
+- series
+activation: Attach when ending and closure is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: craft.narrative.ending_and_closure.quality
+  type: group
+  title: Ending and closure
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: craft.narrative.ending_and_closure.changed_state
+    type: question
+    criterion_key: craft.narrative.ending_and_closure.changed_state
+    text: Does the ending register the relevant changed state, recognition, decision, consequence, or completed
+      pattern?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.ending_and_closure.resolution
+    type: question
+    criterion_key: craft.narrative.ending_and_closure.resolution
+    text: Does it resolve the level of pressure appropriate to the artifact and scope?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.ending_and_closure.expectations
+    type: question
+    criterion_key: craft.narrative.ending_and_closure.expectations
+    text: Are major reader expectations fulfilled, transformed, intentionally deferred, or meaningfully denied?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.ending_and_closure.emphasis
+    type: question
+    criterion_key: craft.narrative.ending_and_closure.emphasis
+    text: Does the final image, line, beat, or action carry appropriate emphasis?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.ending_and_closure.resonance
+    type: question
+    criterion_key: craft.narrative.ending_and_closure.resonance
+    text: Does the ending create useful emotional, intellectual, comic, or imagistic resonance?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.ending_and_closure.openness
+    type: question
+    criterion_key: craft.narrative.ending_and_closure.openness
+    text: If open-ended, does the remaining uncertainty feel purposeful rather than unfinished by accident?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.ending_and_closure.no_overclosure
+    type: question
+    criterion_key: craft.narrative.ending_and_closure.no_overclosure
+    text: Does it avoid explaining, summarizing, moralizing, or softening what the ending has already made clear?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.ending_and_closure.no_abruptness
+    type: question
+    criterion_key: craft.narrative.ending_and_closure.no_abruptness
+    text: If the artifact is expected to be complete, does it avoid accidental truncation or a merely stopped ending?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- vaezi_rezaei_2018
+- carey_davidow_williams_2022
+- gomez_rodriguez_williams_2023
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates local or global resolution, resonance, changed state, final emphasis, fulfilled or
+  intentionally unfulfilled expectations, and avoidance of summary-like overclosure.

@@ -1,0 +1,156 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: op.critique.open_ended_critique
+version: 1
+title: Open-ended critique
+kind: procedure
+description: Evaluates perceptiveness, prioritization, textual evidence, understanding of intent, balance of strengths
+  and weaknesses, and actionable diagnosis.
+origin: user_inventory_refined
+owner_domains:
+- procedure.open_ended_critique
+artifact_types:
+- any
+valid_scopes:
+- operation
+activation: Attach when open-ended critique is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: op.critique.open_ended_critique.quality
+  type: group
+  title: Open-ended critique checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: op.critique.open_ended_critique.intent
+    type: question
+    criterion_key: op.critique.open_ended_critique.intent
+    text: Does the critique infer and respect the work's apparent or stated intent before judging execution?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.critique.open_ended_critique.perception
+    type: question
+    criterion_key: op.critique.open_ended_critique.perception
+    text: Does it identify consequential strengths and weaknesses rather than obvious surface notes alone?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.critique.open_ended_critique.evidence
+    type: question
+    criterion_key: op.critique.open_ended_critique.evidence
+    text: Is every material claim grounded in specific textual or structural evidence?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.critique.open_ended_critique.priority
+    type: question
+    criterion_key: op.critique.open_ended_critique.priority
+    text: Are issues prioritized by impact and revision dependency?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.critique.open_ended_critique.scope
+    type: question
+    criterion_key: op.critique.open_ended_critique.scope
+    text: Does it distinguish what is observable at the supplied scope from what requires more context?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.critique.open_ended_critique.actionable
+    type: question
+    criterion_key: op.critique.open_ended_critique.actionable
+    text: Are proposed next steps specific enough to act on while leaving room for author choice?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.critique.open_ended_critique.balance
+    type: question
+    criterion_key: op.critique.open_ended_critique.balance
+    text: Does it acknowledge real strengths without using praise to soften or obscure defects?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.critique.open_ended_critique.no_rewrite_project
+    type: question
+    criterion_key: op.critique.open_ended_critique.no_rewrite_project
+    text: Does it avoid replacing the author's goals with the critic's preferred genre, style, or story?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- wu_et_al_2025_writingbench
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates perceptiveness, prioritization, textual evidence, understanding of intent, balance
+  of strengths and weaknesses, and actionable diagnosis.

@@ -1,0 +1,180 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: meta.dynamic_task_question_decomposition
+version: 1
+title: Dynamic task-question decomposition
+kind: meta_rubric
+description: Research-informed binary rubric for dynamic task-question decomposition.
+origin: research_synthesis
+owner_domains:
+- meta.dynamic_task_question_decomposition
+artifact_types:
+- evaluation_system
+valid_scopes:
+- operation
+- run
+activation: Attach when dynamic task-question decomposition is the active form, asset, or evaluation concern.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: meta.dynamic_task_question_decomposition.quality
+  type: group
+  title: Dynamic task-question decomposition checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: meta.dynamic_task_question_decomposition.source_only
+    type: question
+    criterion_key: meta.dynamic_task_question_decomposition.source_only
+    text: Is every generated task question traceable to an explicit instruction, supplied source, declared profile,
+      or necessary logical dependency?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: meta.dynamic_task_question_decomposition.atomic
+    type: question
+    criterion_key: meta.dynamic_task_question_decomposition.atomic
+    text: Does each leaf ask one independently answerable pass/fail question?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: meta.dynamic_task_question_decomposition.positive
+    type: question
+    criterion_key: meta.dynamic_task_question_decomposition.positive
+    text: Is each leaf phrased so YES means the requirement is satisfied?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: meta.dynamic_task_question_decomposition.conditional
+    type: question
+    criterion_key: meta.dynamic_task_question_decomposition.conditional
+    text: Are conditional requirements represented with explicit activation conditions?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: meta.dynamic_task_question_decomposition.hard_vs_preference
+    type: question
+    criterion_key: meta.dynamic_task_question_decomposition.hard_vs_preference
+    text: Are hard requirements separated from artistic preferences and diagnostics?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: meta.dynamic_task_question_decomposition.observable
+    type: question
+    criterion_key: meta.dynamic_task_question_decomposition.observable
+    text: Can the judge answer each question from the evidence packet it will receive?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: meta.dynamic_task_question_decomposition.no_duplicate
+    type: question
+    criterion_key: meta.dynamic_task_question_decomposition.no_duplicate
+    text: Does each criterion have one scoring owner with duplicates removed?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: meta.dynamic_task_question_decomposition.examples
+    type: question
+    criterion_key: meta.dynamic_task_question_decomposition.examples
+    text: Do ambiguous criteria include a concise violation example or decision note?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: meta.dynamic_task_question_decomposition.coverage
+    type: question
+    criterion_key: meta.dynamic_task_question_decomposition.coverage
+    text: Does the question set cover every explicit inclusion, exclusion, preservation rule, transformation, and
+      delivery constraint?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: meta.dynamic_task_question_decomposition.review
+    type: question
+    criterion_key: meta.dynamic_task_question_decomposition.review
+    text: Has a validation pass rejected invented, redundant, contradictory, or over-decomposed questions?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- rao_callison_burch_2026_autorubric
+notes: []

@@ -1,0 +1,143 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: form.hybrid.memoir_autobiographical_narrative
+version: 1
+title: Memoir / autobiographical narrative
+kind: artifact_form
+description: Adds memory limitations, perspective, ethical handling of other people, reflective distance, scene
+  selection, and distinction between remembered experience and external claim.
+origin: user_inventory_refined
+owner_domains:
+- form.memoir_autobiographical_narrative
+artifact_types:
+- hybrid_writing
+- creative_nonfiction
+valid_scopes:
+- any
+activation: Attach when memoir / autobiographical narrative is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: form.hybrid.memoir_autobiographical_narrative.quality
+  type: group
+  title: Memoir / autobiographical narrative checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: form.hybrid.memoir_autobiographical_narrative.perspective
+    type: question
+    criterion_key: form.hybrid.memoir_autobiographical_narrative.perspective
+    text: Is the relationship between the experiencing self and narrating self clear and productive?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.hybrid.memoir_autobiographical_narrative.memory_limits
+    type: question
+    criterion_key: form.hybrid.memoir_autobiographical_narrative.memory_limits
+    text: Does the narrative acknowledge material uncertainty or reconstruction where memory cannot support certainty?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.hybrid.memoir_autobiographical_narrative.selection
+    type: question
+    criterion_key: form.hybrid.memoir_autobiographical_narrative.selection
+    text: Are scenes selected for inquiry and movement rather than exhaustive life coverage?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.hybrid.memoir_autobiographical_narrative.reflection
+    type: question
+    criterion_key: form.hybrid.memoir_autobiographical_narrative.reflection
+    text: Does reflection develop understanding rather than merely explain what the scene means?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.hybrid.memoir_autobiographical_narrative.others
+    type: question
+    criterion_key: form.hybrid.memoir_autobiographical_narrative.others
+    text: Are other real people handled with appropriate factual care, context, and ethical awareness?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.hybrid.memoir_autobiographical_narrative.voice
+    type: question
+    criterion_key: form.hybrid.memoir_autobiographical_narrative.voice
+    text: Does the memoir sustain a specific present narrating intelligence?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.hybrid.memoir_autobiographical_narrative.no_false_certainty
+    type: question
+    criterion_key: form.hybrid.memoir_autobiographical_narrative.no_false_certainty
+    text: Does it avoid presenting subjective memory as fully verified external fact?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- fein_et_al_2026_litbench
+- wu_et_al_2025_writingbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Adds memory limitations, perspective, ethical handling of other people, reflective distance,
+  scene selection, and distinction between remembered experience and external claim.

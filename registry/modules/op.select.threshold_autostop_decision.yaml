@@ -1,0 +1,158 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: op.select.threshold_autostop_decision
+version: 1
+title: Threshold/autostop decision
+kind: procedure
+description: Determines whether enough qualifying drafts exist, whether further sampling is likely to add value,
+  and whether high-context critic/editor adjudication is required. It must not reduce stopping to a noisy single score.
+origin: user_inventory_refined
+owner_domains:
+- procedure.threshold_autostop_decision
+artifact_types:
+- any
+valid_scopes:
+- operation
+activation: Attach when threshold/autostop decision is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: op.select.threshold_autostop_decision.quality
+  type: group
+  title: Threshold/autostop decision checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: op.select.threshold_autostop_decision.qualifying
+    type: question
+    criterion_key: op.select.threshold_autostop_decision.qualifying
+    text: Does the current batch contain the configured number of candidates above all hard and quality thresholds?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.select.threshold_autostop_decision.coverage
+    type: question
+    criterion_key: op.select.threshold_autostop_decision.coverage
+    text: Does the batch cover the materially distinct approaches still worth considering?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.select.threshold_autostop_decision.marginal
+    type: question
+    criterion_key: op.select.threshold_autostop_decision.marginal
+    text: Is the estimated marginal value of another sampling round low enough to stop?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.select.threshold_autostop_decision.cost
+    type: question
+    criterion_key: op.select.threshold_autostop_decision.cost
+    text: Does expected benefit justify latency, compute, and review cost?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.select.threshold_autostop_decision.uncertainty
+    type: question
+    criterion_key: op.select.threshold_autostop_decision.uncertainty
+    text: Is judge uncertainty low enough for the stop decision?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.select.threshold_autostop_decision.adjudication
+    type: question
+    criterion_key: op.select.threshold_autostop_decision.adjudication
+    text: Has high-context or pairwise adjudication been invoked when the finalists are close or consequences are
+      material?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.select.threshold_autostop_decision.not_single
+    type: question
+    criterion_key: op.select.threshold_autostop_decision.not_single
+    text: Does the decision use threshold coverage, diversity, uncertainty, and marginal value rather than one noisy
+      scalar score?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.select.threshold_autostop_decision.override
+    type: question
+    criterion_key: op.select.threshold_autostop_decision.override
+    text: Does the decision respect user-requested sample counts, budgets, and stop overrides?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- wu_et_al_2025_writingbench
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Determines whether enough qualifying drafts exist, whether further sampling is likely to add
+  value, and whether high-context critic/editor adjudication is required. It must not reduce stopping to a noisy single score.

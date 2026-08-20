@@ -1,0 +1,129 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: data.eval.category_balance
+version: 1
+title: Category balance
+kind: dataset_eval
+description: Verifies the intended DeepSeek or Qwen mixture without allowing long records to dominate solely by
+  token count.
+origin: user_inventory_refined
+owner_domains:
+- dataset.category_balance
+artifact_types:
+- dataset
+- evaluation_pipeline
+valid_scopes:
+- any
+activation: Attach when category balance is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: data.eval.category_balance.quality
+  type: group
+  title: Category balance checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: data.eval.category_balance.target
+    type: question
+    criterion_key: data.eval.category_balance.target
+    text: Is the target category mixture explicitly defined?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: data.eval.category_balance.records
+    type: question
+    criterion_key: data.eval.category_balance.records
+    text: Does record-level sampling approximate that mixture?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: data.eval.category_balance.tokens
+    type: question
+    criterion_key: data.eval.category_balance.tokens
+    text: Is token-level dominance by a few long records measured and controlled?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: data.eval.category_balance.sources
+    type: question
+    criterion_key: data.eval.category_balance.sources
+    text: Is source diversity sufficient within categories?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: data.eval.category_balance.tails
+    type: question
+    criterion_key: data.eval.category_balance.tails
+    text: Are important low-frequency specialist categories preserved?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: data.eval.category_balance.report
+    type: question
+    criterion_key: data.eval.category_balance.report
+    text: Are deviations from the target mixture reported?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- rao_callison_burch_2026_autorubric
+- longjudgebench_2026
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Verifies the intended DeepSeek or Qwen mixture without allowing long records to dominate solely
+  by token count.

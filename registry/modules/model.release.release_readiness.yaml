@@ -1,0 +1,170 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: model.release.release_readiness
+version: 1
+title: Release readiness
+kind: model_build
+description: Combines capability, non-refusal, context, sampler, runtime, memory, provenance, reproducibility, and
+  regression results into a deployment decision.
+origin: user_inventory_refined
+owner_domains:
+- model.release_readiness
+artifact_types:
+- model_build
+valid_scopes:
+- any
+activation: Attach when release readiness is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: model.release.release_readiness.quality
+  type: group
+  title: Release readiness checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: model.release.release_readiness.capability
+    type: question
+    criterion_key: model.release.release_readiness.capability
+    text: Do all required capability-retention modules pass their release thresholds?
+    pass_answer: 'YES'
+    weight: 2.5
+    question_type: hard_gate
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.release_readiness.nonrefusal
+    type: question
+    criterion_key: model.release.release_readiness.nonrefusal
+    text: Does true non-refusal behavior meet the answer-required target?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: hard_gate
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.release_readiness.context
+    type: question
+    criterion_key: model.release.release_readiness.context
+    text: Does long-context behavior meet the deployment target?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: hard_gate
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.release_readiness.sampler
+    type: question
+    criterion_key: model.release.release_readiness.sampler
+    text: Does custom-sampler behavior meet quality and artifact limits?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.release_readiness.runtime
+    type: question
+    criterion_key: model.release.release_readiness.runtime
+    text: Do supported runtimes and providers behave within equivalence tolerances?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.release_readiness.memory
+    type: question
+    criterion_key: model.release.release_readiness.memory
+    text: Are VRAM, RAM, context, cache, and latency requirements acceptable?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.release_readiness.provenance
+    type: question
+    criterion_key: model.release.release_readiness.provenance
+    text: Are model source, modifications, datasets, licenses, hashes, and build steps documented?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.release_readiness.repro
+    type: question
+    criterion_key: model.release.release_readiness.repro
+    text: Can the released build and evaluation be reproduced?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.release_readiness.regression
+    type: question
+    criterion_key: model.release.release_readiness.regression
+    text: Are all known regressions documented with a deployment decision?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- rao_callison_burch_2026_autorubric
+- longjudgebench_2026
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Combines capability, non-refusal, context, sampler, runtime, memory, provenance, reproducibility,
+  and regression results into a deployment decision.

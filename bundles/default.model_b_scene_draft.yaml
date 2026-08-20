@@ -1,0 +1,162 @@
+$schema: ../schema/hbq_bundle.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+bundle_id: default.model_b_scene_draft
+version: 1
+title: Fast-model scene draft
+description: Full scene-draft rubric for a fast generation model working from a constrained context packet.
+artifact_types:
+- prose_fiction
+- scene
+valid_scopes:
+- scene
+profile: {}
+module_ids:
+- core.task_and_brief_fidelity
+- core.length_and_scope_fit
+- op.draft.draft_from_detailed_outline
+- craft.narrative.scene_construction
+- craft.narrative.narrative_momentum
+- craft.narrative.characterization
+- craft.narrative.point_of_view_and_focalization
+- craft.narrative.dialogue
+- core.voice_and_stylistic_identity
+- core.language_craft
+- craft.narrative.setting_and_atmosphere
+- core.specificity_and_embodiment
+- core.internal_logic_and_plausibility
+- craft.narrative.temporal_and_spatial_continuity
+- core.project_and_source_fidelity
+- core.freshness_and_non_genericness
+- core.economy_and_relevance
+- core.mechanics_and_presentation
+- core.holistic_artistic_success
+- penalty.purple_prose
+- penalty.repetition
+- penalty.unflagged_incomplete
+- scope.scene
+- sampler.single_sample_creative_quality
+domains:
+- domain_id: task
+  title: Task, outline, and scope
+  points: 8.0
+  components:
+  - module_id: core.task_and_brief_fidelity
+    weight: 1.0
+  - module_id: core.length_and_scope_fit
+    weight: 1.0
+  - module_id: op.draft.draft_from_detailed_outline
+    weight: 1.0
+  score_mode: weighted_binary_mean
+- domain_id: scene
+  title: Scene construction and movement
+  points: 18.0
+  components:
+  - module_id: craft.narrative.scene_construction
+    weight: 1.0
+  - module_id: craft.narrative.narrative_momentum
+    weight: 1.0
+  score_mode: weighted_binary_mean
+- domain_id: character
+  title: Character, POV, and dialogue
+  points: 18.0
+  components:
+  - module_id: craft.narrative.characterization
+    weight: 1.0
+  - module_id: craft.narrative.point_of_view_and_focalization
+    weight: 1.0
+  - module_id: craft.narrative.dialogue
+    weight: 1.0
+  score_mode: weighted_binary_mean
+- domain_id: language
+  title: Voice and language
+  points: 16.0
+  components:
+  - module_id: core.voice_and_stylistic_identity
+    weight: 1.0
+  - module_id: core.language_craft
+    weight: 1.0
+  score_mode: weighted_binary_mean
+- domain_id: setting
+  title: Setting and embodiment
+  points: 9.0
+  components:
+  - module_id: craft.narrative.setting_and_atmosphere
+    weight: 1.0
+  - module_id: core.specificity_and_embodiment
+    weight: 1.0
+  score_mode: weighted_binary_mean
+- domain_id: logic
+  title: Continuity and plausibility
+  points: 9.0
+  components:
+  - module_id: core.internal_logic_and_plausibility
+    weight: 1.0
+  - module_id: craft.narrative.temporal_and_spatial_continuity
+    weight: 1.0
+  - module_id: core.project_and_source_fidelity
+    weight: 1.0
+  score_mode: weighted_binary_mean
+- domain_id: fresh
+  title: Freshness and economy
+  points: 9.0
+  components:
+  - module_id: core.freshness_and_non_genericness
+    weight: 1.0
+  - module_id: core.economy_and_relevance
+    weight: 1.0
+  score_mode: weighted_binary_mean
+- domain_id: mechanics
+  title: Mechanics
+  points: 5.0
+  components:
+  - module_id: core.mechanics_and_presentation
+    weight: 1.0
+  score_mode: weighted_binary_mean
+- domain_id: holistic
+  title: Holistic artistic success
+  points: 8.0
+  components:
+  - module_id: core.holistic_artistic_success
+    weight: 1.0
+  score_mode: weighted_binary_mean
+penalty_modules:
+- module_id: penalty.purple_prose
+  cap_points: 5.0
+- module_id: penalty.repetition
+  cap_points: 5.0
+- module_id: penalty.unflagged_incomplete
+  cap_points: 8.0
+hard_gate_policy:
+  no_is_invalid: true
+  cannot_assess_is_unresolved: true
+  not_applicable_requires_condition_or_reason: true
+  hard_gates_are_reported_separately: true
+coverage_policy:
+  minimum_weighted_coverage: 0.88
+  below_threshold_status: PROVISIONAL
+  score_interval_required_when_unassessed: true
+  whole_work_claims_require_whole_work_evidence: true
+excerpt_and_incomplete_policy:
+  flagged_excerpt: Do not penalize absent whole-work completion. Mark unavailable whole-work criteria CANNOT_ASSESS
+    or NOT_APPLICABLE as appropriate.
+  unflagged_incomplete: Apply the bounded unflagged-incomplete penalty when the artifact is presented as complete
+    or partial status is omitted.
+  visible_local_defects: Score defects visible in the supplied extract normally.
+judge_policy:
+  artifact_assumed_ai_generated: true
+  strict_but_fair: true
+  no_glazing: true
+  judge_execution_not_intent: true
+  do_not_invent_defects: true
+  avoid_length_and_ornament_bias: true
+  brief_evidence_required: true
+  private_chain_of_thought_not_requested: true
+  verdict_states:
+  - 'YES'
+  - 'NO'
+  - NOT_APPLICABLE
+  - CANNOT_ASSESS
+  pairwise_finalists: false
+notes: []

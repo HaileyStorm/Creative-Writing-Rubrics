@@ -1,0 +1,143 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: modifier.genre.satire
+version: 1
+title: Satire
+kind: modifier
+description: Clarity of target, insight, proportionality, irony, comic mechanism, and avoidance of reproducing the
+  target without meaningful critique.
+origin: user_inventory_refined
+owner_domains:
+- genre.satire
+artifact_types:
+- creative_text
+valid_scopes:
+- any
+activation: Attach when satire is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: modifier.genre.satire.quality
+  type: group
+  title: Satire contract
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: modifier.genre.satire.target
+    type: question
+    criterion_key: modifier.genre.satire.target
+    text: Is the satirical target sufficiently clear and specific?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.satire.insight
+    type: question
+    criterion_key: modifier.genre.satire.insight
+    text: Does the satire reveal a mechanism, contradiction, incentive, hypocrisy, or consequence beyond mere mockery?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.satire.device
+    type: question
+    criterion_key: modifier.genre.satire.device
+    text: Are irony, exaggeration, inversion, parody, deadpan, or other devices controlled?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.satire.proportion
+    type: question
+    criterion_key: modifier.genre.satire.proportion
+    text: Is the treatment proportionate enough to preserve insight rather than flatten every target?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.satire.stance
+    type: question
+    criterion_key: modifier.genre.satire.stance
+    text: Can the reader distinguish the work's satirical operation from accidental endorsement?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.satire.comedy
+    type: question
+    criterion_key: modifier.genre.satire.comedy
+    text: Does the comic or estranging mechanism actually work?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.satire.no_reproduction
+    type: question
+    criterion_key: modifier.genre.satire.no_reproduction
+    text: Does the work avoid merely reproducing the target's harmful or foolish speech without meaningful framing
+      or transformation?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- fein_et_al_2026_litbench
+- wu_et_al_2025_writingbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Clarity of target, insight, proportionality, irony, comic mechanism, and avoidance of reproducing
+  the target without meaningful critique.

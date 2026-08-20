@@ -1,0 +1,142 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: op.ingest.uncertainty_and_contradiction_extraction
+version: 1
+title: Uncertainty and contradiction extraction
+kind: procedure
+description: Requires explicit identification of gaps, ambiguous facts, incompatible versions, superseded notes,
+  and uncertain inference.
+origin: user_inventory_refined
+owner_domains:
+- procedure.uncertainty_and_contradiction_extraction
+artifact_types:
+- any
+valid_scopes:
+- operation
+activation: Attach when uncertainty and contradiction extraction is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: op.ingest.uncertainty_and_contradiction_extraction.quality
+  type: group
+  title: Uncertainty and contradiction extraction checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: op.ingest.uncertainty_and_contradiction_extraction.gaps
+    type: question
+    criterion_key: op.ingest.uncertainty_and_contradiction_extraction.gaps
+    text: Are material information gaps identified?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ingest.uncertainty_and_contradiction_extraction.ambiguity
+    type: question
+    criterion_key: op.ingest.uncertainty_and_contradiction_extraction.ambiguity
+    text: Are ambiguous facts and interpretations identified?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ingest.uncertainty_and_contradiction_extraction.contradictions
+    type: question
+    criterion_key: op.ingest.uncertainty_and_contradiction_extraction.contradictions
+    text: Are incompatible claims or versions identified with their sources?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ingest.uncertainty_and_contradiction_extraction.supersession
+    type: question
+    criterion_key: op.ingest.uncertainty_and_contradiction_extraction.supersession
+    text: Are notes that appear superseded distinguished from current authority?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ingest.uncertainty_and_contradiction_extraction.confidence
+    type: question
+    criterion_key: op.ingest.uncertainty_and_contradiction_extraction.confidence
+    text: Is confidence calibrated to the strength and number of supporting sources?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ingest.uncertainty_and_contradiction_extraction.impact
+    type: question
+    criterion_key: op.ingest.uncertainty_and_contradiction_extraction.impact
+    text: Does the report explain which writing decisions each uncertainty or contradiction affects?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ingest.uncertainty_and_contradiction_extraction.no_resolution
+    type: question
+    criterion_key: op.ingest.uncertainty_and_contradiction_extraction.no_resolution
+    text: Does it avoid silently resolving conflicts that require the user's decision?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- wu_et_al_2025_writingbench
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Requires explicit identification of gaps, ambiguous facts, incompatible versions, superseded
+  notes, and uncertain inference.

@@ -1,0 +1,170 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: craft.narrative.opening
+version: 1
+title: Opening
+kind: craft
+description: Evaluates orientation, intrigue, voice establishment, tonal promise, entry point, and appropriate withholding
+  at the start of a passage, scene, chapter, story, act, or manuscript.
+origin: user_inventory_refined
+owner_domains:
+- narrative.opening
+artifact_types:
+- prose_fiction
+- creative_nonfiction
+- dramatic_writing
+- narrative_poetry
+- interactive_fiction
+valid_scopes:
+- beat
+- scene
+- chapter
+- sequence
+- act
+- manuscript
+- series
+activation: Attach when opening is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: craft.narrative.opening.quality
+  type: group
+  title: Opening
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: craft.narrative.opening.entry
+    type: question
+    criterion_key: craft.narrative.opening.entry
+    text: Does the opening begin at an effective point for the selected scope?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.opening.orientation
+    type: question
+    criterion_key: craft.narrative.opening.orientation
+    text: Does it provide enough orientation for the reader to engage without premature explanation?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.opening.intrigue
+    type: question
+    criterion_key: craft.narrative.opening.intrigue
+    text: Does it create a substantive reason to continue, such as voice, question, pressure, image, relationship,
+      or concept?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.opening.voice
+    type: question
+    criterion_key: craft.narrative.opening.voice
+    text: Does it establish the relevant voice or stylistic contract?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.opening.tone
+    type: question
+    criterion_key: craft.narrative.opening.tone
+    text: Does it establish or productively complicate the work's tonal promise?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.opening.promise
+    type: question
+    criterion_key: craft.narrative.opening.promise
+    text: Does it imply the kind of experience the artifact intends to deliver?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.opening.withholding
+    type: question
+    criterion_key: craft.narrative.opening.withholding
+    text: Is withheld information controlled rather than merely confusing?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.opening.no_preamble
+    type: question
+    criterion_key: craft.narrative.opening.no_preamble
+    text: Does it avoid disposable preamble, throat-clearing, generic weather, or summary before the live material
+      begins?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- vaezi_rezaei_2018
+- carey_davidow_williams_2022
+- gomez_rodriguez_williams_2023
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates orientation, intrigue, voice establishment, tonal promise, entry point, and appropriate
+  withholding at the start of a passage, scene, chapter, story, act, or manuscript.

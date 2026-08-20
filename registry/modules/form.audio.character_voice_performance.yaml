@@ -1,0 +1,140 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: form.audio.character_voice_performance
+version: 1
+title: Character voice performance
+kind: audio_artifact
+description: Research-informed binary rubric for character voice performance.
+origin: research_expansion
+owner_domains:
+- audio.character_voice_performance
+artifact_types:
+- audio_asset
+valid_scopes:
+- utterance
+- passage
+- scene
+- chapter
+- work
+activation: Attach when character voice performance is the active form, asset, or evaluation concern.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 1
+  project_sources: source text, pronunciation lexicon, voice references, and direction sheet when supplied
+  modalities_required:
+  - audio
+tree:
+- id: form.audio.character_voice_performance.quality
+  type: group
+  title: Character voice performance checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: form.audio.character_voice_performance.identity
+    type: question
+    criterion_key: form.audio.character_voice_performance.identity
+    text: Does the voice fit the character's age, body, background, role, and project direction?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.audio.character_voice_performance.distinct
+    type: question
+    criterion_key: form.audio.character_voice_performance.distinct
+    text: Is the character distinguishable from other voices without exaggerated gimmicks?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.audio.character_voice_performance.stable
+    type: question
+    criterion_key: form.audio.character_voice_performance.stable
+    text: Does voice identity remain stable across emotion, volume, pace, and scene context?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.audio.character_voice_performance.intention
+    type: question
+    criterion_key: form.audio.character_voice_performance.intention
+    text: Does delivery communicate the character's immediate objective and subtext?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.audio.character_voice_performance.emotion
+    type: question
+    criterion_key: form.audio.character_voice_performance.emotion
+    text: Are emotional changes specific and earned rather than generic presets?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.audio.character_voice_performance.speech
+    type: question
+    criterion_key: form.audio.character_voice_performance.speech
+    text: Do pronunciation, rhythm, accent, and disfluency fit the character consistently?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.audio.character_voice_performance.no_caricature
+    type: question
+    criterion_key: form.audio.character_voice_performance.no_caricature
+    text: Does the performance avoid stereotypes and mannerism overload?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- galdino_et_al_2025_prosody_review
+- real_world_voice_eq_bench_2026
+notes: []

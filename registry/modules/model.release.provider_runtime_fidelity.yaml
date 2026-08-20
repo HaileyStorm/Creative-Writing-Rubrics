@@ -1,0 +1,170 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: model.release.provider_runtime_fidelity
+version: 1
+title: Provider/runtime fidelity
+kind: model_build
+description: Checks that the same model behaves equivalently across direct GGUF, managed local server, remote OpenAI-compatible
+  server, MTP on/off, and supported context/cache settings.
+origin: user_inventory_refined
+owner_domains:
+- model.provider_runtime_fidelity
+artifact_types:
+- model_build
+valid_scopes:
+- any
+activation: Attach when provider/runtime fidelity is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: model.release.provider_runtime_fidelity.quality
+  type: group
+  title: Provider/runtime fidelity checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: model.release.provider_runtime_fidelity.identity
+    type: question
+    criterion_key: model.release.provider_runtime_fidelity.identity
+    text: Is the exact model, tokenizer, quantization, adapter, and sampler configuration identified across runtimes?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.provider_runtime_fidelity.gguf
+    type: question
+    criterion_key: model.release.provider_runtime_fidelity.gguf
+    text: Does direct GGUF execution match the reference behavior within declared tolerance?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.provider_runtime_fidelity.managed
+    type: question
+    criterion_key: model.release.provider_runtime_fidelity.managed
+    text: Does managed local serving match the reference behavior within tolerance?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.provider_runtime_fidelity.remote
+    type: question
+    criterion_key: model.release.provider_runtime_fidelity.remote
+    text: Does an OpenAI-compatible remote endpoint preserve supported semantics and parameters?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.provider_runtime_fidelity.mtp
+    type: question
+    criterion_key: model.release.provider_runtime_fidelity.mtp
+    text: Are MTP on/off differences measured and expected?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.provider_runtime_fidelity.context
+    type: question
+    criterion_key: model.release.provider_runtime_fidelity.context
+    text: Are context length, truncation, cache, and rope settings equivalent?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.provider_runtime_fidelity.format
+    type: question
+    criterion_key: model.release.provider_runtime_fidelity.format
+    text: Are chat templates, stop sequences, structured outputs, and tool schemas equivalent?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.provider_runtime_fidelity.performance
+    type: question
+    criterion_key: model.release.provider_runtime_fidelity.performance
+    text: Are latency, throughput, memory, and failure behavior measured per runtime?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.provider_runtime_fidelity.provenance
+    type: question
+    criterion_key: model.release.provider_runtime_fidelity.provenance
+    text: Can every result be traced to a reproducible runtime configuration?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- rao_callison_burch_2026_autorubric
+- longjudgebench_2026
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Checks that the same model behaves equivalently across direct GGUF, managed local server, remote
+  OpenAI-compatible server, MTP on/off, and supported context/cache settings.

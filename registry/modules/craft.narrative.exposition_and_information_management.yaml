@@ -1,0 +1,154 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: craft.narrative.exposition_and_information_management
+version: 1
+title: Exposition and information management
+kind: craft
+description: Evaluates what the reader knows, when they know it, how information is embedded, whether explanation
+  is redundant or premature, and whether necessary context is unfairly withheld.
+origin: user_inventory_refined
+owner_domains:
+- narrative.exposition_and_information_management
+artifact_types:
+- prose_fiction
+- creative_nonfiction
+- dramatic_writing
+- narrative_poetry
+- interactive_fiction
+valid_scopes:
+- beat
+- scene
+- chapter
+- sequence
+- act
+- manuscript
+- series
+activation: Attach when exposition and information management is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: craft.narrative.exposition_and_information_management.quality
+  type: group
+  title: Exposition and information management
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: craft.narrative.exposition_and_information_management.reader_state
+    type: question
+    criterion_key: craft.narrative.exposition_and_information_management.reader_state
+    text: Is the reader given the information needed to understand the current action, choice, or image?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.exposition_and_information_management.timing
+    type: question
+    criterion_key: craft.narrative.exposition_and_information_management.timing
+    text: Does information arrive when it becomes useful rather than substantially too early or too late?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.exposition_and_information_management.embedding
+    type: question
+    criterion_key: craft.narrative.exposition_and_information_management.embedding
+    text: Is exposition embedded in active perception, decision, conflict, voice, or purposeful reference structure?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.exposition_and_information_management.priority
+    type: question
+    criterion_key: craft.narrative.exposition_and_information_management.priority
+    text: Are the most relevant facts emphasized over background trivia?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.exposition_and_information_management.no_redundancy
+    type: question
+    criterion_key: craft.narrative.exposition_and_information_management.no_redundancy
+    text: Does the text avoid re-explaining information the target reader can reasonably retain?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.exposition_and_information_management.no_dump
+    type: question
+    criterion_key: craft.narrative.exposition_and_information_management.no_dump
+    text: Does it avoid uninterrupted explanatory blocks that suspend the intended narrative or dramatic experience?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.exposition_and_information_management.fair_withholding
+    type: question
+    criterion_key: craft.narrative.exposition_and_information_management.fair_withholding
+    text: Is withheld information compatible with viewpoint and fair reader orientation rather than artificial concealment?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- vaezi_rezaei_2018
+- carey_davidow_williams_2022
+- gomez_rodriguez_williams_2023
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates what the reader knows, when they know it, how information is embedded, whether explanation
+  is redundant or premature, and whether necessary context is unfairly withheld.

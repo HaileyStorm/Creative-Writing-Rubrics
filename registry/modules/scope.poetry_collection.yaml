@@ -1,0 +1,137 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: scope.poetry_collection
+version: 1
+title: Poetry sequence or collection scope overlay
+kind: scope_overlay
+description: For a sequence or collection; evaluates ordering, recurrence, variation, architecture, and individual-poem
+  value.
+origin: user_inventory_refined
+owner_domains:
+- scope.poetry_collection
+artifact_types:
+- any
+valid_scopes:
+- poetry_collection
+activation: Attach when the evaluated scope is poetry_collection.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: scope.poetry_collection.quality
+  type: group
+  title: Scope handling
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: scope.poetry_collection.order
+    type: question
+    criterion_key: scope.poetry_collection.order
+    text: Does ordering create development, contrast, echo, and pacing?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: scope.poetry_collection.recurrence
+    type: question
+    criterion_key: scope.poetry_collection.recurrence
+    text: Do recurring images, forms, voices, and themes change significance across the sequence?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: scope.poetry_collection.range
+    type: question
+    criterion_key: scope.poetry_collection.range
+    text: Does the collection possess sufficient tonal, formal, imagistic, and rhetorical range?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: scope.poetry_collection.architecture
+    type: question
+    criterion_key: scope.poetry_collection.architecture
+    text: Does the sequence have a coherent larger architecture?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: scope.poetry_collection.individual
+    type: question
+    criterion_key: scope.poetry_collection.individual
+    text: Do individual poems remain independently worthwhile rather than functioning only as connective tissue?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: scope.poetry_collection.opening_ending
+    type: question
+    criterion_key: scope.poetry_collection.opening_ending
+    text: Do the first and last poems establish and transform the collection's governing pressures?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: scope.poetry_collection.redundancy
+    type: question
+    criterion_key: scope.poetry_collection.redundancy
+    text: Does the collection avoid repeating equivalent poems or gestures?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions:
+- action: require_hierarchical_sampling
+  value: true
+research_basis:
+- cho_et_al_2026_bineval
+- longjudgebench_2026
+notes: []

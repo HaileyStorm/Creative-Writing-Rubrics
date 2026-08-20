@@ -1,0 +1,143 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: form.hybrid.translation_or_transcreation
+version: 1
+title: Translation or transcreation
+kind: artifact_form
+description: Evaluates semantic fidelity, voice, register, rhythm, cultural meaning, ambiguity, and the degree of
+  licensed creative transformation.
+origin: user_inventory_refined
+owner_domains:
+- form.translation_or_transcreation
+artifact_types:
+- hybrid_writing
+- creative_nonfiction
+valid_scopes:
+- any
+activation: Attach when translation or transcreation is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: form.hybrid.translation_or_transcreation.quality
+  type: group
+  title: Translation or transcreation checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: form.hybrid.translation_or_transcreation.semantic
+    type: question
+    criterion_key: form.hybrid.translation_or_transcreation.semantic
+    text: Does the target text preserve the source's essential semantic content at the licensed fidelity level?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.hybrid.translation_or_transcreation.voice
+    type: question
+    criterion_key: form.hybrid.translation_or_transcreation.voice
+    text: Does it preserve or recreate voice, register, and social relation?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.hybrid.translation_or_transcreation.ambiguity
+    type: question
+    criterion_key: form.hybrid.translation_or_transcreation.ambiguity
+    text: Are meaningful ambiguities preserved, recreated, or explicitly resolved for a stated reason?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.hybrid.translation_or_transcreation.rhythm
+    type: question
+    criterion_key: form.hybrid.translation_or_transcreation.rhythm
+    text: Are rhythm, sound, pacing, and form recreated where relevant?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.hybrid.translation_or_transcreation.culture
+    type: question
+    criterion_key: form.hybrid.translation_or_transcreation.culture
+    text: Are cultural meanings, references, and pragmatics carried without misleading substitution?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.hybrid.translation_or_transcreation.naturalness
+    type: question
+    criterion_key: form.hybrid.translation_or_transcreation.naturalness
+    text: Does the target text read as intentional writing in the target language rather than a mechanical calque?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.hybrid.translation_or_transcreation.license
+    type: question
+    criterion_key: form.hybrid.translation_or_transcreation.license
+    text: Does creative transformation remain within the authorized translation or transcreation brief?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- fein_et_al_2026_litbench
+- wu_et_al_2025_writingbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates semantic fidelity, voice, register, rhythm, cultural meaning, ambiguity, and the degree
+  of licensed creative transformation.

@@ -1,0 +1,128 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: scope.micro
+version: 1
+title: Micro-level scope overlay
+kind: scope_overlay
+description: For a phrase, title, line, sentence, exchange, image, or very short paragraph; emphasizes local precision
+  and forbids unsupported macro judgments.
+origin: user_inventory_refined
+owner_domains:
+- scope.micro
+artifact_types:
+- any
+valid_scopes:
+- micro
+activation: Attach when the evaluated scope is micro.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: scope.micro.quality
+  type: group
+  title: Scope handling
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: scope.micro.function
+    type: question
+    criterion_key: scope.micro.function
+    text: Does the micro-unit perform its immediate function in the supplied neighboring context?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: scope.micro.clarity
+    type: question
+    criterion_key: scope.micro.clarity
+    text: Is its local meaning or intended ambiguity controlled?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: scope.micro.precision
+    type: question
+    criterion_key: scope.micro.precision
+    text: Are word choice, syntax, sound, and emphasis precise at this scale?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: scope.micro.rhythm
+    type: question
+    criterion_key: scope.micro.rhythm
+    text: Does its rhythm fit the local voice and movement?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: scope.micro.fit
+    type: question
+    criterion_key: scope.micro.fit
+    text: Does it fit surrounding tone, POV, register, and factual state?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: scope.micro.limits
+    type: question
+    criterion_key: scope.micro.limits
+    text: Does the judge avoid scoring absent plot, arc, world, or closure evidence?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: diagnostic
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions:
+- action: disable_owner_domains
+  domains:
+  - plot_macro
+  - character_arc
+  - whole_work_closure
+- action: minimum_neighboring_units
+  value: 1
+research_basis:
+- cho_et_al_2026_bineval
+- longjudgebench_2026
+notes: []

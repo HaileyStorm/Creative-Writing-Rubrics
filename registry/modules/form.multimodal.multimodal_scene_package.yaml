@@ -1,0 +1,156 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: form.multimodal.multimodal_scene_package
+version: 1
+title: Multimodal scene package
+kind: multimodal_artifact
+description: Research-informed binary rubric for multimodal scene package.
+origin: research_expansion
+owner_domains:
+- multimodal.multimodal_scene_package
+artifact_types:
+- multimodal_asset
+valid_scopes:
+- asset
+- scene
+- sequence
+- work
+- project
+activation: Attach when multimodal scene package is the active form, asset, or evaluation concern.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 2
+  project_sources: source text, image references, audio references, timeline, and asset metadata
+  modalities_required:
+  - text
+  - image
+  - audio_as_applicable
+tree:
+- id: form.multimodal.multimodal_scene_package.quality
+  type: group
+  title: Multimodal scene package checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: form.multimodal.multimodal_scene_package.text
+    type: question
+    criterion_key: form.multimodal.multimodal_scene_package.text
+    text: Is the scene text complete and approved for the package's intended status?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.multimodal.multimodal_scene_package.illustration
+    type: question
+    criterion_key: form.multimodal.multimodal_scene_package.illustration
+    text: Does illustration depict the chosen narrative beat accurately and effectively?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.multimodal.multimodal_scene_package.audio
+    type: question
+    criterion_key: form.multimodal.multimodal_scene_package.audio
+    text: Does narration perform the scene accurately and effectively?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.multimodal.multimodal_scene_package.alignment
+    type: question
+    criterion_key: form.multimodal.multimodal_scene_package.alignment
+    text: Are text, image, and audio mutually consistent?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.multimodal.multimodal_scene_package.placement
+    type: question
+    criterion_key: form.multimodal.multimodal_scene_package.placement
+    text: Are image placement, captioning, and audio synchronization appropriate?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.multimodal.multimodal_scene_package.cohesion
+    type: question
+    criterion_key: form.multimodal.multimodal_scene_package.cohesion
+    text: Do modalities create one coherent experience rather than compete or duplicate mechanically?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.multimodal.multimodal_scene_package.access
+    type: question
+    criterion_key: form.multimodal.multimodal_scene_package.access
+    text: Are alt text, captions, transcript, controls, and metadata provided where required?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.multimodal.multimodal_scene_package.version
+    type: question
+    criterion_key: form.multimodal.multimodal_scene_package.version
+    text: Can every asset be traced to its source and version?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- zhuang_et_al_2025_vistorybench
+- real_world_voice_eq_bench_2026
+notes: []

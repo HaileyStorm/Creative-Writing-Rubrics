@@ -1,0 +1,156 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: form.drama.audio_drama
+version: 1
+title: Audio drama
+kind: artifact_form
+description: Evaluates intelligibility without visuals, speaker distinction, sound cues, exposition through action,
+  sonic pacing, and avoidance of artificial “as you know” dialogue.
+origin: user_inventory_refined
+owner_domains:
+- form.audio_drama
+artifact_types:
+- dramatic_writing
+valid_scopes:
+- any
+activation: Attach when audio drama is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: form.drama.audio_drama.quality
+  type: group
+  title: Audio drama checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: form.drama.audio_drama.audio_legibility
+    type: question
+    criterion_key: form.drama.audio_drama.audio_legibility
+    text: Can listeners follow speakers, action, place, and transitions without visual information?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.drama.audio_drama.speaker_distinction
+    type: question
+    criterion_key: form.drama.audio_drama.speaker_distinction
+    text: Are speakers distinguishable by voice, language, position, or cue design?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.drama.audio_drama.sound_action
+    type: question
+    criterion_key: form.drama.audio_drama.sound_action
+    text: Are sound cues used to dramatize action rather than merely decorate it?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.drama.audio_drama.exposition
+    type: question
+    criterion_key: form.drama.audio_drama.exposition
+    text: Is necessary context conveyed through credible action, dialogue, narration, or sound?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.drama.audio_drama.pacing
+    type: question
+    criterion_key: form.drama.audio_drama.pacing
+    text: Does sonic pacing leave enough time for listeners to process action and information?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.drama.audio_drama.silence
+    type: question
+    criterion_key: form.drama.audio_drama.silence
+    text: Are silence and negative space used intentionally?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.drama.audio_drama.no_as_you_know
+    type: question
+    criterion_key: form.drama.audio_drama.no_as_you_know
+    text: Does the script avoid artificial dialogue that explains visually absent information for the listener?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.drama.audio_drama.production
+    type: question
+    criterion_key: form.drama.audio_drama.production
+    text: Are music, effects, and vocal demands feasible for the intended production?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- fein_et_al_2026_litbench
+- wu_et_al_2025_writingbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates intelligibility without visuals, speaker distinction, sound cues, exposition through
+  action, sonic pacing, and avoidance of artificial “as you know” dialogue.

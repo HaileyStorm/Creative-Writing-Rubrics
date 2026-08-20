@@ -1,0 +1,144 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: modifier.genre.surreal_experimental
+version: 1
+title: Surreal / experimental
+kind: modifier
+description: Internal pattern, aesthetic intention, controlled disorientation, formal necessity, recurrence, reader
+  orientation sufficient for the intended effect, and distinction between difficulty and incoherence.
+origin: user_inventory_refined
+owner_domains:
+- genre.surreal_experimental
+artifact_types:
+- creative_text
+valid_scopes:
+- any
+activation: Attach when surreal / experimental is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: modifier.genre.surreal_experimental.quality
+  type: group
+  title: Surreal / experimental contract
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: modifier.genre.surreal_experimental.pattern
+    type: question
+    criterion_key: modifier.genre.surreal_experimental.pattern
+    text: Does the work establish internal patterns, recurrences, constraints, or transformations that make its
+      experiment apprehensible?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.surreal_experimental.intent
+    type: question
+    criterion_key: modifier.genre.surreal_experimental.intent
+    text: Do formal disruptions appear intentional and related to the work's effect?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.surreal_experimental.orientation
+    type: question
+    criterion_key: modifier.genre.surreal_experimental.orientation
+    text: Does the reader receive enough anchors to experience controlled disorientation rather than undifferentiated
+      confusion?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.surreal_experimental.necessity
+    type: question
+    criterion_key: modifier.genre.surreal_experimental.necessity
+    text: Does the experimental form create meaning or experience unavailable through a conventional treatment?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.surreal_experimental.recurrence
+    type: question
+    criterion_key: modifier.genre.surreal_experimental.recurrence
+    text: Do recurring elements change relation or significance?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.surreal_experimental.difficulty
+    type: question
+    criterion_key: modifier.genre.surreal_experimental.difficulty
+    text: Is difficulty productive rather than a cover for incoherence or thin content?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.surreal_experimental.no_randomness
+    type: question
+    criterion_key: modifier.genre.surreal_experimental.no_randomness
+    text: Does the artifact avoid random novelty without pattern, consequence, or pressure?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- fein_et_al_2026_litbench
+- wu_et_al_2025_writingbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Internal pattern, aesthetic intention, controlled disorientation, formal necessity, recurrence,
+  reader orientation sufficient for the intended effect, and distinction between difficulty and incoherence.

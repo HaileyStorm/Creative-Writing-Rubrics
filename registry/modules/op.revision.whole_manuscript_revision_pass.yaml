@@ -1,0 +1,170 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: op.revision.whole_manuscript_revision_pass
+version: 1
+title: Whole-manuscript revision pass
+kind: procedure
+description: Evaluates consistency and cumulative effect of revisions across all units, not merely local improvement.
+origin: user_inventory_refined
+owner_domains:
+- procedure.whole_manuscript_revision_pass
+artifact_types:
+- any
+valid_scopes:
+- operation
+activation: Attach when whole-manuscript revision pass is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: op.revision.whole_manuscript_revision_pass.quality
+  type: group
+  title: Whole-manuscript revision pass checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: op.revision.whole_manuscript_revision_pass.plan
+    type: question
+    criterion_key: op.revision.whole_manuscript_revision_pass.plan
+    text: Does the pass follow an approved, prioritized revision plan?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.whole_manuscript_revision_pass.systemic
+    type: question
+    criterion_key: op.revision.whole_manuscript_revision_pass.systemic
+    text: Are systemic issues repaired consistently across the manuscript?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.whole_manuscript_revision_pass.local
+    type: question
+    criterion_key: op.revision.whole_manuscript_revision_pass.local
+    text: Do local changes remain compatible with global structure, arcs, and canon?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.whole_manuscript_revision_pass.cumulative
+    type: question
+    criterion_key: op.revision.whole_manuscript_revision_pass.cumulative
+    text: Does the cumulative effect improve the whole rather than merely individual passages?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.whole_manuscript_revision_pass.voice
+    type: question
+    criterion_key: op.revision.whole_manuscript_revision_pass.voice
+    text: Is voice preserved and normalized only where drift was actually defective?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.whole_manuscript_revision_pass.threads
+    type: question
+    criterion_key: op.revision.whole_manuscript_revision_pass.threads
+    text: Are setups, payoffs, motifs, and unresolved threads updated across distance?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.whole_manuscript_revision_pass.continuity
+    type: question
+    criterion_key: op.revision.whole_manuscript_revision_pass.continuity
+    text: Are chronology, knowledge, injuries, objects, and relationships rechecked after revision?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.whole_manuscript_revision_pass.new_patterns
+    type: question
+    criterion_key: op.revision.whole_manuscript_revision_pass.new_patterns
+    text: Has the pass checked for new repetition, pacing imbalance, or tonal flattening introduced by repeated
+      edits?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.whole_manuscript_revision_pass.version
+    type: question
+    criterion_key: op.revision.whole_manuscript_revision_pass.version
+    text: Is the revised manuscript versioned, recoverable, and linked to its parent and plan?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- wu_et_al_2025_writingbench
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates consistency and cumulative effect of revisions across all units, not merely local
+  improvement.

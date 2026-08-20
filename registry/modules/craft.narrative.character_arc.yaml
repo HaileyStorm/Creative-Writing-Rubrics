@@ -1,0 +1,172 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: craft.narrative.character_arc
+version: 1
+title: Character arc
+kind: craft
+description: Evaluates change, resistance to change, turning points, accumulated consequences, and whether the arc
+  develops at an appropriate rate across the selected scope. A scene extract should be judged for contribution to
+  an arc, not for completing one.
+origin: user_inventory_refined
+owner_domains:
+- narrative.character_arc
+artifact_types:
+- prose_fiction
+- creative_nonfiction
+- dramatic_writing
+- narrative_poetry
+- interactive_fiction
+valid_scopes:
+- beat
+- scene
+- chapter
+- sequence
+- act
+- manuscript
+- series
+activation: Attach when character arc is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: craft.narrative.character_arc.quality
+  type: group
+  title: Character arc
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: craft.narrative.character_arc.baseline
+    type: question
+    criterion_key: craft.narrative.character_arc.baseline
+    text: Is the character's relevant starting state or prior state clear enough to measure change?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.character_arc.pressure
+    type: question
+    criterion_key: craft.narrative.character_arc.pressure
+    text: Does the work apply pressure that could plausibly produce, resist, or reveal change?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.character_arc.resistance
+    type: question
+    criterion_key: craft.narrative.character_arc.resistance
+    text: Does the character resist, misunderstand, or negotiate change in a way consistent with their motives?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.character_arc.turns
+    type: question
+    criterion_key: craft.narrative.character_arc.turns
+    text: Are major arc turns caused by accumulated experience, choice, revelation, or consequence?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.character_arc.consequences
+    type: question
+    criterion_key: craft.narrative.character_arc.consequences
+    text: Do earlier choices leave traces that shape later behavior?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.character_arc.rate
+    type: question
+    criterion_key: craft.narrative.character_arc.rate
+    text: Does the rate of change suit the scope and magnitude of the arc?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.character_arc.local_contribution
+    type: question
+    criterion_key: craft.narrative.character_arc.local_contribution
+    text: When judging an extract, does the unit make a legible contribution to the larger arc without being required
+      to complete it?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.character_arc.end_state
+    type: question
+    criterion_key: craft.narrative.character_arc.end_state
+    text: At whole-work scope, is the final character state meaningfully related to the initial state and intervening
+      pressures?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- vaezi_rezaei_2018
+- carey_davidow_williams_2022
+- gomez_rodriguez_williams_2023
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates change, resistance to change, turning points, accumulated consequences, and whether
+  the arc develops at an appropriate rate across the selected scope. A scene extract should be judged for contribution
+  to an arc, not for completing one.

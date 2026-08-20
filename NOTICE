@@ -1,0 +1,18 @@
+Creative-Writing-Rubrics
+Copyright 2026 Hailey Collet
+
+This package is an original synthesis of hierarchical binary-question rubrics,
+judge protocols, and deterministic score aggregation for creative writing and
+related generation tasks (HBQ-RS 1.0.0).
+
+Bibliographic entries in sources/bibliography.json and the discussion in
+docs/RESEARCH_SYNTHESIS.md identify research that informed the design
+(including BinEval, RubricBench, Autorubric, LitBench, LongJudgeBench,
+WritingBench, and earlier craft-rubric literature). Those papers remain under
+their own licenses and copyrights. This repository does not copy paper text
+and does not relicense those works.
+
+Technique-specific model-build modules (for example speculation/MTP
+equivalence, pruning non-inferiority, or refusal-behavior checks) are optional
+overlays. They are not required to judge prose, poetry, drama, or other
+literary artifacts.

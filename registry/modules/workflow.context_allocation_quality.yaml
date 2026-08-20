@@ -1,0 +1,149 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: workflow.context_allocation_quality
+version: 1
+title: Context-allocation quality
+kind: workflow
+description: Research-informed binary rubric for context-allocation quality.
+origin: user_inventory_refined
+owner_domains:
+- workflow.context_allocation_quality
+artifact_types:
+- workflow_execution
+valid_scopes:
+- operation
+activation: Attach when context-allocation quality is the active form, asset, or evaluation concern.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: workflow.context_allocation_quality.quality
+  type: group
+  title: Context-allocation quality checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: workflow.context_allocation_quality.neighbors
+    type: question
+    criterion_key: workflow.context_allocation_quality.neighbors
+    text: Did each model receive enough preceding and following manuscript context?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: workflow.context_allocation_quality.outline
+    type: question
+    criterion_key: workflow.context_allocation_quality.outline
+    text: Did it receive the correct outline level?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: workflow.context_allocation_quality.sheets
+    type: question
+    criterion_key: workflow.context_allocation_quality.sheets
+    text: Did it receive relevant sheets, timeline facts, research, and decisions?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: workflow.context_allocation_quality.rubric
+    type: question
+    criterion_key: workflow.context_allocation_quality.rubric
+    text: Did it receive the active compiled rubric and profiles?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: workflow.context_allocation_quality.drafts
+    type: question
+    criterion_key: workflow.context_allocation_quality.drafts
+    text: Did it receive only relevant prior drafts, grades, and parent versions?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: workflow.context_allocation_quality.budget
+    type: question
+    criterion_key: workflow.context_allocation_quality.budget
+    text: Was context budget allocated to highest-value evidence?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: workflow.context_allocation_quality.no_noise
+    type: question
+    criterion_key: workflow.context_allocation_quality.no_noise
+    text: Was irrelevant context excluded?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: workflow.context_allocation_quality.role
+    type: question
+    criterion_key: workflow.context_allocation_quality.role
+    text: Was broader context given to high-context judgment and tighter context to fast generation as appropriate?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- wu_et_al_2025_writingbench
+- longjudgebench_2026
+notes: []

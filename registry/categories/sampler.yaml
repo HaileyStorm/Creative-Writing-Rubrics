@@ -1,0 +1,1373 @@
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: sampler.batch_diversity
+  version: 1
+  title: Batch diversity
+  kind: sampler
+  description: Measures semantic, structural, tonal, lexical, imagistic, and strategic difference across candidates.
+  origin: user_inventory_refined
+  owner_domains:
+  - sampler.batch_diversity
+  artifact_types:
+  - generated_candidate
+  - candidate_set
+  valid_scopes:
+  - any
+  activation: Attach when batch diversity is relevant to the active artifact or operation.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: sampler.batch_diversity.quality
+    type: group
+    title: Batch diversity checks
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: sampler.batch_diversity.semantic
+      type: question
+      criterion_key: sampler.batch_diversity.semantic
+      text: Do candidates differ in meaning, premise, or decision rather than words alone?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: sampler.batch_diversity.structural
+      type: question
+      criterion_key: sampler.batch_diversity.structural
+      text: Do they explore different structures, beats, or solution strategies where useful?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: sampler.batch_diversity.tonal
+      type: question
+      criterion_key: sampler.batch_diversity.tonal
+      text: Do they explore distinct viable tones or emotional dynamics where useful?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: sampler.batch_diversity.imagistic
+      type: question
+      criterion_key: sampler.batch_diversity.imagistic
+      text: Do they avoid recycling the same images and metaphors?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: sampler.batch_diversity.lexical
+      type: question
+      criterion_key: sampler.batch_diversity.lexical
+      text: Do they avoid near-identical diction and sentence templates?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: sampler.batch_diversity.quality_floor
+      type: question
+      criterion_key: sampler.batch_diversity.quality_floor
+      text: Does every retained candidate remain coherent and task-relevant?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: sampler.batch_diversity.coverage
+      type: question
+      criterion_key: sampler.batch_diversity.coverage
+      text: Does the batch cover the major plausible directions without redundant oversampling?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - cho_et_al_2026_bineval
+  - zhang_et_al_2026_rubricbench
+  - wu_et_al_2025_writingbench
+  - fein_et_al_2026_litbench
+  notes:
+  - Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+  - YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+    labels.
+  source_description: Measures semantic, structural, tonal, lexical, imagistic, and strategic difference across
+    candidates.
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: sampler.closure_and_commitment_preservation
+  version: 1
+  title: Closure and commitment preservation
+  kind: sampler
+  description: Detects the future-entropy failure mode in which prose keeps possibilities open indefinitely and
+    avoids concrete decisions, names, images, punctuation, or scene turns.
+  origin: user_inventory_refined
+  owner_domains:
+  - sampler.closure_and_commitment_preservation
+  artifact_types:
+  - generated_candidate
+  - candidate_set
+  valid_scopes:
+  - any
+  activation: Attach when closure and commitment preservation is relevant to the active artifact or operation.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: sampler.closure_and_commitment_preservation.quality
+    type: group
+    title: Closure and commitment preservation checks
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: sampler.closure_and_commitment_preservation.sentences
+      type: question
+      criterion_key: sampler.closure_and_commitment_preservation.sentences
+      text: Do sentences resolve syntactically and semantically?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: sampler.closure_and_commitment_preservation.punctuation
+      type: question
+      criterion_key: sampler.closure_and_commitment_preservation.punctuation
+      text: Are punctuation and paragraph endings stable?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: sampler.closure_and_commitment_preservation.choices
+      type: question
+      criterion_key: sampler.closure_and_commitment_preservation.choices
+      text: Do characters and narrators make concrete choices when required?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: sampler.closure_and_commitment_preservation.images
+      type: question
+      criterion_key: sampler.closure_and_commitment_preservation.images
+      text: Do images become specific enough to carry meaning?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: sampler.closure_and_commitment_preservation.turns
+      type: question
+      criterion_key: sampler.closure_and_commitment_preservation.turns
+      text: Do scenes and arguments reach turns rather than continually defer them?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: sampler.closure_and_commitment_preservation.ending
+      type: question
+      criterion_key: sampler.closure_and_commitment_preservation.ending
+      text: Does the generation unit end intentionally rather than trail off or remain open by default?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: sampler.closure_and_commitment_preservation.no_entropy
+      type: question
+      criterion_key: sampler.closure_and_commitment_preservation.no_entropy
+      text: Does it avoid indefinite future-entropy behavior that keeps every option alive?
+      pass_answer: 'YES'
+      weight: 2.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - cho_et_al_2026_bineval
+  - zhang_et_al_2026_rubricbench
+  - wu_et_al_2025_writingbench
+  - fein_et_al_2026_litbench
+  notes:
+  - Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+  - YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+    labels.
+  source_description: Detects the future-entropy failure mode in which prose keeps possibilities open indefinitely
+    and avoids concrete decisions, names, images, punctuation, or scene turns.
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: sampler.freshness_gain
+  version: 1
+  title: Freshness gain
+  kind: sampler
+  description: Focuses on reduction of default phrases, predictable completions, stock imagery, and repeated sentence
+    shapes relative to the baseline sampler.
+  origin: user_inventory_refined
+  owner_domains:
+  - sampler.freshness_gain
+  artifact_types:
+  - generated_candidate
+  - candidate_set
+  valid_scopes:
+  - any
+  activation: Attach when freshness gain is relevant to the active artifact or operation.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: sampler.freshness_gain.quality
+    type: group
+    title: Freshness gain checks
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: sampler.freshness_gain.baseline
+      type: question
+      criterion_key: sampler.freshness_gain.baseline
+      text: Is freshness measured against a defined baseline sampler or model configuration?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: diagnostic
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: sampler.freshness_gain.phrases
+      type: question
+      criterion_key: sampler.freshness_gain.phrases
+      text: Does the sample reduce default phrases and stock transitions?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: sampler.freshness_gain.images
+      type: question
+      criterion_key: sampler.freshness_gain.images
+      text: Does it reduce predictable imagery and metaphor?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: sampler.freshness_gain.shapes
+      type: question
+      criterion_key: sampler.freshness_gain.shapes
+      text: Does it reduce repeated sentence and paragraph shapes?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: sampler.freshness_gain.ideas
+      type: question
+      criterion_key: sampler.freshness_gain.ideas
+      text: Does it increase apt conceptual or strategic novelty?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: sampler.freshness_gain.quality
+      type: question
+      criterion_key: sampler.freshness_gain.quality
+      text: Is the gain retained after controlling for coherence, canon, and task fidelity?
+      pass_answer: 'YES'
+      weight: 2.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: sampler.freshness_gain.no_ornate_proxy
+      type: question
+      criterion_key: sampler.freshness_gain.no_ornate_proxy
+      text: Is freshness not merely a proxy for rare diction or ornament?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - cho_et_al_2026_bineval
+  - zhang_et_al_2026_rubricbench
+  - wu_et_al_2025_writingbench
+  - fein_et_al_2026_litbench
+  notes:
+  - Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+  - YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+    labels.
+  source_description: Focuses on reduction of default phrases, predictable completions, stock imagery, and repeated
+    sentence shapes relative to the baseline sampler.
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: sampler.model_specific_sampler_profile
+  version: 1
+  title: Model-specific sampler profile
+  kind: sampler
+  description: Separately evaluates DS, ByteShape, and Escha because the appropriate sampling strength, entropy
+    behavior, speed budget, and MTP interaction will differ.
+  origin: user_inventory_refined
+  owner_domains:
+  - sampler.model_specific_sampler_profile
+  artifact_types:
+  - generated_candidate
+  - candidate_set
+  valid_scopes:
+  - any
+  activation: Attach when model-specific sampler profile is relevant to the active artifact or operation.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: sampler.model_specific_sampler_profile.quality
+    type: group
+    title: Model-specific sampler profile checks
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: sampler.model_specific_sampler_profile.model
+      type: question
+      criterion_key: sampler.model_specific_sampler_profile.model
+      text: Is the profile calibrated for the exact model build, quantization, context setting, and MTP configuration?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: sampler.model_specific_sampler_profile.strength
+      type: question
+      criterion_key: sampler.model_specific_sampler_profile.strength
+      text: Are sampling-strength ranges empirically calibrated for that model?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: sampler.model_specific_sampler_profile.entropy
+      type: question
+      criterion_key: sampler.model_specific_sampler_profile.entropy
+      text: Are entropy and uncertainty behaviors measured rather than assumed from another model family?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: sampler.model_specific_sampler_profile.speed
+      type: question
+      criterion_key: sampler.model_specific_sampler_profile.speed
+      text: Does the profile account for model-specific latency and speculative acceptance?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: sampler.model_specific_sampler_profile.forms
+      type: question
+      criterion_key: sampler.model_specific_sampler_profile.forms
+      text: Are profile differences across prose, poetry, dialogue, planning, and structured tasks represented?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: sampler.model_specific_sampler_profile.regression
+      type: question
+      criterion_key: sampler.model_specific_sampler_profile.regression
+      text: Does the profile include regression checks for artifacts, drift, and long-context behavior?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: sampler.model_specific_sampler_profile.version
+      type: question
+      criterion_key: sampler.model_specific_sampler_profile.version
+      text: Is the profile versioned and invalidated when the model or runtime changes materially?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - cho_et_al_2026_bineval
+  - zhang_et_al_2026_rubricbench
+  - wu_et_al_2025_writingbench
+  - fein_et_al_2026_litbench
+  notes:
+  - Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+  - YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+    labels.
+  source_description: Separately evaluates DS, ByteShape, and Escha because the appropriate sampling strength, entropy
+    behavior, speed budget, and MTP interaction will differ.
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: sampler.optionality_without_drift
+  version: 1
+  title: Optionality without drift
+  kind: sampler
+  description: Evaluates whether choices avoid prematurely generic continuations while still committing when syntax,
+    character, or scene logic requires commitment.
+  origin: user_inventory_refined
+  owner_domains:
+  - sampler.optionality_without_drift
+  artifact_types:
+  - generated_candidate
+  - candidate_set
+  valid_scopes:
+  - any
+  activation: Attach when optionality without drift is relevant to the active artifact or operation.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: sampler.optionality_without_drift.quality
+    type: group
+    title: Optionality without drift checks
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: sampler.optionality_without_drift.forks
+      type: question
+      criterion_key: sampler.optionality_without_drift.forks
+      text: Does the sampler preserve optionality at genuine creative forks?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: sampler.optionality_without_drift.syntax
+      type: question
+      criterion_key: sampler.optionality_without_drift.syntax
+      text: Does it commit when grammar, reference, or sentence logic requires commitment?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: sampler.optionality_without_drift.character
+      type: question
+      criterion_key: sampler.optionality_without_drift.character
+      text: Does it commit when established character choice and scene logic require commitment?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: sampler.optionality_without_drift.scene
+      type: question
+      criterion_key: sampler.optionality_without_drift.scene
+      text: Does the sample create concrete action, images, names, and turns rather than indefinite possibility?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: sampler.optionality_without_drift.no_fog
+      type: question
+      criterion_key: sampler.optionality_without_drift.no_fog
+      text: Does it avoid vague language used mainly to keep mutually incompatible futures open?
+      pass_answer: 'YES'
+      weight: 2.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - cho_et_al_2026_bineval
+  - zhang_et_al_2026_rubricbench
+  - wu_et_al_2025_writingbench
+  - fein_et_al_2026_litbench
+  notes:
+  - Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+  - YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+    labels.
+  source_description: Evaluates whether choices avoid prematurely generic continuations while still committing when
+    syntax, character, or scene logic requires commitment.
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: sampler.productive_divergence
+  version: 1
+  title: Productive divergence
+  kind: sampler
+  description: Distinguishes useful alternative directions from random deviation, incoherent surprise, or violations
+    of canon and brief.
+  origin: user_inventory_refined
+  owner_domains:
+  - sampler.productive_divergence
+  artifact_types:
+  - generated_candidate
+  - candidate_set
+  valid_scopes:
+  - any
+  activation: Attach when productive divergence is relevant to the active artifact or operation.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: sampler.productive_divergence.quality
+    type: group
+    title: Productive divergence checks
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: sampler.productive_divergence.new
+      type: question
+      criterion_key: sampler.productive_divergence.new
+      text: Does the sample move into a genuinely new but relevant creative direction?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: sampler.productive_divergence.logic
+      type: question
+      criterion_key: sampler.productive_divergence.logic
+      text: Does divergence remain causally, stylistically, and canonically intelligible?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: sampler.productive_divergence.utility
+      type: question
+      criterion_key: sampler.productive_divergence.utility
+      text: Does it reveal a useful option, tradeoff, image, or solution?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: sampler.productive_divergence.commit
+      type: question
+      criterion_key: sampler.productive_divergence.commit
+      text: Does it commit enough to demonstrate the direction rather than gesture vaguely at novelty?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: sampler.productive_divergence.no_random
+      type: question
+      criterion_key: sampler.productive_divergence.no_random
+      text: Does it avoid surprise produced chiefly by incoherence, rare-word chasing, or constraint violation?
+      pass_answer: 'YES'
+      weight: 2.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - cho_et_al_2026_bineval
+  - zhang_et_al_2026_rubricbench
+  - wu_et_al_2025_writingbench
+  - fein_et_al_2026_litbench
+  notes:
+  - Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+  - YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+    labels.
+  source_description: Distinguishes useful alternative directions from random deviation, incoherent surprise, or
+    violations of canon and brief.
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: sampler.sampler_artifact_audit
+  version: 1
+  title: Sampler artifact audit
+  kind: sampler
+  description: Checks punctuation anomalies, whitespace behavior, rare-word chasing, ornate drift, dialogue instability,
+    repeated high-entropy constructions, and latency-related truncation.
+  origin: user_inventory_refined
+  owner_domains:
+  - sampler.sampler_artifact_audit
+  artifact_types:
+  - generated_candidate
+  - candidate_set
+  valid_scopes:
+  - any
+  activation: Attach when sampler artifact audit is relevant to the active artifact or operation.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: sampler.sampler_artifact_audit.quality
+    type: group
+    title: Sampler artifact audit checks
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: sampler.sampler_artifact_audit.punctuation
+      type: question
+      criterion_key: sampler.sampler_artifact_audit.punctuation
+      text: Is output free of punctuation anomalies, broken quotation, and delimiter instability?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: sampler.sampler_artifact_audit.whitespace
+      type: question
+      criterion_key: sampler.sampler_artifact_audit.whitespace
+      text: Is whitespace and paragraphing stable?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: sampler.sampler_artifact_audit.rare_words
+      type: question
+      criterion_key: sampler.sampler_artifact_audit.rare_words
+      text: Is rare diction used for precision rather than entropy display?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: sampler.sampler_artifact_audit.ornate
+      type: question
+      criterion_key: sampler.sampler_artifact_audit.ornate
+      text: Is output free of sampler-induced ornate drift and image stacking?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: sampler.sampler_artifact_audit.dialogue
+      type: question
+      criterion_key: sampler.sampler_artifact_audit.dialogue
+      text: Are speaker identity, turns, and quotation mechanics stable?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: sampler.sampler_artifact_audit.patterns
+      type: question
+      criterion_key: sampler.sampler_artifact_audit.patterns
+      text: Is it free of repeated high-entropy constructions and syntactic breakdown?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: sampler.sampler_artifact_audit.truncation
+      type: question
+      criterion_key: sampler.sampler_artifact_audit.truncation
+      text: Is it free of latency- or budget-related truncation?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: sampler.sampler_artifact_audit.prevalence
+      type: question
+      criterion_key: sampler.sampler_artifact_audit.prevalence
+      text: Does the audit quantify artifact prevalence across multiple samples?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - cho_et_al_2026_bineval
+  - zhang_et_al_2026_rubricbench
+  - wu_et_al_2025_writingbench
+  - fein_et_al_2026_litbench
+  notes:
+  - Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+  - YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+    labels.
+  source_description: Checks punctuation anomalies, whitespace behavior, rare-word chasing, ornate drift, dialogue
+    instability, repeated high-entropy constructions, and latency-related truncation.
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: sampler.sampler_benefit_versus_cost
+  version: 1
+  title: Sampler benefit-versus-cost
+  kind: sampler
+  description: Combines writing-quality gain, retained benefit relative to full future-entropy sampling, extra forwards,
+    latency, and consistency. It is an internal experiment rubric rather than a manuscript grade.
+  origin: user_inventory_refined
+  owner_domains:
+  - sampler.sampler_benefit_versus_cost
+  artifact_types:
+  - generated_candidate
+  - candidate_set
+  valid_scopes:
+  - any
+  activation: Attach when sampler benefit-versus-cost is relevant to the active artifact or operation.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: sampler.sampler_benefit_versus_cost.quality
+    type: group
+    title: Sampler benefit-versus-cost checks
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: sampler.sampler_benefit_versus_cost.quality
+      type: question
+      criterion_key: sampler.sampler_benefit_versus_cost.quality
+      text: Does the sampler produce a statistically credible creative-quality gain?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: sampler.sampler_benefit_versus_cost.retention
+      type: question
+      criterion_key: sampler.sampler_benefit_versus_cost.retention
+      text: Does it retain most of the benefit of more expensive future-aware sampling?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: sampler.sampler_benefit_versus_cost.latency
+      type: question
+      criterion_key: sampler.sampler_benefit_versus_cost.latency
+      text: Is delivered-token latency acceptable for the interactive workflow?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: sampler.sampler_benefit_versus_cost.compute
+      type: question
+      criterion_key: sampler.sampler_benefit_versus_cost.compute
+      text: Are extra forwards and memory costs proportionate to the gain?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: sampler.sampler_benefit_versus_cost.consistency
+      type: question
+      criterion_key: sampler.sampler_benefit_versus_cost.consistency
+      text: Does it preserve coherence, canon, and formatting reliability?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: sampler.sampler_benefit_versus_cost.variance
+      type: question
+      criterion_key: sampler.sampler_benefit_versus_cost.variance
+      text: Are gains stable across prompts, lengths, forms, and seeds?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: sampler.sampler_benefit_versus_cost.baseline
+      type: question
+      criterion_key: sampler.sampler_benefit_versus_cost.baseline
+      text: Is comparison made against fair baselines with matched model, prompt, and generation budget?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - cho_et_al_2026_bineval
+  - zhang_et_al_2026_rubricbench
+  - wu_et_al_2025_writingbench
+  - fein_et_al_2026_litbench
+  notes:
+  - Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+  - YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+    labels.
+  source_description: Combines writing-quality gain, retained benefit relative to full future-entropy sampling,
+    extra forwards, latency, and consistency. It is an internal experiment rubric rather than a manuscript grade.
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: sampler.single_sample_creative_quality
+  version: 1
+  title: Single-sample creative quality
+  kind: sampler
+  description: Uses the applicable writing rubric to ensure sampler novelty does not excuse incoherence or weak
+    prose.
+  origin: user_inventory_refined
+  owner_domains:
+  - sampler.single_sample_creative_quality
+  artifact_types:
+  - generated_candidate
+  - candidate_set
+  valid_scopes:
+  - any
+  activation: Attach when single-sample creative quality is relevant to the active artifact or operation.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: sampler.single_sample_creative_quality.quality
+    type: group
+    title: Single-sample creative quality checks
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: sampler.single_sample_creative_quality.compliance
+      type: question
+      criterion_key: sampler.single_sample_creative_quality.compliance
+      text: Does the sample satisfy the active task and hard constraints?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: hard_gate
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: sampler.single_sample_creative_quality.coherence
+      type: question
+      criterion_key: sampler.single_sample_creative_quality.coherence
+      text: Is it locally and globally coherent at the supplied scope?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: sampler.single_sample_creative_quality.craft
+      type: question
+      criterion_key: sampler.single_sample_creative_quality.craft
+      text: Does it meet the active craft modules at a usable quality level?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: sampler.single_sample_creative_quality.fresh
+      type: question
+      criterion_key: sampler.single_sample_creative_quality.fresh
+      text: Does it offer apt freshness rather than random novelty?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: sampler.single_sample_creative_quality.canon
+      type: question
+      criterion_key: sampler.single_sample_creative_quality.canon
+      text: Does it preserve project canon and continuity?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: sampler.single_sample_creative_quality.complete
+      type: question
+      criterion_key: sampler.single_sample_creative_quality.complete
+      text: Is the sample complete for the requested generation unit?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - cho_et_al_2026_bineval
+  - zhang_et_al_2026_rubricbench
+  - wu_et_al_2025_writingbench
+  - fein_et_al_2026_litbench
+  notes:
+  - Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+  - YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+    labels.
+  source_description: Uses the applicable writing rubric to ensure sampler novelty does not excuse incoherence or
+    weak prose.
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: sampler.structure_aware_sampling_fit
+  version: 1
+  title: Structure-aware sampling fit
+  kind: sampler
+  description: Evaluates whether stronger creative sampling is used at useful forks and reduced during tight syntax,
+    factual material, grading, research, and final-preservation operations.
+  origin: user_inventory_refined
+  owner_domains:
+  - sampler.structure_aware_sampling_fit
+  artifact_types:
+  - generated_candidate
+  - candidate_set
+  valid_scopes:
+  - any
+  activation: Attach when structure-aware sampling fit is relevant to the active artifact or operation.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: sampler.structure_aware_sampling_fit.quality
+    type: group
+    title: Structure-aware sampling fit checks
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: sampler.structure_aware_sampling_fit.forks
+      type: question
+      criterion_key: sampler.structure_aware_sampling_fit.forks
+      text: Is stronger creative sampling concentrated at genuine semantic and structural forks?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: sampler.structure_aware_sampling_fit.tight_syntax
+      type: question
+      criterion_key: sampler.structure_aware_sampling_fit.tight_syntax
+      text: Is sampling constrained during tight syntax, quotations, formatting, names, and exact facts?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: sampler.structure_aware_sampling_fit.research
+      type: question
+      criterion_key: sampler.structure_aware_sampling_fit.research
+      text: Is sampling constrained during source-grounded research and factual transfer?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: sampler.structure_aware_sampling_fit.grading
+      type: question
+      criterion_key: sampler.structure_aware_sampling_fit.grading
+      text: Is sampling constrained during grading, verification, and final-preservation operations?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: sampler.structure_aware_sampling_fit.phase
+      type: question
+      criterion_key: sampler.structure_aware_sampling_fit.phase
+      text: Does strength adapt to brainstorming, drafting, revision, and finalization phases?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: sampler.structure_aware_sampling_fit.context
+      type: question
+      criterion_key: sampler.structure_aware_sampling_fit.context
+      text: Does strength adapt to local uncertainty and context confidence?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: sampler.structure_aware_sampling_fit.no_global
+      type: question
+      criterion_key: sampler.structure_aware_sampling_fit.no_global
+      text: Does the system avoid applying maximal creative sampling uniformly to all tokens and operations?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - cho_et_al_2026_bineval
+  - zhang_et_al_2026_rubricbench
+  - wu_et_al_2025_writingbench
+  - fein_et_al_2026_litbench
+  notes:
+  - Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+  - YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+    labels.
+  source_description: Evaluates whether stronger creative sampling is used at useful forks and reduced during tight
+    syntax, factual material, grading, research, and final-preservation operations.

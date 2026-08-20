@@ -1,0 +1,140 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: form.audio.speaker_and_character_consistency
+version: 1
+title: Speaker and character consistency
+kind: audio_artifact
+description: Research-informed binary rubric for speaker and character consistency.
+origin: research_expansion
+owner_domains:
+- audio.speaker_and_character_consistency
+artifact_types:
+- audio_asset
+valid_scopes:
+- utterance
+- passage
+- scene
+- chapter
+- work
+activation: Attach when speaker and character consistency is the active form, asset, or evaluation concern.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 1
+  project_sources: source text, pronunciation lexicon, voice references, and direction sheet when supplied
+  modalities_required:
+  - audio
+tree:
+- id: form.audio.speaker_and_character_consistency.quality
+  type: group
+  title: Speaker and character consistency checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: form.audio.speaker_and_character_consistency.identity
+    type: question
+    criterion_key: form.audio.speaker_and_character_consistency.identity
+    text: Does each speaker remain recognizably the same across segments?
+    pass_answer: 'YES'
+    weight: 2.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.audio.speaker_and_character_consistency.emotion
+    type: question
+    criterion_key: form.audio.speaker_and_character_consistency.emotion
+    text: Is identity preserved under emotional change?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.audio.speaker_and_character_consistency.register
+    type: question
+    criterion_key: form.audio.speaker_and_character_consistency.register
+    text: Is identity preserved under whispering, shouting, pace, and register changes?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.audio.speaker_and_character_consistency.long
+    type: question
+    criterion_key: form.audio.speaker_and_character_consistency.long
+    text: Is identity stable over long-form generation and separated recording batches?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.audio.speaker_and_character_consistency.characters
+    type: question
+    criterion_key: form.audio.speaker_and_character_consistency.characters
+    text: Are different characters sufficiently distinct?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.audio.speaker_and_character_consistency.casting
+    type: question
+    criterion_key: form.audio.speaker_and_character_consistency.casting
+    text: Do voice characteristics remain consistent with the casting and character sheet?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.audio.speaker_and_character_consistency.no_drift
+    type: question
+    criterion_key: form.audio.speaker_and_character_consistency.no_drift
+    text: Is the audio free of gradual timbre, accent, age, or gender-presentation drift?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- galdino_et_al_2025_prosody_review
+- real_world_voice_eq_bench_2026
+notes: []

@@ -1,0 +1,157 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: model.release.dspark_mtp_equivalence_and_benefit
+version: 1
+title: DSpark/MTP equivalence and benefit
+kind: model_build
+description: Checks greedy/token equivalence where applicable, acceptance rate, fallback behavior, creative versus
+  structured output, context sensitivity, delivered-token speed, and whether speculation is actually beneficial.
+origin: user_inventory_refined
+owner_domains:
+- model.dspark_mtp_equivalence_and_benefit
+artifact_types:
+- model_build
+valid_scopes:
+- any
+activation: Attach when dspark/mtp equivalence and benefit is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: model.release.dspark_mtp_equivalence_and_benefit.quality
+  type: group
+  title: DSpark/MTP equivalence and benefit checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: model.release.dspark_mtp_equivalence_and_benefit.equivalence
+    type: question
+    criterion_key: model.release.dspark_mtp_equivalence_and_benefit.equivalence
+    text: Does greedy or configured deterministic decoding match the required token-equivalence policy when speculation
+      is enabled?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.dspark_mtp_equivalence_and_benefit.acceptance
+    type: question
+    criterion_key: model.release.dspark_mtp_equivalence_and_benefit.acceptance
+    text: Is acceptance rate reported by task type, context length, and decoding profile?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.dspark_mtp_equivalence_and_benefit.fallback
+    type: question
+    criterion_key: model.release.dspark_mtp_equivalence_and_benefit.fallback
+    text: Does fallback preserve correctness and stability?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.dspark_mtp_equivalence_and_benefit.creative
+    type: question
+    criterion_key: model.release.dspark_mtp_equivalence_and_benefit.creative
+    text: Does speculative decoding preserve creative quality and sampler behavior?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.dspark_mtp_equivalence_and_benefit.structured
+    type: question
+    criterion_key: model.release.dspark_mtp_equivalence_and_benefit.structured
+    text: Does it preserve exact structure and constrained-output behavior?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.dspark_mtp_equivalence_and_benefit.context
+    type: question
+    criterion_key: model.release.dspark_mtp_equivalence_and_benefit.context
+    text: Does benefit remain stable at representative context lengths?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.dspark_mtp_equivalence_and_benefit.speed
+    type: question
+    criterion_key: model.release.dspark_mtp_equivalence_and_benefit.speed
+    text: Is delivered-token speed measured end to end rather than inferred from draft acceptance alone?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.dspark_mtp_equivalence_and_benefit.benefit
+    type: question
+    criterion_key: model.release.dspark_mtp_equivalence_and_benefit.benefit
+    text: Does measured latency benefit justify complexity and any quality risk?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- rao_callison_burch_2026_autorubric
+- longjudgebench_2026
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Checks greedy/token equivalence where applicable, acceptance rate, fallback behavior, creative
+  versus structured output, context sensitivity, delivered-token speed, and whether speculation is actually beneficial.

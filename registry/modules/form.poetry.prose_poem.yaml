@@ -1,0 +1,145 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: form.poetry.prose_poem
+version: 1
+title: Prose poem
+kind: artifact_form
+description: Evaluates poetic density, image, sound, compression, associative movement, and paragraph form without
+  incorrectly demanding lineation.
+origin: user_inventory_refined
+owner_domains:
+- form.prose_poem
+artifact_types:
+- poetry
+valid_scopes:
+- line
+- stanza
+- poem
+- collection
+activation: Attach when prose poem is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: form.poetry.prose_poem.quality
+  type: group
+  title: Prose poem checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: form.poetry.prose_poem.paragraph_form
+    type: question
+    criterion_key: form.poetry.prose_poem.paragraph_form
+    text: Does the poem use the prose block or paragraph as an active formal unit?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.prose_poem.poetic_density
+    type: question
+    criterion_key: form.poetry.prose_poem.poetic_density
+    text: Does the language sustain poetic density through image, sound, syntax, compression, or association?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.prose_poem.movement
+    type: question
+    criterion_key: form.poetry.prose_poem.movement
+    text: Does the poem move associatively, rhetorically, or emotionally rather than merely describe?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.prose_poem.rhythm
+    type: question
+    criterion_key: form.poetry.prose_poem.rhythm
+    text: Does sentence and paragraph rhythm replace or transform the work normally done by lineation?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.prose_poem.compression
+    type: question
+    criterion_key: form.poetry.prose_poem.compression
+    text: Does the piece avoid explanatory prose that dissipates poetic pressure?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.prose_poem.image_system
+    type: question
+    criterion_key: form.poetry.prose_poem.image_system
+    text: Do images interact and develop rather than appear as isolated ornaments?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.prose_poem.no_short_prose
+    type: question
+    criterion_key: form.poetry.prose_poem.no_short_prose
+    text: Does the artifact possess enough poetic necessity to be more than a short prose passage without line breaks?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- li_et_al_2026_poemetric
+- vaezi_rezaei_2018
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates poetic density, image, sound, compression, associative movement, and paragraph form
+  without incorrectly demanding lineation.

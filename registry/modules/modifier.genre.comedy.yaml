@@ -1,0 +1,157 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: modifier.genre.comedy
+version: 1
+title: Comedy
+kind: modifier
+description: Setup/payoff, surprise, timing, escalation, character-based humor, tonal consistency, and whether repetition
+  compounds rather than merely repeats.
+origin: user_inventory_refined
+owner_domains:
+- genre.comedy
+artifact_types:
+- creative_text
+valid_scopes:
+- any
+activation: Attach when comedy is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: modifier.genre.comedy.quality
+  type: group
+  title: Comedy contract
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: modifier.genre.comedy.mechanism
+    type: question
+    criterion_key: modifier.genre.comedy.mechanism
+    text: Is the primary comic mechanism identifiable and suited to the work?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.comedy.setup
+    type: question
+    criterion_key: modifier.genre.comedy.setup
+    text: Are jokes, reversals, misunderstandings, or absurdities adequately set up?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.comedy.surprise
+    type: question
+    criterion_key: modifier.genre.comedy.surprise
+    text: Does comedy create genuine surprise, recognition, escalation, or incongruity?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.comedy.timing
+    type: question
+    criterion_key: modifier.genre.comedy.timing
+    text: Do placement, pause, sentence length, interruption, and reveal timing support the joke?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.comedy.character
+    type: question
+    criterion_key: modifier.genre.comedy.character
+    text: Does humor arise from specific character, relationship, situation, or worldview rather than detachable
+      one-liners alone?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.comedy.escalation
+    type: question
+    criterion_key: modifier.genre.comedy.escalation
+    text: Does repetition compound or transform the joke?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.comedy.tone
+    type: question
+    criterion_key: modifier.genre.comedy.tone
+    text: Does the work control tonal consequences of ridicule, cruelty, embarrassment, and sentiment?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.comedy.no_explanation
+    type: question
+    criterion_key: modifier.genre.comedy.no_explanation
+    text: Does it avoid explaining the joke or repeatedly signaling that something is funny?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- fein_et_al_2026_litbench
+- wu_et_al_2025_writingbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Setup/payoff, surprise, timing, escalation, character-based humor, tonal consistency, and whether
+  repetition compounds rather than merely repeats.

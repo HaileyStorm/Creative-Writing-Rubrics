@@ -1,0 +1,74 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "creative-writing-rubrics"
+version = "1.0.0"
+description = "HBQ-RS creative-writing rubrics: compile bundles, score binary verdicts, and render judge prompts."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "Apache-2.0" }
+authors = [{ name = "Hailey Collet" }]
+keywords = [
+  "creative-writing",
+  "rubrics",
+  "llm-eval",
+  "benchmarking",
+  "hbq-rs",
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: Apache Software License",
+  "Programming Language :: Python :: 3",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+  "Topic :: Text Processing",
+]
+dependencies = ["pyyaml>=6.0"]
+
+[project.optional-dependencies]
+schema = ["jsonschema>=4.0"]
+dev = ["pytest>=8.0", "jsonschema>=4.0"]
+
+[project.scripts]
+cwr = "hbqrs.cli:main"
+hbq = "hbqrs.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/HaileyStorm/Creative-Writing-Rubrics"
+Repository = "https://github.com/HaileyStorm/Creative-Writing-Rubrics"
+Documentation = "https://github.com/HaileyStorm/Creative-Writing-Rubrics#readme"
+
+[tool.hatch.build.targets.sdist]
+include = [
+  "src/hbqrs",
+  "registry",
+  "bundles",
+  "schema",
+  "prompts",
+  "examples",
+  "docs",
+  "sources",
+  "LICENSE",
+  "NOTICE",
+  "README.md",
+  "CITATION.cff",
+  "manifest.json",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/hbqrs"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"registry" = "hbqrs/book/registry"
+"bundles" = "hbqrs/book/bundles"
+"schema" = "hbqrs/book/schema"
+"prompts" = "hbqrs/book/prompts"
+"examples" = "hbqrs/book/examples"
+"docs" = "hbqrs/book/docs"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

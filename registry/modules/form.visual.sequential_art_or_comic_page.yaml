@@ -1,0 +1,153 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: form.visual.sequential_art_or_comic_page
+version: 1
+title: Sequential art or comic page
+kind: visual_artifact
+description: Research-informed binary rubric for sequential art or comic page.
+origin: research_expansion
+owner_domains:
+- visual.sequential_art_or_comic_page
+artifact_types:
+- visual_asset
+valid_scopes:
+- asset
+- panel
+- sequence
+- project
+activation: Attach when sequential art or comic page is the active form, asset, or evaluation concern.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 2
+  project_sources: character references, style references, scene text, and asset metadata when supplied
+  modalities_required:
+  - image
+tree:
+- id: form.visual.sequential_art_or_comic_page.quality
+  type: group
+  title: Sequential art or comic page checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: form.visual.sequential_art_or_comic_page.reading_order
+    type: question
+    criterion_key: form.visual.sequential_art_or_comic_page.reading_order
+    text: Is panel and balloon reading order immediately clear?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.visual.sequential_art_or_comic_page.continuity
+    type: question
+    criterion_key: form.visual.sequential_art_or_comic_page.continuity
+    text: Are character identity, costume, props, setting, and action continuous across panels?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.visual.sequential_art_or_comic_page.panel_choice
+    type: question
+    criterion_key: form.visual.sequential_art_or_comic_page.panel_choice
+    text: Does each panel depict a meaningful change, beat, or visual necessity?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.visual.sequential_art_or_comic_page.composition
+    type: question
+    criterion_key: form.visual.sequential_art_or_comic_page.composition
+    text: Do page and panel compositions guide attention and control pacing?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.visual.sequential_art_or_comic_page.text
+    type: question
+    criterion_key: form.visual.sequential_art_or_comic_page.text
+    text: Are dialogue, captions, sound effects, and lettering legible and well placed?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.visual.sequential_art_or_comic_page.showing
+    type: question
+    criterion_key: form.visual.sequential_art_or_comic_page.showing
+    text: Does visual information carry work that need not be repeated in text?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.visual.sequential_art_or_comic_page.style
+    type: question
+    criterion_key: form.visual.sequential_art_or_comic_page.style
+    text: Is visual style consistent while allowing purposeful emphasis?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.visual.sequential_art_or_comic_page.no_duplication
+    type: question
+    criterion_key: form.visual.sequential_art_or_comic_page.no_duplication
+    text: Does the page avoid redundant panels and text-image duplication?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- zhuang_et_al_2025_vistorybench
+- lin_et_al_2026_storybook_consistency
+notes: []

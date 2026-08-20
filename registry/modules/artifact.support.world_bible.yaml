@@ -1,0 +1,155 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: artifact.support.world_bible
+version: 1
+title: World bible
+kind: support_artifact
+description: Evaluates rule clarity, consequences, consistency, coverage, cross-references, and whether details
+  support stories rather than merely accumulate lore.
+origin: user_inventory_refined
+owner_domains:
+- support.world_bible
+artifact_types:
+- planning_artifact
+- reference_artifact
+valid_scopes:
+- any
+activation: Attach when world bible is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: artifact.support.world_bible.quality
+  type: group
+  title: World bible checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: artifact.support.world_bible.rules
+    type: question
+    criterion_key: artifact.support.world_bible.rules
+    text: Are world rules stated clearly enough to apply in writing and evaluation?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.world_bible.consequences
+    type: question
+    criterion_key: artifact.support.world_bible.consequences
+    text: Does the bible record costs, constraints, exceptions, and consequences rather than only capabilities?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.world_bible.consistency
+    type: question
+    criterion_key: artifact.support.world_bible.consistency
+    text: Are entries mutually consistent or explicitly versioned when they conflict?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.world_bible.coverage
+    type: question
+    criterion_key: artifact.support.world_bible.coverage
+    text: Does it cover the systems needed by the active narrative without pretending to exhaustive completeness?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.world_bible.crossrefs
+    type: question
+    criterion_key: artifact.support.world_bible.crossrefs
+    text: Are related people, places, events, terms, and sources cross-referenced?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.world_bible.provenance
+    type: question
+    criterion_key: artifact.support.world_bible.provenance
+    text: Can canon facts be traced to decisions, sources, or manuscript evidence?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.world_bible.story_utility
+    type: question
+    criterion_key: artifact.support.world_bible.story_utility
+    text: Do entries identify narrative consequences and uses rather than accumulate inert lore?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.world_bible.machine_use
+    type: question
+    criterion_key: artifact.support.world_bible.machine_use
+    text: Is the structure consistent and machine-readable enough for context retrieval?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates rule clarity, consequences, consistency, coverage, cross-references, and whether details
+  support stories rather than merely accumulate lore.

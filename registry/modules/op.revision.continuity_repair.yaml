@@ -1,0 +1,156 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: op.revision.continuity_repair
+version: 1
+title: Continuity repair
+kind: procedure
+description: Evaluates correction of contradictions with the smallest appropriate set of changes and proper propagation
+  into dependent passages or sheets.
+origin: user_inventory_refined
+owner_domains:
+- procedure.continuity_repair
+artifact_types:
+- any
+valid_scopes:
+- operation
+activation: Attach when continuity repair is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: op.revision.continuity_repair.quality
+  type: group
+  title: Continuity repair checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: op.revision.continuity_repair.identify
+    type: question
+    criterion_key: op.revision.continuity_repair.identify
+    text: Is the contradiction and its authoritative resolution identified precisely?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.continuity_repair.minimal
+    type: question
+    criterion_key: op.revision.continuity_repair.minimal
+    text: Is the smallest sufficient repair surface selected?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.continuity_repair.cause
+    type: question
+    criterion_key: op.revision.continuity_repair.cause
+    text: Does the repair address the source of the contradiction rather than only one visible instance?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.continuity_repair.propagate
+    type: question
+    criterion_key: op.revision.continuity_repair.propagate
+    text: Is the correction propagated to every dependent passage, sheet, timeline entry, and asset?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.continuity_repair.preserve
+    type: question
+    criterion_key: op.revision.continuity_repair.preserve
+    text: Does the repair preserve unrelated voice, facts, pacing, and strengths?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.continuity_repair.new_errors
+    type: question
+    criterion_key: op.revision.continuity_repair.new_errors
+    text: Does the repair avoid creating new contradictions or knowledge-state errors?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.continuity_repair.provenance
+    type: question
+    criterion_key: op.revision.continuity_repair.provenance
+    text: Is the change logged with source authority and affected versions?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.continuity_repair.verify
+    type: question
+    criterion_key: op.revision.continuity_repair.verify
+    text: Has the repaired state been checked across the relevant context span?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- wu_et_al_2025_writingbench
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates correction of contradictions with the smallest appropriate set of changes and proper
+  propagation into dependent passages or sheets.

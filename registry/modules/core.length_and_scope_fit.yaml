@@ -1,0 +1,149 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: core.length_and_scope_fit
+version: 1
+title: Length and scope fit
+kind: base
+description: Rewards length appropriate to form, purpose, and actual creative load while keeping exact requirements
+  as hard gates.
+origin: user_requirement_refined
+owner_domains:
+- length_scope_fit
+artifact_types:
+- any
+valid_scopes:
+- any
+activation: Attach whenever an artifact has a declared form, scope, or delivery context.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: core.length_and_scope_fit.quality
+  type: group
+  title: Length and scope fit
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: core.length_and_scope_fit.explicit
+    type: question
+    criterion_key: core.length_and_scope_fit.explicit
+    text: Does the artifact satisfy every explicit exact, minimum, or maximum length constraint?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: hard_gate
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.length_and_scope_fit.form
+    type: question
+    criterion_key: core.length_and_scope_fit.form
+    text: Is the artifact's length appropriate to the selected form or artifact type?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.length_and_scope_fit.operation
+    type: question
+    criterion_key: core.length_and_scope_fit.operation
+    text: Is its length appropriate to the requested operation and workflow stage?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.length_and_scope_fit.development
+    type: question
+    criterion_key: core.length_and_scope_fit.development
+    text: Does the length provide enough space for the artifact's actual cast, ideas, events, images, or obligations?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.length_and_scope_fit.density
+    type: question
+    criterion_key: core.length_and_scope_fit.density
+    text: Is information and experience density appropriate rather than padded or crushed?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.length_and_scope_fit.ending
+    type: question
+    criterion_key: core.length_and_scope_fit.ending
+    text: Does the artifact end when its governing movement is complete rather than at an arbitrary token boundary?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.length_and_scope_fit.no_padding
+    type: question
+    criterion_key: core.length_and_scope_fit.no_padding
+    text: Does it avoid material included chiefly to reach a target length?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.length_and_scope_fit.no_underbuild
+    type: question
+    criterion_key: core.length_and_scope_fit.no_underbuild
+    text: Does it avoid underdevelopment caused by treating brevity as an automatic virtue?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- wu_et_al_2025_writingbench
+- longjudgebench_2026
+notes: []

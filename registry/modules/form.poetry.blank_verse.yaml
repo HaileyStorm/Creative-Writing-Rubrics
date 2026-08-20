@@ -1,0 +1,143 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: form.poetry.blank_verse
+version: 1
+title: Blank verse
+kind: artifact_form
+description: Research-informed binary rubric for blank verse.
+origin: research_expansion
+owner_domains:
+- form.poetry.blank_verse
+artifact_types:
+- poetry
+valid_scopes:
+- line
+- stanza
+- poem
+- collection
+activation: Attach when blank verse is the active form, asset, or evaluation concern.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: form.poetry.blank_verse.quality
+  type: group
+  title: Blank verse checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: form.poetry.blank_verse.unrhymed
+    type: question
+    criterion_key: form.poetry.blank_verse.unrhymed
+    text: Is the verse substantially unrhymed?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: hard_gate
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.blank_verse.meter
+    type: question
+    criterion_key: form.poetry.blank_verse.meter
+    text: Does it sustain the selected iambic pentameter or other declared blank-verse meter?
+    pass_answer: 'YES'
+    weight: 2.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.blank_verse.natural
+    type: question
+    criterion_key: form.poetry.blank_verse.natural
+    text: Does meter cooperate with natural syntax and speech stress?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.blank_verse.variation
+    type: question
+    criterion_key: form.poetry.blank_verse.variation
+    text: Are inversions, substitutions, caesuras, feminine endings, and run-on lines controlled?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.blank_verse.paragraph
+    type: question
+    criterion_key: form.poetry.blank_verse.paragraph
+    text: Does verse-paragraph or stanza organization support rhetorical or dramatic movement?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.blank_verse.sound
+    type: question
+    criterion_key: form.poetry.blank_verse.sound
+    text: Does sonic patterning provide music without end rhyme?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.blank_verse.no_monotony
+    type: question
+    criterion_key: form.poetry.blank_verse.no_monotony
+    text: Does it avoid metronomic regularity and prose chopped into pentameter?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- li_et_al_2026_poemetric
+- vaezi_rezaei_2018
+notes: []
+profile_overrides:
+  default_profile: traditional
+  profiles:
+    traditional:
+      rhyme: unrhymed
+      default_meter: iambic pentameter

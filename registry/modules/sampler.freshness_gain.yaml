@@ -1,0 +1,143 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: sampler.freshness_gain
+version: 1
+title: Freshness gain
+kind: sampler
+description: Focuses on reduction of default phrases, predictable completions, stock imagery, and repeated sentence
+  shapes relative to the baseline sampler.
+origin: user_inventory_refined
+owner_domains:
+- sampler.freshness_gain
+artifact_types:
+- generated_candidate
+- candidate_set
+valid_scopes:
+- any
+activation: Attach when freshness gain is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: sampler.freshness_gain.quality
+  type: group
+  title: Freshness gain checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: sampler.freshness_gain.baseline
+    type: question
+    criterion_key: sampler.freshness_gain.baseline
+    text: Is freshness measured against a defined baseline sampler or model configuration?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: diagnostic
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: sampler.freshness_gain.phrases
+    type: question
+    criterion_key: sampler.freshness_gain.phrases
+    text: Does the sample reduce default phrases and stock transitions?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: sampler.freshness_gain.images
+    type: question
+    criterion_key: sampler.freshness_gain.images
+    text: Does it reduce predictable imagery and metaphor?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: sampler.freshness_gain.shapes
+    type: question
+    criterion_key: sampler.freshness_gain.shapes
+    text: Does it reduce repeated sentence and paragraph shapes?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: sampler.freshness_gain.ideas
+    type: question
+    criterion_key: sampler.freshness_gain.ideas
+    text: Does it increase apt conceptual or strategic novelty?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: sampler.freshness_gain.quality
+    type: question
+    criterion_key: sampler.freshness_gain.quality
+    text: Is the gain retained after controlling for coherence, canon, and task fidelity?
+    pass_answer: 'YES'
+    weight: 2.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: sampler.freshness_gain.no_ornate_proxy
+    type: question
+    criterion_key: sampler.freshness_gain.no_ornate_proxy
+    text: Is freshness not merely a proxy for rare diction or ornament?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- wu_et_al_2025_writingbench
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Focuses on reduction of default phrases, predictable completions, stock imagery, and repeated
+  sentence shapes relative to the baseline sampler.

@@ -1,0 +1,175 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: core.project_and_source_fidelity
+version: 1
+title: Project and source fidelity
+kind: base
+description: Checks consistency with imported material, prior scenes, project sheets, outline, research, canon,
+  timeline, established style, and user decisions. It must report apparent source conflicts rather than silently
+  choosing one.
+origin: user_inventory_refined
+owner_domains:
+- project_fidelity
+artifact_types:
+- any
+valid_scopes:
+- any
+activation: Attach to every substantive execution.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: core.project_and_source_fidelity.quality
+  type: group
+  title: Project and source fidelity
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: core.project_and_source_fidelity.source_facts
+    type: question
+    criterion_key: core.project_and_source_fidelity.source_facts
+    text: Does the artifact preserve relevant facts from supplied source material?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.project_and_source_fidelity.prior_text
+    type: question
+    criterion_key: core.project_and_source_fidelity.prior_text
+    text: Does it remain consistent with relevant prior manuscript units?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.project_and_source_fidelity.sheets
+    type: question
+    criterion_key: core.project_and_source_fidelity.sheets
+    text: Does it honor active character, setting, relationship, item, faction, and world sheets?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.project_and_source_fidelity.outline
+    type: question
+    criterion_key: core.project_and_source_fidelity.outline
+    text: Does it honor the currently authoritative outline except where departure is authorized?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.project_and_source_fidelity.research
+    type: question
+    criterion_key: core.project_and_source_fidelity.research
+    text: Does it accurately use supplied research and distinguish fact from invention?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.project_and_source_fidelity.timeline
+    type: question
+    criterion_key: core.project_and_source_fidelity.timeline
+    text: Does it preserve the authoritative timeline and state changes?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.project_and_source_fidelity.user_decisions
+    type: question
+    criterion_key: core.project_and_source_fidelity.user_decisions
+    text: Does it preserve explicit user decisions, exclusions, and superseding notes?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.project_and_source_fidelity.conflict_report
+    type: question
+    criterion_key: core.project_and_source_fidelity.conflict_report
+    text: When supplied sources conflict, does the output expose the conflict rather than silently choose or merge
+      versions?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.project_and_source_fidelity.no_invention
+    type: question
+    criterion_key: core.project_and_source_fidelity.no_invention
+    text: Does it avoid presenting unsupported inference as established project canon?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- vaezi_rezaei_2018
+- carey_davidow_williams_2022
+- gomez_rodriguez_williams_2023
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Checks consistency with imported material, prior scenes, project sheets, outline, research,
+  canon, timeline, established style, and user decisions. It must report apparent source conflicts rather than silently
+  choosing one.

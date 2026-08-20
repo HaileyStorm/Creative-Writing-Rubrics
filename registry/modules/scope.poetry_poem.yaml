@@ -1,0 +1,122 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: scope.poetry_poem
+version: 1
+title: Single-poem scope overlay
+kind: scope_overlay
+description: For a complete poem; evaluates total movement, form, image system, ending, and effect.
+origin: user_inventory_refined
+owner_domains:
+- scope.poetry_poem
+artifact_types:
+- any
+valid_scopes:
+- poetry_poem
+activation: Attach when the evaluated scope is poetry_poem.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: scope.poetry_poem.quality
+  type: group
+  title: Scope handling
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: scope.poetry_poem.movement
+    type: question
+    criterion_key: scope.poetry_poem.movement
+    text: Does the poem create total emotional, intellectual, imagistic, narrative, or rhetorical movement?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: scope.poetry_poem.form
+    type: question
+    criterion_key: scope.poetry_poem.form
+    text: Does the form feel necessary to that movement?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: scope.poetry_poem.system
+    type: question
+    criterion_key: scope.poetry_poem.system
+    text: Do images, sounds, motifs, and repetitions form a coherent but developing system?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: scope.poetry_poem.turns
+    type: question
+    criterion_key: scope.poetry_poem.turns
+    text: Do turns alter relation or pressure rather than merely add material?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: scope.poetry_poem.ending
+    type: question
+    criterion_key: scope.poetry_poem.ending
+    text: Does the ending complete, transform, or productively suspend the poem's movement?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: scope.poetry_poem.effect
+    type: question
+    criterion_key: scope.poetry_poem.effect
+    text: Does the poem produce an actual emotional, sensory, comic, conceptual, or aesthetic effect?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions:
+- action: require_complete_status_or_flag
+  value: true
+research_basis:
+- cho_et_al_2026_bineval
+- longjudgebench_2026
+notes: []

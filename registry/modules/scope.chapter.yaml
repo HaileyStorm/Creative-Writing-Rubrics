@@ -1,0 +1,151 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: scope.chapter
+version: 1
+title: Chapter scope overlay
+kind: scope_overlay
+description: For a chapter or comparable unit; evaluates scene sequence, information flow, unity, and contribution
+  to the larger arc.
+origin: user_inventory_refined
+owner_domains:
+- scope.chapter
+artifact_types:
+- any
+valid_scopes:
+- chapter
+activation: Attach when the evaluated scope is chapter.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: scope.chapter.quality
+  type: group
+  title: Scope handling
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: scope.chapter.shape
+    type: question
+    criterion_key: scope.chapter.shape
+    text: Does the chapter possess an intelligible internal shape rather than merely stop at a word count?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: scope.chapter.sequence
+    type: question
+    criterion_key: scope.chapter.sequence
+    text: Do its scenes or sections form a purposeful progression?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: scope.chapter.information
+    type: question
+    criterion_key: scope.chapter.information
+    text: Is information distributed at effective points within the chapter?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: scope.chapter.unity
+    type: question
+    criterion_key: scope.chapter.unity
+    text: Does the chapter have sufficient thematic, emotional, causal, or viewpoint unity?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: scope.chapter.opening
+    type: question
+    criterion_key: scope.chapter.opening
+    text: Does the opening establish the chapter's active state and interest?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: scope.chapter.ending
+    type: question
+    criterion_key: scope.chapter.ending
+    text: Does the ending create changed state, resonance, or forward pressure?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: scope.chapter.arc
+    type: question
+    criterion_key: scope.chapter.arc
+    text: Does the chapter make a distinct contribution to larger arcs without being required to complete them?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: scope.chapter.neighbors
+    type: question
+    criterion_key: scope.chapter.neighbors
+    text: Does it connect coherently to adjacent chapters?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions:
+- action: minimum_neighboring_units
+  value: 1
+research_basis:
+- cho_et_al_2026_bineval
+- longjudgebench_2026
+notes: []

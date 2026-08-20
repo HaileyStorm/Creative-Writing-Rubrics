@@ -1,0 +1,142 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: op.critique.rubric_directed_critique
+version: 1
+title: Rubric-directed critique
+kind: procedure
+description: Evaluates correct application of the selected rubric, category separation, evidence, calibration, and
+  avoidance of inventing criteria not requested.
+origin: user_inventory_refined
+owner_domains:
+- procedure.rubric_directed_critique
+artifact_types:
+- any
+valid_scopes:
+- operation
+activation: Attach when rubric-directed critique is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: op.critique.rubric_directed_critique.quality
+  type: group
+  title: Rubric-directed critique checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: op.critique.rubric_directed_critique.criteria
+    type: question
+    criterion_key: op.critique.rubric_directed_critique.criteria
+    text: Does the critique apply every active criterion and no unauthorized substitute criteria?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.critique.rubric_directed_critique.separation
+    type: question
+    criterion_key: op.critique.rubric_directed_critique.separation
+    text: Are criterion judgments kept distinct enough to avoid double-counting one defect?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.critique.rubric_directed_critique.evidence
+    type: question
+    criterion_key: op.critique.rubric_directed_critique.evidence
+    text: Does each failed criterion include concise evidence?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.critique.rubric_directed_critique.calibration
+    type: question
+    criterion_key: op.critique.rubric_directed_critique.calibration
+    text: Are severity and confidence calibrated to scope and evidence?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.critique.rubric_directed_critique.profile
+    type: question
+    criterion_key: op.critique.rubric_directed_critique.profile
+    text: Are form, genre, audience, phase, and scope profiles applied correctly?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.critique.rubric_directed_critique.objective_subjective
+    type: question
+    criterion_key: op.critique.rubric_directed_critique.objective_subjective
+    text: Are objective criterion failures distinguished from subjective artistic response?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.critique.rubric_directed_critique.no_invention
+    type: question
+    criterion_key: op.critique.rubric_directed_critique.no_invention
+    text: Does the critique avoid inventing rubric requirements or textual defects?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- wu_et_al_2025_writingbench
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates correct application of the selected rubric, category separation, evidence, calibration,
+  and avoidance of inventing criteria not requested.

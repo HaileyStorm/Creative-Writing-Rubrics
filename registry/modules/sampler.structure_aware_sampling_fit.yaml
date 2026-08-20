@@ -1,0 +1,143 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: sampler.structure_aware_sampling_fit
+version: 1
+title: Structure-aware sampling fit
+kind: sampler
+description: Evaluates whether stronger creative sampling is used at useful forks and reduced during tight syntax,
+  factual material, grading, research, and final-preservation operations.
+origin: user_inventory_refined
+owner_domains:
+- sampler.structure_aware_sampling_fit
+artifact_types:
+- generated_candidate
+- candidate_set
+valid_scopes:
+- any
+activation: Attach when structure-aware sampling fit is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: sampler.structure_aware_sampling_fit.quality
+  type: group
+  title: Structure-aware sampling fit checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: sampler.structure_aware_sampling_fit.forks
+    type: question
+    criterion_key: sampler.structure_aware_sampling_fit.forks
+    text: Is stronger creative sampling concentrated at genuine semantic and structural forks?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: sampler.structure_aware_sampling_fit.tight_syntax
+    type: question
+    criterion_key: sampler.structure_aware_sampling_fit.tight_syntax
+    text: Is sampling constrained during tight syntax, quotations, formatting, names, and exact facts?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: sampler.structure_aware_sampling_fit.research
+    type: question
+    criterion_key: sampler.structure_aware_sampling_fit.research
+    text: Is sampling constrained during source-grounded research and factual transfer?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: sampler.structure_aware_sampling_fit.grading
+    type: question
+    criterion_key: sampler.structure_aware_sampling_fit.grading
+    text: Is sampling constrained during grading, verification, and final-preservation operations?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: sampler.structure_aware_sampling_fit.phase
+    type: question
+    criterion_key: sampler.structure_aware_sampling_fit.phase
+    text: Does strength adapt to brainstorming, drafting, revision, and finalization phases?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: sampler.structure_aware_sampling_fit.context
+    type: question
+    criterion_key: sampler.structure_aware_sampling_fit.context
+    text: Does strength adapt to local uncertainty and context confidence?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: sampler.structure_aware_sampling_fit.no_global
+    type: question
+    criterion_key: sampler.structure_aware_sampling_fit.no_global
+    text: Does the system avoid applying maximal creative sampling uniformly to all tokens and operations?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- wu_et_al_2025_writingbench
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates whether stronger creative sampling is used at useful forks and reduced during tight
+  syntax, factual material, grading, research, and final-preservation operations.

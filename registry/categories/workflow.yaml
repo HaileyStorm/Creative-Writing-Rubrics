@@ -1,0 +1,867 @@
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: workflow.context_allocation_quality
+  version: 1
+  title: Context-allocation quality
+  kind: workflow
+  description: Research-informed binary rubric for context-allocation quality.
+  origin: user_inventory_refined
+  owner_domains:
+  - workflow.context_allocation_quality
+  artifact_types:
+  - workflow_execution
+  valid_scopes:
+  - operation
+  activation: Attach when context-allocation quality is the active form, asset, or evaluation concern.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: workflow.context_allocation_quality.quality
+    type: group
+    title: Context-allocation quality checks
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: workflow.context_allocation_quality.neighbors
+      type: question
+      criterion_key: workflow.context_allocation_quality.neighbors
+      text: Did each model receive enough preceding and following manuscript context?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: workflow.context_allocation_quality.outline
+      type: question
+      criterion_key: workflow.context_allocation_quality.outline
+      text: Did it receive the correct outline level?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: workflow.context_allocation_quality.sheets
+      type: question
+      criterion_key: workflow.context_allocation_quality.sheets
+      text: Did it receive relevant sheets, timeline facts, research, and decisions?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: workflow.context_allocation_quality.rubric
+      type: question
+      criterion_key: workflow.context_allocation_quality.rubric
+      text: Did it receive the active compiled rubric and profiles?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: workflow.context_allocation_quality.drafts
+      type: question
+      criterion_key: workflow.context_allocation_quality.drafts
+      text: Did it receive only relevant prior drafts, grades, and parent versions?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: workflow.context_allocation_quality.budget
+      type: question
+      criterion_key: workflow.context_allocation_quality.budget
+      text: Was context budget allocated to highest-value evidence?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: workflow.context_allocation_quality.no_noise
+      type: question
+      criterion_key: workflow.context_allocation_quality.no_noise
+      text: Was irrelevant context excluded?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: workflow.context_allocation_quality.role
+      type: question
+      criterion_key: workflow.context_allocation_quality.role
+      text: Was broader context given to high-context judgment and tighter context to fast generation as appropriate?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - cho_et_al_2026_bineval
+  - wu_et_al_2025_writingbench
+  - longjudgebench_2026
+  notes: []
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: workflow.model_a_high_context_role_fitness
+  version: 1
+  title: High-context critic/editor role fitness
+  kind: workflow
+  description: Research-informed binary rubric for model a high-context role fitness.
+  origin: user_inventory_refined
+  owner_domains:
+  - workflow.model_a_high_context_role_fitness
+  artifact_types:
+  - workflow_execution
+  valid_scopes:
+  - operation
+  activation: Attach when model a high-context role fitness is the active form, asset, or evaluation concern.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: workflow.model_a_high_context_role_fitness.quality
+    type: group
+    title: High-context critic/editor role fitness checks
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: workflow.model_a_high_context_role_fitness.ingest
+      type: question
+      criterion_key: workflow.model_a_high_context_role_fitness.ingest
+      text: Does the model reliably ingest and reconstruct complex projects?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: workflow.model_a_high_context_role_fitness.refine
+      type: question
+      criterion_key: workflow.model_a_high_context_role_fitness.refine
+      text: Does it refine ideas and repair outlines with strong judgment?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: workflow.model_a_high_context_role_fitness.context
+      type: question
+      criterion_key: workflow.model_a_high_context_role_fitness.context
+      text: Does it synthesize broad project context accurately?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: workflow.model_a_high_context_role_fitness.judge
+      type: question
+      criterion_key: workflow.model_a_high_context_role_fitness.judge
+      text: Does it adjudicate rubrics and finalists reliably?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: workflow.model_a_high_context_role_fitness.canon
+      type: question
+      criterion_key: workflow.model_a_high_context_role_fitness.canon
+      text: Does it perform consistency, canon, and research checks accurately?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: workflow.model_a_high_context_role_fitness.revision
+      type: question
+      criterion_key: workflow.model_a_high_context_role_fitness.revision
+      text: Does it plan and verify revision effectively?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: workflow.model_a_high_context_role_fitness.final
+      type: question
+      criterion_key: workflow.model_a_high_context_role_fitness.final
+      text: Does it perform restrained finalization without homogenization?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: workflow.model_a_high_context_role_fitness.long
+      type: question
+      criterion_key: workflow.model_a_high_context_role_fitness.long
+      text: Does it critique long manuscripts hierarchically?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - cho_et_al_2026_bineval
+  - wu_et_al_2025_writingbench
+  - longjudgebench_2026
+  notes: []
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: workflow.model_b_fast_generation_role_fitness
+  version: 1
+  title: Fast generator/screener role fitness
+  kind: workflow
+  description: Research-informed binary rubric for model b fast-generation role fitness.
+  origin: user_inventory_refined
+  owner_domains:
+  - workflow.model_b_fast_generation_role_fitness
+  artifact_types:
+  - workflow_execution
+  valid_scopes:
+  - operation
+  activation: Attach when model b fast-generation role fitness is the active form, asset, or evaluation concern.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: workflow.model_b_fast_generation_role_fitness.quality
+    type: group
+    title: Fast generator/screener role fitness checks
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: workflow.model_b_fast_generation_role_fitness.ideation
+      type: question
+      criterion_key: workflow.model_b_fast_generation_role_fitness.ideation
+      text: Does the model produce broad, relevant, non-duplicate ideation quickly?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: workflow.model_b_fast_generation_role_fitness.coarse
+      type: question
+      criterion_key: workflow.model_b_fast_generation_role_fitness.coarse
+      text: Does it produce useful coarse sheets and outlines?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: workflow.model_b_fast_generation_role_fitness.draft
+      type: question
+      criterion_key: workflow.model_b_fast_generation_role_fitness.draft
+      text: Does it draft effectively from detailed plans and constrained packets?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: workflow.model_b_fast_generation_role_fitness.candidates
+      type: question
+      criterion_key: workflow.model_b_fast_generation_role_fitness.candidates
+      text: Does it produce meaningful rewrite and alternative candidates?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: workflow.model_b_fast_generation_role_fitness.screen
+      type: question
+      criterion_key: workflow.model_b_fast_generation_role_fitness.screen
+      text: Can it perform reliable first-pass screening without pretending to full adjudication?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: workflow.model_b_fast_generation_role_fitness.diversity
+      type: question
+      criterion_key: workflow.model_b_fast_generation_role_fitness.diversity
+      text: Does it provide candidate diversity above the quality floor?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: workflow.model_b_fast_generation_role_fitness.latency
+      type: question
+      criterion_key: workflow.model_b_fast_generation_role_fitness.latency
+      text: Does it meet interactive latency and stable MTP requirements?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: workflow.model_b_fast_generation_role_fitness.role
+      type: question
+      criterion_key: workflow.model_b_fast_generation_role_fitness.role
+      text: Is it evaluated only on assigned fast-generation responsibilities unless explicitly expanded?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: diagnostic
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - cho_et_al_2026_bineval
+  - wu_et_al_2025_writingbench
+  - longjudgebench_2026
+  notes: []
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: workflow.procedure_completeness
+  version: 1
+  title: Procedure completeness
+  kind: workflow
+  description: Research-informed binary rubric for procedure completeness.
+  origin: user_inventory_refined
+  owner_domains:
+  - workflow.procedure_completeness
+  artifact_types:
+  - workflow_execution
+  valid_scopes:
+  - operation
+  activation: Attach when procedure completeness is the active form, asset, or evaluation concern.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: workflow.procedure_completeness.quality
+    type: group
+    title: Procedure completeness checks
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: workflow.procedure_completeness.requirements
+      type: question
+      criterion_key: workflow.procedure_completeness.requirements
+      text: Does the configured workflow include every stage required to produce the requested result safely and
+        usefully?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: workflow.procedure_completeness.disabled
+      type: question
+      criterion_key: workflow.procedure_completeness.disabled
+      text: When a stage is disabled, is its necessary information or validation supplied elsewhere?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: workflow.procedure_completeness.dependencies
+      type: question
+      criterion_key: workflow.procedure_completeness.dependencies
+      text: Are stage dependencies satisfied in order?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: workflow.procedure_completeness.artifacts
+      type: question
+      criterion_key: workflow.procedure_completeness.artifacts
+      text: Are required intermediate artifacts produced and linked?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: workflow.procedure_completeness.validation
+      type: question
+      criterion_key: workflow.procedure_completeness.validation
+      text: Are necessary validation and verification stages retained?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: workflow.procedure_completeness.streamline
+      type: question
+      criterion_key: workflow.procedure_completeness.streamline
+      text: Does the workflow avoid insisting on unnecessary stages for intentionally simple tasks?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: workflow.procedure_completeness.override
+      type: question
+      criterion_key: workflow.procedure_completeness.override
+      text: Are user configuration and intentional risk acceptance respected and recorded?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - cho_et_al_2026_bineval
+  - wu_et_al_2025_writingbench
+  - longjudgebench_2026
+  notes: []
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: workflow.revision_chain_integrity
+  version: 1
+  title: Revision-chain integrity
+  kind: workflow
+  description: Research-informed binary rubric for revision-chain integrity.
+  origin: user_inventory_refined
+  owner_domains:
+  - workflow.revision_chain_integrity
+  artifact_types:
+  - workflow_execution
+  valid_scopes:
+  - operation
+  activation: Attach when revision-chain integrity is the active form, asset, or evaluation concern.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: workflow.revision_chain_integrity.quality
+    type: group
+    title: Revision-chain integrity checks
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: workflow.revision_chain_integrity.parent
+      type: question
+      criterion_key: workflow.revision_chain_integrity.parent
+      text: Does each revision identify the intended parent version?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: workflow.revision_chain_integrity.instructions
+      type: question
+      criterion_key: workflow.revision_chain_integrity.instructions
+      text: Are instructions and rubric reports attached to the correct revision edge?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: workflow.revision_chain_integrity.branches
+      type: question
+      criterion_key: workflow.revision_chain_integrity.branches
+      text: Are branches kept distinct unless an explicit merge occurs?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: workflow.revision_chain_integrity.decisions
+      type: question
+      criterion_key: workflow.revision_chain_integrity.decisions
+      text: Do approved decisions propagate to descendants?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: workflow.revision_chain_integrity.recover
+      type: question
+      criterion_key: workflow.revision_chain_integrity.recover
+      text: Are earlier phases and versions recoverable?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: workflow.revision_chain_integrity.target
+      type: question
+      criterion_key: workflow.revision_chain_integrity.target
+      text: Is every later pass applied to the intended branch and artifact?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: workflow.revision_chain_integrity.merge
+      type: question
+      criterion_key: workflow.revision_chain_integrity.merge
+      text: Are merge conflicts and provenance represented explicitly?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - cho_et_al_2026_bineval
+  - wu_et_al_2025_writingbench
+  - longjudgebench_2026
+  notes: []
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: workflow.role_routing_decision
+  version: 1
+  title: Role-routing decision
+  kind: workflow
+  description: Research-informed binary rubric for role-routing decision.
+  origin: user_inventory_refined
+  owner_domains:
+  - workflow.role_routing_decision
+  artifact_types:
+  - workflow_execution
+  valid_scopes:
+  - operation
+  activation: Attach when role-routing decision is the active form, asset, or evaluation concern.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: workflow.role_routing_decision.quality
+    type: group
+    title: Role-routing decision checks
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: workflow.role_routing_decision.context
+      type: question
+      criterion_key: workflow.role_routing_decision.context
+      text: Does routing account for required context breadth and retrieval?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: workflow.role_routing_decision.judgment
+      type: question
+      criterion_key: workflow.role_routing_decision.judgment
+      text: Does it account for required judgment depth and reliability?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: workflow.role_routing_decision.diversity
+      type: question
+      criterion_key: workflow.role_routing_decision.diversity
+      text: Does it account for whether candidate diversity or one careful result is needed?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: workflow.role_routing_decision.latency
+      type: question
+      criterion_key: workflow.role_routing_decision.latency
+      text: Does it account for interactive latency and model residency?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: workflow.role_routing_decision.availability
+      type: question
+      criterion_key: workflow.role_routing_decision.availability
+      text: Does it account for actual model, modality, context, and runtime availability?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: workflow.role_routing_decision.override
+      type: question
+      criterion_key: workflow.role_routing_decision.override
+      text: Does it respect user routing overrides?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: workflow.role_routing_decision.same
+      type: question
+      criterion_key: workflow.role_routing_decision.same
+      text: Does it avoid redundant A/B routing when both roles use the same model instance?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: workflow.role_routing_decision.fallback
+      type: question
+      criterion_key: workflow.role_routing_decision.fallback
+      text: Is fallback behavior explicit when the preferred model is unavailable?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - cho_et_al_2026_bineval
+  - wu_et_al_2025_writingbench
+  - longjudgebench_2026
+  notes: []

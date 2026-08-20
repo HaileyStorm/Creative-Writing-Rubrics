@@ -1,0 +1,142 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: modifier.genre.hybrid_or_genre_blend
+version: 1
+title: Hybrid or genre-blend
+kind: modifier
+description: Evaluates whether multiple genre promises reinforce one another, whether tonal transitions work, and
+  whether one genre is merely decorative.
+origin: user_inventory_refined
+owner_domains:
+- genre.hybrid_or_genre_blend
+artifact_types:
+- creative_text
+valid_scopes:
+- any
+activation: Attach when hybrid or genre-blend is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: modifier.genre.hybrid_or_genre_blend.quality
+  type: group
+  title: Hybrid or genre-blend contract
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: modifier.genre.hybrid_or_genre_blend.promises
+    type: question
+    criterion_key: modifier.genre.hybrid_or_genre_blend.promises
+    text: Are the active genre promises identifiable?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.hybrid_or_genre_blend.integration
+    type: question
+    criterion_key: modifier.genre.hybrid_or_genre_blend.integration
+    text: Do the genres interact structurally, thematically, or emotionally rather than coexist as decoration?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.hybrid_or_genre_blend.tone
+    type: question
+    criterion_key: modifier.genre.hybrid_or_genre_blend.tone
+    text: Are tonal transitions between genre modes controlled?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.hybrid_or_genre_blend.priority
+    type: question
+    criterion_key: modifier.genre.hybrid_or_genre_blend.priority
+    text: When genre expectations conflict, does the work establish which promise has priority?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.hybrid_or_genre_blend.audience
+    type: question
+    criterion_key: modifier.genre.hybrid_or_genre_blend.audience
+    text: Can the intended audience recognize and follow the blend?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.hybrid_or_genre_blend.payoff
+    type: question
+    criterion_key: modifier.genre.hybrid_or_genre_blend.payoff
+    text: Does the work deliver meaningful payoffs from more than one active genre?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.hybrid_or_genre_blend.no_decorative
+    type: question
+    criterion_key: modifier.genre.hybrid_or_genre_blend.no_decorative
+    text: Does it avoid using one genre only as surface furniture without engaging its logic or reader contract?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- fein_et_al_2026_litbench
+- wu_et_al_2025_writingbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates whether multiple genre promises reinforce one another, whether tonal transitions work,
+  and whether one genre is merely decorative.

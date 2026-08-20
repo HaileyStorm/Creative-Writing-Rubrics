@@ -1,0 +1,146 @@
+{
+  "cho_et_al_2026_bineval": {
+    "authors": "Sangwoo Cho, Kushal Chawla, Pengshan Cai, Zefang Liu, Chenyang Zhu, Shi-Xiong Zhang, and Sambit Sahu",
+    "year": 2026,
+    "title": "Ask, Don't Judge: Binary Questions for Interpretable LLM Evaluation and Self-Improvement",
+    "venue": "arXiv:2606.27226",
+    "url": "https://arxiv.org/abs/2606.27226",
+    "use": "Atomic yes/no decomposition, interpretable aggregation, reduced ceiling effects, and question-level diagnostic feedback."
+  },
+  "zhang_et_al_2026_rubricbench": {
+    "authors": "Qiyuan Zhang et al.",
+    "year": 2026,
+    "title": "RubricBench: Aligning Model-Generated Rubrics with Human Standards",
+    "venue": "arXiv:2603.01562",
+    "url": "https://arxiv.org/abs/2603.01562",
+    "use": "Expert-authored atomic rubrics outperform self-generated rubrics on hard comparisons; supports a curated registry and validation layer."
+  },
+  "rao_callison_burch_2026_autorubric": {
+    "authors": "Autorubric authors",
+    "year": 2026,
+    "title": "Autorubric: A Unified Framework for Rubric-Based LLM Evaluation",
+    "venue": "arXiv:2603.00077",
+    "url": "https://arxiv.org/abs/2603.00077",
+    "use": "Weighted binary/ordinal/nominal criteria, judge ensembles, calibration, position shuffling, psychometric reliability, and production infrastructure."
+  },
+  "fein_et_al_2026_litbench": {
+    "authors": "Daniel Fein, Sebastian Russo, Violet Xiang, Kabir Jolly, Rafael Rafailov, and Nick Haber",
+    "year": 2026,
+    "title": "LitBench: A Benchmark and Dataset for Reliable Evaluation of Creative Writing",
+    "venue": "EACL 2026",
+    "url": "https://aclanthology.org/2026.eacl-long.362/",
+    "use": "Creative-writing judge reliability, pairwise human preference, and caution against assuming zero-shot judges are authoritative."
+  },
+  "longjudgebench_2026": {
+    "authors": "J. Chen et al.",
+    "year": 2026,
+    "title": "Benchmarking LLM-as-a-Judge for Long-Form Output Evaluation",
+    "venue": "arXiv:2606.01629",
+    "url": "https://arxiv.org/abs/2606.01629",
+    "use": "Long-form judging requires document-level organization, cross-section consistency, coverage, hierarchical evidence, and bias/overflow controls."
+  },
+  "wu_et_al_2025_writingbench": {
+    "authors": "Yuning Wu et al.",
+    "year": 2025,
+    "title": "WritingBench: A Comprehensive Benchmark for Generative Writing",
+    "venue": "arXiv:2503.05244",
+    "url": "https://arxiv.org/abs/2503.05244",
+    "use": "Query-dependent style, format, and length criteria across varied writing operations."
+  },
+  "vaezi_rezaei_2018": {
+    "authors": "Maryam Vaezi and Saeed Rezaei",
+    "year": 2018,
+    "title": "Development of a rubric for evaluating creative writing: a multi-phase research",
+    "venue": "New Writing",
+    "url": "https://doi.org/10.1080/14790726.2018.1520894",
+    "use": "Expert-informed, reliability-tested fiction rubric covering voice, characterization, story, setting, atmosphere, language, dialogue, plot, and image."
+  },
+  "carey_davidow_williams_2022": {
+    "authors": "Michael D. Carey, Shelley Davidow, and Paul Williams",
+    "year": 2022,
+    "title": "Re-imagining narrative writing and assessment: a post-NAPLAN craft-based rubric for creative writing",
+    "venue": "The Australian Journal of Language and Literacy",
+    "url": "https://doi.org/10.1007/s44020-022-00004-4",
+    "use": "Integrated craft-based assessment and a holistic whole-text orientation."
+  },
+  "gomez_rodriguez_williams_2023": {
+    "authors": "Carlos Gómez-Rodríguez and Paul Williams",
+    "year": 2023,
+    "title": "A Confederacy of Models: a Comprehensive Evaluation of LLMs on Creative Writing",
+    "venue": "Findings of EMNLP 2023",
+    "url": "https://aclanthology.org/2023.findings-emnlp.966/",
+    "use": "Creative-writing dimensions, task-specific rubric adaptation, human evaluation, originality and humor findings."
+  },
+  "li_et_al_2026_poemetric": {
+    "authors": "Bingru Li, Han Wang, and Hazel Wilkinson",
+    "year": 2026,
+    "title": "POEMetric: The Last Stanza of Humanity",
+    "venue": "arXiv:2604.03695",
+    "url": "https://arxiv.org/abs/2604.03695",
+    "use": "Poetry form accuracy, theme, creativity, lexical diversity, idiosyncrasy, emotional resonance, imagery, devices, and overall quality."
+  },
+  "zhuang_et_al_2025_vistorybench": {
+    "authors": "C. Zhuang et al.",
+    "year": 2025,
+    "title": "ViStoryBench: Comprehensive Benchmark Suite for Story Visualization",
+    "venue": "arXiv:2505.24862",
+    "url": "https://arxiv.org/abs/2505.24862",
+    "use": "Character consistency, style similarity, prompt alignment, aesthetic quality, and copy-paste artifact detection."
+  },
+  "lin_et_al_2026_storybook_consistency": {
+    "authors": "Visual narrative consistency researchers",
+    "year": 2026,
+    "title": "Benchmarks for Faithful and Consistent Visual Narratives",
+    "venue": "visual-storytelling benchmark literature",
+    "url": "https://arxiv.org/abs/2503.20871",
+    "use": "Narrative alignment, time, space, character, event, style, and theme continuity across image sequences."
+  },
+  "galdino_et_al_2025_prosody_review": {
+    "authors": "Speech prosody evaluation researchers",
+    "year": 2025,
+    "title": "Prosody evaluation literature for speech synthesis",
+    "venue": "speech synthesis research",
+    "url": "https://arxiv.org/search/?query=prosody+evaluation+speech+synthesis&searchtype=all",
+    "use": "Pitch, timing, intensity, rhythm, intelligibility, naturalness, and context-appropriate delivery."
+  },
+  "real_world_voice_eq_bench_2026": {
+    "authors": "Daniel Ayllon et al.",
+    "year": 2026,
+    "title": "RW-Voice-EQ Bench: A Real World Benchmark for Evaluating Voice AI Systems",
+    "venue": "arXiv:2607.14846",
+    "url": "https://arxiv.org/abs/2607.14846",
+    "use": "Acting/role fit, expressiveness, voice identity, language stability, reliability, long-form stability, and acoustic quality."
+  },
+  "chung_et_al_2025_literarytaste": {
+    "authors": "LiteraryTaste authors",
+    "year": 2025,
+    "title": "LiteraryTaste: Revealed Reader Preferences for Literary Text",
+    "venue": "research preprint",
+    "url": "https://arxiv.org/search/?query=LiteraryTaste&searchtype=all",
+    "use": "Separating craft assessment from user-specific revealed taste and learning preference from actual choices."
+  },
+  "rubric_survey_2026": {
+    "authors": "Rubric survey authors",
+    "year": 2026,
+    "title": "From Holistic Evaluation to Structured Criteria: Rubrics Across the Evolving LLM Landscape",
+    "venue": "arXiv:2606.08625",
+    "url": "https://arxiv.org/abs/2606.08625",
+    "use": "Taxonomy of rubrics, independent verifiability, and evidence that expert criteria outperform generated criteria."
+  },
+  "researchrubrics_2025": {
+    "authors": "ResearchRubrics authors",
+    "year": 2025,
+    "title": "ResearchRubrics: A Benchmark of Prompts and Rubrics for Deep Research",
+    "venue": "arXiv:2511.07685",
+    "url": "https://arxiv.org/abs/2511.07685",
+    "use": "Expert fine-grained criteria and evidence that binary grading reduces partial-credit ambiguity."
+  },
+  "evidence_grounded_judges_2026": {
+    "authors": "Rulers authors",
+    "year": 2026,
+    "title": "Evidence-Grounded Text Evaluation with LLM Judges",
+    "venue": "arXiv:2601.08654",
+    "url": "https://arxiv.org/abs/2601.08654",
+    "use": "Evidence grounding, stable score distributions, and robustness to rubric perturbation."
+  }
+}

@@ -1,0 +1,164 @@
+$schema: ../schema/hbq_bundle.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+bundle_id: prose.flash
+version: 1
+title: Flash fiction / drabble
+description: Flash fiction / drabble-specific composition of the short-form prose rubric.
+artifact_types:
+- prose_fiction
+valid_scopes:
+- story
+profile:
+  form_profile: flash_fiction
+module_ids:
+- core.task_and_brief_fidelity
+- core.length_and_scope_fit
+- core.audience_and_purpose_fit
+- form.prose.flash_fiction_drabble
+- craft.narrative.characterization
+- craft.narrative.point_of_view_and_focalization
+- craft.narrative.plot_and_causality
+- craft.narrative.scene_construction
+- craft.narrative.narrative_momentum
+- core.language_craft
+- core.voice_and_stylistic_identity
+- craft.narrative.dialogue
+- craft.narrative.setting_and_atmosphere
+- core.specificity_and_embodiment
+- craft.narrative.theme_and_subtext
+- core.emotional_and_intellectual_effect
+- core.freshness_and_non_genericness
+- core.economy_and_relevance
+- core.mechanics_and_presentation
+- core.holistic_artistic_success
+- penalty.purple_prose
+- penalty.repetition
+- penalty.unflagged_incomplete
+- form.prose.general_prose_fiction
+domains:
+- domain_id: task
+  title: Task and scope
+  points: 8.0
+  components:
+  - module_id: core.task_and_brief_fidelity
+    weight: 1.0
+  - module_id: core.length_and_scope_fit
+    weight: 1.0
+  - module_id: core.audience_and_purpose_fit
+    weight: 1.0
+  - module_id: form.prose.flash_fiction_drabble
+    weight: 1.5
+  score_mode: weighted_binary_mean
+- domain_id: character
+  title: Character and perspective
+  points: 15.0
+  components:
+  - module_id: craft.narrative.characterization
+    weight: 1.0
+  - module_id: craft.narrative.point_of_view_and_focalization
+    weight: 1.0
+  score_mode: weighted_binary_mean
+- domain_id: movement
+  title: Plot, scene, and movement
+  points: 19.0
+  components:
+  - module_id: craft.narrative.plot_and_causality
+    weight: 1.0
+  - module_id: craft.narrative.scene_construction
+    weight: 1.0
+  - module_id: craft.narrative.narrative_momentum
+    weight: 1.0
+  score_mode: weighted_binary_mean
+- domain_id: language
+  title: Language, voice, and dialogue
+  points: 16.0
+  components:
+  - module_id: core.language_craft
+    weight: 1.0
+  - module_id: core.voice_and_stylistic_identity
+    weight: 1.0
+  - module_id: craft.narrative.dialogue
+    weight: 1.0
+  score_mode: weighted_binary_mean
+- domain_id: setting
+  title: Setting and embodiment
+  points: 9.0
+  components:
+  - module_id: craft.narrative.setting_and_atmosphere
+    weight: 1.0
+  - module_id: core.specificity_and_embodiment
+    weight: 1.0
+  score_mode: weighted_binary_mean
+- domain_id: effect
+  title: Theme and effect
+  points: 10.0
+  components:
+  - module_id: craft.narrative.theme_and_subtext
+    weight: 1.0
+  - module_id: core.emotional_and_intellectual_effect
+    weight: 1.0
+  score_mode: weighted_binary_mean
+- domain_id: fresh
+  title: Freshness and economy
+  points: 10.0
+  components:
+  - module_id: core.freshness_and_non_genericness
+    weight: 1.0
+  - module_id: core.economy_and_relevance
+    weight: 1.0
+  score_mode: weighted_binary_mean
+- domain_id: mechanics
+  title: Mechanics
+  points: 5.0
+  components:
+  - module_id: core.mechanics_and_presentation
+    weight: 1.0
+  score_mode: weighted_binary_mean
+- domain_id: holistic
+  title: Holistic artistic success
+  points: 8.0
+  components:
+  - module_id: core.holistic_artistic_success
+    weight: 1.0
+  score_mode: weighted_binary_mean
+penalty_modules:
+- module_id: penalty.purple_prose
+  cap_points: 5.0
+- module_id: penalty.repetition
+  cap_points: 5.0
+- module_id: penalty.unflagged_incomplete
+  cap_points: 8.0
+hard_gate_policy:
+  no_is_invalid: true
+  cannot_assess_is_unresolved: true
+  not_applicable_requires_condition_or_reason: true
+  hard_gates_are_reported_separately: true
+coverage_policy:
+  minimum_weighted_coverage: 0.88
+  below_threshold_status: PROVISIONAL
+  score_interval_required_when_unassessed: true
+  whole_work_claims_require_whole_work_evidence: true
+excerpt_and_incomplete_policy:
+  flagged_excerpt: Do not penalize absent whole-work completion. Mark unavailable whole-work criteria CANNOT_ASSESS
+    or NOT_APPLICABLE as appropriate.
+  unflagged_incomplete: Apply the bounded unflagged-incomplete penalty when the artifact is presented as complete
+    or partial status is omitted.
+  visible_local_defects: Score defects visible in the supplied extract normally.
+judge_policy:
+  artifact_assumed_ai_generated: true
+  strict_but_fair: true
+  no_glazing: true
+  judge_execution_not_intent: true
+  do_not_invent_defects: true
+  avoid_length_and_ornament_bias: true
+  brief_evidence_required: true
+  private_chain_of_thought_not_requested: true
+  verdict_states:
+  - 'YES'
+  - 'NO'
+  - NOT_APPLICABLE
+  - CANNOT_ASSESS
+  pairwise_finalists: false
+notes: []

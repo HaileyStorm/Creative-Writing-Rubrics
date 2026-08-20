@@ -1,0 +1,142 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: model.release.instruction_following_retention
+version: 1
+title: Instruction-following retention
+kind: model_build
+description: Tests explicit constraints, formatting, exclusions, transformations, preservation requirements, and
+  multi-part instructions.
+origin: user_inventory_refined
+owner_domains:
+- model.instruction_following_retention
+artifact_types:
+- model_build
+valid_scopes:
+- any
+activation: Attach when instruction-following retention is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: model.release.instruction_following_retention.quality
+  type: group
+  title: Instruction-following retention checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: model.release.instruction_following_retention.explicit
+    type: question
+    criterion_key: model.release.instruction_following_retention.explicit
+    text: Does the modified model retain explicit inclusion and exclusion compliance?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.instruction_following_retention.format
+    type: question
+    criterion_key: model.release.instruction_following_retention.format
+    text: Does it retain requested structure, formatting, and serialization compliance?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.instruction_following_retention.transform
+    type: question
+    criterion_key: model.release.instruction_following_retention.transform
+    text: Does it retain transformation accuracy across POV, tense, register, form, and style operations?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.instruction_following_retention.preserve
+    type: question
+    criterion_key: model.release.instruction_following_retention.preserve
+    text: Does it retain preservation of unchanged content under constrained edits?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.instruction_following_retention.multi
+    type: question
+    criterion_key: model.release.instruction_following_retention.multi
+    text: Does it retain compliance with multi-part and conditionally activated instructions?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.instruction_following_retention.long
+    type: question
+    criterion_key: model.release.instruction_following_retention.long
+    text: Does compliance remain stable when instructions and evidence are distant in context?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.instruction_following_retention.baseline
+    type: question
+    criterion_key: model.release.instruction_following_retention.baseline
+    text: Is retention measured against the source model on locked, contamination-controlled items?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- rao_callison_burch_2026_autorubric
+- longjudgebench_2026
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Tests explicit constraints, formatting, exclusions, transformations, preservation requirements,
+  and multi-part instructions.

@@ -1,0 +1,459 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: form.poetry.sonnet
+version: 1
+title: Sonnet
+kind: artifact_form
+description: Handles selected sonnet tradition, line count, meter or deliberate metrical treatment, rhyme architecture,
+  argument or emotional development, volta, closure, and whether formal pressure strengthens the poem.
+origin: user_inventory_refined
+owner_domains:
+- form.sonnet
+artifact_types:
+- poetry
+valid_scopes:
+- line
+- stanza
+- poem
+- collection
+activation: Attach when sonnet is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: form.poetry.sonnet.architecture
+  type: group
+  title: Selected sonnet architecture
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: form.poetry.sonnet.tradition
+    type: question
+    criterion_key: form.poetry.sonnet.tradition
+    text: Is the intended sonnet tradition or contemporary variant identified or inferable?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.sonnet.fourteen_lines
+    type: question
+    criterion_key: form.poetry.sonnet.fourteen_lines
+    text: Does the poem contain fourteen lines unless the selected variant explicitly licenses a different count?
+    pass_answer: 'YES'
+    weight: 2.5
+    question_type: hard_gate
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.sonnet.unit_structure
+    type: question
+    criterion_key: form.poetry.sonnet.unit_structure
+    text: Does stanza or rhetorical organization match the selected tradition—for example three quatrains and a
+      couplet, octave and sestet, or interlocking quatrains?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: hard_gate
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.sonnet.proportion
+    type: question
+    criterion_key: form.poetry.sonnet.proportion
+    text: Does the poem allocate sufficient space to establish, complicate, turn, and close its central issue?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.sonnet.form_pressure
+    type: question
+    criterion_key: form.poetry.sonnet.form_pressure
+    text: Does the fourteen-line architecture create useful pressure, compression, expectation, or argument?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+- id: form.poetry.sonnet.meter
+  type: group
+  title: Meter and rhythmic treatment
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: form.poetry.sonnet.meter_profile
+    type: question
+    criterion_key: form.poetry.sonnet.meter_profile
+    text: Does the poem follow the meter required by its selected profile, typically iambic pentameter in English
+      traditions?
+    pass_answer: 'YES'
+    weight: 2.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.sonnet.stress_natural
+    type: question
+    criterion_key: form.poetry.sonnet.stress_natural
+    text: Do metrical stresses generally cooperate with natural English word stress and syntax?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.sonnet.variation
+    type: question
+    criterion_key: form.poetry.sonnet.variation
+    text: Are substitutions, inversions, feminine endings, caesuras, and other variations controlled and expressively
+      motivated?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.sonnet.rhythmic_arc
+    type: question
+    criterion_key: form.poetry.sonnet.rhythmic_arc
+    text: Does rhythmic treatment change with argument, emotion, or turn rather than remain mechanically uniform?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+- id: form.poetry.sonnet.rhyme
+  type: group
+  title: Rhyme architecture and musicality
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: form.poetry.sonnet.rhyme_scheme
+    type: question
+    criterion_key: form.poetry.sonnet.rhyme_scheme
+    text: Does the poem follow the selected rhyme architecture, including permitted variants?
+    pass_answer: 'YES'
+    weight: 2.5
+    question_type: hard_gate
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.sonnet.rhyme_accuracy
+    type: question
+    criterion_key: form.poetry.sonnet.rhyme_accuracy
+    text: Are rhyme relationships phonetically credible under the selected dialect and rhyme policy?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.sonnet.rhyme_natural
+    type: question
+    criterion_key: form.poetry.sonnet.rhyme_natural
+    text: Do rhymes avoid forcing syntax, filler, archaic diction, or semantic irrelevance?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.sonnet.rhyme_meaning
+    type: question
+    criterion_key: form.poetry.sonnet.rhyme_meaning
+    text: Do rhyme pairs or chains create semantic, tonal, or argumentative relations?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.sonnet.couplet
+    type: question
+    criterion_key: form.poetry.sonnet.couplet
+    text: Where the form ends in a couplet, does the couplet sharpen, reverse, clinch, or complicate rather than
+      merely summarize?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The selected tradition uses a terminal couplet.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+- id: form.poetry.sonnet.argument_volta
+  type: group
+  title: Argument, emotional movement, and volta
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: form.poetry.sonnet.central_issue
+    type: question
+    criterion_key: form.poetry.sonnet.central_issue
+    text: Does the sonnet establish a sufficiently focused issue, situation, address, image, or emotional problem?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.sonnet.development
+    type: question
+    criterion_key: form.poetry.sonnet.development
+    text: Does each formal unit develop or complicate the poem rather than restate the opening?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.sonnet.volta_presence
+    type: question
+    criterion_key: form.poetry.sonnet.volta_presence
+    text: Does the poem contain a perceptible volta or turn in argument, perspective, emotion, image, or rhetoric?
+    pass_answer: 'YES'
+    weight: 2.5
+    question_type: hard_gate
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.sonnet.volta_position
+    type: question
+    criterion_key: form.poetry.sonnet.volta_position
+    text: Does the volta occur at a position compatible with the selected tradition, or is a departure clearly purposeful?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.sonnet.volta_consequence
+    type: question
+    criterion_key: form.poetry.sonnet.volta_consequence
+    text: Does the turn change how the earlier material is understood or what becomes possible afterward?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.sonnet.closure
+    type: question
+    criterion_key: form.poetry.sonnet.closure
+    text: Does the ending answer, transform, intensify, or productively leave open the poem's central pressure?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+- id: form.poetry.sonnet.language
+  type: group
+  title: Language, image, and constraint integration
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: form.poetry.sonnet.diction
+    type: question
+    criterion_key: form.poetry.sonnet.diction
+    text: Is diction precise and appropriate without pseudo-Elizabethan padding unless the voice specifically requires
+      it?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.sonnet.imagery
+    type: question
+    criterion_key: form.poetry.sonnet.imagery
+    text: Do images develop across the sonnet's argument or emotional movement?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.sonnet.enjambment
+    type: question
+    criterion_key: form.poetry.sonnet.enjambment
+    text: Are enjambment and end-stopping used to negotiate meter, syntax, suspense, and formal units?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.sonnet.no_padding
+    type: question
+    criterion_key: form.poetry.sonnet.no_padding
+    text: Does the poem avoid filler inserted chiefly to satisfy meter or rhyme?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- li_et_al_2026_poemetric
+- vaezi_rezaei_2018
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Handles selected sonnet tradition, line count, meter or deliberate metrical treatment, rhyme
+  architecture, argument or emotional development, volta, closure, and whether formal pressure strengthens the poem.
+profile_overrides:
+  default_profile: shakespearean
+  profiles:
+    shakespearean:
+      line_count: 14
+      units:
+      - 4
+      - 4
+      - 4
+      - 2
+      rhyme: ABAB CDCD EFEF GG
+      meter: iambic pentameter with controlled variation
+      volta: usually near line 9 and/or the final couplet
+    petrarchan:
+      line_count: 14
+      units:
+      - 8
+      - 6
+      rhyme: ABBA ABBA plus a recognized sestet pattern
+      meter: iambic pentameter in English
+      volta: normally between octave and sestet
+    spenserian:
+      line_count: 14
+      units:
+      - 4
+      - 4
+      - 4
+      - 2
+      rhyme: ABAB BCBC CDCD EE
+      meter: iambic pentameter with controlled variation
+      volta: position may be distributed by interlocking argument and couplet
+    miltonic:
+      line_count: 14
+      units: octave/sestet architecture with greater enjambment
+      rhyme: Petrarchan-family variants
+      meter: iambic pentameter with syntactic freedom
+      volta: may be delayed or softened
+    contemporary:
+      line_count: 14
+      units: declared or inferable
+      rhyme: optional but formally intentional
+      meter: optional but rhythmically controlled
+      volta: required as a meaningful turn unless the declared variant says otherwise

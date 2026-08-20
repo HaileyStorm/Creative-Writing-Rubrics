@@ -1,0 +1,141 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: sampler.batch_diversity
+version: 1
+title: Batch diversity
+kind: sampler
+description: Measures semantic, structural, tonal, lexical, imagistic, and strategic difference across candidates.
+origin: user_inventory_refined
+owner_domains:
+- sampler.batch_diversity
+artifact_types:
+- generated_candidate
+- candidate_set
+valid_scopes:
+- any
+activation: Attach when batch diversity is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: sampler.batch_diversity.quality
+  type: group
+  title: Batch diversity checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: sampler.batch_diversity.semantic
+    type: question
+    criterion_key: sampler.batch_diversity.semantic
+    text: Do candidates differ in meaning, premise, or decision rather than words alone?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: sampler.batch_diversity.structural
+    type: question
+    criterion_key: sampler.batch_diversity.structural
+    text: Do they explore different structures, beats, or solution strategies where useful?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: sampler.batch_diversity.tonal
+    type: question
+    criterion_key: sampler.batch_diversity.tonal
+    text: Do they explore distinct viable tones or emotional dynamics where useful?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: sampler.batch_diversity.imagistic
+    type: question
+    criterion_key: sampler.batch_diversity.imagistic
+    text: Do they avoid recycling the same images and metaphors?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: sampler.batch_diversity.lexical
+    type: question
+    criterion_key: sampler.batch_diversity.lexical
+    text: Do they avoid near-identical diction and sentence templates?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: sampler.batch_diversity.quality_floor
+    type: question
+    criterion_key: sampler.batch_diversity.quality_floor
+    text: Does every retained candidate remain coherent and task-relevant?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: sampler.batch_diversity.coverage
+    type: question
+    criterion_key: sampler.batch_diversity.coverage
+    text: Does the batch cover the major plausible directions without redundant oversampling?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- wu_et_al_2025_writingbench
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Measures semantic, structural, tonal, lexical, imagistic, and strategic difference across candidates.

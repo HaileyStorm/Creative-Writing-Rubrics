@@ -1,0 +1,156 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: op.ideation.relationship_faction_conception
+version: 1
+title: Relationship/faction conception
+kind: procedure
+description: Evaluates asymmetry, shared history, conflicting goals, pressure points, change potential, and links
+  to the story’s central movement.
+origin: user_inventory_refined
+owner_domains:
+- procedure.relationship_faction_conception
+artifact_types:
+- any
+valid_scopes:
+- operation
+activation: Attach when relationship/faction conception is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: op.ideation.relationship_faction_conception.quality
+  type: group
+  title: Relationship/faction conception checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: op.ideation.relationship_faction_conception.parties
+    type: question
+    criterion_key: op.ideation.relationship_faction_conception.parties
+    text: Are the participating people or groups individually distinct and legible?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ideation.relationship_faction_conception.history
+    type: question
+    criterion_key: op.ideation.relationship_faction_conception.history
+    text: Does the relationship or faction have a usable shared history or origin?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ideation.relationship_faction_conception.asymmetry
+    type: question
+    criterion_key: op.ideation.relationship_faction_conception.asymmetry
+    text: Does it contain a meaningful asymmetry in power, knowledge, need, loyalty, status, or vulnerability?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ideation.relationship_faction_conception.goals
+    type: question
+    criterion_key: op.ideation.relationship_faction_conception.goals
+    text: Are convergent and conflicting goals both identifiable where the concept calls for them?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ideation.relationship_faction_conception.pressure
+    type: question
+    criterion_key: op.ideation.relationship_faction_conception.pressure
+    text: Are specific pressure points, dependencies, taboos, debts, or leverage available for scenes?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ideation.relationship_faction_conception.change
+    type: question
+    criterion_key: op.ideation.relationship_faction_conception.change
+    text: Can the relationship or faction plausibly change state through events and choices?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ideation.relationship_faction_conception.central
+    type: question
+    criterion_key: op.ideation.relationship_faction_conception.central
+    text: Does it connect to the work's central movement rather than exist as detached background?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ideation.relationship_faction_conception.behavior
+    type: question
+    criterion_key: op.ideation.relationship_faction_conception.behavior
+    text: Does the conception imply how members act differently in public, private, and under stress?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- wu_et_al_2025_writingbench
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates asymmetry, shared history, conflicting goals, pressure points, change potential, and
+  links to the story’s central movement.

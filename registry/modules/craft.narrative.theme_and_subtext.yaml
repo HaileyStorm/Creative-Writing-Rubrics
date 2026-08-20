@@ -1,0 +1,154 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: craft.narrative.theme_and_subtext
+version: 1
+title: Theme and subtext
+kind: craft
+description: Evaluates thematic development through image, action, structure, character, and implication rather
+  than thesis-like explanation. It should allow unresolved or contradictory themes.
+origin: user_inventory_refined
+owner_domains:
+- narrative.theme_and_subtext
+artifact_types:
+- prose_fiction
+- creative_nonfiction
+- dramatic_writing
+- narrative_poetry
+- interactive_fiction
+valid_scopes:
+- beat
+- scene
+- chapter
+- sequence
+- act
+- manuscript
+- series
+activation: Attach when theme and subtext is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: craft.narrative.theme_and_subtext.quality
+  type: group
+  title: Theme and subtext
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: craft.narrative.theme_and_subtext.emergence
+    type: question
+    criterion_key: craft.narrative.theme_and_subtext.emergence
+    text: Does thematic meaning emerge through action, image, structure, character, or pattern?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.theme_and_subtext.subtext
+    type: question
+    criterion_key: craft.narrative.theme_and_subtext.subtext
+    text: Is important meaning carried through implication as well as explicit statement?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.theme_and_subtext.development
+    type: question
+    criterion_key: craft.narrative.theme_and_subtext.development
+    text: Does the work test, complicate, or transform its central ideas rather than repeat a thesis?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.theme_and_subtext.counterpoint
+    type: question
+    criterion_key: craft.narrative.theme_and_subtext.counterpoint
+    text: Where appropriate, does the work permit competing values, interpretations, or contradictions?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.theme_and_subtext.integration
+    type: question
+    criterion_key: craft.narrative.theme_and_subtext.integration
+    text: Are thematic concerns integrated with the artifact's concrete dramatic or lyric material?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.theme_and_subtext.no_moral
+    type: question
+    criterion_key: craft.narrative.theme_and_subtext.no_moral
+    text: Does the work avoid reducing theme to a stated moral, lesson, or explanatory conclusion?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.theme_and_subtext.open_questions
+    type: question
+    criterion_key: craft.narrative.theme_and_subtext.open_questions
+    text: When themes remain unresolved, does the unresolved state feel intentional and generative?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- vaezi_rezaei_2018
+- carey_davidow_williams_2022
+- gomez_rodriguez_williams_2023
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates thematic development through image, action, structure, character, and implication
+  rather than thesis-like explanation. It should allow unresolved or contradictory themes.

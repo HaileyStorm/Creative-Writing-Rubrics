@@ -1,0 +1,127 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: op.revision.proofread
+version: 1
+title: Proofread
+kind: procedure
+description: Restricts intervention to surface errors and formatting defects unless a separate issue report is requested.
+origin: user_inventory_refined
+owner_domains:
+- procedure.proofread
+artifact_types:
+- any
+valid_scopes:
+- operation
+activation: Attach when proofread is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: op.revision.proofread.quality
+  type: group
+  title: Proofread checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: op.revision.proofread.surface
+    type: question
+    criterion_key: op.revision.proofread.surface
+    text: Are typographical, spelling, punctuation, spacing, and formatting errors corrected?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.proofread.consistency
+    type: question
+    criterion_key: op.revision.proofread.consistency
+    text: Are final cross-references, headers, numbering, names, and layout details consistent?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.proofread.complete
+    type: question
+    criterion_key: op.revision.proofread.complete
+    text: Is the complete target artifact checked rather than only obvious trouble spots?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.proofread.meaning
+    type: question
+    criterion_key: op.revision.proofread.meaning
+    text: Is wording and meaning preserved except where a surface correction requires change?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.proofread.report
+    type: question
+    criterion_key: op.revision.proofread.report
+    text: Are suspected substantive issues reported separately rather than silently revised?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.proofread.no_edit
+    type: question
+    criterion_key: op.revision.proofread.no_edit
+    text: Does the pass avoid line editing, rewriting, tone adjustment, and stylistic homogenization?
+    pass_answer: 'YES'
+    weight: 2.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- wu_et_al_2025_writingbench
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Restricts intervention to surface errors and formatting defects unless a separate issue report
+  is requested.

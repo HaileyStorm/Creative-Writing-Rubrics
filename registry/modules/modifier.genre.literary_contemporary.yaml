@@ -1,0 +1,128 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: modifier.genre.literary_contemporary
+version: 1
+title: Literary / contemporary
+kind: modifier
+description: Voice, observation, psychological or social specificity, thematic depth, formal intentionality, and
+  resistance to empty prestige mannerisms.
+origin: user_inventory_refined
+owner_domains:
+- genre.literary_contemporary
+artifact_types:
+- creative_text
+valid_scopes:
+- any
+activation: Attach when literary / contemporary is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: modifier.genre.literary_contemporary.quality
+  type: group
+  title: Literary / contemporary contract
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: modifier.genre.literary_contemporary.observation
+    type: question
+    criterion_key: modifier.genre.literary_contemporary.observation
+    text: Does the work offer psychologically, socially, materially, or linguistically specific observation?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.literary_contemporary.voice
+    type: question
+    criterion_key: modifier.genre.literary_contemporary.voice
+    text: Does voice carry substantive perception rather than prestige-coded polish alone?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.literary_contemporary.complexity
+    type: question
+    criterion_key: modifier.genre.literary_contemporary.complexity
+    text: Do characters and situations resist reductive moral or thematic simplification?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.literary_contemporary.theme
+    type: question
+    criterion_key: modifier.genre.literary_contemporary.theme
+    text: Does thematic depth emerge through form, image, action, relation, and implication?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.literary_contemporary.form
+    type: question
+    criterion_key: modifier.genre.literary_contemporary.form
+    text: Are formal choices intentional and proportionate to the work's inquiry?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.literary_contemporary.no_prestige
+    type: question
+    criterion_key: modifier.genre.literary_contemporary.no_prestige
+    text: Does the work avoid empty prestige mannerisms such as vague melancholy, inert detail, and ornamental opacity?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- fein_et_al_2026_litbench
+- wu_et_al_2025_writingbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Voice, observation, psychological or social specificity, thematic depth, formal intentionality,
+  and resistance to empty prestige mannerisms.

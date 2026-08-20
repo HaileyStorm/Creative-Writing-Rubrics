@@ -1,0 +1,156 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: op.draft.draft_from_coarse_or_medium_outline
+version: 1
+title: Draft from coarse or medium outline
+kind: procedure
+description: Allows more invention but requires the model to preserve structural intent and fill gaps coherently
+  rather than introducing incompatible premises.
+origin: user_inventory_refined
+owner_domains:
+- procedure.draft_from_coarse_or_medium_outline
+artifact_types:
+- any
+valid_scopes:
+- operation
+activation: Attach when draft from coarse or medium outline is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: op.draft.draft_from_coarse_or_medium_outline.quality
+  type: group
+  title: Draft from coarse or medium outline checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: op.draft.draft_from_coarse_or_medium_outline.structural_intent
+    type: question
+    criterion_key: op.draft.draft_from_coarse_or_medium_outline.structural_intent
+    text: Does the draft preserve the outline's major structural and emotional intent?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.draft.draft_from_coarse_or_medium_outline.coherent_fill
+    type: question
+    criterion_key: op.draft.draft_from_coarse_or_medium_outline.coherent_fill
+    text: Are missing local causes, transitions, and details invented coherently?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.draft.draft_from_coarse_or_medium_outline.canon
+    type: question
+    criterion_key: op.draft.draft_from_coarse_or_medium_outline.canon
+    text: Does invention remain compatible with project canon and active plans?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.draft.draft_from_coarse_or_medium_outline.scene_shape
+    type: question
+    criterion_key: op.draft.draft_from_coarse_or_medium_outline.scene_shape
+    text: Does the draft create complete local scene or chapter movement?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.draft.draft_from_coarse_or_medium_outline.voice
+    type: question
+    criterion_key: op.draft.draft_from_coarse_or_medium_outline.voice
+    text: Does it maintain project and character voice?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.draft.draft_from_coarse_or_medium_outline.scale
+    type: question
+    criterion_key: op.draft.draft_from_coarse_or_medium_outline.scale
+    text: Does it use the available length proportionately?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.draft.draft_from_coarse_or_medium_outline.no_new_premise
+    type: question
+    criterion_key: op.draft.draft_from_coarse_or_medium_outline.no_new_premise
+    text: Does it avoid introducing a new governing premise or irreversible branch without authorization?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.draft.draft_from_coarse_or_medium_outline.no_padding
+    type: question
+    criterion_key: op.draft.draft_from_coarse_or_medium_outline.no_padding
+    text: Does it avoid padding broad bullets with generic description, banter, or recap?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- wu_et_al_2025_writingbench
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Allows more invention but requires the model to preserve structural intent and fill gaps coherently
+  rather than introducing incompatible premises.

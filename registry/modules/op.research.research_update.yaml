@@ -1,0 +1,156 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: op.research.research_update
+version: 1
+title: Research update
+kind: procedure
+description: Checks whether new evidence supersedes prior notes, which project facts are affected, and what manuscript
+  passages may need revision.
+origin: user_inventory_refined
+owner_domains:
+- procedure.research_update
+artifact_types:
+- any
+valid_scopes:
+- operation
+activation: Attach when research update is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: op.research.research_update.quality
+  type: group
+  title: Research update checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: op.research.research_update.new
+    type: question
+    criterion_key: op.research.research_update.new
+    text: Is the new evidence relevant, credible, and properly sourced?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.research.research_update.supersede
+    type: question
+    criterion_key: op.research.research_update.supersede
+    text: Does the update identify which earlier notes are confirmed, narrowed, contradicted, or superseded?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.research.research_update.facts
+    type: question
+    criterion_key: op.research.research_update.facts
+    text: Are affected project facts and uncertainty states updated?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.research.research_update.artifacts
+    type: question
+    criterion_key: op.research.research_update.artifacts
+    text: Are affected scenes, outlines, sheets, timeline entries, and assets identified?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.research.research_update.decisions
+    type: question
+    criterion_key: op.research.research_update.decisions
+    text: Are creative choices that intentionally depart from the new evidence preserved and labeled?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.research.research_update.provenance
+    type: question
+    criterion_key: op.research.research_update.provenance
+    text: Is source provenance and update date machine-readable?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.research.research_update.no_silent
+    type: question
+    criterion_key: op.research.research_update.no_silent
+    text: Does the update avoid silently rewriting canon or research history?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.research.research_update.review
+    type: question
+    criterion_key: op.research.research_update.review
+    text: Are material downstream changes queued for review or revision?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- wu_et_al_2025_writingbench
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Checks whether new evidence supersedes prior notes, which project facts are affected, and what
+  manuscript passages may need revision.

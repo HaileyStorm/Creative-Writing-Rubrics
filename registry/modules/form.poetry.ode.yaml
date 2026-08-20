@@ -1,0 +1,137 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: form.poetry.ode
+version: 1
+title: Ode
+kind: artifact_form
+description: Research-informed binary rubric for ode.
+origin: research_expansion
+owner_domains:
+- form.poetry.ode
+artifact_types:
+- poetry
+valid_scopes:
+- line
+- stanza
+- poem
+- collection
+activation: Attach when ode is the active form, asset, or evaluation concern.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: form.poetry.ode.quality
+  type: group
+  title: Ode checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: form.poetry.ode.address
+    type: question
+    criterion_key: form.poetry.ode.address
+    text: Does the poem establish a meaningful object, person, place, idea, or phenomenon of address or contemplation?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.ode.attention
+    type: question
+    criterion_key: form.poetry.ode.attention
+    text: Does sustained attention reveal dimensions beyond initial praise or description?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.ode.movement
+    type: question
+    criterion_key: form.poetry.ode.movement
+    text: Does the poem move through perception, meditation, complication, and altered relation?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.ode.form
+    type: question
+    criterion_key: form.poetry.ode.form
+    text: Does the selected ode form—formal, irregular, or contemporary—support that movement?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.ode.elevation
+    type: question
+    criterion_key: form.poetry.ode.elevation
+    text: Is elevation of language or rhetoric earned by specificity and thought?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.ode.turn
+    type: question
+    criterion_key: form.poetry.ode.turn
+    text: Does the object of address change the speaker's understanding or position?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.ode.no_praise
+    type: question
+    criterion_key: form.poetry.ode.no_praise
+    text: Does it avoid becoming undifferentiated praise, catalog, or decorative apostrophe?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- li_et_al_2026_poemetric
+- vaezi_rezaei_2018
+notes: []

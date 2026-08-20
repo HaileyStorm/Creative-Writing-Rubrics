@@ -1,0 +1,153 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: form.visual.book_cover
+version: 1
+title: Book cover
+kind: visual_artifact
+description: Research-informed binary rubric for book cover.
+origin: research_expansion
+owner_domains:
+- visual.book_cover
+artifact_types:
+- visual_asset
+valid_scopes:
+- asset
+- panel
+- sequence
+- project
+activation: Attach when book cover is the active form, asset, or evaluation concern.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 2
+  project_sources: character references, style references, scene text, and asset metadata when supplied
+  modalities_required:
+  - image
+tree:
+- id: form.visual.book_cover.quality
+  type: group
+  title: Book cover checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: form.visual.book_cover.promise
+    type: question
+    criterion_key: form.visual.book_cover.promise
+    text: Does the cover accurately signal genre, tone, audience, and market position?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.visual.book_cover.identity
+    type: question
+    criterion_key: form.visual.book_cover.identity
+    text: Does it express something specific to this work rather than the category alone?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.visual.book_cover.hierarchy
+    type: question
+    criterion_key: form.visual.book_cover.hierarchy
+    text: Is visual hierarchy effective at thumbnail and full size?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.visual.book_cover.title
+    type: question
+    criterion_key: form.visual.book_cover.title
+    text: Are title and author typography legible and integrated?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.visual.book_cover.composition
+    type: question
+    criterion_key: form.visual.book_cover.composition
+    text: Does composition create intrigue without misleading plot claims?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.visual.book_cover.series
+    type: question
+    criterion_key: form.visual.book_cover.series
+    text: If part of a series, does it balance series identity and volume distinction?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.visual.book_cover.technical
+    type: question
+    criterion_key: form.visual.book_cover.technical
+    text: Does it satisfy trim, bleed, spine, resolution, and safe-area requirements?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.visual.book_cover.no_template
+    type: question
+    criterion_key: form.visual.book_cover.no_template
+    text: Does it avoid interchangeable genre-template composition and AI artifact cues?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- zhuang_et_al_2025_vistorybench
+- lin_et_al_2026_storybook_consistency
+notes: []

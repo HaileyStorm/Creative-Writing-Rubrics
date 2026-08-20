@@ -1,0 +1,156 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: op.revision.line_edit
+version: 1
+title: Line edit
+kind: procedure
+description: Evaluates sentence and paragraph improvements, rhythm, clarity, image, repetition, emphasis, and preservation
+  of voice.
+origin: user_inventory_refined
+owner_domains:
+- procedure.line_edit
+artifact_types:
+- any
+valid_scopes:
+- operation
+activation: Attach when line edit is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: op.revision.line_edit.quality
+  type: group
+  title: Line edit checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: op.revision.line_edit.clarity
+    type: question
+    criterion_key: op.revision.line_edit.clarity
+    text: Do edits improve or preserve sentence-level clarity?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.line_edit.rhythm
+    type: question
+    criterion_key: op.revision.line_edit.rhythm
+    text: Do they improve or preserve rhythm, emphasis, and paragraph movement?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.line_edit.diction
+    type: question
+    criterion_key: op.revision.line_edit.diction
+    text: Do they improve precision and image without replacing distinctive diction with generic polish?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.line_edit.repetition
+    type: question
+    criterion_key: op.revision.line_edit.repetition
+    text: Do they reduce accidental repetition while preserving intentional recurrence?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.line_edit.voice
+    type: question
+    criterion_key: op.revision.line_edit.voice
+    text: Do they preserve narrative and character voice?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.line_edit.meaning
+    type: question
+    criterion_key: op.revision.line_edit.meaning
+    text: Do they preserve factual, emotional, and thematic meaning?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.line_edit.authorization
+    type: question
+    criterion_key: op.revision.line_edit.authorization
+    text: Do they stay within the authorized line-edit scope?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.line_edit.no_beautify
+    type: question
+    criterion_key: op.revision.line_edit.no_beautify
+    text: Do they avoid beautifying every sentence or equalizing all cadence?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- wu_et_al_2025_writingbench
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates sentence and paragraph improvements, rhythm, clarity, image, repetition, emphasis,
+  and preservation of voice.

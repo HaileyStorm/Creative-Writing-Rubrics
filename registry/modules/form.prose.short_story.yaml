@@ -1,0 +1,157 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: form.prose.short_story
+version: 1
+title: Short story
+kind: artifact_form
+description: Evaluates unity, economy, controlled scope, complete movement, selective characterization, and whether
+  the ending recontextualizes or resolves the story’s central pressure.
+origin: user_inventory_refined
+owner_domains:
+- form.short_story
+artifact_types:
+- prose_fiction
+valid_scopes:
+- complete_work
+- manuscript
+activation: Attach when short story is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: form.prose.short_story.quality
+  type: group
+  title: Short story checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: form.prose.short_story.unity
+    type: question
+    criterion_key: form.prose.short_story.unity
+    text: Does the story organize its major elements around a coherent central pressure, movement, or inquiry?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.prose.short_story.scope
+    type: question
+    criterion_key: form.prose.short_story.scope
+    text: Is the cast, timespan, setting load, and subplot load controllable at short-story length?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.prose.short_story.selection
+    type: question
+    criterion_key: form.prose.short_story.selection
+    text: Are scenes and details selected for disproportionate effect rather than novel-like coverage?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.prose.short_story.movement
+    type: question
+    criterion_key: form.prose.short_story.movement
+    text: Does the story complete a meaningful narrative, emotional, or perceptual movement?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.prose.short_story.character_selectivity
+    type: question
+    criterion_key: form.prose.short_story.character_selectivity
+    text: Does characterization achieve sufficient depth through selective, high-yield detail?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.prose.short_story.structure
+    type: question
+    criterion_key: form.prose.short_story.structure
+    text: Does the sequence of scenes or sections create cumulative pressure and meaning?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.prose.short_story.ending
+    type: question
+    criterion_key: form.prose.short_story.ending
+    text: Does the ending resolve, transform, or recontextualize the central pressure?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.prose.short_story.no_novel_fragment
+    type: question
+    criterion_key: form.prose.short_story.no_novel_fragment
+    text: Does the story avoid feeling like an arbitrarily cut chapter from a larger, necessary narrative?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- fein_et_al_2026_litbench
+- wu_et_al_2025_writingbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates unity, economy, controlled scope, complete movement, selective characterization, and
+  whether the ending recontextualizes or resolves the story’s central pressure.

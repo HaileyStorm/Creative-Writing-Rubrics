@@ -1,0 +1,145 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: form.poetry.rondeau
+version: 1
+title: Rondeau
+kind: artifact_form
+description: Research-informed binary rubric for rondeau.
+origin: research_expansion
+owner_domains:
+- form.poetry.rondeau
+artifact_types:
+- poetry
+valid_scopes:
+- line
+- stanza
+- poem
+- collection
+activation: Attach when rondeau is the active form, asset, or evaluation concern.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: form.poetry.rondeau.quality
+  type: group
+  title: Rondeau checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: form.poetry.rondeau.profile
+    type: question
+    criterion_key: form.poetry.rondeau.profile
+    text: Does the poem follow the selected rondeau line-count and stanza pattern?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: hard_gate
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.rondeau.rhyme
+    type: question
+    criterion_key: form.poetry.rondeau.rhyme
+    text: Does it maintain the required two-rhyme architecture?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: hard_gate
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.rondeau.rentrement
+    type: question
+    criterion_key: form.poetry.rondeau.rentrement
+    text: Is the shortened refrain derived from the opening and placed correctly?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: hard_gate
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.rondeau.recontext
+    type: question
+    criterion_key: form.poetry.rondeau.recontext
+    text: Does each refrain occurrence change or deepen meaning?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.rondeau.movement
+    type: question
+    criterion_key: form.poetry.rondeau.movement
+    text: Does the poem develop despite narrow rhyme and refrain constraints?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.rondeau.natural
+    type: question
+    criterion_key: form.poetry.rondeau.natural
+    text: Do syntax and diction remain natural under formal pressure?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.rondeau.closure
+    type: question
+    criterion_key: form.poetry.rondeau.closure
+    text: Does the final refrain create a satisfying or productively altered return?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- li_et_al_2026_poemetric
+- vaezi_rezaei_2018
+notes: []
+profile_overrides:
+  default_profile: traditional
+  profiles:
+    traditional:
+      profile_required: true
+      features:
+      - two rhymes
+      - rentrement

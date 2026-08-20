@@ -1,0 +1,156 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: op.outline.fine_detail_beat_outline
+version: 1
+title: Fine-detail / beat outline
+kind: procedure
+description: Evaluates scene-level objectives, participants, setting, starting state, pressure, beats, turn, resulting
+  state, required setup/payoff, and drafting usefulness without pre-writing every sentence.
+origin: user_inventory_refined
+owner_domains:
+- procedure.fine_detail_beat_outline
+artifact_types:
+- any
+valid_scopes:
+- operation
+activation: Attach when fine-detail / beat outline is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: op.outline.fine_detail_beat_outline.quality
+  type: group
+  title: Fine-detail / beat outline checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: op.outline.fine_detail_beat_outline.objective
+    type: question
+    criterion_key: op.outline.fine_detail_beat_outline.objective
+    text: Is the local objective or governing question explicit for each scene or beat?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.outline.fine_detail_beat_outline.start_state
+    type: question
+    criterion_key: op.outline.fine_detail_beat_outline.start_state
+    text: Is the starting state of participants, knowledge, setting, and active pressure clear?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.outline.fine_detail_beat_outline.progression
+    type: question
+    criterion_key: op.outline.fine_detail_beat_outline.progression
+    text: Do beats form a causal and emotional progression rather than a list of topics?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.outline.fine_detail_beat_outline.turn
+    type: question
+    criterion_key: op.outline.fine_detail_beat_outline.turn
+    text: Is there a meaningful turn, discovery, decision, reversal, or changed understanding?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.outline.fine_detail_beat_outline.end_state
+    type: question
+    criterion_key: op.outline.fine_detail_beat_outline.end_state
+    text: Is the resulting state clear enough to connect to the next unit?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.outline.fine_detail_beat_outline.continuity
+    type: question
+    criterion_key: op.outline.fine_detail_beat_outline.continuity
+    text: Are participants, props, injuries, knowledge, time, and place consistent?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.outline.fine_detail_beat_outline.setup_payoff
+    type: question
+    criterion_key: op.outline.fine_detail_beat_outline.setup_payoff
+    text: Are required setup and payoff obligations represented?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.outline.fine_detail_beat_outline.drafting
+    type: question
+    criterion_key: op.outline.fine_detail_beat_outline.drafting
+    text: Is the plan useful for drafting without pre-writing every line or eliminating discovery?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- wu_et_al_2025_writingbench
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates scene-level objectives, participants, setting, starting state, pressure, beats, turn,
+  resulting state, required setup/payoff, and drafting usefulness without pre-writing every sentence.

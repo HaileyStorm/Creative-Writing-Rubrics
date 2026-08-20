@@ -1,0 +1,140 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: model.release.knowledge_retention
+version: 1
+title: Knowledge retention
+kind: model_build
+description: Covers broad factual knowledge, domain tails, source-grounded answers, and uncertainty.
+origin: user_inventory_refined
+owner_domains:
+- model.knowledge_retention
+artifact_types:
+- model_build
+valid_scopes:
+- any
+activation: Attach when knowledge retention is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: model.release.knowledge_retention.quality
+  type: group
+  title: Knowledge retention checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: model.release.knowledge_retention.broad
+    type: question
+    criterion_key: model.release.knowledge_retention.broad
+    text: Does the modified model retain broad factual knowledge within confidence bounds?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.knowledge_retention.tails
+    type: question
+    criterion_key: model.release.knowledge_retention.tails
+    text: Does it retain domain-tail and specialist knowledge represented by vulnerable experts?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.knowledge_retention.grounded
+    type: question
+    criterion_key: model.release.knowledge_retention.grounded
+    text: Does it retain source-grounded answer quality when references are supplied?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.knowledge_retention.update
+    type: question
+    criterion_key: model.release.knowledge_retention.update
+    text: Can it apply newer or superseding context over memorized prior facts?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.knowledge_retention.uncertainty
+    type: question
+    criterion_key: model.release.knowledge_retention.uncertainty
+    text: Does it retain calibrated uncertainty and abstention from unsupported fabrication?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.knowledge_retention.creative_use
+    type: question
+    criterion_key: model.release.knowledge_retention.creative_use
+    text: Can retained knowledge be applied plausibly in creative and editorial tasks?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.knowledge_retention.baseline
+    type: question
+    criterion_key: model.release.knowledge_retention.baseline
+    text: Are losses measured against matched source-model conditions and reported by domain?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- rao_callison_burch_2026_autorubric
+- longjudgebench_2026
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Covers broad factual knowledge, domain tails, source-grounded answers, and uncertainty.

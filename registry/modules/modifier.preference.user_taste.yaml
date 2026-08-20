@@ -1,0 +1,153 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: modifier.preference.user_taste
+version: 1
+title: User taste and project preference
+kind: preference_modifier
+description: A personalization overlay for selection; it must not redefine objective craft quality.
+origin: research_expansion
+owner_domains:
+- user_taste
+artifact_types:
+- creative_text
+- visual_asset
+- audio_asset
+valid_scopes:
+- any
+activation: Attach when personalized ranking or generation is requested.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: modifier.preference.user_taste.quality
+  type: group
+  title: Preference fit
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: modifier.preference.user_taste.profile
+    type: question
+    criterion_key: modifier.preference.user_taste.profile
+    text: Is the active taste profile grounded in the user's revealed selections, edits, ratings, or explicit current
+      preference?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: diagnostic
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.preference.user_taste.voice
+    type: question
+    criterion_key: modifier.preference.user_taste.voice
+    text: Does the candidate fit the user's demonstrated preferences for voice and prose texture?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.preference.user_taste.pace
+    type: question
+    criterion_key: modifier.preference.user_taste.pace
+    text: Does it fit demonstrated preferences for pace, density, and scene development?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.preference.user_taste.tone
+    type: question
+    criterion_key: modifier.preference.user_taste.tone
+    text: Does it fit demonstrated preferences for tone, emotional temperature, darkness, humor, and sentiment?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.preference.user_taste.content
+    type: question
+    criterion_key: modifier.preference.user_taste.content
+    text: Does it fit current project-specific preferences for genre elements, tropes, themes, and intensity?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.preference.user_taste.novelty
+    type: question
+    criterion_key: modifier.preference.user_taste.novelty
+    text: Does it balance familiarity and surprise according to demonstrated preference?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.preference.user_taste.separate
+    type: question
+    criterion_key: modifier.preference.user_taste.separate
+    text: Is this preference score reported separately from craft and hard-constraint scores?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: diagnostic
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.preference.user_taste.current
+    type: question
+    criterion_key: modifier.preference.user_taste.current
+    text: Has the system allowed the user to override or update older inferred preferences?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: diagnostic
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- chung_et_al_2025_literarytaste
+- fein_et_al_2026_litbench
+notes:
+- Revealed preferences should receive more evidentiary weight than broad stated taste labels.
+- Keep this score separate so a craft-strong but taste-mismatched candidate remains visible.

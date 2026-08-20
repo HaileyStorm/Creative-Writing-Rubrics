@@ -1,0 +1,163 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: penalty.repetition
+version: 1
+title: Repetition penalty
+kind: penalty
+description: Bounded deduction for lexical, syntactic, semantic, beat-level, and long-range repetition that adds
+  no transformed function.
+origin: research_refinement
+owner_domains:
+- penalty.repetition
+artifact_types:
+- creative_text
+- audio
+valid_scopes:
+- any
+activation: Attach to substantive creative bundles.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: penalty.repetition.controls
+  type: group
+  title: Accidental-repetition controls
+  score_mode: capped_penalty
+  weight: 1.0
+  children:
+  - id: penalty.repetition.lexical
+    type: question
+    criterion_key: penalty.repetition.lexical
+    text: Are repeated words and phrases either unobtrusive or functionally transformed?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: penalty.repetition.syntax
+    type: question
+    criterion_key: penalty.repetition.syntax
+    text: Do sentence and paragraph openings, lengths, and syntactic shapes vary enough for the intended style?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: penalty.repetition.semantic
+    type: question
+    criterion_key: penalty.repetition.semantic
+    text: Does the artifact avoid restating the same proposition, emotion, or interpretation without adding pressure
+      or information?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: penalty.repetition.image
+    type: question
+    criterion_key: penalty.repetition.image
+    text: Do recurring images and motifs return with changed context or meaning?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: penalty.repetition.beat
+    type: question
+    criterion_key: penalty.repetition.beat
+    text: Does the artifact avoid repeating equivalent scene beats, actions, conflicts, and reactions?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: penalty.repetition.dialogue
+    type: question
+    criterion_key: penalty.repetition.dialogue
+    text: Do dialogue and internal monologue avoid circular loops that reproduce already established positions?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: penalty.repetition.explanation
+    type: question
+    criterion_key: penalty.repetition.explanation
+    text: Does the artifact avoid explaining a concrete moment again after its meaning is already legible?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: penalty.repetition.long_range
+    type: question
+    criterion_key: penalty.repetition.long_range
+    text: At long scope, do chapters, sections, or episodes avoid repeatedly resetting and re-establishing the same
+      narrative state?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The evaluated scope is chapter, sequence, act, manuscript, series, collection, or long-form audio.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+  description: Default maximum deduction is eight points in long form, five in short prose, and six in poetry. Refrain,
+    motif, ritual, comic recurrence, and other intentional repetition pass when recurrence changes pressure, relation,
+    or meaning.
+  cap_points: 8.0
+modifier_actions: []
+research_basis:
+- fein_et_al_2026_litbench
+- li_et_al_2026_poemetric
+notes: []
+profile_overrides:
+  caps:
+    short_prose: 5
+    long_prose: 8
+    poetry: 6
+    script: 6
+    audio_long_form: 8

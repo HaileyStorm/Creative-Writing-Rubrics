@@ -1,0 +1,142 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: op.select.first_pass_screening_grade
+version: 1
+title: First-pass screening grade
+kind: procedure
+description: A compact rubric suitable for a fast generator/screener. It should eliminate clearly weak, noncompliant, repetitive,
+  incoherent, or canon-breaking drafts without pretending to make the final artistic judgment.
+origin: user_inventory_refined
+owner_domains:
+- procedure.first_pass_screening_grade
+artifact_types:
+- any
+valid_scopes:
+- operation
+activation: Attach when first-pass screening grade is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: op.select.first_pass_screening_grade.quality
+  type: group
+  title: First-pass screening grade checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: op.select.first_pass_screening_grade.hard
+    type: question
+    criterion_key: op.select.first_pass_screening_grade.hard
+    text: Does the candidate satisfy all hard constraints?
+    pass_answer: 'YES'
+    weight: 2.5
+    question_type: hard_gate
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.select.first_pass_screening_grade.coherence
+    type: question
+    criterion_key: op.select.first_pass_screening_grade.coherence
+    text: Is it free of obvious incoherence, contradiction, truncation, and formatting failure?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.select.first_pass_screening_grade.canon
+    type: question
+    criterion_key: op.select.first_pass_screening_grade.canon
+    text: Is it free of clear project-canon and immediate-continuity violations?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.select.first_pass_screening_grade.function
+    type: question
+    criterion_key: op.select.first_pass_screening_grade.function
+    text: Does it perform the required scene, artifact, or operation function?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.select.first_pass_screening_grade.generic
+    type: question
+    criterion_key: op.select.first_pass_screening_grade.generic
+    text: Is it free of severe genericness, repetition, and sampler artifacts?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.select.first_pass_screening_grade.keep
+    type: question
+    criterion_key: op.select.first_pass_screening_grade.keep
+    text: Does it contain enough viable material to justify finalist-level adjudication?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.select.first_pass_screening_grade.confidence
+    type: question
+    criterion_key: op.select.first_pass_screening_grade.confidence
+    text: Is the screening decision supported by sufficient evidence for this fast stage?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- wu_et_al_2025_writingbench
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: A compact rubric suitable for a fast generator/screener. It should eliminate clearly weak, noncompliant, repetitive,
+  incoherent, or canon-breaking drafts without pretending to make the final artistic judgment.

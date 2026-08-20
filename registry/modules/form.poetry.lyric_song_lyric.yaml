@@ -1,0 +1,159 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: form.poetry.lyric_song_lyric
+version: 1
+title: Lyric / song lyric
+kind: artifact_form
+description: Adds performability, stress, repetition, refrain, musical phrasing, singability where relevant, and
+  the difference between effective recurrence and filler.
+origin: user_inventory_refined
+owner_domains:
+- form.lyric_song_lyric
+artifact_types:
+- poetry
+valid_scopes:
+- line
+- stanza
+- poem
+- collection
+activation: Attach when lyric / song lyric is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: form.poetry.lyric_song_lyric.quality
+  type: group
+  title: Lyric / song lyric checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: form.poetry.lyric_song_lyric.speaker
+    type: question
+    criterion_key: form.poetry.lyric_song_lyric.speaker
+    text: Does the lyric establish a compelling speaker, address, situation, or emotional center?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.lyric_song_lyric.stress
+    type: question
+    criterion_key: form.poetry.lyric_song_lyric.stress
+    text: Do stresses and phrase lengths fit the intended musical or spoken phrasing where known?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.lyric_song_lyric.singability
+    type: question
+    criterion_key: form.poetry.lyric_song_lyric.singability
+    text: Are words and consonant clusters singable at the intended tempo and register?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.lyric_song_lyric.hook
+    type: question
+    criterion_key: form.poetry.lyric_song_lyric.hook
+    text: Does the lyric contain a memorable verbal, melodic, imagistic, or emotional hook?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.lyric_song_lyric.refrain
+    type: question
+    criterion_key: form.poetry.lyric_song_lyric.refrain
+    text: Does a refrain or chorus return with increased meaning, energy, or recognition?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.lyric_song_lyric.sections
+    type: question
+    criterion_key: form.poetry.lyric_song_lyric.sections
+    text: Do verse, chorus, bridge, pre-chorus, or other sections perform distinct functions?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.lyric_song_lyric.rhyme
+    type: question
+    criterion_key: form.poetry.lyric_song_lyric.rhyme
+    text: Does rhyme support phrasing and memory without forcing diction?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.lyric_song_lyric.no_filler
+    type: question
+    criterion_key: form.poetry.lyric_song_lyric.no_filler
+    text: Does repetition avoid functioning as filler when musical performance does not justify it?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- li_et_al_2026_poemetric
+- vaezi_rezaei_2018
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Adds performability, stress, repetition, refrain, musical phrasing, singability where relevant,
+  and the difference between effective recurrence and filler.

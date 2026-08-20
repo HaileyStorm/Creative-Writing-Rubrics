@@ -1,0 +1,140 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: form.audio.speech_naturalness_and_intelligibility
+version: 1
+title: Speech naturalness and intelligibility
+kind: audio_artifact
+description: Research-informed binary rubric for speech naturalness and intelligibility.
+origin: research_expansion
+owner_domains:
+- audio.speech_naturalness_and_intelligibility
+artifact_types:
+- audio_asset
+valid_scopes:
+- utterance
+- passage
+- scene
+- chapter
+- work
+activation: Attach when speech naturalness and intelligibility is the active form, asset, or evaluation concern.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 1
+  project_sources: source text, pronunciation lexicon, voice references, and direction sheet when supplied
+  modalities_required:
+  - audio
+tree:
+- id: form.audio.speech_naturalness_and_intelligibility.quality
+  type: group
+  title: Speech naturalness and intelligibility checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: form.audio.speech_naturalness_and_intelligibility.intelligible
+    type: question
+    criterion_key: form.audio.speech_naturalness_and_intelligibility.intelligible
+    text: Can every word be understood under normal listening conditions?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.audio.speech_naturalness_and_intelligibility.pronunciation
+    type: question
+    criterion_key: form.audio.speech_naturalness_and_intelligibility.pronunciation
+    text: Are phonemes, stress, reductions, and word boundaries natural and correct?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.audio.speech_naturalness_and_intelligibility.fluency
+    type: question
+    criterion_key: form.audio.speech_naturalness_and_intelligibility.fluency
+    text: Is speech free of unnatural stutters, timing glitches, and discontinuities?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.audio.speech_naturalness_and_intelligibility.phrasing
+    type: question
+    criterion_key: form.audio.speech_naturalness_and_intelligibility.phrasing
+    text: Do phrases align with syntax and meaning?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.audio.speech_naturalness_and_intelligibility.breath
+    type: question
+    criterion_key: form.audio.speech_naturalness_and_intelligibility.breath
+    text: Do breaths and pauses sound plausible and unobtrusive?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.audio.speech_naturalness_and_intelligibility.human
+    type: question
+    criterion_key: form.audio.speech_naturalness_and_intelligibility.human
+    text: Does the voice avoid robotic cadence, over-smoothed prosody, and repeated contour templates?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.audio.speech_naturalness_and_intelligibility.artifacts
+    type: question
+    criterion_key: form.audio.speech_naturalness_and_intelligibility.artifacts
+    text: Is it free of clicks, warble, clipping, pitch jumps, dropouts, and spectral artifacts?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- galdino_et_al_2025_prosody_review
+- real_world_voice_eq_bench_2026
+notes: []

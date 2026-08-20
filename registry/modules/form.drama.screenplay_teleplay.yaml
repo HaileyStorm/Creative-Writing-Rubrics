@@ -1,0 +1,156 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: form.drama.screenplay_teleplay
+version: 1
+title: Screenplay / teleplay
+kind: artifact_form
+description: Evaluates scene function, visual action, dialogue, screenplay economy, formatting, producibility, entrances/exits,
+  sequence construction, and what is shown rather than explained.
+origin: user_inventory_refined
+owner_domains:
+- form.screenplay_teleplay
+artifact_types:
+- dramatic_writing
+valid_scopes:
+- any
+activation: Attach when screenplay / teleplay is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: form.drama.screenplay_teleplay.quality
+  type: group
+  title: Screenplay / teleplay checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: form.drama.screenplay_teleplay.format
+    type: question
+    criterion_key: form.drama.screenplay_teleplay.format
+    text: Does the script follow the selected screenplay or teleplay formatting standard?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.drama.screenplay_teleplay.visual_action
+    type: question
+    criterion_key: form.drama.screenplay_teleplay.visual_action
+    text: Is action written in visible, audible, playable terms rather than unfilmable interior explanation?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.drama.screenplay_teleplay.scene_function
+    type: question
+    criterion_key: form.drama.screenplay_teleplay.scene_function
+    text: Does each scene perform a clear dramatic and sequence-level function?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.drama.screenplay_teleplay.economy
+    type: question
+    criterion_key: form.drama.screenplay_teleplay.economy
+    text: Are action lines and descriptions concise enough for production reading without becoming vague?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.drama.screenplay_teleplay.dialogue
+    type: question
+    criterion_key: form.drama.screenplay_teleplay.dialogue
+    text: Does dialogue create character and dramatic action rather than explain the plot?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.drama.screenplay_teleplay.entrances
+    type: question
+    criterion_key: form.drama.screenplay_teleplay.entrances
+    text: Are entrances, exits, locations, and sequence transitions clear?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.drama.screenplay_teleplay.producibility
+    type: question
+    criterion_key: form.drama.screenplay_teleplay.producibility
+    text: Are production demands coherent with the project's intended scale and medium?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.drama.screenplay_teleplay.showing
+    type: question
+    criterion_key: form.drama.screenplay_teleplay.showing
+    text: Does the script avoid relying on prose-narrative effects that cannot be conveyed on screen?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- fein_et_al_2026_litbench
+- wu_et_al_2025_writingbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates scene function, visual action, dialogue, screenplay economy, formatting, producibility,
+  entrances/exits, sequence construction, and what is shown rather than explained.

@@ -1,0 +1,142 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: form.prose.vignette_slice_of_life
+version: 1
+title: Vignette / slice-of-life
+kind: artifact_form
+description: Avoids penalizing the work for lacking conventional plot while still evaluating selection, observation,
+  atmosphere, character revelation, and changed perception.
+origin: user_inventory_refined
+owner_domains:
+- form.vignette_slice_of_life
+artifact_types:
+- prose_fiction
+valid_scopes:
+- any
+activation: Attach when vignette / slice-of-life is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: form.prose.vignette_slice_of_life.quality
+  type: group
+  title: Vignette / slice-of-life checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: form.prose.vignette_slice_of_life.selection
+    type: question
+    criterion_key: form.prose.vignette_slice_of_life.selection
+    text: Is the selected moment or pattern worth attending to even without conventional plot escalation?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.prose.vignette_slice_of_life.observation
+    type: question
+    criterion_key: form.prose.vignette_slice_of_life.observation
+    text: Does the piece offer specific observation rather than generic everyday summary?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.prose.vignette_slice_of_life.presence
+    type: question
+    criterion_key: form.prose.vignette_slice_of_life.presence
+    text: Does atmosphere, embodiment, or relational texture create a lived experience?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.prose.vignette_slice_of_life.micro_change
+    type: question
+    criterion_key: form.prose.vignette_slice_of_life.micro_change
+    text: Does something shift in attention, relationship, understanding, mood, or implication?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.prose.vignette_slice_of_life.shape
+    type: question
+    criterion_key: form.prose.vignette_slice_of_life.shape
+    text: Does the vignette possess an intentional beginning, development, and point of release?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.prose.vignette_slice_of_life.resonance
+    type: question
+    criterion_key: form.prose.vignette_slice_of_life.resonance
+    text: Does the ordinary material accrue emotional, comic, thematic, or perceptual significance?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.prose.vignette_slice_of_life.no_false_plot
+    type: question
+    criterion_key: form.prose.vignette_slice_of_life.no_false_plot
+    text: Is the piece judged without demanding thriller-like conflict or a conventional climax it does not promise?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: diagnostic
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- fein_et_al_2026_litbench
+- wu_et_al_2025_writingbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Avoids penalizing the work for lacking conventional plot while still evaluating selection, observation,
+  atmosphere, character revelation, and changed perception.

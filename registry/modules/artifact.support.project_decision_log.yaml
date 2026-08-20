@@ -1,0 +1,136 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: artifact.support.project_decision_log
+version: 1
+title: Project decision log
+kind: support_artifact
+description: Research-informed binary rubric for project decision log.
+origin: research_expansion
+owner_domains:
+- support.project_decision_log
+artifact_types:
+- planning_artifact
+- reference_artifact
+valid_scopes:
+- artifact
+- project
+activation: Attach when project decision log is the active form, asset, or evaluation concern.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: artifact.support.project_decision_log.quality
+  type: group
+  title: Project decision log checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: artifact.support.project_decision_log.decision
+    type: question
+    criterion_key: artifact.support.project_decision_log.decision
+    text: Is each decision stated unambiguously?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.project_decision_log.date
+    type: question
+    criterion_key: artifact.support.project_decision_log.date
+    text: Are date, author, and project branch recorded?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.project_decision_log.reason
+    type: question
+    criterion_key: artifact.support.project_decision_log.reason
+    text: Is the reason and intended effect recorded?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.project_decision_log.alternatives
+    type: question
+    criterion_key: artifact.support.project_decision_log.alternatives
+    text: Are rejected or deferred alternatives linked rather than erased?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.project_decision_log.impact
+    type: question
+    criterion_key: artifact.support.project_decision_log.impact
+    text: Are affected artifacts, sheets, timeline entries, and assets identified?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.project_decision_log.authority
+    type: question
+    criterion_key: artifact.support.project_decision_log.authority
+    text: Is supersession and current authority explicit?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.project_decision_log.machine
+    type: question
+    criterion_key: artifact.support.project_decision_log.machine
+    text: Can the active decision set be retrieved reliably by software and models?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- wu_et_al_2025_writingbench
+- cho_et_al_2026_bineval
+notes: []

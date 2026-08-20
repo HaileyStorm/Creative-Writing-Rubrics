@@ -1,0 +1,128 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: form.multimodal.cross_modal_canon_integrity
+version: 1
+title: Cross-modal canon integrity
+kind: multimodal_artifact
+description: Research-informed binary rubric for cross-modal canon integrity.
+origin: research_expansion
+owner_domains:
+- multimodal.cross_modal_canon_integrity
+artifact_types:
+- multimodal_asset
+valid_scopes:
+- asset
+- scene
+- sequence
+- work
+- project
+activation: Attach when cross-modal canon integrity is the active form, asset, or evaluation concern.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 2
+  project_sources: source text, image references, audio references, timeline, and asset metadata
+  modalities_required:
+  - text
+  - image
+  - audio_as_applicable
+tree:
+- id: form.multimodal.cross_modal_canon_integrity.quality
+  type: group
+  title: Cross-modal canon integrity checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: form.multimodal.cross_modal_canon_integrity.entities
+    type: question
+    criterion_key: form.multimodal.cross_modal_canon_integrity.entities
+    text: Do text, images, audio, timelines, maps, and sheets refer to the same canonical entities and states?
+    pass_answer: 'YES'
+    weight: 2.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.multimodal.cross_modal_canon_integrity.time
+    type: question
+    criterion_key: form.multimodal.cross_modal_canon_integrity.time
+    text: Are chronology and state updates synchronized across modalities?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.multimodal.cross_modal_canon_integrity.appearance
+    type: question
+    criterion_key: form.multimodal.cross_modal_canon_integrity.appearance
+    text: Are character and location appearances consistent across visual assets and prose descriptions?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.multimodal.cross_modal_canon_integrity.voice
+    type: question
+    criterion_key: form.multimodal.cross_modal_canon_integrity.voice
+    text: Are names, pronunciations, accents, and speaker identities consistent across audio and text?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.multimodal.cross_modal_canon_integrity.versions
+    type: question
+    criterion_key: form.multimodal.cross_modal_canon_integrity.versions
+    text: Are assets linked to the correct manuscript version and branch?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.multimodal.cross_modal_canon_integrity.conflicts
+    type: question
+    criterion_key: form.multimodal.cross_modal_canon_integrity.conflicts
+    text: Are cross-modal conflicts detected and surfaced rather than silently propagated?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- zhuang_et_al_2025_vistorybench
+- real_world_voice_eq_bench_2026
+notes: []

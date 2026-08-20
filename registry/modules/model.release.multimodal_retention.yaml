@@ -1,0 +1,144 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: model.release.multimodal_retention
+version: 1
+title: Multimodal retention
+kind: model_build
+description: 'For ByteShape or another vision-capable build: image understanding, visual reasoning, OCR/document
+  use, description, project ingestion, and text–image continuity. Escha’s current text-only profile simply omits
+  this module.'
+origin: user_inventory_refined
+owner_domains:
+- model.multimodal_retention
+artifact_types:
+- model_build
+valid_scopes:
+- any
+activation: Attach when multimodal retention is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: model.release.multimodal_retention.quality
+  type: group
+  title: Multimodal retention checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: model.release.multimodal_retention.understanding
+    type: question
+    criterion_key: model.release.multimodal_retention.understanding
+    text: Is image and document understanding retained?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.multimodal_retention.reasoning
+    type: question
+    criterion_key: model.release.multimodal_retention.reasoning
+    text: Is visual reasoning retained?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.multimodal_retention.ocr
+    type: question
+    criterion_key: model.release.multimodal_retention.ocr
+    text: Is OCR and structured document use retained where supported?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.multimodal_retention.description
+    type: question
+    criterion_key: model.release.multimodal_retention.description
+    text: Is accurate, specific visual description retained?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.multimodal_retention.ingest
+    type: question
+    criterion_key: model.release.multimodal_retention.ingest
+    text: Can visual project materials be ingested into canon and context correctly?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.multimodal_retention.continuity
+    type: question
+    criterion_key: model.release.multimodal_retention.continuity
+    text: Is text-image continuity and character identity reasoning retained?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.multimodal_retention.omit
+    type: question
+    criterion_key: model.release.multimodal_retention.omit
+    text: Is this module omitted rather than failed for builds intentionally lacking vision capability?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: diagnostic
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- rao_callison_burch_2026_autorubric
+- longjudgebench_2026
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: 'For ByteShape or another vision-capable build: image understanding, visual reasoning, OCR/document
+  use, description, project ingestion, and text–image continuity. Escha’s current text-only profile simply omits
+  this module.'

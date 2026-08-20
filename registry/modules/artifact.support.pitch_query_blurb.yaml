@@ -1,0 +1,141 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: artifact.support.pitch_query_blurb
+version: 1
+title: Pitch / query / blurb
+kind: support_artifact
+description: Evaluates promise, audience positioning, intrigue, accurate representation, tone, and distinction between
+  selling the work and summarizing it.
+origin: user_inventory_refined
+owner_domains:
+- support.pitch_query_blurb
+artifact_types:
+- planning_artifact
+- reference_artifact
+valid_scopes:
+- any
+activation: Attach when pitch / query / blurb is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: artifact.support.pitch_query_blurb.quality
+  type: group
+  title: Pitch / query / blurb checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: artifact.support.pitch_query_blurb.promise
+    type: question
+    criterion_key: artifact.support.pitch_query_blurb.promise
+    text: Does the text communicate a clear and appealing promise to the intended recipient?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.pitch_query_blurb.positioning
+    type: question
+    criterion_key: artifact.support.pitch_query_blurb.positioning
+    text: Does it position form, genre, audience, length, and comparable appeal accurately where required?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.pitch_query_blurb.intrigue
+    type: question
+    criterion_key: artifact.support.pitch_query_blurb.intrigue
+    text: Does it create curiosity without withholding the basic premise?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.pitch_query_blurb.tone
+    type: question
+    criterion_key: artifact.support.pitch_query_blurb.tone
+    text: Does its tone match the work and professional context?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.pitch_query_blurb.specificity
+    type: question
+    criterion_key: artifact.support.pitch_query_blurb.specificity
+    text: Does it use specific story material rather than generic praise language?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.pitch_query_blurb.accuracy
+    type: question
+    criterion_key: artifact.support.pitch_query_blurb.accuracy
+    text: Does it represent the work truthfully and avoid promising absent features?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.pitch_query_blurb.purpose
+    type: question
+    criterion_key: artifact.support.pitch_query_blurb.purpose
+    text: Does it distinguish selling copy from synopsis and provide the kind of information the operation requires?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates promise, audience positioning, intrigue, accurate representation, tone, and distinction
+  between selling the work and summarizing it.

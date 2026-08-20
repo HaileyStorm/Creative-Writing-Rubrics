@@ -1,0 +1,168 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: craft.narrative.plot_and_causality
+version: 1
+title: Plot and causality
+kind: craft
+description: Evaluates causal linkage, setup, decision, consequence, escalation, complication, reversals, and whether
+  events arise from characters and conditions rather than authorial convenience.
+origin: user_inventory_refined
+owner_domains:
+- narrative.plot_and_causality
+artifact_types:
+- prose_fiction
+- creative_nonfiction
+- dramatic_writing
+- narrative_poetry
+- interactive_fiction
+valid_scopes:
+- beat
+- scene
+- chapter
+- sequence
+- act
+- manuscript
+- series
+activation: Attach when plot and causality is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: craft.narrative.plot_and_causality.quality
+  type: group
+  title: Plot and causality
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: craft.narrative.plot_and_causality.causal_chain
+    type: question
+    criterion_key: craft.narrative.plot_and_causality.causal_chain
+    text: Does each major event arise from prior conditions, choices, or consequences?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.plot_and_causality.setup
+    type: question
+    criterion_key: craft.narrative.plot_and_causality.setup
+    text: Are important developments prepared enough to feel intelligible rather than arbitrary?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.plot_and_causality.decision
+    type: question
+    criterion_key: craft.narrative.plot_and_causality.decision
+    text: Do character decisions materially alter what happens next?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.plot_and_causality.consequence
+    type: question
+    criterion_key: craft.narrative.plot_and_causality.consequence
+    text: Are consequential actions followed through rather than reset or forgotten?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.plot_and_causality.escalation
+    type: question
+    criterion_key: craft.narrative.plot_and_causality.escalation
+    text: Does pressure change in kind, intensity, or implication rather than merely repeat?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.plot_and_causality.complication
+    type: question
+    criterion_key: craft.narrative.plot_and_causality.complication
+    text: Do complications force new choices or understanding rather than delay the same beat?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.plot_and_causality.reversal
+    type: question
+    criterion_key: craft.narrative.plot_and_causality.reversal
+    text: Are reversals both surprising enough to matter and supported enough to accept?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.plot_and_causality.no_convenience
+    type: question
+    criterion_key: craft.narrative.plot_and_causality.no_convenience
+    text: Does the plot avoid coincidence, withheld competence, or arbitrary behavior used chiefly to force an outcome?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- vaezi_rezaei_2018
+- carey_davidow_williams_2022
+- gomez_rodriguez_williams_2023
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates causal linkage, setup, decision, consequence, escalation, complication, reversals,
+  and whether events arise from characters and conditions rather than authorial convenience.

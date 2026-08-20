@@ -1,0 +1,135 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: workflow.revision_chain_integrity
+version: 1
+title: Revision-chain integrity
+kind: workflow
+description: Research-informed binary rubric for revision-chain integrity.
+origin: user_inventory_refined
+owner_domains:
+- workflow.revision_chain_integrity
+artifact_types:
+- workflow_execution
+valid_scopes:
+- operation
+activation: Attach when revision-chain integrity is the active form, asset, or evaluation concern.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: workflow.revision_chain_integrity.quality
+  type: group
+  title: Revision-chain integrity checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: workflow.revision_chain_integrity.parent
+    type: question
+    criterion_key: workflow.revision_chain_integrity.parent
+    text: Does each revision identify the intended parent version?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: workflow.revision_chain_integrity.instructions
+    type: question
+    criterion_key: workflow.revision_chain_integrity.instructions
+    text: Are instructions and rubric reports attached to the correct revision edge?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: workflow.revision_chain_integrity.branches
+    type: question
+    criterion_key: workflow.revision_chain_integrity.branches
+    text: Are branches kept distinct unless an explicit merge occurs?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: workflow.revision_chain_integrity.decisions
+    type: question
+    criterion_key: workflow.revision_chain_integrity.decisions
+    text: Do approved decisions propagate to descendants?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: workflow.revision_chain_integrity.recover
+    type: question
+    criterion_key: workflow.revision_chain_integrity.recover
+    text: Are earlier phases and versions recoverable?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: workflow.revision_chain_integrity.target
+    type: question
+    criterion_key: workflow.revision_chain_integrity.target
+    text: Is every later pass applied to the intended branch and artifact?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: workflow.revision_chain_integrity.merge
+    type: question
+    criterion_key: workflow.revision_chain_integrity.merge
+    text: Are merge conflicts and provenance represented explicitly?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- wu_et_al_2025_writingbench
+- longjudgebench_2026
+notes: []

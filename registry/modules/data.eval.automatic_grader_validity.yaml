@@ -1,0 +1,143 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: data.eval.automatic_grader_validity
+version: 1
+title: Automatic-grader validity
+kind: dataset_eval
+description: Checks that exact, likelihood, unit-test, structural, and statistical metrics correspond to the intended
+  task and are not easily gamed.
+origin: user_inventory_refined
+owner_domains:
+- dataset.automatic_grader_validity
+artifact_types:
+- dataset
+- evaluation_pipeline
+valid_scopes:
+- any
+activation: Attach when automatic-grader validity is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: data.eval.automatic_grader_validity.quality
+  type: group
+  title: Automatic-grader validity checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: data.eval.automatic_grader_validity.metric
+    type: question
+    criterion_key: data.eval.automatic_grader_validity.metric
+    text: Does each automatic metric correspond to the intended human or task construct?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: data.eval.automatic_grader_validity.gaming
+    type: question
+    criterion_key: data.eval.automatic_grader_validity.gaming
+    text: Is the metric resistant to obvious gaming and surface proxies?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: data.eval.automatic_grader_validity.calibration
+    type: question
+    criterion_key: data.eval.automatic_grader_validity.calibration
+    text: Is it calibrated against representative human judgments?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: data.eval.automatic_grader_validity.failure
+    type: question
+    criterion_key: data.eval.automatic_grader_validity.failure
+    text: Are known false-positive and false-negative modes documented?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: data.eval.automatic_grader_validity.forms
+    type: question
+    criterion_key: data.eval.automatic_grader_validity.forms
+    text: Are form-specific automatic checks separated from artistic-quality judgments?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: data.eval.automatic_grader_validity.uncertainty
+    type: question
+    criterion_key: data.eval.automatic_grader_validity.uncertainty
+    text: Does the grader expose uncertainty and unscorable cases?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: data.eval.automatic_grader_validity.version
+    type: question
+    criterion_key: data.eval.automatic_grader_validity.version
+    text: Are grader model, prompt, code, and dependencies versioned?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- rao_callison_burch_2026_autorubric
+- longjudgebench_2026
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Checks that exact, likelihood, unit-test, structural, and statistical metrics correspond to
+  the intended task and are not easily gamed.

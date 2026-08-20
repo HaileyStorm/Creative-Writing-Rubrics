@@ -1,0 +1,136 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: artifact.support.illustration_brief
+version: 1
+title: Illustration brief
+kind: support_artifact
+description: Research-informed binary rubric for illustration brief.
+origin: research_expansion
+owner_domains:
+- support.illustration_brief
+artifact_types:
+- planning_artifact
+- reference_artifact
+valid_scopes:
+- artifact
+- project
+activation: Attach when illustration brief is the active form, asset, or evaluation concern.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: artifact.support.illustration_brief.quality
+  type: group
+  title: Illustration brief checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: artifact.support.illustration_brief.beat
+    type: question
+    criterion_key: artifact.support.illustration_brief.beat
+    text: Does the brief identify the exact narrative beat and source passage?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.illustration_brief.subjects
+    type: question
+    criterion_key: artifact.support.illustration_brief.subjects
+    text: Does it specify required characters, appearances, action, relationships, and states?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.illustration_brief.setting
+    type: question
+    criterion_key: artifact.support.illustration_brief.setting
+    text: Does it specify location, time, weather, props, and continuity anchors?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.illustration_brief.composition
+    type: question
+    criterion_key: artifact.support.illustration_brief.composition
+    text: Does it specify shot, framing, focus, aspect ratio, and intended use?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.illustration_brief.style
+    type: question
+    criterion_key: artifact.support.illustration_brief.style
+    text: Does it specify visual style, palette, medium, and reference assets?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.illustration_brief.avoid
+    type: question
+    criterion_key: artifact.support.illustration_brief.avoid
+    text: Does it list likely model failure modes and forbidden deviations?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.illustration_brief.provenance
+    type: question
+    criterion_key: artifact.support.illustration_brief.provenance
+    text: Are all brief facts traceable to canon or explicit creative direction?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- wu_et_al_2025_writingbench
+- cho_et_al_2026_bineval
+notes: []

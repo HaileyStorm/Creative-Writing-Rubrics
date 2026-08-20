@@ -1,0 +1,142 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: op.select.candidate_set_coverage
+version: 1
+title: Candidate-set coverage
+kind: procedure
+description: Evaluates whether a batch contains distinct viable approaches, tones, structures, images, or phrasings
+  rather than near-duplicates.
+origin: user_inventory_refined
+owner_domains:
+- procedure.candidate_set_coverage
+artifact_types:
+- any
+valid_scopes:
+- operation
+activation: Attach when candidate-set coverage is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: op.select.candidate_set_coverage.quality
+  type: group
+  title: Candidate-set coverage checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: op.select.candidate_set_coverage.semantic
+    type: question
+    criterion_key: op.select.candidate_set_coverage.semantic
+    text: Does the set cover meaningfully different semantic or conceptual approaches?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.select.candidate_set_coverage.structural
+    type: question
+    criterion_key: op.select.candidate_set_coverage.structural
+    text: Does it cover different structural or strategic approaches where useful?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.select.candidate_set_coverage.tonal
+    type: question
+    criterion_key: op.select.candidate_set_coverage.tonal
+    text: Does it cover different viable tones or emotional temperatures where useful?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.select.candidate_set_coverage.lexical
+    type: question
+    criterion_key: op.select.candidate_set_coverage.lexical
+    text: Does it avoid superficial lexical duplication?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.select.candidate_set_coverage.constraints
+    type: question
+    criterion_key: op.select.candidate_set_coverage.constraints
+    text: Does every candidate remain within non-negotiable constraints?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.select.candidate_set_coverage.quality_floor
+    type: question
+    criterion_key: op.select.candidate_set_coverage.quality_floor
+    text: Does diversity remain above a minimum coherence and usefulness floor?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.select.candidate_set_coverage.no_near_dupes
+    type: question
+    criterion_key: op.select.candidate_set_coverage.no_near_dupes
+    text: Are near-duplicate candidates excluded or clustered instead of presented as distinct choices?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- wu_et_al_2025_writingbench
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates whether a batch contains distinct viable approaches, tones, structures, images, or
+  phrasings rather than near-duplicates.

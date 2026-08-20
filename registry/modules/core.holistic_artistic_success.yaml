@@ -1,0 +1,110 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: core.holistic_artistic_success
+version: 1
+title: Holistic artistic success
+kind: base
+description: 'Captures the reader-level judgment that atomized categories miss: whether the piece works as an intentional
+  whole, feels alive, and is worth keeping. It should be present once per evaluated artifact, not once per module.'
+origin: user_inventory_refined
+owner_domains:
+- holistic_artistic_success
+artifact_types:
+- any
+valid_scopes:
+- any
+activation: Attach to every substantive execution.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: core.holistic_artistic_success.subjective_ladder
+  type: group
+  title: Holistic artistic-success ladder
+  score_mode: cumulative_threshold
+  weight: 1.0
+  children:
+  - id: core.holistic_artistic_success.threshold_1_functional
+    type: question
+    criterion_key: core.holistic_artistic_success.threshold_1_functional
+    text: On an honest cold read, does the artifact work at all as the kind of creative object it claims to be?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: subjective_threshold
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+    notes: Threshold 1. Higher thresholds should not pass if this fails.
+  - id: core.holistic_artistic_success.threshold_2_effective
+    type: question
+    criterion_key: core.holistic_artistic_success.threshold_2_effective
+    text: Is the artifact genuinely effective rather than merely compliant, fluent, or technically competent?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: subjective_threshold
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+    notes: Threshold 2. Requires Threshold 1.
+  - id: core.holistic_artistic_success.threshold_3_keepworthy
+    type: question
+    criterion_key: core.holistic_artistic_success.threshold_3_keepworthy
+    text: Would a demanding intended reader, editor, or creator regard the artifact as worth keeping, using, revisiting,
+      or developing?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: subjective_threshold
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+    notes: Threshold 3. Requires Thresholds 1–2.
+  - id: core.holistic_artistic_success.threshold_4_exceptional
+    type: question
+    criterion_key: core.holistic_artistic_success.threshold_4_exceptional
+    text: Is the artifact exceptional for its form, purpose, stage, and comparison set rather than merely strong?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: subjective_threshold
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+    notes: Threshold 4. Requires Thresholds 1–3. Reserve YES for rare cases.
+  tags: []
+  description: A controlled subjective component worth eight points in default creative bundles. It is assessed
+    once per artifact.
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- vaezi_rezaei_2018
+- carey_davidow_williams_2022
+- gomez_rodriguez_williams_2023
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: 'Captures the reader-level judgment that atomized categories miss: whether the piece works as
+  an intentional whole, feels alive, and is worth keeping. It should be present once per evaluated artifact, not
+  once per module.'

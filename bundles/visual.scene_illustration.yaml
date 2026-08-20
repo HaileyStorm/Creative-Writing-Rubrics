@@ -1,0 +1,126 @@
+$schema: ../schema/hbq_bundle.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+bundle_id: visual.scene_illustration
+version: 1
+title: Scene illustration
+description: Visual-asset rubric for scene illustration in a narrative project.
+artifact_types:
+- visual_asset
+valid_scopes:
+- asset
+- panel
+- sequence
+profile: {}
+module_ids:
+- core.task_and_brief_fidelity
+- form.visual.visual_prompt_and_canon_fidelity
+- form.visual.scene_illustration
+- form.multimodal.cross_modal_canon_integrity
+- form.visual.visual_craft_and_artifact_control
+- core.audience_and_purpose_fit
+- core.holistic_artistic_success
+domains:
+- domain_id: task
+  title: Brief and required content
+  points: 12.0
+  components:
+  - module_id: core.task_and_brief_fidelity
+    weight: 1.0
+  - module_id: form.visual.visual_prompt_and_canon_fidelity
+    weight: 1.0
+  score_mode: weighted_binary_mean
+- domain_id: form
+  title: Artifact-specific function
+  points: 22.0
+  components:
+  - module_id: form.visual.scene_illustration
+    weight: 1.0
+  score_mode: weighted_binary_mean
+- domain_id: canon
+  title: Character, setting, and canon fidelity
+  points: 18.0
+  components:
+  - module_id: form.multimodal.cross_modal_canon_integrity
+    weight: 1.0
+  score_mode: weighted_binary_mean
+- domain_id: composition
+  title: Composition and legibility
+  points: 14.0
+  components:
+  - module_id: form.visual.visual_craft_and_artifact_control
+    weight: 1.0
+    include_question_ids:
+    - form.visual.visual_craft_and_artifact_control.composition
+    - form.visual.visual_craft_and_artifact_control.value
+    - form.visual.visual_craft_and_artifact_control.perspective
+  score_mode: weighted_binary_mean
+- domain_id: style
+  title: Style and aesthetic control
+  points: 12.0
+  components:
+  - module_id: form.visual.visual_craft_and_artifact_control
+    weight: 1.0
+    include_question_ids:
+    - form.visual.visual_craft_and_artifact_control.color
+    - form.visual.visual_craft_and_artifact_control.edges
+  score_mode: weighted_binary_mean
+- domain_id: artifacts
+  title: Generation-artifact control
+  points: 8.0
+  components:
+  - module_id: form.visual.visual_craft_and_artifact_control
+    weight: 1.0
+    include_question_ids:
+    - form.visual.visual_craft_and_artifact_control.anatomy
+    - form.visual.visual_craft_and_artifact_control.artifacts
+    - form.visual.visual_craft_and_artifact_control.resolution
+  score_mode: weighted_binary_mean
+- domain_id: purpose
+  title: Audience and production fit
+  points: 6.0
+  components:
+  - module_id: core.audience_and_purpose_fit
+    weight: 1.0
+  score_mode: weighted_binary_mean
+- domain_id: holistic
+  title: Holistic visual success
+  points: 8.0
+  components:
+  - module_id: core.holistic_artistic_success
+    weight: 1.0
+  score_mode: weighted_binary_mean
+penalty_modules: []
+hard_gate_policy:
+  no_is_invalid: true
+  cannot_assess_is_unresolved: true
+  not_applicable_requires_condition_or_reason: true
+  hard_gates_are_reported_separately: true
+coverage_policy:
+  minimum_weighted_coverage: 0.9
+  below_threshold_status: PROVISIONAL
+  score_interval_required_when_unassessed: true
+  whole_work_claims_require_whole_work_evidence: true
+excerpt_and_incomplete_policy:
+  flagged_excerpt: Do not penalize absent whole-work completion. Mark unavailable whole-work criteria CANNOT_ASSESS
+    or NOT_APPLICABLE as appropriate.
+  unflagged_incomplete: Apply the bounded unflagged-incomplete penalty when the artifact is presented as complete
+    or partial status is omitted.
+  visible_local_defects: Score defects visible in the supplied extract normally.
+judge_policy:
+  artifact_assumed_ai_generated: true
+  strict_but_fair: true
+  no_glazing: true
+  judge_execution_not_intent: true
+  do_not_invent_defects: true
+  avoid_length_and_ornament_bias: true
+  brief_evidence_required: true
+  private_chain_of_thought_not_requested: true
+  verdict_states:
+  - 'YES'
+  - 'NO'
+  - NOT_APPLICABLE
+  - CANNOT_ASSESS
+  pairwise_finalists: false
+notes: []

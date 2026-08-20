@@ -1,0 +1,142 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: op.research.research_to_fiction_application
+version: 1
+title: Research-to-fiction application
+kind: procedure
+description: Evaluates whether research is translated into narratively relevant constraints and opportunities rather
+  than dumped into prose.
+origin: user_inventory_refined
+owner_domains:
+- procedure.research_to_fiction_application
+artifact_types:
+- any
+valid_scopes:
+- operation
+activation: Attach when research-to-fiction application is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: op.research.research_to_fiction_application.quality
+  type: group
+  title: Research-to-fiction application checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: op.research.research_to_fiction_application.constraints
+    type: question
+    criterion_key: op.research.research_to_fiction_application.constraints
+    text: Does research become concrete constraints on setting, action, character, language, or consequence?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.research.research_to_fiction_application.opportunities
+    type: question
+    criterion_key: op.research.research_to_fiction_application.opportunities
+    text: Does it generate story opportunities rather than only prohibit errors?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.research.research_to_fiction_application.selection
+    type: question
+    criterion_key: op.research.research_to_fiction_application.selection
+    text: Is only research relevant to the current scene or artifact surfaced?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.research.research_to_fiction_application.integration
+    type: question
+    criterion_key: op.research.research_to_fiction_application.integration
+    text: Is information integrated through action, perception, conflict, objects, or setting?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.research.research_to_fiction_application.departure
+    type: question
+    criterion_key: op.research.research_to_fiction_application.departure
+    text: Are deliberate departures from fact documented and internally consistent?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.research.research_to_fiction_application.uncertainty
+    type: question
+    criterion_key: op.research.research_to_fiction_application.uncertainty
+    text: Is uncertain research handled without false precision?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.research.research_to_fiction_application.no_dump
+    type: question
+    criterion_key: op.research.research_to_fiction_application.no_dump
+    text: Does the resulting fiction avoid displaying research through lectures, inventory, or implausible dialogue?
+    pass_answer: 'YES'
+    weight: 2.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- wu_et_al_2025_writingbench
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates whether research is translated into narratively relevant constraints and opportunities
+  rather than dumped into prose.

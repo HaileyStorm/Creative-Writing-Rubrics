@@ -1,0 +1,144 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: penalty.purple_prose
+version: 1
+title: Purple prose penalty
+kind: penalty
+description: Bounded deduction for ornamental excess that obscures, mismatches, or fatigues.
+origin: research_refinement
+owner_domains:
+- penalty.purple_prose
+artifact_types:
+- creative_text
+valid_scopes:
+- any
+activation: Attach to creative prose and poetry bundles.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: penalty.purple_prose.controls
+  type: group
+  title: Purple-prose controls
+  score_mode: capped_penalty
+  weight: 1.0
+  children:
+  - id: penalty.purple_prose.clarity
+    type: question
+    criterion_key: penalty.purple_prose.clarity
+    text: Can the reader recover the central action, perception, thought, or emotion without fighting ornamental
+      language?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: penalty.purple_prose.proportion
+    type: question
+    criterion_key: penalty.purple_prose.proportion
+    text: Are figurative layers, modifiers, and elevated diction proportionate to the material being carried?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: penalty.purple_prose.specificity
+    type: question
+    criterion_key: penalty.purple_prose.specificity
+    text: Does ornate language remain specific rather than replacing perception with generalized grandeur or abstraction?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: penalty.purple_prose.tone
+    type: question
+    criterion_key: penalty.purple_prose.tone
+    text: Does stylistic lushness fit the speaker, project, scene intensity, genre, and form?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: penalty.purple_prose.metaphor
+    type: question
+    criterion_key: penalty.purple_prose.metaphor
+    text: Do metaphors and images cooperate rather than stack, mix, or compete?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: penalty.purple_prose.attention
+    type: question
+    criterion_key: penalty.purple_prose.attention
+    text: Does the language direct attention toward the artifact's subject rather than mainly toward its own fanciness?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: penalty.purple_prose.fatigue
+    type: question
+    criterion_key: penalty.purple_prose.fatigue
+    text: Across the evaluated scope, does lyrical intensity vary enough to avoid cumulative fatigue?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+  description: Default maximum deduction is five points. Bundle profiles may set four points for poetry and five
+    for prose. Deliberate maximalism passes when language remains precise, controlled, and functional.
+  cap_points: 5.0
+modifier_actions: []
+research_basis:
+- fein_et_al_2026_litbench
+- li_et_al_2026_poemetric
+notes: []
+profile_overrides:
+  caps:
+    short_prose: 5
+    long_prose: 5
+    poetry: 4
+    script: 4

@@ -1,0 +1,115 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: sampler.optionality_without_drift
+version: 1
+title: Optionality without drift
+kind: sampler
+description: Evaluates whether choices avoid prematurely generic continuations while still committing when syntax,
+  character, or scene logic requires commitment.
+origin: user_inventory_refined
+owner_domains:
+- sampler.optionality_without_drift
+artifact_types:
+- generated_candidate
+- candidate_set
+valid_scopes:
+- any
+activation: Attach when optionality without drift is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: sampler.optionality_without_drift.quality
+  type: group
+  title: Optionality without drift checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: sampler.optionality_without_drift.forks
+    type: question
+    criterion_key: sampler.optionality_without_drift.forks
+    text: Does the sampler preserve optionality at genuine creative forks?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: sampler.optionality_without_drift.syntax
+    type: question
+    criterion_key: sampler.optionality_without_drift.syntax
+    text: Does it commit when grammar, reference, or sentence logic requires commitment?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: sampler.optionality_without_drift.character
+    type: question
+    criterion_key: sampler.optionality_without_drift.character
+    text: Does it commit when established character choice and scene logic require commitment?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: sampler.optionality_without_drift.scene
+    type: question
+    criterion_key: sampler.optionality_without_drift.scene
+    text: Does the sample create concrete action, images, names, and turns rather than indefinite possibility?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: sampler.optionality_without_drift.no_fog
+    type: question
+    criterion_key: sampler.optionality_without_drift.no_fog
+    text: Does it avoid vague language used mainly to keep mutually incompatible futures open?
+    pass_answer: 'YES'
+    weight: 2.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- wu_et_al_2025_writingbench
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates whether choices avoid prematurely generic continuations while still committing when
+  syntax, character, or scene logic requires commitment.

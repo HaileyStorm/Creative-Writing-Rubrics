@@ -1,0 +1,163 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: scope.manuscript
+version: 1
+title: Full-manuscript scope overlay
+kind: scope_overlay
+description: Requires hierarchical whole-work evaluation, stratified evidence, recurring-pattern analysis, and confidence
+  reporting.
+origin: user_inventory_refined
+owner_domains:
+- scope.manuscript
+artifact_types:
+- any
+valid_scopes:
+- manuscript
+activation: Attach when the evaluated scope is manuscript.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: scope.manuscript.quality
+  type: group
+  title: Scope handling
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: scope.manuscript.map
+    type: question
+    criterion_key: scope.manuscript.map
+    text: Has the judge constructed a whole-work map before global evaluation?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: hard_gate
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: scope.manuscript.global
+    type: question
+    criterion_key: scope.manuscript.global
+    text: Are structure, chronology, character/thread state, opening-to-ending relation, and thematic architecture
+      evaluated globally?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: scope.manuscript.sampling
+    type: question
+    criterion_key: scope.manuscript.sampling
+    text: Is local evidence sampled across representative regions and modes?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: scope.manuscript.patterns
+    type: question
+    criterion_key: scope.manuscript.patterns
+    text: Are recurring patterns distinguished from isolated defects?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: scope.manuscript.prevalence
+    type: question
+    criterion_key: scope.manuscript.prevalence
+    text: Are prevalence, severity, and reach reported?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: scope.manuscript.threads
+    type: question
+    criterion_key: scope.manuscript.threads
+    text: Are characters, relationships, subplots, promises, setups, and payoffs tracked across the whole?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: scope.manuscript.confidence
+    type: question
+    criterion_key: scope.manuscript.confidence
+    text: Are coverage and confidence reported by domain?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: scope.manuscript.no_average
+    type: question
+    criterion_key: scope.manuscript.no_average
+    text: Is the manuscript score derived from hierarchical evidence rather than a simple mean of chapter scores?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: hard_gate
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions:
+- action: require_hierarchical_sampling
+  value: true
+- action: minimum_strata
+  value:
+  - opening
+  - early
+  - middle
+  - late
+  - ending
+  - high_intensity
+  - quiet
+  - exposition
+  - dialogue
+research_basis:
+- cho_et_al_2026_bineval
+- longjudgebench_2026
+notes: []

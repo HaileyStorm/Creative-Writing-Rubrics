@@ -1,0 +1,156 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: op.outline.coarse_outline
+version: 1
+title: Coarse outline
+kind: procedure
+description: Evaluates premise-scale movement, major turns, broad causal chain, central arcs, ending direction,
+  and whether the outline provides a useful skeleton without false precision.
+origin: user_inventory_refined
+owner_domains:
+- procedure.coarse_outline
+artifact_types:
+- any
+valid_scopes:
+- operation
+activation: Attach when coarse outline is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: op.outline.coarse_outline.quality
+  type: group
+  title: Coarse outline checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: op.outline.coarse_outline.premise
+    type: question
+    criterion_key: op.outline.coarse_outline.premise
+    text: Does the outline preserve the governing premise and reader promise?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.outline.coarse_outline.chain
+    type: question
+    criterion_key: op.outline.coarse_outline.chain
+    text: Does it establish a broad causal chain from opening conditions through major turns to an ending direction?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.outline.coarse_outline.turns
+    type: question
+    criterion_key: op.outline.coarse_outline.turns
+    text: Are major turns load-bearing changes rather than arbitrary milestones?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.outline.coarse_outline.arcs
+    type: question
+    criterion_key: op.outline.coarse_outline.arcs
+    text: Are central character and relationship arcs represented at a useful level?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.outline.coarse_outline.ending
+    type: question
+    criterion_key: op.outline.coarse_outline.ending
+    text: Does it establish a plausible ending direction without false scene-level precision?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.outline.coarse_outline.proportion
+    type: question
+    criterion_key: op.outline.coarse_outline.proportion
+    text: Are major movements proportioned to the intended form and length?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.outline.coarse_outline.utility
+    type: question
+    criterion_key: op.outline.coarse_outline.utility
+    text: Can the outline support further medium-detail planning?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.outline.coarse_outline.no_false_precision
+    type: question
+    criterion_key: op.outline.coarse_outline.no_false_precision
+    text: Does it avoid premature details that create brittle commitments without solving structural questions?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- wu_et_al_2025_writingbench
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates premise-scale movement, major turns, broad causal chain, central arcs, ending direction,
+  and whether the outline provides a useful skeleton without false precision.

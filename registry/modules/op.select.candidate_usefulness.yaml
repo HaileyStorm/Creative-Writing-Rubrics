@@ -1,0 +1,156 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: op.select.candidate_usefulness
+version: 1
+title: Candidate usefulness
+kind: procedure
+description: Evaluates whether even non-winning drafts contain reusable ideas, lines, structures, or solutions worth
+  preserving.
+origin: user_inventory_refined
+owner_domains:
+- procedure.candidate_usefulness
+artifact_types:
+- any
+valid_scopes:
+- operation
+activation: Attach when candidate usefulness is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: op.select.candidate_usefulness.quality
+  type: group
+  title: Candidate usefulness checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: op.select.candidate_usefulness.identify
+    type: question
+    criterion_key: op.select.candidate_usefulness.identify
+    text: Are reusable lines, images, beats, structures, facts, and solutions identified precisely?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.select.candidate_usefulness.quality
+    type: question
+    criterion_key: op.select.candidate_usefulness.quality
+    text: Are preserved fragments strong enough to justify reuse rather than merely novel?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.select.candidate_usefulness.portable
+    type: question
+    criterion_key: op.select.candidate_usefulness.portable
+    text: Can each preserved element be reused without importing the candidate's defects or incompatible assumptions?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.select.candidate_usefulness.provenance
+    type: question
+    criterion_key: op.select.candidate_usefulness.provenance
+    text: Is the source candidate and span recorded?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.select.candidate_usefulness.destination
+    type: question
+    criterion_key: op.select.candidate_usefulness.destination
+    text: Is a plausible destination or use recorded for each retained element?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.select.candidate_usefulness.conflicts
+    type: question
+    criterion_key: op.select.candidate_usefulness.conflicts
+    text: Are canon, voice, licensing, and branch conflicts noted before reuse?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.select.candidate_usefulness.no_hoard
+    type: question
+    criterion_key: op.select.candidate_usefulness.no_hoard
+    text: Does the process avoid preserving low-value material merely because generation was costly?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.select.candidate_usefulness.set_value
+    type: question
+    criterion_key: op.select.candidate_usefulness.set_value
+    text: Does the preserved pool add options not already represented by the winner?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- wu_et_al_2025_writingbench
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates whether even non-winning drafts contain reusable ideas, lines, structures, or solutions
+  worth preserving.

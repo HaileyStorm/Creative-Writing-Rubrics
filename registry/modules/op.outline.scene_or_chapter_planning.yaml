@@ -1,0 +1,156 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: op.outline.scene_or_chapter_planning
+version: 1
+title: Scene or chapter planning
+kind: procedure
+description: Evaluates whether the local plan fits the fine outline, surrounding units, character knowledge, continuity,
+  pacing needs, and intended emotional movement.
+origin: user_inventory_refined
+owner_domains:
+- procedure.scene_or_chapter_planning
+artifact_types:
+- any
+valid_scopes:
+- operation
+activation: Attach when scene or chapter planning is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: op.outline.scene_or_chapter_planning.quality
+  type: group
+  title: Scene or chapter planning checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: op.outline.scene_or_chapter_planning.larger_fit
+    type: question
+    criterion_key: op.outline.scene_or_chapter_planning.larger_fit
+    text: Does the plan serve the surrounding outline and current arc?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.outline.scene_or_chapter_planning.entry
+    type: question
+    criterion_key: op.outline.scene_or_chapter_planning.entry
+    text: Does it choose an efficient and intelligible entry point?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.outline.scene_or_chapter_planning.objective
+    type: question
+    criterion_key: op.outline.scene_or_chapter_planning.objective
+    text: Are participant objectives, pressures, and knowledge states clear?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.outline.scene_or_chapter_planning.beats
+    type: question
+    criterion_key: op.outline.scene_or_chapter_planning.beats
+    text: Do planned beats escalate, deepen, reveal, or transform rather than merely occupy space?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.outline.scene_or_chapter_planning.turn
+    type: question
+    criterion_key: op.outline.scene_or_chapter_planning.turn
+    text: Is the unit's changed state or new understanding identifiable?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.outline.scene_or_chapter_planning.exit
+    type: question
+    criterion_key: op.outline.scene_or_chapter_planning.exit
+    text: Does the exit hand meaningful momentum or resonance to the next unit?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.outline.scene_or_chapter_planning.continuity
+    type: question
+    criterion_key: op.outline.scene_or_chapter_planning.continuity
+    text: Does the plan satisfy canon, timeline, location, and physical-state constraints?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.outline.scene_or_chapter_planning.scope
+    type: question
+    criterion_key: op.outline.scene_or_chapter_planning.scope
+    text: Is the amount of planned material appropriate to the unit's intended length?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- wu_et_al_2025_writingbench
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates whether the local plan fits the fine outline, surrounding units, character knowledge,
+  continuity, pacing needs, and intended emotional movement.

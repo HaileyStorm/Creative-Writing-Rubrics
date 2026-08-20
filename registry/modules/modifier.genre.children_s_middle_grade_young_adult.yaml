@@ -1,0 +1,157 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: modifier.genre.children_s_middle_grade_young_adult
+version: 1
+title: Children’s / middle-grade / young adult
+kind: modifier
+description: Age-appropriate complexity without condescension, emotional truth, readability, agency, intensity,
+  voice, and accurate audience targeting.
+origin: user_inventory_refined
+owner_domains:
+- genre.children_s_middle_grade_young_adult
+artifact_types:
+- creative_text
+valid_scopes:
+- any
+activation: Attach when children’s / middle-grade / young adult is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: modifier.genre.children_s_middle_grade_young_adult.quality
+  type: group
+  title: Children’s / middle-grade / young adult contract
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: modifier.genre.children_s_middle_grade_young_adult.age_fit
+    type: question
+    criterion_key: modifier.genre.children_s_middle_grade_young_adult.age_fit
+    text: Is language, conceptual load, structure, and intensity appropriate to the specified age band rather than
+      a generic idea of youth?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.children_s_middle_grade_young_adult.agency
+    type: question
+    criterion_key: modifier.genre.children_s_middle_grade_young_adult.agency
+    text: Do young characters possess meaningful agency and competence appropriate to their situation?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.children_s_middle_grade_young_adult.truth
+    type: question
+    criterion_key: modifier.genre.children_s_middle_grade_young_adult.truth
+    text: Does the work treat emotional and social experience with honesty rather than condescension?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.children_s_middle_grade_young_adult.readability
+    type: question
+    criterion_key: modifier.genre.children_s_middle_grade_young_adult.readability
+    text: Is readability appropriate without flattening voice, complexity, or vocabulary?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.children_s_middle_grade_young_adult.perspective
+    type: question
+    criterion_key: modifier.genre.children_s_middle_grade_young_adult.perspective
+    text: Does the viewpoint reflect the character's developmental stage without caricature?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.children_s_middle_grade_young_adult.intensity
+    type: question
+    criterion_key: modifier.genre.children_s_middle_grade_young_adult.intensity
+    text: Are fear, violence, sexuality, loss, and ambiguity calibrated to the specified audience and purpose?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.children_s_middle_grade_young_adult.no_moralizing
+    type: question
+    criterion_key: modifier.genre.children_s_middle_grade_young_adult.no_moralizing
+    text: Does the story avoid turning into an adult-delivered lesson at the expense of narrative experience?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.children_s_middle_grade_young_adult.no_baby_talk
+    type: question
+    criterion_key: modifier.genre.children_s_middle_grade_young_adult.no_baby_talk
+    text: Does it avoid infantilizing diction or excessive explanation?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- fein_et_al_2026_litbench
+- wu_et_al_2025_writingbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Age-appropriate complexity without condescension, emotional truth, readability, agency, intensity,
+  voice, and accurate audience targeting.

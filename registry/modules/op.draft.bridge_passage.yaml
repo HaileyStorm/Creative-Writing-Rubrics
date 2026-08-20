@@ -1,0 +1,142 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: op.draft.bridge_passage
+version: 1
+title: Bridge passage
+kind: procedure
+description: Evaluates transition efficiency, changed state, temporal/spatial clarity, tonal continuity, and whether
+  the bridge avoids feeling like connective filler.
+origin: user_inventory_refined
+owner_domains:
+- procedure.bridge_passage
+artifact_types:
+- any
+valid_scopes:
+- operation
+activation: Attach when bridge passage is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: op.draft.bridge_passage.quality
+  type: group
+  title: Bridge passage checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: op.draft.bridge_passage.from_state
+    type: question
+    criterion_key: op.draft.bridge_passage.from_state
+    text: Does the passage begin from the preceding unit's actual resulting state?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.draft.bridge_passage.to_state
+    type: question
+    criterion_key: op.draft.bridge_passage.to_state
+    text: Does it deliver the characters, time, place, knowledge, and tone required by the next unit?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.draft.bridge_passage.clarity
+    type: question
+    criterion_key: op.draft.bridge_passage.clarity
+    text: Are temporal, spatial, and causal changes clear?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.draft.bridge_passage.economy
+    type: question
+    criterion_key: op.draft.bridge_passage.economy
+    text: Does it perform only the connective work that is needed?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.draft.bridge_passage.voice
+    type: question
+    criterion_key: op.draft.bridge_passage.voice
+    text: Does it maintain voice and tone across the transition?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.draft.bridge_passage.meaning
+    type: question
+    criterion_key: op.draft.bridge_passage.meaning
+    text: Does the transition contain at least one meaningful observation, consequence, choice, or shift?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.draft.bridge_passage.no_filler
+    type: question
+    criterion_key: op.draft.bridge_passage.no_filler
+    text: Does it avoid travelogue, recap, weather filler, and generic time-passing summary?
+    pass_answer: 'YES'
+    weight: 2.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- wu_et_al_2025_writingbench
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates transition efficiency, changed state, temporal/spatial clarity, tonal continuity,
+  and whether the bridge avoids feeling like connective filler.

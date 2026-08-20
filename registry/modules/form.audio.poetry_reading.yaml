@@ -1,0 +1,140 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: form.audio.poetry_reading
+version: 1
+title: Poetry reading
+kind: audio_artifact
+description: Research-informed binary rubric for poetry reading.
+origin: research_expansion
+owner_domains:
+- audio.poetry_reading
+artifact_types:
+- audio_asset
+valid_scopes:
+- utterance
+- passage
+- scene
+- chapter
+- work
+activation: Attach when poetry reading is the active form, asset, or evaluation concern.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 1
+  project_sources: source text, pronunciation lexicon, voice references, and direction sheet when supplied
+  modalities_required:
+  - audio
+tree:
+- id: form.audio.poetry_reading.quality
+  type: group
+  title: Poetry reading checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: form.audio.poetry_reading.text
+    type: question
+    criterion_key: form.audio.poetry_reading.text
+    text: Is every word and line reproduced accurately?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: hard_gate
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.audio.poetry_reading.lineation
+    type: question
+    criterion_key: form.audio.poetry_reading.lineation
+    text: Does delivery respect or productively interpret line breaks, stanza breaks, caesuras, and enjambment?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.audio.poetry_reading.sound
+    type: question
+    criterion_key: form.audio.poetry_reading.sound
+    text: Does it reveal the poem's sound pattern, rhythm, and stress without chanting mechanically?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.audio.poetry_reading.meaning
+    type: question
+    criterion_key: form.audio.poetry_reading.meaning
+    text: Do phrasing and emphasis support the poem's syntax, images, turns, and ambiguities?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.audio.poetry_reading.voice
+    type: question
+    criterion_key: form.audio.poetry_reading.voice
+    text: Does performance suit the poem's speaker, tone, and mode?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.audio.poetry_reading.silence
+    type: question
+    criterion_key: form.audio.poetry_reading.silence
+    text: Are pauses and breath used as meaningful elements rather than arbitrary gaps?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.audio.poetry_reading.no_overact
+    type: question
+    criterion_key: form.audio.poetry_reading.no_overact
+    text: Does it avoid overacting, generalized solemnity, and emotional instruction that narrows the poem?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- galdino_et_al_2025_prosody_review
+- real_world_voice_eq_bench_2026
+notes: []

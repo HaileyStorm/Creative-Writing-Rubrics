@@ -1,0 +1,141 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: artifact.support.synopsis
+version: 1
+title: Synopsis
+kind: support_artifact
+description: Evaluates accurate compression, causal clarity, inclusion of major turns and ending, character arc,
+  and proportionate coverage.
+origin: user_inventory_refined
+owner_domains:
+- support.synopsis
+artifact_types:
+- planning_artifact
+- reference_artifact
+valid_scopes:
+- any
+activation: Attach when synopsis is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: artifact.support.synopsis.quality
+  type: group
+  title: Synopsis checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: artifact.support.synopsis.coverage
+    type: question
+    criterion_key: artifact.support.synopsis.coverage
+    text: Does the synopsis include the major causal turns, climax, and ending required by its purpose?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.synopsis.causality
+    type: question
+    criterion_key: artifact.support.synopsis.causality
+    text: Can the reader see why major events lead to one another?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.synopsis.arc
+    type: question
+    criterion_key: artifact.support.synopsis.arc
+    text: Does it show the central character or relationship arc?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.synopsis.proportion
+    type: question
+    criterion_key: artifact.support.synopsis.proportion
+    text: Is space allocated in proportion to narrative importance?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.synopsis.clarity
+    type: question
+    criterion_key: artifact.support.synopsis.clarity
+    text: Can the synopsis be followed without consulting the manuscript?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.synopsis.accuracy
+    type: question
+    criterion_key: artifact.support.synopsis.accuracy
+    text: Does it accurately represent the current manuscript version?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.synopsis.no_teaser
+    type: question
+    criterion_key: artifact.support.synopsis.no_teaser
+    text: Does it avoid withholding the ending or substituting promotional suspense when a full synopsis is requested?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates accurate compression, causal clarity, inclusion of major turns and ending, character
+  arc, and proportionate coverage.

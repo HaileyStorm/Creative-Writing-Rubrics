@@ -1,0 +1,142 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: form.drama.monologue
+version: 1
+title: Monologue
+kind: artifact_form
+description: Evaluates sustained voice, rhetorical movement, revelation, audience relationship, escalation, variation,
+  and performability.
+origin: user_inventory_refined
+owner_domains:
+- form.monologue
+artifact_types:
+- dramatic_writing
+valid_scopes:
+- any
+activation: Attach when monologue is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: form.drama.monologue.quality
+  type: group
+  title: Monologue checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: form.drama.monologue.voice
+    type: question
+    criterion_key: form.drama.monologue.voice
+    text: Can one speaker sustain a distinctive and specific voice?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.drama.monologue.situation
+    type: question
+    criterion_key: form.drama.monologue.situation
+    text: Is the speaking situation, audience, or addressee sufficiently legible?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.drama.monologue.movement
+    type: question
+    criterion_key: form.drama.monologue.movement
+    text: Does the monologue change tactic, understanding, disclosure, pressure, or emotional state?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.drama.monologue.revelation
+    type: question
+    criterion_key: form.drama.monologue.revelation
+    text: Does information emerge through the speaker's need and behavior rather than exposition alone?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.drama.monologue.variation
+    type: question
+    criterion_key: form.drama.monologue.variation
+    text: Does rhythm, intensity, syntax, and focus vary enough to sustain attention?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.drama.monologue.performability
+    type: question
+    criterion_key: form.drama.monologue.performability
+    text: Can the language be spoken naturally and effectively by a performer?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.drama.monologue.ending
+    type: question
+    criterion_key: form.drama.monologue.ending
+    text: Does the monologue arrive at an earned final action, recognition, refusal, or image?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- fein_et_al_2026_litbench
+- wu_et_al_2025_writingbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates sustained voice, rhetorical movement, revelation, audience relationship, escalation,
+  variation, and performability.

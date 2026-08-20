@@ -1,0 +1,156 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: model.release.creative_sampler_regression
+version: 1
+title: Creative-sampler regression
+kind: model_build
+description: Ensures modified models retain the intended quality gain from the custom sampler without disproportionate
+  drift or latency.
+origin: user_inventory_refined
+owner_domains:
+- model.creative_sampler_regression
+artifact_types:
+- model_build
+valid_scopes:
+- any
+activation: Attach when creative-sampler regression is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: model.release.creative_sampler_regression.quality
+  type: group
+  title: Creative-sampler regression checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: model.release.creative_sampler_regression.baseline
+    type: question
+    criterion_key: model.release.creative_sampler_regression.baseline
+    text: Is the custom sampler compared with the standard sampler on locked prompts and matched seeds where possible?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.creative_sampler_regression.quality
+    type: question
+    criterion_key: model.release.creative_sampler_regression.quality
+    text: Does the modified model retain the sampler's creative-quality gain?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.creative_sampler_regression.freshness
+    type: question
+    criterion_key: model.release.creative_sampler_regression.freshness
+    text: Does it retain gains in freshness, specificity, and structural diversity?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.creative_sampler_regression.coherence
+    type: question
+    criterion_key: model.release.creative_sampler_regression.coherence
+    text: Does it avoid disproportionate incoherence, drift, punctuation damage, and unfinished syntax?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.creative_sampler_regression.repetition
+    type: question
+    criterion_key: model.release.creative_sampler_regression.repetition
+    text: Does it avoid increased lexical, syntactic, imagistic, and scene-level repetition?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.creative_sampler_regression.profiles
+    type: question
+    criterion_key: model.release.creative_sampler_regression.profiles
+    text: Are model-specific and operation-specific sampler profiles retuned after modification?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.creative_sampler_regression.latency
+    type: question
+    criterion_key: model.release.creative_sampler_regression.latency
+    text: Is retained benefit reported against extra forwards and delivered latency?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.creative_sampler_regression.long
+    type: question
+    criterion_key: model.release.creative_sampler_regression.long
+    text: Does the sampler remain stable over representative long continuations?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- rao_callison_burch_2026_autorubric
+- longjudgebench_2026
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Ensures modified models retain the intended quality gain from the custom sampler without disproportionate
+  drift or latency.

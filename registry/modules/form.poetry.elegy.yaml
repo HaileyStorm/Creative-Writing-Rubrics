@@ -1,0 +1,138 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: form.poetry.elegy
+version: 1
+title: Elegy
+kind: artifact_form
+description: Research-informed binary rubric for elegy.
+origin: research_expansion
+owner_domains:
+- form.poetry.elegy
+artifact_types:
+- poetry
+valid_scopes:
+- line
+- stanza
+- poem
+- collection
+activation: Attach when elegy is the active form, asset, or evaluation concern.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: form.poetry.elegy.quality
+  type: group
+  title: Elegy checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: form.poetry.elegy.loss
+    type: question
+    criterion_key: form.poetry.elegy.loss
+    text: Is the loss, absence, death, or disappearance sufficiently present without requiring exhaustive explanation?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.elegy.specific
+    type: question
+    criterion_key: form.poetry.elegy.specific
+    text: Does the poem make grief or remembrance specific to its subject and speaker?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.elegy.movement
+    type: question
+    criterion_key: form.poetry.elegy.movement
+    text: Does it move through lament, memory, protest, praise, consolation, refusal, or another coherent elegiac
+      sequence?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.elegy.complexity
+    type: question
+    criterion_key: form.poetry.elegy.complexity
+    text: Does it allow contradiction, ambivalence, anger, numbness, or unresolved grief where appropriate?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.elegy.form
+    type: question
+    criterion_key: form.poetry.elegy.form
+    text: Does form carry the temporal and emotional pressure of mourning?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.elegy.ethics
+    type: question
+    criterion_key: form.poetry.elegy.ethics
+    text: Does it avoid using the deceased or lost subject merely as emotional leverage?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.elegy.no_generic
+    type: question
+    criterion_key: form.poetry.elegy.no_generic
+    text: Does it avoid generic solemnity, abstract grief language, and interchangeable memorial imagery?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- li_et_al_2026_poemetric
+- vaezi_rezaei_2018
+notes: []

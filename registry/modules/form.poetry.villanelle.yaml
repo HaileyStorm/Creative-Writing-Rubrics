@@ -1,0 +1,151 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: form.poetry.villanelle
+version: 1
+title: Villanelle
+kind: artifact_form
+description: Research-informed binary rubric for villanelle.
+origin: research_expansion
+owner_domains:
+- form.poetry.villanelle
+artifact_types:
+- poetry
+valid_scopes:
+- line
+- stanza
+- poem
+- collection
+activation: Attach when villanelle is the active form, asset, or evaluation concern.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: form.poetry.villanelle.quality
+  type: group
+  title: Villanelle checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: form.poetry.villanelle.nineteen
+    type: question
+    criterion_key: form.poetry.villanelle.nineteen
+    text: Does the poem contain nineteen lines organized as five tercets and a quatrain?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: hard_gate
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.villanelle.refrains
+    type: question
+    criterion_key: form.poetry.villanelle.refrains
+    text: Are the two refrain lines repeated in the required alternating pattern and joined in the final quatrain?
+    pass_answer: 'YES'
+    weight: 2.5
+    question_type: hard_gate
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.villanelle.rhyme
+    type: question
+    criterion_key: form.poetry.villanelle.rhyme
+    text: Does the poem maintain the two-rhyme architecture?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: hard_gate
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.villanelle.variation
+    type: question
+    criterion_key: form.poetry.villanelle.variation
+    text: Do context, punctuation, syntax, or emphasis make each refrain recurrence change meaning?
+    pass_answer: 'YES'
+    weight: 2.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.villanelle.development
+    type: question
+    criterion_key: form.poetry.villanelle.development
+    text: Does the poem develop despite its circular form?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.villanelle.no_filler
+    type: question
+    criterion_key: form.poetry.villanelle.no_filler
+    text: Does it avoid filler inserted merely to reach refrain or rhyme positions?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.villanelle.closure
+    type: question
+    criterion_key: form.poetry.villanelle.closure
+    text: Does the final joining of refrains create culmination rather than simple repetition?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- li_et_al_2026_poemetric
+- vaezi_rezaei_2018
+notes: []
+profile_overrides:
+  default_profile: traditional
+  profiles:
+    traditional:
+      line_count: 19
+      stanzas:
+      - 3
+      - 3
+      - 3
+      - 3
+      - 3
+      - 4
+      rhyme: ABA x5 + ABAA
+      refrains: A1/A2 alternating and joined at close

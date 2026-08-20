@@ -1,0 +1,164 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: meta.human_review_escalation
+version: 1
+title: Human review escalation
+kind: meta_rubric
+description: Research-informed binary rubric for human review escalation.
+origin: research_synthesis
+owner_domains:
+- meta.human_review_escalation
+artifact_types:
+- evaluation_system
+valid_scopes:
+- operation
+- run
+activation: Attach when human review escalation is the active form, asset, or evaluation concern.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: meta.human_review_escalation.quality
+  type: group
+  title: Human review escalation checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: meta.human_review_escalation.hard_unresolved
+    type: question
+    criterion_key: meta.human_review_escalation.hard_unresolved
+    text: Is human review required when a material hard gate cannot be assessed?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: meta.human_review_escalation.coverage
+    type: question
+    criterion_key: meta.human_review_escalation.coverage
+    text: Is review required when weighted evidence coverage falls below the bundle threshold?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: meta.human_review_escalation.close
+    type: question
+    criterion_key: meta.human_review_escalation.close
+    text: Is review required when finalist score intervals overlap materially?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: meta.human_review_escalation.conflict
+    type: question
+    criterion_key: meta.human_review_escalation.conflict
+    text: Is review required when authoritative project sources conflict?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: meta.human_review_escalation.subjective
+    type: question
+    criterion_key: meta.human_review_escalation.subjective
+    text: Is review available when the decision turns mainly on taste or holistic artistic judgment?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: meta.human_review_escalation.long
+    type: question
+    criterion_key: meta.human_review_escalation.long
+    text: Is review available for long-form decisions whose evidence exceeds reliable judge context?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: meta.human_review_escalation.multimodal
+    type: question
+    criterion_key: meta.human_review_escalation.multimodal
+    text: Is review available when the judge lacks direct access to a relevant modality?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: meta.human_review_escalation.impact
+    type: question
+    criterion_key: meta.human_review_escalation.impact
+    text: Does escalation consider reversibility, user impact, publication state, and downstream cost?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: meta.human_review_escalation.reason
+    type: question
+    criterion_key: meta.human_review_escalation.reason
+    text: Is the escalation reason and unresolved evidence reported concisely?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- rao_callison_burch_2026_autorubric
+notes: []

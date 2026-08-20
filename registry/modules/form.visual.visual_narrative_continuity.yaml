@@ -1,0 +1,139 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: form.visual.visual_narrative_continuity
+version: 1
+title: Visual narrative continuity
+kind: visual_artifact
+description: Research-informed binary rubric for visual narrative continuity.
+origin: research_expansion
+owner_domains:
+- visual.visual_narrative_continuity
+artifact_types:
+- visual_asset
+valid_scopes:
+- asset
+- panel
+- sequence
+- project
+activation: Attach when visual narrative continuity is the active form, asset, or evaluation concern.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 2
+  project_sources: character references, style references, scene text, and asset metadata when supplied
+  modalities_required:
+  - image
+tree:
+- id: form.visual.visual_narrative_continuity.quality
+  type: group
+  title: Visual narrative continuity checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: form.visual.visual_narrative_continuity.character
+    type: question
+    criterion_key: form.visual.visual_narrative_continuity.character
+    text: Is character identity stable across images despite pose, expression, angle, lighting, and distance changes?
+    pass_answer: 'YES'
+    weight: 2.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.visual.visual_narrative_continuity.space
+    type: question
+    criterion_key: form.visual.visual_narrative_continuity.space
+    text: Are environments and spatial anchors stable across adjacent and distant images?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.visual.visual_narrative_continuity.props
+    type: question
+    criterion_key: form.visual.visual_narrative_continuity.props
+    text: Are important props, clothing, injuries, and state changes persistent?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.visual.visual_narrative_continuity.time
+    type: question
+    criterion_key: form.visual.visual_narrative_continuity.time
+    text: Are time, weather, lighting, and aging changes consistent with the narrative?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.visual.visual_narrative_continuity.event
+    type: question
+    criterion_key: form.visual.visual_narrative_continuity.event
+    text: Does each image correctly reflect event and plot progression?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.visual.visual_narrative_continuity.style
+    type: question
+    criterion_key: form.visual.visual_narrative_continuity.style
+    text: Is rendering style consistent across the sequence?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.visual.visual_narrative_continuity.transitions
+    type: question
+    criterion_key: form.visual.visual_narrative_continuity.transitions
+    text: Do visual transitions feel intentional rather than abrupt identity or setting resets?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- zhuang_et_al_2025_vistorybench
+- lin_et_al_2026_storybook_consistency
+notes: []

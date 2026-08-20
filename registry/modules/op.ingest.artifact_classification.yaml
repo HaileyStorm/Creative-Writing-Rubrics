@@ -1,0 +1,129 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: op.ingest.artifact_classification
+version: 1
+title: Artifact classification
+kind: procedure
+description: Evaluates whether text was correctly divided into scenes, chapters, poems, notes, outlines, research,
+  alternate drafts, and reference material.
+origin: user_inventory_refined
+owner_domains:
+- procedure.artifact_classification
+artifact_types:
+- any
+valid_scopes:
+- operation
+activation: Attach when artifact classification is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: op.ingest.artifact_classification.quality
+  type: group
+  title: Artifact classification checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: op.ingest.artifact_classification.unit_type
+    type: question
+    criterion_key: op.ingest.artifact_classification.unit_type
+    text: Is each unit assigned the correct artifact type, such as scene, chapter, poem, outline, note, research,
+      or alternate draft?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ingest.artifact_classification.boundaries
+    type: question
+    criterion_key: op.ingest.artifact_classification.boundaries
+    text: Are unit boundaries detected without merging unrelated artifacts or splitting coherent ones?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ingest.artifact_classification.status
+    type: question
+    criterion_key: op.ingest.artifact_classification.status
+    text: Is each unit's status—draft, final, excerpt, note, deprecated, alternate, or unknown—represented accurately?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ingest.artifact_classification.hierarchy
+    type: question
+    criterion_key: op.ingest.artifact_classification.hierarchy
+    text: Are parent-child relationships among manuscripts, chapters, scenes, sections, and notes correct?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ingest.artifact_classification.ambiguity
+    type: question
+    criterion_key: op.ingest.artifact_classification.ambiguity
+    text: Are ambiguous classifications exposed rather than forced into a false certainty?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ingest.artifact_classification.no_content_loss
+    type: question
+    criterion_key: op.ingest.artifact_classification.no_content_loss
+    text: Does classification preserve all source content and provenance?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- wu_et_al_2025_writingbench
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates whether text was correctly divided into scenes, chapters, poems, notes, outlines,
+  research, alternate drafts, and reference material.

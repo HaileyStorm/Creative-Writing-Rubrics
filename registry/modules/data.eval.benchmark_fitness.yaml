@@ -1,0 +1,143 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: data.eval.benchmark_fitness
+version: 1
+title: Benchmark fitness
+kind: dataset_eval
+description: Evaluates whether a benchmark genuinely measures the intended capability and whether contamination,
+  lexical shortcuts, or scope mismatch limit its interpretation.
+origin: user_inventory_refined
+owner_domains:
+- dataset.benchmark_fitness
+artifact_types:
+- dataset
+- evaluation_pipeline
+valid_scopes:
+- any
+activation: Attach when benchmark fitness is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: data.eval.benchmark_fitness.quality
+  type: group
+  title: Benchmark fitness checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: data.eval.benchmark_fitness.construct
+    type: question
+    criterion_key: data.eval.benchmark_fitness.construct
+    text: Does the benchmark actually measure the claimed capability?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: data.eval.benchmark_fitness.scope
+    type: question
+    criterion_key: data.eval.benchmark_fitness.scope
+    text: Do artifact types, lengths, genres, operations, and context resemble the deployment workload?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: data.eval.benchmark_fitness.difficulty
+    type: question
+    criterion_key: data.eval.benchmark_fitness.difficulty
+    text: Does it discriminate among models at the relevant performance level?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: data.eval.benchmark_fitness.shortcuts
+    type: question
+    criterion_key: data.eval.benchmark_fitness.shortcuts
+    text: Are lexical, formatting, provenance, and other shortcut cues controlled?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: data.eval.benchmark_fitness.contamination
+    type: question
+    criterion_key: data.eval.benchmark_fitness.contamination
+    text: Is likely training contamination assessed?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: data.eval.benchmark_fitness.labels
+    type: question
+    criterion_key: data.eval.benchmark_fitness.labels
+    text: Are reference labels or preferences sufficiently reliable?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: data.eval.benchmark_fitness.limits
+    type: question
+    criterion_key: data.eval.benchmark_fitness.limits
+    text: Are limitations and allowed interpretations documented?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- rao_callison_burch_2026_autorubric
+- longjudgebench_2026
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates whether a benchmark genuinely measures the intended capability and whether contamination,
+  lexical shortcuts, or scope mismatch limit its interpretation.

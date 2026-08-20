@@ -1,0 +1,128 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: sampler.single_sample_creative_quality
+version: 1
+title: Single-sample creative quality
+kind: sampler
+description: Uses the applicable writing rubric to ensure sampler novelty does not excuse incoherence or weak prose.
+origin: user_inventory_refined
+owner_domains:
+- sampler.single_sample_creative_quality
+artifact_types:
+- generated_candidate
+- candidate_set
+valid_scopes:
+- any
+activation: Attach when single-sample creative quality is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: sampler.single_sample_creative_quality.quality
+  type: group
+  title: Single-sample creative quality checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: sampler.single_sample_creative_quality.compliance
+    type: question
+    criterion_key: sampler.single_sample_creative_quality.compliance
+    text: Does the sample satisfy the active task and hard constraints?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: hard_gate
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: sampler.single_sample_creative_quality.coherence
+    type: question
+    criterion_key: sampler.single_sample_creative_quality.coherence
+    text: Is it locally and globally coherent at the supplied scope?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: sampler.single_sample_creative_quality.craft
+    type: question
+    criterion_key: sampler.single_sample_creative_quality.craft
+    text: Does it meet the active craft modules at a usable quality level?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: sampler.single_sample_creative_quality.fresh
+    type: question
+    criterion_key: sampler.single_sample_creative_quality.fresh
+    text: Does it offer apt freshness rather than random novelty?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: sampler.single_sample_creative_quality.canon
+    type: question
+    criterion_key: sampler.single_sample_creative_quality.canon
+    text: Does it preserve project canon and continuity?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: sampler.single_sample_creative_quality.complete
+    type: question
+    criterion_key: sampler.single_sample_creative_quality.complete
+    text: Is the sample complete for the requested generation unit?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- wu_et_al_2025_writingbench
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Uses the applicable writing rubric to ensure sampler novelty does not excuse incoherence or
+  weak prose.

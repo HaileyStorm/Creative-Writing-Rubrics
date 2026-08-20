@@ -1,0 +1,170 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: op.revision.character_revision
+version: 1
+title: Character revision
+kind: procedure
+description: Evaluates stronger agency, motive, differentiation, arc, voice, or relationship logic without turning
+  the character into a different person unintentionally.
+origin: user_inventory_refined
+owner_domains:
+- procedure.character_revision
+artifact_types:
+- any
+valid_scopes:
+- operation
+activation: Attach when character revision is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: op.revision.character_revision.quality
+  type: group
+  title: Character revision checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: op.revision.character_revision.target
+    type: question
+    criterion_key: op.revision.character_revision.target
+    text: Does the revision address the specified character problem?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.character_revision.agency
+    type: question
+    criterion_key: op.revision.character_revision.agency
+    text: Does it strengthen meaningful choice where agency was weak?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.character_revision.motive
+    type: question
+    criterion_key: op.revision.character_revision.motive
+    text: Does it clarify or deepen motive through behavior and consequence rather than labels alone?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.character_revision.distinct
+    type: question
+    criterion_key: op.revision.character_revision.distinct
+    text: Does it increase distinction without replacing the character with a collection of quirks?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.character_revision.voice
+    type: question
+    criterion_key: op.revision.character_revision.voice
+    text: Does it strengthen character-specific voice while preserving identity?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.character_revision.arc
+    type: question
+    criterion_key: op.revision.character_revision.arc
+    text: Does it improve arc continuity and rate of change?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.character_revision.relationships
+    type: question
+    criterion_key: op.revision.character_revision.relationships
+    text: Do changed traits or motives propagate credibly through relationships?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.character_revision.same_person
+    type: question
+    criterion_key: op.revision.character_revision.same_person
+    text: Does the revised character remain recognizably the intended person unless reinvention was authorized?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.character_revision.canon
+    type: question
+    criterion_key: op.revision.character_revision.canon
+    text: Are character sheets and dependent canon updated when the change is approved?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- wu_et_al_2025_writingbench
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates stronger agency, motive, differentiation, arc, voice, or relationship logic without
+  turning the character into a different person unintentionally.

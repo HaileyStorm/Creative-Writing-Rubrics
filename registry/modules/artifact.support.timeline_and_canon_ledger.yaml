@@ -1,0 +1,155 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: artifact.support.timeline_and_canon_ledger
+version: 1
+title: Timeline and canon ledger
+kind: support_artifact
+description: Evaluates chronology, state changes, source provenance, uncertainty, contradiction handling, and machine-readable
+  usefulness.
+origin: user_inventory_refined
+owner_domains:
+- support.timeline_and_canon_ledger
+artifact_types:
+- planning_artifact
+- reference_artifact
+valid_scopes:
+- any
+activation: Attach when timeline and canon ledger is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: artifact.support.timeline_and_canon_ledger.quality
+  type: group
+  title: Timeline and canon ledger checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: artifact.support.timeline_and_canon_ledger.chronology
+    type: question
+    criterion_key: artifact.support.timeline_and_canon_ledger.chronology
+    text: Are dated and relative events ordered consistently?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.timeline_and_canon_ledger.state_changes
+    type: question
+    criterion_key: artifact.support.timeline_and_canon_ledger.state_changes
+    text: Does each relevant event update character, relationship, item, place, and world state?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.timeline_and_canon_ledger.provenance
+    type: question
+    criterion_key: artifact.support.timeline_and_canon_ledger.provenance
+    text: Can each canon entry be traced to a source, user decision, or manuscript unit?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.timeline_and_canon_ledger.uncertainty
+    type: question
+    criterion_key: artifact.support.timeline_and_canon_ledger.uncertainty
+    text: Are approximate dates, disputed events, and inferred ordering explicitly marked?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.timeline_and_canon_ledger.conflicts
+    type: question
+    criterion_key: artifact.support.timeline_and_canon_ledger.conflicts
+    text: Are contradictions recorded and routed for resolution rather than silently overwritten?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.timeline_and_canon_ledger.supersession
+    type: question
+    criterion_key: artifact.support.timeline_and_canon_ledger.supersession
+    text: Are superseded entries retained with version status while current canon is clear?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.timeline_and_canon_ledger.queryability
+    type: question
+    criterion_key: artifact.support.timeline_and_canon_ledger.queryability
+    text: Is the ledger structured for machine retrieval, filtering, and continuity checking?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.timeline_and_canon_ledger.coverage
+    type: question
+    criterion_key: artifact.support.timeline_and_canon_ledger.coverage
+    text: Does it include the state information needed by active narrative operations?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates chronology, state changes, source provenance, uncertainty, contradiction handling,
+  and machine-readable usefulness.

@@ -1,0 +1,245 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/HaileyStorm/Creative-Writing-Rubrics/main/schema/hbq_rubric.schema.json",
+  "title": "HBQ-RS rubric module",
+  "type": "object",
+  "required": [
+    "standard",
+    "module_id",
+    "version",
+    "title",
+    "kind",
+    "description",
+    "owner_domains",
+    "artifact_types",
+    "valid_scopes",
+    "tree"
+  ],
+  "properties": {
+    "standard": {
+      "type": "object",
+      "required": [
+        "id",
+        "version"
+      ],
+      "properties": {
+        "id": {
+          "const": "HBQ-RS"
+        },
+        "version": {
+          "type": "string"
+        }
+      }
+    },
+    "module_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9_.]+$"
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "title": {
+      "type": "string"
+    },
+    "kind": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "owner_domains": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      }
+    },
+    "artifact_types": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      }
+    },
+    "valid_scopes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      }
+    },
+    "tree": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/node"
+      }
+    }
+  },
+  "$defs": {
+    "question": {
+      "type": "object",
+      "required": [
+        "id",
+        "type",
+        "criterion_key",
+        "text",
+        "pass_answer",
+        "weight",
+        "question_type",
+        "severity",
+        "applies_when",
+        "evidence_policy"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 3
+        },
+        "type": {
+          "const": "question"
+        },
+        "criterion_key": {
+          "type": "string",
+          "minLength": 3
+        },
+        "text": {
+          "type": "string",
+          "pattern": "\\?$"
+        },
+        "pass_answer": {
+          "const": "YES"
+        },
+        "weight": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "question_type": {
+          "enum": [
+            "hard_gate",
+            "scored",
+            "subjective_threshold",
+            "diagnostic"
+          ]
+        },
+        "severity": {
+          "enum": [
+            "minor",
+            "material",
+            "major",
+            "critical"
+          ]
+        },
+        "applies_when": {
+          "type": "string"
+        },
+        "evidence_policy": {
+          "type": "object",
+          "required": [
+            "required",
+            "minimum_references",
+            "reference_style"
+          ],
+          "properties": {
+            "required": {
+              "type": "boolean"
+            },
+            "minimum_references": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "reference_style": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": true
+        },
+        "violation_example": {
+          "type": "string"
+        },
+        "notes": {
+          "type": "string"
+        },
+        "failure_effect": {
+          "type": "object"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "group": {
+      "type": "object",
+      "required": [
+        "id",
+        "type",
+        "title",
+        "score_mode",
+        "weight",
+        "children"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "type": {
+          "const": "group"
+        },
+        "title": {
+          "type": "string"
+        },
+        "score_mode": {
+          "enum": [
+            "weighted_mean",
+            "weighted_binary_mean",
+            "capped_penalty",
+            "cumulative_threshold",
+            "all_required",
+            "diagnostic"
+          ]
+        },
+        "weight": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "children": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/node"
+          }
+        },
+        "cap_points": {
+          "type": "number",
+          "minimum": 0
+        },
+        "description": {
+          "type": "string"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "node": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/question"
+        },
+        {
+          "$ref": "#/$defs/group"
+        }
+      ]
+    }
+  },
+  "additionalProperties": true
+}

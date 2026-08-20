@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/HaileyStorm/Creative-Writing-Rubrics/main/schema/hbq_score_report.schema.json",
+  "title": "HBQ-RS score report",
+  "type": "object",
+  "required": [
+    "bundle_id",
+    "artifact_id",
+    "hard_gate_status",
+    "coverage",
+    "base_score",
+    "penalty_deduction",
+    "final_score",
+    "domains"
+  ],
+  "properties": {
+    "bundle_id": {
+      "type": "string"
+    },
+    "artifact_id": {
+      "type": "string"
+    },
+    "hard_gate_status": {
+      "enum": [
+        "VALID",
+        "INVALID",
+        "UNRESOLVED"
+      ]
+    },
+    "coverage": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "base_score": {
+      "type": "object"
+    },
+    "penalty_deduction": {
+      "type": "object"
+    },
+    "final_score": {
+      "type": "object"
+    },
+    "domains": {
+      "type": "array"
+    },
+    "issues": {
+      "type": "array"
+    }
+  },
+  "additionalProperties": true
+}

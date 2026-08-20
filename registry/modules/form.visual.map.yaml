@@ -1,0 +1,153 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: form.visual.map
+version: 1
+title: Map
+kind: visual_artifact
+description: Research-informed binary rubric for map.
+origin: research_expansion
+owner_domains:
+- visual.map
+artifact_types:
+- visual_asset
+valid_scopes:
+- asset
+- panel
+- sequence
+- project
+activation: Attach when map is the active form, asset, or evaluation concern.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 2
+  project_sources: character references, style references, scene text, and asset metadata when supplied
+  modalities_required:
+  - image
+tree:
+- id: form.visual.map.quality
+  type: group
+  title: Map checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: form.visual.map.purpose
+    type: question
+    criterion_key: form.visual.map.purpose
+    text: Does the map support its intended narrative, planning, or reader-reference purpose?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.visual.map.geography
+    type: question
+    criterion_key: form.visual.map.geography
+    text: Are relative positions, routes, terrain, scale, and travel constraints coherent?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.visual.map.canon
+    type: question
+    criterion_key: form.visual.map.canon
+    text: Does it match the timeline, place sheets, and manuscript facts?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.visual.map.labels
+    type: question
+    criterion_key: form.visual.map.labels
+    text: Are labels legible, distinct, and consistent with project terminology?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.visual.map.hierarchy
+    type: question
+    criterion_key: form.visual.map.hierarchy
+    text: Does visual hierarchy distinguish important and secondary information?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.visual.map.style
+    type: question
+    criterion_key: form.visual.map.style
+    text: Does the map style fit the world and publication context?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.visual.map.uncertainty
+    type: question
+    criterion_key: form.visual.map.uncertainty
+    text: Are unknown, disputed, approximate, or perspective-dependent regions represented appropriately?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.visual.map.no_decor
+    type: question
+    criterion_key: form.visual.map.no_decor
+    text: Does decoration avoid obscuring usable geographic information?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- zhuang_et_al_2025_vistorybench
+- lin_et_al_2026_storybook_consistency
+notes: []

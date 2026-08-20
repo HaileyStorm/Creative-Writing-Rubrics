@@ -1,0 +1,136 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: scope.act
+version: 1
+title: Act or part scope overlay
+kind: scope_overlay
+description: For a major structural division; evaluates macro-turns, proportion, subplot coordination, and new state.
+origin: user_inventory_refined
+owner_domains:
+- scope.act
+artifact_types:
+- any
+valid_scopes:
+- act
+activation: Attach when the evaluated scope is act.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: scope.act.quality
+  type: group
+  title: Scope handling
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: scope.act.function
+    type: question
+    criterion_key: scope.act.function
+    text: Does the division perform a distinct macro-structural function?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: scope.act.turn
+    type: question
+    criterion_key: scope.act.turn
+    text: Does it contain or culminate in a load-bearing macro-turn?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: scope.act.proportion
+    type: question
+    criterion_key: scope.act.proportion
+    text: Is its size proportionate to its function and the whole work?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: scope.act.subplots
+    type: question
+    criterion_key: scope.act.subplots
+    text: Are active subplots coordinated and advanced in proportion to importance?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: scope.act.theme
+    type: question
+    criterion_key: scope.act.theme
+    text: Does thematic or conceptual movement develop across the division?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: scope.act.new_state
+    type: question
+    criterion_key: scope.act.new_state
+    text: Does the division establish a meaningfully new narrative state?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: scope.act.boundaries
+    type: question
+    criterion_key: scope.act.boundaries
+    text: Are its opening and ending boundaries structurally justified?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions:
+- action: minimum_neighboring_units
+  value: 1
+research_basis:
+- cho_et_al_2026_bineval
+- longjudgebench_2026
+notes: []

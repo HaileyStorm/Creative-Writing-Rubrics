@@ -1,0 +1,142 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: op.research.research_synthesis
+version: 1
+title: Research synthesis
+kind: procedure
+description: Evaluates factual accuracy, reconciliation of sources, uncertainty, citations, distinction between
+  fact and inference, and usable organization.
+origin: user_inventory_refined
+owner_domains:
+- procedure.research_synthesis
+artifact_types:
+- any
+valid_scopes:
+- operation
+activation: Attach when research synthesis is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: op.research.research_synthesis.quality
+  type: group
+  title: Research synthesis checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: op.research.research_synthesis.accuracy
+    type: question
+    criterion_key: op.research.research_synthesis.accuracy
+    text: Are factual claims accurately represented from their sources?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.research.research_synthesis.agreement
+    type: question
+    criterion_key: op.research.research_synthesis.agreement
+    text: Are agreement, disagreement, uncertainty, and evidence quality distinguished?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.research.research_synthesis.fact_inference
+    type: question
+    criterion_key: op.research.research_synthesis.fact_inference
+    text: Are source facts separated from synthesis, inference, and creative recommendation?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.research.research_synthesis.citations
+    type: question
+    criterion_key: op.research.research_synthesis.citations
+    text: Does each non-obvious claim have an appropriate citation or provenance pointer?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.research.research_synthesis.organization
+    type: question
+    criterion_key: op.research.research_synthesis.organization
+    text: Is the synthesis organized around the writing decision rather than source-by-source summary?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.research.research_synthesis.implications
+    type: question
+    criterion_key: op.research.research_synthesis.implications
+    text: Are narrative constraints, options, risks, and opportunities derived carefully?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.research.research_synthesis.no_fill
+    type: question
+    criterion_key: op.research.research_synthesis.no_fill
+    text: Does it avoid filling unsupported gaps with plausible-sounding general knowledge?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- wu_et_al_2025_writingbench
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates factual accuracy, reconciliation of sources, uncertainty, citations, distinction between
+  fact and inference, and usable organization.

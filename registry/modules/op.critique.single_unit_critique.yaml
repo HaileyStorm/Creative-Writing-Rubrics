@@ -1,0 +1,141 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: op.critique.single_unit_critique
+version: 1
+title: Single-unit critique
+kind: procedure
+description: Applies to an extract, scene, chapter, or poem and must state what cannot be judged at that scope.
+origin: user_inventory_refined
+owner_domains:
+- procedure.single_unit_critique
+artifact_types:
+- any
+valid_scopes:
+- operation
+activation: Attach when single-unit critique is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: op.critique.single_unit_critique.quality
+  type: group
+  title: Single-unit critique checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: op.critique.single_unit_critique.local
+    type: question
+    criterion_key: op.critique.single_unit_critique.local
+    text: Does the critique fully assess craft visible within the supplied unit?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.critique.single_unit_critique.context
+    type: question
+    criterion_key: op.critique.single_unit_critique.context
+    text: Does it use supplied neighboring context and project facts where relevant?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.critique.single_unit_critique.limits
+    type: question
+    criterion_key: op.critique.single_unit_critique.limits
+    text: Does it state which arc, setup, continuity, or closure questions cannot be resolved at this scope?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.critique.single_unit_critique.contribution
+    type: question
+    criterion_key: op.critique.single_unit_critique.contribution
+    text: Does it judge the unit's contribution to larger structures without demanding that it complete them?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.critique.single_unit_critique.evidence
+    type: question
+    criterion_key: op.critique.single_unit_critique.evidence
+    text: Are claims tied to precise local evidence?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.critique.single_unit_critique.priority
+    type: question
+    criterion_key: op.critique.single_unit_critique.priority
+    text: Are the most important local revisions identified?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.critique.single_unit_critique.no_whole_claims
+    type: question
+    criterion_key: op.critique.single_unit_critique.no_whole_claims
+    text: Does it avoid extrapolating an isolated pattern into a whole-manuscript verdict without evidence?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- wu_et_al_2025_writingbench
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Applies to an extract, scene, chapter, or poem and must state what cannot be judged at that
+  scope.

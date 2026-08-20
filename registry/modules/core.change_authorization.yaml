@@ -1,0 +1,160 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: core.change_authorization
+version: 1
+title: Change authorization
+kind: base
+description: Used whenever an existing artifact is modified. It distinguishes requested changes, necessary supporting
+  changes, optional improvements, and unauthorized alterations. This is especially important for the restrained
+  final-pass role.
+origin: user_inventory_refined
+owner_domains:
+- change_authorization
+artifact_types:
+- any
+valid_scopes:
+- any
+activation: Attach to every substantive execution.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: core.change_authorization.quality
+  type: group
+  title: Change authorization
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: core.change_authorization.requested
+    type: question
+    criterion_key: core.change_authorization.requested
+    text: Does every explicitly requested change appear in the revised artifact?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.change_authorization.supporting
+    type: question
+    criterion_key: core.change_authorization.supporting
+    text: Are supporting changes limited to those needed to make requested changes coherent?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.change_authorization.no_optional
+    type: question
+    criterion_key: core.change_authorization.no_optional
+    text: Does the revision avoid optional improvements that were not authorized for this pass?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.change_authorization.facts
+    type: question
+    criterion_key: core.change_authorization.facts
+    text: Does it preserve facts and canon outside the authorized change surface?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.change_authorization.voice
+    type: question
+    criterion_key: core.change_authorization.voice
+    text: Does it preserve voice and stylistic identity outside the authorized change surface?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.change_authorization.structure
+    type: question
+    criterion_key: core.change_authorization.structure
+    text: Does it preserve structure and emphasis outside the authorized change surface?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.change_authorization.strengths
+    type: question
+    criterion_key: core.change_authorization.strengths
+    text: Does it preserve unrelated strengths of the original?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.change_authorization.collateral
+    type: question
+    criterion_key: core.change_authorization.collateral
+    text: Are collateral changes identified when the operation requires an audit trail?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- vaezi_rezaei_2018
+- carey_davidow_williams_2022
+- gomez_rodriguez_williams_2023
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Used whenever an existing artifact is modified. It distinguishes requested changes, necessary
+  supporting changes, optional improvements, and unauthorized alterations. This is especially important for the
+  restrained final-pass role.

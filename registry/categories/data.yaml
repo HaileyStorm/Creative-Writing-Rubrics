@@ -1,0 +1,1459 @@
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: data.eval.answer_required_purity
+  version: 1
+  title: Answer-required purity
+  kind: dataset_eval
+  description: Ensures every abliteration item expects a substantive response and that no refusal-positive or censorship-preferred
+    example enters any view.
+  origin: user_inventory_refined
+  owner_domains:
+  - dataset.answer_required_purity
+  artifact_types:
+  - dataset
+  - evaluation_pipeline
+  valid_scopes:
+  - any
+  activation: Attach when answer-required purity is relevant to the active artifact or operation.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: data.eval.answer_required_purity.quality
+    type: group
+    title: Answer-required purity checks
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: data.eval.answer_required_purity.expected
+      type: question
+      criterion_key: data.eval.answer_required_purity.expected
+      text: Does every item require a substantive answer under the evaluation's declared policy?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: hard_gate
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: data.eval.answer_required_purity.no_refusal_positive
+      type: question
+      criterion_key: data.eval.answer_required_purity.no_refusal_positive
+      text: Is the dataset free of refusal-preferred examples?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: hard_gate
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: data.eval.answer_required_purity.no_censor
+      type: question
+      criterion_key: data.eval.answer_required_purity.no_censor
+      text: Is it free of censorship-preferred or moralizing target responses?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: hard_gate
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: data.eval.answer_required_purity.no_ambiguous
+      type: question
+      criterion_key: data.eval.answer_required_purity.no_ambiguous
+      text: Are ambiguous items removed or separately labeled rather than silently treated as answer-required?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: data.eval.answer_required_purity.quality
+      type: question
+      criterion_key: data.eval.answer_required_purity.quality
+      text: Do target responses preserve competence and task quality rather than reward bare compliance?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: data.eval.answer_required_purity.audit
+      type: question
+      criterion_key: data.eval.answer_required_purity.audit
+      text: Has purity been audited across source, transformed, and final views?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: data.eval.answer_required_purity.provenance
+      type: question
+      criterion_key: data.eval.answer_required_purity.provenance
+      text: Can each item's policy classification be traced and reproduced?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - cho_et_al_2026_bineval
+  - zhang_et_al_2026_rubricbench
+  - rao_callison_burch_2026_autorubric
+  - longjudgebench_2026
+  notes:
+  - Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+  - YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+    labels.
+  source_description: Ensures every abliteration item expects a substantive response and that no refusal-positive
+    or censorship-preferred example enters any view.
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: data.eval.automatic_grader_validity
+  version: 1
+  title: Automatic-grader validity
+  kind: dataset_eval
+  description: Checks that exact, likelihood, unit-test, structural, and statistical metrics correspond to the intended
+    task and are not easily gamed.
+  origin: user_inventory_refined
+  owner_domains:
+  - dataset.automatic_grader_validity
+  artifact_types:
+  - dataset
+  - evaluation_pipeline
+  valid_scopes:
+  - any
+  activation: Attach when automatic-grader validity is relevant to the active artifact or operation.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: data.eval.automatic_grader_validity.quality
+    type: group
+    title: Automatic-grader validity checks
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: data.eval.automatic_grader_validity.metric
+      type: question
+      criterion_key: data.eval.automatic_grader_validity.metric
+      text: Does each automatic metric correspond to the intended human or task construct?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: data.eval.automatic_grader_validity.gaming
+      type: question
+      criterion_key: data.eval.automatic_grader_validity.gaming
+      text: Is the metric resistant to obvious gaming and surface proxies?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: data.eval.automatic_grader_validity.calibration
+      type: question
+      criterion_key: data.eval.automatic_grader_validity.calibration
+      text: Is it calibrated against representative human judgments?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: data.eval.automatic_grader_validity.failure
+      type: question
+      criterion_key: data.eval.automatic_grader_validity.failure
+      text: Are known false-positive and false-negative modes documented?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: data.eval.automatic_grader_validity.forms
+      type: question
+      criterion_key: data.eval.automatic_grader_validity.forms
+      text: Are form-specific automatic checks separated from artistic-quality judgments?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: data.eval.automatic_grader_validity.uncertainty
+      type: question
+      criterion_key: data.eval.automatic_grader_validity.uncertainty
+      text: Does the grader expose uncertainty and unscorable cases?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: data.eval.automatic_grader_validity.version
+      type: question
+      criterion_key: data.eval.automatic_grader_validity.version
+      text: Are grader model, prompt, code, and dependencies versioned?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - cho_et_al_2026_bineval
+  - zhang_et_al_2026_rubricbench
+  - rao_callison_burch_2026_autorubric
+  - longjudgebench_2026
+  notes:
+  - Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+  - YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+    labels.
+  source_description: Checks that exact, likelihood, unit-test, structural, and statistical metrics correspond to
+    the intended task and are not easily gamed.
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: data.eval.benchmark_fitness
+  version: 1
+  title: Benchmark fitness
+  kind: dataset_eval
+  description: Evaluates whether a benchmark genuinely measures the intended capability and whether contamination,
+    lexical shortcuts, or scope mismatch limit its interpretation.
+  origin: user_inventory_refined
+  owner_domains:
+  - dataset.benchmark_fitness
+  artifact_types:
+  - dataset
+  - evaluation_pipeline
+  valid_scopes:
+  - any
+  activation: Attach when benchmark fitness is relevant to the active artifact or operation.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: data.eval.benchmark_fitness.quality
+    type: group
+    title: Benchmark fitness checks
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: data.eval.benchmark_fitness.construct
+      type: question
+      criterion_key: data.eval.benchmark_fitness.construct
+      text: Does the benchmark actually measure the claimed capability?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: data.eval.benchmark_fitness.scope
+      type: question
+      criterion_key: data.eval.benchmark_fitness.scope
+      text: Do artifact types, lengths, genres, operations, and context resemble the deployment workload?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: data.eval.benchmark_fitness.difficulty
+      type: question
+      criterion_key: data.eval.benchmark_fitness.difficulty
+      text: Does it discriminate among models at the relevant performance level?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: data.eval.benchmark_fitness.shortcuts
+      type: question
+      criterion_key: data.eval.benchmark_fitness.shortcuts
+      text: Are lexical, formatting, provenance, and other shortcut cues controlled?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: data.eval.benchmark_fitness.contamination
+      type: question
+      criterion_key: data.eval.benchmark_fitness.contamination
+      text: Is likely training contamination assessed?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: data.eval.benchmark_fitness.labels
+      type: question
+      criterion_key: data.eval.benchmark_fitness.labels
+      text: Are reference labels or preferences sufficiently reliable?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: data.eval.benchmark_fitness.limits
+      type: question
+      criterion_key: data.eval.benchmark_fitness.limits
+      text: Are limitations and allowed interpretations documented?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - cho_et_al_2026_bineval
+  - zhang_et_al_2026_rubricbench
+  - rao_callison_burch_2026_autorubric
+  - longjudgebench_2026
+  notes:
+  - Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+  - YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+    labels.
+  source_description: Evaluates whether a benchmark genuinely measures the intended capability and whether contamination,
+    lexical shortcuts, or scope mismatch limit its interpretation.
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: data.eval.category_balance
+  version: 1
+  title: Category balance
+  kind: dataset_eval
+  description: Verifies the intended DeepSeek or Qwen mixture without allowing long records to dominate solely by
+    token count.
+  origin: user_inventory_refined
+  owner_domains:
+  - dataset.category_balance
+  artifact_types:
+  - dataset
+  - evaluation_pipeline
+  valid_scopes:
+  - any
+  activation: Attach when category balance is relevant to the active artifact or operation.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: data.eval.category_balance.quality
+    type: group
+    title: Category balance checks
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: data.eval.category_balance.target
+      type: question
+      criterion_key: data.eval.category_balance.target
+      text: Is the target category mixture explicitly defined?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: data.eval.category_balance.records
+      type: question
+      criterion_key: data.eval.category_balance.records
+      text: Does record-level sampling approximate that mixture?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: data.eval.category_balance.tokens
+      type: question
+      criterion_key: data.eval.category_balance.tokens
+      text: Is token-level dominance by a few long records measured and controlled?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: data.eval.category_balance.sources
+      type: question
+      criterion_key: data.eval.category_balance.sources
+      text: Is source diversity sufficient within categories?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: data.eval.category_balance.tails
+      type: question
+      criterion_key: data.eval.category_balance.tails
+      text: Are important low-frequency specialist categories preserved?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: data.eval.category_balance.report
+      type: question
+      criterion_key: data.eval.category_balance.report
+      text: Are deviations from the target mixture reported?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - cho_et_al_2026_bineval
+  - zhang_et_al_2026_rubricbench
+  - rao_callison_burch_2026_autorubric
+  - longjudgebench_2026
+  notes:
+  - Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+  - YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+    labels.
+  source_description: Verifies the intended DeepSeek or Qwen mixture without allowing long records to dominate solely
+    by token count.
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: data.eval.context_length_balance
+  version: 1
+  title: Context-length balance
+  kind: dataset_eval
+  description: Verifies the requested length distribution and sufficient representation of 32K–128K material without
+    overwhelming the primarily short-context workload.
+  origin: user_inventory_refined
+  owner_domains:
+  - dataset.context_length_balance
+  artifact_types:
+  - dataset
+  - evaluation_pipeline
+  valid_scopes:
+  - any
+  activation: Attach when context-length balance is relevant to the active artifact or operation.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: data.eval.context_length_balance.quality
+    type: group
+    title: Context-length balance checks
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: data.eval.context_length_balance.target
+      type: question
+      criterion_key: data.eval.context_length_balance.target
+      text: Is the target context-length distribution defined?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: data.eval.context_length_balance.bins
+      type: question
+      criterion_key: data.eval.context_length_balance.bins
+      text: Are short, medium, long, and very-long bins represented according to intended workload?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: data.eval.context_length_balance.long
+      type: question
+      criterion_key: data.eval.context_length_balance.long
+      text: Is there enough 32K–128K material to test long-context behavior?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: data.eval.context_length_balance.dominance
+      type: question
+      criterion_key: data.eval.context_length_balance.dominance
+      text: Are very long records prevented from overwhelming primarily short-context workloads?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: data.eval.context_length_balance.natural
+      type: question
+      criterion_key: data.eval.context_length_balance.natural
+      text: Are long contexts naturally coherent rather than mechanically concatenated?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: data.eval.context_length_balance.report
+      type: question
+      criterion_key: data.eval.context_length_balance.report
+      text: Are length statistics reported by records, tokens, and task category?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - cho_et_al_2026_bineval
+  - zhang_et_al_2026_rubricbench
+  - rao_callison_burch_2026_autorubric
+  - longjudgebench_2026
+  notes:
+  - Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+  - YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+    labels.
+  source_description: Verifies the requested length distribution and sufficient representation of 32K–128K material
+    without overwhelming the primarily short-context workload.
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: data.eval.dataset_provenance_and_reproducibility
+  version: 1
+  title: Dataset provenance and reproducibility
+  kind: dataset_eval
+  description: Source repository, revision, configuration, original split, item ID, license, transformations, hashes,
+    and deterministic regeneration.
+  origin: user_inventory_refined
+  owner_domains:
+  - dataset.dataset_provenance_and_reproducibility
+  artifact_types:
+  - dataset
+  - evaluation_pipeline
+  valid_scopes:
+  - any
+  activation: Attach when dataset provenance and reproducibility is relevant to the active artifact or operation.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: data.eval.dataset_provenance_and_reproducibility.quality
+    type: group
+    title: Dataset provenance and reproducibility checks
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: data.eval.dataset_provenance_and_reproducibility.source
+      type: question
+      criterion_key: data.eval.dataset_provenance_and_reproducibility.source
+      text: Is every source repository, dataset, and document identified?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: data.eval.dataset_provenance_and_reproducibility.revision
+      type: question
+      criterion_key: data.eval.dataset_provenance_and_reproducibility.revision
+      text: Are exact revisions, configurations, and original splits recorded?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: data.eval.dataset_provenance_and_reproducibility.ids
+      type: question
+      criterion_key: data.eval.dataset_provenance_and_reproducibility.ids
+      text: Are original item IDs preserved?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: data.eval.dataset_provenance_and_reproducibility.license
+      type: question
+      criterion_key: data.eval.dataset_provenance_and_reproducibility.license
+      text: Are licenses and usage constraints recorded and compatible with the intended use?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: data.eval.dataset_provenance_and_reproducibility.transform
+      type: question
+      criterion_key: data.eval.dataset_provenance_and_reproducibility.transform
+      text: Are every transformation and filter documented?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: data.eval.dataset_provenance_and_reproducibility.hash
+      type: question
+      criterion_key: data.eval.dataset_provenance_and_reproducibility.hash
+      text: Are source and generated artifacts hashed?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: data.eval.dataset_provenance_and_reproducibility.regen
+      type: question
+      criterion_key: data.eval.dataset_provenance_and_reproducibility.regen
+      text: Can the dataset be regenerated deterministically from recorded inputs?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - cho_et_al_2026_bineval
+  - zhang_et_al_2026_rubricbench
+  - rao_callison_burch_2026_autorubric
+  - longjudgebench_2026
+  notes:
+  - Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+  - YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+    labels.
+  source_description: Source repository, revision, configuration, original split, item ID, license, transformations,
+    hashes, and deterministic regeneration.
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: data.eval.evaluation_determinism
+  version: 1
+  title: Evaluation determinism
+  kind: dataset_eval
+  description: Ensures fixed IDs, seeds, tokenization policies, official scorers, unit-test environments, exact
+    normalization rules, and reproducible aggregation.
+  origin: user_inventory_refined
+  owner_domains:
+  - dataset.evaluation_determinism
+  artifact_types:
+  - dataset
+  - evaluation_pipeline
+  valid_scopes:
+  - any
+  activation: Attach when evaluation determinism is relevant to the active artifact or operation.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: data.eval.evaluation_determinism.quality
+    type: group
+    title: Evaluation determinism checks
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: data.eval.evaluation_determinism.ids
+      type: question
+      criterion_key: data.eval.evaluation_determinism.ids
+      text: Are evaluation item IDs and splits fixed?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: data.eval.evaluation_determinism.seeds
+      type: question
+      criterion_key: data.eval.evaluation_determinism.seeds
+      text: Are random seeds and sampling settings fixed or fully recorded?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: data.eval.evaluation_determinism.tokenization
+      type: question
+      criterion_key: data.eval.evaluation_determinism.tokenization
+      text: Are tokenization and length policies fixed?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: data.eval.evaluation_determinism.scorers
+      type: question
+      criterion_key: data.eval.evaluation_determinism.scorers
+      text: Are official scorer and unit-test versions pinned?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: data.eval.evaluation_determinism.normalize
+      type: question
+      criterion_key: data.eval.evaluation_determinism.normalize
+      text: Are normalization and aggregation rules exact and versioned?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: data.eval.evaluation_determinism.environment
+      type: question
+      criterion_key: data.eval.evaluation_determinism.environment
+      text: Is the execution environment reproducible?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: data.eval.evaluation_determinism.rerun
+      type: question
+      criterion_key: data.eval.evaluation_determinism.rerun
+      text: Do repeated runs produce identical or tolerance-bounded results?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - cho_et_al_2026_bineval
+  - zhang_et_al_2026_rubricbench
+  - rao_callison_burch_2026_autorubric
+  - longjudgebench_2026
+  notes:
+  - Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+  - YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+    labels.
+  source_description: Ensures fixed IDs, seeds, tokenization policies, official scorers, unit-test environments,
+    exact normalization rules, and reproducible aggregation.
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: data.eval.split_isolation
+  version: 1
+  title: Split isolation
+  kind: dataset_eval
+  description: Document/thread/project-level separation, near-duplicate removal, benchmark-overlap checks, and no
+    leakage between calibration, development, and locked final evaluation.
+  origin: user_inventory_refined
+  owner_domains:
+  - dataset.split_isolation
+  artifact_types:
+  - dataset
+  - evaluation_pipeline
+  valid_scopes:
+  - any
+  activation: Attach when split isolation is relevant to the active artifact or operation.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: data.eval.split_isolation.quality
+    type: group
+    title: Split isolation checks
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: data.eval.split_isolation.unit
+      type: question
+      criterion_key: data.eval.split_isolation.unit
+      text: Are documents, threads, projects, authors, or other leakage units kept wholly within one split?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: data.eval.split_isolation.near_dupe
+      type: question
+      criterion_key: data.eval.split_isolation.near_dupe
+      text: Are exact and near duplicates removed across splits?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: data.eval.split_isolation.benchmark
+      type: question
+      criterion_key: data.eval.split_isolation.benchmark
+      text: Is overlap with external benchmarks and evaluation corpora checked?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: data.eval.split_isolation.views
+      type: question
+      criterion_key: data.eval.split_isolation.views
+      text: Are transformed views of one source prevented from crossing calibration, development, and locked evaluation
+        splits?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: data.eval.split_isolation.locked
+      type: question
+      criterion_key: data.eval.split_isolation.locked
+      text: Is the final evaluation split access-controlled and immutable?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: data.eval.split_isolation.audit
+      type: question
+      criterion_key: data.eval.split_isolation.audit
+      text: Can split assignments be audited from stable IDs?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - cho_et_al_2026_bineval
+  - zhang_et_al_2026_rubricbench
+  - rao_callison_burch_2026_autorubric
+  - longjudgebench_2026
+  notes:
+  - Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+  - YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+    labels.
+  source_description: Document/thread/project-level separation, near-duplicate removal, benchmark-overlap checks,
+    and no leakage between calibration, development, and locked final evaluation.
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: data.eval.task_tail_coverage
+  version: 1
+  title: Task-tail coverage
+  kind: dataset_eval
+  description: Ensures creative writing, revision, instruction, knowledge, commonsense, code, math, and true non-refusal
+    each preserve specialist experts and downstream capability.
+  origin: user_inventory_refined
+  owner_domains:
+  - dataset.task_tail_coverage
+  artifact_types:
+  - dataset
+  - evaluation_pipeline
+  valid_scopes:
+  - any
+  activation: Attach when task-tail coverage is relevant to the active artifact or operation.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: data.eval.task_tail_coverage.quality
+    type: group
+    title: Task-tail coverage checks
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: data.eval.task_tail_coverage.creative
+      type: question
+      criterion_key: data.eval.task_tail_coverage.creative
+      text: Does the dataset preserve creative-writing and style-control tails?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: data.eval.task_tail_coverage.revision
+      type: question
+      criterion_key: data.eval.task_tail_coverage.revision
+      text: Does it preserve revision, diagnosis, and constrained-editing tails?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: data.eval.task_tail_coverage.instruction
+      type: question
+      criterion_key: data.eval.task_tail_coverage.instruction
+      text: Does it preserve complex instruction-following tails?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: data.eval.task_tail_coverage.knowledge
+      type: question
+      criterion_key: data.eval.task_tail_coverage.knowledge
+      text: Does it preserve broad and specialist knowledge tails?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: data.eval.task_tail_coverage.commonsense
+      type: question
+      criterion_key: data.eval.task_tail_coverage.commonsense
+      text: Does it preserve physical, social, temporal, and causal commonsense tails?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: data.eval.task_tail_coverage.code
+      type: question
+      criterion_key: data.eval.task_tail_coverage.code
+      text: Does it preserve designated code tails?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: data.eval.task_tail_coverage.math
+      type: question
+      criterion_key: data.eval.task_tail_coverage.math
+      text: Does it preserve designated math tails?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: data.eval.task_tail_coverage.nonrefusal
+      type: question
+      criterion_key: data.eval.task_tail_coverage.nonrefusal
+      text: Does it preserve answer-required non-refusal tails?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: data.eval.task_tail_coverage.representation
+      type: question
+      criterion_key: data.eval.task_tail_coverage.representation
+      text: Is each tail represented by enough independent documents, tasks, and difficulty levels?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: data.eval.task_tail_coverage.token_bias
+      type: question
+      criterion_key: data.eval.task_tail_coverage.token_bias
+      text: Does sampling prevent long records from dominating tail coverage only by token count?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - cho_et_al_2026_bineval
+  - zhang_et_al_2026_rubricbench
+  - rao_callison_burch_2026_autorubric
+  - longjudgebench_2026
+  notes:
+  - Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+  - YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+    labels.
+  source_description: Ensures creative writing, revision, instruction, knowledge, commonsense, code, math, and true
+    non-refusal each preserve specialist experts and downstream capability.
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: data.eval.transformation_fidelity
+  version: 1
+  title: Transformation fidelity
+  kind: dataset_eval
+  description: Checks that deterministic slicing, continuation creation, editing transforms, option construction,
+    and formatting preserve the original content and labels.
+  origin: user_inventory_refined
+  owner_domains:
+  - dataset.transformation_fidelity
+  artifact_types:
+  - dataset
+  - evaluation_pipeline
+  valid_scopes:
+  - any
+  activation: Attach when transformation fidelity is relevant to the active artifact or operation.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: data.eval.transformation_fidelity.quality
+    type: group
+    title: Transformation fidelity checks
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: data.eval.transformation_fidelity.source
+      type: question
+      criterion_key: data.eval.transformation_fidelity.source
+      text: Can every transformed item be traced to its original source and span?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: data.eval.transformation_fidelity.content
+      type: question
+      criterion_key: data.eval.transformation_fidelity.content
+      text: Does deterministic slicing preserve the intended content without accidental omission or contamination?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: data.eval.transformation_fidelity.continuation
+      type: question
+      criterion_key: data.eval.transformation_fidelity.continuation
+      text: Do continuation transforms preserve chronology, context, and target boundaries?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: data.eval.transformation_fidelity.editing
+      type: question
+      criterion_key: data.eval.transformation_fidelity.editing
+      text: Do editing transforms preserve unchanged content and requested labels?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: data.eval.transformation_fidelity.options
+      type: question
+      criterion_key: data.eval.transformation_fidelity.options
+      text: Do option and pair constructions preserve ground-truth preference or correctness?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: data.eval.transformation_fidelity.format
+      type: question
+      criterion_key: data.eval.transformation_fidelity.format
+      text: Does formatting preserve semantic content and parser compatibility?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: data.eval.transformation_fidelity.tokenization
+      type: question
+      criterion_key: data.eval.transformation_fidelity.tokenization
+      text: Are tokenization-dependent boundaries and length metadata reproducible?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: data.eval.transformation_fidelity.validation
+      type: question
+      criterion_key: data.eval.transformation_fidelity.validation
+      text: Are transformed outputs checked by deterministic tests and sampled human review?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: data.eval.transformation_fidelity.hashes
+      type: question
+      criterion_key: data.eval.transformation_fidelity.hashes
+      text: Are transformation code, parameters, seeds, and output hashes recorded?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - cho_et_al_2026_bineval
+  - zhang_et_al_2026_rubricbench
+  - rao_callison_burch_2026_autorubric
+  - longjudgebench_2026
+  notes:
+  - Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+  - YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+    labels.
+  source_description: Checks that deterministic slicing, continuation creation, editing transforms, option construction,
+    and formatting preserve the original content and labels.

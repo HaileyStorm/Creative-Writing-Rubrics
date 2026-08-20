@@ -1,0 +1,115 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: sampler.productive_divergence
+version: 1
+title: Productive divergence
+kind: sampler
+description: Distinguishes useful alternative directions from random deviation, incoherent surprise, or violations
+  of canon and brief.
+origin: user_inventory_refined
+owner_domains:
+- sampler.productive_divergence
+artifact_types:
+- generated_candidate
+- candidate_set
+valid_scopes:
+- any
+activation: Attach when productive divergence is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: sampler.productive_divergence.quality
+  type: group
+  title: Productive divergence checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: sampler.productive_divergence.new
+    type: question
+    criterion_key: sampler.productive_divergence.new
+    text: Does the sample move into a genuinely new but relevant creative direction?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: sampler.productive_divergence.logic
+    type: question
+    criterion_key: sampler.productive_divergence.logic
+    text: Does divergence remain causally, stylistically, and canonically intelligible?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: sampler.productive_divergence.utility
+    type: question
+    criterion_key: sampler.productive_divergence.utility
+    text: Does it reveal a useful option, tradeoff, image, or solution?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: sampler.productive_divergence.commit
+    type: question
+    criterion_key: sampler.productive_divergence.commit
+    text: Does it commit enough to demonstrate the direction rather than gesture vaguely at novelty?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: sampler.productive_divergence.no_random
+    type: question
+    criterion_key: sampler.productive_divergence.no_random
+    text: Does it avoid surprise produced chiefly by incoherence, rare-word chasing, or constraint violation?
+    pass_answer: 'YES'
+    weight: 2.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- wu_et_al_2025_writingbench
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Distinguishes useful alternative directions from random deviation, incoherent surprise, or violations
+  of canon and brief.

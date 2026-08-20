@@ -1,0 +1,155 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: craft.narrative.transitions_and_connective_tissue
+version: 1
+title: Transitions and connective tissue
+kind: craft
+description: Evaluates movement between beats, paragraphs, scenes, chapters, times, places, speakers, and narrative
+  modes. It is especially important for bridge-writing and manuscript assembly.
+origin: user_inventory_refined
+owner_domains:
+- narrative.transitions_and_connective_tissue
+artifact_types:
+- prose_fiction
+- creative_nonfiction
+- dramatic_writing
+- narrative_poetry
+- interactive_fiction
+valid_scopes:
+- beat
+- scene
+- chapter
+- sequence
+- act
+- manuscript
+- series
+activation: Attach when transitions and connective tissue is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: craft.narrative.transitions_and_connective_tissue.quality
+  type: group
+  title: Transitions and connective tissue
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: craft.narrative.transitions_and_connective_tissue.logic
+    type: question
+    criterion_key: craft.narrative.transitions_and_connective_tissue.logic
+    text: Does each transition preserve the logical or associative relationship between the units it joins?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.transitions_and_connective_tissue.time
+    type: question
+    criterion_key: craft.narrative.transitions_and_connective_tissue.time
+    text: Are changes in time signaled with the degree of clarity the reader needs?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.transitions_and_connective_tissue.place
+    type: question
+    criterion_key: craft.narrative.transitions_and_connective_tissue.place
+    text: Are changes in place spatially and narratively intelligible?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.transitions_and_connective_tissue.speaker
+    type: question
+    criterion_key: craft.narrative.transitions_and_connective_tissue.speaker
+    text: Are changes in speaker or focalizer legible?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.transitions_and_connective_tissue.mode
+    type: question
+    criterion_key: craft.narrative.transitions_and_connective_tissue.mode
+    text: Are shifts among scene, summary, exposition, reflection, document, and other modes controlled?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.transitions_and_connective_tissue.momentum
+    type: question
+    criterion_key: craft.narrative.transitions_and_connective_tissue.momentum
+    text: Does connective material preserve momentum or create a purposeful pause?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.transitions_and_connective_tissue.no_bridge_filler
+    type: question
+    criterion_key: craft.narrative.transitions_and_connective_tissue.no_bridge_filler
+    text: Does the work avoid generic bridge language that merely moves pieces without adding orientation, tone,
+      or consequence?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- vaezi_rezaei_2018
+- carey_davidow_williams_2022
+- gomez_rodriguez_williams_2023
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates movement between beats, paragraphs, scenes, chapters, times, places, speakers, and
+  narrative modes. It is especially important for bridge-writing and manuscript assembly.

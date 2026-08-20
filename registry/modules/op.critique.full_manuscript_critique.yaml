@@ -1,0 +1,172 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: op.critique.full_manuscript_critique
+version: 1
+title: Full-manuscript critique
+kind: procedure
+description: Requires hierarchical analysis, recurring-pattern detection, structural diagnosis, character and thread
+  tracking, and prioritized revision strategy.
+origin: user_inventory_refined
+owner_domains:
+- procedure.full_manuscript_critique
+artifact_types:
+- any
+valid_scopes:
+- operation
+activation: Attach when full-manuscript critique is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: op.critique.full_manuscript_critique.quality
+  type: group
+  title: Full-manuscript critique checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: op.critique.full_manuscript_critique.map
+    type: question
+    criterion_key: op.critique.full_manuscript_critique.map
+    text: Does the critique construct a whole-work map of units, arcs, chronology, POVs, and major turns?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.critique.full_manuscript_critique.global
+    type: question
+    criterion_key: op.critique.full_manuscript_critique.global
+    text: Does it evaluate global structure, opening-to-ending relation, pacing distribution, and thematic architecture?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.critique.full_manuscript_critique.threads
+    type: question
+    criterion_key: op.critique.full_manuscript_critique.threads
+    text: Does it track character arcs, relationships, subplots, setups, payoffs, and unresolved threads across
+      the manuscript?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.critique.full_manuscript_critique.sampling
+    type: question
+    criterion_key: op.critique.full_manuscript_critique.sampling
+    text: Does it use stratified local evidence from early, middle, late, high-intensity, quiet, dialogue-heavy,
+      and expository regions as applicable?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.critique.full_manuscript_critique.patterns
+    type: question
+    criterion_key: op.critique.full_manuscript_critique.patterns
+    text: Does it distinguish systemic recurring problems from isolated imperfections?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.critique.full_manuscript_critique.prevalence
+    type: question
+    criterion_key: op.critique.full_manuscript_critique.prevalence
+    text: Does it report issue prevalence and severity rather than merely list examples?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.critique.full_manuscript_critique.priorities
+    type: question
+    criterion_key: op.critique.full_manuscript_critique.priorities
+    text: Does it produce a dependency-aware revision strategy from structural to local concerns?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.critique.full_manuscript_critique.uncertainty
+    type: question
+    criterion_key: op.critique.full_manuscript_critique.uncertainty
+    text: Does it state coverage, context limitations, source conflicts, and confidence?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.critique.full_manuscript_critique.no_average
+    type: question
+    criterion_key: op.critique.full_manuscript_critique.no_average
+    text: Does it avoid reducing the manuscript to an unweighted average of chapter scores?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- wu_et_al_2025_writingbench
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Requires hierarchical analysis, recurring-pattern detection, structural diagnosis, character
+  and thread tracking, and prioritized revision strategy.

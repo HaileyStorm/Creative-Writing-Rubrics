@@ -1,0 +1,158 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: modifier.genre.historical_fiction
+version: 1
+title: Historical fiction
+kind: modifier
+description: Period plausibility, material and social detail, chronology, source fidelity, character interiority
+  without careless presentism, and transparent handling of invention.
+origin: user_inventory_refined
+owner_domains:
+- genre.historical_fiction
+artifact_types:
+- creative_text
+valid_scopes:
+- any
+activation: Attach when historical fiction is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: modifier.genre.historical_fiction.quality
+  type: group
+  title: Historical fiction contract
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: modifier.genre.historical_fiction.chronology
+    type: question
+    criterion_key: modifier.genre.historical_fiction.chronology
+    text: Are dates, events, technologies, and institutions compatible with the selected period?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.historical_fiction.material
+    type: question
+    criterion_key: modifier.genre.historical_fiction.material
+    text: Does material life reflect period-specific tools, labor, travel, clothing, food, architecture, and constraints?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.historical_fiction.social
+    type: question
+    criterion_key: modifier.genre.historical_fiction.social
+    text: Do social relations, law, class, gender, religion, race, and institutions reflect researched context without
+      becoming static stereotypes?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.historical_fiction.interiority
+    type: question
+    criterion_key: modifier.genre.historical_fiction.interiority
+    text: Do characters possess period-plausible assumptions while remaining psychologically legible?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.historical_fiction.language
+    type: question
+    criterion_key: modifier.genre.historical_fiction.language
+    text: Does dialogue and narration evoke period register without unreadable imitation or careless modern slang?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.historical_fiction.invention
+    type: question
+    criterion_key: modifier.genre.historical_fiction.invention
+    text: Are invented events and composites compatible with known history and documented as needed?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.historical_fiction.no_presentism
+    type: question
+    criterion_key: modifier.genre.historical_fiction.no_presentism
+    text: Does the work avoid careless presentism while still allowing intentional contemporary dialogue with the
+      past?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.historical_fiction.no_research_dump
+    type: question
+    criterion_key: modifier.genre.historical_fiction.no_research_dump
+    text: Does it avoid displaying research at the expense of scene and character?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- fein_et_al_2026_litbench
+- wu_et_al_2025_writingbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Period plausibility, material and social detail, chronology, source fidelity, character interiority
+  without careless presentism, and transparent handling of invention.

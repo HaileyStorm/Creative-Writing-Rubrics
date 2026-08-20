@@ -1,0 +1,157 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: sampler.sampler_artifact_audit
+version: 1
+title: Sampler artifact audit
+kind: sampler
+description: Checks punctuation anomalies, whitespace behavior, rare-word chasing, ornate drift, dialogue instability,
+  repeated high-entropy constructions, and latency-related truncation.
+origin: user_inventory_refined
+owner_domains:
+- sampler.sampler_artifact_audit
+artifact_types:
+- generated_candidate
+- candidate_set
+valid_scopes:
+- any
+activation: Attach when sampler artifact audit is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: sampler.sampler_artifact_audit.quality
+  type: group
+  title: Sampler artifact audit checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: sampler.sampler_artifact_audit.punctuation
+    type: question
+    criterion_key: sampler.sampler_artifact_audit.punctuation
+    text: Is output free of punctuation anomalies, broken quotation, and delimiter instability?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: sampler.sampler_artifact_audit.whitespace
+    type: question
+    criterion_key: sampler.sampler_artifact_audit.whitespace
+    text: Is whitespace and paragraphing stable?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: sampler.sampler_artifact_audit.rare_words
+    type: question
+    criterion_key: sampler.sampler_artifact_audit.rare_words
+    text: Is rare diction used for precision rather than entropy display?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: sampler.sampler_artifact_audit.ornate
+    type: question
+    criterion_key: sampler.sampler_artifact_audit.ornate
+    text: Is output free of sampler-induced ornate drift and image stacking?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: sampler.sampler_artifact_audit.dialogue
+    type: question
+    criterion_key: sampler.sampler_artifact_audit.dialogue
+    text: Are speaker identity, turns, and quotation mechanics stable?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: sampler.sampler_artifact_audit.patterns
+    type: question
+    criterion_key: sampler.sampler_artifact_audit.patterns
+    text: Is it free of repeated high-entropy constructions and syntactic breakdown?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: sampler.sampler_artifact_audit.truncation
+    type: question
+    criterion_key: sampler.sampler_artifact_audit.truncation
+    text: Is it free of latency- or budget-related truncation?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: sampler.sampler_artifact_audit.prevalence
+    type: question
+    criterion_key: sampler.sampler_artifact_audit.prevalence
+    text: Does the audit quantify artifact prevalence across multiple samples?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- wu_et_al_2025_writingbench
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Checks punctuation anomalies, whitespace behavior, rare-word chasing, ornate drift, dialogue
+  instability, repeated high-entropy constructions, and latency-related truncation.

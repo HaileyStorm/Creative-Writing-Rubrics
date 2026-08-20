@@ -1,0 +1,155 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: artifact.support.relationship_faction_item_sheet
+version: 1
+title: Relationship / faction / item sheet
+kind: support_artifact
+description: Evaluates state, history, tensions, goals, dependencies, asymmetries, change potential, and relevance
+  to the active narrative.
+origin: user_inventory_refined
+owner_domains:
+- support.relationship_faction_item_sheet
+artifact_types:
+- planning_artifact
+- reference_artifact
+valid_scopes:
+- any
+activation: Attach when relationship / faction / item sheet is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: artifact.support.relationship_faction_item_sheet.quality
+  type: group
+  title: Relationship / faction / item sheet checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: artifact.support.relationship_faction_item_sheet.current_state
+    type: question
+    criterion_key: artifact.support.relationship_faction_item_sheet.current_state
+    text: Does the sheet clearly record the current state at a known point in the timeline?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.relationship_faction_item_sheet.history
+    type: question
+    criterion_key: artifact.support.relationship_faction_item_sheet.history
+    text: Does it record the relevant history that produced the current state?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.relationship_faction_item_sheet.goals
+    type: question
+    criterion_key: artifact.support.relationship_faction_item_sheet.goals
+    text: Are the involved actors' goals and interests specific?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.relationship_faction_item_sheet.asymmetry
+    type: question
+    criterion_key: artifact.support.relationship_faction_item_sheet.asymmetry
+    text: Does it capture asymmetries of knowledge, power, affection, obligation, access, or value?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.relationship_faction_item_sheet.tensions
+    type: question
+    criterion_key: artifact.support.relationship_faction_item_sheet.tensions
+    text: Are active tensions and pressure points identifiable?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.relationship_faction_item_sheet.dependencies
+    type: question
+    criterion_key: artifact.support.relationship_faction_item_sheet.dependencies
+    text: Are dependencies and consequences of change recorded?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.relationship_faction_item_sheet.change
+    type: question
+    criterion_key: artifact.support.relationship_faction_item_sheet.change
+    text: Does the sheet identify plausible trajectories or trigger conditions?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.relationship_faction_item_sheet.relevance
+    type: question
+    criterion_key: artifact.support.relationship_faction_item_sheet.relevance
+    text: Is the information linked to active narrative units and decisions?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates state, history, tensions, goals, dependencies, asymmetries, change potential, and
+  relevance to the active narrative.

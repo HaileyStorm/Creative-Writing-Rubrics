@@ -1,0 +1,163 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: form.poetry.generic_fixed_form_verse
+version: 1
+title: Generic fixed-form verse
+kind: artifact_form
+description: Reads formal rules from the chosen schema and evaluates correctness, expressive use, variation, and
+  whether form creates meaning rather than merely being satisfied.
+origin: user_inventory_refined
+owner_domains:
+- form.generic_fixed_form_verse
+artifact_types:
+- poetry
+valid_scopes:
+- line
+- stanza
+- poem
+- collection
+activation: Attach when generic fixed-form verse is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: form.poetry.generic_fixed_form_verse.quality
+  type: group
+  title: Generic fixed-form verse checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: form.poetry.generic_fixed_form_verse.schema
+    type: question
+    criterion_key: form.poetry.generic_fixed_form_verse.schema
+    text: Is the selected formal schema explicitly identified or machine-readable?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: hard_gate
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.generic_fixed_form_verse.line_stanza
+    type: question
+    criterion_key: form.poetry.generic_fixed_form_verse.line_stanza
+    text: Does the poem satisfy required line and stanza architecture?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: hard_gate
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.generic_fixed_form_verse.meter
+    type: question
+    criterion_key: form.poetry.generic_fixed_form_verse.meter
+    text: Does the poem satisfy the schema's metrical or syllabic requirements, including allowed substitutions?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.generic_fixed_form_verse.rhyme
+    type: question
+    criterion_key: form.poetry.generic_fixed_form_verse.rhyme
+    text: Does it satisfy the schema's rhyme, refrain, or repetition architecture?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.generic_fixed_form_verse.turns
+    type: question
+    criterion_key: form.poetry.generic_fixed_form_verse.turns
+    text: Does it satisfy any required turn, address, sequence, or thematic movement?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.generic_fixed_form_verse.naturalness
+    type: question
+    criterion_key: form.poetry.generic_fixed_form_verse.naturalness
+    text: Do formal constraints avoid forcing syntax, stress, diction, or meaning into conspicuous awkwardness?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.generic_fixed_form_verse.expressive_use
+    type: question
+    criterion_key: form.poetry.generic_fixed_form_verse.expressive_use
+    text: Does the form generate pressure, expectation, music, contrast, or meaning rather than functioning as a
+      checklist?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.generic_fixed_form_verse.variation
+    type: question
+    criterion_key: form.poetry.generic_fixed_form_verse.variation
+    text: Are departures from the schema controlled, interpretable, and permitted by the selected profile?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- li_et_al_2026_poemetric
+- vaezi_rezaei_2018
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Reads formal rules from the chosen schema and evaluates correctness, expressive use, variation,
+  and whether form creates meaning rather than merely being satisfied.
+profile_overrides:
+  schema_required: true
+  note: Load a named fixed-form module or user-supplied machine-readable form schema.

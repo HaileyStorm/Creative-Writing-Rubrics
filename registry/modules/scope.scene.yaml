@@ -1,0 +1,137 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: scope.scene
+version: 1
+title: Scene scope overlay
+kind: scope_overlay
+description: For a complete or near-complete scene; evaluates local movement and fit with adjacent scenes.
+origin: user_inventory_refined
+owner_domains:
+- scope.scene
+artifact_types:
+- any
+valid_scopes:
+- scene
+activation: Attach when the evaluated scope is scene.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: scope.scene.quality
+  type: group
+  title: Scope handling
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: scope.scene.entry
+    type: question
+    criterion_key: scope.scene.entry
+    text: Is the scene's entry point efficient and sufficiently oriented?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: scope.scene.purpose
+    type: question
+    criterion_key: scope.scene.purpose
+    text: Does the scene perform a distinct local and larger-work function?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: scope.scene.progression
+    type: question
+    criterion_key: scope.scene.progression
+    text: Do pressures, choices, revelations, or relations progress across the scene?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: scope.scene.turn
+    type: question
+    criterion_key: scope.scene.turn
+    text: Does the scene reach a changed state, understanding, commitment, or pressure?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: scope.scene.exit
+    type: question
+    criterion_key: scope.scene.exit
+    text: Does the exit produce momentum, resonance, or necessary transition?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: scope.scene.neighbors
+    type: question
+    criterion_key: scope.scene.neighbors
+    text: Does the scene fit the supplied previous and next units?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: scope.scene.quiet
+    type: question
+    criterion_key: scope.scene.quiet
+    text: If the scene is quiet, does observation, relation, implication, or perception provide meaningful movement
+      without forced conflict?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions:
+- action: minimum_neighboring_units
+  value: 1
+research_basis:
+- cho_et_al_2026_bineval
+- longjudgebench_2026
+notes: []

@@ -1,0 +1,144 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: core.specificity_and_embodiment
+version: 1
+title: Specificity and embodiment
+kind: base
+description: Evaluates concrete detail, sensory presence, physical action, grounded thought, particularity of setting
+  and character, and whether abstractions are supported by observable material.
+origin: user_inventory_refined
+owner_domains:
+- specificity_embodiment
+artifact_types:
+- any
+valid_scopes:
+- any
+activation: Attach to every substantive execution.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: core.specificity_and_embodiment.quality
+  type: group
+  title: Specificity and embodiment
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: core.specificity_and_embodiment.concrete_detail
+    type: question
+    criterion_key: core.specificity_and_embodiment.concrete_detail
+    text: Does the artifact use concrete detail where abstraction alone would leave the experience thin?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.specificity_and_embodiment.sensory_presence
+    type: question
+    criterion_key: core.specificity_and_embodiment.sensory_presence
+    text: Are relevant sensory channels used selectively and specifically?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.specificity_and_embodiment.physical_action
+    type: question
+    criterion_key: core.specificity_and_embodiment.physical_action
+    text: Are bodies, objects, and physical actions present enough for the reader to inhabit the moment?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.specificity_and_embodiment.grounded_thought
+    type: question
+    criterion_key: core.specificity_and_embodiment.grounded_thought
+    text: Are thoughts grounded in the speaker's or character's particular situation, language, and attention?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.specificity_and_embodiment.setting_particularity
+    type: question
+    criterion_key: core.specificity_and_embodiment.setting_particularity
+    text: Does the setting contain distinguishing features rather than generic inventory?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.specificity_and_embodiment.character_particularity
+    type: question
+    criterion_key: core.specificity_and_embodiment.character_particularity
+    text: Do character details imply an individual rather than a role label?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.specificity_and_embodiment.abstract_support
+    type: question
+    criterion_key: core.specificity_and_embodiment.abstract_support
+    text: Are thematic or emotional abstractions supported by observable material, pattern, or consequence?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- vaezi_rezaei_2018
+- carey_davidow_williams_2022
+- gomez_rodriguez_williams_2023
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates concrete detail, sensory presence, physical action, grounded thought, particularity
+  of setting and character, and whether abstractions are supported by observable material.

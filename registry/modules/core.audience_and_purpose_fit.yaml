@@ -1,0 +1,162 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: core.audience_and_purpose_fit
+version: 1
+title: Audience and purpose fit
+kind: base
+description: 'Evaluates whether complexity, tone, explanation, intensity, vocabulary, length, and genre signaling
+  fit the intended audience and use: private draft, literary submission, children’s story, serial fiction, performance
+  piece, etc.'
+origin: user_inventory_refined
+owner_domains:
+- audience_purpose
+artifact_types:
+- any
+valid_scopes:
+- any
+activation: Attach to every substantive execution.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: core.audience_and_purpose_fit.quality
+  type: group
+  title: Audience and purpose fit
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: core.audience_and_purpose_fit.complexity
+    type: question
+    criterion_key: core.audience_and_purpose_fit.complexity
+    text: Is conceptual and structural complexity appropriate for the intended audience?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.audience_and_purpose_fit.tone
+    type: question
+    criterion_key: core.audience_and_purpose_fit.tone
+    text: Is tone appropriate for the intended audience, venue, and purpose?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.audience_and_purpose_fit.explanation
+    type: question
+    criterion_key: core.audience_and_purpose_fit.explanation
+    text: Is the amount of explanation appropriate for what the intended reader is expected to know?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.audience_and_purpose_fit.intensity
+    type: question
+    criterion_key: core.audience_and_purpose_fit.intensity
+    text: Is emotional, violent, frightening, sexual, or comic intensity appropriate to the specified audience and
+      purpose?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.audience_and_purpose_fit.vocabulary
+    type: question
+    criterion_key: core.audience_and_purpose_fit.vocabulary
+    text: Is vocabulary appropriate without condescension, needless opacity, or accidental register mismatch?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.audience_and_purpose_fit.length
+    type: question
+    criterion_key: core.audience_and_purpose_fit.length
+    text: Is length appropriate for the delivery context and reader commitment?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.audience_and_purpose_fit.genre_signals
+    type: question
+    criterion_key: core.audience_and_purpose_fit.genre_signals
+    text: Does the artifact signal and fulfill the relevant genre or mode promises for its target audience?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.audience_and_purpose_fit.use_context
+    type: question
+    criterion_key: core.audience_and_purpose_fit.use_context
+    text: Does it fit its intended use, such as private exploration, publication, performance, gameplay, reference,
+      or revision support?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- vaezi_rezaei_2018
+- carey_davidow_williams_2022
+- gomez_rodriguez_williams_2023
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: 'Evaluates whether complexity, tone, explanation, intensity, vocabulary, length, and genre signaling
+  fit the intended audience and use: private draft, literary submission, children’s story, serial fiction, performance
+  piece, etc.'

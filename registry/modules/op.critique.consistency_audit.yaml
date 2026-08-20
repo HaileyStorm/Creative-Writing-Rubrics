@@ -1,0 +1,157 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: op.critique.consistency_audit
+version: 1
+title: Consistency audit
+kind: procedure
+description: Checks canon, timeline, knowledge state, physical state, motivations, terminology, world rules, relationship
+  progression, and discrepancies with project sheets.
+origin: user_inventory_refined
+owner_domains:
+- procedure.consistency_audit
+artifact_types:
+- any
+valid_scopes:
+- operation
+activation: Attach when consistency audit is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: op.critique.consistency_audit.quality
+  type: group
+  title: Consistency audit checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: op.critique.consistency_audit.facts
+    type: question
+    criterion_key: op.critique.consistency_audit.facts
+    text: Are persistent facts, names, terminology, relationships, and world rules checked across all supplied sources?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.critique.consistency_audit.timeline
+    type: question
+    criterion_key: op.critique.consistency_audit.timeline
+    text: Are chronology, elapsed time, travel, age, season, and state updates checked?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.critique.consistency_audit.knowledge
+    type: question
+    criterion_key: op.critique.consistency_audit.knowledge
+    text: Are character knowledge and belief states tracked?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.critique.consistency_audit.physical
+    type: question
+    criterion_key: op.critique.consistency_audit.physical
+    text: Are injuries, possessions, clothing, object locations, entrances, and exits tracked where relevant?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.critique.consistency_audit.motivation
+    type: question
+    criterion_key: op.critique.consistency_audit.motivation
+    text: Are motives and relationship progression consistent or intentionally changed?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.critique.consistency_audit.authority
+    type: question
+    criterion_key: op.critique.consistency_audit.authority
+    text: Are apparent contradictions checked against source authority and branch status?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.critique.consistency_audit.severity
+    type: question
+    criterion_key: op.critique.consistency_audit.severity
+    text: Is each issue classified by confidence, severity, reach, and likely repair surface?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.critique.consistency_audit.no_false_positive
+    type: question
+    criterion_key: op.critique.consistency_audit.no_false_positive
+    text: Does the audit avoid treating deliberate mystery, unreliable narration, or later correction as continuity
+      errors?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- wu_et_al_2025_writingbench
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Checks canon, timeline, knowledge state, physical state, motivations, terminology, world rules,
+  relationship progression, and discrepancies with project sheets.

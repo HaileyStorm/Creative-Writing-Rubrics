@@ -1,0 +1,129 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: form.multimodal.text_audio_alignment
+version: 1
+title: Text-audio alignment
+kind: multimodal_artifact
+description: Research-informed binary rubric for text-audio alignment.
+origin: research_expansion
+owner_domains:
+- multimodal.text_audio_alignment
+artifact_types:
+- multimodal_asset
+valid_scopes:
+- asset
+- scene
+- sequence
+- work
+- project
+activation: Attach when text-audio alignment is the active form, asset, or evaluation concern.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 2
+  project_sources: source text, image references, audio references, timeline, and asset metadata
+  modalities_required:
+  - text
+  - image
+  - audio_as_applicable
+tree:
+- id: form.multimodal.text_audio_alignment.quality
+  type: group
+  title: Text-audio alignment checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: form.multimodal.text_audio_alignment.words
+    type: question
+    criterion_key: form.multimodal.text_audio_alignment.words
+    text: Does audio faithfully realize the approved text?
+    pass_answer: 'YES'
+    weight: 2.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.multimodal.text_audio_alignment.speaker
+    type: question
+    criterion_key: form.multimodal.text_audio_alignment.speaker
+    text: Are narration and dialogue assigned to the correct speakers?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.multimodal.text_audio_alignment.meaning
+    type: question
+    criterion_key: form.multimodal.text_audio_alignment.meaning
+    text: Do pace, emphasis, pauses, and emotion reflect the textual scene and subtext?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.multimodal.text_audio_alignment.tone
+    type: question
+    criterion_key: form.multimodal.text_audio_alignment.tone
+    text: Does performance tone fit the text's mode and project direction?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.multimodal.text_audio_alignment.continuity
+    type: question
+    criterion_key: form.multimodal.text_audio_alignment.continuity
+    text: Do character voice and pronunciation remain consistent with prior audio assets?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.multimodal.text_audio_alignment.no_narrow
+    type: question
+    criterion_key: form.multimodal.text_audio_alignment.no_narrow
+    text: Does performance avoid imposing an interpretation that contradicts or unnecessarily collapses intended
+      ambiguity?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- zhuang_et_al_2025_vistorybench
+- real_world_voice_eq_bench_2026
+notes: []

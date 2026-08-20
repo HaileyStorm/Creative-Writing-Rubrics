@@ -1,0 +1,136 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: artifact.support.glossary_and_pronunciation_lexicon
+version: 1
+title: Glossary and pronunciation lexicon
+kind: support_artifact
+description: Research-informed binary rubric for glossary and pronunciation lexicon.
+origin: research_expansion
+owner_domains:
+- support.glossary_and_pronunciation_lexicon
+artifact_types:
+- planning_artifact
+- reference_artifact
+valid_scopes:
+- artifact
+- project
+activation: Attach when glossary and pronunciation lexicon is the active form, asset, or evaluation concern.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: artifact.support.glossary_and_pronunciation_lexicon.quality
+  type: group
+  title: Glossary and pronunciation lexicon checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: artifact.support.glossary_and_pronunciation_lexicon.terms
+    type: question
+    criterion_key: artifact.support.glossary_and_pronunciation_lexicon.terms
+    text: Does it include every active invented, technical, cultural, or potentially ambiguous term?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.glossary_and_pronunciation_lexicon.definitions
+    type: question
+    criterion_key: artifact.support.glossary_and_pronunciation_lexicon.definitions
+    text: Are definitions concise, accurate, and project-specific?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.glossary_and_pronunciation_lexicon.pronunciation
+    type: question
+    criterion_key: artifact.support.glossary_and_pronunciation_lexicon.pronunciation
+    text: Are pronunciation, stress, dialect, and approved variants recorded where relevant?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.glossary_and_pronunciation_lexicon.usage
+    type: question
+    criterion_key: artifact.support.glossary_and_pronunciation_lexicon.usage
+    text: Are capitalization, plurality, inflection, and usage examples included where needed?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.glossary_and_pronunciation_lexicon.canon
+    type: question
+    criterion_key: artifact.support.glossary_and_pronunciation_lexicon.canon
+    text: Are entries consistent with world and manuscript canon?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.glossary_and_pronunciation_lexicon.provenance
+    type: question
+    criterion_key: artifact.support.glossary_and_pronunciation_lexicon.provenance
+    text: Are source and authority status recorded?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.glossary_and_pronunciation_lexicon.machine
+    type: question
+    criterion_key: artifact.support.glossary_and_pronunciation_lexicon.machine
+    text: Is the structure machine-readable and stable for prompting and TTS?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- wu_et_al_2025_writingbench
+- cho_et_al_2026_bineval
+notes: []

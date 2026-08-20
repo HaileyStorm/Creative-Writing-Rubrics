@@ -1,0 +1,155 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: artifact.support.revision_plan
+version: 1
+title: Revision plan
+kind: support_artifact
+description: Evaluates diagnosis, priorities, dependencies, proposed changes, expected effects, preservation constraints,
+  and executable sequencing.
+origin: user_inventory_refined
+owner_domains:
+- support.revision_plan
+artifact_types:
+- planning_artifact
+- reference_artifact
+valid_scopes:
+- any
+activation: Attach when revision plan is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: artifact.support.revision_plan.quality
+  type: group
+  title: Revision plan checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: artifact.support.revision_plan.diagnosis
+    type: question
+    criterion_key: artifact.support.revision_plan.diagnosis
+    text: Does the plan identify causes and patterns rather than only symptoms?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.revision_plan.priorities
+    type: question
+    criterion_key: artifact.support.revision_plan.priorities
+    text: Are issues prioritized by impact, dependency, and revision phase?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.revision_plan.actions
+    type: question
+    criterion_key: artifact.support.revision_plan.actions
+    text: Are proposed changes concrete enough to execute?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.revision_plan.dependencies
+    type: question
+    criterion_key: artifact.support.revision_plan.dependencies
+    text: Does the plan order changes so later work is not invalidated by unresolved higher-level problems?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.revision_plan.effects
+    type: question
+    criterion_key: artifact.support.revision_plan.effects
+    text: Does it predict intended benefits and possible side effects?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.revision_plan.preservation
+    type: question
+    criterion_key: artifact.support.revision_plan.preservation
+    text: Does it state what must be preserved?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.revision_plan.scope
+    type: question
+    criterion_key: artifact.support.revision_plan.scope
+    text: Is each action assigned to the appropriate units and revision level?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.revision_plan.verification
+    type: question
+    criterion_key: artifact.support.revision_plan.verification
+    text: Does it define how completion and success will be checked?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates diagnosis, priorities, dependencies, proposed changes, expected effects, preservation
+  constraints, and executable sequencing.

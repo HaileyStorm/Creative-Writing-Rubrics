@@ -1,0 +1,149 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: workflow.model_a_high_context_role_fitness
+version: 1
+title: High-context critic/editor role fitness
+kind: workflow
+description: Research-informed binary rubric for model a high-context role fitness.
+origin: user_inventory_refined
+owner_domains:
+- workflow.model_a_high_context_role_fitness
+artifact_types:
+- workflow_execution
+valid_scopes:
+- operation
+activation: Attach when model a high-context role fitness is the active form, asset, or evaluation concern.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: workflow.model_a_high_context_role_fitness.quality
+  type: group
+  title: High-context critic/editor role fitness checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: workflow.model_a_high_context_role_fitness.ingest
+    type: question
+    criterion_key: workflow.model_a_high_context_role_fitness.ingest
+    text: Does the model reliably ingest and reconstruct complex projects?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: workflow.model_a_high_context_role_fitness.refine
+    type: question
+    criterion_key: workflow.model_a_high_context_role_fitness.refine
+    text: Does it refine ideas and repair outlines with strong judgment?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: workflow.model_a_high_context_role_fitness.context
+    type: question
+    criterion_key: workflow.model_a_high_context_role_fitness.context
+    text: Does it synthesize broad project context accurately?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: workflow.model_a_high_context_role_fitness.judge
+    type: question
+    criterion_key: workflow.model_a_high_context_role_fitness.judge
+    text: Does it adjudicate rubrics and finalists reliably?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: workflow.model_a_high_context_role_fitness.canon
+    type: question
+    criterion_key: workflow.model_a_high_context_role_fitness.canon
+    text: Does it perform consistency, canon, and research checks accurately?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: workflow.model_a_high_context_role_fitness.revision
+    type: question
+    criterion_key: workflow.model_a_high_context_role_fitness.revision
+    text: Does it plan and verify revision effectively?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: workflow.model_a_high_context_role_fitness.final
+    type: question
+    criterion_key: workflow.model_a_high_context_role_fitness.final
+    text: Does it perform restrained finalization without homogenization?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: workflow.model_a_high_context_role_fitness.long
+    type: question
+    criterion_key: workflow.model_a_high_context_role_fitness.long
+    text: Does it critique long manuscripts hierarchically?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- wu_et_al_2025_writingbench
+- longjudgebench_2026
+notes: []

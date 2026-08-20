@@ -1,0 +1,83 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: penalty.unflagged_incomplete
+version: 1
+title: Unflagged incomplete artifact penalty
+kind: penalty
+description: Deducts only when an artifact is presented as complete or its partial status is not disclosed.
+origin: user_requirement
+owner_domains:
+- penalty.incomplete
+artifact_types:
+- any
+valid_scopes:
+- any
+activation: Attach when the operation requests a complete unit or artifact status may be ambiguous.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: penalty.unflagged_incomplete.controls
+  type: group
+  title: Unflagged incompleteness controls
+  score_mode: capped_penalty
+  weight: 1.0
+  children:
+  - id: penalty.unflagged_incomplete.status
+    type: question
+    criterion_key: penalty.unflagged_incomplete.status
+    text: If the artifact is an excerpt, fragment, sample, partial draft, or intentionally unfinished, is that status
+      supplied to the judge?
+    pass_answer: 'YES'
+    weight: 3.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: penalty.unflagged_incomplete.unit
+    type: question
+    criterion_key: penalty.unflagged_incomplete.unit
+    text: If presented as complete, does the requested unit reach the minimum closure or changed state promised
+      by its form and operation?
+    pass_answer: 'YES'
+    weight: 3.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: penalty.unflagged_incomplete.truncation
+    type: question
+    criterion_key: penalty.unflagged_incomplete.truncation
+    text: Is the artifact free of accidental truncation, unresolved syntax, dropped sections, and abrupt stopping
+      caused by generation limits?
+    pass_answer: 'YES'
+    weight: 3.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+  description: Do not penalize a work merely for being an explicitly flagged excerpt or in-progress artifact. Apply
+    only when the artifact is presented as complete or its partial status is omitted.
+  cap_points: 8.0
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+notes: []

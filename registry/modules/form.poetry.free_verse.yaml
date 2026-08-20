@@ -1,0 +1,159 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: form.poetry.free_verse
+version: 1
+title: Free verse
+kind: artifact_form
+description: Requires line breaks, stanza breaks, visual arrangement, rhythm, and repetitions to feel chosen rather
+  than like prose wrapped into short lines.
+origin: user_inventory_refined
+owner_domains:
+- form.free_verse
+artifact_types:
+- poetry
+valid_scopes:
+- line
+- stanza
+- poem
+- collection
+activation: Attach when free verse is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: form.poetry.free_verse.quality
+  type: group
+  title: Free verse checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: form.poetry.free_verse.line_breaks
+    type: question
+    criterion_key: form.poetry.free_verse.line_breaks
+    text: Does each consequential line break affect rhythm, syntax, emphasis, image, ambiguity, or pace?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.free_verse.stanzas
+    type: question
+    criterion_key: form.poetry.free_verse.stanzas
+    text: Do stanza divisions create meaningful units, turns, pauses, or relations?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.free_verse.rhythm
+    type: question
+    criterion_key: form.poetry.free_verse.rhythm
+    text: Does the poem establish and vary a deliberate rhythmic field without requiring regular meter?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.free_verse.visual_form
+    type: question
+    criterion_key: form.poetry.free_verse.visual_form
+    text: Does the page arrangement contribute to reading rather than merely decorate it?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.free_verse.syntax
+    type: question
+    criterion_key: form.poetry.free_verse.syntax
+    text: Does syntax interact productively with lineation and enjambment?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.free_verse.repetition
+    type: question
+    criterion_key: form.poetry.free_verse.repetition
+    text: When words, phrases, or structures recur, does recurrence alter pressure or meaning?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.free_verse.no_prose_wrap
+    type: question
+    criterion_key: form.poetry.free_verse.no_prose_wrap
+    text: Does the poem avoid reading like ordinary prose arbitrarily wrapped into short lines?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.free_verse.necessity
+    type: question
+    criterion_key: form.poetry.free_verse.necessity
+    text: Does free-verse form feel necessary to the poem's movement and voice?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- li_et_al_2026_poemetric
+- vaezi_rezaei_2018
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Requires line breaks, stanza breaks, visual arrangement, rhythm, and repetitions to feel chosen
+  rather than like prose wrapped into short lines.

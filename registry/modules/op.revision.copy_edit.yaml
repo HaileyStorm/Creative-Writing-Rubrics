@@ -1,0 +1,142 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: op.revision.copy_edit
+version: 1
+title: Copy edit
+kind: procedure
+description: Evaluates correctness, consistency, formatting, house style, names, capitalization, punctuation, and
+  minimal semantic disturbance.
+origin: user_inventory_refined
+owner_domains:
+- procedure.copy_edit
+artifact_types:
+- any
+valid_scopes:
+- operation
+activation: Attach when copy edit is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: op.revision.copy_edit.quality
+  type: group
+  title: Copy edit checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: op.revision.copy_edit.correctness
+    type: question
+    criterion_key: op.revision.copy_edit.correctness
+    text: Are grammar, spelling, punctuation, capitalization, and usage corrected according to the selected style?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.copy_edit.consistency
+    type: question
+    criterion_key: op.revision.copy_edit.consistency
+    text: Are names, terms, numbers, dates, hyphenation, and formatting made consistent?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.copy_edit.dialogue
+    type: question
+    criterion_key: op.revision.copy_edit.dialogue
+    text: Are dialogue and quotation mechanics correct?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.copy_edit.house
+    type: question
+    criterion_key: op.revision.copy_edit.house
+    text: Is the selected house style applied consistently?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.copy_edit.meaning
+    type: question
+    criterion_key: op.revision.copy_edit.meaning
+    text: Is semantic meaning preserved?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.copy_edit.voice
+    type: question
+    criterion_key: op.revision.copy_edit.voice
+    text: Are deliberate dialect, fragments, nonstandard syntax, and stylistic punctuation preserved where intended?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.copy_edit.minimal
+    type: question
+    criterion_key: op.revision.copy_edit.minimal
+    text: Are changes no broader than necessary for copy editing?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- wu_et_al_2025_writingbench
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates correctness, consistency, formatting, house style, names, capitalization, punctuation,
+  and minimal semantic disturbance.

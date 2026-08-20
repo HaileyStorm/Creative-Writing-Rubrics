@@ -1,0 +1,135 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: workflow.procedure_completeness
+version: 1
+title: Procedure completeness
+kind: workflow
+description: Research-informed binary rubric for procedure completeness.
+origin: user_inventory_refined
+owner_domains:
+- workflow.procedure_completeness
+artifact_types:
+- workflow_execution
+valid_scopes:
+- operation
+activation: Attach when procedure completeness is the active form, asset, or evaluation concern.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: workflow.procedure_completeness.quality
+  type: group
+  title: Procedure completeness checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: workflow.procedure_completeness.requirements
+    type: question
+    criterion_key: workflow.procedure_completeness.requirements
+    text: Does the configured workflow include every stage required to produce the requested result safely and usefully?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: workflow.procedure_completeness.disabled
+    type: question
+    criterion_key: workflow.procedure_completeness.disabled
+    text: When a stage is disabled, is its necessary information or validation supplied elsewhere?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: workflow.procedure_completeness.dependencies
+    type: question
+    criterion_key: workflow.procedure_completeness.dependencies
+    text: Are stage dependencies satisfied in order?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: workflow.procedure_completeness.artifacts
+    type: question
+    criterion_key: workflow.procedure_completeness.artifacts
+    text: Are required intermediate artifacts produced and linked?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: workflow.procedure_completeness.validation
+    type: question
+    criterion_key: workflow.procedure_completeness.validation
+    text: Are necessary validation and verification stages retained?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: workflow.procedure_completeness.streamline
+    type: question
+    criterion_key: workflow.procedure_completeness.streamline
+    text: Does the workflow avoid insisting on unnecessary stages for intentionally simple tasks?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: workflow.procedure_completeness.override
+    type: question
+    criterion_key: workflow.procedure_completeness.override
+    text: Are user configuration and intentional risk acceptance respected and recorded?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- wu_et_al_2025_writingbench
+- longjudgebench_2026
+notes: []

@@ -1,0 +1,174 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: core.language_craft
+version: 1
+title: Language craft
+kind: base
+description: Covers diction, syntax, sentence construction, cadence, rhythm, paragraph movement, image construction,
+  sonic qualities, and control of emphasis. Different form rubrics reinterpret this module rather than replacing
+  it entirely.
+origin: user_inventory_refined
+owner_domains:
+- language_craft
+artifact_types:
+- any
+valid_scopes:
+- any
+activation: Attach to every substantive execution.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: core.language_craft.quality
+  type: group
+  title: Language craft
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: core.language_craft.diction
+    type: question
+    criterion_key: core.language_craft.diction
+    text: Are the chosen words precise, apt, and proportionate to the intended effect?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.language_craft.syntax
+    type: question
+    criterion_key: core.language_craft.syntax
+    text: Are sentence or line structures controlled rather than accidentally tangled, monotonous, or fragmentary?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.language_craft.cadence
+    type: question
+    criterion_key: core.language_craft.cadence
+    text: Does cadence support meaning, emphasis, and mood?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.language_craft.variation
+    type: question
+    criterion_key: core.language_craft.variation
+    text: Is syntactic and rhythmic variation purposeful rather than mechanically repetitive?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.language_craft.paragraph_movement
+    type: question
+    criterion_key: core.language_craft.paragraph_movement
+    text: Do paragraphs, stanzas, or comparable units move and turn at effective points?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.language_craft.images
+    type: question
+    criterion_key: core.language_craft.images
+    text: Are images constructed clearly enough to be apprehended and specifically enough to matter?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.language_craft.sound
+    type: question
+    criterion_key: core.language_craft.sound
+    text: Where sound is relevant, are sonic effects controlled and useful rather than accidental ornament?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.language_craft.emphasis
+    type: question
+    criterion_key: core.language_craft.emphasis
+    text: Does the language place emphasis on the elements that deserve it?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.language_craft.no_awkwardness
+    type: question
+    criterion_key: core.language_craft.no_awkwardness
+    text: Is the language free of conspicuous awkwardness that interrupts the intended experience?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- vaezi_rezaei_2018
+- carey_davidow_williams_2022
+- gomez_rodriguez_williams_2023
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Covers diction, syntax, sentence construction, cadence, rhythm, paragraph movement, image construction,
+  sonic qualities, and control of emphasis. Different form rubrics reinterpret this module rather than replacing
+  it entirely.

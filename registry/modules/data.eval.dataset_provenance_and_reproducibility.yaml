@@ -1,0 +1,143 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: data.eval.dataset_provenance_and_reproducibility
+version: 1
+title: Dataset provenance and reproducibility
+kind: dataset_eval
+description: Source repository, revision, configuration, original split, item ID, license, transformations, hashes,
+  and deterministic regeneration.
+origin: user_inventory_refined
+owner_domains:
+- dataset.dataset_provenance_and_reproducibility
+artifact_types:
+- dataset
+- evaluation_pipeline
+valid_scopes:
+- any
+activation: Attach when dataset provenance and reproducibility is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: data.eval.dataset_provenance_and_reproducibility.quality
+  type: group
+  title: Dataset provenance and reproducibility checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: data.eval.dataset_provenance_and_reproducibility.source
+    type: question
+    criterion_key: data.eval.dataset_provenance_and_reproducibility.source
+    text: Is every source repository, dataset, and document identified?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: data.eval.dataset_provenance_and_reproducibility.revision
+    type: question
+    criterion_key: data.eval.dataset_provenance_and_reproducibility.revision
+    text: Are exact revisions, configurations, and original splits recorded?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: data.eval.dataset_provenance_and_reproducibility.ids
+    type: question
+    criterion_key: data.eval.dataset_provenance_and_reproducibility.ids
+    text: Are original item IDs preserved?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: data.eval.dataset_provenance_and_reproducibility.license
+    type: question
+    criterion_key: data.eval.dataset_provenance_and_reproducibility.license
+    text: Are licenses and usage constraints recorded and compatible with the intended use?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: data.eval.dataset_provenance_and_reproducibility.transform
+    type: question
+    criterion_key: data.eval.dataset_provenance_and_reproducibility.transform
+    text: Are every transformation and filter documented?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: data.eval.dataset_provenance_and_reproducibility.hash
+    type: question
+    criterion_key: data.eval.dataset_provenance_and_reproducibility.hash
+    text: Are source and generated artifacts hashed?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: data.eval.dataset_provenance_and_reproducibility.regen
+    type: question
+    criterion_key: data.eval.dataset_provenance_and_reproducibility.regen
+    text: Can the dataset be regenerated deterministically from recorded inputs?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- rao_callison_burch_2026_autorubric
+- longjudgebench_2026
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Source repository, revision, configuration, original split, item ID, license, transformations,
+  hashes, and deterministic regeneration.

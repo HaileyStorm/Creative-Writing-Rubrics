@@ -1,0 +1,159 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: form.poetry.spoken_word_performance_poetry
+version: 1
+title: Spoken-word / performance poetry
+kind: artifact_form
+description: Adds oral rhythm, breath, rhetoric, audience address, escalation, sonic clarity, and performative impact
+  without reducing it to page-poetry conventions.
+origin: user_inventory_refined
+owner_domains:
+- form.spoken_word_performance_poetry
+artifact_types:
+- poetry
+valid_scopes:
+- line
+- stanza
+- poem
+- collection
+activation: Attach when spoken-word / performance poetry is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: form.poetry.spoken_word_performance_poetry.quality
+  type: group
+  title: Spoken-word / performance poetry checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: form.poetry.spoken_word_performance_poetry.oral_clarity
+    type: question
+    criterion_key: form.poetry.spoken_word_performance_poetry.oral_clarity
+    text: Can the poem's syntax, references, and key images be followed in a single hearing?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.spoken_word_performance_poetry.breath
+    type: question
+    criterion_key: form.poetry.spoken_word_performance_poetry.breath
+    text: Do line, phrase, and pause patterns support breath and performance?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.spoken_word_performance_poetry.sound
+    type: question
+    criterion_key: form.poetry.spoken_word_performance_poetry.sound
+    text: Do rhythm, consonance, assonance, rhyme, and vocal texture work audibly?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.spoken_word_performance_poetry.audience
+    type: question
+    criterion_key: form.poetry.spoken_word_performance_poetry.audience
+    text: Does the poem establish an effective relationship with a live or imagined audience?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.spoken_word_performance_poetry.escalation
+    type: question
+    criterion_key: form.poetry.spoken_word_performance_poetry.escalation
+    text: Does rhetorical and emotional energy develop rather than remain at maximum intensity throughout?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.spoken_word_performance_poetry.gesture
+    type: question
+    criterion_key: form.poetry.spoken_word_performance_poetry.gesture
+    text: Do repetitions, pivots, and declarations create performative action rather than page-bound explanation?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.spoken_word_performance_poetry.ending
+    type: question
+    criterion_key: form.poetry.spoken_word_performance_poetry.ending
+    text: Does the final movement land audibly without requiring rereading to recover its point?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.spoken_word_performance_poetry.page_independence
+    type: question
+    criterion_key: form.poetry.spoken_word_performance_poetry.page_independence
+    text: Is the work judged as performance writing rather than penalized for not resembling quiet page poetry?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: diagnostic
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- li_et_al_2026_poemetric
+- vaezi_rezaei_2018
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Adds oral rhythm, breath, rhetoric, audience address, escalation, sonic clarity, and performative
+  impact without reducing it to page-poetry conventions.

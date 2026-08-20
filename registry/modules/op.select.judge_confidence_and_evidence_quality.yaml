@@ -1,0 +1,143 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: op.select.judge_confidence_and_evidence_quality
+version: 1
+title: Judge confidence and evidence quality
+kind: procedure
+description: Evaluates whether the grader’s conclusions are supported, appropriately scoped, and stable enough to
+  drive automated selection.
+origin: user_inventory_refined
+owner_domains:
+- procedure.judge_confidence_and_evidence_quality
+artifact_types:
+- any
+valid_scopes:
+- operation
+activation: Attach when judge confidence and evidence quality is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: op.select.judge_confidence_and_evidence_quality.quality
+  type: group
+  title: Judge confidence and evidence quality checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: op.select.judge_confidence_and_evidence_quality.evidence
+    type: question
+    criterion_key: op.select.judge_confidence_and_evidence_quality.evidence
+    text: Is every material verdict supported by relevant evidence?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.select.judge_confidence_and_evidence_quality.scope
+    type: question
+    criterion_key: op.select.judge_confidence_and_evidence_quality.scope
+    text: Does confidence reflect artifact scope and available project context?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.select.judge_confidence_and_evidence_quality.observable
+    type: question
+    criterion_key: op.select.judge_confidence_and_evidence_quality.observable
+    text: Is the criterion actually observable in the supplied material?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.select.judge_confidence_and_evidence_quality.conflict
+    type: question
+    criterion_key: op.select.judge_confidence_and_evidence_quality.conflict
+    text: Are conflicting sources or evidence represented in confidence?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.select.judge_confidence_and_evidence_quality.stability
+    type: question
+    criterion_key: op.select.judge_confidence_and_evidence_quality.stability
+    text: Would the verdict likely remain stable under paraphrased instructions or candidate-order permutation?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.select.judge_confidence_and_evidence_quality.calibration
+    type: question
+    criterion_key: op.select.judge_confidence_and_evidence_quality.calibration
+    text: Does the judge avoid high confidence on subjective, culturally specific, or context-dependent claims without
+      calibration?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.select.judge_confidence_and_evidence_quality.coverage
+    type: question
+    criterion_key: op.select.judge_confidence_and_evidence_quality.coverage
+    text: Are evidence coverage and unassessed weight reported?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- wu_et_al_2025_writingbench
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates whether the grader’s conclusions are supported, appropriately scoped, and stable enough
+  to drive automated selection.

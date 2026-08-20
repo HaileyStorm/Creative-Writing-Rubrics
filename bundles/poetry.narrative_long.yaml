@@ -1,0 +1,119 @@
+$schema: ../schema/hbq_bundle.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+bundle_id: poetry.narrative_long
+version: 1
+title: Narrative or long poem
+description: General poetry craft plus the narrative or long poem form rubric.
+artifact_types:
+- poetry
+valid_scopes:
+- poem
+- poem
+profile: {}
+module_ids:
+- core.task_and_brief_fidelity
+- core.length_and_scope_fit
+- form.poetry.general_poetry
+- form.poetry.narrative_or_long_poem
+- core.freshness_and_non_genericness
+- core.emotional_and_intellectual_effect
+- core.mechanics_and_presentation
+- core.holistic_artistic_success
+- penalty.purple_prose
+- penalty.repetition
+- penalty.unflagged_incomplete
+domains:
+- domain_id: task
+  title: Task and scope
+  points: 8.0
+  components:
+  - module_id: core.task_and_brief_fidelity
+    weight: 1.0
+  - module_id: core.length_and_scope_fit
+    weight: 1.0
+  score_mode: weighted_binary_mean
+- domain_id: poetry
+  title: General poetic craft
+  points: 38.0
+  components:
+  - module_id: form.poetry.general_poetry
+    weight: 1.0
+  score_mode: weighted_binary_mean
+- domain_id: form
+  title: Form-specific craft
+  points: 26.0
+  components:
+  - module_id: form.poetry.narrative_or_long_poem
+    weight: 1.0
+  score_mode: weighted_binary_mean
+- domain_id: fresh
+  title: Freshness and idiosyncrasy
+  points: 12.0
+  components:
+  - module_id: core.freshness_and_non_genericness
+    weight: 1.0
+  score_mode: weighted_binary_mean
+- domain_id: effect
+  title: Emotional and intellectual effect
+  points: 8.0
+  components:
+  - module_id: core.emotional_and_intellectual_effect
+    weight: 1.0
+  score_mode: weighted_binary_mean
+- domain_id: mechanics
+  title: Presentation
+  points: 4.0
+  components:
+  - module_id: core.mechanics_and_presentation
+    weight: 1.0
+  score_mode: weighted_binary_mean
+- domain_id: holistic
+  title: Holistic artistic success
+  points: 4.0
+  components:
+  - module_id: core.holistic_artistic_success
+    weight: 1.0
+  score_mode: weighted_binary_mean
+penalty_modules:
+- module_id: penalty.purple_prose
+  cap_points: 4.0
+- module_id: penalty.repetition
+  cap_points: 6.0
+- module_id: penalty.unflagged_incomplete
+  cap_points: 8.0
+hard_gate_policy:
+  no_is_invalid: true
+  cannot_assess_is_unresolved: true
+  not_applicable_requires_condition_or_reason: true
+  hard_gates_are_reported_separately: true
+coverage_policy:
+  minimum_weighted_coverage: 0.9
+  below_threshold_status: PROVISIONAL
+  score_interval_required_when_unassessed: true
+  whole_work_claims_require_whole_work_evidence: true
+excerpt_and_incomplete_policy:
+  flagged_excerpt: Do not penalize absent whole-work completion. Mark unavailable whole-work criteria CANNOT_ASSESS
+    or NOT_APPLICABLE as appropriate.
+  unflagged_incomplete: Apply the bounded unflagged-incomplete penalty when the artifact is presented as complete
+    or partial status is omitted.
+  visible_local_defects: Score defects visible in the supplied extract normally.
+judge_policy:
+  artifact_assumed_ai_generated: true
+  strict_but_fair: true
+  no_glazing: true
+  judge_execution_not_intent: true
+  do_not_invent_defects: true
+  avoid_length_and_ornament_bias: true
+  brief_evidence_required: true
+  private_chain_of_thought_not_requested: true
+  verdict_states:
+  - 'YES'
+  - 'NO'
+  - NOT_APPLICABLE
+  - CANNOT_ASSESS
+  pairwise_finalists: false
+notes:
+- This compact fixed-form bundle assigns four holistic points; the full poetry bundles retain the standard eight-point
+  holistic domain.

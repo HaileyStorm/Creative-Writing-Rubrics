@@ -1,0 +1,156 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: op.select.pairwise_comparison
+version: 1
+title: Pairwise comparison
+kind: procedure
+description: Requires direct comparison on the same criteria, explicit tradeoffs, and a decision based on the requested
+  operation rather than independent absolute scores alone.
+origin: user_inventory_refined
+owner_domains:
+- procedure.pairwise_comparison
+artifact_types:
+- any
+valid_scopes:
+- operation
+activation: Attach when pairwise comparison is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: op.select.pairwise_comparison.quality
+  type: group
+  title: Pairwise comparison checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: op.select.pairwise_comparison.same_criteria
+    type: question
+    criterion_key: op.select.pairwise_comparison.same_criteria
+    text: Are both candidates compared under the same active criteria and context?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.select.pairwise_comparison.independent_scores
+    type: question
+    criterion_key: op.select.pairwise_comparison.independent_scores
+    text: Were candidates first evaluated independently rather than only relative to one another?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.select.pairwise_comparison.tradeoffs
+    type: question
+    criterion_key: op.select.pairwise_comparison.tradeoffs
+    text: Does the comparison identify concrete criterion-level tradeoffs?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.select.pairwise_comparison.operation
+    type: question
+    criterion_key: op.select.pairwise_comparison.operation
+    text: Is the preferred candidate better for the requested operation, not merely more polished or longer?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.select.pairwise_comparison.swap
+    type: question
+    criterion_key: op.select.pairwise_comparison.swap
+    text: Was candidate order swapped or otherwise controlled for position bias?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.select.pairwise_comparison.tie
+    type: question
+    criterion_key: op.select.pairwise_comparison.tie
+    text: Is a genuine tie or insufficient-evidence result permitted?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.select.pairwise_comparison.evidence
+    type: question
+    criterion_key: op.select.pairwise_comparison.evidence
+    text: Is the decision supported by paired evidence rather than general impressions?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.select.pairwise_comparison.no_length
+    type: question
+    criterion_key: op.select.pairwise_comparison.no_length
+    text: Does it avoid preferring length, detail, or ornament without corresponding value?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- wu_et_al_2025_writingbench
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Requires direct comparison on the same criteria, explicit tradeoffs, and a decision based on
+  the requested operation rather than independent absolute scores alone.

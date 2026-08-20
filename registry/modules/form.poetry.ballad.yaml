@@ -1,0 +1,151 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: form.poetry.ballad
+version: 1
+title: Ballad
+kind: artifact_form
+description: Research-informed binary rubric for ballad.
+origin: research_expansion
+owner_domains:
+- form.poetry.ballad
+artifact_types:
+- poetry
+valid_scopes:
+- line
+- stanza
+- poem
+- collection
+activation: Attach when ballad is the active form, asset, or evaluation concern.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: form.poetry.ballad.quality
+  type: group
+  title: Ballad checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: form.poetry.ballad.narrative
+    type: question
+    criterion_key: form.poetry.ballad.narrative
+    text: Does the poem present a focused narrative or dramatic incident?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.ballad.stanzas
+    type: question
+    criterion_key: form.poetry.ballad.stanzas
+    text: Does stanza structure follow the selected ballad tradition or a coherent declared variant?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.ballad.meter
+    type: question
+    criterion_key: form.poetry.ballad.meter
+    text: Does alternating meter or stress pattern remain controlled where required?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.ballad.rhyme
+    type: question
+    criterion_key: form.poetry.ballad.rhyme
+    text: Does the selected rhyme pattern function naturally?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.ballad.refrain
+    type: question
+    criterion_key: form.poetry.ballad.refrain
+    text: If a refrain is used, does recurrence gather narrative or emotional force?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.ballad.compression
+    type: question
+    criterion_key: form.poetry.ballad.compression
+    text: Does narrative compression preserve vivid action and implication?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.ballad.oral
+    type: question
+    criterion_key: form.poetry.ballad.oral
+    text: Does the poem possess oral momentum and memorable sonic shape?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.ballad.no_archaism
+    type: question
+    criterion_key: form.poetry.ballad.no_archaism
+    text: Does it avoid empty pseudo-folk archaism unless integral to the voice?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- li_et_al_2026_poemetric
+- vaezi_rezaei_2018
+notes: []

@@ -1,0 +1,141 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: model.release.commonsense_and_causal_reasoning_retention
+version: 1
+title: Commonsense and causal-reasoning retention
+kind: model_build
+description: Covers everyday physical, social, temporal, and causal reasoning important to credible fiction.
+origin: user_inventory_refined
+owner_domains:
+- model.commonsense_and_causal_reasoning_retention
+artifact_types:
+- model_build
+valid_scopes:
+- any
+activation: Attach when commonsense and causal-reasoning retention is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: model.release.commonsense_and_causal_reasoning_retention.quality
+  type: group
+  title: Commonsense and causal-reasoning retention checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: model.release.commonsense_and_causal_reasoning_retention.physical
+    type: question
+    criterion_key: model.release.commonsense_and_causal_reasoning_retention.physical
+    text: Does the model retain everyday physical and spatial reasoning?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.commonsense_and_causal_reasoning_retention.social
+    type: question
+    criterion_key: model.release.commonsense_and_causal_reasoning_retention.social
+    text: Does it retain social, interpersonal, and institutional commonsense?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.commonsense_and_causal_reasoning_retention.temporal
+    type: question
+    criterion_key: model.release.commonsense_and_causal_reasoning_retention.temporal
+    text: Does it retain temporal order, duration, and state-update reasoning?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.commonsense_and_causal_reasoning_retention.causal
+    type: question
+    criterion_key: model.release.commonsense_and_causal_reasoning_retention.causal
+    text: Does it retain multi-step causal consequence reasoning?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.commonsense_and_causal_reasoning_retention.motivation
+    type: question
+    criterion_key: model.release.commonsense_and_causal_reasoning_retention.motivation
+    text: Does it retain plausible inference about motives, beliefs, and knowledge states?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.commonsense_and_causal_reasoning_retention.narrative
+    type: question
+    criterion_key: model.release.commonsense_and_causal_reasoning_retention.narrative
+    text: Does it retain these abilities inside long and stylistically complex fiction rather than only isolated
+      questions?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.commonsense_and_causal_reasoning_retention.baseline
+    type: question
+    criterion_key: model.release.commonsense_and_causal_reasoning_retention.baseline
+    text: Are regressions compared with the source model under matched prompts and decoding?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- rao_callison_burch_2026_autorubric
+- longjudgebench_2026
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Covers everyday physical, social, temporal, and causal reasoning important to credible fiction.

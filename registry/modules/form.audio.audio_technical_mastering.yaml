@@ -1,0 +1,140 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: form.audio.audio_technical_mastering
+version: 1
+title: Audio technical mastering
+kind: audio_artifact
+description: Research-informed binary rubric for audio technical mastering.
+origin: research_expansion
+owner_domains:
+- audio.audio_technical_mastering
+artifact_types:
+- audio_asset
+valid_scopes:
+- utterance
+- passage
+- scene
+- chapter
+- work
+activation: Attach when audio technical mastering is the active form, asset, or evaluation concern.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 1
+  project_sources: source text, pronunciation lexicon, voice references, and direction sheet when supplied
+  modalities_required:
+  - audio
+tree:
+- id: form.audio.audio_technical_mastering.quality
+  type: group
+  title: Audio technical mastering checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: form.audio.audio_technical_mastering.level
+    type: question
+    criterion_key: form.audio.audio_technical_mastering.level
+    text: Are loudness and peak levels consistent with the selected delivery standard?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.audio.audio_technical_mastering.noise
+    type: question
+    criterion_key: form.audio.audio_technical_mastering.noise
+    text: Is background noise controlled and consistent?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.audio.audio_technical_mastering.dynamics
+    type: question
+    criterion_key: form.audio.audio_technical_mastering.dynamics
+    text: Do compression and dynamics preserve intelligibility and expression?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.audio.audio_technical_mastering.tone
+    type: question
+    criterion_key: form.audio.audio_technical_mastering.tone
+    text: Is spectral balance natural and consistent across sessions?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.audio.audio_technical_mastering.edits
+    type: question
+    criterion_key: form.audio.audio_technical_mastering.edits
+    text: Are edits, joins, room tone, and pickups inaudible or intentional?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.audio.audio_technical_mastering.format
+    type: question
+    criterion_key: form.audio.audio_technical_mastering.format
+    text: Does file format, sample rate, bit depth, channels, and metadata match delivery requirements?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.audio.audio_technical_mastering.access
+    type: question
+    criterion_key: form.audio.audio_technical_mastering.access
+    text: Is audio usable on typical playback systems and at expected listening levels?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- galdino_et_al_2025_prosody_review
+- real_world_voice_eq_bench_2026
+notes: []

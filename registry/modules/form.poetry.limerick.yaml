@@ -1,0 +1,159 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: form.poetry.limerick
+version: 1
+title: Limerick
+kind: artifact_form
+description: Research-informed binary rubric for limerick.
+origin: research_expansion
+owner_domains:
+- form.poetry.limerick
+artifact_types:
+- poetry
+valid_scopes:
+- line
+- stanza
+- poem
+- collection
+activation: Attach when limerick is the active form, asset, or evaluation concern.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: form.poetry.limerick.quality
+  type: group
+  title: Limerick checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: form.poetry.limerick.five
+    type: question
+    criterion_key: form.poetry.limerick.five
+    text: Does the poem contain five lines?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: hard_gate
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.limerick.rhyme
+    type: question
+    criterion_key: form.poetry.limerick.rhyme
+    text: Does it use a credible AABBA rhyme scheme?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: hard_gate
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.limerick.meter
+    type: question
+    criterion_key: form.poetry.limerick.meter
+    text: Do lines 1, 2, and 5 use the longer anapestic/amphibrachic pattern and lines 3 and 4 the shorter pattern
+      with controlled variation?
+    pass_answer: 'YES'
+    weight: 2.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.limerick.setup
+    type: question
+    criterion_key: form.poetry.limerick.setup
+    text: Do the opening lines efficiently establish person, place, premise, or comic condition?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.limerick.turn
+    type: question
+    criterion_key: form.poetry.limerick.turn
+    text: Do the short middle lines create escalation or turn?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.limerick.punch
+    type: question
+    criterion_key: form.poetry.limerick.punch
+    text: Does the final line deliver an effective comic, absurd, bawdy, or surprising payoff?
+    pass_answer: 'YES'
+    weight: 2.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.limerick.natural
+    type: question
+    criterion_key: form.poetry.limerick.natural
+    text: Do meter and rhyme sound natural rather than syntactically contorted?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.limerick.no_placeholder
+    type: question
+    criterion_key: form.poetry.limerick.no_placeholder
+    text: Does it avoid predictable filler and merely grammatical rhymes?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- li_et_al_2026_poemetric
+- vaezi_rezaei_2018
+notes: []
+profile_overrides:
+  default_profile: traditional
+  profiles:
+    traditional:
+      line_count: 5
+      rhyme: AABBA
+      meter: long-long-short-short-long anapestic/amphibrachic family

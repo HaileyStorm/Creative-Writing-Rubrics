@@ -1,0 +1,144 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: core.mechanics_and_presentation
+version: 1
+title: Mechanics and presentation
+kind: base
+description: 'Covers grammar, punctuation, spelling, formatting, dialogue mechanics, typography, and output cleanliness.
+  Its importance changes sharply by phase: low during brainstorming, high during finalization.'
+origin: user_inventory_refined
+owner_domains:
+- mechanics
+artifact_types:
+- any
+valid_scopes:
+- any
+activation: Attach to every substantive execution.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: core.mechanics_and_presentation.quality
+  type: group
+  title: Mechanics and presentation
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: core.mechanics_and_presentation.grammar
+    type: question
+    criterion_key: core.mechanics_and_presentation.grammar
+    text: Is the artifact free of unintended grammatical errors that impede or distract?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.mechanics_and_presentation.punctuation
+    type: question
+    criterion_key: core.mechanics_and_presentation.punctuation
+    text: Is punctuation correct or deliberately unconventional in a controlled way?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.mechanics_and_presentation.spelling
+    type: question
+    criterion_key: core.mechanics_and_presentation.spelling
+    text: Is spelling correct and consistent for the selected language, dialect, and house style?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.mechanics_and_presentation.formatting
+    type: question
+    criterion_key: core.mechanics_and_presentation.formatting
+    text: Is the required form-specific formatting correct and legible?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.mechanics_and_presentation.dialogue_mechanics
+    type: question
+    criterion_key: core.mechanics_and_presentation.dialogue_mechanics
+    text: Where dialogue appears, are quotation, paragraphing, speaker changes, and tags mechanically clear?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.mechanics_and_presentation.typography
+    type: question
+    criterion_key: core.mechanics_and_presentation.typography
+    text: Are typography, spacing, headings, and special marks internally consistent?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.mechanics_and_presentation.cleanliness
+    type: question
+    criterion_key: core.mechanics_and_presentation.cleanliness
+    text: Is the deliverable free of stray markup, generation artifacts, duplicated text, and truncation?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- vaezi_rezaei_2018
+- carey_davidow_williams_2022
+- gomez_rodriguez_williams_2023
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: 'Covers grammar, punctuation, spelling, formatting, dialogue mechanics, typography, and output
+  cleanliness. Its importance changes sharply by phase: low during brainstorming, high during finalization.'

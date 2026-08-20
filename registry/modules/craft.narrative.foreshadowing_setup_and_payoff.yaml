@@ -1,0 +1,170 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: craft.narrative.foreshadowing_setup_and_payoff
+version: 1
+title: Foreshadowing, setup, and payoff
+kind: craft
+description: Evaluates preparation, reader expectation, delayed consequences, thematic echoes, planted details,
+  and whether payoffs are earned, forgotten, or over-signaled.
+origin: user_inventory_refined
+owner_domains:
+- narrative.foreshadowing_setup_and_payoff
+artifact_types:
+- prose_fiction
+- creative_nonfiction
+- dramatic_writing
+- narrative_poetry
+- interactive_fiction
+valid_scopes:
+- beat
+- scene
+- chapter
+- sequence
+- act
+- manuscript
+- series
+activation: Attach when foreshadowing, setup, and payoff is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: craft.narrative.foreshadowing_setup_and_payoff.quality
+  type: group
+  title: Foreshadowing, setup, and payoff
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: craft.narrative.foreshadowing_setup_and_payoff.preparation
+    type: question
+    criterion_key: craft.narrative.foreshadowing_setup_and_payoff.preparation
+    text: Are major payoffs prepared through prior detail, pattern, motive, rule, or expectation?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.foreshadowing_setup_and_payoff.subtlety
+    type: question
+    criterion_key: craft.narrative.foreshadowing_setup_and_payoff.subtlety
+    text: Are setups noticeable enough to register without being so emphasized that they mechanically announce the
+      payoff?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.foreshadowing_setup_and_payoff.expectation
+    type: question
+    criterion_key: craft.narrative.foreshadowing_setup_and_payoff.expectation
+    text: Does the work create productive reader expectations that can be fulfilled, complicated, or deliberately
+      denied?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.foreshadowing_setup_and_payoff.delay
+    type: question
+    criterion_key: craft.narrative.foreshadowing_setup_and_payoff.delay
+    text: Is the interval between setup and payoff used to develop tension, meaning, or consequence?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.foreshadowing_setup_and_payoff.earned
+    type: question
+    criterion_key: craft.narrative.foreshadowing_setup_and_payoff.earned
+    text: Does the payoff follow credibly from what was planted?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.foreshadowing_setup_and_payoff.remembered
+    type: question
+    criterion_key: craft.narrative.foreshadowing_setup_and_payoff.remembered
+    text: Are significant setups either paid off, intentionally deferred, or consciously abandoned?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.foreshadowing_setup_and_payoff.echo
+    type: question
+    criterion_key: craft.narrative.foreshadowing_setup_and_payoff.echo
+    text: Do thematic or imagistic echoes gain meaning through recurrence rather than merely repeat?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.foreshadowing_setup_and_payoff.no_deus
+    type: question
+    criterion_key: craft.narrative.foreshadowing_setup_and_payoff.no_deus
+    text: Does the resolution avoid unprepared rescue, revelation, power, or coincidence?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- vaezi_rezaei_2018
+- carey_davidow_williams_2022
+- gomez_rodriguez_williams_2023
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates preparation, reader expectation, delayed consequences, thematic echoes, planted details,
+  and whether payoffs are earned, forgotten, or over-signaled.

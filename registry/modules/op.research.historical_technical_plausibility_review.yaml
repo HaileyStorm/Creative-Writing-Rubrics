@@ -1,0 +1,170 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: op.research.historical_technical_plausibility_review
+version: 1
+title: Historical/technical plausibility review
+kind: procedure
+description: Evaluates the manuscript’s use of researched material while allowing deliberate departures that the
+  project has documented.
+origin: user_inventory_refined
+owner_domains:
+- procedure.historical_technical_plausibility_review
+artifact_types:
+- any
+valid_scopes:
+- operation
+activation: Attach when historical/technical plausibility review is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: op.research.historical_technical_plausibility_review.quality
+  type: group
+  title: Historical/technical plausibility review checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: op.research.historical_technical_plausibility_review.claims
+    type: question
+    criterion_key: op.research.historical_technical_plausibility_review.claims
+    text: Are historically or technically material claims identified?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.research.historical_technical_plausibility_review.sources
+    type: question
+    criterion_key: op.research.historical_technical_plausibility_review.sources
+    text: Are they checked against authoritative and appropriately dated sources?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.research.historical_technical_plausibility_review.material
+    type: question
+    criterion_key: op.research.historical_technical_plausibility_review.material
+    text: Are objects, practices, terminology, institutions, and constraints plausible for the stated context?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.research.historical_technical_plausibility_review.causal
+    type: question
+    criterion_key: op.research.historical_technical_plausibility_review.causal
+    text: Do technical or historical mechanisms produce plausible consequences in the narrative?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.research.historical_technical_plausibility_review.characters
+    type: question
+    criterion_key: op.research.historical_technical_plausibility_review.characters
+    text: Do characters know, believe, and do what their background and period permit?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.research.historical_technical_plausibility_review.departure
+    type: question
+    criterion_key: op.research.historical_technical_plausibility_review.departure
+    text: Are deliberate departures documented as project choices rather than accidental errors?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.research.historical_technical_plausibility_review.story
+    type: question
+    criterion_key: op.research.historical_technical_plausibility_review.story
+    text: Does the review preserve narrative function instead of demanding irrelevant documentary completeness?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.research.historical_technical_plausibility_review.severity
+    type: question
+    criterion_key: op.research.historical_technical_plausibility_review.severity
+    text: Are findings ranked by impact on credibility, plot, and reader trust?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.research.historical_technical_plausibility_review.evidence
+    type: question
+    criterion_key: op.research.historical_technical_plausibility_review.evidence
+    text: Can each finding be traced to the manuscript and research source?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- wu_et_al_2025_writingbench
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates the manuscript’s use of researched material while allowing deliberate departures that
+  the project has documented.

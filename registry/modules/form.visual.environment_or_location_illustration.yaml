@@ -1,0 +1,154 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: form.visual.environment_or_location_illustration
+version: 1
+title: Environment or location illustration
+kind: visual_artifact
+description: Research-informed binary rubric for environment or location illustration.
+origin: research_expansion
+owner_domains:
+- visual.environment_or_location_illustration
+artifact_types:
+- visual_asset
+valid_scopes:
+- asset
+- panel
+- sequence
+- project
+activation: Attach when environment or location illustration is the active form, asset, or evaluation concern.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 2
+  project_sources: character references, style references, scene text, and asset metadata when supplied
+  modalities_required:
+  - image
+tree:
+- id: form.visual.environment_or_location_illustration.quality
+  type: group
+  title: Environment or location illustration checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: form.visual.environment_or_location_illustration.identity
+    type: question
+    criterion_key: form.visual.environment_or_location_illustration.identity
+    text: Does the environment possess a specific visual identity tied to project canon?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.visual.environment_or_location_illustration.layout
+    type: question
+    criterion_key: form.visual.environment_or_location_illustration.layout
+    text: Are spatial relationships and major landmarks intelligible?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.visual.environment_or_location_illustration.function
+    type: question
+    criterion_key: form.visual.environment_or_location_illustration.function
+    text: Does the depicted place support the scenes and actions intended to occur there?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.visual.environment_or_location_illustration.culture
+    type: question
+    criterion_key: form.visual.environment_or_location_illustration.culture
+    text: Do architecture, objects, wear, signage, materials, and use patterns reflect the setting's culture and
+      history?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.visual.environment_or_location_illustration.atmosphere
+    type: question
+    criterion_key: form.visual.environment_or_location_illustration.atmosphere
+    text: Do weather, lighting, color, and scale produce the intended atmosphere?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.visual.environment_or_location_illustration.continuity
+    type: question
+    criterion_key: form.visual.environment_or_location_illustration.continuity
+    text: Is the location consistent with prior depictions and maps?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.visual.environment_or_location_illustration.perspective
+    type: question
+    criterion_key: form.visual.environment_or_location_illustration.perspective
+    text: Are perspective, scale, and geometry coherent?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.visual.environment_or_location_illustration.no_generic
+    type: question
+    criterion_key: form.visual.environment_or_location_illustration.no_generic
+    text: Does it avoid generic environment concept-art furniture?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- zhuang_et_al_2025_vistorybench
+- lin_et_al_2026_storybook_consistency
+notes: []

@@ -1,0 +1,151 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: form.poetry.sestina
+version: 1
+title: Sestina
+kind: artifact_form
+description: Research-informed binary rubric for sestina.
+origin: research_expansion
+owner_domains:
+- form.poetry.sestina
+artifact_types:
+- poetry
+valid_scopes:
+- line
+- stanza
+- poem
+- collection
+activation: Attach when sestina is the active form, asset, or evaluation concern.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: form.poetry.sestina.quality
+  type: group
+  title: Sestina checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: form.poetry.sestina.stanzas
+    type: question
+    criterion_key: form.poetry.sestina.stanzas
+    text: Does the poem contain six six-line stanzas followed by a three-line envoi?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: hard_gate
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.sestina.end_words
+    type: question
+    criterion_key: form.poetry.sestina.end_words
+    text: Are six end-words used in the required retrogradatio cruciata permutation?
+    pass_answer: 'YES'
+    weight: 3.0
+    question_type: hard_gate
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.sestina.envoi
+    type: question
+    criterion_key: form.poetry.sestina.envoi
+    text: Does the envoi include all six end-words according to the selected convention?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: hard_gate
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.sestina.transformation
+    type: question
+    criterion_key: form.poetry.sestina.transformation
+    text: Do repeated end-words accrue, shift, or fracture meaning across contexts?
+    pass_answer: 'YES'
+    weight: 2.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.sestina.syntax
+    type: question
+    criterion_key: form.poetry.sestina.syntax
+    text: Does syntax remain natural despite fixed end-word positions?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.sestina.movement
+    type: question
+    criterion_key: form.poetry.sestina.movement
+    text: Does the poem sustain emotional, narrative, or conceptual movement over its length?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.sestina.no_padding
+    type: question
+    criterion_key: form.poetry.sestina.no_padding
+    text: Does it avoid padding and semantic contortion created by the permutation?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- li_et_al_2026_poemetric
+- vaezi_rezaei_2018
+notes: []
+profile_overrides:
+  default_profile: traditional
+  profiles:
+    traditional:
+      line_count: 39
+      stanzas:
+      - 6
+      - 6
+      - 6
+      - 6
+      - 6
+      - 6
+      - 3
+      end_word_pattern: retrogradatio cruciata

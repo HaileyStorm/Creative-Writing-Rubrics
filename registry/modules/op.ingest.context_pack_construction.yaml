@@ -1,0 +1,170 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: op.ingest.context_pack_construction
+version: 1
+title: Context-pack construction
+kind: procedure
+description: Evaluates whether the correct manuscript units, project sheets, outline levels, research, rubric, and
+  neighboring context were assembled for the current operation.
+origin: user_inventory_refined
+owner_domains:
+- procedure.context_pack_construction
+artifact_types:
+- any
+valid_scopes:
+- operation
+activation: Attach when context-pack construction is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: op.ingest.context_pack_construction.quality
+  type: group
+  title: Context-pack construction checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: op.ingest.context_pack_construction.operation
+    type: question
+    criterion_key: op.ingest.context_pack_construction.operation
+    text: Does the context pack match the exact operation being performed?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ingest.context_pack_construction.neighbors
+    type: question
+    criterion_key: op.ingest.context_pack_construction.neighbors
+    text: Does it include enough preceding and following artifact context to judge or generate the current unit?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ingest.context_pack_construction.outline
+    type: question
+    criterion_key: op.ingest.context_pack_construction.outline
+    text: Does it include the appropriate outline level without crowding out more relevant evidence?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ingest.context_pack_construction.sheets
+    type: question
+    criterion_key: op.ingest.context_pack_construction.sheets
+    text: Does it include only the project sheets and canon facts relevant to the current operation?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ingest.context_pack_construction.research
+    type: question
+    criterion_key: op.ingest.context_pack_construction.research
+    text: Does it include relevant research with provenance and uncertainty?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ingest.context_pack_construction.rubric
+    type: question
+    criterion_key: op.ingest.context_pack_construction.rubric
+    text: Does it include the compiled rubric and applicable profile settings?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ingest.context_pack_construction.authority
+    type: question
+    criterion_key: op.ingest.context_pack_construction.authority
+    text: Are authoritative, alternate, and superseded sources labeled clearly?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ingest.context_pack_construction.budget
+    type: question
+    criterion_key: op.ingest.context_pack_construction.budget
+    text: Does the pack fit the available context budget while preserving load-bearing material?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ingest.context_pack_construction.no_distractors
+    type: question
+    criterion_key: op.ingest.context_pack_construction.no_distractors
+    text: Is it free of irrelevant material likely to distract the model or induce branch contamination?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- wu_et_al_2025_writingbench
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates whether the correct manuscript units, project sheets, outline levels, research, rubric,
+  and neighboring context were assembled for the current operation.

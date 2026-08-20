@@ -1,0 +1,126 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: form.audio.speech_text_fidelity
+version: 1
+title: Speech text fidelity
+kind: audio_artifact
+description: Research-informed binary rubric for speech text fidelity.
+origin: research_expansion
+owner_domains:
+- audio.speech_text_fidelity
+artifact_types:
+- audio_asset
+valid_scopes:
+- utterance
+- passage
+- scene
+- chapter
+- work
+activation: Attach when speech text fidelity is the active form, asset, or evaluation concern.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 1
+  project_sources: source text, pronunciation lexicon, voice references, and direction sheet when supplied
+  modalities_required:
+  - audio
+tree:
+- id: form.audio.speech_text_fidelity.quality
+  type: group
+  title: Speech text fidelity checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: form.audio.speech_text_fidelity.words
+    type: question
+    criterion_key: form.audio.speech_text_fidelity.words
+    text: Are all words spoken in the correct order?
+    pass_answer: 'YES'
+    weight: 2.5
+    question_type: hard_gate
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.audio.speech_text_fidelity.omissions
+    type: question
+    criterion_key: form.audio.speech_text_fidelity.omissions
+    text: Is the audio free of omitted or duplicated phrases?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.audio.speech_text_fidelity.punctuation
+    type: question
+    criterion_key: form.audio.speech_text_fidelity.punctuation
+    text: Does phrasing reflect punctuation and syntactic boundaries appropriately?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.audio.speech_text_fidelity.names
+    type: question
+    criterion_key: form.audio.speech_text_fidelity.names
+    text: Are names, invented terms, foreign words, numbers, and symbols pronounced according to the project lexicon?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.audio.speech_text_fidelity.dialogue
+    type: question
+    criterion_key: form.audio.speech_text_fidelity.dialogue
+    text: Are speaker turns and quoted material assigned correctly?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.audio.speech_text_fidelity.variants
+    type: question
+    criterion_key: form.audio.speech_text_fidelity.variants
+    text: Are approved pronunciation variants and deliberate deviations documented?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- galdino_et_al_2025_prosody_review
+- real_world_voice_eq_bench_2026
+notes: []

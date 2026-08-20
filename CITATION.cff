@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+title: Creative-Writing-Rubrics
+message: If you use this rubric stack, please cite it.
+type: software
+authors:
+  - family-names: Collet
+    given-names: Hailey
+license: Apache-2.0
+version: 1.0.0
+date-released: "2026-08-20"
+abstract: >
+  HBQ-RS 1.0.0 — a composable hierarchical binary-question rubric stack for
+  creative writing, multimedia narrative, draft judging, benchmarking, and
+  synthetic-data generation, with deterministic score aggregation.
+keywords:
+  - creative writing
+  - rubrics
+  - LLM evaluation
+  - benchmarking
+  - synthetic data
+  - HBQ-RS
+repository-code: https://github.com/HaileyStorm/Creative-Writing-Rubrics

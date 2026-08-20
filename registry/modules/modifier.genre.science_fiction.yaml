@@ -1,0 +1,156 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: modifier.genre.science_fiction
+version: 1
+title: Science fiction
+kind: modifier
+description: Speculative premise, causal consequences, technical and social plausibility, conceptual integration,
+  and avoidance of explanatory lectures detached from story.
+origin: user_inventory_refined
+owner_domains:
+- genre.science_fiction
+artifact_types:
+- creative_text
+valid_scopes:
+- any
+activation: Attach when science fiction is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: modifier.genre.science_fiction.quality
+  type: group
+  title: Science fiction contract
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: modifier.genre.science_fiction.novum
+    type: question
+    criterion_key: modifier.genre.science_fiction.novum
+    text: Is the central speculative change or technology sufficiently specific to generate consequences?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.science_fiction.causality
+    type: question
+    criterion_key: modifier.genre.science_fiction.causality
+    text: Do technical, biological, environmental, and social consequences follow from the premise?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.science_fiction.plausibility
+    type: question
+    criterion_key: modifier.genre.science_fiction.plausibility
+    text: Is plausibility appropriate to the selected hard, soft, social, space-operatic, or speculative mode?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.science_fiction.integration
+    type: question
+    criterion_key: modifier.genre.science_fiction.integration
+    text: Is the speculative premise integrated with character, institutions, material life, and plot?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.science_fiction.concept_character
+    type: question
+    criterion_key: modifier.genre.science_fiction.concept_character
+    text: Does conceptual exploration remain connected to lived stakes and choices?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.science_fiction.limits
+    type: question
+    criterion_key: modifier.genre.science_fiction.limits
+    text: Are limits, uncertainty, costs, and failure modes present where needed?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.science_fiction.no_lecture
+    type: question
+    criterion_key: modifier.genre.science_fiction.no_lecture
+    text: Does the work avoid detached explanatory lectures that pause the story without compensating value?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.science_fiction.no_magic_tech
+    type: question
+    criterion_key: modifier.genre.science_fiction.no_magic_tech
+    text: Does technology avoid functioning as arbitrary magic when the selected mode promises causal explanation?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- fein_et_al_2026_litbench
+- wu_et_al_2025_writingbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Speculative premise, causal consequences, technical and social plausibility, conceptual integration,
+  and avoidance of explanatory lectures detached from story.

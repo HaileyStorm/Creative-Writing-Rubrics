@@ -1,0 +1,157 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: modifier.genre.thriller_suspense
+version: 1
+title: Thriller / suspense
+kind: modifier
+description: Escalation, urgency, vulnerability, threat logic, reversals, pacing, cause-and-effect pressure, and
+  avoidance of stakes inflation without consequence.
+origin: user_inventory_refined
+owner_domains:
+- genre.thriller_suspense
+artifact_types:
+- creative_text
+valid_scopes:
+- any
+activation: Attach when thriller / suspense is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: modifier.genre.thriller_suspense.quality
+  type: group
+  title: Thriller / suspense contract
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: modifier.genre.thriller_suspense.threat
+    type: question
+    criterion_key: modifier.genre.thriller_suspense.threat
+    text: Is the threat or destabilizing force concrete enough to shape decisions?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.thriller_suspense.vulnerability
+    type: question
+    criterion_key: modifier.genre.thriller_suspense.vulnerability
+    text: Are characters vulnerable in specific, credible ways?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.thriller_suspense.urgency
+    type: question
+    criterion_key: modifier.genre.thriller_suspense.urgency
+    text: Does urgency arise from deadlines, pursuit, uncertainty, exposure, or closing options rather than repeated
+      declarations?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.thriller_suspense.escalation
+    type: question
+    criterion_key: modifier.genre.thriller_suspense.escalation
+    text: Does pressure escalate through causally linked complications and reversals?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.thriller_suspense.logic
+    type: question
+    criterion_key: modifier.genre.thriller_suspense.logic
+    text: Does the antagonist, threat system, or danger operate with credible logic and resources?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.thriller_suspense.pacing
+    type: question
+    criterion_key: modifier.genre.thriller_suspense.pacing
+    text: Does pacing balance propulsion with enough orientation and consequence to preserve impact?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.thriller_suspense.reversals
+    type: question
+    criterion_key: modifier.genre.thriller_suspense.reversals
+    text: Are reversals surprising but prepared?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.thriller_suspense.no_stakes_inflation
+    type: question
+    criterion_key: modifier.genre.thriller_suspense.no_stakes_inflation
+    text: Does the work avoid increasing nominal stakes without changing concrete risk, cost, or choice?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- fein_et_al_2026_litbench
+- wu_et_al_2025_writingbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Escalation, urgency, vulnerability, threat logic, reversals, pacing, cause-and-effect pressure,
+  and avoidance of stakes inflation without consequence.

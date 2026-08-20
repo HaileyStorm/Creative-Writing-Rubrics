@@ -1,0 +1,170 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: op.select.rubric_application_quality
+version: 1
+title: Rubric-application quality
+kind: procedure
+description: 'A meta-rubric for the grader: category fidelity, non-overlap, evidence, severity calibration, avoidance
+  of flattery, and distinction between preference and defect.'
+origin: user_inventory_refined
+owner_domains:
+- procedure.rubric_application_quality
+artifact_types:
+- any
+valid_scopes:
+- operation
+activation: Attach when rubric-application quality is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: op.select.rubric_application_quality.quality
+  type: group
+  title: Rubric-application quality checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: op.select.rubric_application_quality.criterion
+    type: question
+    criterion_key: op.select.rubric_application_quality.criterion
+    text: Does each verdict answer the exact atomic question asked?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.select.rubric_application_quality.ownership
+    type: question
+    criterion_key: op.select.rubric_application_quality.ownership
+    text: Is each underlying criterion scored by only one owner module?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.select.rubric_application_quality.nondouble
+    type: question
+    criterion_key: op.select.rubric_application_quality.nondouble
+    text: Are the same flaw and evidence prevented from receiving duplicate penalties?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.select.rubric_application_quality.evidence
+    type: question
+    criterion_key: op.select.rubric_application_quality.evidence
+    text: Are evidence references accurate, concise, and sufficient?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.select.rubric_application_quality.severity
+    type: question
+    criterion_key: op.select.rubric_application_quality.severity
+    text: Are failures weighted by actual effect rather than emotional wording?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.select.rubric_application_quality.harshness
+    type: question
+    criterion_key: op.select.rubric_application_quality.harshness
+    text: Does the judge use the full range without glazing, while avoiding invented defects?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.select.rubric_application_quality.preference
+    type: question
+    criterion_key: op.select.rubric_application_quality.preference
+    text: Are personal preference and objective defect distinguished?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.select.rubric_application_quality.scope
+    type: question
+    criterion_key: op.select.rubric_application_quality.scope
+    text: Are N/A, cannot-assess, excerpt status, and incomplete status handled correctly?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.select.rubric_application_quality.formula
+    type: question
+    criterion_key: op.select.rubric_application_quality.formula
+    text: Are gates, caps, domain budgets, coverage, and totals computed correctly?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- wu_et_al_2025_writingbench
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: 'A meta-rubric for the grader: category fidelity, non-overlap, evidence, severity calibration,
+  avoidance of flattery, and distinction between preference and defect.'

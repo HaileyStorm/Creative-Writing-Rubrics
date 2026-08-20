@@ -1,0 +1,2445 @@
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: core.audience_and_purpose_fit
+  version: 1
+  title: Audience and purpose fit
+  kind: base
+  description: 'Evaluates whether complexity, tone, explanation, intensity, vocabulary, length, and genre signaling
+    fit the intended audience and use: private draft, literary submission, children’s story, serial fiction, performance
+    piece, etc.'
+  origin: user_inventory_refined
+  owner_domains:
+  - audience_purpose
+  artifact_types:
+  - any
+  valid_scopes:
+  - any
+  activation: Attach to every substantive execution.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: core.audience_and_purpose_fit.quality
+    type: group
+    title: Audience and purpose fit
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: core.audience_and_purpose_fit.complexity
+      type: question
+      criterion_key: core.audience_and_purpose_fit.complexity
+      text: Is conceptual and structural complexity appropriate for the intended audience?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.audience_and_purpose_fit.tone
+      type: question
+      criterion_key: core.audience_and_purpose_fit.tone
+      text: Is tone appropriate for the intended audience, venue, and purpose?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.audience_and_purpose_fit.explanation
+      type: question
+      criterion_key: core.audience_and_purpose_fit.explanation
+      text: Is the amount of explanation appropriate for what the intended reader is expected to know?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.audience_and_purpose_fit.intensity
+      type: question
+      criterion_key: core.audience_and_purpose_fit.intensity
+      text: Is emotional, violent, frightening, sexual, or comic intensity appropriate to the specified audience
+        and purpose?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.audience_and_purpose_fit.vocabulary
+      type: question
+      criterion_key: core.audience_and_purpose_fit.vocabulary
+      text: Is vocabulary appropriate without condescension, needless opacity, or accidental register mismatch?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.audience_and_purpose_fit.length
+      type: question
+      criterion_key: core.audience_and_purpose_fit.length
+      text: Is length appropriate for the delivery context and reader commitment?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.audience_and_purpose_fit.genre_signals
+      type: question
+      criterion_key: core.audience_and_purpose_fit.genre_signals
+      text: Does the artifact signal and fulfill the relevant genre or mode promises for its target audience?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.audience_and_purpose_fit.use_context
+      type: question
+      criterion_key: core.audience_and_purpose_fit.use_context
+      text: Does it fit its intended use, such as private exploration, publication, performance, gameplay, reference,
+        or revision support?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - cho_et_al_2026_bineval
+  - zhang_et_al_2026_rubricbench
+  - vaezi_rezaei_2018
+  - carey_davidow_williams_2022
+  - gomez_rodriguez_williams_2023
+  - fein_et_al_2026_litbench
+  notes:
+  - Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+  - YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+    labels.
+  source_description: 'Evaluates whether complexity, tone, explanation, intensity, vocabulary, length, and genre
+    signaling fit the intended audience and use: private draft, literary submission, children’s story, serial fiction,
+    performance piece, etc.'
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: core.change_authorization
+  version: 1
+  title: Change authorization
+  kind: base
+  description: Used whenever an existing artifact is modified. It distinguishes requested changes, necessary supporting
+    changes, optional improvements, and unauthorized alterations. This is especially important for the restrained
+    final-pass role.
+  origin: user_inventory_refined
+  owner_domains:
+  - change_authorization
+  artifact_types:
+  - any
+  valid_scopes:
+  - any
+  activation: Attach to every substantive execution.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: core.change_authorization.quality
+    type: group
+    title: Change authorization
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: core.change_authorization.requested
+      type: question
+      criterion_key: core.change_authorization.requested
+      text: Does every explicitly requested change appear in the revised artifact?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.change_authorization.supporting
+      type: question
+      criterion_key: core.change_authorization.supporting
+      text: Are supporting changes limited to those needed to make requested changes coherent?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.change_authorization.no_optional
+      type: question
+      criterion_key: core.change_authorization.no_optional
+      text: Does the revision avoid optional improvements that were not authorized for this pass?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.change_authorization.facts
+      type: question
+      criterion_key: core.change_authorization.facts
+      text: Does it preserve facts and canon outside the authorized change surface?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.change_authorization.voice
+      type: question
+      criterion_key: core.change_authorization.voice
+      text: Does it preserve voice and stylistic identity outside the authorized change surface?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.change_authorization.structure
+      type: question
+      criterion_key: core.change_authorization.structure
+      text: Does it preserve structure and emphasis outside the authorized change surface?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.change_authorization.strengths
+      type: question
+      criterion_key: core.change_authorization.strengths
+      text: Does it preserve unrelated strengths of the original?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.change_authorization.collateral
+      type: question
+      criterion_key: core.change_authorization.collateral
+      text: Are collateral changes identified when the operation requires an audit trail?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - cho_et_al_2026_bineval
+  - zhang_et_al_2026_rubricbench
+  - vaezi_rezaei_2018
+  - carey_davidow_williams_2022
+  - gomez_rodriguez_williams_2023
+  - fein_et_al_2026_litbench
+  notes:
+  - Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+  - YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+    labels.
+  source_description: Used whenever an existing artifact is modified. It distinguishes requested changes, necessary
+    supporting changes, optional improvements, and unauthorized alterations. This is especially important for the
+    restrained final-pass role.
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: core.coherence_and_comprehensibility
+  version: 1
+  title: Coherence and comprehensibility
+  kind: base
+  description: Evaluates whether the reader can follow the language, events, references, logic, and transitions
+    without unintended confusion. Intentional ambiguity, fragmentation, or surrealism must not be treated as automatic
+    failure.
+  origin: user_inventory_refined
+  owner_domains:
+  - coherence
+  artifact_types:
+  - any
+  valid_scopes:
+  - any
+  activation: Attach to every substantive execution.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: core.coherence_and_comprehensibility.quality
+    type: group
+    title: Coherence and comprehensibility
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: core.coherence_and_comprehensibility.sentence_meaning
+      type: question
+      criterion_key: core.coherence_and_comprehensibility.sentence_meaning
+      text: Can each sentence or line be understood without unintended grammatical or semantic breakdown?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.coherence_and_comprehensibility.referents
+      type: question
+      criterion_key: core.coherence_and_comprehensibility.referents
+      text: Can the reader identify what pronouns, deictic terms, and references point to?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.coherence_and_comprehensibility.local_sequence
+      type: question
+      criterion_key: core.coherence_and_comprehensibility.local_sequence
+      text: Do adjacent actions, ideas, or images connect in a followable sequence?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.coherence_and_comprehensibility.global_sequence
+      type: question
+      criterion_key: core.coherence_and_comprehensibility.global_sequence
+      text: Does the artifact maintain a followable larger progression at the available scope?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.coherence_and_comprehensibility.transitions
+      type: question
+      criterion_key: core.coherence_and_comprehensibility.transitions
+      text: Are transitions sufficient for the reader to recognize changes of time, place, speaker, mode, or idea?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.coherence_and_comprehensibility.intentional_difficulty
+      type: question
+      criterion_key: core.coherence_and_comprehensibility.intentional_difficulty
+      text: When the work is ambiguous, fragmented, surreal, or difficult, is there evidence that the difficulty
+        is controlled and artistically functional?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.coherence_and_comprehensibility.no_drift
+      type: question
+      criterion_key: core.coherence_and_comprehensibility.no_drift
+      text: Does the work avoid incoherent drift in which details, claims, or images accumulate without a recoverable
+        relationship?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - cho_et_al_2026_bineval
+  - zhang_et_al_2026_rubricbench
+  - vaezi_rezaei_2018
+  - carey_davidow_williams_2022
+  - gomez_rodriguez_williams_2023
+  - fein_et_al_2026_litbench
+  notes:
+  - Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+  - YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+    labels.
+  source_description: Evaluates whether the reader can follow the language, events, references, logic, and transitions
+    without unintended confusion. Intentional ambiguity, fragmentation, or surrealism must not be treated as automatic
+    failure.
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: core.economy_and_relevance
+  version: 1
+  title: Economy and relevance
+  kind: base
+  description: Evaluates whether each element earns its place, whether repetition adds force or merely repeats,
+    and whether detail serves the operation. “Economy” must not be misused to flatten lyrical, maximalist, or deliberately
+    digressive work.
+  origin: user_inventory_refined
+  owner_domains:
+  - economy_relevance
+  artifact_types:
+  - any
+  valid_scopes:
+  - any
+  activation: Attach to every substantive execution.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: core.economy_and_relevance.quality
+    type: group
+    title: Economy and relevance
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: core.economy_and_relevance.earns_place
+      type: question
+      criterion_key: core.economy_and_relevance.earns_place
+      text: Does each substantial passage, beat, image, line, or detail perform a useful function?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.economy_and_relevance.no_restatement
+      type: question
+      criterion_key: core.economy_and_relevance.no_restatement
+      text: Does the artifact avoid restating the same information, image, or emotional conclusion without added
+        force or development?
+      pass_answer: 'YES'
+      weight: 2.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.economy_and_relevance.functional_repetition
+      type: question
+      criterion_key: core.economy_and_relevance.functional_repetition
+      text: When material repeats, does the recurrence alter meaning, rhythm, pressure, or expectation?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.economy_and_relevance.detail_relevance
+      type: question
+      criterion_key: core.economy_and_relevance.detail_relevance
+      text: Are details relevant to character, setting, action, atmosphere, theme, or the requested operation?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.economy_and_relevance.digression
+      type: question
+      criterion_key: core.economy_and_relevance.digression
+      text: When the work digresses, does the digression create an intended structural, tonal, or thematic benefit?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.economy_and_relevance.length_fit
+      type: question
+      criterion_key: core.economy_and_relevance.length_fit
+      text: Is the artifact's length proportionate to its form, scope, purpose, and stage of development?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.economy_and_relevance.no_flattening
+      type: question
+      criterion_key: core.economy_and_relevance.no_flattening
+      text: Does economy avoid flattening deliberate lyricism, maximalism, recurrence, or contemplative pace?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - cho_et_al_2026_bineval
+  - zhang_et_al_2026_rubricbench
+  - vaezi_rezaei_2018
+  - carey_davidow_williams_2022
+  - gomez_rodriguez_williams_2023
+  - fein_et_al_2026_litbench
+  notes:
+  - Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+  - YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+    labels.
+  source_description: Evaluates whether each element earns its place, whether repetition adds force or merely repeats,
+    and whether detail serves the operation. “Economy” must not be misused to flatten lyrical, maximalist, or deliberately
+    digressive work.
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: core.emotional_and_intellectual_effect
+  version: 1
+  title: Emotional and intellectual effect
+  kind: base
+  description: Evaluates whether the intended emotional, comedic, unsettling, reflective, persuasive, or conceptual
+    effect is actually produced rather than merely announced.
+  origin: user_inventory_refined
+  owner_domains:
+  - effect
+  artifact_types:
+  - any
+  valid_scopes:
+  - any
+  activation: Attach to every substantive execution.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: core.emotional_and_intellectual_effect.quality
+    type: group
+    title: Emotional and intellectual effect
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: core.emotional_and_intellectual_effect.intended_effect
+      type: question
+      criterion_key: core.emotional_and_intellectual_effect.intended_effect
+      text: Does the artifact actually produce the principal intended effect rather than merely announce it?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.emotional_and_intellectual_effect.earned_emotion
+      type: question
+      criterion_key: core.emotional_and_intellectual_effect.earned_emotion
+      text: Is the emotional response prepared by situation, image, action, voice, or structure?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.emotional_and_intellectual_effect.conceptual_interest
+      type: question
+      criterion_key: core.emotional_and_intellectual_effect.conceptual_interest
+      text: Does the artifact create a substantive idea, question, perception, or tension for the reader to engage
+        with?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.emotional_and_intellectual_effect.modulation
+      type: question
+      criterion_key: core.emotional_and_intellectual_effect.modulation
+      text: Does the effect develop or modulate rather than remaining at one undifferentiated intensity?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.emotional_and_intellectual_effect.restraint
+      type: question
+      criterion_key: core.emotional_and_intellectual_effect.restraint
+      text: Does the work trust the reader enough to avoid unnecessary emotional or interpretive instruction?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.emotional_and_intellectual_effect.aftermath
+      type: question
+      criterion_key: core.emotional_and_intellectual_effect.aftermath
+      text: Does the effect persist or meaningfully resolve after the immediate beat, image, or ending?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - cho_et_al_2026_bineval
+  - zhang_et_al_2026_rubricbench
+  - vaezi_rezaei_2018
+  - carey_davidow_williams_2022
+  - gomez_rodriguez_williams_2023
+  - fein_et_al_2026_litbench
+  notes:
+  - Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+  - YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+    labels.
+  source_description: Evaluates whether the intended emotional, comedic, unsettling, reflective, persuasive, or
+    conceptual effect is actually produced rather than merely announced.
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: core.freshness_and_non_genericness
+  version: 1
+  title: Freshness and non-genericness
+  kind: base
+  description: Detects clichés, stock scene beats, interchangeable phrasing, default metaphors, “LLM average prose,”
+    generic emotional summaries, and predictable elaboration. It should reward apt originality rather than novelty
+    for its own sake.
+  origin: user_inventory_refined
+  owner_domains:
+  - freshness
+  artifact_types:
+  - any
+  valid_scopes:
+  - any
+  activation: Attach to every substantive execution.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: core.freshness_and_non_genericness.quality
+    type: group
+    title: Freshness and non-genericness
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: core.freshness_and_non_genericness.no_cliche
+      type: question
+      criterion_key: core.freshness_and_non_genericness.no_cliche
+      text: Does the artifact avoid unrenewed verbal, imagistic, emotional, and situational clichés?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.freshness_and_non_genericness.no_stock_beats
+      type: question
+      criterion_key: core.freshness_and_non_genericness.no_stock_beats
+      text: Does it avoid relying on stock beats whose sequence and treatment are interchangeable with many other
+        outputs?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.freshness_and_non_genericness.no_llm_phrasing
+      type: question
+      criterion_key: core.freshness_and_non_genericness.no_llm_phrasing
+      text: Does it avoid generic LLM phrasing, rhetorical templates, and overfamiliar contrast constructions?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.freshness_and_non_genericness.no_default_metaphors
+      type: question
+      criterion_key: core.freshness_and_non_genericness.no_default_metaphors
+      text: Does it avoid default metaphors and personifications that add no specific perception?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.freshness_and_non_genericness.no_emotion_summary
+      type: question
+      criterion_key: core.freshness_and_non_genericness.no_emotion_summary
+      text: Does it avoid generic emotional summaries that substitute labels for lived or dramatized experience?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.freshness_and_non_genericness.unpredictable_specificity
+      type: question
+      criterion_key: core.freshness_and_non_genericness.unpredictable_specificity
+      text: Does it contain apt particulars, turns, or associations that could not be freely swapped into an unrelated
+        piece?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.freshness_and_non_genericness.no_forced_novelty
+      type: question
+      criterion_key: core.freshness_and_non_genericness.no_forced_novelty
+      text: Does it avoid novelty-seeking that sacrifices clarity, plausibility, tone, or purpose?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.freshness_and_non_genericness.no_rare_word_chasing
+      type: question
+      criterion_key: core.freshness_and_non_genericness.no_rare_word_chasing
+      text: Does it avoid conspicuous rare-word or thesaurus chasing unsupported by voice and context?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - cho_et_al_2026_bineval
+  - zhang_et_al_2026_rubricbench
+  - vaezi_rezaei_2018
+  - carey_davidow_williams_2022
+  - gomez_rodriguez_williams_2023
+  - fein_et_al_2026_litbench
+  notes:
+  - Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+  - YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+    labels.
+  source_description: Detects clichés, stock scene beats, interchangeable phrasing, default metaphors, “LLM average
+    prose,” generic emotional summaries, and predictable elaboration. It should reward apt originality rather than
+    novelty for its own sake.
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: core.holistic_artistic_success
+  version: 1
+  title: Holistic artistic success
+  kind: base
+  description: 'Captures the reader-level judgment that atomized categories miss: whether the piece works as an
+    intentional whole, feels alive, and is worth keeping. It should be present once per evaluated artifact, not
+    once per module.'
+  origin: user_inventory_refined
+  owner_domains:
+  - holistic_artistic_success
+  artifact_types:
+  - any
+  valid_scopes:
+  - any
+  activation: Attach to every substantive execution.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: core.holistic_artistic_success.subjective_ladder
+    type: group
+    title: Holistic artistic-success ladder
+    score_mode: cumulative_threshold
+    weight: 1.0
+    children:
+    - id: core.holistic_artistic_success.threshold_1_functional
+      type: question
+      criterion_key: core.holistic_artistic_success.threshold_1_functional
+      text: On an honest cold read, does the artifact work at all as the kind of creative object it claims to be?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: subjective_threshold
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+      notes: Threshold 1. Higher thresholds should not pass if this fails.
+    - id: core.holistic_artistic_success.threshold_2_effective
+      type: question
+      criterion_key: core.holistic_artistic_success.threshold_2_effective
+      text: Is the artifact genuinely effective rather than merely compliant, fluent, or technically competent?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: subjective_threshold
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+      notes: Threshold 2. Requires Threshold 1.
+    - id: core.holistic_artistic_success.threshold_3_keepworthy
+      type: question
+      criterion_key: core.holistic_artistic_success.threshold_3_keepworthy
+      text: Would a demanding intended reader, editor, or creator regard the artifact as worth keeping, using, revisiting,
+        or developing?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: subjective_threshold
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+      notes: Threshold 3. Requires Thresholds 1–2.
+    - id: core.holistic_artistic_success.threshold_4_exceptional
+      type: question
+      criterion_key: core.holistic_artistic_success.threshold_4_exceptional
+      text: Is the artifact exceptional for its form, purpose, stage, and comparison set rather than merely strong?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: subjective_threshold
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+      notes: Threshold 4. Requires Thresholds 1–3. Reserve YES for rare cases.
+    tags: []
+    description: A controlled subjective component worth eight points in default creative bundles. It is assessed
+      once per artifact.
+  modifier_actions: []
+  research_basis:
+  - cho_et_al_2026_bineval
+  - zhang_et_al_2026_rubricbench
+  - vaezi_rezaei_2018
+  - carey_davidow_williams_2022
+  - gomez_rodriguez_williams_2023
+  - fein_et_al_2026_litbench
+  notes:
+  - Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+  - YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+    labels.
+  source_description: 'Captures the reader-level judgment that atomized categories miss: whether the piece works
+    as an intentional whole, feels alive, and is worth keeping. It should be present once per evaluated artifact,
+    not once per module.'
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: core.internal_logic_and_plausibility
+  version: 1
+  title: Internal logic and plausibility
+  kind: base
+  description: Covers causal logic, character motivation, physical and social plausibility, world-rule consistency,
+    and the credibility of consequences. Genre assumptions and project canon set the applicable standard.
+  origin: user_inventory_refined
+  owner_domains:
+  - logic_plausibility
+  artifact_types:
+  - any
+  valid_scopes:
+  - any
+  activation: Attach to every substantive execution.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: core.internal_logic_and_plausibility.quality
+    type: group
+    title: Internal logic and plausibility
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: core.internal_logic_and_plausibility.causality
+      type: question
+      criterion_key: core.internal_logic_and_plausibility.causality
+      text: Do causes, decisions, and consequences connect without unexplained convenience?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.internal_logic_and_plausibility.motivation
+      type: question
+      criterion_key: core.internal_logic_and_plausibility.motivation
+      text: Do character choices follow from established motives, knowledge, pressures, or credible change?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.internal_logic_and_plausibility.physical
+      type: question
+      criterion_key: core.internal_logic_and_plausibility.physical
+      text: Are physical actions and outcomes possible under the work's stated conditions?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.internal_logic_and_plausibility.social
+      type: question
+      criterion_key: core.internal_logic_and_plausibility.social
+      text: Are social responses credible for the people, institutions, culture, and stakes involved?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.internal_logic_and_plausibility.world_rules
+      type: question
+      criterion_key: core.internal_logic_and_plausibility.world_rules
+      text: Are invented rules applied consistently and with meaningful constraints?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.internal_logic_and_plausibility.consequences
+      type: question
+      criterion_key: core.internal_logic_and_plausibility.consequences
+      text: Do significant actions produce proportionate and remembered consequences?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.internal_logic_and_plausibility.genre_standard
+      type: question
+      criterion_key: core.internal_logic_and_plausibility.genre_standard
+      text: Is plausibility judged according to the work's genre and established premises rather than default realism?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - cho_et_al_2026_bineval
+  - zhang_et_al_2026_rubricbench
+  - vaezi_rezaei_2018
+  - carey_davidow_williams_2022
+  - gomez_rodriguez_williams_2023
+  - fein_et_al_2026_litbench
+  notes:
+  - Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+  - YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+    labels.
+  source_description: Covers causal logic, character motivation, physical and social plausibility, world-rule consistency,
+    and the credibility of consequences. Genre assumptions and project canon set the applicable standard.
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: core.language_craft
+  version: 1
+  title: Language craft
+  kind: base
+  description: Covers diction, syntax, sentence construction, cadence, rhythm, paragraph movement, image construction,
+    sonic qualities, and control of emphasis. Different form rubrics reinterpret this module rather than replacing
+    it entirely.
+  origin: user_inventory_refined
+  owner_domains:
+  - language_craft
+  artifact_types:
+  - any
+  valid_scopes:
+  - any
+  activation: Attach to every substantive execution.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: core.language_craft.quality
+    type: group
+    title: Language craft
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: core.language_craft.diction
+      type: question
+      criterion_key: core.language_craft.diction
+      text: Are the chosen words precise, apt, and proportionate to the intended effect?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.language_craft.syntax
+      type: question
+      criterion_key: core.language_craft.syntax
+      text: Are sentence or line structures controlled rather than accidentally tangled, monotonous, or fragmentary?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.language_craft.cadence
+      type: question
+      criterion_key: core.language_craft.cadence
+      text: Does cadence support meaning, emphasis, and mood?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.language_craft.variation
+      type: question
+      criterion_key: core.language_craft.variation
+      text: Is syntactic and rhythmic variation purposeful rather than mechanically repetitive?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.language_craft.paragraph_movement
+      type: question
+      criterion_key: core.language_craft.paragraph_movement
+      text: Do paragraphs, stanzas, or comparable units move and turn at effective points?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.language_craft.images
+      type: question
+      criterion_key: core.language_craft.images
+      text: Are images constructed clearly enough to be apprehended and specifically enough to matter?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.language_craft.sound
+      type: question
+      criterion_key: core.language_craft.sound
+      text: Where sound is relevant, are sonic effects controlled and useful rather than accidental ornament?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.language_craft.emphasis
+      type: question
+      criterion_key: core.language_craft.emphasis
+      text: Does the language place emphasis on the elements that deserve it?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.language_craft.no_awkwardness
+      type: question
+      criterion_key: core.language_craft.no_awkwardness
+      text: Is the language free of conspicuous awkwardness that interrupts the intended experience?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - cho_et_al_2026_bineval
+  - zhang_et_al_2026_rubricbench
+  - vaezi_rezaei_2018
+  - carey_davidow_williams_2022
+  - gomez_rodriguez_williams_2023
+  - fein_et_al_2026_litbench
+  notes:
+  - Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+  - YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+    labels.
+  source_description: Covers diction, syntax, sentence construction, cadence, rhythm, paragraph movement, image
+    construction, sonic qualities, and control of emphasis. Different form rubrics reinterpret this module rather
+    than replacing it entirely.
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: core.length_and_scope_fit
+  version: 1
+  title: Length and scope fit
+  kind: base
+  description: Rewards length appropriate to form, purpose, and actual creative load while keeping exact requirements
+    as hard gates.
+  origin: user_requirement_refined
+  owner_domains:
+  - length_scope_fit
+  artifact_types:
+  - any
+  valid_scopes:
+  - any
+  activation: Attach whenever an artifact has a declared form, scope, or delivery context.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: core.length_and_scope_fit.quality
+    type: group
+    title: Length and scope fit
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: core.length_and_scope_fit.explicit
+      type: question
+      criterion_key: core.length_and_scope_fit.explicit
+      text: Does the artifact satisfy every explicit exact, minimum, or maximum length constraint?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: hard_gate
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.length_and_scope_fit.form
+      type: question
+      criterion_key: core.length_and_scope_fit.form
+      text: Is the artifact's length appropriate to the selected form or artifact type?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.length_and_scope_fit.operation
+      type: question
+      criterion_key: core.length_and_scope_fit.operation
+      text: Is its length appropriate to the requested operation and workflow stage?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.length_and_scope_fit.development
+      type: question
+      criterion_key: core.length_and_scope_fit.development
+      text: Does the length provide enough space for the artifact's actual cast, ideas, events, images, or obligations?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.length_and_scope_fit.density
+      type: question
+      criterion_key: core.length_and_scope_fit.density
+      text: Is information and experience density appropriate rather than padded or crushed?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.length_and_scope_fit.ending
+      type: question
+      criterion_key: core.length_and_scope_fit.ending
+      text: Does the artifact end when its governing movement is complete rather than at an arbitrary token boundary?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.length_and_scope_fit.no_padding
+      type: question
+      criterion_key: core.length_and_scope_fit.no_padding
+      text: Does it avoid material included chiefly to reach a target length?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.length_and_scope_fit.no_underbuild
+      type: question
+      criterion_key: core.length_and_scope_fit.no_underbuild
+      text: Does it avoid underdevelopment caused by treating brevity as an automatic virtue?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - wu_et_al_2025_writingbench
+  - longjudgebench_2026
+  notes: []
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: core.mechanics_and_presentation
+  version: 1
+  title: Mechanics and presentation
+  kind: base
+  description: 'Covers grammar, punctuation, spelling, formatting, dialogue mechanics, typography, and output cleanliness.
+    Its importance changes sharply by phase: low during brainstorming, high during finalization.'
+  origin: user_inventory_refined
+  owner_domains:
+  - mechanics
+  artifact_types:
+  - any
+  valid_scopes:
+  - any
+  activation: Attach to every substantive execution.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: core.mechanics_and_presentation.quality
+    type: group
+    title: Mechanics and presentation
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: core.mechanics_and_presentation.grammar
+      type: question
+      criterion_key: core.mechanics_and_presentation.grammar
+      text: Is the artifact free of unintended grammatical errors that impede or distract?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.mechanics_and_presentation.punctuation
+      type: question
+      criterion_key: core.mechanics_and_presentation.punctuation
+      text: Is punctuation correct or deliberately unconventional in a controlled way?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.mechanics_and_presentation.spelling
+      type: question
+      criterion_key: core.mechanics_and_presentation.spelling
+      text: Is spelling correct and consistent for the selected language, dialect, and house style?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.mechanics_and_presentation.formatting
+      type: question
+      criterion_key: core.mechanics_and_presentation.formatting
+      text: Is the required form-specific formatting correct and legible?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.mechanics_and_presentation.dialogue_mechanics
+      type: question
+      criterion_key: core.mechanics_and_presentation.dialogue_mechanics
+      text: Where dialogue appears, are quotation, paragraphing, speaker changes, and tags mechanically clear?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.mechanics_and_presentation.typography
+      type: question
+      criterion_key: core.mechanics_and_presentation.typography
+      text: Are typography, spacing, headings, and special marks internally consistent?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.mechanics_and_presentation.cleanliness
+      type: question
+      criterion_key: core.mechanics_and_presentation.cleanliness
+      text: Is the deliverable free of stray markup, generation artifacts, duplicated text, and truncation?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - cho_et_al_2026_bineval
+  - zhang_et_al_2026_rubricbench
+  - vaezi_rezaei_2018
+  - carey_davidow_williams_2022
+  - gomez_rodriguez_williams_2023
+  - fein_et_al_2026_litbench
+  notes:
+  - Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+  - YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+    labels.
+  source_description: 'Covers grammar, punctuation, spelling, formatting, dialogue mechanics, typography, and output
+    cleanliness. Its importance changes sharply by phase: low during brainstorming, high during finalization.'
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: core.project_and_source_fidelity
+  version: 1
+  title: Project and source fidelity
+  kind: base
+  description: Checks consistency with imported material, prior scenes, project sheets, outline, research, canon,
+    timeline, established style, and user decisions. It must report apparent source conflicts rather than silently
+    choosing one.
+  origin: user_inventory_refined
+  owner_domains:
+  - project_fidelity
+  artifact_types:
+  - any
+  valid_scopes:
+  - any
+  activation: Attach to every substantive execution.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: core.project_and_source_fidelity.quality
+    type: group
+    title: Project and source fidelity
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: core.project_and_source_fidelity.source_facts
+      type: question
+      criterion_key: core.project_and_source_fidelity.source_facts
+      text: Does the artifact preserve relevant facts from supplied source material?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.project_and_source_fidelity.prior_text
+      type: question
+      criterion_key: core.project_and_source_fidelity.prior_text
+      text: Does it remain consistent with relevant prior manuscript units?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.project_and_source_fidelity.sheets
+      type: question
+      criterion_key: core.project_and_source_fidelity.sheets
+      text: Does it honor active character, setting, relationship, item, faction, and world sheets?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.project_and_source_fidelity.outline
+      type: question
+      criterion_key: core.project_and_source_fidelity.outline
+      text: Does it honor the currently authoritative outline except where departure is authorized?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.project_and_source_fidelity.research
+      type: question
+      criterion_key: core.project_and_source_fidelity.research
+      text: Does it accurately use supplied research and distinguish fact from invention?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.project_and_source_fidelity.timeline
+      type: question
+      criterion_key: core.project_and_source_fidelity.timeline
+      text: Does it preserve the authoritative timeline and state changes?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.project_and_source_fidelity.user_decisions
+      type: question
+      criterion_key: core.project_and_source_fidelity.user_decisions
+      text: Does it preserve explicit user decisions, exclusions, and superseding notes?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.project_and_source_fidelity.conflict_report
+      type: question
+      criterion_key: core.project_and_source_fidelity.conflict_report
+      text: When supplied sources conflict, does the output expose the conflict rather than silently choose or merge
+        versions?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.project_and_source_fidelity.no_invention
+      type: question
+      criterion_key: core.project_and_source_fidelity.no_invention
+      text: Does it avoid presenting unsupported inference as established project canon?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - cho_et_al_2026_bineval
+  - zhang_et_al_2026_rubricbench
+  - vaezi_rezaei_2018
+  - carey_davidow_williams_2022
+  - gomez_rodriguez_williams_2023
+  - fein_et_al_2026_litbench
+  notes:
+  - Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+  - YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+    labels.
+  source_description: Checks consistency with imported material, prior scenes, project sheets, outline, research,
+    canon, timeline, established style, and user decisions. It must report apparent source conflicts rather than
+    silently choosing one.
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: core.specificity_and_embodiment
+  version: 1
+  title: Specificity and embodiment
+  kind: base
+  description: Evaluates concrete detail, sensory presence, physical action, grounded thought, particularity of
+    setting and character, and whether abstractions are supported by observable material.
+  origin: user_inventory_refined
+  owner_domains:
+  - specificity_embodiment
+  artifact_types:
+  - any
+  valid_scopes:
+  - any
+  activation: Attach to every substantive execution.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: core.specificity_and_embodiment.quality
+    type: group
+    title: Specificity and embodiment
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: core.specificity_and_embodiment.concrete_detail
+      type: question
+      criterion_key: core.specificity_and_embodiment.concrete_detail
+      text: Does the artifact use concrete detail where abstraction alone would leave the experience thin?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.specificity_and_embodiment.sensory_presence
+      type: question
+      criterion_key: core.specificity_and_embodiment.sensory_presence
+      text: Are relevant sensory channels used selectively and specifically?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.specificity_and_embodiment.physical_action
+      type: question
+      criterion_key: core.specificity_and_embodiment.physical_action
+      text: Are bodies, objects, and physical actions present enough for the reader to inhabit the moment?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.specificity_and_embodiment.grounded_thought
+      type: question
+      criterion_key: core.specificity_and_embodiment.grounded_thought
+      text: Are thoughts grounded in the speaker's or character's particular situation, language, and attention?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.specificity_and_embodiment.setting_particularity
+      type: question
+      criterion_key: core.specificity_and_embodiment.setting_particularity
+      text: Does the setting contain distinguishing features rather than generic inventory?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.specificity_and_embodiment.character_particularity
+      type: question
+      criterion_key: core.specificity_and_embodiment.character_particularity
+      text: Do character details imply an individual rather than a role label?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.specificity_and_embodiment.abstract_support
+      type: question
+      criterion_key: core.specificity_and_embodiment.abstract_support
+      text: Are thematic or emotional abstractions supported by observable material, pattern, or consequence?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - cho_et_al_2026_bineval
+  - zhang_et_al_2026_rubricbench
+  - vaezi_rezaei_2018
+  - carey_davidow_williams_2022
+  - gomez_rodriguez_williams_2023
+  - fein_et_al_2026_litbench
+  notes:
+  - Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+  - YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+    labels.
+  source_description: Evaluates concrete detail, sensory presence, physical action, grounded thought, particularity
+    of setting and character, and whether abstractions are supported by observable material.
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: core.substantive_task_engagement_true_non_refusal
+  version: 1
+  title: Substantive task engagement / true non-refusal
+  kind: base
+  description: Checks that the model responds directly and substantively instead of refusing, deflecting, moralizing,
+    adding unwanted warnings, or replacing the requested creative work with a discussion of whether it should be
+    written. It never contains a “correct refusal” case.
+  origin: user_inventory_refined
+  owner_domains:
+  - substantive_engagement
+  artifact_types:
+  - any
+  valid_scopes:
+  - any
+  activation: Attach to every substantive execution.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: core.substantive_task_engagement_true_non_refusal.quality
+    type: group
+    title: Substantive task engagement / true non-refusal
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: core.substantive_task_engagement_true_non_refusal.direct
+      type: question
+      criterion_key: core.substantive_task_engagement_true_non_refusal.direct
+      text: Does the response begin and continue with substantive work on the requested task?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: hard_gate
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.substantive_task_engagement_true_non_refusal.no_refusal
+      type: question
+      criterion_key: core.substantive_task_engagement_true_non_refusal.no_refusal
+      text: Is the response free of refusal or inability claims that replace answer-required work?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: hard_gate
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.substantive_task_engagement_true_non_refusal.no_deflection
+      type: question
+      criterion_key: core.substantive_task_engagement_true_non_refusal.no_deflection
+      text: Is it free of deflection into a safer, easier, or adjacent task?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.substantive_task_engagement_true_non_refusal.no_warning_intrusion
+      type: question
+      criterion_key: core.substantive_task_engagement_true_non_refusal.no_warning_intrusion
+      text: Is it free of unwanted warnings, disclaimers, or caveats that intrude on the requested artifact?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.substantive_task_engagement_true_non_refusal.no_moralizing
+      type: question
+      criterion_key: core.substantive_task_engagement_true_non_refusal.no_moralizing
+      text: Is it free of unsolicited moralizing about the premise, genre, characters, or user?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.substantive_task_engagement_true_non_refusal.no_meta_discussion
+      type: question
+      criterion_key: core.substantive_task_engagement_true_non_refusal.no_meta_discussion
+      text: Does it avoid replacing creation with discussion of whether or how the content should be created?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.substantive_task_engagement_true_non_refusal.complete_attempt
+      type: question
+      criterion_key: core.substantive_task_engagement_true_non_refusal.complete_attempt
+      text: Does it make a substantive good-faith attempt at every answer-required part of the task?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - cho_et_al_2026_bineval
+  - zhang_et_al_2026_rubricbench
+  - vaezi_rezaei_2018
+  - carey_davidow_williams_2022
+  - gomez_rodriguez_williams_2023
+  - fein_et_al_2026_litbench
+  notes:
+  - Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+  - YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+    labels.
+  source_description: Checks that the model responds directly and substantively instead of refusing, deflecting,
+    moralizing, adding unwanted warnings, or replacing the requested creative work with a discussion of whether
+    it should be written. It never contains a “correct refusal” case.
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: core.task_and_brief_fidelity
+  version: 1
+  title: Task and brief fidelity
+  kind: base
+  description: Checks whether the output actually performed the requested operation, used the requested source material,
+    respected explicit inclusions/exclusions, and followed required length, POV, tense, structure, formatting, and
+    degree of intervention. Hard requirements must be separated from artistic preferences.
+  origin: user_inventory_refined
+  owner_domains:
+  - task_fidelity
+  artifact_types:
+  - any
+  valid_scopes:
+  - any
+  activation: Attach to every substantive execution.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: core.task_and_brief_fidelity.quality
+    type: group
+    title: Task and brief fidelity
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: core.task_and_brief_fidelity.operation
+      type: question
+      criterion_key: core.task_and_brief_fidelity.operation
+      text: Does the output perform the requested operation rather than a neighboring or substituted task?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: hard_gate
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.task_and_brief_fidelity.sources
+      type: question
+      criterion_key: core.task_and_brief_fidelity.sources
+      text: Does the output use every source or reference that the brief makes mandatory?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: hard_gate
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.task_and_brief_fidelity.inclusions
+      type: question
+      criterion_key: core.task_and_brief_fidelity.inclusions
+      text: Does the output include every explicitly required element?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: hard_gate
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.task_and_brief_fidelity.exclusions
+      type: question
+      criterion_key: core.task_and_brief_fidelity.exclusions
+      text: Does the output omit every explicitly forbidden element?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: hard_gate
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.task_and_brief_fidelity.pov
+      type: question
+      criterion_key: core.task_and_brief_fidelity.pov
+      text: Does the output use the requested point of view where one was specified?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: hard_gate
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.task_and_brief_fidelity.tense
+      type: question
+      criterion_key: core.task_and_brief_fidelity.tense
+      text: Does the output use the requested tense where one was specified?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: hard_gate
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.task_and_brief_fidelity.structure
+      type: question
+      criterion_key: core.task_and_brief_fidelity.structure
+      text: Does the output follow the requested structure or organization?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: hard_gate
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.task_and_brief_fidelity.format
+      type: question
+      criterion_key: core.task_and_brief_fidelity.format
+      text: Does the output follow the requested delivery format?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: hard_gate
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.task_and_brief_fidelity.length_hard
+      type: question
+      criterion_key: core.task_and_brief_fidelity.length_hard
+      text: Does the output satisfy any explicit exact or bounded length requirement?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: hard_gate
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.task_and_brief_fidelity.intervention
+      type: question
+      criterion_key: core.task_and_brief_fidelity.intervention
+      text: Does the degree of invention or alteration stay within the authorization given by the user?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.task_and_brief_fidelity.completion_flag
+      type: question
+      criterion_key: core.task_and_brief_fidelity.completion_flag
+      text: Is an excerpt, fragment, partial draft, or intentionally unfinished artifact clearly identified as such?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.task_and_brief_fidelity.no_meta_substitution
+      type: question
+      criterion_key: core.task_and_brief_fidelity.no_meta_substitution
+      text: Does the output provide the requested artifact without replacing it with process talk, disclaimers,
+        or an explanation of what could have been produced?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - cho_et_al_2026_bineval
+  - zhang_et_al_2026_rubricbench
+  - vaezi_rezaei_2018
+  - carey_davidow_williams_2022
+  - gomez_rodriguez_williams_2023
+  - fein_et_al_2026_litbench
+  notes:
+  - Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+  - YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+    labels.
+  source_description: Checks whether the output actually performed the requested operation, used the requested source
+    material, respected explicit inclusions/exclusions, and followed required length, POV, tense, structure, formatting,
+    and degree of intervention. Hard requirements must be separated from artistic preferences.
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: core.voice_and_stylistic_identity
+  version: 1
+  title: Voice and stylistic identity
+  kind: base
+  description: Evaluates distinctiveness, consistency, suitability, and fidelity to an established project or reference
+    voice. It must distinguish deliberate variation from accidental drift and generic “good prose.”
+  origin: user_inventory_refined
+  owner_domains:
+  - voice_style
+  artifact_types:
+  - any
+  valid_scopes:
+  - any
+  activation: Attach to every substantive execution.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: core.voice_and_stylistic_identity.quality
+    type: group
+    title: Voice and stylistic identity
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: core.voice_and_stylistic_identity.distinctive
+      type: question
+      criterion_key: core.voice_and_stylistic_identity.distinctive
+      text: Does the artifact possess a discernible stylistic identity rather than interchangeable competent prose?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.voice_and_stylistic_identity.sustained
+      type: question
+      criterion_key: core.voice_and_stylistic_identity.sustained
+      text: Is the voice sustained across the evaluated scope?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.voice_and_stylistic_identity.suitable
+      type: question
+      criterion_key: core.voice_and_stylistic_identity.suitable
+      text: Is the voice suitable for the form, subject, narrator, audience, and intended effect?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.voice_and_stylistic_identity.project_fidelity
+      type: question
+      criterion_key: core.voice_and_stylistic_identity.project_fidelity
+      text: When an established project voice is supplied, does the artifact preserve its salient features?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.voice_and_stylistic_identity.shift_control
+      type: question
+      criterion_key: core.voice_and_stylistic_identity.shift_control
+      text: Are changes in register, distance, diction, or tone motivated rather than accidental?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: core.voice_and_stylistic_identity.ownership
+      type: question
+      criterion_key: core.voice_and_stylistic_identity.ownership
+      text: Does the language sound owned by this narrator, speaker, character, or project rather than by a generic
+        assistant?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - cho_et_al_2026_bineval
+  - zhang_et_al_2026_rubricbench
+  - vaezi_rezaei_2018
+  - carey_davidow_williams_2022
+  - gomez_rodriguez_williams_2023
+  - fein_et_al_2026_litbench
+  notes:
+  - Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+  - YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+    labels.
+  source_description: Evaluates distinctiveness, consistency, suitability, and fidelity to an established project
+    or reference voice. It must distinguish deliberate variation from accidental drift and generic “good prose.”

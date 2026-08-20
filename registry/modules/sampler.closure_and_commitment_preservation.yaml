@@ -1,0 +1,143 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: sampler.closure_and_commitment_preservation
+version: 1
+title: Closure and commitment preservation
+kind: sampler
+description: Detects the future-entropy failure mode in which prose keeps possibilities open indefinitely and avoids
+  concrete decisions, names, images, punctuation, or scene turns.
+origin: user_inventory_refined
+owner_domains:
+- sampler.closure_and_commitment_preservation
+artifact_types:
+- generated_candidate
+- candidate_set
+valid_scopes:
+- any
+activation: Attach when closure and commitment preservation is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: sampler.closure_and_commitment_preservation.quality
+  type: group
+  title: Closure and commitment preservation checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: sampler.closure_and_commitment_preservation.sentences
+    type: question
+    criterion_key: sampler.closure_and_commitment_preservation.sentences
+    text: Do sentences resolve syntactically and semantically?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: sampler.closure_and_commitment_preservation.punctuation
+    type: question
+    criterion_key: sampler.closure_and_commitment_preservation.punctuation
+    text: Are punctuation and paragraph endings stable?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: sampler.closure_and_commitment_preservation.choices
+    type: question
+    criterion_key: sampler.closure_and_commitment_preservation.choices
+    text: Do characters and narrators make concrete choices when required?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: sampler.closure_and_commitment_preservation.images
+    type: question
+    criterion_key: sampler.closure_and_commitment_preservation.images
+    text: Do images become specific enough to carry meaning?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: sampler.closure_and_commitment_preservation.turns
+    type: question
+    criterion_key: sampler.closure_and_commitment_preservation.turns
+    text: Do scenes and arguments reach turns rather than continually defer them?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: sampler.closure_and_commitment_preservation.ending
+    type: question
+    criterion_key: sampler.closure_and_commitment_preservation.ending
+    text: Does the generation unit end intentionally rather than trail off or remain open by default?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: sampler.closure_and_commitment_preservation.no_entropy
+    type: question
+    criterion_key: sampler.closure_and_commitment_preservation.no_entropy
+    text: Does it avoid indefinite future-entropy behavior that keeps every option alive?
+    pass_answer: 'YES'
+    weight: 2.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- wu_et_al_2025_writingbench
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Detects the future-entropy failure mode in which prose keeps possibilities open indefinitely
+  and avoids concrete decisions, names, images, punctuation, or scene turns.

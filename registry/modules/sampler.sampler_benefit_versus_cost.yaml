@@ -1,0 +1,143 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: sampler.sampler_benefit_versus_cost
+version: 1
+title: Sampler benefit-versus-cost
+kind: sampler
+description: Combines writing-quality gain, retained benefit relative to full future-entropy sampling, extra forwards,
+  latency, and consistency. It is an internal experiment rubric rather than a manuscript grade.
+origin: user_inventory_refined
+owner_domains:
+- sampler.sampler_benefit_versus_cost
+artifact_types:
+- generated_candidate
+- candidate_set
+valid_scopes:
+- any
+activation: Attach when sampler benefit-versus-cost is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: sampler.sampler_benefit_versus_cost.quality
+  type: group
+  title: Sampler benefit-versus-cost checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: sampler.sampler_benefit_versus_cost.quality
+    type: question
+    criterion_key: sampler.sampler_benefit_versus_cost.quality
+    text: Does the sampler produce a statistically credible creative-quality gain?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: sampler.sampler_benefit_versus_cost.retention
+    type: question
+    criterion_key: sampler.sampler_benefit_versus_cost.retention
+    text: Does it retain most of the benefit of more expensive future-aware sampling?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: sampler.sampler_benefit_versus_cost.latency
+    type: question
+    criterion_key: sampler.sampler_benefit_versus_cost.latency
+    text: Is delivered-token latency acceptable for the interactive workflow?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: sampler.sampler_benefit_versus_cost.compute
+    type: question
+    criterion_key: sampler.sampler_benefit_versus_cost.compute
+    text: Are extra forwards and memory costs proportionate to the gain?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: sampler.sampler_benefit_versus_cost.consistency
+    type: question
+    criterion_key: sampler.sampler_benefit_versus_cost.consistency
+    text: Does it preserve coherence, canon, and formatting reliability?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: sampler.sampler_benefit_versus_cost.variance
+    type: question
+    criterion_key: sampler.sampler_benefit_versus_cost.variance
+    text: Are gains stable across prompts, lengths, forms, and seeds?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: sampler.sampler_benefit_versus_cost.baseline
+    type: question
+    criterion_key: sampler.sampler_benefit_versus_cost.baseline
+    text: Is comparison made against fair baselines with matched model, prompt, and generation budget?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- wu_et_al_2025_writingbench
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Combines writing-quality gain, retained benefit relative to full future-entropy sampling, extra
+  forwards, latency, and consistency. It is an internal experiment rubric rather than a manuscript grade.

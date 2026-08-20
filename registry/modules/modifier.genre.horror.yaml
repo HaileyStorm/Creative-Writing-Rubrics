@@ -1,0 +1,170 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: modifier.genre.horror
+version: 1
+title: Horror
+kind: modifier
+description: Dread, atmosphere, vulnerability, escalation, image control, uncertainty, thematic fear, aftermath,
+  and avoidance of merely naming fear or relying only on gore.
+origin: user_inventory_refined
+owner_domains:
+- genre.horror
+artifact_types:
+- creative_text
+valid_scopes:
+- any
+activation: Attach when horror is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: modifier.genre.horror.quality
+  type: group
+  title: Horror contract
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: modifier.genre.horror.fear_source
+    type: question
+    criterion_key: modifier.genre.horror.fear_source
+    text: Is the work's source of fear, dread, disgust, uncanny disturbance, or existential pressure specific?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.horror.vulnerability
+    type: question
+    criterion_key: modifier.genre.horror.vulnerability
+    text: Does the work establish what makes its characters, bodies, relationships, or worldview vulnerable?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.horror.atmosphere
+    type: question
+    criterion_key: modifier.genre.horror.atmosphere
+    text: Does atmosphere arise from controlled sensory, spatial, social, and linguistic detail?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.horror.uncertainty
+    type: question
+    criterion_key: modifier.genre.horror.uncertainty
+    text: Does uncertainty remain active without becoming arbitrary incomprehension?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.horror.escalation
+    type: question
+    criterion_key: modifier.genre.horror.escalation
+    text: Does horror escalate or deepen through changed understanding and consequence rather than only louder imagery?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.horror.images
+    type: question
+    criterion_key: modifier.genre.horror.images
+    text: Are horrific images selected and timed for effect rather than accumulated indiscriminately?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.horror.aftermath
+    type: question
+    criterion_key: modifier.genre.horror.aftermath
+    text: Does the work register psychological, physical, relational, or thematic aftermath?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.horror.no_named_fear
+    type: question
+    criterion_key: modifier.genre.horror.no_named_fear
+    text: Does it avoid merely stating that something is terrifying, wrong, ancient, or unspeakable?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.horror.no_gore_substitution
+    type: question
+    criterion_key: modifier.genre.horror.no_gore_substitution
+    text: Does gore, when present, serve horror rather than substitute for dread, character, or consequence?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- fein_et_al_2026_litbench
+- wu_et_al_2025_writingbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Dread, atmosphere, vulnerability, escalation, image control, uncertainty, thematic fear, aftermath,
+  and avoidance of merely naming fear or relying only on gore.

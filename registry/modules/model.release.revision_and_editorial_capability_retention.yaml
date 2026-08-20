@@ -1,0 +1,128 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: model.release.revision_and_editorial_capability_retention
+version: 1
+title: Revision and editorial capability retention
+kind: model_build
+description: Tests diagnosis, constrained rewriting, preservation, full-context critique, and restrained final-pass
+  behavior.
+origin: user_inventory_refined
+owner_domains:
+- model.revision_and_editorial_capability_retention
+artifact_types:
+- model_build
+valid_scopes:
+- any
+activation: Attach when revision and editorial capability retention is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: model.release.revision_and_editorial_capability_retention.quality
+  type: group
+  title: Revision and editorial capability retention checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: model.release.revision_and_editorial_capability_retention.diagnosis
+    type: question
+    criterion_key: model.release.revision_and_editorial_capability_retention.diagnosis
+    text: Is critique and diagnosis quality retained?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.revision_and_editorial_capability_retention.constraint
+    type: question
+    criterion_key: model.release.revision_and_editorial_capability_retention.constraint
+    text: Is constrained rewriting accuracy retained?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.revision_and_editorial_capability_retention.preservation
+    type: question
+    criterion_key: model.release.revision_and_editorial_capability_retention.preservation
+    text: Is preservation of unrelated facts, voice, and structure retained?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.revision_and_editorial_capability_retention.long
+    type: question
+    criterion_key: model.release.revision_and_editorial_capability_retention.long
+    text: Is full-context manuscript critique retained?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.revision_and_editorial_capability_retention.final
+    type: question
+    criterion_key: model.release.revision_and_editorial_capability_retention.final
+    text: Is restrained final-pass behavior retained without homogenization?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.revision_and_editorial_capability_retention.verification
+    type: question
+    criterion_key: model.release.revision_and_editorial_capability_retention.verification
+    text: Is before/after revision verification retained?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- rao_callison_burch_2026_autorubric
+- longjudgebench_2026
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Tests diagnosis, constrained rewriting, preservation, full-context critique, and restrained
+  final-pass behavior.

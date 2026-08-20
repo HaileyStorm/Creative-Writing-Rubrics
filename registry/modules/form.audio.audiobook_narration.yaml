@@ -1,0 +1,168 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: form.audio.audiobook_narration
+version: 1
+title: Audiobook narration
+kind: audio_artifact
+description: Research-informed binary rubric for audiobook narration.
+origin: research_expansion
+owner_domains:
+- audio.audiobook_narration
+artifact_types:
+- audio_asset
+valid_scopes:
+- utterance
+- passage
+- scene
+- chapter
+- work
+activation: Attach when audiobook narration is the active form, asset, or evaluation concern.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 1
+  project_sources: source text, pronunciation lexicon, voice references, and direction sheet when supplied
+  modalities_required:
+  - audio
+tree:
+- id: form.audio.audiobook_narration.quality
+  type: group
+  title: Audiobook narration checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: form.audio.audiobook_narration.text
+    type: question
+    criterion_key: form.audio.audiobook_narration.text
+    text: Does the narration reproduce the approved text accurately?
+    pass_answer: 'YES'
+    weight: 2.5
+    question_type: hard_gate
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.audio.audiobook_narration.natural
+    type: question
+    criterion_key: form.audio.audiobook_narration.natural
+    text: Does the narration sound fluent and humanly phrased rather than token-by-token or synthetic?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.audio.audiobook_narration.meaning
+    type: question
+    criterion_key: form.audio.audiobook_narration.meaning
+    text: Do emphasis, phrasing, and pauses communicate sentence and scene meaning?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.audio.audiobook_narration.narrator
+    type: question
+    criterion_key: form.audio.audiobook_narration.narrator
+    text: Is narrator identity stable across the passage and project?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.audio.audiobook_narration.characters
+    type: question
+    criterion_key: form.audio.audiobook_narration.characters
+    text: Are character voices distinguishable without caricature or identity drift?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.audio.audiobook_narration.emotion
+    type: question
+    criterion_key: form.audio.audiobook_narration.emotion
+    text: Is emotion specific, proportionate, and responsive to context?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.audio.audiobook_narration.pace
+    type: question
+    criterion_key: form.audio.audiobook_narration.pace
+    text: Does pace vary appropriately across narration, action, dialogue, reflection, and transitions?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.audio.audiobook_narration.long
+    type: question
+    criterion_key: form.audio.audiobook_narration.long
+    text: Does performance remain stable and engaging over long-form listening?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.audio.audiobook_narration.technical
+    type: question
+    criterion_key: form.audio.audiobook_narration.technical
+    text: Is audio free of distracting artifacts, clipping, dropouts, noise, and inconsistent level?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- galdino_et_al_2025_prosody_review
+- real_world_voice_eq_bench_2026
+notes: []

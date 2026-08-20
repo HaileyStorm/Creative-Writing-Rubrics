@@ -1,0 +1,13 @@
+{
+  "package": "creative-writing-rubrics",
+  "standard": {
+    "id": "HBQ-RS",
+    "version": "1.0.0"
+  },
+  "generated": "2026-08-20",
+  "module_count": 277,
+  "question_count": 2139,
+  "bundle_count": 85,
+  "source_inventory_table_modules": 203,
+  "notes": "Public extract of the HBQ-RS creative-writing rubric stack. Stable IDs are unchanged; human-facing two-role wording is neutralized."
+}

@@ -1,0 +1,156 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: op.ideation.setting_world_conception
+version: 1
+title: Setting/world conception
+kind: procedure
+description: Evaluates narrative utility, distinctive constraints, consequence-rich systems, sensory identity, and
+  opportunities for conflict or discovery.
+origin: user_inventory_refined
+owner_domains:
+- procedure.setting_world_conception
+artifact_types:
+- any
+valid_scopes:
+- operation
+activation: Attach when setting/world conception is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: op.ideation.setting_world_conception.quality
+  type: group
+  title: Setting/world conception checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: op.ideation.setting_world_conception.identity
+    type: question
+    criterion_key: op.ideation.setting_world_conception.identity
+    text: Does the setting or world have a recognizable sensory, social, material, or conceptual identity?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ideation.setting_world_conception.constraints
+    type: question
+    criterion_key: op.ideation.setting_world_conception.constraints
+    text: Does it impose distinctive constraints on what characters can know, want, do, or risk?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ideation.setting_world_conception.consequences
+    type: question
+    criterion_key: op.ideation.setting_world_conception.consequences
+    text: Do its systems create second-order consequences rather than decorative lore alone?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ideation.setting_world_conception.social
+    type: question
+    criterion_key: op.ideation.setting_world_conception.social
+    text: Are relevant institutions, customs, incentives, and power relations implied or specified?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ideation.setting_world_conception.story_engine
+    type: question
+    criterion_key: op.ideation.setting_world_conception.story_engine
+    text: Does the conception generate conflicts, discoveries, choices, and scene opportunities?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ideation.setting_world_conception.scale
+    type: question
+    criterion_key: op.ideation.setting_world_conception.scale
+    text: Is the amount of conception proportionate to the intended artifact and current planning phase?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ideation.setting_world_conception.specific
+    type: question
+    criterion_key: op.ideation.setting_world_conception.specific
+    text: Does it avoid default genre furniture by using specific, causally connected particulars?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ideation.setting_world_conception.open_space
+    type: question
+    criterion_key: op.ideation.setting_world_conception.open_space
+    text: Does it leave useful room for discovery during outlining and drafting?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- wu_et_al_2025_writingbench
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates narrative utility, distinctive constraints, consequence-rich systems, sensory identity,
+  and opportunities for conflict or discovery.

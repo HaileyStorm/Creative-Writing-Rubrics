@@ -1,0 +1,2758 @@
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: artifact.support.asset_manifest
+  version: 1
+  title: Asset manifest
+  kind: support_artifact
+  description: Research-informed binary rubric for asset manifest.
+  origin: research_expansion
+  owner_domains:
+  - support.asset_manifest
+  artifact_types:
+  - planning_artifact
+  - reference_artifact
+  valid_scopes:
+  - artifact
+  - project
+  activation: Attach when asset manifest is the active form, asset, or evaluation concern.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: artifact.support.asset_manifest.quality
+    type: group
+    title: Asset manifest checks
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: artifact.support.asset_manifest.identity
+      type: question
+      criterion_key: artifact.support.asset_manifest.identity
+      text: Does every text, image, audio, map, and support asset have a stable ID?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.asset_manifest.version
+      type: question
+      criterion_key: artifact.support.asset_manifest.version
+      text: Are versions, branches, parents, and approval status recorded?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.asset_manifest.source
+      type: question
+      criterion_key: artifact.support.asset_manifest.source
+      text: Are source files, prompts, models, settings, and licenses recorded where relevant?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.asset_manifest.links
+      type: question
+      criterion_key: artifact.support.asset_manifest.links
+      text: Are assets linked to characters, locations, scenes, chapters, and timeline states?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.asset_manifest.technical
+      type: question
+      criterion_key: artifact.support.asset_manifest.technical
+      text: Are paths, hashes, dimensions, duration, formats, and metadata recorded?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.asset_manifest.authority
+      type: question
+      criterion_key: artifact.support.asset_manifest.authority
+      text: Is the canonical or selected asset distinguishable from candidates and deprecated versions?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.asset_manifest.missing
+      type: question
+      criterion_key: artifact.support.asset_manifest.missing
+      text: Are missing, stale, and conflicting assets detectable?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - wu_et_al_2025_writingbench
+  - cho_et_al_2026_bineval
+  notes: []
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: artifact.support.character_sheet
+  version: 1
+  title: Character sheet
+  kind: support_artifact
+  description: Evaluates usefulness, specificity, internal consistency, behavioral implications, arc potential,
+    relationships, voice cues, and distinction between characters.
+  origin: user_inventory_refined
+  owner_domains:
+  - support.character_sheet
+  artifact_types:
+  - planning_artifact
+  - reference_artifact
+  valid_scopes:
+  - any
+  activation: Attach when character sheet is relevant to the active artifact or operation.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: artifact.support.character_sheet.quality
+    type: group
+    title: Character sheet checks
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: artifact.support.character_sheet.specificity
+      type: question
+      criterion_key: artifact.support.character_sheet.specificity
+      text: Does the sheet contain specific, distinguishing information rather than generic trait lists?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.character_sheet.consistency
+      type: question
+      criterion_key: artifact.support.character_sheet.consistency
+      text: Are facts, ages, relationships, abilities, and history internally consistent?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.character_sheet.behavior
+      type: question
+      criterion_key: artifact.support.character_sheet.behavior
+      text: Do traits and motives imply observable behavior, choices, language, and attention?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.character_sheet.agency
+      type: question
+      criterion_key: artifact.support.character_sheet.agency
+      text: Does the character possess goals, strategies, and capacities for consequential choice?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.character_sheet.contradiction
+      type: question
+      criterion_key: artifact.support.character_sheet.contradiction
+      text: Does the sheet include productive contradictions, pressures, blind spots, or competing loyalties?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.character_sheet.arc
+      type: question
+      criterion_key: artifact.support.character_sheet.arc
+      text: Does it identify plausible change, resistance, and pressure points?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.character_sheet.relationships
+      type: question
+      criterion_key: artifact.support.character_sheet.relationships
+      text: Are key relationships represented as dynamic states rather than labels?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.character_sheet.voice
+      type: question
+      criterion_key: artifact.support.character_sheet.voice
+      text: Does it provide usable cues for voice without reducing the character to catchphrases?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.character_sheet.utility
+      type: question
+      criterion_key: artifact.support.character_sheet.utility
+      text: Can a drafting model use the sheet to make scene-level decisions?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - cho_et_al_2026_bineval
+  - zhang_et_al_2026_rubricbench
+  notes:
+  - Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+  - YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+    labels.
+  source_description: Evaluates usefulness, specificity, internal consistency, behavioral implications, arc potential,
+    relationships, voice cues, and distinction between characters.
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: artifact.support.glossary_and_pronunciation_lexicon
+  version: 1
+  title: Glossary and pronunciation lexicon
+  kind: support_artifact
+  description: Research-informed binary rubric for glossary and pronunciation lexicon.
+  origin: research_expansion
+  owner_domains:
+  - support.glossary_and_pronunciation_lexicon
+  artifact_types:
+  - planning_artifact
+  - reference_artifact
+  valid_scopes:
+  - artifact
+  - project
+  activation: Attach when glossary and pronunciation lexicon is the active form, asset, or evaluation concern.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: artifact.support.glossary_and_pronunciation_lexicon.quality
+    type: group
+    title: Glossary and pronunciation lexicon checks
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: artifact.support.glossary_and_pronunciation_lexicon.terms
+      type: question
+      criterion_key: artifact.support.glossary_and_pronunciation_lexicon.terms
+      text: Does it include every active invented, technical, cultural, or potentially ambiguous term?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.glossary_and_pronunciation_lexicon.definitions
+      type: question
+      criterion_key: artifact.support.glossary_and_pronunciation_lexicon.definitions
+      text: Are definitions concise, accurate, and project-specific?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.glossary_and_pronunciation_lexicon.pronunciation
+      type: question
+      criterion_key: artifact.support.glossary_and_pronunciation_lexicon.pronunciation
+      text: Are pronunciation, stress, dialect, and approved variants recorded where relevant?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.glossary_and_pronunciation_lexicon.usage
+      type: question
+      criterion_key: artifact.support.glossary_and_pronunciation_lexicon.usage
+      text: Are capitalization, plurality, inflection, and usage examples included where needed?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.glossary_and_pronunciation_lexicon.canon
+      type: question
+      criterion_key: artifact.support.glossary_and_pronunciation_lexicon.canon
+      text: Are entries consistent with world and manuscript canon?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.glossary_and_pronunciation_lexicon.provenance
+      type: question
+      criterion_key: artifact.support.glossary_and_pronunciation_lexicon.provenance
+      text: Are source and authority status recorded?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.glossary_and_pronunciation_lexicon.machine
+      type: question
+      criterion_key: artifact.support.glossary_and_pronunciation_lexicon.machine
+      text: Is the structure machine-readable and stable for prompting and TTS?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - wu_et_al_2025_writingbench
+  - cho_et_al_2026_bineval
+  notes: []
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: artifact.support.illustration_brief
+  version: 1
+  title: Illustration brief
+  kind: support_artifact
+  description: Research-informed binary rubric for illustration brief.
+  origin: research_expansion
+  owner_domains:
+  - support.illustration_brief
+  artifact_types:
+  - planning_artifact
+  - reference_artifact
+  valid_scopes:
+  - artifact
+  - project
+  activation: Attach when illustration brief is the active form, asset, or evaluation concern.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: artifact.support.illustration_brief.quality
+    type: group
+    title: Illustration brief checks
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: artifact.support.illustration_brief.beat
+      type: question
+      criterion_key: artifact.support.illustration_brief.beat
+      text: Does the brief identify the exact narrative beat and source passage?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.illustration_brief.subjects
+      type: question
+      criterion_key: artifact.support.illustration_brief.subjects
+      text: Does it specify required characters, appearances, action, relationships, and states?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.illustration_brief.setting
+      type: question
+      criterion_key: artifact.support.illustration_brief.setting
+      text: Does it specify location, time, weather, props, and continuity anchors?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.illustration_brief.composition
+      type: question
+      criterion_key: artifact.support.illustration_brief.composition
+      text: Does it specify shot, framing, focus, aspect ratio, and intended use?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.illustration_brief.style
+      type: question
+      criterion_key: artifact.support.illustration_brief.style
+      text: Does it specify visual style, palette, medium, and reference assets?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.illustration_brief.avoid
+      type: question
+      criterion_key: artifact.support.illustration_brief.avoid
+      text: Does it list likely model failure modes and forbidden deviations?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.illustration_brief.provenance
+      type: question
+      criterion_key: artifact.support.illustration_brief.provenance
+      text: Are all brief facts traceable to canon or explicit creative direction?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - wu_et_al_2025_writingbench
+  - cho_et_al_2026_bineval
+  notes: []
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: artifact.support.logline
+  version: 1
+  title: Logline
+  kind: support_artifact
+  description: Evaluates clarity, protagonist, objective, opposition, stakes, distinctiveness, and compression without
+    overspecifying the entire plot.
+  origin: user_inventory_refined
+  owner_domains:
+  - support.logline
+  artifact_types:
+  - planning_artifact
+  - reference_artifact
+  valid_scopes:
+  - any
+  activation: Attach when logline is relevant to the active artifact or operation.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: artifact.support.logline.quality
+    type: group
+    title: Logline checks
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: artifact.support.logline.protagonist
+      type: question
+      criterion_key: artifact.support.logline.protagonist
+      text: Does the logline identify the central protagonist or agent?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: hard_gate
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.logline.objective
+      type: question
+      criterion_key: artifact.support.logline.objective
+      text: Does it identify the protagonist's central objective, need, or task?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.logline.opposition
+      type: question
+      criterion_key: artifact.support.logline.opposition
+      text: Does it identify the principal opposing force, obstacle, or complication?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.logline.stakes
+      type: question
+      criterion_key: artifact.support.logline.stakes
+      text: Does it make the important stakes or consequence legible?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.logline.distinctiveness
+      type: question
+      criterion_key: artifact.support.logline.distinctiveness
+      text: Does it communicate what distinguishes this work from generic examples of its genre?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.logline.compression
+      type: question
+      criterion_key: artifact.support.logline.compression
+      text: Is it concise enough to function as a logline without becoming vague?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.logline.accuracy
+      type: question
+      criterion_key: artifact.support.logline.accuracy
+      text: Does it represent the actual project rather than a more marketable but misleading version?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - cho_et_al_2026_bineval
+  - zhang_et_al_2026_rubricbench
+  notes:
+  - Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+  - YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+    labels.
+  source_description: Evaluates clarity, protagonist, objective, opposition, stakes, distinctiveness, and compression
+    without overspecifying the entire plot.
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: artifact.support.narration_direction_sheet
+  version: 1
+  title: Narration direction sheet
+  kind: support_artifact
+  description: Research-informed binary rubric for narration direction sheet.
+  origin: research_expansion
+  owner_domains:
+  - support.narration_direction_sheet
+  artifact_types:
+  - planning_artifact
+  - reference_artifact
+  valid_scopes:
+  - artifact
+  - project
+  activation: Attach when narration direction sheet is the active form, asset, or evaluation concern.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: artifact.support.narration_direction_sheet.quality
+    type: group
+    title: Narration direction sheet checks
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: artifact.support.narration_direction_sheet.text
+      type: question
+      criterion_key: artifact.support.narration_direction_sheet.text
+      text: Does the sheet link to the approved text and version?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.narration_direction_sheet.casting
+      type: question
+      criterion_key: artifact.support.narration_direction_sheet.casting
+      text: Does it specify narrator and character voice profiles?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.narration_direction_sheet.pronunciation
+      type: question
+      criterion_key: artifact.support.narration_direction_sheet.pronunciation
+      text: Does it include a pronunciation lexicon for names and special terms?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.narration_direction_sheet.prosody
+      type: question
+      criterion_key: artifact.support.narration_direction_sheet.prosody
+      text: Does it specify pace, intensity, emotional movement, emphasis, and pause guidance at useful granularity?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.narration_direction_sheet.characters
+      type: question
+      criterion_key: artifact.support.narration_direction_sheet.characters
+      text: Does it distinguish character voices without relying on stereotypes?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.narration_direction_sheet.technical
+      type: question
+      criterion_key: artifact.support.narration_direction_sheet.technical
+      text: Does it specify file, mastering, segmentation, and metadata requirements?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.narration_direction_sheet.flexibility
+      type: question
+      criterion_key: artifact.support.narration_direction_sheet.flexibility
+      text: Does it leave room for performance rather than micromanaging every word?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - wu_et_al_2025_writingbench
+  - cho_et_al_2026_bineval
+  notes: []
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: artifact.support.outline
+  version: 1
+  title: Outline
+  kind: support_artifact
+  description: Uses the coarse, medium, or fine-detail procedure rubric described below. It must be judged as a
+    planning instrument, not as prose.
+  origin: user_inventory_refined
+  owner_domains:
+  - support.outline
+  artifact_types:
+  - planning_artifact
+  - reference_artifact
+  valid_scopes:
+  - any
+  activation: Attach when outline is relevant to the active artifact or operation.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: artifact.support.outline.quality
+    type: group
+    title: Outline checks
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: artifact.support.outline.instrument
+      type: question
+      criterion_key: artifact.support.outline.instrument
+      text: Does the outline function as a usable planning instrument rather than polished prose or a vague summary?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.outline.level
+      type: question
+      criterion_key: artifact.support.outline.level
+      text: Is its granularity appropriate to the requested coarse, medium, or fine level?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.outline.causality
+      type: question
+      criterion_key: artifact.support.outline.causality
+      text: Does it make major causal relationships and dependencies visible?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.outline.state
+      type: question
+      criterion_key: artifact.support.outline.state
+      text: Does it track relevant starting and resulting states?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.outline.arcs
+      type: question
+      criterion_key: artifact.support.outline.arcs
+      text: Does it show the movement of central arcs at the chosen granularity?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.outline.gaps
+      type: question
+      criterion_key: artifact.support.outline.gaps
+      text: Does it expose unresolved decisions and uncertainties rather than conceal them with false precision?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.outline.alignment
+      type: question
+      criterion_key: artifact.support.outline.alignment
+      text: Is it consistent with authoritative project material?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - cho_et_al_2026_bineval
+  - zhang_et_al_2026_rubricbench
+  notes:
+  - Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+  - YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+    labels.
+  source_description: Uses the coarse, medium, or fine-detail procedure rubric described below. It must be judged
+    as a planning instrument, not as prose.
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: artifact.support.pitch_query_blurb
+  version: 1
+  title: Pitch / query / blurb
+  kind: support_artifact
+  description: Evaluates promise, audience positioning, intrigue, accurate representation, tone, and distinction
+    between selling the work and summarizing it.
+  origin: user_inventory_refined
+  owner_domains:
+  - support.pitch_query_blurb
+  artifact_types:
+  - planning_artifact
+  - reference_artifact
+  valid_scopes:
+  - any
+  activation: Attach when pitch / query / blurb is relevant to the active artifact or operation.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: artifact.support.pitch_query_blurb.quality
+    type: group
+    title: Pitch / query / blurb checks
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: artifact.support.pitch_query_blurb.promise
+      type: question
+      criterion_key: artifact.support.pitch_query_blurb.promise
+      text: Does the text communicate a clear and appealing promise to the intended recipient?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.pitch_query_blurb.positioning
+      type: question
+      criterion_key: artifact.support.pitch_query_blurb.positioning
+      text: Does it position form, genre, audience, length, and comparable appeal accurately where required?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.pitch_query_blurb.intrigue
+      type: question
+      criterion_key: artifact.support.pitch_query_blurb.intrigue
+      text: Does it create curiosity without withholding the basic premise?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.pitch_query_blurb.tone
+      type: question
+      criterion_key: artifact.support.pitch_query_blurb.tone
+      text: Does its tone match the work and professional context?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.pitch_query_blurb.specificity
+      type: question
+      criterion_key: artifact.support.pitch_query_blurb.specificity
+      text: Does it use specific story material rather than generic praise language?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.pitch_query_blurb.accuracy
+      type: question
+      criterion_key: artifact.support.pitch_query_blurb.accuracy
+      text: Does it represent the work truthfully and avoid promising absent features?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.pitch_query_blurb.purpose
+      type: question
+      criterion_key: artifact.support.pitch_query_blurb.purpose
+      text: Does it distinguish selling copy from synopsis and provide the kind of information the operation requires?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - cho_et_al_2026_bineval
+  - zhang_et_al_2026_rubricbench
+  notes:
+  - Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+  - YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+    labels.
+  source_description: Evaluates promise, audience positioning, intrigue, accurate representation, tone, and distinction
+    between selling the work and summarizing it.
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: artifact.support.place_setting_sheet
+  version: 1
+  title: Place / setting sheet
+  kind: support_artifact
+  description: Evaluates spatial usability, sensory identity, history, social function, constraints, narrative opportunities,
+    and links to actual scenes.
+  origin: user_inventory_refined
+  owner_domains:
+  - support.place_setting_sheet
+  artifact_types:
+  - planning_artifact
+  - reference_artifact
+  valid_scopes:
+  - any
+  activation: Attach when place / setting sheet is relevant to the active artifact or operation.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: artifact.support.place_setting_sheet.quality
+    type: group
+    title: Place / setting sheet checks
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: artifact.support.place_setting_sheet.spatial
+      type: question
+      criterion_key: artifact.support.place_setting_sheet.spatial
+      text: Does the sheet make relevant spatial relationships usable for scene blocking and movement?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.place_setting_sheet.sensory
+      type: question
+      criterion_key: artifact.support.place_setting_sheet.sensory
+      text: Does the place have a distinguishing sensory identity?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.place_setting_sheet.history
+      type: question
+      criterion_key: artifact.support.place_setting_sheet.history
+      text: Does relevant history explain present conditions and tensions?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.place_setting_sheet.social
+      type: question
+      criterion_key: artifact.support.place_setting_sheet.social
+      text: Does it identify the place's social, economic, institutional, or ritual functions?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.place_setting_sheet.constraints
+      type: question
+      criterion_key: artifact.support.place_setting_sheet.constraints
+      text: Does it specify constraints, hazards, access, resources, and affordances?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.place_setting_sheet.opportunities
+      type: question
+      criterion_key: artifact.support.place_setting_sheet.opportunities
+      text: Does it generate concrete scene, conflict, discovery, and image opportunities?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.place_setting_sheet.links
+      type: question
+      criterion_key: artifact.support.place_setting_sheet.links
+      text: Is the place linked to actual characters, events, timelines, and manuscript units?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.place_setting_sheet.utility
+      type: question
+      criterion_key: artifact.support.place_setting_sheet.utility
+      text: Can it support continuity checks and drafting without requiring lore excavation?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - cho_et_al_2026_bineval
+  - zhang_et_al_2026_rubricbench
+  notes:
+  - Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+  - YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+    labels.
+  source_description: Evaluates spatial usability, sensory identity, history, social function, constraints, narrative
+    opportunities, and links to actual scenes.
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: artifact.support.premise_story_seed
+  version: 1
+  title: Premise / story seed
+  kind: support_artifact
+  description: Evaluates generative potential, specificity, conflict or pressure, implied character, extensibility,
+    and distinction from a mere topic.
+  origin: user_inventory_refined
+  owner_domains:
+  - support.premise_story_seed
+  artifact_types:
+  - planning_artifact
+  - reference_artifact
+  valid_scopes:
+  - any
+  activation: Attach when premise / story seed is relevant to the active artifact or operation.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: artifact.support.premise_story_seed.quality
+    type: group
+    title: Premise / story seed checks
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: artifact.support.premise_story_seed.specificity
+      type: question
+      criterion_key: artifact.support.premise_story_seed.specificity
+      text: Is the premise more specific than a broad topic or genre label?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.premise_story_seed.pressure
+      type: question
+      criterion_key: artifact.support.premise_story_seed.pressure
+      text: Does it imply a conflict, incompatibility, desire, question, or destabilizing condition?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.premise_story_seed.character
+      type: question
+      criterion_key: artifact.support.premise_story_seed.character
+      text: Does it imply a character, group, or perspective meaningfully affected by the premise?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.premise_story_seed.consequence
+      type: question
+      criterion_key: artifact.support.premise_story_seed.consequence
+      text: Does the premise generate plausible consequences rather than only an initial image?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.premise_story_seed.extensibility
+      type: question
+      criterion_key: artifact.support.premise_story_seed.extensibility
+      text: Can it sustain the intended length and medium?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.premise_story_seed.distinctiveness
+      type: question
+      criterion_key: artifact.support.premise_story_seed.distinctiveness
+      text: Does it contain a distinguishing angle, constraint, relationship, or implication?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.premise_story_seed.choice_space
+      type: question
+      criterion_key: artifact.support.premise_story_seed.choice_space
+      text: Does it permit multiple worthwhile developments rather than predetermine every beat?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - cho_et_al_2026_bineval
+  - zhang_et_al_2026_rubricbench
+  notes:
+  - Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+  - YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+    labels.
+  source_description: Evaluates generative potential, specificity, conflict or pressure, implied character, extensibility,
+    and distinction from a mere topic.
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: artifact.support.project_decision_log
+  version: 1
+  title: Project decision log
+  kind: support_artifact
+  description: Research-informed binary rubric for project decision log.
+  origin: research_expansion
+  owner_domains:
+  - support.project_decision_log
+  artifact_types:
+  - planning_artifact
+  - reference_artifact
+  valid_scopes:
+  - artifact
+  - project
+  activation: Attach when project decision log is the active form, asset, or evaluation concern.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: artifact.support.project_decision_log.quality
+    type: group
+    title: Project decision log checks
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: artifact.support.project_decision_log.decision
+      type: question
+      criterion_key: artifact.support.project_decision_log.decision
+      text: Is each decision stated unambiguously?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.project_decision_log.date
+      type: question
+      criterion_key: artifact.support.project_decision_log.date
+      text: Are date, author, and project branch recorded?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.project_decision_log.reason
+      type: question
+      criterion_key: artifact.support.project_decision_log.reason
+      text: Is the reason and intended effect recorded?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.project_decision_log.alternatives
+      type: question
+      criterion_key: artifact.support.project_decision_log.alternatives
+      text: Are rejected or deferred alternatives linked rather than erased?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.project_decision_log.impact
+      type: question
+      criterion_key: artifact.support.project_decision_log.impact
+      text: Are affected artifacts, sheets, timeline entries, and assets identified?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.project_decision_log.authority
+      type: question
+      criterion_key: artifact.support.project_decision_log.authority
+      text: Is supersession and current authority explicit?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.project_decision_log.machine
+      type: question
+      criterion_key: artifact.support.project_decision_log.machine
+      text: Can the active decision set be retrieved reliably by software and models?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - wu_et_al_2025_writingbench
+  - cho_et_al_2026_bineval
+  notes: []
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: artifact.support.project_style_guide
+  version: 1
+  title: Project style guide
+  kind: support_artifact
+  description: Research-informed binary rubric for project style guide.
+  origin: research_expansion
+  owner_domains:
+  - support.project_style_guide
+  artifact_types:
+  - planning_artifact
+  - reference_artifact
+  valid_scopes:
+  - artifact
+  - project
+  activation: Attach when project style guide is the active form, asset, or evaluation concern.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: artifact.support.project_style_guide.quality
+    type: group
+    title: Project style guide checks
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: artifact.support.project_style_guide.evidence
+      type: question
+      criterion_key: artifact.support.project_style_guide.evidence
+      text: Are style rules derived from approved project samples and explicit decisions?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.project_style_guide.features
+      type: question
+      criterion_key: artifact.support.project_style_guide.features
+      text: Does the guide cover voice, POV, distance, tense, syntax, diction, imagery, dialogue, exposition, rhythm,
+        and formatting as relevant?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.project_style_guide.examples
+      type: question
+      criterion_key: artifact.support.project_style_guide.examples
+      text: Does each important rule include positive and negative project-specific examples?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.project_style_guide.variation
+      type: question
+      criterion_key: artifact.support.project_style_guide.variation
+      text: Does it define allowed variation by character, mode, intensity, and artifact type?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.project_style_guide.priority
+      type: question
+      criterion_key: artifact.support.project_style_guide.priority
+      text: Does it distinguish hard invariants from preferences and tendencies?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.project_style_guide.usable
+      type: question
+      criterion_key: artifact.support.project_style_guide.usable
+      text: Can a model apply the guide without copying phrases or homogenizing the work?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.project_style_guide.version
+      type: question
+      criterion_key: artifact.support.project_style_guide.version
+      text: Is it versioned and linked to authoritative samples?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - wu_et_al_2025_writingbench
+  - cho_et_al_2026_bineval
+  notes: []
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: artifact.support.relationship_faction_item_sheet
+  version: 1
+  title: Relationship / faction / item sheet
+  kind: support_artifact
+  description: Evaluates state, history, tensions, goals, dependencies, asymmetries, change potential, and relevance
+    to the active narrative.
+  origin: user_inventory_refined
+  owner_domains:
+  - support.relationship_faction_item_sheet
+  artifact_types:
+  - planning_artifact
+  - reference_artifact
+  valid_scopes:
+  - any
+  activation: Attach when relationship / faction / item sheet is relevant to the active artifact or operation.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: artifact.support.relationship_faction_item_sheet.quality
+    type: group
+    title: Relationship / faction / item sheet checks
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: artifact.support.relationship_faction_item_sheet.current_state
+      type: question
+      criterion_key: artifact.support.relationship_faction_item_sheet.current_state
+      text: Does the sheet clearly record the current state at a known point in the timeline?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.relationship_faction_item_sheet.history
+      type: question
+      criterion_key: artifact.support.relationship_faction_item_sheet.history
+      text: Does it record the relevant history that produced the current state?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.relationship_faction_item_sheet.goals
+      type: question
+      criterion_key: artifact.support.relationship_faction_item_sheet.goals
+      text: Are the involved actors' goals and interests specific?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.relationship_faction_item_sheet.asymmetry
+      type: question
+      criterion_key: artifact.support.relationship_faction_item_sheet.asymmetry
+      text: Does it capture asymmetries of knowledge, power, affection, obligation, access, or value?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.relationship_faction_item_sheet.tensions
+      type: question
+      criterion_key: artifact.support.relationship_faction_item_sheet.tensions
+      text: Are active tensions and pressure points identifiable?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.relationship_faction_item_sheet.dependencies
+      type: question
+      criterion_key: artifact.support.relationship_faction_item_sheet.dependencies
+      text: Are dependencies and consequences of change recorded?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.relationship_faction_item_sheet.change
+      type: question
+      criterion_key: artifact.support.relationship_faction_item_sheet.change
+      text: Does the sheet identify plausible trajectories or trigger conditions?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.relationship_faction_item_sheet.relevance
+      type: question
+      criterion_key: artifact.support.relationship_faction_item_sheet.relevance
+      text: Is the information linked to active narrative units and decisions?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - cho_et_al_2026_bineval
+  - zhang_et_al_2026_rubricbench
+  notes:
+  - Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+  - YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+    labels.
+  source_description: Evaluates state, history, tensions, goals, dependencies, asymmetries, change potential, and
+    relevance to the active narrative.
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: artifact.support.research_brief_or_dossier
+  version: 1
+  title: Research brief or dossier
+  kind: support_artifact
+  description: Evaluates source quality, relevance, factual accuracy, uncertainty, synthesis, citations, and direct
+    usefulness to the writing task.
+  origin: user_inventory_refined
+  owner_domains:
+  - support.research_brief_or_dossier
+  artifact_types:
+  - planning_artifact
+  - reference_artifact
+  valid_scopes:
+  - any
+  activation: Attach when research brief or dossier is relevant to the active artifact or operation.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: artifact.support.research_brief_or_dossier.quality
+    type: group
+    title: Research brief or dossier checks
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: artifact.support.research_brief_or_dossier.sources
+      type: question
+      criterion_key: artifact.support.research_brief_or_dossier.sources
+      text: Are sources sufficiently authoritative and appropriate for the question?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.research_brief_or_dossier.accuracy
+      type: question
+      criterion_key: artifact.support.research_brief_or_dossier.accuracy
+      text: Are factual claims accurately represented?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.research_brief_or_dossier.relevance
+      type: question
+      criterion_key: artifact.support.research_brief_or_dossier.relevance
+      text: Does the dossier prioritize information that changes writing decisions?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.research_brief_or_dossier.synthesis
+      type: question
+      criterion_key: artifact.support.research_brief_or_dossier.synthesis
+      text: Does it synthesize sources rather than stack summaries?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.research_brief_or_dossier.uncertainty
+      type: question
+      criterion_key: artifact.support.research_brief_or_dossier.uncertainty
+      text: Are uncertainty, dispute, scope limits, and inference clearly marked?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.research_brief_or_dossier.citations
+      type: question
+      criterion_key: artifact.support.research_brief_or_dossier.citations
+      text: Can claims be traced to citations or source IDs?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.research_brief_or_dossier.application
+      type: question
+      criterion_key: artifact.support.research_brief_or_dossier.application
+      text: Does it translate research into narrative constraints, opportunities, vocabulary, and likely failure
+        risks?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.research_brief_or_dossier.organization
+      type: question
+      criterion_key: artifact.support.research_brief_or_dossier.organization
+      text: Can a writer or model retrieve the needed fact efficiently?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - cho_et_al_2026_bineval
+  - zhang_et_al_2026_rubricbench
+  notes:
+  - Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+  - YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+    labels.
+  source_description: Evaluates source quality, relevance, factual accuracy, uncertainty, synthesis, citations,
+    and direct usefulness to the writing task.
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: artifact.support.revision_plan
+  version: 1
+  title: Revision plan
+  kind: support_artifact
+  description: Evaluates diagnosis, priorities, dependencies, proposed changes, expected effects, preservation constraints,
+    and executable sequencing.
+  origin: user_inventory_refined
+  owner_domains:
+  - support.revision_plan
+  artifact_types:
+  - planning_artifact
+  - reference_artifact
+  valid_scopes:
+  - any
+  activation: Attach when revision plan is relevant to the active artifact or operation.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: artifact.support.revision_plan.quality
+    type: group
+    title: Revision plan checks
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: artifact.support.revision_plan.diagnosis
+      type: question
+      criterion_key: artifact.support.revision_plan.diagnosis
+      text: Does the plan identify causes and patterns rather than only symptoms?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.revision_plan.priorities
+      type: question
+      criterion_key: artifact.support.revision_plan.priorities
+      text: Are issues prioritized by impact, dependency, and revision phase?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.revision_plan.actions
+      type: question
+      criterion_key: artifact.support.revision_plan.actions
+      text: Are proposed changes concrete enough to execute?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.revision_plan.dependencies
+      type: question
+      criterion_key: artifact.support.revision_plan.dependencies
+      text: Does the plan order changes so later work is not invalidated by unresolved higher-level problems?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.revision_plan.effects
+      type: question
+      criterion_key: artifact.support.revision_plan.effects
+      text: Does it predict intended benefits and possible side effects?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.revision_plan.preservation
+      type: question
+      criterion_key: artifact.support.revision_plan.preservation
+      text: Does it state what must be preserved?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.revision_plan.scope
+      type: question
+      criterion_key: artifact.support.revision_plan.scope
+      text: Is each action assigned to the appropriate units and revision level?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.revision_plan.verification
+      type: question
+      criterion_key: artifact.support.revision_plan.verification
+      text: Does it define how completion and success will be checked?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - cho_et_al_2026_bineval
+  - zhang_et_al_2026_rubricbench
+  notes:
+  - Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+  - YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+    labels.
+  source_description: Evaluates diagnosis, priorities, dependencies, proposed changes, expected effects, preservation
+    constraints, and executable sequencing.
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: artifact.support.scene_card_or_beat_sheet
+  version: 1
+  title: Scene card or beat sheet
+  kind: support_artifact
+  description: Research-informed binary rubric for scene card or beat sheet.
+  origin: research_expansion
+  owner_domains:
+  - support.scene_card_or_beat_sheet
+  artifact_types:
+  - planning_artifact
+  - reference_artifact
+  valid_scopes:
+  - artifact
+  - project
+  activation: Attach when scene card or beat sheet is the active form, asset, or evaluation concern.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: artifact.support.scene_card_or_beat_sheet.quality
+    type: group
+    title: Scene card or beat sheet checks
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: artifact.support.scene_card_or_beat_sheet.identity
+      type: question
+      criterion_key: artifact.support.scene_card_or_beat_sheet.identity
+      text: Does the card identify scene, branch, POV, time, place, and participants?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.scene_card_or_beat_sheet.state
+      type: question
+      criterion_key: artifact.support.scene_card_or_beat_sheet.state
+      text: Does it record starting and ending states?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.scene_card_or_beat_sheet.objective
+      type: question
+      criterion_key: artifact.support.scene_card_or_beat_sheet.objective
+      text: Does it record local objectives, pressure, and scene function?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.scene_card_or_beat_sheet.beats
+      type: question
+      criterion_key: artifact.support.scene_card_or_beat_sheet.beats
+      text: Does it list causally ordered beats and a turn?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.scene_card_or_beat_sheet.continuity
+      type: question
+      criterion_key: artifact.support.scene_card_or_beat_sheet.continuity
+      text: Does it record relevant knowledge, objects, injuries, promises, and setup/payoff obligations?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.scene_card_or_beat_sheet.links
+      type: question
+      criterion_key: artifact.support.scene_card_or_beat_sheet.links
+      text: Does it link to neighboring scenes, outline, sheets, research, and assets?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.scene_card_or_beat_sheet.usable
+      type: question
+      criterion_key: artifact.support.scene_card_or_beat_sheet.usable
+      text: Is it compact enough for repeated interactive use?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - wu_et_al_2025_writingbench
+  - cho_et_al_2026_bineval
+  notes: []
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: artifact.support.synopsis
+  version: 1
+  title: Synopsis
+  kind: support_artifact
+  description: Evaluates accurate compression, causal clarity, inclusion of major turns and ending, character arc,
+    and proportionate coverage.
+  origin: user_inventory_refined
+  owner_domains:
+  - support.synopsis
+  artifact_types:
+  - planning_artifact
+  - reference_artifact
+  valid_scopes:
+  - any
+  activation: Attach when synopsis is relevant to the active artifact or operation.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: artifact.support.synopsis.quality
+    type: group
+    title: Synopsis checks
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: artifact.support.synopsis.coverage
+      type: question
+      criterion_key: artifact.support.synopsis.coverage
+      text: Does the synopsis include the major causal turns, climax, and ending required by its purpose?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.synopsis.causality
+      type: question
+      criterion_key: artifact.support.synopsis.causality
+      text: Can the reader see why major events lead to one another?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.synopsis.arc
+      type: question
+      criterion_key: artifact.support.synopsis.arc
+      text: Does it show the central character or relationship arc?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.synopsis.proportion
+      type: question
+      criterion_key: artifact.support.synopsis.proportion
+      text: Is space allocated in proportion to narrative importance?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.synopsis.clarity
+      type: question
+      criterion_key: artifact.support.synopsis.clarity
+      text: Can the synopsis be followed without consulting the manuscript?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.synopsis.accuracy
+      type: question
+      criterion_key: artifact.support.synopsis.accuracy
+      text: Does it accurately represent the current manuscript version?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.synopsis.no_teaser
+      type: question
+      criterion_key: artifact.support.synopsis.no_teaser
+      text: Does it avoid withholding the ending or substituting promotional suspense when a full synopsis is requested?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - cho_et_al_2026_bineval
+  - zhang_et_al_2026_rubricbench
+  notes:
+  - Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+  - YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+    labels.
+  source_description: Evaluates accurate compression, causal clarity, inclusion of major turns and ending, character
+    arc, and proportionate coverage.
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: artifact.support.timeline_and_canon_ledger
+  version: 1
+  title: Timeline and canon ledger
+  kind: support_artifact
+  description: Evaluates chronology, state changes, source provenance, uncertainty, contradiction handling, and
+    machine-readable usefulness.
+  origin: user_inventory_refined
+  owner_domains:
+  - support.timeline_and_canon_ledger
+  artifact_types:
+  - planning_artifact
+  - reference_artifact
+  valid_scopes:
+  - any
+  activation: Attach when timeline and canon ledger is relevant to the active artifact or operation.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: artifact.support.timeline_and_canon_ledger.quality
+    type: group
+    title: Timeline and canon ledger checks
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: artifact.support.timeline_and_canon_ledger.chronology
+      type: question
+      criterion_key: artifact.support.timeline_and_canon_ledger.chronology
+      text: Are dated and relative events ordered consistently?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.timeline_and_canon_ledger.state_changes
+      type: question
+      criterion_key: artifact.support.timeline_and_canon_ledger.state_changes
+      text: Does each relevant event update character, relationship, item, place, and world state?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.timeline_and_canon_ledger.provenance
+      type: question
+      criterion_key: artifact.support.timeline_and_canon_ledger.provenance
+      text: Can each canon entry be traced to a source, user decision, or manuscript unit?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.timeline_and_canon_ledger.uncertainty
+      type: question
+      criterion_key: artifact.support.timeline_and_canon_ledger.uncertainty
+      text: Are approximate dates, disputed events, and inferred ordering explicitly marked?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.timeline_and_canon_ledger.conflicts
+      type: question
+      criterion_key: artifact.support.timeline_and_canon_ledger.conflicts
+      text: Are contradictions recorded and routed for resolution rather than silently overwritten?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.timeline_and_canon_ledger.supersession
+      type: question
+      criterion_key: artifact.support.timeline_and_canon_ledger.supersession
+      text: Are superseded entries retained with version status while current canon is clear?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.timeline_and_canon_ledger.queryability
+      type: question
+      criterion_key: artifact.support.timeline_and_canon_ledger.queryability
+      text: Is the ledger structured for machine retrieval, filtering, and continuity checking?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.timeline_and_canon_ledger.coverage
+      type: question
+      criterion_key: artifact.support.timeline_and_canon_ledger.coverage
+      text: Does it include the state information needed by active narrative operations?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - cho_et_al_2026_bineval
+  - zhang_et_al_2026_rubricbench
+  notes:
+  - Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+  - YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+    labels.
+  source_description: Evaluates chronology, state changes, source provenance, uncertainty, contradiction handling,
+    and machine-readable usefulness.
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: artifact.support.world_bible
+  version: 1
+  title: World bible
+  kind: support_artifact
+  description: Evaluates rule clarity, consequences, consistency, coverage, cross-references, and whether details
+    support stories rather than merely accumulate lore.
+  origin: user_inventory_refined
+  owner_domains:
+  - support.world_bible
+  artifact_types:
+  - planning_artifact
+  - reference_artifact
+  valid_scopes:
+  - any
+  activation: Attach when world bible is relevant to the active artifact or operation.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: artifact.support.world_bible.quality
+    type: group
+    title: World bible checks
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: artifact.support.world_bible.rules
+      type: question
+      criterion_key: artifact.support.world_bible.rules
+      text: Are world rules stated clearly enough to apply in writing and evaluation?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.world_bible.consequences
+      type: question
+      criterion_key: artifact.support.world_bible.consequences
+      text: Does the bible record costs, constraints, exceptions, and consequences rather than only capabilities?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.world_bible.consistency
+      type: question
+      criterion_key: artifact.support.world_bible.consistency
+      text: Are entries mutually consistent or explicitly versioned when they conflict?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.world_bible.coverage
+      type: question
+      criterion_key: artifact.support.world_bible.coverage
+      text: Does it cover the systems needed by the active narrative without pretending to exhaustive completeness?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.world_bible.crossrefs
+      type: question
+      criterion_key: artifact.support.world_bible.crossrefs
+      text: Are related people, places, events, terms, and sources cross-referenced?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.world_bible.provenance
+      type: question
+      criterion_key: artifact.support.world_bible.provenance
+      text: Can canon facts be traced to decisions, sources, or manuscript evidence?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.world_bible.story_utility
+      type: question
+      criterion_key: artifact.support.world_bible.story_utility
+      text: Do entries identify narrative consequences and uses rather than accumulate inert lore?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: artifact.support.world_bible.machine_use
+      type: question
+      criterion_key: artifact.support.world_bible.machine_use
+      text: Is the structure consistent and machine-readable enough for context retrieval?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - cho_et_al_2026_bineval
+  - zhang_et_al_2026_rubricbench
+  notes:
+  - Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+  - YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+    labels.
+  source_description: Evaluates rule clarity, consequences, consistency, coverage, cross-references, and whether
+    details support stories rather than merely accumulate lore.

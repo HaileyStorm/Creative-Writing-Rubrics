@@ -1,0 +1,129 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: op.draft.pov_tense_register_or_form_conversion
+version: 1
+title: POV, tense, register, or form conversion
+kind: procedure
+description: Evaluates requested transformation, preservation of facts and intent, repair of all dependent language,
+  and avoidance of hybrid artifacts.
+origin: user_inventory_refined
+owner_domains:
+- procedure.pov_tense_register_or_form_conversion
+artifact_types:
+- any
+valid_scopes:
+- operation
+activation: Attach when pov, tense, register, or form conversion is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: op.draft.pov_tense_register_or_form_conversion.quality
+  type: group
+  title: POV, tense, register, or form conversion checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: op.draft.pov_tense_register_or_form_conversion.target
+    type: question
+    criterion_key: op.draft.pov_tense_register_or_form_conversion.target
+    text: Is the requested target POV, tense, register, or form applied consistently?
+    pass_answer: 'YES'
+    weight: 2.5
+    question_type: hard_gate
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.draft.pov_tense_register_or_form_conversion.facts
+    type: question
+    criterion_key: op.draft.pov_tense_register_or_form_conversion.facts
+    text: Are source facts, actions, sequence, and intended meaning preserved?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.draft.pov_tense_register_or_form_conversion.dependencies
+    type: question
+    criterion_key: op.draft.pov_tense_register_or_form_conversion.dependencies
+    text: Are pronouns, temporal markers, knowledge access, syntax, dialogue mechanics, and paragraphing repaired
+      throughout?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.draft.pov_tense_register_or_form_conversion.voice
+    type: question
+    criterion_key: op.draft.pov_tense_register_or_form_conversion.voice
+    text: Does the conversion create a coherent target voice rather than a mechanically transformed source?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.draft.pov_tense_register_or_form_conversion.effects
+    type: question
+    criterion_key: op.draft.pov_tense_register_or_form_conversion.effects
+    text: Are changes in distance, emphasis, pacing, and implication handled intentionally?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.draft.pov_tense_register_or_form_conversion.no_hybrid
+    type: question
+    criterion_key: op.draft.pov_tense_register_or_form_conversion.no_hybrid
+    text: Is the result free of leftover source-form artifacts and accidental hybrids?
+    pass_answer: 'YES'
+    weight: 2.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- wu_et_al_2025_writingbench
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates requested transformation, preservation of facts and intent, repair of all dependent
+  language, and avoidance of hybrid artifacts.

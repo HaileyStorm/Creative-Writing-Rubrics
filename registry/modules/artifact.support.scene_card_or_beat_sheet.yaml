@@ -1,0 +1,136 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: artifact.support.scene_card_or_beat_sheet
+version: 1
+title: Scene card or beat sheet
+kind: support_artifact
+description: Research-informed binary rubric for scene card or beat sheet.
+origin: research_expansion
+owner_domains:
+- support.scene_card_or_beat_sheet
+artifact_types:
+- planning_artifact
+- reference_artifact
+valid_scopes:
+- artifact
+- project
+activation: Attach when scene card or beat sheet is the active form, asset, or evaluation concern.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: artifact.support.scene_card_or_beat_sheet.quality
+  type: group
+  title: Scene card or beat sheet checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: artifact.support.scene_card_or_beat_sheet.identity
+    type: question
+    criterion_key: artifact.support.scene_card_or_beat_sheet.identity
+    text: Does the card identify scene, branch, POV, time, place, and participants?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.scene_card_or_beat_sheet.state
+    type: question
+    criterion_key: artifact.support.scene_card_or_beat_sheet.state
+    text: Does it record starting and ending states?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.scene_card_or_beat_sheet.objective
+    type: question
+    criterion_key: artifact.support.scene_card_or_beat_sheet.objective
+    text: Does it record local objectives, pressure, and scene function?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.scene_card_or_beat_sheet.beats
+    type: question
+    criterion_key: artifact.support.scene_card_or_beat_sheet.beats
+    text: Does it list causally ordered beats and a turn?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.scene_card_or_beat_sheet.continuity
+    type: question
+    criterion_key: artifact.support.scene_card_or_beat_sheet.continuity
+    text: Does it record relevant knowledge, objects, injuries, promises, and setup/payoff obligations?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.scene_card_or_beat_sheet.links
+    type: question
+    criterion_key: artifact.support.scene_card_or_beat_sheet.links
+    text: Does it link to neighboring scenes, outline, sheets, research, and assets?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.scene_card_or_beat_sheet.usable
+    type: question
+    criterion_key: artifact.support.scene_card_or_beat_sheet.usable
+    text: Is it compact enough for repeated interactive use?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- wu_et_al_2025_writingbench
+- cho_et_al_2026_bineval
+notes: []

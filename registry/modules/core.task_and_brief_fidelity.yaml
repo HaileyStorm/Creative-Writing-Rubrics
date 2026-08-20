@@ -1,0 +1,217 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: core.task_and_brief_fidelity
+version: 1
+title: Task and brief fidelity
+kind: base
+description: Checks whether the output actually performed the requested operation, used the requested source material,
+  respected explicit inclusions/exclusions, and followed required length, POV, tense, structure, formatting, and
+  degree of intervention. Hard requirements must be separated from artistic preferences.
+origin: user_inventory_refined
+owner_domains:
+- task_fidelity
+artifact_types:
+- any
+valid_scopes:
+- any
+activation: Attach to every substantive execution.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: core.task_and_brief_fidelity.quality
+  type: group
+  title: Task and brief fidelity
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: core.task_and_brief_fidelity.operation
+    type: question
+    criterion_key: core.task_and_brief_fidelity.operation
+    text: Does the output perform the requested operation rather than a neighboring or substituted task?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: hard_gate
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.task_and_brief_fidelity.sources
+    type: question
+    criterion_key: core.task_and_brief_fidelity.sources
+    text: Does the output use every source or reference that the brief makes mandatory?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: hard_gate
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.task_and_brief_fidelity.inclusions
+    type: question
+    criterion_key: core.task_and_brief_fidelity.inclusions
+    text: Does the output include every explicitly required element?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: hard_gate
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.task_and_brief_fidelity.exclusions
+    type: question
+    criterion_key: core.task_and_brief_fidelity.exclusions
+    text: Does the output omit every explicitly forbidden element?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: hard_gate
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.task_and_brief_fidelity.pov
+    type: question
+    criterion_key: core.task_and_brief_fidelity.pov
+    text: Does the output use the requested point of view where one was specified?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: hard_gate
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.task_and_brief_fidelity.tense
+    type: question
+    criterion_key: core.task_and_brief_fidelity.tense
+    text: Does the output use the requested tense where one was specified?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: hard_gate
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.task_and_brief_fidelity.structure
+    type: question
+    criterion_key: core.task_and_brief_fidelity.structure
+    text: Does the output follow the requested structure or organization?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: hard_gate
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.task_and_brief_fidelity.format
+    type: question
+    criterion_key: core.task_and_brief_fidelity.format
+    text: Does the output follow the requested delivery format?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: hard_gate
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.task_and_brief_fidelity.length_hard
+    type: question
+    criterion_key: core.task_and_brief_fidelity.length_hard
+    text: Does the output satisfy any explicit exact or bounded length requirement?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: hard_gate
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.task_and_brief_fidelity.intervention
+    type: question
+    criterion_key: core.task_and_brief_fidelity.intervention
+    text: Does the degree of invention or alteration stay within the authorization given by the user?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.task_and_brief_fidelity.completion_flag
+    type: question
+    criterion_key: core.task_and_brief_fidelity.completion_flag
+    text: Is an excerpt, fragment, partial draft, or intentionally unfinished artifact clearly identified as such?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.task_and_brief_fidelity.no_meta_substitution
+    type: question
+    criterion_key: core.task_and_brief_fidelity.no_meta_substitution
+    text: Does the output provide the requested artifact without replacing it with process talk, disclaimers, or
+      an explanation of what could have been produced?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- vaezi_rezaei_2018
+- carey_davidow_williams_2022
+- gomez_rodriguez_williams_2023
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Checks whether the output actually performed the requested operation, used the requested source
+  material, respected explicit inclusions/exclusions, and followed required length, POV, tense, structure, formatting,
+  and degree of intervention. Hard requirements must be separated from artistic preferences.

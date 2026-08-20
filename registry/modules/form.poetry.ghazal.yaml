@@ -1,0 +1,161 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: form.poetry.ghazal
+version: 1
+title: Ghazal
+kind: artifact_form
+description: Research-informed binary rubric for ghazal.
+origin: research_expansion
+owner_domains:
+- form.poetry.ghazal
+artifact_types:
+- poetry
+valid_scopes:
+- line
+- stanza
+- poem
+- collection
+activation: Attach when ghazal is the active form, asset, or evaluation concern.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: form.poetry.ghazal.quality
+  type: group
+  title: Ghazal checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: form.poetry.ghazal.couplets
+    type: question
+    criterion_key: form.poetry.ghazal.couplets
+    text: Is the poem composed of autonomous but resonant couplets?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: hard_gate
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.ghazal.matla
+    type: question
+    criterion_key: form.poetry.ghazal.matla
+    text: Does the opening couplet establish qafia and radif according to the selected convention?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: hard_gate
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.ghazal.radif
+    type: question
+    criterion_key: form.poetry.ghazal.radif
+    text: Is the radif repeated consistently at the end of the appropriate lines?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: hard_gate
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.ghazal.qafia
+    type: question
+    criterion_key: form.poetry.ghazal.qafia
+    text: Does the qafia rhyme immediately before the radif?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: hard_gate
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.ghazal.autonomy
+    type: question
+    criterion_key: form.poetry.ghazal.autonomy
+    text: Can each couplet stand as a distinct thought or image without breaking the poem's larger field?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.ghazal.resonance
+    type: question
+    criterion_key: form.poetry.ghazal.resonance
+    text: Do couplets create associative, emotional, or thematic resonance across discontinuity?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.ghazal.maqta
+    type: question
+    criterion_key: form.poetry.ghazal.maqta
+    text: If a signature couplet or takhallus is used, does it deepen the poem rather than merely satisfy convention?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.ghazal.no_forcing
+    type: question
+    criterion_key: form.poetry.ghazal.no_forcing
+    text: Do rhyme and refrain avoid forcing syntax or trivial repetition?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- li_et_al_2026_poemetric
+- vaezi_rezaei_2018
+notes: []
+profile_overrides:
+  default_profile: traditional
+  profiles:
+    traditional:
+      unit: autonomous couplets
+      features:
+      - matla
+      - qafia
+      - radif
+      maqta: optional/profile-dependent

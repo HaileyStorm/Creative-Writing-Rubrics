@@ -1,0 +1,156 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: op.ideation.brainstorm_idea_set_quality
+version: 1
+title: Brainstorm / idea-set quality
+kind: procedure
+description: Evaluates range, relevance, usefulness, distinctness, generative potential, and avoidance of cosmetic
+  variations of one idea. The set matters in addition to each item.
+origin: user_inventory_refined
+owner_domains:
+- procedure.brainstorm_idea_set_quality
+artifact_types:
+- any
+valid_scopes:
+- operation
+activation: Attach when brainstorm / idea-set quality is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: op.ideation.brainstorm_idea_set_quality.quality
+  type: group
+  title: Brainstorm / idea-set quality checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: op.ideation.brainstorm_idea_set_quality.relevance
+    type: question
+    criterion_key: op.ideation.brainstorm_idea_set_quality.relevance
+    text: Does every candidate address the requested creative problem?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ideation.brainstorm_idea_set_quality.range
+    type: question
+    criterion_key: op.ideation.brainstorm_idea_set_quality.range
+    text: Does the set span meaningfully different premises, mechanisms, tones, structures, or implications?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ideation.brainstorm_idea_set_quality.distinct
+    type: question
+    criterion_key: op.ideation.brainstorm_idea_set_quality.distinct
+    text: Are candidates substantively distinct rather than cosmetic rewrites?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ideation.brainstorm_idea_set_quality.specific
+    type: question
+    criterion_key: op.ideation.brainstorm_idea_set_quality.specific
+    text: Is each idea specific enough to evaluate or develop?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ideation.brainstorm_idea_set_quality.fertile
+    type: question
+    criterion_key: op.ideation.brainstorm_idea_set_quality.fertile
+    text: Does each serious candidate imply characters, pressures, consequences, images, or further decisions?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ideation.brainstorm_idea_set_quality.fit
+    type: question
+    criterion_key: op.ideation.brainstorm_idea_set_quality.fit
+    text: Do candidates respect project canon, audience, genre, and stated exclusions?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ideation.brainstorm_idea_set_quality.surprise
+    type: question
+    criterion_key: op.ideation.brainstorm_idea_set_quality.surprise
+    text: Does the set contain at least one apt direction that is not an obvious default completion?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ideation.brainstorm_idea_set_quality.usable
+    type: question
+    criterion_key: op.ideation.brainstorm_idea_set_quality.usable
+    text: Are the candidates presented in a form that supports selection, combination, or refinement?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- wu_et_al_2025_writingbench
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates range, relevance, usefulness, distinctness, generative potential, and avoidance of
+  cosmetic variations of one idea. The set matters in addition to each item.

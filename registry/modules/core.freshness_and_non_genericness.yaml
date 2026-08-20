@@ -1,0 +1,162 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: core.freshness_and_non_genericness
+version: 1
+title: Freshness and non-genericness
+kind: base
+description: Detects clichés, stock scene beats, interchangeable phrasing, default metaphors, “LLM average prose,”
+  generic emotional summaries, and predictable elaboration. It should reward apt originality rather than novelty
+  for its own sake.
+origin: user_inventory_refined
+owner_domains:
+- freshness
+artifact_types:
+- any
+valid_scopes:
+- any
+activation: Attach to every substantive execution.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: core.freshness_and_non_genericness.quality
+  type: group
+  title: Freshness and non-genericness
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: core.freshness_and_non_genericness.no_cliche
+    type: question
+    criterion_key: core.freshness_and_non_genericness.no_cliche
+    text: Does the artifact avoid unrenewed verbal, imagistic, emotional, and situational clichés?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.freshness_and_non_genericness.no_stock_beats
+    type: question
+    criterion_key: core.freshness_and_non_genericness.no_stock_beats
+    text: Does it avoid relying on stock beats whose sequence and treatment are interchangeable with many other
+      outputs?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.freshness_and_non_genericness.no_llm_phrasing
+    type: question
+    criterion_key: core.freshness_and_non_genericness.no_llm_phrasing
+    text: Does it avoid generic LLM phrasing, rhetorical templates, and overfamiliar contrast constructions?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.freshness_and_non_genericness.no_default_metaphors
+    type: question
+    criterion_key: core.freshness_and_non_genericness.no_default_metaphors
+    text: Does it avoid default metaphors and personifications that add no specific perception?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.freshness_and_non_genericness.no_emotion_summary
+    type: question
+    criterion_key: core.freshness_and_non_genericness.no_emotion_summary
+    text: Does it avoid generic emotional summaries that substitute labels for lived or dramatized experience?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.freshness_and_non_genericness.unpredictable_specificity
+    type: question
+    criterion_key: core.freshness_and_non_genericness.unpredictable_specificity
+    text: Does it contain apt particulars, turns, or associations that could not be freely swapped into an unrelated
+      piece?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.freshness_and_non_genericness.no_forced_novelty
+    type: question
+    criterion_key: core.freshness_and_non_genericness.no_forced_novelty
+    text: Does it avoid novelty-seeking that sacrifices clarity, plausibility, tone, or purpose?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.freshness_and_non_genericness.no_rare_word_chasing
+    type: question
+    criterion_key: core.freshness_and_non_genericness.no_rare_word_chasing
+    text: Does it avoid conspicuous rare-word or thesaurus chasing unsupported by voice and context?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- vaezi_rezaei_2018
+- carey_davidow_williams_2022
+- gomez_rodriguez_williams_2023
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Detects clichés, stock scene beats, interchangeable phrasing, default metaphors, “LLM average
+  prose,” generic emotional summaries, and predictable elaboration. It should reward apt originality rather than
+  novelty for its own sake.

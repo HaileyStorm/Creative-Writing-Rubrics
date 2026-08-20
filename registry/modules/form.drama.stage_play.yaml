@@ -1,0 +1,156 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: form.drama.stage_play
+version: 1
+title: Stage play
+kind: artifact_form
+description: Adds stageability, spatial continuity, actor opportunities, live timing, entrances/exits, set constraints,
+  dramatic action, and audience experience.
+origin: user_inventory_refined
+owner_domains:
+- form.stage_play
+artifact_types:
+- dramatic_writing
+valid_scopes:
+- any
+activation: Attach when stage play is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: form.drama.stage_play.quality
+  type: group
+  title: Stage play checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: form.drama.stage_play.stageability
+    type: question
+    criterion_key: form.drama.stage_play.stageability
+    text: Can the action be staged intelligibly under the selected theatrical assumptions?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.drama.stage_play.space
+    type: question
+    criterion_key: form.drama.stage_play.space
+    text: Is spatial use clear and dramatically meaningful?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.drama.stage_play.dramatic_action
+    type: question
+    criterion_key: form.drama.stage_play.dramatic_action
+    text: Do characters pursue playable objectives through speech and action?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.drama.stage_play.actor_opportunity
+    type: question
+    criterion_key: form.drama.stage_play.actor_opportunity
+    text: Does the text provide actors with specific shifts, tactics, relationships, and subtext?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.drama.stage_play.timing
+    type: question
+    criterion_key: form.drama.stage_play.timing
+    text: Do pauses, entrances, exits, reveals, and scene changes support live timing?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.drama.stage_play.constraints
+    type: question
+    criterion_key: form.drama.stage_play.constraints
+    text: Are set, costume, prop, and technical demands proportionate to the intended production context?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.drama.stage_play.audience
+    type: question
+    criterion_key: form.drama.stage_play.audience
+    text: Does the work account for what a live audience can perceive in real time?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.drama.stage_play.no_novelization
+    type: question
+    criterion_key: form.drama.stage_play.no_novelization
+    text: Does it avoid using stage directions as a substitute for novelistic narration?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- fein_et_al_2026_litbench
+- wu_et_al_2025_writingbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Adds stageability, spatial continuity, actor opportunities, live timing, entrances/exits, set
+  constraints, dramatic action, and audience experience.

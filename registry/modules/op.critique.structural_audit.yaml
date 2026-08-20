@@ -1,0 +1,156 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: op.critique.structural_audit
+version: 1
+title: Structural audit
+kind: procedure
+description: Evaluates order, proportion, repeated scene functions, missing transitions, arc distribution, subplot
+  load, opening/ending relation, and unused setup.
+origin: user_inventory_refined
+owner_domains:
+- procedure.structural_audit
+artifact_types:
+- any
+valid_scopes:
+- operation
+activation: Attach when structural audit is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: op.critique.structural_audit.quality
+  type: group
+  title: Structural audit checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: op.critique.structural_audit.map
+    type: question
+    criterion_key: op.critique.structural_audit.map
+    text: Does the audit map units and their narrative functions?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.critique.structural_audit.order
+    type: question
+    criterion_key: op.critique.structural_audit.order
+    text: Does it evaluate whether current order maximizes causality, comprehension, tension, and thematic movement?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.critique.structural_audit.proportion
+    type: question
+    criterion_key: op.critique.structural_audit.proportion
+    text: Does it identify sections that are overbuilt, underbuilt, or structurally misplaced?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.critique.structural_audit.repetition
+    type: question
+    criterion_key: op.critique.structural_audit.repetition
+    text: Does it identify repeated scene functions, revelations, conflicts, and emotional beats?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.critique.structural_audit.transitions
+    type: question
+    criterion_key: op.critique.structural_audit.transitions
+    text: Does it identify missing or inefficient transitions?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.critique.structural_audit.arcs
+    type: question
+    criterion_key: op.critique.structural_audit.arcs
+    text: Does it evaluate distribution of character arcs, subplots, setups, and payoffs?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.critique.structural_audit.opening_ending
+    type: question
+    criterion_key: op.critique.structural_audit.opening_ending
+    text: Does it compare the work's opening promise with its ending fulfillment or transformation?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.critique.structural_audit.repair
+    type: question
+    criterion_key: op.critique.structural_audit.repair
+    text: Are proposed structural changes sequenced and checked for downstream consequences?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- wu_et_al_2025_writingbench
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates order, proportion, repeated scene functions, missing transitions, arc distribution,
+  subplot load, opening/ending relation, and unused setup.

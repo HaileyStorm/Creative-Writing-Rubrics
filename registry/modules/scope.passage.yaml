@@ -1,0 +1,123 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: scope.passage
+version: 1
+title: Passage or extract scope overlay
+kind: scope_overlay
+description: For several paragraphs or an excerpt detached from a larger unit; separates visible defects, possible
+  outside causes, and undecidable questions.
+origin: user_inventory_refined
+owner_domains:
+- scope.passage
+artifact_types:
+- any
+valid_scopes:
+- passage
+activation: Attach when the evaluated scope is passage.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: scope.passage.quality
+  type: group
+  title: Scope handling
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: scope.passage.local
+    type: question
+    criterion_key: scope.passage.local
+    text: Does the evaluation assess all material craft visible inside the extract?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: scope.passage.context
+    type: question
+    criterion_key: scope.passage.context
+    text: Does it use supplied surrounding context where needed?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: scope.passage.visible
+    type: question
+    criterion_key: scope.passage.visible
+    text: Are defects visible inside the extract identified as local evidence rather than assumed whole-work patterns?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: scope.passage.external
+    type: question
+    criterion_key: scope.passage.external
+    text: Are problems that may originate outside the extract labeled as contextual hypotheses?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: scope.passage.undecidable
+    type: question
+    criterion_key: scope.passage.undecidable
+    text: Are questions that cannot be decided without more context marked CANNOT_ASSESS?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: scope.passage.status
+    type: question
+    criterion_key: scope.passage.status
+    text: If the passage is explicitly an excerpt or fragment, is it exempt from whole-work completeness requirements?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: diagnostic
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions:
+- action: minimum_neighboring_units
+  value: 1
+research_basis:
+- cho_et_al_2026_bineval
+- longjudgebench_2026
+notes: []

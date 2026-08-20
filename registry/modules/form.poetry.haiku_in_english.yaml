@@ -1,0 +1,472 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: form.poetry.haiku_in_english
+version: 1
+title: Haiku in English
+kind: artifact_form
+description: Handles the intended syllabic pattern, seasonal reference or allusion, cut/caesura, juxtaposition,
+  immediacy, compression, and the relation between literal observation and resonance. Multi-stanza variants must
+  apply stanza-level form while allowing some required material to work across the whole.
+origin: user_inventory_refined
+owner_domains:
+- form.haiku_in_english
+artifact_types:
+- poetry
+valid_scopes:
+- line
+- stanza
+- poem
+- collection
+activation: Attach when haiku in english is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: form.poetry.haiku_in_english.form
+  type: group
+  title: Selected English-haiku form profile
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: form.poetry.haiku_in_english.three_lines
+    type: question
+    criterion_key: form.poetry.haiku_in_english.three_lines
+    text: Does each haiku stanza contain exactly three lines when the selected profile requires three-line presentation?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: hard_gate
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.haiku_in_english.five_first
+    type: question
+    criterion_key: form.poetry.haiku_in_english.five_first
+    text: Under the strict 5–7–5 profile, does line one contain exactly five English syllables?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: hard_gate
+    severity: material
+    applies_when: The selected profile is strict_english_575.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.haiku_in_english.seven_second
+    type: question
+    criterion_key: form.poetry.haiku_in_english.seven_second
+    text: Under the strict 5–7–5 profile, does line two contain exactly seven English syllables?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: hard_gate
+    severity: material
+    applies_when: The selected profile is strict_english_575.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.haiku_in_english.five_third
+    type: question
+    criterion_key: form.poetry.haiku_in_english.five_third
+    text: Under the strict 5–7–5 profile, does line three contain exactly five English syllables?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: hard_gate
+    severity: material
+    applies_when: The selected profile is strict_english_575.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.haiku_in_english.contemporary_length
+    type: question
+    criterion_key: form.poetry.haiku_in_english.contemporary_length
+    text: Under a contemporary English-haiku profile, is the poem compressed to a breath-length form without padding
+      toward seventeen syllables?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The selected profile is contemporary_english_haiku.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.haiku_in_english.stanza_pattern
+    type: question
+    criterion_key: form.poetry.haiku_in_english.stanza_pattern
+    text: In a multi-stanza work, does every stanza follow the selected line and syllabic profile?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: hard_gate
+    severity: material
+    applies_when: The artifact contains more than one haiku stanza.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.haiku_in_english.natural_syntax
+    type: question
+    criterion_key: form.poetry.haiku_in_english.natural_syntax
+    text: Does adherence to syllable or line constraints preserve natural English stress, syntax, and diction?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.haiku_in_english.unrhymed
+    type: question
+    criterion_key: form.poetry.haiku_in_english.unrhymed
+    text: Does the poem avoid conspicuous end-rhyme unless rhyme is an explicit, functional variation?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+- id: form.poetry.haiku_in_english.season
+  type: group
+  title: Seasonal reference or allusion
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: form.poetry.haiku_in_english.kigo_presence
+    type: question
+    criterion_key: form.poetry.haiku_in_english.kigo_presence
+    text: Does the poem or permitted stanza sequence contain a seasonal word, phrase, image, metaphor, or cultural
+      allusion at the required scope?
+    pass_answer: 'YES'
+    weight: 2.5
+    question_type: hard_gate
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.haiku_in_english.kigo_legible
+    type: question
+    criterion_key: form.poetry.haiku_in_english.kigo_legible
+    text: Can an attentive reader plausibly connect the seasonal reference to a season without external explanation
+      beyond ordinary cultural or natural knowledge?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.haiku_in_english.kigo_function
+    type: question
+    criterion_key: form.poetry.haiku_in_english.kigo_function
+    text: Does the seasonal reference contribute atmosphere, time, cultural memory, transience, contrast, or resonance
+      rather than serve as a checked label?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.haiku_in_english.sequence_scope
+    type: question
+    criterion_key: form.poetry.haiku_in_english.sequence_scope
+    text: When a sequence-level kigo is permitted, does its influence remain perceptible across the stanzas that
+      lack an individual seasonal term?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The artifact is a multi-stanza sequence and the profile permits one seasonal reference across
+      the sequence.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+- id: form.poetry.haiku_in_english.cut_juxtaposition
+  type: group
+  title: Cut, caesura, and juxtaposition
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: form.poetry.haiku_in_english.cut_presence
+    type: question
+    criterion_key: form.poetry.haiku_in_english.cut_presence
+    text: Does each required stanza contain a perceptible cut, caesura, pivot, or syntactic break?
+    pass_answer: 'YES'
+    weight: 2.5
+    question_type: hard_gate
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.haiku_in_english.two_parts
+    type: question
+    criterion_key: form.poetry.haiku_in_english.two_parts
+    text: Does the cut create two distinguishable perceptual, imagistic, grammatical, or temporal parts?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.haiku_in_english.juxtaposition
+    type: question
+    criterion_key: form.poetry.haiku_in_english.juxtaposition
+    text: Does the relation between the two parts create discovery, tension, contrast, echo, or enlargement rather
+      than merely list two observations?
+    pass_answer: 'YES'
+    weight: 2.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.haiku_in_english.cut_means
+    type: question
+    criterion_key: form.poetry.haiku_in_english.cut_means
+    text: Is the cut carried effectively through punctuation, spacing, syntax, lineation, or semantic turn rather
+      than requiring a Japanese kireji token?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+- id: form.poetry.haiku_in_english.haiku_quality
+  type: group
+  title: Observation, immediacy, compression, and resonance
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: form.poetry.haiku_in_english.immediacy
+    type: question
+    criterion_key: form.poetry.haiku_in_english.immediacy
+    text: Does the haiku present an immediate perception, event, or encounter rather than explain a generalized
+      idea?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.haiku_in_english.specificity
+    type: question
+    criterion_key: form.poetry.haiku_in_english.specificity
+    text: Are the selected images concrete and particular enough to be apprehended?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.haiku_in_english.economy
+    type: question
+    criterion_key: form.poetry.haiku_in_english.economy
+    text: Does every word perform necessary perceptual, rhythmic, grammatical, seasonal, or relational work?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.haiku_in_english.opening_space
+    type: question
+    criterion_key: form.poetry.haiku_in_english.opening_space
+    text: Does the poem leave interpretive or emotional space rather than state its meaning or moral?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.haiku_in_english.resonance
+    type: question
+    criterion_key: form.poetry.haiku_in_english.resonance
+    text: Does the literal observation generate resonance beyond its small surface event?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.haiku_in_english.no_cliche
+    type: question
+    criterion_key: form.poetry.haiku_in_english.no_cliche
+    text: Does the poem avoid stock moon, blossom, dew, silence, shadow, and transience imagery unless made newly
+      specific?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.haiku_in_english.no_explanation
+    type: question
+    criterion_key: form.poetry.haiku_in_english.no_explanation
+    text: Does it avoid explanatory abstraction, explicit emotion labels, and summary after the image?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+- id: form.poetry.haiku_in_english.sequence
+  type: group
+  title: Multi-stanza sequence integrity
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: form.poetry.haiku_in_english.independent_stanzas
+    type: question
+    criterion_key: form.poetry.haiku_in_english.independent_stanzas
+    text: Can each stanza function as a haiku-sized perceptual unit rather than as an arbitrarily sliced longer
+      sentence?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The artifact contains multiple stanzas.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.haiku_in_english.sequence_progression
+    type: question
+    criterion_key: form.poetry.haiku_in_english.sequence_progression
+    text: Do the stanzas create variation, progression, echo, or seasonal movement rather than duplicate one another?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The artifact contains multiple stanzas.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.haiku_in_english.sequence_unity
+    type: question
+    criterion_key: form.poetry.haiku_in_english.sequence_unity
+    text: Does the sequence form a coherent whole without erasing the integrity of each stanza?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The artifact contains multiple stanzas.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- li_et_al_2026_poemetric
+- vaezi_rezaei_2018
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Handles the intended syllabic pattern, seasonal reference or allusion, cut/caesura, juxtaposition,
+  immediacy, compression, and the relation between literal observation and resonance. Multi-stanza variants must
+  apply stanza-level form while allowing some required material to work across the whole.
+profile_overrides:
+  default_profile: contemporary_english_haiku
+  profiles:
+    strict_english_575:
+      lines_per_stanza: 3
+      syllables:
+      - 5
+      - 7
+      - 5
+      seasonal_reference_scope: whole_poem
+      cut_scope: each_stanza
+      multi_stanza_policy: each stanza follows 5-7-5; kigo may be whole-sequence only when explicitly enabled
+    contemporary_english_haiku:
+      lines_per_stanza: 3
+      syllables: not fixed; generally shorter than seventeen English syllables
+      seasonal_reference_scope: whole_poem
+      cut_scope: each_stanza
+      multi_stanza_policy: each stanza remains haiku-sized; shared seasonal field may span the sequence
+  pronunciation_policy: Use supplied dialect/lexicon first; otherwise report ambiguous syllable counts rather than
+    guessing silently.

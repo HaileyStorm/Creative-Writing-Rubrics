@@ -1,0 +1,183 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: craft.narrative.continuity_and_canon_integrity
+version: 1
+title: Continuity and canon integrity
+kind: craft
+description: Checks characters, relationships, facts, terminology, world rules, chronology, unresolved threads,
+  prior promises, knowledge states, injuries, possessions, and other persistent state.
+origin: user_inventory_refined
+owner_domains:
+- narrative.continuity_and_canon_integrity
+artifact_types:
+- prose_fiction
+- creative_nonfiction
+- dramatic_writing
+- narrative_poetry
+- interactive_fiction
+valid_scopes:
+- beat
+- scene
+- chapter
+- sequence
+- act
+- manuscript
+- series
+activation: Attach when continuity and canon integrity is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: craft.narrative.continuity_and_canon_integrity.quality
+  type: group
+  title: Continuity and canon integrity
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: craft.narrative.continuity_and_canon_integrity.characters
+    type: question
+    criterion_key: craft.narrative.continuity_and_canon_integrity.characters
+    text: Are character identities, traits, relationships, abilities, and histories consistent with authoritative
+      sources?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.continuity_and_canon_integrity.knowledge
+    type: question
+    criterion_key: craft.narrative.continuity_and_canon_integrity.knowledge
+    text: Does each character know only what they have learned or could reasonably infer?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.continuity_and_canon_integrity.facts
+    type: question
+    criterion_key: craft.narrative.continuity_and_canon_integrity.facts
+    text: Are established facts and terminology preserved?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.continuity_and_canon_integrity.world
+    type: question
+    criterion_key: craft.narrative.continuity_and_canon_integrity.world
+    text: Are world rules and institutional facts preserved?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.continuity_and_canon_integrity.chronology
+    type: question
+    criterion_key: craft.narrative.continuity_and_canon_integrity.chronology
+    text: Is chronology consistent with the canon timeline?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.continuity_and_canon_integrity.state
+    type: question
+    criterion_key: craft.narrative.continuity_and_canon_integrity.state
+    text: Are injuries, possessions, locations, commitments, and other persistent states correctly carried forward?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.continuity_and_canon_integrity.threads
+    type: question
+    criterion_key: craft.narrative.continuity_and_canon_integrity.threads
+    text: Are unresolved threads and prior promises tracked without accidental disappearance or premature closure?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.continuity_and_canon_integrity.supersession
+    type: question
+    criterion_key: craft.narrative.continuity_and_canon_integrity.supersession
+    text: When a later source supersedes an earlier one, does the artifact apply the current version?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.continuity_and_canon_integrity.conflicts
+    type: question
+    criterion_key: craft.narrative.continuity_and_canon_integrity.conflicts
+    text: Are unresolved canon conflicts surfaced rather than silently harmonized?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- vaezi_rezaei_2018
+- carey_davidow_williams_2022
+- gomez_rodriguez_williams_2023
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Checks characters, relationships, facts, terminology, world rules, chronology, unresolved threads,
+  prior promises, knowledge states, injuries, possessions, and other persistent state.

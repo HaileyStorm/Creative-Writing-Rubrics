@@ -1,0 +1,122 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: scope.poetry_stanza
+version: 1
+title: Poetry stanza scope overlay
+kind: scope_overlay
+description: For one stanza; evaluates internal development, pattern, turn, and relation to surrounding stanzas.
+origin: user_inventory_refined
+owner_domains:
+- scope.poetry_stanza
+artifact_types:
+- any
+valid_scopes:
+- poetry_stanza
+activation: Attach when the evaluated scope is poetry_stanza.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: scope.poetry_stanza.quality
+  type: group
+  title: Scope handling
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: scope.poetry_stanza.unit
+    type: question
+    criterion_key: scope.poetry_stanza.unit
+    text: Does the stanza function as an intentional unit?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: scope.poetry_stanza.development
+    type: question
+    criterion_key: scope.poetry_stanza.development
+    text: Does it develop or transform image, thought, emotion, or rhetoric internally?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: scope.poetry_stanza.pattern
+    type: question
+    criterion_key: scope.poetry_stanza.pattern
+    text: Are its sound, syntax, lineation, and repetition patterns controlled?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: scope.poetry_stanza.turn
+    type: question
+    criterion_key: scope.poetry_stanza.turn
+    text: Does it contain or prepare a meaningful turn where appropriate?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: scope.poetry_stanza.relation
+    type: question
+    criterion_key: scope.poetry_stanza.relation
+    text: Does it relate productively to neighboring stanzas?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: scope.poetry_stanza.limits
+    type: question
+    criterion_key: scope.poetry_stanza.limits
+    text: Does the judge avoid demanding whole-poem resolution from one stanza?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: diagnostic
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions:
+- action: minimum_neighboring_units
+  value: 1
+research_basis:
+- cho_et_al_2026_bineval
+- longjudgebench_2026
+notes: []

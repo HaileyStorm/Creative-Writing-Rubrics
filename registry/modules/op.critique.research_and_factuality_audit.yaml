@@ -1,0 +1,170 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: op.critique.research_and_factuality_audit
+version: 1
+title: Research and factuality audit
+kind: procedure
+description: Separates verified facts, plausible inference, fictional invention, disputed claims, unsupported statements,
+  and material that requires sourcing.
+origin: user_inventory_refined
+owner_domains:
+- procedure.research_and_factuality_audit
+artifact_types:
+- any
+valid_scopes:
+- operation
+activation: Attach when research and factuality audit is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: op.critique.research_and_factuality_audit.quality
+  type: group
+  title: Research and factuality audit checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: op.critique.research_and_factuality_audit.verified
+    type: question
+    criterion_key: op.critique.research_and_factuality_audit.verified
+    text: Are externally verifiable claims distinguished from fictional assertions?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.critique.research_and_factuality_audit.supported
+    type: question
+    criterion_key: op.critique.research_and_factuality_audit.supported
+    text: Are factual claims supported by appropriate sources or marked for verification?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.critique.research_and_factuality_audit.inference
+    type: question
+    criterion_key: op.critique.research_and_factuality_audit.inference
+    text: Are plausible inferences distinguished from directly supported facts?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.critique.research_and_factuality_audit.invention
+    type: question
+    criterion_key: op.critique.research_and_factuality_audit.invention
+    text: Is deliberate fictional invention identified where readers or collaborators could mistake it for fact?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.critique.research_and_factuality_audit.dispute
+    type: question
+    criterion_key: op.critique.research_and_factuality_audit.dispute
+    text: Are disputed claims and source disagreement represented accurately?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.critique.research_and_factuality_audit.uncertainty
+    type: question
+    criterion_key: op.critique.research_and_factuality_audit.uncertainty
+    text: Are uncertainty and missing evidence calibrated rather than concealed?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.critique.research_and_factuality_audit.currency
+    type: question
+    criterion_key: op.critique.research_and_factuality_audit.currency
+    text: Are time-sensitive facts checked against the required date?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.critique.research_and_factuality_audit.materiality
+    type: question
+    criterion_key: op.critique.research_and_factuality_audit.materiality
+    text: Does the audit prioritize errors that materially affect the artifact?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.critique.research_and_factuality_audit.provenance
+    type: question
+    criterion_key: op.critique.research_and_factuality_audit.provenance
+    text: Can each finding be traced to artifact evidence and source evidence?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- wu_et_al_2025_writingbench
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Separates verified facts, plausible inference, fictional invention, disputed claims, unsupported
+  statements, and material that requires sourcing.

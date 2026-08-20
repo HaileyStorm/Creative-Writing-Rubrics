@@ -1,0 +1,136 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: artifact.support.narration_direction_sheet
+version: 1
+title: Narration direction sheet
+kind: support_artifact
+description: Research-informed binary rubric for narration direction sheet.
+origin: research_expansion
+owner_domains:
+- support.narration_direction_sheet
+artifact_types:
+- planning_artifact
+- reference_artifact
+valid_scopes:
+- artifact
+- project
+activation: Attach when narration direction sheet is the active form, asset, or evaluation concern.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: artifact.support.narration_direction_sheet.quality
+  type: group
+  title: Narration direction sheet checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: artifact.support.narration_direction_sheet.text
+    type: question
+    criterion_key: artifact.support.narration_direction_sheet.text
+    text: Does the sheet link to the approved text and version?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.narration_direction_sheet.casting
+    type: question
+    criterion_key: artifact.support.narration_direction_sheet.casting
+    text: Does it specify narrator and character voice profiles?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.narration_direction_sheet.pronunciation
+    type: question
+    criterion_key: artifact.support.narration_direction_sheet.pronunciation
+    text: Does it include a pronunciation lexicon for names and special terms?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.narration_direction_sheet.prosody
+    type: question
+    criterion_key: artifact.support.narration_direction_sheet.prosody
+    text: Does it specify pace, intensity, emotional movement, emphasis, and pause guidance at useful granularity?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.narration_direction_sheet.characters
+    type: question
+    criterion_key: artifact.support.narration_direction_sheet.characters
+    text: Does it distinguish character voices without relying on stereotypes?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.narration_direction_sheet.technical
+    type: question
+    criterion_key: artifact.support.narration_direction_sheet.technical
+    text: Does it specify file, mastering, segmentation, and metadata requirements?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.narration_direction_sheet.flexibility
+    type: question
+    criterion_key: artifact.support.narration_direction_sheet.flexibility
+    text: Does it leave room for performance rather than micromanaging every word?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- wu_et_al_2025_writingbench
+- cho_et_al_2026_bineval
+notes: []

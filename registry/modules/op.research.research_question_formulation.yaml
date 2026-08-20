@@ -1,0 +1,142 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: op.research.research_question_formulation
+version: 1
+title: Research-question formulation
+kind: procedure
+description: Evaluates relevance to the writing decision, specificity, answerability, priority, and separation of
+  factual research from creative choice.
+origin: user_inventory_refined
+owner_domains:
+- procedure.research_question_formulation
+artifact_types:
+- any
+valid_scopes:
+- operation
+activation: Attach when research-question formulation is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: op.research.research_question_formulation.quality
+  type: group
+  title: Research-question formulation checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: op.research.research_question_formulation.decision
+    type: question
+    criterion_key: op.research.research_question_formulation.decision
+    text: Is the question tied to a concrete writing, worldbuilding, revision, or product decision?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.research.research_question_formulation.specific
+    type: question
+    criterion_key: op.research.research_question_formulation.specific
+    text: Is it specific enough to search and answer?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.research.research_question_formulation.scope
+    type: question
+    criterion_key: op.research.research_question_formulation.scope
+    text: Is its temporal, geographic, cultural, technical, and evidentiary scope explicit where needed?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.research.research_question_formulation.fact_choice
+    type: question
+    criterion_key: op.research.research_question_formulation.fact_choice
+    text: Does it distinguish factual uncertainty from a creative choice the author must make?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.research.research_question_formulation.priority
+    type: question
+    criterion_key: op.research.research_question_formulation.priority
+    text: Is its priority proportionate to its likely narrative impact?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.research.research_question_formulation.answerable
+    type: question
+    criterion_key: op.research.research_question_formulation.answerable
+    text: Can available sources reasonably answer it?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.research.research_question_formulation.no_trivia
+    type: question
+    criterion_key: op.research.research_question_formulation.no_trivia
+    text: Does it avoid research that is accurate but irrelevant to the active artifact?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- wu_et_al_2025_writingbench
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates relevance to the writing decision, specificity, answerability, priority, and separation
+  of factual research from creative choice.

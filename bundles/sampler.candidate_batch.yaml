@@ -1,0 +1,129 @@
+$schema: ../schema/hbq_bundle.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+bundle_id: sampler.candidate_batch
+version: 1
+title: Creative-sampler candidate batch
+description: Evaluates the quality distribution, diversity, productive divergence, closure, artifacts, and cost
+  of a generated batch.
+artifact_types:
+- candidate_set
+valid_scopes:
+- batch
+profile: {}
+module_ids:
+- core.task_and_brief_fidelity
+- sampler.single_sample_creative_quality
+- sampler.batch_diversity
+- op.select.candidate_set_coverage
+- sampler.productive_divergence
+- sampler.optionality_without_drift
+- sampler.freshness_gain
+- sampler.closure_and_commitment_preservation
+- sampler.sampler_artifact_audit
+- sampler.sampler_benefit_versus_cost
+- core.holistic_artistic_success
+- sampler.structure_aware_sampling_fit
+- sampler.model_specific_sampler_profile
+domains:
+- domain_id: task
+  title: Task and eligibility
+  points: 8.0
+  components:
+  - module_id: core.task_and_brief_fidelity
+    weight: 1.0
+  score_mode: weighted_binary_mean
+- domain_id: floor
+  title: Single-sample quality floor
+  points: 14.0
+  components:
+  - module_id: sampler.single_sample_creative_quality
+    weight: 1.0
+  score_mode: weighted_binary_mean
+- domain_id: diversity
+  title: Batch diversity
+  points: 18.0
+  components:
+  - module_id: sampler.batch_diversity
+    weight: 1.0
+  - module_id: op.select.candidate_set_coverage
+    weight: 1.0
+  score_mode: weighted_binary_mean
+- domain_id: divergence
+  title: Productive divergence
+  points: 16.0
+  components:
+  - module_id: sampler.productive_divergence
+    weight: 1.0
+  - module_id: sampler.optionality_without_drift
+    weight: 1.0
+  score_mode: weighted_binary_mean
+- domain_id: fresh
+  title: Freshness gain
+  points: 14.0
+  components:
+  - module_id: sampler.freshness_gain
+    weight: 1.0
+  score_mode: weighted_binary_mean
+- domain_id: closure
+  title: Closure and commitment
+  points: 12.0
+  components:
+  - module_id: sampler.closure_and_commitment_preservation
+    weight: 1.0
+  score_mode: weighted_binary_mean
+- domain_id: artifacts
+  title: Sampler artifact control
+  points: 8.0
+  components:
+  - module_id: sampler.sampler_artifact_audit
+    weight: 1.0
+  score_mode: weighted_binary_mean
+- domain_id: cost
+  title: Benefit versus cost
+  points: 6.0
+  components:
+  - module_id: sampler.sampler_benefit_versus_cost
+    weight: 1.0
+  score_mode: weighted_binary_mean
+- domain_id: holistic
+  title: Holistic batch value
+  points: 4.0
+  components:
+  - module_id: core.holistic_artistic_success
+    weight: 1.0
+  score_mode: weighted_binary_mean
+penalty_modules: []
+hard_gate_policy:
+  no_is_invalid: true
+  cannot_assess_is_unresolved: true
+  not_applicable_requires_condition_or_reason: true
+  hard_gates_are_reported_separately: true
+coverage_policy:
+  minimum_weighted_coverage: 0.86
+  below_threshold_status: PROVISIONAL
+  score_interval_required_when_unassessed: true
+  whole_work_claims_require_whole_work_evidence: true
+excerpt_and_incomplete_policy:
+  flagged_excerpt: Do not penalize absent whole-work completion. Mark unavailable whole-work criteria CANNOT_ASSESS
+    or NOT_APPLICABLE as appropriate.
+  unflagged_incomplete: Apply the bounded unflagged-incomplete penalty when the artifact is presented as complete
+    or partial status is omitted.
+  visible_local_defects: Score defects visible in the supplied extract normally.
+judge_policy:
+  artifact_assumed_ai_generated: true
+  strict_but_fair: true
+  no_glazing: true
+  judge_execution_not_intent: true
+  do_not_invent_defects: true
+  avoid_length_and_ornament_bias: true
+  brief_evidence_required: true
+  private_chain_of_thought_not_requested: true
+  verdict_states:
+  - 'YES'
+  - 'NO'
+  - NOT_APPLICABLE
+  - CANNOT_ASSESS
+  pairwise_finalists: false
+notes: []

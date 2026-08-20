@@ -1,0 +1,142 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: op.draft.compression
+version: 1
+title: Compression
+kind: procedure
+description: Evaluates preservation of essential events, voice, image, logic, and emotional movement while removing
+  redundancy or excess detail.
+origin: user_inventory_refined
+owner_domains:
+- procedure.compression
+artifact_types:
+- any
+valid_scopes:
+- operation
+activation: Attach when compression is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: op.draft.compression.quality
+  type: group
+  title: Compression checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: op.draft.compression.events
+    type: question
+    criterion_key: op.draft.compression.events
+    text: Does compression preserve every event and fact necessary for later causality?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.draft.compression.voice
+    type: question
+    criterion_key: op.draft.compression.voice
+    text: Does it preserve distinctive voice and character-specific language?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.draft.compression.emotion
+    type: question
+    criterion_key: op.draft.compression.emotion
+    text: Does it preserve the emotional and thematic movement of the source?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.draft.compression.image
+    type: question
+    criterion_key: op.draft.compression.image
+    text: Does it preserve or improve the strongest images and concrete anchors?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.draft.compression.logic
+    type: question
+    criterion_key: op.draft.compression.logic
+    text: Do remaining transitions and references still make sense?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.draft.compression.gain
+    type: question
+    criterion_key: op.draft.compression.gain
+    text: Does the compressed version produce a meaningful gain in pace, focus, or clarity?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.draft.compression.no_skeleton
+    type: question
+    criterion_key: op.draft.compression.no_skeleton
+    text: Does it avoid reducing the passage to summary-like plot skeleton or generic statements?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- wu_et_al_2025_writingbench
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates preservation of essential events, voice, image, logic, and emotional movement while
+  removing redundancy or excess detail.

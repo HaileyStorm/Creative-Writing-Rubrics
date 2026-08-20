@@ -1,0 +1,149 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: workflow.model_b_fast_generation_role_fitness
+version: 1
+title: Fast generator/screener role fitness
+kind: workflow
+description: Research-informed binary rubric for model b fast-generation role fitness.
+origin: user_inventory_refined
+owner_domains:
+- workflow.model_b_fast_generation_role_fitness
+artifact_types:
+- workflow_execution
+valid_scopes:
+- operation
+activation: Attach when model b fast-generation role fitness is the active form, asset, or evaluation concern.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: workflow.model_b_fast_generation_role_fitness.quality
+  type: group
+  title: Fast generator/screener role fitness checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: workflow.model_b_fast_generation_role_fitness.ideation
+    type: question
+    criterion_key: workflow.model_b_fast_generation_role_fitness.ideation
+    text: Does the model produce broad, relevant, non-duplicate ideation quickly?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: workflow.model_b_fast_generation_role_fitness.coarse
+    type: question
+    criterion_key: workflow.model_b_fast_generation_role_fitness.coarse
+    text: Does it produce useful coarse sheets and outlines?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: workflow.model_b_fast_generation_role_fitness.draft
+    type: question
+    criterion_key: workflow.model_b_fast_generation_role_fitness.draft
+    text: Does it draft effectively from detailed plans and constrained packets?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: workflow.model_b_fast_generation_role_fitness.candidates
+    type: question
+    criterion_key: workflow.model_b_fast_generation_role_fitness.candidates
+    text: Does it produce meaningful rewrite and alternative candidates?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: workflow.model_b_fast_generation_role_fitness.screen
+    type: question
+    criterion_key: workflow.model_b_fast_generation_role_fitness.screen
+    text: Can it perform reliable first-pass screening without pretending to full adjudication?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: workflow.model_b_fast_generation_role_fitness.diversity
+    type: question
+    criterion_key: workflow.model_b_fast_generation_role_fitness.diversity
+    text: Does it provide candidate diversity above the quality floor?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: workflow.model_b_fast_generation_role_fitness.latency
+    type: question
+    criterion_key: workflow.model_b_fast_generation_role_fitness.latency
+    text: Does it meet interactive latency and stable MTP requirements?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: workflow.model_b_fast_generation_role_fitness.role
+    type: question
+    criterion_key: workflow.model_b_fast_generation_role_fitness.role
+    text: Is it evaluated only on assigned fast-generation responsibilities unless explicitly expanded?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: diagnostic
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- wu_et_al_2025_writingbench
+- longjudgebench_2026
+notes: []

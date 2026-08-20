@@ -1,0 +1,174 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: form.prose.flash_fiction_drabble
+version: 1
+title: Flash fiction / drabble
+kind: artifact_form
+description: Emphasizes compression, implication, immediate orientation, high information density, a meaningful
+  turn, and an ending proportionate to the tiny form. Exact-length constraints may be hard gates.
+origin: user_inventory_refined
+owner_domains:
+- form.flash_fiction_drabble
+artifact_types:
+- prose_fiction
+valid_scopes:
+- complete_work
+- manuscript
+activation: Attach when flash fiction / drabble is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: form.prose.flash_fiction_drabble.quality
+  type: group
+  title: Flash fiction / drabble checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: form.prose.flash_fiction_drabble.length
+    type: question
+    criterion_key: form.prose.flash_fiction_drabble.length
+    text: Does the piece satisfy an exact word-count rule when the selected flash or drabble profile requires one?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: hard_gate
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.prose.flash_fiction_drabble.entry
+    type: question
+    criterion_key: form.prose.flash_fiction_drabble.entry
+    text: Does the piece establish its live situation, voice, or pressure with minimal preamble?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.prose.flash_fiction_drabble.density
+    type: question
+    criterion_key: form.prose.flash_fiction_drabble.density
+    text: Does each sentence perform more than one useful function where compression demands it?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.prose.flash_fiction_drabble.implication
+    type: question
+    criterion_key: form.prose.flash_fiction_drabble.implication
+    text: Does the piece imply a larger world, history, or consequence without explaining all of it?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.prose.flash_fiction_drabble.scope
+    type: question
+    criterion_key: form.prose.flash_fiction_drabble.scope
+    text: Is the selected event, perception, or change small enough to be developed at this length?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.prose.flash_fiction_drabble.turn
+    type: question
+    criterion_key: form.prose.flash_fiction_drabble.turn
+    text: Does the piece contain a meaningful turn, recognition, recontextualization, or changed state?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.prose.flash_fiction_drabble.ending
+    type: question
+    criterion_key: form.prose.flash_fiction_drabble.ending
+    text: Does the ending create impact proportionate to the tiny form without relying only on a gimmick twist?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.prose.flash_fiction_drabble.no_compression_damage
+    type: question
+    criterion_key: form.prose.flash_fiction_drabble.no_compression_damage
+    text: Does compression avoid making causality, reference, or emotional logic unintelligible?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- fein_et_al_2026_litbench
+- wu_et_al_2025_writingbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Emphasizes compression, implication, immediate orientation, high information density, a meaningful
+  turn, and an ending proportionate to the tiny form. Exact-length constraints may be hard gates.
+profile_overrides:
+  default_profile: flash_fiction
+  profiles:
+    drabble_100:
+      exact_words: 100
+    microfiction:
+      recommended_words:
+      - 1
+      - 300
+    flash_fiction:
+      recommended_words:
+      - 300
+      - 1500
+    short_short:
+      recommended_words:
+      - 1000
+      - 3000

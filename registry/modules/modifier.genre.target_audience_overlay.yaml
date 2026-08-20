@@ -1,0 +1,156 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: modifier.genre.target_audience_overlay
+version: 1
+title: Target-audience overlay
+kind: modifier
+description: 'Separate from genre: children, teen, general adult, specialist, literary, commercial, private/personal,
+  performance audience, or another user-defined readership.'
+origin: user_inventory_refined
+owner_domains:
+- genre.target_audience_overlay
+artifact_types:
+- creative_text
+valid_scopes:
+- any
+activation: Attach when target-audience overlay is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: modifier.genre.target_audience_overlay.quality
+  type: group
+  title: Target-audience overlay contract
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: modifier.genre.target_audience_overlay.defined
+    type: question
+    criterion_key: modifier.genre.target_audience_overlay.defined
+    text: Is the target audience defined specifically enough to guide judgment?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: hard_gate
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.target_audience_overlay.knowledge
+    type: question
+    criterion_key: modifier.genre.target_audience_overlay.knowledge
+    text: Does the artifact assume an appropriate level of prior knowledge?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.target_audience_overlay.language
+    type: question
+    criterion_key: modifier.genre.target_audience_overlay.language
+    text: Are vocabulary, syntax, and references accessible without needless simplification?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.target_audience_overlay.tone
+    type: question
+    criterion_key: modifier.genre.target_audience_overlay.tone
+    text: Does tone fit the audience's expectations and the artifact's purpose?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.target_audience_overlay.intensity
+    type: question
+    criterion_key: modifier.genre.target_audience_overlay.intensity
+    text: Is content intensity calibrated to the specified audience and context?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.target_audience_overlay.length
+    type: question
+    criterion_key: modifier.genre.target_audience_overlay.length
+    text: Is length and information density appropriate to the audience's likely use and attention?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.target_audience_overlay.signals
+    type: question
+    criterion_key: modifier.genre.target_audience_overlay.signals
+    text: Are form and genre signals legible to the intended audience?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.target_audience_overlay.respect
+    type: question
+    criterion_key: modifier.genre.target_audience_overlay.respect
+    text: Does the artifact respect the audience's intelligence, experience, and agency?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- fein_et_al_2026_litbench
+- wu_et_al_2025_writingbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: 'Separate from genre: children, teen, general adult, specialist, literary, commercial, private/personal,
+  performance audience, or another user-defined readership.'

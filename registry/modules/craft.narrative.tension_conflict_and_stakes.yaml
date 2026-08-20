@@ -1,0 +1,169 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: craft.narrative.tension_conflict_and_stakes
+version: 1
+title: Tension, conflict, and stakes
+kind: craft
+description: Evaluates the form of pressure appropriate to the work—external, interpersonal, internal, intellectual,
+  comic, romantic, or atmospheric—and whether stakes are legible without being overexplained.
+origin: user_inventory_refined
+owner_domains:
+- narrative.tension_conflict_and_stakes
+artifact_types:
+- prose_fiction
+- creative_nonfiction
+- dramatic_writing
+- narrative_poetry
+- interactive_fiction
+valid_scopes:
+- beat
+- scene
+- chapter
+- sequence
+- act
+- manuscript
+- series
+activation: Attach when tension, conflict, and stakes is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: craft.narrative.tension_conflict_and_stakes.quality
+  type: group
+  title: Tension, conflict, and stakes
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: craft.narrative.tension_conflict_and_stakes.pressure_type
+    type: question
+    criterion_key: craft.narrative.tension_conflict_and_stakes.pressure_type
+    text: Is an appropriate form of pressure present for this work, including quiet, comic, romantic, intellectual,
+      internal, or atmospheric pressure?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.tension_conflict_and_stakes.opposition
+    type: question
+    criterion_key: craft.narrative.tension_conflict_and_stakes.opposition
+    text: Is there a credible obstacle, incompatibility, uncertainty, desire, or cost preventing immediate resolution?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.tension_conflict_and_stakes.stakes_legible
+    type: question
+    criterion_key: craft.narrative.tension_conflict_and_stakes.stakes_legible
+    text: Can the reader infer what may be lost, changed, exposed, delayed, or desired?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.tension_conflict_and_stakes.personal
+    type: question
+    criterion_key: craft.narrative.tension_conflict_and_stakes.personal
+    text: Do stakes matter specifically to the involved characters or speaker?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.tension_conflict_and_stakes.dynamic
+    type: question
+    criterion_key: craft.narrative.tension_conflict_and_stakes.dynamic
+    text: Does tension evolve through new information, choices, proximity, delay, or altered power?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.tension_conflict_and_stakes.forecasting
+    type: question
+    criterion_key: craft.narrative.tension_conflict_and_stakes.forecasting
+    text: Does the reader have live uncertainty about plausible near-future outcomes?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.tension_conflict_and_stakes.no_inflation
+    type: question
+    criterion_key: craft.narrative.tension_conflict_and_stakes.no_inflation
+    text: Does the work avoid announcing enormous stakes without credible mechanisms or consequences?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.tension_conflict_and_stakes.no_overexplain
+    type: question
+    criterion_key: craft.narrative.tension_conflict_and_stakes.no_overexplain
+    text: Does it avoid explaining the stakes more often or more explicitly than the reader needs?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- vaezi_rezaei_2018
+- carey_davidow_williams_2022
+- gomez_rodriguez_williams_2023
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates the form of pressure appropriate to the work—external, interpersonal, internal, intellectual,
+  comic, romantic, or atmospheric—and whether stakes are legible without being overexplained.

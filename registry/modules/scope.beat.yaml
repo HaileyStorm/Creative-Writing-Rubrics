@@ -1,0 +1,124 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: scope.beat
+version: 1
+title: Beat scope overlay
+kind: scope_overlay
+description: For one action, conversational movement, revelation, reversal, or emotional unit.
+origin: user_inventory_refined
+owner_domains:
+- scope.beat
+artifact_types:
+- any
+valid_scopes:
+- beat
+activation: Attach when the evaluated scope is beat.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: scope.beat.quality
+  type: group
+  title: Scope handling
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: scope.beat.start
+    type: question
+    criterion_key: scope.beat.start
+    text: Is the beat's starting state or expectation legible?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: scope.beat.change
+    type: question
+    criterion_key: scope.beat.change
+    text: Does something perceptible change in action, knowledge, relation, emotion, or pressure?
+    pass_answer: 'YES'
+    weight: 2.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: scope.beat.cause
+    type: question
+    criterion_key: scope.beat.cause
+    text: Does the change arise from the preceding stimulus or condition?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: scope.beat.economy
+    type: question
+    criterion_key: scope.beat.economy
+    text: Is the change accomplished without redundant staging or explanation?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: scope.beat.next
+    type: question
+    criterion_key: scope.beat.next
+    text: Does the beat create a usable condition or pressure for the next beat?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: scope.beat.scope
+    type: question
+    criterion_key: scope.beat.scope
+    text: Does the judge avoid demanding a complete scene arc from a single beat?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: diagnostic
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions:
+- action: emphasize
+  criterion_keys:
+  - craft.narrative.scene_construction.changed_state
+  - core.economy_and_relevance
+research_basis:
+- cho_et_al_2026_bineval
+- longjudgebench_2026
+notes: []

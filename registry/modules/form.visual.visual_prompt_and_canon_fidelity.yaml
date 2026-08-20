@@ -1,0 +1,139 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: form.visual.visual_prompt_and_canon_fidelity
+version: 1
+title: Visual prompt and canon fidelity
+kind: visual_artifact
+description: Research-informed binary rubric for visual prompt and canon fidelity.
+origin: research_expansion
+owner_domains:
+- visual.visual_prompt_and_canon_fidelity
+artifact_types:
+- visual_asset
+valid_scopes:
+- asset
+- panel
+- sequence
+- project
+activation: Attach when visual prompt and canon fidelity is the active form, asset, or evaluation concern.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 2
+  project_sources: character references, style references, scene text, and asset metadata when supplied
+  modalities_required:
+  - image
+tree:
+- id: form.visual.visual_prompt_and_canon_fidelity.quality
+  type: group
+  title: Visual prompt and canon fidelity checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: form.visual.visual_prompt_and_canon_fidelity.subjects
+    type: question
+    criterion_key: form.visual.visual_prompt_and_canon_fidelity.subjects
+    text: Are all required subjects and no forbidden subjects depicted?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: hard_gate
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.visual.visual_prompt_and_canon_fidelity.attributes
+    type: question
+    criterion_key: form.visual.visual_prompt_and_canon_fidelity.attributes
+    text: Are specified identities, attributes, relationships, actions, and states correct?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.visual.visual_prompt_and_canon_fidelity.setting
+    type: question
+    criterion_key: form.visual.visual_prompt_and_canon_fidelity.setting
+    text: Are location, period, time, weather, and environmental details correct?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.visual.visual_prompt_and_canon_fidelity.composition
+    type: question
+    criterion_key: form.visual.visual_prompt_and_canon_fidelity.composition
+    text: Are requested framing, camera, orientation, and aspect ratio followed?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.visual.visual_prompt_and_canon_fidelity.style
+    type: question
+    criterion_key: form.visual.visual_prompt_and_canon_fidelity.style
+    text: Are requested medium, style, palette, and rendering constraints followed?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.visual.visual_prompt_and_canon_fidelity.canon
+    type: question
+    criterion_key: form.visual.visual_prompt_and_canon_fidelity.canon
+    text: Does the image agree with project sheets and active canon?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.visual.visual_prompt_and_canon_fidelity.no_invention
+    type: question
+    criterion_key: form.visual.visual_prompt_and_canon_fidelity.no_invention
+    text: Does it avoid visually asserting unsupported canon where the brief requires fidelity?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- zhuang_et_al_2025_vistorybench
+- lin_et_al_2026_storybook_consistency
+notes: []

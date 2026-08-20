@@ -1,0 +1,13 @@
+.working
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.artifacts-temp/
+.DS_Store

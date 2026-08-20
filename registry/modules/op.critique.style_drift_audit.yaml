@@ -1,0 +1,156 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: op.critique.style_drift_audit
+version: 1
+title: Style-drift audit
+kind: procedure
+description: Detects changes in voice, POV distance, syntax, diction, imagery, tone, dialogue style, exposition
+  practice, and formatting across units.
+origin: user_inventory_refined
+owner_domains:
+- procedure.style_drift_audit
+artifact_types:
+- any
+valid_scopes:
+- operation
+activation: Attach when style-drift audit is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: op.critique.style_drift_audit.quality
+  type: group
+  title: Style-drift audit checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: op.critique.style_drift_audit.baseline
+    type: question
+    criterion_key: op.critique.style_drift_audit.baseline
+    text: Does the audit establish a supported style baseline from representative project material?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.critique.style_drift_audit.voice
+    type: question
+    criterion_key: op.critique.style_drift_audit.voice
+    text: Does it detect meaningful changes in narrative and character voice?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.critique.style_drift_audit.distance
+    type: question
+    criterion_key: op.critique.style_drift_audit.distance
+    text: Does it detect unintended POV and psychic-distance drift?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.critique.style_drift_audit.syntax
+    type: question
+    criterion_key: op.critique.style_drift_audit.syntax
+    text: Does it detect changes in syntax, cadence, paragraph shape, and sentence-pattern distribution?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.critique.style_drift_audit.diction
+    type: question
+    criterion_key: op.critique.style_drift_audit.diction
+    text: Does it detect changes in diction, register, imagery, exposition, and dialogue practice?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.critique.style_drift_audit.intent
+    type: question
+    criterion_key: op.critique.style_drift_audit.intent
+    text: Does it distinguish deliberate development or context-sensitive variation from accidental drift?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.critique.style_drift_audit.evidence
+    type: question
+    criterion_key: op.critique.style_drift_audit.evidence
+    text: Does each drift claim cite before-and-after evidence?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.critique.style_drift_audit.no_homogenize
+    type: question
+    criterion_key: op.critique.style_drift_audit.no_homogenize
+    text: Does the audit avoid defining consistency as uniformity?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- wu_et_al_2025_writingbench
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Detects changes in voice, POV distance, syntax, diction, imagery, tone, dialogue style, exposition
+  practice, and formatting across units.

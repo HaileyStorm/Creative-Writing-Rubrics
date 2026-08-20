@@ -1,0 +1,156 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: op.ideation.character_conception
+version: 1
+title: Character conception
+kind: procedure
+description: Evaluates distinctiveness, agency, contradiction, relational potential, behavioral implications, voice,
+  and story usefulness.
+origin: user_inventory_refined
+owner_domains:
+- procedure.character_conception
+artifact_types:
+- any
+valid_scopes:
+- operation
+activation: Attach when character conception is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: op.ideation.character_conception.quality
+  type: group
+  title: Character conception checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: op.ideation.character_conception.distinctive
+    type: question
+    criterion_key: op.ideation.character_conception.distinctive
+    text: Does the character possess a specific identity that is not interchangeable with another cast member?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ideation.character_conception.agency
+    type: question
+    criterion_key: op.ideation.character_conception.agency
+    text: Does the character have goals and the capacity to make consequential choices?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ideation.character_conception.contradiction
+    type: question
+    criterion_key: op.ideation.character_conception.contradiction
+    text: Does the concept contain at least one productive tension, contradiction, blind spot, or competing need?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ideation.character_conception.behavior
+    type: question
+    criterion_key: op.ideation.character_conception.behavior
+    text: Do the stated traits imply observable behavior rather than remain abstract labels?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ideation.character_conception.voice
+    type: question
+    criterion_key: op.ideation.character_conception.voice
+    text: Does the concept provide usable cues for diction, rhythm, attention, and conversational behavior?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ideation.character_conception.relationships
+    type: question
+    criterion_key: op.ideation.character_conception.relationships
+    text: Does the character create specific pressure, affinity, asymmetry, or change potential in relationships?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ideation.character_conception.story_use
+    type: question
+    criterion_key: op.ideation.character_conception.story_use
+    text: Does the character generate scenes, decisions, conflicts, discoveries, or thematic pressure?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ideation.character_conception.no_trait_heap
+    type: question
+    criterion_key: op.ideation.character_conception.no_trait_heap
+    text: Does the concept avoid a heap of disconnected quirks, traumas, competencies, and aesthetic labels?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- wu_et_al_2025_writingbench
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates distinctiveness, agency, contradiction, relational potential, behavioral implications,
+  voice, and story usefulness.

@@ -1,0 +1,131 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: core.voice_and_stylistic_identity
+version: 1
+title: Voice and stylistic identity
+kind: base
+description: Evaluates distinctiveness, consistency, suitability, and fidelity to an established project or reference
+  voice. It must distinguish deliberate variation from accidental drift and generic “good prose.”
+origin: user_inventory_refined
+owner_domains:
+- voice_style
+artifact_types:
+- any
+valid_scopes:
+- any
+activation: Attach to every substantive execution.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: core.voice_and_stylistic_identity.quality
+  type: group
+  title: Voice and stylistic identity
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: core.voice_and_stylistic_identity.distinctive
+    type: question
+    criterion_key: core.voice_and_stylistic_identity.distinctive
+    text: Does the artifact possess a discernible stylistic identity rather than interchangeable competent prose?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.voice_and_stylistic_identity.sustained
+    type: question
+    criterion_key: core.voice_and_stylistic_identity.sustained
+    text: Is the voice sustained across the evaluated scope?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.voice_and_stylistic_identity.suitable
+    type: question
+    criterion_key: core.voice_and_stylistic_identity.suitable
+    text: Is the voice suitable for the form, subject, narrator, audience, and intended effect?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.voice_and_stylistic_identity.project_fidelity
+    type: question
+    criterion_key: core.voice_and_stylistic_identity.project_fidelity
+    text: When an established project voice is supplied, does the artifact preserve its salient features?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.voice_and_stylistic_identity.shift_control
+    type: question
+    criterion_key: core.voice_and_stylistic_identity.shift_control
+    text: Are changes in register, distance, diction, or tone motivated rather than accidental?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.voice_and_stylistic_identity.ownership
+    type: question
+    criterion_key: core.voice_and_stylistic_identity.ownership
+    text: Does the language sound owned by this narrator, speaker, character, or project rather than by a generic
+      assistant?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- vaezi_rezaei_2018
+- carey_davidow_williams_2022
+- gomez_rodriguez_williams_2023
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates distinctiveness, consistency, suitability, and fidelity to an established project
+  or reference voice. It must distinguish deliberate variation from accidental drift and generic “good prose.”

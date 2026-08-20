@@ -1,0 +1,155 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: op.select.full_adjudication_grade
+version: 1
+title: Full adjudication grade
+kind: procedure
+description: A richer high-context critic/editor evaluation with more context, full applicable modules, evidence, and holistic assessment.
+origin: user_inventory_refined
+owner_domains:
+- procedure.full_adjudication_grade
+artifact_types:
+- any
+valid_scopes:
+- operation
+activation: Attach when full adjudication grade is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: op.select.full_adjudication_grade.quality
+  type: group
+  title: Full adjudication grade checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: op.select.full_adjudication_grade.stack
+    type: question
+    criterion_key: op.select.full_adjudication_grade.stack
+    text: Does the adjudication use the complete applicable rubric stack and context?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.select.full_adjudication_grade.independent
+    type: question
+    criterion_key: op.select.full_adjudication_grade.independent
+    text: Are all atomic questions answered independently before aggregation?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.select.full_adjudication_grade.evidence
+    type: question
+    criterion_key: op.select.full_adjudication_grade.evidence
+    text: Does each material NO verdict include concise, accurate evidence?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.select.full_adjudication_grade.scope
+    type: question
+    criterion_key: op.select.full_adjudication_grade.scope
+    text: Are NOT_APPLICABLE and CANNOT_ASSESS used correctly?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.select.full_adjudication_grade.weights
+    type: question
+    criterion_key: op.select.full_adjudication_grade.weights
+    text: Are ownership, weights, gates, caps, and score formulas applied correctly?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.select.full_adjudication_grade.holistic
+    type: question
+    criterion_key: op.select.full_adjudication_grade.holistic
+    text: Is holistic artistic success assessed once and kept distinct from analytic criteria?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.select.full_adjudication_grade.bias
+    type: question
+    criterion_key: op.select.full_adjudication_grade.bias
+    text: Are length, verbosity, position, model-family, and surface-polish biases actively controlled?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.select.full_adjudication_grade.decision
+    type: question
+    criterion_key: op.select.full_adjudication_grade.decision
+    text: Does the final decision reflect the requested operation and project priorities?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- wu_et_al_2025_writingbench
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: A richer high-context critic/editor evaluation with more context, full applicable modules, evidence, and holistic
+  assessment.

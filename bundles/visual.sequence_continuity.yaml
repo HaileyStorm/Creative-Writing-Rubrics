@@ -1,0 +1,122 @@
+$schema: ../schema/hbq_bundle.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+bundle_id: visual.sequence_continuity
+version: 1
+title: Visual narrative continuity
+description: Sequence-level evaluation of character, setting, time, style, event, and attribute continuity.
+artifact_types:
+- visual_sequence
+valid_scopes:
+- sequence
+- project
+profile: {}
+module_ids:
+- core.task_and_brief_fidelity
+- form.visual.visual_prompt_and_canon_fidelity
+- form.visual.visual_narrative_continuity
+- form.visual.character_design_sheet
+- form.multimodal.text_image_alignment
+- form.visual.visual_craft_and_artifact_control
+- core.holistic_artistic_success
+domains:
+- domain_id: task
+  title: Narrative and prompt alignment
+  points: 12.0
+  components:
+  - module_id: core.task_and_brief_fidelity
+    weight: 1.0
+  - module_id: form.visual.visual_prompt_and_canon_fidelity
+    weight: 1.0
+  score_mode: weighted_binary_mean
+- domain_id: character
+  title: Character and attribute consistency
+  points: 22.0
+  components:
+  - module_id: form.visual.visual_narrative_continuity
+    weight: 1.0
+    include_question_ids:
+    - form.visual.visual_narrative_continuity.character
+    - form.visual.visual_narrative_continuity.props
+  - module_id: form.visual.character_design_sheet
+    weight: 1.0
+  score_mode: weighted_binary_mean
+- domain_id: space_time
+  title: Space and time continuity
+  points: 16.0
+  components:
+  - module_id: form.visual.visual_narrative_continuity
+    weight: 1.0
+    include_question_ids:
+    - form.visual.visual_narrative_continuity.space
+    - form.visual.visual_narrative_continuity.time
+  score_mode: weighted_binary_mean
+- domain_id: event
+  title: Event and plot coherence
+  points: 16.0
+  components:
+  - module_id: form.visual.visual_narrative_continuity
+    weight: 1.0
+    include_question_ids:
+    - form.visual.visual_narrative_continuity.event
+    - form.visual.visual_narrative_continuity.transitions
+  - module_id: form.multimodal.text_image_alignment
+    weight: 1.0
+  score_mode: weighted_binary_mean
+- domain_id: style
+  title: Style and theme continuity
+  points: 14.0
+  components:
+  - module_id: form.visual.visual_narrative_continuity
+    weight: 1.0
+    include_question_ids:
+    - form.visual.visual_narrative_continuity.style
+  score_mode: weighted_binary_mean
+- domain_id: quality
+  title: Visual quality and artifact control
+  points: 12.0
+  components:
+  - module_id: form.visual.visual_craft_and_artifact_control
+    weight: 1.0
+  score_mode: weighted_binary_mean
+- domain_id: holistic
+  title: Holistic sequence success
+  points: 8.0
+  components:
+  - module_id: core.holistic_artistic_success
+    weight: 1.0
+  score_mode: weighted_binary_mean
+penalty_modules: []
+hard_gate_policy:
+  no_is_invalid: true
+  cannot_assess_is_unresolved: true
+  not_applicable_requires_condition_or_reason: true
+  hard_gates_are_reported_separately: true
+coverage_policy:
+  minimum_weighted_coverage: 0.88
+  below_threshold_status: PROVISIONAL
+  score_interval_required_when_unassessed: true
+  whole_work_claims_require_whole_work_evidence: true
+excerpt_and_incomplete_policy:
+  flagged_excerpt: Do not penalize absent whole-work completion. Mark unavailable whole-work criteria CANNOT_ASSESS
+    or NOT_APPLICABLE as appropriate.
+  unflagged_incomplete: Apply the bounded unflagged-incomplete penalty when the artifact is presented as complete
+    or partial status is omitted.
+  visible_local_defects: Score defects visible in the supplied extract normally.
+judge_policy:
+  artifact_assumed_ai_generated: true
+  strict_but_fair: true
+  no_glazing: true
+  judge_execution_not_intent: true
+  do_not_invent_defects: true
+  avoid_length_and_ornament_bias: true
+  brief_evidence_required: true
+  private_chain_of_thought_not_requested: true
+  verdict_states:
+  - 'YES'
+  - 'NO'
+  - NOT_APPLICABLE
+  - CANNOT_ASSESS
+  pairwise_finalists: false
+notes: []

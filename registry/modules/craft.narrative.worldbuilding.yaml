@@ -1,0 +1,182 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: craft.narrative.worldbuilding
+version: 1
+title: Worldbuilding
+kind: craft
+description: Covers clarity and consistency of systems, culture, history, institutions, technology or magic, consequences,
+  integration into the narrative, and avoidance of exposition dumping.
+origin: user_inventory_refined
+owner_domains:
+- narrative.worldbuilding
+artifact_types:
+- prose_fiction
+- creative_nonfiction
+- dramatic_writing
+- narrative_poetry
+- interactive_fiction
+valid_scopes:
+- beat
+- scene
+- chapter
+- sequence
+- act
+- manuscript
+- series
+activation: Attach when worldbuilding is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: craft.narrative.worldbuilding.quality
+  type: group
+  title: Worldbuilding
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: craft.narrative.worldbuilding.rules
+    type: question
+    criterion_key: craft.narrative.worldbuilding.rules
+    text: Are the relevant systems and rules clear enough for the reader to understand choices and consequences?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.worldbuilding.consistency
+    type: question
+    criterion_key: craft.narrative.worldbuilding.consistency
+    text: Are world rules applied consistently across the supplied evidence?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.worldbuilding.constraints
+    type: question
+    criterion_key: craft.narrative.worldbuilding.constraints
+    text: Do technology, magic, institutions, or social systems impose meaningful constraints and costs?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.worldbuilding.culture
+    type: question
+    criterion_key: craft.narrative.worldbuilding.culture
+    text: Do cultures and institutions show internally related practices, values, material conditions, and tensions?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.worldbuilding.history
+    type: question
+    criterion_key: craft.narrative.worldbuilding.history
+    text: Does history affect present conditions rather than exist only as detached lore?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.worldbuilding.consequences
+    type: question
+    criterion_key: craft.narrative.worldbuilding.consequences
+    text: Are second-order social, economic, ecological, political, or personal consequences considered where relevant?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.worldbuilding.integration
+    type: question
+    criterion_key: craft.narrative.worldbuilding.integration
+    text: Is world information embedded through action, choice, perception, conflict, or useful reference structure?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.worldbuilding.no_lore_dump
+    type: question
+    criterion_key: craft.narrative.worldbuilding.no_lore_dump
+    text: Does the artifact avoid lore dumping that outruns the reader's current need and stalls the operation?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.worldbuilding.no_default_furniture
+    type: question
+    criterion_key: craft.narrative.worldbuilding.no_default_furniture
+    text: Does the world avoid unexamined default genre furniture where specificity is needed?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- vaezi_rezaei_2018
+- carey_davidow_williams_2022
+- gomez_rodriguez_williams_2023
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Covers clarity and consistency of systems, culture, history, institutions, technology or magic,
+  consequences, integration into the narrative, and avoidance of exposition dumping.

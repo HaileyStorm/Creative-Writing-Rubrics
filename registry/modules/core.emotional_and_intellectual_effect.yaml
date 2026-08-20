@@ -1,0 +1,131 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: core.emotional_and_intellectual_effect
+version: 1
+title: Emotional and intellectual effect
+kind: base
+description: Evaluates whether the intended emotional, comedic, unsettling, reflective, persuasive, or conceptual
+  effect is actually produced rather than merely announced.
+origin: user_inventory_refined
+owner_domains:
+- effect
+artifact_types:
+- any
+valid_scopes:
+- any
+activation: Attach to every substantive execution.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: core.emotional_and_intellectual_effect.quality
+  type: group
+  title: Emotional and intellectual effect
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: core.emotional_and_intellectual_effect.intended_effect
+    type: question
+    criterion_key: core.emotional_and_intellectual_effect.intended_effect
+    text: Does the artifact actually produce the principal intended effect rather than merely announce it?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.emotional_and_intellectual_effect.earned_emotion
+    type: question
+    criterion_key: core.emotional_and_intellectual_effect.earned_emotion
+    text: Is the emotional response prepared by situation, image, action, voice, or structure?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.emotional_and_intellectual_effect.conceptual_interest
+    type: question
+    criterion_key: core.emotional_and_intellectual_effect.conceptual_interest
+    text: Does the artifact create a substantive idea, question, perception, or tension for the reader to engage
+      with?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.emotional_and_intellectual_effect.modulation
+    type: question
+    criterion_key: core.emotional_and_intellectual_effect.modulation
+    text: Does the effect develop or modulate rather than remaining at one undifferentiated intensity?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.emotional_and_intellectual_effect.restraint
+    type: question
+    criterion_key: core.emotional_and_intellectual_effect.restraint
+    text: Does the work trust the reader enough to avoid unnecessary emotional or interpretive instruction?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.emotional_and_intellectual_effect.aftermath
+    type: question
+    criterion_key: core.emotional_and_intellectual_effect.aftermath
+    text: Does the effect persist or meaningfully resolve after the immediate beat, image, or ending?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- vaezi_rezaei_2018
+- carey_davidow_williams_2022
+- gomez_rodriguez_williams_2023
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates whether the intended emotional, comedic, unsettling, reflective, persuasive, or conceptual
+  effect is actually produced rather than merely announced.

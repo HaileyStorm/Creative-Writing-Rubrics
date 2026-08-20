@@ -1,0 +1,151 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: scope.series
+version: 1
+title: Series or project-corpus scope overlay
+kind: scope_overlay
+description: For multiple books, episodes, stories, and reference documents; evaluates cross-volume canon and deliberate
+  evolution.
+origin: user_inventory_refined
+owner_domains:
+- scope.series
+artifact_types:
+- any
+valid_scopes:
+- series
+activation: Attach when the evaluated scope is series.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: scope.series.quality
+  type: group
+  title: Scope handling
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: scope.series.canon
+    type: question
+    criterion_key: scope.series.canon
+    text: Are persistent canon and terminology consistent across volumes and documents?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: scope.series.arcs
+    type: question
+    criterion_key: scope.series.arcs
+    text: Do character and relationship developments accumulate across installments?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: scope.series.threads
+    type: question
+    criterion_key: scope.series.threads
+    text: Are unresolved and resolved threads tracked across the corpus?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: scope.series.structures
+    type: question
+    criterion_key: scope.series.structures
+    text: Are repeated structures varied or justified?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: scope.series.tone
+    type: question
+    criterion_key: scope.series.tone
+    text: Is tonal continuity maintained while allowing deliberate evolution?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: scope.series.documents
+    type: question
+    criterion_key: scope.series.documents
+    text: Are contradictions among manuscripts, bibles, timelines, and notes identified with authority status?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: scope.series.entry
+    type: question
+    criterion_key: scope.series.entry
+    text: Does each installment remain sufficiently accessible at its intended entry point?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: scope.series.whole
+    type: question
+    criterion_key: scope.series.whole
+    text: Does the corpus develop a larger architecture without sacrificing installment-level value?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions:
+- action: require_cross_document_state_tracking
+  value: true
+research_basis:
+- cho_et_al_2026_bineval
+- longjudgebench_2026
+notes: []

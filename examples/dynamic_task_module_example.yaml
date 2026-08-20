@@ -1,0 +1,133 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: task.example_scene_request
+version: 1
+title: Example dynamic scene constraints
+kind: dynamic_task
+description: Ephemeral hard and scored questions generated from one fictional scene request.
+origin: example
+owner_domains:
+- task.example
+artifact_types:
+- prose_fiction
+valid_scopes:
+- scene
+activation: Attach when relevant to the requested operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: task.example_scene_request.quality
+  type: group
+  title: Prompt-derived constraints
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: task.example_scene_request.operation
+    type: question
+    criterion_key: task.example_scene_request.operation
+    text: Does the output provide a complete scene continuation rather than an outline or commentary?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: hard_gate
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: task.example_scene_request.pov
+    type: question
+    criterion_key: task.example_scene_request.pov
+    text: Does the continuation remain in Mara's close third-person point of view?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: hard_gate
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: task.example_scene_request.tense
+    type: question
+    criterion_key: task.example_scene_request.tense
+    text: Does it remain in past tense?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: hard_gate
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: task.example_scene_request.object
+    type: question
+    criterion_key: task.example_scene_request.object
+    text: Does the brass key remain in Mara's left coat pocket until she deliberately removes it?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: hard_gate
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: task.example_scene_request.exclude
+    type: question
+    criterion_key: task.example_scene_request.exclude
+    text: Does the scene avoid revealing who sent the letter?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: hard_gate
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: task.example_scene_request.length
+    type: question
+    criterion_key: task.example_scene_request.length
+    text: Is the scene between 900 and 1,200 words?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: hard_gate
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: task.example_scene_request.tone
+    type: question
+    criterion_key: task.example_scene_request.tone
+    text: Does the continuation preserve the supplied restrained, dryly comic tone?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+notes: []

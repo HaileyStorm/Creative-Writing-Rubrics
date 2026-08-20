@@ -1,0 +1,156 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: model.release.quantization_retention
+version: 1
+title: Quantization retention
+kind: model_build
+description: Separates pruning damage, repair effects, and final quantization damage; it must compare the final
+  materialized model with both the repaired K256 source and the same-K pre-quantized model.
+origin: user_inventory_refined
+owner_domains:
+- model.quantization_retention
+artifact_types:
+- model_build
+valid_scopes:
+- any
+activation: Attach when quantization retention is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: model.release.quantization_retention.quality
+  type: group
+  title: Quantization retention checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: model.release.quantization_retention.stages
+    type: question
+    criterion_key: model.release.quantization_retention.stages
+    text: Are pruning damage, repair effects, and quantization damage measured separately?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.quantization_retention.source
+    type: question
+    criterion_key: model.release.quantization_retention.source
+    text: Is the final model compared with the repaired K256 source?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.quantization_retention.same_k
+    type: question
+    criterion_key: model.release.quantization_retention.same_k
+    text: Is it compared with the same-K pre-quantized model?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.quantization_retention.creative
+    type: question
+    criterion_key: model.release.quantization_retention.creative
+    text: Are prose, dialogue, revision, and style-control regressions measured?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.quantization_retention.context
+    type: question
+    criterion_key: model.release.quantization_retention.context
+    text: Are long-context and cache-sensitive regressions measured?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.quantization_retention.tails
+    type: question
+    criterion_key: model.release.quantization_retention.tails
+    text: Are code, math, knowledge, and instruction tails measured?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.quantization_retention.runtime
+    type: question
+    criterion_key: model.release.quantization_retention.runtime
+    text: Is the materialized runtime artifact tested rather than only simulated weights?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.quantization_retention.stability
+    type: question
+    criterion_key: model.release.quantization_retention.stability
+    text: Are repetition, degeneration, sampler interaction, and numerical stability checked?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- rao_callison_burch_2026_autorubric
+- longjudgebench_2026
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Separates pruning damage, repair effects, and final quantization damage; it must compare the
+  final materialized model with both the repaired K256 source and the same-K pre-quantized model.

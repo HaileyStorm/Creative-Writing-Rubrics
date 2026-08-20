@@ -1,0 +1,111 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/HaileyStorm/Creative-Writing-Rubrics/main/schema/hbq_bundle.schema.json",
+  "title": "HBQ-RS bundle preset",
+  "type": "object",
+  "required": [
+    "standard",
+    "bundle_id",
+    "version",
+    "title",
+    "module_ids",
+    "domains",
+    "penalty_modules",
+    "hard_gate_policy",
+    "coverage_policy",
+    "judge_policy"
+  ],
+  "properties": {
+    "standard": {
+      "type": "object"
+    },
+    "bundle_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9_.]+$"
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "title": {
+      "type": "string"
+    },
+    "module_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "domains": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "domain_id",
+          "title",
+          "points",
+          "components"
+        ],
+        "properties": {
+          "domain_id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "points": {
+            "type": "number",
+            "minimum": 0
+          },
+          "components": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "required": [
+                "module_id",
+                "weight"
+              ],
+              "properties": {
+                "module_id": {
+                  "type": "string"
+                },
+                "weight": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "include_group_ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "include_question_ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "additionalProperties": true
+            }
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "penalty_modules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "module_id",
+          "cap_points"
+        ]
+      }
+    }
+  },
+  "additionalProperties": true
+}

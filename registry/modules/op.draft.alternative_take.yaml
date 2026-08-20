@@ -1,0 +1,129 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: op.draft.alternative_take
+version: 1
+title: Alternative take
+kind: procedure
+description: Evaluates both quality and meaningful divergence from existing drafts. A stylistic synonym pass should
+  not count as a distinct alternative.
+origin: user_inventory_refined
+owner_domains:
+- procedure.alternative_take
+artifact_types:
+- any
+valid_scopes:
+- operation
+activation: Attach when alternative take is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: op.draft.alternative_take.quality
+  type: group
+  title: Alternative take checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: op.draft.alternative_take.quality
+    type: question
+    criterion_key: op.draft.alternative_take.quality
+    text: Is the alternative independently viable and well executed?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.draft.alternative_take.difference
+    type: question
+    criterion_key: op.draft.alternative_take.difference
+    text: Does it differ meaningfully in strategy, voice, structure, emotional logic, image system, or character
+      choice?
+    pass_answer: 'YES'
+    weight: 2.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.draft.alternative_take.same_problem
+    type: question
+    criterion_key: op.draft.alternative_take.same_problem
+    text: Does it solve the same requested creative problem?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.draft.alternative_take.canon
+    type: question
+    criterion_key: op.draft.alternative_take.canon
+    text: Does it remain compatible with non-negotiable project facts?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.draft.alternative_take.tradeoff
+    type: question
+    criterion_key: op.draft.alternative_take.tradeoff
+    text: Does it expose a useful creative tradeoff or possibility?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.draft.alternative_take.no_synonym
+    type: question
+    criterion_key: op.draft.alternative_take.no_synonym
+    text: Is it more than a synonym-level or sentence-order variation of an existing draft?
+    pass_answer: 'YES'
+    weight: 2.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- wu_et_al_2025_writingbench
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates both quality and meaningful divergence from existing drafts. A stylistic synonym pass
+  should not count as a distinct alternative.

@@ -1,0 +1,156 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: op.critique.clich_and_ai_pattern_audit
+version: 1
+title: Cliché and AI-pattern audit
+kind: procedure
+description: Finds recurring generic constructions, rhetorical templates, excessive contrast framing, emotional
+  overexplanation, sentence-pattern repetition, and other model-like habits.
+origin: user_inventory_refined
+owner_domains:
+- procedure.clich_and_ai_pattern_audit
+artifact_types:
+- any
+valid_scopes:
+- operation
+activation: Attach when cliché and ai-pattern audit is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: op.critique.clich_and_ai_pattern_audit.quality
+  type: group
+  title: Cliché and AI-pattern audit checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: op.critique.clich_and_ai_pattern_audit.phrases
+    type: question
+    criterion_key: op.critique.clich_and_ai_pattern_audit.phrases
+    text: Does the audit identify stock phrases, default metaphors, and generic emotional summaries?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.critique.clich_and_ai_pattern_audit.templates
+    type: question
+    criterion_key: op.critique.clich_and_ai_pattern_audit.templates
+    text: Does it identify repeated rhetorical templates, contrast frames, triads, and summary structures?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.critique.clich_and_ai_pattern_audit.sentences
+    type: question
+    criterion_key: op.critique.clich_and_ai_pattern_audit.sentences
+    text: Does it identify repeated sentence openings, lengths, syntactic shapes, and paragraph cadences?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.critique.clich_and_ai_pattern_audit.explanation
+    type: question
+    criterion_key: op.critique.clich_and_ai_pattern_audit.explanation
+    text: Does it identify emotional overexplanation and redundant interpretation after concrete moments?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.critique.clich_and_ai_pattern_audit.ornament
+    type: question
+    criterion_key: op.critique.clich_and_ai_pattern_audit.ornament
+    text: Does it identify model-like ornate abstraction, portentous fragments, and purple image stacking?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.critique.clich_and_ai_pattern_audit.prevalence
+    type: question
+    criterion_key: op.critique.clich_and_ai_pattern_audit.prevalence
+    text: Does it distinguish isolated conventional language from recurring system-level habits?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.critique.clich_and_ai_pattern_audit.evidence
+    type: question
+    criterion_key: op.critique.clich_and_ai_pattern_audit.evidence
+    text: Does every pattern claim include multiple representative examples when prevalence is alleged?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.critique.clich_and_ai_pattern_audit.repair
+    type: question
+    criterion_key: op.critique.clich_and_ai_pattern_audit.repair
+    text: Does it suggest pattern-level repair rather than one-off synonym substitution?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- wu_et_al_2025_writingbench
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Finds recurring generic constructions, rhetorical templates, excessive contrast framing, emotional
+  overexplanation, sentence-pattern repetition, and other model-like habits.

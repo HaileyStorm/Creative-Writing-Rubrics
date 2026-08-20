@@ -1,0 +1,173 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: op.revision.restrained_final_pass
+version: 1
+title: Restrained final pass
+kind: procedure
+description: 'Critical for a high-context critic/editor: corrects remaining clarity, continuity, awkwardness, excess, and mechanical
+  problems but does **not** homogenize diction, intensify everything, overwrite voice, beautify every sentence,
+  or revise the “poetry” of the piece without instruction.'
+origin: user_inventory_refined
+owner_domains:
+- procedure.restrained_final_pass
+artifact_types:
+- any
+valid_scopes:
+- operation
+activation: Attach when restrained final pass is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: op.revision.restrained_final_pass.quality
+  type: group
+  title: Restrained final pass checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: op.revision.restrained_final_pass.remaining
+    type: question
+    criterion_key: op.revision.restrained_final_pass.remaining
+    text: Does the pass correct remaining clarity, continuity, awkwardness, excess, and mechanical problems that
+      materially affect reading?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.restrained_final_pass.voice
+    type: question
+    criterion_key: op.revision.restrained_final_pass.voice
+    text: Does it preserve the artifact's distinctive diction, syntax, rhythm, and tonal range?
+    pass_answer: 'YES'
+    weight: 2.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.restrained_final_pass.character
+    type: question
+    criterion_key: op.revision.restrained_final_pass.character
+    text: Does it preserve character-specific speech and thought?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.restrained_final_pass.emphasis
+    type: question
+    criterion_key: op.revision.restrained_final_pass.emphasis
+    text: Does it preserve intentional emphasis, silence, ambiguity, roughness, and asymmetry?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.restrained_final_pass.facts
+    type: question
+    criterion_key: op.revision.restrained_final_pass.facts
+    text: Does it preserve facts, canon, and structure?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.restrained_final_pass.minimal
+    type: question
+    criterion_key: op.revision.restrained_final_pass.minimal
+    text: Is each change necessary or clearly beneficial at final-pass scale?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.restrained_final_pass.no_homogenize
+    type: question
+    criterion_key: op.revision.restrained_final_pass.no_homogenize
+    text: Does it avoid homogenizing sentence length, paragraph shape, vocabulary, and emotional register?
+    pass_answer: 'YES'
+    weight: 2.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.restrained_final_pass.no_intensify
+    type: question
+    criterion_key: op.revision.restrained_final_pass.no_intensify
+    text: Does it avoid intensifying every image, emotion, joke, conflict, or transition?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.restrained_final_pass.no_poeticize
+    type: question
+    criterion_key: op.revision.restrained_final_pass.no_poeticize
+    text: Does it avoid adding unrequested lyrical ornament, metaphors, fragments, and portentous phrasing?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- wu_et_al_2025_writingbench
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: 'Critical for a high-context critic/editor: corrects remaining clarity, continuity, awkwardness, excess, and mechanical
+  problems but does **not** homogenize diction, intensify everything, overwrite voice, beautify every sentence,
+  or revise the “poetry” of the piece without instruction.'

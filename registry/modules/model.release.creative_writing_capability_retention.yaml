@@ -1,0 +1,142 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: model.release.creative_writing_capability_retention
+version: 1
+title: Creative-writing capability retention
+kind: model_build
+description: Compares the modified/pruned/quantized model with its source across prose, dialogue, revision, long-form
+  consistency, style control, and preference likelihood.
+origin: user_inventory_refined
+owner_domains:
+- model.creative_writing_capability_retention
+artifact_types:
+- model_build
+valid_scopes:
+- any
+activation: Attach when creative-writing capability retention is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: model.release.creative_writing_capability_retention.quality
+  type: group
+  title: Creative-writing capability retention checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: model.release.creative_writing_capability_retention.prose
+    type: question
+    criterion_key: model.release.creative_writing_capability_retention.prose
+    text: Is prose quality non-inferior across short and long forms?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.creative_writing_capability_retention.dialogue
+    type: question
+    criterion_key: model.release.creative_writing_capability_retention.dialogue
+    text: Is dialogue differentiation and subtext retained?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.creative_writing_capability_retention.poetry
+    type: question
+    criterion_key: model.release.creative_writing_capability_retention.poetry
+    text: Are poetic form, imagery, idiosyncrasy, and emotional resonance retained?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.creative_writing_capability_retention.continuity
+    type: question
+    criterion_key: model.release.creative_writing_capability_retention.continuity
+    text: Is long-range narrative consistency retained?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.creative_writing_capability_retention.style
+    type: question
+    criterion_key: model.release.creative_writing_capability_retention.style
+    text: Is style control and project-voice fidelity retained?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.creative_writing_capability_retention.freshness
+    type: question
+    criterion_key: model.release.creative_writing_capability_retention.freshness
+    text: Is freshness retained without increasing incoherent divergence?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.creative_writing_capability_retention.preference
+    type: question
+    criterion_key: model.release.creative_writing_capability_retention.preference
+    text: Does blind human or validated-judge preference remain non-inferior to the source model?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- rao_callison_burch_2026_autorubric
+- longjudgebench_2026
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Compares the modified/pruned/quantized model with its source across prose, dialogue, revision,
+  long-form consistency, style control, and preference likelihood.

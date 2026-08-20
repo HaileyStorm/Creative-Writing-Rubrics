@@ -1,0 +1,143 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: form.hybrid.creative_nonfiction
+version: 1
+title: Creative nonfiction
+kind: artifact_form
+description: Combines literary craft with factual fidelity, source transparency, uncertainty, fair representation,
+  and clear separation between reconstruction and known fact.
+origin: user_inventory_refined
+owner_domains:
+- form.creative_nonfiction
+artifact_types:
+- hybrid_writing
+- creative_nonfiction
+valid_scopes:
+- any
+activation: Attach when creative nonfiction is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: form.hybrid.creative_nonfiction.quality
+  type: group
+  title: Creative nonfiction checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: form.hybrid.creative_nonfiction.factual_fidelity
+    type: question
+    criterion_key: form.hybrid.creative_nonfiction.factual_fidelity
+    text: Are factual claims and quoted or attributed material faithful to available sources?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.hybrid.creative_nonfiction.reconstruction
+    type: question
+    criterion_key: form.hybrid.creative_nonfiction.reconstruction
+    text: Are reconstructed scenes, dialogue, composites, and uncertain memories identified or handled transparently?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.hybrid.creative_nonfiction.source_transparency
+    type: question
+    criterion_key: form.hybrid.creative_nonfiction.source_transparency
+    text: Can significant external claims be traced to sources where the intended form requires it?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.hybrid.creative_nonfiction.uncertainty
+    type: question
+    criterion_key: form.hybrid.creative_nonfiction.uncertainty
+    text: Does the work distinguish known fact, memory, inference, interpretation, and invention?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.hybrid.creative_nonfiction.fairness
+    type: question
+    criterion_key: form.hybrid.creative_nonfiction.fairness
+    text: Are real people and contested events represented with proportionate context and intellectual honesty?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.hybrid.creative_nonfiction.literary_craft
+    type: question
+    criterion_key: form.hybrid.creative_nonfiction.literary_craft
+    text: Does factual fidelity coexist with effective scene, image, voice, structure, and reflection?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.hybrid.creative_nonfiction.no_fact_shaping
+    type: question
+    criterion_key: form.hybrid.creative_nonfiction.no_fact_shaping
+    text: Does the work avoid altering facts merely to improve narrative convenience or thematic neatness?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- fein_et_al_2026_litbench
+- wu_et_al_2025_writingbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Combines literary craft with factual fidelity, source transparency, uncertainty, fair representation,
+  and clear separation between reconstruction and known fact.

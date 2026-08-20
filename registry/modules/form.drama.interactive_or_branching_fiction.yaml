@@ -1,0 +1,157 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: form.drama.interactive_or_branching_fiction
+version: 1
+title: Interactive or branching fiction
+kind: artifact_form
+description: Evaluates meaningful choice, branch distinction, state tracking, consequence, convergence, replay value,
+  continuity, and avoidance of cosmetic choices.
+origin: user_inventory_refined
+owner_domains:
+- form.interactive_or_branching_fiction
+artifact_types:
+- dramatic_writing
+valid_scopes:
+- any
+activation: Attach when interactive or branching fiction is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: form.drama.interactive_or_branching_fiction.quality
+  type: group
+  title: Interactive or branching fiction checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: form.drama.interactive_or_branching_fiction.choice_meaning
+    type: question
+    criterion_key: form.drama.interactive_or_branching_fiction.choice_meaning
+    text: Do player choices alter state, information, relationship, route, or outcome in meaningful ways?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.drama.interactive_or_branching_fiction.branch_distinction
+    type: question
+    criterion_key: form.drama.interactive_or_branching_fiction.branch_distinction
+    text: Are branches substantively distinct rather than cosmetically reworded?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.drama.interactive_or_branching_fiction.state_tracking
+    type: question
+    criterion_key: form.drama.interactive_or_branching_fiction.state_tracking
+    text: Are variables, inventory, flags, relationships, and prior choices tracked consistently?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.drama.interactive_or_branching_fiction.consequence
+    type: question
+    criterion_key: form.drama.interactive_or_branching_fiction.consequence
+    text: Are consequences legible enough for choices to feel consequential without always being predictable?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.drama.interactive_or_branching_fiction.convergence
+    type: question
+    criterion_key: form.drama.interactive_or_branching_fiction.convergence
+    text: When branches reconverge, does convergence preserve meaningful prior differences?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.drama.interactive_or_branching_fiction.agency
+    type: question
+    criterion_key: form.drama.interactive_or_branching_fiction.agency
+    text: Does the player retain genuine agency rather than being punished for not guessing the author's preferred
+      path?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.drama.interactive_or_branching_fiction.replay
+    type: question
+    criterion_key: form.drama.interactive_or_branching_fiction.replay
+    text: Does replay reveal worthwhile variation or new understanding?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.drama.interactive_or_branching_fiction.continuity
+    type: question
+    criterion_key: form.drama.interactive_or_branching_fiction.continuity
+    text: Does every reachable path remain narratively and logically coherent?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- fein_et_al_2026_litbench
+- wu_et_al_2025_writingbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates meaningful choice, branch distinction, state tracking, consequence, convergence, replay
+  value, continuity, and avoidance of cosmetic choices.

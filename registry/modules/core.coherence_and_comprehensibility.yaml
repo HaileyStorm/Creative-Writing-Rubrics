@@ -1,0 +1,147 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: core.coherence_and_comprehensibility
+version: 1
+title: Coherence and comprehensibility
+kind: base
+description: Evaluates whether the reader can follow the language, events, references, logic, and transitions without
+  unintended confusion. Intentional ambiguity, fragmentation, or surrealism must not be treated as automatic failure.
+origin: user_inventory_refined
+owner_domains:
+- coherence
+artifact_types:
+- any
+valid_scopes:
+- any
+activation: Attach to every substantive execution.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: core.coherence_and_comprehensibility.quality
+  type: group
+  title: Coherence and comprehensibility
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: core.coherence_and_comprehensibility.sentence_meaning
+    type: question
+    criterion_key: core.coherence_and_comprehensibility.sentence_meaning
+    text: Can each sentence or line be understood without unintended grammatical or semantic breakdown?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.coherence_and_comprehensibility.referents
+    type: question
+    criterion_key: core.coherence_and_comprehensibility.referents
+    text: Can the reader identify what pronouns, deictic terms, and references point to?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.coherence_and_comprehensibility.local_sequence
+    type: question
+    criterion_key: core.coherence_and_comprehensibility.local_sequence
+    text: Do adjacent actions, ideas, or images connect in a followable sequence?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.coherence_and_comprehensibility.global_sequence
+    type: question
+    criterion_key: core.coherence_and_comprehensibility.global_sequence
+    text: Does the artifact maintain a followable larger progression at the available scope?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.coherence_and_comprehensibility.transitions
+    type: question
+    criterion_key: core.coherence_and_comprehensibility.transitions
+    text: Are transitions sufficient for the reader to recognize changes of time, place, speaker, mode, or idea?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.coherence_and_comprehensibility.intentional_difficulty
+    type: question
+    criterion_key: core.coherence_and_comprehensibility.intentional_difficulty
+    text: When the work is ambiguous, fragmented, surreal, or difficult, is there evidence that the difficulty is
+      controlled and artistically functional?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.coherence_and_comprehensibility.no_drift
+    type: question
+    criterion_key: core.coherence_and_comprehensibility.no_drift
+    text: Does the work avoid incoherent drift in which details, claims, or images accumulate without a recoverable
+      relationship?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- vaezi_rezaei_2018
+- carey_davidow_williams_2022
+- gomez_rodriguez_williams_2023
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates whether the reader can follow the language, events, references, logic, and transitions
+  without unintended confusion. Intentional ambiguity, fragmentation, or surrealism must not be treated as automatic
+  failure.

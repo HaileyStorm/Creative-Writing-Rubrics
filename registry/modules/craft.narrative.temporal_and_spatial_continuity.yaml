@@ -1,0 +1,154 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: craft.narrative.temporal_and_spatial_continuity
+version: 1
+title: Temporal and spatial continuity
+kind: craft
+description: Tracks chronology, elapsed time, travel, entrances and exits, object locations, physical orientation,
+  and other scene logistics.
+origin: user_inventory_refined
+owner_domains:
+- narrative.temporal_and_spatial_continuity
+artifact_types:
+- prose_fiction
+- creative_nonfiction
+- dramatic_writing
+- narrative_poetry
+- interactive_fiction
+valid_scopes:
+- beat
+- scene
+- chapter
+- sequence
+- act
+- manuscript
+- series
+activation: Attach when temporal and spatial continuity is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: craft.narrative.temporal_and_spatial_continuity.quality
+  type: group
+  title: Temporal and spatial continuity
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: craft.narrative.temporal_and_spatial_continuity.chronology
+    type: question
+    criterion_key: craft.narrative.temporal_and_spatial_continuity.chronology
+    text: Is the order of events internally consistent and identifiable where needed?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.temporal_and_spatial_continuity.elapsed_time
+    type: question
+    criterion_key: craft.narrative.temporal_and_spatial_continuity.elapsed_time
+    text: Are durations, deadlines, ages, and elapsed time mutually compatible?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.temporal_and_spatial_continuity.travel
+    type: question
+    criterion_key: craft.narrative.temporal_and_spatial_continuity.travel
+    text: Are travel time, distance, and route plausible under the established world conditions?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.temporal_and_spatial_continuity.entrances
+    type: question
+    criterion_key: craft.narrative.temporal_and_spatial_continuity.entrances
+    text: Are entrances, exits, and character locations tracked consistently?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.temporal_and_spatial_continuity.objects
+    type: question
+    criterion_key: craft.narrative.temporal_and_spatial_continuity.objects
+    text: Are important objects, clothing, injuries, and possessions located and transferred consistently?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.temporal_and_spatial_continuity.orientation
+    type: question
+    criterion_key: craft.narrative.temporal_and_spatial_continuity.orientation
+    text: Is physical orientation clear enough for action to remain intelligible?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.temporal_and_spatial_continuity.state_update
+    type: question
+    criterion_key: craft.narrative.temporal_and_spatial_continuity.state_update
+    text: Do later states correctly incorporate prior physical and temporal changes?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- vaezi_rezaei_2018
+- carey_davidow_williams_2022
+- gomez_rodriguez_williams_2023
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Tracks chronology, elapsed time, travel, entrances and exits, object locations, physical orientation,
+  and other scene logistics.

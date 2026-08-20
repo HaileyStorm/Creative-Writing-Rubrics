@@ -1,0 +1,171 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: model.release.judge_reliability
+version: 1
+title: Judge reliability
+kind: model_build
+description: Evaluates grading consistency, evidence quality, harshness calibration, order bias, verbosity bias,
+  self-preference, and agreement under repeated or permuted evaluations.
+origin: user_inventory_refined
+owner_domains:
+- model.judge_reliability
+artifact_types:
+- model_build
+valid_scopes:
+- any
+activation: Attach when judge reliability is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: model.release.judge_reliability.quality
+  type: group
+  title: Judge reliability checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: model.release.judge_reliability.human
+    type: question
+    criterion_key: model.release.judge_reliability.human
+    text: Does the judge show acceptable agreement with human or expert reference judgments on representative project
+      tasks?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.judge_reliability.repeat
+    type: question
+    criterion_key: model.release.judge_reliability.repeat
+    text: Are verdicts stable across repeated runs at deterministic settings?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.judge_reliability.position
+    type: question
+    criterion_key: model.release.judge_reliability.position
+    text: Are pairwise judgments stable after candidate-order swaps?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.judge_reliability.length
+    type: question
+    criterion_key: model.release.judge_reliability.length
+    text: Does the judge avoid preferring longer outputs when extra length adds no value?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.judge_reliability.verbosity
+    type: question
+    criterion_key: model.release.judge_reliability.verbosity
+    text: Does it avoid rewarding explanations, ornament, or surface polish over substantive quality?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.judge_reliability.self
+    type: question
+    criterion_key: model.release.judge_reliability.self
+    text: Is self- or model-family preference measured and controlled?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.judge_reliability.scope
+    type: question
+    criterion_key: model.release.judge_reliability.scope
+    text: Does reliability remain adequate across short, long, multimodal, and specialized forms assigned to it?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.judge_reliability.evidence
+    type: question
+    criterion_key: model.release.judge_reliability.evidence
+    text: Are question-level evidence and confidence accurate enough for automated decisions?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: model.release.judge_reliability.refusal
+    type: question
+    criterion_key: model.release.judge_reliability.refusal
+    text: Can the judge score all answer-required content without safety deflection?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- rao_callison_burch_2026_autorubric
+- longjudgebench_2026
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates grading consistency, evidence quality, harshness calibration, order bias, verbosity
+  bias, self-preference, and agreement under repeated or permuted evaluations.

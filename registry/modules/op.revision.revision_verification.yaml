@@ -1,0 +1,142 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: op.revision.revision_verification
+version: 1
+title: Revision verification
+kind: procedure
+description: Compares before, instructions, and after; confirms each requested change, identifies collateral changes,
+  checks new defects, and reports unresolved items.
+origin: user_inventory_refined
+owner_domains:
+- procedure.revision_verification
+artifact_types:
+- any
+valid_scopes:
+- operation
+activation: Attach when revision verification is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: op.revision.revision_verification.quality
+  type: group
+  title: Revision verification checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: op.revision.revision_verification.requests
+    type: question
+    criterion_key: op.revision.revision_verification.requests
+    text: Can every requested change be located in the revised artifact?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.revision_verification.success
+    type: question
+    criterion_key: op.revision.revision_verification.success
+    text: Does each change actually resolve the issue it targeted?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.revision_verification.collateral
+    type: question
+    criterion_key: op.revision.revision_verification.collateral
+    text: Are all collateral changes identified and authorized?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.revision_verification.preservation
+    type: question
+    criterion_key: op.revision.revision_verification.preservation
+    text: Are protected facts, voice, structure, and strengths preserved?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.revision_verification.new_defects
+    type: question
+    criterion_key: op.revision.revision_verification.new_defects
+    text: Is the revision free of new continuity, clarity, mechanics, and style defects?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.revision_verification.unresolved
+    type: question
+    criterion_key: op.revision.revision_verification.unresolved
+    text: Are unresolved or partially resolved items reported accurately?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.revision_verification.branch
+    type: question
+    criterion_key: op.revision.revision_verification.branch
+    text: Was the revision applied to the correct parent and branch?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- wu_et_al_2025_writingbench
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Compares before, instructions, and after; confirms each requested change, identifies collateral
+  changes, checks new defects, and reports unresolved items.

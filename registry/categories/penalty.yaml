@@ -1,0 +1,391 @@
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: penalty.purple_prose
+  version: 1
+  title: Purple prose penalty
+  kind: penalty
+  description: Bounded deduction for ornamental excess that obscures, mismatches, or fatigues.
+  origin: research_refinement
+  owner_domains:
+  - penalty.purple_prose
+  artifact_types:
+  - creative_text
+  valid_scopes:
+  - any
+  activation: Attach to creative prose and poetry bundles.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: penalty.purple_prose.controls
+    type: group
+    title: Purple-prose controls
+    score_mode: capped_penalty
+    weight: 1.0
+    children:
+    - id: penalty.purple_prose.clarity
+      type: question
+      criterion_key: penalty.purple_prose.clarity
+      text: Can the reader recover the central action, perception, thought, or emotion without fighting ornamental
+        language?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: penalty.purple_prose.proportion
+      type: question
+      criterion_key: penalty.purple_prose.proportion
+      text: Are figurative layers, modifiers, and elevated diction proportionate to the material being carried?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: penalty.purple_prose.specificity
+      type: question
+      criterion_key: penalty.purple_prose.specificity
+      text: Does ornate language remain specific rather than replacing perception with generalized grandeur or abstraction?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: penalty.purple_prose.tone
+      type: question
+      criterion_key: penalty.purple_prose.tone
+      text: Does stylistic lushness fit the speaker, project, scene intensity, genre, and form?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: penalty.purple_prose.metaphor
+      type: question
+      criterion_key: penalty.purple_prose.metaphor
+      text: Do metaphors and images cooperate rather than stack, mix, or compete?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: penalty.purple_prose.attention
+      type: question
+      criterion_key: penalty.purple_prose.attention
+      text: Does the language direct attention toward the artifact's subject rather than mainly toward its own fanciness?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: penalty.purple_prose.fatigue
+      type: question
+      criterion_key: penalty.purple_prose.fatigue
+      text: Across the evaluated scope, does lyrical intensity vary enough to avoid cumulative fatigue?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+    description: Default maximum deduction is five points. Bundle profiles may set four points for poetry and five
+      for prose. Deliberate maximalism passes when language remains precise, controlled, and functional.
+    cap_points: 5.0
+  modifier_actions: []
+  research_basis:
+  - fein_et_al_2026_litbench
+  - li_et_al_2026_poemetric
+  notes: []
+  profile_overrides:
+    caps:
+      short_prose: 5
+      long_prose: 5
+      poetry: 4
+      script: 4
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: penalty.repetition
+  version: 1
+  title: Repetition penalty
+  kind: penalty
+  description: Bounded deduction for lexical, syntactic, semantic, beat-level, and long-range repetition that adds
+    no transformed function.
+  origin: research_refinement
+  owner_domains:
+  - penalty.repetition
+  artifact_types:
+  - creative_text
+  - audio
+  valid_scopes:
+  - any
+  activation: Attach to substantive creative bundles.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: penalty.repetition.controls
+    type: group
+    title: Accidental-repetition controls
+    score_mode: capped_penalty
+    weight: 1.0
+    children:
+    - id: penalty.repetition.lexical
+      type: question
+      criterion_key: penalty.repetition.lexical
+      text: Are repeated words and phrases either unobtrusive or functionally transformed?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: penalty.repetition.syntax
+      type: question
+      criterion_key: penalty.repetition.syntax
+      text: Do sentence and paragraph openings, lengths, and syntactic shapes vary enough for the intended style?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: penalty.repetition.semantic
+      type: question
+      criterion_key: penalty.repetition.semantic
+      text: Does the artifact avoid restating the same proposition, emotion, or interpretation without adding pressure
+        or information?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: penalty.repetition.image
+      type: question
+      criterion_key: penalty.repetition.image
+      text: Do recurring images and motifs return with changed context or meaning?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: penalty.repetition.beat
+      type: question
+      criterion_key: penalty.repetition.beat
+      text: Does the artifact avoid repeating equivalent scene beats, actions, conflicts, and reactions?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: penalty.repetition.dialogue
+      type: question
+      criterion_key: penalty.repetition.dialogue
+      text: Do dialogue and internal monologue avoid circular loops that reproduce already established positions?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: penalty.repetition.explanation
+      type: question
+      criterion_key: penalty.repetition.explanation
+      text: Does the artifact avoid explaining a concrete moment again after its meaning is already legible?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: penalty.repetition.long_range
+      type: question
+      criterion_key: penalty.repetition.long_range
+      text: At long scope, do chapters, sections, or episodes avoid repeatedly resetting and re-establishing the
+        same narrative state?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The evaluated scope is chapter, sequence, act, manuscript, series, collection, or long-form
+        audio.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+    description: Default maximum deduction is eight points in long form, five in short prose, and six in poetry.
+      Refrain, motif, ritual, comic recurrence, and other intentional repetition pass when recurrence changes pressure,
+      relation, or meaning.
+    cap_points: 8.0
+  modifier_actions: []
+  research_basis:
+  - fein_et_al_2026_litbench
+  - li_et_al_2026_poemetric
+  notes: []
+  profile_overrides:
+    caps:
+      short_prose: 5
+      long_prose: 8
+      poetry: 6
+      script: 6
+      audio_long_form: 8
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: penalty.unflagged_incomplete
+  version: 1
+  title: Unflagged incomplete artifact penalty
+  kind: penalty
+  description: Deducts only when an artifact is presented as complete or its partial status is not disclosed.
+  origin: user_requirement
+  owner_domains:
+  - penalty.incomplete
+  artifact_types:
+  - any
+  valid_scopes:
+  - any
+  activation: Attach when the operation requests a complete unit or artifact status may be ambiguous.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: penalty.unflagged_incomplete.controls
+    type: group
+    title: Unflagged incompleteness controls
+    score_mode: capped_penalty
+    weight: 1.0
+    children:
+    - id: penalty.unflagged_incomplete.status
+      type: question
+      criterion_key: penalty.unflagged_incomplete.status
+      text: If the artifact is an excerpt, fragment, sample, partial draft, or intentionally unfinished, is that
+        status supplied to the judge?
+      pass_answer: 'YES'
+      weight: 3.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: penalty.unflagged_incomplete.unit
+      type: question
+      criterion_key: penalty.unflagged_incomplete.unit
+      text: If presented as complete, does the requested unit reach the minimum closure or changed state promised
+        by its form and operation?
+      pass_answer: 'YES'
+      weight: 3.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: penalty.unflagged_incomplete.truncation
+      type: question
+      criterion_key: penalty.unflagged_incomplete.truncation
+      text: Is the artifact free of accidental truncation, unresolved syntax, dropped sections, and abrupt stopping
+        caused by generation limits?
+      pass_answer: 'YES'
+      weight: 3.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+    description: Do not penalize a work merely for being an explicitly flagged excerpt or in-progress artifact.
+      Apply only when the artifact is presented as complete or its partial status is omitted.
+    cap_points: 8.0
+  modifier_actions: []
+  research_basis:
+  - cho_et_al_2026_bineval
+  notes: []

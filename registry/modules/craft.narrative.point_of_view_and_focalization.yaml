@@ -1,0 +1,154 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: craft.narrative.point_of_view_and_focalization
+version: 1
+title: Point of view and focalization
+kind: craft
+description: Evaluates viewpoint control, psychic distance, access to information, voice ownership, head-hopping,
+  narrator reliability, and intentional shifts.
+origin: user_inventory_refined
+owner_domains:
+- narrative.point_of_view_and_focalization
+artifact_types:
+- prose_fiction
+- creative_nonfiction
+- dramatic_writing
+- narrative_poetry
+- interactive_fiction
+valid_scopes:
+- beat
+- scene
+- chapter
+- sequence
+- act
+- manuscript
+- series
+activation: Attach when point of view and focalization is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: craft.narrative.point_of_view_and_focalization.quality
+  type: group
+  title: Point of view and focalization
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: craft.narrative.point_of_view_and_focalization.viewpoint
+    type: question
+    criterion_key: craft.narrative.point_of_view_and_focalization.viewpoint
+    text: Is the controlling viewpoint identifiable at each moment where clarity is required?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.point_of_view_and_focalization.distance
+    type: question
+    criterion_key: craft.narrative.point_of_view_and_focalization.distance
+    text: Is psychic distance controlled and appropriate to the intended effect?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.point_of_view_and_focalization.access
+    type: question
+    criterion_key: craft.narrative.point_of_view_and_focalization.access
+    text: Does the narration reveal only information available under the selected viewpoint rules?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.point_of_view_and_focalization.ownership
+    type: question
+    criterion_key: craft.narrative.point_of_view_and_focalization.ownership
+    text: Do perceptions, judgments, and metaphors belong plausibly to the focalizer or narrator?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.point_of_view_and_focalization.head_hopping
+    type: question
+    criterion_key: craft.narrative.point_of_view_and_focalization.head_hopping
+    text: Does the text avoid accidental shifts into another character's private knowledge?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.point_of_view_and_focalization.reliability
+    type: question
+    criterion_key: craft.narrative.point_of_view_and_focalization.reliability
+    text: If the narrator is limited or unreliable, is that limitation coherent and artistically legible?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.point_of_view_and_focalization.shift_intent
+    type: question
+    criterion_key: craft.narrative.point_of_view_and_focalization.shift_intent
+    text: Are viewpoint shifts clearly signaled and artistically justified?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- vaezi_rezaei_2018
+- carey_davidow_williams_2022
+- gomez_rodriguez_williams_2023
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates viewpoint control, psychic distance, access to information, voice ownership, head-hopping,
+  narrator reliability, and intentional shifts.

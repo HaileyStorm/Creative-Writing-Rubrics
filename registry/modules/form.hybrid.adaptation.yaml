@@ -1,0 +1,144 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: form.hybrid.adaptation
+version: 1
+title: Adaptation
+kind: artifact_form
+description: Evaluates preservation of essential identity, purposeful transformation for the new form, structural
+  equivalence where useful, and whether changes solve format-specific problems.
+origin: user_inventory_refined
+owner_domains:
+- form.adaptation
+artifact_types:
+- hybrid_writing
+- creative_nonfiction
+valid_scopes:
+- any
+activation: Attach when adaptation is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: form.hybrid.adaptation.quality
+  type: group
+  title: Adaptation checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: form.hybrid.adaptation.identity
+    type: question
+    criterion_key: form.hybrid.adaptation.identity
+    text: Does the adaptation preserve the source's essential identity, relationships, pressures, or thematic core
+      as defined by the brief?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.hybrid.adaptation.medium
+    type: question
+    criterion_key: form.hybrid.adaptation.medium
+    text: Does it transform material to exploit the affordances and constraints of the new medium?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.hybrid.adaptation.structure
+    type: question
+    criterion_key: form.hybrid.adaptation.structure
+    text: Does the new structure perform equivalent dramatic or thematic work where literal transfer would fail?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.hybrid.adaptation.selection
+    type: question
+    criterion_key: form.hybrid.adaptation.selection
+    text: Are omissions, condensations, additions, and rearrangements purposeful?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.hybrid.adaptation.character
+    type: question
+    criterion_key: form.hybrid.adaptation.character
+    text: Do adapted characters remain coherent despite medium-specific changes?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.hybrid.adaptation.new_value
+    type: question
+    criterion_key: form.hybrid.adaptation.new_value
+    text: Does the adaptation offer a reason to exist beyond faithful transcription?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.hybrid.adaptation.no_betrayal
+    type: question
+    criterion_key: form.hybrid.adaptation.no_betrayal
+    text: Does it avoid accidental changes that undermine the source's central logic or promise?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- fein_et_al_2026_litbench
+- wu_et_al_2025_writingbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates preservation of essential identity, purposeful transformation for the new form, structural
+  equivalence where useful, and whether changes solve format-specific problems.

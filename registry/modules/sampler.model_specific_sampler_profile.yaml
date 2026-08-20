@@ -1,0 +1,143 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: sampler.model_specific_sampler_profile
+version: 1
+title: Model-specific sampler profile
+kind: sampler
+description: Separately evaluates DS, ByteShape, and Escha because the appropriate sampling strength, entropy behavior,
+  speed budget, and MTP interaction will differ.
+origin: user_inventory_refined
+owner_domains:
+- sampler.model_specific_sampler_profile
+artifact_types:
+- generated_candidate
+- candidate_set
+valid_scopes:
+- any
+activation: Attach when model-specific sampler profile is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: sampler.model_specific_sampler_profile.quality
+  type: group
+  title: Model-specific sampler profile checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: sampler.model_specific_sampler_profile.model
+    type: question
+    criterion_key: sampler.model_specific_sampler_profile.model
+    text: Is the profile calibrated for the exact model build, quantization, context setting, and MTP configuration?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: sampler.model_specific_sampler_profile.strength
+    type: question
+    criterion_key: sampler.model_specific_sampler_profile.strength
+    text: Are sampling-strength ranges empirically calibrated for that model?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: sampler.model_specific_sampler_profile.entropy
+    type: question
+    criterion_key: sampler.model_specific_sampler_profile.entropy
+    text: Are entropy and uncertainty behaviors measured rather than assumed from another model family?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: sampler.model_specific_sampler_profile.speed
+    type: question
+    criterion_key: sampler.model_specific_sampler_profile.speed
+    text: Does the profile account for model-specific latency and speculative acceptance?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: sampler.model_specific_sampler_profile.forms
+    type: question
+    criterion_key: sampler.model_specific_sampler_profile.forms
+    text: Are profile differences across prose, poetry, dialogue, planning, and structured tasks represented?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: sampler.model_specific_sampler_profile.regression
+    type: question
+    criterion_key: sampler.model_specific_sampler_profile.regression
+    text: Does the profile include regression checks for artifacts, drift, and long-context behavior?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: sampler.model_specific_sampler_profile.version
+    type: question
+    criterion_key: sampler.model_specific_sampler_profile.version
+    text: Is the profile versioned and invalidated when the model or runtime changes materially?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- wu_et_al_2025_writingbench
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Separately evaluates DS, ByteShape, and Escha because the appropriate sampling strength, entropy
+  behavior, speed budget, and MTP interaction will differ.

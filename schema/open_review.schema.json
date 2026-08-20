@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/HaileyStorm/Creative-Writing-Rubrics/main/schema/open_review.schema.json",
+  "title": "Open review report",
+  "type": "object",
+  "required": [
+    "family",
+    "artifact_id",
+    "summary",
+    "findings"
+  ],
+  "properties": {
+    "family": {
+      "type": "string"
+    },
+    "artifact_id": {
+      "type": "string"
+    },
+    "bundle_id": {
+      "type": "string"
+    },
+    "summary": {
+      "type": "string"
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "severity",
+          "scope",
+          "claim",
+          "evidence"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "severity": {
+            "enum": [
+              "blocker",
+              "major",
+              "minor",
+              "note"
+            ]
+          },
+          "scope": {
+            "enum": [
+              "local",
+              "unit",
+              "whole_work"
+            ]
+          },
+          "claim": {
+            "type": "string"
+          },
+          "evidence": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "reference"
+              ],
+              "properties": {
+                "reference": {
+                  "type": "string"
+                },
+                "quote": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "recommendation": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "unassessable": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "rubric_report_ref": {
+      "type": "string",
+      "description": "Optional pointer to a stored HBQ-RS score report used as evidence."
+    }
+  },
+  "additionalProperties": true
+}

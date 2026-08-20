@@ -1,0 +1,143 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: op.critique.reader_orientation_audit
+version: 1
+title: Reader-orientation audit
+kind: procedure
+description: Tracks what the reader knows, what they likely infer, where confusion begins, and whether confusion
+  is purposeful.
+origin: user_inventory_refined
+owner_domains:
+- procedure.reader_orientation_audit
+artifact_types:
+- any
+valid_scopes:
+- operation
+activation: Attach when reader-orientation audit is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: op.critique.reader_orientation_audit.quality
+  type: group
+  title: Reader-orientation audit checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: op.critique.reader_orientation_audit.ledger
+    type: question
+    criterion_key: op.critique.reader_orientation_audit.ledger
+    text: Does the audit track what the intended reader knows, infers, expects, and misapprehends at each major
+      point?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.critique.reader_orientation_audit.confusion
+    type: question
+    criterion_key: op.critique.reader_orientation_audit.confusion
+    text: Does it locate where unintended confusion begins rather than only where it becomes obvious?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.critique.reader_orientation_audit.withholding
+    type: question
+    criterion_key: op.critique.reader_orientation_audit.withholding
+    text: Does it distinguish productive withholding from missing orientation?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.critique.reader_orientation_audit.references
+    type: question
+    criterion_key: op.critique.reader_orientation_audit.references
+    text: Does it check referents, spatial relations, chronology, terminology, and identity cues?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.critique.reader_orientation_audit.load
+    type: question
+    criterion_key: op.critique.reader_orientation_audit.load
+    text: Does it identify sections with excessive simultaneous names, concepts, locations, or unresolved questions?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.critique.reader_orientation_audit.audience
+    type: question
+    criterion_key: op.critique.reader_orientation_audit.audience
+    text: Does it apply the knowledge and genre expectations of the intended audience?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.critique.reader_orientation_audit.repair
+    type: question
+    criterion_key: op.critique.reader_orientation_audit.repair
+    text: Do proposed repairs preserve mystery, momentum, and voice while restoring necessary orientation?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- wu_et_al_2025_writingbench
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Tracks what the reader knows, what they likely infer, where confusion begins, and whether confusion
+  is purposeful.

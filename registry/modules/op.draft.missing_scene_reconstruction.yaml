@@ -1,0 +1,143 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: op.draft.missing_scene_reconstruction
+version: 1
+title: Missing-scene reconstruction
+kind: procedure
+description: Evaluates fit between known before/after states, necessary causal work, character progression, and
+  minimal contradiction.
+origin: user_inventory_refined
+owner_domains:
+- procedure.missing_scene_reconstruction
+artifact_types:
+- any
+valid_scopes:
+- operation
+activation: Attach when missing-scene reconstruction is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: op.draft.missing_scene_reconstruction.quality
+  type: group
+  title: Missing-scene reconstruction checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: op.draft.missing_scene_reconstruction.before
+    type: question
+    criterion_key: op.draft.missing_scene_reconstruction.before
+    text: Does the scene begin from every known before-state?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.draft.missing_scene_reconstruction.after
+    type: question
+    criterion_key: op.draft.missing_scene_reconstruction.after
+    text: Does it plausibly produce every required after-state?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.draft.missing_scene_reconstruction.causal_work
+    type: question
+    criterion_key: op.draft.missing_scene_reconstruction.causal_work
+    text: Does it perform the minimum necessary causal, emotional, informational, and logistical work between those
+      states?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.draft.missing_scene_reconstruction.character
+    type: question
+    criterion_key: op.draft.missing_scene_reconstruction.character
+    text: Does the transition arise through credible character action and response?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.draft.missing_scene_reconstruction.voice
+    type: question
+    criterion_key: op.draft.missing_scene_reconstruction.voice
+    text: Does it fit surrounding voice, style, and pacing?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.draft.missing_scene_reconstruction.canon
+    type: question
+    criterion_key: op.draft.missing_scene_reconstruction.canon
+    text: Does it avoid contradicting later facts or knowledge states?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.draft.missing_scene_reconstruction.no_excess
+    type: question
+    criterion_key: op.draft.missing_scene_reconstruction.no_excess
+    text: Does it avoid adding new obligations or subplots not required by the gap?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- wu_et_al_2025_writingbench
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates fit between known before/after states, necessary causal work, character progression,
+  and minimal contradiction.

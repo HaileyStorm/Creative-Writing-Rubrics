@@ -1,0 +1,147 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: core.economy_and_relevance
+version: 1
+title: Economy and relevance
+kind: base
+description: Evaluates whether each element earns its place, whether repetition adds force or merely repeats, and
+  whether detail serves the operation. “Economy” must not be misused to flatten lyrical, maximalist, or deliberately
+  digressive work.
+origin: user_inventory_refined
+owner_domains:
+- economy_relevance
+artifact_types:
+- any
+valid_scopes:
+- any
+activation: Attach to every substantive execution.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: core.economy_and_relevance.quality
+  type: group
+  title: Economy and relevance
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: core.economy_and_relevance.earns_place
+    type: question
+    criterion_key: core.economy_and_relevance.earns_place
+    text: Does each substantial passage, beat, image, line, or detail perform a useful function?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.economy_and_relevance.no_restatement
+    type: question
+    criterion_key: core.economy_and_relevance.no_restatement
+    text: Does the artifact avoid restating the same information, image, or emotional conclusion without added force
+      or development?
+    pass_answer: 'YES'
+    weight: 2.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.economy_and_relevance.functional_repetition
+    type: question
+    criterion_key: core.economy_and_relevance.functional_repetition
+    text: When material repeats, does the recurrence alter meaning, rhythm, pressure, or expectation?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.economy_and_relevance.detail_relevance
+    type: question
+    criterion_key: core.economy_and_relevance.detail_relevance
+    text: Are details relevant to character, setting, action, atmosphere, theme, or the requested operation?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.economy_and_relevance.digression
+    type: question
+    criterion_key: core.economy_and_relevance.digression
+    text: When the work digresses, does the digression create an intended structural, tonal, or thematic benefit?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.economy_and_relevance.length_fit
+    type: question
+    criterion_key: core.economy_and_relevance.length_fit
+    text: Is the artifact's length proportionate to its form, scope, purpose, and stage of development?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: core.economy_and_relevance.no_flattening
+    type: question
+    criterion_key: core.economy_and_relevance.no_flattening
+    text: Does economy avoid flattening deliberate lyricism, maximalism, recurrence, or contemplative pace?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- vaezi_rezaei_2018
+- carey_davidow_williams_2022
+- gomez_rodriguez_williams_2023
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates whether each element earns its place, whether repetition adds force or merely repeats,
+  and whether detail serves the operation. “Economy” must not be misused to flatten lyrical, maximalist, or deliberately
+  digressive work.

@@ -1,0 +1,142 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: form.multimodal.accessibility_metadata
+version: 1
+title: Accessibility metadata
+kind: multimodal_artifact
+description: Research-informed binary rubric for accessibility metadata.
+origin: research_expansion
+owner_domains:
+- multimodal.accessibility_metadata
+artifact_types:
+- multimodal_asset
+valid_scopes:
+- asset
+- scene
+- sequence
+- work
+- project
+activation: Attach when accessibility metadata is the active form, asset, or evaluation concern.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 2
+  project_sources: source text, image references, audio references, timeline, and asset metadata
+  modalities_required:
+  - text
+  - image
+  - audio_as_applicable
+tree:
+- id: form.multimodal.accessibility_metadata.quality
+  type: group
+  title: Accessibility metadata checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: form.multimodal.accessibility_metadata.alt
+    type: question
+    criterion_key: form.multimodal.accessibility_metadata.alt
+    text: Does every meaningful image have concise, accurate alt text suited to its context?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.multimodal.accessibility_metadata.decorative
+    type: question
+    criterion_key: form.multimodal.accessibility_metadata.decorative
+    text: Are decorative images correctly marked so they do not create noise?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.multimodal.accessibility_metadata.captions
+    type: question
+    criterion_key: form.multimodal.accessibility_metadata.captions
+    text: Are captions and transcripts accurate and synchronized?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.multimodal.accessibility_metadata.speaker
+    type: question
+    criterion_key: form.multimodal.accessibility_metadata.speaker
+    text: Do audio captions identify speakers and meaningful non-speech sound where needed?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.multimodal.accessibility_metadata.spoilers
+    type: question
+    criterion_key: form.multimodal.accessibility_metadata.spoilers
+    text: Does accessibility text avoid unnecessary spoilers while conveying equivalent information?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.multimodal.accessibility_metadata.navigation
+    type: question
+    criterion_key: form.multimodal.accessibility_metadata.navigation
+    text: Are headings, landmarks, controls, and asset labels navigable?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.multimodal.accessibility_metadata.language
+    type: question
+    criterion_key: form.multimodal.accessibility_metadata.language
+    text: Are accessibility descriptions clear and free of generic AI image narration?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- zhuang_et_al_2025_vistorybench
+- real_world_voice_eq_bench_2026
+notes: []

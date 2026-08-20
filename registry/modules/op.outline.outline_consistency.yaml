@@ -1,0 +1,155 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: op.outline.outline_consistency
+version: 1
+title: Outline consistency
+kind: procedure
+description: Checks contradictions among outline levels, sheets, existing manuscript, timeline, and user decisions.
+origin: user_inventory_refined
+owner_domains:
+- procedure.outline_consistency
+artifact_types:
+- any
+valid_scopes:
+- operation
+activation: Attach when outline consistency is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: op.outline.outline_consistency.quality
+  type: group
+  title: Outline consistency checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: op.outline.outline_consistency.levels
+    type: question
+    criterion_key: op.outline.outline_consistency.levels
+    text: Are coarse, medium, and fine outline levels mutually compatible?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.outline.outline_consistency.sheets
+    type: question
+    criterion_key: op.outline.outline_consistency.sheets
+    text: Is the outline compatible with authoritative character, setting, relationship, world, and item sheets?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.outline.outline_consistency.manuscript
+    type: question
+    criterion_key: op.outline.outline_consistency.manuscript
+    text: Is it compatible with already approved manuscript material?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.outline.outline_consistency.timeline
+    type: question
+    criterion_key: op.outline.outline_consistency.timeline
+    text: Is it compatible with the current timeline and state ledger?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.outline.outline_consistency.decisions
+    type: question
+    criterion_key: op.outline.outline_consistency.decisions
+    text: Does it preserve current user decisions and superseding notes?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.outline.outline_consistency.knowledge
+    type: question
+    criterion_key: op.outline.outline_consistency.knowledge
+    text: Does each planned action respect character knowledge and availability?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.outline.outline_consistency.conflicts
+    type: question
+    criterion_key: op.outline.outline_consistency.conflicts
+    text: Are unresolved contradictions identified rather than silently reconciled?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.outline.outline_consistency.authority
+    type: question
+    criterion_key: op.outline.outline_consistency.authority
+    text: Is the authoritative version clear when multiple outline branches exist?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- wu_et_al_2025_writingbench
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Checks contradictions among outline levels, sheets, existing manuscript, timeline, and user
+  decisions.

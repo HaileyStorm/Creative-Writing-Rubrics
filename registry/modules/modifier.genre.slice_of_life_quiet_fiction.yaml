@@ -1,0 +1,156 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: modifier.genre.slice_of_life_quiet_fiction
+version: 1
+title: Slice-of-life / quiet fiction
+kind: modifier
+description: Observation, relational movement, atmosphere, micro-change, implication, and selection, without demanding
+  thriller-like escalation.
+origin: user_inventory_refined
+owner_domains:
+- genre.slice_of_life_quiet_fiction
+artifact_types:
+- creative_text
+valid_scopes:
+- any
+activation: Attach when slice-of-life / quiet fiction is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: modifier.genre.slice_of_life_quiet_fiction.quality
+  type: group
+  title: Slice-of-life / quiet fiction contract
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: modifier.genre.slice_of_life_quiet_fiction.observation
+    type: question
+    criterion_key: modifier.genre.slice_of_life_quiet_fiction.observation
+    text: Does the work select and observe ordinary material with specificity?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.slice_of_life_quiet_fiction.relationship
+    type: question
+    criterion_key: modifier.genre.slice_of_life_quiet_fiction.relationship
+    text: Do small interactions alter relational understanding or texture?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.slice_of_life_quiet_fiction.atmosphere
+    type: question
+    criterion_key: modifier.genre.slice_of_life_quiet_fiction.atmosphere
+    text: Does atmosphere carry active emotional or thematic weight?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.slice_of_life_quiet_fiction.microchange
+    type: question
+    criterion_key: modifier.genre.slice_of_life_quiet_fiction.microchange
+    text: Does something shift in attention, routine, knowledge, desire, or relation?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.slice_of_life_quiet_fiction.implication
+    type: question
+    criterion_key: modifier.genre.slice_of_life_quiet_fiction.implication
+    text: Does the work imply larger lives and pressures beyond the selected moment?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.slice_of_life_quiet_fiction.shape
+    type: question
+    criterion_key: modifier.genre.slice_of_life_quiet_fiction.shape
+    text: Does the quiet unit possess intentional shape and release?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.slice_of_life_quiet_fiction.no_false_escalation
+    type: question
+    criterion_key: modifier.genre.slice_of_life_quiet_fiction.no_false_escalation
+    text: Does it avoid inserting disproportionate conflict merely to satisfy a conventional plot checklist?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: diagnostic
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.slice_of_life_quiet_fiction.no_inertia
+    type: question
+    criterion_key: modifier.genre.slice_of_life_quiet_fiction.no_inertia
+    text: Does quietness avoid becoming inert repetition or unselected daily detail?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- fein_et_al_2026_litbench
+- wu_et_al_2025_writingbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Observation, relational movement, atmosphere, micro-change, implication, and selection, without
+  demanding thriller-like escalation.

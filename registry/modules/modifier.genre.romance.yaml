@@ -1,0 +1,159 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: modifier.genre.romance
+version: 1
+title: Romance
+kind: modifier
+description: Relationship development, attraction, compatibility, conflict, agency, emotional progression, chemistry,
+  genre promise, and earned resolution appropriate to the subtype.
+origin: user_inventory_refined
+owner_domains:
+- genre.romance
+artifact_types:
+- creative_text
+valid_scopes:
+- any
+activation: Attach when romance is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: modifier.genre.romance.quality
+  type: group
+  title: Romance contract
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: modifier.genre.romance.agency
+    type: question
+    criterion_key: modifier.genre.romance.agency
+    text: Do both central partners possess meaningful agency, goals, and boundaries?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.romance.attraction
+    type: question
+    criterion_key: modifier.genre.romance.attraction
+    text: Is attraction made specific through attention, behavior, values, physicality, or shared experience?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.romance.compatibility
+    type: question
+    criterion_key: modifier.genre.romance.compatibility
+    text: Does the work establish plausible compatibility beyond stated desire?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.romance.chemistry
+    type: question
+    criterion_key: modifier.genre.romance.chemistry
+    text: Do interaction, rhythm, friction, vulnerability, and subtext create chemistry?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.romance.progression
+    type: question
+    criterion_key: modifier.genre.romance.progression
+    text: Does the relationship change through earned stages rather than switch states by authorial declaration?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.romance.conflict
+    type: question
+    criterion_key: modifier.genre.romance.conflict
+    text: Does romantic conflict arise from credible needs, histories, values, or circumstances rather than avoidable
+      noncommunication alone?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.romance.resolution
+    type: question
+    criterion_key: modifier.genre.romance.resolution
+    text: Does the ending fulfill the subtype's promised relationship resolution or intentionally signal a different
+      contract?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.romance.no_coercion_blindness
+    type: question
+    criterion_key: modifier.genre.romance.no_coercion_blindness
+    text: When power imbalance, coercion, or harm is part of the story, does the narrative understand its relational
+      consequences rather than accidentally romanticize them?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- fein_et_al_2026_litbench
+- wu_et_al_2025_writingbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Relationship development, attraction, compatibility, conflict, agency, emotional progression,
+  chemistry, genre promise, and earned resolution appropriate to the subtype.

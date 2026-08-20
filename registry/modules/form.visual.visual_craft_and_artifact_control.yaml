@@ -1,0 +1,153 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: form.visual.visual_craft_and_artifact_control
+version: 1
+title: Visual craft and artifact control
+kind: visual_artifact
+description: Research-informed binary rubric for visual craft and artifact control.
+origin: research_expansion
+owner_domains:
+- visual.visual_craft_and_artifact_control
+artifact_types:
+- visual_asset
+valid_scopes:
+- asset
+- panel
+- sequence
+- project
+activation: Attach when visual craft and artifact control is the active form, asset, or evaluation concern.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 2
+  project_sources: character references, style references, scene text, and asset metadata when supplied
+  modalities_required:
+  - image
+tree:
+- id: form.visual.visual_craft_and_artifact_control.quality
+  type: group
+  title: Visual craft and artifact control checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: form.visual.visual_craft_and_artifact_control.composition
+    type: question
+    criterion_key: form.visual.visual_craft_and_artifact_control.composition
+    text: Is composition balanced, legible, and intentional?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.visual.visual_craft_and_artifact_control.value
+    type: question
+    criterion_key: form.visual.visual_craft_and_artifact_control.value
+    text: Do value, contrast, and focal hierarchy support readability?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.visual.visual_craft_and_artifact_control.color
+    type: question
+    criterion_key: form.visual.visual_craft_and_artifact_control.color
+    text: Do color relationships support atmosphere and hierarchy?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.visual.visual_craft_and_artifact_control.perspective
+    type: question
+    criterion_key: form.visual.visual_craft_and_artifact_control.perspective
+    text: Are perspective, scale, and spatial geometry coherent?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.visual.visual_craft_and_artifact_control.anatomy
+    type: question
+    criterion_key: form.visual.visual_craft_and_artifact_control.anatomy
+    text: Are anatomy, hands, faces, and object structures free of distracting errors?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.visual.visual_craft_and_artifact_control.edges
+    type: question
+    criterion_key: form.visual.visual_craft_and_artifact_control.edges
+    text: Are edges, textures, and detail density controlled?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.visual.visual_craft_and_artifact_control.artifacts
+    type: question
+    criterion_key: form.visual.visual_craft_and_artifact_control.artifacts
+    text: Is the image free of duplicated features, malformed text, seams, watermarks, and generation artifacts?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.visual.visual_craft_and_artifact_control.resolution
+    type: question
+    criterion_key: form.visual.visual_craft_and_artifact_control.resolution
+    text: Does resolution and technical delivery suit the intended use?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- zhuang_et_al_2025_vistorybench
+- lin_et_al_2026_storybook_consistency
+notes: []

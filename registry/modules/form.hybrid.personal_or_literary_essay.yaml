@@ -1,0 +1,143 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: form.hybrid.personal_or_literary_essay
+version: 1
+title: Personal or literary essay
+kind: artifact_form
+description: Evaluates inquiry, association, argument, image, voice, structural movement, intellectual honesty,
+  and whether reflection develops rather than circles.
+origin: user_inventory_refined
+owner_domains:
+- form.personal_or_literary_essay
+artifact_types:
+- hybrid_writing
+- creative_nonfiction
+valid_scopes:
+- any
+activation: Attach when personal or literary essay is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: form.hybrid.personal_or_literary_essay.quality
+  type: group
+  title: Personal or literary essay checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: form.hybrid.personal_or_literary_essay.inquiry
+    type: question
+    criterion_key: form.hybrid.personal_or_literary_essay.inquiry
+    text: Does the essay pursue a genuine question or discovery rather than announce a predetermined lesson?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.hybrid.personal_or_literary_essay.association
+    type: question
+    criterion_key: form.hybrid.personal_or_literary_essay.association
+    text: Do associative moves create intelligible and generative relations?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.hybrid.personal_or_literary_essay.argument
+    type: question
+    criterion_key: form.hybrid.personal_or_literary_essay.argument
+    text: Does an implicit or explicit line of thought develop across the essay?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.hybrid.personal_or_literary_essay.image
+    type: question
+    criterion_key: form.hybrid.personal_or_literary_essay.image
+    text: Do concrete scenes and images carry intellectual as well as decorative weight?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.hybrid.personal_or_literary_essay.voice
+    type: question
+    criterion_key: form.hybrid.personal_or_literary_essay.voice
+    text: Does the essay possess a specific, trustworthy, and self-aware intelligence?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.hybrid.personal_or_literary_essay.honesty
+    type: question
+    criterion_key: form.hybrid.personal_or_literary_essay.honesty
+    text: Does it examine its own assumptions, stakes, and limitations?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.hybrid.personal_or_literary_essay.movement
+    type: question
+    criterion_key: form.hybrid.personal_or_literary_essay.movement
+    text: Does reflection progress rather than circle the same conclusion?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- fein_et_al_2026_litbench
+- wu_et_al_2025_writingbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates inquiry, association, argument, image, voice, structural movement, intellectual honesty,
+  and whether reflection develops rather than circles.

@@ -1,0 +1,156 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: op.outline.outline_to_manuscript_alignment
+version: 1
+title: Outline-to-manuscript alignment
+kind: procedure
+description: Evaluates how the drafted work fulfills, improves upon, or intentionally departs from the outline;
+  divergence is not automatically a defect.
+origin: user_inventory_refined
+owner_domains:
+- procedure.outline_to_manuscript_alignment
+artifact_types:
+- any
+valid_scopes:
+- operation
+activation: Attach when outline-to-manuscript alignment is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: op.outline.outline_to_manuscript_alignment.quality
+  type: group
+  title: Outline-to-manuscript alignment checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: op.outline.outline_to_manuscript_alignment.function
+    type: question
+    criterion_key: op.outline.outline_to_manuscript_alignment.function
+    text: Does the draft fulfill the intended function of the relevant outline unit?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.outline.outline_to_manuscript_alignment.turns
+    type: question
+    criterion_key: op.outline.outline_to_manuscript_alignment.turns
+    text: Are required events, decisions, revelations, and changed states realized?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.outline.outline_to_manuscript_alignment.arc
+    type: question
+    criterion_key: op.outline.outline_to_manuscript_alignment.arc
+    text: Does the draft preserve the intended character and relationship movement?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.outline.outline_to_manuscript_alignment.causality
+    type: question
+    criterion_key: op.outline.outline_to_manuscript_alignment.causality
+    text: Does it preserve or improve the outline's causal logic?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.outline.outline_to_manuscript_alignment.invention
+    type: question
+    criterion_key: op.outline.outline_to_manuscript_alignment.invention
+    text: Does added invention remain compatible with higher-level structural intent and canon?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.outline.outline_to_manuscript_alignment.departure
+    type: question
+    criterion_key: op.outline.outline_to_manuscript_alignment.departure
+    text: When the draft departs from the outline, is the departure purposeful and superior or explicitly authorized?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.outline.outline_to_manuscript_alignment.propagation
+    type: question
+    criterion_key: op.outline.outline_to_manuscript_alignment.propagation
+    text: Are accepted departures propagated to dependent outline and project artifacts?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.outline.outline_to_manuscript_alignment.no_mechanical
+    type: question
+    criterion_key: op.outline.outline_to_manuscript_alignment.no_mechanical
+    text: Does the prose avoid feeling like a sentence-by-sentence expansion of bullets?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- wu_et_al_2025_writingbench
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates how the drafted work fulfills, improves upon, or intentionally departs from the outline;
+  divergence is not automatically a defect.

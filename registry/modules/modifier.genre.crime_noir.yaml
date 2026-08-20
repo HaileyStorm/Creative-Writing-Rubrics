@@ -1,0 +1,142 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: modifier.genre.crime_noir
+version: 1
+title: Crime / noir
+kind: modifier
+description: Moral pressure, causality, social texture, voice, consequence, atmosphere, and avoidance of imitation
+  without substantive perspective.
+origin: user_inventory_refined
+owner_domains:
+- genre.crime_noir
+artifact_types:
+- creative_text
+valid_scopes:
+- any
+activation: Attach when crime / noir is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: modifier.genre.crime_noir.quality
+  type: group
+  title: Crime / noir contract
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: modifier.genre.crime_noir.causality
+    type: question
+    criterion_key: modifier.genre.crime_noir.causality
+    text: Do crimes, investigations, betrayals, and consequences follow a coherent causal chain?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.crime_noir.moral_pressure
+    type: question
+    criterion_key: modifier.genre.crime_noir.moral_pressure
+    text: Does the work create specific moral pressure rather than generic cynicism?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.crime_noir.social_texture
+    type: question
+    criterion_key: modifier.genre.crime_noir.social_texture
+    text: Does crime emerge from a concrete social, economic, institutional, or neighborhood context?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.crime_noir.voice
+    type: question
+    criterion_key: modifier.genre.crime_noir.voice
+    text: Does the voice possess perspective rather than merely imitate familiar noir cadences?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.crime_noir.atmosphere
+    type: question
+    criterion_key: modifier.genre.crime_noir.atmosphere
+    text: Does atmosphere support danger, corruption, isolation, desire, or fatalism through specific material detail?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.crime_noir.consequence
+    type: question
+    criterion_key: modifier.genre.crime_noir.consequence
+    text: Do violence and criminal choices carry durable consequences?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.crime_noir.no_pastiche
+    type: question
+    criterion_key: modifier.genre.crime_noir.no_pastiche
+    text: Does the work avoid empty trench-coat, rain, cigarette, femme-fatale, and hardboiled imitation?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- fein_et_al_2026_litbench
+- wu_et_al_2025_writingbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Moral pressure, causality, social texture, voice, consequence, atmosphere, and avoidance of
+  imitation without substantive perspective.

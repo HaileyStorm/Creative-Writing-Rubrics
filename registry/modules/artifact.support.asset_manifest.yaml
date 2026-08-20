@@ -1,0 +1,136 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: artifact.support.asset_manifest
+version: 1
+title: Asset manifest
+kind: support_artifact
+description: Research-informed binary rubric for asset manifest.
+origin: research_expansion
+owner_domains:
+- support.asset_manifest
+artifact_types:
+- planning_artifact
+- reference_artifact
+valid_scopes:
+- artifact
+- project
+activation: Attach when asset manifest is the active form, asset, or evaluation concern.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: artifact.support.asset_manifest.quality
+  type: group
+  title: Asset manifest checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: artifact.support.asset_manifest.identity
+    type: question
+    criterion_key: artifact.support.asset_manifest.identity
+    text: Does every text, image, audio, map, and support asset have a stable ID?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.asset_manifest.version
+    type: question
+    criterion_key: artifact.support.asset_manifest.version
+    text: Are versions, branches, parents, and approval status recorded?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.asset_manifest.source
+    type: question
+    criterion_key: artifact.support.asset_manifest.source
+    text: Are source files, prompts, models, settings, and licenses recorded where relevant?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.asset_manifest.links
+    type: question
+    criterion_key: artifact.support.asset_manifest.links
+    text: Are assets linked to characters, locations, scenes, chapters, and timeline states?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.asset_manifest.technical
+    type: question
+    criterion_key: artifact.support.asset_manifest.technical
+    text: Are paths, hashes, dimensions, duration, formats, and metadata recorded?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.asset_manifest.authority
+    type: question
+    criterion_key: artifact.support.asset_manifest.authority
+    text: Is the canonical or selected asset distinguishable from candidates and deprecated versions?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.asset_manifest.missing
+    type: question
+    criterion_key: artifact.support.asset_manifest.missing
+    text: Are missing, stale, and conflicting assets detectable?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- wu_et_al_2025_writingbench
+- cho_et_al_2026_bineval
+notes: []

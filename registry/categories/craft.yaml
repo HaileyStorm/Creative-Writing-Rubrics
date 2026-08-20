@@ -1,0 +1,3187 @@
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: craft.narrative.character_arc
+  version: 1
+  title: Character arc
+  kind: craft
+  description: Evaluates change, resistance to change, turning points, accumulated consequences, and whether the
+    arc develops at an appropriate rate across the selected scope. A scene extract should be judged for contribution
+    to an arc, not for completing one.
+  origin: user_inventory_refined
+  owner_domains:
+  - narrative.character_arc
+  artifact_types:
+  - prose_fiction
+  - creative_nonfiction
+  - dramatic_writing
+  - narrative_poetry
+  - interactive_fiction
+  valid_scopes:
+  - beat
+  - scene
+  - chapter
+  - sequence
+  - act
+  - manuscript
+  - series
+  activation: Attach when character arc is relevant to the active artifact or operation.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: craft.narrative.character_arc.quality
+    type: group
+    title: Character arc
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: craft.narrative.character_arc.baseline
+      type: question
+      criterion_key: craft.narrative.character_arc.baseline
+      text: Is the character's relevant starting state or prior state clear enough to measure change?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.character_arc.pressure
+      type: question
+      criterion_key: craft.narrative.character_arc.pressure
+      text: Does the work apply pressure that could plausibly produce, resist, or reveal change?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.character_arc.resistance
+      type: question
+      criterion_key: craft.narrative.character_arc.resistance
+      text: Does the character resist, misunderstand, or negotiate change in a way consistent with their motives?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.character_arc.turns
+      type: question
+      criterion_key: craft.narrative.character_arc.turns
+      text: Are major arc turns caused by accumulated experience, choice, revelation, or consequence?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.character_arc.consequences
+      type: question
+      criterion_key: craft.narrative.character_arc.consequences
+      text: Do earlier choices leave traces that shape later behavior?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.character_arc.rate
+      type: question
+      criterion_key: craft.narrative.character_arc.rate
+      text: Does the rate of change suit the scope and magnitude of the arc?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.character_arc.local_contribution
+      type: question
+      criterion_key: craft.narrative.character_arc.local_contribution
+      text: When judging an extract, does the unit make a legible contribution to the larger arc without being required
+        to complete it?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.character_arc.end_state
+      type: question
+      criterion_key: craft.narrative.character_arc.end_state
+      text: At whole-work scope, is the final character state meaningfully related to the initial state and intervening
+        pressures?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - cho_et_al_2026_bineval
+  - zhang_et_al_2026_rubricbench
+  - vaezi_rezaei_2018
+  - carey_davidow_williams_2022
+  - gomez_rodriguez_williams_2023
+  - fein_et_al_2026_litbench
+  notes:
+  - Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+  - YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+    labels.
+  source_description: Evaluates change, resistance to change, turning points, accumulated consequences, and whether
+    the arc develops at an appropriate rate across the selected scope. A scene extract should be judged for contribution
+    to an arc, not for completing one.
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: craft.narrative.characterization
+  version: 1
+  title: Characterization
+  kind: craft
+  description: Evaluates dimensionality, behavioral specificity, motives, contradictions, agency, development, distinction
+    among characters, and fidelity to character sheets and prior behavior.
+  origin: user_inventory_refined
+  owner_domains:
+  - narrative.characterization
+  artifact_types:
+  - prose_fiction
+  - creative_nonfiction
+  - dramatic_writing
+  - narrative_poetry
+  - interactive_fiction
+  valid_scopes:
+  - beat
+  - scene
+  - chapter
+  - sequence
+  - act
+  - manuscript
+  - series
+  activation: Attach when characterization is relevant to the active artifact or operation.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: craft.narrative.characterization.quality
+    type: group
+    title: Characterization
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: craft.narrative.characterization.dimensionality
+      type: question
+      criterion_key: craft.narrative.characterization.dimensionality
+      text: Do major characters possess multiple relevant traits, motives, pressures, or loyalties?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.characterization.behavior
+      type: question
+      criterion_key: craft.narrative.characterization.behavior
+      text: Are characters revealed through specific behavior, choices, attention, language, or relationships?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.characterization.motives
+      type: question
+      criterion_key: craft.narrative.characterization.motives
+      text: Are motives legible enough to make choices meaningful without being overexplained?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.characterization.contradiction
+      type: question
+      criterion_key: craft.narrative.characterization.contradiction
+      text: Do contradictions or mixed motives add credible complexity rather than random inconsistency?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.characterization.agency
+      type: question
+      criterion_key: craft.narrative.characterization.agency
+      text: Do important characters make consequential choices rather than functioning only as plot furniture?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.characterization.distinction
+      type: question
+      criterion_key: craft.narrative.characterization.distinction
+      text: Can characters be distinguished by more than names, labels, and superficial quirks?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.characterization.development
+      type: question
+      criterion_key: craft.narrative.characterization.development
+      text: At the available scope, is new character information, pressure, or change meaningfully developed?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.characterization.canon
+      type: question
+      criterion_key: craft.narrative.characterization.canon
+      text: Do character actions and voices remain faithful to supplied sheets and prior behavior unless change
+        is earned?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.characterization.no_trait_labels
+      type: question
+      criterion_key: craft.narrative.characterization.no_trait_labels
+      text: Does the text avoid relying on direct trait labels where dramatized evidence is needed?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - cho_et_al_2026_bineval
+  - zhang_et_al_2026_rubricbench
+  - vaezi_rezaei_2018
+  - carey_davidow_williams_2022
+  - gomez_rodriguez_williams_2023
+  - fein_et_al_2026_litbench
+  notes:
+  - Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+  - YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+    labels.
+  source_description: Evaluates dimensionality, behavioral specificity, motives, contradictions, agency, development,
+    distinction among characters, and fidelity to character sheets and prior behavior.
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: craft.narrative.continuity_and_canon_integrity
+  version: 1
+  title: Continuity and canon integrity
+  kind: craft
+  description: Checks characters, relationships, facts, terminology, world rules, chronology, unresolved threads,
+    prior promises, knowledge states, injuries, possessions, and other persistent state.
+  origin: user_inventory_refined
+  owner_domains:
+  - narrative.continuity_and_canon_integrity
+  artifact_types:
+  - prose_fiction
+  - creative_nonfiction
+  - dramatic_writing
+  - narrative_poetry
+  - interactive_fiction
+  valid_scopes:
+  - beat
+  - scene
+  - chapter
+  - sequence
+  - act
+  - manuscript
+  - series
+  activation: Attach when continuity and canon integrity is relevant to the active artifact or operation.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: craft.narrative.continuity_and_canon_integrity.quality
+    type: group
+    title: Continuity and canon integrity
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: craft.narrative.continuity_and_canon_integrity.characters
+      type: question
+      criterion_key: craft.narrative.continuity_and_canon_integrity.characters
+      text: Are character identities, traits, relationships, abilities, and histories consistent with authoritative
+        sources?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.continuity_and_canon_integrity.knowledge
+      type: question
+      criterion_key: craft.narrative.continuity_and_canon_integrity.knowledge
+      text: Does each character know only what they have learned or could reasonably infer?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.continuity_and_canon_integrity.facts
+      type: question
+      criterion_key: craft.narrative.continuity_and_canon_integrity.facts
+      text: Are established facts and terminology preserved?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.continuity_and_canon_integrity.world
+      type: question
+      criterion_key: craft.narrative.continuity_and_canon_integrity.world
+      text: Are world rules and institutional facts preserved?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.continuity_and_canon_integrity.chronology
+      type: question
+      criterion_key: craft.narrative.continuity_and_canon_integrity.chronology
+      text: Is chronology consistent with the canon timeline?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.continuity_and_canon_integrity.state
+      type: question
+      criterion_key: craft.narrative.continuity_and_canon_integrity.state
+      text: Are injuries, possessions, locations, commitments, and other persistent states correctly carried forward?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.continuity_and_canon_integrity.threads
+      type: question
+      criterion_key: craft.narrative.continuity_and_canon_integrity.threads
+      text: Are unresolved threads and prior promises tracked without accidental disappearance or premature closure?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.continuity_and_canon_integrity.supersession
+      type: question
+      criterion_key: craft.narrative.continuity_and_canon_integrity.supersession
+      text: When a later source supersedes an earlier one, does the artifact apply the current version?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.continuity_and_canon_integrity.conflicts
+      type: question
+      criterion_key: craft.narrative.continuity_and_canon_integrity.conflicts
+      text: Are unresolved canon conflicts surfaced rather than silently harmonized?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - cho_et_al_2026_bineval
+  - zhang_et_al_2026_rubricbench
+  - vaezi_rezaei_2018
+  - carey_davidow_williams_2022
+  - gomez_rodriguez_williams_2023
+  - fein_et_al_2026_litbench
+  notes:
+  - Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+  - YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+    labels.
+  source_description: Checks characters, relationships, facts, terminology, world rules, chronology, unresolved
+    threads, prior promises, knowledge states, injuries, possessions, and other persistent state.
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: craft.narrative.dialogue
+  version: 1
+  title: Dialogue
+  kind: craft
+  description: Covers voice differentiation, subtext, naturalness, dramatic purpose, rhythm, turn-taking, implication,
+    interruption, and the balance between dialogue and surrounding action.
+  origin: user_inventory_refined
+  owner_domains:
+  - narrative.dialogue
+  artifact_types:
+  - prose_fiction
+  - creative_nonfiction
+  - dramatic_writing
+  - narrative_poetry
+  - interactive_fiction
+  valid_scopes:
+  - beat
+  - scene
+  - chapter
+  - sequence
+  - act
+  - manuscript
+  - series
+  activation: Attach when dialogue is relevant to the active artifact or operation.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: craft.narrative.dialogue.quality
+    type: group
+    title: Dialogue
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: craft.narrative.dialogue.voice_distinction
+      type: question
+      criterion_key: craft.narrative.dialogue.voice_distinction
+      text: Can speakers be distinguished by syntax, diction, assumptions, rhythm, and aims rather than tags alone?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.dialogue.subtext
+      type: question
+      criterion_key: craft.narrative.dialogue.subtext
+      text: Does dialogue carry implication, pressure, or withheld meaning where the scene calls for it?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.dialogue.naturalness
+      type: question
+      criterion_key: craft.narrative.dialogue.naturalness
+      text: Does dialogue sound behaviorally credible for these speakers and circumstances without merely transcribing
+        real-world filler?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.dialogue.purpose
+      type: question
+      criterion_key: craft.narrative.dialogue.purpose
+      text: Does each substantial exchange perform dramatic, relational, informational, or tonal work?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.dialogue.rhythm
+      type: question
+      criterion_key: craft.narrative.dialogue.rhythm
+      text: Do turn length, interruption, silence, overlap, and response timing support the scene?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.dialogue.listening
+      type: question
+      criterion_key: craft.narrative.dialogue.listening
+      text: Do speakers respond to what was actually said or implied rather than delivering adjacent prepared speeches?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.dialogue.action_balance
+      type: question
+      criterion_key: craft.narrative.dialogue.action_balance
+      text: Is dialogue integrated with action, perception, and silence rather than floating in a vacuum?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.dialogue.no_exposition
+      type: question
+      criterion_key: craft.narrative.dialogue.no_exposition
+      text: Does the dialogue avoid implausible exposition, 'as you know' statements, and on-the-nose emotional
+        explanation?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - cho_et_al_2026_bineval
+  - zhang_et_al_2026_rubricbench
+  - vaezi_rezaei_2018
+  - carey_davidow_williams_2022
+  - gomez_rodriguez_williams_2023
+  - fein_et_al_2026_litbench
+  notes:
+  - Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+  - YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+    labels.
+  source_description: Covers voice differentiation, subtext, naturalness, dramatic purpose, rhythm, turn-taking,
+    implication, interruption, and the balance between dialogue and surrounding action.
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: craft.narrative.ending_and_closure
+  version: 1
+  title: Ending and closure
+  kind: craft
+  description: Evaluates local or global resolution, resonance, changed state, final emphasis, fulfilled or intentionally
+    unfulfilled expectations, and avoidance of summary-like overclosure.
+  origin: user_inventory_refined
+  owner_domains:
+  - narrative.ending_and_closure
+  artifact_types:
+  - prose_fiction
+  - creative_nonfiction
+  - dramatic_writing
+  - narrative_poetry
+  - interactive_fiction
+  valid_scopes:
+  - beat
+  - scene
+  - chapter
+  - sequence
+  - act
+  - manuscript
+  - series
+  activation: Attach when ending and closure is relevant to the active artifact or operation.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: craft.narrative.ending_and_closure.quality
+    type: group
+    title: Ending and closure
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: craft.narrative.ending_and_closure.changed_state
+      type: question
+      criterion_key: craft.narrative.ending_and_closure.changed_state
+      text: Does the ending register the relevant changed state, recognition, decision, consequence, or completed
+        pattern?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.ending_and_closure.resolution
+      type: question
+      criterion_key: craft.narrative.ending_and_closure.resolution
+      text: Does it resolve the level of pressure appropriate to the artifact and scope?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.ending_and_closure.expectations
+      type: question
+      criterion_key: craft.narrative.ending_and_closure.expectations
+      text: Are major reader expectations fulfilled, transformed, intentionally deferred, or meaningfully denied?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.ending_and_closure.emphasis
+      type: question
+      criterion_key: craft.narrative.ending_and_closure.emphasis
+      text: Does the final image, line, beat, or action carry appropriate emphasis?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.ending_and_closure.resonance
+      type: question
+      criterion_key: craft.narrative.ending_and_closure.resonance
+      text: Does the ending create useful emotional, intellectual, comic, or imagistic resonance?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.ending_and_closure.openness
+      type: question
+      criterion_key: craft.narrative.ending_and_closure.openness
+      text: If open-ended, does the remaining uncertainty feel purposeful rather than unfinished by accident?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.ending_and_closure.no_overclosure
+      type: question
+      criterion_key: craft.narrative.ending_and_closure.no_overclosure
+      text: Does it avoid explaining, summarizing, moralizing, or softening what the ending has already made clear?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.ending_and_closure.no_abruptness
+      type: question
+      criterion_key: craft.narrative.ending_and_closure.no_abruptness
+      text: If the artifact is expected to be complete, does it avoid accidental truncation or a merely stopped
+        ending?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - cho_et_al_2026_bineval
+  - zhang_et_al_2026_rubricbench
+  - vaezi_rezaei_2018
+  - carey_davidow_williams_2022
+  - gomez_rodriguez_williams_2023
+  - fein_et_al_2026_litbench
+  notes:
+  - Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+  - YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+    labels.
+  source_description: Evaluates local or global resolution, resonance, changed state, final emphasis, fulfilled
+    or intentionally unfulfilled expectations, and avoidance of summary-like overclosure.
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: craft.narrative.exposition_and_information_management
+  version: 1
+  title: Exposition and information management
+  kind: craft
+  description: Evaluates what the reader knows, when they know it, how information is embedded, whether explanation
+    is redundant or premature, and whether necessary context is unfairly withheld.
+  origin: user_inventory_refined
+  owner_domains:
+  - narrative.exposition_and_information_management
+  artifact_types:
+  - prose_fiction
+  - creative_nonfiction
+  - dramatic_writing
+  - narrative_poetry
+  - interactive_fiction
+  valid_scopes:
+  - beat
+  - scene
+  - chapter
+  - sequence
+  - act
+  - manuscript
+  - series
+  activation: Attach when exposition and information management is relevant to the active artifact or operation.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: craft.narrative.exposition_and_information_management.quality
+    type: group
+    title: Exposition and information management
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: craft.narrative.exposition_and_information_management.reader_state
+      type: question
+      criterion_key: craft.narrative.exposition_and_information_management.reader_state
+      text: Is the reader given the information needed to understand the current action, choice, or image?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.exposition_and_information_management.timing
+      type: question
+      criterion_key: craft.narrative.exposition_and_information_management.timing
+      text: Does information arrive when it becomes useful rather than substantially too early or too late?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.exposition_and_information_management.embedding
+      type: question
+      criterion_key: craft.narrative.exposition_and_information_management.embedding
+      text: Is exposition embedded in active perception, decision, conflict, voice, or purposeful reference structure?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.exposition_and_information_management.priority
+      type: question
+      criterion_key: craft.narrative.exposition_and_information_management.priority
+      text: Are the most relevant facts emphasized over background trivia?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.exposition_and_information_management.no_redundancy
+      type: question
+      criterion_key: craft.narrative.exposition_and_information_management.no_redundancy
+      text: Does the text avoid re-explaining information the target reader can reasonably retain?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.exposition_and_information_management.no_dump
+      type: question
+      criterion_key: craft.narrative.exposition_and_information_management.no_dump
+      text: Does it avoid uninterrupted explanatory blocks that suspend the intended narrative or dramatic experience?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.exposition_and_information_management.fair_withholding
+      type: question
+      criterion_key: craft.narrative.exposition_and_information_management.fair_withholding
+      text: Is withheld information compatible with viewpoint and fair reader orientation rather than artificial
+        concealment?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - cho_et_al_2026_bineval
+  - zhang_et_al_2026_rubricbench
+  - vaezi_rezaei_2018
+  - carey_davidow_williams_2022
+  - gomez_rodriguez_williams_2023
+  - fein_et_al_2026_litbench
+  notes:
+  - Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+  - YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+    labels.
+  source_description: Evaluates what the reader knows, when they know it, how information is embedded, whether explanation
+    is redundant or premature, and whether necessary context is unfairly withheld.
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: craft.narrative.foreshadowing_setup_and_payoff
+  version: 1
+  title: Foreshadowing, setup, and payoff
+  kind: craft
+  description: Evaluates preparation, reader expectation, delayed consequences, thematic echoes, planted details,
+    and whether payoffs are earned, forgotten, or over-signaled.
+  origin: user_inventory_refined
+  owner_domains:
+  - narrative.foreshadowing_setup_and_payoff
+  artifact_types:
+  - prose_fiction
+  - creative_nonfiction
+  - dramatic_writing
+  - narrative_poetry
+  - interactive_fiction
+  valid_scopes:
+  - beat
+  - scene
+  - chapter
+  - sequence
+  - act
+  - manuscript
+  - series
+  activation: Attach when foreshadowing, setup, and payoff is relevant to the active artifact or operation.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: craft.narrative.foreshadowing_setup_and_payoff.quality
+    type: group
+    title: Foreshadowing, setup, and payoff
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: craft.narrative.foreshadowing_setup_and_payoff.preparation
+      type: question
+      criterion_key: craft.narrative.foreshadowing_setup_and_payoff.preparation
+      text: Are major payoffs prepared through prior detail, pattern, motive, rule, or expectation?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.foreshadowing_setup_and_payoff.subtlety
+      type: question
+      criterion_key: craft.narrative.foreshadowing_setup_and_payoff.subtlety
+      text: Are setups noticeable enough to register without being so emphasized that they mechanically announce
+        the payoff?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.foreshadowing_setup_and_payoff.expectation
+      type: question
+      criterion_key: craft.narrative.foreshadowing_setup_and_payoff.expectation
+      text: Does the work create productive reader expectations that can be fulfilled, complicated, or deliberately
+        denied?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.foreshadowing_setup_and_payoff.delay
+      type: question
+      criterion_key: craft.narrative.foreshadowing_setup_and_payoff.delay
+      text: Is the interval between setup and payoff used to develop tension, meaning, or consequence?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.foreshadowing_setup_and_payoff.earned
+      type: question
+      criterion_key: craft.narrative.foreshadowing_setup_and_payoff.earned
+      text: Does the payoff follow credibly from what was planted?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.foreshadowing_setup_and_payoff.remembered
+      type: question
+      criterion_key: craft.narrative.foreshadowing_setup_and_payoff.remembered
+      text: Are significant setups either paid off, intentionally deferred, or consciously abandoned?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.foreshadowing_setup_and_payoff.echo
+      type: question
+      criterion_key: craft.narrative.foreshadowing_setup_and_payoff.echo
+      text: Do thematic or imagistic echoes gain meaning through recurrence rather than merely repeat?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.foreshadowing_setup_and_payoff.no_deus
+      type: question
+      criterion_key: craft.narrative.foreshadowing_setup_and_payoff.no_deus
+      text: Does the resolution avoid unprepared rescue, revelation, power, or coincidence?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - cho_et_al_2026_bineval
+  - zhang_et_al_2026_rubricbench
+  - vaezi_rezaei_2018
+  - carey_davidow_williams_2022
+  - gomez_rodriguez_williams_2023
+  - fein_et_al_2026_litbench
+  notes:
+  - Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+  - YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+    labels.
+  source_description: Evaluates preparation, reader expectation, delayed consequences, thematic echoes, planted
+    details, and whether payoffs are earned, forgotten, or over-signaled.
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: craft.narrative.narrative_momentum
+  version: 1
+  title: Narrative momentum
+  kind: craft
+  description: Evaluates whether the reader is given meaningful reasons to continue—not merely through cliffhangers,
+    but through curiosity, emotional investment, escalating consequence, voice, or conceptual interest.
+  origin: user_inventory_refined
+  owner_domains:
+  - narrative.narrative_momentum
+  artifact_types:
+  - prose_fiction
+  - creative_nonfiction
+  - dramatic_writing
+  - narrative_poetry
+  - interactive_fiction
+  valid_scopes:
+  - beat
+  - scene
+  - chapter
+  - sequence
+  - act
+  - manuscript
+  - series
+  activation: Attach when narrative momentum is relevant to the active artifact or operation.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: craft.narrative.narrative_momentum.quality
+    type: group
+    title: Narrative momentum
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: craft.narrative.narrative_momentum.curiosity
+      type: question
+      criterion_key: craft.narrative.narrative_momentum.curiosity
+      text: Does the unit sustain a live question, uncertainty, or desire to know what follows?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.narrative_momentum.investment
+      type: question
+      criterion_key: craft.narrative.narrative_momentum.investment
+      text: Does it deepen emotional or relational investment?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.narrative_momentum.consequence
+      type: question
+      criterion_key: craft.narrative.narrative_momentum.consequence
+      text: Does it create, increase, or clarify consequences that matter beyond the immediate beat?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.narrative_momentum.voice_pull
+      type: question
+      criterion_key: craft.narrative.narrative_momentum.voice_pull
+      text: Does voice or language itself provide a reason to continue?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.narrative_momentum.concept_pull
+      type: question
+      criterion_key: craft.narrative.narrative_momentum.concept_pull
+      text: Does conceptual, thematic, or world interest remain active?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.narrative_momentum.progress
+      type: question
+      criterion_key: craft.narrative.narrative_momentum.progress
+      text: Does the narrative make meaningful progress rather than only defer?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.narrative_momentum.commitment
+      type: question
+      criterion_key: craft.narrative.narrative_momentum.commitment
+      text: Does the prose commit to concrete developments rather than indefinitely preserving optionality?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.narrative_momentum.no_false_hook
+      type: question
+      criterion_key: craft.narrative.narrative_momentum.no_false_hook
+      text: Does it avoid substituting arbitrary cliffhangers or withheld basics for earned momentum?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - cho_et_al_2026_bineval
+  - zhang_et_al_2026_rubricbench
+  - vaezi_rezaei_2018
+  - carey_davidow_williams_2022
+  - gomez_rodriguez_williams_2023
+  - fein_et_al_2026_litbench
+  notes:
+  - Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+  - YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+    labels.
+  source_description: Evaluates whether the reader is given meaningful reasons to continue—not merely through cliffhangers,
+    but through curiosity, emotional investment, escalating consequence, voice, or conceptual interest.
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: craft.narrative.opening
+  version: 1
+  title: Opening
+  kind: craft
+  description: Evaluates orientation, intrigue, voice establishment, tonal promise, entry point, and appropriate
+    withholding at the start of a passage, scene, chapter, story, act, or manuscript.
+  origin: user_inventory_refined
+  owner_domains:
+  - narrative.opening
+  artifact_types:
+  - prose_fiction
+  - creative_nonfiction
+  - dramatic_writing
+  - narrative_poetry
+  - interactive_fiction
+  valid_scopes:
+  - beat
+  - scene
+  - chapter
+  - sequence
+  - act
+  - manuscript
+  - series
+  activation: Attach when opening is relevant to the active artifact or operation.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: craft.narrative.opening.quality
+    type: group
+    title: Opening
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: craft.narrative.opening.entry
+      type: question
+      criterion_key: craft.narrative.opening.entry
+      text: Does the opening begin at an effective point for the selected scope?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.opening.orientation
+      type: question
+      criterion_key: craft.narrative.opening.orientation
+      text: Does it provide enough orientation for the reader to engage without premature explanation?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.opening.intrigue
+      type: question
+      criterion_key: craft.narrative.opening.intrigue
+      text: Does it create a substantive reason to continue, such as voice, question, pressure, image, relationship,
+        or concept?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.opening.voice
+      type: question
+      criterion_key: craft.narrative.opening.voice
+      text: Does it establish the relevant voice or stylistic contract?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.opening.tone
+      type: question
+      criterion_key: craft.narrative.opening.tone
+      text: Does it establish or productively complicate the work's tonal promise?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.opening.promise
+      type: question
+      criterion_key: craft.narrative.opening.promise
+      text: Does it imply the kind of experience the artifact intends to deliver?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.opening.withholding
+      type: question
+      criterion_key: craft.narrative.opening.withholding
+      text: Is withheld information controlled rather than merely confusing?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.opening.no_preamble
+      type: question
+      criterion_key: craft.narrative.opening.no_preamble
+      text: Does it avoid disposable preamble, throat-clearing, generic weather, or summary before the live material
+        begins?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - cho_et_al_2026_bineval
+  - zhang_et_al_2026_rubricbench
+  - vaezi_rezaei_2018
+  - carey_davidow_williams_2022
+  - gomez_rodriguez_williams_2023
+  - fein_et_al_2026_litbench
+  notes:
+  - Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+  - YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+    labels.
+  source_description: Evaluates orientation, intrigue, voice establishment, tonal promise, entry point, and appropriate
+    withholding at the start of a passage, scene, chapter, story, act, or manuscript.
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: craft.narrative.pacing_and_narrative_time
+  version: 1
+  title: Pacing and narrative time
+  kind: craft
+  description: Covers allocation of space, acceleration, deceleration, summary versus scene, reveal timing, pause,
+    repetition, and whether the pace suits both the local unit and the work’s larger rhythm.
+  origin: user_inventory_refined
+  owner_domains:
+  - narrative.pacing_and_narrative_time
+  artifact_types:
+  - prose_fiction
+  - creative_nonfiction
+  - dramatic_writing
+  - narrative_poetry
+  - interactive_fiction
+  valid_scopes:
+  - beat
+  - scene
+  - chapter
+  - sequence
+  - act
+  - manuscript
+  - series
+  activation: Attach when pacing and narrative time is relevant to the active artifact or operation.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: craft.narrative.pacing_and_narrative_time.quality
+    type: group
+    title: Pacing and narrative time
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: craft.narrative.pacing_and_narrative_time.allocation
+      type: question
+      criterion_key: craft.narrative.pacing_and_narrative_time.allocation
+      text: Is narrative space allocated in proportion to the importance and experiential needs of events?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.pacing_and_narrative_time.acceleration
+      type: question
+      criterion_key: craft.narrative.pacing_and_narrative_time.acceleration
+      text: Does acceleration occur where compression, urgency, or transition benefits the work?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.pacing_and_narrative_time.deceleration
+      type: question
+      criterion_key: craft.narrative.pacing_and_narrative_time.deceleration
+      text: Does deceleration occur where perception, consequence, intimacy, suspense, or complexity needs room?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.pacing_and_narrative_time.scene_summary
+      type: question
+      criterion_key: craft.narrative.pacing_and_narrative_time.scene_summary
+      text: Is the choice between scene, summary, ellipsis, and reflection appropriate at each major passage?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.pacing_and_narrative_time.reveal_timing
+      type: question
+      criterion_key: craft.narrative.pacing_and_narrative_time.reveal_timing
+      text: Are revelations and explanations timed for maximum clarity and effect rather than mere delay?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.pacing_and_narrative_time.variation
+      type: question
+      criterion_key: craft.narrative.pacing_and_narrative_time.variation
+      text: Does the work vary pace enough to avoid monotony while preserving its intended mode?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.pacing_and_narrative_time.local_global
+      type: question
+      criterion_key: craft.narrative.pacing_and_narrative_time.local_global
+      text: Does local pacing support rather than distort the larger rhythm of the work?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.pacing_and_narrative_time.no_stall
+      type: question
+      criterion_key: craft.narrative.pacing_and_narrative_time.no_stall
+      text: Does repetition, exposition, description, or introspection avoid stalling movement without compensating
+        value?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - cho_et_al_2026_bineval
+  - zhang_et_al_2026_rubricbench
+  - vaezi_rezaei_2018
+  - carey_davidow_williams_2022
+  - gomez_rodriguez_williams_2023
+  - fein_et_al_2026_litbench
+  notes:
+  - Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+  - YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+    labels.
+  source_description: Covers allocation of space, acceleration, deceleration, summary versus scene, reveal timing,
+    pause, repetition, and whether the pace suits both the local unit and the work’s larger rhythm.
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: craft.narrative.plot_and_causality
+  version: 1
+  title: Plot and causality
+  kind: craft
+  description: Evaluates causal linkage, setup, decision, consequence, escalation, complication, reversals, and
+    whether events arise from characters and conditions rather than authorial convenience.
+  origin: user_inventory_refined
+  owner_domains:
+  - narrative.plot_and_causality
+  artifact_types:
+  - prose_fiction
+  - creative_nonfiction
+  - dramatic_writing
+  - narrative_poetry
+  - interactive_fiction
+  valid_scopes:
+  - beat
+  - scene
+  - chapter
+  - sequence
+  - act
+  - manuscript
+  - series
+  activation: Attach when plot and causality is relevant to the active artifact or operation.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: craft.narrative.plot_and_causality.quality
+    type: group
+    title: Plot and causality
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: craft.narrative.plot_and_causality.causal_chain
+      type: question
+      criterion_key: craft.narrative.plot_and_causality.causal_chain
+      text: Does each major event arise from prior conditions, choices, or consequences?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.plot_and_causality.setup
+      type: question
+      criterion_key: craft.narrative.plot_and_causality.setup
+      text: Are important developments prepared enough to feel intelligible rather than arbitrary?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.plot_and_causality.decision
+      type: question
+      criterion_key: craft.narrative.plot_and_causality.decision
+      text: Do character decisions materially alter what happens next?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.plot_and_causality.consequence
+      type: question
+      criterion_key: craft.narrative.plot_and_causality.consequence
+      text: Are consequential actions followed through rather than reset or forgotten?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.plot_and_causality.escalation
+      type: question
+      criterion_key: craft.narrative.plot_and_causality.escalation
+      text: Does pressure change in kind, intensity, or implication rather than merely repeat?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.plot_and_causality.complication
+      type: question
+      criterion_key: craft.narrative.plot_and_causality.complication
+      text: Do complications force new choices or understanding rather than delay the same beat?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.plot_and_causality.reversal
+      type: question
+      criterion_key: craft.narrative.plot_and_causality.reversal
+      text: Are reversals both surprising enough to matter and supported enough to accept?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.plot_and_causality.no_convenience
+      type: question
+      criterion_key: craft.narrative.plot_and_causality.no_convenience
+      text: Does the plot avoid coincidence, withheld competence, or arbitrary behavior used chiefly to force an
+        outcome?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - cho_et_al_2026_bineval
+  - zhang_et_al_2026_rubricbench
+  - vaezi_rezaei_2018
+  - carey_davidow_williams_2022
+  - gomez_rodriguez_williams_2023
+  - fein_et_al_2026_litbench
+  notes:
+  - Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+  - YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+    labels.
+  source_description: Evaluates causal linkage, setup, decision, consequence, escalation, complication, reversals,
+    and whether events arise from characters and conditions rather than authorial convenience.
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: craft.narrative.point_of_view_and_focalization
+  version: 1
+  title: Point of view and focalization
+  kind: craft
+  description: Evaluates viewpoint control, psychic distance, access to information, voice ownership, head-hopping,
+    narrator reliability, and intentional shifts.
+  origin: user_inventory_refined
+  owner_domains:
+  - narrative.point_of_view_and_focalization
+  artifact_types:
+  - prose_fiction
+  - creative_nonfiction
+  - dramatic_writing
+  - narrative_poetry
+  - interactive_fiction
+  valid_scopes:
+  - beat
+  - scene
+  - chapter
+  - sequence
+  - act
+  - manuscript
+  - series
+  activation: Attach when point of view and focalization is relevant to the active artifact or operation.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: craft.narrative.point_of_view_and_focalization.quality
+    type: group
+    title: Point of view and focalization
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: craft.narrative.point_of_view_and_focalization.viewpoint
+      type: question
+      criterion_key: craft.narrative.point_of_view_and_focalization.viewpoint
+      text: Is the controlling viewpoint identifiable at each moment where clarity is required?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.point_of_view_and_focalization.distance
+      type: question
+      criterion_key: craft.narrative.point_of_view_and_focalization.distance
+      text: Is psychic distance controlled and appropriate to the intended effect?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.point_of_view_and_focalization.access
+      type: question
+      criterion_key: craft.narrative.point_of_view_and_focalization.access
+      text: Does the narration reveal only information available under the selected viewpoint rules?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.point_of_view_and_focalization.ownership
+      type: question
+      criterion_key: craft.narrative.point_of_view_and_focalization.ownership
+      text: Do perceptions, judgments, and metaphors belong plausibly to the focalizer or narrator?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.point_of_view_and_focalization.head_hopping
+      type: question
+      criterion_key: craft.narrative.point_of_view_and_focalization.head_hopping
+      text: Does the text avoid accidental shifts into another character's private knowledge?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.point_of_view_and_focalization.reliability
+      type: question
+      criterion_key: craft.narrative.point_of_view_and_focalization.reliability
+      text: If the narrator is limited or unreliable, is that limitation coherent and artistically legible?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.point_of_view_and_focalization.shift_intent
+      type: question
+      criterion_key: craft.narrative.point_of_view_and_focalization.shift_intent
+      text: Are viewpoint shifts clearly signaled and artistically justified?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - cho_et_al_2026_bineval
+  - zhang_et_al_2026_rubricbench
+  - vaezi_rezaei_2018
+  - carey_davidow_williams_2022
+  - gomez_rodriguez_williams_2023
+  - fein_et_al_2026_litbench
+  notes:
+  - Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+  - YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+    labels.
+  source_description: Evaluates viewpoint control, psychic distance, access to information, voice ownership, head-hopping,
+    narrator reliability, and intentional shifts.
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: craft.narrative.scene_construction
+  version: 1
+  title: Scene construction
+  kind: craft
+  description: Evaluates scene purpose, entry point, local objective, conflict or pressure, progression, turn, changed
+    state, exit, and connection to surrounding scenes. Not every quiet scene needs overt conflict, but it should
+    create meaningful change or understanding.
+  origin: user_inventory_refined
+  owner_domains:
+  - narrative.scene_construction
+  artifact_types:
+  - prose_fiction
+  - creative_nonfiction
+  - dramatic_writing
+  - narrative_poetry
+  - interactive_fiction
+  valid_scopes:
+  - beat
+  - scene
+  - chapter
+  - sequence
+  - act
+  - manuscript
+  - series
+  activation: Attach when scene construction is relevant to the active artifact or operation.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: craft.narrative.scene_construction.quality
+    type: group
+    title: Scene construction
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: craft.narrative.scene_construction.purpose
+      type: question
+      criterion_key: craft.narrative.scene_construction.purpose
+      text: Does the scene perform a discernible narrative, character, relational, atmospheric, or thematic function?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.scene_construction.entry
+      type: question
+      criterion_key: craft.narrative.scene_construction.entry
+      text: Does the scene enter at a point that avoids unnecessary preamble while preserving needed orientation?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.scene_construction.objective
+      type: question
+      criterion_key: craft.narrative.scene_construction.objective
+      text: Is there a local want, task, question, pressure, or focus that organizes the scene?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.scene_construction.pressure
+      type: question
+      criterion_key: craft.narrative.scene_construction.pressure
+      text: Does something complicate, resist, expose, or deepen the scene's local movement?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.scene_construction.progression
+      type: question
+      criterion_key: craft.narrative.scene_construction.progression
+      text: Do beats build on one another rather than circle or reset?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.scene_construction.turn
+      type: question
+      criterion_key: craft.narrative.scene_construction.turn
+      text: Does the scene contain a meaningful change of information, decision, relationship, condition, perception,
+        or possibility?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.scene_construction.changed_state
+      type: question
+      criterion_key: craft.narrative.scene_construction.changed_state
+      text: Is the end state meaningfully different from the beginning state?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.scene_construction.exit
+      type: question
+      criterion_key: craft.narrative.scene_construction.exit
+      text: Does the exit place emphasis effectively and create an appropriate relation to what follows?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.scene_construction.context_fit
+      type: question
+      criterion_key: craft.narrative.scene_construction.context_fit
+      text: Does the scene connect coherently to the preceding and following units when those are supplied?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - cho_et_al_2026_bineval
+  - zhang_et_al_2026_rubricbench
+  - vaezi_rezaei_2018
+  - carey_davidow_williams_2022
+  - gomez_rodriguez_williams_2023
+  - fein_et_al_2026_litbench
+  notes:
+  - Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+  - YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+    labels.
+  source_description: Evaluates scene purpose, entry point, local objective, conflict or pressure, progression,
+    turn, changed state, exit, and connection to surrounding scenes. Not every quiet scene needs overt conflict,
+    but it should create meaningful change or understanding.
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: craft.narrative.setting_and_atmosphere
+  version: 1
+  title: Setting and atmosphere
+  kind: craft
+  description: Evaluates spatial clarity, sensory presence, atmosphere, meaningful interaction between setting and
+    action, and avoidance of setting as detached decorative inventory.
+  origin: user_inventory_refined
+  owner_domains:
+  - narrative.setting_and_atmosphere
+  artifact_types:
+  - prose_fiction
+  - creative_nonfiction
+  - dramatic_writing
+  - narrative_poetry
+  - interactive_fiction
+  valid_scopes:
+  - beat
+  - scene
+  - chapter
+  - sequence
+  - act
+  - manuscript
+  - series
+  activation: Attach when setting and atmosphere is relevant to the active artifact or operation.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: craft.narrative.setting_and_atmosphere.quality
+    type: group
+    title: Setting and atmosphere
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: craft.narrative.setting_and_atmosphere.spatial
+      type: question
+      criterion_key: craft.narrative.setting_and_atmosphere.spatial
+      text: Can the reader understand the spatial relationships necessary for action and attention?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.setting_and_atmosphere.sensory
+      type: question
+      criterion_key: craft.narrative.setting_and_atmosphere.sensory
+      text: Does the setting possess selective sensory presence rather than detached inventory?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.setting_and_atmosphere.identity
+      type: question
+      criterion_key: craft.narrative.setting_and_atmosphere.identity
+      text: Does the place have distinguishing material, social, historical, or emotional characteristics?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.setting_and_atmosphere.atmosphere
+      type: question
+      criterion_key: craft.narrative.setting_and_atmosphere.atmosphere
+      text: Does atmosphere emerge from concrete conditions, language, and character perception?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.setting_and_atmosphere.interaction
+      type: question
+      criterion_key: craft.narrative.setting_and_atmosphere.interaction
+      text: Do characters and events materially interact with the setting?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.setting_and_atmosphere.function
+      type: question
+      criterion_key: craft.narrative.setting_and_atmosphere.function
+      text: Does setting constrain, enable, pressure, reveal, or transform something in the narrative?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.setting_and_atmosphere.no_inventory
+      type: question
+      criterion_key: craft.narrative.setting_and_atmosphere.no_inventory
+      text: Does the text avoid pausing for decorative setting inventory that has no current function?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - cho_et_al_2026_bineval
+  - zhang_et_al_2026_rubricbench
+  - vaezi_rezaei_2018
+  - carey_davidow_williams_2022
+  - gomez_rodriguez_williams_2023
+  - fein_et_al_2026_litbench
+  notes:
+  - Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+  - YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+    labels.
+  source_description: Evaluates spatial clarity, sensory presence, atmosphere, meaningful interaction between setting
+    and action, and avoidance of setting as detached decorative inventory.
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: craft.narrative.temporal_and_spatial_continuity
+  version: 1
+  title: Temporal and spatial continuity
+  kind: craft
+  description: Tracks chronology, elapsed time, travel, entrances and exits, object locations, physical orientation,
+    and other scene logistics.
+  origin: user_inventory_refined
+  owner_domains:
+  - narrative.temporal_and_spatial_continuity
+  artifact_types:
+  - prose_fiction
+  - creative_nonfiction
+  - dramatic_writing
+  - narrative_poetry
+  - interactive_fiction
+  valid_scopes:
+  - beat
+  - scene
+  - chapter
+  - sequence
+  - act
+  - manuscript
+  - series
+  activation: Attach when temporal and spatial continuity is relevant to the active artifact or operation.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: craft.narrative.temporal_and_spatial_continuity.quality
+    type: group
+    title: Temporal and spatial continuity
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: craft.narrative.temporal_and_spatial_continuity.chronology
+      type: question
+      criterion_key: craft.narrative.temporal_and_spatial_continuity.chronology
+      text: Is the order of events internally consistent and identifiable where needed?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.temporal_and_spatial_continuity.elapsed_time
+      type: question
+      criterion_key: craft.narrative.temporal_and_spatial_continuity.elapsed_time
+      text: Are durations, deadlines, ages, and elapsed time mutually compatible?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.temporal_and_spatial_continuity.travel
+      type: question
+      criterion_key: craft.narrative.temporal_and_spatial_continuity.travel
+      text: Are travel time, distance, and route plausible under the established world conditions?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.temporal_and_spatial_continuity.entrances
+      type: question
+      criterion_key: craft.narrative.temporal_and_spatial_continuity.entrances
+      text: Are entrances, exits, and character locations tracked consistently?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.temporal_and_spatial_continuity.objects
+      type: question
+      criterion_key: craft.narrative.temporal_and_spatial_continuity.objects
+      text: Are important objects, clothing, injuries, and possessions located and transferred consistently?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.temporal_and_spatial_continuity.orientation
+      type: question
+      criterion_key: craft.narrative.temporal_and_spatial_continuity.orientation
+      text: Is physical orientation clear enough for action to remain intelligible?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.temporal_and_spatial_continuity.state_update
+      type: question
+      criterion_key: craft.narrative.temporal_and_spatial_continuity.state_update
+      text: Do later states correctly incorporate prior physical and temporal changes?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - cho_et_al_2026_bineval
+  - zhang_et_al_2026_rubricbench
+  - vaezi_rezaei_2018
+  - carey_davidow_williams_2022
+  - gomez_rodriguez_williams_2023
+  - fein_et_al_2026_litbench
+  notes:
+  - Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+  - YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+    labels.
+  source_description: Tracks chronology, elapsed time, travel, entrances and exits, object locations, physical orientation,
+    and other scene logistics.
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: craft.narrative.tension_conflict_and_stakes
+  version: 1
+  title: Tension, conflict, and stakes
+  kind: craft
+  description: Evaluates the form of pressure appropriate to the work—external, interpersonal, internal, intellectual,
+    comic, romantic, or atmospheric—and whether stakes are legible without being overexplained.
+  origin: user_inventory_refined
+  owner_domains:
+  - narrative.tension_conflict_and_stakes
+  artifact_types:
+  - prose_fiction
+  - creative_nonfiction
+  - dramatic_writing
+  - narrative_poetry
+  - interactive_fiction
+  valid_scopes:
+  - beat
+  - scene
+  - chapter
+  - sequence
+  - act
+  - manuscript
+  - series
+  activation: Attach when tension, conflict, and stakes is relevant to the active artifact or operation.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: craft.narrative.tension_conflict_and_stakes.quality
+    type: group
+    title: Tension, conflict, and stakes
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: craft.narrative.tension_conflict_and_stakes.pressure_type
+      type: question
+      criterion_key: craft.narrative.tension_conflict_and_stakes.pressure_type
+      text: Is an appropriate form of pressure present for this work, including quiet, comic, romantic, intellectual,
+        internal, or atmospheric pressure?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.tension_conflict_and_stakes.opposition
+      type: question
+      criterion_key: craft.narrative.tension_conflict_and_stakes.opposition
+      text: Is there a credible obstacle, incompatibility, uncertainty, desire, or cost preventing immediate resolution?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.tension_conflict_and_stakes.stakes_legible
+      type: question
+      criterion_key: craft.narrative.tension_conflict_and_stakes.stakes_legible
+      text: Can the reader infer what may be lost, changed, exposed, delayed, or desired?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.tension_conflict_and_stakes.personal
+      type: question
+      criterion_key: craft.narrative.tension_conflict_and_stakes.personal
+      text: Do stakes matter specifically to the involved characters or speaker?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.tension_conflict_and_stakes.dynamic
+      type: question
+      criterion_key: craft.narrative.tension_conflict_and_stakes.dynamic
+      text: Does tension evolve through new information, choices, proximity, delay, or altered power?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.tension_conflict_and_stakes.forecasting
+      type: question
+      criterion_key: craft.narrative.tension_conflict_and_stakes.forecasting
+      text: Does the reader have live uncertainty about plausible near-future outcomes?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.tension_conflict_and_stakes.no_inflation
+      type: question
+      criterion_key: craft.narrative.tension_conflict_and_stakes.no_inflation
+      text: Does the work avoid announcing enormous stakes without credible mechanisms or consequences?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.tension_conflict_and_stakes.no_overexplain
+      type: question
+      criterion_key: craft.narrative.tension_conflict_and_stakes.no_overexplain
+      text: Does it avoid explaining the stakes more often or more explicitly than the reader needs?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - cho_et_al_2026_bineval
+  - zhang_et_al_2026_rubricbench
+  - vaezi_rezaei_2018
+  - carey_davidow_williams_2022
+  - gomez_rodriguez_williams_2023
+  - fein_et_al_2026_litbench
+  notes:
+  - Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+  - YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+    labels.
+  source_description: Evaluates the form of pressure appropriate to the work—external, interpersonal, internal,
+    intellectual, comic, romantic, or atmospheric—and whether stakes are legible without being overexplained.
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: craft.narrative.theme_and_subtext
+  version: 1
+  title: Theme and subtext
+  kind: craft
+  description: Evaluates thematic development through image, action, structure, character, and implication rather
+    than thesis-like explanation. It should allow unresolved or contradictory themes.
+  origin: user_inventory_refined
+  owner_domains:
+  - narrative.theme_and_subtext
+  artifact_types:
+  - prose_fiction
+  - creative_nonfiction
+  - dramatic_writing
+  - narrative_poetry
+  - interactive_fiction
+  valid_scopes:
+  - beat
+  - scene
+  - chapter
+  - sequence
+  - act
+  - manuscript
+  - series
+  activation: Attach when theme and subtext is relevant to the active artifact or operation.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: craft.narrative.theme_and_subtext.quality
+    type: group
+    title: Theme and subtext
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: craft.narrative.theme_and_subtext.emergence
+      type: question
+      criterion_key: craft.narrative.theme_and_subtext.emergence
+      text: Does thematic meaning emerge through action, image, structure, character, or pattern?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.theme_and_subtext.subtext
+      type: question
+      criterion_key: craft.narrative.theme_and_subtext.subtext
+      text: Is important meaning carried through implication as well as explicit statement?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.theme_and_subtext.development
+      type: question
+      criterion_key: craft.narrative.theme_and_subtext.development
+      text: Does the work test, complicate, or transform its central ideas rather than repeat a thesis?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.theme_and_subtext.counterpoint
+      type: question
+      criterion_key: craft.narrative.theme_and_subtext.counterpoint
+      text: Where appropriate, does the work permit competing values, interpretations, or contradictions?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.theme_and_subtext.integration
+      type: question
+      criterion_key: craft.narrative.theme_and_subtext.integration
+      text: Are thematic concerns integrated with the artifact's concrete dramatic or lyric material?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.theme_and_subtext.no_moral
+      type: question
+      criterion_key: craft.narrative.theme_and_subtext.no_moral
+      text: Does the work avoid reducing theme to a stated moral, lesson, or explanatory conclusion?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.theme_and_subtext.open_questions
+      type: question
+      criterion_key: craft.narrative.theme_and_subtext.open_questions
+      text: When themes remain unresolved, does the unresolved state feel intentional and generative?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - cho_et_al_2026_bineval
+  - zhang_et_al_2026_rubricbench
+  - vaezi_rezaei_2018
+  - carey_davidow_williams_2022
+  - gomez_rodriguez_williams_2023
+  - fein_et_al_2026_litbench
+  notes:
+  - Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+  - YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+    labels.
+  source_description: Evaluates thematic development through image, action, structure, character, and implication
+    rather than thesis-like explanation. It should allow unresolved or contradictory themes.
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: craft.narrative.transitions_and_connective_tissue
+  version: 1
+  title: Transitions and connective tissue
+  kind: craft
+  description: Evaluates movement between beats, paragraphs, scenes, chapters, times, places, speakers, and narrative
+    modes. It is especially important for bridge-writing and manuscript assembly.
+  origin: user_inventory_refined
+  owner_domains:
+  - narrative.transitions_and_connective_tissue
+  artifact_types:
+  - prose_fiction
+  - creative_nonfiction
+  - dramatic_writing
+  - narrative_poetry
+  - interactive_fiction
+  valid_scopes:
+  - beat
+  - scene
+  - chapter
+  - sequence
+  - act
+  - manuscript
+  - series
+  activation: Attach when transitions and connective tissue is relevant to the active artifact or operation.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: craft.narrative.transitions_and_connective_tissue.quality
+    type: group
+    title: Transitions and connective tissue
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: craft.narrative.transitions_and_connective_tissue.logic
+      type: question
+      criterion_key: craft.narrative.transitions_and_connective_tissue.logic
+      text: Does each transition preserve the logical or associative relationship between the units it joins?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.transitions_and_connective_tissue.time
+      type: question
+      criterion_key: craft.narrative.transitions_and_connective_tissue.time
+      text: Are changes in time signaled with the degree of clarity the reader needs?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.transitions_and_connective_tissue.place
+      type: question
+      criterion_key: craft.narrative.transitions_and_connective_tissue.place
+      text: Are changes in place spatially and narratively intelligible?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.transitions_and_connective_tissue.speaker
+      type: question
+      criterion_key: craft.narrative.transitions_and_connective_tissue.speaker
+      text: Are changes in speaker or focalizer legible?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.transitions_and_connective_tissue.mode
+      type: question
+      criterion_key: craft.narrative.transitions_and_connective_tissue.mode
+      text: Are shifts among scene, summary, exposition, reflection, document, and other modes controlled?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.transitions_and_connective_tissue.momentum
+      type: question
+      criterion_key: craft.narrative.transitions_and_connective_tissue.momentum
+      text: Does connective material preserve momentum or create a purposeful pause?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.transitions_and_connective_tissue.no_bridge_filler
+      type: question
+      criterion_key: craft.narrative.transitions_and_connective_tissue.no_bridge_filler
+      text: Does the work avoid generic bridge language that merely moves pieces without adding orientation, tone,
+        or consequence?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - cho_et_al_2026_bineval
+  - zhang_et_al_2026_rubricbench
+  - vaezi_rezaei_2018
+  - carey_davidow_williams_2022
+  - gomez_rodriguez_williams_2023
+  - fein_et_al_2026_litbench
+  notes:
+  - Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+  - YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+    labels.
+  source_description: Evaluates movement between beats, paragraphs, scenes, chapters, times, places, speakers, and
+    narrative modes. It is especially important for bridge-writing and manuscript assembly.
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.0.0
+  module_id: craft.narrative.worldbuilding
+  version: 1
+  title: Worldbuilding
+  kind: craft
+  description: Covers clarity and consistency of systems, culture, history, institutions, technology or magic, consequences,
+    integration into the narrative, and avoidance of exposition dumping.
+  origin: user_inventory_refined
+  owner_domains:
+  - narrative.worldbuilding
+  artifact_types:
+  - prose_fiction
+  - creative_nonfiction
+  - dramatic_writing
+  - narrative_poetry
+  - interactive_fiction
+  valid_scopes:
+  - beat
+  - scene
+  - chapter
+  - sequence
+  - act
+  - manuscript
+  - series
+  activation: Attach when worldbuilding is relevant to the active artifact or operation.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: when supplied
+  tree:
+  - id: craft.narrative.worldbuilding.quality
+    type: group
+    title: Worldbuilding
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: craft.narrative.worldbuilding.rules
+      type: question
+      criterion_key: craft.narrative.worldbuilding.rules
+      text: Are the relevant systems and rules clear enough for the reader to understand choices and consequences?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.worldbuilding.consistency
+      type: question
+      criterion_key: craft.narrative.worldbuilding.consistency
+      text: Are world rules applied consistently across the supplied evidence?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.worldbuilding.constraints
+      type: question
+      criterion_key: craft.narrative.worldbuilding.constraints
+      text: Do technology, magic, institutions, or social systems impose meaningful constraints and costs?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.worldbuilding.culture
+      type: question
+      criterion_key: craft.narrative.worldbuilding.culture
+      text: Do cultures and institutions show internally related practices, values, material conditions, and tensions?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.worldbuilding.history
+      type: question
+      criterion_key: craft.narrative.worldbuilding.history
+      text: Does history affect present conditions rather than exist only as detached lore?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.worldbuilding.consequences
+      type: question
+      criterion_key: craft.narrative.worldbuilding.consequences
+      text: Are second-order social, economic, ecological, political, or personal consequences considered where
+        relevant?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.worldbuilding.integration
+      type: question
+      criterion_key: craft.narrative.worldbuilding.integration
+      text: Is world information embedded through action, choice, perception, conflict, or useful reference structure?
+      pass_answer: 'YES'
+      weight: 1.5
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.worldbuilding.no_lore_dump
+      type: question
+      criterion_key: craft.narrative.worldbuilding.no_lore_dump
+      text: Does the artifact avoid lore dumping that outruns the reader's current need and stalls the operation?
+      pass_answer: 'YES'
+      weight: 2.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: craft.narrative.worldbuilding.no_default_furniture
+      type: question
+      criterion_key: craft.narrative.worldbuilding.no_default_furniture
+      text: Does the world avoid unexamined default genre furniture where specificity is needed?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+  modifier_actions: []
+  research_basis:
+  - cho_et_al_2026_bineval
+  - zhang_et_al_2026_rubricbench
+  - vaezi_rezaei_2018
+  - carey_davidow_williams_2022
+  - gomez_rodriguez_williams_2023
+  - fein_et_al_2026_litbench
+  notes:
+  - Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+  - YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+    labels.
+  source_description: Covers clarity and consistency of systems, culture, history, institutions, technology or magic,
+    consequences, integration into the narrative, and avoidance of exposition dumping.

@@ -1,0 +1,159 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: form.poetry.narrative_or_long_poem
+version: 1
+title: Narrative or long poem
+kind: artifact_form
+description: Combines poetic craft with narrative movement, section architecture, sustained voice, pacing, recurrence,
+  and long-range image systems.
+origin: user_inventory_refined
+owner_domains:
+- form.narrative_or_long_poem
+artifact_types:
+- poetry
+valid_scopes:
+- line
+- stanza
+- poem
+- collection
+activation: Attach when narrative or long poem is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: form.poetry.narrative_or_long_poem.quality
+  type: group
+  title: Narrative or long poem checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: form.poetry.narrative_or_long_poem.narrative
+    type: question
+    criterion_key: form.poetry.narrative_or_long_poem.narrative
+    text: Can the reader follow the poem's relevant events, speakers, and temporal movement?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.narrative_or_long_poem.poetic_craft
+    type: question
+    criterion_key: form.poetry.narrative_or_long_poem.poetic_craft
+    text: Does sustained narrative preserve poetic pressure in language, image, sound, or form?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.narrative_or_long_poem.sections
+    type: question
+    criterion_key: form.poetry.narrative_or_long_poem.sections
+    text: Do sections or cantos create a useful long-form architecture?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.narrative_or_long_poem.voice
+    type: question
+    criterion_key: form.poetry.narrative_or_long_poem.voice
+    text: Is voice sustained or deliberately varied across the poem's length?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.narrative_or_long_poem.pacing
+    type: question
+    criterion_key: form.poetry.narrative_or_long_poem.pacing
+    text: Does narrative time vary effectively among scene, summary, meditation, and recurrence?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.narrative_or_long_poem.motifs
+    type: question
+    criterion_key: form.poetry.narrative_or_long_poem.motifs
+    text: Do long-range images, refrains, and motifs return with transformation?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.narrative_or_long_poem.ending
+    type: question
+    criterion_key: form.poetry.narrative_or_long_poem.ending
+    text: Does the ending respond to both narrative movement and poetic pattern?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.narrative_or_long_poem.no_prose_dilution
+    type: question
+    criterion_key: form.poetry.narrative_or_long_poem.no_prose_dilution
+    text: Does the poem avoid allowing plot delivery to dilute line-level and sonic craft?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- li_et_al_2026_poemetric
+- vaezi_rezaei_2018
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Combines poetic craft with narrative movement, section architecture, sustained voice, pacing,
+  recurrence, and long-range image systems.

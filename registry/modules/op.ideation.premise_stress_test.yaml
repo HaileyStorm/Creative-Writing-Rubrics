@@ -1,0 +1,156 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: op.ideation.premise_stress_test
+version: 1
+title: Premise stress test
+kind: procedure
+description: Evaluates sustainability, likely conflicts, character pressure, thematic implications, scale fit, hidden
+  assumptions, and failure risks.
+origin: user_inventory_refined
+owner_domains:
+- procedure.premise_stress_test
+artifact_types:
+- any
+valid_scopes:
+- operation
+activation: Attach when premise stress test is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: op.ideation.premise_stress_test.quality
+  type: group
+  title: Premise stress test checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: op.ideation.premise_stress_test.engine
+    type: question
+    criterion_key: op.ideation.premise_stress_test.engine
+    text: Does the premise contain a repeatable or sustainable source of pressure, choice, discovery, or transformation?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ideation.premise_stress_test.character
+    type: question
+    criterion_key: op.ideation.premise_stress_test.character
+    text: Does it place specific characters under pressures that matter to them?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ideation.premise_stress_test.scale
+    type: question
+    criterion_key: op.ideation.premise_stress_test.scale
+    text: Can the premise sustain the intended length and form without padding or premature exhaustion?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ideation.premise_stress_test.causality
+    type: question
+    criterion_key: op.ideation.premise_stress_test.causality
+    text: Do likely developments arise from the premise rather than arbitrary event addition?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ideation.premise_stress_test.theme
+    type: question
+    criterion_key: op.ideation.premise_stress_test.theme
+    text: Does the premise generate thematic or conceptual implications without requiring a thesis?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ideation.premise_stress_test.assumptions
+    type: question
+    criterion_key: op.ideation.premise_stress_test.assumptions
+    text: Are hidden logistical, social, technical, or motivational assumptions exposed?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ideation.premise_stress_test.risks
+    type: question
+    criterion_key: op.ideation.premise_stress_test.risks
+    text: Are major cliché, repetition, escalation, plausibility, and audience risks identified?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ideation.premise_stress_test.repairable
+    type: question
+    criterion_key: op.ideation.premise_stress_test.repairable
+    text: Does the stress test distinguish fatal weaknesses from fixable design problems?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- wu_et_al_2025_writingbench
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates sustainability, likely conflicts, character pressure, thematic implications, scale
+  fit, hidden assumptions, and failure risks.

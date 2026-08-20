@@ -1,0 +1,156 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: op.ingest.project_reconstruction
+version: 1
+title: Project reconstruction
+kind: procedure
+description: Evaluates the model’s reconstruction of premise, current state, structure, character relationships,
+  timeline, themes, unresolved threads, and uncertainties from existing material.
+origin: user_inventory_refined
+owner_domains:
+- procedure.project_reconstruction
+artifact_types:
+- any
+valid_scopes:
+- operation
+activation: Attach when project reconstruction is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: op.ingest.project_reconstruction.quality
+  type: group
+  title: Project reconstruction checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: op.ingest.project_reconstruction.premise
+    type: question
+    criterion_key: op.ingest.project_reconstruction.premise
+    text: Does the reconstruction identify the project's current premise and central creative intent?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ingest.project_reconstruction.state
+    type: question
+    criterion_key: op.ingest.project_reconstruction.state
+    text: Does it accurately represent the current manuscript and planning state?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ingest.project_reconstruction.structure
+    type: question
+    criterion_key: op.ingest.project_reconstruction.structure
+    text: Does it recover the known structural organization and major units?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ingest.project_reconstruction.relationships
+    type: question
+    criterion_key: op.ingest.project_reconstruction.relationships
+    text: Does it recover important character and faction relationships without inventing links?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ingest.project_reconstruction.timeline
+    type: question
+    criterion_key: op.ingest.project_reconstruction.timeline
+    text: Does it recover chronology, current states, and known temporal uncertainties?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ingest.project_reconstruction.threads
+    type: question
+    criterion_key: op.ingest.project_reconstruction.threads
+    text: Does it identify active, resolved, abandoned, and uncertain narrative threads?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ingest.project_reconstruction.themes
+    type: question
+    criterion_key: op.ingest.project_reconstruction.themes
+    text: Does it identify supported thematic and stylistic patterns without overstating them?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.ingest.project_reconstruction.uncertainty
+    type: question
+    criterion_key: op.ingest.project_reconstruction.uncertainty
+    text: Does it explicitly mark gaps, conflicts, obsolete versions, and uncertain inferences?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- wu_et_al_2025_writingbench
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates the model’s reconstruction of premise, current state, structure, character relationships,
+  timeline, themes, unresolved threads, and uncertainties from existing material.

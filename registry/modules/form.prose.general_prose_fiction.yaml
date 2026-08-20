@@ -1,0 +1,140 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: form.prose.general_prose_fiction
+version: 1
+title: General prose fiction
+kind: artifact_form
+description: Provides the base conventions for narrated fiction without assuming a particular length or genre.
+origin: user_inventory_refined
+owner_domains:
+- form.general_prose_fiction
+artifact_types:
+- prose_fiction
+valid_scopes:
+- any
+activation: Attach when general prose fiction is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: form.prose.general_prose_fiction.quality
+  type: group
+  title: General prose fiction checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: form.prose.general_prose_fiction.narrative_experience
+    type: question
+    criterion_key: form.prose.general_prose_fiction.narrative_experience
+    text: Does the prose create a sustained fictional experience rather than merely summarize a premise?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.prose.general_prose_fiction.character_action
+    type: question
+    criterion_key: form.prose.general_prose_fiction.character_action
+    text: Are character, action, setting, and narration integrated rather than presented as separate inventories?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.prose.general_prose_fiction.movement
+    type: question
+    criterion_key: form.prose.general_prose_fiction.movement
+    text: Does the artifact create meaningful movement in event, relationship, perception, knowledge, or pressure?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.prose.general_prose_fiction.mode_control
+    type: question
+    criterion_key: form.prose.general_prose_fiction.mode_control
+    text: Are scene, summary, exposition, and reflection used deliberately?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.prose.general_prose_fiction.reader_orientation
+    type: question
+    criterion_key: form.prose.general_prose_fiction.reader_orientation
+    text: Does the reader receive enough orientation to follow the intended experience?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.prose.general_prose_fiction.proportion
+    type: question
+    criterion_key: form.prose.general_prose_fiction.proportion
+    text: Is the balance among narration, action, dialogue, description, and interiority appropriate to this work?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.prose.general_prose_fiction.completion
+    type: question
+    criterion_key: form.prose.general_prose_fiction.completion
+    text: If presented as complete, does the work achieve form-appropriate closure rather than accidental truncation?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- fein_et_al_2026_litbench
+- wu_et_al_2025_writingbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Provides the base conventions for narrated fiction without assuming a particular length or genre.

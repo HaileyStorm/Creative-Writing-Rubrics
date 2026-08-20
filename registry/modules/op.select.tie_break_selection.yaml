@@ -1,0 +1,128 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: op.select.tie_break_selection
+version: 1
+title: Tie-break selection
+kind: procedure
+description: Focuses on the few dimensions that genuinely distinguish finalists, examines surrounding context, and
+  avoids arbitrary precision when drafts are effectively tied.
+origin: user_inventory_refined
+owner_domains:
+- procedure.tie_break_selection
+artifact_types:
+- any
+valid_scopes:
+- operation
+activation: Attach when tie-break selection is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: op.select.tie_break_selection.quality
+  type: group
+  title: Tie-break selection checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: op.select.tie_break_selection.finalists
+    type: question
+    criterion_key: op.select.tie_break_selection.finalists
+    text: Are the candidates close enough that a tie-break rather than broad screening is appropriate?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: diagnostic
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.select.tie_break_selection.differences
+    type: question
+    criterion_key: op.select.tie_break_selection.differences
+    text: Does the tie-break focus on the few criteria that materially distinguish the finalists?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.select.tie_break_selection.context
+    type: question
+    criterion_key: op.select.tie_break_selection.context
+    text: Does it inspect surrounding project context needed to decide those criteria?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.select.tie_break_selection.taste
+    type: question
+    criterion_key: op.select.tie_break_selection.taste
+    text: Are craft defects separated from user-specific taste and project preference?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.select.tie_break_selection.uncertainty
+    type: question
+    criterion_key: op.select.tie_break_selection.uncertainty
+    text: Does it report effective ties or unstable decisions instead of inventing false precision?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.select.tie_break_selection.decision
+    type: question
+    criterion_key: op.select.tie_break_selection.decision
+    text: Does the chosen candidate create the best downstream option for the current workflow?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- wu_et_al_2025_writingbench
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Focuses on the few dimensions that genuinely distinguish finalists, examines surrounding context,
+  and avoids arbitrary precision when drafts are effectively tied.

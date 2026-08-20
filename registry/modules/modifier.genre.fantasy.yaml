@@ -1,0 +1,144 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: modifier.genre.fantasy
+version: 1
+title: Fantasy
+kind: modifier
+description: World-rule consequences, wonder, cultural specificity, integrated exposition, character-scale stakes,
+  and resistance to default genre furniture.
+origin: user_inventory_refined
+owner_domains:
+- genre.fantasy
+artifact_types:
+- creative_text
+valid_scopes:
+- any
+activation: Attach when fantasy is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: modifier.genre.fantasy.quality
+  type: group
+  title: Fantasy contract
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: modifier.genre.fantasy.wonder
+    type: question
+    criterion_key: modifier.genre.fantasy.wonder
+    text: Does the work create genuine wonder, estrangement, or imaginative possibility rather than only familiar
+      fantasy labels?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.fantasy.rules
+    type: question
+    criterion_key: modifier.genre.fantasy.rules
+    text: Do magical or fantastical elements have consequences and constraints relevant to choices?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.fantasy.culture
+    type: question
+    criterion_key: modifier.genre.fantasy.culture
+    text: Do cultures, institutions, and material life possess specific relations to the fantastical premise?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.fantasy.exposition
+    type: question
+    criterion_key: modifier.genre.fantasy.exposition
+    text: Is world information integrated at the reader's point of need?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.fantasy.character_scale
+    type: question
+    criterion_key: modifier.genre.fantasy.character_scale
+    text: Do large-scale world stakes remain connected to character-scale desires and costs?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.fantasy.language
+    type: question
+    criterion_key: modifier.genre.fantasy.language
+    text: Does nomenclature and diction support the world without overwhelming clarity?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.genre.fantasy.no_default_furniture
+    type: question
+    criterion_key: modifier.genre.fantasy.no_default_furniture
+    text: Does the work avoid default medieval-European furniture, species templates, prophecy mechanics, and magic
+      terminology unless specifically renewed?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- fein_et_al_2026_litbench
+- wu_et_al_2025_writingbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: World-rule consequences, wonder, cultural specificity, integrated exposition, character-scale
+  stakes, and resistance to default genre furniture.

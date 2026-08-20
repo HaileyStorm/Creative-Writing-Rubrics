@@ -1,0 +1,137 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: form.poetry.dramatic_monologue_poem
+version: 1
+title: Dramatic monologue poem
+kind: artifact_form
+description: Research-informed binary rubric for dramatic monologue poem.
+origin: research_expansion
+owner_domains:
+- form.poetry.dramatic_monologue_poem
+artifact_types:
+- poetry
+valid_scopes:
+- line
+- stanza
+- poem
+- collection
+activation: Attach when dramatic monologue poem is the active form, asset, or evaluation concern.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: form.poetry.dramatic_monologue_poem.quality
+  type: group
+  title: Dramatic monologue poem checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: form.poetry.dramatic_monologue_poem.speaker
+    type: question
+    criterion_key: form.poetry.dramatic_monologue_poem.speaker
+    text: Does the poem establish a specific speaker distinct from the implied poet?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.dramatic_monologue_poem.occasion
+    type: question
+    criterion_key: form.poetry.dramatic_monologue_poem.occasion
+    text: Is there a credible dramatic occasion and implied listener or audience?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.dramatic_monologue_poem.voice
+    type: question
+    criterion_key: form.poetry.dramatic_monologue_poem.voice
+    text: Does diction, syntax, rhythm, and attention reveal the speaker's character?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.dramatic_monologue_poem.revelation
+    type: question
+    criterion_key: form.poetry.dramatic_monologue_poem.revelation
+    text: Does the speaker reveal more than they intend or understand?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.dramatic_monologue_poem.movement
+    type: question
+    criterion_key: form.poetry.dramatic_monologue_poem.movement
+    text: Does the monologue develop through pressure, evasion, persuasion, memory, or self-exposure?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.dramatic_monologue_poem.listener
+    type: question
+    criterion_key: form.poetry.dramatic_monologue_poem.listener
+    text: Does the implied listener affect what is said and withheld?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.poetry.dramatic_monologue_poem.no_exposition
+    type: question
+    criterion_key: form.poetry.dramatic_monologue_poem.no_exposition
+    text: Does it avoid becoming a biographical speech with no dramatic action?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- li_et_al_2026_poemetric
+- vaezi_rezaei_2018
+notes: []

@@ -1,0 +1,169 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: craft.narrative.dialogue
+version: 1
+title: Dialogue
+kind: craft
+description: Covers voice differentiation, subtext, naturalness, dramatic purpose, rhythm, turn-taking, implication,
+  interruption, and the balance between dialogue and surrounding action.
+origin: user_inventory_refined
+owner_domains:
+- narrative.dialogue
+artifact_types:
+- prose_fiction
+- creative_nonfiction
+- dramatic_writing
+- narrative_poetry
+- interactive_fiction
+valid_scopes:
+- beat
+- scene
+- chapter
+- sequence
+- act
+- manuscript
+- series
+activation: Attach when dialogue is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: craft.narrative.dialogue.quality
+  type: group
+  title: Dialogue
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: craft.narrative.dialogue.voice_distinction
+    type: question
+    criterion_key: craft.narrative.dialogue.voice_distinction
+    text: Can speakers be distinguished by syntax, diction, assumptions, rhythm, and aims rather than tags alone?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.dialogue.subtext
+    type: question
+    criterion_key: craft.narrative.dialogue.subtext
+    text: Does dialogue carry implication, pressure, or withheld meaning where the scene calls for it?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.dialogue.naturalness
+    type: question
+    criterion_key: craft.narrative.dialogue.naturalness
+    text: Does dialogue sound behaviorally credible for these speakers and circumstances without merely transcribing
+      real-world filler?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.dialogue.purpose
+    type: question
+    criterion_key: craft.narrative.dialogue.purpose
+    text: Does each substantial exchange perform dramatic, relational, informational, or tonal work?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.dialogue.rhythm
+    type: question
+    criterion_key: craft.narrative.dialogue.rhythm
+    text: Do turn length, interruption, silence, overlap, and response timing support the scene?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.dialogue.listening
+    type: question
+    criterion_key: craft.narrative.dialogue.listening
+    text: Do speakers respond to what was actually said or implied rather than delivering adjacent prepared speeches?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.dialogue.action_balance
+    type: question
+    criterion_key: craft.narrative.dialogue.action_balance
+    text: Is dialogue integrated with action, perception, and silence rather than floating in a vacuum?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.dialogue.no_exposition
+    type: question
+    criterion_key: craft.narrative.dialogue.no_exposition
+    text: Does the dialogue avoid implausible exposition, 'as you know' statements, and on-the-nose emotional explanation?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- vaezi_rezaei_2018
+- carey_davidow_williams_2022
+- gomez_rodriguez_williams_2023
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Covers voice differentiation, subtext, naturalness, dramatic purpose, rhythm, turn-taking, implication,
+  interruption, and the balance between dialogue and surrounding action.

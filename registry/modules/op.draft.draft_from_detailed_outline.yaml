@@ -1,0 +1,156 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: op.draft.draft_from_detailed_outline
+version: 1
+title: Draft from detailed outline
+kind: procedure
+description: Combines prose craft with outline fidelity, scene function, canon, voice, and the requirement that
+  prose feel discovered rather than mechanically expanded from bullets.
+origin: user_inventory_refined
+owner_domains:
+- procedure.draft_from_detailed_outline
+artifact_types:
+- any
+valid_scopes:
+- operation
+activation: Attach when draft from detailed outline is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: op.draft.draft_from_detailed_outline.quality
+  type: group
+  title: Draft from detailed outline checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: op.draft.draft_from_detailed_outline.function
+    type: question
+    criterion_key: op.draft.draft_from_detailed_outline.function
+    text: Does the draft accomplish the outline's scene and arc functions?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.draft.draft_from_detailed_outline.facts
+    type: question
+    criterion_key: op.draft.draft_from_detailed_outline.facts
+    text: Does it preserve required events, knowledge, continuity, and canon?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.draft.draft_from_detailed_outline.causality
+    type: question
+    criterion_key: op.draft.draft_from_detailed_outline.causality
+    text: Do outline bullets become causally connected lived action rather than sequential paraphrase?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.draft.draft_from_detailed_outline.embodiment
+    type: question
+    criterion_key: op.draft.draft_from_detailed_outline.embodiment
+    text: Does it embody abstract outline information in perception, behavior, setting, and language?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.draft.draft_from_detailed_outline.voice
+    type: question
+    criterion_key: op.draft.draft_from_detailed_outline.voice
+    text: Does it preserve project voice and character-specific language?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.draft.draft_from_detailed_outline.discovery
+    type: question
+    criterion_key: op.draft.draft_from_detailed_outline.discovery
+    text: Does the prose feel locally discovered and responsive rather than mechanically expanded?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.draft.draft_from_detailed_outline.authorized_invention
+    type: question
+    criterion_key: op.draft.draft_from_detailed_outline.authorized_invention
+    text: Does any invention remain within gaps the outline leaves open?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.draft.draft_from_detailed_outline.no_outline_echo
+    type: question
+    criterion_key: op.draft.draft_from_detailed_outline.no_outline_echo
+    text: Does it avoid repeating planning-language abstractions in the final prose?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- wu_et_al_2025_writingbench
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Combines prose craft with outline fidelity, scene function, canon, voice, and the requirement
+  that prose feel discovered rather than mechanically expanded from bullets.

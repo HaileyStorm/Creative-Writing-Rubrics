@@ -1,0 +1,154 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: form.visual.scene_illustration
+version: 1
+title: Scene illustration
+kind: visual_artifact
+description: Research-informed binary rubric for scene illustration.
+origin: research_expansion
+owner_domains:
+- visual.scene_illustration
+artifact_types:
+- visual_asset
+valid_scopes:
+- asset
+- panel
+- sequence
+- project
+activation: Attach when scene illustration is the active form, asset, or evaluation concern.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 2
+  project_sources: character references, style references, scene text, and asset metadata when supplied
+  modalities_required:
+  - image
+tree:
+- id: form.visual.scene_illustration.quality
+  type: group
+  title: Scene illustration checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: form.visual.scene_illustration.event
+    type: question
+    criterion_key: form.visual.scene_illustration.event
+    text: Does the image depict the intended scene, action, or emotional beat?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.visual.scene_illustration.characters
+    type: question
+    criterion_key: form.visual.scene_illustration.characters
+    text: Are required characters present with correct identity, appearance, clothing, age, and state?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.visual.scene_illustration.setting
+    type: question
+    criterion_key: form.visual.scene_illustration.setting
+    text: Does the environment match project canon and the scene's location and time?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.visual.scene_illustration.composition
+    type: question
+    criterion_key: form.visual.scene_illustration.composition
+    text: Does composition direct attention to the scene's narrative priority?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.visual.scene_illustration.emotion
+    type: question
+    criterion_key: form.visual.scene_illustration.emotion
+    text: Do pose, expression, distance, lighting, and framing produce the intended emotional effect?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.visual.scene_illustration.continuity
+    type: question
+    criterion_key: form.visual.scene_illustration.continuity
+    text: Does the image preserve relevant props, injuries, weather, time, and spatial relations?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.visual.scene_illustration.style
+    type: question
+    criterion_key: form.visual.scene_illustration.style
+    text: Does it follow the active visual style guide?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.visual.scene_illustration.no_generic
+    type: question
+    criterion_key: form.visual.scene_illustration.no_generic
+    text: Does it avoid generic fantasy/sci-fi/romance concept-art defaults where the text specifies particular
+      detail?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- zhuang_et_al_2025_vistorybench
+- lin_et_al_2026_storybook_consistency
+notes: []

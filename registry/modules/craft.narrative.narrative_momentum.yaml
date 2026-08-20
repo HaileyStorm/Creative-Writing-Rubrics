@@ -1,0 +1,168 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: craft.narrative.narrative_momentum
+version: 1
+title: Narrative momentum
+kind: craft
+description: Evaluates whether the reader is given meaningful reasons to continue—not merely through cliffhangers,
+  but through curiosity, emotional investment, escalating consequence, voice, or conceptual interest.
+origin: user_inventory_refined
+owner_domains:
+- narrative.narrative_momentum
+artifact_types:
+- prose_fiction
+- creative_nonfiction
+- dramatic_writing
+- narrative_poetry
+- interactive_fiction
+valid_scopes:
+- beat
+- scene
+- chapter
+- sequence
+- act
+- manuscript
+- series
+activation: Attach when narrative momentum is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: craft.narrative.narrative_momentum.quality
+  type: group
+  title: Narrative momentum
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: craft.narrative.narrative_momentum.curiosity
+    type: question
+    criterion_key: craft.narrative.narrative_momentum.curiosity
+    text: Does the unit sustain a live question, uncertainty, or desire to know what follows?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.narrative_momentum.investment
+    type: question
+    criterion_key: craft.narrative.narrative_momentum.investment
+    text: Does it deepen emotional or relational investment?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.narrative_momentum.consequence
+    type: question
+    criterion_key: craft.narrative.narrative_momentum.consequence
+    text: Does it create, increase, or clarify consequences that matter beyond the immediate beat?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.narrative_momentum.voice_pull
+    type: question
+    criterion_key: craft.narrative.narrative_momentum.voice_pull
+    text: Does voice or language itself provide a reason to continue?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.narrative_momentum.concept_pull
+    type: question
+    criterion_key: craft.narrative.narrative_momentum.concept_pull
+    text: Does conceptual, thematic, or world interest remain active?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.narrative_momentum.progress
+    type: question
+    criterion_key: craft.narrative.narrative_momentum.progress
+    text: Does the narrative make meaningful progress rather than only defer?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.narrative_momentum.commitment
+    type: question
+    criterion_key: craft.narrative.narrative_momentum.commitment
+    text: Does the prose commit to concrete developments rather than indefinitely preserving optionality?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: craft.narrative.narrative_momentum.no_false_hook
+    type: question
+    criterion_key: craft.narrative.narrative_momentum.no_false_hook
+    text: Does it avoid substituting arbitrary cliffhangers or withheld basics for earned momentum?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- vaezi_rezaei_2018
+- carey_davidow_williams_2022
+- gomez_rodriguez_williams_2023
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates whether the reader is given meaningful reasons to continue—not merely through cliffhangers,
+  but through curiosity, emotional investment, escalating consequence, voice, or conceptual interest.

@@ -1,0 +1,153 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: form.visual.storyboard
+version: 1
+title: Storyboard
+kind: visual_artifact
+description: Research-informed binary rubric for storyboard.
+origin: research_expansion
+owner_domains:
+- visual.storyboard
+artifact_types:
+- visual_asset
+valid_scopes:
+- asset
+- panel
+- sequence
+- project
+activation: Attach when storyboard is the active form, asset, or evaluation concern.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 2
+  project_sources: character references, style references, scene text, and asset metadata when supplied
+  modalities_required:
+  - image
+tree:
+- id: form.visual.storyboard.quality
+  type: group
+  title: Storyboard checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: form.visual.storyboard.sequence
+    type: question
+    criterion_key: form.visual.storyboard.sequence
+    text: Does the panel sequence communicate the intended action and narrative progression?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.visual.storyboard.shots
+    type: question
+    criterion_key: form.visual.storyboard.shots
+    text: Are shot size, angle, camera movement, and staging selected for narrative purpose?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.visual.storyboard.continuity
+    type: question
+    criterion_key: form.visual.storyboard.continuity
+    text: Are character, prop, environment, screen direction, and spatial continuity preserved?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.visual.storyboard.beats
+    type: question
+    criterion_key: form.visual.storyboard.beats
+    text: Are important beats and transitions represented at the correct granularity?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.visual.storyboard.clarity
+    type: question
+    criterion_key: form.visual.storyboard.clarity
+    text: Can another creator understand what occurs without relying on hidden explanation?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.visual.storyboard.timing
+    type: question
+    criterion_key: form.visual.storyboard.timing
+    text: Does panel or shot allocation imply effective timing and emphasis?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.visual.storyboard.feasible
+    type: question
+    criterion_key: form.visual.storyboard.feasible
+    text: Is the storyboard feasible for the intended production medium and budget?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.visual.storyboard.no_beauty
+    type: question
+    criterion_key: form.visual.storyboard.no_beauty
+    text: Does it prioritize communication over unnecessary finish?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: diagnostic
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- zhuang_et_al_2025_vistorybench
+- lin_et_al_2026_storybook_consistency
+notes: []

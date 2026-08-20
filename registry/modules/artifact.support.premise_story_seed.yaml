@@ -1,0 +1,141 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: artifact.support.premise_story_seed
+version: 1
+title: Premise / story seed
+kind: support_artifact
+description: Evaluates generative potential, specificity, conflict or pressure, implied character, extensibility,
+  and distinction from a mere topic.
+origin: user_inventory_refined
+owner_domains:
+- support.premise_story_seed
+artifact_types:
+- planning_artifact
+- reference_artifact
+valid_scopes:
+- any
+activation: Attach when premise / story seed is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: artifact.support.premise_story_seed.quality
+  type: group
+  title: Premise / story seed checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: artifact.support.premise_story_seed.specificity
+    type: question
+    criterion_key: artifact.support.premise_story_seed.specificity
+    text: Is the premise more specific than a broad topic or genre label?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.premise_story_seed.pressure
+    type: question
+    criterion_key: artifact.support.premise_story_seed.pressure
+    text: Does it imply a conflict, incompatibility, desire, question, or destabilizing condition?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.premise_story_seed.character
+    type: question
+    criterion_key: artifact.support.premise_story_seed.character
+    text: Does it imply a character, group, or perspective meaningfully affected by the premise?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.premise_story_seed.consequence
+    type: question
+    criterion_key: artifact.support.premise_story_seed.consequence
+    text: Does the premise generate plausible consequences rather than only an initial image?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.premise_story_seed.extensibility
+    type: question
+    criterion_key: artifact.support.premise_story_seed.extensibility
+    text: Can it sustain the intended length and medium?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.premise_story_seed.distinctiveness
+    type: question
+    criterion_key: artifact.support.premise_story_seed.distinctiveness
+    text: Does it contain a distinguishing angle, constraint, relationship, or implication?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: artifact.support.premise_story_seed.choice_space
+    type: question
+    criterion_key: artifact.support.premise_story_seed.choice_space
+    text: Does it permit multiple worthwhile developments rather than predetermine every beat?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates generative potential, specificity, conflict or pressure, implied character, extensibility,
+  and distinction from a mere topic.

@@ -1,0 +1,153 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: form.visual.character_portrait
+version: 1
+title: Character portrait
+kind: visual_artifact
+description: Research-informed binary rubric for character portrait.
+origin: research_expansion
+owner_domains:
+- visual.character_portrait
+artifact_types:
+- visual_asset
+valid_scopes:
+- asset
+- panel
+- sequence
+- project
+activation: Attach when character portrait is the active form, asset, or evaluation concern.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 2
+  project_sources: character references, style references, scene text, and asset metadata when supplied
+  modalities_required:
+  - image
+tree:
+- id: form.visual.character_portrait.quality
+  type: group
+  title: Character portrait checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: form.visual.character_portrait.identity
+    type: question
+    criterion_key: form.visual.character_portrait.identity
+    text: Does the portrait match the character's canonical physical identity and age?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.visual.character_portrait.personality
+    type: question
+    criterion_key: form.visual.character_portrait.personality
+    text: Do expression, posture, styling, and gaze communicate character-specific personality or current state?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.visual.character_portrait.wardrobe
+    type: question
+    criterion_key: form.visual.character_portrait.wardrobe
+    text: Are clothing, accessories, and grooming appropriate to setting, role, culture, and scene?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.visual.character_portrait.silhouette
+    type: question
+    criterion_key: form.visual.character_portrait.silhouette
+    text: Is the character visually distinguishable from other project characters?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.visual.character_portrait.composition
+    type: question
+    criterion_key: form.visual.character_portrait.composition
+    text: Does framing suit the portrait's intended reference or promotional use?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.visual.character_portrait.style
+    type: question
+    criterion_key: form.visual.character_portrait.style
+    text: Does rendering match the project style guide?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.visual.character_portrait.anatomy
+    type: question
+    criterion_key: form.visual.character_portrait.anatomy
+    text: Are anatomy, hands, face, and perspective free of distracting defects?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: form.visual.character_portrait.no_beautify
+    type: question
+    criterion_key: form.visual.character_portrait.no_beautify
+    text: Does the portrait avoid generic beautification that erases distinctive features?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- zhuang_et_al_2025_vistorybench
+- lin_et_al_2026_storybook_consistency
+notes: []

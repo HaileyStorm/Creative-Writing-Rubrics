@@ -1,0 +1,185 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: data.eval.task_tail_coverage
+version: 1
+title: Task-tail coverage
+kind: dataset_eval
+description: Ensures creative writing, revision, instruction, knowledge, commonsense, code, math, and true non-refusal
+  each preserve specialist experts and downstream capability.
+origin: user_inventory_refined
+owner_domains:
+- dataset.task_tail_coverage
+artifact_types:
+- dataset
+- evaluation_pipeline
+valid_scopes:
+- any
+activation: Attach when task-tail coverage is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: data.eval.task_tail_coverage.quality
+  type: group
+  title: Task-tail coverage checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: data.eval.task_tail_coverage.creative
+    type: question
+    criterion_key: data.eval.task_tail_coverage.creative
+    text: Does the dataset preserve creative-writing and style-control tails?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: data.eval.task_tail_coverage.revision
+    type: question
+    criterion_key: data.eval.task_tail_coverage.revision
+    text: Does it preserve revision, diagnosis, and constrained-editing tails?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: data.eval.task_tail_coverage.instruction
+    type: question
+    criterion_key: data.eval.task_tail_coverage.instruction
+    text: Does it preserve complex instruction-following tails?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: data.eval.task_tail_coverage.knowledge
+    type: question
+    criterion_key: data.eval.task_tail_coverage.knowledge
+    text: Does it preserve broad and specialist knowledge tails?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: data.eval.task_tail_coverage.commonsense
+    type: question
+    criterion_key: data.eval.task_tail_coverage.commonsense
+    text: Does it preserve physical, social, temporal, and causal commonsense tails?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: data.eval.task_tail_coverage.code
+    type: question
+    criterion_key: data.eval.task_tail_coverage.code
+    text: Does it preserve designated code tails?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: data.eval.task_tail_coverage.math
+    type: question
+    criterion_key: data.eval.task_tail_coverage.math
+    text: Does it preserve designated math tails?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: data.eval.task_tail_coverage.nonrefusal
+    type: question
+    criterion_key: data.eval.task_tail_coverage.nonrefusal
+    text: Does it preserve answer-required non-refusal tails?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: data.eval.task_tail_coverage.representation
+    type: question
+    criterion_key: data.eval.task_tail_coverage.representation
+    text: Is each tail represented by enough independent documents, tasks, and difficulty levels?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: data.eval.task_tail_coverage.token_bias
+    type: question
+    criterion_key: data.eval.task_tail_coverage.token_bias
+    text: Does sampling prevent long records from dominating tail coverage only by token count?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- rao_callison_burch_2026_autorubric
+- longjudgebench_2026
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Ensures creative writing, revision, instruction, knowledge, commonsense, code, math, and true
+  non-refusal each preserve specialist experts and downstream capability.

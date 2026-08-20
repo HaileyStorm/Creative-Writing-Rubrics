@@ -1,0 +1,142 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: op.revision.targeted_rewrite
+version: 1
+title: Targeted rewrite
+kind: procedure
+description: Evaluates whether specified issues were corrected while unrelated strengths, facts, voice, and structure
+  were preserved.
+origin: user_inventory_refined
+owner_domains:
+- procedure.targeted_rewrite
+artifact_types:
+- any
+valid_scopes:
+- operation
+activation: Attach when targeted rewrite is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: op.revision.targeted_rewrite.quality
+  type: group
+  title: Targeted rewrite checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: op.revision.targeted_rewrite.requested
+    type: question
+    criterion_key: op.revision.targeted_rewrite.requested
+    text: Does the rewrite correct every specified target issue?
+    pass_answer: 'YES'
+    weight: 2.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.targeted_rewrite.preserve_facts
+    type: question
+    criterion_key: op.revision.targeted_rewrite.preserve_facts
+    text: Does it preserve all unrelated facts, continuity, and canon?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.targeted_rewrite.preserve_voice
+    type: question
+    criterion_key: op.revision.targeted_rewrite.preserve_voice
+    text: Does it preserve unrelated voice, diction, rhythm, and characterization?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.targeted_rewrite.preserve_structure
+    type: question
+    criterion_key: op.revision.targeted_rewrite.preserve_structure
+    text: Does it preserve unrelated structure and emphasis?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.targeted_rewrite.supporting
+    type: question
+    criterion_key: op.revision.targeted_rewrite.supporting
+    text: Are supporting changes limited to those required for coherence?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.targeted_rewrite.new_defects
+    type: question
+    criterion_key: op.revision.targeted_rewrite.new_defects
+    text: Is the result free of new errors, awkwardness, repetition, and continuity problems?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: op.revision.targeted_rewrite.no_scope_creep
+    type: question
+    criterion_key: op.revision.targeted_rewrite.no_scope_creep
+    text: Does it avoid unauthorized improvement outside the target surface?
+    pass_answer: 'YES'
+    weight: 2.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- wu_et_al_2025_writingbench
+- fein_et_al_2026_litbench
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Evaluates whether specified issues were corrected while unrelated strengths, facts, voice, and
+  structure were preserved.

@@ -1,0 +1,143 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.0.0
+module_id: data.eval.answer_required_purity
+version: 1
+title: Answer-required purity
+kind: dataset_eval
+description: Ensures every abliteration item expects a substantive response and that no refusal-positive or censorship-preferred
+  example enters any view.
+origin: user_inventory_refined
+owner_domains:
+- dataset.answer_required_purity
+artifact_types:
+- dataset
+- evaluation_pipeline
+valid_scopes:
+- any
+activation: Attach when answer-required purity is relevant to the active artifact or operation.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: when supplied
+tree:
+- id: data.eval.answer_required_purity.quality
+  type: group
+  title: Answer-required purity checks
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: data.eval.answer_required_purity.expected
+    type: question
+    criterion_key: data.eval.answer_required_purity.expected
+    text: Does every item require a substantive answer under the evaluation's declared policy?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: hard_gate
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: data.eval.answer_required_purity.no_refusal_positive
+    type: question
+    criterion_key: data.eval.answer_required_purity.no_refusal_positive
+    text: Is the dataset free of refusal-preferred examples?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: hard_gate
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: data.eval.answer_required_purity.no_censor
+    type: question
+    criterion_key: data.eval.answer_required_purity.no_censor
+    text: Is it free of censorship-preferred or moralizing target responses?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: hard_gate
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: data.eval.answer_required_purity.no_ambiguous
+    type: question
+    criterion_key: data.eval.answer_required_purity.no_ambiguous
+    text: Are ambiguous items removed or separately labeled rather than silently treated as answer-required?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: data.eval.answer_required_purity.quality
+    type: question
+    criterion_key: data.eval.answer_required_purity.quality
+    text: Do target responses preserve competence and task quality rather than reward bare compliance?
+    pass_answer: 'YES'
+    weight: 2.0
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: data.eval.answer_required_purity.audit
+    type: question
+    criterion_key: data.eval.answer_required_purity.audit
+    text: Has purity been audited across source, transformed, and final views?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: data.eval.answer_required_purity.provenance
+    type: question
+    criterion_key: data.eval.answer_required_purity.provenance
+    text: Can each item's policy classification be traced and reproduced?
+    pass_answer: 'YES'
+    weight: 1.5
+    question_type: scored
+    severity: material
+    applies_when: The criterion is relevant to the requested artifact, scope, and operation.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+modifier_actions: []
+research_basis:
+- cho_et_al_2026_bineval
+- zhang_et_al_2026_rubricbench
+- rao_callison_burch_2026_autorubric
+- longjudgebench_2026
+notes:
+- Derived from the supplied application rubric inventory and refined into atomic positive binary questions.
+- YES means the observable criterion is satisfied; NOT_APPLICABLE and CANNOT_ASSESS are control states, not quality
+  labels.
+source_description: Ensures every abliteration item expects a substantive response and that no refusal-positive
+  or censorship-preferred example enters any view.
