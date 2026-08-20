@@ -1,0 +1,221 @@
+{
+  "evaluation_id": "gray-blood-chapters-1-6-comparison",
+  "scope": "Two private WIP novel drafts, chapters 1-6; manuscript text is not included.",
+  "rubric_revision": "448c461c74d7a612db12ef7ac9b9236b54123980",
+  "protocol": "prompts/judge/LONG_FORM_PROTOCOL.md",
+  "publication": {
+    "private_prose_included": false,
+    "evidence_quotes_included": false,
+    "local_paths_included": false,
+    "scores_and_verdict_states_complete": true
+  },
+  "routes": {
+    "whole_bundle": {
+      "bundle": "prose.novel",
+      "model": "gpt-5.6-luna",
+      "reasoning": "max",
+      "leaves_per_draft": 221
+    },
+    "chapter_subset": {
+      "bundle": "prose.chapter",
+      "model": "gpt-5.6-sol",
+      "reasoning": "medium",
+      "leaves_per_chapter": 28
+    },
+    "maps_and_synthesis": {
+      "model": "gpt-5.6-sol",
+      "reasoning": "high"
+    }
+  },
+  "whole": {
+    "original": {
+      "artifact_id": "gray-blood-original-ch01-06",
+      "status": "INELIGIBLE",
+      "score": {
+        "lower": 75.0029,
+        "observed": 78.0767,
+        "upper": 78.3
+      },
+      "coverage": 0.967,
+      "verdict_count": 221
+    },
+    "new": {
+      "artifact_id": "gray-blood-new-ch01-06",
+      "status": "UNRESOLVED",
+      "score": {
+        "lower": 70.1137,
+        "observed": 74.1946,
+        "upper": 74.8519
+      },
+      "coverage": 0.9526,
+      "verdict_count": 221
+    }
+  },
+  "chapters": [
+    {
+      "chapter": 1,
+      "original": {
+        "artifact_id": "gray-blood-original-chapter-01",
+        "status": "UNRESOLVED",
+        "score": {
+          "lower": 0.0,
+          "observed": 84.0722,
+          "upper": 97.5468
+        },
+        "coverage": 0.1499,
+        "verdict_count": 28
+      },
+      "new": {
+        "artifact_id": "gray-blood-new-chapter-01",
+        "status": "UNRESOLVED",
+        "score": {
+          "lower": 0.0,
+          "observed": 80.3685,
+          "upper": 97.0397
+        },
+        "coverage": 0.148,
+        "verdict_count": 28
+      }
+    },
+    {
+      "chapter": 2,
+      "original": {
+        "artifact_id": "gray-blood-original-chapter-02",
+        "status": "UNRESOLVED",
+        "score": {
+          "lower": 0.0,
+          "observed": 81.6031,
+          "upper": 97.0397
+        },
+        "coverage": 0.1582,
+        "verdict_count": 28
+      },
+      "new": {
+        "artifact_id": "gray-blood-new-chapter-02",
+        "status": "UNRESOLVED",
+        "score": {
+          "lower": 0.0,
+          "observed": 78.3824,
+          "upper": 96.5134
+        },
+        "coverage": 0.1582,
+        "verdict_count": 28
+      }
+    },
+    {
+      "chapter": 3,
+      "original": {
+        "artifact_id": "gray-blood-original-chapter-03",
+        "status": "UNRESOLVED",
+        "score": {
+          "lower": 0.0,
+          "observed": 86.5991,
+          "upper": 97.8668
+        },
+        "coverage": 0.1582,
+        "verdict_count": 28
+      },
+      "new": {
+        "artifact_id": "gray-blood-new-chapter-03",
+        "status": "UNRESOLVED",
+        "score": {
+          "lower": 0.0,
+          "observed": 90.3978,
+          "upper": 98.5017
+        },
+        "coverage": 0.1582,
+        "verdict_count": 28
+      }
+    },
+    {
+      "chapter": 4,
+      "original": {
+        "artifact_id": "gray-blood-original-chapter-04",
+        "status": "UNRESOLVED",
+        "score": {
+          "lower": 0.0,
+          "observed": 80.5295,
+          "upper": 96.8643
+        },
+        "coverage": 0.1582,
+        "verdict_count": 28
+      },
+      "new": {
+        "artifact_id": "gray-blood-new-chapter-04",
+        "status": "UNRESOLVED",
+        "score": {
+          "lower": 0.0,
+          "observed": 78.0604,
+          "upper": 96.3572
+        },
+        "coverage": 0.1582,
+        "verdict_count": 28
+      }
+    },
+    {
+      "chapter": 5,
+      "original": {
+        "artifact_id": "gray-blood-original-chapter-05",
+        "status": "UNRESOLVED",
+        "score": {
+          "lower": 0.0,
+          "observed": 83.7501,
+          "upper": 97.3906
+        },
+        "coverage": 0.1582,
+        "verdict_count": 28
+      },
+      "new": {
+        "artifact_id": "gray-blood-new-chapter-05",
+        "status": "UNRESOLVED",
+        "score": {
+          "lower": 0.0,
+          "observed": 77.8242,
+          "upper": 96.3239
+        },
+        "coverage": 0.1582,
+        "verdict_count": 28
+      }
+    },
+    {
+      "chapter": 6,
+      "original": {
+        "artifact_id": "gray-blood-original-chapter-06",
+        "status": "UNRESOLVED",
+        "score": {
+          "lower": 0.0,
+          "observed": 83.7501,
+          "upper": 97.3906
+        },
+        "coverage": 0.1582,
+        "verdict_count": 28
+      },
+      "new": {
+        "artifact_id": "gray-blood-new-chapter-06",
+        "status": "UNRESOLVED",
+        "score": {
+          "lower": 0.0,
+          "observed": 75.5334,
+          "upper": 96.0372
+        },
+        "coverage": 0.1582,
+        "verdict_count": 28
+      }
+    }
+  ],
+  "accepted_binary_verdicts": 778,
+  "failed_batch_attempts_excluded": 1,
+  "notes": [
+    "Whole-run control states are not ordinary numeric grades.",
+    "Chapter reports deliberately cover a fixed subset and must not be averaged.",
+    "Open synthesis does not alter deterministic scores."
+  ],
+  "provenance": {
+    "sanitized_provider_attestations_included": true,
+    "checkpoint_hash_chains_included": true,
+    "prompt_and_response_hash_commitments_included": true,
+    "published_verdict_files_hash_bound": true,
+    "private_pre_sanitization_batch_hash_commitments_included": true,
+    "run_and_session_ids_included": false
+  }
+}

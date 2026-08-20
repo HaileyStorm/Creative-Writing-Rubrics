@@ -1,0 +1,18 @@
+{
+  "original": {
+    "reported": {
+      "provider": "openai",
+      "model": "gpt-5.6-sol",
+      "reasoning_effort": "high"
+    },
+    "map_sha256": "0a748ee88e88edb9dd7ce0f7da49a87ddb7b04be87822c8a685399d501ee4f67"
+  },
+  "new": {
+    "reported": {
+      "provider": "openai",
+      "model": "gpt-5.6-sol",
+      "reasoning_effort": "high"
+    },
+    "map_sha256": "7dd4f6cd2274f8121c7a9ed57fbab27906027dc18a39e493891d19fb57cbdf69"
+  }
+}

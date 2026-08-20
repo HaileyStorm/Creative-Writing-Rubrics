@@ -1,0 +1,59 @@
+{
+  "format_version": 1,
+  "configuration_sha256": "21aaba66a901c69247e96ef5c0865852faf9fdd75a49933d39e487cf22f3d363",
+  "artifact_id": "gray-blood-new-chapter-02",
+  "bundle_id": "prose.chapter",
+  "requested": {
+    "provider": "codex",
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "medium"
+  },
+  "batch_count": 1,
+  "accepted_verdict_count": 28,
+  "published_verdicts_sha256": "b1abbeb6283c68072829c05683f3fca5ae4779d53c119bb70a6a1631eb98ca9b",
+  "batches": [
+    {
+      "batch": 1,
+      "question_ids": [
+        "craft.narrative.characterization.behavior",
+        "craft.narrative.characterization.motives",
+        "craft.narrative.characterization.contradiction",
+        "craft.narrative.character_arc.local_contribution",
+        "craft.narrative.plot_and_causality.causal_chain",
+        "craft.narrative.plot_and_causality.consequence",
+        "craft.narrative.narrative_momentum.curiosity",
+        "craft.narrative.narrative_momentum.progress",
+        "craft.narrative.opening.entry",
+        "craft.narrative.opening.tone",
+        "craft.narrative.ending_and_closure.changed_state",
+        "craft.narrative.ending_and_closure.resonance",
+        "craft.narrative.worldbuilding.rules",
+        "craft.narrative.worldbuilding.constraints",
+        "craft.narrative.worldbuilding.integration",
+        "craft.narrative.continuity_and_canon_integrity.characters",
+        "craft.narrative.continuity_and_canon_integrity.world",
+        "craft.narrative.temporal_and_spatial_continuity.state_update",
+        "craft.narrative.pacing_and_narrative_time.allocation",
+        "craft.narrative.pacing_and_narrative_time.no_stall",
+        "craft.narrative.exposition_and_information_management.timing",
+        "craft.narrative.exposition_and_information_management.embedding",
+        "core.language_craft.no_awkwardness",
+        "core.voice_and_stylistic_identity.ownership",
+        "craft.narrative.dialogue.subtext",
+        "core.emotional_and_intellectual_effect.earned_emotion",
+        "core.freshness_and_non_genericness.unpredictable_specificity",
+        "core.economy_and_relevance.no_restatement"
+      ],
+      "prompt_sha256": "b39dbb81c7edb6d24a76a4aca5313f48a939a496e0fc066614b8a15e462eeedc",
+      "response_sha256": "d0bc624a22754100125c47f581150f7b21757f76881d3b244effc1ec02b3337e",
+      "private_unsanitized_batch_verdicts_sha256": "da71b7308a99cbe181a24b3c0e0b44a9a6e90cbe214ccc4517e3b3862e01fb8e",
+      "previous_checkpoint_sha256": null,
+      "checkpoint_sha256": "f0475167fd695418f244e79f87a0df3281fee5797063a25201b368f51bf981bf",
+      "reported": {
+        "provider": "openai",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "medium"
+      }
+    }
+  ]
+}

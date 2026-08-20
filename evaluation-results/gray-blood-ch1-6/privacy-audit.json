@@ -1,0 +1,29 @@
+{
+  "format_version": 1,
+  "audited_tree_sha256": "fefe89cbb4c7a2d117a8a9b061a7acbbb15c93c8045b758a1ac74869c590a729",
+  "audited_file_count": 49,
+  "audited_total_bytes": 1901587,
+  "forbidden_pattern_hits": {
+    "windows_absolute_path": 0,
+    "unix_home_path": 0,
+    "private_source_filename": 0,
+    "raw_evidence_quote_key": 0,
+    "run_or_session_id_key": 0
+  },
+  "exact_source_prose_ngram_hits": {
+    "12": {
+      "original": 0,
+      "new": 0
+    },
+    "20": {
+      "original": 0,
+      "new": 0
+    },
+    "40": {
+      "original": 0,
+      "new": 0
+    }
+  },
+  "ngram_normalization": "lowercase ASCII alphanumeric tokens; exact contiguous token sequences",
+  "note": "The tree commitment excludes this audit file. Any package change requires a new source-backed audit."
+}

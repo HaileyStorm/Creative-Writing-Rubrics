@@ -4,9 +4,9 @@
 
 The package ships **277 modules**, **2,139 atomic leaves**, and **85 bundle presets**, plus deterministic scoring. A judge answers one yes/no leaf at a time. Aggregation is code, not another model call.
 
-## Current work
+## Verification status
 
-Fresh-clone installation, CLI and Python workflows, wheel contents, schemas, and examples have been verified. The headless runner for OpenAI-compatible endpoints and Codex CLI is available and tested against a local endpoint and GPT-5.6. A multi-chapter comparison of two private novel drafts is next: the drafts will not be published, but the complete evaluation reports will be, with embedded excerpts and local metadata sanitized. A small approved excerpt may accompany the reports. The completed update is expected by morning.
+Fresh-clone installation, CLI and Python workflows, wheel contents, schemas, and examples have been verified. The headless runner is tested against a local endpoint and GPT-5.6. This public repository includes a real two-draft, six-chapter evaluation with 778 quote-free verdicts and 14 score reports, plus a separate 249-verdict extension over all seven available chapters of the original draft. The private manuscript is not published.
 
 ## Install
 
@@ -98,6 +98,8 @@ Stable IDs (`module_id`, `question_id`, `bundle_id`, `criterion_key`) are the pu
 
 ## Guides
 
+- [Real long-form draft comparison](https://github.com/HaileyStorm/Creative-Writing-Rubrics/tree/main/evaluation-results/gray-blood-ch1-6)
+- [Full-original chapters 1-7 extension](https://github.com/HaileyStorm/Creative-Writing-Rubrics/tree/main/evaluation-results/gray-blood-original-ch1-7)
 - [Run a headless judge](docs/judging.md)
 - [Embed in another app](docs/apps.md)
 - [Benchmarking](docs/benchmarking.md)

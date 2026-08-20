@@ -1,0 +1,2505 @@
+{
+  "$schema": "https://raw.githubusercontent.com/HaileyStorm/Creative-Writing-Rubrics/main/schema/hbq_score_report.schema.json",
+  "active_nominal_points": 100.0,
+  "artifact_id": "gray-blood-original-chapter-04",
+  "base_score": {
+    "lower": 12.6801,
+    "observed": 80.5295,
+    "upper": 96.8643
+  },
+  "bundle_id": "prose.chapter",
+  "bundle_version": 1,
+  "confidence": 0.9547,
+  "coverage": 0.1582,
+  "domains": [
+    {
+      "active": true,
+      "confidence": null,
+      "coverage": 0.0,
+      "domain_id": "task",
+      "nominal_points": 7.0,
+      "questions": [
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "core.task_and_brief_fidelity",
+          "question_id": "core.task_and_brief_fidelity.intervention",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "core.task_and_brief_fidelity",
+          "question_id": "core.task_and_brief_fidelity.completion_flag",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "core.task_and_brief_fidelity",
+          "question_id": "core.task_and_brief_fidelity.no_meta_substitution",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "core.length_and_scope_fit",
+          "question_id": "core.length_and_scope_fit.form",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "core.length_and_scope_fit",
+          "question_id": "core.length_and_scope_fit.operation",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "core.length_and_scope_fit",
+          "question_id": "core.length_and_scope_fit.development",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "core.length_and_scope_fit",
+          "question_id": "core.length_and_scope_fit.density",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "core.length_and_scope_fit",
+          "question_id": "core.length_and_scope_fit.ending",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "core.length_and_scope_fit",
+          "question_id": "core.length_and_scope_fit.no_padding",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "core.length_and_scope_fit",
+          "question_id": "core.length_and_scope_fit.no_underbuild",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "core.audience_and_purpose_fit",
+          "question_id": "core.audience_and_purpose_fit.complexity",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "core.audience_and_purpose_fit",
+          "question_id": "core.audience_and_purpose_fit.tone",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "core.audience_and_purpose_fit",
+          "question_id": "core.audience_and_purpose_fit.explanation",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "core.audience_and_purpose_fit",
+          "question_id": "core.audience_and_purpose_fit.intensity",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "core.audience_and_purpose_fit",
+          "question_id": "core.audience_and_purpose_fit.vocabulary",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "core.audience_and_purpose_fit",
+          "question_id": "core.audience_and_purpose_fit.length",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "core.audience_and_purpose_fit",
+          "question_id": "core.audience_and_purpose_fit.genre_signals",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "core.audience_and_purpose_fit",
+          "question_id": "core.audience_and_purpose_fit.use_context",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "form.prose.general_prose_fiction",
+          "question_id": "form.prose.general_prose_fiction.narrative_experience",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 2.25
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "form.prose.general_prose_fiction",
+          "question_id": "form.prose.general_prose_fiction.character_action",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 2.25
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "form.prose.general_prose_fiction",
+          "question_id": "form.prose.general_prose_fiction.movement",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 2.25
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "form.prose.general_prose_fiction",
+          "question_id": "form.prose.general_prose_fiction.mode_control",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 2.25
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "form.prose.general_prose_fiction",
+          "question_id": "form.prose.general_prose_fiction.reader_orientation",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "form.prose.general_prose_fiction",
+          "question_id": "form.prose.general_prose_fiction.proportion",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 2.25
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "form.prose.general_prose_fiction",
+          "question_id": "form.prose.general_prose_fiction.completion",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 2.25
+        }
+      ],
+      "score": {
+        "lower": 0.0,
+        "observed": null,
+        "upper": 7.0
+      },
+      "title": "Task and scope",
+      "weights": {
+        "applicable": 42.0,
+        "failed": 0.0,
+        "passed": 0.0,
+        "unassessed": 42.0
+      }
+    },
+    {
+      "active": true,
+      "confidence": 0.97,
+      "coverage": 0.2222,
+      "domain_id": "character",
+      "nominal_points": 16.0,
+      "questions": [
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.characterization",
+          "question_id": "craft.narrative.characterization.dimensionality",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "reference": "chapter 04, dorm approach"
+            },
+            {
+              "reference": "chapter 04, confrontation"
+            }
+          ],
+          "module_id": "craft.narrative.characterization",
+          "question_id": "craft.narrative.characterization.behavior",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.97,
+          "evidence": [
+            {
+              "reference": "chapter 04, opening"
+            },
+            {
+              "reference": "chapter 04, invisibility-spell preparation"
+            }
+          ],
+          "module_id": "craft.narrative.characterization",
+          "question_id": "craft.narrative.characterization.motives",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "reference": "chapter 04, lunch scene"
+            },
+            {
+              "reference": "chapter 04, dorm approach"
+            }
+          ],
+          "module_id": "craft.narrative.characterization",
+          "question_id": "craft.narrative.characterization.contradiction",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.characterization",
+          "question_id": "craft.narrative.characterization.agency",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.characterization",
+          "question_id": "craft.narrative.characterization.distinction",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.characterization",
+          "question_id": "craft.narrative.characterization.development",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.characterization",
+          "question_id": "craft.narrative.characterization.canon",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.characterization",
+          "question_id": "craft.narrative.characterization.no_trait_labels",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.character_arc",
+          "question_id": "craft.narrative.character_arc.baseline",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.character_arc",
+          "question_id": "craft.narrative.character_arc.pressure",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.character_arc",
+          "question_id": "craft.narrative.character_arc.resistance",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.character_arc",
+          "question_id": "craft.narrative.character_arc.turns",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.character_arc",
+          "question_id": "craft.narrative.character_arc.consequences",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.character_arc",
+          "question_id": "craft.narrative.character_arc.rate",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.95,
+          "evidence": [
+            {
+              "reference": "chapter 04, lunch scene"
+            },
+            {
+              "reference": "chapter 04, spell preparation"
+            }
+          ],
+          "module_id": "craft.narrative.character_arc",
+          "question_id": "craft.narrative.character_arc.local_contribution",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.character_arc",
+          "question_id": "craft.narrative.character_arc.end_state",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        }
+      ],
+      "score": {
+        "lower": 3.5556,
+        "observed": 16.0,
+        "upper": 16.0
+      },
+      "title": "Character and arcs",
+      "weights": {
+        "applicable": 22.5,
+        "failed": 0.0,
+        "passed": 5.0,
+        "unassessed": 17.5
+      }
+    },
+    {
+      "active": true,
+      "confidence": 0.947,
+      "coverage": 0.2018,
+      "domain_id": "plot",
+      "nominal_points": 20.0,
+      "questions": [
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "reference": "chapter 04, lunch scene"
+            },
+            {
+              "reference": "chapter 04, tracking sequence"
+            },
+            {
+              "reference": "chapter 04, third-floor hallway"
+            }
+          ],
+          "module_id": "craft.narrative.plot_and_causality",
+          "question_id": "craft.narrative.plot_and_causality.causal_chain",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.plot_and_causality",
+          "question_id": "craft.narrative.plot_and_causality.setup",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.plot_and_causality",
+          "question_id": "craft.narrative.plot_and_causality.decision",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "reference": "chapter 04, shield preparation"
+            },
+            {
+              "reference": "chapter 04, ending"
+            }
+          ],
+          "module_id": "craft.narrative.plot_and_causality",
+          "question_id": "craft.narrative.plot_and_causality.consequence",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.plot_and_causality",
+          "question_id": "craft.narrative.plot_and_causality.escalation",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.plot_and_causality",
+          "question_id": "craft.narrative.plot_and_causality.complication",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.plot_and_causality",
+          "question_id": "craft.narrative.plot_and_causality.reversal",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.plot_and_causality",
+          "question_id": "craft.narrative.plot_and_causality.no_convenience",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.foreshadowing_setup_and_payoff",
+          "question_id": "craft.narrative.foreshadowing_setup_and_payoff.preparation",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.foreshadowing_setup_and_payoff",
+          "question_id": "craft.narrative.foreshadowing_setup_and_payoff.subtlety",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.foreshadowing_setup_and_payoff",
+          "question_id": "craft.narrative.foreshadowing_setup_and_payoff.expectation",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.foreshadowing_setup_and_payoff",
+          "question_id": "craft.narrative.foreshadowing_setup_and_payoff.delay",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.foreshadowing_setup_and_payoff",
+          "question_id": "craft.narrative.foreshadowing_setup_and_payoff.earned",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.foreshadowing_setup_and_payoff",
+          "question_id": "craft.narrative.foreshadowing_setup_and_payoff.remembered",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.foreshadowing_setup_and_payoff",
+          "question_id": "craft.narrative.foreshadowing_setup_and_payoff.echo",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.foreshadowing_setup_and_payoff",
+          "question_id": "craft.narrative.foreshadowing_setup_and_payoff.no_deus",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "reference": "chapter 04, hallway"
+            },
+            {
+              "reference": "chapter 04, ending"
+            }
+          ],
+          "module_id": "craft.narrative.narrative_momentum",
+          "question_id": "craft.narrative.narrative_momentum.curiosity",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.narrative_momentum",
+          "question_id": "craft.narrative.narrative_momentum.investment",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.narrative_momentum",
+          "question_id": "craft.narrative.narrative_momentum.consequence",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.narrative_momentum",
+          "question_id": "craft.narrative.narrative_momentum.voice_pull",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.narrative_momentum",
+          "question_id": "craft.narrative.narrative_momentum.concept_pull",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "reference": "chapter 04, tracking sequence"
+            },
+            {
+              "reference": "chapter 04, confrontation"
+            }
+          ],
+          "module_id": "craft.narrative.narrative_momentum",
+          "question_id": "craft.narrative.narrative_momentum.progress",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.narrative_momentum",
+          "question_id": "craft.narrative.narrative_momentum.commitment",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.narrative_momentum",
+          "question_id": "craft.narrative.narrative_momentum.no_false_hook",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.93,
+          "evidence": [
+            {
+              "reference": "chapter 04, opening paragraph"
+            }
+          ],
+          "module_id": "craft.narrative.opening",
+          "question_id": "craft.narrative.opening.entry",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.opening",
+          "question_id": "craft.narrative.opening.orientation",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.opening",
+          "question_id": "craft.narrative.opening.intrigue",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.opening",
+          "question_id": "craft.narrative.opening.voice",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.9,
+          "evidence": [
+            {
+              "reference": "chapter 04, opening paragraph"
+            },
+            {
+              "reference": "chapter 04, classroom sequence"
+            }
+          ],
+          "module_id": "craft.narrative.opening",
+          "question_id": "craft.narrative.opening.tone",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.opening",
+          "question_id": "craft.narrative.opening.promise",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.opening",
+          "question_id": "craft.narrative.opening.withholding",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.opening",
+          "question_id": "craft.narrative.opening.no_preamble",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.87,
+          "evidence": [
+            {
+              "reference": "chapter 04, final exchange"
+            },
+            {
+              "reference": "chapter 04, final line"
+            }
+          ],
+          "module_id": "craft.narrative.ending_and_closure",
+          "question_id": "craft.narrative.ending_and_closure.changed_state",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.ending_and_closure",
+          "question_id": "craft.narrative.ending_and_closure.resolution",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.ending_and_closure",
+          "question_id": "craft.narrative.ending_and_closure.expectations",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.ending_and_closure",
+          "question_id": "craft.narrative.ending_and_closure.emphasis",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.95,
+          "evidence": [
+            {
+              "reference": "chapter 04, final line"
+            }
+          ],
+          "module_id": "craft.narrative.ending_and_closure",
+          "question_id": "craft.narrative.ending_and_closure.resonance",
+          "verdict": "NO",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.ending_and_closure",
+          "question_id": "craft.narrative.ending_and_closure.openness",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.ending_and_closure",
+          "question_id": "craft.narrative.ending_and_closure.no_overclosure",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.ending_and_closure",
+          "question_id": "craft.narrative.ending_and_closure.no_abruptness",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 2.0
+        }
+      ],
+      "score": {
+        "lower": 3.5088,
+        "observed": 17.3913,
+        "upper": 19.4737
+      },
+      "title": "Plot architecture and payoff",
+      "weights": {
+        "applicable": 57.0,
+        "failed": 1.5,
+        "passed": 10.0,
+        "unassessed": 45.5
+      }
+    },
+    {
+      "active": true,
+      "confidence": 0.9733,
+      "coverage": 0.2535,
+      "domain_id": "world",
+      "nominal_points": 12.0,
+      "questions": [
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "reference": "chapter 04, spell preparation"
+            },
+            {
+              "reference": "chapter 04, tracking spell"
+            }
+          ],
+          "module_id": "craft.narrative.worldbuilding",
+          "question_id": "craft.narrative.worldbuilding.rules",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.worldbuilding",
+          "question_id": "craft.narrative.worldbuilding.consistency",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "reference": "chapter 04, dorm entrance"
+            },
+            {
+              "reference": "chapter 04, hallway"
+            },
+            {
+              "reference": "chapter 04, confrontation"
+            }
+          ],
+          "module_id": "craft.narrative.worldbuilding",
+          "question_id": "craft.narrative.worldbuilding.constraints",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.worldbuilding",
+          "question_id": "craft.narrative.worldbuilding.culture",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.worldbuilding",
+          "question_id": "craft.narrative.worldbuilding.history",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.worldbuilding",
+          "question_id": "craft.narrative.worldbuilding.consequences",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "reference": "chapter 04, tracking spell"
+            },
+            {
+              "reference": "chapter 04, confrontation"
+            }
+          ],
+          "module_id": "craft.narrative.worldbuilding",
+          "question_id": "craft.narrative.worldbuilding.integration",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.worldbuilding",
+          "question_id": "craft.narrative.worldbuilding.no_lore_dump",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.worldbuilding",
+          "question_id": "craft.narrative.worldbuilding.no_default_furniture",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.93,
+          "evidence": [
+            {
+              "reference": "chapter 04, invisibility aftermath"
+            },
+            {
+              "reference": "chapter 04, dorm approach"
+            },
+            {
+              "reference": "chapter 04, lunch scene"
+            }
+          ],
+          "module_id": "craft.narrative.continuity_and_canon_integrity",
+          "question_id": "craft.narrative.continuity_and_canon_integrity.characters",
+          "verdict": "NO",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.continuity_and_canon_integrity",
+          "question_id": "craft.narrative.continuity_and_canon_integrity.knowledge",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.continuity_and_canon_integrity",
+          "question_id": "craft.narrative.continuity_and_canon_integrity.facts",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "reference": "chapter 04, text exchange"
+            },
+            {
+              "reference": "chapter 04, tracking spell"
+            },
+            {
+              "reference": "chapter 04, hallway"
+            }
+          ],
+          "module_id": "craft.narrative.continuity_and_canon_integrity",
+          "question_id": "craft.narrative.continuity_and_canon_integrity.world",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.continuity_and_canon_integrity",
+          "question_id": "craft.narrative.continuity_and_canon_integrity.chronology",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.continuity_and_canon_integrity",
+          "question_id": "craft.narrative.continuity_and_canon_integrity.state",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.continuity_and_canon_integrity",
+          "question_id": "craft.narrative.continuity_and_canon_integrity.threads",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.continuity_and_canon_integrity",
+          "question_id": "craft.narrative.continuity_and_canon_integrity.supersession",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.continuity_and_canon_integrity",
+          "question_id": "craft.narrative.continuity_and_canon_integrity.conflicts",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.temporal_and_spatial_continuity",
+          "question_id": "craft.narrative.temporal_and_spatial_continuity.chronology",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.temporal_and_spatial_continuity",
+          "question_id": "craft.narrative.temporal_and_spatial_continuity.elapsed_time",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.temporal_and_spatial_continuity",
+          "question_id": "craft.narrative.temporal_and_spatial_continuity.travel",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.temporal_and_spatial_continuity",
+          "question_id": "craft.narrative.temporal_and_spatial_continuity.entrances",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.temporal_and_spatial_continuity",
+          "question_id": "craft.narrative.temporal_and_spatial_continuity.objects",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.temporal_and_spatial_continuity",
+          "question_id": "craft.narrative.temporal_and_spatial_continuity.orientation",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "reference": "chapter 04, lunch scene"
+            },
+            {
+              "reference": "chapter 04, stairwell sequence"
+            },
+            {
+              "reference": "chapter 04, confrontation"
+            }
+          ],
+          "module_id": "craft.narrative.temporal_and_spatial_continuity",
+          "question_id": "craft.narrative.temporal_and_spatial_continuity.state_update",
+          "verdict": "YES",
+          "weight": 1.5
+        }
+      ],
+      "score": {
+        "lower": 2.5352,
+        "observed": 10.0,
+        "upper": 11.493
+      },
+      "title": "World and continuity",
+      "weights": {
+        "applicable": 35.5,
+        "failed": 1.5,
+        "passed": 7.5,
+        "unassessed": 26.5
+      }
+    },
+    {
+      "active": true,
+      "confidence": 0.9162,
+      "coverage": 0.2063,
+      "domain_id": "pacing",
+      "nominal_points": 10.0,
+      "questions": [
+        {
+          "confidence": 0.82,
+          "evidence": [
+            {
+              "reference": "chapter 04, extended preparation sequence"
+            },
+            {
+              "reference": "chapter 04, extended preparation sequence"
+            }
+          ],
+          "module_id": "craft.narrative.pacing_and_narrative_time",
+          "question_id": "craft.narrative.pacing_and_narrative_time.allocation",
+          "verdict": "NO",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.pacing_and_narrative_time",
+          "question_id": "craft.narrative.pacing_and_narrative_time.acceleration",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.pacing_and_narrative_time",
+          "question_id": "craft.narrative.pacing_and_narrative_time.deceleration",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.pacing_and_narrative_time",
+          "question_id": "craft.narrative.pacing_and_narrative_time.scene_summary",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.pacing_and_narrative_time",
+          "question_id": "craft.narrative.pacing_and_narrative_time.reveal_timing",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.pacing_and_narrative_time",
+          "question_id": "craft.narrative.pacing_and_narrative_time.variation",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.pacing_and_narrative_time",
+          "question_id": "craft.narrative.pacing_and_narrative_time.local_global",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.9,
+          "evidence": [
+            {
+              "reference": "chapter 04, spell preparation"
+            },
+            {
+              "reference": "chapter 04, spell preparation"
+            }
+          ],
+          "module_id": "craft.narrative.pacing_and_narrative_time",
+          "question_id": "craft.narrative.pacing_and_narrative_time.no_stall",
+          "verdict": "NO",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.exposition_and_information_management",
+          "question_id": "craft.narrative.exposition_and_information_management.reader_state",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.97,
+          "evidence": [
+            {
+              "reference": "chapter 04, spell preparation"
+            },
+            {
+              "reference": "chapter 04, confrontation"
+            }
+          ],
+          "module_id": "craft.narrative.exposition_and_information_management",
+          "question_id": "craft.narrative.exposition_and_information_management.timing",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "reference": "chapter 04, Amelia choosing how to protect Madison"
+            },
+            {
+              "reference": "chapter 04, Madison choosing the cut location"
+            }
+          ],
+          "module_id": "craft.narrative.exposition_and_information_management",
+          "question_id": "craft.narrative.exposition_and_information_management.embedding",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.exposition_and_information_management",
+          "question_id": "craft.narrative.exposition_and_information_management.priority",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.exposition_and_information_management",
+          "question_id": "craft.narrative.exposition_and_information_management.no_redundancy",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.exposition_and_information_management",
+          "question_id": "craft.narrative.exposition_and_information_management.no_dump",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.exposition_and_information_management",
+          "question_id": "craft.narrative.exposition_and_information_management.fair_withholding",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.transitions_and_connective_tissue",
+          "question_id": "craft.narrative.transitions_and_connective_tissue.logic",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.transitions_and_connective_tissue",
+          "question_id": "craft.narrative.transitions_and_connective_tissue.time",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.transitions_and_connective_tissue",
+          "question_id": "craft.narrative.transitions_and_connective_tissue.place",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.transitions_and_connective_tissue",
+          "question_id": "craft.narrative.transitions_and_connective_tissue.speaker",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.transitions_and_connective_tissue",
+          "question_id": "craft.narrative.transitions_and_connective_tissue.mode",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.transitions_and_connective_tissue",
+          "question_id": "craft.narrative.transitions_and_connective_tissue.momentum",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.transitions_and_connective_tissue",
+          "question_id": "craft.narrative.transitions_and_connective_tissue.no_bridge_filler",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 2.0
+        }
+      ],
+      "score": {
+        "lower": 0.9524,
+        "observed": 4.6154,
+        "upper": 8.8889
+      },
+      "title": "Pacing and information",
+      "weights": {
+        "applicable": 31.5,
+        "failed": 3.5,
+        "passed": 3.0,
+        "unassessed": 25.0
+      }
+    },
+    {
+      "active": true,
+      "confidence": 0.984,
+      "coverage": 0.1493,
+      "domain_id": "language",
+      "nominal_points": 10.0,
+      "questions": [
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "core.language_craft",
+          "question_id": "core.language_craft.diction",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "core.language_craft",
+          "question_id": "core.language_craft.syntax",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "core.language_craft",
+          "question_id": "core.language_craft.cadence",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "core.language_craft",
+          "question_id": "core.language_craft.variation",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "core.language_craft",
+          "question_id": "core.language_craft.paragraph_movement",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "core.language_craft",
+          "question_id": "core.language_craft.images",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "core.language_craft",
+          "question_id": "core.language_craft.sound",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "core.language_craft",
+          "question_id": "core.language_craft.emphasis",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "reference": "chapter 04, classroom sequence"
+            },
+            {
+              "reference": "chapter 04, lunch scene"
+            },
+            {
+              "reference": "chapter 04, dorm entrance"
+            }
+          ],
+          "module_id": "core.language_craft",
+          "question_id": "core.language_craft.no_awkwardness",
+          "verdict": "NO",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "core.voice_and_stylistic_identity",
+          "question_id": "core.voice_and_stylistic_identity.distinctive",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "core.voice_and_stylistic_identity",
+          "question_id": "core.voice_and_stylistic_identity.sustained",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "core.voice_and_stylistic_identity",
+          "question_id": "core.voice_and_stylistic_identity.suitable",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "core.voice_and_stylistic_identity",
+          "question_id": "core.voice_and_stylistic_identity.project_fidelity",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "core.voice_and_stylistic_identity",
+          "question_id": "core.voice_and_stylistic_identity.shift_control",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "reference": "chapter 04, classroom sequence"
+            },
+            {
+              "reference": "chapter 04, classroom sequence"
+            },
+            {
+              "reference": "chapter 04, dorm approach"
+            }
+          ],
+          "module_id": "core.voice_and_stylistic_identity",
+          "question_id": "core.voice_and_stylistic_identity.ownership",
+          "verdict": "YES",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.dialogue",
+          "question_id": "craft.narrative.dialogue.voice_distinction",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.97,
+          "evidence": [
+            {
+              "reference": "chapter 04, lunch scene"
+            },
+            {
+              "reference": "chapter 04, confrontation"
+            },
+            {
+              "reference": "chapter 04, confrontation"
+            }
+          ],
+          "module_id": "craft.narrative.dialogue",
+          "question_id": "craft.narrative.dialogue.subtext",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.dialogue",
+          "question_id": "craft.narrative.dialogue.naturalness",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.dialogue",
+          "question_id": "craft.narrative.dialogue.purpose",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.dialogue",
+          "question_id": "craft.narrative.dialogue.rhythm",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.dialogue",
+          "question_id": "craft.narrative.dialogue.listening",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.dialogue",
+          "question_id": "craft.narrative.dialogue.action_balance",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.dialogue",
+          "question_id": "craft.narrative.dialogue.no_exposition",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 2.0
+        }
+      ],
+      "score": {
+        "lower": 1.0448,
+        "observed": 7.0,
+        "upper": 9.5522
+      },
+      "title": "Language and voice",
+      "weights": {
+        "applicable": 33.5,
+        "failed": 1.5,
+        "passed": 3.5,
+        "unassessed": 28.5
+      }
+    },
+    {
+      "active": true,
+      "confidence": 0.95,
+      "coverage": 0.0811,
+      "domain_id": "effect",
+      "nominal_points": 8.0,
+      "questions": [
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.theme_and_subtext",
+          "question_id": "craft.narrative.theme_and_subtext.emergence",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.theme_and_subtext",
+          "question_id": "craft.narrative.theme_and_subtext.subtext",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.theme_and_subtext",
+          "question_id": "craft.narrative.theme_and_subtext.development",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.theme_and_subtext",
+          "question_id": "craft.narrative.theme_and_subtext.counterpoint",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.theme_and_subtext",
+          "question_id": "craft.narrative.theme_and_subtext.integration",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.theme_and_subtext",
+          "question_id": "craft.narrative.theme_and_subtext.no_moral",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "craft.narrative.theme_and_subtext",
+          "question_id": "craft.narrative.theme_and_subtext.open_questions",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "core.emotional_and_intellectual_effect",
+          "question_id": "core.emotional_and_intellectual_effect.intended_effect",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.95,
+          "evidence": [
+            {
+              "reference": "chapter 04, hallway"
+            },
+            {
+              "reference": "chapter 04, confrontation"
+            }
+          ],
+          "module_id": "core.emotional_and_intellectual_effect",
+          "question_id": "core.emotional_and_intellectual_effect.earned_emotion",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "core.emotional_and_intellectual_effect",
+          "question_id": "core.emotional_and_intellectual_effect.conceptual_interest",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "core.emotional_and_intellectual_effect",
+          "question_id": "core.emotional_and_intellectual_effect.modulation",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "core.emotional_and_intellectual_effect",
+          "question_id": "core.emotional_and_intellectual_effect.restraint",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "core.emotional_and_intellectual_effect",
+          "question_id": "core.emotional_and_intellectual_effect.aftermath",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.0
+        }
+      ],
+      "score": {
+        "lower": 0.6486,
+        "observed": 8.0,
+        "upper": 8.0
+      },
+      "title": "Theme and effect",
+      "weights": {
+        "applicable": 18.5,
+        "failed": 0.0,
+        "passed": 1.5,
+        "unassessed": 17.0
+      }
+    },
+    {
+      "active": true,
+      "confidence": 0.9178,
+      "coverage": 0.1957,
+      "domain_id": "fresh",
+      "nominal_points": 5.0,
+      "questions": [
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "core.freshness_and_non_genericness",
+          "question_id": "core.freshness_and_non_genericness.no_cliche",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "core.freshness_and_non_genericness",
+          "question_id": "core.freshness_and_non_genericness.no_stock_beats",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "core.freshness_and_non_genericness",
+          "question_id": "core.freshness_and_non_genericness.no_llm_phrasing",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "core.freshness_and_non_genericness",
+          "question_id": "core.freshness_and_non_genericness.no_default_metaphors",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "core.freshness_and_non_genericness",
+          "question_id": "core.freshness_and_non_genericness.no_emotion_summary",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "reference": "chapter 04, invisibility symbol"
+            },
+            {
+              "reference": "chapter 04, confrontation"
+            },
+            {
+              "reference": "chapter 04, classroom"
+            }
+          ],
+          "module_id": "core.freshness_and_non_genericness",
+          "question_id": "core.freshness_and_non_genericness.unpredictable_specificity",
+          "verdict": "YES",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "core.freshness_and_non_genericness",
+          "question_id": "core.freshness_and_non_genericness.no_forced_novelty",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "core.freshness_and_non_genericness",
+          "question_id": "core.freshness_and_non_genericness.no_rare_word_chasing",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "core.economy_and_relevance",
+          "question_id": "core.economy_and_relevance.earns_place",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.86,
+          "evidence": [
+            {
+              "reference": "chapter 04, tracking spell"
+            },
+            {
+              "reference": "chapter 04, spell preparation"
+            },
+            {
+              "reference": "chapter 04, spell preparation"
+            }
+          ],
+          "module_id": "core.economy_and_relevance",
+          "question_id": "core.economy_and_relevance.no_restatement",
+          "verdict": "NO",
+          "weight": 2.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "core.economy_and_relevance",
+          "question_id": "core.economy_and_relevance.functional_repetition",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "core.economy_and_relevance",
+          "question_id": "core.economy_and_relevance.detail_relevance",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "core.economy_and_relevance",
+          "question_id": "core.economy_and_relevance.digression",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "core.economy_and_relevance",
+          "question_id": "core.economy_and_relevance.length_fit",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "core.economy_and_relevance",
+          "question_id": "core.economy_and_relevance.no_flattening",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.0
+        }
+      ],
+      "score": {
+        "lower": 0.4348,
+        "observed": 2.2222,
+        "upper": 4.4565
+      },
+      "title": "Freshness and economy",
+      "weights": {
+        "applicable": 23.0,
+        "failed": 2.5,
+        "passed": 2.0,
+        "unassessed": 18.5
+      }
+    },
+    {
+      "active": true,
+      "confidence": null,
+      "coverage": 0.0,
+      "domain_id": "mechanics",
+      "nominal_points": 4.0,
+      "questions": [
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "core.mechanics_and_presentation",
+          "question_id": "core.mechanics_and_presentation.grammar",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "core.mechanics_and_presentation",
+          "question_id": "core.mechanics_and_presentation.punctuation",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "core.mechanics_and_presentation",
+          "question_id": "core.mechanics_and_presentation.spelling",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "core.mechanics_and_presentation",
+          "question_id": "core.mechanics_and_presentation.formatting",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "core.mechanics_and_presentation",
+          "question_id": "core.mechanics_and_presentation.dialogue_mechanics",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "core.mechanics_and_presentation",
+          "question_id": "core.mechanics_and_presentation.typography",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "core.mechanics_and_presentation",
+          "question_id": "core.mechanics_and_presentation.cleanliness",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        }
+      ],
+      "score": {
+        "lower": 0.0,
+        "observed": null,
+        "upper": 4.0
+      },
+      "title": "Mechanics",
+      "weights": {
+        "applicable": 7.5,
+        "failed": 0.0,
+        "passed": 0.0,
+        "unassessed": 7.5
+      }
+    },
+    {
+      "active": true,
+      "confidence": null,
+      "coverage": 0.0,
+      "domain_id": "holistic",
+      "nominal_points": 8.0,
+      "questions": [
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "core.holistic_artistic_success",
+          "question_id": "core.holistic_artistic_success.threshold_1_functional",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "core.holistic_artistic_success",
+          "question_id": "core.holistic_artistic_success.threshold_2_effective",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "core.holistic_artistic_success",
+          "question_id": "core.holistic_artistic_success.threshold_3_keepworthy",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "module_id": "core.holistic_artistic_success",
+          "question_id": "core.holistic_artistic_success.threshold_4_exceptional",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 2.0
+        }
+      ],
+      "score": {
+        "lower": 0.0,
+        "observed": null,
+        "upper": 8.0
+      },
+      "title": "Holistic artistic success",
+      "weights": {
+        "applicable": 8.0,
+        "failed": 0.0,
+        "passed": 0.0,
+        "unassessed": 8.0
+      }
+    }
+  ],
+  "final_score": {
+    "lower": 0.0,
+    "observed": 80.5295,
+    "upper": 96.8643
+  },
+  "hard_gate_status": "UNRESOLVED",
+  "hard_gates": [
+    {
+      "evidence": [],
+      "module_id": "core.task_and_brief_fidelity",
+      "question_id": "core.task_and_brief_fidelity.operation",
+      "verdict": "CANNOT_ASSESS"
+    },
+    {
+      "evidence": [],
+      "module_id": "core.task_and_brief_fidelity",
+      "question_id": "core.task_and_brief_fidelity.sources",
+      "verdict": "CANNOT_ASSESS"
+    },
+    {
+      "evidence": [],
+      "module_id": "core.task_and_brief_fidelity",
+      "question_id": "core.task_and_brief_fidelity.inclusions",
+      "verdict": "CANNOT_ASSESS"
+    },
+    {
+      "evidence": [],
+      "module_id": "core.task_and_brief_fidelity",
+      "question_id": "core.task_and_brief_fidelity.exclusions",
+      "verdict": "CANNOT_ASSESS"
+    },
+    {
+      "evidence": [],
+      "module_id": "core.task_and_brief_fidelity",
+      "question_id": "core.task_and_brief_fidelity.pov",
+      "verdict": "CANNOT_ASSESS"
+    },
+    {
+      "evidence": [],
+      "module_id": "core.task_and_brief_fidelity",
+      "question_id": "core.task_and_brief_fidelity.tense",
+      "verdict": "CANNOT_ASSESS"
+    },
+    {
+      "evidence": [],
+      "module_id": "core.task_and_brief_fidelity",
+      "question_id": "core.task_and_brief_fidelity.structure",
+      "verdict": "CANNOT_ASSESS"
+    },
+    {
+      "evidence": [],
+      "module_id": "core.task_and_brief_fidelity",
+      "question_id": "core.task_and_brief_fidelity.format",
+      "verdict": "CANNOT_ASSESS"
+    },
+    {
+      "evidence": [],
+      "module_id": "core.task_and_brief_fidelity",
+      "question_id": "core.task_and_brief_fidelity.length_hard",
+      "verdict": "CANNOT_ASSESS"
+    },
+    {
+      "evidence": [],
+      "module_id": "core.length_and_scope_fit",
+      "question_id": "core.length_and_scope_fit.explicit",
+      "verdict": "CANNOT_ASSESS"
+    },
+    {
+      "evidence": [],
+      "module_id": "scope.long_context",
+      "question_id": "scope.long_context.overflow",
+      "verdict": "CANNOT_ASSESS"
+    }
+  ],
+  "inactive_points_reallocated": 0.0,
+  "issues": [
+    "Missing verdict for selected question core.audience_and_purpose_fit.complexity; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question core.audience_and_purpose_fit.explanation; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question core.audience_and_purpose_fit.genre_signals; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question core.audience_and_purpose_fit.intensity; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question core.audience_and_purpose_fit.length; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question core.audience_and_purpose_fit.tone; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question core.audience_and_purpose_fit.use_context; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question core.audience_and_purpose_fit.vocabulary; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question core.economy_and_relevance.detail_relevance; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question core.economy_and_relevance.digression; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question core.economy_and_relevance.earns_place; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question core.economy_and_relevance.functional_repetition; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question core.economy_and_relevance.length_fit; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question core.economy_and_relevance.no_flattening; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question core.emotional_and_intellectual_effect.aftermath; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question core.emotional_and_intellectual_effect.conceptual_interest; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question core.emotional_and_intellectual_effect.intended_effect; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question core.emotional_and_intellectual_effect.modulation; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question core.emotional_and_intellectual_effect.restraint; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question core.freshness_and_non_genericness.no_cliche; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question core.freshness_and_non_genericness.no_default_metaphors; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question core.freshness_and_non_genericness.no_emotion_summary; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question core.freshness_and_non_genericness.no_forced_novelty; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question core.freshness_and_non_genericness.no_llm_phrasing; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question core.freshness_and_non_genericness.no_rare_word_chasing; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question core.freshness_and_non_genericness.no_stock_beats; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question core.holistic_artistic_success.threshold_1_functional; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question core.holistic_artistic_success.threshold_2_effective; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question core.holistic_artistic_success.threshold_3_keepworthy; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question core.holistic_artistic_success.threshold_4_exceptional; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question core.language_craft.cadence; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question core.language_craft.diction; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question core.language_craft.emphasis; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question core.language_craft.images; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question core.language_craft.paragraph_movement; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question core.language_craft.sound; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question core.language_craft.syntax; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question core.language_craft.variation; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question core.length_and_scope_fit.density; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question core.length_and_scope_fit.development; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question core.length_and_scope_fit.ending; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question core.length_and_scope_fit.explicit; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question core.length_and_scope_fit.form; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question core.length_and_scope_fit.no_padding; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question core.length_and_scope_fit.no_underbuild; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question core.length_and_scope_fit.operation; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question core.mechanics_and_presentation.cleanliness; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question core.mechanics_and_presentation.dialogue_mechanics; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question core.mechanics_and_presentation.formatting; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question core.mechanics_and_presentation.grammar; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question core.mechanics_and_presentation.punctuation; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question core.mechanics_and_presentation.spelling; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question core.mechanics_and_presentation.typography; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question core.task_and_brief_fidelity.completion_flag; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question core.task_and_brief_fidelity.exclusions; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question core.task_and_brief_fidelity.format; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question core.task_and_brief_fidelity.inclusions; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question core.task_and_brief_fidelity.intervention; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question core.task_and_brief_fidelity.length_hard; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question core.task_and_brief_fidelity.no_meta_substitution; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question core.task_and_brief_fidelity.operation; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question core.task_and_brief_fidelity.pov; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question core.task_and_brief_fidelity.sources; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question core.task_and_brief_fidelity.structure; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question core.task_and_brief_fidelity.tense; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question core.voice_and_stylistic_identity.distinctive; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question core.voice_and_stylistic_identity.project_fidelity; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question core.voice_and_stylistic_identity.shift_control; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question core.voice_and_stylistic_identity.suitable; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question core.voice_and_stylistic_identity.sustained; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.character_arc.baseline; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.character_arc.consequences; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.character_arc.end_state; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.character_arc.pressure; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.character_arc.rate; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.character_arc.resistance; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.character_arc.turns; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.characterization.agency; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.characterization.canon; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.characterization.development; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.characterization.dimensionality; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.characterization.distinction; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.characterization.no_trait_labels; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.continuity_and_canon_integrity.chronology; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.continuity_and_canon_integrity.conflicts; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.continuity_and_canon_integrity.facts; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.continuity_and_canon_integrity.knowledge; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.continuity_and_canon_integrity.state; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.continuity_and_canon_integrity.supersession; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.continuity_and_canon_integrity.threads; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.dialogue.action_balance; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.dialogue.listening; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.dialogue.naturalness; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.dialogue.no_exposition; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.dialogue.purpose; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.dialogue.rhythm; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.dialogue.voice_distinction; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.ending_and_closure.emphasis; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.ending_and_closure.expectations; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.ending_and_closure.no_abruptness; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.ending_and_closure.no_overclosure; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.ending_and_closure.openness; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.ending_and_closure.resolution; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.exposition_and_information_management.fair_withholding; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.exposition_and_information_management.no_dump; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.exposition_and_information_management.no_redundancy; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.exposition_and_information_management.priority; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.exposition_and_information_management.reader_state; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.foreshadowing_setup_and_payoff.delay; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.foreshadowing_setup_and_payoff.earned; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.foreshadowing_setup_and_payoff.echo; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.foreshadowing_setup_and_payoff.expectation; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.foreshadowing_setup_and_payoff.no_deus; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.foreshadowing_setup_and_payoff.preparation; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.foreshadowing_setup_and_payoff.remembered; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.foreshadowing_setup_and_payoff.subtlety; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.narrative_momentum.commitment; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.narrative_momentum.concept_pull; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.narrative_momentum.consequence; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.narrative_momentum.investment; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.narrative_momentum.no_false_hook; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.narrative_momentum.voice_pull; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.opening.intrigue; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.opening.no_preamble; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.opening.orientation; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.opening.promise; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.opening.voice; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.opening.withholding; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.pacing_and_narrative_time.acceleration; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.pacing_and_narrative_time.deceleration; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.pacing_and_narrative_time.local_global; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.pacing_and_narrative_time.reveal_timing; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.pacing_and_narrative_time.scene_summary; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.pacing_and_narrative_time.variation; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.plot_and_causality.complication; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.plot_and_causality.decision; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.plot_and_causality.escalation; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.plot_and_causality.no_convenience; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.plot_and_causality.reversal; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.plot_and_causality.setup; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.temporal_and_spatial_continuity.chronology; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.temporal_and_spatial_continuity.elapsed_time; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.temporal_and_spatial_continuity.entrances; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.temporal_and_spatial_continuity.objects; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.temporal_and_spatial_continuity.orientation; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.temporal_and_spatial_continuity.travel; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.theme_and_subtext.counterpoint; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.theme_and_subtext.development; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.theme_and_subtext.emergence; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.theme_and_subtext.integration; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.theme_and_subtext.no_moral; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.theme_and_subtext.open_questions; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.theme_and_subtext.subtext; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.transitions_and_connective_tissue.logic; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.transitions_and_connective_tissue.mode; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.transitions_and_connective_tissue.momentum; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.transitions_and_connective_tissue.no_bridge_filler; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.transitions_and_connective_tissue.place; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.transitions_and_connective_tissue.speaker; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.transitions_and_connective_tissue.time; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.worldbuilding.consequences; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.worldbuilding.consistency; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.worldbuilding.culture; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.worldbuilding.history; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.worldbuilding.no_default_furniture; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question craft.narrative.worldbuilding.no_lore_dump; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question form.prose.general_prose_fiction.character_action; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question form.prose.general_prose_fiction.completion; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question form.prose.general_prose_fiction.mode_control; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question form.prose.general_prose_fiction.movement; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question form.prose.general_prose_fiction.narrative_experience; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question form.prose.general_prose_fiction.proportion; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question form.prose.general_prose_fiction.reader_orientation; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question penalty.purple_prose.attention; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question penalty.purple_prose.clarity; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question penalty.purple_prose.fatigue; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question penalty.purple_prose.metaphor; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question penalty.purple_prose.proportion; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question penalty.purple_prose.specificity; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question penalty.purple_prose.tone; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question penalty.repetition.beat; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question penalty.repetition.dialogue; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question penalty.repetition.explanation; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question penalty.repetition.image; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question penalty.repetition.lexical; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question penalty.repetition.long_range; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question penalty.repetition.semantic; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question penalty.repetition.syntax; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question penalty.unflagged_incomplete.status; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question penalty.unflagged_incomplete.truncation; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question penalty.unflagged_incomplete.unit; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question scope.long_context.distant; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question scope.long_context.distractors; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question scope.long_context.documents; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question scope.long_context.multi; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question scope.long_context.no_first; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question scope.long_context.no_recent; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question scope.long_context.overflow; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question scope.long_context.uncertainty; treated as CANNOT_ASSESS",
+    "Missing verdict for selected question scope.long_context.updates; treated as CANNOT_ASSESS"
+  ],
+  "minimum_coverage": 0.8,
+  "penalties": [
+    {
+      "cap_points": 5.0,
+      "coverage": 0.0,
+      "deduction": {
+        "lower": 0.0,
+        "observed": 0.0,
+        "upper": 5.0
+      },
+      "module_id": "penalty.purple_prose",
+      "questions": [
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "question_id": "penalty.purple_prose.clarity",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "question_id": "penalty.purple_prose.proportion",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "question_id": "penalty.purple_prose.specificity",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "question_id": "penalty.purple_prose.tone",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "question_id": "penalty.purple_prose.metaphor",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "question_id": "penalty.purple_prose.attention",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "question_id": "penalty.purple_prose.fatigue",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        }
+      ],
+      "title": "Purple prose penalty",
+      "weights": {
+        "applicable": 12.0,
+        "failed": 0.0,
+        "passed": 0.0,
+        "unassessed": 12.0
+      }
+    },
+    {
+      "cap_points": 8.0,
+      "coverage": 0.0,
+      "deduction": {
+        "lower": 0.0,
+        "observed": 0.0,
+        "upper": 8.0
+      },
+      "module_id": "penalty.repetition",
+      "questions": [
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "question_id": "penalty.repetition.lexical",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "question_id": "penalty.repetition.syntax",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "question_id": "penalty.repetition.semantic",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "question_id": "penalty.repetition.image",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "question_id": "penalty.repetition.beat",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "question_id": "penalty.repetition.dialogue",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "question_id": "penalty.repetition.explanation",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "question_id": "penalty.repetition.long_range",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 2.0
+        }
+      ],
+      "title": "Repetition penalty",
+      "weights": {
+        "applicable": 14.0,
+        "failed": 0.0,
+        "passed": 0.0,
+        "unassessed": 14.0
+      }
+    },
+    {
+      "cap_points": 8.0,
+      "coverage": 0.0,
+      "deduction": {
+        "lower": 0.0,
+        "observed": 0.0,
+        "upper": 8.0
+      },
+      "module_id": "penalty.unflagged_incomplete",
+      "questions": [
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "question_id": "penalty.unflagged_incomplete.status",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 3.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "question_id": "penalty.unflagged_incomplete.unit",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 3.0
+        },
+        {
+          "confidence": 0.0,
+          "evidence": [],
+          "question_id": "penalty.unflagged_incomplete.truncation",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 3.0
+        }
+      ],
+      "title": "Unflagged incomplete artifact penalty",
+      "weights": {
+        "applicable": 9.0,
+        "failed": 0.0,
+        "passed": 0.0,
+        "unassessed": 9.0
+      }
+    }
+  ],
+  "penalty_deduction": {
+    "lower": 0.0,
+    "observed": 0.0,
+    "upper": 21.0
+  },
+  "standard": {
+    "id": "HBQ-RS",
+    "version": "1.0.0"
+  },
+  "status": "UNRESOLVED",
+  "supplemental": [
+    {
+      "confidence": 0.0,
+      "evidence": [],
+      "module_id": "scope.long_context",
+      "question_id": "scope.long_context.distant",
+      "verdict": "CANNOT_ASSESS"
+    },
+    {
+      "confidence": 0.0,
+      "evidence": [],
+      "module_id": "scope.long_context",
+      "question_id": "scope.long_context.distractors",
+      "verdict": "CANNOT_ASSESS"
+    },
+    {
+      "confidence": 0.0,
+      "evidence": [],
+      "module_id": "scope.long_context",
+      "question_id": "scope.long_context.multi",
+      "verdict": "CANNOT_ASSESS"
+    },
+    {
+      "confidence": 0.0,
+      "evidence": [],
+      "module_id": "scope.long_context",
+      "question_id": "scope.long_context.updates",
+      "verdict": "CANNOT_ASSESS"
+    },
+    {
+      "confidence": 0.0,
+      "evidence": [],
+      "module_id": "scope.long_context",
+      "question_id": "scope.long_context.documents",
+      "verdict": "CANNOT_ASSESS"
+    },
+    {
+      "confidence": 0.0,
+      "evidence": [],
+      "module_id": "scope.long_context",
+      "question_id": "scope.long_context.uncertainty",
+      "verdict": "CANNOT_ASSESS"
+    },
+    {
+      "confidence": 0.0,
+      "evidence": [],
+      "module_id": "scope.long_context",
+      "question_id": "scope.long_context.no_first",
+      "verdict": "CANNOT_ASSESS"
+    },
+    {
+      "confidence": 0.0,
+      "evidence": [],
+      "module_id": "scope.long_context",
+      "question_id": "scope.long_context.no_recent",
+      "verdict": "CANNOT_ASSESS"
+    }
+  ]
+}

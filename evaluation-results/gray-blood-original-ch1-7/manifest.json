@@ -1,0 +1,61 @@
+{
+  "evaluation_id": "gray-blood-original-chapters-1-7-extension",
+  "scope": "Separate full-original track covering private WIP chapters 1-7; manuscript text is not included.",
+  "rubric_revision": "448c461c74d7a612db12ef7ac9b9236b54123980",
+  "protocol": "prompts/judge/LONG_FORM_PROTOCOL.md",
+  "publication": {
+    "private_prose_included": false,
+    "evidence_quotes_included": false,
+    "local_paths_included": false,
+    "scores_and_verdict_states_complete": true
+  },
+  "routes": {
+    "whole_bundle": {
+      "bundle": "prose.novel",
+      "model": "gpt-5.6-luna",
+      "reasoning": "max",
+      "leaves": 221
+    },
+    "chapter_7_subset": {
+      "bundle": "prose.chapter",
+      "model": "gpt-5.6-sol",
+      "reasoning": "medium",
+      "leaves": 28
+    }
+  },
+  "whole": {
+    "artifact_id": "gray-blood-original-ch01-07",
+    "status": "INELIGIBLE",
+    "score": {
+      "lower": 68.7414,
+      "observed": 70.9898,
+      "upper": 71.3865
+    },
+    "coverage": 0.9735,
+    "verdict_count": 221
+  },
+  "chapter_7": {
+    "artifact_id": "gray-blood-original-chapter-07",
+    "status": "UNRESOLVED",
+    "score": {
+      "lower": 0.0,
+      "observed": 72.6927,
+      "upper": 95.4801
+    },
+    "coverage": 0.1582,
+    "verdict_count": 28
+  },
+  "accepted_binary_verdicts": 249,
+  "notes": [
+    "This extension is separate from the chapters 1-6 draft comparison.",
+    "The chapter report deliberately covers a fixed subset and must not be averaged with the whole-work result."
+  ],
+  "provenance": {
+    "sanitized_provider_attestations_included": true,
+    "checkpoint_hash_chains_included": true,
+    "prompt_and_response_hash_commitments_included": true,
+    "published_verdict_files_hash_bound": true,
+    "private_pre_sanitization_batch_hash_commitments_included": true,
+    "run_and_session_ids_included": false
+  }
+}

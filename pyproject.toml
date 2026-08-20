@@ -50,6 +50,7 @@ include = [
   "schema",
   "prompts",
   "examples",
+  "evaluation-results",
   "docs",
   "sources",
   "LICENSE",
