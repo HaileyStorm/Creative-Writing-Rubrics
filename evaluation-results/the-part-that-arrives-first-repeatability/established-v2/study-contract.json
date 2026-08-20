@@ -1,0 +1,86 @@
+{
+  "format_version": 1,
+  "study_id": "the-part-that-arrives-first-established-rubrics-v2",
+  "frozen_before_execution": true,
+  "source": {
+    "path": "../source.md",
+    "sha256": "ed6fb2e19f07174f56eb02e0a5d4c4419eecba324752881439b9b2992f082729",
+    "bytes": 64490,
+    "publication_authorized": true,
+    "artifact_kind": "prose_fiction",
+    "declared_scope": "complete_short_story"
+  },
+  "provider": {
+    "kind": "codex_cli",
+    "model": "gpt-5.6-sol",
+    "reasoning": "high",
+    "fresh_sessions": true,
+    "tools": "disabled",
+    "network": "disabled",
+    "seed_control": "unsupported",
+    "temperature_control": "unsupported"
+  },
+  "repetitions": 5,
+  "stopping_rule": "Run exactly five complete fresh-session repetitions of every arm. Do not stop, extend, repeat selectively, or choose a schedule based on any observed score.",
+  "schedule": {
+    "kind": "five_block_near_latin",
+    "execution": "serial_in_listed_order",
+    "blocks": [
+      ["hbq_short_story_one_batch", "naplan_narrative_2022", "cambridge_igcse_0500_p2_mj_2024", "oregon_narrative_2017"],
+      ["naplan_narrative_2022", "cambridge_igcse_0500_p2_mj_2024", "oregon_narrative_2017", "hbq_short_story_one_batch"],
+      ["cambridge_igcse_0500_p2_mj_2024", "oregon_narrative_2017", "hbq_short_story_one_batch", "naplan_narrative_2022"],
+      ["oregon_narrative_2017", "hbq_short_story_one_batch", "naplan_narrative_2022", "cambridge_igcse_0500_p2_mj_2024"],
+      ["hbq_short_story_one_batch", "naplan_narrative_2022", "cambridge_igcse_0500_p2_mj_2024", "oregon_narrative_2017"]
+    ],
+    "maximum_position_imbalance": 1
+  },
+  "hbq_runtime": {
+    "bundle_id": "prose.short_story",
+    "question_count": 178,
+    "question_id_sequence_sha256": "5bc1c7067a96acddc1513f8e69e0814f282856061e37129ec38cf6e91024d524",
+    "batch_size": 256,
+    "strict_ai": true,
+    "registry_path": "../../../registry/all_modules.json",
+    "bundle_index_path": "../../../bundles/all_bundles.json",
+    "binary_prompt_path": "../../../prompts/judge/BINARY_EVALUATION_PROMPT.md",
+    "response_schema_path": "../../../schema/hbq_judge_response.schema.json"
+  },
+  "arms": [
+    {"arm_id": "hbq_short_story_one_batch", "kind": "hbq", "method": "HBQ-RS prose.short_story binary leaves with deterministic aggregation", "native_scale": "HBQ-RS observed score (0-100; report separately)"},
+    {"arm_id": "naplan_narrative_2022", "kind": "native_rubric", "method": "Original implementation derived from NAPLAN Narrative Writing Marking Guide 2022", "official_url": "https://www.nap.edu.au/docs/default-source/naplan/narrative-writing-marking-guide.pdf?sfvrsn=c85435e_2", "official_version": "2022 Narrative Writing Marking Guide", "prompt": "arms/naplan-narrative-2022.prompt.md", "schema": "arms/naplan-narrative-2022.schema.json", "native_scale": "10 criterion ranges, total 0-47"},
+    {"arm_id": "cambridge_igcse_0500_p2_mj_2024", "kind": "native_rubric", "method": "Original implementation derived from Cambridge IGCSE First Language English 0500 Paper 2 composition mark scheme, May/June 2024", "official_url": "https://www.cambridgeinternational.org/Images/521329-june-2024-mark-scheme-paper-21.pdf", "official_version": "0500/21 May/June 2024 mark scheme", "prompt": "arms/cambridge-igcse-0500-p2-mj-2024.prompt.md", "schema": "arms/cambridge-igcse-0500-p2-mj-2024.schema.json", "native_scale": "content and structure 0-16; style and accuracy 0-24; total 0-40"},
+    {"arm_id": "oregon_narrative_2017", "kind": "native_rubric", "method": "Original implementation derived from Oregon DOE Revised Narrative Writing Scoring Guide (2017)", "official_url": "https://www.oregon.gov/ode/educator-resources/essentialskills/ScoringGuides/wriscorguide_narrative_eng.pdf", "official_version": "Revised Narrative Writing Scoring Guide, 2017", "prompt": "arms/oregon-narrative-2017.prompt.md", "schema": "arms/oregon-narrative-2017.schema.json", "native_scale": "six traits 1-6, total 6-36"}
+  ],
+  "asset_hashes": {
+    "binary_prompt": "6c1cac901d820c1ab866e19f9191896e8c97a6aadf35bdae4eac640fd199a3a2",
+    "bundle_index": "06390140d0d1f83b9e8a1a8ab946a4d90ac2b8c6b8d81f84cc44c4cf54a54096",
+    "cambridge_igcse_0500_p2_mj_2024:prompt": "9ed1c64b3173c55d7d8246b246a1388e8346fe9c4e1ee6a0770893f8e155dd6c",
+    "cambridge_igcse_0500_p2_mj_2024:schema": "057361b153707c7a40c59d5046c5a51c1eae9079ca05d7b82af1c93285683ad4",
+    "judge_prefix": "5e3a0990efca93e2cbc3894e635f9fd1b97b6e61ea2981940319cb54994ebb74",
+    "naplan_narrative_2022:prompt": "07e85ca388debef6219c390de92c93120bbd944deca8af2b4059b613412f188e",
+    "naplan_narrative_2022:schema": "ca1ab3761f1d7fa5bd621e56b87c7135df91486bcfeaee4e882a1742e9ef4776",
+    "oregon_narrative_2017:prompt": "136e023df18f4f0ad3d7c7b71b133ff22c7d7ff8dfdd509659a8daaa83abc47a",
+    "oregon_narrative_2017:schema": "6a761c896b9a9c707fa8df637eaf77f347495920acccdaddfabbbc6abb68f178",
+    "paths": "dedadb6d9f8e3cf700c16012b29e1a590a2b1175c8ead0cf17c44aa6417b8266",
+    "registry": "e6de0c216b68f1532605181284550cd4aca689a1ad1331631980e098d0055a2c",
+    "response_schema": "49c7d824ba5dd957e67968ba3ae6ceb8a7ed9434dfb0dfc654836a76613c7854",
+    "score_report_schema": "f0e1fd939774f3c569458f7fd4ce9c6f9b4d942fbc1654badb7b72d09007c87d",
+    "runner": "6e57eac81f064735b7bb564b4eeccc94bd4ed36eb05a099a8e694c76bf3d698f",
+    "scoring_core": "70b4cd16bd536f2f6ddb8e066f801090a037a39605652b14d6c7f6ff312446cb",
+    "short_story_bundle": "74464c15d4ebc950c3f2db549788ac25beb992bd7eecb517fc9950ab162c5369",
+    "structured_runner": "22df16b12794db3cf4db97a9c3cfafbdb869191fc45dc79966bd50c4f347ba2e",
+    "study_analyzer": "547ddef6ae0b28c27dbac8fd256beb590539ac6a9aed5a9950cd311232e6b53a",
+    "study_runner": "60373bd7f8495317a414f8c74652a186b74a04c96fb07b35a8741e2697e9d92d",
+    "verdict_schema": "2d176506edab164c71d42a73661bcd526e4331dbdce659dfae56168b708a4f19"
+  },
+  "primary_metrics": {
+    "hbq": ["leaf exact all-run agreement", "leaf modal-label proportion", "nominal Krippendorff alpha", "observed score standard deviation", "typed evidence exact-quote and summary coverage"],
+    "native_rubrics": ["criterion exact all-run agreement", "criterion modal-score proportion", "native-total standard deviation"]
+  },
+  "interpretation_limits": [
+    "Every comparator is an original research implementation derived from a published rubric; it is not official scoring or a substitute for trained marking.",
+    "The arms retain their native scales. Raw totals are never subtracted, averaged, or ranked across rubrics.",
+    "This one-story, five-run experiment is descriptive evidence about repeatability, not proof of validity or superiority.",
+    "The HBQ arm receives no comparator output, and comparator arms receive no HBQ output."
+  ]
+}

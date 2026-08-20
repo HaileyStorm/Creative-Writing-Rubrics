@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["method", "traits", "total_score", "overall_note"],
+  "properties": {
+    "method": {"const": "oregon_narrative_2017_research_implementation"},
+    "traits": {
+      "type": "array",
+      "minItems": 6,
+      "maxItems": 6,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["trait_id", "score", "exact_quote", "observation"],
+        "properties": {
+          "trait_id": {"enum": ["ideas_and_content", "organization", "voice", "word_choice", "sentence_fluency", "conventions"]},
+          "score": {"type": "integer", "minimum": 1, "maximum": 6},
+          "exact_quote": {"type": "string", "minLength": 1, "maxLength": 500},
+          "observation": {"type": "string", "minLength": 1, "maxLength": 1200}
+        }
+      }
+    },
+    "total_score": {"type": "integer", "minimum": 6, "maximum": 36},
+    "overall_note": {"type": "string", "minLength": 1, "maxLength": 1600}
+  }
+}

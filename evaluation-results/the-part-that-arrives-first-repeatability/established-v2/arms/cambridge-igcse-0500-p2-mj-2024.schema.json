@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["method", "components", "total_score", "overall_note"],
+  "properties": {
+    "method": {"const": "cambridge_igcse_0500_p2_mj_2024_research_implementation"},
+    "components": {"type": "array", "minItems": 2, "maxItems": 2, "items": {"type": "object", "additionalProperties": false, "required": ["component_id", "score", "exact_quote", "observation"], "properties": {"component_id": {"enum": ["content_and_structure", "style_and_accuracy"]}, "score": {"type": "integer", "minimum": 0, "maximum": 24}, "exact_quote": {"type": "string", "minLength": 1, "maxLength": 500}, "observation": {"type": "string", "minLength": 1, "maxLength": 1200}}}},
+    "total_score": {"type": "integer", "minimum": 0, "maximum": 40},
+    "overall_note": {"type": "string", "minLength": 1, "maxLength": 1600}
+  },
+  "allOf": [
+    {"properties": {"components": {"contains": {"properties": {"component_id": {"const": "content_and_structure"}, "score": {"maximum": 16}}, "required": ["component_id", "score"]}, "minContains": 1, "maxContains": 1}}},
+    {"properties": {"components": {"contains": {"properties": {"component_id": {"const": "style_and_accuracy"}, "score": {"maximum": 24}}, "required": ["component_id", "score"]}, "minContains": 1, "maxContains": 1}}}
+  ]
+}

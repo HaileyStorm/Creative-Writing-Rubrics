@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["method", "criteria", "total_score", "overall_note"],
+  "properties": {
+    "method": {"const": "naplan_narrative_2022_research_implementation"},
+    "criteria": {"type": "array", "minItems": 10, "maxItems": 10, "items": {"type": "object", "additionalProperties": false, "required": ["criterion_id", "score", "exact_quote", "observation"], "properties": {"criterion_id": {"enum": ["audience", "text_structure", "ideas", "character_and_setting", "vocabulary", "cohesion", "paragraphing", "sentence_structure", "punctuation", "spelling"]}, "score": {"type": "integer", "minimum": 0, "maximum": 6}, "exact_quote": {"type": "string", "minLength": 1, "maxLength": 500}, "observation": {"type": "string", "minLength": 1, "maxLength": 1200}}}},
+    "total_score": {"type": "integer", "minimum": 0, "maximum": 47},
+    "overall_note": {"type": "string", "minLength": 1, "maxLength": 1600}
+  },
+  "allOf": [
+    {"properties": {"criteria": {"contains": {"properties": {"criterion_id": {"const": "audience"}, "score": {"maximum": 6}}, "required": ["criterion_id", "score"]}, "minContains": 1, "maxContains": 1}}},
+    {"properties": {"criteria": {"contains": {"properties": {"criterion_id": {"const": "text_structure"}, "score": {"maximum": 4}}, "required": ["criterion_id", "score"]}, "minContains": 1, "maxContains": 1}}},
+    {"properties": {"criteria": {"contains": {"properties": {"criterion_id": {"const": "ideas"}, "score": {"maximum": 5}}, "required": ["criterion_id", "score"]}, "minContains": 1, "maxContains": 1}}},
+    {"properties": {"criteria": {"contains": {"properties": {"criterion_id": {"const": "character_and_setting"}, "score": {"maximum": 4}}, "required": ["criterion_id", "score"]}, "minContains": 1, "maxContains": 1}}},
+    {"properties": {"criteria": {"contains": {"properties": {"criterion_id": {"const": "vocabulary"}, "score": {"maximum": 5}}, "required": ["criterion_id", "score"]}, "minContains": 1, "maxContains": 1}}},
+    {"properties": {"criteria": {"contains": {"properties": {"criterion_id": {"const": "cohesion"}, "score": {"maximum": 4}}, "required": ["criterion_id", "score"]}, "minContains": 1, "maxContains": 1}}},
+    {"properties": {"criteria": {"contains": {"properties": {"criterion_id": {"const": "paragraphing"}, "score": {"maximum": 2}}, "required": ["criterion_id", "score"]}, "minContains": 1, "maxContains": 1}}},
+    {"properties": {"criteria": {"contains": {"properties": {"criterion_id": {"const": "sentence_structure"}, "score": {"maximum": 6}}, "required": ["criterion_id", "score"]}, "minContains": 1, "maxContains": 1}}},
+    {"properties": {"criteria": {"contains": {"properties": {"criterion_id": {"const": "punctuation"}, "score": {"maximum": 5}}, "required": ["criterion_id", "score"]}, "minContains": 1, "maxContains": 1}}},
+    {"properties": {"criteria": {"contains": {"properties": {"criterion_id": {"const": "spelling"}, "score": {"maximum": 6}}, "required": ["criterion_id", "score"]}, "minContains": 1, "maxContains": 1}}}
+  ]
+}
