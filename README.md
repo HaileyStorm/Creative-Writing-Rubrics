@@ -52,6 +52,10 @@ report = score_bundle(modules, bundle, load_verdicts("examples/verdicts_example.
 print(report["status"], report["final_score"])
 ```
 
+## Work in progress
+
+This release is getting a real shakedown: fresh-clone installs, CLI and Python workflows, wheel packaging, schema validation, and the documented examples. A headless runner for OpenAI-compatible endpoints and Codex CLI is next, tested against a fake local endpoint before real GPT-5.6 runs (Luna Max for broad passes; Sol Medium/High for judgment and synthesis). A small, sanitized before/after novel excerpt case study will follow; private drafts stay private.
+
 ## How judging works
 
 1. Pick a **bundle** for the artifact and operation (`prose.scene`, `poetry.sonnet.shakespearean`, `default.first_pass_screening`, …).
