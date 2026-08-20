@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import hbqrs.cli as cli
 from hbqrs.cli import build_parser, main
 from hbqrs.pack import pack_book
 
@@ -79,6 +80,39 @@ def test_render_judge(tmp_path: Path) -> None:
     assert "YES, NO, NOT_APPLICABLE, or CANNOT_ASSESS" in text
     assert "Mara counted the coins" in text
     assert "core.task_and_brief_fidelity" in text
+
+
+def test_judge_command_dispatches_runner(monkeypatch, capsys, tmp_path: Path) -> None:
+    artifact = tmp_path / "artifact.txt"
+    artifact.write_text("test", encoding="utf-8")
+    captured: dict[str, object] = {}
+
+    def fake_run_judge(**kwargs: object) -> dict[str, object]:
+        captured.update(kwargs)
+        return {"status": "DRY_RUN", "run_id": "test-run"}
+
+    monkeypatch.setattr(cli, "run_judge", fake_run_judge)
+    assert (
+        main(
+            [
+                "judge",
+                str(artifact),
+                "--bundle",
+                "prose.scene",
+                "--provider",
+                "openai",
+                "--model",
+                "fake-local",
+                "--output-dir",
+                str(tmp_path / "run"),
+                "--dry-run",
+            ]
+        )
+        == 0
+    )
+    assert captured["artifact_path"] == str(artifact)
+    assert captured["bundle_id"] == "prose.scene"
+    assert json.loads(capsys.readouterr().out)["status"] == "DRY_RUN"
 
 
 def test_validate() -> None:

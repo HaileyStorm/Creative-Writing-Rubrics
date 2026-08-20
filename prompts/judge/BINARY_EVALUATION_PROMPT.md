@@ -15,4 +15,4 @@ For each selected question:
 
 Evaluate hard gates first. If a hard gate is NO, continue evaluating diagnostic questions unless the caller has requested early stop. Enforce the cumulative order of subjective thresholds.
 
-Return JSONL conforming to `schema/hbq_verdict.schema.json`, one object per question.
+Return one verdict object per question, conforming to `schema/hbq_verdict.schema.json`, in the JSON or JSONL envelope requested by the caller. If the caller does not specify an envelope, return JSONL.

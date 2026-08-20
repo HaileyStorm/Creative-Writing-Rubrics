@@ -459,6 +459,22 @@ def compile_bundle(
     }
 
 
+def compiled_questions(compiled: Mapping[str, Any]) -> list[dict[str, Any]]:
+    """Flatten a compiled bundle into its ordered judge-question records."""
+
+    rows: list[dict[str, Any]] = []
+    for item in compiled.get("domain_questions", []):
+        rows.append({**item, "role": "domain"})
+    for item in compiled.get("hard_gates", []):
+        rows.append({**item, "role": "hard_gate"})
+    for group in compiled.get("penalty_groups", []):
+        for item in group.get("questions", []):
+            rows.append({**item, "role": "penalty", "penalty_module_id": group.get("module_id")})
+    for item in compiled.get("supplemental_questions", []):
+        rows.append({**item, "role": "supplemental"})
+    return rows
+
+
 def _normalize_verdict_records(value: Any) -> list[dict[str, Any]]:
     """Normalize a verdict collection to a list of objects."""
 

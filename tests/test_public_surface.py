@@ -1,10 +1,13 @@
 from __future__ import annotations
 
+import json
 import re
 import subprocess
 import sys
 import zipfile
 from pathlib import Path
+
+from jsonschema import Draft202012Validator
 
 from hbqrs import book_root
 
@@ -73,6 +76,15 @@ def test_open_review_schema_exists() -> None:
     assert "open review" in schema.read_text(encoding="utf-8").lower()
 
 
+def test_strict_judge_response_schema_is_public() -> None:
+    path = book_root() / "schema" / "hbq_judge_response.schema.json"
+    schema = json.loads(path.read_text(encoding="utf-8"))
+    Draft202012Validator.check_schema(schema)
+    verdict = schema["properties"]["verdicts"]["items"]
+    assert verdict["additionalProperties"] is False
+    assert verdict["properties"]["evidence"]["items"]["additionalProperties"] is False
+
+
 def test_built_wheel_includes_provenance_and_validation_runtime(tmp_path: Path) -> None:
     root = book_root()
     subprocess.run(
@@ -101,5 +113,6 @@ def test_built_wheel_includes_provenance_and_validation_runtime(tmp_path: Path) 
         metadata = archive.read(metadata_name).decode("utf-8")
 
     assert "hbqrs/book/manifest.json" in names
+    assert "hbqrs/book/schema/hbq_judge_response.schema.json" in names
     assert any(name.startswith("hbqrs/book/sources/") for name in names)
     assert "Requires-Dist: jsonschema>=4.0" in metadata

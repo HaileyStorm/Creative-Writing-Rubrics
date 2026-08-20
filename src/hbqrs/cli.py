@@ -11,6 +11,7 @@ from . import __version__
 from .core import (
     HBQError,
     compile_bundle,
+    compiled_questions,
     load_bundles,
     load_data,
     load_modules,
@@ -23,6 +24,7 @@ from .core import (
 )
 from .pack import pack_book
 from .paths import book_root, bundles_path, prompts_dir, registry_path, schema_dir
+from .runner import run_judge
 
 
 def _load_registry(args: argparse.Namespace) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
@@ -125,26 +127,12 @@ def _cmd_show(args: argparse.Namespace) -> int:
     return 0
 
 
-def _compiled_questions(compiled: dict[str, Any]) -> list[dict[str, Any]]:
-    rows: list[dict[str, Any]] = []
-    for item in compiled.get("domain_questions", []):
-        rows.append({**item, "role": "domain"})
-    for item in compiled.get("hard_gates", []):
-        rows.append({**item, "role": "hard_gate"})
-    for group in compiled.get("penalty_groups", []):
-        for item in group.get("questions", []):
-            rows.append({**item, "role": "penalty", "penalty_module_id": group.get("module_id")})
-    for item in compiled.get("supplemental_questions", []):
-        rows.append({**item, "role": "supplemental"})
-    return rows
-
-
 def _cmd_export(args: argparse.Namespace) -> int:
     modules, bundles = _load_registry(args)
     if args.bundle_id:
         compiled = compile_bundle(modules, resolve_bundle(bundles, args.bundle_id))
         rows = []
-        for item in _compiled_questions(compiled):
+        for item in compiled_questions(compiled):
             question = dict(item["question"])
             rows.append(
                 {
@@ -199,7 +187,7 @@ def _read_prompt(name: str) -> str:
 def _cmd_render_judge(args: argparse.Namespace) -> int:
     modules, bundles = _load_registry(args)
     compiled = compile_bundle(modules, resolve_bundle(bundles, args.bundle_id))
-    questions = _compiled_questions(compiled)
+    questions = compiled_questions(compiled)
     if args.question_id:
         questions = [item for item in questions if item["question"].get("id") == args.question_id]
         if not questions:
@@ -244,11 +232,41 @@ def _cmd_pack(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_judge(args: argparse.Namespace) -> int:
+    summary = run_judge(
+        artifact_path=args.artifact,
+        bundle_id=args.bundle_id,
+        provider=args.provider,
+        model=args.model,
+        output_dir=args.output_dir,
+        registry=args.registry,
+        bundles=args.bundles,
+        context_paths=args.context,
+        question_ids=args.question_id,
+        batch_size=args.batch_size,
+        base_url=args.base_url,
+        api_key_env=args.api_key_env,
+        temperature=args.temperature,
+        allow_model_mismatch=args.allow_model_mismatch,
+        reasoning=args.reasoning,
+        codex_bin=args.codex_bin,
+        allow_remote=args.allow_remote,
+        resume=args.resume,
+        dry_run=args.dry_run,
+        timeout=args.timeout,
+        artifact_id=args.artifact_id,
+        judge_id=args.judge_id,
+        strict_ai=args.strict_ai,
+    )
+    print(json.dumps(summary, ensure_ascii=False, indent=2))
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     root = book_root()
     parser = argparse.ArgumentParser(
         prog="cwr",
-        description="HBQ-RS creative-writing rubrics: compile, score, export, and render judge prompts.",
+        description="HBQ-RS creative-writing rubrics: compile, run, score, export, and render judge prompts.",
     )
     parser.add_argument("--registry", default=str(registry_path()), help="module registry JSON/JSONL/YAML")
     parser.add_argument("--bundles", default=str(bundles_path()), help="bundle collection JSON/JSONL/YAML")
@@ -309,6 +327,33 @@ def build_parser() -> argparse.ArgumentParser:
     pack.add_argument("-o", "--output")
     pack.add_argument("--format", choices=["json", "yaml"], default="json")
     pack.set_defaults(func=_cmd_pack)
+
+    judge = subparsers.add_parser(
+        "judge",
+        help="run a bundle through an OpenAI-compatible endpoint or Codex CLI, then score it",
+    )
+    judge.add_argument("artifact", help="UTF-8 text artifact to evaluate")
+    judge.add_argument("--bundle", dest="bundle_id", required=True)
+    judge.add_argument("--provider", choices=["openai", "codex"], required=True)
+    judge.add_argument("--model", required=True)
+    judge.add_argument("--output-dir", required=True, help="new run directory, or an existing run with --resume")
+    judge.add_argument("--context", action="append", default=[], help="additional UTF-8 brief/canon file; repeatable")
+    judge.add_argument("--question-id", action="append", default=[], help="limit to a selected leaf; repeatable")
+    judge.add_argument("--batch-size", type=int, default=12)
+    judge.add_argument("--base-url", default="http://127.0.0.1:8000/v1")
+    judge.add_argument("--api-key-env", default="OPENAI_API_KEY")
+    judge.add_argument("--temperature", type=float)
+    judge.add_argument("--allow-model-mismatch", action="store_true")
+    judge.add_argument("--reasoning", choices=["low", "medium", "high", "xhigh", "max"], default="medium")
+    judge.add_argument("--codex-bin", default="codex")
+    judge.add_argument("--allow-remote", action="store_true")
+    judge.add_argument("--resume", action="store_true")
+    judge.add_argument("--dry-run", action="store_true")
+    judge.add_argument("--timeout", type=float, default=600.0)
+    judge.add_argument("--artifact-id")
+    judge.add_argument("--judge-id")
+    judge.add_argument("--strict-ai", action="store_true", help="apply the stricter AI-output judge prefix")
+    judge.set_defaults(func=_cmd_judge)
     return parser
 
 

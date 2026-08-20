@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "verdicts"
+  ],
+  "properties": {
+    "verdicts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "question_id",
+          "verdict",
+          "confidence",
+          "evidence",
+          "note"
+        ],
+        "properties": {
+          "question_id": {
+            "type": "string"
+          },
+          "verdict": {
+            "enum": [
+              "YES",
+              "NO",
+              "NOT_APPLICABLE",
+              "CANNOT_ASSESS"
+            ]
+          },
+          "confidence": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "evidence": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "reference",
+                "quote"
+              ],
+              "properties": {
+                "reference": {
+                  "type": "string"
+                },
+                "quote": {
+                  "type": "string",
+                  "maxLength": 500
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "note": {
+            "type": "string",
+            "maxLength": 1000
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}
