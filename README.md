@@ -103,6 +103,10 @@ Stable IDs (`module_id`, `question_id`, `bundle_id`, `criterion_key`) are the pu
 
 Scores are structured evidence, not literary truth. Calibrate before high-stakes use.
 
+## Support
+
+This project is free. Donations are entirely optional and never affect access or support; they sustain Hailey's open-source work. You can use [Buy Me a Coffee](https://buymeacoffee.com/threadspan), or see the [donation details, safety, and privacy notes](https://github.com/HaileyStorm/threadspan/blob/main/docs/DONATIONS.md). No route is preferred. This repository does not collect donor identities or telemetry, and it never asks for wallet keys; verify recipients independently because transfers may be irreversible.
+
 ## License
 
 Apache License 2.0. See [LICENSE](LICENSE) and [NOTICE](NOTICE). Bibliography entries identify informing papers; those works keep their own licenses.
