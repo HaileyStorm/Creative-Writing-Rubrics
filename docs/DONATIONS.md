@@ -49,4 +49,4 @@ The current public maintainer page is [Buy Me a Coffee](https://buymeacoffee.com
 
 ## Privacy and boundaries
 
-This repository does not collect donor identities, amounts, wallet activity, or donation telemetry. It contains no payment SDK, donation popup, background request, automatic transfer, financial control, wallet key, or provider credential. No donation route is preferred.
+Payments and transfers are handled by the listed providers. This project does not ask for wallet keys, provider credentials, or card details. No donation route is preferred.

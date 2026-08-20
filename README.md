@@ -109,7 +109,7 @@ Scores are structured evidence, not literary truth. Calibrate before high-stakes
 
 ## Support
 
-This project is free. Donations are entirely optional and never affect access or support; they sustain Hailey's open-source work. You can use [Buy Me a Coffee](https://buymeacoffee.com/threadspan), or see this repository's [donation details, safety, and privacy notes](docs/DONATIONS.md). No route is preferred. This repository does not collect donor identities or telemetry, and it never asks for wallet keys; verify recipients independently because transfers may be irreversible.
+This project is free. Donations are entirely optional and never affect access or support; they sustain Hailey's open-source work. You can use [Buy Me a Coffee](https://buymeacoffee.com/threadspan), or see this repository's [donation details and safety notes](docs/DONATIONS.md). No route is preferred. Never share wallet keys or provider credentials; verify recipients independently because transfers may be irreversible.
 
 ## License
 
