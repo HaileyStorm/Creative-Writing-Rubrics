@@ -1,255 +1,816 @@
 {
-  "draft_id": "new-chapters-01-06",
-  "units": [
+  "artifact_id": "gray-blood-rewrite-ch01-06",
+  "distant_links": [
     {
-      "chapter": 1,
-      "summary": "Madison, nineteen, meets Amelia during summer break; their attraction becomes an exclusive dating arrangement within a day. At Amelia's new home, Madison meets June, Savannah, and Emma, notices concealed hand movements, and finds Amelia's diplomas and paramedic credentials. An accidental cut exposes Amelia's attraction to blood, although its meaning remains concealed.",
-      "pov": "First-person retrospective Madison; close access to her confidence, attraction, family avoidance, and programmer identity, but not Amelia's motives.",
-      "chronology": "Opening frame looks back on the discovery of magic. Main action spans the park meeting and first date, followed by unpacking at Amelia's house the next day; approximately two weeks before the summer semester.",
-      "load_bearing": true,
-      "evidence_refs": [
-        "Ch1/opening retrospective",
-        "Ch1/park meeting and first date",
-        "Ch1/meeting Amelia's mothers",
-        "Ch1/lip injury and blood response",
-        "Ch1/school-box disclosure"
-      ]
+      "description": "Amelia's concealed education and paramedic background later establish why her fatal prognosis for the climber carries professional weight.",
+      "payoff_unit_id": "unit-0003-aa9f0ac01ee1",
+      "setup_unit_id": "unit-0002-920c59af6477",
+      "status": "paid_off"
     },
     {
-      "chapter": 2,
-      "summary": "Nearly two weeks into the relationship, Amelia reveals her brooding musical side. On the Sunday before classes, a climber suffers a fatal fall; Amelia drains him, stores his lifeblood, incinerates and pulverizes the remains, disperses the dust, and conceals the site. Madison recognizes possible murder but follows Amelia home for answers.",
-      "pov": "First-person Madison; Amelia's medical judgment and motives are reported rather than independently verified.",
-      "chronology": "Begins shortly before the semester with the piano scene, then advances to Sunday, less than twenty-four hours before classes. The hike and concealment sequence is continuous.",
-      "load_bearing": true,
-      "evidence_refs": [
-        "Ch2/piano performance",
-        "Ch2/Sunday hike",
-        "Ch2/climber fall and draining",
-        "Ch2/body-disposal workings",
-        "Ch2/Savannah phone call"
-      ]
+      "description": "Amelia's unusual response to Madison's blood and her claim of starvation foreshadow the revelation that she is a blood-drinking witch.",
+      "payoff_unit_id": "unit-0004-39a17c40720a",
+      "setup_unit_id": "unit-0002-920c59af6477",
+      "status": "paid_off"
     },
     {
-      "chapter": 3,
-      "summary": "Immediately after the climber incident, Amelia identifies herself as a witch and explains fangs, the two-part stronghold, weak and remixed blood, activation, and the post-activation pull toward blood. The beating-heart requirement overwhelms Madison. That night Madison asks for benevolent magic; Amelia creates shadow flowers through freework and distinguishes freework, grimwork, and engraving.",
-      "pov": "First-person Madison; world rules arrive chiefly through Amelia and her mothers, whose expertise is plausible but not externally tested.",
-      "chronology": "Same day as the climber's death, from the return to Amelia's house through dinner and late evening.",
-      "load_bearing": true,
-      "evidence_refs": [
-        "Ch3/bedroom disclosure lesson",
-        "Ch3/fang and stronghold demonstration",
-        "Ch3/activation disclosure",
-        "Ch3/dinner biology discussion",
-        "Ch3/shadow-flower freework"
-      ]
+      "description": "The mothers' concealed hand-tracing and Amelia's worn book foreshadow symbolic magic and grimoires; the symbols pay off, but the book's identity remains unconfirmed.",
+      "payoff_unit_id": "unit-0007-b80e8306ee58",
+      "setup_unit_id": "unit-0002-920c59af6477",
+      "status": "cannot_assess"
     },
     {
-      "chapter": 4,
-      "summary": "On Monday, Madison prioritizes magical data over her first classes and learns that magical activity slows aging; Amelia is twenty-eight and very active. Amelia detects a large working on campus, tracks its residue, conceals and shields Madison, and confronts an unknown witch who defeats their concealment and invites them inside.",
-      "pov": "First-person Madison, including text-message evidence; her technical curiosity and appetite for risk shape the account.",
-      "chronology": "The morning and lunch period of the summer semester's first Monday; the tracking and dorm confrontation are continuous.",
-      "load_bearing": true,
-      "evidence_refs": [
-        "Ch4/CS205 text exchange",
-        "Ch4/lunch and detection",
-        "Ch4/residue-compass working",
-        "Ch4/invisibility and shields",
-        "Ch4/dorm confrontation"
-      ]
+      "description": "Amelia's reluctance to play piano pays off as a vulnerable performance that reveals her melancholy and deepens intimacy.",
+      "payoff_unit_id": "unit-0003-aa9f0ac01ee1",
+      "setup_unit_id": "unit-0002-920c59af6477",
+      "status": "paid_off"
     },
     {
-      "chapter": 5,
-      "summary": "The dorm group identifies itself as FAWN and demonstrates experimental blood batteries through a magically grown tree. A magically enforced Truth or Dare game exposes Amelia's ready access to compulsion, Mackenzie's violence, and the possibility of making Madison a witch. Mackenzie feeds on Madison until she nearly loses consciousness. After learning the batteries use voluntary human donations rather than lifeblood, Madison joins the group's social orbit, recognizes that Amelia is no longer her sole access to magic, and declares her love.",
-      "pov": "First-person Madison; intoxication and hypovolemia reduce reliability during the game, while battery explanations come from FAWN members with an interest in legitimizing the project.",
-      "chronology": "Continues directly from Ch4 through Monday lunch and early afternoon, ending as Madison and Amelia leave for Madison's ethics class.",
-      "load_bearing": true,
-      "evidence_refs": [
-        "Ch5/FAWN introduction",
-        "Ch5/tree and battery explanation",
-        "Ch5/compelled Truth or Dare",
-        "Ch5/Mackenzie feeding",
-        "Ch5/turning question",
-        "Ch5/stairwell love declaration"
-      ]
+      "description": "Madison's programmer identity develops into a sustained habit of modeling magic as code and treating symbology as a learnable control language.",
+      "payoff_unit_id": "unit-0007-b80e8306ee58",
+      "setup_unit_id": "unit-0002-920c59af6477",
+      "status": "paid_off"
     },
     {
-      "chapter": 6,
-      "summary": "Madison tells Julia about her new love without revealing magic. She confronts Amelia over serial killing and learns about blood addiction, one EMS-related death, informal confinement and rehabilitation, ninety-three completed engravings, and the unused climber lifeblood. On Wednesday, Amelia gives Madison a heart gem synchronized to her heartbeat; Madison deepens her friendship with Zoe, learns intent and spell-termination rules, attends human game night, then studies elemental symbols with Amelia until exhaustion and asks her to stay overnight.",
-      "pov": "First-person Madison; Amelia supplies self-incriminating history, Zoe supplies secondary accounts and simplified mechanics, and neither account is independently confirmed.",
-      "chronology": "Spans an uncertain interval after Monday's confession, including an undated serial-killer conversation, then Wednesday from classes through the evening lesson and sleepover.",
-      "load_bearing": true,
-      "evidence_refs": [
-        "Ch6/Julia phone call",
-        "Ch6/serial-killer confrontation",
-        "Ch6/EMS addiction disclosure",
-        "Ch6/heart gem",
-        "Ch6/Zoe walk and mechanics lesson",
-        "Ch6/engraving count and elemental lesson"
-      ]
+      "description": "Amelia's activation confession establishes a violent trauma whose emotional effects remain visible in her tears, shame, and difficulty discussing it, though its longer-term treatment remains open.",
+      "payoff_unit_id": "unit-0007-b80e8306ee58",
+      "setup_unit_id": "unit-0004-39a17c40720a",
+      "status": "open"
+    },
+    {
+      "description": "The unexplained large campus magic leads Madison and Amelia to FAWN and its blood-battery research.",
+      "payoff_unit_id": "unit-0006-07454b12a420",
+      "setup_unit_id": "unit-0005-febc528a057c",
+      "status": "paid_off"
+    },
+    {
+      "description": "Madison's alarm at Amelia's coercive truth-and-dare engraving develops into an explicit need to discuss mind control, but no ethical resolution occurs in scope.",
+      "payoff_unit_id": "unit-0007-b80e8306ee58",
+      "setup_unit_id": "unit-0006-07454b12a420",
+      "status": "open"
+    },
+    {
+      "description": "Mackenzie's question about whether Amelia wants Madison to become a witch opens the reproduction mystery; later discussion confirms mutual desire matters but postpones the full mechanism.",
+      "payoff_unit_id": "unit-0007-b80e8306ee58",
+      "setup_unit_id": "unit-0006-07454b12a420",
+      "status": "open"
+    },
+    {
+      "description": "FAWN's degrading stored-blood experiments establish a continuing blood-battery research thread not resolved in the supplied chapters.",
+      "payoff_unit_id": "unit-0007-b80e8306ee58",
+      "setup_unit_id": "unit-0006-07454b12a420",
+      "status": "open"
+    },
+    {
+      "description": "Madison's early fear that access to magic might improperly bind her to Amelia pays off when FAWN gives her an independent connection and she freely declares love.",
+      "payoff_unit_id": "unit-0006-07454b12a420",
+      "setup_unit_id": "unit-0004-39a17c40720a",
+      "status": "paid_off"
+    },
+    {
+      "description": "Amelia's claim to conscientious gray morality receives quantified support and pressure when she discloses her addiction history, one EMS death, and ninety-four acquired lifeblood sources.",
+      "payoff_unit_id": "unit-0007-b80e8306ee58",
+      "setup_unit_id": "unit-0004-39a17c40720a",
+      "status": "paid_off"
     }
   ],
-  "ledgers": {
-    "characters": [
-      "Madison: nineteen-year-old CS student and self-taught programmer who intends to pursue mathematics; highly confident, information-hungry, afraid of emotional loss, and increasingly willing to incur physical or moral risk for magical access.",
-      "Amelia: twenty-eight-year-old witch who appears about twenty-one; activated at thirteen, is very magically active, has biology/pre-med and paramedic training, minored in music, left EMS after blood addiction, and holds ninety-three completed engravings plus the climber's unused lifeblood.",
-      "June, Savannah, and Emma: Amelia's three mothers and support system; all are witches. June and Savannah are legal parents, while Emma is described as their platonic life partner. Their exact biological relationships to Amelia remain unstated.",
-      "Mackenzie Jordan: FAWN witch and postdoctoral molecular biologist leading battery work; confrontational, powerful, amused by cruelty, and willing to push Madison's feeding past visible distress.",
-      "Miriam: FAWN witch who develops the tree-growing working and maintains dorm protections; Zoe reports that Miriam killed an assaulting boy but refused his lifeblood.",
-      "Zoe: human FAWN member and blood donor who becomes Madison's independent friend and principal source of simplified magic exposition; she also introduces Madison to a nonmagical game-night circle.",
-      "Olivia and Evelyn: human FAWN members and rotating donors; Olivia wants to become a witch, while the precise reasons and limits remain undeveloped.",
-      "Julia: Madison's former girlfriend and continuing friend; knows Madison has fallen in love and made new friends but receives no evidence of magic.",
-      "The climber: unnamed dying man drained by Amelia; his body is destroyed, while his lifeblood remains stored in Amelia's stronghold at the end of Ch6.",
-      "Robin: absent former local monitoring witch whose departure prompted Amelia's family to move; known only through conversation."
+  "limitations": [
+    "The evaluated artifact is a work in progress containing blank front matter and Chapters One through Six, not the planned complete novel.",
+    "Future material involving Katherine Henot, Frieda's grimoire, the tracker antagonist, and later FAWN or Madison developments is unavailable; their eventual setup and payoff cannot be assessed here.",
+    "The mechanism of creating witches, Katherine's immediate-visit motivation, and the recursion-versus-Turing-completeness question remain deliberately unresolved project decisions, not contradictions.",
+    "The apparent discrepancy between Amelia's account of Robin's recent departure and FAWN's belief that Robin predates them is unresolved within the supplied scope.",
+    "The opening retrospective frame implies later narration, but the temporal distance and narrator's ultimate circumstances are not supplied.",
+    "Canon checks based on absence—such as no male witches, no activation without a beating heart, and no prohibited witch-human offspring—apply only to the material provided."
+  ],
+  "map_version": 1,
+  "orientation": {
+    "cast": [
+      {
+        "name": "Madison",
+        "role": "Nineteen-year-old programmer and first-person narrator whose romance with Amelia draws her into magic and moral danger."
+      },
+      {
+        "name": "Amelia",
+        "role": "Twenty-eight-year-old witch, former paramedic, and Madison's lover; powerful, affectionate, secretive, and morally compromised."
+      },
+      {
+        "name": "June",
+        "role": "One of Amelia's three mothers; an approximately 150-year-old witch with a nurturing manner."
+      },
+      {
+        "name": "Savannah",
+        "role": "Amelia's legal mother and family authority figure who monitors consequential magic."
+      },
+      {
+        "name": "Emma",
+        "role": "Amelia's third mother and her mothers' platonic life partner."
+      },
+      {
+        "name": "Mackenzie",
+        "role": "Combative FAWN witch and molecular-biology postdoc researching stored blood."
+      },
+      {
+        "name": "Miriam",
+        "role": "FAWN witch who develops spells and shares a protective bond with Zoe."
+      },
+      {
+        "name": "Zoe",
+        "role": "Human FAWN member who befriends Madison and explains additional magic mechanics."
+      },
+      {
+        "name": "Olivia",
+        "role": "Human FAWN member who wants to become a witch."
+      },
+      {
+        "name": "Evelyn",
+        "role": "Human FAWN member participating in its research and social circle."
+      },
+      {
+        "name": "Julia",
+        "role": "Madison's former girlfriend and continuing confidante, unaware of magic."
+      },
+      {
+        "name": "The climber",
+        "role": "Mortally injured stranger whose death exposes Amelia's witchcraft to Madison."
+      }
     ],
-    "knowledge": [
-      "Madison knows by Ch6 that witches use finger fangs, strongholds, blood, symbols, intent, freework, grimwork, and engraving; she knows activation requires beginning to eat a beating heart and that the later pull toward blood is controllable but addiction remains possible.",
-      "Madison knows Amelia is twenty-eight, very active, formerly a paramedic, previously addicted to blood, responsible for one EMS death, and associated with at least ninety-three prior lifeblood deaths plus the climber.",
-      "Madison knows FAWN stores remixed witch blood derived from voluntary human donations, that preservation is unreliable, and that degraded stores can still support noncritical large workings.",
-      "Madison does not know the full making-a-witch process, whether conception is certain, detailed witch reproduction, population or surname lore, the contents of Amelia's grimoire, or the source histories behind the ninety-three engravings.",
-      "Amelia knows Madison is fascinated rather than repelled enough to leave, has gained independent access through FAWN, wants the engraving record, is willing to be fed upon, and loves her.",
-      "FAWN knows Madison is human, newly informed, romantically involved with Amelia, willing to enter compelled games, and interested in batteries; its members also know Amelia comes from an enforcement-oriented family.",
-      "Amelia's mothers know about the climber working, Madison's presence, FAWN's campus activity, and Mackenzie's dangerous feeding. Their knowledge of Madison's later mechanics lessons is not established.",
-      "Julia and Madison's roommates remain outside the secret as far as Ch1-6 show.",
-      "No character in the supplied chapters introduces Katherine, Frieda Henot, Frieda's grimoire, a tracker, fungal-spore theory, Turing incompleteness, or recursion."
-    ],
-    "relationships": [
-      "Madison and Amelia progress from strangers to exclusive dating and mutual declarations of love in roughly two weeks; trust remains strained by Amelia's secrecy, killing, compulsion repertoire, blood addiction, and Madison's dependence on access to magic.",
-      "Madison's relief at gaining FAWN as an independent magical connection separates her love for Amelia from her fear of losing magical access, while also making that access an explicit competing attachment.",
-      "Madison and Zoe establish an independent friendship through FAWN, Wednesday game night, and mutual contact; Zoe normalizes both blood donation and witch violence for Madison.",
-      "Madison and Mackenzie develop an adversarial fascination: Madison resists her, accepts her challenge, calls her evil but fun, and plans to return despite the dangerous feeding.",
-      "Amelia and Mackenzie begin in magical conflict, then reach a practical truce around FAWN contact; hostility persists over authority, blood ethics, and Mackenzie's treatment of Madison.",
-      "Amelia's relationship with her mothers is affectionate but monitored: they detect major workings, question her control, protect Madison, and previously confined Amelia during addiction recovery.",
-      "Madison's family relationships remain mostly negative space: she avoids home, describes it as weird, and considers calling her father; the mother conflict described in the notes is not yet dramatized.",
-      "FAWN mixes friendship, research exchange, magical favors, consent claims, blood donation, intimidation, and compulsion, leaving its internal power balance ethically unstable."
-    ],
-    "physical_state": [
-      "End of Ch6: Madison remains weak from Mackenzie's Ch5 feeding, with exhaustion, breathlessness, dizziness, and limited walking tolerance; Amelia magically closed the forearm wound, but blood-volume recovery is incomplete.",
-      "Madison's Ch4 palm was cut for invisibility; no later scene explicitly records its healing or residual mark.",
-      "Amelia bears many healing cuts and faint scars from workings and engravings. She expends her ordinary stored power during the FAWN encounter but withholds the climber's lifeblood; she has usable power again by the Ch6 lesson, with the replenishment source unstated.",
-      "The climber's body, bones, dust, rope evidence, and disturbed ground are magically destroyed or concealed at the cliff site. Whether mundane missing-person or climbing evidence remains elsewhere is not addressed.",
-      "The climber's lifeblood remains unused in Amelia's stronghold and is effectively a one-use engraving resource.",
-      "FAWN's research room contains shelves of blood jars, experimental chemicals and equipment, a microscope, and a successfully grown potted tree. Many jars are degraded or spoiled; several are emptied during the tree work.",
-      "Madison possesses or has immediate access to a translucent purple heart gem made by Amelia; it pulses in time with Amelia's heartbeat. Its range, durability, fuel source, protective value, and final storage location are unstated.",
-      "Amelia's grimoire is not with her during the Ch6 lesson. The leather-bound book called a journal in Ch1 could be related, but the manuscript provides no confirming link.",
-      "Primary locations are Madison's dorm, Amelia's family home and garden, the cliff trail, campus classrooms, FAWN's repurposed dorm room, and Zoe's dorm. The city and university remain unnamed."
-    ],
-    "world_rules": [
-      "Ch2 establishes that large workings can be sensed at a distance, lifeblood can be taken from a dying person, and symbols can burn, crush, move, and conceal physical evidence.",
-      "Ch3 establishes retractable hollow fangs in the index and middle fingers; a connected digestive and reservoir stronghold; extraction centered on white blood cells; delivery of stored magic into blood at a cut; and weak versus stronghold-remixed blood.",
-      "All living blood carries some magic, intelligence strongly affects value, and human blood tastes exceptionally potent to witches. The exact distinction between taste potency, raw magical potency, and distilled potency remains only partly clarified.",
-      "Activation normally occurs near puberty after escalating Hunger and requires beginning to consume a still-beating heart. Afterward, Hunger becomes a controllable sensory pull; blood addiction is a separate but related risk.",
-      "Witches heal and replenish blood faster, can reduce but not eliminate pain, may have fragile skin, and age more slowly in proportion to magical activity.",
-      "Cutting uses blood already in the subject; dripping or painting can place a witch's remixed blood elsewhere. Humans lack the intent needed to activate or target a working.",
-      "Freework writes all components improvisationally; grimwork uses planned or memorized structures; engraving compresses a complex spell into a personal symbol and reduces later casting cost.",
-      "Each engraving consumes all magic stored from one lifeblood source regardless of the spell's size; Ch6 thereby links Amelia's ninety-three engravings to at least ninety-three deaths, with the climber as a reserved ninety-fourth source.",
-      "Spell size can affect duration or power, while blood type and quantity affect strength. Some workings have minimum power requirements; engraved forms reduce the amount required.",
-      "Intent can initiate, target, sustain with additional remixed blood, or stop a spell. A spell can also end when fuel is exhausted or a constituent symbol is broken; consumed magical blood disappears.",
-      "Known capabilities include light bending, residue tracking, magical and air shields, attack triggers, dispelling, illusion, healing, accelerated growth, elemental effects, concealment, and behavior compulsion.",
-      "FAWN batteries store blood after a witch drinks human blood, distills it, and bleeds remixed blood into jars. Stored blood degrades; chemicals and magic may hasten or delay failure. Cross-witch activation is implied by communal use but not directly demonstrated.",
-      "Making a human into a witch requires mutual desire according to Amelia and is associated with intimacy and blood, but pregnancy, orgasm, activation, failure conditions, and the human subject's later Hunger are not disclosed in the manuscript.",
-      "Local witch governance is presented as informal volunteer policing. Portland has a reputation for authoritarian enforcement, while FAWN is independent and Amelia's family has assumed Robin's abandoned monitoring role.",
-      "The manuscript does not establish female-only witch biology, inheritance rules, witch-human offspring limits, population estimates, surname traditions, fungal-spore theory, recursion limits, or whether magic is Turing complete."
-    ]
+    "evaluated_scope": "One blank front-matter unit followed by six substantive novel chapters, from Madison meeting Amelia through Madison beginning formal study of magical symbols.",
+    "premise": "College student Madison falls rapidly for Amelia, then discovers that her lover is a blood-drinking witch whose symbolic magic, lethal history, and morally gray community are as alluring as they are horrifying."
   },
-  "arcs": [
-    "Madison's initiation: romance and curiosity become eyewitness horror, intensive study, social integration, and an active choice to remain in the magical world.",
-    "Madison's moral slippage: she deprioritizes possible murder, volunteers for cutting and feeding, focuses on scalable batteries, seeks kill-count data, enjoys Mackenzie's evil edge, and secures access independent of Amelia. Her programming mindset makes systems, costs, and optimization more salient than customary prohibitions.",
-    "Madison's programming-shaped fascination is legible through note-taking during class, compiler and control-language analogies, rapid absorption of symbol rules, and interest in storage. She has not yet designed or activated a spell, so the promised leap into magical innovation remains deferred.",
-    "Amelia's exposure arc: charming younger-seeming student gives way to trained medic, witch, blood addict, enforcement figure, and killer responsible for at least ninety-four lifeblood acquisitions or reservations.",
-    "Amelia's moral-gray evidence includes taking a dying climber's life, destroying evidence, lying about being empty, maintaining compelled-action engravings, one EMS death, and a punitive first post-activation spell. Her repeated apologies, tears, reassurance-seeking, and cheerful presentation substantially soften the darker characterization requested in the notes.",
-    "Relationship arc: rapid attraction survives successive disclosures and becomes mutual love, but unresolved consent, secrecy, dependence, possessiveness, and unequal knowledge keep the bond unstable.",
-    "Magic-curriculum arc: visceral demonstration precedes anatomy, activation, casting categories, aging, detection, batteries, intent, termination, lifeblood accounting, and elementary symbology.",
-    "FAWN arc: an apparent magical threat becomes a research and social network, giving Madison belonging and access while introducing coercion, dangerous experimentation, and competing ethical norms."
+  "source_sha256": "0be7829a1c602b783ec066ec8b939e979f6a3e030eeebdd23742ed283d27c281",
+  "state_ledgers": [
+    {
+      "changes": [
+        {
+          "state": "Confident programmer but romantically flustered human who begins dating Amelia.",
+          "unit_id": "unit-0002-920c59af6477"
+        },
+        {
+          "state": "Witnesses a climber's death, exsanguination, and magical destruction; her prior worldview collapses.",
+          "unit_id": "unit-0003-aa9f0ac01ee1"
+        },
+        {
+          "state": "Learns witch biology and activation, suffers visceral horror, but chooses to remain and seek constructive magic.",
+          "unit_id": "unit-0004-39a17c40720a"
+        },
+        {
+          "state": "Begins systematically recording and investigating magic through a programmer's lens.",
+          "unit_id": "unit-0005-febc528a057c"
+        },
+        {
+          "state": "Voluntarily enters FAWN's dangerous social world, is severely bled, gains independent magical contacts, and declares love.",
+          "unit_id": "unit-0006-07454b12a420"
+        },
+        {
+          "state": "Confronts Amelia's killing history and becomes an engaged student of magical symbology despite moral unease and exhaustion.",
+          "unit_id": "unit-0007-b80e8306ee58"
+        }
+      ],
+      "current_state": "In love with Amelia, recovering from blood loss, socially connected to FAWN, and actively learning magic while confronting its costs.",
+      "entity": "Madison",
+      "entity_type": "character"
+    },
+    {
+      "changes": [
+        {
+          "state": "Appears to be a cheerful gap-year student but reveals concealed advanced education and paramedic credentials.",
+          "unit_id": "unit-0002-920c59af6477"
+        },
+        {
+          "state": "Exsanguinates a doomed climber, harvests lifeblood, and erases the body with blood-drawn magic.",
+          "unit_id": "unit-0003-aa9f0ac01ee1"
+        },
+        {
+          "state": "Confesses she is a witch, describes activation trauma and blood addiction, and uses freework to show magic's beauty.",
+          "unit_id": "unit-0004-39a17c40720a"
+        },
+        {
+          "state": "Acts as a protective campus investigator and demonstrates extensive engraved combat and utility magic.",
+          "unit_id": "unit-0005-febc528a057c"
+        },
+        {
+          "state": "Uses coercive magic with consent, heals Madison at personal cost, and admits wanting possible future witch reproduction with her.",
+          "unit_id": "unit-0006-07454b12a420"
+        },
+        {
+          "state": "Discloses addiction, an EMS-related death, ninety-four lifeblood sources, and ninety-three completed engravings; begins teaching Madison symbology.",
+          "unit_id": "unit-0007-b80e8306ee58"
+        }
+      ],
+      "current_state": "Madison's loving but dangerous partner, openly identified as a powerful witch with a large lethal history and a self-conscious gray moral code.",
+      "entity": "Amelia",
+      "entity_type": "character"
+    },
+    {
+      "changes": [
+        {
+          "state": "Mutual attraction becomes explicitly exclusive dating within two days of meeting.",
+          "unit_id": "unit-0002-920c59af6477"
+        },
+        {
+          "state": "The revelation of Amelia's lethal nature shocks Madison, but she retains physical contact and follows Amelia home.",
+          "unit_id": "unit-0003-aa9f0ac01ee1"
+        },
+        {
+          "state": "Madison promises to hear Amelia out, recoils from activation, then reconnects and asks to see benevolent magic.",
+          "unit_id": "unit-0004-39a17c40720a"
+        },
+        {
+          "state": "Amelia protects Madison during a magical investigation while Madison's fascination increasingly complicates her romantic choice.",
+          "unit_id": "unit-0005-febc528a057c"
+        },
+        {
+          "state": "Conflict over coercion and reproduction is followed by Madison gaining independent access to magic and freely declaring love.",
+          "unit_id": "unit-0006-07454b12a420"
+        },
+        {
+          "state": "They discuss killing, addiction, blood intimacy, and engravings; Amelia reciprocates love and continues sharing her world.",
+          "unit_id": "unit-0007-b80e8306ee58"
+        }
+      ],
+      "current_state": "Mutually loving and intimate, with greater honesty but unresolved ethical tension around killing, coercion, blood, and reproduction.",
+      "entity": "Madison and Amelia",
+      "entity_type": "relationship"
+    },
+    {
+      "changes": [
+        {
+          "state": "Madison knows Amelia concealed her age, education, and prior paramedic career but not why.",
+          "unit_id": "unit-0002-920c59af6477"
+        },
+        {
+          "state": "Madison learns Amelia can drain blood and perform destructive symbol-based magic.",
+          "unit_id": "unit-0003-aa9f0ac01ee1"
+        },
+        {
+          "state": "Madison learns core witch anatomy, blood potency, hunger, activation, freework, grimwork, engraving, healing, and aging traits.",
+          "unit_id": "unit-0004-39a17c40720a"
+        },
+        {
+          "state": "She begins collecting data and sees engraving, intent targeting, shields, concealment, detection, and counter-magic in practice.",
+          "unit_id": "unit-0005-febc528a057c"
+        },
+        {
+          "state": "She learns about FAWN, preserved-blood experiments, coercive spells, and mutually desired witch reproduction, though details remain incomplete.",
+          "unit_id": "unit-0006-07454b12a420"
+        },
+        {
+          "state": "She learns that lifeblood is required for engraving, one source is wholly consumed per engraving, and Amelia has ninety-three completed engravings.",
+          "unit_id": "unit-0007-b80e8306ee58"
+        }
+      ],
+      "current_state": "Madison has substantial introductory knowledge of witch biology and symbolic magic but incomplete knowledge of reproduction, culture, history, and advanced mechanics.",
+      "entity": "Madison's knowledge of witches and magic",
+      "entity_type": "knowledge"
+    },
+    {
+      "changes": [
+        {
+          "state": "A split lip caused during kissing bleeds and then stops unusually quickly.",
+          "unit_id": "unit-0002-920c59af6477"
+        },
+        {
+          "state": "Mackenzie opens Madison's arm and drinks until Madison becomes severely dizzy; Amelia magically closes the wound.",
+          "unit_id": "unit-0006-07454b12a420"
+        },
+        {
+          "state": "Madison remains exhausted, breathless, and weak from hypovolemia but expects gradual recovery.",
+          "unit_id": "unit-0007-b80e8306ee58"
+        }
+      ],
+      "current_state": "The arm wound is healed, but Madison is still recovering from substantial blood loss.",
+      "entity": "Madison's injuries",
+      "entity_type": "injury"
+    },
+    {
+      "changes": [
+        {
+          "state": "Amelia harvests the dying climber's lifeblood and retains what is not used for ordinary workings.",
+          "unit_id": "unit-0003-aa9f0ac01ee1"
+        },
+        {
+          "state": "Amelia reveals she still holds the climber's source because she has not engraved a spell from it.",
+          "unit_id": "unit-0007-b80e8306ee58"
+        }
+      ],
+      "current_state": "Stored in Amelia's stronghold and available as one future engraving source.",
+      "entity": "The climber's lifeblood",
+      "entity_type": "object"
+    },
+    {
+      "changes": [
+        {
+          "state": "FAWN stores distilled witch-remixed human blood in labeled jars, but its magic degrades or is spoiled by preservation experiments.",
+          "unit_id": "unit-0006-07454b12a420"
+        }
+      ],
+      "current_state": "An experimental, unreliable supply of blood batteries remains under FAWN investigation.",
+      "entity": "FAWN blood jars",
+      "entity_type": "object"
+    },
+    {
+      "changes": [
+        {
+          "state": "Amelia creates a translucent purple heart synchronized with her heartbeat and gives it to Madison as a declaration of love.",
+          "unit_id": "unit-0007-b80e8306ee58"
+        }
+      ],
+      "current_state": "Possessed by Madison as a magical token of Amelia's reciprocated love.",
+      "entity": "Purple heart construct",
+      "entity_type": "object"
+    },
+    {
+      "changes": [
+        {
+          "state": "Introduced as Amelia's family home, containing hidden magical behavior, a piano, and a garden that supports intimacy.",
+          "unit_id": "unit-0002-920c59af6477"
+        },
+        {
+          "state": "Becomes the site of Madison's first structured magical education and emotional reconciliation.",
+          "unit_id": "unit-0004-39a17c40720a"
+        },
+        {
+          "state": "Serves as the family's monitoring base and a place where Madison is increasingly treated as connected to the household.",
+          "unit_id": "unit-0007-b80e8306ee58"
+        }
+      ],
+      "current_state": "A domestic refuge, teaching space, and operational base for Amelia's witch family.",
+      "entity": "Amelia's family home",
+      "entity_type": "location"
+    },
+    {
+      "changes": [
+        {
+          "state": "Discovered as an improvised FAWN laboratory containing blood stores, equipment, and experimental spell work.",
+          "unit_id": "unit-0006-07454b12a420"
+        }
+      ],
+      "current_state": "A recurring Monday gathering place and active research space now open to Madison and Amelia.",
+      "entity": "FAWN dorm room",
+      "entity_type": "location"
+    },
+    {
+      "changes": [
+        {
+          "state": "All depicted witches are female; Amelia has three mothers, and no male witch appears.",
+          "unit_id": "unit-0004-39a17c40720a"
+        },
+        {
+          "state": "FAWN introduces two additional female witches and no male witches.",
+          "unit_id": "unit-0006-07454b12a420"
+        }
+      ],
+      "current_state": "Only female witches are depicted in the supplied scope; trans and intersex specifics remain unaddressed.",
+      "entity": "Witch sex and gender",
+      "entity_type": "world_rule"
+    },
+    {
+      "changes": [
+        {
+          "state": "Amelia states activation occurs when escalating Hunger compels a young witch to consume an entire heart that is beating when consumption begins.",
+          "unit_id": "unit-0004-39a17c40720a"
+        }
+      ],
+      "current_state": "Activation requires consuming a beating heart; no alternative activation is depicted.",
+      "entity": "Witch activation",
+      "entity_type": "world_rule"
+    },
+    {
+      "changes": [
+        {
+          "state": "Magic is established as blood-powered and performed through drawn or cut symbols shaped by witch intent.",
+          "unit_id": "unit-0003-aa9f0ac01ee1"
+        },
+        {
+          "state": "Freework, grimwork, and engraving are distinguished as different ways of composing symbolic workings.",
+          "unit_id": "unit-0004-39a17c40720a"
+        },
+        {
+          "state": "Engraved symbols provide compact, efficient access to prepared effects; intent can target, sustain, feed, or end workings.",
+          "unit_id": "unit-0005-febc528a057c"
+        },
+        {
+          "state": "Humans lack the intent needed to activate magic even when witch blood is available.",
+          "unit_id": "unit-0007-b80e8306ee58"
+        }
+      ],
+      "current_state": "Magic operates through blood-fueled drawn symbols activated and controlled by witch intent.",
+      "entity": "Operative basis of magic",
+      "entity_type": "world_rule"
+    },
+    {
+      "changes": [
+        {
+          "state": "Engraving is introduced as a prepared form of magic, without its full cost explained.",
+          "unit_id": "unit-0004-39a17c40720a"
+        },
+        {
+          "state": "Madison learns engraving is powered by lifeblood.",
+          "unit_id": "unit-0007-b80e8306ee58"
+        },
+        {
+          "state": "Amelia specifies that each engraving consumes all stored magic from one lifeblood source regardless of how much remained.",
+          "unit_id": "unit-0007-b80e8306ee58"
+        }
+      ],
+      "current_state": "Every engraving requires and completely consumes the stored magic from one lifeblood source.",
+      "entity": "Engraving cost",
+      "entity_type": "world_rule"
+    },
+    {
+      "changes": [
+        {
+          "state": "Witches detect consequential nearby magic and Amelia's family participates in informal local oversight.",
+          "unit_id": "unit-0005-febc528a057c"
+        },
+        {
+          "state": "FAWN disputes authoritarian enforcement but agrees to warn Amelia before large workings.",
+          "unit_id": "unit-0006-07454b12a420"
+        }
+      ],
+      "current_state": "Local magical order depends on informal, contested monitoring rather than universally recognized authority.",
+      "entity": "Witch oversight",
+      "entity_type": "world_rule"
+    }
   ],
-  "subplots": [
-    "Madison's summer courses provide a clock and contrast magical discovery with ordinary CS, mathematics, philosophy, and campus life.",
-    "Amelia's abandoned medical career and blood addiction remain only partly disclosed; the EMS death, rehabilitation, and continuing temptation around FAWN's jars require fuller accounting.",
-    "FAWN's battery-preservation research is established through failed jars and a successful large growth working; the fungal explanation and scaling program exist only in notes.",
-    "Amelia's family has replaced Robin as local monitors, creating potential conflict between enforcement, FAWN autonomy, and Amelia's romantic loyalties.",
-    "Zoe's friendship and human game-night circle give Madison social independence and normalize regular Monday FAWN meetings, Wednesday games, and Saturday dates.",
-    "Madison's fear of saying love is introduced through Julia and overcome after she separates love from dependency on Amelia's magical access; the parental cause remains undramatized.",
-    "Amelia's search for work and uncertainty about her post-EMS future are introduced but not advanced after Ch2.",
-    "The unused climber lifeblood creates a pending choice about Amelia's next engraving.",
-    "Katherine, Frieda Henot, the family grimoire, and the tracker conflict are author-note plans, not active subplots in the supplied manuscript."
+  "units": [
+    {
+      "characters": [],
+      "chronology": "Blank front matter preceding the narrated chapters.",
+      "ending_state": "No narrative state is established.",
+      "load_bearing": false,
+      "locations": [],
+      "motifs": [],
+      "povs": [],
+      "promises_advanced": [],
+      "promises_opened": [],
+      "promises_resolved": [],
+      "summary": "Empty front-matter unit.",
+      "unit_id": "unit-0001-7eb70257593d"
+    },
+    {
+      "characters": [
+        "Madison",
+        "Amelia",
+        "June",
+        "Savannah",
+        "Emma",
+        "Chloe"
+      ],
+      "chronology": "Retrospective opening followed by Madison and Amelia's first meeting, first date, and reunion the next day during summer break.",
+      "ending_state": "Madison remains attracted but learns Amelia lied about being a gap-year student and has extensive medical training.",
+      "load_bearing": true,
+      "locations": [
+        "College-town park",
+        "Bakery patio",
+        "Madison's dorm",
+        "Amelia's family home",
+        "Amelia's bedroom"
+      ],
+      "motifs": [
+        "Programming language",
+        "Beauty and self-image",
+        "Hands and touch",
+        "Mint",
+        "Hidden books and symbols",
+        "Blood",
+        "Piano"
+      ],
+      "povs": [
+        "Madison"
+      ],
+      "promises_advanced": [],
+      "promises_opened": [
+        "The true source of vampire myths",
+        "Madison and Amelia's rapid romance",
+        "Amelia's concealed identity and age",
+        "The meaning of Amelia's unusual journal and her mothers' hand-traced patterns",
+        "Why Amelia abandoned paramedicine",
+        "Amelia's attraction to blood",
+        "Madison's difficulty saying she loves someone"
+      ],
+      "promises_resolved": [],
+      "summary": "Madison meets Amelia, begins an intense romance, meets her three mothers, and discovers that Amelia concealed advanced degrees and paramedic credentials.",
+      "unit_id": "unit-0002-920c59af6477"
+    },
+    {
+      "characters": [
+        "Madison",
+        "Amelia",
+        "The climber",
+        "Savannah"
+      ],
+      "chronology": "Roughly two weeks after the first meeting, ending on the Sunday before Madison's summer semester begins.",
+      "ending_state": "Madison knows Amelia killed and drained a doomed climber and erased his remains with magic, yet follows her home holding her hand.",
+      "load_bearing": true,
+      "locations": [
+        "Amelia's family home",
+        "Amelia's bedroom",
+        "Living room and piano",
+        "Mountain trail and cliff"
+      ],
+      "motifs": [
+        "Piano and melancholy",
+        "Darkness under control",
+        "Blood",
+        "Falling",
+        "Hands and touch",
+        "Drawn symbols",
+        "Fire and obliteration"
+      ],
+      "povs": [
+        "Madison"
+      ],
+      "promises_advanced": [
+        "Madison and Amelia's rapid romance",
+        "Amelia's concealed identity and age",
+        "Why Amelia abandoned paramedicine",
+        "Amelia's attraction to blood",
+        "Madison's difficulty saying she loves someone"
+      ],
+      "promises_opened": [
+        "The nature and rules of witchcraft",
+        "Whether the climber could have been saved",
+        "Amelia's prior killings and moral code",
+        "The source and cost of Amelia's magic",
+        "Amelia's family's magical oversight"
+      ],
+      "promises_resolved": [
+        "Amelia's paramedic expertise has immediate plot relevance",
+        "Magic and blood-drinking underlie the vampire myths"
+      ],
+      "summary": "After Amelia shares her vulnerable piano repertoire, a climber falls; she declares him unsalvageable, drains him, and uses blood-drawn spells to destroy all evidence.",
+      "unit_id": "unit-0003-aa9f0ac01ee1"
+    },
+    {
+      "characters": [
+        "Madison",
+        "Amelia",
+        "June",
+        "Savannah",
+        "Emma"
+      ],
+      "chronology": "Immediately after the climber's death, continuing through dinner and the same evening.",
+      "ending_state": "Horrified but still connected to Amelia, Madison accepts that magic can also create beauty and begins translating its forms into programming concepts.",
+      "load_bearing": true,
+      "locations": [
+        "Amelia's bedroom",
+        "Amelia's patio",
+        "Amelia's garden"
+      ],
+      "motifs": [
+        "Blood and heartbeat",
+        "Hunger",
+        "Tears and silence",
+        "Hands and touch",
+        "Candle shadows",
+        "Flowers",
+        "Symbols as code",
+        "Pain and scars"
+      ],
+      "povs": [
+        "Madison"
+      ],
+      "promises_advanced": [
+        "The nature and rules of witchcraft",
+        "Amelia's prior killings and moral code",
+        "The source and cost of Amelia's magic",
+        "Amelia's attraction to blood",
+        "Why Amelia abandoned paramedicine",
+        "Madison and Amelia's rapid romance"
+      ],
+      "promises_opened": [
+        "Activation's lasting psychological cost",
+        "Blood addiction and Amelia's EMS history",
+        "Magic's constructive possibilities",
+        "Freework, grimwork, and engraving mechanics",
+        "Witch reproduction and aging",
+        "Madison's programmer-driven approach to magic"
+      ],
+      "promises_resolved": [
+        "Whether the climber could have been saved",
+        "Activation requires eating a beating heart",
+        "Amelia and her mothers are witches"
+      ],
+      "summary": "Amelia explains witch anatomy, blood magic, Hunger, and her traumatic activation; Madison recoils but stays and asks to see benevolent magic, prompting a beautiful freework display.",
+      "unit_id": "unit-0004-39a17c40720a"
+    },
+    {
+      "characters": [
+        "Madison",
+        "Amelia",
+        "Savannah",
+        "Professor McDroney Voice",
+        "Mackenzie"
+      ],
+      "chronology": "The next morning and midday: Monday, the first day of Madison's summer semester.",
+      "ending_state": "A hostile magical encounter de-escalates when the unknown witch invites Madison and Amelia into her dorm to see the source of the campus working.",
+      "load_bearing": true,
+      "locations": [
+        "University classroom",
+        "Campus lunch area",
+        "Campus walkways",
+        "Dormitory stairwell and hallway"
+      ],
+      "motifs": [
+        "Programming and data collection",
+        "Age and time",
+        "Blood as power",
+        "Detection and concealment",
+        "Cut symbols",
+        "Shields",
+        "Authority and surveillance"
+      ],
+      "povs": [
+        "Madison"
+      ],
+      "promises_advanced": [
+        "Witch reproduction and aging",
+        "Madison's programmer-driven approach to magic",
+        "Amelia's family's magical oversight",
+        "Freework, grimwork, and engraving mechanics",
+        "Amelia's prior killings and moral code"
+      ],
+      "promises_opened": [
+        "The source of large campus magic",
+        "The unknown witch's identity and intentions",
+        "Who Robin was and why Amelia's family replaced her",
+        "The limits of Amelia's protective power"
+      ],
+      "promises_resolved": [
+        "Amelia's true age is twenty-eight",
+        "Magic use slows witch aging"
+      ],
+      "summary": "Madison questions Amelia about age and magical activity, then joins her investigation of a large campus working, where concealment and shields fail against a formidable unknown witch.",
+      "unit_id": "unit-0005-febc528a057c"
+    },
+    {
+      "characters": [
+        "Madison",
+        "Amelia",
+        "Mackenzie",
+        "Miriam",
+        "Zoe",
+        "Olivia",
+        "Evelyn"
+      ],
+      "chronology": "Immediately following the hallway confrontation, through Monday afternoon.",
+      "ending_state": "Madison gains FAWN as an independent connection to magic, recognizes that she is choosing Amelia freely, and declares her love.",
+      "load_bearing": true,
+      "locations": [
+        "FAWN dorm room",
+        "Dormitory stairwell"
+      ],
+      "motifs": [
+        "Blood batteries",
+        "Consent and coercion",
+        "Truth and performance",
+        "Drinking",
+        "Violent sexuality",
+        "Magic as community",
+        "Hands and severed contact",
+        "Love and independence"
+      ],
+      "povs": [
+        "Madison"
+      ],
+      "promises_advanced": [
+        "The source of large campus magic",
+        "The unknown witch's identity and intentions",
+        "Freework, grimwork, and engraving mechanics",
+        "Blood addiction and Amelia's EMS history",
+        "Amelia's prior killings and moral code",
+        "Witch reproduction and aging",
+        "Madison and Amelia's rapid romance",
+        "Who Robin was and why Amelia's family replaced her"
+      ],
+      "promises_opened": [
+        "FAWN's blood-battery research",
+        "The ethics of coercive and mind-control magic",
+        "Whether Amelia wants Madison to become a witch",
+        "The full mechanism and consequences of creating a witch",
+        "The discrepancy surrounding Robin's departure",
+        "Madison's place within FAWN"
+      ],
+      "promises_resolved": [
+        "FAWN's plant-growth experiments caused the large campus magic",
+        "Mackenzie is the unknown witch from the confrontation",
+        "Madison can access the magical world independently of Amelia",
+        "Madison overcomes her inability to declare love"
+      ],
+      "summary": "Madison and Amelia meet FAWN, witness experimental blood storage and coercive party magic, clash over witch reproduction, and leave with new contacts and a transformed relationship.",
+      "unit_id": "unit-0006-07454b12a420"
+    },
+    {
+      "characters": [
+        "Madison",
+        "Amelia",
+        "Julia",
+        "Savannah",
+        "Zoe",
+        "Mackenzie",
+        "Miriam",
+        "Zoe's roommates"
+      ],
+      "chronology": "From Monday night through Wednesday night of the semester's first week.",
+      "ending_state": "Madison and Amelia are mutually in love; Madison knows the scale of Amelia's killing and begins learning magic's elemental control language while still recovering from blood loss.",
+      "load_bearing": true,
+      "locations": [
+        "Amelia's bedroom",
+        "University classrooms and campus",
+        "Amelia's patio and garden",
+        "Zoe's dorm",
+        "Madison's dorm"
+      ],
+      "motifs": [
+        "Love declarations",
+        "Blood and addiction",
+        "Serial killing and gray morality",
+        "Heartbeat",
+        "Gifts",
+        "Exhaustion",
+        "Symbols as programming language",
+        "Counting and moral accounting"
+      ],
+      "povs": [
+        "Madison"
+      ],
+      "promises_advanced": [
+        "Activation's lasting psychological cost",
+        "Blood addiction and Amelia's EMS history",
+        "Amelia's prior killings and moral code",
+        "The ethics of coercive and mind-control magic",
+        "Whether Amelia wants Madison to become a witch",
+        "The full mechanism and consequences of creating a witch",
+        "FAWN's blood-battery research",
+        "Madison's place within FAWN",
+        "Madison's programmer-driven approach to magic",
+        "Freework, grimwork, and engraving mechanics"
+      ],
+      "promises_opened": [
+        "Reviewing Amelia's grimoire and ninety-three engravings",
+        "The significance and future use of the climber's retained lifeblood",
+        "Madison's potential mastery or misuse of magic"
+      ],
+      "promises_resolved": [
+        "Amelia left EMS after blood addiction and one drinking-related patient death",
+        "Amelia has acquired ninety-four lifeblood sources and completed ninety-three engravings",
+        "Each engraving consumes all stored magic from one lifeblood source",
+        "Amelia reciprocates Madison's love"
+      ],
+      "summary": "Madison confronts Amelia's serial killing and addiction, receives a magical love token, learns more mechanics from Zoe, and begins studying Amelia's symbol system after hearing her death count.",
+      "unit_id": "unit-0007-b80e8306ee58"
+    }
   ],
-  "promises": [
-    "Amelia has promised complete disclosure but has not supplied the full EMS account, source histories for her lifeblood, or the complete cultural and historical lesson.",
-    "Madison explicitly says she and Amelia must discuss the compelled Truth or Dare working; no such discussion occurs by the end of Ch6.",
-    "The making-a-witch process is repeatedly deferred. Amelia's reluctance and Zoe's reassurance establish deliberate withholding, while the notes leave conception certainty unresolved.",
-    "Amelia agrees to show Madison the ninety-three engraved spells through her grimoire; the book is absent during Ch6, so payoff remains pending.",
-    "The climber's unused lifeblood is reserved for a future engraving, but no spell choice has been made in the manuscript.",
-    "Regular FAWN meetings, Zoe's game nights, and dates with Amelia are prospective routines rather than completed patterns.",
-    "Amelia's monitoring role promises further contact with dangerous or uncontrolled witches, although no antagonist has been identified.",
-    "The heart gem is positioned as an emotionally important object but has no established plot function beyond reassurance.",
-    "The notes promise Katherine's arrival, Frieda's grimoire, a tracking spell, attacks, and Madison's design work; chapters 1-6 contain insufficient direct setup to treat these as manuscript promises.",
-    "The notes promise constraints involving recursion or Turing incompleteness, but no such limitation has appeared; whether this is intentional later exposition or missing early constraint evidence cannot yet be determined."
-  ],
-  "motifs": [
-    "Programming and mathematical notation frame chapter titles and Madison's interpretation of magic as a language, compiler target, and optimization problem.",
-    "Blood repeatedly intersects with appetite, food, hunger, addiction, intimacy, fuel, evidence, and moral accounting.",
-    "Hands carry affection and danger: clasping, cutting, fangs, painted symbols, healing, shielding, and compulsion all travel through touch.",
-    "Light and darkness move between character and mechanics through piano mood, white fire, shadow flowers, invisibility, illusions, and elemental symbols.",
-    "Hearts connect the violent activation threshold, the climber's death, romantic declarations, heartbeat imagery, and Amelia's heart gem.",
-    "Consent is repeatedly tested through exclusivity, sex, feeding, compulsion, making witches, and Madison's insistence on choosing dangerous experiences.",
-    "Concealment and revelation recur through Amelia's age and career lies, invisible bodies, evidence destruction, secret society rules, and staggered exposition.",
-    "Frequent laughter, giggling, flirtation, food, and cozy domestic scenes counterpoint the violence; in these chapters the romantic-comic register often dominates the stated grim-dark intent.",
-    "Control appears as Madison's need for complete information, Amelia's policing and compulsions, Mackenzie's provocations, and the technical targeting or termination of spells.",
-    "Music and improvisation provide a parallel to magical freework, while programming provides the parallel to engraving and reusable structure."
-  ],
-  "distant_links": [
-    "Ch1/lip blood and Amelia's reflexive tasting set up Ch3/post-activation pull and Ch6/EMS addiction.",
-    "Ch1/paramedic credentials support Ch2/Amelia's fatal prognosis and pay off in Ch6/the EMS failure-of-control disclosure.",
-    "Ch1/mothers' concealed hand movements are retrospectively identified in Ch3 as a likely magical check on Madison.",
-    "Ch1/leather-bound journal visually resembles a grimoire, but Ch6 says Amelia's grimoire is absent; the connection remains ambiguous rather than confirmed.",
-    "Ch2/piano's brooding darkness and controlled power foreshadow the later moral disclosures, though Amelia's behavior remains predominantly tender and apologetic.",
-    "Ch2/climber lifeblood pays off numerically in Ch6 as the unused ninety-fourth source and sets up a future engraving.",
-    "Ch2/Madison's acknowledged moral flexibility develops through Ch4/risk-taking, Ch5/battery fascination, and Ch6/quantification of Amelia's deaths.",
-    "Ch3/shadow flowers establish constructive freework and provide a visual precedent for Ch5/Mackenzie's illusion.",
-    "Ch3/engraving explanation leads to Ch5/compulsion engravings and Ch6/the ninety-three-source accounting.",
-    "Ch4/Amelia's very active status gains concrete moral weight when Ch6 reveals the scale of her engravings.",
-    "Ch4/campus magic detection resolves immediately into Ch5/FAWN and its battery research, while Robin's departure supplies the reason Amelia's family is present.",
-    "Ch5/Mackenzie's feeding causes Madison's continuing Ch6 hypovolemia and enables her closer friendship with Zoe.",
-    "Ch5/turning question returns in Ch6, but physical intimacy interrupts the explanation again.",
-    "Ch5/independent magical access directly releases Madison's fear of confessing love; it also prepares a route for later action independent of Amelia.",
-    "Ch5/battery fascination aligns with the notes' future Madison scaling plot, but no design contribution or mass-harm plan exists yet in manuscript evidence.",
-    "Ch6/heartbeat gem deliberately contrasts love and reassurance with Ch3's beating-heart activation horror.",
-    "Current rules say humans lack activating intent; the notes' future claim that Madison creates heart tattoos will require Amelia or another witch to activate and power her design, or a documented rule change."
-  ],
-  "conflicts": [
-    "Numerical continuity conflict: Ch4 gives June about 150, Savannah and Emma about 120, the oldest known witch about 263, and a theoretical maximum near 400; the notes give approximately 160, 140, 302, and 500 respectively.",
-    "Intent-text gap: the notes request a darker, sharper, less apologetic Amelia, while the manuscript repeatedly presents her as cheerful, tearful, apologetic, approval-seeking, and easily embarrassed. Dark evidence exists, but its framing usually protects reader sympathy.",
-    "Tone gap: the notes specify grim-dark, but romantic banter, giggling, domestic comfort, and playful exposition occupy more narrative space than dread or moral consequence after violent revelations.",
-    "The notes attribute Madison's amused description of Mackenzie to Ch7, but it appears in supplied Ch6. The notes also cite heart tattoos as recent development, yet no heart-tattoo spell occurs in Ch1-6; Ch6 contains a separate heart gem.",
-    "The notes list witch reproduction, turning mechanics, surnames, and population among material Madison learns, but Ch1-6 provide only mutual-consent hints about making a witch. These items are absent within coverage and should not be treated as established.",
-    "The notes describe Madison's sophisticated first spell and rapid design aptitude, but the manuscript ends while she is still receiving elementary symbol instruction. This is likely intentional deferral, not current evidence of proficiency.",
-    "The notes define detailed female-only biology, inheritance, and pregnancy-linked turning. The manuscript neither confirms nor contradicts most of it; Amelia's and Zoe's evasions mark turning as deliberate deferral.",
-    "The notes leave pregnancy certainty and recursion unresolved. The manuscript supplies no evidence capable of resolving either issue.",
-    "The author notes plan Katherine's immediate visit, Frieda Henot's grimoire, and a tracker, but Katherine and Frieda are not named in Ch1-6. Madison's vague avoidance of home is insufficient to establish that planned causal chain.",
-    "The communal battery model implies blood can be activated by a witch other than its donor or processor, but no scene directly demonstrates cross-witch activation. The notes state it as fact, so manuscript support is presently incomplete.",
-    "Ch6 establishes ninety-three engravings and the climber as a reserved ninety-fourth lifeblood source. The notes' phrase ninety-three spells or ninety-four counting the climber risks conflating completed engravings with acquired lifeblood sources; the manuscript distinguishes them.",
-    "Amelia's rapid return to usable strong blood between Ch5 and the Ch6 elemental lesson has no shown feeding or replenishment event. Enhanced replenishment may explain blood volume, but stored stronghold magic still requires a source under the stated mechanics.",
-    "The exact FAWN donation cadence is unclear: manuscript dialogue can mean each donor gives once and then rests or that the group alternates donation weeks; the notes specify one rotating donor per week. No quantity or recovery constraint is established.",
-    "Madison accepts Amelia's assertion that the climber was unsavable, but no independent evidence confirms the prognosis. The map therefore records Amelia's act as a claimed mercy killing, not an objectively established necessity.",
-    "The climber's total disappearance should create mundane investigative consequences through his equipment, travel, contacts, and missing-person status, but none appear within Ch1-6. The partial manuscript may intentionally defer them.",
-    "Witch society is described as respecting life in the notes, while manuscript examples include at least ninety-four Amelia-linked deaths, Miriam's killing, Mackenzie's violent feeding and sexualized neck attack, and casual compelled behavior. The manuscript has not yet supplied enough broader social evidence to calibrate whether these are exceptions or representative.",
-    "Amelia says she cannot turn her compulsion spell on and off, yet can shift its target through intent. The operational boundary between targeting, activation, and termination needs clarification to keep consent mechanics comprehensible.",
-    "Magic's blood economy is broadly legible, but distinctions among raw human potency, taste, weak blood, distilled strong blood, and lifeblood are distributed across several speakers and not yet consolidated; Zoe's explanations may be simplified rather than authoritative."
-  ],
-  "coverage": {
-    "chapters_read": [
-      1,
-      2,
-      3,
-      4,
-      5,
-      6
+  "work_state": {
+    "central_arcs": [
+      "Madison's movement from supernatural disbelief through horror into analytical fascination and possible moral darkness",
+      "Amelia's gradual disclosure as a loving, traumatized, addicted, powerful, and lethally pragmatic witch",
+      "Madison and Amelia's rapid romance under pressure from secrecy, power imbalance, killing, and access to magic",
+      "Madison's conversion of magic into a system she can document, model, and eventually manipulate"
     ],
-    "omissions": [
-      "No supplied scene numbering exists; evidence references use chapter plus inferred scene labels.",
-      "Only chapters 1-6 were mapped. Author-note references to Ch7, sequels, Katherine, Frieda, the tracker, attacks, fungal theory, advanced batteries, and future spells were treated as intent claims rather than manuscript events.",
-      "The manuscript is partial. Unanswered questions explicitly postponed in dialogue are marked as intentional deferrals; unsupported mechanics or planned events without in-text setup are marked as missing evidence.",
-      "No manuscript passages are reproduced, and no conclusion depends on material outside the supplied chapters and notes."
+    "chronology": [
+      "A retrospective narrator introduces the truth behind vampire myths.",
+      "During summer break, Madison meets Amelia and begins an exclusive relationship.",
+      "About two weeks later, Amelia exposes her witchcraft after a climber's fatal fall.",
+      "That evening, Amelia explains witch biology, activation, and basic magical practice.",
+      "On the semester's first Monday, Madison and Amelia investigate major campus magic.",
+      "They encounter FAWN, whose research and social circle give Madison an independent magical connection.",
+      "By Wednesday night, Madison and Amelia have exchanged declarations of love, and Madison has begun studying symbology."
     ],
-    "confidence": 0.97
+    "ending_state": "Madison is physically weakened but intellectually energized, mutually in love with Amelia, welcomed into FAWN's orbit, and beginning systematic magical study after learning Amelia's ninety-four-person lifeblood history. Turning, mind-control ethics, Robin, blood batteries, the climber's stored lifeblood, and Madison's darker trajectory remain open.",
+    "motifs": [
+      "Blood as nourishment, power, temptation, debt, and evidence",
+      "Drawn and engraved symbols as a magical programming language",
+      "Hands, touch, cutting, and clasping",
+      "Hearts and heartbeats",
+      "Darkness balanced against beauty and affection",
+      "Secrets, partial disclosures, and forced truth",
+      "Counting, data, and mathematical framing",
+      "Music as access to Amelia's hidden self",
+      "Hunger, appetite, and consumption",
+      "Control, consent, and contested authority"
+    ],
+    "promises": [
+      "Madison may pursue a darker path through her analytical fascination with magic.",
+      "Amelia's gray morality, addiction, killings, and affection will continue to strain the romance.",
+      "Madison will learn more from Amelia's grimoire and ninety-three engravings.",
+      "The mechanism and consequences of consensually creating a witch remain to be explained.",
+      "The ethics and possible misuse of coercive magic remain unresolved.",
+      "FAWN's blood-battery research may change access to magical power.",
+      "The climber's retained lifeblood remains available for a future engraving.",
+      "Robin's history and the discrepancy about her departure require clarification.",
+      "Activation trauma may have continuing psychological consequences.",
+      "Madison's independent relationships with FAWN and Zoe will broaden her access to the magical world."
+    ],
+    "subplots": [
+      "FAWN's experimental preservation and use of donated blood",
+      "Mackenzie's antagonistic but potentially productive relationship with Madison and Amelia",
+      "Zoe's friendship with Madison and her human social circle",
+      "Amelia's former EMS career, addiction, and family-supervised recovery",
+      "Informal witch monitoring and disagreement over authority",
+      "Robin's unexplained relationship to the town and Amelia's family's move",
+      "Madison's school life and tension between formal study and magical obsession"
+    ]
   }
 }

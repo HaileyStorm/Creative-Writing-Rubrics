@@ -4986,7 +4986,7 @@
       "version": "1.0.0"
     },
     "module_id": "core.length_and_scope_fit",
-    "version": 1,
+    "version": 2,
     "title": "Length and scope fit",
     "kind": "base",
     "description": "Rewards length appropriate to form, purpose, and actual creative load while keeping exact requirements as hard gates.",
@@ -5023,7 +5023,7 @@
             "text": "Does the artifact satisfy every explicit exact, minimum, or maximum length constraint?",
             "pass_answer": "YES",
             "weight": 2.0,
-            "question_type": "hard_gate",
+            "question_type": "diagnostic",
             "severity": "material",
             "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
             "evidence_policy": {
@@ -5904,10 +5904,10 @@
       "version": "1.0.0"
     },
     "module_id": "core.task_and_brief_fidelity",
-    "version": 1,
+    "version": 2,
     "title": "Task and brief fidelity",
     "kind": "base",
-    "description": "Checks whether the output actually performed the requested operation, used the requested source material, respected explicit inclusions/exclusions, and followed required length, POV, tense, structure, formatting, and degree of intervention. Hard requirements must be separated from artistic preferences.",
+    "description": "Checks task and brief alignment without turning broad author goals into eligibility failures. Context, preferences, and revision priorities are diagnostics here; weighted atomic goals and binding atomic requirements come from a task contract frozen before judging.",
     "origin": "user_inventory_refined",
     "owner_domains": [
       "task_fidelity"
@@ -5918,7 +5918,7 @@
     "valid_scopes": [
       "any"
     ],
-    "activation": "Attach to every substantive execution.",
+    "activation": "Attach when task or brief evidence exists. Never infer hard gates from notes, preferences, aspirations, or future-work plans.",
     "requires": [],
     "incompatible_with": [],
     "default_evidence_scope": {
@@ -5941,7 +5941,7 @@
             "text": "Does the output perform the requested operation rather than a neighboring or substituted task?",
             "pass_answer": "YES",
             "weight": 2.0,
-            "question_type": "hard_gate",
+            "question_type": "diagnostic",
             "severity": "material",
             "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
             "evidence_policy": {
@@ -5958,7 +5958,7 @@
             "text": "Does the output use every source or reference that the brief makes mandatory?",
             "pass_answer": "YES",
             "weight": 2.0,
-            "question_type": "hard_gate",
+            "question_type": "diagnostic",
             "severity": "material",
             "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
             "evidence_policy": {
@@ -5975,7 +5975,7 @@
             "text": "Does the output include every explicitly required element?",
             "pass_answer": "YES",
             "weight": 2.0,
-            "question_type": "hard_gate",
+            "question_type": "diagnostic",
             "severity": "material",
             "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
             "evidence_policy": {
@@ -5992,7 +5992,7 @@
             "text": "Does the output omit every explicitly forbidden element?",
             "pass_answer": "YES",
             "weight": 2.0,
-            "question_type": "hard_gate",
+            "question_type": "diagnostic",
             "severity": "material",
             "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
             "evidence_policy": {
@@ -6009,7 +6009,7 @@
             "text": "Does the output use the requested point of view where one was specified?",
             "pass_answer": "YES",
             "weight": 1.5,
-            "question_type": "hard_gate",
+            "question_type": "diagnostic",
             "severity": "material",
             "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
             "evidence_policy": {
@@ -6026,7 +6026,7 @@
             "text": "Does the output use the requested tense where one was specified?",
             "pass_answer": "YES",
             "weight": 1.5,
-            "question_type": "hard_gate",
+            "question_type": "diagnostic",
             "severity": "material",
             "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
             "evidence_policy": {
@@ -6043,7 +6043,7 @@
             "text": "Does the output follow the requested structure or organization?",
             "pass_answer": "YES",
             "weight": 1.5,
-            "question_type": "hard_gate",
+            "question_type": "diagnostic",
             "severity": "material",
             "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
             "evidence_policy": {
@@ -6060,7 +6060,7 @@
             "text": "Does the output follow the requested delivery format?",
             "pass_answer": "YES",
             "weight": 1.5,
-            "question_type": "hard_gate",
+            "question_type": "diagnostic",
             "severity": "material",
             "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
             "evidence_policy": {
@@ -6077,7 +6077,7 @@
             "text": "Does the output satisfy any explicit exact or bounded length requirement?",
             "pass_answer": "YES",
             "weight": 1.5,
-            "question_type": "hard_gate",
+            "question_type": "diagnostic",
             "severity": "material",
             "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
             "evidence_policy": {

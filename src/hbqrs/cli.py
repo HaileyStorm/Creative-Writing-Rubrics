@@ -7,6 +7,8 @@ import json
 from pathlib import Path
 from typing import Any, Sequence
 
+from jsonschema import Draft202012Validator
+
 from . import __version__
 from .core import (
     HBQError,
@@ -25,10 +27,26 @@ from .core import (
 from .pack import pack_book
 from .paths import book_root, bundles_path, prompts_dir, registry_path, schema_dir
 from .runner import run_judge
+from .longform_runner import run_longform_judge
 
 
 def _load_registry(args: argparse.Namespace) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     return load_modules(args.registry), load_bundles(args.bundles)
+
+
+def _load_task_contract(path: str | None) -> dict[str, Any] | None:
+    if path is None:
+        return None
+    value = load_data(path)
+    if not isinstance(value, dict):
+        raise HBQError("Task contract must be a JSON or YAML object")
+    errors = sorted(
+        Draft202012Validator(load_data(schema_dir() / "hbq_task_contract.schema.json")).iter_errors(value),
+        key=lambda error: list(error.path),
+    )
+    if errors:
+        raise HBQError(f"Task contract violates its strict schema: {errors[0].message}")
+    return value
 
 
 def _cmd_validate(args: argparse.Namespace) -> int:
@@ -54,7 +72,11 @@ def _cmd_validate(args: argparse.Namespace) -> int:
 
 def _cmd_compile(args: argparse.Namespace) -> int:
     modules, bundles = _load_registry(args)
-    packet = compile_bundle(modules, resolve_bundle(bundles, args.bundle_id))
+    packet = compile_bundle(
+        modules,
+        resolve_bundle(bundles, args.bundle_id),
+        task_contract=_load_task_contract(args.task_contract),
+    )
     write_data(args.output, packet, fmt=args.format)
     return 0
 
@@ -66,6 +88,7 @@ def _cmd_score(args: argparse.Namespace) -> int:
         resolve_bundle(bundles, args.bundle_id),
         load_verdicts(args.verdicts),
         artifact_id=args.artifact_id,
+        task_contract=_load_task_contract(args.task_contract),
     )
     write_data(args.output, report, fmt=args.format)
     return 0
@@ -186,7 +209,11 @@ def _read_prompt(name: str) -> str:
 
 def _cmd_render_judge(args: argparse.Namespace) -> int:
     modules, bundles = _load_registry(args)
-    compiled = compile_bundle(modules, resolve_bundle(bundles, args.bundle_id))
+    compiled = compile_bundle(
+        modules,
+        resolve_bundle(bundles, args.bundle_id),
+        task_contract=_load_task_contract(args.task_contract),
+    )
     questions = compiled_questions(compiled)
     if args.question_id:
         questions = [item for item in questions if item["question"].get("id") == args.question_id]
@@ -242,6 +269,7 @@ def _cmd_judge(args: argparse.Namespace) -> int:
         registry=args.registry,
         bundles=args.bundles,
         context_paths=args.context,
+        task_contract_path=args.task_contract,
         question_ids=args.question_id,
         batch_size=args.batch_size,
         base_url=args.base_url,
@@ -256,6 +284,46 @@ def _cmd_judge(args: argparse.Namespace) -> int:
         timeout=args.timeout,
         artifact_id=args.artifact_id,
         judge_id=args.judge_id,
+        strict_ai=args.strict_ai,
+    )
+    print(json.dumps(summary, ensure_ascii=False, indent=2))
+    return 0
+
+
+def _cmd_longform(args: argparse.Namespace) -> int:
+    summary = run_longform_judge(
+        artifact_path=args.artifact,
+        brief_paths=args.brief,
+        output_dir=args.output_dir,
+        provider=args.provider,
+        model=args.model,
+        registry=args.registry,
+        bundles=args.bundles,
+        artifact_kind=args.artifact_kind,
+        declared_scope=args.declared_scope,
+        completion_status=args.completion_status,
+        artifact_id=args.artifact_id,
+        driving_prompt=args.driving_prompt,
+        bundle_id=args.bundle_id,
+        task_contract_path=args.task_contract,
+        local_bundle_id=args.local_bundle_id,
+        route_sample_char_limit=args.route_sample_char_limit,
+        local_sample_limit=args.local_sample_limit,
+        frozen_sample_ordinals=args.frozen_sample_ordinal,
+        binary_workers=args.binary_workers,
+        batch_size=args.batch_size,
+        base_url=args.base_url,
+        api_key_env=args.api_key_env,
+        temperature=args.temperature,
+        allow_model_mismatch=args.allow_model_mismatch,
+        openai_structured_outputs=args.openai_structured_outputs,
+        structured_reasoning=args.structured_reasoning,
+        judge_reasoning=args.judge_reasoning,
+        codex_bin=args.codex_bin,
+        allow_remote=args.allow_remote,
+        resume=args.resume,
+        dry_run=args.dry_run,
+        timeout=args.timeout,
         strict_ai=args.strict_ai,
     )
     print(json.dumps(summary, ensure_ascii=False, indent=2))
@@ -282,6 +350,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     compile_parser = subparsers.add_parser("compile", help="compile one bundle into a flat judge packet")
     compile_parser.add_argument("bundle_id")
+    compile_parser.add_argument("--task-contract", help="frozen task-contract JSON/YAML")
     compile_parser.add_argument("-o", "--output")
     compile_parser.add_argument("--format", choices=["json", "yaml"], default="json")
     compile_parser.set_defaults(func=_cmd_compile)
@@ -290,6 +359,7 @@ def build_parser() -> argparse.ArgumentParser:
     score.add_argument("bundle_id")
     score.add_argument("verdicts", help="verdict JSON/JSONL/YAML")
     score.add_argument("--artifact-id")
+    score.add_argument("--task-contract", help="same frozen task contract used during judging")
     score.add_argument("-o", "--output")
     score.add_argument("--format", choices=["json", "yaml"], default="json")
     score.set_defaults(func=_cmd_score)
@@ -319,6 +389,7 @@ def build_parser() -> argparse.ArgumentParser:
     render.add_argument("--bundle", dest="bundle_id", required=True)
     render.add_argument("--artifact", help="path to the draft or other artifact text")
     render.add_argument("--question-id", help="render a single leaf instead of the full bundle")
+    render.add_argument("--task-contract", help="frozen task-contract JSON/YAML")
     render.add_argument("-o", "--output")
     render.set_defaults(func=_cmd_render_judge)
 
@@ -338,6 +409,7 @@ def build_parser() -> argparse.ArgumentParser:
     judge.add_argument("--model", required=True)
     judge.add_argument("--output-dir", required=True, help="new run directory, or an existing run with --resume")
     judge.add_argument("--context", action="append", default=[], help="additional UTF-8 brief/canon file; repeatable")
+    judge.add_argument("--task-contract", help="frozen task contract with weighted goals and binding requirements")
     judge.add_argument("--question-id", action="append", default=[], help="limit to a selected leaf; repeatable")
     judge.add_argument("--batch-size", type=int, default=12)
     judge.add_argument("--base-url", default="http://127.0.0.1:8000/v1")
@@ -354,6 +426,84 @@ def build_parser() -> argparse.ArgumentParser:
     judge.add_argument("--judge-id")
     judge.add_argument("--strict-ai", action="store_true", help="apply the stricter AI-output judge prefix")
     judge.set_defaults(func=_cmd_judge)
+
+    longform = subparsers.add_parser(
+        "longform",
+        help="route, map, judge, and report on a long-form text with resumable provider calls",
+    )
+    longform.add_argument("artifact", help="UTF-8 long-form text to evaluate")
+    longform.add_argument("--brief", action="append", default=[], help="author brief or notes; repeatable")
+    longform.add_argument("--driving-prompt", default="", help="prompt that originally drove the artifact")
+    longform.add_argument("--artifact-kind", default="prose_fiction")
+    longform.add_argument("--scope", dest="declared_scope", default="manuscript")
+    longform.add_argument(
+        "--completion-status",
+        choices=["complete", "work_in_progress", "excerpt", "unknown"],
+        default="work_in_progress",
+    )
+    longform.add_argument("--artifact-id")
+    longform.add_argument(
+        "--bundle",
+        dest="bundle_id",
+        help="freeze one complete bundle instead of automatic bundle/module selection",
+    )
+    longform.add_argument(
+        "--task-contract",
+        help="freeze a validated task contract instead of using the route model's contract",
+    )
+    longform.add_argument("--local-bundle", dest="local_bundle_id")
+    longform.add_argument("--route-sample-chars", dest="route_sample_char_limit", type=int, default=12000)
+    longform.add_argument(
+        "--local-sample-limit",
+        type=int,
+        default=4,
+        help="maximum independently scored local units; the whole work is always judged globally",
+    )
+    longform.add_argument(
+        "--frozen-sample-ordinal",
+        action="append",
+        type=int,
+        default=[],
+        help="score this unit ordinal locally; repeat to compare the same units across drafts",
+    )
+    longform.add_argument(
+        "--binary-workers",
+        type=int,
+        default=1,
+        help="bounded parallel workers for the global and sampled-unit binary passes",
+    )
+    longform.add_argument("--provider", choices=["openai", "codex"], required=True)
+    longform.add_argument("--model", required=True)
+    longform.add_argument("--output-dir", required=True, help="new workflow directory, or existing with --resume")
+    longform.add_argument("--batch-size", type=int, default=12)
+    longform.add_argument("--base-url", default="http://127.0.0.1:8000/v1")
+    longform.add_argument("--api-key-env", default="OPENAI_API_KEY")
+    longform.add_argument("--temperature", type=float)
+    longform.add_argument("--allow-model-mismatch", action="store_true")
+    longform.add_argument(
+        "--openai-structured-outputs",
+        action="store_true",
+        help="request strict JSON Schema output from an endpoint that supports OpenAI Structured Outputs",
+    )
+    longform.add_argument(
+        "--structured-reasoning",
+        choices=["low", "medium", "high", "xhigh", "max"],
+        default="high",
+        help="Codex reasoning for route, map, and synthesis passes",
+    )
+    longform.add_argument(
+        "--judge-reasoning",
+        choices=["low", "medium", "high", "xhigh", "max"],
+        default="medium",
+        help="Codex reasoning for binary rubric batches",
+    )
+    longform.add_argument("--codex-bin", default="codex")
+    longform.add_argument("--allow-remote", action="store_true")
+    longform.add_argument("--resume", action="store_true")
+    longform.add_argument("--dry-run", action="store_true")
+    longform.add_argument("--timeout", type=float, default=600.0)
+    longform.add_argument("--strict-ai", action="store_true", help="apply the stricter AI-output judge prefix")
+    longform.set_defaults(func=_cmd_longform)
     return parser
 
 

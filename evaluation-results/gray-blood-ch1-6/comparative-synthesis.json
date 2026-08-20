@@ -1,488 +1,443 @@
 {
-  "executive_summary": "The rewrite is a mixed revision, not a clear replacement. It improves diction, syntax, dialogue mechanics, and Chapter 3's local momentum, but loses ground in world continuity, overall pacing, exposition control, motive dramatization, tonal fit, and Chapter 6's ending. The original supplies the stronger structural base across this six-chapter comparison, while the new version offers useful line-level and Chapter 3 refinements. Neither version yet fulfills the grim-dark or darker-Amelia goals, and both retain repetitive reassurance, conspicuous instruction, generic paranormal-romance beats, and unresolved blood-magic safeguards. A strong third draft should combine the original's stronger continuity and dramatic allocation with the rewrite's cleaner language and more efficient Chapter 3.",
-  "score_interpretation": "The deterministic scores remain unchanged. The original whole artifact is INELIGIBLE with hard_gate_status INVALID because core.task_and_brief_fidelity.inclusions received NO; its 78.0767 observed score is therefore not an ordinary passing grade. The new artifact is UNRESOLVED because core.task_and_brief_fidelity.operation and core.task_and_brief_fidelity.inclusions are CANNOT_ASSESS; its 74.1946 observed score is likewise not a completed grade. INELIGIBLE and UNRESOLVED describe different gate failures and cannot be treated as numeric ranks. Whole-artifact domain results can still identify comparative tendencies: the original is stronger in character, world, and pacing; the new is stronger in language and mechanics; plot, effect, freshness, and holistic observed scores are unchanged. Both receive the same 4.0 repetition deduction. Chapter bundles have only about 0.148–0.158 coverage, zero coverage in several domains, lower bounds of zero, and UNRESOLVED hard gates. Their observed scores support only paired local diagnosis and must not be averaged or used to infer either version's overall quality.",
+  "executive_summary": "The rewrite is not a clear overall improvement. Both versions are VALID, functional, effective, and keepworthy, but not exceptional. The original has the stronger deterministic whole-work result and retains advantages in plot causality, world continuity, pacing, language, dialogue, and freshness/economy. The new version preserves the premise, core relationship, Madison's programming-shaped moral descent, and all assessable canon gates; it also shows localized improvement in Chapter 3 and a small reduction in the repetition penalty. However, it does not demonstrate the intended darker Amelia or grim-dark baseline, introduces continuity and causal concerns, and often feels less controlled rather than productively rougher. A third draft should combine the original's causal and stylistic strengths with the rewrite's best localized compression, then substantially revise Amelia's default behavior, exposition, repetition, and mechanics.",
+  "score_interpretation": "Both whole-work reports have control_state VALID, hard_gate_status VALID, and status SCORED. The original deterministic observed score is 78.9174 with non-statistical bounds 76.4053–79.5715 and coverage 0.9683; the new score is 74.0536 with bounds 72.2044–74.4024 and coverage 0.978. These fixed results must not be changed by open review. The higher new coverage does not compensate for its lower observed result; coverage measures assessability, not quality. All five assessable canon gates pass in both versions, while canon.witch_human_offspring_human is NOT_APPLICABLE because the triggering event is absent; NOT_APPLICABLE neither passes nor fails a gate. Author goals are weighted priorities, not hard gates. Under HBQ-RS, INELIGIBLE would indicate that a hard-gate failure prevents treatment of a numeric result as an ordinary grade, while UNRESOLVED would indicate inadequate coverage or unresolved scoring conditions; neither state applies here. CANNOT_ASSESS is likewise absence of a supported verdict, not a failure. The chapter diagnostics cover only 28 of 228 available questions, explicitly produce no composites, and exist solely for paired local comparison. Their counts and the separately sampled local scores must not be averaged into manuscript scores.",
   "comparative_findings": [
     {
-      "area": "Grim-dark tone and Amelia's presentation",
+      "area": "Whole-work effectiveness",
       "advantage": "ORIGINAL",
       "severity": "HIGH",
-      "finding": "Both versions substantially miss the stated tonal target: violent acts are repeatedly cushioned by flirtation, laughter, apologies, and reassurance. The new version weakens the balance further, especially in Chapter 6, where opening tone changes from YES to NO and the whole-artifact voice-suitability verdict changes from YES to NO. The original is only comparatively stronger; it also fails audience tone, project fidelity, intended effect, and Amelia canon alignment.",
+      "finding": "The original is presently the stronger reading experience by the deterministic global evidence. It leads by 4.8638 observed points while both versions clear the same functional, effective, and keepworthy thresholds and fail the exceptional threshold. The difference is concentrated in execution rather than premise or basic viability.",
       "evidence_references": [
-        "core.audience_and_purpose_fit.tone",
-        "core.voice_and_stylistic_identity.suitable",
-        "core.voice_and_stylistic_identity.project_fidelity",
-        "core.emotional_and_intellectual_effect.intended_effect",
-        "craft.narrative.opening.tone",
-        "Ch6 verdict changes",
-        "original map > conflicts > Tone conflict",
-        "new map > conflicts > Intent-text gap"
+        "Original whole-work score state: VALID, 78.9174",
+        "New whole-work score state: VALID, 74.0536",
+        "core.holistic_artistic_success.threshold_1_functional",
+        "core.holistic_artistic_success.threshold_2_effective",
+        "core.holistic_artistic_success.threshold_3_keepworthy",
+        "core.holistic_artistic_success.threshold_4_exceptional"
       ],
-      "revision_action": "Recast Amelia's reactions after violence and coercion around weary certainty, controlled appetite, possessiveness, or anger. Preserve selective tenderness, but make it costly and specific rather than her default response."
+      "revision_action": "Use neither version wholesale. Preserve the shared premise and architecture, but treat the original as the stronger execution baseline and selectively import only independently supported improvements from the new version."
     },
     {
-      "area": "Language and presentation",
-      "advantage": "NEW",
-      "severity": "MEDIUM",
-      "finding": "The rewrite produces genuine line-level gains: diction and syntax change from NO to YES, dialogue mechanics from NO to YES, and the mechanics domain rises from 0.5333 to 1.0667. These gains are incomplete because both versions still fail grammar, spelling, typography, cleanliness, and general awkwardness, while the new version loses rhythmic variation.",
-      "evidence_references": [
-        "core.language_craft.diction",
-        "core.language_craft.syntax",
-        "core.mechanics_and_presentation.dialogue_mechanics",
-        "core.language_craft.variation",
-        "mechanics domain",
-        "language domain",
-        "core.mechanics_and_presentation.grammar",
-        "core.mechanics_and_presentation.cleanliness"
-      ],
-      "revision_action": "Carry forward the rewrite's clearer sentence construction and dialogue handling, then perform a dedicated copyedit that also reduces recurring laughter, blush, wink, and reassurance beats."
-    },
-    {
-      "area": "Exposition and pacing",
+      "area": "Plot architecture and causality",
       "advantage": "ORIGINAL",
       "severity": "HIGH",
-      "finding": "The rewrite makes information density less effective overall. Whole-artifact no_redundancy and no_stall change from YES to NO, the pacing domain falls from 9.3651 to 8.0952, and Chapter 6 exposition embedding changes from YES to NO. Chapter 3 is the important exception: its no_stall verdict improves to YES and its local pacing observation improves.",
+      "finding": "Both versions sustain decisions, consequences, escalation, and long-range setup, but the original plot domain is 20.0 while the new version falls to 18.8235. The new version adds a localized convenience problem around the climber convergence and a separate credibility problem in delayed intervention during dangerous blood loss. These are repairable scene-level defects rather than evidence that the whole plot spine has failed.",
       "evidence_references": [
-        "craft.narrative.exposition_and_information_management.no_redundancy",
-        "craft.narrative.pacing_and_narrative_time.no_stall",
-        "craft.narrative.exposition_and_information_management.embedding",
-        "pacing domain",
-        "Ch3 verdict changes",
-        "Ch6 verdict changes",
-        "original map > conflicts > Blood-magic comprehensibility strength",
-        "new map > conflicts > Magic's blood economy"
+        "Plot domain: original 20.0",
+        "Plot domain: new 18.8235",
+        "craft.narrative.plot_and_causality.causal_chain",
+        "craft.narrative.plot_and_causality.consequence",
+        "craft.narrative.plot_and_causality.no_convenience: original YES, new NO",
+        "New report map entry: two localized causal defects"
       ],
-      "revision_action": "Use the rewrite's Chapter 3 lesson structure as a model, but convert later instruction into experiments, disagreements, errors, or decisions. Remove explanations that merely repeat rules Madison and the reader already possess."
+      "revision_action": "Retain the original setup-to-payoff logic. Give the climber convergence an antecedent cause and establish a concrete constraint, error, or competing motive that explains Amelia's delayed intervention."
     },
     {
-      "area": "World and canon continuity",
-      "advantage": "ORIGINAL",
+      "area": "Grim-dark tone and Amelia's characterization",
+      "advantage": "MIXED",
       "severity": "HIGH",
-      "finding": "The original maintains stronger continuity across the supplied evidence. In the rewrite, whole-artifact facts, world, conflicts, and worldbuilding consistency change from YES to NO, while the world domain falls from 10.7647 to 9.1765. The clearest rewrite-specific defect is Chapter 4's conflicting longevity benchmarks. Both versions still leave battery control, replenishment, society, reproduction, and turning mechanics incomplete.",
+      "finding": "Neither version achieves the dominant grim-dark tone or the desired volatile, less-apologetic Amelia. The original explicitly receives NO for Amelia being darker; the new report marks comparative darkness CANNOT_ASSESS while still returning NO for volatility and reduced apology. Both retain the useful contradiction between affection, appetite, power, trauma, and lethal capacity, so the solution is not indiscriminate cruelty. No evidence demonstrates that the rewrite made Amelia reliably sharper or darker.",
       "evidence_references": [
-        "craft.narrative.continuity_and_canon_integrity.facts",
-        "craft.narrative.continuity_and_canon_integrity.world",
-        "craft.narrative.continuity_and_canon_integrity.conflicts",
-        "craft.narrative.worldbuilding.consistency",
-        "world domain",
-        "Ch4 verdict changes",
-        "new map > conflicts > Numerical continuity conflict",
-        "new map > conflicts > Amelia's rapid return to usable strong blood"
+        "task.contract.gray-blood-ch1-6-comparison-v1.goal.grim_dark_tone: both NO",
+        "task.contract.gray-blood-ch1-6-comparison-v1.goal.amelia_darker: original NO, new CANNOT_ASSESS",
+        "task.contract.gray-blood-ch1-6-comparison-v1.goal.amelia_volatility: both NO",
+        "task.contract.gray-blood-ch1-6-comparison-v1.goal.amelia_less_apologetic: both NO",
+        "task.contract.gray-blood-ch1-6-comparison-v1.goal.amelia_power_attraction: both YES",
+        "task.contract.gray-blood-ch1-6-comparison-v1.goal.amelia_affection_power_balance: both YES"
       ],
-      "revision_action": "Establish a compact canon sheet for ages, aging limits, blood classes, reserve types, battery activation, and replenishment. Correct Chapter 4 and explicitly distinguish ordinary stored power from reserved lifeblood."
+      "revision_action": "Rewrite Amelia's recurring response pattern: fewer automatic apologies and reassurances; more factual justification, selective silence, sharper wit, controlled anger, pragmatic boundary-setting, and moments of unsettling calm. Preserve rare vulnerability so darkness does not become monotone."
     },
     {
-      "area": "Blood-magic comprehensibility and constraint",
-      "advantage": "ORIGINAL",
-      "severity": "HIGH",
-      "finding": "Both versions establish a promising causal system through blood classes, strongholds, intent, symbols, engraving, scale, sensing, and termination. The original is comparatively more consistent, but neither version closes the important constraint gaps: cross-witch battery activation, ownership of stored blood, lifeblood acquisition categories, engraving cost versus effect size, and Amelia's post-FAWN replenishment.",
-      "evidence_references": [
-        "original map > ledgers > world_rules",
-        "new map > ledgers > world_rules",
-        "original map > conflicts > Battery-rule gap",
-        "original map > conflicts > Spell-size nuance",
-        "new map > conflicts > communal battery model",
-        "new map > conflicts > Amelia's rapid return to usable strong blood",
-        "world domain"
-      ],
-      "revision_action": "Consolidate the minimum rules through one consequential test of a battery or engraving. Let a failed or disputed working demonstrate ownership, depletion, targeting, and termination instead of adding another taxonomy lecture."
-    },
-    {
-      "area": "Madison's programming-shaped fascination",
+      "area": "Madison's programming lens and moral slippage",
       "advantage": "MIXED",
       "severity": "LOW",
-      "finding": "This is one of the strongest author-goal alignments in both versions. Madison progresses from data gathering to battery interest, cost accounting, compiler-like analogies, and sustained symbol study. The new map makes this pattern especially legible, but Chapter 5's motive verdict regresses because the narration explains her motives twice rather than allowing her risk-taking and choices to establish them.",
+      "finding": "Both versions successfully make Madison's technical fascination coexist with moral alarm and establish a darker trajectory appropriate to an opening. The new version preserves rather than clearly improves this engine. Its lower language and dialogue results create some risk that the programming-shaped voice becomes explanatory machinery instead of character-specific perception.",
       "evidence_references": [
-        "original map > arcs > Madison's dark-aptitude arc",
-        "new map > arcs > Madison's programming-shaped fascination",
-        "original map > distant_links > Ch2 morals to Ch5 batteries to Ch6 architecture",
-        "new map > distant_links > Ch2 moral flexibility",
-        "craft.narrative.characterization.motives",
-        "Ch5 verdict changes"
+        "task.contract.gray-blood-ch1-6-comparison-v1.goal.madison_moral_grappling: both YES",
+        "task.contract.gray-blood-ch1-6-comparison-v1.goal.madison_programmer_lens: both YES",
+        "task.contract.gray-blood-ch1-6-comparison-v1.goal.madison_dark_path_setup: both YES",
+        "craft.narrative.theme_and_subtext.open_questions: both YES",
+        "Language domain: original 8.4127, new 5.8209"
       ],
-      "revision_action": "Keep the technical analogies, but dramatize fascination through what Madison notices, tests, ignores, or optimizes. Give her one small, consequential hypothesis or design contribution without prematurely granting mastery."
+      "revision_action": "Make every important technical insight create a temptation, rationalization, compromised choice, or cost. Remove explanations that do not alter Madison's behavior or ethical position."
     },
     {
-      "area": "Madison's moral slippage",
-      "advantage": "MIXED",
+      "area": "Blood-magic rules and constraints",
+      "advantage": "ORIGINAL",
       "severity": "MEDIUM",
-      "finding": "Both versions credibly establish early slippage without falsely presenting Madison as already monstrous. She deprioritizes possible murder, accepts escalating bodily risk, seeks independent magical access, and treats deaths as resource accounting. The rewrite does not materially deepen this arc because it continues to summarize her motives and often normalizes danger through social comedy.",
+      "finding": "Both versions keep the core system comprehensible and constrained, and every assessable magic-related hard gate passes. The original nevertheless integrates the world more cleanly: its world domain is 11.4462 versus 10.4118, and the new version receives NO for continuity facts and world continuity. The rewrite therefore preserves the rules but weakens confidence in their surrounding presentation and continuity.",
       "evidence_references": [
-        "original map > arcs > Madison's dark-aptitude arc",
-        "new map > arcs > Madison's moral slippage",
-        "Ch2 map entries",
-        "Ch5 map entries",
-        "Ch6 map entries",
-        "craft.narrative.characterization.motives"
+        "task.contract.gray-blood-ch1-6-comparison-v1.canon.activation_requires_heart: both YES",
+        "task.contract.gray-blood-ch1-6-comparison-v1.canon.engraving_requires_lifeblood: both YES",
+        "task.contract.gray-blood-ch1-6-comparison-v1.canon.engraving_consumes_one_source: both YES",
+        "task.contract.gray-blood-ch1-6-comparison-v1.canon.magic_uses_drawn_symbols: both YES",
+        "craft.narrative.worldbuilding.rules: both YES",
+        "craft.narrative.worldbuilding.constraints: both YES",
+        "World domain: original 11.4462, new 10.4118"
       ],
-      "revision_action": "Make one choice impose a visible cost on another person or relationship. Madison should recognize the cost and still choose information, access, or optimization, allowing moral grayness to emerge from conduct."
+      "revision_action": "Create a compact rule ledger for activation, engraving, storage, source exhaustion, and drawn symbols. Reveal only the rule needed for the immediate experiment or decision, then demonstrate its cost through consequence."
     },
     {
-      "area": "Relationship complexity",
-      "advantage": "MIXED",
+      "area": "Witch biology and society continuity",
+      "advantage": "ORIGINAL",
+      "severity": "HIGH",
+      "finding": "The female-only gate passes in both versions, and the offspring gate remains legitimately untested. Both depict family and FAWN culture, but the new version introduces or exposes continuity problems: facts and world continuity receive NO, and the packet records an unresolved discrepancy concerning Robin's chronology. This is a regression from the original's YES results for those continuity questions.",
+      "evidence_references": [
+        "task.contract.gray-blood-ch1-6-comparison-v1.canon.witches_female_only: both YES",
+        "task.contract.gray-blood-ch1-6-comparison-v1.canon.witch_human_offspring_human: both NOT_APPLICABLE",
+        "craft.narrative.worldbuilding.culture: both YES",
+        "craft.narrative.continuity_and_canon_integrity.facts: original YES, new NO",
+        "craft.narrative.continuity_and_canon_integrity.world: original YES, new NO",
+        "New warnings map entry: Robin chronology discrepancy"
+      ],
+      "revision_action": "Reconcile the Robin chronology and audit ages, family roles, activation knowledge, research practices, and social authority across Chapters 1–6. Leave unobserved reproductive and trans/intersex rules unasserted until canon defines them."
+    },
+    {
+      "area": "Relationship complexity and dialogue",
+      "advantage": "ORIGINAL",
       "severity": "MEDIUM",
-      "finding": "Both versions successfully combine rapid love, deception, unequal knowledge, bodily danger, access dependency, and competing loyalties through FAWN. The rewrite adds useful specificity about Amelia's informal confinement and rehabilitation, but its repeated reassurance and direct motive summaries simplify tensions that should remain unstable. Neither version gives adequate follow-through to compulsion, excessive feeding, or turning consent.",
+      "finding": "Both versions preserve the relationship's central contradiction: genuine affection coexists with secrecy, coercion, addiction, danger, and unequal power. The new version does not flatten this thematic structure, but its dialogue execution regresses: voice distinction, naturalness, and stylistic suitability move from YES in the original to NO in the new version. Repeated reassurance also too often neutralizes rather than complicates danger.",
       "evidence_references": [
-        "original map > ledgers > relationships > Madison–Amelia",
-        "new map > ledgers > relationships > Madison and Amelia",
-        "new Ch6 map entry",
-        "Ch5 map entries",
-        "original map > conflicts > Consent conflict",
-        "new map > promises > compelled Truth or Dare discussion",
-        "craft.narrative.characterization.motives"
+        "task.contract.gray-blood-ch1-6-comparison-v1.goal.amelia_affection_power_balance: both YES",
+        "craft.narrative.characterization.dimensionality: both YES",
+        "craft.narrative.characterization.contradiction: both YES",
+        "craft.narrative.dialogue.voice_distinction: original YES, new NO",
+        "craft.narrative.dialogue.naturalness: original YES, new NO",
+        "core.voice_and_stylistic_identity.suitable: original YES, new NO"
       ],
-      "revision_action": "Make love declarations coexist with unresolved boundaries rather than settling them. Stage the promised compulsion discussion, clarify what Amelia concealed, and let FAWN access create a real loyalty conflict."
+      "revision_action": "Give each intimate exchange a live disagreement, concealed aim, boundary, or power shift. Differentiate speakers by decision logic and evasions, not additional mannerisms, and allow tenderness to leave danger unresolved."
     },
     {
-      "area": "Consent, feeding, and aftercare",
+      "area": "Pacing, exposition, and repetition",
+      "advantage": "ORIGINAL",
+      "severity": "HIGH",
+      "finding": "Both versions have systemic economy problems across romance, instruction, party setup, recovery, and connective material. The new repetition deduction improves slightly from 4.2857 to 4.0, and penalty.repetition.explanation changes from NO to YES, which is a real but narrow gain. Against that, pacing falls from 6.8254 to 6.3492, exposition embedding changes from YES to NO, and functional repetition changes from YES to NO. The rewrite has redistributed more than solved the excess.",
+      "evidence_references": [
+        "Pacing domain: original 6.8254, new 6.3492",
+        "Freshness and economy domain: original 2.8261, new 2.3913",
+        "Repetition deduction: original 4.2857, new 4.0",
+        "penalty.repetition.explanation: original NO, new YES",
+        "craft.narrative.exposition_and_information_management.embedding: original YES, new NO",
+        "core.economy_and_relevance.functional_repetition: original YES, new NO"
+      ],
+      "revision_action": "Cut by function. Combine equivalent flirtation and recovery cycles; retain only immediately actionable rules; convert later recaps into experiments, disputes, or consequences; and enter and leave scenes closer to irreversible choices."
+    },
+    {
+      "area": "Voice, freshness, and risk of generic polish",
+      "advantage": "ORIGINAL",
+      "severity": "HIGH",
+      "finding": "The new version is not over-polished; persistent mechanics defects rule that out. Its greater risk is genericization without technical refinement. Both retain distinctive specificity and avoid an LLM-phrasing finding, but the new language domain drops sharply, project fidelity and stylistic suitability receive NO, and dialogue voices become less distinct. Stock romantic shorthand and default metaphors remain in both versions.",
+      "evidence_references": [
+        "Language domain: original 8.4127, new 5.8209",
+        "Freshness and economy domain: original 2.8261, new 2.3913",
+        "core.voice_and_stylistic_identity.ownership: both YES",
+        "core.voice_and_stylistic_identity.project_fidelity: original CANNOT_ASSESS, new NO",
+        "core.voice_and_stylistic_identity.suitable: original YES, new NO",
+        "core.freshness_and_non_genericness.unpredictable_specificity: both YES",
+        "core.freshness_and_non_genericness.no_cliche: both NO"
+      ],
+      "revision_action": "Restore the original's character-specific verbal logic while removing generic romance shorthand and default metaphors. Prefer precise, project-specific images and morally charged technical perception over smoother but interchangeable phrasing."
+    },
+    {
+      "area": "Mechanics and presentation",
       "advantage": "MIXED",
       "severity": "HIGH",
-      "finding": "Both versions recognize consent as a theme but do not make its practice credible. Madison remains symptomatic for days after near-syncope, yet there is no firm recovery boundary, medical supervision, or meaningful consequence for Mackenzie. Amelia's engraved compulsion also lacks operational safeguards despite her stated consent standard.",
+      "finding": "Neither version makes meaningful whole-work progress on copy quality: both mechanics domains remain 1.6, with grammar, punctuation, spelling, and cleanliness all NO. The new Chapter 6 sampled mechanics result is stronger than the original Chapter 6 result, but this is isolated and does not change the systemic whole-work finding.",
       "evidence_references": [
-        "original map > ledgers > physical_state",
-        "new map > ledgers > physical_state",
-        "original map > conflicts > Healing and feeding continuity",
-        "original map > conflicts > Consent conflict",
-        "new map > conflicts > compulsion spell boundary",
-        "Ch5 map entries",
-        "Ch6 map entries"
+        "Mechanics domain: both 1.6",
+        "core.mechanics_and_presentation.grammar: both NO",
+        "core.mechanics_and_presentation.punctuation: both NO",
+        "core.mechanics_and_presentation.spelling: both NO",
+        "core.mechanics_and_presentation.cleanliness: both NO",
+        "Chapter 6 sampled mechanics: original 1.8667, new 2.4"
       ],
-      "revision_action": "Show concrete aftercare and accountability. Define mechanical and social safeguards for compulsion, and make Mackenzie's conduct alter trust or group access rather than functioning mainly as provocative initiation."
-    },
-    {
-      "area": "Plot architecture and originality",
-      "advantage": "MIXED",
-      "severity": "MEDIUM",
-      "finding": "The versions share the same strong revelation sequence and the same weaknesses. Plot, effect, freshness, and holistic whole-artifact observations are unchanged, while both fail no_convenience, no_stock_beats, no_cliche, and no_default_metaphors. The rewrite is not over-polished, but it also has not made the opening less generic; cleaner diction coexists with formulaic beat structure and recurring connective gestures.",
-      "evidence_references": [
-        "plot domain",
-        "effect domain",
-        "fresh domain",
-        "holistic domain",
-        "craft.narrative.plot_and_causality.no_convenience",
-        "core.freshness_and_non_genericness.no_stock_beats",
-        "core.freshness_and_non_genericness.no_cliche",
-        "core.freshness_and_non_genericness.no_default_metaphors"
-      ],
-      "revision_action": "Preserve the blood economy, programming lens, three-mother household, and morally unstable research group as distinctive material. Compress interchangeable meet-cute and party beats, and seed the climber or campus working through prior causality rather than consecutive coincidences."
-    },
-    {
-      "area": "Repetition",
-      "advantage": "MIXED",
-      "severity": "HIGH",
-      "finding": "Neither version improves the systemic repetition problem. Both receive the same 4.0 penalty, and both fail lexical, semantic, dialogue, and explanatory repetition checks. The rewrite additionally changes no_redundancy to NO and variation to NO.",
-      "evidence_references": [
-        "penalty.repetition",
-        "penalty.repetition.lexical",
-        "penalty.repetition.semantic",
-        "penalty.repetition.dialogue",
-        "penalty.repetition.explanation",
-        "craft.narrative.exposition_and_information_management.no_redundancy",
-        "core.language_craft.variation"
-      ],
-      "revision_action": "Delete repeated attraction markers, apology loops, exhaustion reminders, and recaps unless each recurrence changes power, knowledge, or consequence. Give characters differentiated stress responses."
+      "revision_action": "Complete structural, continuity, and tonal revision first; then run a dedicated copyedit for tense, agreement, clause integrity, missing words, punctuation, spelling, and debris."
     }
   ],
   "chapters": [
     {
       "chapter": 1,
-      "comparison": "The original has a slight comparative advantage, but both versions devote too much space to repetitive courtship and too little to the blood anomaly, deception, and ominous framing. The chapter scores are UNRESOLVED at roughly 0.15 coverage and are not standalone grades.",
+      "comparison": "The paired 28-question diagnostic slightly favors the original: original 21 YES, 5 NO, and 2 NOT_APPLICABLE; new 20 YES, 6 NO, and 2 CANNOT_ASSESS. Separately sampled local results also favor the original, 75.6380 versus 73.3761, but these remain independent diagnostics rather than components of a chapter average.",
       "original_strengths": [
-        "Character-continuity verdict is YES for the family structure, education, EMS history, romance, and blood response.",
-        "Local world observation is stronger than the rewrite's, though supernatural rules are deliberately withheld."
+        "Stronger sampled pacing, language, and freshness/economy results.",
+        "Maintains the premise, character baseline, causal entry, and world orientation."
       ],
       "new_strengths": [
-        "Sentence-level cleanup contributes to the rewrite's broader diction, syntax, and dialogue-mechanics gains.",
-        "The same core clues and relationship dependencies remain intact."
+        "Higher sampled task-domain observed result, though part of that difference reflects changed assessability rather than proven craft improvement.",
+        "Preserves the central setup and canon."
       ],
       "revision_priorities": [
-        "Reduce repeated flirting, unpacking logistics, and interchangeable gesture beats.",
-        "Give Amelia's age and credential deception greater relational consequence.",
-        "Make the blood response and retrospective frame cast a sustained shadow without prematurely explaining magic."
+        "Reduce courtship and setup repetition without weakening the relationship's initial attraction.",
+        "Establish Amelia's sharper and less-reassuring default behavior immediately.",
+        "Repair mechanics only after scene-level compression."
       ]
     },
     {
       "chapter": 2,
-      "comparison": "The original is stronger locally: opening entry changes from YES to NO in the rewrite, and the rewrite's local plot observation is lower. Both versions delay the climber event with an overextended piano sequence and soften the aftermath through romantic framing.",
+      "comparison": "The paired subset slightly favors the original: original 22 YES and 6 NO versus new 21 YES and 7 NO. The new version's separate local score of 81.0185 shows that the chapter can function strongly in isolation, but there is no corresponding original full local result in the packet, so that number cannot establish comparative superiority.",
       "original_strengths": [
-        "The opening more effectively connects Madison's attachment and fear of love to her decision to follow Amelia.",
-        "The violent revelation and evidence destruction establish the novel's most effective early moral rupture."
+        "Slightly cleaner result across the fixed paired diagnostic.",
+        "Part of the original's globally perfect causal architecture."
       ],
       "new_strengths": [
-        "The climber's stored lifeblood and later accounting remain clearly connected.",
-        "The rewrite retains Amelia's medical competence and the contrast between controlled music and lethal power."
+        "Strong standalone revelation, escalation, language, and effect results in its sampled local report.",
+        "Sustains mounting supernatural and relationship pressure."
       ],
       "revision_priorities": [
-        "Compress the recital to the minimum needed to establish melancholy, discipline, and Madison's attachment.",
-        "Seed the hike or climber causally so the revelation feels less convenient.",
-        "Let Amelia's decision and cleanup carry colder agency, while preserving uncertainty about the prognosis."
+        "Give the climber convergence an earlier causal basis.",
+        "Keep the revelation's acceleration while reducing stock romantic or tonal cushioning.",
+        "Preserve clues that earn subsequent disclosures."
       ]
     },
     {
       "chapter": 3,
-      "comparison": "This is the rewrite's clearest local success. no_stall changes from NO to YES and the local pacing observation rises, although both versions still contain a lore-dump and an over-apologetic Amelia.",
+      "comparison": "This is the only paired subset that favors the new version: new 25 YES and 3 NO versus original 24 YES and 4 NO. Because the packet supplies counts rather than question-level verdicts for this subset, the exact source of improvement cannot be identified. The original's separate local result remains strong at 86.2436, but no matching new full local result is available.",
       "original_strengths": [
-        "The anatomy, activation, blood classes, and casting categories form a coherent foundational curriculum.",
-        "The constructive shadow working prevents the magic system from becoming purely destructive."
+        "Strong character, plot, world, effect, and language local results.",
+        "Preserves activation trauma and earned revelation."
       ],
       "new_strengths": [
-        "The explanatory sequence better converts information into crisis, relationship change, and demonstration.",
-        "The chapter preserves the visceral activation cost while maintaining Madison's decision to stay."
+        "Best paired diagnostic movement in the six-chapter comparison.",
+        "Retains activation trauma and Madison's programmer lens."
       ],
       "revision_priorities": [
-        "Retain the rewrite's tighter causal lesson structure.",
-        "Cut repeated fear-of-rejection and apology exchanges.",
-        "Clarify only the rules needed for the activation crisis and constructive demonstration; defer secondary ontology."
+        "Preserve whatever compression or clarification produced the improved subset state.",
+        "Shorten anatomy and mechanics instruction and embed rules in conflict or demonstration.",
+        "Prevent technical explanation from replacing Amelia's emotional and moral sharpness."
       ]
     },
     {
       "chapter": 4,
-      "comparison": "The original is stronger because the rewrite introduces explicit longevity and naming continuity errors. Both versions slow an urgent pursuit with extensive preparation and end on a weak transition rather than a resonant discovery.",
+      "comparison": "The paired subset favors the original: original 22 YES and 6 NO versus new 21 YES and 7 NO. Both reports associate this region with heavy instruction, while the new whole-work result specifically loses exposition embedding.",
       "original_strengths": [
-        "Aging, blood potency, targeting, engraving efficiency, and informal policing align more consistently with the supplied canon.",
-        "The shift from private lessons to active witch society broadens the story effectively."
+        "More successful global exposition embedding.",
+        "Clear rules and constraints without the new version's wider continuity regression."
       ],
       "new_strengths": [
-        "Madison's willingness to prioritize magical data and bodily risk remains clear.",
-        "The tracking, concealment, counter-detection, and confrontation provide useful operational testing."
+        "Maintains traumatic activation, moral grappling, and programmable-system interpretation.",
+        "Retains earned emotion and world specificity."
       ],
       "revision_priorities": [
-        "Correct all lifespan and character-name benchmarks against a single canon.",
-        "Compress symbol cataloguing and repeated invisibility limitations during the pursuit.",
-        "End on Mackenzie's successful countermeasure or an ethically charged recognition rather than provisional reassurance."
+        "Break the instructional sequence into only the rules needed for current decisions.",
+        "Make Amelia's account more selective, self-interested, and less apologetic.",
+        "Track all biological and magical claims against a single continuity ledger."
       ]
     },
     {
       "chapter": 5,
-      "comparison": "The original is stronger in characterization: Madison's motive verdict changes from YES to NO and the rewrite's local character observation falls. Both versions overallocate space to party mechanics while compressing turning fear, unsafe feeding, and its consequences.",
+      "comparison": "Both the paired subset and sampled local result favor the original. The subset is original 23 YES and 5 NO versus new 22 YES and 6 NO; sampled local scores are original 87.0711 and new 82.8982. The new chapter nevertheless reaches full sampled task and character scores, showing that its goals and character movement are legible even while execution declines elsewhere.",
       "original_strengths": [
-        "Madison's need for competence, access, and independence is more effectively enacted through her choices.",
-        "FAWN's batteries, compulsion, feeding, and turning question create a dense convergence of research, desire, and coercion."
+        "Stronger sampled whole-chapter result, including plot, language, and freshness/economy.",
+        "Consequential material rests on a strong causal chain."
       ],
       "new_strengths": [
-        "The voluntary-donation explanation and Madison's relief at independent access remain legible.",
-        "The rewrite retains Mackenzie as a sharp counterforce to Amelia's authority."
+        "Sampled task score 7.0 and character score 16.0.",
+        "Strong pacing result within the new version despite excessive setup identified by the global review."
       ],
       "revision_priorities": [
-        "Remove duplicated declarations of Madison's motive and let her actions establish it.",
-        "Shorten low-differentiation game banter and expand the turning and feeding consequences.",
-        "Give Amelia, Mackenzie, Miriam, and the human donors distinct ethical positions and accountability thresholds."
+        "Compress drinking-game and social setup before consequential choices.",
+        "Preserve coercion ethics, relationship pressure, and character turns.",
+        "Resolve the Robin-related continuity discrepancy."
       ]
     },
     {
       "chapter": 6,
-      "comparison": "The original is substantially stronger locally. In the rewrite, exposition embedding, opening tone, and ending resonance change from YES to NO; pacing and plot observations also fall. The rewrite's added rehabilitation history is useful but too compressed to offset the structural regressions.",
+      "comparison": "This is the largest paired diagnostic regression: original 23 YES and 5 NO versus new 20 YES and 8 NO. The sampled local result also falls from 84.8077 to 78.2106. The new version retains a 20.0 local plot score and improves local mechanics to 2.4, but loses ground in character, pacing, language, and freshness/economy.",
       "original_strengths": [
-        "The opening more effectively complicates romance with the serial-killer confrontation.",
-        "The mechanics lesson is better motivated, and the ending modestly integrates intimacy, bodily cost, and dangerous instruction.",
-        "Madison's numerical accounting of engravings gives Amelia's power an effective human cost."
+        "Stronger overall balance of consequence, character, language, and connective pacing.",
+        "Maintains moral confrontation and technical fascination without as much diagnostic attrition."
       ],
       "new_strengths": [
-        "Informal confinement and rehabilitation add specificity to Amelia's addiction history and family relationship.",
-        "The heart gem, Zoe friendship, engraving count, and programming-shaped study preserve valuable emotional and thematic links."
+        "Perfect sampled plot result.",
+        "Improved sampled mechanics result and continued bodily-state continuity."
       ],
       "revision_priorities": [
-        "Give the EMS death, accountability, and Amelia's response enough scene weight to resist sanitization.",
-        "Cut routine travel, meal, game-night, and repeated exhaustion beats.",
-        "End on Madison's attraction to a system purchased through deaths, or another morally charged image, rather than a generic romantic joke.",
-        "Replace Zoe's comprehensive lecture with a test, disagreement, or failure that advances both friendship and rules."
+        "Remove repeated recovery, travel, mobility-assistance, and mechanics-recap beats.",
+        "Give quantified killing and retained lifeblood more relational and ethical aftermath.",
+        "Clarify why Amelia fails to intervene sooner during dangerous blood loss."
       ]
     }
   ],
   "author_goals": [
     {
       "goal": "Grim-dark tone",
-      "original_assessment": "Contains graphic death, bodily horror, coercion, addiction, and moral unease, but romantic-comedic cushioning prevents the darkness from governing the experience.",
-      "new_assessment": "Retains the grim material but gives even more comparative weight to breezy flirtation and lecture-like discovery; Chapter 6 loses its previously positive opening-tone verdict.",
-      "stronger": "ORIGINAL",
+      "original_assessment": "NO. Violence and moral danger are repeatedly softened by buoyant romance, laughter, apology, and reassurance.",
+      "new_assessment": "NO. The same tonal cushioning remains dominant, and project fidelity also receives NO.",
+      "stronger": "MIXED",
       "evidence_references": [
+        "task.contract.gray-blood-ch1-6-comparison-v1.goal.grim_dark_tone",
         "core.audience_and_purpose_fit.tone",
-        "core.emotional_and_intellectual_effect.intended_effect",
-        "craft.narrative.opening.tone",
-        "Ch6 verdict changes",
-        "original map > conflicts > Tone conflict",
-        "new map > conflicts > Tone gap"
+        "core.audience_and_purpose_fit.genre_signals",
+        "core.emotional_and_intellectual_effect.intended_effect"
       ]
     },
     {
       "goal": "Amelia darker, sharper, less apologetic, and morally gray",
-      "original_assessment": "Her killing, concealment, compulsion, EMS death, and ninety-three engravings provide strong dark facts, but her behavior remains apologetic, defensive, and reassurance-seeking.",
-      "new_assessment": "Adds rehabilitation detail and preserves self-incriminating history, but still frames Amelia as cheerful, embarrassed, tearful, and approval-seeking. The rewrite does not achieve the requested behavioral edge.",
+      "original_assessment": "Darker, volatile, and less-apologetic targets are NO, but power attraction and affection/power balance are YES.",
+      "new_assessment": "Comparative darkness is CANNOT_ASSESS; volatility and reduced apology remain NO, while moral contradiction and affection/power balance remain YES.",
       "stronger": "MIXED",
       "evidence_references": [
-        "craft.narrative.characterization.canon",
-        "core.voice_and_stylistic_identity.project_fidelity",
-        "original map > conflicts > Amelia characterization conflict",
-        "new map > arcs > Amelia's moral-gray evidence",
-        "Ch6 map entries"
+        "task.contract.gray-blood-ch1-6-comparison-v1.goal.amelia_darker",
+        "task.contract.gray-blood-ch1-6-comparison-v1.goal.amelia_volatility",
+        "task.contract.gray-blood-ch1-6-comparison-v1.goal.amelia_less_apologetic",
+        "task.contract.gray-blood-ch1-6-comparison-v1.goal.amelia_power_attraction",
+        "task.contract.gray-blood-ch1-6-comparison-v1.goal.amelia_affection_power_balance"
       ]
     },
     {
       "goal": "Madison's programming-shaped fascination and moral slippage",
-      "original_assessment": "Clearly established through data gathering, battery fascination, resource accounting, risk acceptance, and symbol-language analogies.",
-      "new_assessment": "Equally legible and somewhat more explicitly mapped, but weakened by direct motive explanation and the absence of any independent design or spell.",
+      "original_assessment": "All three relevant weighted goals are YES; technical insight, fascination, objection, and dangerous choice remain linked.",
+      "new_assessment": "The same three goals are YES and the darker trajectory remains active, though weaker dialogue and language control sometimes make the lens more expository.",
       "stronger": "MIXED",
       "evidence_references": [
-        "original map > arcs > Madison's dark-aptitude arc",
-        "new map > arcs > Madison's programming-shaped fascination",
-        "craft.narrative.characterization.motives",
-        "Ch5 verdict changes",
-        "Ch6 map entries"
+        "task.contract.gray-blood-ch1-6-comparison-v1.goal.madison_moral_grappling",
+        "task.contract.gray-blood-ch1-6-comparison-v1.goal.madison_programmer_lens",
+        "task.contract.gray-blood-ch1-6-comparison-v1.goal.madison_dark_path_setup"
       ]
     },
     {
       "goal": "Comprehensible and constrained blood magic",
-      "original_assessment": "Broadly comprehensible and comparatively consistent, though battery ownership, lifeblood categories, reserve accounting, and ontology remain unresolved.",
-      "new_assessment": "Preserves the understandable core but introduces or exposes more continuity problems, including lifespan conflicts and unexplained replenishment; later explanations also become redundant.",
+      "original_assessment": "All assessable magic canon gates pass; rules, constraints, and integration are YES, with world domain 11.4462.",
+      "new_assessment": "The same gates and core worldbuilding questions pass, but continuity facts and world continuity fail, lowering the world domain to 10.4118.",
       "stronger": "ORIGINAL",
       "evidence_references": [
-        "world domain",
-        "craft.narrative.worldbuilding.consistency",
+        "craft.narrative.worldbuilding.rules",
+        "craft.narrative.worldbuilding.constraints",
+        "craft.narrative.worldbuilding.integration",
+        "craft.narrative.continuity_and_canon_integrity.facts",
         "craft.narrative.continuity_and_canon_integrity.world",
-        "original map > ledgers > world_rules",
-        "new map > conflicts > Amelia's rapid return to usable strong blood"
+        "World domain states"
       ]
     },
     {
       "goal": "Witch biology and society continuity",
-      "original_assessment": "Stronghold anatomy, activation, aging mechanism, and monitoring are coherent within coverage, but reproduction, population, jurisdiction, and inheritance remain missing or deferred.",
-      "new_assessment": "Retains the same partial foundation but contradicts supplied longevity benchmarks and still does not establish the larger society or reproductive continuity.",
+      "original_assessment": "Female-only canon passes, the unobserved offspring case is NOT_APPLICABLE, and culture and world continuity are supported.",
+      "new_assessment": "The same gate states hold, but facts and world continuity receive NO and a Robin chronology discrepancy remains unresolved.",
       "stronger": "ORIGINAL",
       "evidence_references": [
-        "original map > conflicts > Witch reproduction gap",
-        "original map > conflicts > Society and population gap",
-        "new map > conflicts > Numerical continuity conflict",
-        "craft.narrative.continuity_and_canon_integrity.facts",
-        "Ch4 verdict changes"
+        "task.contract.gray-blood-ch1-6-comparison-v1.canon.witches_female_only",
+        "task.contract.gray-blood-ch1-6-comparison-v1.canon.witch_human_offspring_human",
+        "craft.narrative.worldbuilding.culture",
+        "New warnings map entry: Robin chronology discrepancy"
       ]
     },
     {
       "goal": "Relationship complexity",
-      "original_assessment": "Love is productively entangled with deception, lethal ethics, bodily danger, knowledge inequality, and dependence on magical access.",
-      "new_assessment": "Preserves those tensions and adds rehabilitation context, but over-explains motives and repeatedly reassures away conflict before consequences fully develop.",
-      "stronger": "MIXED",
-      "evidence_references": [
-        "original map > ledgers > relationships",
-        "new map > ledgers > relationships",
-        "craft.narrative.characterization.motives",
-        "original map > conflicts > Consent conflict",
-        "new map > promises > compelled Truth or Dare discussion"
-      ]
-    },
-    {
-      "goal": "Manage exposition load",
-      "original_assessment": "Still contains conspicuous lore dumps, but later material more often adds new targeting, termination, and engraving information.",
-      "new_assessment": "Chapter 3 improves, but whole-artifact redundancy and stalling worsen, and Chapter 6's Zoe explanation becomes insufficiently embedded.",
+      "original_assessment": "Affection, coercion, addiction, danger, and unequal power coexist; dialogue distinction and naturalness are YES.",
+      "new_assessment": "The thematic contradictions remain, but dialogue distinction and naturalness fall to NO and reassurance still neutralizes pressure too quickly.",
       "stronger": "ORIGINAL",
       "evidence_references": [
-        "craft.narrative.worldbuilding.no_lore_dump",
-        "craft.narrative.exposition_and_information_management.no_redundancy",
-        "craft.narrative.pacing_and_narrative_time.no_stall",
-        "craft.narrative.exposition_and_information_management.embedding",
-        "Ch3 verdict changes",
-        "Ch6 verdict changes"
+        "task.contract.gray-blood-ch1-6-comparison-v1.goal.amelia_affection_power_balance",
+        "craft.narrative.characterization.contradiction",
+        "craft.narrative.dialogue.voice_distinction",
+        "craft.narrative.dialogue.naturalness"
       ]
     },
     {
-      "goal": "Improve the experience without becoming generic or over-polished",
-      "original_assessment": "Rougher at sentence level but somewhat stronger in continuity, pacing, motive dramatization, and Chapter 6 resonance; still burdened by stock beats and copy errors.",
-      "new_assessment": "Cleaner in diction, syntax, and dialogue mechanics, but not over-polished. It remains generic at the beat level and loses voice suitability, rhythmic variation, continuity, and pacing.",
-      "stronger": "MIXED",
+      "goal": "Reduced exposition load",
+      "original_assessment": "A systemic weakness: pacing 6.8254, with failures in priority, redundancy, dumping, and expository dialogue.",
+      "new_assessment": "Still systemic and slightly worse overall: pacing 6.3492, with exposition embedding additionally changing to NO, despite a narrower improvement in penalty.repetition.explanation.",
+      "stronger": "ORIGINAL",
       "evidence_references": [
-        "core.language_craft.diction",
-        "core.language_craft.syntax",
-        "core.mechanics_and_presentation.dialogue_mechanics",
-        "core.voice_and_stylistic_identity.suitable",
-        "core.language_craft.variation",
-        "core.freshness_and_non_genericness.no_stock_beats",
-        "fresh domain"
+        "Pacing domain states",
+        "craft.narrative.exposition_and_information_management.embedding",
+        "craft.narrative.exposition_and_information_management.priority",
+        "craft.narrative.exposition_and_information_management.no_redundancy",
+        "craft.narrative.exposition_and_information_management.no_dump",
+        "penalty.repetition.explanation"
+      ]
+    },
+    {
+      "goal": "Rewrite improves the experience without becoming generic or over-polished",
+      "original_assessment": "The stronger current baseline: distinctive and owned voice with higher language and freshness/economy results, though clichés, repetition, and mechanics remain serious defects.",
+      "new_assessment": "Not over-polished, because mechanics remain at 1.6; however, lower language, freshness/economy, dialogue distinction, suitability, and project fidelity indicate a genericization risk. Local Chapter 3 and repetition improvements do not outweigh the broader regression.",
+      "stronger": "ORIGINAL",
+      "evidence_references": [
+        "Whole-work score states",
+        "Language domain states",
+        "Freshness and economy domain states",
+        "Mechanics domain states",
+        "core.voice_and_stylistic_identity.project_fidelity",
+        "core.freshness_and_non_genericness.unpredictable_specificity",
+        "Chapter 3 diagnostic states"
       ]
     }
   ],
   "systemic_patterns": [
-    "Across both versions, the tonal frame repeatedly protects Amelia from the full implications of killing, concealment, compulsion, addiction, and enforcement.",
-    "Across Chapters 1–6, laughter, giggling, smiling, blushing, attraction summaries, and reassurance operate as default connective tissue; the unchanged 4.0 repetition penalty confirms that the rewrite did not solve this.",
-    "Exposition is structurally attached to Madison's curiosity, which is sound, but too often arrives as comprehensive classification rather than contested or consequential action.",
-    "Both versions underweight aftermath: the climber's disappearance, Mackenzie's unsafe feeding, compulsion safeguards, the EMS death, and Amelia's prior lifeblood acquisitions receive less consequence than their severity warrants.",
-    "Madison's systems-oriented fascination is consistently strong, but her moral descent is more often announced or normalized than tested through an irreversible choice.",
-    "The blood-magic system has a coherent core, yet its highest-stakes edges remain least constrained: battery ownership, lifeblood sourcing, compulsion targeting, reserve accounting, turning, and social enforcement.",
-    "Both versions retain familiar paranormal-romance architecture and default metaphors; the distinctive material lies in blood economics, programming, morally compromised research, and witch family structures rather than the scene sequence.",
-    "Both artifacts remain visibly unfinished at the line level despite the rewrite's real improvements in diction, syntax, and dialogue mechanics."
+    "Both versions possess a keepworthy premise, sustained relationship engine, coordinated open arcs, and comprehensible blood-magic constraints.",
+    "Both versions fail to make grim-dark pressure the dominant tonal baseline; reassurance, apology, laughter, and romance repeatedly restore emotional safety.",
+    "Amelia's moral complexity is present in both versions, but her moment-to-moment behavior remains softer, more defensive, and more apologetic than the stated goal.",
+    "Madison's programmer lens, fascination, moral grappling, and dark-path setup are durable strengths across both versions.",
+    "Exposition, repetition, and scene allocation remain systemic weaknesses across Chapters 1–6; the new version changes their distribution more than their total effect.",
+    "Sentence-level mechanics remain systemically poor in both versions, with the same whole-work mechanics score and the same four central NO verdicts.",
+    "The new version systemically weakens language, dialogue distinction, freshness/economy, and world continuity despite preserving core concepts.",
+    "Neither version is generic at the premise or magic-system level; generic risk arises from recurring romance shorthand, default metaphors, and insufficiently differentiated dialogue."
   ],
   "isolated_findings": [
-    "The rewrite's Chapter 4 longevity benchmarks conflict with the supplied canon and create a concrete world-continuity regression.",
-    "The rewrite's Chapter 3 is a genuine local pacing improvement and should be preserved as a model for information tied to crisis and demonstration.",
-    "The rewrite adds informal confinement and rehabilitation to Amelia's EMS history, increasing family and addiction specificity even though the disclosure remains compressed.",
-    "Chapter 2's opening-entry regression is concentrated in the prolonged piano allocation rather than the climber sequence itself.",
-    "Chapter 6's rewrite-specific final joke sacrifices the stronger available resonance of Madison studying a system funded by Amelia's deaths.",
-    "The inconsistent spelling of Savannah is a discrete continuity and copyediting defect.",
-    "The original map flags unreliable Chopin catalogue details in Chapter 2; this is a localized factual caution rather than a systemic story-world failure."
+    "The new Chapter 3 paired diagnostic improves from 24 YES and 4 NO to 25 YES and 3 NO; the missing question-level states prevent identification of the exact gain.",
+    "The new version's climber convergence is flagged under craft.narrative.plot_and_causality.no_convenience even though its broader causal chain passes.",
+    "The delayed intervention during dangerous blood loss is a localized credibility problem involving Amelia's protectiveness and medical competence.",
+    "The new Chapter 6 sampled mechanics result improves to 2.4 from the original's 1.8667 even though whole-work mechanics remain unchanged.",
+    "The Robin chronology discrepancy is a specific continuity issue that should be resolved without broad worldbuilding reconstruction."
   ],
   "conflicts_and_uncertainties": [
-    "The whole-artifact control states differ because the original has a failed inclusion gate while the rewrite has unassessable operation and inclusion gates. This distinction prevents a simple numeric winner declaration.",
-    "Chapter evaluations have deliberately low coverage, zero coverage in several domains, and UNRESOLVED gates. Their observed values are useful only where paired verdict changes and map evidence converge.",
-    "The manuscript is partial. Turning, reproduction, grimoire history, battery preservation, local governance, and the unused climber lifeblood may receive later development; their absence is not equivalent to a failed full-novel payoff.",
-    "Note-only Katherine, Frieda Henot, tracker, fungal theory, recursion, advanced spell design, and later heart-related developments are not evidence of accomplishments or promises within Chapters 1–6.",
-    "The exact relationship among killing, last-moment draining, lifeblood acquisition, and engraving counts remains unclear. Madison's numerical interpretation should not be treated as confirmed historical fact without Amelia's source records.",
-    "Magic's ontology—created by blood or alongside it—remains explicitly unresolved in both maps.",
-    "The climber's prognosis is Amelia's medical assertion, not independently established fact; the moral classification remains intentionally uncertain.",
-    "Cross-witch use of FAWN batteries is implied but not directly demonstrated, leaving activation and ownership rules uncertain.",
-    "Some apparent continuity problems may arise from unresolved author notes rather than settled canon, but the rewrite's unmarked longevity discrepancy is still a reader-facing inconsistency within the supplied evidence."
+    "The new report marks Amelia being darker as CANNOT_ASSESS because that evaluation lacked a baseline, while this comparative packet supplies the original report. The available verdicts still do not prove improvement: the original is NO and the new version continues to fail volatility and reduced-apology goals.",
+    "The original report leaves novel middle and total payoff CANNOT_ASSESS, while the new report marks middle and payoff YES within the same six-chapter WIP scope. This difference may reflect assessment interpretation or additional local closure and should not be treated as proof of superior full-novel structure.",
+    "The chapter diagnostics provide only verdict counts, not per-question verdict mappings. A changed count cannot identify which craft property improved or regressed.",
+    "The sampled local chapter sets differ: original samples Chapters 1, 3, 5, and 6; new samples Chapters 1, 2, 5, and 6. Only Chapters 1, 5, and 6 have matched full local results, and even those remain independent diagnostics.",
+    "Complete-novel structure, ending, final character states, Katherine's motivation, turning mechanics, and several later promises remain CANNOT_ASSESS or outside scope rather than failed.",
+    "The offspring gate is NOT_APPLICABLE, so neither version has demonstrated that canon rule in action. Trans/intersex specifics also remain unsupported and must not be inferred.",
+    "The original's score bounds and the new version's score bounds are non-statistical coverage bounds; overlap or separation should not be interpreted as statistical significance."
   ],
   "revision_priorities": [
     {
       "rank": 1,
-      "priority": "Rebuild Amelia's behavioral register around controlled darkness rather than repeated apology.",
-      "rationale": "This is the central author-goal miss and drives failures in tone, character canon, voice fidelity, emotional effect, repetition, and relationship complexity. Tenderness should remain, but it needs contrast with sharper agency and moral self-knowledge.",
+      "priority": "Rebuild Amelia's default interpersonal behavior around controlled danger rather than automatic emotional repair.",
+      "rationale": "This is the clearest unmet author goal in both versions and the main obstacle to grim-dark tonal identity. Sharper justification, silence, boundaries, anger, and selective vulnerability can intensify existing moral contradictions without flattening the romance.",
       "applies_to": "BOTH"
     },
     {
       "rank": 2,
-      "priority": "Restructure Chapters 4–6 so rules emerge through consequential action, disagreement, or failure.",
-      "rationale": "The rewrite's largest regression is exposition and pacing, particularly repeated instruction and Chapter 6 embedding. Chapter 3 demonstrates that necessary information can change the relationship and immediate stakes.",
+      "priority": "Restore the original's causal and continuity advantages while repairing the new version's localized defects.",
+      "rationale": "Protect the setup-to-payoff chain, then causally motivate the climber convergence, explain delayed intervention, and reconcile the Robin and wider witch-society facts.",
       "applies_to": "NEW"
     },
     {
       "rank": 3,
-      "priority": "Create and enforce a compact blood-magic and biology continuity ledger.",
-      "rationale": "Correct longevity figures and clarify ordinary reserves, lifeblood, engraving costs, replenishment, battery ownership, compulsion targeting, and termination. These rules govern the novel's moral economy as well as its mechanics.",
+      "priority": "Perform a functional compression pass across romance, instruction, social setup, recovery, and transitions.",
+      "rationale": "Both versions stall through equivalent reaction cycles and repeated explanation. Cuts should preserve decisions, consequences, blood-loss state, coercion ethics, and open promises.",
       "applies_to": "BOTH"
     },
     {
       "rank": 4,
-      "priority": "Give coercion, feeding, addiction, and killing visible aftermath and accountability.",
-      "rationale": "Mackenzie's feeding, Amelia's EMS death, compelled play, and the climber's disappearance currently receive insufficient practical or relational consequence, weakening grim-dark credibility and consent realism.",
+      "priority": "Tie every major magical insight to Madison's next ethical compromise.",
+      "rationale": "Her programming lens and moral slippage already work in both versions. Making knowledge produce temptation, rationalization, or cost will deepen the dark arc while reducing inert exposition.",
       "applies_to": "BOTH"
     },
     {
       "rank": 5,
-      "priority": "Advance Madison's moral slippage through one consequential choice rather than further self-explanation.",
-      "rationale": "Her technical fascination is already convincing. A third draft needs behavior that sacrifices safety, loyalty, or another person's welfare for knowledge or scalable power.",
-      "applies_to": "BOTH"
+      "priority": "Recover speaker distinction and project-specific voice.",
+      "rationale": "The new version loses dialogue naturalness, voice distinction, suitability, and project fidelity. A third draft should retain precise magical and programming specificity while removing interchangeable romance shorthand and default metaphors.",
+      "applies_to": "NEW"
     },
     {
       "rank": 6,
-      "priority": "Compress repetitive romance, music, party, travel, and exhaustion beats.",
-      "rationale": "Both versions incur the same repetition penalty, while the rewrite worsens no_redundancy and no_stall. Subtraction will increase pressure without making the prose generic.",
+      "priority": "Maintain a concise canon and state ledger during revision.",
+      "rationale": "Activation, engraving, source consumption, drawn symbols, blood storage, bodily consequences, family roles, and chronology need consistent presentation. Unobserved biology should remain unasserted.",
       "applies_to": "BOTH"
     },
     {
       "rank": 7,
-      "priority": "Preserve the rewrite's language improvements while restoring the original's stronger continuity and scene allocation.",
-      "rationale": "Diction, syntax, and dialogue mechanics genuinely improve, but those gains should be transplanted into a structure closer to the original, especially in Chapters 2, 4, 5, and 6.",
-      "applies_to": "NEW"
+      "priority": "Run a dedicated copyedit only after structural decisions are complete.",
+      "rationale": "Both versions retain pervasive grammar, punctuation, spelling, syntax, and cleanliness defects. Copyediting earlier would polish passages likely to be cut or rewritten.",
+      "applies_to": "BOTH"
     },
     {
       "rank": 8,
-      "priority": "Differentiate the novel from stock paranormal-romance sequencing.",
-      "rationale": "Both versions fail stock-beat and cliché checks. Emphasize programming, blood-resource economics, three-mother family dynamics, research ethics, and competing witch governance; reduce interchangeable meet-cute and social-initiation material.",
-      "applies_to": "BOTH"
-    },
-    {
-      "rank": 9,
-      "priority": "Complete a rigorous line and continuity edit after structural revision.",
-      "rationale": "Both versions retain grammar, spelling, typography, cleanliness, and awkwardness defects. Copyediting now would be partly wasted if major scenes are subsequently compressed or rebuilt.",
+      "priority": "Re-evaluate the resulting third draft globally and with the same paired chapter subset.",
+      "rationale": "Use the whole-work bundle for manuscript conclusions and the fixed 28-question chapter subset only to locate local changes. Preserve all deterministic historical scores and never average chapter results.",
       "applies_to": "BOTH"
     }
   ],
-  "publication_summary": "Promising dark fantasy with a distinctive blood economy and a compelling programmer protagonist, but the rewrite is not yet an overall improvement. It cleans portions of the prose while weakening continuity, pacing, and tonal force. A third draft should retain those line-level gains, restore stronger dramatic allocation, harden Amelia's characterization, and make violence and coercion produce lasting consequences."
+  "publication_summary": "Both versions contain a distinctive, keepworthy supernatural-romance opening, but neither is publication-ready. The original is currently stronger overall; the rewrite preserves the novel's best ideas and offers a few local gains, yet weakens voice, continuity, pacing, and causal credibility without achieving the intended darker Amelia. A strong third draft should synthesize their strengths, then receive a full structural, continuity, tonal, and copyediting pass."
 }

@@ -33,8 +33,10 @@ def _full_verdicts(
     modules: list[dict[str, Any]],
     bundle: dict[str, Any],
     default: str = "YES",
+    *,
+    task_contract: dict[str, Any] | None = None,
 ) -> tuple[dict[str, Any], list[dict[str, Any]]]:
-    compiled = compile_bundle(modules, bundle)
+    compiled = compile_bundle(modules, bundle, task_contract=task_contract)
     qids: list[str] = []
     qids.extend(item["question"]["id"] for item in compiled["domain_questions"])
     qids.extend(item["question"]["id"] for item in compiled["hard_gates"])
@@ -45,6 +47,35 @@ def _full_verdicts(
         for item in group["questions"]
     )
     return compiled, [_verdict(qid, default) for qid in dict.fromkeys(qids)]
+
+
+def _task_contract() -> dict[str, Any]:
+    source = {"kind": "user_preference", "reference": "brief:goal-1", "exact_excerpt": "Keep Amelia morally dark."}
+    return {
+        "contract_id": "gray-blood-test",
+        "weighted_goals": [
+            {
+                "goal_id": "darker-amelia",
+                "atomic_question": "Does Amelia retain morally dark behavior?",
+                "weight": 2.0,
+                "source": source,
+            }
+        ],
+        "binding_requirements": [
+            {
+                "requirement_id": "first-person",
+                "atomic_question": "Is the artifact written in first person?",
+                "objective": True,
+                "non_negotiable": True,
+                "weight": 1.0,
+                "source": {**source, "kind": "explicit_user_requirement", "reference": "brief:req-1"},
+                "verification": {
+                    "method": "absence",
+                    "expected": "No third-person narration appears.",
+                },
+            }
+        ],
+    }
 
 
 def test_inventory_counts(modules, bundles, manifest) -> None:
@@ -100,7 +131,6 @@ def test_every_bundle_compiles_without_duplicate_scoring(modules, bundles) -> No
         ids = [item["question"]["id"] for item in compiled["domain_questions"]]
         assert ids
         assert len(ids) == len(set(ids)), bundle["bundle_id"]
-        assert compiled["hard_gates"], bundle["bundle_id"]
 
 
 def test_all_yes_produces_full_score_and_valid_gates(modules, bundle_by_id) -> None:
@@ -115,13 +145,77 @@ def test_all_yes_produces_full_score_and_valid_gates(modules, bundle_by_id) -> N
 
 
 def test_failed_hard_gate_invalidates_without_erasing_quality_score(modules, bundle_by_id) -> None:
-    compiled, verdicts = _full_verdicts(modules, bundle_by_id["prose.scene"])
-    gate_id = compiled["hard_gates"][0]["question"]["id"]
+    contract = _task_contract()
+    compiled, verdicts = _full_verdicts(
+        modules,
+        bundle_by_id["prose.scene"],
+        task_contract=contract,
+    )
+    gate_id = compiled["task_contract"]["binding_requirement_ids"][0]
     next(item for item in verdicts if item["question_id"] == gate_id)["verdict"] = "NO"
-    report = score_bundle(modules, bundle_by_id["prose.scene"], verdicts)
+    report = score_bundle(
+        modules,
+        bundle_by_id["prose.scene"],
+        verdicts,
+        task_contract=contract,
+    )
     assert report["hard_gate_status"] == "INVALID"
     assert report["status"] == "INELIGIBLE"
     assert report["base_score"]["observed"] == pytest.approx(100.0)
+
+
+def test_task_goals_are_weighted_without_becoming_gates(modules, bundle_by_id) -> None:
+    contract = _task_contract()
+    compiled, verdicts = _full_verdicts(
+        modules,
+        bundle_by_id["prose.novel"],
+        task_contract=contract,
+    )
+    goal_id = compiled["task_contract"]["weighted_goal_ids"][0]
+    requirement_id = compiled["task_contract"]["binding_requirement_ids"][0]
+    next(item for item in verdicts if item["question_id"] == goal_id)["verdict"] = "NO"
+    report = score_bundle(
+        modules,
+        bundle_by_id["prose.novel"],
+        verdicts,
+        task_contract=contract,
+    )
+    assert report["status"] == "SCORED"
+    assert report["hard_gate_status"] == "VALID"
+    assert report["final_score"]["observed"] < 100.0
+    assert goal_id not in {item["question_id"] for item in report["hard_gates"]}
+    assert requirement_id in {item["question_id"] for item in report["hard_gates"]}
+
+
+def test_only_explicit_binding_requirement_can_invalidate_task_contract(modules, bundle_by_id) -> None:
+    contract = _task_contract()
+    compiled, verdicts = _full_verdicts(
+        modules,
+        bundle_by_id["prose.novel"],
+        task_contract=contract,
+    )
+    requirement_id = compiled["task_contract"]["binding_requirement_ids"][0]
+    next(item for item in verdicts if item["question_id"] == requirement_id)["verdict"] = "NO"
+    report = score_bundle(
+        modules,
+        bundle_by_id["prose.novel"],
+        verdicts,
+        task_contract=contract,
+    )
+    assert report["hard_gate_status"] == "INVALID"
+    assert report["status"] == "INELIGIBLE"
+
+
+def test_absence_requirement_exposes_activation_semantics(modules, bundle_by_id) -> None:
+    contract = _task_contract()
+    compiled = compile_bundle(modules, bundle_by_id["prose.novel"], task_contract=contract)
+    gate = next(
+        item
+        for item in compiled["hard_gates"]
+        if item["question"]["id"] in compiled["task_contract"]["binding_requirement_ids"]
+    )["question"]
+    assert gate["verification"]["method"] == "absence"
+    assert "NOT_APPLICABLE rather than CANNOT_ASSESS" in gate["applies_when"]
 
 
 def test_cannot_assess_creates_coverage_and_score_interval(modules, bundle_by_id) -> None:

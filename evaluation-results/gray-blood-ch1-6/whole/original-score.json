@@ -1,3388 +1,3250 @@
 {
   "$schema": "https://raw.githubusercontent.com/HaileyStorm/Creative-Writing-Rubrics/main/schema/hbq_score_report.schema.json",
-  "active_nominal_points": 100.0,
-  "artifact_id": "gray-blood-original-ch01-06",
-  "base_score": {
-    "lower": 79.0029,
-    "observed": 82.0767,
-    "upper": 82.3
-  },
-  "bundle_id": "prose.novel",
-  "bundle_version": 1,
-  "confidence": 0.9164,
-  "coverage": 0.967,
-  "domains": [
-    {
-      "active": true,
-      "confidence": 0.8896,
-      "coverage": 0.6814,
-      "domain_id": "task",
-      "nominal_points": 7.0,
-      "questions": [
-        {
-          "confidence": 0.92,
-          "evidence": [
-            {
-              "reference": "author notes, §IX"
-            },
-            {
-              "reference": "author notes, §V"
-            }
-          ],
-          "module_id": "core.task_and_brief_fidelity",
-          "question_id": "core.task_and_brief_fidelity.intervention",
-          "verdict": "CANNOT_ASSESS",
-          "weight": 2.0
-        },
-        {
-          "confidence": 0.96,
-          "evidence": [
-            {
-              "reference": "Prompt artifact metadata"
-            },
-            {
-              "reference": "draft chapters 1-6, Chapter Six"
-            }
-          ],
-          "module_id": "core.task_and_brief_fidelity",
-          "question_id": "core.task_and_brief_fidelity.completion_flag",
-          "verdict": "YES",
-          "weight": 1.0
-        },
-        {
-          "confidence": 0.99,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Chapter One"
-            }
-          ],
-          "module_id": "core.task_and_brief_fidelity",
-          "question_id": "core.task_and_brief_fidelity.no_meta_substitution",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.89,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Chapters One-Six"
-            }
-          ],
-          "module_id": "core.length_and_scope_fit",
-          "question_id": "core.length_and_scope_fit.form",
-          "verdict": "YES",
-          "weight": 2.0
-        },
-        {
-          "confidence": 0.9,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Chapter Two"
-            }
-          ],
-          "module_id": "core.length_and_scope_fit",
-          "question_id": "core.length_and_scope_fit.operation",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.86,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Chapter Five"
-            },
-            {
-              "reference": "draft chapters 1-6, Chapter Three"
-            }
-          ],
-          "module_id": "core.length_and_scope_fit",
-          "question_id": "core.length_and_scope_fit.development",
-          "verdict": "YES",
-          "weight": 2.0
-        },
-        {
-          "confidence": 0.68,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Chapter Three"
-            },
-            {
-              "reference": "draft chapters 1-6, Chapter Five"
-            }
-          ],
-          "module_id": "core.length_and_scope_fit",
-          "question_id": "core.length_and_scope_fit.density",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.93,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, end of Chapter Six"
-            }
-          ],
-          "module_id": "core.length_and_scope_fit",
-          "question_id": "core.length_and_scope_fit.ending",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.8,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Chapter Three"
-            }
-          ],
-          "module_id": "core.length_and_scope_fit",
-          "question_id": "core.length_and_scope_fit.no_padding",
-          "verdict": "YES",
-          "weight": 2.0
-        },
-        {
-          "confidence": 0.92,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Chapter Three"
-            },
-            {
-              "reference": "draft chapters 1-6, Chapter Five"
-            }
-          ],
-          "module_id": "core.length_and_scope_fit",
-          "question_id": "core.length_and_scope_fit.no_underbuild",
-          "verdict": "YES",
-          "weight": 2.0
-        },
-        {
-          "confidence": 0.83,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Chapter Three"
-            },
-            {
-              "reference": "draft chapters 1-6, Chapter Three"
-            }
-          ],
-          "module_id": "core.audience_and_purpose_fit",
-          "question_id": "core.audience_and_purpose_fit.complexity",
-          "verdict": "YES",
-          "weight": 1.0
-        },
-        {
-          "confidence": 0.9,
-          "evidence": [
-            {
-              "reference": "author notes, §I"
-            },
-            {
-              "reference": "draft chapters 1-6, Chapter One"
-            }
-          ],
-          "module_id": "core.audience_and_purpose_fit",
-          "question_id": "core.audience_and_purpose_fit.tone",
-          "verdict": "NO",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.78,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Chapter Three"
-            },
-            {
-              "reference": "draft chapters 1-6, Chapter Three"
-            }
-          ],
-          "module_id": "core.audience_and_purpose_fit",
-          "question_id": "core.audience_and_purpose_fit.explanation",
-          "verdict": "YES",
-          "weight": 1.0
-        },
-        {
-          "confidence": 0.82,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Chapter Two"
-            },
-            {
-              "reference": "draft chapters 1-6, Chapter Three"
-            }
-          ],
-          "module_id": "core.audience_and_purpose_fit",
-          "question_id": "core.audience_and_purpose_fit.intensity",
-          "verdict": "YES",
-          "weight": 1.0
-        },
-        {
-          "confidence": 0.92,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Chapter Six"
-            }
-          ],
-          "module_id": "core.audience_and_purpose_fit",
-          "question_id": "core.audience_and_purpose_fit.vocabulary",
-          "verdict": "YES",
-          "weight": 1.0
-        },
-        {
-          "confidence": 0.88,
-          "evidence": [
-            {
-              "reference": "Prompt artifact metadata"
-            }
-          ],
-          "module_id": "core.audience_and_purpose_fit",
-          "question_id": "core.audience_and_purpose_fit.length",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.89,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Chapter One"
-            },
-            {
-              "reference": "draft chapters 1-6, Chapter Five"
-            }
-          ],
-          "module_id": "core.audience_and_purpose_fit",
-          "question_id": "core.audience_and_purpose_fit.genre_signals",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.89,
-          "evidence": [
-            {
-              "reference": "author notes, §I"
-            },
-            {
-              "reference": "Prompt artifact metadata"
-            }
-          ],
-          "module_id": "core.audience_and_purpose_fit",
-          "question_id": "core.audience_and_purpose_fit.use_context",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.97,
-          "evidence": [
-            {
-              "reference": "Prompt artifact metadata"
-            },
-            {
-              "reference": "author notes, §V"
-            }
-          ],
-          "module_id": "form.prose.novel",
-          "question_id": "form.prose.novel.macro_structure",
-          "verdict": "CANNOT_ASSESS",
-          "weight": 3.0
-        },
-        {
-          "confidence": 0.97,
-          "evidence": [
-            {
-              "reference": "Prompt artifact metadata"
-            },
-            {
-              "reference": "author notes, §V"
-            }
-          ],
-          "module_id": "form.prose.novel",
-          "question_id": "form.prose.novel.long_causality",
-          "verdict": "CANNOT_ASSESS",
-          "weight": 3.0
-        },
-        {
-          "confidence": 0.96,
-          "evidence": [
-            {
-              "reference": "Prompt artifact metadata"
-            },
-            {
-              "reference": "author notes, §V"
-            }
-          ],
-          "module_id": "form.prose.novel",
-          "question_id": "form.prose.novel.multiple_arcs",
-          "verdict": "CANNOT_ASSESS",
-          "weight": 2.25
-        },
-        {
-          "confidence": 0.93,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 2"
-            },
-            {
-              "reference": "draft chapters 1-6, Ch. 2"
-            }
-          ],
-          "module_id": "form.prose.novel",
-          "question_id": "form.prose.novel.pacing_variation",
-          "verdict": "YES",
-          "weight": 2.25
-        },
-        {
-          "confidence": 0.95,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 2"
-            },
-            {
-              "reference": "draft chapters 1-6, Ch. 5"
-            }
-          ],
-          "module_id": "form.prose.novel",
-          "question_id": "form.prose.novel.development",
-          "verdict": "YES",
-          "weight": 2.25
-        },
-        {
-          "confidence": 0.94,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 1"
-            },
-            {
-              "reference": "draft chapters 1-6, Ch. 5"
-            },
-            {
-              "reference": "draft chapters 1-6, Ch. 6"
-            }
-          ],
-          "module_id": "form.prose.novel",
-          "question_id": "form.prose.novel.recurrence",
-          "verdict": "YES",
-          "weight": 2.25
-        },
-        {
-          "confidence": 0.97,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 6"
-            }
-          ],
-          "module_id": "form.prose.novel",
-          "question_id": "form.prose.novel.payoff",
-          "verdict": "CANNOT_ASSESS",
-          "weight": 3.0
-        },
-        {
-          "confidence": 0.91,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 3"
-            },
-            {
-              "reference": "draft chapters 1-6, Ch. 5"
-            }
-          ],
-          "module_id": "form.prose.novel",
-          "question_id": "form.prose.novel.middle",
-          "verdict": "YES",
-          "weight": 3.0
-        },
-        {
-          "confidence": 0.99,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 6"
-            }
-          ],
-          "module_id": "form.prose.novel",
-          "question_id": "form.prose.novel.ending",
-          "verdict": "CANNOT_ASSESS",
-          "weight": 3.0
-        }
-      ],
-      "score": {
-        "lower": 4.5637,
-        "observed": 6.6978,
-        "upper": 6.7941
-      },
-      "title": "Task and scope",
-      "weights": {
-        "applicable": 51.0,
-        "failed": 1.5,
-        "passed": 33.25,
-        "unassessed": 16.25
-      }
-    },
-    {
-      "active": true,
-      "confidence": 0.9131,
-      "coverage": 0.9333,
-      "domain_id": "character",
-      "nominal_points": 16.0,
-      "questions": [
-        {
-          "confidence": 0.95,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 3"
-            },
-            {
-              "reference": "draft chapters 1-6, Ch. 6"
-            }
-          ],
-          "module_id": "craft.narrative.characterization",
-          "question_id": "craft.narrative.characterization.dimensionality",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.98,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 4"
-            },
-            {
-              "reference": "draft chapters 1-6, Ch. 5"
-            }
-          ],
-          "module_id": "craft.narrative.characterization",
-          "question_id": "craft.narrative.characterization.behavior",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.78,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 4"
-            },
-            {
-              "reference": "draft chapters 1-6, Ch. 5"
-            }
-          ],
-          "module_id": "craft.narrative.characterization",
-          "question_id": "craft.narrative.characterization.motives",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.93,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 6"
-            },
-            {
-              "reference": "draft chapters 1-6, Ch. 5"
-            }
-          ],
-          "module_id": "craft.narrative.characterization",
-          "question_id": "craft.narrative.characterization.contradiction",
-          "verdict": "YES",
-          "weight": 1.0
-        },
-        {
-          "confidence": 0.98,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 4"
-            },
-            {
-              "reference": "draft chapters 1-6, Ch. 5"
-            }
-          ],
-          "module_id": "craft.narrative.characterization",
-          "question_id": "craft.narrative.characterization.agency",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.85,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 5"
-            },
-            {
-              "reference": "draft chapters 1-6, Ch. 6"
-            }
-          ],
-          "module_id": "craft.narrative.characterization",
-          "question_id": "craft.narrative.characterization.distinction",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.92,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 3"
-            },
-            {
-              "reference": "draft chapters 1-6, Ch. 5"
-            }
-          ],
-          "module_id": "craft.narrative.characterization",
-          "question_id": "craft.narrative.characterization.development",
-          "verdict": "YES",
-          "weight": 1.0
-        },
-        {
-          "confidence": 0.86,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 1"
-            },
-            {
-              "reference": "author notes, VI"
-            }
-          ],
-          "module_id": "craft.narrative.characterization",
-          "question_id": "craft.narrative.characterization.canon",
-          "verdict": "NO",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.95,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 2"
-            },
-            {
-              "reference": "draft chapters 1-6, Ch. 1"
-            }
-          ],
-          "module_id": "craft.narrative.characterization",
-          "question_id": "craft.narrative.characterization.no_trait_labels",
-          "verdict": "NO",
-          "weight": 1.0
-        },
-        {
-          "confidence": 0.96,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 1"
-            },
-            {
-              "reference": "draft chapters 1-6, Ch. 4"
-            }
-          ],
-          "module_id": "craft.narrative.character_arc",
-          "question_id": "craft.narrative.character_arc.baseline",
-          "verdict": "YES",
-          "weight": 1.0
-        },
-        {
-          "confidence": 0.99,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 3"
-            },
-            {
-              "reference": "draft chapters 1-6, Ch. 5"
-            }
-          ],
-          "module_id": "craft.narrative.character_arc",
-          "question_id": "craft.narrative.character_arc.pressure",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.94,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 3"
-            },
-            {
-              "reference": "draft chapters 1-6, Ch. 5"
-            }
-          ],
-          "module_id": "craft.narrative.character_arc",
-          "question_id": "craft.narrative.character_arc.resistance",
-          "verdict": "YES",
-          "weight": 1.0
-        },
-        {
-          "confidence": 0.91,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 5"
-            },
-            {
-              "reference": "draft chapters 1-6, Ch. 5"
-            }
-          ],
-          "module_id": "craft.narrative.character_arc",
-          "question_id": "craft.narrative.character_arc.turns",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.98,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 6"
-            },
-            {
-              "reference": "draft chapters 1-6, Ch. 5"
-            }
-          ],
-          "module_id": "craft.narrative.character_arc",
-          "question_id": "craft.narrative.character_arc.consequences",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.73,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 2"
-            },
-            {
-              "reference": "draft chapters 1-6, Ch. 6"
-            }
-          ],
-          "module_id": "craft.narrative.character_arc",
-          "question_id": "craft.narrative.character_arc.rate",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.96,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 5"
-            },
-            {
-              "reference": "draft chapters 1-6, Ch. 6"
-            }
-          ],
-          "module_id": "craft.narrative.character_arc",
-          "question_id": "craft.narrative.character_arc.local_contribution",
-          "verdict": "YES",
-          "weight": 1.0
-        },
-        {
-          "confidence": 0.99,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 6"
-            }
-          ],
-          "module_id": "craft.narrative.character_arc",
-          "question_id": "craft.narrative.character_arc.end_state",
-          "verdict": "CANNOT_ASSESS",
-          "weight": 1.5
-        }
-      ],
-      "score": {
-        "lower": 13.1556,
-        "observed": 14.0952,
-        "upper": 14.2222
-      },
-      "title": "Character and arcs",
-      "weights": {
-        "applicable": 22.5,
-        "failed": 2.5,
-        "passed": 18.5,
-        "unassessed": 1.5
-      }
-    },
-    {
-      "active": true,
-      "confidence": 0.9243,
-      "coverage": 1.0,
-      "domain_id": "plot",
-      "nominal_points": 20.0,
-      "questions": [
-        {
-          "confidence": 0.82,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 2"
-            },
-            {
-              "reference": "draft chapters 1-6, Ch. 4"
-            }
-          ],
-          "module_id": "craft.narrative.plot_and_causality",
-          "question_id": "craft.narrative.plot_and_causality.causal_chain",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.88,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 1"
-            },
-            {
-              "reference": "draft chapters 1-6, Ch. 2"
-            }
-          ],
-          "module_id": "craft.narrative.plot_and_causality",
-          "question_id": "craft.narrative.plot_and_causality.setup",
-          "verdict": "YES",
-          "weight": 1.0
-        },
-        {
-          "confidence": 0.99,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 4"
-            },
-            {
-              "reference": "draft chapters 1-6, Ch. 4"
-            }
-          ],
-          "module_id": "craft.narrative.plot_and_causality",
-          "question_id": "craft.narrative.plot_and_causality.decision",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.98,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 6"
-            },
-            {
-              "reference": "draft chapters 1-6, Ch. 5"
-            }
-          ],
-          "module_id": "craft.narrative.plot_and_causality",
-          "question_id": "craft.narrative.plot_and_causality.consequence",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.98,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 2"
-            },
-            {
-              "reference": "draft chapters 1-6, Ch. 5"
-            }
-          ],
-          "module_id": "craft.narrative.plot_and_causality",
-          "question_id": "craft.narrative.plot_and_causality.escalation",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.95,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 5"
-            },
-            {
-              "reference": "draft chapters 1-6, Ch. 5"
-            }
-          ],
-          "module_id": "craft.narrative.plot_and_causality",
-          "question_id": "craft.narrative.plot_and_causality.complication",
-          "verdict": "YES",
-          "weight": 1.0
-        },
-        {
-          "confidence": 0.9,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 2"
-            },
-            {
-              "reference": "draft chapters 1-6, Ch. 3"
-            }
-          ],
-          "module_id": "craft.narrative.plot_and_causality",
-          "question_id": "craft.narrative.plot_and_causality.reversal",
-          "verdict": "YES",
-          "weight": 1.0
-        },
-        {
-          "confidence": 0.94,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 2"
-            },
-            {
-              "reference": "draft chapters 1-6, Ch. 4"
-            }
-          ],
-          "module_id": "craft.narrative.plot_and_causality",
-          "question_id": "craft.narrative.plot_and_causality.no_convenience",
-          "verdict": "NO",
-          "weight": 2.0
-        },
-        {
-          "confidence": 0.92,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 1"
-            },
-            {
-              "reference": "draft chapters 1-6, Ch. 1"
-            }
-          ],
-          "module_id": "craft.narrative.foreshadowing_setup_and_payoff",
-          "question_id": "craft.narrative.foreshadowing_setup_and_payoff.preparation",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.83,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 1"
-            }
-          ],
-          "module_id": "craft.narrative.foreshadowing_setup_and_payoff",
-          "question_id": "craft.narrative.foreshadowing_setup_and_payoff.subtlety",
-          "verdict": "YES",
-          "weight": 1.0
-        },
-        {
-          "confidence": 0.98,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 3"
-            }
-          ],
-          "module_id": "craft.narrative.foreshadowing_setup_and_payoff",
-          "question_id": "craft.narrative.foreshadowing_setup_and_payoff.expectation",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.86,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 1-2"
-            }
-          ],
-          "module_id": "craft.narrative.foreshadowing_setup_and_payoff",
-          "question_id": "craft.narrative.foreshadowing_setup_and_payoff.delay",
-          "verdict": "YES",
-          "weight": 1.0
-        },
-        {
-          "confidence": 0.9,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 1"
-            },
-            {
-              "reference": "draft chapters 1-6, Ch. 2"
-            }
-          ],
-          "module_id": "craft.narrative.foreshadowing_setup_and_payoff",
-          "question_id": "craft.narrative.foreshadowing_setup_and_payoff.earned",
-          "verdict": "YES",
-          "weight": 2.0
-        },
-        {
-          "confidence": 0.84,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 6"
-            },
-            {
-              "reference": "draft chapters 1-6, Ch. 6"
-            }
-          ],
-          "module_id": "craft.narrative.foreshadowing_setup_and_payoff",
-          "question_id": "craft.narrative.foreshadowing_setup_and_payoff.remembered",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.97,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 3"
-            },
-            {
-              "reference": "draft chapters 1-6, Ch. 6"
-            }
-          ],
-          "module_id": "craft.narrative.foreshadowing_setup_and_payoff",
-          "question_id": "craft.narrative.foreshadowing_setup_and_payoff.echo",
-          "verdict": "YES",
-          "weight": 1.0
-        },
-        {
-          "confidence": 0.82,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 4"
-            },
-            {
-              "reference": "draft chapters 1-6, Ch. 4"
-            }
-          ],
-          "module_id": "craft.narrative.foreshadowing_setup_and_payoff",
-          "question_id": "craft.narrative.foreshadowing_setup_and_payoff.no_deus",
-          "verdict": "YES",
-          "weight": 2.0
-        },
-        {
-          "confidence": 0.98,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 2"
-            }
-          ],
-          "module_id": "craft.narrative.narrative_momentum",
-          "question_id": "craft.narrative.narrative_momentum.curiosity",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.97,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 5"
-            }
-          ],
-          "module_id": "craft.narrative.narrative_momentum",
-          "question_id": "craft.narrative.narrative_momentum.investment",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.97,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 6"
-            }
-          ],
-          "module_id": "craft.narrative.narrative_momentum",
-          "question_id": "craft.narrative.narrative_momentum.consequence",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.92,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 1"
-            },
-            {
-              "reference": "draft chapters 1-6, Ch. 6"
-            }
-          ],
-          "module_id": "craft.narrative.narrative_momentum",
-          "question_id": "craft.narrative.narrative_momentum.voice_pull",
-          "verdict": "YES",
-          "weight": 1.0
-        },
-        {
-          "confidence": 0.98,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 5"
-            },
-            {
-              "reference": "draft chapters 1-6, Ch. 6"
-            }
-          ],
-          "module_id": "craft.narrative.narrative_momentum",
-          "question_id": "craft.narrative.narrative_momentum.concept_pull",
-          "verdict": "YES",
-          "weight": 1.0
-        },
-        {
-          "confidence": 0.95,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 5"
-            }
-          ],
-          "module_id": "craft.narrative.narrative_momentum",
-          "question_id": "craft.narrative.narrative_momentum.progress",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.94,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 5-6"
-            }
-          ],
-          "module_id": "craft.narrative.narrative_momentum",
-          "question_id": "craft.narrative.narrative_momentum.commitment",
-          "verdict": "YES",
-          "weight": 2.0
-        },
-        {
-          "confidence": 0.91,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 4"
-            },
-            {
-              "reference": "draft chapters 1-6, Ch. 5"
-            }
-          ],
-          "module_id": "craft.narrative.narrative_momentum",
-          "question_id": "craft.narrative.narrative_momentum.no_false_hook",
-          "verdict": "YES",
-          "weight": 1.5
-        }
-      ],
-      "score": {
-        "lower": 18.8235,
-        "observed": 18.8235,
-        "upper": 18.8235
-      },
-      "title": "Plot architecture and payoff",
-      "weights": {
-        "applicable": 34.0,
-        "failed": 2.0,
-        "passed": 32.0,
-        "unassessed": 0.0
-      }
-    },
-    {
-      "active": true,
-      "confidence": 0.9122,
-      "coverage": 1.0,
-      "domain_id": "world",
-      "nominal_points": 12.0,
-      "questions": [
-        {
-          "confidence": 0.94,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 6"
-            }
-          ],
-          "module_id": "craft.narrative.worldbuilding",
-          "question_id": "craft.narrative.worldbuilding.rules",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.87,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 5"
-            },
-            {
-              "reference": "draft chapters 1-6, Ch. 6"
-            }
-          ],
-          "module_id": "craft.narrative.worldbuilding",
-          "question_id": "craft.narrative.worldbuilding.consistency",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.99,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 5"
-            },
-            {
-              "reference": "draft chapters 1-6, Ch. 5"
-            }
-          ],
-          "module_id": "craft.narrative.worldbuilding",
-          "question_id": "craft.narrative.worldbuilding.constraints",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.88,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 5"
-            },
-            {
-              "reference": "draft chapters 1-6, Ch. 5"
-            }
-          ],
-          "module_id": "craft.narrative.worldbuilding",
-          "question_id": "craft.narrative.worldbuilding.culture",
-          "verdict": "YES",
-          "weight": 1.0
-        },
-        {
-          "confidence": 0.92,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 5"
-            }
-          ],
-          "module_id": "craft.narrative.worldbuilding",
-          "question_id": "craft.narrative.worldbuilding.history",
-          "verdict": "YES",
-          "weight": 1.0
-        },
-        {
-          "confidence": 0.82,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 5"
-            },
-            {
-              "reference": "draft chapters 1-6, Ch. 5"
-            }
-          ],
-          "module_id": "craft.narrative.worldbuilding",
-          "question_id": "craft.narrative.worldbuilding.consequences",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.97,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 3"
-            },
-            {
-              "reference": "draft chapters 1-6, Ch. 3"
-            }
-          ],
-          "module_id": "craft.narrative.worldbuilding",
-          "question_id": "craft.narrative.worldbuilding.integration",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.98,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 3"
-            },
-            {
-              "reference": "draft chapters 1-6, Ch. 3"
-            }
-          ],
-          "module_id": "craft.narrative.worldbuilding",
-          "question_id": "craft.narrative.worldbuilding.no_lore_dump",
-          "verdict": "NO",
-          "weight": 2.0
-        },
-        {
-          "confidence": 0.9,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 5"
-            },
-            {
-              "reference": "draft chapters 1-6, Ch. 5"
-            }
-          ],
-          "module_id": "craft.narrative.worldbuilding",
-          "question_id": "craft.narrative.worldbuilding.no_default_furniture",
-          "verdict": "YES",
-          "weight": 1.0
-        },
-        {
-          "confidence": 0.89,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 4"
-            },
-            {
-              "reference": "draft chapters 1-6, Ch. 6"
-            },
-            {
-              "reference": "author notes, VI"
-            }
-          ],
-          "module_id": "craft.narrative.continuity_and_canon_integrity",
-          "question_id": "craft.narrative.continuity_and_canon_integrity.characters",
-          "verdict": "NO",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.97,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 6"
-            }
-          ],
-          "module_id": "craft.narrative.continuity_and_canon_integrity",
-          "question_id": "craft.narrative.continuity_and_canon_integrity.knowledge",
-          "verdict": "YES",
-          "weight": 2.0
-        },
-        {
-          "confidence": 0.91,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 3"
-            },
-            {
-              "reference": "draft chapters 1-6, Ch. 3"
-            }
-          ],
-          "module_id": "craft.narrative.continuity_and_canon_integrity",
-          "question_id": "craft.narrative.continuity_and_canon_integrity.facts",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.91,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 4"
-            },
-            {
-              "reference": "draft chapters 1-6, Ch. 5"
-            }
-          ],
-          "module_id": "craft.narrative.continuity_and_canon_integrity",
-          "question_id": "craft.narrative.continuity_and_canon_integrity.world",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.93,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 1"
-            },
-            {
-              "reference": "draft chapters 1-6, Ch. 4"
-            }
-          ],
-          "module_id": "craft.narrative.continuity_and_canon_integrity",
-          "question_id": "craft.narrative.continuity_and_canon_integrity.chronology",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.83,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 6"
-            }
-          ],
-          "module_id": "craft.narrative.continuity_and_canon_integrity",
-          "question_id": "craft.narrative.continuity_and_canon_integrity.state",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.88,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 5"
-            },
-            {
-              "reference": "draft chapters 1-6, Ch. 6"
-            }
-          ],
-          "module_id": "craft.narrative.continuity_and_canon_integrity",
-          "question_id": "craft.narrative.continuity_and_canon_integrity.threads",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.98,
-          "evidence": [
-            {
-              "reference": "author notes, IX"
-            }
-          ],
-          "module_id": "craft.narrative.continuity_and_canon_integrity",
-          "question_id": "craft.narrative.continuity_and_canon_integrity.supersession",
-          "verdict": "NOT_APPLICABLE",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.86,
-          "evidence": [
-            {
-              "reference": "ch. 6"
-            },
-            {
-              "reference": "ch. 6"
-            }
-          ],
-          "module_id": "craft.narrative.continuity_and_canon_integrity",
-          "question_id": "craft.narrative.continuity_and_canon_integrity.conflicts",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.96,
-          "evidence": [
-            {
-              "reference": "ch. 2"
-            },
-            {
-              "reference": "ch. 6"
-            }
-          ],
-          "module_id": "craft.narrative.temporal_and_spatial_continuity",
-          "question_id": "craft.narrative.temporal_and_spatial_continuity.chronology",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.95,
-          "evidence": [
-            {
-              "reference": "ch. 1"
-            },
-            {
-              "reference": "ch. 4"
-            },
-            {
-              "reference": "ch. 3"
-            }
-          ],
-          "module_id": "craft.narrative.temporal_and_spatial_continuity",
-          "question_id": "craft.narrative.temporal_and_spatial_continuity.elapsed_time",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.94,
-          "evidence": [
-            {
-              "reference": "ch. 1"
-            },
-            {
-              "reference": "ch. 6"
-            }
-          ],
-          "module_id": "craft.narrative.temporal_and_spatial_continuity",
-          "question_id": "craft.narrative.temporal_and_spatial_continuity.travel",
-          "verdict": "YES",
-          "weight": 1.0
-        },
-        {
-          "confidence": 0.91,
-          "evidence": [
-            {
-              "reference": "ch. 4"
-            },
-            {
-              "reference": "ch. 5"
-            }
-          ],
-          "module_id": "craft.narrative.temporal_and_spatial_continuity",
-          "question_id": "craft.narrative.temporal_and_spatial_continuity.entrances",
-          "verdict": "YES",
-          "weight": 1.0
-        },
-        {
-          "confidence": 0.86,
-          "evidence": [
-            {
-              "reference": "ch. 2"
-            },
-            {
-              "reference": "ch. 5"
-            }
-          ],
-          "module_id": "craft.narrative.temporal_and_spatial_continuity",
-          "question_id": "craft.narrative.temporal_and_spatial_continuity.objects",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.92,
-          "evidence": [
-            {
-              "reference": "ch. 4"
-            },
-            {
-              "reference": "ch. 4"
-            }
-          ],
-          "module_id": "craft.narrative.temporal_and_spatial_continuity",
-          "question_id": "craft.narrative.temporal_and_spatial_continuity.orientation",
-          "verdict": "YES",
-          "weight": 1.0
-        },
-        {
-          "confidence": 0.86,
-          "evidence": [
-            {
-              "reference": "ch. 5"
-            },
-            {
-              "reference": "ch. 6"
-            }
-          ],
-          "module_id": "craft.narrative.temporal_and_spatial_continuity",
-          "question_id": "craft.narrative.temporal_and_spatial_continuity.state_update",
-          "verdict": "YES",
-          "weight": 1.5
-        }
-      ],
-      "score": {
-        "lower": 10.7647,
-        "observed": 10.7647,
-        "upper": 10.7647
-      },
-      "title": "World and continuity",
-      "weights": {
-        "applicable": 34.0,
-        "failed": 3.5,
-        "passed": 30.5,
-        "unassessed": 0.0
-      }
-    },
-    {
-      "active": true,
-      "confidence": 0.8573,
-      "coverage": 1.0,
-      "domain_id": "pacing",
-      "nominal_points": 10.0,
-      "questions": [
-        {
-          "confidence": 0.78,
-          "evidence": [
-            {
-              "reference": "ch. 1"
-            },
-            {
-              "reference": "ch. 5"
-            }
-          ],
-          "module_id": "craft.narrative.pacing_and_narrative_time",
-          "question_id": "craft.narrative.pacing_and_narrative_time.allocation",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.97,
-          "evidence": [
-            {
-              "reference": "ch. 4"
-            }
-          ],
-          "module_id": "craft.narrative.pacing_and_narrative_time",
-          "question_id": "craft.narrative.pacing_and_narrative_time.acceleration",
-          "verdict": "YES",
-          "weight": 1.0
-        },
-        {
-          "confidence": 0.94,
-          "evidence": [
-            {
-              "reference": "ch. 3"
-            },
-            {
-              "reference": "ch. 3"
-            }
-          ],
-          "module_id": "craft.narrative.pacing_and_narrative_time",
-          "question_id": "craft.narrative.pacing_and_narrative_time.deceleration",
-          "verdict": "YES",
-          "weight": 1.0
-        },
-        {
-          "confidence": 0.87,
-          "evidence": [
-            {
-              "reference": "ch. 5"
-            },
-            {
-              "reference": "ch. 3"
-            }
-          ],
-          "module_id": "craft.narrative.pacing_and_narrative_time",
-          "question_id": "craft.narrative.pacing_and_narrative_time.scene_summary",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.88,
-          "evidence": [
-            {
-              "reference": "ch. 2"
-            },
-            {
-              "reference": "ch. 3"
-            }
-          ],
-          "module_id": "craft.narrative.pacing_and_narrative_time",
-          "question_id": "craft.narrative.pacing_and_narrative_time.reveal_timing",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.96,
-          "evidence": [
-            {
-              "reference": "ch. 2"
-            },
-            {
-              "reference": "ch. 4"
-            }
-          ],
-          "module_id": "craft.narrative.pacing_and_narrative_time",
-          "question_id": "craft.narrative.pacing_and_narrative_time.variation",
-          "verdict": "YES",
-          "weight": 1.0
-        },
-        {
-          "confidence": 0.79,
-          "evidence": [
-            {
-              "reference": "ch. 5"
-            },
-            {
-              "reference": "ch. 6"
-            }
-          ],
-          "module_id": "craft.narrative.pacing_and_narrative_time",
-          "question_id": "craft.narrative.pacing_and_narrative_time.local_global",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.74,
-          "evidence": [
-            {
-              "reference": "ch. 6"
-            }
-          ],
-          "module_id": "craft.narrative.pacing_and_narrative_time",
-          "question_id": "craft.narrative.pacing_and_narrative_time.no_stall",
-          "verdict": "YES",
-          "weight": 2.0
-        },
-        {
-          "confidence": 0.93,
-          "evidence": [
-            {
-              "reference": "ch. 2"
-            },
-            {
-              "reference": "ch. 4"
-            }
-          ],
-          "module_id": "craft.narrative.exposition_and_information_management",
-          "question_id": "craft.narrative.exposition_and_information_management.reader_state",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.88,
-          "evidence": [
-            {
-              "reference": "ch. 2"
-            },
-            {
-              "reference": "ch. 6"
-            }
-          ],
-          "module_id": "craft.narrative.exposition_and_information_management",
-          "question_id": "craft.narrative.exposition_and_information_management.timing",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.89,
-          "evidence": [
-            {
-              "reference": "ch. 3"
-            },
-            {
-              "reference": "ch. 4"
-            }
-          ],
-          "module_id": "craft.narrative.exposition_and_information_management",
-          "question_id": "craft.narrative.exposition_and_information_management.embedding",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.78,
-          "evidence": [
-            {
-              "reference": "ch. 5"
-            },
-            {
-              "reference": "ch. 5"
-            }
-          ],
-          "module_id": "craft.narrative.exposition_and_information_management",
-          "question_id": "craft.narrative.exposition_and_information_management.priority",
-          "verdict": "YES",
-          "weight": 1.0
-        },
-        {
-          "confidence": 0.73,
-          "evidence": [
-            {
-              "reference": "ch. 3"
-            },
-            {
-              "reference": "ch. 6"
-            }
-          ],
-          "module_id": "craft.narrative.exposition_and_information_management",
-          "question_id": "craft.narrative.exposition_and_information_management.no_redundancy",
-          "verdict": "YES",
-          "weight": 2.0
-        },
-        {
-          "confidence": 0.86,
-          "evidence": [
-            {
-              "reference": "ch. 3"
-            },
-            {
-              "reference": "ch. 6"
-            }
-          ],
-          "module_id": "craft.narrative.exposition_and_information_management",
-          "question_id": "craft.narrative.exposition_and_information_management.no_dump",
-          "verdict": "NO",
-          "weight": 2.0
-        },
-        {
-          "confidence": 0.88,
-          "evidence": [
-            {
-              "reference": "ch. 3"
-            },
-            {
-              "reference": "ch. 6"
-            }
-          ],
-          "module_id": "craft.narrative.exposition_and_information_management",
-          "question_id": "craft.narrative.exposition_and_information_management.fair_withholding",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.91,
-          "evidence": [
-            {
-              "reference": "ch. 4"
-            },
-            {
-              "reference": "ch. 5"
-            }
-          ],
-          "module_id": "craft.narrative.transitions_and_connective_tissue",
-          "question_id": "craft.narrative.transitions_and_connective_tissue.logic",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.95,
-          "evidence": [
-            {
-              "reference": "ch. 2"
-            },
-            {
-              "reference": "ch. 6"
-            }
-          ],
-          "module_id": "craft.narrative.transitions_and_connective_tissue",
-          "question_id": "craft.narrative.transitions_and_connective_tissue.time",
-          "verdict": "YES",
-          "weight": 1.0
-        },
-        {
-          "confidence": 0.94,
-          "evidence": [
-            {
-              "reference": "ch. 6"
-            },
-            {
-              "reference": "ch. 1"
-            }
-          ],
-          "module_id": "craft.narrative.transitions_and_connective_tissue",
-          "question_id": "craft.narrative.transitions_and_connective_tissue.place",
-          "verdict": "YES",
-          "weight": 1.0
-        },
-        {
-          "confidence": 0.98,
-          "evidence": [
-            {
-              "reference": "ch. 4"
-            },
-            {
-              "reference": "ch. 4"
-            }
-          ],
-          "module_id": "craft.narrative.transitions_and_connective_tissue",
-          "question_id": "craft.narrative.transitions_and_connective_tissue.speaker",
-          "verdict": "YES",
-          "weight": 1.0
-        },
-        {
-          "confidence": 0.9,
-          "evidence": [
-            {
-              "reference": "ch. 6"
-            },
-            {
-              "reference": "ch. 3"
-            }
-          ],
-          "module_id": "craft.narrative.transitions_and_connective_tissue",
-          "question_id": "craft.narrative.transitions_and_connective_tissue.mode",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.8,
-          "evidence": [
-            {
-              "reference": "ch. 5"
-            }
-          ],
-          "module_id": "craft.narrative.transitions_and_connective_tissue",
-          "question_id": "craft.narrative.transitions_and_connective_tissue.momentum",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.78,
-          "evidence": [
-            {
-              "reference": "ch. 5"
-            }
-          ],
-          "module_id": "craft.narrative.transitions_and_connective_tissue",
-          "question_id": "craft.narrative.transitions_and_connective_tissue.no_bridge_filler",
-          "verdict": "YES",
-          "weight": 2.0
-        }
-      ],
-      "score": {
-        "lower": 9.3651,
-        "observed": 9.3651,
-        "upper": 9.3651
-      },
-      "title": "Pacing and information",
-      "weights": {
-        "applicable": 31.5,
-        "failed": 2.0,
-        "passed": 29.5,
-        "unassessed": 0.0
-      }
-    },
-    {
-      "active": true,
-      "confidence": 0.9085,
-      "coverage": 1.0,
-      "domain_id": "language",
-      "nominal_points": 10.0,
-      "questions": [
-        {
-          "confidence": 0.97,
-          "evidence": [
-            {
-              "reference": "ch. 2"
-            },
-            {
-              "reference": "ch. 1"
-            }
-          ],
-          "module_id": "core.language_craft",
-          "question_id": "core.language_craft.diction",
-          "verdict": "NO",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.95,
-          "evidence": [
-            {
-              "reference": "ch. 6"
-            },
-            {
-              "reference": "ch. 5"
-            }
-          ],
-          "module_id": "core.language_craft",
-          "question_id": "core.language_craft.syntax",
-          "verdict": "NO",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.9,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 3, activation disclosure"
-            }
-          ],
-          "module_id": "core.language_craft",
-          "question_id": "core.language_craft.cadence",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.82,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 4, dorm confrontation"
-            }
-          ],
-          "module_id": "core.language_craft",
-          "question_id": "core.language_craft.variation",
-          "verdict": "YES",
-          "weight": 1.0
-        },
-        {
-          "confidence": 0.86,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 3, activation disclosure"
-            }
-          ],
-          "module_id": "core.language_craft",
-          "question_id": "core.language_craft.paragraph_movement",
-          "verdict": "YES",
-          "weight": 1.0
-        },
-        {
-          "confidence": 0.95,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 3, shadow-flowers spell"
-            }
-          ],
-          "module_id": "core.language_craft",
-          "question_id": "core.language_craft.images",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.89,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 4, dorm confrontation"
-            }
-          ],
-          "module_id": "core.language_craft",
-          "question_id": "core.language_craft.sound",
-          "verdict": "YES",
-          "weight": 1.0
-        },
-        {
-          "confidence": 0.91,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 3, activation disclosure"
-            }
-          ],
-          "module_id": "core.language_craft",
-          "question_id": "core.language_craft.emphasis",
-          "verdict": "YES",
-          "weight": 1.0
-        },
-        {
-          "confidence": 0.99,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 1, bedroom banter"
-            },
-            {
-              "reference": "draft chapters 1-6, Ch. 6, discussion with Amelia"
-            }
-          ],
-          "module_id": "core.language_craft",
-          "question_id": "core.language_craft.no_awkwardness",
-          "verdict": "NO",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.96,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 6, magic lesson"
-            }
-          ],
-          "module_id": "core.voice_and_stylistic_identity",
-          "question_id": "core.voice_and_stylistic_identity.distinctive",
-          "verdict": "YES",
-          "weight": 2.0
-        },
-        {
-          "confidence": 0.95,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 3, Madison's response to the lesson"
-            }
-          ],
-          "module_id": "core.voice_and_stylistic_identity",
-          "question_id": "core.voice_and_stylistic_identity.sustained",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.86,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 2, aftermath of the climber incident"
-            }
-          ],
-          "module_id": "core.voice_and_stylistic_identity",
-          "question_id": "core.voice_and_stylistic_identity.suitable",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.96,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 1, first meeting"
-            },
-            {
-              "reference": "draft chapters 1-6, Ch. 1, after tasting Madison's blood"
-            }
-          ],
-          "module_id": "core.voice_and_stylistic_identity",
-          "question_id": "core.voice_and_stylistic_identity.project_fidelity",
-          "verdict": "NO",
-          "weight": 2.0
-        },
-        {
-          "confidence": 0.77,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 4, confrontation with Mackenzie"
-            },
-            {
-              "reference": "draft chapters 1-6, Ch. 5, FAWN drinking game"
-            }
-          ],
-          "module_id": "core.voice_and_stylistic_identity",
-          "question_id": "core.voice_and_stylistic_identity.shift_control",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.96,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 6, magic lesson"
-            }
-          ],
-          "module_id": "core.voice_and_stylistic_identity",
-          "question_id": "core.voice_and_stylistic_identity.ownership",
-          "verdict": "YES",
-          "weight": 2.0
-        },
-        {
-          "confidence": 0.82,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 5, Mackenzie"
-            },
-            {
-              "reference": "draft chapters 1-6, Ch. 6, Zoe"
-            }
-          ],
-          "module_id": "craft.narrative.dialogue",
-          "question_id": "craft.narrative.dialogue.voice_distinction",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.93,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 5, truth-or-dare exchange"
-            }
-          ],
-          "module_id": "craft.narrative.dialogue",
-          "question_id": "craft.narrative.dialogue.subtext",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.7,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 3, Amelia's first magic lesson"
-            }
-          ],
-          "module_id": "craft.narrative.dialogue",
-          "question_id": "craft.narrative.dialogue.naturalness",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.96,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 5, truth-or-dare exchange"
-            }
-          ],
-          "module_id": "craft.narrative.dialogue",
-          "question_id": "craft.narrative.dialogue.purpose",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.88,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 5, Mackenzie feeding on Madison"
-            },
-            {
-              "reference": "draft chapters 1-6, Ch. 5, confession"
-            }
-          ],
-          "module_id": "craft.narrative.dialogue",
-          "question_id": "craft.narrative.dialogue.rhythm",
-          "verdict": "YES",
-          "weight": 1.0
-        },
-        {
-          "confidence": 0.84,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 3, Madison questioning Amelia"
-            }
-          ],
-          "module_id": "craft.narrative.dialogue",
-          "question_id": "craft.narrative.dialogue.listening",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.95,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 2, post-incident conversation"
-            },
-            {
-              "reference": "draft chapters 1-6, Ch. 5, feeding scene"
-            }
-          ],
-          "module_id": "craft.narrative.dialogue",
-          "question_id": "craft.narrative.dialogue.action_balance",
-          "verdict": "YES",
-          "weight": 1.0
-        },
-        {
-          "confidence": 0.99,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 3, magic lesson"
-            },
-            {
-              "reference": "draft chapters 1-6, Ch. 6, Zoe explaining intent"
-            }
-          ],
-          "module_id": "craft.narrative.dialogue",
-          "question_id": "craft.narrative.dialogue.no_exposition",
-          "verdict": "NO",
-          "weight": 2.0
-        }
-      ],
-      "score": {
-        "lower": 7.4627,
-        "observed": 7.4627,
-        "upper": 7.4627
-      },
-      "title": "Language and voice",
-      "weights": {
-        "applicable": 33.5,
-        "failed": 8.5,
-        "passed": 25.0,
-        "unassessed": 0.0
-      }
-    },
-    {
-      "active": true,
-      "confidence": 0.9254,
-      "coverage": 1.0,
-      "domain_id": "effect",
-      "nominal_points": 8.0,
-      "questions": [
-        {
-          "confidence": 0.93,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 2, aftermath of the climber incident"
-            },
-            {
-              "reference": "draft chapters 1-6, Ch. 5, FAWN meeting"
-            }
-          ],
-          "module_id": "craft.narrative.theme_and_subtext",
-          "question_id": "craft.narrative.theme_and_subtext.emergence",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.9,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 5, Madison's confession"
-            }
-          ],
-          "module_id": "craft.narrative.theme_and_subtext",
-          "question_id": "craft.narrative.theme_and_subtext.subtext",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.86,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 5, blood batteries"
-            },
-            {
-              "reference": "draft chapters 1-6, Ch. 3, activation disclosure"
-            }
-          ],
-          "module_id": "craft.narrative.theme_and_subtext",
-          "question_id": "craft.narrative.theme_and_subtext.development",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.97,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 3, request for constructive magic"
-            },
-            {
-              "reference": "draft chapters 1-6, Ch. 6, Amelia's defense"
-            }
-          ],
-          "module_id": "craft.narrative.theme_and_subtext",
-          "question_id": "craft.narrative.theme_and_subtext.counterpoint",
-          "verdict": "YES",
-          "weight": 1.0
-        },
-        {
-          "confidence": 0.95,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 3, freework spell"
-            },
-            {
-              "reference": "draft chapters 1-6, Ch. 6, engraved spells"
-            }
-          ],
-          "module_id": "craft.narrative.theme_and_subtext",
-          "question_id": "craft.narrative.theme_and_subtext.integration",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.9,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 6, Amelia's defense"
-            }
-          ],
-          "module_id": "craft.narrative.theme_and_subtext",
-          "question_id": "craft.narrative.theme_and_subtext.no_moral",
-          "verdict": "YES",
-          "weight": 2.0
-        },
-        {
-          "confidence": 0.83,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 5, after Madison's confession"
-            },
-            {
-              "reference": "draft chapters 1-6, Ch. 6, Zoe on turning"
-            }
-          ],
-          "module_id": "craft.narrative.theme_and_subtext",
-          "question_id": "craft.narrative.theme_and_subtext.open_questions",
-          "verdict": "YES",
-          "weight": 1.0
-        },
-        {
-          "confidence": 0.93,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 2, Madison seeing the climber drained"
-            },
-            {
-              "reference": "draft chapters 1-6, Ch. 3, request for constructive magic"
-            }
-          ],
-          "module_id": "core.emotional_and_intellectual_effect",
-          "question_id": "core.emotional_and_intellectual_effect.intended_effect",
-          "verdict": "NO",
-          "weight": 2.0
-        },
-        {
-          "confidence": 0.89,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 3, activation disclosure"
-            },
-            {
-              "reference": "draft chapters 1-6, Ch. 5, feeding scene"
-            }
-          ],
-          "module_id": "core.emotional_and_intellectual_effect",
-          "question_id": "core.emotional_and_intellectual_effect.earned_emotion",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.98,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 6, magic lesson"
-            }
-          ],
-          "module_id": "core.emotional_and_intellectual_effect",
-          "question_id": "core.emotional_and_intellectual_effect.conceptual_interest",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.93,
-          "evidence": [
-            {
-              "reference": "draft chapters 1-6, Ch. 2, piano scene"
-            },
-            {
-              "reference": "draft chapters 1-6, Ch. 5, FAWN drinking game"
-            }
-          ],
-          "module_id": "core.emotional_and_intellectual_effect",
-          "question_id": "core.emotional_and_intellectual_effect.modulation",
-          "verdict": "YES",
-          "weight": 1.0
-        },
-        {
-          "confidence": 0.99,
-          "evidence": [
-            {
-              "reference": "Artifact, Ch. 2, piano scene"
-            }
-          ],
-          "module_id": "core.emotional_and_intellectual_effect",
-          "question_id": "core.emotional_and_intellectual_effect.restraint",
-          "verdict": "NO",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.98,
-          "evidence": [
-            {
-              "reference": "Artifact, Ch. 2, climber aftermath"
-            },
-            {
-              "reference": "Artifact, Ch. 6, serial-killer conversation"
-            }
-          ],
-          "module_id": "core.emotional_and_intellectual_effect",
-          "question_id": "core.emotional_and_intellectual_effect.aftermath",
-          "verdict": "YES",
-          "weight": 1.0
-        }
-      ],
-      "score": {
-        "lower": 6.4865,
-        "observed": 6.4865,
-        "upper": 6.4865
-      },
-      "title": "Theme and effect",
-      "weights": {
-        "applicable": 18.5,
-        "failed": 3.5,
-        "passed": 15.0,
-        "unassessed": 0.0
-      }
-    },
-    {
-      "active": true,
-      "confidence": 0.9496,
-      "coverage": 1.0,
-      "domain_id": "fresh",
-      "nominal_points": 5.0,
-      "questions": [
-        {
-          "confidence": 0.98,
-          "evidence": [
-            {
-              "reference": "Artifact, Ch. 1"
-            },
-            {
-              "reference": "Artifact, Ch. 2, piano scene"
-            }
-          ],
-          "module_id": "core.freshness_and_non_genericness",
-          "question_id": "core.freshness_and_non_genericness.no_cliche",
-          "verdict": "NO",
-          "weight": 2.0
-        },
-        {
-          "confidence": 0.98,
-          "evidence": [
-            {
-              "reference": "Artifact, Ch. 1, first date"
-            },
-            {
-              "reference": "Artifact, Ch. 5, ending"
-            }
-          ],
-          "module_id": "core.freshness_and_non_genericness",
-          "question_id": "core.freshness_and_non_genericness.no_stock_beats",
-          "verdict": "NO",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.94,
-          "evidence": [
-            {
-              "reference": "Artifact, Ch. 2, piano scene"
-            },
-            {
-              "reference": "Artifact, Ch. 3, magic exposition"
-            }
-          ],
-          "module_id": "core.freshness_and_non_genericness",
-          "question_id": "core.freshness_and_non_genericness.no_llm_phrasing",
-          "verdict": "NO",
-          "weight": 2.0
-        },
-        {
-          "confidence": 0.99,
-          "evidence": [
-            {
-              "reference": "Artifact, Ch. 1"
-            },
-            {
-              "reference": "Artifact, Ch. 3"
-            }
-          ],
-          "module_id": "core.freshness_and_non_genericness",
-          "question_id": "core.freshness_and_non_genericness.no_default_metaphors",
-          "verdict": "NO",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.98,
-          "evidence": [
-            {
-              "reference": "Artifact, Ch. 2, walk after the climber"
-            },
-            {
-              "reference": "Artifact, Ch. 5, FAWN meeting"
-            }
-          ],
-          "module_id": "core.freshness_and_non_genericness",
-          "question_id": "core.freshness_and_non_genericness.no_emotion_summary",
-          "verdict": "NO",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.99,
-          "evidence": [
-            {
-              "reference": "Artifact, Ch. 3, shadow-flower spell"
-            }
-          ],
-          "module_id": "core.freshness_and_non_genericness",
-          "question_id": "core.freshness_and_non_genericness.unpredictable_specificity",
-          "verdict": "YES",
-          "weight": 2.0
-        },
-        {
-          "confidence": 0.86,
-          "evidence": [
-            {
-              "reference": "Artifact, Ch. 6, mechanics lesson"
-            },
-            {
-              "reference": "Artifact, Ch. 3, chapter heading"
-            }
-          ],
-          "module_id": "core.freshness_and_non_genericness",
-          "question_id": "core.freshness_and_non_genericness.no_forced_novelty",
-          "verdict": "YES",
-          "weight": 1.0
-        },
-        {
-          "confidence": 0.98,
-          "evidence": [
-            {
-              "reference": "Artifact, Ch. 2, climber scene"
-            }
-          ],
-          "module_id": "core.freshness_and_non_genericness",
-          "question_id": "core.freshness_and_non_genericness.no_rare_word_chasing",
-          "verdict": "YES",
-          "weight": 1.0
-        },
-        {
-          "confidence": 0.95,
-          "evidence": [
-            {
-              "reference": "Artifact, Ch. 2, piano scene"
-            },
-            {
-              "reference": "Artifact, Ch. 1, unpacking scene"
-            }
-          ],
-          "module_id": "core.economy_and_relevance",
-          "question_id": "core.economy_and_relevance.earns_place",
-          "verdict": "NO",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.98,
-          "evidence": [
-            {
-              "reference": "Artifact, Ch. 3"
-            },
-            {
-              "reference": "Artifact, Ch. 3"
-            }
-          ],
-          "module_id": "core.economy_and_relevance",
-          "question_id": "core.economy_and_relevance.no_restatement",
-          "verdict": "NO",
-          "weight": 2.5
-        },
-        {
-          "confidence": 0.96,
-          "evidence": [
-            {
-              "reference": "Artifact, Ch. 3"
-            },
-            {
-              "reference": "Artifact, Ch. 4"
-            }
-          ],
-          "module_id": "core.economy_and_relevance",
-          "question_id": "core.economy_and_relevance.functional_repetition",
-          "verdict": "NO",
-          "weight": 2.0
-        },
-        {
-          "confidence": 0.9,
-          "evidence": [
-            {
-              "reference": "Artifact, Ch. 1, Amelia's house"
-            },
-            {
-              "reference": "Artifact, Ch. 6, heart gem"
-            }
-          ],
-          "module_id": "core.economy_and_relevance",
-          "question_id": "core.economy_and_relevance.detail_relevance",
-          "verdict": "YES",
-          "weight": 1.0
-        },
-        {
-          "confidence": 0.93,
-          "evidence": [
-            {
-              "reference": "Artifact, Ch. 2, piano scene"
-            }
-          ],
-          "module_id": "core.economy_and_relevance",
-          "question_id": "core.economy_and_relevance.digression",
-          "verdict": "YES",
-          "weight": 1.0
-        },
-        {
-          "confidence": 0.8,
-          "evidence": [
-            {
-              "reference": "Artifact, Ch. 5"
-            },
-            {
-              "reference": "Artifact, Ch. 6"
-            }
-          ],
-          "module_id": "core.economy_and_relevance",
-          "question_id": "core.economy_and_relevance.length_fit",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.93,
-          "evidence": [
-            {
-              "reference": "Artifact, Ch. 3, shadow-flower scene"
-            },
-            {
-              "reference": "Artifact, Ch. 2, piano scene"
-            }
-          ],
-          "module_id": "core.economy_and_relevance",
-          "question_id": "core.economy_and_relevance.no_flattening",
-          "verdict": "YES",
-          "weight": 1.0
-        }
-      ],
-      "score": {
-        "lower": 1.8478,
-        "observed": 1.8478,
-        "upper": 1.8478
-      },
-      "title": "Freshness and economy",
-      "weights": {
-        "applicable": 23.0,
-        "failed": 14.5,
-        "passed": 8.5,
-        "unassessed": 0.0
-      }
-    },
-    {
-      "active": true,
-      "confidence": 0.9915,
-      "coverage": 1.0,
-      "domain_id": "mechanics",
-      "nominal_points": 4.0,
-      "questions": [
-        {
-          "confidence": 0.999,
-          "evidence": [
-            {
-              "reference": "Artifact, Ch. 2"
-            },
-            {
-              "reference": "Artifact, Ch. 6"
-            }
-          ],
-          "module_id": "core.mechanics_and_presentation",
-          "question_id": "core.mechanics_and_presentation.grammar",
-          "verdict": "NO",
-          "weight": 1.0
-        },
-        {
-          "confidence": 0.999,
-          "evidence": [
-            {
-              "reference": "Artifact, Ch. 2"
-            },
-            {
-              "reference": "Artifact, Ch. 4"
-            }
-          ],
-          "module_id": "core.mechanics_and_presentation",
-          "question_id": "core.mechanics_and_presentation.punctuation",
-          "verdict": "NO",
-          "weight": 1.0
-        },
-        {
-          "confidence": 0.999,
-          "evidence": [
-            {
-              "reference": "Artifact, Ch. 5"
-            },
-            {
-              "reference": "Artifact, Ch. 4"
-            }
-          ],
-          "module_id": "core.mechanics_and_presentation",
-          "question_id": "core.mechanics_and_presentation.spelling",
-          "verdict": "NO",
-          "weight": 1.0
-        },
-        {
-          "confidence": 0.95,
-          "evidence": [
-            {
-              "reference": "Artifact, chapter heading"
-            }
-          ],
-          "module_id": "core.mechanics_and_presentation",
-          "question_id": "core.mechanics_and_presentation.formatting",
-          "verdict": "YES",
-          "weight": 1.0
-        },
-        {
-          "confidence": 0.99,
-          "evidence": [
-            {
-              "reference": "Artifact, Ch. 2, opening dialogue"
-            }
-          ],
-          "module_id": "core.mechanics_and_presentation",
-          "question_id": "core.mechanics_and_presentation.dialogue_mechanics",
-          "verdict": "NO",
-          "weight": 1.0
-        },
-        {
-          "confidence": 0.999,
-          "evidence": [
-            {
-              "reference": "Artifact, Ch. 1"
-            },
-            {
-              "reference": "Artifact, Ch. 4"
-            }
-          ],
-          "module_id": "core.mechanics_and_presentation",
-          "question_id": "core.mechanics_and_presentation.typography",
-          "verdict": "NO",
-          "weight": 1.0
-        },
-        {
-          "confidence": 1.0,
-          "evidence": [
-            {
-              "reference": "Artifact, Ch. 1"
-            }
-          ],
-          "module_id": "core.mechanics_and_presentation",
-          "question_id": "core.mechanics_and_presentation.cleanliness",
-          "verdict": "NO",
-          "weight": 1.5
-        }
-      ],
-      "score": {
-        "lower": 0.5333,
-        "observed": 0.5333,
-        "upper": 0.5333
-      },
-      "title": "Mechanics",
-      "weights": {
-        "applicable": 7.5,
-        "failed": 6.5,
-        "passed": 1.0,
-        "unassessed": 0.0
-      }
-    },
-    {
-      "active": true,
-      "confidence": 0.95,
-      "coverage": 1.0,
-      "domain_id": "holistic",
-      "nominal_points": 8.0,
-      "questions": [
-        {
-          "confidence": 0.99,
-          "evidence": [
-            {
-              "reference": "Artifact, Ch. 2"
-            },
-            {
-              "reference": "Artifact, Ch. 3"
-            }
-          ],
-          "module_id": "core.holistic_artistic_success",
-          "question_id": "core.holistic_artistic_success.threshold_1_functional",
-          "verdict": "YES",
-          "weight": 2.0
-        },
-        {
-          "confidence": 0.9,
-          "evidence": [
-            {
-              "reference": "Artifact, Ch. 4"
-            },
-            {
-              "reference": "Artifact, Ch. 3"
-            }
-          ],
-          "module_id": "core.holistic_artistic_success",
-          "question_id": "core.holistic_artistic_success.threshold_2_effective",
-          "verdict": "YES",
-          "weight": 2.0
-        },
-        {
-          "confidence": 0.92,
-          "evidence": [
-            {
-              "reference": "Artifact, Ch. 6"
-            },
-            {
-              "reference": "Artifact, Ch. 6"
-            }
-          ],
-          "module_id": "core.holistic_artistic_success",
-          "question_id": "core.holistic_artistic_success.threshold_3_keepworthy",
-          "verdict": "YES",
-          "weight": 2.0
-        },
-        {
-          "confidence": 0.99,
-          "evidence": [
-            {
-              "reference": "Artifact, Ch. 2"
-            },
-            {
-              "reference": "Artifact, Ch. 6"
-            }
-          ],
-          "module_id": "core.holistic_artistic_success",
-          "question_id": "core.holistic_artistic_success.threshold_4_exceptional",
-          "verdict": "NO",
-          "weight": 2.0
-        }
-      ],
-      "score": {
-        "lower": 6.0,
-        "observed": 6.0,
-        "upper": 6.0
-      },
-      "title": "Holistic artistic success",
-      "weights": {
-        "applicable": 8.0,
-        "failed": 2.0,
-        "passed": 6.0,
-        "unassessed": 0.0
-      }
-    }
-  ],
-  "final_score": {
-    "lower": 75.0029,
-    "observed": 78.0767,
-    "upper": 78.3
-  },
-  "hard_gate_status": "INVALID",
-  "hard_gates": [
-    {
-      "evidence": [
-        {
-          "reference": "draft chapters 1-6, Chapter One"
-        }
-      ],
-      "module_id": "core.task_and_brief_fidelity",
-      "question_id": "core.task_and_brief_fidelity.operation",
-      "verdict": "YES"
-    },
-    {
-      "evidence": [
-        {
-          "reference": "Prompt context header"
-        }
-      ],
-      "module_id": "core.task_and_brief_fidelity",
-      "question_id": "core.task_and_brief_fidelity.sources",
-      "verdict": "NOT_APPLICABLE"
-    },
-    {
-      "evidence": [
-        {
-          "reference": "author notes, §I"
-        },
-        {
-          "reference": "draft chapters 1-6, Chapter One"
-        }
-      ],
-      "module_id": "core.task_and_brief_fidelity",
-      "question_id": "core.task_and_brief_fidelity.inclusions",
-      "verdict": "NO"
-    },
-    {
-      "evidence": [
-        {
-          "reference": "author notes, §IX"
-        }
-      ],
-      "module_id": "core.task_and_brief_fidelity",
-      "question_id": "core.task_and_brief_fidelity.exclusions",
-      "verdict": "NOT_APPLICABLE"
-    },
-    {
-      "evidence": [
-        {
-          "reference": "author notes, §§I-IX"
-        }
-      ],
-      "module_id": "core.task_and_brief_fidelity",
-      "question_id": "core.task_and_brief_fidelity.pov",
-      "verdict": "NOT_APPLICABLE"
-    },
-    {
-      "evidence": [
-        {
-          "reference": "author notes, §§I-IX"
-        }
-      ],
-      "module_id": "core.task_and_brief_fidelity",
-      "question_id": "core.task_and_brief_fidelity.tense",
-      "verdict": "NOT_APPLICABLE"
-    },
-    {
-      "evidence": [
-        {
-          "reference": "draft chapters 1-6, Chapter One"
-        },
-        {
-          "reference": "draft chapters 1-6, Chapter Six"
-        }
-      ],
-      "module_id": "core.task_and_brief_fidelity",
-      "question_id": "core.task_and_brief_fidelity.structure",
-      "verdict": "YES"
-    },
-    {
-      "evidence": [
-        {
-          "reference": "draft chapters 1-6, Chapter Three"
-        }
-      ],
-      "module_id": "core.task_and_brief_fidelity",
-      "question_id": "core.task_and_brief_fidelity.format",
-      "verdict": "YES"
-    },
-    {
-      "evidence": [
-        {
-          "reference": "Prompt artifact metadata"
-        }
-      ],
-      "module_id": "core.task_and_brief_fidelity",
-      "question_id": "core.task_and_brief_fidelity.length_hard",
-      "verdict": "NOT_APPLICABLE"
-    },
-    {
-      "evidence": [
-        {
-          "reference": "author notes, §§I-IX"
-        }
-      ],
-      "module_id": "core.length_and_scope_fit",
-      "question_id": "core.length_and_scope_fit.explicit",
-      "verdict": "NOT_APPLICABLE"
-    },
-    {
-      "evidence": [
-        {
-          "reference": "draft chapters 1-6, Chapter One"
-        },
-        {
-          "reference": "draft chapters 1-6, end of Chapter Six"
-        }
-      ],
-      "module_id": "scope.long_context",
-      "question_id": "scope.long_context.overflow",
-      "verdict": "YES"
-    }
-  ],
-  "inactive_points_reallocated": 0.0,
-  "issues": [],
-  "minimum_coverage": 0.8,
-  "penalties": [
-    {
-      "cap_points": 5.0,
-      "coverage": 1.0,
-      "deduction": {
-        "lower": 0.0,
-        "observed": 0.0,
-        "upper": 0.0
-      },
-      "module_id": "penalty.purple_prose",
-      "questions": [
-        {
-          "confidence": 0.98,
-          "evidence": [
-            {
-              "reference": "Artifact, Ch. 2, spell aftermath"
-            }
-          ],
-          "question_id": "penalty.purple_prose.clarity",
-          "verdict": "YES",
-          "weight": 2.0
-        },
-        {
-          "confidence": 0.9,
-          "evidence": [
-            {
-              "reference": "Artifact, Ch. 2, piano scene"
-            },
-            {
-              "reference": "Artifact, Ch. 3"
-            }
-          ],
-          "question_id": "penalty.purple_prose.proportion",
-          "verdict": "YES",
-          "weight": 2.0
-        },
-        {
-          "confidence": 0.99,
-          "evidence": [
-            {
-              "reference": "Artifact, Ch. 3"
-            }
-          ],
-          "question_id": "penalty.purple_prose.specificity",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.82,
-          "evidence": [
-            {
-              "reference": "Artifact, Ch. 6, heart-gem scene"
-            }
-          ],
-          "question_id": "penalty.purple_prose.tone",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.8,
-          "evidence": [
-            {
-              "reference": "artifact:draft chapters 1-6#ch3-shadow-flowers"
-            }
-          ],
-          "question_id": "penalty.purple_prose.metaphor",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.84,
-          "evidence": [
-            {
-              "reference": "artifact:draft chapters 1-6#ch4-campus-confrontation"
-            }
-          ],
-          "question_id": "penalty.purple_prose.attention",
-          "verdict": "YES",
-          "weight": 2.0
-        },
-        {
-          "confidence": 0.88,
-          "evidence": [
-            {
-              "reference": "artifact:draft chapters 1-6#ch2-piano"
-            },
-            {
-              "reference": "artifact:draft chapters 1-6#ch4-class"
-            }
-          ],
-          "question_id": "penalty.purple_prose.fatigue",
-          "verdict": "YES",
-          "weight": 1.5
-        }
-      ],
-      "title": "Purple prose penalty",
-      "weights": {
-        "applicable": 12.0,
-        "failed": 0.0,
-        "passed": 12.0,
-        "unassessed": 0.0
-      }
-    },
-    {
-      "cap_points": 8.0,
-      "coverage": 1.0,
-      "deduction": {
-        "lower": 4.0,
-        "observed": 4.0,
-        "upper": 4.0
-      },
-      "module_id": "penalty.repetition",
-      "questions": [
-        {
-          "confidence": 0.94,
-          "evidence": [
-            {
-              "reference": "artifact:draft chapters 1-6#ch1-first-date"
-            },
-            {
-              "reference": "artifact:draft chapters 1-6#ch3-magic-lesson"
-            }
-          ],
-          "question_id": "penalty.repetition.lexical",
-          "verdict": "NO",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.88,
-          "evidence": [
-            {
-              "reference": "artifact:draft chapters 1-6#ch4-campus-confrontation"
-            },
-            {
-              "reference": "artifact:draft chapters 1-6#ch2-piano"
-            }
-          ],
-          "question_id": "penalty.repetition.syntax",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.8,
-          "evidence": [
-            {
-              "reference": "artifact:draft chapters 1-6#ch3-initial-reassurance"
-            },
-            {
-              "reference": "artifact:draft chapters 1-6#ch5-confession"
-            }
-          ],
-          "question_id": "penalty.repetition.semantic",
-          "verdict": "NO",
-          "weight": 2.0
-        },
-        {
-          "confidence": 0.93,
-          "evidence": [
-            {
-              "reference": "artifact:draft chapters 1-6#ch2-climber"
-            },
-            {
-              "reference": "artifact:draft chapters 1-6#ch5-fawn"
-            }
-          ],
-          "question_id": "penalty.repetition.image",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.75,
-          "evidence": [
-            {
-              "reference": "artifact:draft chapters 1-6#ch2-climber"
-            },
-            {
-              "reference": "artifact:draft chapters 1-6#ch5-feeding"
-            }
-          ],
-          "question_id": "penalty.repetition.beat",
-          "verdict": "YES",
-          "weight": 2.0
-        },
-        {
-          "confidence": 0.82,
-          "evidence": [
-            {
-              "reference": "artifact:draft chapters 1-6#ch3-magic-lesson"
-            },
-            {
-              "reference": "artifact:draft chapters 1-6#ch4-lunch"
-            }
-          ],
-          "question_id": "penalty.repetition.dialogue",
-          "verdict": "NO",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.84,
-          "evidence": [
-            {
-              "reference": "artifact:draft chapters 1-6#ch2-phone-call"
-            },
-            {
-              "reference": "artifact:draft chapters 1-6#ch3-aftermath"
-            }
-          ],
-          "question_id": "penalty.repetition.explanation",
-          "verdict": "NO",
-          "weight": 2.0
-        },
-        {
-          "confidence": 0.92,
-          "evidence": [
-            {
-              "reference": "artifact:draft chapters 1-6#ch1-opening"
-            },
-            {
-              "reference": "artifact:draft chapters 1-6#ch5-stairwell"
-            }
-          ],
-          "question_id": "penalty.repetition.long_range",
-          "verdict": "YES",
-          "weight": 2.0
-        }
-      ],
-      "title": "Repetition penalty",
-      "weights": {
-        "applicable": 14.0,
-        "failed": 7.0,
-        "passed": 7.0,
-        "unassessed": 0.0
-      }
-    },
-    {
-      "cap_points": 8.0,
-      "coverage": 1.0,
-      "deduction": {
-        "lower": 0.0,
-        "observed": 0.0,
-        "upper": 0.0
-      },
-      "module_id": "penalty.unflagged_incomplete",
-      "questions": [
-        {
-          "confidence": 0.99,
-          "evidence": [
-            {
-              "reference": "artifact:draft chapters 1-6#header"
-            },
-            {
-              "reference": "artifact:draft chapters 1-6#header"
-            }
-          ],
-          "question_id": "penalty.unflagged_incomplete.status",
-          "verdict": "YES",
-          "weight": 3.0
-        },
-        {
-          "confidence": 0.95,
-          "evidence": [
-            {
-              "reference": "source:author notes#plot-points"
-            },
-            {
-              "reference": "artifact:draft chapters 1-6#ch6-ending"
-            }
-          ],
-          "question_id": "penalty.unflagged_incomplete.unit",
-          "verdict": "NOT_APPLICABLE",
-          "weight": 3.0
-        },
-        {
-          "confidence": 0.88,
-          "evidence": [
-            {
-              "reference": "artifact:draft chapters 1-6#ch6-ending"
-            }
-          ],
-          "question_id": "penalty.unflagged_incomplete.truncation",
-          "verdict": "YES",
-          "weight": 3.0
-        }
-      ],
-      "title": "Unflagged incomplete artifact penalty",
-      "weights": {
-        "applicable": 6.0,
-        "failed": 0.0,
-        "passed": 6.0,
-        "unassessed": 0.0
-      }
-    }
-  ],
-  "penalty_deduction": {
-    "lower": 4.0,
-    "observed": 4.0,
-    "upper": 4.0
-  },
   "standard": {
     "id": "HBQ-RS",
     "version": "1.0.0"
   },
-  "status": "INELIGIBLE",
+  "bundle_id": "prose.novel",
+  "bundle_version": 1,
+  "task_contract": {
+    "contract_id": "gray-blood-ch1-6-comparison-v1",
+    "domain_id": "task",
+    "weighted_goal_ids": [
+      "task.contract.gray-blood-ch1-6-comparison-v1.goal.grim_dark_tone",
+      "task.contract.gray-blood-ch1-6-comparison-v1.goal.amelia_darker",
+      "task.contract.gray-blood-ch1-6-comparison-v1.goal.madison_moral_grappling",
+      "task.contract.gray-blood-ch1-6-comparison-v1.goal.madison_programmer_lens",
+      "task.contract.gray-blood-ch1-6-comparison-v1.goal.madison_dark_path_setup",
+      "task.contract.gray-blood-ch1-6-comparison-v1.goal.activation_as_trauma",
+      "task.contract.gray-blood-ch1-6-comparison-v1.goal.amelia_volatility",
+      "task.contract.gray-blood-ch1-6-comparison-v1.goal.amelia_less_apologetic",
+      "task.contract.gray-blood-ch1-6-comparison-v1.goal.amelia_power_attraction",
+      "task.contract.gray-blood-ch1-6-comparison-v1.goal.amelia_affection_power_balance",
+      "task.contract.gray-blood-ch1-6-comparison-v1.goal.katherine_motivation",
+      "task.contract.gray-blood-ch1-6-comparison-v1.goal.chapter_title_relevance"
+    ],
+    "binding_requirement_ids": [
+      "task.contract.gray-blood-ch1-6-comparison-v1.canon.witches_female_only",
+      "task.contract.gray-blood-ch1-6-comparison-v1.canon.activation_requires_heart",
+      "task.contract.gray-blood-ch1-6-comparison-v1.canon.witch_human_offspring_human",
+      "task.contract.gray-blood-ch1-6-comparison-v1.canon.engraving_requires_lifeblood",
+      "task.contract.gray-blood-ch1-6-comparison-v1.canon.engraving_consumes_one_source",
+      "task.contract.gray-blood-ch1-6-comparison-v1.canon.magic_uses_drawn_symbols"
+    ]
+  },
+  "artifact_id": "gray-blood-original-ch01-06",
+  "status": "SCORED",
+  "hard_gate_status": "VALID",
+  "hard_gates": [
+    {
+      "question_id": "scope.long_context.overflow",
+      "verdict": "YES",
+      "module_id": "scope.long_context",
+      "evidence": [
+        {
+          "reference": "organized source units: unit-0007-25dfed4ef40f"
+        }
+      ]
+    },
+    {
+      "question_id": "task.contract.gray-blood-ch1-6-comparison-v1.canon.witches_female_only",
+      "verdict": "YES",
+      "module_id": "task.contract.gray-blood-ch1-6-comparison-v1",
+      "evidence": [
+        {
+          "reference": "result.json — state ledger: Sex and gender of depicted witches"
+        }
+      ]
+    },
+    {
+      "question_id": "task.contract.gray-blood-ch1-6-comparison-v1.canon.activation_requires_heart",
+      "verdict": "YES",
+      "module_id": "task.contract.gray-blood-ch1-6-comparison-v1",
+      "evidence": [
+        {
+          "reference": "unit-0004-d56cc8561b6b"
+        }
+      ]
+    },
+    {
+      "question_id": "task.contract.gray-blood-ch1-6-comparison-v1.canon.witch_human_offspring_human",
+      "verdict": "NOT_APPLICABLE",
+      "module_id": "task.contract.gray-blood-ch1-6-comparison-v1",
+      "evidence": [
+        {
+          "reference": "result.json — limitations"
+        }
+      ]
+    },
+    {
+      "question_id": "task.contract.gray-blood-ch1-6-comparison-v1.canon.engraving_requires_lifeblood",
+      "verdict": "YES",
+      "module_id": "task.contract.gray-blood-ch1-6-comparison-v1",
+      "evidence": [
+        {
+          "reference": "unit-0007-25dfed4ef40f"
+        }
+      ]
+    },
+    {
+      "question_id": "task.contract.gray-blood-ch1-6-comparison-v1.canon.engraving_consumes_one_source",
+      "verdict": "YES",
+      "module_id": "task.contract.gray-blood-ch1-6-comparison-v1",
+      "evidence": [
+        {
+          "reference": "unit-0007-25dfed4ef40f"
+        }
+      ]
+    },
+    {
+      "question_id": "task.contract.gray-blood-ch1-6-comparison-v1.canon.magic_uses_drawn_symbols",
+      "verdict": "YES",
+      "module_id": "task.contract.gray-blood-ch1-6-comparison-v1",
+      "evidence": [
+        {
+          "reference": "unit-0003-a790dad00537"
+        }
+      ]
+    }
+  ],
+  "coverage": 0.9683,
+  "minimum_coverage": 0.8,
+  "confidence": 0.9367,
+  "active_nominal_points": 100.0,
+  "inactive_points_reallocated": 0.0,
+  "base_score": {
+    "observed": 83.2032,
+    "lower": 80.691,
+    "upper": 83.8572
+  },
+  "penalty_deduction": {
+    "observed": 4.2857,
+    "lower": 4.2857,
+    "upper": 4.2857
+  },
+  "final_score": {
+    "observed": 78.9174,
+    "lower": 76.4053,
+    "upper": 79.5715
+  },
+  "domains": [
+    {
+      "domain_id": "task",
+      "title": "Task and scope",
+      "nominal_points": 7.0,
+      "active": true,
+      "weights": {
+        "passed": 52.75,
+        "failed": 25.0,
+        "unassessed": 21.25,
+        "applicable": 99.0
+      },
+      "coverage": 0.7854,
+      "confidence": 0.9454,
+      "score": {
+        "observed": 4.7492,
+        "lower": 3.7298,
+        "upper": 5.2323
+      },
+      "questions": [
+        {
+          "question_id": "core.task_and_brief_fidelity.intervention",
+          "module_id": "core.task_and_brief_fidelity",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 2.0,
+          "confidence": 0.95,
+          "evidence": [
+            {
+              "reference": "result.json: limitations"
+            }
+          ]
+        },
+        {
+          "question_id": "core.task_and_brief_fidelity.completion_flag",
+          "module_id": "core.task_and_brief_fidelity",
+          "verdict": "YES",
+          "weight": 1.0,
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "reference": "result.json: limitations"
+            }
+          ]
+        },
+        {
+          "question_id": "core.task_and_brief_fidelity.no_meta_substitution",
+          "module_id": "core.task_and_brief_fidelity",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "reference": "organized source units: unit-0002-e3373399775a"
+            }
+          ]
+        },
+        {
+          "question_id": "core.length_and_scope_fit.form",
+          "module_id": "core.length_and_scope_fit",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 2.0,
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "reference": "result.json: limitations"
+            }
+          ]
+        },
+        {
+          "question_id": "core.length_and_scope_fit.operation",
+          "module_id": "core.length_and_scope_fit",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.93,
+          "evidence": [
+            {
+              "reference": "result.json: orientation.evaluated_scope"
+            }
+          ]
+        },
+        {
+          "question_id": "core.length_and_scope_fit.development",
+          "module_id": "core.length_and_scope_fit",
+          "verdict": "YES",
+          "weight": 2.0,
+          "confidence": 0.9,
+          "evidence": [
+            {
+              "reference": "result.json: work_state.ending_state"
+            }
+          ]
+        },
+        {
+          "question_id": "core.length_and_scope_fit.density",
+          "module_id": "core.length_and_scope_fit",
+          "verdict": "NO",
+          "weight": 1.5,
+          "confidence": 0.86,
+          "evidence": [
+            {
+              "reference": "organized source units: unit-0004-d56cc8561b6b"
+            }
+          ]
+        },
+        {
+          "question_id": "core.length_and_scope_fit.ending",
+          "module_id": "core.length_and_scope_fit",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.84,
+          "evidence": [
+            {
+              "reference": "organized source units: unit-0007-25dfed4ef40f"
+            }
+          ]
+        },
+        {
+          "question_id": "core.length_and_scope_fit.no_padding",
+          "module_id": "core.length_and_scope_fit",
+          "verdict": "NO",
+          "weight": 2.0,
+          "confidence": 0.76,
+          "evidence": [
+            {
+              "reference": "organized source units: unit-0006-71f0cc119f96"
+            }
+          ]
+        },
+        {
+          "question_id": "core.length_and_scope_fit.no_underbuild",
+          "module_id": "core.length_and_scope_fit",
+          "verdict": "YES",
+          "weight": 2.0,
+          "confidence": 0.93,
+          "evidence": [
+            {
+              "reference": "result.json: unit-0007-25dfed4ef40f summary"
+            }
+          ]
+        },
+        {
+          "question_id": "core.audience_and_purpose_fit.complexity",
+          "module_id": "core.audience_and_purpose_fit",
+          "verdict": "YES",
+          "weight": 1.0,
+          "confidence": 0.92,
+          "evidence": [
+            {
+              "reference": "organized source units: unit-0007-25dfed4ef40f"
+            }
+          ]
+        },
+        {
+          "question_id": "core.audience_and_purpose_fit.tone",
+          "module_id": "core.audience_and_purpose_fit",
+          "verdict": "NO",
+          "weight": 1.5,
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "reference": "author brief: I. Core Concept & Tone"
+            }
+          ]
+        },
+        {
+          "question_id": "core.audience_and_purpose_fit.explanation",
+          "module_id": "core.audience_and_purpose_fit",
+          "verdict": "NO",
+          "weight": 1.0,
+          "confidence": 0.86,
+          "evidence": [
+            {
+              "reference": "organized source units: unit-0004-d56cc8561b6b"
+            }
+          ]
+        },
+        {
+          "question_id": "core.audience_and_purpose_fit.intensity",
+          "module_id": "core.audience_and_purpose_fit",
+          "verdict": "YES",
+          "weight": 1.0,
+          "confidence": 0.93,
+          "evidence": [
+            {
+              "reference": "organized source units: unit-0003-a790dad00537"
+            }
+          ]
+        },
+        {
+          "question_id": "core.audience_and_purpose_fit.vocabulary",
+          "module_id": "core.audience_and_purpose_fit",
+          "verdict": "YES",
+          "weight": 1.0,
+          "confidence": 0.94,
+          "evidence": [
+            {
+              "reference": "organized source units: unit-0007-25dfed4ef40f"
+            }
+          ]
+        },
+        {
+          "question_id": "core.audience_and_purpose_fit.length",
+          "module_id": "core.audience_and_purpose_fit",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.9,
+          "evidence": [
+            {
+              "reference": "result.json: orientation.evaluated_scope"
+            }
+          ]
+        },
+        {
+          "question_id": "core.audience_and_purpose_fit.genre_signals",
+          "module_id": "core.audience_and_purpose_fit",
+          "verdict": "NO",
+          "weight": 1.5,
+          "confidence": 0.9,
+          "evidence": [
+            {
+              "reference": "result.json: unit-0003-a790dad00537 summary"
+            }
+          ]
+        },
+        {
+          "question_id": "core.audience_and_purpose_fit.use_context",
+          "module_id": "core.audience_and_purpose_fit",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "reference": "result.json: limitations"
+            }
+          ]
+        },
+        {
+          "question_id": "form.prose.novel.macro_structure",
+          "module_id": "form.prose.novel",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 3.0,
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "reference": "result.json: limitations"
+            }
+          ]
+        },
+        {
+          "question_id": "form.prose.novel.long_causality",
+          "module_id": "form.prose.novel",
+          "verdict": "YES",
+          "weight": 3.0,
+          "confidence": 0.97,
+          "evidence": [
+            {
+              "reference": "result.json: distant_links, setup unit-0002 / payoff unit-0007"
+            }
+          ]
+        },
+        {
+          "question_id": "form.prose.novel.multiple_arcs",
+          "module_id": "form.prose.novel",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 2.25,
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "reference": "result.json: limitations"
+            }
+          ]
+        },
+        {
+          "question_id": "form.prose.novel.pacing_variation",
+          "module_id": "form.prose.novel",
+          "verdict": "YES",
+          "weight": 2.25,
+          "confidence": 0.92,
+          "evidence": [
+            {
+              "reference": "result.json: unit-0006-71f0cc119f96 summary"
+            }
+          ]
+        },
+        {
+          "question_id": "form.prose.novel.development",
+          "module_id": "form.prose.novel",
+          "verdict": "YES",
+          "weight": 2.25,
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "reference": "result.json: work_state.central_arcs"
+            }
+          ]
+        },
+        {
+          "question_id": "form.prose.novel.recurrence",
+          "module_id": "form.prose.novel",
+          "verdict": "YES",
+          "weight": 2.25,
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "reference": "result.json: work_state.motifs"
+            }
+          ]
+        },
+        {
+          "question_id": "form.prose.novel.payoff",
+          "module_id": "form.prose.novel",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 3.0,
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "reference": "result.json: limitations"
+            }
+          ]
+        },
+        {
+          "question_id": "form.prose.novel.middle",
+          "module_id": "form.prose.novel",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 3.0,
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "reference": "result.json, limitations[0]"
+            }
+          ]
+        },
+        {
+          "question_id": "form.prose.novel.ending",
+          "module_id": "form.prose.novel",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 3.0,
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "reference": "result.json, limitations[0]"
+            }
+          ]
+        },
+        {
+          "question_id": "task.contract.gray-blood-ch1-6-comparison-v1.goal.grim_dark_tone",
+          "module_id": "task.contract.gray-blood-ch1-6-comparison-v1",
+          "verdict": "NO",
+          "weight": 5.0,
+          "confidence": 0.91,
+          "evidence": [
+            {
+              "reference": "unit-0003-a790dad00537"
+            }
+          ]
+        },
+        {
+          "question_id": "task.contract.gray-blood-ch1-6-comparison-v1.goal.amelia_darker",
+          "module_id": "task.contract.gray-blood-ch1-6-comparison-v1",
+          "verdict": "NO",
+          "weight": 5.0,
+          "confidence": 0.94,
+          "evidence": [
+            {
+              "reference": "unit-0003-a790dad00537"
+            }
+          ]
+        },
+        {
+          "question_id": "task.contract.gray-blood-ch1-6-comparison-v1.goal.madison_moral_grappling",
+          "module_id": "task.contract.gray-blood-ch1-6-comparison-v1",
+          "verdict": "YES",
+          "weight": 5.0,
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "reference": "unit-0007-25dfed4ef40f"
+            }
+          ]
+        },
+        {
+          "question_id": "task.contract.gray-blood-ch1-6-comparison-v1.goal.madison_programmer_lens",
+          "module_id": "task.contract.gray-blood-ch1-6-comparison-v1",
+          "verdict": "YES",
+          "weight": 4.5,
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "reference": "unit-0007-25dfed4ef40f"
+            }
+          ]
+        },
+        {
+          "question_id": "task.contract.gray-blood-ch1-6-comparison-v1.goal.madison_dark_path_setup",
+          "module_id": "task.contract.gray-blood-ch1-6-comparison-v1",
+          "verdict": "YES",
+          "weight": 4.5,
+          "confidence": 0.97,
+          "evidence": [
+            {
+              "reference": "unit-0006-71f0cc119f96"
+            }
+          ]
+        },
+        {
+          "question_id": "task.contract.gray-blood-ch1-6-comparison-v1.goal.activation_as_trauma",
+          "module_id": "task.contract.gray-blood-ch1-6-comparison-v1",
+          "verdict": "YES",
+          "weight": 4.0,
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b"
+            }
+          ]
+        },
+        {
+          "question_id": "task.contract.gray-blood-ch1-6-comparison-v1.goal.amelia_volatility",
+          "module_id": "task.contract.gray-blood-ch1-6-comparison-v1",
+          "verdict": "NO",
+          "weight": 4.0,
+          "confidence": 0.95,
+          "evidence": [
+            {
+              "reference": "unit-0002-e3373399775a"
+            }
+          ]
+        },
+        {
+          "question_id": "task.contract.gray-blood-ch1-6-comparison-v1.goal.amelia_less_apologetic",
+          "module_id": "task.contract.gray-blood-ch1-6-comparison-v1",
+          "verdict": "NO",
+          "weight": 3.5,
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b"
+            }
+          ]
+        },
+        {
+          "question_id": "task.contract.gray-blood-ch1-6-comparison-v1.goal.amelia_power_attraction",
+          "module_id": "task.contract.gray-blood-ch1-6-comparison-v1",
+          "verdict": "YES",
+          "weight": 4.0,
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b"
+            }
+          ]
+        },
+        {
+          "question_id": "task.contract.gray-blood-ch1-6-comparison-v1.goal.amelia_affection_power_balance",
+          "module_id": "task.contract.gray-blood-ch1-6-comparison-v1",
+          "verdict": "YES",
+          "weight": 4.0,
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "reference": "unit-0007-25dfed4ef40f"
+            },
+            {
+              "reference": "unit-0003-a790dad00537"
+            }
+          ]
+        },
+        {
+          "question_id": "task.contract.gray-blood-ch1-6-comparison-v1.goal.katherine_motivation",
+          "module_id": "task.contract.gray-blood-ch1-6-comparison-v1",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 3.0,
+          "confidence": 1.0,
+          "evidence": [
+            {
+              "reference": "result.json — limitations"
+            }
+          ]
+        },
+        {
+          "question_id": "task.contract.gray-blood-ch1-6-comparison-v1.goal.chapter_title_relevance",
+          "module_id": "task.contract.gray-blood-ch1-6-comparison-v1",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.91,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b"
+            },
+            {
+              "reference": "unit-0007-25dfed4ef40f"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "domain_id": "character",
+      "title": "Character and arcs",
+      "nominal_points": 16.0,
+      "active": true,
+      "weights": {
+        "passed": 19.5,
+        "failed": 1.5,
+        "unassessed": 1.5,
+        "applicable": 22.5
+      },
+      "coverage": 0.9333,
+      "confidence": 0.956,
+      "score": {
+        "observed": 14.8571,
+        "lower": 13.8667,
+        "upper": 14.9333
+      },
+      "questions": [
+        {
+          "question_id": "craft.narrative.characterization.dimensionality",
+          "module_id": "craft.narrative.characterization",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "reference": "unit-0007-25dfed4ef40f"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.characterization.behavior",
+          "module_id": "craft.narrative.characterization",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "reference": "unit-0006-71f0cc119f96"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.characterization.motives",
+          "module_id": "craft.narrative.characterization",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "reference": "unit-0006-71f0cc119f96"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.characterization.contradiction",
+          "module_id": "craft.narrative.characterization",
+          "verdict": "YES",
+          "weight": 1.0,
+          "confidence": 0.97,
+          "evidence": [
+            {
+              "reference": "unit-0006-71f0cc119f96"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.characterization.agency",
+          "module_id": "craft.narrative.characterization",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "reference": "unit-0005-ea246b1652fb"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.characterization.distinction",
+          "module_id": "craft.narrative.characterization",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.94,
+          "evidence": [
+            {
+              "reference": "unit-0006-71f0cc119f96"
+            },
+            {
+              "reference": "unit-0006-71f0cc119f96"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.characterization.development",
+          "module_id": "craft.narrative.characterization",
+          "verdict": "YES",
+          "weight": 1.0,
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "reference": "unit-0007-25dfed4ef40f"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.characterization.canon",
+          "module_id": "craft.narrative.characterization",
+          "verdict": "NO",
+          "weight": 1.5,
+          "confidence": 0.88,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b"
+            },
+            {
+              "reference": "author brief, VI. Character Development Notes"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.characterization.no_trait_labels",
+          "module_id": "craft.narrative.characterization",
+          "verdict": "YES",
+          "weight": 1.0,
+          "confidence": 0.94,
+          "evidence": [
+            {
+              "reference": "unit-0006-71f0cc119f96"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.character_arc.baseline",
+          "module_id": "craft.narrative.character_arc",
+          "verdict": "YES",
+          "weight": 1.0,
+          "confidence": 0.97,
+          "evidence": [
+            {
+              "reference": "unit-0002-e3373399775a"
+            },
+            {
+              "reference": "unit-0002-e3373399775a"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.character_arc.pressure",
+          "module_id": "craft.narrative.character_arc",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "reference": "unit-0003-a790dad00537"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.character_arc.resistance",
+          "module_id": "craft.narrative.character_arc",
+          "verdict": "YES",
+          "weight": 1.0,
+          "confidence": 0.97,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.character_arc.turns",
+          "module_id": "craft.narrative.character_arc",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.97,
+          "evidence": [
+            {
+              "reference": "unit-0006-71f0cc119f96"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.character_arc.consequences",
+          "module_id": "craft.narrative.character_arc",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "reference": "unit-0007-25dfed4ef40f"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.character_arc.rate",
+          "module_id": "craft.narrative.character_arc",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.86,
+          "evidence": [
+            {
+              "reference": "unit-0003-a790dad00537"
+            },
+            {
+              "reference": "unit-0007-25dfed4ef40f"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.character_arc.local_contribution",
+          "module_id": "craft.narrative.character_arc",
+          "verdict": "YES",
+          "weight": 1.0,
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "reference": "unit-0007-25dfed4ef40f"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.character_arc.end_state",
+          "module_id": "craft.narrative.character_arc",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5,
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "reference": "result.json, limitations[0]"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "domain_id": "plot",
+      "title": "Plot architecture and payoff",
+      "nominal_points": 20.0,
+      "active": true,
+      "weights": {
+        "passed": 34.0,
+        "failed": 0.0,
+        "unassessed": 0.0,
+        "applicable": 34.0
+      },
+      "coverage": 1.0,
+      "confidence": 0.9506,
+      "score": {
+        "observed": 20.0,
+        "lower": 20.0,
+        "upper": 20.0
+      },
+      "questions": [
+        {
+          "question_id": "craft.narrative.plot_and_causality.causal_chain",
+          "module_id": "craft.narrative.plot_and_causality",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "reference": "unit-0003-a790dad00537"
+            },
+            {
+              "reference": "unit-0006-71f0cc119f96"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.plot_and_causality.setup",
+          "module_id": "craft.narrative.plot_and_causality",
+          "verdict": "YES",
+          "weight": 1.0,
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "reference": "unit-0002-e3373399775a"
+            },
+            {
+              "reference": "unit-0004-d56cc8561b6b"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.plot_and_causality.decision",
+          "module_id": "craft.narrative.plot_and_causality",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "reference": "unit-0005-ea246b1652fb"
+            },
+            {
+              "reference": "unit-0006-71f0cc119f96"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.plot_and_causality.consequence",
+          "module_id": "craft.narrative.plot_and_causality",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "reference": "result.json, state_ledgers: Madison's blood-loss injury"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.plot_and_causality.escalation",
+          "module_id": "craft.narrative.plot_and_causality",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "reference": "unit-0006-71f0cc119f96"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.plot_and_causality.complication",
+          "module_id": "craft.narrative.plot_and_causality",
+          "verdict": "YES",
+          "weight": 1.0,
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "reference": "unit-0006-71f0cc119f96"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.plot_and_causality.reversal",
+          "module_id": "craft.narrative.plot_and_causality",
+          "verdict": "YES",
+          "weight": 1.0,
+          "confidence": 0.9,
+          "evidence": [
+            {
+              "reference": "unit-0005-ea246b1652fb"
+            },
+            {
+              "reference": "unit-0006-71f0cc119f96"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.plot_and_causality.no_convenience",
+          "module_id": "craft.narrative.plot_and_causality",
+          "verdict": "YES",
+          "weight": 2.0,
+          "confidence": 0.8,
+          "evidence": [
+            {
+              "reference": "unit-0003-a790dad00537"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.foreshadowing_setup_and_payoff.preparation",
+          "module_id": "craft.narrative.foreshadowing_setup_and_payoff",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "reference": "unit-0002-e3373399775a"
+            },
+            {
+              "reference": "unit-0007-25dfed4ef40f"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.foreshadowing_setup_and_payoff.subtlety",
+          "module_id": "craft.narrative.foreshadowing_setup_and_payoff",
+          "verdict": "YES",
+          "weight": 1.0,
+          "confidence": 0.95,
+          "evidence": [
+            {
+              "reference": "unit-0002-e3373399775a"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.foreshadowing_setup_and_payoff.expectation",
+          "module_id": "craft.narrative.foreshadowing_setup_and_payoff",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "reference": "result.json, unit-0002-e3373399775a promises_opened"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.foreshadowing_setup_and_payoff.delay",
+          "module_id": "craft.narrative.foreshadowing_setup_and_payoff",
+          "verdict": "YES",
+          "weight": 1.0,
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "reference": "unit-0007-25dfed4ef40f"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.foreshadowing_setup_and_payoff.earned",
+          "module_id": "craft.narrative.foreshadowing_setup_and_payoff",
+          "verdict": "YES",
+          "weight": 2.0,
+          "confidence": 0.97,
+          "evidence": [
+            {
+              "reference": "unit-0007-25dfed4ef40f"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.foreshadowing_setup_and_payoff.remembered",
+          "module_id": "craft.narrative.foreshadowing_setup_and_payoff",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "reference": "result.json:distant_links; units unit-0002-e3373399775a through unit-0007-25dfed4ef40f"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.foreshadowing_setup_and_payoff.echo",
+          "module_id": "craft.narrative.foreshadowing_setup_and_payoff",
+          "verdict": "YES",
+          "weight": 1.0,
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b; unit-0007-25dfed4ef40f"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.foreshadowing_setup_and_payoff.no_deus",
+          "module_id": "craft.narrative.foreshadowing_setup_and_payoff",
+          "verdict": "YES",
+          "weight": 2.0,
+          "confidence": 0.83,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b; unit-0006-71f0cc119f96"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.narrative_momentum.curiosity",
+          "module_id": "craft.narrative.narrative_momentum",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "reference": "unit-0007-25dfed4ef40f; result.json:work_state.ending_state"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.narrative_momentum.investment",
+          "module_id": "craft.narrative.narrative_momentum",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "reference": "unit-0007-25dfed4ef40f"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.narrative_momentum.consequence",
+          "module_id": "craft.narrative.narrative_momentum",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "reference": "unit-0007-25dfed4ef40f"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.narrative_momentum.voice_pull",
+          "module_id": "craft.narrative.narrative_momentum",
+          "verdict": "YES",
+          "weight": 1.0,
+          "confidence": 0.94,
+          "evidence": [
+            {
+              "reference": "unit-0003-a790dad00537"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.narrative_momentum.concept_pull",
+          "module_id": "craft.narrative.narrative_momentum",
+          "verdict": "YES",
+          "weight": 1.0,
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "reference": "unit-0006-71f0cc119f96"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.narrative_momentum.progress",
+          "module_id": "craft.narrative.narrative_momentum",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "reference": "result.json:state_ledgers[Madison]; units unit-0002-e3373399775a through unit-0007-25dfed4ef40f"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.narrative_momentum.commitment",
+          "module_id": "craft.narrative.narrative_momentum",
+          "verdict": "YES",
+          "weight": 2.0,
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "reference": "unit-0006-71f0cc119f96"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.narrative_momentum.no_false_hook",
+          "module_id": "craft.narrative.narrative_momentum",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.93,
+          "evidence": [
+            {
+              "reference": "unit-0006-71f0cc119f96; unit-0007-25dfed4ef40f"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "domain_id": "world",
+      "title": "World and continuity",
+      "nominal_points": 12.0,
+      "active": true,
+      "weights": {
+        "passed": 31.0,
+        "failed": 1.5,
+        "unassessed": 0.0,
+        "applicable": 32.5
+      },
+      "coverage": 1.0,
+      "confidence": 0.9408,
+      "score": {
+        "observed": 11.4462,
+        "lower": 11.4462,
+        "upper": 11.4462
+      },
+      "questions": [
+        {
+          "question_id": "craft.narrative.worldbuilding.rules",
+          "module_id": "craft.narrative.worldbuilding",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.97,
+          "evidence": [
+            {
+              "reference": "unit-0007-25dfed4ef40f"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.worldbuilding.consistency",
+          "module_id": "craft.narrative.worldbuilding",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "reference": "units unit-0003-a790dad00537 through unit-0007-25dfed4ef40f"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.worldbuilding.constraints",
+          "module_id": "craft.narrative.worldbuilding",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "reference": "unit-0007-25dfed4ef40f"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.worldbuilding.culture",
+          "module_id": "craft.narrative.worldbuilding",
+          "verdict": "YES",
+          "weight": 1.0,
+          "confidence": 0.94,
+          "evidence": [
+            {
+              "reference": "unit-0006-71f0cc119f96"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.worldbuilding.history",
+          "module_id": "craft.narrative.worldbuilding",
+          "verdict": "YES",
+          "weight": 1.0,
+          "confidence": 0.93,
+          "evidence": [
+            {
+              "reference": "unit-0007-25dfed4ef40f"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.worldbuilding.consequences",
+          "module_id": "craft.narrative.worldbuilding",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.95,
+          "evidence": [
+            {
+              "reference": "unit-0005-ea246b1652fb; unit-0006-71f0cc119f96"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.worldbuilding.integration",
+          "module_id": "craft.narrative.worldbuilding",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.97,
+          "evidence": [
+            {
+              "reference": "unit-0005-ea246b1652fb; unit-0006-71f0cc119f96; unit-0007-25dfed4ef40f"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.worldbuilding.no_lore_dump",
+          "module_id": "craft.narrative.worldbuilding",
+          "verdict": "YES",
+          "weight": 2.0,
+          "confidence": 0.78,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.worldbuilding.no_default_furniture",
+          "module_id": "craft.narrative.worldbuilding",
+          "verdict": "YES",
+          "weight": 1.0,
+          "confidence": 0.97,
+          "evidence": [
+            {
+              "reference": "units unit-0004-d56cc8561b6b through unit-0007-25dfed4ef40f"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.continuity_and_canon_integrity.characters",
+          "module_id": "craft.narrative.continuity_and_canon_integrity",
+          "verdict": "NO",
+          "weight": 1.5,
+          "confidence": 0.78,
+          "evidence": [
+            {
+              "reference": "author brief:I and VI; unit-0002-e3373399775a; unit-0003-a790dad00537"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.continuity_and_canon_integrity.knowledge",
+          "module_id": "craft.narrative.continuity_and_canon_integrity",
+          "verdict": "YES",
+          "weight": 2.0,
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "reference": "result.json:state_ledgers[Madison's knowledge of Amelia and witchcraft]"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.continuity_and_canon_integrity.facts",
+          "module_id": "craft.narrative.continuity_and_canon_integrity",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.94,
+          "evidence": [
+            {
+              "reference": "units unit-0004-d56cc8561b6b through unit-0007-25dfed4ef40f"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.continuity_and_canon_integrity.world",
+          "module_id": "craft.narrative.continuity_and_canon_integrity",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.95,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b; unit-0007-25dfed4ef40f"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.continuity_and_canon_integrity.chronology",
+          "module_id": "craft.narrative.continuity_and_canon_integrity",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.97,
+          "evidence": [
+            {
+              "reference": "result.json:work_state.chronology; units unit-0002-e3373399775a through unit-0007-25dfed4ef40f"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.continuity_and_canon_integrity.state",
+          "module_id": "craft.narrative.continuity_and_canon_integrity",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "reference": "unit-0006-71f0cc119f96; unit-0007-25dfed4ef40f"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.continuity_and_canon_integrity.threads",
+          "module_id": "craft.narrative.continuity_and_canon_integrity",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.97,
+          "evidence": [
+            {
+              "reference": "unit-0007-25dfed4ef40f; result.json:distant_links"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.continuity_and_canon_integrity.supersession",
+          "module_id": "craft.narrative.continuity_and_canon_integrity",
+          "verdict": "NOT_APPLICABLE",
+          "weight": 1.5,
+          "confidence": 0.92,
+          "evidence": [
+            {
+              "reference": "author brief:V and IX; result.json:limitations"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.continuity_and_canon_integrity.conflicts",
+          "module_id": "craft.narrative.continuity_and_canon_integrity",
+          "verdict": "NOT_APPLICABLE",
+          "weight": 1.5,
+          "confidence": 0.9,
+          "evidence": [
+            {
+              "reference": "author brief:IX; result.json:limitations"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.temporal_and_spatial_continuity.chronology",
+          "module_id": "craft.narrative.temporal_and_spatial_continuity",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "reference": "units unit-0003-a790dad00537 through unit-0007-25dfed4ef40f"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.temporal_and_spatial_continuity.elapsed_time",
+          "module_id": "craft.narrative.temporal_and_spatial_continuity",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "reference": "unit-0005-ea246b1652fb; unit-0007-25dfed4ef40f"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.temporal_and_spatial_continuity.travel",
+          "module_id": "craft.narrative.temporal_and_spatial_continuity",
+          "verdict": "YES",
+          "weight": 1.0,
+          "confidence": 0.93,
+          "evidence": [
+            {
+              "reference": "unit-0002-e3373399775a; unit-0007-25dfed4ef40f"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.temporal_and_spatial_continuity.entrances",
+          "module_id": "craft.narrative.temporal_and_spatial_continuity",
+          "verdict": "YES",
+          "weight": 1.0,
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "reference": "unit-0005-ea246b1652fb"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.temporal_and_spatial_continuity.objects",
+          "module_id": "craft.narrative.temporal_and_spatial_continuity",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.95,
+          "evidence": [
+            {
+              "reference": "result.json, state ledger: Madison's blood-loss injury; units 0006-0007"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.temporal_and_spatial_continuity.orientation",
+          "module_id": "craft.narrative.temporal_and_spatial_continuity",
+          "verdict": "YES",
+          "weight": 1.0,
+          "confidence": 0.93,
+          "evidence": [
+            {
+              "reference": "unit-0005-ea246b1652fb"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.temporal_and_spatial_continuity.state_update",
+          "module_id": "craft.narrative.temporal_and_spatial_continuity",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.97,
+          "evidence": [
+            {
+              "reference": "unit-0007-25dfed4ef40f"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "domain_id": "pacing",
+      "title": "Pacing and information",
+      "nominal_points": 10.0,
+      "active": true,
+      "weights": {
+        "passed": 21.5,
+        "failed": 10.0,
+        "unassessed": 0.0,
+        "applicable": 31.5
+      },
+      "coverage": 1.0,
+      "confidence": 0.8771,
+      "score": {
+        "observed": 6.8254,
+        "lower": 6.8254,
+        "upper": 6.8254
+      },
+      "questions": [
+        {
+          "question_id": "craft.narrative.pacing_and_narrative_time.allocation",
+          "module_id": "craft.narrative.pacing_and_narrative_time",
+          "verdict": "NO",
+          "weight": 1.5,
+          "confidence": 0.73,
+          "evidence": [
+            {
+              "reference": "unit-0002-e3373399775a"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.pacing_and_narrative_time.acceleration",
+          "module_id": "craft.narrative.pacing_and_narrative_time",
+          "verdict": "YES",
+          "weight": 1.0,
+          "confidence": 0.91,
+          "evidence": [
+            {
+              "reference": "unit-0006-71f0cc119f96"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.pacing_and_narrative_time.deceleration",
+          "module_id": "craft.narrative.pacing_and_narrative_time",
+          "verdict": "YES",
+          "weight": 1.0,
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.pacing_and_narrative_time.scene_summary",
+          "module_id": "craft.narrative.pacing_and_narrative_time",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.88,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.pacing_and_narrative_time.reveal_timing",
+          "module_id": "craft.narrative.pacing_and_narrative_time",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.94,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.pacing_and_narrative_time.variation",
+          "module_id": "craft.narrative.pacing_and_narrative_time",
+          "verdict": "YES",
+          "weight": 1.0,
+          "confidence": 0.92,
+          "evidence": [
+            {
+              "reference": "unit-0005-ea246b1652fb"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.pacing_and_narrative_time.local_global",
+          "module_id": "craft.narrative.pacing_and_narrative_time",
+          "verdict": "NO",
+          "weight": 1.5,
+          "confidence": 0.7,
+          "evidence": [
+            {
+              "reference": "unit-0002-e3373399775a"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.pacing_and_narrative_time.no_stall",
+          "module_id": "craft.narrative.pacing_and_narrative_time",
+          "verdict": "NO",
+          "weight": 2.0,
+          "confidence": 0.79,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.exposition_and_information_management.reader_state",
+          "module_id": "craft.narrative.exposition_and_information_management",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "reference": "unit-0005-ea246b1652fb"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.exposition_and_information_management.timing",
+          "module_id": "craft.narrative.exposition_and_information_management",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.94,
+          "evidence": [
+            {
+              "reference": "unit-0007-25dfed4ef40f"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.exposition_and_information_management.embedding",
+          "module_id": "craft.narrative.exposition_and_information_management",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.93,
+          "evidence": [
+            {
+              "reference": "unit-0005-ea246b1652fb"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.exposition_and_information_management.priority",
+          "module_id": "craft.narrative.exposition_and_information_management",
+          "verdict": "NO",
+          "weight": 1.0,
+          "confidence": 0.69,
+          "evidence": [
+            {
+              "reference": "unit-0003-a790dad00537"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.exposition_and_information_management.no_redundancy",
+          "module_id": "craft.narrative.exposition_and_information_management",
+          "verdict": "NO",
+          "weight": 2.0,
+          "confidence": 0.76,
+          "evidence": [
+            {
+              "reference": "unit-0007-25dfed4ef40f"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.exposition_and_information_management.no_dump",
+          "module_id": "craft.narrative.exposition_and_information_management",
+          "verdict": "NO",
+          "weight": 2.0,
+          "confidence": 0.92,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.exposition_and_information_management.fair_withholding",
+          "module_id": "craft.narrative.exposition_and_information_management",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.92,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.transitions_and_connective_tissue.logic",
+          "module_id": "craft.narrative.transitions_and_connective_tissue",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.94,
+          "evidence": [
+            {
+              "reference": "unit-0003-a790dad00537"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.transitions_and_connective_tissue.time",
+          "module_id": "craft.narrative.transitions_and_connective_tissue",
+          "verdict": "YES",
+          "weight": 1.0,
+          "confidence": 0.97,
+          "evidence": [
+            {
+              "reference": "unit-0007-25dfed4ef40f"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.transitions_and_connective_tissue.place",
+          "module_id": "craft.narrative.transitions_and_connective_tissue",
+          "verdict": "YES",
+          "weight": 1.0,
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "reference": "unit-0005-ea246b1652fb"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.transitions_and_connective_tissue.speaker",
+          "module_id": "craft.narrative.transitions_and_connective_tissue",
+          "verdict": "YES",
+          "weight": 1.0,
+          "confidence": 0.95,
+          "evidence": [
+            {
+              "reference": "unit-0007-25dfed4ef40f"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.transitions_and_connective_tissue.mode",
+          "module_id": "craft.narrative.transitions_and_connective_tissue",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.92,
+          "evidence": [
+            {
+              "reference": "unit-0005-ea246b1652fb"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.transitions_and_connective_tissue.momentum",
+          "module_id": "craft.narrative.transitions_and_connective_tissue",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.88,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.transitions_and_connective_tissue.no_bridge_filler",
+          "module_id": "craft.narrative.transitions_and_connective_tissue",
+          "verdict": "YES",
+          "weight": 2.0,
+          "confidence": 0.86,
+          "evidence": [
+            {
+              "reference": "unit-0007-25dfed4ef40f"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "domain_id": "language",
+      "title": "Language and voice",
+      "nominal_points": 10.0,
+      "active": true,
+      "weights": {
+        "passed": 26.5,
+        "failed": 5.0,
+        "unassessed": 2.0,
+        "applicable": 33.5
+      },
+      "coverage": 0.9403,
+      "confidence": 0.9246,
+      "score": {
+        "observed": 8.4127,
+        "lower": 7.9104,
+        "upper": 8.5075
+      },
+      "questions": [
+        {
+          "question_id": "core.language_craft.diction",
+          "module_id": "core.language_craft",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.86,
+          "evidence": [
+            {
+              "reference": "unit-0003-a790dad00537"
+            }
+          ]
+        },
+        {
+          "question_id": "core.language_craft.syntax",
+          "module_id": "core.language_craft",
+          "verdict": "NO",
+          "weight": 1.5,
+          "confidence": 0.72,
+          "evidence": [
+            {
+              "reference": "unit-0006-71f0cc119f96"
+            }
+          ]
+        },
+        {
+          "question_id": "core.language_craft.cadence",
+          "module_id": "core.language_craft",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.95,
+          "evidence": [
+            {
+              "reference": "unit-0003-a790dad00537"
+            }
+          ]
+        },
+        {
+          "question_id": "core.language_craft.variation",
+          "module_id": "core.language_craft",
+          "verdict": "YES",
+          "weight": 1.0,
+          "confidence": 0.91,
+          "evidence": [
+            {
+              "reference": "unit-0005-ea246b1652fb"
+            }
+          ]
+        },
+        {
+          "question_id": "core.language_craft.paragraph_movement",
+          "module_id": "core.language_craft",
+          "verdict": "YES",
+          "weight": 1.0,
+          "confidence": 0.87,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b"
+            }
+          ]
+        },
+        {
+          "question_id": "core.language_craft.images",
+          "module_id": "core.language_craft",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b"
+            }
+          ]
+        },
+        {
+          "question_id": "core.language_craft.sound",
+          "module_id": "core.language_craft",
+          "verdict": "YES",
+          "weight": 1.0,
+          "confidence": 0.93,
+          "evidence": [
+            {
+              "reference": "unit-0003-a790dad00537"
+            }
+          ]
+        },
+        {
+          "question_id": "core.language_craft.emphasis",
+          "module_id": "core.language_craft",
+          "verdict": "YES",
+          "weight": 1.0,
+          "confidence": 0.9,
+          "evidence": [
+            {
+              "reference": "unit-0003-a790dad00537"
+            }
+          ]
+        },
+        {
+          "question_id": "core.language_craft.no_awkwardness",
+          "module_id": "core.language_craft",
+          "verdict": "NO",
+          "weight": 1.5,
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "reference": "unit-0006-71f0cc119f96"
+            }
+          ]
+        },
+        {
+          "question_id": "core.voice_and_stylistic_identity.distinctive",
+          "module_id": "core.voice_and_stylistic_identity",
+          "verdict": "YES",
+          "weight": 2.0,
+          "confidence": 0.97,
+          "evidence": [
+            {
+              "reference": "unit-0003-a790dad00537"
+            }
+          ]
+        },
+        {
+          "question_id": "core.voice_and_stylistic_identity.sustained",
+          "module_id": "core.voice_and_stylistic_identity",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.94,
+          "evidence": [
+            {
+              "reference": "unit-0007-25dfed4ef40f"
+            }
+          ]
+        },
+        {
+          "question_id": "core.voice_and_stylistic_identity.suitable",
+          "module_id": "core.voice_and_stylistic_identity",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.91,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b"
+            }
+          ]
+        },
+        {
+          "question_id": "core.voice_and_stylistic_identity.project_fidelity",
+          "module_id": "core.voice_and_stylistic_identity",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 2.0,
+          "confidence": 0.97,
+          "evidence": [
+            {
+              "reference": "author brief §VI"
+            }
+          ]
+        },
+        {
+          "question_id": "core.voice_and_stylistic_identity.shift_control",
+          "module_id": "core.voice_and_stylistic_identity",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.9,
+          "evidence": [
+            {
+              "reference": "unit-0003-a790dad00537"
+            }
+          ]
+        },
+        {
+          "question_id": "core.voice_and_stylistic_identity.ownership",
+          "module_id": "core.voice_and_stylistic_identity",
+          "verdict": "YES",
+          "weight": 2.0,
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.dialogue.voice_distinction",
+          "module_id": "craft.narrative.dialogue",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.92,
+          "evidence": [
+            {
+              "reference": "unit-0006-71f0cc119f96"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.dialogue.subtext",
+          "module_id": "craft.narrative.dialogue",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.95,
+          "evidence": [
+            {
+              "reference": "unit-0007-25dfed4ef40f"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.dialogue.naturalness",
+          "module_id": "craft.narrative.dialogue",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.87,
+          "evidence": [
+            {
+              "reference": "unit-0006-71f0cc119f96"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.dialogue.purpose",
+          "module_id": "craft.narrative.dialogue",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.91,
+          "evidence": [
+            {
+              "reference": "unit-0006-71f0cc119f96"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.dialogue.rhythm",
+          "module_id": "craft.narrative.dialogue",
+          "verdict": "YES",
+          "weight": 1.0,
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "reference": "unit-0007-25dfed4ef40f"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.dialogue.listening",
+          "module_id": "craft.narrative.dialogue",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.93,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.dialogue.action_balance",
+          "module_id": "craft.narrative.dialogue",
+          "verdict": "YES",
+          "weight": 1.0,
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "reference": "unit-0006-71f0cc119f96"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.dialogue.no_exposition",
+          "module_id": "craft.narrative.dialogue",
+          "verdict": "NO",
+          "weight": 2.0,
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "domain_id": "effect",
+      "title": "Theme and effect",
+      "nominal_points": 8.0,
+      "active": true,
+      "weights": {
+        "passed": 15.0,
+        "failed": 3.5,
+        "unassessed": 0.0,
+        "applicable": 18.5
+      },
+      "coverage": 1.0,
+      "confidence": 0.9619,
+      "score": {
+        "observed": 6.4865,
+        "lower": 6.4865,
+        "upper": 6.4865
+      },
+      "questions": [
+        {
+          "question_id": "craft.narrative.theme_and_subtext.emergence",
+          "module_id": "craft.narrative.theme_and_subtext",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.97,
+          "evidence": [
+            {
+              "reference": "unit-0003-a790dad00537"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.theme_and_subtext.subtext",
+          "module_id": "craft.narrative.theme_and_subtext",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.93,
+          "evidence": [
+            {
+              "reference": "unit-0006-71f0cc119f96"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.theme_and_subtext.development",
+          "module_id": "craft.narrative.theme_and_subtext",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "reference": "unit-0007-25dfed4ef40f"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.theme_and_subtext.counterpoint",
+          "module_id": "craft.narrative.theme_and_subtext",
+          "verdict": "YES",
+          "weight": 1.0,
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "reference": "unit-0007-25dfed4ef40f"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.theme_and_subtext.integration",
+          "module_id": "craft.narrative.theme_and_subtext",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "reference": "unit-0006-71f0cc119f96"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.theme_and_subtext.no_moral",
+          "module_id": "craft.narrative.theme_and_subtext",
+          "verdict": "YES",
+          "weight": 2.0,
+          "confidence": 0.95,
+          "evidence": [
+            {
+              "reference": "unit-0006-71f0cc119f96"
+            }
+          ]
+        },
+        {
+          "question_id": "craft.narrative.theme_and_subtext.open_questions",
+          "module_id": "craft.narrative.theme_and_subtext",
+          "verdict": "YES",
+          "weight": 1.0,
+          "confidence": 0.97,
+          "evidence": [
+            {
+              "reference": "unit-0007-25dfed4ef40f"
+            }
+          ]
+        },
+        {
+          "question_id": "core.emotional_and_intellectual_effect.intended_effect",
+          "module_id": "core.emotional_and_intellectual_effect",
+          "verdict": "NO",
+          "weight": 2.0,
+          "confidence": 0.97,
+          "evidence": [
+            {
+              "reference": "author brief §I"
+            }
+          ]
+        },
+        {
+          "question_id": "core.emotional_and_intellectual_effect.earned_emotion",
+          "module_id": "core.emotional_and_intellectual_effect",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b"
+            }
+          ]
+        },
+        {
+          "question_id": "core.emotional_and_intellectual_effect.conceptual_interest",
+          "module_id": "core.emotional_and_intellectual_effect",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "reference": "unit-0007-25dfed4ef40f"
+            }
+          ]
+        },
+        {
+          "question_id": "core.emotional_and_intellectual_effect.modulation",
+          "module_id": "core.emotional_and_intellectual_effect",
+          "verdict": "YES",
+          "weight": 1.0,
+          "confidence": 0.94,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b"
+            }
+          ]
+        },
+        {
+          "question_id": "core.emotional_and_intellectual_effect.restraint",
+          "module_id": "core.emotional_and_intellectual_effect",
+          "verdict": "NO",
+          "weight": 1.5,
+          "confidence": 0.97,
+          "evidence": [
+            {
+              "reference": "unit-0003-a790dad00537"
+            }
+          ]
+        },
+        {
+          "question_id": "core.emotional_and_intellectual_effect.aftermath",
+          "module_id": "core.emotional_and_intellectual_effect",
+          "verdict": "YES",
+          "weight": 1.0,
+          "confidence": 0.97,
+          "evidence": [
+            {
+              "reference": "result.json, state ledger: Madison's blood-loss injury"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "domain_id": "fresh",
+      "title": "Freshness and economy",
+      "nominal_points": 5.0,
+      "active": true,
+      "weights": {
+        "passed": 13.0,
+        "failed": 10.0,
+        "unassessed": 0.0,
+        "applicable": 23.0
+      },
+      "coverage": 1.0,
+      "confidence": 0.8767,
+      "score": {
+        "observed": 2.8261,
+        "lower": 2.8261,
+        "upper": 2.8261
+      },
+      "questions": [
+        {
+          "question_id": "core.freshness_and_non_genericness.no_cliche",
+          "module_id": "core.freshness_and_non_genericness",
+          "verdict": "NO",
+          "weight": 2.0,
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "reference": "unit-0003-a790dad00537"
+            }
+          ]
+        },
+        {
+          "question_id": "core.freshness_and_non_genericness.no_stock_beats",
+          "module_id": "core.freshness_and_non_genericness",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.92,
+          "evidence": [
+            {
+              "reference": "result.json, unit-0006-71f0cc119f96 summary"
+            }
+          ]
+        },
+        {
+          "question_id": "core.freshness_and_non_genericness.no_llm_phrasing",
+          "module_id": "core.freshness_and_non_genericness",
+          "verdict": "YES",
+          "weight": 2.0,
+          "confidence": 0.91,
+          "evidence": [
+            {
+              "reference": "unit-0003-a790dad00537"
+            }
+          ]
+        },
+        {
+          "question_id": "core.freshness_and_non_genericness.no_default_metaphors",
+          "module_id": "core.freshness_and_non_genericness",
+          "verdict": "NO",
+          "weight": 1.5,
+          "confidence": 0.78,
+          "evidence": [
+            {
+              "reference": "unit-0003-a790dad00537"
+            }
+          ]
+        },
+        {
+          "question_id": "core.freshness_and_non_genericness.no_emotion_summary",
+          "module_id": "core.freshness_and_non_genericness",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.86,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b"
+            }
+          ]
+        },
+        {
+          "question_id": "core.freshness_and_non_genericness.unpredictable_specificity",
+          "module_id": "core.freshness_and_non_genericness",
+          "verdict": "YES",
+          "weight": 2.0,
+          "confidence": 0.97,
+          "evidence": [
+            {
+              "reference": "unit-0003-a790dad00537"
+            }
+          ]
+        },
+        {
+          "question_id": "core.freshness_and_non_genericness.no_forced_novelty",
+          "module_id": "core.freshness_and_non_genericness",
+          "verdict": "YES",
+          "weight": 1.0,
+          "confidence": 0.93,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b"
+            }
+          ]
+        },
+        {
+          "question_id": "core.freshness_and_non_genericness.no_rare_word_chasing",
+          "module_id": "core.freshness_and_non_genericness",
+          "verdict": "YES",
+          "weight": 1.0,
+          "confidence": 0.94,
+          "evidence": [
+            {
+              "reference": "unit-0003-a790dad00537"
+            }
+          ]
+        },
+        {
+          "question_id": "core.economy_and_relevance.earns_place",
+          "module_id": "core.economy_and_relevance",
+          "verdict": "NO",
+          "weight": 1.5,
+          "confidence": 0.84,
+          "evidence": [
+            {
+              "reference": "unit-0002-e3373399775a"
+            }
+          ]
+        },
+        {
+          "question_id": "core.economy_and_relevance.no_restatement",
+          "module_id": "core.economy_and_relevance",
+          "verdict": "NO",
+          "weight": 2.5,
+          "confidence": 0.88,
+          "evidence": [
+            {
+              "reference": "unit-0003-a790dad00537"
+            },
+            {
+              "reference": "unit-0004-d56cc8561b6b"
+            }
+          ]
+        },
+        {
+          "question_id": "core.economy_and_relevance.functional_repetition",
+          "module_id": "core.economy_and_relevance",
+          "verdict": "YES",
+          "weight": 2.0,
+          "confidence": 0.78,
+          "evidence": [
+            {
+              "reference": "unit-0007-25dfed4ef40f"
+            }
+          ]
+        },
+        {
+          "question_id": "core.economy_and_relevance.detail_relevance",
+          "module_id": "core.economy_and_relevance",
+          "verdict": "YES",
+          "weight": 1.0,
+          "confidence": 0.87,
+          "evidence": [
+            {
+              "reference": "unit-0007-25dfed4ef40f"
+            }
+          ]
+        },
+        {
+          "question_id": "core.economy_and_relevance.digression",
+          "module_id": "core.economy_and_relevance",
+          "verdict": "NO",
+          "weight": 1.0,
+          "confidence": 0.75,
+          "evidence": [
+            {
+              "reference": "unit-0003-a790dad00537"
+            }
+          ]
+        },
+        {
+          "question_id": "core.economy_and_relevance.length_fit",
+          "module_id": "core.economy_and_relevance",
+          "verdict": "NO",
+          "weight": 1.5,
+          "confidence": 0.85,
+          "evidence": [
+            {
+              "reference": "result.json: orientation.evaluated_scope"
+            },
+            {
+              "reference": "unit-0007-25dfed4ef40f"
+            }
+          ]
+        },
+        {
+          "question_id": "core.economy_and_relevance.no_flattening",
+          "module_id": "core.economy_and_relevance",
+          "verdict": "YES",
+          "weight": 1.0,
+          "confidence": 0.82,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "domain_id": "mechanics",
+      "title": "Mechanics",
+      "nominal_points": 4.0,
+      "active": true,
+      "weights": {
+        "passed": 3.0,
+        "failed": 4.5,
+        "unassessed": 0.0,
+        "applicable": 7.5
+      },
+      "coverage": 1.0,
+      "confidence": 0.966,
+      "score": {
+        "observed": 1.6,
+        "lower": 1.6,
+        "upper": 1.6
+      },
+      "questions": [
+        {
+          "question_id": "core.mechanics_and_presentation.grammar",
+          "module_id": "core.mechanics_and_presentation",
+          "verdict": "NO",
+          "weight": 1.0,
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b"
+            },
+            {
+              "reference": "unit-0006-71f0cc119f96"
+            }
+          ]
+        },
+        {
+          "question_id": "core.mechanics_and_presentation.punctuation",
+          "module_id": "core.mechanics_and_presentation",
+          "verdict": "NO",
+          "weight": 1.0,
+          "confidence": 0.97,
+          "evidence": [
+            {
+              "reference": "unit-0002-e3373399775a"
+            },
+            {
+              "reference": "unit-0005-ea246b1652fb"
+            }
+          ]
+        },
+        {
+          "question_id": "core.mechanics_and_presentation.spelling",
+          "module_id": "core.mechanics_and_presentation",
+          "verdict": "NO",
+          "weight": 1.0,
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "reference": "unit-0002-e3373399775a"
+            },
+            {
+              "reference": "unit-0002-e3373399775a"
+            },
+            {
+              "reference": "unit-0003-a790dad00537"
+            }
+          ]
+        },
+        {
+          "question_id": "core.mechanics_and_presentation.formatting",
+          "module_id": "core.mechanics_and_presentation",
+          "verdict": "YES",
+          "weight": 1.0,
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "reference": "unit-0003-a790dad00537"
+            },
+            {
+              "reference": "unit-0007-25dfed4ef40f"
+            }
+          ]
+        },
+        {
+          "question_id": "core.mechanics_and_presentation.dialogue_mechanics",
+          "module_id": "core.mechanics_and_presentation",
+          "verdict": "YES",
+          "weight": 1.0,
+          "confidence": 0.94,
+          "evidence": [
+            {
+              "reference": "unit-0006-71f0cc119f96"
+            }
+          ]
+        },
+        {
+          "question_id": "core.mechanics_and_presentation.typography",
+          "module_id": "core.mechanics_and_presentation",
+          "verdict": "YES",
+          "weight": 1.0,
+          "confidence": 0.91,
+          "evidence": [
+            {
+              "reference": "unit-0007-25dfed4ef40f"
+            },
+            {
+              "reference": "unit-0005-ea246b1652fb"
+            }
+          ]
+        },
+        {
+          "question_id": "core.mechanics_and_presentation.cleanliness",
+          "module_id": "core.mechanics_and_presentation",
+          "verdict": "NO",
+          "weight": 1.5,
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "reference": "unit-0002-e3373399775a"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "domain_id": "holistic",
+      "title": "Holistic artistic success",
+      "nominal_points": 8.0,
+      "active": true,
+      "weights": {
+        "passed": 6.0,
+        "failed": 2.0,
+        "unassessed": 0.0,
+        "applicable": 8.0
+      },
+      "coverage": 1.0,
+      "confidence": 0.9375,
+      "score": {
+        "observed": 6.0,
+        "lower": 6.0,
+        "upper": 6.0
+      },
+      "questions": [
+        {
+          "question_id": "core.holistic_artistic_success.threshold_1_functional",
+          "module_id": "core.holistic_artistic_success",
+          "verdict": "YES",
+          "weight": 2.0,
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "reference": "result.json: units[2].summary"
+            }
+          ]
+        },
+        {
+          "question_id": "core.holistic_artistic_success.threshold_2_effective",
+          "module_id": "core.holistic_artistic_success",
+          "verdict": "YES",
+          "weight": 2.0,
+          "confidence": 0.91,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b"
+            }
+          ]
+        },
+        {
+          "question_id": "core.holistic_artistic_success.threshold_3_keepworthy",
+          "module_id": "core.holistic_artistic_success",
+          "verdict": "YES",
+          "weight": 2.0,
+          "confidence": 0.9,
+          "evidence": [
+            {
+              "reference": "unit-0007-25dfed4ef40f"
+            }
+          ]
+        },
+        {
+          "question_id": "core.holistic_artistic_success.threshold_4_exceptional",
+          "module_id": "core.holistic_artistic_success",
+          "verdict": "NO",
+          "weight": 2.0,
+          "confidence": 0.95,
+          "evidence": [
+            {
+              "reference": "evaluation finding: core.economy_and_relevance.no_restatement"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "penalties": [
+    {
+      "module_id": "penalty.purple_prose",
+      "title": "Purple prose penalty",
+      "cap_points": 5.0,
+      "coverage": 1.0,
+      "weights": {
+        "passed": 12.0,
+        "failed": 0.0,
+        "unassessed": 0.0,
+        "applicable": 12.0
+      },
+      "deduction": {
+        "observed": 0.0,
+        "lower": 0.0,
+        "upper": 0.0
+      },
+      "questions": [
+        {
+          "question_id": "penalty.purple_prose.clarity",
+          "verdict": "YES",
+          "weight": 2.0,
+          "confidence": 0.97,
+          "evidence": [
+            {
+              "reference": "unit-0005-ea246b1652fb"
+            }
+          ]
+        },
+        {
+          "question_id": "penalty.purple_prose.proportion",
+          "verdict": "YES",
+          "weight": 2.0,
+          "confidence": 0.94,
+          "evidence": [
+            {
+              "reference": "unit-0003-a790dad00537"
+            }
+          ]
+        },
+        {
+          "question_id": "penalty.purple_prose.specificity",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.97,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b"
+            }
+          ]
+        },
+        {
+          "question_id": "penalty.purple_prose.tone",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.95,
+          "evidence": [
+            {
+              "reference": "unit-0003-a790dad00537"
+            }
+          ]
+        },
+        {
+          "question_id": "penalty.purple_prose.metaphor",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.92,
+          "evidence": [
+            {
+              "reference": "unit-0003-a790dad00537"
+            }
+          ]
+        },
+        {
+          "question_id": "penalty.purple_prose.attention",
+          "verdict": "YES",
+          "weight": 2.0,
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "reference": "unit-0003-a790dad00537"
+            }
+          ]
+        },
+        {
+          "question_id": "penalty.purple_prose.fatigue",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "reference": "unit-0007-25dfed4ef40f"
+            },
+            {
+              "reference": "unit-0003-a790dad00537"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "module_id": "penalty.repetition",
+      "title": "Repetition penalty",
+      "cap_points": 8.0,
+      "coverage": 1.0,
+      "weights": {
+        "passed": 6.5,
+        "failed": 7.5,
+        "unassessed": 0.0,
+        "applicable": 14.0
+      },
+      "deduction": {
+        "observed": 4.2857,
+        "lower": 4.2857,
+        "upper": 4.2857
+      },
+      "questions": [
+        {
+          "question_id": "penalty.repetition.lexical",
+          "verdict": "NO",
+          "weight": 1.5,
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "reference": "unit-0002-e3373399775a"
+            }
+          ]
+        },
+        {
+          "question_id": "penalty.repetition.syntax",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.94,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b"
+            }
+          ]
+        },
+        {
+          "question_id": "penalty.repetition.semantic",
+          "verdict": "NO",
+          "weight": 2.0,
+          "confidence": 0.86,
+          "evidence": [
+            {
+              "reference": "unit-0005-ea246b1652fb"
+            },
+            {
+              "reference": "unit-0004-d56cc8561b6b"
+            }
+          ]
+        },
+        {
+          "question_id": "penalty.repetition.image",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b"
+            },
+            {
+              "reference": "unit-0007-25dfed4ef40f"
+            }
+          ]
+        },
+        {
+          "question_id": "penalty.repetition.beat",
+          "verdict": "NO",
+          "weight": 2.0,
+          "confidence": 0.85,
+          "evidence": [
+            {
+              "reference": "unit-0007-25dfed4ef40f"
+            },
+            {
+              "reference": "unit-0004-d56cc8561b6b"
+            }
+          ]
+        },
+        {
+          "question_id": "penalty.repetition.dialogue",
+          "verdict": "YES",
+          "weight": 1.5,
+          "confidence": 0.91,
+          "evidence": [
+            {
+              "reference": "unit-0007-25dfed4ef40f"
+            }
+          ]
+        },
+        {
+          "question_id": "penalty.repetition.explanation",
+          "verdict": "NO",
+          "weight": 2.0,
+          "confidence": 0.88,
+          "evidence": [
+            {
+              "reference": "unit-0003-a790dad00537"
+            },
+            {
+              "reference": "unit-0003-a790dad00537"
+            }
+          ]
+        },
+        {
+          "question_id": "penalty.repetition.long_range",
+          "verdict": "YES",
+          "weight": 2.0,
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "reference": "result.json:work_state.central_arcs"
+            },
+            {
+              "reference": "result.json:state_ledgers"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "module_id": "penalty.unflagged_incomplete",
+      "title": "Unflagged incomplete artifact penalty",
+      "cap_points": 8.0,
+      "coverage": 1.0,
+      "weights": {
+        "passed": 6.0,
+        "failed": 0.0,
+        "unassessed": 0.0,
+        "applicable": 6.0
+      },
+      "deduction": {
+        "observed": 0.0,
+        "lower": 0.0,
+        "upper": 0.0
+      },
+      "questions": [
+        {
+          "question_id": "penalty.unflagged_incomplete.status",
+          "verdict": "YES",
+          "weight": 3.0,
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "reference": "result.json:limitations"
+            }
+          ]
+        },
+        {
+          "question_id": "penalty.unflagged_incomplete.unit",
+          "verdict": "NOT_APPLICABLE",
+          "weight": 3.0,
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "reference": "result.json:limitations"
+            }
+          ]
+        },
+        {
+          "question_id": "penalty.unflagged_incomplete.truncation",
+          "verdict": "YES",
+          "weight": 3.0,
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "reference": "unit-0007-25dfed4ef40f"
+            }
+          ]
+        }
+      ]
+    }
+  ],
   "supplemental": [
     {
-      "confidence": 0.98,
+      "question_id": "core.task_and_brief_fidelity.operation",
+      "module_id": "core.task_and_brief_fidelity",
+      "verdict": "YES",
+      "confidence": 0.97,
       "evidence": [
         {
-          "reference": "artifact:draft chapters 1-6#ch2-climber"
-        },
-        {
-          "reference": "artifact:draft chapters 1-6#ch5-fawn"
+          "reference": "result.json:orientation.premise"
         }
-      ],
-      "module_id": "form.prose.general_prose_fiction",
-      "question_id": "form.prose.general_prose_fiction.narrative_experience",
-      "verdict": "YES"
+      ]
     },
     {
-      "confidence": 0.87,
-      "evidence": [
-        {
-          "reference": "artifact:draft chapters 1-6#ch5-fawn-room"
-        },
-        {
-          "reference": "artifact:draft chapters 1-6#ch5-fawn-dialogue"
-        }
-      ],
-      "module_id": "form.prose.general_prose_fiction",
-      "question_id": "form.prose.general_prose_fiction.character_action",
-      "verdict": "YES"
-    },
-    {
-      "confidence": 0.99,
-      "evidence": [
-        {
-          "reference": "artifact:draft chapters 1-6#ch1-opening"
-        },
-        {
-          "reference": "artifact:draft chapters 1-6#ch5-confession"
-        },
-        {
-          "reference": "artifact:draft chapters 1-6#ch6-count"
-        }
-      ],
-      "module_id": "form.prose.general_prose_fiction",
-      "question_id": "form.prose.general_prose_fiction.movement",
-      "verdict": "YES"
-    },
-    {
-      "confidence": 0.88,
-      "evidence": [
-        {
-          "reference": "artifact:draft chapters 1-6#ch1-summary"
-        },
-        {
-          "reference": "artifact:draft chapters 1-6#ch3-exposition"
-        }
-      ],
-      "module_id": "form.prose.general_prose_fiction",
-      "question_id": "form.prose.general_prose_fiction.mode_control",
-      "verdict": "YES"
-    },
-    {
-      "confidence": 0.85,
-      "evidence": [
-        {
-          "reference": "artifact:draft chapters 1-6#ch1-opening"
-        },
-        {
-          "reference": "artifact:draft chapters 1-6#ch3-lesson-structure"
-        }
-      ],
-      "module_id": "form.prose.general_prose_fiction",
-      "question_id": "form.prose.general_prose_fiction.reader_orientation",
-      "verdict": "YES"
-    },
-    {
-      "confidence": 0.72,
-      "evidence": [
-        {
-          "reference": "artifact:draft chapters 1-6#ch3-lesson"
-        },
-        {
-          "reference": "artifact:draft chapters 1-6#ch6-mechanics"
-        }
-      ],
-      "module_id": "form.prose.general_prose_fiction",
-      "question_id": "form.prose.general_prose_fiction.proportion",
-      "verdict": "NO"
-    },
-    {
+      "question_id": "core.task_and_brief_fidelity.sources",
+      "module_id": "core.task_and_brief_fidelity",
+      "verdict": "YES",
       "confidence": 0.96,
       "evidence": [
         {
-          "reference": "artifact:draft chapters 1-6#ch6-ending"
+          "reference": "author brief:I"
         },
         {
-          "reference": "source:author notes#future"
+          "reference": "result.json:units[3].summary"
         }
-      ],
-      "module_id": "form.prose.general_prose_fiction",
-      "question_id": "form.prose.general_prose_fiction.completion",
-      "verdict": "NOT_APPLICABLE"
+      ]
     },
     {
-      "confidence": 0.92,
+      "question_id": "core.task_and_brief_fidelity.inclusions",
+      "module_id": "core.task_and_brief_fidelity",
+      "verdict": "YES",
+      "confidence": 0.82,
       "evidence": [
         {
-          "reference": "artifact:draft chapters 1-6#ch1-opening"
+          "reference": "author brief:V"
         },
         {
-          "reference": "artifact:draft chapters 1-6#ch6-count"
+          "reference": "result.json:state_ledgers"
         }
-      ],
-      "module_id": "scope.long_context",
-      "question_id": "scope.long_context.distant",
-      "verdict": "YES"
+      ]
     },
     {
-      "confidence": 0.94,
+      "question_id": "core.task_and_brief_fidelity.exclusions",
+      "module_id": "core.task_and_brief_fidelity",
+      "verdict": "NOT_APPLICABLE",
+      "confidence": 0.99,
       "evidence": [
         {
-          "reference": "artifact:draft chapters 1-6#ch1-mothers"
-        },
-        {
-          "reference": "artifact:draft chapters 1-6#ch5-fawn"
+          "reference": "evaluation prompt"
         }
-      ],
-      "module_id": "scope.long_context",
-      "question_id": "scope.long_context.distractors",
-      "verdict": "YES"
+      ]
     },
     {
-      "confidence": 0.91,
-      "evidence": [
-        {
-          "reference": "artifact:draft chapters 1-6#ch2-climber"
-        },
-        {
-          "reference": "artifact:draft chapters 1-6#ch5-batteries"
-        },
-        {
-          "reference": "artifact:draft chapters 1-6#ch6-count"
-        }
-      ],
-      "module_id": "scope.long_context",
-      "question_id": "scope.long_context.multi",
-      "verdict": "YES"
-    },
-    {
-      "confidence": 0.86,
-      "evidence": [
-        {
-          "reference": "artifact:draft chapters 1-6#ch1-ameliabackstory"
-        },
-        {
-          "reference": "artifact:draft chapters 1-6#ch6-count"
-        }
-      ],
-      "module_id": "scope.long_context",
-      "question_id": "scope.long_context.updates",
-      "verdict": "YES"
-    },
-    {
-      "confidence": 0.9,
-      "evidence": [
-        {
-          "reference": "source:author notes#katherine-arc"
-        },
-        {
-          "reference": "source:author notes#future"
-        }
-      ],
-      "module_id": "scope.long_context",
-      "question_id": "scope.long_context.documents",
-      "verdict": "YES"
-    },
-    {
+      "question_id": "core.task_and_brief_fidelity.pov",
+      "module_id": "core.task_and_brief_fidelity",
+      "verdict": "NOT_APPLICABLE",
       "confidence": 0.98,
       "evidence": [
         {
-          "reference": "source:author notes#clarifications"
+          "reference": "result.json:limitations"
+        }
+      ]
+    },
+    {
+      "question_id": "core.task_and_brief_fidelity.tense",
+      "module_id": "core.task_and_brief_fidelity",
+      "verdict": "NOT_APPLICABLE",
+      "confidence": 0.99,
+      "evidence": [
+        {
+          "reference": "author brief"
+        }
+      ]
+    },
+    {
+      "question_id": "core.task_and_brief_fidelity.structure",
+      "module_id": "core.task_and_brief_fidelity",
+      "verdict": "NOT_APPLICABLE",
+      "confidence": 0.98,
+      "evidence": [
+        {
+          "reference": "result.json:orientation.evaluated_scope"
+        }
+      ]
+    },
+    {
+      "question_id": "core.task_and_brief_fidelity.format",
+      "module_id": "core.task_and_brief_fidelity",
+      "verdict": "NOT_APPLICABLE",
+      "confidence": 0.99,
+      "evidence": [
+        {
+          "reference": "author brief:VII"
+        }
+      ]
+    },
+    {
+      "question_id": "core.task_and_brief_fidelity.length_hard",
+      "module_id": "core.task_and_brief_fidelity",
+      "verdict": "NOT_APPLICABLE",
+      "confidence": 0.99,
+      "evidence": [
+        {
+          "reference": "author brief:I"
+        }
+      ]
+    },
+    {
+      "question_id": "core.length_and_scope_fit.explicit",
+      "module_id": "core.length_and_scope_fit",
+      "verdict": "NOT_APPLICABLE",
+      "confidence": 0.99,
+      "evidence": [
+        {
+          "reference": "result.json:limitations"
+        }
+      ]
+    },
+    {
+      "question_id": "form.prose.general_prose_fiction.narrative_experience",
+      "module_id": "form.prose.general_prose_fiction",
+      "verdict": "YES",
+      "confidence": 0.99,
+      "evidence": [
+        {
+          "reference": "organized source units, unit-0003-a790dad00537"
+        }
+      ]
+    },
+    {
+      "question_id": "form.prose.general_prose_fiction.character_action",
+      "module_id": "form.prose.general_prose_fiction",
+      "verdict": "YES",
+      "confidence": 0.98,
+      "evidence": [
+        {
+          "reference": "organized source units, unit-0006-71f0cc119f96"
+        }
+      ]
+    },
+    {
+      "question_id": "form.prose.general_prose_fiction.movement",
+      "module_id": "form.prose.general_prose_fiction",
+      "verdict": "YES",
+      "confidence": 0.99,
+      "evidence": [
+        {
+          "reference": "organized source units, unit-0006-71f0cc119f96"
+        }
+      ]
+    },
+    {
+      "question_id": "form.prose.general_prose_fiction.mode_control",
+      "module_id": "form.prose.general_prose_fiction",
+      "verdict": "YES",
+      "confidence": 0.96,
+      "evidence": [
+        {
+          "reference": "organized source units, unit-0004-d56cc8561b6b"
         },
         {
-          "reference": "source:author notes#clarifications"
+          "reference": "organized source units, unit-0004-d56cc8561b6b"
         }
-      ],
+      ]
+    },
+    {
+      "question_id": "form.prose.general_prose_fiction.reader_orientation",
+      "module_id": "form.prose.general_prose_fiction",
+      "verdict": "YES",
+      "confidence": 0.98,
+      "evidence": [
+        {
+          "reference": "organized source units, unit-0005-ea246b1652fb"
+        }
+      ]
+    },
+    {
+      "question_id": "form.prose.general_prose_fiction.proportion",
+      "module_id": "form.prose.general_prose_fiction",
+      "verdict": "YES",
+      "confidence": 0.91,
+      "evidence": [
+        {
+          "reference": "organized source units, unit-0006-71f0cc119f96"
+        }
+      ]
+    },
+    {
+      "question_id": "form.prose.general_prose_fiction.completion",
+      "module_id": "form.prose.general_prose_fiction",
+      "verdict": "NOT_APPLICABLE",
+      "confidence": 1.0,
+      "evidence": [
+        {
+          "reference": "result.json, limitations[0]"
+        }
+      ]
+    },
+    {
+      "question_id": "scope.long_context.distant",
       "module_id": "scope.long_context",
+      "verdict": "YES",
+      "confidence": 0.98,
+      "evidence": [
+        {
+          "reference": "organized source units, unit-0002-e3373399775a"
+        },
+        {
+          "reference": "organized source units, unit-0007-25dfed4ef40f"
+        }
+      ]
+    },
+    {
+      "question_id": "scope.long_context.distractors",
+      "module_id": "scope.long_context",
+      "verdict": "YES",
+      "confidence": 0.99,
+      "evidence": [
+        {
+          "reference": "organized source units, unit-0007-25dfed4ef40f"
+        }
+      ]
+    },
+    {
+      "question_id": "scope.long_context.multi",
+      "module_id": "scope.long_context",
+      "verdict": "YES",
+      "confidence": 0.98,
+      "evidence": [
+        {
+          "reference": "organized source units, unit-0004-d56cc8561b6b"
+        },
+        {
+          "reference": "organized source units, unit-0007-25dfed4ef40f"
+        }
+      ]
+    },
+    {
+      "question_id": "scope.long_context.updates",
+      "module_id": "scope.long_context",
+      "verdict": "YES",
+      "confidence": 0.99,
+      "evidence": [
+        {
+          "reference": "organized source units, unit-0006-71f0cc119f96"
+        },
+        {
+          "reference": "organized source units, unit-0007-25dfed4ef40f"
+        }
+      ]
+    },
+    {
+      "question_id": "scope.long_context.documents",
+      "module_id": "scope.long_context",
+      "verdict": "YES",
+      "confidence": 0.98,
+      "evidence": [
+        {
+          "reference": "result.json, limitations[3]"
+        },
+        {
+          "reference": "author brief, V. Plot Points & Scene Ideas"
+        }
+      ]
+    },
+    {
       "question_id": "scope.long_context.uncertainty",
-      "verdict": "YES"
-    },
-    {
-      "confidence": 0.91,
+      "module_id": "scope.long_context",
+      "verdict": "YES",
+      "confidence": 0.99,
       "evidence": [
         {
-          "reference": "artifact:draft chapters 1-6#ch1-ameliabackstory"
+          "reference": "result.json, state_ledgers, Amelia's journal or grimoire"
         },
         {
-          "reference": "artifact:draft chapters 1-6#ch4-age"
+          "reference": "author brief, IX. Items Needing Clarification"
         }
-      ],
-      "module_id": "scope.long_context",
+      ]
+    },
+    {
       "question_id": "scope.long_context.no_first",
-      "verdict": "YES"
-    },
-    {
-      "confidence": 0.91,
+      "module_id": "scope.long_context",
+      "verdict": "YES",
+      "confidence": 0.98,
       "evidence": [
         {
-          "reference": "artifact:draft chapters 1-6#ch1-opening"
+          "reference": "organized source units, unit-0007-25dfed4ef40f"
         },
         {
-          "reference": "artifact:draft chapters 1-6#ch6-mechanics"
+          "reference": "result.json, work_state.promises"
         }
-      ],
-      "module_id": "scope.long_context",
+      ]
+    },
+    {
       "question_id": "scope.long_context.no_recent",
-      "verdict": "YES"
+      "module_id": "scope.long_context",
+      "verdict": "YES",
+      "confidence": 0.98,
+      "evidence": [
+        {
+          "reference": "organized source units, unit-0002-e3373399775a"
+        },
+        {
+          "reference": "organized source units, unit-0004-d56cc8561b6b"
+        }
+      ]
     }
-  ]
+  ],
+  "issues": []
 }

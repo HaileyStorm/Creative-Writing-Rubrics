@@ -1,4 +1,4 @@
-# HBQ-RS 1.0.0: Hierarchical Binary-Question Rubric Stack
+# HBQ-RS: Hierarchical Binary-Question Rubric Stack
 
 ## Status and purpose
 
@@ -35,7 +35,7 @@ Every question leaf includes a stable ID, a globally owned `criterion_key`, posi
 
 ### Question types
 
-- `hard_gate`: a failed requirement invalidates the output for the requested operation, regardless of artistic merit.
+- `hard_gate`: a failed objective, atomic, explicitly non-negotiable requirement from the frozen task contract invalidates the output for the requested operation, regardless of artistic merit.
 - `scored`: contributes to a weighted quality domain.
 - `subjective_threshold`: contributes to a small cumulative holistic ladder.
 - `diagnostic`: reported but excluded from the quality total unless a bundle explicitly promotes it.
@@ -89,6 +89,8 @@ final_upper    = max(0, base_upper − penalty_lower)
 
 Hard-gate status is reported separately as `VALID`, `INVALID`, or `UNRESOLVED`.
 
+Author preferences, aesthetic targets, revision priorities, and inferred goals are never hard gates. They may receive explicit weight in the task domain, but failure lowers the quality result rather than invalidating the artifact. Broad catch-all questions such as “does it satisfy every inclusion?” are diagnostic only; binding requirements must be split into independently answerable leaves before judging.
+
 ## 5. Controlled subjective assessment
 
 The default holistic module is worth eight points and uses four cumulative thresholds worth two points each:
@@ -106,7 +108,7 @@ A flagged excerpt is judged for visible local craft and contribution to the supp
 
 ## 7. Length and form fit
 
-Exact word, line, duration, or format constraints are hard gates. Otherwise, length is a positive fit criterion: enough space for the artifact's actual creative load, no padding to hit a target, and no underbuilding disguised as economy. The applicable form and operation determine the standard.
+An exact word, line, duration, or format constraint is a hard gate only when it is explicitly non-negotiable, objectively verifiable, and frozen in the task contract before judging. Otherwise, length is a positive fit criterion: enough space for the artifact's actual creative load, no padding to hit a target, and no underbuilding disguised as economy. The applicable form and operation determine the standard.
 
 ## 8. Long-form protocol
 
@@ -128,7 +130,12 @@ Strong finalists are first evaluated independently. Pairwise comparison then exa
 
 ## 10. Dynamic task questions
 
-The stable registry supplies craft and workflow knowledge. Explicit instructions are decomposed at execution time into an ephemeral task module. Dynamic questions must be traceable to the prompt or source, atomic, condition-aware, observable, deduplicated against the registry, and validated before use. The system must not let a judge invent new artistic preferences after seeing candidate outputs.
+The stable registry supplies craft and workflow knowledge. Before candidate judging, the brief and declared context are compiled into a frozen task contract with two scored/control surfaces:
+
+- `weighted_goals`: atomic author goals and preferences that contribute to the task domain without affecting eligibility;
+- `binding_requirements`: atomic, objective, explicitly non-negotiable constraints that become hard gates.
+
+Context, background, and priorities remain available to the evaluator but are not silently promoted. Every dynamic question must be traceable to an exact prompt or source excerpt, condition-aware, observable, deduplicated against the registry, and validated before use. The system must not let a judge invent preferences or requirements after seeing candidate outputs.
 
 ## 11. Strict AI-output judging prefix
 
@@ -136,4 +143,4 @@ The evaluated artifact is AI-generated. The judge should be exacting without bec
 
 ## 12. Serialization
 
-Canonical machine formats are JSON and JSONL. YAML is provided for human editing. The schemas in `schema/` define modules, bundles, verdicts, and score reports. Stable IDs and versions are mandatory; displayed titles may change without breaking references.
+Canonical machine formats are JSON and JSONL. YAML is provided for human editing. The schemas in `schema/` define modules, bundles, task contracts, route selection, strict judge responses, verdicts, diagnostics, score reports, and long-form reports. Stable registry IDs and versions are mandatory; displayed titles may change without breaking references.

@@ -1,0 +1,150 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/HaileyStorm/Creative-Writing-Rubrics/main/schema/hbq_task_contract.schema.json",
+  "title": "HBQ-RS task contract",
+  "type": "object",
+  "required": [
+    "contract_version",
+    "contract_id",
+    "artifact_id",
+    "context",
+    "preferences",
+    "priorities",
+    "weighted_goals",
+    "binding_requirements"
+  ],
+  "properties": {
+    "contract_version": {"const": 1},
+    "contract_id": {"type": "string", "pattern": "^[a-z0-9_.-]+$"},
+    "artifact_id": {"type": "string", "minLength": 1},
+    "context": {
+      "type": "object",
+      "required": ["artifact_kind", "declared_scope", "completion_status", "background", "constraints", "audience"],
+      "properties": {
+        "artifact_kind": {"type": "string", "minLength": 1},
+        "declared_scope": {"type": "string", "minLength": 1},
+        "completion_status": {"enum": ["complete", "work_in_progress", "excerpt", "unknown"]},
+        "background": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+        "constraints": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+        "audience": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true}
+      },
+      "additionalProperties": false
+    },
+    "preferences": {
+      "type": "array",
+      "maxItems": 64,
+      "items": {"$ref": "#/$defs/context_item"}
+    },
+    "priorities": {
+      "type": "array",
+      "maxItems": 64,
+      "items": {"$ref": "#/$defs/context_item"}
+    },
+    "weighted_goals": {
+      "type": "array",
+      "maxItems": 64,
+      "items": {"$ref": "#/$defs/weighted_goal"}
+    },
+    "binding_requirements": {
+      "type": "array",
+      "maxItems": 64,
+      "description": "Populated only by a deterministically typed, user-supplied or user-approved task contract; automatic route selection must leave this empty.",
+      "items": {"$ref": "#/$defs/binding_requirement"}
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "source": {
+      "type": "object",
+      "required": ["kind", "reference", "exact_excerpt"],
+      "properties": {
+        "kind": {
+          "enum": [
+            "explicit_user_requirement",
+            "formal_specification",
+            "driving_prompt",
+            "user_preference"
+          ]
+        },
+        "reference": {"type": "string", "minLength": 1},
+        "exact_excerpt": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    },
+    "context_item": {
+      "type": "object",
+      "required": ["id", "statement", "source"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^[a-z0-9_.-]+$"},
+        "statement": {"type": "string", "minLength": 1},
+        "source": {"$ref": "#/$defs/source"}
+      },
+      "additionalProperties": false
+    },
+    "weighted_goal": {
+      "type": "object",
+      "required": ["goal_id", "atomic_question", "weight", "source", "applies_to", "rationale"],
+      "properties": {
+        "goal_id": {"type": "string", "pattern": "^[a-z0-9_.-]+$"},
+        "atomic_question": {"type": "string", "minLength": 4, "pattern": "\\?$"},
+        "weight": {"type": "number", "exclusiveMinimum": 0},
+        "source": {"$ref": "#/$defs/source"},
+        "applies_to": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"type": "string", "minLength": 1},
+          "uniqueItems": true
+        },
+        "rationale": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    },
+    "binding_requirement": {
+      "type": "object",
+      "required": [
+        "requirement_id",
+        "atomic_question",
+        "objective",
+        "non_negotiable",
+        "source",
+        "applies_to",
+        "verification"
+      ],
+      "properties": {
+        "requirement_id": {"type": "string", "pattern": "^[a-z0-9_.-]+$"},
+        "atomic_question": {"type": "string", "minLength": 4, "pattern": "\\?$"},
+        "objective": {"const": true},
+        "non_negotiable": {"const": true},
+        "source": {
+          "type": "object",
+          "required": ["kind", "reference", "exact_excerpt"],
+          "properties": {
+            "kind": {"enum": ["explicit_user_requirement", "formal_specification"]},
+            "reference": {"type": "string", "minLength": 1},
+            "exact_excerpt": {"type": "string", "minLength": 1}
+          },
+          "additionalProperties": false
+        },
+        "applies_to": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"type": "string", "minLength": 1},
+          "uniqueItems": true
+        },
+        "verification": {
+          "type": "object",
+          "description": "For method absence, YES means the prohibited condition is absent and NO means it is present; absence alone is never NOT_APPLICABLE or CANNOT_ASSESS.",
+          "required": ["method", "expected"],
+          "properties": {
+            "method": {
+              "enum": ["exact_match", "presence", "absence", "numeric_limit", "enumerated_constraint", "structural_constraint"]
+            },
+            "expected": {"type": "string", "minLength": 1}
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

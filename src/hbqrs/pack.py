@@ -13,19 +13,32 @@ from .core import walk_tree
 from .paths import book_root
 
 
+class _NoAliasDumper(yaml.SafeDumper):
+    def ignore_aliases(self, data: Any) -> bool:
+        return True
+
+
 def _json_dump(path: Path, value: Any) -> None:
+    if path.is_file() and json.loads(path.read_text(encoding="utf-8")) == value:
+        return
     path.write_text(json.dumps(value, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 
 def _yaml_dump(path: Path, value: Any) -> None:
+    if path.is_file() and yaml.safe_load(path.read_text(encoding="utf-8")) == value:
+        return
     path.write_text(
-        yaml.safe_dump(value, sort_keys=False, allow_unicode=True, width=110),
+        yaml.dump(value, Dumper=_NoAliasDumper, sort_keys=False, allow_unicode=True, width=110),
         encoding="utf-8",
     )
 
 
 def _jsonl_dump(path: Path, records: list[Any]) -> None:
-    lines = [json.dumps(item, ensure_ascii=False, separators=(",", ":")) for item in records]
+    if path.is_file():
+        existing = [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
+        if existing == records:
+            return
+    lines = [json.dumps(item, ensure_ascii=False) for item in records]
     path.write_text("\n".join(lines) + ("\n" if lines else ""), encoding="utf-8")
 
 

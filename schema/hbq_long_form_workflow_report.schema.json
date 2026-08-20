@@ -1,0 +1,135 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/HaileyStorm/Creative-Writing-Rubrics/main/schema/hbq_long_form_workflow_report.schema.json",
+  "title": "HBQ-RS long-form workflow report",
+  "type": "object",
+  "required": [
+    "report_version",
+    "artifact",
+    "route",
+    "orientation",
+    "global_result",
+    "local_results",
+    "findings",
+    "warnings"
+  ],
+  "properties": {
+    "report_version": {"const": 1},
+    "artifact": {
+      "type": "object",
+      "required": ["artifact_id", "source_sha256", "unit_count"],
+      "properties": {
+        "artifact_id": {"type": "string", "minLength": 1},
+        "source_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "unit_count": {"type": "integer", "minimum": 1}
+      },
+      "additionalProperties": false
+    },
+    "route": {
+      "type": "object",
+      "required": ["bundle_id", "module_ids", "weighted_goal_count", "binding_requirement_count", "sampled_unit_ids"],
+      "properties": {
+        "bundle_id": {"type": "string", "pattern": "^[a-z0-9_.]+$"},
+        "module_ids": {"type": "array", "items": {"type": "string", "pattern": "^[a-z0-9_.]+$"}, "uniqueItems": true},
+        "weighted_goal_count": {"type": "integer", "minimum": 0},
+        "binding_requirement_count": {"type": "integer", "minimum": 0},
+        "sampled_unit_ids": {"type": "array", "items": {"type": "string", "pattern": "^unit-[0-9]{4}-[0-9a-f]{12}$"}, "uniqueItems": true}
+      },
+      "additionalProperties": false
+    },
+    "orientation": {
+      "type": "object",
+      "required": ["premise", "evaluated_scope", "cast"],
+      "properties": {
+        "premise": {"type": "string", "minLength": 1},
+        "evaluated_scope": {"type": "string", "minLength": 1},
+        "cast": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name", "role"],
+            "properties": {
+              "name": {"type": "string", "minLength": 1},
+              "role": {"type": "string", "minLength": 1}
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "global_result": {
+      "anyOf": [
+        {"$ref": "#/$defs/result"},
+        {"type": "null"}
+      ]
+    },
+    "local_results": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/result"}
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["kind", "finding", "why_it_matters", "evidence_refs", "criterion_ids"],
+        "properties": {
+          "kind": {"enum": ["strength", "risk", "revision_priority", "observation"]},
+          "finding": {"type": "string", "minLength": 1},
+          "why_it_matters": {"type": "string", "minLength": 1},
+          "evidence_refs": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+          "criterion_ids": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}, "uniqueItems": true}
+        },
+        "additionalProperties": false
+      }
+    },
+    "warnings": {"type": "array", "items": {"type": "string", "minLength": 1}}
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "interval": {
+      "type": "object",
+      "required": ["observed", "lower", "upper"],
+      "properties": {
+        "observed": {"type": "number", "minimum": 0, "maximum": 100},
+        "lower": {"type": "number", "minimum": 0, "maximum": 100},
+        "upper": {"type": "number", "minimum": 0, "maximum": 100}
+      },
+      "additionalProperties": false
+    },
+    "domain": {
+      "type": "object",
+      "required": ["domain_id", "title", "coverage", "score"],
+      "properties": {
+        "domain_id": {"type": "string", "minLength": 1},
+        "title": {"type": "string", "minLength": 1},
+        "coverage": {"type": "number", "minimum": 0, "maximum": 1},
+        "score": {
+          "anyOf": [
+            {"$ref": "#/$defs/interval"},
+            {"type": "null"}
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "result": {
+      "type": "object",
+      "required": ["scope_id", "label", "control_state", "coverage", "score", "domains"],
+      "properties": {
+        "scope_id": {"type": "string", "minLength": 1},
+        "label": {"type": "string", "minLength": 1},
+        "control_state": {"enum": ["VALID", "INVALID", "UNRESOLVED", "PROVISIONAL", "INELIGIBLE"]},
+        "coverage": {"type": "number", "minimum": 0, "maximum": 1},
+        "score": {
+          "anyOf": [
+            {"$ref": "#/$defs/interval"},
+            {"type": "null"}
+          ]
+        },
+        "domains": {"type": "array", "items": {"$ref": "#/$defs/domain"}}
+      },
+      "additionalProperties": false
+    }
+  }
+}

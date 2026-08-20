@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="440" viewBox="0 0 960 440" role="img" aria-labelledby="title desc">
+<title id="title">Paired chapter-diagnostic verdict transitions</title>
+<desc id="desc">Counts of the 28 paired selected-question verdicts that improved, regressed, stayed unchanged, or changed assessability state in each chapter.</desc>
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="24" y="30" font-family="sans-serif" font-size="20" font-weight="700" fill="#111827">Paired chapter-diagnostic verdict transitions</text>
+<rect x="24" y="48" width="12" height="12" fill="#059669"/>
+<text x="42" y="59" font-family="sans-serif" font-size="12" fill="#374151">Improved</text>
+<rect x="126" y="48" width="12" height="12" fill="#dc2626"/>
+<text x="144" y="59" font-family="sans-serif" font-size="12" fill="#374151">Regressed</text>
+<rect x="235" y="48" width="12" height="12" fill="#9ca3af"/>
+<text x="253" y="59" font-family="sans-serif" font-size="12" fill="#374151">Unchanged</text>
+<rect x="344" y="48" width="12" height="12" fill="#7c3aed"/>
+<text x="362" y="59" font-family="sans-serif" font-size="12" fill="#374151">Control Shift</text>
+<line x1="130.0" y1="80" x2="130.0" y2="398" stroke="#e5e7eb"/>
+<text x="130.0" y="422" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#6b7280">0</text>
+<line x1="320.5" y1="80" x2="320.5" y2="398" stroke="#e5e7eb"/>
+<text x="320.5" y="422" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#6b7280">7</text>
+<line x1="511.0" y1="80" x2="511.0" y2="398" stroke="#e5e7eb"/>
+<text x="511.0" y="422" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#6b7280">14</text>
+<line x1="701.5" y1="80" x2="701.5" y2="398" stroke="#e5e7eb"/>
+<text x="701.5" y="422" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#6b7280">21</text>
+<line x1="892.0" y1="80" x2="892.0" y2="398" stroke="#e5e7eb"/>
+<text x="892.0" y="422" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#6b7280">28</text>
+<text x="116" y="111" text-anchor="end" font-family="sans-serif" font-size="12" fill="#111827">Chapter 1</text>
+<rect x="130.0" y="94" width="27.2" height="26" fill="#dc2626"><title>Regressed: 1</title></rect>
+<text x="143.6" y="112" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#ffffff">1</text>
+<rect x="157.2" y="94" width="680.4" height="26" fill="#9ca3af"><title>Unchanged: 25</title></rect>
+<text x="497.4" y="112" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#ffffff">25</text>
+<rect x="837.6" y="94" width="54.4" height="26" fill="#7c3aed"><title>Control Shift: 2</title></rect>
+<text x="864.8" y="112" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#ffffff">2</text>
+<text x="116" y="159" text-anchor="end" font-family="sans-serif" font-size="12" fill="#111827">Chapter 2</text>
+<rect x="130.0" y="142" width="27.2" height="26" fill="#dc2626"><title>Regressed: 1</title></rect>
+<text x="143.6" y="160" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#ffffff">1</text>
+<rect x="157.2" y="142" width="734.8" height="26" fill="#9ca3af"><title>Unchanged: 27</title></rect>
+<text x="524.6" y="160" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#ffffff">27</text>
+<text x="116" y="207" text-anchor="end" font-family="sans-serif" font-size="12" fill="#111827">Chapter 3</text>
+<rect x="130.0" y="190" width="27.2" height="26" fill="#059669"><title>Improved: 1</title></rect>
+<text x="143.6" y="208" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#ffffff">1</text>
+<rect x="157.2" y="190" width="734.8" height="26" fill="#9ca3af"><title>Unchanged: 27</title></rect>
+<text x="524.6" y="208" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#ffffff">27</text>
+<text x="116" y="255" text-anchor="end" font-family="sans-serif" font-size="12" fill="#111827">Chapter 4</text>
+<rect x="130.0" y="238" width="27.2" height="26" fill="#dc2626"><title>Regressed: 1</title></rect>
+<text x="143.6" y="256" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#ffffff">1</text>
+<rect x="157.2" y="238" width="734.8" height="26" fill="#9ca3af"><title>Unchanged: 27</title></rect>
+<text x="524.6" y="256" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#ffffff">27</text>
+<text x="116" y="303" text-anchor="end" font-family="sans-serif" font-size="12" fill="#111827">Chapter 5</text>
+<rect x="130.0" y="286" width="27.2" height="26" fill="#dc2626"><title>Regressed: 1</title></rect>
+<text x="143.6" y="304" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#ffffff">1</text>
+<rect x="157.2" y="286" width="734.8" height="26" fill="#9ca3af"><title>Unchanged: 27</title></rect>
+<text x="524.6" y="304" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#ffffff">27</text>
+<text x="116" y="351" text-anchor="end" font-family="sans-serif" font-size="12" fill="#111827">Chapter 6</text>
+<rect x="130.0" y="334" width="81.6" height="26" fill="#dc2626"><title>Regressed: 3</title></rect>
+<text x="170.8" y="352" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#ffffff">3</text>
+<rect x="211.6" y="334" width="680.4" height="26" fill="#9ca3af"><title>Unchanged: 25</title></rect>
+<text x="551.8" y="352" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#ffffff">25</text>
+<text x="130" y="436" font-family="sans-serif" font-size="11" fill="#6b7280">Each bar contains the same 28 selected leaves; these are transitions, not chapter grades.</text>
+</svg>

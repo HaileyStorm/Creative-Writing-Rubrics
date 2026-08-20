@@ -5,14 +5,14 @@
       "model": "gpt-5.6-sol",
       "reasoning_effort": "high"
     },
-    "map_sha256": "0a748ee88e88edb9dd7ce0f7da49a87ddb7b04be87822c8a685399d501ee4f67"
+    "map_sha256": "0027f17aeec37800bfdc9692b1d41b6dc84136a981519136c360cad3d476653e"
   },
-  "new": {
+  "rewrite": {
     "reported": {
       "provider": "openai",
       "model": "gpt-5.6-sol",
       "reasoning_effort": "high"
     },
-    "map_sha256": "7dd4f6cd2274f8121c7a9ed57fbab27906027dc18a39e493891d19fb57cbdf69"
+    "map_sha256": "ee7562af553f6c34037d878d72be2d736cb47fe716a1a1fc83a39bc53cb9c2d9"
   }
 }

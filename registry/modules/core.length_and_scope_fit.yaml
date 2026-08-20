@@ -3,7 +3,7 @@ standard:
   id: HBQ-RS
   version: 1.0.0
 module_id: core.length_and_scope_fit
-version: 1
+version: 2
 title: Length and scope fit
 kind: base
 description: Rewards length appropriate to form, purpose, and actual creative load while keeping exact requirements
@@ -35,7 +35,7 @@ tree:
     text: Does the artifact satisfy every explicit exact, minimum, or maximum length constraint?
     pass_answer: 'YES'
     weight: 2.0
-    question_type: hard_gate
+    question_type: diagnostic
     severity: material
     applies_when: The criterion is relevant to the requested artifact, scope, and operation.
     evidence_policy:

@@ -239,6 +239,16 @@ def _call_codex(
         "--disable",
         "shell_tool",
         "--disable",
+        "unified_exec",
+        "--disable",
+        "code_mode_host",
+        "--disable",
+        "hooks",
+        "--disable",
+        "memories",
+        "--disable",
+        "plugins",
+        "--disable",
         "multi_agent",
         "--disable",
         "apps",
@@ -288,8 +298,12 @@ def _call_codex(
     except (OSError, subprocess.TimeoutExpired) as exc:
         raise HBQError(f"Codex CLI failed to run: {exc}") from exc
     if completed.returncode != 0:
-        errors = [line.strip() for line in completed.stderr.splitlines() if line.strip().startswith("ERROR:")]
-        detail = errors[-1] if errors else "no structured provider error was reported"
+        error_start = completed.stderr.rfind("ERROR:")
+        if error_start >= 0:
+            detail = completed.stderr[error_start : error_start + 4000].strip()
+        else:
+            lines = [line.strip() for line in completed.stderr.splitlines() if line.strip()]
+            detail = "\n".join(lines[-12:])[:4000] or "no structured provider error was reported"
         raise HBQError(f"Codex CLI exited {completed.returncode}: {detail}")
     if not message_path.is_file():
         raise HBQError("Codex CLI completed without writing its final response")
@@ -320,6 +334,9 @@ def _question_payload(records: Sequence[Mapping[str, Any]]) -> list[dict[str, An
                 "role": record.get("role"),
                 "module_id": record.get("module_id"),
                 "domain_id": record.get("domain_id"),
+                "applies_when": question.get("applies_when"),
+                "source_reference": question.get("source_reference"),
+                "verification": question.get("verification"),
                 "evidence_policy": question.get("evidence_policy", {}),
             }
         )
@@ -462,6 +479,17 @@ def _load_checkpoints(output_dir: Path) -> tuple[list[dict[str, Any]], int, str 
             raise HBQError(f"Response checkpoints are not a contiguous ordered sequence at {path.name}")
         if record.get("previous_checkpoint_sha256") != previous_sha256:
             raise HBQError(f"Response checkpoint chain is broken at {path.name}")
+        prompt_path = path.with_suffix(".prompt.txt.gz")
+        if not prompt_path.is_file():
+            raise HBQError(
+                f"Prompt checkpoint {prompt_path.name} is missing for completed response checkpoint {path.name}"
+            )
+        try:
+            prompt_bytes = gzip.decompress(prompt_path.read_bytes())
+        except (OSError, EOFError) as exc:
+            raise HBQError(f"Cannot read prompt checkpoint {prompt_path.name}: {exc}") from exc
+        if record.get("prompt_sha256") != _sha256_bytes(prompt_bytes):
+            raise HBQError(f"Prompt checkpoint {prompt_path.name} hash does not match {path.name}")
         normalized = record.get("normalized_verdicts")
         if not isinstance(normalized, list) or not all(isinstance(item, dict) for item in normalized):
             raise HBQError(f"Response checkpoint {path.name} lacks normalized verdicts")
@@ -485,6 +513,7 @@ def run_judge(
     registry: str | Path,
     bundles: str | Path,
     context_paths: Sequence[str | Path] = (),
+    task_contract_path: str | Path | None = None,
     question_ids: Sequence[str] = (),
     batch_size: int = 12,
     base_url: str = "http://127.0.0.1:8000/v1",
@@ -522,11 +551,43 @@ def run_judge(
 
     artifact = _read_text_record(Path(artifact_path))
     contexts = [_read_text_record(Path(path)) for path in context_paths]
+    task_contract: dict[str, Any] | None = None
+    task_contract_record: dict[str, Any] | None = None
+    if task_contract_path is not None:
+        contract_path = Path(task_contract_path)
+        try:
+            contract_bytes = contract_path.read_bytes()
+            loaded_contract = load_data(contract_path)
+        except (OSError, UnicodeError, ValueError) as exc:
+            raise HBQError(f"Cannot read task contract {contract_path}: {exc}") from exc
+        if not isinstance(loaded_contract, dict):
+            raise HBQError("Task contract must be a JSON or YAML object")
+        contract_errors = sorted(
+            Draft202012Validator(load_data(schema_dir() / "hbq_task_contract.schema.json")).iter_errors(
+                loaded_contract
+            ),
+            key=lambda error: list(error.path),
+        )
+        if contract_errors:
+            raise HBQError(f"Task contract violates its strict schema: {contract_errors[0].message}")
+        task_contract = loaded_contract
+        task_contract_record = {
+            "path": str(contract_path.resolve()),
+            "name": contract_path.name,
+            "bytes": len(contract_bytes),
+            "sha256": _sha256_bytes(contract_bytes),
+            "contract_id": task_contract.get("contract_id"),
+        }
     artifact_id = artifact_id or Path(artifact_path).stem
+    if task_contract is not None and task_contract.get("artifact_id") != artifact_id:
+        raise HBQError(
+            "Task contract artifact_id "
+            f"{task_contract.get('artifact_id')!r} does not match judged artifact_id {artifact_id!r}"
+        )
     judge_id = judge_id or f"{provider}:{model}"
     modules = load_modules(registry)
     bundle = resolve_bundle(load_bundles(bundles), bundle_id)
-    compiled = compile_bundle(modules, bundle)
+    compiled = compile_bundle(modules, bundle, task_contract=task_contract)
     role_order = {"hard_gate": 0, "domain": 1, "penalty": 2, "supplemental": 3}
     questions = sorted(
         compiled_questions(compiled),
@@ -541,6 +602,7 @@ def run_judge(
         requested_set = set(requested)
         questions = [item for item in questions if item["question"]["id"] in requested_set]
     selected_ids = [str(item["question"]["id"]) for item in questions]
+    diagnostic_subset = len(selected_ids) != len(available_ids)
     if not selected_ids:
         raise HBQError("No questions selected")
 
@@ -557,6 +619,7 @@ def run_judge(
         "remote": remote,
         "artifact": _manifest_inputs([artifact])[0],
         "contexts": _manifest_inputs(contexts),
+        "task_contract": task_contract_record,
         "judge_instructions": _manifest_inputs(prompt_records),
         "questions": _question_payload(questions),
         "output_dir": str(Path(output_dir).resolve()),
@@ -568,6 +631,7 @@ def run_judge(
     configuration = {
         "artifact": _manifest_inputs([artifact])[0],
         "contexts": _manifest_inputs(contexts),
+        "task_contract": task_contract_record,
         "bundle_id": bundle_id,
         "bundle_version": bundle.get("version"),
         "question_ids": selected_ids,
@@ -595,6 +659,7 @@ def run_judge(
     manifest_path = destination / "run.json"
     verdicts_path = destination / "verdicts.jsonl"
     score_path = destination / "score.json"
+    diagnostic_path = destination / "diagnostic.json"
     schema_path = destination / "response.schema.json"
 
     if manifest_path.is_file():
@@ -729,7 +794,48 @@ def run_judge(
         completed = next_completed
         _write_verdicts(verdicts_path, completed)
 
-    report = score_bundle(modules, bundle, completed, artifact_id=artifact_id)
+    if diagnostic_subset:
+        counts = {state: 0 for state in sorted(VERDICTS)}
+        for verdict in completed:
+            counts[str(verdict["verdict"])] += 1
+        diagnostic = {
+            "$schema": "https://raw.githubusercontent.com/HaileyStorm/Creative-Writing-Rubrics/main/schema/hbq_diagnostic_report.schema.json",
+            "report_kind": "selected-question-diagnostic",
+            "artifact_id": artifact_id,
+            "bundle_id": bundle_id,
+            "task_contract": compiled.get("task_contract"),
+            "status": "DIAGNOSTIC_SUBSET",
+            "selected_question_ids": selected_ids,
+            "selected_question_count": len(selected_ids),
+            "available_question_count": len(available_ids),
+            "verdict_counts": counts,
+            "note": "No composite score is produced for a selected-question subset; local subset results must not be averaged.",
+        }
+        diagnostic_errors = sorted(
+            Draft202012Validator(load_data(schema_dir() / "hbq_diagnostic_report.schema.json")).iter_errors(
+                diagnostic
+            ),
+            key=lambda error: list(error.path),
+        )
+        if diagnostic_errors:
+            raise HBQError(f"Internal diagnostic report error: {diagnostic_errors[0].message}")
+        _write_json(diagnostic_path, diagnostic)
+        return {
+            "status": "DIAGNOSTIC_SUBSET",
+            "run_id": run_id,
+            "verdicts": len(completed),
+            "score": None,
+            "coverage": None,
+            "output_dir": str(destination),
+        }
+
+    report = score_bundle(
+        modules,
+        bundle,
+        completed,
+        artifact_id=artifact_id,
+        task_contract=task_contract,
+    )
     _write_json(score_path, report)
     return {
         "status": report["status"],

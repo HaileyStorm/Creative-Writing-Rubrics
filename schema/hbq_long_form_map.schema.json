@@ -1,0 +1,133 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/HaileyStorm/Creative-Writing-Rubrics/main/schema/hbq_long_form_map.schema.json",
+  "title": "HBQ-RS long-form work map",
+  "type": "object",
+  "required": [
+    "map_version",
+    "artifact_id",
+    "source_sha256",
+    "orientation",
+    "units",
+    "work_state",
+    "state_ledgers",
+    "distant_links",
+    "limitations"
+  ],
+  "properties": {
+    "map_version": {"const": 1},
+    "artifact_id": {"type": "string", "minLength": 1},
+    "source_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "orientation": {
+      "type": "object",
+      "required": ["premise", "evaluated_scope", "cast"],
+      "properties": {
+        "premise": {"type": "string", "minLength": 1},
+        "evaluated_scope": {"type": "string", "minLength": 1},
+        "cast": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name", "role"],
+            "properties": {
+              "name": {"type": "string", "minLength": 1},
+              "role": {"type": "string", "minLength": 1}
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "units": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "unit_id",
+          "summary",
+          "chronology",
+          "povs",
+          "characters",
+          "locations",
+          "promises_opened",
+          "promises_advanced",
+          "promises_resolved",
+          "motifs",
+          "ending_state",
+          "load_bearing"
+        ],
+        "properties": {
+          "unit_id": {"type": "string", "pattern": "^unit-[0-9]{4}-[0-9a-f]{12}$"},
+          "summary": {"type": "string", "minLength": 1},
+          "chronology": {"type": "string", "minLength": 1},
+          "povs": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+          "characters": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+          "locations": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+          "promises_opened": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+          "promises_advanced": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+          "promises_resolved": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+          "motifs": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+          "ending_state": {"type": "string", "minLength": 1},
+          "load_bearing": {"type": "boolean"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "work_state": {
+      "type": "object",
+      "required": ["chronology", "central_arcs", "subplots", "promises", "motifs", "ending_state"],
+      "properties": {
+        "chronology": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "central_arcs": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "subplots": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "promises": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "motifs": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "ending_state": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    },
+    "state_ledgers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["entity_type", "entity", "current_state", "changes"],
+        "properties": {
+          "entity_type": {"enum": ["character", "knowledge", "relationship", "injury", "object", "location", "world_rule"]},
+          "entity": {"type": "string", "minLength": 1},
+          "current_state": {"type": "string", "minLength": 1},
+          "changes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["unit_id", "state"],
+              "properties": {
+                "unit_id": {"type": "string", "pattern": "^unit-[0-9]{4}-[0-9a-f]{12}$"},
+                "state": {"type": "string", "minLength": 1}
+              },
+              "additionalProperties": false
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "distant_links": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["setup_unit_id", "payoff_unit_id", "description", "status"],
+        "properties": {
+          "setup_unit_id": {"type": "string", "pattern": "^unit-[0-9]{4}-[0-9a-f]{12}$"},
+          "payoff_unit_id": {"type": "string", "pattern": "^unit-[0-9]{4}-[0-9a-f]{12}$"},
+          "description": {"type": "string", "minLength": 1},
+          "status": {"enum": ["paid_off", "open", "contradicted", "cannot_assess"]}
+        },
+        "additionalProperties": false
+      }
+    },
+    "limitations": {"type": "array", "items": {"type": "string", "minLength": 1}}
+  },
+  "additionalProperties": false
+}

@@ -1,12 +1,8 @@
 # Creative-Writing-Rubrics
 
-**HBQ-RS 1.0.0** — a composable stack of binary-question rubrics for creative writing, draft judging, open critique, model/dataset evaluation, benchmarking, and synthetic data.
+**creative-writing-rubrics 1.1.0 · HBQ-RS 1.0.0** — a composable stack of binary-question rubrics for creative writing, draft judging, open critique, model/dataset evaluation, benchmarking, and synthetic data.
 
 The package ships **277 modules**, **2,139 atomic leaves**, and **85 bundle presets**, plus deterministic scoring. A judge answers one yes/no leaf at a time. Aggregation is code, not another model call.
-
-## Verification status
-
-Fresh-clone installation, CLI and Python workflows, wheel contents, schemas, and examples have been verified. The headless runner is tested against a local endpoint and GPT-5.6. This public repository includes a real two-draft, six-chapter evaluation with 778 quote-free verdicts and 14 score reports, plus a separate 249-verdict extension over all seven available chapters of the original draft. The private manuscript is not published.
 
 ## Install
 
@@ -51,7 +47,19 @@ cwr judge examples/sample_scene.md --bundle prose.scene --provider openai \
   --base-url http://127.0.0.1:8000/v1 --model local-model --output-dir ../cwr-runs/sample
 ```
 
-The same command supports Codex CLI. Local fake-endpoint tests cover transport; for real GPT-5.6 evaluation, Luna Max suits broad passes and Sol Medium/High suits judgment and synthesis. See [Running a headless judge](docs/judging.md) for privacy gates, resume, context files, and long-form use.
+For a manuscript, `cwr longform` can select a valid bundle/module stack, turn a brief into frozen weighted goals, segment and map the work, run whole-work scoring plus independent local diagnostics, and render a narrative report. Binding requirements come only from an explicit `--task-contract` file:
+
+```bash
+cwr longform manuscript.txt --brief author-notes.txt \
+  --artifact-kind prose_fiction --provider openai \
+  --base-url http://127.0.0.1:8000/v1 --model local-model \
+  --local-sample-limit 4 --binary-workers 2 \
+  --output-dir ../cwr-runs/manuscript
+```
+
+The same commands support Codex CLI. For GPT-5.6, Sol Medium is a good default for binary judging and Sol High for route selection, long-range mapping, ambiguous judgments, and synthesis. Luna Max is useful for broad passes when a stronger model or deterministic check reviews the result. See [Running a headless judge](docs/judging.md) for privacy gates, resume, task contracts, and provider details.
+
+Automatic routing is the default. For a controlled draft comparison, add `--bundle prose.novel` to freeze the complete rubric stack, `--task-contract contract.json` to reuse the same weighted goals and objective requirements, and repeat `--frozen-sample-ordinal N` to score matched chapter positions. Endpoints that implement OpenAI Structured Outputs can opt in with `--openai-structured-outputs`; generic local endpoints remain prompt-and-validation based.
 
 Python:
 
@@ -67,17 +75,17 @@ print(report["status"], report["final_score"])
 
 ## How judging works
 
-1. Pick a **bundle** for the artifact and operation (`prose.scene`, `poetry.sonnet.shakespearean`, `default.first_pass_screening`, …).
-2. Optionally generate ephemeral hard/task questions from the brief with `prompts/judge/TASK_DECOMPOSITION_PROMPT.md` *before* candidates are visible. This begins the LLM-as-judge phase; the final score is still aggregated deterministically.
-3. Ask each selected leaf with `BINARY_EVALUATION_PROMPT.md`; add `JUDGE_PREFIX.md` when the artifact is AI-generated or AI-modified.
+1. Pick a **bundle** for the artifact and operation (`prose.scene`, `poetry.sonnet.shakespearean`, `default.first_pass_screening`, …), or let the long-form runner select a valid stack from the local catalog.
+2. Freeze the task contract before judging. Author goals and preferences become weighted questions; only atomic, objective, explicitly non-negotiable requirements supplied in an artifact-bound contract can become gates. Automatic routing cannot create them.
+3. Ask each selected leaf with `BINARY_EVALUATION_PROMPT.md`. **This is the LLM-as-judge part.** Add `JUDGE_PREFIX.md` when the artifact is AI-generated or AI-modified.
 4. Collect JSONL verdicts: `YES`, `NO`, `NOT_APPLICABLE`, or `CANNOT_ASSESS`.
 5. Run `cwr score`. Hard gates decide eligibility; scored leaves decide quality; penalties are capped; missing evidence widens an interval instead of counting as failure.
 
 ```text
-brief → task questions → compiled bundle → per-leaf verdicts → deterministic score → optional open review
+artifact + brief → validated route → frozen task contract → stable map → per-leaf verdicts → deterministic score → report
 ```
 
-Do not average chapter scores into a manuscript score. Use `prompts/judge/LONG_FORM_PROTOCOL.md`.
+For long work, global questions see the complete source organized into stable units. `--local-sample-limit` bounds the representative chapters or sections that receive independent local results (maximum 64); `--binary-workers` can evaluate those disjoint scopes concurrently (maximum 8). Local results are never averaged into the manuscript score.
 
 ## What is in the box
 
@@ -99,7 +107,6 @@ Stable IDs (`module_id`, `question_id`, `bundle_id`, `criterion_key`) are the pu
 ## Guides
 
 - [Real long-form draft comparison](https://github.com/HaileyStorm/Creative-Writing-Rubrics/tree/main/evaluation-results/gray-blood-ch1-6)
-- [Full-original chapters 1-7 extension](https://github.com/HaileyStorm/Creative-Writing-Rubrics/tree/main/evaluation-results/gray-blood-original-ch1-7)
 - [Run a headless judge](docs/judging.md)
 - [Embed in another app](docs/apps.md)
 - [Benchmarking](docs/benchmarking.md)
@@ -118,6 +125,10 @@ Stable IDs (`module_id`, `question_id`, `bundle_id`, `criterion_key`) are the pu
 - Do not let a judge invent new artistic preferences after seeing candidates.
 
 Scores are structured evidence, not literary truth. Calibrate before high-stakes use.
+
+## Verification
+
+The release is tested from a fresh clone and isolated wheel install, through the CLI and Python APIs, against strict schemas and both a fake local OpenAI-compatible endpoint and GPT-5.6 via Codex CLI. The public six-chapter case study includes the full publishable score breakdowns and diagnostics; the private manuscript is not distributed.
 
 ## Support
 

@@ -321,6 +321,8 @@ def validate_registry(
 def compile_bundle(
     modules: Sequence[dict[str, Any]],
     bundle: dict[str, Any],
+    *,
+    task_contract: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Compile a bundle to a flat, judge-ready question packet.
 
@@ -432,6 +434,114 @@ def compile_bundle(
             else:
                 supplemental.setdefault(qid, record)
 
+    contract_record: dict[str, Any] | None = None
+    if task_contract is not None:
+        contract_id = str(task_contract.get("contract_id", "")).strip()
+        if not contract_id or any(character not in "abcdefghijklmnopqrstuvwxyz0123456789_.-" for character in contract_id):
+            raise HBQError("Task contract requires a non-empty contract_id")
+        domain_id = str(task_contract.get("domain_id", "task"))
+        domain = next((item for item in bundle.get("domains", []) if str(item.get("domain_id")) == domain_id), None)
+        if domain is None:
+            raise HBQError(f"Task contract domain {domain_id!r} is not present in bundle {bundle_id}")
+        module_id = f"task.contract.{contract_id}"
+        goals = task_contract.get("weighted_goals", [])
+        requirements = task_contract.get("binding_requirements", [])
+        if not isinstance(goals, list) or not isinstance(requirements, list):
+            raise HBQError("Task contract goals and requirements must be arrays")
+        seen_contract_ids: set[str] = set()
+
+        def contract_question(
+            item: Any,
+            *,
+            id_key: str,
+            question_type: str,
+            default_weight: float,
+        ) -> dict[str, Any]:
+            if not isinstance(item, Mapping):
+                raise HBQError("Task contract entries must be objects")
+            entry_id = str(item.get(id_key, "")).strip()
+            qid = f"{module_id}.{entry_id}"
+            text = str(item.get("atomic_question", "")).strip()
+            source = item.get("source", {})
+            source_reference = str(source.get("reference", "")).strip() if isinstance(source, Mapping) else ""
+            if not entry_id or not text or not source_reference:
+                raise HBQError(f"Every task contract entry requires {id_key}, atomic_question, and source.reference")
+            if qid in seen_contract_ids or qid in scored_qids or qid in hard_gates or qid in supplemental:
+                raise HBQError(f"Duplicate task contract question ID: {qid}")
+            seen_contract_ids.add(qid)
+            weight = float(item.get("weight", default_weight))
+            if not math.isfinite(weight) or weight <= 0:
+                raise HBQError(f"Task contract question {qid} requires a positive finite weight")
+            leaf = {
+                "id": qid,
+                "type": "question",
+                "criterion_key": qid,
+                "text": text,
+                "pass_answer": "YES",
+                "weight": weight,
+                "question_type": question_type,
+                "severity": str(item.get("severity", "material")),
+                "applies_when": "Activated by the frozen task contract before judging.",
+                "source_reference": source_reference,
+                "evidence_policy": {
+                    "required": True,
+                    "minimum_references": 1,
+                    "reference_style": "artifact span, unit ID, timestamp, or source ID",
+                },
+                "tags": ["dynamic_task_contract"],
+            }
+            verification = item.get("verification")
+            if question_type == "hard_gate" and isinstance(verification, Mapping):
+                leaf["verification"] = dict(verification)
+                if verification.get("method") == "absence":
+                    leaf["applies_when"] = (
+                        "The frozen constraint is activated by a contradictory depiction or statement. "
+                        "If the relevant situation never occurs in the evaluated scope, return "
+                        "NOT_APPLICABLE rather than CANNOT_ASSESS."
+                    )
+            return leaf
+
+        for item in goals:
+            leaf = contract_question(item, id_key="goal_id", question_type="scored", default_weight=1.0)
+            qid = str(leaf["id"])
+            scored_qids[qid] = domain_id
+            domain_questions.append(
+                {
+                    "module_id": module_id,
+                    "domain_id": domain_id,
+                    "domain_title": domain.get("title", domain_id),
+                    "domain_points": float(domain.get("points", 0)),
+                    "question": leaf,
+                    "component_weight": 1.0,
+                    "group_weight": 1.0,
+                    "effective_weight": float(leaf["weight"]),
+                    "group_ids": [],
+                    "role": "domain",
+                }
+            )
+        for item in requirements:
+            if not isinstance(item, Mapping) or item.get("objective") is not True or item.get("non_negotiable") is not True:
+                raise HBQError("Binding requirements must be objective and explicitly non-negotiable")
+            leaf = contract_question(item, id_key="requirement_id", question_type="hard_gate", default_weight=1.0)
+            hard_gates[str(leaf["id"])] = {
+                "module_id": module_id,
+                "domain_id": domain_id,
+                "domain_title": domain.get("title", domain_id),
+                "domain_points": float(domain.get("points", 0)),
+                "question": leaf,
+                "component_weight": 1.0,
+                "group_weight": 1.0,
+                "effective_weight": float(leaf["weight"]),
+                "group_ids": [],
+                "role": "hard_gate",
+            }
+        contract_record = {
+            "contract_id": contract_id,
+            "domain_id": domain_id,
+            "weighted_goal_ids": [f"{module_id}.{item['goal_id']}" for item in goals],
+            "binding_requirement_ids": [f"{module_id}.{item['requirement_id']}" for item in requirements],
+        }
+
     return {
         "standard": bundle.get("standard"),
         "bundle_id": bundle_id,
@@ -444,6 +554,7 @@ def compile_bundle(
         "judge_policy": bundle.get("judge_policy", {}),
         "coverage_policy": bundle.get("coverage_policy", {}),
         "hard_gate_policy": bundle.get("hard_gate_policy", {}),
+        "task_contract": contract_record,
         "excerpt_and_incomplete_policy": bundle.get("excerpt_and_incomplete_policy", {}),
         "domains": bundle.get("domains", []),
         "domain_questions": domain_questions,
@@ -617,10 +728,11 @@ def score_bundle(
     verdicts: Sequence[dict[str, Any]],
     *,
     artifact_id: str | None = None,
+    task_contract: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Score verdicts under one bundle using HBQ-RS uncertainty rules."""
 
-    compiled = compile_bundle(modules, bundle)
+    compiled = compile_bundle(modules, bundle, task_contract=task_contract)
     verdict_by_id, issues = _verdict_index(verdicts)
     selected_ids = {
         record["question"]["id"]
@@ -868,6 +980,7 @@ def score_bundle(
         "standard": bundle.get("standard"),
         "bundle_id": bundle.get("bundle_id"),
         "bundle_version": bundle.get("version"),
+        "task_contract": compiled.get("task_contract"),
         "artifact_id": artifact,
         "status": status,
         "hard_gate_status": hard_gate_status,

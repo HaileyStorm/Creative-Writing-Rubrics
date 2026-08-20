@@ -1,31 +1,26 @@
 {
-  "format_version": 1,
-  "configuration_sha256": "c1364285ee060142c918eb85c23523130ee5811f5a51224b0067b328787682fa",
+  "format_version": 2,
   "artifact_id": "gray-blood-original-ch01-06",
   "bundle_id": "prose.novel",
   "requested": {
     "provider": "codex",
-    "model": "gpt-5.6-luna",
-    "reasoning_effort": "max"
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "medium"
   },
-  "batch_count": 7,
-  "accepted_verdict_count": 221,
-  "published_verdicts_sha256": "01aa15eb63d977306cbbf8ff0873f172cec1959bf5fd93b20c0e2c7eb213c878",
+  "accepted_verdict_count": 239,
+  "published_verdicts_sha256": "edf02d163b681bb0ef841c2c99aba544a7dc5304620042628717150e5910282b",
   "batches": [
     {
+      "phase": "complete-bundle",
       "batch": 1,
       "question_ids": [
-        "core.task_and_brief_fidelity.operation",
-        "core.task_and_brief_fidelity.sources",
-        "core.task_and_brief_fidelity.inclusions",
-        "core.task_and_brief_fidelity.exclusions",
-        "core.task_and_brief_fidelity.pov",
-        "core.task_and_brief_fidelity.tense",
-        "core.task_and_brief_fidelity.structure",
-        "core.task_and_brief_fidelity.format",
-        "core.task_and_brief_fidelity.length_hard",
-        "core.length_and_scope_fit.explicit",
         "scope.long_context.overflow",
+        "task.contract.gray-blood-ch1-6-comparison-v1.canon.witches_female_only",
+        "task.contract.gray-blood-ch1-6-comparison-v1.canon.activation_requires_heart",
+        "task.contract.gray-blood-ch1-6-comparison-v1.canon.witch_human_offspring_human",
+        "task.contract.gray-blood-ch1-6-comparison-v1.canon.engraving_requires_lifeblood",
+        "task.contract.gray-blood-ch1-6-comparison-v1.canon.engraving_consumes_one_source",
+        "task.contract.gray-blood-ch1-6-comparison-v1.canon.magic_uses_drawn_symbols",
         "core.task_and_brief_fidelity.intervention",
         "core.task_and_brief_fidelity.completion_flag",
         "core.task_and_brief_fidelity.no_meta_substitution",
@@ -46,26 +41,25 @@
         "core.audience_and_purpose_fit.use_context",
         "form.prose.novel.macro_structure",
         "form.prose.novel.long_causality",
-        "form.prose.novel.multiple_arcs"
-      ],
-      "prompt_sha256": "d2d20a9628782cd8f196943253332f80f22ce01b9b10d1453e056ead4e5bc118",
-      "response_sha256": "54bdfe6744bc6635798eb470f847b33cb712065dc39be3cf9f0bee17d0f37880",
-      "private_unsanitized_batch_verdicts_sha256": "8204b3e7eac0f8a74b8e70edecc93afdd38a99fff842ec53843eb48359a4f8b3",
-      "previous_checkpoint_sha256": null,
-      "checkpoint_sha256": "efe12bc92c123e87073f1d0b16efcfa82bf12e0c6556570a747e0246b5301bc9",
-      "reported": {
-        "provider": "openai",
-        "model": "gpt-5.6-luna",
-        "reasoning_effort": "max"
-      }
-    },
-    {
-      "batch": 2,
-      "question_ids": [
+        "form.prose.novel.multiple_arcs",
         "form.prose.novel.pacing_variation",
         "form.prose.novel.development",
         "form.prose.novel.recurrence",
-        "form.prose.novel.payoff",
+        "form.prose.novel.payoff"
+      ],
+      "prompt_sha256": "bfd193b90cd5fd01864149bcda883772c3679ad6e25b60b221a8c041116227fd",
+      "response_sha256": "b691be91688364c9cc7fd6a6f87b505c21177fdfe43ba6c0d42a5aa7eb22348d",
+      "checkpoint_sha256": "b0ffa72d1a642d29e2e55d192f876883869a54589569e21f14d0f224f9f6f138",
+      "reported": {
+        "provider": "openai",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "medium"
+      }
+    },
+    {
+      "phase": "complete-bundle",
+      "batch": 2,
+      "question_ids": [
         "form.prose.novel.middle",
         "form.prose.novel.ending",
         "craft.narrative.characterization.dimensionality",
@@ -93,26 +87,25 @@
         "craft.narrative.plot_and_causality.complication",
         "craft.narrative.plot_and_causality.reversal",
         "craft.narrative.plot_and_causality.no_convenience",
-        "craft.narrative.foreshadowing_setup_and_payoff.preparation"
-      ],
-      "prompt_sha256": "2b2707a312c5a59bdc5b38cb5db2686fd5d885345ab215e31750a2002c421cab",
-      "response_sha256": "0abc334a8c7bc94c669d710be1acc6f666e0dd9508ccb0caae3373e9abdc6681",
-      "private_unsanitized_batch_verdicts_sha256": "1d22bc67ebe8ff7c99bb302badfc4d0b9b14253207b2fa2113adc5e7c113cbaf",
-      "previous_checkpoint_sha256": "efe12bc92c123e87073f1d0b16efcfa82bf12e0c6556570a747e0246b5301bc9",
-      "checkpoint_sha256": "b7108a64b201c9ecea5c410faecdc4e3405bb7331f35ca22be70eeed1a059794",
-      "reported": {
-        "provider": "openai",
-        "model": "gpt-5.6-luna",
-        "reasoning_effort": "max"
-      }
-    },
-    {
-      "batch": 3,
-      "question_ids": [
+        "craft.narrative.foreshadowing_setup_and_payoff.preparation",
         "craft.narrative.foreshadowing_setup_and_payoff.subtlety",
         "craft.narrative.foreshadowing_setup_and_payoff.expectation",
         "craft.narrative.foreshadowing_setup_and_payoff.delay",
-        "craft.narrative.foreshadowing_setup_and_payoff.earned",
+        "craft.narrative.foreshadowing_setup_and_payoff.earned"
+      ],
+      "prompt_sha256": "11cd660e5e868c3876825a017201ab064e0c8f1f55431d018dea17d7091f3a59",
+      "response_sha256": "3b060b643ab3527ec8c08e8affd35714df1b9e8b31be8d970717b927f7b97b83",
+      "checkpoint_sha256": "f8a3b96e43b8d42f260f19c4602328599f88a8fd3670f71e9908aed341fe6208",
+      "reported": {
+        "provider": "openai",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "medium"
+      }
+    },
+    {
+      "phase": "complete-bundle",
+      "batch": 3,
+      "question_ids": [
         "craft.narrative.foreshadowing_setup_and_payoff.remembered",
         "craft.narrative.foreshadowing_setup_and_payoff.echo",
         "craft.narrative.foreshadowing_setup_and_payoff.no_deus",
@@ -140,26 +133,25 @@
         "craft.narrative.continuity_and_canon_integrity.chronology",
         "craft.narrative.continuity_and_canon_integrity.state",
         "craft.narrative.continuity_and_canon_integrity.threads",
-        "craft.narrative.continuity_and_canon_integrity.supersession"
-      ],
-      "prompt_sha256": "be4deba42d1f9d020ccc10f0eee21a357885360e6da73851966bd0d006a7a741",
-      "response_sha256": "f9d2a5b39c9f90234f8ecae8751b866470d395ed38d36ba0ac6762e903ccb4f4",
-      "private_unsanitized_batch_verdicts_sha256": "517f710c21825c4415550e247869ed9e1949fb15ec7dcfca33df8e2190c37238",
-      "previous_checkpoint_sha256": "b7108a64b201c9ecea5c410faecdc4e3405bb7331f35ca22be70eeed1a059794",
-      "checkpoint_sha256": "49077c4cce102fd8ad6ec0a2e33fc06b8ca20b84aa538934abfee142f24bb438",
-      "reported": {
-        "provider": "openai",
-        "model": "gpt-5.6-luna",
-        "reasoning_effort": "max"
-      }
-    },
-    {
-      "batch": 4,
-      "question_ids": [
+        "craft.narrative.continuity_and_canon_integrity.supersession",
         "craft.narrative.continuity_and_canon_integrity.conflicts",
         "craft.narrative.temporal_and_spatial_continuity.chronology",
         "craft.narrative.temporal_and_spatial_continuity.elapsed_time",
-        "craft.narrative.temporal_and_spatial_continuity.travel",
+        "craft.narrative.temporal_and_spatial_continuity.travel"
+      ],
+      "prompt_sha256": "9f366180c8b0b9a399b43fdae7bd141716fbf941ed83b4174ad1fff380a521a2",
+      "response_sha256": "8706ed318795bf785ea22a4f1a7c64581c7b181f9e3c97550c3b352607211957",
+      "checkpoint_sha256": "d8c2a4784cbb6d1c7d579d17fdd0c6fea767fa88086663461928b502a9b991dc",
+      "reported": {
+        "provider": "openai",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "medium"
+      }
+    },
+    {
+      "phase": "complete-bundle",
+      "batch": 4,
+      "question_ids": [
         "craft.narrative.temporal_and_spatial_continuity.entrances",
         "craft.narrative.temporal_and_spatial_continuity.objects",
         "craft.narrative.temporal_and_spatial_continuity.orientation",
@@ -187,26 +179,25 @@
         "craft.narrative.transitions_and_connective_tissue.momentum",
         "craft.narrative.transitions_and_connective_tissue.no_bridge_filler",
         "core.language_craft.diction",
-        "core.language_craft.syntax"
-      ],
-      "prompt_sha256": "111f873c87839349b2532f91d5130e2135de2f0f0278c2f5e7693122064df87a",
-      "response_sha256": "42ea14d8801ac0af0b9a5eac7c4f667aeaeccab6eb36c54b9183828ee586aeed",
-      "private_unsanitized_batch_verdicts_sha256": "bf2348b84f003134e8f107d282f0c2af2eb2c99fd93da13ebe25a51e6542779f",
-      "previous_checkpoint_sha256": "49077c4cce102fd8ad6ec0a2e33fc06b8ca20b84aa538934abfee142f24bb438",
-      "checkpoint_sha256": "a009b8d39f085154289977c2a39d25f3be4fdd9d6c92b81d779496d5d9dabd85",
-      "reported": {
-        "provider": "openai",
-        "model": "gpt-5.6-luna",
-        "reasoning_effort": "max"
-      }
-    },
-    {
-      "batch": 5,
-      "question_ids": [
+        "core.language_craft.syntax",
         "core.language_craft.cadence",
         "core.language_craft.variation",
         "core.language_craft.paragraph_movement",
-        "core.language_craft.images",
+        "core.language_craft.images"
+      ],
+      "prompt_sha256": "9d09e3205e0f59226fbd03e484901b848b3f53b30496b9ebed83a30c1b131b16",
+      "response_sha256": "f58c3436133d1210faf5dee3c7a5f1928797bba74cdb47263c810fb11f57ddf6",
+      "checkpoint_sha256": "4119a904190481dc460a06b6f76c825078cc7b17a03d2101952a3c50e65e2d57",
+      "reported": {
+        "provider": "openai",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "medium"
+      }
+    },
+    {
+      "phase": "complete-bundle",
+      "batch": 5,
+      "question_ids": [
         "core.language_craft.sound",
         "core.language_craft.emphasis",
         "core.language_craft.no_awkwardness",
@@ -234,26 +225,25 @@
         "core.emotional_and_intellectual_effect.intended_effect",
         "core.emotional_and_intellectual_effect.earned_emotion",
         "core.emotional_and_intellectual_effect.conceptual_interest",
-        "core.emotional_and_intellectual_effect.modulation"
-      ],
-      "prompt_sha256": "25006bed95b20a97a659034f7211269ab503428f02526e11ae0a63d4f01483ad",
-      "response_sha256": "ed009a89cff93f5bd883780b93f2c19a30dee21eed27400ccd98f347b015ce9e",
-      "private_unsanitized_batch_verdicts_sha256": "2602dfe7b14c68b1298c522f20bddef36ebf1679bc1d60fc7eee04a15838f6d3",
-      "previous_checkpoint_sha256": "a009b8d39f085154289977c2a39d25f3be4fdd9d6c92b81d779496d5d9dabd85",
-      "checkpoint_sha256": "d05e11f238437d9628ff0a94c6446355505147f7f4426102a457383d5ac7c891",
-      "reported": {
-        "provider": "openai",
-        "model": "gpt-5.6-luna",
-        "reasoning_effort": "max"
-      }
-    },
-    {
-      "batch": 6,
-      "question_ids": [
+        "core.emotional_and_intellectual_effect.modulation",
         "core.emotional_and_intellectual_effect.restraint",
         "core.emotional_and_intellectual_effect.aftermath",
         "core.freshness_and_non_genericness.no_cliche",
-        "core.freshness_and_non_genericness.no_stock_beats",
+        "core.freshness_and_non_genericness.no_stock_beats"
+      ],
+      "prompt_sha256": "06b200a33dca7a8c38d88a2d056606432abe365834c30129ebaac026ac0a734c",
+      "response_sha256": "f60c725ed45f3d340008e5b21eb35d490948fcebde3070fa0dc0edad4e3dae53",
+      "checkpoint_sha256": "8e4cd433ab42cbec0c3d72885e7dca1e8a94b8e8d9f38491c0d1559da63f773a",
+      "reported": {
+        "provider": "openai",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "medium"
+      }
+    },
+    {
+      "phase": "complete-bundle",
+      "batch": 6,
+      "question_ids": [
         "core.freshness_and_non_genericness.no_llm_phrasing",
         "core.freshness_and_non_genericness.no_default_metaphors",
         "core.freshness_and_non_genericness.no_emotion_summary",
@@ -278,25 +268,36 @@
         "core.holistic_artistic_success.threshold_2_effective",
         "core.holistic_artistic_success.threshold_3_keepworthy",
         "core.holistic_artistic_success.threshold_4_exceptional",
-        "penalty.purple_prose.clarity",
-        "penalty.purple_prose.proportion",
-        "penalty.purple_prose.specificity",
-        "penalty.purple_prose.tone"
+        "task.contract.gray-blood-ch1-6-comparison-v1.goal.grim_dark_tone",
+        "task.contract.gray-blood-ch1-6-comparison-v1.goal.amelia_darker",
+        "task.contract.gray-blood-ch1-6-comparison-v1.goal.madison_moral_grappling",
+        "task.contract.gray-blood-ch1-6-comparison-v1.goal.madison_programmer_lens",
+        "task.contract.gray-blood-ch1-6-comparison-v1.goal.madison_dark_path_setup",
+        "task.contract.gray-blood-ch1-6-comparison-v1.goal.activation_as_trauma",
+        "task.contract.gray-blood-ch1-6-comparison-v1.goal.amelia_volatility",
+        "task.contract.gray-blood-ch1-6-comparison-v1.goal.amelia_less_apologetic"
       ],
-      "prompt_sha256": "e3890e154aa7cfa79ab76bd778a20fb9ac50bf132a8ea91c5ca05ee610b89456",
-      "response_sha256": "218dcc7537ea461bfe324501ac6c8bf921181e373c429ac92293a1e42fdb4392",
-      "private_unsanitized_batch_verdicts_sha256": "cdd8af47d4dda62a2e1ecac55925f3c4fb312401b8c2468664200d8f977ef840",
-      "previous_checkpoint_sha256": "d05e11f238437d9628ff0a94c6446355505147f7f4426102a457383d5ac7c891",
-      "checkpoint_sha256": "5944e4358344d7db96a2a2b1e249b815733b8e100123cdd99b243100119d8717",
+      "prompt_sha256": "68b6738654cb0167331dc457e7d7ab79a16f0295ba5f6bf1f7c7df483229452e",
+      "response_sha256": "13b9b6dc817589204e361b986cc9516a82681d1936d6c796fbed6edea1045d38",
+      "checkpoint_sha256": "0d2335f5d0a788ccbb037e2d8be366733f0e3c93ed7bba7b81ae66880d76d8b7",
       "reported": {
         "provider": "openai",
-        "model": "gpt-5.6-luna",
-        "reasoning_effort": "max"
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "medium"
       }
     },
     {
+      "phase": "complete-bundle",
       "batch": 7,
       "question_ids": [
+        "task.contract.gray-blood-ch1-6-comparison-v1.goal.amelia_power_attraction",
+        "task.contract.gray-blood-ch1-6-comparison-v1.goal.amelia_affection_power_balance",
+        "task.contract.gray-blood-ch1-6-comparison-v1.goal.katherine_motivation",
+        "task.contract.gray-blood-ch1-6-comparison-v1.goal.chapter_title_relevance",
+        "penalty.purple_prose.clarity",
+        "penalty.purple_prose.proportion",
+        "penalty.purple_prose.specificity",
+        "penalty.purple_prose.tone",
         "penalty.purple_prose.metaphor",
         "penalty.purple_prose.attention",
         "penalty.purple_prose.fatigue",
@@ -311,6 +312,30 @@
         "penalty.unflagged_incomplete.status",
         "penalty.unflagged_incomplete.unit",
         "penalty.unflagged_incomplete.truncation",
+        "core.task_and_brief_fidelity.operation",
+        "core.task_and_brief_fidelity.sources",
+        "core.task_and_brief_fidelity.inclusions",
+        "core.task_and_brief_fidelity.exclusions",
+        "core.task_and_brief_fidelity.pov",
+        "core.task_and_brief_fidelity.tense",
+        "core.task_and_brief_fidelity.structure",
+        "core.task_and_brief_fidelity.format",
+        "core.task_and_brief_fidelity.length_hard",
+        "core.length_and_scope_fit.explicit"
+      ],
+      "prompt_sha256": "8a1b8abfc3f8a9d411691654a14f11ad2a09e305eb08bf27b4da3992ca03fc05",
+      "response_sha256": "a7f8eac61e52810b5b76a3eb094da50bc8541d106e76831656fcf71d492bafc5",
+      "checkpoint_sha256": "ce4aa21d33b6ef96fbdca4a68864d4b06293799171e6defe2605d3cde482e9dd",
+      "reported": {
+        "provider": "openai",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "medium"
+      }
+    },
+    {
+      "phase": "complete-bundle",
+      "batch": 8,
+      "question_ids": [
         "form.prose.general_prose_fiction.narrative_experience",
         "form.prose.general_prose_fiction.character_action",
         "form.prose.general_prose_fiction.movement",
@@ -327,15 +352,45 @@
         "scope.long_context.no_first",
         "scope.long_context.no_recent"
       ],
-      "prompt_sha256": "410f8f063f6817cb5b5cc7b04dbca07c7acd56e8a60232b8818106a095214eb8",
-      "response_sha256": "eaeee9e71e4602c1b60fa62d3e4cb846c1ebd2610a04564bb8a7de48961e2fa5",
-      "private_unsanitized_batch_verdicts_sha256": "e97cf2eca1e3387d3fe853646dda6a795289edbda8accf969c4a3c51029e84dd",
-      "previous_checkpoint_sha256": "5944e4358344d7db96a2a2b1e249b815733b8e100123cdd99b243100119d8717",
-      "checkpoint_sha256": "0b21e014b3785e93c28d2ddf6075f3e19db1827dfc378ea752df206fae76dcea",
+      "prompt_sha256": "a6f2f8a2b09c0787b04d337e11e2c5b25f8f7c9bd2cf9684c074559c362f263f",
+      "response_sha256": "4da73f12949da67a08f9250b781d455db7816f8e6629af0789deaeee917795cc",
+      "checkpoint_sha256": "a1a6956c907517e8c3a715bbcd18c552d5d8ea3e52c48adccead9bb1135dfe16",
       "reported": {
         "provider": "openai",
-        "model": "gpt-5.6-luna",
-        "reasoning_effort": "max"
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "medium"
+      }
+    },
+    {
+      "phase": "task-contract-adjudication",
+      "batch": 1,
+      "question_ids": [
+        "task.contract.gray-blood-ch1-6-comparison-v1.canon.witches_female_only",
+        "task.contract.gray-blood-ch1-6-comparison-v1.canon.activation_requires_heart",
+        "task.contract.gray-blood-ch1-6-comparison-v1.canon.witch_human_offspring_human",
+        "task.contract.gray-blood-ch1-6-comparison-v1.canon.engraving_requires_lifeblood",
+        "task.contract.gray-blood-ch1-6-comparison-v1.canon.engraving_consumes_one_source",
+        "task.contract.gray-blood-ch1-6-comparison-v1.canon.magic_uses_drawn_symbols",
+        "task.contract.gray-blood-ch1-6-comparison-v1.goal.grim_dark_tone",
+        "task.contract.gray-blood-ch1-6-comparison-v1.goal.amelia_darker",
+        "task.contract.gray-blood-ch1-6-comparison-v1.goal.madison_moral_grappling",
+        "task.contract.gray-blood-ch1-6-comparison-v1.goal.madison_programmer_lens",
+        "task.contract.gray-blood-ch1-6-comparison-v1.goal.madison_dark_path_setup",
+        "task.contract.gray-blood-ch1-6-comparison-v1.goal.activation_as_trauma",
+        "task.contract.gray-blood-ch1-6-comparison-v1.goal.amelia_volatility",
+        "task.contract.gray-blood-ch1-6-comparison-v1.goal.amelia_less_apologetic",
+        "task.contract.gray-blood-ch1-6-comparison-v1.goal.amelia_power_attraction",
+        "task.contract.gray-blood-ch1-6-comparison-v1.goal.amelia_affection_power_balance",
+        "task.contract.gray-blood-ch1-6-comparison-v1.goal.katherine_motivation",
+        "task.contract.gray-blood-ch1-6-comparison-v1.goal.chapter_title_relevance"
+      ],
+      "prompt_sha256": "5e164d76588e4dec2668d97cccebc83949a1a15046e65b4439cb3eae1011e0c7",
+      "response_sha256": "7baac4cf515aa8ff34668d925d566b135aa2e0794db06ee7da8d00da8526b5cd",
+      "checkpoint_sha256": "67d8b195fdbf652946bc900fa44456035fe011602be2322a002e61f5cc8bb0e5",
+      "reported": {
+        "provider": "openai",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "medium"
       }
     }
   ]

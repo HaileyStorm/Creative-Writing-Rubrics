@@ -115,6 +115,56 @@ def test_judge_command_dispatches_runner(monkeypatch, capsys, tmp_path: Path) ->
     assert json.loads(capsys.readouterr().out)["status"] == "DRY_RUN"
 
 
+def test_longform_command_dispatches_workflow(monkeypatch, capsys, tmp_path: Path) -> None:
+    artifact = tmp_path / "manuscript.txt"
+    brief = tmp_path / "brief.txt"
+    artifact.write_text("Chapter One\n\nTest.", encoding="utf-8")
+    brief.write_text("Prefer quiet tension.", encoding="utf-8")
+    captured: dict[str, object] = {}
+
+    def fake_run_longform_judge(**kwargs: object) -> dict[str, object]:
+        captured.update(kwargs)
+        return {"status": "DRY_RUN", "unit_count": 1}
+
+    monkeypatch.setattr(cli, "run_longform_judge", fake_run_longform_judge)
+    assert (
+        main(
+            [
+                "longform",
+                str(artifact),
+                "--brief",
+                str(brief),
+                "--provider",
+                "codex",
+                "--model",
+                "gpt-5.6-sol",
+                "--output-dir",
+                str(tmp_path / "run"),
+                "--frozen-sample-ordinal",
+                "1",
+                "--frozen-sample-ordinal",
+                "3",
+                "--openai-structured-outputs",
+                "--allow-remote",
+                "--dry-run",
+            ]
+        )
+        == 0
+    )
+    assert captured["artifact_path"] == str(artifact)
+    assert captured["brief_paths"] == [str(brief)]
+    assert captured["artifact_kind"] == "prose_fiction"
+    assert captured["bundle_id"] is None
+    assert captured["task_contract_path"] is None
+    assert captured["structured_reasoning"] == "high"
+    assert captured["judge_reasoning"] == "medium"
+    assert captured["local_sample_limit"] == 4
+    assert captured["frozen_sample_ordinals"] == [1, 3]
+    assert captured["binary_workers"] == 1
+    assert captured["openai_structured_outputs"] is True
+    assert json.loads(capsys.readouterr().out)["status"] == "DRY_RUN"
+
+
 def test_validate() -> None:
     assert main(["validate"]) == 0
 

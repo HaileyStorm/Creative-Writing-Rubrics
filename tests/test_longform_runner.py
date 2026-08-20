@@ -1,0 +1,807 @@
+from __future__ import annotations
+
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+import json
+from pathlib import Path
+import threading
+
+import pytest
+
+from hbqrs import HBQError
+import hbqrs.longform_runner as longform_runner
+import hbqrs.runner as binary_runner
+from hbqrs.longform_runner import run_longform_judge
+
+
+TEXT = (
+    "Chapter One\n"
+    "Mara watched rain cross the empty platform.\n\n"
+    "Chapter Two\n"
+    "At dawn, she opened the letter beside the river.\n"
+)
+
+
+def _input_json(prompt: str) -> dict:
+    return json.loads(prompt.split("INPUT JSON\n```json\n", 1)[1].rsplit("\n```", 1)[0])
+
+
+def test_codex_schema_projection_keeps_full_constraints_for_local_validation_only() -> None:
+    projected = longform_runner._provider_response_schema(
+        {
+            "type": "object",
+            "properties": {
+                "items": {"type": "array", "items": {"type": "string"}, "uniqueItems": True},
+                "version": {"const": 1},
+                "status": {"enum": ["ready", "done"]},
+            },
+            "required": ["items", "version", "status"],
+            "additionalProperties": False,
+        }
+    )
+    assert "uniqueItems" not in json.dumps(projected)
+    assert projected["properties"]["version"] == {"enum": [1], "type": "integer"}
+    assert projected["properties"]["status"]["type"] == "string"
+
+
+def _questions(prompt: str) -> list[dict]:
+    return json.loads(prompt.rsplit("```json\n", 1)[1].split("\n```", 1)[0])
+
+
+def _artifact(prompt: str) -> str:
+    return prompt.split("\n## Artifact: ", 1)[1].split("\n", 1)[1].split("\n## Questions\n", 1)[0]
+
+
+class _LongFormHandler(BaseHTTPRequestHandler):
+    stages: list[str] = []
+    binary_prompts: list[str] = []
+    requests: list[dict] = []
+
+    def do_POST(self) -> None:  # noqa: N802 - standard-library callback name
+        length = int(self.headers["Content-Length"])
+        request = json.loads(self.rfile.read(length))
+        type(self).requests.append(request)
+        prompt = request["messages"][1]["content"]
+        if prompt.startswith("HBQ-RS STRUCTURED PASS: route"):
+            type(self).stages.append("route")
+            data = _input_json(prompt)
+            profile = data["artifact_profile"]
+            unit_ids = [unit["unit_id"] for unit in data["unit_inventory"]]
+            content = {
+                "route_version": 1,
+                "artifact_profile": {
+                    "artifact_kind": profile["artifact_kind"],
+                    "declared_scope": profile["declared_scope"],
+                    "completion_status": profile["completion_status"],
+                    "unit_count": profile["unit_count"],
+                    "source_sha256": profile["source_sha256"],
+                },
+                "selected_bundle_id": "prose.synthetic",
+                "selected_module_ids": ["craft.synthetic"],
+                "selection_reasons": [
+                    {"catalog_id": "prose.synthetic", "reason": "The artifact is synthetic prose."},
+                    {"catalog_id": "craft.synthetic", "reason": "The module measures clear execution."},
+                ],
+                "sampling_plan": {
+                    "unit_ids": unit_ids,
+                    "strata": [{"name": "all synthetic chapters", "unit_ids": unit_ids}],
+                    "global_map_required": True,
+                    "rationale": "The two-unit fixture can be read in full.",
+                },
+                "task_contract": {
+                    "contract_version": 1,
+                    "contract_id": "contract.synthetic",
+                    "artifact_id": profile["artifact_id"],
+                    "context": {
+                        "artifact_kind": profile["artifact_kind"],
+                        "declared_scope": profile["declared_scope"],
+                        "completion_status": profile["completion_status"],
+                        "background": ["A tiny synthetic mystery."],
+                        "constraints": [],
+                        "audience": ["adult"],
+                    },
+                    "preferences": [
+                        {
+                            "id": "preference.tension",
+                            "statement": "Prefer quiet tension.",
+                            "source": {
+                                "kind": "user_preference",
+                                "reference": "brief:1",
+                                "exact_excerpt": "Prefer quiet tension.",
+                            },
+                        }
+                    ],
+                    "priorities": [],
+                    "weighted_goals": [
+                        {
+                            "goal_id": "goal.tension",
+                            "atomic_question": "Does the passage sustain quiet tension?",
+                            "weight": 2.0,
+                            "source": {
+                                "kind": "user_preference",
+                                "reference": "brief:1",
+                                "exact_excerpt": "Prefer quiet tension.",
+                            },
+                            "applies_to": ["work", *unit_ids],
+                            "rationale": "The declared preference should affect scores without gating eligibility.",
+                        }
+                    ],
+                    "binding_requirements": [],
+                },
+            }
+        elif prompt.startswith("HBQ-RS STRUCTURED PASS: map"):
+            type(self).stages.append("map")
+            data = _input_json(prompt)
+            mapped_units = []
+            for unit in data["units"]:
+                mapped_units.append(
+                    {
+                        "unit_id": unit["unit_id"],
+                        "summary": f"Synthetic summary for {unit['heading']}.",
+                        "chronology": f"Position {unit['ordinal']}",
+                        "povs": ["Mara"],
+                        "characters": ["Mara"],
+                        "locations": ["platform" if unit["ordinal"] == 1 else "river"],
+                        "promises_opened": ["The letter"] if unit["ordinal"] == 1 else [],
+                        "promises_advanced": [],
+                        "promises_resolved": ["The letter is opened"] if unit["ordinal"] == 2 else [],
+                        "motifs": ["water"],
+                        "ending_state": "The synthetic sequence advances.",
+                        "load_bearing": True,
+                    }
+                )
+            content = {
+                "map_version": 1,
+                "artifact_id": data["artifact_id"],
+                "source_sha256": data["source_sha256"],
+                "orientation": {
+                    "premise": "Mara delays opening a consequential letter.",
+                    "evaluated_scope": "Two synthetic chapters.",
+                    "cast": [{"name": "Mara", "role": "The viewpoint character and letter recipient."}],
+                },
+                "units": mapped_units,
+                "work_state": {
+                    "chronology": ["Rainy night", "Dawn"],
+                    "central_arcs": ["Mara moves from avoidance to action."],
+                    "subplots": [],
+                    "promises": ["The letter creates and resolves a local action promise."],
+                    "motifs": ["Water accompanies transition."],
+                    "ending_state": "The letter is open.",
+                },
+                "state_ledgers": [],
+                "distant_links": [
+                    {
+                        "setup_unit_id": data["units"][0]["unit_id"],
+                        "payoff_unit_id": data["units"][1]["unit_id"],
+                        "description": "The letter is introduced and opened.",
+                        "status": "paid_off",
+                    }
+                ],
+                "limitations": [],
+            }
+        elif prompt.startswith("HBQ-RS STRUCTURED PASS: synthesis"):
+            type(self).stages.append("synthesis")
+            data = _input_json(prompt)
+            content = {
+                "findings": [
+                    {
+                        "kind": "strength",
+                        "finding": "The letter creates a traceable setup and payoff.",
+                        "why_it_matters": "The global map and both unit passes point to the same causal movement.",
+                        "evidence_refs": [result["scope_id"] for result in data["local_results"]],
+                        "criterion_ids": ["craft.synthetic.clear"],
+                    }
+                ],
+                "warnings": [],
+            }
+        else:
+            type(self).stages.append("binary")
+            type(self).binary_prompts.append(prompt)
+            verdicts = [
+                {
+                    "question_id": question["question_id"],
+                    "verdict": "YES",
+                    "confidence": 0.9,
+                    "evidence": [{"reference": "unit:synthetic", "quote": "Synthetic evidence."}],
+                    "note": "The positive criterion is satisfied in this fixture.",
+                }
+                for question in _questions(prompt)
+            ]
+            content = {"verdicts": verdicts}
+        body = json.dumps(
+            {
+                "id": f"fake-{len(type(self).stages)}",
+                "model": request["model"],
+                "choices": [{"message": {"role": "assistant", "content": json.dumps(content)}}],
+            }
+        ).encode("utf-8")
+        self.send_response(200)
+        self.send_header("Content-Type", "application/json")
+        self.send_header("Content-Length", str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
+
+    def log_message(self, format: str, *args: object) -> None:
+        return
+
+
+@pytest.fixture()
+def endpoint():
+    _LongFormHandler.stages = []
+    _LongFormHandler.binary_prompts = []
+    _LongFormHandler.requests = []
+    server = ThreadingHTTPServer(("127.0.0.1", 0), _LongFormHandler)
+    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    try:
+        yield f"http://127.0.0.1:{server.server_port}/v1", _LongFormHandler
+    finally:
+        server.shutdown()
+        thread.join(timeout=5)
+
+
+def _catalog(tmp_path: Path) -> tuple[Path, Path]:
+    module = {
+        "module_id": "craft.synthetic",
+        "title": "Synthetic craft",
+        "description": "Synthetic clarity checks.",
+        "artifact_types": ["prose_fiction"],
+        "valid_scopes": ["work"],
+        "tree": [
+            {
+                "id": "craft.synthetic.clear",
+                "type": "question",
+                "criterion_key": "craft.synthetic.clear",
+                "text": "Is the prose clear?",
+                "pass_answer": "YES",
+                "weight": 1.0,
+                "question_type": "scored",
+                "severity": "material",
+                "applies_when": "Always.",
+                "evidence_policy": {"required": True, "minimum_references": 1, "reference_style": "unit"},
+            }
+        ],
+    }
+    bundle = {
+        "standard": {"id": "HBQ-RS", "version": "1.0.0"},
+        "bundle_id": "prose.synthetic",
+        "version": 1,
+        "title": "Synthetic prose",
+        "description": "Synthetic test bundle.",
+        "artifact_types": ["prose_fiction"],
+        "valid_scopes": ["work"],
+        "profile": {},
+        "module_ids": ["craft.synthetic"],
+        "domains": [
+            {
+                "domain_id": "task",
+                "title": "Task and craft",
+                "points": 100.0,
+                "components": [{"module_id": "craft.synthetic", "weight": 1.0}],
+            }
+        ],
+        "penalty_modules": [],
+        "hard_gate_policy": {
+            "no_is_invalid": True,
+            "cannot_assess_is_unresolved": True,
+            "not_applicable_requires_condition_or_reason": True,
+            "hard_gates_are_reported_separately": True,
+        },
+        "coverage_policy": {
+            "minimum_weighted_coverage": 0.8,
+            "below_threshold_status": "PROVISIONAL",
+            "score_interval_required_when_unassessed": True,
+            "whole_work_claims_require_whole_work_evidence": True,
+        },
+        "excerpt_and_incomplete_policy": {},
+        "judge_policy": {},
+        "notes": [],
+    }
+    registry = tmp_path / "registry.json"
+    bundles = tmp_path / "bundles.json"
+    registry.write_text(json.dumps([module]), encoding="utf-8")
+    bundles.write_text(json.dumps([bundle]), encoding="utf-8")
+    return registry, bundles
+
+
+def test_provider_workflow_runs_every_pass_persists_and_resumes(tmp_path: Path, endpoint) -> None:
+    base_url, handler = endpoint
+    registry, bundles = _catalog(tmp_path)
+    artifact = tmp_path / "story.txt"
+    brief = tmp_path / "brief.txt"
+    artifact.write_text(TEXT, encoding="utf-8")
+    brief.write_text("Prefer quiet tension.", encoding="utf-8")
+    output = tmp_path / "run"
+    arguments = {
+        "artifact_path": artifact,
+        "brief_paths": [brief],
+        "output_dir": output,
+        "provider": "openai",
+        "model": "fake-local",
+        "registry": registry,
+        "bundles": bundles,
+        "artifact_kind": "prose_fiction",
+        "bundle_id": "prose.synthetic",
+        "base_url": base_url,
+        "batch_size": 8,
+        "binary_workers": 3,
+    }
+
+    summary = run_longform_judge(**arguments)
+    assert summary["status"] == "VALID"
+    assert summary["sampled_units"] == 2
+    assert handler.stages[:2] == ["route", "map"]
+    assert handler.stages[-1] == "synthesis"
+    assert handler.stages.count("binary") == 3
+    assert all("response_format" not in request for request in handler.requests)
+    binary_artifacts = [_artifact(prompt) for prompt in handler.binary_prompts]
+    global_artifacts = [
+        artifact for artifact in binary_artifacts if "Chapter One" in artifact and "Chapter Two" in artifact
+    ]
+    assert len(global_artifacts) == 1
+    assert global_artifacts[0].count("<<<HBQ-RS UNIT") == 2
+    report = json.loads((output / "report.json").read_text(encoding="utf-8"))
+    assert report["global_result"]["score"]["observed"] == 100.0
+    assert len(report["local_results"]) == 2
+    assert "average" not in json.dumps(report).lower()
+    organized = (output / ".private" / "generated-inputs" / "whole-work-units.txt").read_text(encoding="utf-8")
+    assert "Chapter One" in organized and "Chapter Two" in organized
+    assert organized.count("<<<HBQ-RS UNIT") == 2
+    assert (output / ".private" / "passes" / "route" / "request.prompt.txt.gz").is_file()
+    assert (output / ".private" / "evaluations" / "global" / "run.json").is_file()
+    assert "Mara" in (output / "report.md").read_text(encoding="utf-8")
+
+    calls = len(handler.stages)
+    resumed = run_longform_judge(**arguments, resume=True)
+    assert resumed == summary
+    assert len(handler.stages) == calls
+
+
+def test_task_contract_override_is_validated_before_provider_contact(tmp_path: Path) -> None:
+    registry, bundles = _catalog(tmp_path)
+    artifact = tmp_path / "story.txt"
+    artifact.write_text(TEXT, encoding="utf-8")
+    contract = {
+        "contract_version": 1,
+        "contract_id": "contract.override",
+        "artifact_id": "story",
+        "context": {
+            "artifact_kind": "prose_fiction",
+            "declared_scope": "work",
+            "completion_status": "work_in_progress",
+            "background": [],
+            "constraints": [],
+            "audience": [],
+        },
+        "preferences": [],
+        "priorities": [],
+        "weighted_goals": [],
+        "binding_requirements": [],
+    }
+    contract_path = tmp_path / "contract.json"
+    contract_path.write_text(json.dumps(contract), encoding="utf-8")
+    summary = run_longform_judge(
+        artifact_path=artifact,
+        brief_paths=[],
+        output_dir=tmp_path / "run",
+        provider="openai",
+        model="unused-local",
+        registry=registry,
+        bundles=bundles,
+        artifact_kind="prose_fiction",
+        bundle_id="prose.synthetic",
+        task_contract_path=contract_path,
+        dry_run=True,
+    )
+    assert summary["status"] == "DRY_RUN"
+
+
+def test_remote_workflow_discloses_and_requires_allow_gate(tmp_path: Path) -> None:
+    registry, bundles = _catalog(tmp_path)
+    artifact = tmp_path / "story.txt"
+    brief = tmp_path / "brief.txt"
+    artifact.write_text(TEXT, encoding="utf-8")
+    brief.write_text("Prefer quiet tension.", encoding="utf-8")
+    output = tmp_path / "blocked"
+    with pytest.raises(HBQError, match="pass --allow-remote"):
+        run_longform_judge(
+            artifact_path=artifact,
+            brief_paths=[brief],
+            output_dir=output,
+            provider="openai",
+            model="remote-model",
+            registry=registry,
+            bundles=bundles,
+            artifact_kind="prose_fiction",
+            base_url="https://example.com/v1",
+        )
+    assert not output.exists()
+
+
+def test_codex_routes_high_structured_and_medium_binary_reasoning(tmp_path: Path, endpoint, monkeypatch) -> None:
+    base_url, handler = endpoint
+    registry, bundles = _catalog(tmp_path)
+    artifact = tmp_path / "story.txt"
+    brief = tmp_path / "brief.txt"
+    artifact.write_text(TEXT, encoding="utf-8")
+    brief.write_text("Prefer quiet tension.", encoding="utf-8")
+    structured_reasoning: list[str] = []
+    judge_reasoning: list[str] = []
+
+    def fake_codex_call(*, model, reasoning, prompt, **kwargs):
+        target = structured_reasoning if prompt.startswith("HBQ-RS STRUCTURED PASS:") else judge_reasoning
+        target.append(reasoning)
+        return binary_runner._call_openai(
+            endpoint=binary_runner._endpoint_url(base_url),
+            api_key_env="UNSET_TEST_KEY",
+            model=model,
+            system_prompt="Synthetic Codex transport adapter.",
+            user_prompt=prompt,
+            temperature=None,
+            allow_model_mismatch=False,
+            timeout=30,
+        )
+
+    monkeypatch.setattr(longform_runner, "_call_codex", fake_codex_call)
+    monkeypatch.setattr(binary_runner, "_call_codex", fake_codex_call)
+    summary = run_longform_judge(
+        artifact_path=artifact,
+        brief_paths=[brief],
+        output_dir=tmp_path / "codex-run",
+        provider="codex",
+        model="fake-codex",
+        registry=registry,
+        bundles=bundles,
+        artifact_kind="prose_fiction",
+        allow_remote=True,
+        batch_size=8,
+    )
+    assert summary["status"] == "VALID"
+    assert structured_reasoning == ["high", "high", "high"]
+    assert judge_reasoning == ["medium", "medium", "medium"]
+    assert handler.stages == ["route", "map", "binary", "binary", "binary", "synthesis"]
+
+
+def test_openai_rejects_codex_only_phase_reasoning_controls(tmp_path: Path) -> None:
+    registry, bundles = _catalog(tmp_path)
+    artifact = tmp_path / "story.txt"
+    artifact.write_text(TEXT, encoding="utf-8")
+    with pytest.raises(HBQError, match="apply only to Codex CLI"):
+        run_longform_judge(
+            artifact_path=artifact,
+            brief_paths=[],
+            output_dir=tmp_path / "unused",
+            provider="openai",
+            model="fake-local",
+            registry=registry,
+            bundles=bundles,
+            artifact_kind="prose_fiction",
+            structured_reasoning="max",
+        )
+
+
+def test_structured_failure_is_retryable_and_cached_result_is_hash_bound(tmp_path: Path, monkeypatch) -> None:
+    responses = iter(["{}", '{"value": 1}'])
+
+    def fake_call(**kwargs):
+        return next(responses), {"model": "fake-local"}
+
+    monkeypatch.setattr(longform_runner, "_call_openai_structured", fake_call)
+    schema = {
+        "type": "object",
+        "required": ["value"],
+        "properties": {"value": {"const": 1}},
+        "additionalProperties": False,
+    }
+    arguments = {
+        "name": "retryable",
+        "prompt": "synthetic prompt",
+        "schema": schema,
+        "pass_dir": tmp_path / "pass",
+        "provider": "openai",
+        "model": "fake-local",
+        "endpoint": "http://127.0.0.1:1/v1/chat/completions",
+        "api_key_env": "UNSET_TEST_KEY",
+        "temperature": None,
+        "allow_model_mismatch": False,
+        "reasoning": "high",
+        "codex_bin": "codex",
+        "timeout": 5,
+        "openai_structured_outputs": False,
+    }
+    with pytest.raises(HBQError, match="strict schema"):
+        longform_runner._run_structured_pass(**arguments, resume=False)
+    assert not (tmp_path / "pass" / "response.json").exists()
+    assert not (tmp_path / "pass" / "result.json").exists()
+    assert (tmp_path / "pass" / "attempts" / "failed-0001.json").is_file()
+
+    assert longform_runner._run_structured_pass(**arguments, resume=True) == {"value": 1}
+    (tmp_path / "pass" / "result.json").write_text('{"value": 2}\n', encoding="utf-8")
+    with pytest.raises(HBQError, match="do not match the accepted response"):
+        longform_runner._run_structured_pass(**arguments, resume=True)
+
+
+def test_synthesis_rejects_unknown_criterion_and_evidence_ids() -> None:
+    synthesis = {
+        "findings": [
+            {
+                "criterion_ids": ["invented.criterion"],
+                "evidence_refs": ["invented:span"],
+            }
+        ]
+    }
+    with pytest.raises(HBQError, match="unknown criterion IDs"):
+        longform_runner._validate_synthesis_references(
+            synthesis,
+            criterion_results=[
+                {
+                    "scope_id": "work",
+                    "criterion_id": "craft.synthetic.clear",
+                    "evidence_refs": ["unit:known"],
+                }
+            ],
+            scope_ids=["work"],
+        )
+
+
+def test_synthesis_evidence_must_be_grounded_in_the_same_findings_criteria() -> None:
+    synthesis = {
+        "findings": [
+            {
+                "criterion_ids": ["criterion.a"],
+                "evidence_refs": ["evidence-b"],
+            }
+        ]
+    }
+    with pytest.raises(HBQError, match="not grounded in its cited criteria"):
+        longform_runner._validate_synthesis_references(
+            synthesis,
+            criterion_results=[
+                {
+                    "scope_id": "work",
+                    "criterion_id": "criterion.a",
+                    "evidence_refs": ["evidence-a"],
+                },
+                {
+                    "scope_id": "work",
+                    "criterion_id": "criterion.b",
+                    "evidence_refs": ["evidence-b"],
+                },
+            ],
+            scope_ids=["work"],
+        )
+
+
+def test_synthesis_findings_require_nonempty_criterion_and_evidence_arrays() -> None:
+    schema = longform_runner._synthesis_schema(
+        criterion_results=[
+            {"scope_id": "work", "criterion_id": "criterion.a", "evidence_refs": ["evidence-a"]}
+        ],
+        scope_ids=["work"],
+    )
+    with pytest.raises(HBQError, match="violates its strict schema"):
+        longform_runner._validate(
+            {
+                "findings": [
+                    {
+                        "kind": "observation",
+                        "finding": "Synthetic finding.",
+                        "why_it_matters": "Synthetic reason.",
+                        "criterion_ids": [],
+                        "evidence_refs": [],
+                    }
+                ],
+                "warnings": [],
+            },
+            schema,
+            "synthesis",
+        )
+
+
+def test_parallel_binary_failure_cancels_pending_jobs() -> None:
+    release = threading.Event()
+    started: list[int] = []
+
+    def fail_global():
+        raise HBQError("synthetic global failure")
+
+    def local_job(index: int):
+        started.append(index)
+        release.wait(timeout=1)
+        return {"result": {}, "criteria": []}
+
+    timer = threading.Timer(0.05, release.set)
+    timer.start()
+    try:
+        with pytest.raises(HBQError, match="synthetic global failure"):
+            longform_runner._run_binary_jobs(
+                fail_global,
+                [(str(index), lambda index=index: local_job(index)) for index in range(20)],
+                max_workers=2,
+            )
+    finally:
+        release.set()
+        timer.cancel()
+    assert len(started) < 20
+
+
+def test_structured_outputs_frozen_ordinals_and_criterion_synthesis(tmp_path: Path, endpoint) -> None:
+    base_url, handler = endpoint
+    registry, bundles = _catalog(tmp_path)
+    artifact = tmp_path / "story.txt"
+    brief = tmp_path / "brief.txt"
+    artifact.write_text(TEXT, encoding="utf-8")
+    brief.write_text("Prefer quiet tension.", encoding="utf-8")
+    output = tmp_path / "run"
+    summary = run_longform_judge(
+        artifact_path=artifact,
+        brief_paths=[brief],
+        output_dir=output,
+        provider="openai",
+        model="fake-local",
+        registry=registry,
+        bundles=bundles,
+        artifact_kind="prose_fiction",
+        bundle_id="prose.synthetic",
+        base_url=base_url,
+        frozen_sample_ordinals=[2],
+        openai_structured_outputs=True,
+    )
+    assert summary["sampled_units"] == 1
+    report = json.loads((output / "report.json").read_text(encoding="utf-8"))
+    segmentation = json.loads((output / ".private" / "segmentation.json").read_text(encoding="utf-8"))
+    expected_unit = segmentation["units"][1]["unit_id"]
+    assert report["route"]["sampled_unit_ids"] == [expected_unit]
+    structured = [
+        request
+        for request in handler.requests
+        if request["messages"][1]["content"].startswith("HBQ-RS STRUCTURED PASS:")
+    ]
+    binary = [request for request in handler.requests if request not in structured]
+    assert len(structured) == 3
+    assert all(request["response_format"]["type"] == "json_schema" for request in structured)
+    assert all("response_format" not in request for request in binary)
+    synthesis_prompt = next(
+        request["messages"][1]["content"]
+        for request in structured
+        if request["messages"][1]["content"].startswith("HBQ-RS STRUCTURED PASS: synthesis")
+    )
+    synthesis_input = _input_json(synthesis_prompt)
+    assert {item["criterion_id"] for item in synthesis_input["criterion_results"]} == {
+        "craft.synthetic.clear",
+        "task.contract.contract.synthetic.goal.tension",
+    }
+    assert "work" in synthesis_input["allowed_evidence_refs"]
+    assert expected_unit in synthesis_input["allowed_evidence_refs"]
+    assert set(synthesis_input["allowed_evidence_refs"]) >= {
+        reference
+        for item in synthesis_input["criterion_results"]
+        for reference in item["evidence_refs"]
+    }
+    assert synthesis_input["evidence_reference_catalog"]
+    assert all(
+        item["reference_id"].startswith("evidence-")
+        for item in synthesis_input["evidence_reference_catalog"]
+    )
+    finding_schema = synthesis_input["response_schema"]["properties"]["findings"]["items"]
+    assert set(finding_schema["properties"]["criterion_ids"]["items"]["enum"]) == {
+        "craft.synthetic.clear",
+        "task.contract.contract.synthetic.goal.tension",
+    }
+    assert expected_unit in finding_schema["properties"]["evidence_refs"]["items"]["enum"]
+
+
+def test_disclosure_enumerates_payload_hashes_and_call_ceiling(tmp_path: Path, capsys) -> None:
+    registry, bundles = _catalog(tmp_path)
+    artifact = tmp_path / "story.txt"
+    artifact.write_text(TEXT, encoding="utf-8")
+    with pytest.raises(HBQError, match="pass --allow-remote"):
+        run_longform_judge(
+            artifact_path=artifact,
+            brief_paths=[],
+            output_dir=tmp_path / "blocked",
+            provider="openai",
+            model="remote-model",
+            registry=registry,
+            bundles=bundles,
+            artifact_kind="prose_fiction",
+            base_url="https://example.com/v1",
+        )
+    disclosure = json.loads(capsys.readouterr().err)["disclosure"]
+    assert disclosure["maximum_provider_calls"] >= 3
+    assert disclosure["payloads"]["route"]["sample"]["excerpts"]
+    assert disclosure["payloads"]["route"]["request"]["sha256"]
+    assert disclosure["payloads"]["global_judge"]["organized_source"]["sha256"]
+    assert disclosure["payloads"]["synthesis"]["raw_source_included"] is False
+
+
+@pytest.mark.parametrize(
+    ("keyword", "value", "message"),
+    [
+        ("temperature", 2.1, "temperature must be between"),
+        ("binary_workers", 9, "binary_workers must be between"),
+        ("local_sample_limit", 65, "local_sample_limit must be between"),
+    ],
+)
+def test_resource_and_sampling_controls_are_bounded(tmp_path: Path, keyword, value, message) -> None:
+    registry, bundles = _catalog(tmp_path)
+    artifact = tmp_path / "story.txt"
+    artifact.write_text(TEXT, encoding="utf-8")
+    arguments = {
+        "artifact_path": artifact,
+        "brief_paths": [],
+        "output_dir": tmp_path / "unused",
+        "provider": "openai",
+        "model": "fake-local",
+        "registry": registry,
+        "bundles": bundles,
+        "artifact_kind": "prose_fiction",
+        keyword: value,
+    }
+    with pytest.raises(HBQError, match=message):
+        run_longform_judge(**arguments)
+
+
+def test_absence_requirement_supplies_verification_and_verdict_guidance(tmp_path: Path, endpoint) -> None:
+    base_url, handler = endpoint
+    registry, bundles = _catalog(tmp_path)
+    artifact = tmp_path / "story.txt"
+    artifact.write_text(TEXT, encoding="utf-8")
+    contract = {
+        "contract_version": 1,
+        "contract_id": "contract.absence",
+        "artifact_id": "story",
+        "context": {
+            "artifact_kind": "prose_fiction",
+            "declared_scope": "work",
+            "completion_status": "work_in_progress",
+            "background": [],
+            "constraints": ["No dragons."],
+            "audience": [],
+        },
+        "preferences": [],
+        "priorities": [],
+        "weighted_goals": [],
+        "binding_requirements": [
+            {
+                "requirement_id": "requirement.no_dragons",
+                "atomic_question": "Is the work free of dragons?",
+                "objective": True,
+                "non_negotiable": True,
+                "source": {
+                    "kind": "explicit_user_requirement",
+                    "reference": "driving-prompt:1",
+                    "exact_excerpt": "Do not include dragons.",
+                },
+                "applies_to": ["work"],
+                "verification": {"method": "absence", "expected": "dragons"},
+            }
+        ],
+    }
+    contract_path = tmp_path / "contract.json"
+    contract_path.write_text(json.dumps(contract), encoding="utf-8")
+    run_longform_judge(
+        artifact_path=artifact,
+        brief_paths=[],
+        output_dir=tmp_path / "run",
+        provider="openai",
+        model="fake-local",
+        registry=registry,
+        bundles=bundles,
+        artifact_kind="prose_fiction",
+        bundle_id="prose.synthetic",
+        task_contract_path=contract_path,
+        driving_prompt="Do not include dragons.",
+        base_url=base_url,
+    )
+    global_prompt = next(prompt for prompt in handler.binary_prompts if "Chapter One" in _artifact(prompt))
+    assert '"method": "absence"' in global_prompt
+    assert "Return YES when the prohibited condition is absent" in global_prompt
+    assert "return NOT_APPLICABLE rather than CANNOT_ASSESS" not in global_prompt
+    runtime_contract = json.loads(
+        (tmp_path / "run" / ".private" / "generated-inputs" / "contracts" / "work.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    runtime_verification = runtime_contract["binding_requirements"][0]["verification"]
+    assert runtime_verification["method"] == "structural_constraint"
+    assert runtime_verification["expected"].startswith("Return YES when the prohibited condition is absent")

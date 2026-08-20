@@ -14,8 +14,10 @@ from .core import (
 )
 from .paths import book_root, bundles_path, registry_path
 from .runner import run_judge
+from .longform import segment_longform
+from .longform_runner import run_longform_judge
 
-__version__ = "1.0.0"
+__version__ = "1.1.0"
 
 __all__ = [
     "HBQError",
@@ -30,6 +32,8 @@ __all__ = [
     "registry_path",
     "resolve_bundle",
     "run_judge",
+    "run_longform_judge",
+    "segment_longform",
     "score_bundle",
     "validate_registry",
     "walk_tree",

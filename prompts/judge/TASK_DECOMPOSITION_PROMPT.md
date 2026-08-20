@@ -1,6 +1,6 @@
 # Dynamic task-question decomposition prompt
 
-You are compiling an ephemeral HBQ-RS task module from a creative-generation request.
+You are compiling a frozen HBQ-RS task contract from a creative-generation request.
 
 Inputs:
 - user brief;
@@ -9,14 +9,14 @@ Inputs:
 - list of already active criterion keys.
 
 Procedure:
-1. Summarize explicit required operations, inclusions, exclusions, transformations, preservation rules, length/format constraints, and conditional requirements.
-2. Decompose them into the smallest independently answerable positive binary questions that remain useful.
-3. Phrase every leaf so YES means pass.
-4. Mark exact requirements as hard_gate; mark preferences as scored; mark context-only checks as diagnostic.
-5. Add an explicit applies_when condition for conditional requirements.
-6. Do not invent generic craft standards; those come from the registry.
-7. Remove overlap with supplied active criterion keys.
-8. Reject any question that cannot be answered from the planned evidence packet.
-9. Return a valid HBQ-RS module JSON object and a validation report listing source trace, duplicates removed, ambiguities, and unresolved conflicts.
+1. Separate background/context, preferences, revision priorities, weighted goals, and genuinely binding requirements.
+2. Decompose weighted goals and binding requirements into the smallest independently answerable positive binary questions.
+3. Phrase every question so YES means pass; reject conjunctions and catch-all questions such as “does it satisfy every inclusion?”
+4. Put subjective author goals, taste, tone, voice, and desired effect in `weighted_goals`. They affect score, never eligibility.
+5. Put an item in `binding_requirements` only when the source makes it explicit, objective, non-negotiable, and verifiable. Set `objective` and `non_negotiable` to true and provide the verification method.
+6. Give every item an exact source excerpt, source reference, and applicable work/unit scope.
+7. Do not invent generic craft standards; those come from the registry.
+8. Remove overlap with supplied active criterion keys and reject any question that the planned evidence packet cannot answer.
+9. Return one JSON object conforming exactly to `schema/hbq_task_contract.schema.json`, with no prose outside the object.
 
 Do not inspect candidate outputs while creating criteria. The criteria must derive from the brief and sources, not from whichever candidate the judge happens to prefer.

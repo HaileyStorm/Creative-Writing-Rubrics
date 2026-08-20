@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/HaileyStorm/Creative-Writing-Rubrics/main/schema/hbq_diagnostic_report.schema.json",
+  "title": "HBQ-RS selected-question diagnostic report",
+  "type": "object",
+  "required": [
+    "report_kind",
+    "artifact_id",
+    "bundle_id",
+    "status",
+    "selected_question_ids",
+    "selected_question_count",
+    "available_question_count",
+    "verdict_counts",
+    "note"
+  ],
+  "properties": {
+    "$schema": {"type": "string"},
+    "report_kind": {"const": "selected-question-diagnostic"},
+    "artifact_id": {"type": "string", "minLength": 1},
+    "bundle_id": {"type": "string", "minLength": 1},
+    "task_contract": {"type": ["object", "null"]},
+    "status": {"const": "DIAGNOSTIC_SUBSET"},
+    "selected_question_ids": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "selected_question_count": {"type": "integer", "minimum": 1},
+    "available_question_count": {"type": "integer", "minimum": 2},
+    "verdict_counts": {
+      "type": "object",
+      "required": ["CANNOT_ASSESS", "NOT_APPLICABLE", "NO", "YES"],
+      "properties": {
+        "CANNOT_ASSESS": {"type": "integer", "minimum": 0},
+        "NOT_APPLICABLE": {"type": "integer", "minimum": 0},
+        "NO": {"type": "integer", "minimum": 0},
+        "YES": {"type": "integer", "minimum": 0}
+      },
+      "additionalProperties": false
+    },
+    "note": {"type": "string", "minLength": 1}
+  },
+  "additionalProperties": false
+}

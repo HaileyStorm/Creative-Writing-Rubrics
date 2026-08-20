@@ -1,0 +1,2984 @@
+{
+  "$schema": "https://raw.githubusercontent.com/HaileyStorm/Creative-Writing-Rubrics/main/schema/hbq_score_report.schema.json",
+  "active_nominal_points": 100.0,
+  "artifact_id": "gray-blood-original-ch01-06-unit-0004-d56cc8561b6b",
+  "base_score": {
+    "lower": 87.246,
+    "observed": 90.2436,
+    "upper": 90.8146
+  },
+  "bundle_id": "prose.novel",
+  "bundle_version": 1,
+  "confidence": 0.9383,
+  "coverage": 0.9643,
+  "domains": [
+    {
+      "active": true,
+      "confidence": 0.9336,
+      "coverage": 0.4902,
+      "domain_id": "task",
+      "nominal_points": 7.0,
+      "questions": [
+        {
+          "confidence": 0.88,
+          "evidence": [
+            {
+              "reference": "result.json: limitations[0]"
+            }
+          ],
+          "module_id": "core.task_and_brief_fidelity",
+          "question_id": "core.task_and_brief_fidelity.intervention",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "reference": "result.json: limitations[0]"
+            }
+          ],
+          "module_id": "core.task_and_brief_fidelity",
+          "question_id": "core.task_and_brief_fidelity.completion_flag",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b.txt: heading"
+            }
+          ],
+          "module_id": "core.task_and_brief_fidelity",
+          "question_id": "core.task_and_brief_fidelity.no_meta_substitution",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.87,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b.txt: final scene opening"
+            }
+          ],
+          "module_id": "core.length_and_scope_fit",
+          "question_id": "core.length_and_scope_fit.form",
+          "verdict": "YES",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.93,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b.txt: Amelia's lesson setup"
+            }
+          ],
+          "module_id": "core.length_and_scope_fit",
+          "question_id": "core.length_and_scope_fit.operation",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.92,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b.txt: bedroom scene"
+            }
+          ],
+          "module_id": "core.length_and_scope_fit",
+          "question_id": "core.length_and_scope_fit.development",
+          "verdict": "YES",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.91,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b.txt: lesson preparation"
+            }
+          ],
+          "module_id": "core.length_and_scope_fit",
+          "question_id": "core.length_and_scope_fit.density",
+          "verdict": "NO",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b.txt: final sentence"
+            }
+          ],
+          "module_id": "core.length_and_scope_fit",
+          "question_id": "core.length_and_scope_fit.ending",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.92,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b.txt: garden aftermath"
+            }
+          ],
+          "module_id": "core.length_and_scope_fit",
+          "question_id": "core.length_and_scope_fit.no_padding",
+          "verdict": "YES",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.94,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b.txt: activation reaction"
+            }
+          ],
+          "module_id": "core.length_and_scope_fit",
+          "question_id": "core.length_and_scope_fit.no_underbuild",
+          "verdict": "YES",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.9,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b.txt: closing exchange"
+            }
+          ],
+          "module_id": "core.audience_and_purpose_fit",
+          "question_id": "core.audience_and_purpose_fit.complexity",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "reference": "author brief: VI. Character Development Notes"
+            }
+          ],
+          "module_id": "core.audience_and_purpose_fit",
+          "question_id": "core.audience_and_purpose_fit.tone",
+          "verdict": "NO",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.93,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b.txt: anatomy explanation"
+            }
+          ],
+          "module_id": "core.audience_and_purpose_fit",
+          "question_id": "core.audience_and_purpose_fit.explanation",
+          "verdict": "NO",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.97,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b.txt: activation disclosure"
+            }
+          ],
+          "module_id": "core.audience_and_purpose_fit",
+          "question_id": "core.audience_and_purpose_fit.intensity",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.94,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b.txt: lesson setup"
+            }
+          ],
+          "module_id": "core.audience_and_purpose_fit",
+          "question_id": "core.audience_and_purpose_fit.vocabulary",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.9,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b.txt: closing magic explanation"
+            }
+          ],
+          "module_id": "core.audience_and_purpose_fit",
+          "question_id": "core.audience_and_purpose_fit.length",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.95,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b.txt: request for positive magic"
+            }
+          ],
+          "module_id": "core.audience_and_purpose_fit",
+          "question_id": "core.audience_and_purpose_fit.genre_signals",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.94,
+          "evidence": [
+            {
+              "reference": "author brief: I. Core Concept & Tone"
+            }
+          ],
+          "module_id": "core.audience_and_purpose_fit",
+          "question_id": "core.audience_and_purpose_fit.use_context",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "reference": "result.json: limitations[3]"
+            }
+          ],
+          "module_id": "form.prose.novel",
+          "question_id": "form.prose.novel.macro_structure",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 3.0
+        },
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "reference": "result.json: limitations[0]"
+            }
+          ],
+          "module_id": "form.prose.novel",
+          "question_id": "form.prose.novel.long_causality",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 3.0
+        },
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "reference": "result.json: limitations[0]"
+            }
+          ],
+          "module_id": "form.prose.novel",
+          "question_id": "form.prose.novel.multiple_arcs",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 2.25
+        },
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "reference": "result.json: orientation.evaluated_scope"
+            }
+          ],
+          "module_id": "form.prose.novel",
+          "question_id": "form.prose.novel.pacing_variation",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 2.25
+        },
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "reference": "result.json: work_state.central_arcs[1]"
+            }
+          ],
+          "module_id": "form.prose.novel",
+          "question_id": "form.prose.novel.development",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 2.25
+        },
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "reference": "result.json: work_state.motifs[0]"
+            }
+          ],
+          "module_id": "form.prose.novel",
+          "question_id": "form.prose.novel.recurrence",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 2.25
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "reference": "result.json: distant_links[3]"
+            }
+          ],
+          "module_id": "form.prose.novel",
+          "question_id": "form.prose.novel.payoff",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 3.0
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "reference": "result.json: limitations[0]"
+            }
+          ],
+          "module_id": "form.prose.novel",
+          "question_id": "form.prose.novel.middle",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 3.0
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "reference": "result.json: limitations[0]"
+            }
+          ],
+          "module_id": "form.prose.novel",
+          "question_id": "form.prose.novel.ending",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 3.0
+        }
+      ],
+      "score": {
+        "lower": 2.8824,
+        "observed": 5.88,
+        "upper": 6.451
+      },
+      "title": "Task and scope",
+      "weights": {
+        "applicable": 51.0,
+        "failed": 4.0,
+        "passed": 21.0,
+        "unassessed": 26.0
+      }
+    },
+    {
+      "active": true,
+      "confidence": 0.9533,
+      "coverage": 1.0,
+      "domain_id": "character",
+      "nominal_points": 16.0,
+      "questions": [
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b.txt: opening disclosure"
+            }
+          ],
+          "module_id": "craft.narrative.characterization",
+          "question_id": "craft.narrative.characterization.dimensionality",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b.txt: activation reaction"
+            }
+          ],
+          "module_id": "craft.narrative.characterization",
+          "question_id": "craft.narrative.characterization.behavior",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.97,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b.txt: bedroom scene"
+            }
+          ],
+          "module_id": "craft.narrative.characterization",
+          "question_id": "craft.narrative.characterization.motives",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b.txt: opening paragraph"
+            }
+          ],
+          "module_id": "craft.narrative.characterization",
+          "question_id": "craft.narrative.characterization.contradiction",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b"
+            }
+          ],
+          "module_id": "craft.narrative.characterization",
+          "question_id": "craft.narrative.characterization.agency",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b"
+            }
+          ],
+          "module_id": "craft.narrative.characterization",
+          "question_id": "craft.narrative.characterization.distinction",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b"
+            }
+          ],
+          "module_id": "craft.narrative.characterization",
+          "question_id": "craft.narrative.characterization.development",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.78,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b"
+            }
+          ],
+          "module_id": "craft.narrative.characterization",
+          "question_id": "craft.narrative.characterization.canon",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.9,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b"
+            }
+          ],
+          "module_id": "craft.narrative.characterization",
+          "question_id": "craft.narrative.characterization.no_trait_labels",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.97,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b"
+            }
+          ],
+          "module_id": "craft.narrative.character_arc",
+          "question_id": "craft.narrative.character_arc.baseline",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b"
+            }
+          ],
+          "module_id": "craft.narrative.character_arc",
+          "question_id": "craft.narrative.character_arc.pressure",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b"
+            }
+          ],
+          "module_id": "craft.narrative.character_arc",
+          "question_id": "craft.narrative.character_arc.resistance",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b"
+            }
+          ],
+          "module_id": "craft.narrative.character_arc",
+          "question_id": "craft.narrative.character_arc.turns",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.97,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b"
+            }
+          ],
+          "module_id": "craft.narrative.character_arc",
+          "question_id": "craft.narrative.character_arc.consequences",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.91,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b"
+            }
+          ],
+          "module_id": "craft.narrative.character_arc",
+          "question_id": "craft.narrative.character_arc.rate",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b"
+            }
+          ],
+          "module_id": "craft.narrative.character_arc",
+          "question_id": "craft.narrative.character_arc.local_contribution",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [],
+          "module_id": "craft.narrative.character_arc",
+          "question_id": "craft.narrative.character_arc.end_state",
+          "verdict": "NOT_APPLICABLE",
+          "weight": 1.5
+        }
+      ],
+      "score": {
+        "lower": 16.0,
+        "observed": 16.0,
+        "upper": 16.0
+      },
+      "title": "Character and arcs",
+      "weights": {
+        "applicable": 21.0,
+        "failed": 0.0,
+        "passed": 21.0,
+        "unassessed": 0.0
+      }
+    },
+    {
+      "active": true,
+      "confidence": 0.9526,
+      "coverage": 1.0,
+      "domain_id": "plot",
+      "nominal_points": 20.0,
+      "questions": [
+        {
+          "confidence": 0.97,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b"
+            }
+          ],
+          "module_id": "craft.narrative.plot_and_causality",
+          "question_id": "craft.narrative.plot_and_causality.causal_chain",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.94,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b"
+            }
+          ],
+          "module_id": "craft.narrative.plot_and_causality",
+          "question_id": "craft.narrative.plot_and_causality.setup",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b"
+            }
+          ],
+          "module_id": "craft.narrative.plot_and_causality",
+          "question_id": "craft.narrative.plot_and_causality.decision",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b"
+            }
+          ],
+          "module_id": "craft.narrative.plot_and_causality",
+          "question_id": "craft.narrative.plot_and_causality.consequence",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.97,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b"
+            }
+          ],
+          "module_id": "craft.narrative.plot_and_causality",
+          "question_id": "craft.narrative.plot_and_causality.escalation",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b"
+            }
+          ],
+          "module_id": "craft.narrative.plot_and_causality",
+          "question_id": "craft.narrative.plot_and_causality.complication",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.9,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b"
+            }
+          ],
+          "module_id": "craft.narrative.plot_and_causality",
+          "question_id": "craft.narrative.plot_and_causality.reversal",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.92,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b"
+            }
+          ],
+          "module_id": "craft.narrative.plot_and_causality",
+          "question_id": "craft.narrative.plot_and_causality.no_convenience",
+          "verdict": "YES",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.95,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b; context source result.json distant_links"
+            }
+          ],
+          "module_id": "craft.narrative.foreshadowing_setup_and_payoff",
+          "question_id": "craft.narrative.foreshadowing_setup_and_payoff.preparation",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.87,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b"
+            }
+          ],
+          "module_id": "craft.narrative.foreshadowing_setup_and_payoff",
+          "question_id": "craft.narrative.foreshadowing_setup_and_payoff.subtlety",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b"
+            }
+          ],
+          "module_id": "craft.narrative.foreshadowing_setup_and_payoff",
+          "question_id": "craft.narrative.foreshadowing_setup_and_payoff.expectation",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.92,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b"
+            }
+          ],
+          "module_id": "craft.narrative.foreshadowing_setup_and_payoff",
+          "question_id": "craft.narrative.foreshadowing_setup_and_payoff.delay",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b; context source result.json distant_links"
+            }
+          ],
+          "module_id": "craft.narrative.foreshadowing_setup_and_payoff",
+          "question_id": "craft.narrative.foreshadowing_setup_and_payoff.earned",
+          "verdict": "YES",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.94,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b"
+            }
+          ],
+          "module_id": "craft.narrative.foreshadowing_setup_and_payoff",
+          "question_id": "craft.narrative.foreshadowing_setup_and_payoff.remembered",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.95,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b"
+            }
+          ],
+          "module_id": "craft.narrative.foreshadowing_setup_and_payoff",
+          "question_id": "craft.narrative.foreshadowing_setup_and_payoff.echo",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.91,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b"
+            }
+          ],
+          "module_id": "craft.narrative.foreshadowing_setup_and_payoff",
+          "question_id": "craft.narrative.foreshadowing_setup_and_payoff.no_deus",
+          "verdict": "YES",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b"
+            }
+          ],
+          "module_id": "craft.narrative.narrative_momentum",
+          "question_id": "craft.narrative.narrative_momentum.curiosity",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b"
+            }
+          ],
+          "module_id": "craft.narrative.narrative_momentum",
+          "question_id": "craft.narrative.narrative_momentum.investment",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b"
+            }
+          ],
+          "module_id": "craft.narrative.narrative_momentum",
+          "question_id": "craft.narrative.narrative_momentum.consequence",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.94,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, activation discussion"
+            }
+          ],
+          "module_id": "craft.narrative.narrative_momentum",
+          "question_id": "craft.narrative.narrative_momentum.voice_pull",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, activation revelation"
+            }
+          ],
+          "module_id": "craft.narrative.narrative_momentum",
+          "question_id": "craft.narrative.narrative_momentum.concept_pull",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.97,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, shadow-flower demonstration"
+            }
+          ],
+          "module_id": "craft.narrative.narrative_momentum",
+          "question_id": "craft.narrative.narrative_momentum.progress",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, patio dinner"
+            }
+          ],
+          "module_id": "craft.narrative.narrative_momentum",
+          "question_id": "craft.narrative.narrative_momentum.commitment",
+          "verdict": "YES",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.93,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, bedroom request"
+            }
+          ],
+          "module_id": "craft.narrative.narrative_momentum",
+          "question_id": "craft.narrative.narrative_momentum.no_false_hook",
+          "verdict": "YES",
+          "weight": 1.5
+        }
+      ],
+      "score": {
+        "lower": 20.0,
+        "observed": 20.0,
+        "upper": 20.0
+      },
+      "title": "Plot architecture and payoff",
+      "weights": {
+        "applicable": 34.0,
+        "failed": 0.0,
+        "passed": 34.0,
+        "unassessed": 0.0
+      }
+    },
+    {
+      "active": true,
+      "confidence": 0.9432,
+      "coverage": 1.0,
+      "domain_id": "world",
+      "nominal_points": 12.0,
+      "questions": [
+        {
+          "confidence": 0.97,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, anatomy lesson"
+            }
+          ],
+          "module_id": "craft.narrative.worldbuilding",
+          "question_id": "craft.narrative.worldbuilding.rules",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.92,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, patio discussion"
+            }
+          ],
+          "module_id": "craft.narrative.worldbuilding",
+          "question_id": "craft.narrative.worldbuilding.consistency",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, activation revelation"
+            }
+          ],
+          "module_id": "craft.narrative.worldbuilding",
+          "question_id": "craft.narrative.worldbuilding.constraints",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.84,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, opening lesson"
+            }
+          ],
+          "module_id": "craft.narrative.worldbuilding",
+          "question_id": "craft.narrative.worldbuilding.culture",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.89,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, patio discussion"
+            }
+          ],
+          "module_id": "craft.narrative.worldbuilding",
+          "question_id": "craft.narrative.worldbuilding.history",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.95,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, patio discussion"
+            }
+          ],
+          "module_id": "craft.narrative.worldbuilding",
+          "question_id": "craft.narrative.worldbuilding.consequences",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.95,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, fang demonstration"
+            }
+          ],
+          "module_id": "craft.narrative.worldbuilding",
+          "question_id": "craft.narrative.worldbuilding.integration",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.76,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, before Amelia's lesson"
+            }
+          ],
+          "module_id": "craft.narrative.worldbuilding",
+          "question_id": "craft.narrative.worldbuilding.no_lore_dump",
+          "verdict": "YES",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.97,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, anatomy lesson"
+            }
+          ],
+          "module_id": "craft.narrative.worldbuilding",
+          "question_id": "craft.narrative.worldbuilding.no_default_furniture",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, climber discussion"
+            }
+          ],
+          "module_id": "craft.narrative.continuity_and_canon_integrity",
+          "question_id": "craft.narrative.continuity_and_canon_integrity.characters",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, bedroom request"
+            }
+          ],
+          "module_id": "craft.narrative.continuity_and_canon_integrity",
+          "question_id": "craft.narrative.continuity_and_canon_integrity.knowledge",
+          "verdict": "YES",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.97,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, closing magic lesson"
+            }
+          ],
+          "module_id": "craft.narrative.continuity_and_canon_integrity",
+          "question_id": "craft.narrative.continuity_and_canon_integrity.facts",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.97,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, anatomy lesson"
+            }
+          ],
+          "module_id": "craft.narrative.continuity_and_canon_integrity",
+          "question_id": "craft.narrative.continuity_and_canon_integrity.world",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, chapter opening"
+            }
+          ],
+          "module_id": "craft.narrative.continuity_and_canon_integrity",
+          "question_id": "craft.narrative.continuity_and_canon_integrity.chronology",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.95,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, opening conversation"
+            }
+          ],
+          "module_id": "craft.narrative.continuity_and_canon_integrity",
+          "question_id": "craft.narrative.continuity_and_canon_integrity.state",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.93,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, patio discussion"
+            }
+          ],
+          "module_id": "craft.narrative.continuity_and_canon_integrity",
+          "question_id": "craft.narrative.continuity_and_canon_integrity.threads",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.98,
+          "evidence": [],
+          "module_id": "craft.narrative.continuity_and_canon_integrity",
+          "question_id": "craft.narrative.continuity_and_canon_integrity.supersession",
+          "verdict": "NOT_APPLICABLE",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.96,
+          "evidence": [],
+          "module_id": "craft.narrative.continuity_and_canon_integrity",
+          "question_id": "craft.narrative.continuity_and_canon_integrity.conflicts",
+          "verdict": "NOT_APPLICABLE",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, garden-to-bedroom transition"
+            }
+          ],
+          "module_id": "craft.narrative.temporal_and_spatial_continuity",
+          "question_id": "craft.narrative.temporal_and_spatial_continuity.chronology",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, chapter opening"
+            }
+          ],
+          "module_id": "craft.narrative.temporal_and_spatial_continuity",
+          "question_id": "craft.narrative.temporal_and_spatial_continuity.elapsed_time",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [],
+          "module_id": "craft.narrative.temporal_and_spatial_continuity",
+          "question_id": "craft.narrative.temporal_and_spatial_continuity.travel",
+          "verdict": "NOT_APPLICABLE",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, activation aftermath"
+            }
+          ],
+          "module_id": "craft.narrative.temporal_and_spatial_continuity",
+          "question_id": "craft.narrative.temporal_and_spatial_continuity.entrances",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.94,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, fang demonstration and closing lesson"
+            }
+          ],
+          "module_id": "craft.narrative.temporal_and_spatial_continuity",
+          "question_id": "craft.narrative.temporal_and_spatial_continuity.objects",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, chapter opening"
+            }
+          ],
+          "module_id": "craft.narrative.temporal_and_spatial_continuity",
+          "question_id": "craft.narrative.temporal_and_spatial_continuity.orientation",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.97,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, patio dinner"
+            }
+          ],
+          "module_id": "craft.narrative.temporal_and_spatial_continuity",
+          "question_id": "craft.narrative.temporal_and_spatial_continuity.state_update",
+          "verdict": "YES",
+          "weight": 1.5
+        }
+      ],
+      "score": {
+        "lower": 12.0,
+        "observed": 12.0,
+        "upper": 12.0
+      },
+      "title": "World and continuity",
+      "weights": {
+        "applicable": 31.5,
+        "failed": 0.0,
+        "passed": 31.5,
+        "unassessed": 0.0
+      }
+    },
+    {
+      "active": true,
+      "confidence": 0.8997,
+      "coverage": 1.0,
+      "domain_id": "pacing",
+      "nominal_points": 10.0,
+      "questions": [
+        {
+          "confidence": 0.92,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, activation revelation"
+            }
+          ],
+          "module_id": "craft.narrative.pacing_and_narrative_time",
+          "question_id": "craft.narrative.pacing_and_narrative_time.allocation",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.91,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, garden transition"
+            }
+          ],
+          "module_id": "craft.narrative.pacing_and_narrative_time",
+          "question_id": "craft.narrative.pacing_and_narrative_time.acceleration",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, activation revelation"
+            }
+          ],
+          "module_id": "craft.narrative.pacing_and_narrative_time",
+          "question_id": "craft.narrative.pacing_and_narrative_time.deceleration",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.84,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, garden-to-bedroom passage"
+            }
+          ],
+          "module_id": "craft.narrative.pacing_and_narrative_time",
+          "question_id": "craft.narrative.pacing_and_narrative_time.scene_summary",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.94,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, activation explanation"
+            }
+          ],
+          "module_id": "craft.narrative.pacing_and_narrative_time",
+          "question_id": "craft.narrative.pacing_and_narrative_time.reveal_timing",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.91,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, before Amelia’s lesson"
+            },
+            {
+              "reference": "unit-0004-d56cc8561b6b, closing magical demonstration"
+            }
+          ],
+          "module_id": "craft.narrative.pacing_and_narrative_time",
+          "question_id": "craft.narrative.pacing_and_narrative_time.variation",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.86,
+          "evidence": [
+            {
+              "reference": "result.json, unit-0004 summary"
+            }
+          ],
+          "module_id": "craft.narrative.pacing_and_narrative_time",
+          "question_id": "craft.narrative.pacing_and_narrative_time.local_global",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.8,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, anatomy lecture"
+            }
+          ],
+          "module_id": "craft.narrative.pacing_and_narrative_time",
+          "question_id": "craft.narrative.pacing_and_narrative_time.no_stall",
+          "verdict": "NO",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, fang demonstration"
+            },
+            {
+              "reference": "unit-0004-d56cc8561b6b, shadow-flower explanation"
+            }
+          ],
+          "module_id": "craft.narrative.exposition_and_information_management",
+          "question_id": "craft.narrative.exposition_and_information_management.reader_state",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.9,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, request for constructive magic"
+            }
+          ],
+          "module_id": "craft.narrative.exposition_and_information_management",
+          "question_id": "craft.narrative.exposition_and_information_management.timing",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.83,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, transition to Hunger"
+            }
+          ],
+          "module_id": "craft.narrative.exposition_and_information_management",
+          "question_id": "craft.narrative.exposition_and_information_management.embedding",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.78,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, stronghold explanation"
+            }
+          ],
+          "module_id": "craft.narrative.exposition_and_information_management",
+          "question_id": "craft.narrative.exposition_and_information_management.priority",
+          "verdict": "NO",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.88,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, dinner discussion"
+            }
+          ],
+          "module_id": "craft.narrative.exposition_and_information_management",
+          "question_id": "craft.narrative.exposition_and_information_management.no_redundancy",
+          "verdict": "YES",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.93,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, anatomy lecture"
+            }
+          ],
+          "module_id": "craft.narrative.exposition_and_information_management",
+          "question_id": "craft.narrative.exposition_and_information_management.no_dump",
+          "verdict": "NO",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.95,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, before activation disclosure"
+            }
+          ],
+          "module_id": "craft.narrative.exposition_and_information_management",
+          "question_id": "craft.narrative.exposition_and_information_management.fair_withholding",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.94,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, post-activation transition"
+            }
+          ],
+          "module_id": "craft.narrative.transitions_and_connective_tissue",
+          "question_id": "craft.narrative.transitions_and_connective_tissue.logic",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.94,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, evening transition"
+            },
+            {
+              "reference": "unit-0004-d56cc8561b6b, bedroom transition"
+            }
+          ],
+          "module_id": "craft.narrative.transitions_and_connective_tissue",
+          "question_id": "craft.narrative.transitions_and_connective_tissue.time",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, patio transition"
+            },
+            {
+              "reference": "unit-0004-d56cc8561b6b, bedroom transition"
+            }
+          ],
+          "module_id": "craft.narrative.transitions_and_connective_tissue",
+          "question_id": "craft.narrative.transitions_and_connective_tissue.place",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.95,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, patio conversation"
+            }
+          ],
+          "module_id": "craft.narrative.transitions_and_connective_tissue",
+          "question_id": "craft.narrative.transitions_and_connective_tissue.speaker",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.89,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, bedroom reflection"
+            }
+          ],
+          "module_id": "craft.narrative.transitions_and_connective_tissue",
+          "question_id": "craft.narrative.transitions_and_connective_tissue.mode",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.91,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, candle passage"
+            }
+          ],
+          "module_id": "craft.narrative.transitions_and_connective_tissue",
+          "question_id": "craft.narrative.transitions_and_connective_tissue.momentum",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.9,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, garden-to-bedroom bridge"
+            }
+          ],
+          "module_id": "craft.narrative.transitions_and_connective_tissue",
+          "question_id": "craft.narrative.transitions_and_connective_tissue.no_bridge_filler",
+          "verdict": "YES",
+          "weight": 2.0
+        }
+      ],
+      "score": {
+        "lower": 8.4127,
+        "observed": 8.4127,
+        "upper": 8.4127
+      },
+      "title": "Pacing and information",
+      "weights": {
+        "applicable": 31.5,
+        "failed": 5.0,
+        "passed": 26.5,
+        "unassessed": 0.0
+      }
+    },
+    {
+      "active": true,
+      "confidence": 0.9296,
+      "coverage": 1.0,
+      "domain_id": "language",
+      "nominal_points": 10.0,
+      "questions": [
+        {
+          "confidence": 0.87,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, Madison’s activation response"
+            },
+            {
+              "reference": "unit-0004-d56cc8561b6b, magical demonstration"
+            }
+          ],
+          "module_id": "core.language_craft",
+          "question_id": "core.language_craft.diction",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.91,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, anatomy lesson"
+            },
+            {
+              "reference": "unit-0004-d56cc8561b6b, activation exchange"
+            }
+          ],
+          "module_id": "core.language_craft",
+          "question_id": "core.language_craft.syntax",
+          "verdict": "NO",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.94,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, activation revelation"
+            }
+          ],
+          "module_id": "core.language_craft",
+          "question_id": "core.language_craft.cadence",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.9,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, Madison awaiting the revelation"
+            },
+            {
+              "reference": "unit-0004-d56cc8561b6b, Madison’s reaction"
+            }
+          ],
+          "module_id": "core.language_craft",
+          "question_id": "core.language_craft.variation",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.91,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, end of activation scene"
+            }
+          ],
+          "module_id": "core.language_craft",
+          "question_id": "core.language_craft.paragraph_movement",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.97,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, candle image"
+            },
+            {
+              "reference": "unit-0004-d56cc8561b6b, shadow flowers"
+            }
+          ],
+          "module_id": "core.language_craft",
+          "question_id": "core.language_craft.images",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.9,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, activation response"
+            },
+            {
+              "reference": "unit-0004-d56cc8561b6b, bathroom flight"
+            }
+          ],
+          "module_id": "core.language_craft",
+          "question_id": "core.language_craft.sound",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, activation revelation"
+            }
+          ],
+          "module_id": "core.language_craft",
+          "question_id": "core.language_craft.emphasis",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.95,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, activation exchange"
+            },
+            {
+              "reference": "unit-0004-d56cc8561b6b, magical demonstration"
+            }
+          ],
+          "module_id": "core.language_craft",
+          "question_id": "core.language_craft.no_awkwardness",
+          "verdict": "NO",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.95,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, Madison’s narration"
+            },
+            {
+              "reference": "unit-0004-d56cc8561b6b, candle passage"
+            }
+          ],
+          "module_id": "core.voice_and_stylistic_identity",
+          "question_id": "core.voice_and_stylistic_identity.distinctive",
+          "verdict": "YES",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.94,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, before anatomy lesson"
+            },
+            {
+              "reference": "unit-0004-d56cc8561b6b, closing exchange"
+            }
+          ],
+          "module_id": "core.voice_and_stylistic_identity",
+          "question_id": "core.voice_and_stylistic_identity.sustained",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.9,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, patio reflection"
+            }
+          ],
+          "module_id": "core.voice_and_stylistic_identity",
+          "question_id": "core.voice_and_stylistic_identity.suitable",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.92,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, closing exchange"
+            }
+          ],
+          "module_id": "core.voice_and_stylistic_identity",
+          "question_id": "core.voice_and_stylistic_identity.project_fidelity",
+          "verdict": "YES",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.91,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, opening bedroom conversation"
+            }
+          ],
+          "module_id": "core.voice_and_stylistic_identity",
+          "question_id": "core.voice_and_stylistic_identity.shift_control",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.97,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, before anatomy lesson"
+            }
+          ],
+          "module_id": "core.voice_and_stylistic_identity",
+          "question_id": "core.voice_and_stylistic_identity.ownership",
+          "verdict": "YES",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.83,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, patio dinner"
+            }
+          ],
+          "module_id": "craft.narrative.dialogue",
+          "question_id": "craft.narrative.dialogue.voice_distinction",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.94,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, patio reunion"
+            }
+          ],
+          "module_id": "craft.narrative.dialogue",
+          "question_id": "craft.narrative.dialogue.subtext",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.89,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, bedroom disclosure"
+            }
+          ],
+          "module_id": "craft.narrative.dialogue",
+          "question_id": "craft.narrative.dialogue.naturalness",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.95,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, candlelit bedroom scene"
+            }
+          ],
+          "module_id": "craft.narrative.dialogue",
+          "question_id": "craft.narrative.dialogue.purpose",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, activation disclosure"
+            }
+          ],
+          "module_id": "craft.narrative.dialogue",
+          "question_id": "craft.narrative.dialogue.rhythm",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.94,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, patio discussion"
+            }
+          ],
+          "module_id": "craft.narrative.dialogue",
+          "question_id": "craft.narrative.dialogue.listening",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, heart revelation"
+            }
+          ],
+          "module_id": "craft.narrative.dialogue",
+          "question_id": "craft.narrative.dialogue.action_balance",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.97,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, anatomy lecture"
+            }
+          ],
+          "module_id": "craft.narrative.dialogue",
+          "question_id": "craft.narrative.dialogue.no_exposition",
+          "verdict": "NO",
+          "weight": 2.0
+        }
+      ],
+      "score": {
+        "lower": 8.5075,
+        "observed": 8.5075,
+        "upper": 8.5075
+      },
+      "title": "Language and voice",
+      "weights": {
+        "applicable": 33.5,
+        "failed": 5.0,
+        "passed": 28.5,
+        "unassessed": 0.0
+      }
+    },
+    {
+      "active": true,
+      "confidence": 0.9492,
+      "coverage": 1.0,
+      "domain_id": "effect",
+      "nominal_points": 8.0,
+      "questions": [
+        {
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, freework demonstration"
+            }
+          ],
+          "module_id": "craft.narrative.theme_and_subtext",
+          "question_id": "craft.narrative.theme_and_subtext.emergence",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.92,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, patio dinner"
+            }
+          ],
+          "module_id": "craft.narrative.theme_and_subtext",
+          "question_id": "craft.narrative.theme_and_subtext.subtext",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.94,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, request for constructive magic"
+            }
+          ],
+          "module_id": "craft.narrative.theme_and_subtext",
+          "question_id": "craft.narrative.theme_and_subtext.development",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.97,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, candlelit bedroom scene"
+            }
+          ],
+          "module_id": "craft.narrative.theme_and_subtext",
+          "question_id": "craft.narrative.theme_and_subtext.counterpoint",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, shadow-flower spell"
+            }
+          ],
+          "module_id": "craft.narrative.theme_and_subtext",
+          "question_id": "craft.narrative.theme_and_subtext.integration",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.95,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, patio discussion"
+            }
+          ],
+          "module_id": "craft.narrative.theme_and_subtext",
+          "question_id": "craft.narrative.theme_and_subtext.no_moral",
+          "verdict": "YES",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.95,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, patio reunion"
+            }
+          ],
+          "module_id": "craft.narrative.theme_and_subtext",
+          "question_id": "craft.narrative.theme_and_subtext.open_questions",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.95,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, activation aftermath"
+            }
+          ],
+          "module_id": "core.emotional_and_intellectual_effect",
+          "question_id": "core.emotional_and_intellectual_effect.intended_effect",
+          "verdict": "YES",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.97,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, activation disclosure"
+            }
+          ],
+          "module_id": "core.emotional_and_intellectual_effect",
+          "question_id": "core.emotional_and_intellectual_effect.earned_emotion",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, patio discussion"
+            }
+          ],
+          "module_id": "core.emotional_and_intellectual_effect",
+          "question_id": "core.emotional_and_intellectual_effect.conceptual_interest",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, after shadow flowers"
+            }
+          ],
+          "module_id": "core.emotional_and_intellectual_effect",
+          "question_id": "core.emotional_and_intellectual_effect.modulation",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.85,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, waiting for the spell"
+            }
+          ],
+          "module_id": "core.emotional_and_intellectual_effect",
+          "question_id": "core.emotional_and_intellectual_effect.restraint",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, closing exchange"
+            }
+          ],
+          "module_id": "core.emotional_and_intellectual_effect",
+          "question_id": "core.emotional_and_intellectual_effect.aftermath",
+          "verdict": "YES",
+          "weight": 1.0
+        }
+      ],
+      "score": {
+        "lower": 8.0,
+        "observed": 8.0,
+        "upper": 8.0
+      },
+      "title": "Theme and effect",
+      "weights": {
+        "applicable": 18.5,
+        "failed": 0.0,
+        "passed": 18.5,
+        "unassessed": 0.0
+      }
+    },
+    {
+      "active": true,
+      "confidence": 0.91,
+      "coverage": 1.0,
+      "domain_id": "fresh",
+      "nominal_points": 5.0,
+      "questions": [
+        {
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, before activation disclosure"
+            }
+          ],
+          "module_id": "core.freshness_and_non_genericness",
+          "question_id": "core.freshness_and_non_genericness.no_cliche",
+          "verdict": "NO",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.91,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, anatomy demonstration"
+            }
+          ],
+          "module_id": "core.freshness_and_non_genericness",
+          "question_id": "core.freshness_and_non_genericness.no_stock_beats",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.94,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, activation buildup"
+            }
+          ],
+          "module_id": "core.freshness_and_non_genericness",
+          "question_id": "core.freshness_and_non_genericness.no_llm_phrasing",
+          "verdict": "YES",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.93,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, reaction to activation"
+            }
+          ],
+          "module_id": "core.freshness_and_non_genericness",
+          "question_id": "core.freshness_and_non_genericness.no_default_metaphors",
+          "verdict": "NO",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.94,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, patio discussion"
+            }
+          ],
+          "module_id": "core.freshness_and_non_genericness",
+          "question_id": "core.freshness_and_non_genericness.no_emotion_summary",
+          "verdict": "NO",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, fang demonstration"
+            }
+          ],
+          "module_id": "core.freshness_and_non_genericness",
+          "question_id": "core.freshness_and_non_genericness.unpredictable_specificity",
+          "verdict": "YES",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.95,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, anatomy lesson"
+            }
+          ],
+          "module_id": "core.freshness_and_non_genericness",
+          "question_id": "core.freshness_and_non_genericness.no_forced_novelty",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, opening lesson"
+            }
+          ],
+          "module_id": "core.freshness_and_non_genericness",
+          "question_id": "core.freshness_and_non_genericness.no_rare_word_chasing",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.88,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, opening bedroom conversation"
+            }
+          ],
+          "module_id": "core.economy_and_relevance",
+          "question_id": "core.economy_and_relevance.earns_place",
+          "verdict": "NO",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.92,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, pre-lesson exchange"
+            }
+          ],
+          "module_id": "core.economy_and_relevance",
+          "question_id": "core.economy_and_relevance.no_restatement",
+          "verdict": "NO",
+          "weight": 2.5
+        },
+        {
+          "confidence": 0.84,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, after the shadow-flower spell"
+            }
+          ],
+          "module_id": "core.economy_and_relevance",
+          "question_id": "core.economy_and_relevance.functional_repetition",
+          "verdict": "YES",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.94,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, candle scene"
+            }
+          ],
+          "module_id": "core.economy_and_relevance",
+          "question_id": "core.economy_and_relevance.detail_relevance",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.87,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, before Amelia's lesson"
+            }
+          ],
+          "module_id": "core.economy_and_relevance",
+          "question_id": "core.economy_and_relevance.digression",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.74,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, lesson setup"
+            }
+          ],
+          "module_id": "core.economy_and_relevance",
+          "question_id": "core.economy_and_relevance.length_fit",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.82,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, shadow-flower sequence"
+            }
+          ],
+          "module_id": "core.economy_and_relevance",
+          "question_id": "core.economy_and_relevance.no_flattening",
+          "verdict": "YES",
+          "weight": 1.0
+        }
+      ],
+      "score": {
+        "lower": 3.0435,
+        "observed": 3.0435,
+        "upper": 3.0435
+      },
+      "title": "Freshness and economy",
+      "weights": {
+        "applicable": 23.0,
+        "failed": 9.0,
+        "passed": 14.0,
+        "unassessed": 0.0
+      }
+    },
+    {
+      "active": true,
+      "confidence": 0.964,
+      "coverage": 1.0,
+      "domain_id": "mechanics",
+      "nominal_points": 4.0,
+      "questions": [
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, activation disclosure"
+            },
+            {
+              "reference": "unit-0004-d56cc8561b6b, activation disclosure"
+            }
+          ],
+          "module_id": "core.mechanics_and_presentation",
+          "question_id": "core.mechanics_and_presentation.grammar",
+          "verdict": "NO",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, pre-lesson exchange"
+            }
+          ],
+          "module_id": "core.mechanics_and_presentation",
+          "question_id": "core.mechanics_and_presentation.punctuation",
+          "verdict": "NO",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, fang description"
+            }
+          ],
+          "module_id": "core.mechanics_and_presentation",
+          "question_id": "core.mechanics_and_presentation.spelling",
+          "verdict": "NO",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.93,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, heading"
+            }
+          ],
+          "module_id": "core.mechanics_and_presentation",
+          "question_id": "core.mechanics_and_presentation.formatting",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.97,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, opening bedroom conversation"
+            }
+          ],
+          "module_id": "core.mechanics_and_presentation",
+          "question_id": "core.mechanics_and_presentation.dialogue_mechanics",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.95,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, chapter boundary"
+            }
+          ],
+          "module_id": "core.mechanics_and_presentation",
+          "question_id": "core.mechanics_and_presentation.typography",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, final line"
+            }
+          ],
+          "module_id": "core.mechanics_and_presentation",
+          "question_id": "core.mechanics_and_presentation.cleanliness",
+          "verdict": "YES",
+          "weight": 1.5
+        }
+      ],
+      "score": {
+        "lower": 2.4,
+        "observed": 2.4,
+        "upper": 2.4
+      },
+      "title": "Mechanics",
+      "weights": {
+        "applicable": 7.5,
+        "failed": 3.0,
+        "passed": 4.5,
+        "unassessed": 0.0
+      }
+    },
+    {
+      "active": true,
+      "confidence": 0.9225,
+      "coverage": 1.0,
+      "domain_id": "holistic",
+      "nominal_points": 8.0,
+      "questions": [
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, activation disclosure"
+            }
+          ],
+          "module_id": "core.holistic_artistic_success",
+          "question_id": "core.holistic_artistic_success.threshold_1_functional",
+          "verdict": "YES",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.91,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, candle scene"
+            }
+          ],
+          "module_id": "core.holistic_artistic_success",
+          "question_id": "core.holistic_artistic_success.threshold_2_effective",
+          "verdict": "YES",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.88,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, closing exchange"
+            }
+          ],
+          "module_id": "core.holistic_artistic_success",
+          "question_id": "core.holistic_artistic_success.threshold_3_keepworthy",
+          "verdict": "YES",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.91,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, anatomy lesson"
+            }
+          ],
+          "module_id": "core.holistic_artistic_success",
+          "question_id": "core.holistic_artistic_success.threshold_4_exceptional",
+          "verdict": "NO",
+          "weight": 2.0
+        }
+      ],
+      "score": {
+        "lower": 6.0,
+        "observed": 6.0,
+        "upper": 6.0
+      },
+      "title": "Holistic artistic success",
+      "weights": {
+        "applicable": 8.0,
+        "failed": 2.0,
+        "passed": 6.0,
+        "unassessed": 0.0
+      }
+    }
+  ],
+  "final_score": {
+    "lower": 83.246,
+    "observed": 86.2436,
+    "upper": 86.8146
+  },
+  "hard_gate_status": "VALID",
+  "hard_gates": [
+    {
+      "evidence": [
+        {
+          "reference": "supplied evaluation packet"
+        }
+      ],
+      "module_id": "scope.long_context",
+      "question_id": "scope.long_context.overflow",
+      "verdict": "YES"
+    }
+  ],
+  "inactive_points_reallocated": 0.0,
+  "issues": [],
+  "minimum_coverage": 0.8,
+  "penalties": [
+    {
+      "cap_points": 5.0,
+      "coverage": 1.0,
+      "deduction": {
+        "lower": 0.0,
+        "observed": 0.0,
+        "upper": 0.0
+      },
+      "module_id": "penalty.purple_prose",
+      "questions": [
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, reaction to activation"
+            }
+          ],
+          "question_id": "penalty.purple_prose.clarity",
+          "verdict": "YES",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, activation disclosure"
+            }
+          ],
+          "question_id": "penalty.purple_prose.proportion",
+          "verdict": "YES",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, shadow-flower sequence"
+            }
+          ],
+          "question_id": "penalty.purple_prose.specificity",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.95,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, shadow-flower sequence"
+            }
+          ],
+          "question_id": "penalty.purple_prose.tone",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, candle scene"
+            }
+          ],
+          "question_id": "penalty.purple_prose.metaphor",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, shadow-flower sequence"
+            }
+          ],
+          "question_id": "penalty.purple_prose.attention",
+          "verdict": "YES",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, anatomy lesson"
+            },
+            {
+              "reference": "unit-0004-d56cc8561b6b, shadow-flower sequence"
+            }
+          ],
+          "question_id": "penalty.purple_prose.fatigue",
+          "verdict": "YES",
+          "weight": 1.5
+        }
+      ],
+      "title": "Purple prose penalty",
+      "weights": {
+        "applicable": 12.0,
+        "failed": 0.0,
+        "passed": 12.0,
+        "unassessed": 0.0
+      }
+    },
+    {
+      "cap_points": 8.0,
+      "coverage": 1.0,
+      "deduction": {
+        "lower": 4.0,
+        "observed": 4.0,
+        "upper": 4.0
+      },
+      "module_id": "penalty.repetition",
+      "questions": [
+        {
+          "confidence": 0.77,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, opening bedroom conversation"
+            },
+            {
+              "reference": "unit-0004-d56cc8561b6b, muggles exchange"
+            }
+          ],
+          "question_id": "penalty.repetition.lexical",
+          "verdict": "NO",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.9,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, activation disclosure"
+            }
+          ],
+          "question_id": "penalty.repetition.syntax",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.91,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, pre-lesson exchange"
+            }
+          ],
+          "question_id": "penalty.repetition.semantic",
+          "verdict": "NO",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.97,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, opening bedroom conversation"
+            },
+            {
+              "reference": "unit-0004-d56cc8561b6b, activation disclosure"
+            }
+          ],
+          "question_id": "penalty.repetition.image",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.75,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, opening explanation"
+            },
+            {
+              "reference": "unit-0004-d56cc8561b6b, pre-lesson exchange"
+            }
+          ],
+          "question_id": "penalty.repetition.beat",
+          "verdict": "NO",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.83,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, opening bedroom conversation"
+            },
+            {
+              "reference": "unit-0004-d56cc8561b6b, pre-lesson exchange"
+            }
+          ],
+          "question_id": "penalty.repetition.dialogue",
+          "verdict": "NO",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.91,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, activation disclosure"
+            }
+          ],
+          "question_id": "penalty.repetition.explanation",
+          "verdict": "YES",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.9,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, opening"
+            },
+            {
+              "reference": "unit-0004-d56cc8561b6b, closing bedroom scene"
+            }
+          ],
+          "question_id": "penalty.repetition.long_range",
+          "verdict": "YES",
+          "weight": 2.0
+        }
+      ],
+      "title": "Repetition penalty",
+      "weights": {
+        "applicable": 14.0,
+        "failed": 7.0,
+        "passed": 7.0,
+        "unassessed": 0.0
+      }
+    },
+    {
+      "cap_points": 8.0,
+      "coverage": 1.0,
+      "deduction": {
+        "lower": 0.0,
+        "observed": 0.0,
+        "upper": 0.0
+      },
+      "module_id": "penalty.unflagged_incomplete",
+      "questions": [
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "reference": "result.json, limitations[0]"
+            }
+          ],
+          "question_id": "penalty.unflagged_incomplete.status",
+          "verdict": "YES",
+          "weight": 3.0
+        },
+        {
+          "confidence": 0.92,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, shadow-flower scene"
+            }
+          ],
+          "question_id": "penalty.unflagged_incomplete.unit",
+          "verdict": "YES",
+          "weight": 3.0
+        },
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "reference": "unit-0004-d56cc8561b6b, final paragraph"
+            }
+          ],
+          "question_id": "penalty.unflagged_incomplete.truncation",
+          "verdict": "YES",
+          "weight": 3.0
+        }
+      ],
+      "title": "Unflagged incomplete artifact penalty",
+      "weights": {
+        "applicable": 9.0,
+        "failed": 0.0,
+        "passed": 9.0,
+        "unassessed": 0.0
+      }
+    }
+  ],
+  "penalty_deduction": {
+    "lower": 4.0,
+    "observed": 4.0,
+    "upper": 4.0
+  },
+  "standard": {
+    "id": "HBQ-RS",
+    "version": "1.0.0"
+  },
+  "status": "SCORED",
+  "supplemental": [
+    {
+      "confidence": 0.93,
+      "evidence": [
+        {
+          "reference": "unit-0004-d56cc8561b6b, heading"
+        },
+        {
+          "reference": "result.json, unit-0004 summary"
+        }
+      ],
+      "module_id": "core.task_and_brief_fidelity",
+      "question_id": "core.task_and_brief_fidelity.operation",
+      "verdict": "YES"
+    },
+    {
+      "confidence": 0.96,
+      "evidence": [
+        {
+          "reference": "author brief, Grimoires"
+        }
+      ],
+      "module_id": "core.task_and_brief_fidelity",
+      "question_id": "core.task_and_brief_fidelity.sources",
+      "verdict": "NOT_APPLICABLE"
+    },
+    {
+      "confidence": 0.98,
+      "evidence": [
+        {
+          "reference": "author brief, Core Concept & Tone"
+        },
+        {
+          "reference": "unit-0004-d56cc8561b6b, closing bedroom scene"
+        }
+      ],
+      "module_id": "core.task_and_brief_fidelity",
+      "question_id": "core.task_and_brief_fidelity.inclusions",
+      "verdict": "NO"
+    },
+    {
+      "confidence": 0.91,
+      "evidence": [
+        {
+          "reference": "author brief, Magic System Mechanics"
+        }
+      ],
+      "module_id": "core.task_and_brief_fidelity",
+      "question_id": "core.task_and_brief_fidelity.exclusions",
+      "verdict": "NOT_APPLICABLE"
+    },
+    {
+      "confidence": 0.97,
+      "evidence": [
+        {
+          "reference": "result.json, limitations[2]"
+        }
+      ],
+      "module_id": "core.task_and_brief_fidelity",
+      "question_id": "core.task_and_brief_fidelity.pov",
+      "verdict": "NOT_APPLICABLE"
+    },
+    {
+      "confidence": 0.98,
+      "evidence": [
+        {
+          "reference": "author brief, Core Concept & Tone"
+        }
+      ],
+      "module_id": "core.task_and_brief_fidelity",
+      "question_id": "core.task_and_brief_fidelity.tense",
+      "verdict": "NOT_APPLICABLE"
+    },
+    {
+      "confidence": 0.95,
+      "evidence": [
+        {
+          "reference": "author brief, Meta/Technical Notes"
+        }
+      ],
+      "module_id": "core.task_and_brief_fidelity",
+      "question_id": "core.task_and_brief_fidelity.structure",
+      "verdict": "NOT_APPLICABLE"
+    },
+    {
+      "confidence": 0.98,
+      "evidence": [
+        {
+          "reference": "author brief, Core Concept & Tone"
+        }
+      ],
+      "module_id": "core.task_and_brief_fidelity",
+      "question_id": "core.task_and_brief_fidelity.format",
+      "verdict": "NOT_APPLICABLE"
+    },
+    {
+      "confidence": 0.99,
+      "evidence": [
+        {
+          "reference": "result.json, limitations[0]"
+        }
+      ],
+      "module_id": "core.task_and_brief_fidelity",
+      "question_id": "core.task_and_brief_fidelity.length_hard",
+      "verdict": "NOT_APPLICABLE"
+    },
+    {
+      "confidence": 0.99,
+      "evidence": [
+        {
+          "reference": "result.json, orientation.evaluated_scope"
+        }
+      ],
+      "module_id": "core.length_and_scope_fit",
+      "question_id": "core.length_and_scope_fit.explicit",
+      "verdict": "NOT_APPLICABLE"
+    },
+    {
+      "confidence": 0.99,
+      "evidence": [
+        {
+          "reference": "unit-0004-d56cc8561b6b, activation disclosure"
+        }
+      ],
+      "module_id": "form.prose.general_prose_fiction",
+      "question_id": "form.prose.general_prose_fiction.narrative_experience",
+      "verdict": "YES"
+    },
+    {
+      "confidence": 0.96,
+      "evidence": [
+        {
+          "reference": "unit-0004-d56cc8561b6b, activation disclosure"
+        }
+      ],
+      "module_id": "form.prose.general_prose_fiction",
+      "question_id": "form.prose.general_prose_fiction.character_action",
+      "verdict": "YES"
+    },
+    {
+      "confidence": 0.98,
+      "evidence": [
+        {
+          "reference": "unit-0004-d56cc8561b6b, closing bedroom scene"
+        }
+      ],
+      "module_id": "form.prose.general_prose_fiction",
+      "question_id": "form.prose.general_prose_fiction.movement",
+      "verdict": "YES"
+    },
+    {
+      "confidence": 0.91,
+      "evidence": [
+        {
+          "reference": "unit-0004-d56cc8561b6b, opening bedroom scene"
+        },
+        {
+          "reference": "unit-0004-d56cc8561b6b, activation disclosure"
+        }
+      ],
+      "module_id": "form.prose.general_prose_fiction",
+      "question_id": "form.prose.general_prose_fiction.mode_control",
+      "verdict": "YES"
+    },
+    {
+      "confidence": 0.97,
+      "evidence": [
+        {
+          "reference": "unit-0004-d56cc8561b6b, opening paragraph"
+        }
+      ],
+      "module_id": "form.prose.general_prose_fiction",
+      "question_id": "form.prose.general_prose_fiction.reader_orientation",
+      "verdict": "YES"
+    },
+    {
+      "confidence": 0.83,
+      "evidence": [
+        {
+          "reference": "unit-0004-d56cc8561b6b, garden transition"
+        },
+        {
+          "reference": "unit-0004-d56cc8561b6b, shadow-flower scene"
+        }
+      ],
+      "module_id": "form.prose.general_prose_fiction",
+      "question_id": "form.prose.general_prose_fiction.proportion",
+      "verdict": "YES"
+    },
+    {
+      "confidence": 0.94,
+      "evidence": [
+        {
+          "reference": "unit-0004-d56cc8561b6b, final exchange"
+        }
+      ],
+      "module_id": "form.prose.general_prose_fiction",
+      "question_id": "form.prose.general_prose_fiction.completion",
+      "verdict": "YES"
+    },
+    {
+      "confidence": 0.94,
+      "evidence": [
+        {
+          "reference": "unit-0004-d56cc8561b6b, opening"
+        },
+        {
+          "reference": "result.json, unit-0003 summary"
+        }
+      ],
+      "module_id": "scope.long_context",
+      "question_id": "scope.long_context.distant",
+      "verdict": "YES"
+    },
+    {
+      "confidence": 0.88,
+      "evidence": [
+        {
+          "reference": "unit-0004-d56cc8561b6b, patio conversation"
+        },
+        {
+          "reference": "result.json, orientation.cast"
+        }
+      ],
+      "module_id": "scope.long_context",
+      "question_id": "scope.long_context.distractors",
+      "verdict": "YES"
+    },
+    {
+      "confidence": 0.92,
+      "evidence": [
+        {
+          "reference": "unit-0004-d56cc8561b6b, opening conversation"
+        },
+        {
+          "reference": "unit-0004-d56cc8561b6b, patio conversation"
+        }
+      ],
+      "module_id": "scope.long_context",
+      "question_id": "scope.long_context.multi",
+      "verdict": "YES"
+    },
+    {
+      "confidence": 0.95,
+      "evidence": [
+        {
+          "reference": "unit-0004-d56cc8561b6b, opening conversation"
+        },
+        {
+          "reference": "result.json, Madison knowledge ledger, unit-0003"
+        }
+      ],
+      "module_id": "scope.long_context",
+      "question_id": "scope.long_context.updates",
+      "verdict": "YES"
+    },
+    {
+      "confidence": 0.93,
+      "evidence": [
+        {
+          "reference": "result.json, limitations[0]"
+        }
+      ],
+      "module_id": "scope.long_context",
+      "question_id": "scope.long_context.documents",
+      "verdict": "NOT_APPLICABLE"
+    },
+    {
+      "confidence": 0.9,
+      "evidence": [
+        {
+          "reference": "unit-0004-d56cc8561b6b, anatomy lesson"
+        }
+      ],
+      "module_id": "scope.long_context",
+      "question_id": "scope.long_context.uncertainty",
+      "verdict": "YES"
+    },
+    {
+      "confidence": 0.96,
+      "evidence": [
+        {
+          "reference": "unit-0004-d56cc8561b6b, patio conversation"
+        }
+      ],
+      "module_id": "scope.long_context",
+      "question_id": "scope.long_context.no_first",
+      "verdict": "YES"
+    },
+    {
+      "confidence": 0.93,
+      "evidence": [
+        {
+          "reference": "unit-0004-d56cc8561b6b, patio conversation"
+        },
+        {
+          "reference": "result.json, work_state.promises"
+        }
+      ],
+      "module_id": "scope.long_context",
+      "question_id": "scope.long_context.no_recent",
+      "verdict": "YES"
+    }
+  ],
+  "task_contract": null
+}

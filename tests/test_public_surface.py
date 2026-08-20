@@ -90,13 +90,19 @@ def test_strict_judge_response_schema_is_public() -> None:
 def test_published_long_form_evaluation_is_complete_and_sanitized() -> None:
     root = book_root() / "evaluation-results" / "gray-blood-ch1-6"
     manifest = json.loads((root / "manifest.json").read_text(encoding="utf-8"))
-    assert manifest["accepted_binary_verdicts"] == 778
+    assert manifest["accepted_binary_verdicts_published"] == 2582
     assert manifest["publication"] == {
         "private_prose_included": False,
         "evidence_quotes_included": False,
         "local_paths_included": False,
         "scores_and_verdict_states_complete": True,
+        "automated_longform_reports": 2,
+        "sampled_local_score_reports": 8,
+        "selected_question_diagnostic_reports": 12,
+        "whole_score_reports": 2,
     }
+    assert {draft["status"] for draft in manifest["whole"].values()} == {"SCORED"}
+    assert {draft["hard_gate_status"] for draft in manifest["whole"].values()} == {"VALID"}
 
     public_files = [path for path in root.rglob("*") if path.is_file()]
     public_text = "\n".join(path.read_text(encoding="utf-8") for path in public_files)
@@ -135,7 +141,30 @@ def test_published_long_form_evaluation_is_complete_and_sanitized() -> None:
         for line in path.read_text(encoding="utf-8").splitlines():
             validator.validate(json.loads(line))
             verdict_count += 1
-    assert verdict_count == 778
+    assert verdict_count == manifest["accepted_binary_verdicts_published"]
+
+    score_schema = json.loads(
+        (book_root() / "schema" / "hbq_score_report.schema.json").read_text(encoding="utf-8")
+    )
+    score_validator = Draft202012Validator(score_schema)
+    score_paths = list(root.rglob("*-score.json"))
+    assert len(score_paths) == 10
+    for path in score_paths:
+        score_validator.validate(json.loads(path.read_text(encoding="utf-8")))
+
+    diagnostic_schema = json.loads(
+        (book_root() / "schema" / "hbq_diagnostic_report.schema.json").read_text(encoding="utf-8")
+    )
+    diagnostic_validator = Draft202012Validator(diagnostic_schema)
+    diagnostics = list(root.rglob("*-diagnostic.json"))
+    assert len(diagnostics) == 12
+    for path in diagnostics:
+        diagnostic = json.loads(path.read_text(encoding="utf-8"))
+        diagnostic_validator.validate(diagnostic)
+        assert diagnostic["status"] == "DIAGNOSTIC_SUBSET"
+        assert diagnostic["selected_question_count"] == 28
+        assert "must not be averaged" in diagnostic["note"]
+    assert list(root.rglob("chapter-*-score.json")) == []
 
     published_hash_bindings = 0
     for path in root.rglob("*-provenance.json"):
@@ -145,65 +174,9 @@ def test_published_long_form_evaluation_is_complete_and_sanitized() -> None:
         verdict_path = path.with_name(path.name.replace("-provenance.json", "-verdicts.jsonl"))
         assert provenance["published_verdicts_sha256"] == hashlib.sha256(verdict_path.read_bytes()).hexdigest()
         for batch in provenance["batches"]:
-            assert "private_unsanitized_batch_verdicts_sha256" in batch
-            assert "verdicts_sha256" not in batch
+            assert {"prompt_sha256", "response_sha256", "checkpoint_sha256"} <= set(batch)
         published_hash_bindings += 1
     assert published_hash_bindings == 14
-
-
-def test_published_full_original_extension_is_complete_and_sanitized() -> None:
-    root = book_root() / "evaluation-results" / "gray-blood-original-ch1-7"
-    manifest = json.loads((root / "manifest.json").read_text(encoding="utf-8"))
-    assert manifest["accepted_binary_verdicts"] == 249
-    assert manifest["whole"]["verdict_count"] == 221
-    assert manifest["chapter_7"]["verdict_count"] == 28
-    assert manifest["publication"] == {
-        "private_prose_included": False,
-        "evidence_quotes_included": False,
-        "local_paths_included": False,
-        "scores_and_verdict_states_complete": True,
-    }
-
-    public_files = [path for path in root.rglob("*") if path.is_file()]
-    public_text = "\n".join(path.read_text(encoding="utf-8") for path in public_files)
-    assert re.search(r"(?i)\b[a-z]:\\", public_text) is None
-    assert re.search(r"(?:/home/|/Users/)", public_text) is None
-    for marker in ('Gray Blood 11-25-23.txt', 'Gray_Blood_NOTES.txt', '"quote"', '"run_id"', '"session_id"'):
-        assert marker not in public_text
-
-    audit = json.loads((root / "privacy-audit.json").read_text(encoding="utf-8"))
-    assert not any(audit["forbidden_pattern_hits"].values())
-    assert not any(count for row in audit["exact_source_prose_ngram_hits"].values() for count in row.values())
-    audited_files = [path for path in public_files if path.name != "privacy-audit.json"]
-    digest = hashlib.sha256()
-    for path in sorted(audited_files, key=lambda item: item.relative_to(root).as_posix()):
-        digest.update(path.relative_to(root).as_posix().encode("utf-8"))
-        digest.update(b"\0")
-        digest.update(path.read_bytes())
-        digest.update(b"\0")
-    assert len(audited_files) == audit["audited_file_count"]
-    assert sum(path.stat().st_size for path in audited_files) == audit["audited_total_bytes"]
-    assert digest.hexdigest() == audit["audited_tree_sha256"]
-
-    verdict_schema = json.loads((book_root() / "schema" / "hbq_verdict.schema.json").read_text(encoding="utf-8"))
-    validator = Draft202012Validator(verdict_schema)
-    verdict_count = 0
-    for path in root.rglob("*-verdicts.jsonl"):
-        for line in path.read_text(encoding="utf-8").splitlines():
-            validator.validate(json.loads(line))
-            verdict_count += 1
-    assert verdict_count == 249
-
-    provenance_count = 0
-    for path in root.rglob("*-provenance.json"):
-        provenance = json.loads(path.read_text(encoding="utf-8"))
-        verdict_path = path.with_name(path.name.replace("-provenance.json", "-verdicts.jsonl"))
-        assert provenance["published_verdicts_sha256"] == hashlib.sha256(verdict_path.read_bytes()).hexdigest()
-        for batch in provenance["batches"]:
-            assert "private_unsanitized_batch_verdicts_sha256" in batch
-            assert "verdicts_sha256" not in batch
-        provenance_count += 1
-    assert provenance_count == 2
 
 
 def test_built_distributions_include_the_intended_public_surface(tmp_path: Path) -> None:
@@ -259,4 +232,4 @@ def test_built_distributions_include_the_intended_public_surface(tmp_path: Path)
     with tarfile.open(sdist, "r:gz") as archive:
         sdist_names = set(archive.getnames())
     assert any("/evaluation-results/gray-blood-ch1-6/manifest.json" in name for name in sdist_names)
-    assert any("/evaluation-results/gray-blood-original-ch1-7/manifest.json" in name for name in sdist_names)
+    assert not any("/evaluation-results/gray-blood-original-ch1-7/" in name for name in sdist_names)

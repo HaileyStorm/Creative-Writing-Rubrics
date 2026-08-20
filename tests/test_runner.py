@@ -71,6 +71,7 @@ class _RedirectHandler(BaseHTTPRequestHandler):
     def do_POST(self) -> None:  # noqa: N802 - standard-library handler API
         self.send_response(307)
         self.send_header("Location", "https://example.com/v1/chat/completions")
+        self.send_header("Content-Length", "0")
         self.end_headers()
 
     def log_message(self, format: str, *args: object) -> None:
@@ -110,7 +111,32 @@ def _run(tmp_path: Path, **overrides: object) -> dict[str, object]:
     return run_judge(**arguments)
 
 
-def test_openai_runner_checkpoints_scores_and_resumes(tmp_path: Path, fake_openai_endpoint) -> None:
+def _write_task_contract(path: Path, *, artifact_id: str) -> None:
+    path.write_text(
+        json.dumps(
+            {
+                "contract_version": 1,
+                "contract_id": "test-contract",
+                "artifact_id": artifact_id,
+                "context": {
+                    "artifact_kind": "scene",
+                    "declared_scope": "single scene",
+                    "completion_status": "complete",
+                    "background": [],
+                    "constraints": [],
+                    "audience": [],
+                },
+                "preferences": [],
+                "priorities": [],
+                "weighted_goals": [],
+                "binding_requirements": [],
+            }
+        ),
+        encoding="utf-8",
+    )
+
+
+def test_openai_runner_checkpoints_diagnostic_subset_and_resumes(tmp_path: Path, fake_openai_endpoint) -> None:
     base_url, handler = fake_openai_endpoint
     summary = _run(tmp_path, base_url=base_url)
 
@@ -119,7 +145,13 @@ def test_openai_runner_checkpoints_scores_and_resumes(tmp_path: Path, fake_opena
     verdict = json.loads((tmp_path / "run" / "verdicts.jsonl").read_text(encoding="utf-8"))
     assert verdict["question_id"] == QUESTION_ID
     assert verdict["bundle_id"] == "prose.scene"
-    assert (tmp_path / "run" / "score.json").is_file()
+    assert summary["status"] == "DIAGNOSTIC_SUBSET"
+    assert not (tmp_path / "run" / "score.json").exists()
+    diagnostic = json.loads((tmp_path / "run" / "diagnostic.json").read_text(encoding="utf-8"))
+    assert diagnostic["status"] == "DIAGNOSTIC_SUBSET"
+    assert diagnostic["selected_question_count"] == 1
+    assert diagnostic["available_question_count"] > 1
+    assert "must not be averaged" in diagnostic["note"]
     manifest = json.loads((tmp_path / "run" / "run.json").read_text(encoding="utf-8"))
     assert "A short test scene." not in json.dumps(manifest)
     assert manifest["configuration"]["artifact"]["sha256"]
@@ -135,6 +167,45 @@ def test_openai_runner_checkpoints_scores_and_resumes(tmp_path: Path, fake_opena
     (tmp_path / "run" / "verdicts.jsonl").write_text(json.dumps(verdict) + "\n", encoding="utf-8")
     with pytest.raises(HBQError, match="does not match the ordered response checkpoints"):
         _run(tmp_path, base_url=base_url, resume=True)
+
+
+@pytest.mark.parametrize("mutation", ["deleted", "altered"])
+def test_resume_requires_immutable_prompt_snapshot(
+    tmp_path: Path,
+    fake_openai_endpoint,
+    mutation: str,
+) -> None:
+    base_url, handler = fake_openai_endpoint
+    _run(tmp_path, base_url=base_url)
+    prompt_path = tmp_path / "run" / "responses" / "batch-0001.prompt.txt.gz"
+    if mutation == "deleted":
+        prompt_path.unlink()
+        expected = "is missing for completed response checkpoint"
+    else:
+        prompt_path.write_bytes(gzip.compress(b"altered prompt bytes", mtime=0))
+        expected = "hash does not match"
+
+    with pytest.raises(HBQError, match=expected):
+        _run(tmp_path, base_url=base_url, resume=True)
+    assert handler.calls == 1
+
+
+def test_task_contract_artifact_id_must_match_judged_artifact(tmp_path: Path) -> None:
+    matching = tmp_path / "matching-contract.json"
+    _write_task_contract(matching, artifact_id="artifact")
+    summary = _run(tmp_path, dry_run=True, task_contract_path=matching)
+    assert summary["status"] == "DRY_RUN"
+
+    mismatched = tmp_path / "mismatched-contract.json"
+    _write_task_contract(mismatched, artifact_id="another-artifact")
+    with pytest.raises(HBQError, match="does not match judged artifact_id"):
+        _run(
+            tmp_path,
+            dry_run=True,
+            task_contract_path=mismatched,
+            output_dir=tmp_path / "mismatched-run",
+        )
+    assert not (tmp_path / "mismatched-run").exists()
 
 
 def test_partial_multi_batch_run_resumes_without_overwrite(tmp_path: Path, fake_openai_endpoint) -> None:
@@ -279,7 +350,18 @@ def test_codex_backend_uses_schema_and_read_only_ephemeral_exec(tmp_path: Path, 
         assert "--ignore-user-config" in argv
         assert "--ignore-rules" in argv
         assert "--strict-config" in argv
-        for feature in ("shell_tool", "multi_agent", "apps", "browser_use", "computer_use"):
+        for feature in (
+            "shell_tool",
+            "unified_exec",
+            "code_mode_host",
+            "hooks",
+            "memories",
+            "plugins",
+            "multi_agent",
+            "apps",
+            "browser_use",
+            "computer_use",
+        ):
             assert feature in argv
         assert argv[argv.index("--sandbox") + 1] == "read-only"
         assert argv[argv.index("--model") + 1] == "gpt-5.6-sol"
