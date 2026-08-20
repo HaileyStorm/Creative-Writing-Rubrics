@@ -7,7 +7,7 @@ from typing import Any
 import pytest
 import yaml
 
-from hbqrs import book_root, compile_bundle, score_bundle, validate_registry, walk_tree
+from hbqrs import HBQError, book_root, compile_bundle, score_bundle, validate_registry, walk_tree
 
 ROOT = book_root()
 
@@ -187,6 +187,22 @@ def test_task_goals_are_weighted_without_becoming_gates(modules, bundle_by_id) -
     assert requirement_id in {item["question_id"] for item in report["hard_gates"]}
 
 
+@pytest.mark.parametrize(
+    ("bundle_id", "domain_id"),
+    [
+        ("default.first_pass_screening", "hard"),
+        ("default.full_manuscript_critique", "scope"),
+    ],
+)
+def test_general_bundles_place_task_goals_in_declared_domain(
+    modules, bundle_by_id, bundle_id: str, domain_id: str
+) -> None:
+    compiled = compile_bundle(modules, bundle_by_id[bundle_id], task_contract=_task_contract())
+    goal_id = compiled["task_contract"]["weighted_goal_ids"][0]
+    record = next(item for item in compiled["domain_questions"] if item["question"]["id"] == goal_id)
+    assert record["domain_id"] == domain_id
+
+
 def test_only_explicit_binding_requirement_can_invalidate_task_contract(modules, bundle_by_id) -> None:
     contract = _task_contract()
     compiled, verdicts = _full_verdicts(
@@ -291,6 +307,58 @@ def test_missing_verdict_is_unassessed_not_failed(modules, bundle_by_id) -> None
     report = score_bundle(modules, bundle_by_id["poetry.general"], verdicts)
     assert report["coverage"] < 1.0
     assert any(missing_id in issue and "Missing verdict" in issue for issue in report["issues"])
+
+
+def test_no_assessable_point_bearing_questions_is_not_labeled_scored(modules, bundle_by_id) -> None:
+    compiled, verdicts = _full_verdicts(modules, bundle_by_id["prose.scene"], "CANNOT_ASSESS")
+    report = score_bundle(modules, bundle_by_id["prose.scene"], verdicts)
+    assert compiled["domain_questions"]
+    assert report["base_score"]["observed"] is None
+    assert report["final_score"]["observed"] is None
+    assert report["status"] == "PROVISIONAL"
+
+
+def test_penalty_modules_reject_non_scored_leaves() -> None:
+    modules = [
+        {
+            "module_id": "penalty.bad",
+            "tree": [
+                {
+                    "id": "penalty.bad.gate",
+                    "type": "question",
+                    "question_type": "hard_gate",
+                    "weight": 1,
+                    "text": "Is this invalid as a penalty leaf?",
+                }
+            ],
+        },
+        {
+            "module_id": "domain.good",
+            "tree": [
+                {
+                    "id": "domain.good.score",
+                    "type": "question",
+                    "question_type": "scored",
+                    "weight": 1,
+                    "text": "Does this score?",
+                }
+            ],
+        },
+    ]
+    bundle = {
+        "bundle_id": "bad.penalty",
+        "domains": [
+            {
+                "domain_id": "quality",
+                "points": 100,
+                "components": [{"module_id": "domain.good"}],
+            }
+        ],
+        "module_ids": ["domain.good", "penalty.bad"],
+        "penalty_modules": [{"module_id": "penalty.bad", "cap_points": 5}],
+    }
+    with pytest.raises(HBQError, match="contains non-scored question"):
+        compile_bundle(modules, bundle)
 
 
 def test_stable_role_ids_survive_display_rewrites(module_by_id) -> None:

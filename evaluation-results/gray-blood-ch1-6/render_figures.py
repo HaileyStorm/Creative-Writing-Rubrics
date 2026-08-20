@@ -7,6 +7,8 @@ from html import escape
 import json
 from pathlib import Path
 
+from hbqrs.longform import render_chapter_comparison_svg
+
 
 ROOT = Path(__file__).resolve().parent
 FIGURES = ROOT / "figures"
@@ -142,10 +144,24 @@ def chapter_transitions() -> str:
     return "\n".join(parts) + "\n"
 
 
+def chapter_score_comparison() -> str:
+    series = []
+    for name, directory in (("Original", "original"), ("Rewrite", "rewrite")):
+        report = _json(ROOT / "automated" / directory / "report.json")
+        series.append({"name": name, "results": report["local_results"]})
+    return render_chapter_comparison_svg(
+        series,
+        title="Complete chapter-local score comparison",
+    )
+
+
 def main() -> None:
     FIGURES.mkdir(exist_ok=True)
     (FIGURES / "domain-comparison.svg").write_text(domain_comparison(), encoding="utf-8")
     (FIGURES / "chapter-verdict-transitions.svg").write_text(chapter_transitions(), encoding="utf-8")
+    (FIGURES / "chapter-score-comparison.svg").write_text(
+        chapter_score_comparison(), encoding="utf-8"
+    )
 
 
 if __name__ == "__main__":

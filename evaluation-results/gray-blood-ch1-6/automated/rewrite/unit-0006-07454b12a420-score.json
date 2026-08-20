@@ -1,32 +1,29 @@
 {
   "$schema": "https://raw.githubusercontent.com/HaileyStorm/Creative-Writing-Rubrics/main/schema/hbq_score_report.schema.json",
   "active_nominal_points": 100.0,
-  "artifact_id": "gray-blood-rewrite-ch01-06-unit-0006-07454b12a420",
+  "artifact_id": "gray-blood-rewrite-ch01-06-chapter-unit-0006-07454b12a420",
   "base_score": {
-    "lower": 88.4864,
-    "observed": 88.8982,
-    "upper": 88.8982
+    "lower": 91.5328,
+    "observed": 91.5328,
+    "upper": 91.5328
   },
-  "bundle_id": "prose.novel",
+  "bundle_id": "prose.chapter",
   "bundle_version": 1,
-  "confidence": 0.9301,
-  "coverage": 0.9959,
+  "confidence": 0.9479,
+  "coverage": 1.0,
   "domains": [
     {
       "active": true,
-      "confidence": 0.9238,
-      "coverage": 0.9412,
+      "confidence": 0.9211,
+      "coverage": 1.0,
       "domain_id": "task",
       "nominal_points": 7.0,
       "questions": [
         {
-          "confidence": 0.92,
+          "confidence": 0.89,
           "evidence": [
             {
-              "reference": "author brief, I and VI"
-            },
-            {
-              "reference": "unit-0006-07454b12a420.txt"
+              "reference": "unit-0006-07454b12a420"
             }
           ],
           "module_id": "core.task_and_brief_fidelity",
@@ -35,13 +32,10 @@
           "weight": 2.0
         },
         {
-          "confidence": 0.98,
+          "confidence": 0.99,
           "evidence": [
             {
-              "reference": "result.json, limitations"
-            },
-            {
-              "reference": "unit-0006-07454b12a420.txt"
+              "reference": "WIP_CHAPTER_CONTEXT.json"
             }
           ],
           "module_id": "core.task_and_brief_fidelity",
@@ -50,10 +44,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 1.0,
+          "confidence": 0.99,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420.txt, opening"
+              "reference": "unit-0006-07454b12a420 opening"
             }
           ],
           "module_id": "core.task_and_brief_fidelity",
@@ -62,13 +56,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.91,
+          "confidence": 0.9,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420.txt"
-            },
-            {
-              "reference": "result.json, unit-0006 summary"
+              "reference": "unit-0006-07454b12a420"
             }
           ],
           "module_id": "core.length_and_scope_fit",
@@ -77,13 +68,10 @@
           "weight": 2.0
         },
         {
-          "confidence": 0.88,
+          "confidence": 0.91,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420.txt"
-            },
-            {
-              "reference": "result.json, limitations"
+              "reference": "result.json, unit-0006 summary"
             }
           ],
           "module_id": "core.length_and_scope_fit",
@@ -92,13 +80,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.95,
+          "confidence": 0.9,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420.txt"
-            },
-            {
-              "reference": "unit-0006-07454b12a420.txt"
+              "reference": "unit-0006-07454b12a420 ending sequence"
             }
           ],
           "module_id": "core.length_and_scope_fit",
@@ -107,13 +92,10 @@
           "weight": 2.0
         },
         {
-          "confidence": 0.78,
+          "confidence": 0.86,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420.txt"
-            },
-            {
-              "reference": "unit-0006-07454b12a420.txt"
+              "reference": "unit-0006-07454b12a420 truth-or-dare sequence"
             }
           ],
           "module_id": "core.length_and_scope_fit",
@@ -125,10 +107,7 @@
           "confidence": 0.97,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420.txt, ending"
-            },
-            {
-              "reference": "unit-0006-07454b12a420.txt, ending"
+              "reference": "unit-0006-07454b12a420 closing scene"
             }
           ],
           "module_id": "core.length_and_scope_fit",
@@ -137,13 +116,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.79,
+          "confidence": 0.84,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420.txt"
-            },
-            {
-              "reference": "unit-0006-07454b12a420.txt"
+              "reference": "unit-0006-07454b12a420"
             }
           ],
           "module_id": "core.length_and_scope_fit",
@@ -152,13 +128,10 @@
           "weight": 2.0
         },
         {
-          "confidence": 0.96,
+          "confidence": 0.88,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420.txt"
-            },
-            {
-              "reference": "unit-0006-07454b12a420.txt"
+              "reference": "unit-0006-07454b12a420 feeding scene"
             }
           ],
           "module_id": "core.length_and_scope_fit",
@@ -167,13 +140,10 @@
           "weight": 2.0
         },
         {
-          "confidence": 0.94,
+          "confidence": 0.93,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420.txt"
-            },
-            {
-              "reference": "unit-0006-07454b12a420.txt"
+              "reference": "unit-0006-07454b12a420"
             }
           ],
           "module_id": "core.audience_and_purpose_fit",
@@ -182,13 +152,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.75,
+          "confidence": 0.82,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420.txt"
-            },
-            {
-              "reference": "unit-0006-07454b12a420.txt"
+              "reference": "unit-0006-07454b12a420 illusion scene"
             }
           ],
           "module_id": "core.audience_and_purpose_fit",
@@ -197,13 +164,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.92,
+          "confidence": 0.91,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420.txt"
-            },
-            {
-              "reference": "unit-0006-07454b12a420.txt"
+              "reference": "unit-0006-07454b12a420"
             }
           ],
           "module_id": "core.audience_and_purpose_fit",
@@ -212,13 +176,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.91,
+          "confidence": 0.93,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420.txt"
-            },
-            {
-              "reference": "unit-0006-07454b12a420.txt"
+              "reference": "unit-0006-07454b12a420 feeding scene"
             }
           ],
           "module_id": "core.audience_and_purpose_fit",
@@ -230,10 +191,7 @@
           "confidence": 0.94,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420.txt"
-            },
-            {
-              "reference": "unit-0006-07454b12a420.txt"
+              "reference": "unit-0006-07454b12a420"
             }
           ],
           "module_id": "core.audience_and_purpose_fit",
@@ -242,13 +200,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.92,
+          "confidence": 0.89,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420.txt"
-            },
-            {
-              "reference": "unit-0006-07454b12a420.txt"
+              "reference": "unit-0006-07454b12a420"
             }
           ],
           "module_id": "core.audience_and_purpose_fit",
@@ -257,13 +212,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.96,
+          "confidence": 0.95,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420.txt"
-            },
-            {
-              "reference": "unit-0006-07454b12a420.txt"
+              "reference": "unit-0006-07454b12a420 opening"
             }
           ],
           "module_id": "core.audience_and_purpose_fit",
@@ -272,13 +224,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.87,
+          "confidence": 0.91,
           "evidence": [
             {
-              "reference": "result.json, limitations"
-            },
-            {
-              "reference": "result.json, unit-0006 summary"
+              "reference": "WIP_CHAPTER_CONTEXT.json"
             }
           ],
           "module_id": "core.audience_and_purpose_fit",
@@ -287,47 +236,38 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.94,
+          "confidence": 0.99,
           "evidence": [
             {
-              "reference": "result.json, work_state.central_arcs"
-            },
-            {
-              "reference": "result.json, work_state.central_arcs"
+              "reference": "unit-0006-07454b12a420 feeding scene"
             }
           ],
-          "module_id": "form.prose.novel",
-          "question_id": "form.prose.novel.macro_structure",
+          "module_id": "form.prose.general_prose_fiction",
+          "question_id": "form.prose.general_prose_fiction.narrative_experience",
           "verdict": "YES",
-          "weight": 3.0
+          "weight": 2.25
         },
         {
           "confidence": 0.97,
           "evidence": [
             {
-              "reference": "result.json, distant_links"
-            },
-            {
-              "reference": "result.json, distant_links"
+              "reference": "unit-0006-07454b12a420 opening scene"
             }
           ],
-          "module_id": "form.prose.novel",
-          "question_id": "form.prose.novel.long_causality",
+          "module_id": "form.prose.general_prose_fiction",
+          "question_id": "form.prose.general_prose_fiction.character_action",
           "verdict": "YES",
-          "weight": 3.0
+          "weight": 2.25
         },
         {
-          "confidence": 0.88,
+          "confidence": 0.99,
           "evidence": [
             {
-              "reference": "result.json, work_state"
-            },
-            {
-              "reference": "result.json, work_state.subplots"
+              "reference": "unit-0006-07454b12a420 closing scene"
             }
           ],
-          "module_id": "form.prose.novel",
-          "question_id": "form.prose.novel.multiple_arcs",
+          "module_id": "form.prose.general_prose_fiction",
+          "question_id": "form.prose.general_prose_fiction.movement",
           "verdict": "YES",
           "weight": 2.25
         },
@@ -335,109 +275,67 @@
           "confidence": 0.93,
           "evidence": [
             {
-              "reference": "result.json, relationship ledger, unit-0006"
-            },
-            {
-              "reference": "unit-0006-07454b12a420.txt"
+              "reference": "unit-0006-07454b12a420 transition"
             }
           ],
-          "module_id": "form.prose.novel",
-          "question_id": "form.prose.novel.pacing_variation",
+          "module_id": "form.prose.general_prose_fiction",
+          "question_id": "form.prose.general_prose_fiction.mode_control",
           "verdict": "YES",
           "weight": 2.25
         },
         {
-          "confidence": 0.98,
+          "confidence": 0.91,
           "evidence": [
             {
-              "reference": "result.json, Madison state ledger, unit-0006"
-            },
-            {
-              "reference": "result.json, Amelia state ledger, unit-0006"
+              "reference": "unit-0006-07454b12a420 opening"
             }
           ],
-          "module_id": "form.prose.novel",
-          "question_id": "form.prose.novel.development",
+          "module_id": "form.prose.general_prose_fiction",
+          "question_id": "form.prose.general_prose_fiction.reader_orientation",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.91,
+          "evidence": [
+            {
+              "reference": "unit-0006-07454b12a420 blood-battery discussion"
+            }
+          ],
+          "module_id": "form.prose.general_prose_fiction",
+          "question_id": "form.prose.general_prose_fiction.proportion",
           "verdict": "YES",
           "weight": 2.25
-        },
-        {
-          "confidence": 0.96,
-          "evidence": [
-            {
-              "reference": "result.json, work_state.motifs"
-            },
-            {
-              "reference": "result.json, work_state.motifs"
-            }
-          ],
-          "module_id": "form.prose.novel",
-          "question_id": "form.prose.novel.recurrence",
-          "verdict": "YES",
-          "weight": 2.25
-        },
-        {
-          "confidence": 0.95,
-          "evidence": [
-            {
-              "reference": "result.json, distant_links"
-            },
-            {
-              "reference": "result.json, distant_links"
-            }
-          ],
-          "module_id": "form.prose.novel",
-          "question_id": "form.prose.novel.payoff",
-          "verdict": "YES",
-          "weight": 3.0
-        },
-        {
-          "confidence": 0.96,
-          "evidence": [
-            {
-              "reference": "result.json, FAWN blood jars ledger"
-            },
-            {
-              "reference": "unit-0006-07454b12a420.txt"
-            }
-          ],
-          "module_id": "form.prose.novel",
-          "question_id": "form.prose.novel.middle",
-          "verdict": "YES",
-          "weight": 3.0
         },
         {
           "confidence": 0.99,
           "evidence": [
             {
-              "reference": "result.json, limitations"
-            },
-            {
-              "reference": "result.json, work_state.ending_state"
+              "reference": "WIP_CHAPTER_CONTEXT.json"
             }
           ],
-          "module_id": "form.prose.novel",
-          "question_id": "form.prose.novel.ending",
-          "verdict": "CANNOT_ASSESS",
-          "weight": 3.0
+          "module_id": "form.prose.general_prose_fiction",
+          "question_id": "form.prose.general_prose_fiction.completion",
+          "verdict": "NOT_APPLICABLE",
+          "weight": 2.25
         }
       ],
       "score": {
-        "lower": 6.5882,
+        "lower": 7.0,
         "observed": 7.0,
         "upper": 7.0
       },
       "title": "Task and scope",
       "weights": {
-        "applicable": 51.0,
+        "applicable": 39.75,
         "failed": 0.0,
-        "passed": 48.0,
-        "unassessed": 3.0
+        "passed": 39.75,
+        "unassessed": 0.0
       }
     },
     {
       "active": true,
-      "confidence": 0.9621,
+      "confidence": 0.9645,
       "coverage": 1.0,
       "domain_id": "character",
       "nominal_points": 16.0,
@@ -446,10 +344,7 @@
           "confidence": 0.96,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420.txt"
-            },
-            {
-              "reference": "unit-0006-07454b12a420.txt"
+              "reference": "unit-0006-07454b12a420 truth-or-dare sequence"
             }
           ],
           "module_id": "craft.narrative.characterization",
@@ -458,13 +353,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.98,
+          "confidence": 0.99,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420.txt"
-            },
-            {
-              "reference": "unit-0006-07454b12a420.txt"
+              "reference": "unit-0006-07454b12a420 feeding scene"
             }
           ],
           "module_id": "craft.narrative.characterization",
@@ -473,13 +365,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.97,
+          "confidence": 0.96,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420.txt"
-            },
-            {
-              "reference": "unit-0006-07454b12a420.txt"
+              "reference": "unit-0006-07454b12a420 feeding scene"
             }
           ],
           "module_id": "craft.narrative.characterization",
@@ -488,13 +377,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.96,
+          "confidence": 0.98,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420.txt"
-            },
-            {
-              "reference": "unit-0006-07454b12a420.txt"
+              "reference": "unit-0006-07454b12a420 turning discussion"
             }
           ],
           "module_id": "craft.narrative.characterization",
@@ -503,10 +389,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.99,
+          "confidence": 0.98,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420 game opening"
             }
           ],
           "module_id": "craft.narrative.characterization",
@@ -515,8 +401,11 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.96,
+          "confidence": 0.9,
           "evidence": [
+            {
+              "reference": "unit-0006-07454b12a420"
+            },
             {
               "reference": "unit-0006-07454b12a420"
             }
@@ -530,7 +419,7 @@
           "confidence": 0.98,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, Mackenzie feeding scene"
             }
           ],
           "module_id": "craft.narrative.characterization",
@@ -539,10 +428,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.94,
+          "confidence": 0.97,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, blood-battery discussion"
             }
           ],
           "module_id": "craft.narrative.characterization",
@@ -554,7 +443,7 @@
           "confidence": 0.91,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, Mackenzie feeding scene"
             }
           ],
           "module_id": "craft.narrative.characterization",
@@ -566,7 +455,7 @@
           "confidence": 0.97,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "result.json, Madison state ledger, unit-0006 change"
             }
           ],
           "module_id": "craft.narrative.character_arc",
@@ -578,7 +467,7 @@
           "confidence": 0.99,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, Mackenzie feeding scene"
             }
           ],
           "module_id": "craft.narrative.character_arc",
@@ -590,7 +479,7 @@
           "confidence": 0.98,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, turning revelation"
             }
           ],
           "module_id": "craft.narrative.character_arc",
@@ -599,10 +488,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.97,
+          "confidence": 0.98,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, closing stairwell conversation"
             }
           ],
           "module_id": "craft.narrative.character_arc",
@@ -611,10 +500,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.98,
+          "confidence": 0.99,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, closing stairwell conversation"
             }
           ],
           "module_id": "craft.narrative.character_arc",
@@ -623,10 +512,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.87,
+          "confidence": 0.91,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, closing stairwell conversation"
             }
           ],
           "module_id": "craft.narrative.character_arc",
@@ -638,7 +527,7 @@
           "confidence": 0.99,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, closing stairwell conversation"
             }
           ],
           "module_id": "craft.narrative.character_arc",
@@ -647,8 +536,12 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.99,
-          "evidence": [],
+          "confidence": 1.0,
+          "evidence": [
+            {
+              "reference": "WIP_CHAPTER_CONTEXT.json"
+            }
+          ],
           "module_id": "craft.narrative.character_arc",
           "question_id": "craft.narrative.character_arc.end_state",
           "verdict": "NOT_APPLICABLE",
@@ -670,16 +563,16 @@
     },
     {
       "active": true,
-      "confidence": 0.9456,
+      "confidence": 0.9696,
       "coverage": 1.0,
       "domain_id": "plot",
       "nominal_points": 20.0,
       "questions": [
         {
-          "confidence": 0.94,
+          "confidence": 0.97,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, opening FAWN encounter"
             }
           ],
           "module_id": "craft.narrative.plot_and_causality",
@@ -691,7 +584,7 @@
           "confidence": 0.96,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, before the drinking game"
             }
           ],
           "module_id": "craft.narrative.plot_and_causality",
@@ -703,7 +596,7 @@
           "confidence": 0.99,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, start of truth-or-dare game"
             }
           ],
           "module_id": "craft.narrative.plot_and_causality",
@@ -712,10 +605,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.97,
+          "confidence": 0.98,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, departure from FAWN"
             }
           ],
           "module_id": "craft.narrative.plot_and_causality",
@@ -727,7 +620,7 @@
           "confidence": 0.98,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, turning question"
             }
           ],
           "module_id": "craft.narrative.plot_and_causality",
@@ -736,10 +629,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.98,
+          "confidence": 0.97,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, closing stairwell conversation"
             }
           ],
           "module_id": "craft.narrative.plot_and_causality",
@@ -751,7 +644,7 @@
           "confidence": 0.93,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, Mackenzie’s question to Amelia"
             }
           ],
           "module_id": "craft.narrative.plot_and_causality",
@@ -760,22 +653,22 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.7,
+          "confidence": 0.88,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, truth-or-dare setup"
             }
           ],
           "module_id": "craft.narrative.plot_and_causality",
           "question_id": "craft.narrative.plot_and_causality.no_convenience",
-          "verdict": "NO",
+          "verdict": "YES",
           "weight": 2.0
         },
         {
           "confidence": 0.97,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "result.json, distant_links, setup unit-0005 to payoff unit-0006"
             }
           ],
           "module_id": "craft.narrative.foreshadowing_setup_and_payoff",
@@ -787,7 +680,7 @@
           "confidence": 0.91,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, Amelia reacting to blood jars"
             }
           ],
           "module_id": "craft.narrative.foreshadowing_setup_and_payoff",
@@ -796,10 +689,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.99,
+          "confidence": 0.98,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, closing stairwell conversation"
             }
           ],
           "module_id": "craft.narrative.foreshadowing_setup_and_payoff",
@@ -808,10 +701,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.89,
+          "confidence": 0.94,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, closing stairwell conversation"
             }
           ],
           "module_id": "craft.narrative.foreshadowing_setup_and_payoff",
@@ -820,10 +713,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.96,
+          "confidence": 0.98,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, closing stairwell conversation"
             }
           ],
           "module_id": "craft.narrative.foreshadowing_setup_and_payoff",
@@ -832,10 +725,10 @@
           "weight": 2.0
         },
         {
-          "confidence": 0.94,
+          "confidence": 0.97,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "result.json, distant_links, setup unit-0006, status open"
             }
           ],
           "module_id": "craft.narrative.foreshadowing_setup_and_payoff",
@@ -844,10 +737,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.96,
+          "confidence": 0.95,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, turning conflict and closing stairwell conversation"
             }
           ],
           "module_id": "craft.narrative.foreshadowing_setup_and_payoff",
@@ -856,10 +749,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.97,
+          "confidence": 0.94,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, healing after Mackenzie feeds"
             }
           ],
           "module_id": "craft.narrative.foreshadowing_setup_and_payoff",
@@ -871,7 +764,7 @@
           "confidence": 0.99,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, blood-battery discussion"
             }
           ],
           "module_id": "craft.narrative.narrative_momentum",
@@ -883,7 +776,7 @@
           "confidence": 0.99,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, closing stairwell conversation"
             }
           ],
           "module_id": "craft.narrative.narrative_momentum",
@@ -895,7 +788,7 @@
           "confidence": 0.99,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, closing stairwell conversation"
             }
           ],
           "module_id": "craft.narrative.narrative_momentum",
@@ -904,10 +797,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.9,
+          "confidence": 0.94,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, transition into drinking game"
             }
           ],
           "module_id": "craft.narrative.narrative_momentum",
@@ -916,10 +809,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.96,
+          "confidence": 0.99,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, FAWN laboratory discussion"
             }
           ],
           "module_id": "craft.narrative.narrative_momentum",
@@ -928,10 +821,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.97,
+          "confidence": 0.99,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "result.json, unit-0006-07454b12a420, promises_resolved"
             }
           ],
           "module_id": "craft.narrative.narrative_momentum",
@@ -940,10 +833,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.97,
+          "confidence": 0.98,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420.txt, closing FAWN scene"
             }
           ],
           "module_id": "craft.narrative.narrative_momentum",
@@ -952,43 +845,235 @@
           "weight": 2.0
         },
         {
-          "confidence": 0.92,
+          "confidence": 0.97,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420.txt, final stairwell scene"
             }
           ],
           "module_id": "craft.narrative.narrative_momentum",
           "question_id": "craft.narrative.narrative_momentum.no_false_hook",
           "verdict": "YES",
           "weight": 1.5
+        },
+        {
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "reference": "unit-0006-07454b12a420.txt, opening paragraph"
+            }
+          ],
+          "module_id": "craft.narrative.opening",
+          "question_id": "craft.narrative.opening.entry",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.95,
+          "evidence": [
+            {
+              "reference": "unit-0006-07454b12a420.txt, opening room description"
+            }
+          ],
+          "module_id": "craft.narrative.opening",
+          "question_id": "craft.narrative.opening.orientation",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "reference": "unit-0006-07454b12a420.txt, opening room description"
+            }
+          ],
+          "module_id": "craft.narrative.opening",
+          "question_id": "craft.narrative.opening.intrigue",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "reference": "unit-0006-07454b12a420.txt, opening room description"
+            }
+          ],
+          "module_id": "craft.narrative.opening",
+          "question_id": "craft.narrative.opening.voice",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "reference": "unit-0006-07454b12a420.txt, opening room description"
+            }
+          ],
+          "module_id": "craft.narrative.opening",
+          "question_id": "craft.narrative.opening.tone",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "reference": "unit-0006-07454b12a420.txt, opening room description"
+            }
+          ],
+          "module_id": "craft.narrative.opening",
+          "question_id": "craft.narrative.opening.promise",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.95,
+          "evidence": [
+            {
+              "reference": "unit-0006-07454b12a420.txt, Miriam's door spell"
+            }
+          ],
+          "module_id": "craft.narrative.opening",
+          "question_id": "craft.narrative.opening.withholding",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "reference": "unit-0006-07454b12a420.txt, opening paragraph"
+            }
+          ],
+          "module_id": "craft.narrative.opening",
+          "question_id": "craft.narrative.opening.no_preamble",
+          "verdict": "YES",
+          "weight": 2.0
+        },
+        {
+          "confidence": 1.0,
+          "evidence": [
+            {
+              "reference": "unit-0006-07454b12a420.txt, final stairwell scene"
+            }
+          ],
+          "module_id": "craft.narrative.ending_and_closure",
+          "question_id": "craft.narrative.ending_and_closure.changed_state",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "reference": "unit-0006-07454b12a420.txt, final stairwell scene"
+            }
+          ],
+          "module_id": "craft.narrative.ending_and_closure",
+          "question_id": "craft.narrative.ending_and_closure.resolution",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.97,
+          "evidence": [
+            {
+              "reference": "result.json, unit-0006-07454b12a420, promises_resolved"
+            }
+          ],
+          "module_id": "craft.narrative.ending_and_closure",
+          "question_id": "craft.narrative.ending_and_closure.expectations",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "reference": "unit-0006-07454b12a420.txt, final lines"
+            }
+          ],
+          "module_id": "craft.narrative.ending_and_closure",
+          "question_id": "craft.narrative.ending_and_closure.emphasis",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "reference": "unit-0006-07454b12a420.txt, final stairwell scene"
+            }
+          ],
+          "module_id": "craft.narrative.ending_and_closure",
+          "question_id": "craft.narrative.ending_and_closure.resonance",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "reference": "unit-0006-07454b12a420.txt, final stairwell scene"
+            }
+          ],
+          "module_id": "craft.narrative.ending_and_closure",
+          "question_id": "craft.narrative.ending_and_closure.openness",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.97,
+          "evidence": [
+            {
+              "reference": "unit-0006-07454b12a420.txt, final lines"
+            }
+          ],
+          "module_id": "craft.narrative.ending_and_closure",
+          "question_id": "craft.narrative.ending_and_closure.no_overclosure",
+          "verdict": "YES",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "reference": "unit-0006-07454b12a420.txt, final line"
+            }
+          ],
+          "module_id": "craft.narrative.ending_and_closure",
+          "question_id": "craft.narrative.ending_and_closure.no_abruptness",
+          "verdict": "YES",
+          "weight": 2.0
         }
       ],
       "score": {
-        "lower": 18.8235,
-        "observed": 18.8235,
-        "upper": 18.8235
+        "lower": 20.0,
+        "observed": 20.0,
+        "upper": 20.0
       },
       "title": "Plot architecture and payoff",
       "weights": {
-        "applicable": 34.0,
-        "failed": 2.0,
-        "passed": 32.0,
+        "applicable": 57.0,
+        "failed": 0.0,
+        "passed": 57.0,
         "unassessed": 0.0
       }
     },
     {
       "active": true,
-      "confidence": 0.9488,
+      "confidence": 0.9721,
       "coverage": 1.0,
       "domain_id": "world",
       "nominal_points": 12.0,
       "questions": [
         {
-          "confidence": 0.95,
+          "confidence": 0.98,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420.txt, blood-battery explanation"
             }
           ],
           "module_id": "craft.narrative.worldbuilding",
@@ -997,10 +1082,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.91,
+          "confidence": 0.97,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420.txt, Amelia during truth or dare"
             }
           ],
           "module_id": "craft.narrative.worldbuilding",
@@ -1009,10 +1094,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.98,
+          "confidence": 0.99,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420.txt, Mackenzie's illusion dare"
             }
           ],
           "module_id": "craft.narrative.worldbuilding",
@@ -1021,10 +1106,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.96,
+          "confidence": 0.98,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420.txt, FAWN introduction"
             }
           ],
           "module_id": "craft.narrative.worldbuilding",
@@ -1033,10 +1118,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.88,
+          "confidence": 0.93,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420.txt, Robin discussion"
             }
           ],
           "module_id": "craft.narrative.worldbuilding",
@@ -1045,10 +1130,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.96,
+          "confidence": 0.99,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420.txt, donor-system explanation"
             }
           ],
           "module_id": "craft.narrative.worldbuilding",
@@ -1057,10 +1142,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.98,
+          "confidence": 0.99,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420.txt, Madison's feeding scene"
             }
           ],
           "module_id": "craft.narrative.worldbuilding",
@@ -1069,10 +1154,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.94,
+          "confidence": 0.97,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420.txt, initial battery discussion"
             }
           ],
           "module_id": "craft.narrative.worldbuilding",
@@ -1081,10 +1166,10 @@
           "weight": 2.0
         },
         {
-          "confidence": 0.96,
+          "confidence": 0.98,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420.txt, FAWN introduction"
             }
           ],
           "module_id": "craft.narrative.worldbuilding",
@@ -1096,19 +1181,19 @@
           "confidence": 0.92,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420.txt, Amelia addressing FAWN"
             }
           ],
           "module_id": "craft.narrative.continuity_and_canon_integrity",
           "question_id": "craft.narrative.continuity_and_canon_integrity.characters",
-          "verdict": "YES",
+          "verdict": "NO",
           "weight": 1.5
         },
         {
-          "confidence": 0.93,
+          "confidence": 0.98,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420.txt, Madison observing the blood jars"
             }
           ],
           "module_id": "craft.narrative.continuity_and_canon_integrity",
@@ -1117,10 +1202,10 @@
           "weight": 2.0
         },
         {
-          "confidence": 0.94,
+          "confidence": 0.97,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420.txt, blood-battery explanation"
             }
           ],
           "module_id": "craft.narrative.continuity_and_canon_integrity",
@@ -1129,10 +1214,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.95,
+          "confidence": 0.96,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420.txt, FAWN lifeblood discussion"
             }
           ],
           "module_id": "craft.narrative.continuity_and_canon_integrity",
@@ -1141,7 +1226,7 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.96,
+          "confidence": 0.98,
           "evidence": [
             {
               "reference": "unit-0006-07454b12a420"
@@ -1153,7 +1238,7 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.97,
+          "confidence": 0.98,
           "evidence": [
             {
               "reference": "unit-0006-07454b12a420"
@@ -1165,7 +1250,7 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.95,
+          "confidence": 0.97,
           "evidence": [
             {
               "reference": "unit-0006-07454b12a420"
@@ -1177,15 +1262,19 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.98,
-          "evidence": [],
+          "confidence": 0.94,
+          "evidence": [
+            {
+              "reference": "unit-0006-07454b12a420"
+            }
+          ],
           "module_id": "craft.narrative.continuity_and_canon_integrity",
           "question_id": "craft.narrative.continuity_and_canon_integrity.supersession",
-          "verdict": "NOT_APPLICABLE",
+          "verdict": "YES",
           "weight": 1.5
         },
         {
-          "confidence": 0.98,
+          "confidence": 0.99,
           "evidence": [
             {
               "reference": "unit-0006-07454b12a420"
@@ -1197,7 +1286,7 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.97,
+          "confidence": 0.99,
           "evidence": [
             {
               "reference": "unit-0006-07454b12a420"
@@ -1209,7 +1298,7 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.9,
+          "confidence": 0.96,
           "evidence": [
             {
               "reference": "unit-0006-07454b12a420"
@@ -1221,15 +1310,19 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.99,
-          "evidence": [],
+          "confidence": 0.93,
+          "evidence": [
+            {
+              "reference": "unit-0006-07454b12a420"
+            }
+          ],
           "module_id": "craft.narrative.temporal_and_spatial_continuity",
           "question_id": "craft.narrative.temporal_and_spatial_continuity.travel",
-          "verdict": "NOT_APPLICABLE",
+          "verdict": "YES",
           "weight": 1.0
         },
         {
-          "confidence": 0.95,
+          "confidence": 0.98,
           "evidence": [
             {
               "reference": "unit-0006-07454b12a420"
@@ -1241,7 +1334,7 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.96,
+          "confidence": 0.99,
           "evidence": [
             {
               "reference": "unit-0006-07454b12a420"
@@ -1253,7 +1346,7 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.93,
+          "confidence": 0.97,
           "evidence": [
             {
               "reference": "unit-0006-07454b12a420"
@@ -1265,7 +1358,7 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.98,
+          "confidence": 0.99,
           "evidence": [
             {
               "reference": "unit-0006-07454b12a420"
@@ -1278,27 +1371,27 @@
         }
       ],
       "score": {
-        "lower": 12.0,
-        "observed": 12.0,
-        "upper": 12.0
+        "lower": 11.493,
+        "observed": 11.493,
+        "upper": 11.493
       },
       "title": "World and continuity",
       "weights": {
-        "applicable": 33.0,
-        "failed": 0.0,
-        "passed": 33.0,
+        "applicable": 35.5,
+        "failed": 1.5,
+        "passed": 34.0,
         "unassessed": 0.0
       }
     },
     {
       "active": true,
-      "confidence": 0.8862,
+      "confidence": 0.9462,
       "coverage": 1.0,
       "domain_id": "pacing",
       "nominal_points": 10.0,
       "questions": [
         {
-          "confidence": 0.78,
+          "confidence": 0.83,
           "evidence": [
             {
               "reference": "unit-0006-07454b12a420"
@@ -1310,7 +1403,7 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.97,
+          "confidence": 0.96,
           "evidence": [
             {
               "reference": "unit-0006-07454b12a420"
@@ -1322,10 +1415,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.95,
+          "confidence": 0.98,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420, Mackenzie feeding scene"
+              "reference": "unit-0006-07454b12a420"
             }
           ],
           "module_id": "craft.narrative.pacing_and_narrative_time",
@@ -1334,10 +1427,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.84,
+          "confidence": 0.96,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420, post-game ellipsis"
+              "reference": "unit-0006-07454b12a420"
             }
           ],
           "module_id": "craft.narrative.pacing_and_narrative_time",
@@ -1346,10 +1439,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.9,
+          "confidence": 0.97,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420, truth-or-dare sequence"
+              "reference": "unit-0006-07454b12a420"
             }
           ],
           "module_id": "craft.narrative.pacing_and_narrative_time",
@@ -1358,13 +1451,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.89,
+          "confidence": 0.96,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420, FAWN introduction"
-            },
-            {
-              "reference": "unit-0006-07454b12a420, feeding climax"
+              "reference": "unit-0006-07454b12a420"
             }
           ],
           "module_id": "craft.narrative.pacing_and_narrative_time",
@@ -1373,10 +1463,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.81,
+          "confidence": 0.92,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420, closing stairwell scene"
+              "reference": "unit-0006-07454b12a420"
             }
           ],
           "module_id": "craft.narrative.pacing_and_narrative_time",
@@ -1385,25 +1475,22 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.89,
+          "confidence": 0.84,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420, drinking-game setup"
-            },
-            {
-              "reference": "unit-0006-07454b12a420, celebration setup"
+              "reference": "unit-0006-07454b12a420"
             }
           ],
           "module_id": "craft.narrative.pacing_and_narrative_time",
           "question_id": "craft.narrative.pacing_and_narrative_time.no_stall",
-          "verdict": "NO",
+          "verdict": "YES",
           "weight": 2.0
         },
         {
-          "confidence": 0.9,
+          "confidence": 0.98,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420, blood-battery explanation"
+              "reference": "unit-0006-07454b12a420"
             }
           ],
           "module_id": "craft.narrative.exposition_and_information_management",
@@ -1412,10 +1499,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.91,
+          "confidence": 0.98,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420, compulsion-spell setup"
+              "reference": "unit-0006-07454b12a420"
             }
           ],
           "module_id": "craft.narrative.exposition_and_information_management",
@@ -1424,10 +1511,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.94,
+          "confidence": 0.99,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420, engraving observation"
+              "reference": "unit-0006-07454b12a420"
             }
           ],
           "module_id": "craft.narrative.exposition_and_information_management",
@@ -1436,10 +1523,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.81,
+          "confidence": 0.94,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420, Zoe aside"
+              "reference": "unit-0006-07454b12a420"
             }
           ],
           "module_id": "craft.narrative.exposition_and_information_management",
@@ -1448,13 +1535,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.82,
+          "confidence": 0.95,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420, later battery discussion"
-            },
-            {
-              "reference": "unit-0006-07454b12a420, later battery discussion"
+              "reference": "unit-0006-07454b12a420"
             }
           ],
           "module_id": "craft.narrative.exposition_and_information_management",
@@ -1463,10 +1547,10 @@
           "weight": 2.0
         },
         {
-          "confidence": 0.92,
+          "confidence": 0.99,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420, battery discussion"
+              "reference": "unit-0006-07454b12a420"
             }
           ],
           "module_id": "craft.narrative.exposition_and_information_management",
@@ -1475,10 +1559,10 @@
           "weight": 2.0
         },
         {
-          "confidence": 0.91,
+          "confidence": 0.98,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420, turning discussion"
+              "reference": "unit-0006-07454b12a420"
             }
           ],
           "module_id": "craft.narrative.exposition_and_information_management",
@@ -1487,10 +1571,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.9,
+          "confidence": 0.98,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420, section transition"
+              "reference": "unit-0006-07454b12a420"
             }
           ],
           "module_id": "craft.narrative.transitions_and_connective_tissue",
@@ -1499,13 +1583,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.94,
+          "confidence": 0.99,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420, drinking-game transition"
-            },
-            {
-              "reference": "unit-0006-07454b12a420, post-game transition"
+              "reference": "unit-0006-07454b12a420"
             }
           ],
           "module_id": "craft.narrative.transitions_and_connective_tissue",
@@ -1514,10 +1595,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.97,
+          "confidence": 0.99,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420, departure"
+              "reference": "unit-0006-07454b12a420"
             }
           ],
           "module_id": "craft.narrative.transitions_and_connective_tissue",
@@ -1526,10 +1607,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.8,
+          "confidence": 0.96,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420, later battery discussion"
+              "reference": "unit-0006-07454b12a420"
             }
           ],
           "module_id": "craft.narrative.transitions_and_connective_tissue",
@@ -1538,10 +1619,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.91,
+          "confidence": 0.98,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420, post-game reflection"
+              "reference": "unit-0006-07454b12a420"
             }
           ],
           "module_id": "craft.narrative.transitions_and_connective_tissue",
@@ -1550,10 +1631,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.87,
+          "confidence": 0.9,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420, departure transition"
+              "reference": "unit-0006-07454b12a420, blood-shelf discussion through truth-or-dare escalation"
             }
           ],
           "module_id": "craft.narrative.transitions_and_connective_tissue",
@@ -1562,10 +1643,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.91,
+          "confidence": 0.88,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420, stairwell bridge"
+              "reference": "unit-0006-07454b12a420, transition after truth-or-dare"
             }
           ],
           "module_id": "craft.narrative.transitions_and_connective_tissue",
@@ -1575,48 +1656,42 @@
         }
       ],
       "score": {
-        "lower": 9.3651,
-        "observed": 9.3651,
-        "upper": 9.3651
+        "lower": 10.0,
+        "observed": 10.0,
+        "upper": 10.0
       },
       "title": "Pacing and information",
       "weights": {
         "applicable": 31.5,
-        "failed": 2.0,
-        "passed": 29.5,
+        "failed": 0.0,
+        "passed": 31.5,
         "unassessed": 0.0
       }
     },
     {
       "active": true,
-      "confidence": 0.8946,
+      "confidence": 0.9113,
       "coverage": 1.0,
       "domain_id": "language",
       "nominal_points": 10.0,
       "questions": [
         {
-          "confidence": 0.93,
+          "confidence": 0.78,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420, opening"
-            },
-            {
-              "reference": "unit-0006-07454b12a420, FAWN introduction"
+              "reference": "unit-0006-07454b12a420, post-game reflection"
             }
           ],
           "module_id": "core.language_craft",
           "question_id": "core.language_craft.diction",
-          "verdict": "NO",
+          "verdict": "YES",
           "weight": 1.5
         },
         {
           "confidence": 0.96,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420, post-game reflection"
-            },
-            {
-              "reference": "unit-0006-07454b12a420, turning reaction"
+              "reference": "unit-0006-07454b12a420, reaction to Amelia’s turning answer"
             }
           ],
           "module_id": "core.language_craft",
@@ -1625,13 +1700,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.88,
+          "confidence": 0.91,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420, feeding scene"
-            },
-            {
-              "reference": "unit-0006-07454b12a420, feeding aftermath"
+              "reference": "unit-0006-07454b12a420, immediately after Mackenzie feeds"
             }
           ],
           "module_id": "core.language_craft",
@@ -1640,13 +1712,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.86,
+          "confidence": 0.91,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420, turning disclosure"
-            },
-            {
-              "reference": "unit-0006-07454b12a420, battery discussion"
+              "reference": "unit-0006-07454b12a420, Mackenzie cuts Madison"
             }
           ],
           "module_id": "core.language_craft",
@@ -1655,10 +1724,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.87,
+          "confidence": 0.88,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420, paragraph turn before feeding"
+              "reference": "unit-0006-07454b12a420, feeding sequence"
             }
           ],
           "module_id": "core.language_craft",
@@ -1667,13 +1736,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.93,
+          "confidence": 0.94,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420, feeding scene"
-            },
-            {
-              "reference": "unit-0006-07454b12a420, illusion scene"
+              "reference": "unit-0006-07454b12a420, illusion sequence"
             }
           ],
           "module_id": "core.language_craft",
@@ -1682,13 +1748,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.78,
+          "confidence": 0.86,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420, feeding scene"
-            },
-            {
-              "reference": "unit-0006-07454b12a420, feeding aftermath"
+              "reference": "unit-0006-07454b12a420, aftermath of Madison’s bleeding"
             }
           ],
           "module_id": "core.language_craft",
@@ -1697,13 +1760,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.91,
+          "confidence": 0.93,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420, closing stairwell scene"
-            },
-            {
-              "reference": "unit-0006-07454b12a420, closing declaration"
+              "reference": "unit-0006-07454b12a420, stairwell ending"
             }
           ],
           "module_id": "core.language_craft",
@@ -1715,13 +1775,7 @@
           "confidence": 0.98,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420, opening"
-            },
-            {
-              "reference": "unit-0006-07454b12a420, turning reaction"
-            },
-            {
-              "reference": "unit-0006-07454b12a420, later battery discussion"
+              "reference": "unit-0006-07454b12a420, opening introduction to FAWN"
             }
           ],
           "module_id": "core.language_craft",
@@ -1730,13 +1784,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.91,
+          "confidence": 0.93,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420, feeding aftermath"
-            },
-            {
-              "reference": "unit-0006-07454b12a420, closing stairwell scene"
+              "reference": "unit-0006-07454b12a420, Madison accepts Mackenzie’s feeding condition"
             }
           ],
           "module_id": "core.voice_and_stylistic_identity",
@@ -1745,13 +1796,10 @@
           "weight": 2.0
         },
         {
-          "confidence": 0.9,
+          "confidence": 0.91,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420, battery discovery"
-            },
-            {
-              "reference": "unit-0006-07454b12a420, closing declaration"
+              "reference": "unit-0006-07454b12a420, discussion of degraded blood"
             }
           ],
           "module_id": "core.voice_and_stylistic_identity",
@@ -1760,10 +1808,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.85,
+          "confidence": 0.9,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420, feeding scene"
+              "reference": "unit-0006-07454b12a420, drinking-game setup"
             }
           ],
           "module_id": "core.voice_and_stylistic_identity",
@@ -1772,10 +1820,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.9,
+          "confidence": 0.86,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, Madison recognizes the use of blood jars"
             }
           ],
           "module_id": "core.voice_and_stylistic_identity",
@@ -1784,10 +1832,10 @@
           "weight": 2.0
         },
         {
-          "confidence": 0.88,
+          "confidence": 0.9,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, before Madison volunteers blood"
             }
           ],
           "module_id": "core.voice_and_stylistic_identity",
@@ -1796,10 +1844,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.94,
+          "confidence": 0.95,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, Madison refuses Mackenzie’s preferred feeding site"
             }
           ],
           "module_id": "core.voice_and_stylistic_identity",
@@ -1808,10 +1856,10 @@
           "weight": 2.0
         },
         {
-          "confidence": 0.84,
+          "confidence": 0.94,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, drinking-game proposal"
             }
           ],
           "module_id": "craft.narrative.dialogue",
@@ -1820,10 +1868,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.93,
+          "confidence": 0.95,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, lifeblood discussion"
             }
           ],
           "module_id": "craft.narrative.dialogue",
@@ -1832,22 +1880,22 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.78,
+          "confidence": 0.9,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, feeding negotiation"
             }
           ],
           "module_id": "craft.narrative.dialogue",
           "question_id": "craft.narrative.dialogue.naturalness",
-          "verdict": "NO",
+          "verdict": "YES",
           "weight": 1.5
         },
         {
-          "confidence": 0.9,
+          "confidence": 0.92,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, Mackenzie challenges Amelia"
             }
           ],
           "module_id": "craft.narrative.dialogue",
@@ -1856,10 +1904,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.91,
+          "confidence": 0.95,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, turning conflict"
             }
           ],
           "module_id": "craft.narrative.dialogue",
@@ -1868,10 +1916,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.92,
+          "confidence": 0.93,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, stairwell conversation"
             }
           ],
           "module_id": "craft.narrative.dialogue",
@@ -1883,7 +1931,7 @@
           "confidence": 0.96,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, turning conflict"
             }
           ],
           "module_id": "craft.narrative.dialogue",
@@ -1892,10 +1940,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.83,
+          "confidence": 0.84,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, blood-donation explanation"
             }
           ],
           "module_id": "craft.narrative.dialogue",
@@ -1905,30 +1953,30 @@
         }
       ],
       "score": {
-        "lower": 8.209,
-        "observed": 8.209,
-        "upper": 8.209
+        "lower": 9.1045,
+        "observed": 9.1045,
+        "upper": 9.1045
       },
       "title": "Language and voice",
       "weights": {
         "applicable": 33.5,
-        "failed": 6.0,
-        "passed": 27.5,
+        "failed": 3.0,
+        "passed": 30.5,
         "unassessed": 0.0
       }
     },
     {
       "active": true,
-      "confidence": 0.9176,
+      "confidence": 0.9359,
       "coverage": 1.0,
       "domain_id": "effect",
       "nominal_points": 8.0,
       "questions": [
         {
-          "confidence": 0.95,
+          "confidence": 0.96,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, coercive spell setup"
             }
           ],
           "module_id": "craft.narrative.theme_and_subtext",
@@ -1937,10 +1985,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.91,
+          "confidence": 0.94,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, first wine bottle"
             }
           ],
           "module_id": "craft.narrative.theme_and_subtext",
@@ -1949,10 +1997,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.94,
+          "confidence": 0.95,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, Madison volunteers to be fed upon"
             }
           ],
           "module_id": "craft.narrative.theme_and_subtext",
@@ -1961,10 +2009,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.96,
+          "confidence": 0.97,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, FAWN donation arrangement"
             }
           ],
           "module_id": "craft.narrative.theme_and_subtext",
@@ -1973,10 +2021,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.95,
+          "confidence": 0.97,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, Mackenzie feeding on Madison"
             }
           ],
           "module_id": "craft.narrative.theme_and_subtext",
@@ -1985,10 +2033,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.93,
+          "confidence": 0.94,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, stairwell ending"
             }
           ],
           "module_id": "craft.narrative.theme_and_subtext",
@@ -1997,10 +2045,10 @@
           "weight": 2.0
         },
         {
-          "confidence": 0.94,
+          "confidence": 0.95,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, Amelia’s compelled answer about Madison"
             }
           ],
           "module_id": "craft.narrative.theme_and_subtext",
@@ -2009,10 +2057,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.88,
+          "confidence": 0.92,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, closing stairwell scene"
             }
           ],
           "module_id": "core.emotional_and_intellectual_effect",
@@ -2021,10 +2069,10 @@
           "weight": 2.0
         },
         {
-          "confidence": 0.82,
+          "confidence": 0.91,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, turning revelation"
             }
           ],
           "module_id": "core.emotional_and_intellectual_effect",
@@ -2033,10 +2081,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.97,
+          "confidence": 0.96,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, truth-or-dare setup"
             }
           ],
           "module_id": "core.emotional_and_intellectual_effect",
@@ -2048,7 +2096,7 @@
           "confidence": 0.95,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, post-game transition"
             }
           ],
           "module_id": "core.emotional_and_intellectual_effect",
@@ -2057,10 +2105,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.85,
+          "confidence": 0.84,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, Mackenzie feeding scene"
             }
           ],
           "module_id": "core.emotional_and_intellectual_effect",
@@ -2069,10 +2117,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.92,
+          "confidence": 0.93,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, closing stairwell scene"
             }
           ],
           "module_id": "core.emotional_and_intellectual_effect",
@@ -2096,16 +2144,16 @@
     },
     {
       "active": true,
-      "confidence": 0.9004,
+      "confidence": 0.885,
       "coverage": 1.0,
       "domain_id": "fresh",
       "nominal_points": 5.0,
       "questions": [
         {
-          "confidence": 0.93,
+          "confidence": 0.94,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, turning revelation"
             }
           ],
           "module_id": "core.freshness_and_non_genericness",
@@ -2114,10 +2162,10 @@
           "weight": 2.0
         },
         {
-          "confidence": 0.87,
+          "confidence": 0.88,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, FAWN laboratory introduction"
             }
           ],
           "module_id": "core.freshness_and_non_genericness",
@@ -2126,10 +2174,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.94,
+          "confidence": 0.86,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, Mackenzie illusion"
             }
           ],
           "module_id": "core.freshness_and_non_genericness",
@@ -2141,7 +2189,7 @@
           "confidence": 0.91,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, FAWN questioning scene"
             }
           ],
           "module_id": "core.freshness_and_non_genericness",
@@ -2153,7 +2201,7 @@
           "confidence": 0.82,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, closing stairwell scene"
             }
           ],
           "module_id": "core.freshness_and_non_genericness",
@@ -2165,7 +2213,7 @@
           "confidence": 0.97,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, truth-or-dare spell comparison"
             }
           ],
           "module_id": "core.freshness_and_non_genericness",
@@ -2174,10 +2222,10 @@
           "weight": 2.0
         },
         {
-          "confidence": 0.88,
+          "confidence": 0.9,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, drinking-game transition"
             }
           ],
           "module_id": "core.freshness_and_non_genericness",
@@ -2189,7 +2237,7 @@
           "confidence": 0.98,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, Mackenzie illusion"
             }
           ],
           "module_id": "core.freshness_and_non_genericness",
@@ -2198,10 +2246,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.93,
+          "confidence": 0.86,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, early FAWN conversation"
             }
           ],
           "module_id": "core.economy_and_relevance",
@@ -2210,10 +2258,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.9,
+          "confidence": 0.83,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, drinking-game proposal"
             }
           ],
           "module_id": "core.economy_and_relevance",
@@ -2222,22 +2270,22 @@
           "weight": 2.5
         },
         {
-          "confidence": 0.82,
+          "confidence": 0.87,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, aftermath of feeding"
             }
           ],
           "module_id": "core.economy_and_relevance",
           "question_id": "core.economy_and_relevance.functional_repetition",
-          "verdict": "NO",
+          "verdict": "YES",
           "weight": 2.0
         },
         {
-          "confidence": 0.9,
+          "confidence": 0.93,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, opening room description"
             }
           ],
           "module_id": "core.economy_and_relevance",
@@ -2246,10 +2294,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.88,
+          "confidence": 0.9,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, post-game transition"
             }
           ],
           "module_id": "core.economy_and_relevance",
@@ -2258,10 +2306,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.91,
+          "confidence": 0.87,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, post-game transition"
             }
           ],
           "module_id": "core.economy_and_relevance",
@@ -2270,10 +2318,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.84,
+          "confidence": 0.78,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, feeding scene"
             }
           ],
           "module_id": "core.economy_and_relevance",
@@ -2283,30 +2331,30 @@
         }
       ],
       "score": {
-        "lower": 2.2826,
-        "observed": 2.2826,
-        "upper": 2.2826
+        "lower": 2.7174,
+        "observed": 2.7174,
+        "upper": 2.7174
       },
       "title": "Freshness and economy",
       "weights": {
         "applicable": 23.0,
-        "failed": 12.5,
-        "passed": 10.5,
+        "failed": 10.5,
+        "passed": 12.5,
         "unassessed": 0.0
       }
     },
     {
       "active": true,
-      "confidence": 0.9493,
+      "confidence": 0.9473,
       "coverage": 1.0,
       "domain_id": "mechanics",
       "nominal_points": 4.0,
       "questions": [
         {
-          "confidence": 0.98,
+          "confidence": 0.97,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, post-game conversation"
             }
           ],
           "module_id": "core.mechanics_and_presentation",
@@ -2315,10 +2363,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.99,
+          "confidence": 0.98,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, first truth-or-dare turn"
             }
           ],
           "module_id": "core.mechanics_and_presentation",
@@ -2330,7 +2378,7 @@
           "confidence": 0.99,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, opening FAWN introduction"
             }
           ],
           "module_id": "core.mechanics_and_presentation",
@@ -2339,10 +2387,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.91,
+          "confidence": 0.92,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, heading"
             }
           ],
           "module_id": "core.mechanics_and_presentation",
@@ -2354,7 +2402,7 @@
           "confidence": 0.98,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, truth-or-dare setup"
             }
           ],
           "module_id": "core.mechanics_and_presentation",
@@ -2363,10 +2411,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.86,
+          "confidence": 0.9,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, heading"
             }
           ],
           "module_id": "core.mechanics_and_presentation",
@@ -2375,10 +2423,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.94,
+          "confidence": 0.91,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, ending"
             }
           ],
           "module_id": "core.mechanics_and_presentation",
@@ -2402,7 +2450,7 @@
     },
     {
       "active": true,
-      "confidence": 0.925,
+      "confidence": 0.9475,
       "coverage": 1.0,
       "domain_id": "holistic",
       "nominal_points": 8.0,
@@ -2411,7 +2459,7 @@
           "confidence": 0.99,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, central truth-or-dare turn"
             }
           ],
           "module_id": "core.holistic_artistic_success",
@@ -2420,10 +2468,10 @@
           "weight": 2.0
         },
         {
-          "confidence": 0.82,
+          "confidence": 0.94,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, closing stairwell scene"
             }
           ],
           "module_id": "core.holistic_artistic_success",
@@ -2435,7 +2483,7 @@
           "confidence": 0.91,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, blood-battery discussion"
             }
           ],
           "module_id": "core.holistic_artistic_success",
@@ -2444,10 +2492,10 @@
           "weight": 2.0
         },
         {
-          "confidence": 0.98,
+          "confidence": 0.95,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, aftermath of feeding"
             }
           ],
           "module_id": "core.holistic_artistic_success",
@@ -2471,16 +2519,16 @@
     }
   ],
   "final_score": {
-    "lower": 82.4864,
-    "observed": 82.8982,
-    "upper": 82.8982
+    "lower": 90.6757,
+    "observed": 90.6757,
+    "upper": 90.6757
   },
   "hard_gate_status": "VALID",
   "hard_gates": [
     {
       "evidence": [
         {
-          "reference": "author brief; result.json; unit-0006-07454b12a420.txt"
+          "reference": "source packet"
         }
       ],
       "module_id": "scope.long_context",
@@ -2503,10 +2551,10 @@
       "module_id": "penalty.purple_prose",
       "questions": [
         {
-          "confidence": 0.99,
+          "confidence": 0.98,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, turning-question confrontation"
             }
           ],
           "question_id": "penalty.purple_prose.clarity",
@@ -2514,10 +2562,10 @@
           "weight": 2.0
         },
         {
-          "confidence": 0.98,
+          "confidence": 0.97,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, Amelia’s compelled answer"
             }
           ],
           "question_id": "penalty.purple_prose.proportion",
@@ -2525,10 +2573,10 @@
           "weight": 2.0
         },
         {
-          "confidence": 0.96,
+          "confidence": 0.97,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, turning-question confrontation"
             }
           ],
           "question_id": "penalty.purple_prose.specificity",
@@ -2536,10 +2584,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.97,
+          "confidence": 0.95,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, Mackenzie’s illusion"
             }
           ],
           "question_id": "penalty.purple_prose.tone",
@@ -2550,7 +2598,7 @@
           "confidence": 0.96,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, closing stairwell conversation"
             }
           ],
           "question_id": "penalty.purple_prose.metaphor",
@@ -2558,10 +2606,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.99,
+          "confidence": 0.98,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, feeding scene"
             }
           ],
           "question_id": "penalty.purple_prose.attention",
@@ -2569,10 +2617,10 @@
           "weight": 2.0
         },
         {
-          "confidence": 0.98,
+          "confidence": 0.97,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, post-game transition"
             }
           ],
           "question_id": "penalty.purple_prose.fatigue",
@@ -2592,17 +2640,17 @@
       "cap_points": 8.0,
       "coverage": 1.0,
       "deduction": {
-        "lower": 6.0,
-        "observed": 6.0,
-        "upper": 6.0
+        "lower": 0.8571,
+        "observed": 0.8571,
+        "upper": 0.8571
       },
       "module_id": "penalty.repetition",
       "questions": [
         {
-          "confidence": 0.94,
+          "confidence": 0.87,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, drinking-game setup"
             }
           ],
           "question_id": "penalty.repetition.lexical",
@@ -2610,32 +2658,35 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.87,
+          "confidence": 0.96,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, illusion sequence"
             }
           ],
           "question_id": "penalty.repetition.syntax",
-          "verdict": "NO",
+          "verdict": "YES",
           "weight": 1.5
         },
         {
-          "confidence": 0.91,
+          "confidence": 0.94,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, closing stairwell conversation"
             }
           ],
           "question_id": "penalty.repetition.semantic",
-          "verdict": "NO",
+          "verdict": "YES",
           "weight": 2.0
         },
         {
-          "confidence": 0.91,
+          "confidence": 0.95,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, turning-question confrontation"
+            },
+            {
+              "reference": "unit-0006-07454b12a420, closing love declaration"
             }
           ],
           "question_id": "penalty.repetition.image",
@@ -2643,43 +2694,43 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.89,
+          "confidence": 0.9,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, post-game transition"
             }
           ],
           "question_id": "penalty.repetition.beat",
-          "verdict": "NO",
+          "verdict": "YES",
           "weight": 2.0
         },
         {
-          "confidence": 0.88,
+          "confidence": 0.94,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, closing stairwell conversation"
             }
           ],
           "question_id": "penalty.repetition.dialogue",
-          "verdict": "NO",
+          "verdict": "YES",
           "weight": 1.5
         },
         {
-          "confidence": 0.86,
+          "confidence": 0.89,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420"
+              "reference": "unit-0006-07454b12a420, feeding scene"
             }
           ],
           "question_id": "penalty.repetition.explanation",
-          "verdict": "NO",
+          "verdict": "YES",
           "weight": 2.0
         },
         {
-          "confidence": 0.86,
+          "confidence": 0.96,
           "evidence": [
             {
-              "reference": "result.json, unit-0006 promises_resolved"
+              "reference": "unit-0006-07454b12a420, closing stairwell conversation"
             }
           ],
           "question_id": "penalty.repetition.long_range",
@@ -2690,8 +2741,8 @@
       "title": "Repetition penalty",
       "weights": {
         "applicable": 14.0,
-        "failed": 10.5,
-        "passed": 3.5,
+        "failed": 1.5,
+        "passed": 12.5,
         "unassessed": 0.0
       }
     },
@@ -2706,10 +2757,10 @@
       "module_id": "penalty.unflagged_incomplete",
       "questions": [
         {
-          "confidence": 0.99,
+          "confidence": 1.0,
           "evidence": [
             {
-              "reference": "result.json, limitations"
+              "reference": "WIP_CHAPTER_CONTEXT.json"
             }
           ],
           "question_id": "penalty.unflagged_incomplete.status",
@@ -2717,18 +2768,18 @@
           "weight": 3.0
         },
         {
-          "confidence": 0.96,
+          "confidence": 0.99,
           "evidence": [
             {
-              "reference": "unit-0006-07454b12a420, closing stairwell scene"
+              "reference": "WIP_CHAPTER_CONTEXT.json"
             }
           ],
           "question_id": "penalty.unflagged_incomplete.unit",
-          "verdict": "YES",
+          "verdict": "NOT_APPLICABLE",
           "weight": 3.0
         },
         {
-          "confidence": 0.98,
+          "confidence": 0.99,
           "evidence": [
             {
               "reference": "unit-0006-07454b12a420, final lines"
@@ -2741,17 +2792,17 @@
       ],
       "title": "Unflagged incomplete artifact penalty",
       "weights": {
-        "applicable": 9.0,
+        "applicable": 6.0,
         "failed": 0.0,
-        "passed": 9.0,
+        "passed": 6.0,
         "unassessed": 0.0
       }
     }
   ],
   "penalty_deduction": {
-    "lower": 6.0,
-    "observed": 6.0,
-    "upper": 6.0
+    "lower": 0.8571,
+    "observed": 0.8571,
+    "upper": 0.8571
   },
   "standard": {
     "id": "HBQ-RS",
@@ -2760,51 +2811,57 @@
   "status": "SCORED",
   "supplemental": [
     {
-      "confidence": 0.42,
+      "confidence": 0.97,
       "evidence": [
         {
-          "reference": "result.json, limitations"
+          "reference": "unit-0006-07454b12a420, heading"
         }
       ],
       "module_id": "core.task_and_brief_fidelity",
       "question_id": "core.task_and_brief_fidelity.operation",
-      "verdict": "CANNOT_ASSESS"
+      "verdict": "YES"
     },
     {
-      "confidence": 0.78,
+      "confidence": 0.96,
       "evidence": [
         {
-          "reference": "author brief, Core Concept & Tone"
+          "reference": "unit-0006-07454b12a420, blood-battery discussion"
+        },
+        {
+          "reference": "author brief, VIII.A.2"
         }
       ],
       "module_id": "core.task_and_brief_fidelity",
       "question_id": "core.task_and_brief_fidelity.sources",
-      "verdict": "NOT_APPLICABLE"
+      "verdict": "YES"
     },
     {
-      "confidence": 0.48,
+      "confidence": 0.95,
       "evidence": [
         {
-          "reference": "author brief, Plot Points & Scene Ideas"
+          "reference": "unit-0006-07454b12a420, FAWN laboratory"
+        },
+        {
+          "reference": "unit-0006-07454b12a420, closing stairwell conversation"
         }
       ],
       "module_id": "core.task_and_brief_fidelity",
       "question_id": "core.task_and_brief_fidelity.inclusions",
-      "verdict": "CANNOT_ASSESS"
+      "verdict": "YES"
     },
     {
-      "confidence": 0.76,
+      "confidence": 0.94,
       "evidence": [
         {
-          "reference": "author brief, Fundamental Symbols"
+          "reference": "unit-0006-07454b12a420, Amelia on mutual desire"
         }
       ],
       "module_id": "core.task_and_brief_fidelity",
       "question_id": "core.task_and_brief_fidelity.exclusions",
-      "verdict": "NOT_APPLICABLE"
+      "verdict": "YES"
     },
     {
-      "confidence": 0.94,
+      "confidence": 0.99,
       "evidence": [
         {
           "reference": "unit-0006-07454b12a420, FAWN arrival"
@@ -2815,10 +2872,10 @@
       "verdict": "YES"
     },
     {
-      "confidence": 0.92,
+      "confidence": 0.99,
       "evidence": [
         {
-          "reference": "unit-0006-07454b12a420"
+          "reference": "unit-0006-07454b12a420, FAWN arrival"
         }
       ],
       "module_id": "core.task_and_brief_fidelity",
@@ -2826,10 +2883,10 @@
       "verdict": "YES"
     },
     {
-      "confidence": 0.74,
+      "confidence": 0.97,
       "evidence": [
         {
-          "reference": "unit-0006-07454b12a420, heading"
+          "reference": "unit-0006-07454b12a420, section transition"
         }
       ],
       "module_id": "core.task_and_brief_fidelity",
@@ -2837,7 +2894,7 @@
       "verdict": "YES"
     },
     {
-      "confidence": 0.55,
+      "confidence": 0.99,
       "evidence": [
         {
           "reference": "unit-0006-07454b12a420, heading"
@@ -2845,13 +2902,13 @@
       ],
       "module_id": "core.task_and_brief_fidelity",
       "question_id": "core.task_and_brief_fidelity.format",
-      "verdict": "CANNOT_ASSESS"
+      "verdict": "YES"
     },
     {
-      "confidence": 0.99,
+      "confidence": 1.0,
       "evidence": [
         {
-          "reference": "result.json, limitations"
+          "reference": "author brief"
         }
       ],
       "module_id": "core.task_and_brief_fidelity",
@@ -2859,10 +2916,10 @@
       "verdict": "NOT_APPLICABLE"
     },
     {
-      "confidence": 0.99,
+      "confidence": 1.0,
       "evidence": [
         {
-          "reference": "result.json, limitations"
+          "reference": "author brief"
         }
       ],
       "module_id": "core.length_and_scope_fit",
@@ -2870,87 +2927,13 @@
       "verdict": "NOT_APPLICABLE"
     },
     {
-      "confidence": 0.99,
-      "evidence": [
-        {
-          "reference": "unit-0006-07454b12a420, feeding scene"
-        }
-      ],
-      "module_id": "form.prose.general_prose_fiction",
-      "question_id": "form.prose.general_prose_fiction.narrative_experience",
-      "verdict": "YES"
-    },
-    {
       "confidence": 0.97,
       "evidence": [
         {
-          "reference": "unit-0006-07454b12a420, feeding scene"
-        }
-      ],
-      "module_id": "form.prose.general_prose_fiction",
-      "question_id": "form.prose.general_prose_fiction.character_action",
-      "verdict": "YES"
-    },
-    {
-      "confidence": 0.99,
-      "evidence": [
+          "reference": "result.json, unit-0006 promises_resolved"
+        },
         {
-          "reference": "unit-0006-07454b12a420, closing stairwell scene"
-        }
-      ],
-      "module_id": "form.prose.general_prose_fiction",
-      "question_id": "form.prose.general_prose_fiction.movement",
-      "verdict": "YES"
-    },
-    {
-      "confidence": 0.94,
-      "evidence": [
-        {
-          "reference": "unit-0006-07454b12a420, post-game transition"
-        }
-      ],
-      "module_id": "form.prose.general_prose_fiction",
-      "question_id": "form.prose.general_prose_fiction.mode_control",
-      "verdict": "YES"
-    },
-    {
-      "confidence": 0.95,
-      "evidence": [
-        {
-          "reference": "unit-0006-07454b12a420, opening"
-        }
-      ],
-      "module_id": "form.prose.general_prose_fiction",
-      "question_id": "form.prose.general_prose_fiction.reader_orientation",
-      "verdict": "YES"
-    },
-    {
-      "confidence": 0.86,
-      "evidence": [
-        {
-          "reference": "unit-0006-07454b12a420, blood-battery discussion"
-        }
-      ],
-      "module_id": "form.prose.general_prose_fiction",
-      "question_id": "form.prose.general_prose_fiction.proportion",
-      "verdict": "YES"
-    },
-    {
-      "confidence": 0.97,
-      "evidence": [
-        {
-          "reference": "unit-0006-07454b12a420, ending"
-        }
-      ],
-      "module_id": "form.prose.general_prose_fiction",
-      "question_id": "form.prose.general_prose_fiction.completion",
-      "verdict": "YES"
-    },
-    {
-      "confidence": 0.96,
-      "evidence": [
-        {
-          "reference": "result.json, distant_links"
+          "reference": "unit-0006-07454b12a420, Miriam identifying the tree"
         }
       ],
       "module_id": "scope.long_context",
@@ -2958,10 +2941,13 @@
       "verdict": "YES"
     },
     {
-      "confidence": 0.94,
+      "confidence": 0.98,
       "evidence": [
         {
-          "reference": "result.json, Madison's injuries ledger"
+          "reference": "unit-0006-07454b12a420, Mackenzie’s introductions"
+        },
+        {
+          "reference": "unit-0006-07454b12a420, Robin discussion"
         }
       ],
       "module_id": "scope.long_context",
@@ -2969,10 +2955,13 @@
       "verdict": "YES"
     },
     {
-      "confidence": 0.95,
+      "confidence": 0.96,
       "evidence": [
         {
-          "reference": "result.json, Madison and Amelia relationship ledger, unit-0006"
+          "reference": "unit-0006-07454b12a420, closing stairwell conversation"
+        },
+        {
+          "reference": "result.json, distant_links"
         }
       ],
       "module_id": "scope.long_context",
@@ -2980,10 +2969,10 @@
       "verdict": "YES"
     },
     {
-      "confidence": 0.97,
+      "confidence": 0.96,
       "evidence": [
         {
-          "reference": "result.json, Madison's injuries ledger, unit-0007"
+          "reference": "unit-0006-07454b12a420, Robin discussion"
         }
       ],
       "module_id": "scope.long_context",
@@ -2991,10 +2980,10 @@
       "verdict": "YES"
     },
     {
-      "confidence": 0.93,
+      "confidence": 0.94,
       "evidence": [
         {
-          "reference": "result.json, limitations"
+          "reference": "unit-0006-07454b12a420.txt, Chapter Five, FAWN blood-shelf discussion"
         }
       ],
       "module_id": "scope.long_context",
@@ -3005,7 +2994,7 @@
       "confidence": 0.99,
       "evidence": [
         {
-          "reference": "result.json, limitations"
+          "reference": "unit-0006-07454b12a420.txt, Chapter Five, Robin discussion"
         }
       ],
       "module_id": "scope.long_context",
@@ -3013,10 +3002,10 @@
       "verdict": "YES"
     },
     {
-      "confidence": 0.94,
+      "confidence": 0.98,
       "evidence": [
         {
-          "reference": "result.json, Engraving cost ledger"
+          "reference": "unit-0006-07454b12a420.txt, Chapter Five, Robin discussion"
         }
       ],
       "module_id": "scope.long_context",
@@ -3024,10 +3013,10 @@
       "verdict": "YES"
     },
     {
-      "confidence": 0.94,
+      "confidence": 0.98,
       "evidence": [
         {
-          "reference": "result.json, distant_links"
+          "reference": "unit-0006-07454b12a420.txt, Chapter Five, Robin discussion"
         }
       ],
       "module_id": "scope.long_context",

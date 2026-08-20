@@ -31,6 +31,7 @@ from .core import (
     score_bundle,
 )
 from .paths import prompts_dir, schema_dir
+from .weights import materialize_weight_profile
 
 
 MAX_RESPONSE_BYTES = 16 * 1024 * 1024
@@ -514,6 +515,7 @@ def run_judge(
     bundles: str | Path,
     context_paths: Sequence[str | Path] = (),
     task_contract_path: str | Path | None = None,
+    weight_profile: Mapping[str, Any] | None = None,
     question_ids: Sequence[str] = (),
     batch_size: int = 12,
     base_url: str = "http://127.0.0.1:8000/v1",
@@ -587,6 +589,9 @@ def run_judge(
     judge_id = judge_id or f"{provider}:{model}"
     modules = load_modules(registry)
     bundle = resolve_bundle(load_bundles(bundles), bundle_id)
+    modules, bundle, weight_audit = materialize_weight_profile(
+        modules, bundle, weight_profile
+    )
     compiled = compile_bundle(modules, bundle, task_contract=task_contract)
     role_order = {"hard_gate": 0, "domain": 1, "penalty": 2, "supplemental": 3}
     questions = sorted(
@@ -620,6 +625,7 @@ def run_judge(
         "artifact": _manifest_inputs([artifact])[0],
         "contexts": _manifest_inputs(contexts),
         "task_contract": task_contract_record,
+        "weight_profile": weight_audit,
         "judge_instructions": _manifest_inputs(prompt_records),
         "questions": _question_payload(questions),
         "output_dir": str(Path(output_dir).resolve()),
@@ -632,6 +638,7 @@ def run_judge(
         "artifact": _manifest_inputs([artifact])[0],
         "contexts": _manifest_inputs(contexts),
         "task_contract": task_contract_record,
+        "weight_profile": weight_audit,
         "bundle_id": bundle_id,
         "bundle_version": bundle.get("version"),
         "question_ids": selected_ids,
@@ -804,6 +811,7 @@ def run_judge(
             "artifact_id": artifact_id,
             "bundle_id": bundle_id,
             "task_contract": compiled.get("task_contract"),
+            "weight_profile": weight_audit,
             "status": "DIAGNOSTIC_SUBSET",
             "selected_question_ids": selected_ids,
             "selected_question_count": len(selected_ids),
@@ -836,6 +844,7 @@ def run_judge(
         artifact_id=artifact_id,
         task_contract=task_contract,
     )
+    report["weight_profile"] = weight_audit
     _write_json(score_path, report)
     return {
         "status": report["status"],

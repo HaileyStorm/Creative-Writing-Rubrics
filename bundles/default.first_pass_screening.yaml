@@ -16,6 +16,7 @@ valid_scopes:
 - chapter
 - artifact
 profile: {}
+task_contract_domain_id: hard
 module_ids:
 - core.task_and_brief_fidelity
 - core.substantive_task_engagement_true_non_refusal

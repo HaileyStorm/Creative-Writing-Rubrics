@@ -1,8 +1,8 @@
 {
   "format_version": 1,
-  "audited_tree_sha256": "29cb9f635dee9e256014140dca0af86eee0d2faf6721cbe083c19a8bc87e0c32",
-  "audited_file_count": 74,
-  "audited_total_bytes": 2412472,
+  "audited_tree_sha256": "8a0aadec755020f36fcbf5cd938b27ffc11cc6a5cdf0a177a460b82d86738e3a",
+  "audited_file_count": 87,
+  "audited_total_bytes": 3514334,
   "forbidden_pattern_hits": {
     "windows_absolute_path": 0,
     "unix_home_path": 0,

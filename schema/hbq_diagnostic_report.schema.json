@@ -20,6 +20,7 @@
     "artifact_id": {"type": "string", "minLength": 1},
     "bundle_id": {"type": "string", "minLength": 1},
     "task_contract": {"type": ["object", "null"]},
+    "weight_profile": {"type": "object"},
     "status": {"const": "DIAGNOSTIC_SUBSET"},
     "selected_question_ids": {
       "type": "array",

@@ -6,7 +6,9 @@
     "unit_count": 7
   },
   "route": {
-    "bundle_id": "prose.novel",
+    "global_bundle_id": "prose.novel",
+    "local_bundle_id": "prose.chapter",
+    "local_bundle_mode": "scope_auto",
     "module_ids": [
       "core.task_and_brief_fidelity",
       "core.length_and_scope_fit",
@@ -40,12 +42,29 @@
     ],
     "weighted_goal_count": 12,
     "binding_requirement_count": 6,
-    "sampled_unit_ids": [
+    "local_coverage_mode": "complete",
+    "local_unit_ids": [
       "unit-0002-920c59af6477",
       "unit-0003-aa9f0ac01ee1",
+      "unit-0004-39a17c40720a",
+      "unit-0005-febc528a057c",
       "unit-0006-07454b12a420",
       "unit-0007-b80e8306ee58"
+    ],
+    "non_substantive_unit_ids": [
+      "unit-0001-7eb70257593d"
     ]
+  },
+  "completion_contract": {
+    "contract_version": 1,
+    "completion_status": "work_in_progress",
+    "incomplete": true,
+    "completion_only_criterion_verdict": "NOT_APPLICABLE",
+    "unavailable_supplied_evidence_verdict": "CANNOT_ASSESS",
+    "assess_supplied_scope_craft": true,
+    "assess_supplied_scope_continuity": true,
+    "applicable_binding_requirements": "evaluate",
+    "applicable_weighted_goals": "score"
   },
   "orientation": {
     "cast": [
@@ -219,21 +238,21 @@
       "scope_id": "unit-0002-920c59af6477",
       "label": "Chapter 1",
       "control_state": "VALID",
-      "coverage": 0.9662,
+      "coverage": 0.9965,
       "score": {
-        "observed": 73.3761,
-        "lower": 70.0657,
-        "upper": 73.4429
+        "observed": 77.3678,
+        "lower": 77.0926,
+        "upper": 77.4448
       },
       "domains": [
         {
           "domain_id": "task",
           "title": "Task and scope",
-          "coverage": 0.7549,
+          "coverage": 0.9497,
           "score": {
-            "observed": 6.7273,
-            "lower": 5.0784,
-            "upper": 6.7941
+            "observed": 5.4702,
+            "lower": 5.195,
+            "upper": 5.5472
           }
         },
         {
@@ -241,9 +260,9 @@
           "title": "Character and arcs",
           "coverage": 1.0,
           "score": {
-            "observed": 14.0952,
-            "lower": 14.0952,
-            "upper": 14.0952
+            "observed": 14.8571,
+            "lower": 14.8571,
+            "upper": 14.8571
           }
         },
         {
@@ -251,19 +270,19 @@
           "title": "Plot architecture and payoff",
           "coverage": 1.0,
           "score": {
-            "observed": 19.4118,
-            "lower": 19.4118,
-            "upper": 19.4118
+            "observed": 19.6491,
+            "lower": 19.6491,
+            "upper": 19.6491
           }
         },
         {
           "domain_id": "world",
           "title": "World and continuity",
-          "coverage": 0.8615,
+          "coverage": 1.0,
           "score": {
-            "observed": 12.0,
-            "lower": 10.3385,
-            "upper": 12.0
+            "observed": 11.3077,
+            "lower": 11.3077,
+            "upper": 11.3077
           }
         },
         {
@@ -271,9 +290,9 @@
           "title": "Pacing and information",
           "coverage": 1.0,
           "score": {
-            "observed": 5.5556,
-            "lower": 5.5556,
-            "upper": 5.5556
+            "observed": 6.1905,
+            "lower": 6.1905,
+            "upper": 6.1905
           }
         },
         {
@@ -281,9 +300,9 @@
           "title": "Language and voice",
           "coverage": 1.0,
           "score": {
-            "observed": 5.9701,
-            "lower": 5.9701,
-            "upper": 5.9701
+            "observed": 8.0597,
+            "lower": 8.0597,
+            "upper": 8.0597
           }
         },
         {
@@ -301,9 +320,9 @@
           "title": "Freshness and economy",
           "coverage": 1.0,
           "score": {
-            "observed": 1.7391,
-            "lower": 1.7391,
-            "upper": 1.7391
+            "observed": 1.9565,
+            "lower": 1.9565,
+            "upper": 1.9565
           }
         },
         {
@@ -332,21 +351,21 @@
       "scope_id": "unit-0003-aa9f0ac01ee1",
       "label": "Chapter 2",
       "control_state": "VALID",
-      "coverage": 0.9818,
+      "coverage": 1.0,
       "score": {
-        "observed": 81.0185,
-        "lower": 79.3444,
-        "upper": 81.163
+        "observed": 78.5622,
+        "lower": 78.5622,
+        "upper": 78.5622
       },
       "domains": [
         {
           "domain_id": "task",
           "title": "Task and scope",
-          "coverage": 0.7402,
+          "coverage": 1.0,
           "score": {
-            "observed": 6.4437,
-            "lower": 4.7696,
-            "upper": 6.5882
+            "observed": 5.7233,
+            "lower": 5.7233,
+            "upper": 5.7233
           }
         },
         {
@@ -364,9 +383,9 @@
           "title": "Plot architecture and payoff",
           "coverage": 1.0,
           "score": {
-            "observed": 18.8235,
-            "lower": 18.8235,
-            "upper": 18.8235
+            "observed": 19.2982,
+            "lower": 19.2982,
+            "upper": 19.2982
           }
         },
         {
@@ -384,9 +403,9 @@
           "title": "Pacing and information",
           "coverage": 1.0,
           "score": {
-            "observed": 6.9841,
-            "lower": 6.9841,
-            "upper": 6.9841
+            "observed": 8.0952,
+            "lower": 8.0952,
+            "upper": 8.0952
           }
         },
         {
@@ -394,9 +413,9 @@
           "title": "Language and voice",
           "coverage": 1.0,
           "score": {
-            "observed": 9.5522,
-            "lower": 9.5522,
-            "upper": 9.5522
+            "observed": 8.5075,
+            "lower": 8.5075,
+            "upper": 8.5075
           }
         },
         {
@@ -414,9 +433,9 @@
           "title": "Freshness and economy",
           "coverage": 1.0,
           "score": {
-            "observed": 2.2826,
-            "lower": 2.2826,
-            "upper": 2.2826
+            "observed": 2.0652,
+            "lower": 2.0652,
+            "upper": 2.0652
           }
         },
         {
@@ -442,23 +461,249 @@
       ]
     },
     {
-      "scope_id": "unit-0006-07454b12a420",
-      "label": "Chapter 5",
+      "scope_id": "unit-0004-39a17c40720a",
+      "label": "Chapter 3",
       "control_state": "VALID",
-      "coverage": 0.9959,
+      "coverage": 0.9965,
       "score": {
-        "observed": 82.8982,
-        "lower": 82.4864,
-        "upper": 82.8982
+        "observed": 84.0157,
+        "lower": 83.6775,
+        "upper": 84.0297
       },
       "domains": [
         {
           "domain_id": "task",
           "title": "Task and scope",
-          "coverage": 0.9412,
+          "coverage": 0.9497,
+          "score": {
+            "observed": 6.7219,
+            "lower": 6.3836,
+            "upper": 6.7358
+          }
+        },
+        {
+          "domain_id": "character",
+          "title": "Character and arcs",
+          "coverage": 1.0,
+          "score": {
+            "observed": 14.8571,
+            "lower": 14.8571,
+            "upper": 14.8571
+          }
+        },
+        {
+          "domain_id": "plot",
+          "title": "Plot architecture and payoff",
+          "coverage": 1.0,
+          "score": {
+            "observed": 20.0,
+            "lower": 20.0,
+            "upper": 20.0
+          }
+        },
+        {
+          "domain_id": "world",
+          "title": "World and continuity",
+          "coverage": 1.0,
+          "score": {
+            "observed": 10.6667,
+            "lower": 10.6667,
+            "upper": 10.6667
+          }
+        },
+        {
+          "domain_id": "pacing",
+          "title": "Pacing and information",
+          "coverage": 1.0,
+          "score": {
+            "observed": 8.7302,
+            "lower": 8.7302,
+            "upper": 8.7302
+          }
+        },
+        {
+          "domain_id": "language",
+          "title": "Language and voice",
+          "coverage": 1.0,
+          "score": {
+            "observed": 9.1045,
+            "lower": 9.1045,
+            "upper": 9.1045
+          }
+        },
+        {
+          "domain_id": "effect",
+          "title": "Theme and effect",
+          "coverage": 1.0,
+          "score": {
+            "observed": 7.3514,
+            "lower": 7.3514,
+            "upper": 7.3514
+          }
+        },
+        {
+          "domain_id": "fresh",
+          "title": "Freshness and economy",
+          "coverage": 1.0,
+          "score": {
+            "observed": 2.7174,
+            "lower": 2.7174,
+            "upper": 2.7174
+          }
+        },
+        {
+          "domain_id": "mechanics",
+          "title": "Mechanics",
+          "coverage": 1.0,
+          "score": {
+            "observed": 1.8667,
+            "lower": 1.8667,
+            "upper": 1.8667
+          }
+        },
+        {
+          "domain_id": "holistic",
+          "title": "Holistic artistic success",
+          "coverage": 1.0,
+          "score": {
+            "observed": 6.0,
+            "lower": 6.0,
+            "upper": 6.0
+          }
+        }
+      ]
+    },
+    {
+      "scope_id": "unit-0005-febc528a057c",
+      "label": "Chapter 4",
+      "control_state": "VALID",
+      "coverage": 0.9949,
+      "score": {
+        "observed": 92.2371,
+        "lower": 91.7524,
+        "upper": 92.2595
+      },
+      "domains": [
+        {
+          "domain_id": "task",
+          "title": "Task and scope",
+          "coverage": 1.0,
+          "score": {
+            "observed": 6.7358,
+            "lower": 6.7358,
+            "upper": 6.7358
+          }
+        },
+        {
+          "domain_id": "character",
+          "title": "Character and arcs",
+          "coverage": 1.0,
+          "score": {
+            "observed": 16.0,
+            "lower": 16.0,
+            "upper": 16.0
+          }
+        },
+        {
+          "domain_id": "plot",
+          "title": "Plot architecture and payoff",
+          "coverage": 1.0,
+          "score": {
+            "observed": 20.0,
+            "lower": 20.0,
+            "upper": 20.0
+          }
+        },
+        {
+          "domain_id": "world",
+          "title": "World and continuity",
+          "coverage": 0.9577,
+          "score": {
+            "observed": 11.4706,
+            "lower": 10.9859,
+            "upper": 11.493
+          }
+        },
+        {
+          "domain_id": "pacing",
+          "title": "Pacing and information",
+          "coverage": 1.0,
+          "score": {
+            "observed": 10.0,
+            "lower": 10.0,
+            "upper": 10.0
+          }
+        },
+        {
+          "domain_id": "language",
+          "title": "Language and voice",
+          "coverage": 1.0,
+          "score": {
+            "observed": 8.5075,
+            "lower": 8.5075,
+            "upper": 8.5075
+          }
+        },
+        {
+          "domain_id": "effect",
+          "title": "Theme and effect",
+          "coverage": 1.0,
+          "score": {
+            "observed": 8.0,
+            "lower": 8.0,
+            "upper": 8.0
+          }
+        },
+        {
+          "domain_id": "fresh",
+          "title": "Freshness and economy",
+          "coverage": 1.0,
+          "score": {
+            "observed": 4.4565,
+            "lower": 4.4565,
+            "upper": 4.4565
+          }
+        },
+        {
+          "domain_id": "mechanics",
+          "title": "Mechanics",
+          "coverage": 1.0,
+          "score": {
+            "observed": 1.0667,
+            "lower": 1.0667,
+            "upper": 1.0667
+          }
+        },
+        {
+          "domain_id": "holistic",
+          "title": "Holistic artistic success",
+          "coverage": 1.0,
+          "score": {
+            "observed": 6.0,
+            "lower": 6.0,
+            "upper": 6.0
+          }
+        }
+      ]
+    },
+    {
+      "scope_id": "unit-0006-07454b12a420",
+      "label": "Chapter 5",
+      "control_state": "VALID",
+      "coverage": 1.0,
+      "score": {
+        "observed": 90.6757,
+        "lower": 90.6757,
+        "upper": 90.6757
+      },
+      "domains": [
+        {
+          "domain_id": "task",
+          "title": "Task and scope",
+          "coverage": 1.0,
           "score": {
             "observed": 7.0,
-            "lower": 6.5882,
+            "lower": 7.0,
             "upper": 7.0
           }
         },
@@ -477,9 +722,9 @@
           "title": "Plot architecture and payoff",
           "coverage": 1.0,
           "score": {
-            "observed": 18.8235,
-            "lower": 18.8235,
-            "upper": 18.8235
+            "observed": 20.0,
+            "lower": 20.0,
+            "upper": 20.0
           }
         },
         {
@@ -487,9 +732,9 @@
           "title": "World and continuity",
           "coverage": 1.0,
           "score": {
-            "observed": 12.0,
-            "lower": 12.0,
-            "upper": 12.0
+            "observed": 11.493,
+            "lower": 11.493,
+            "upper": 11.493
           }
         },
         {
@@ -497,9 +742,9 @@
           "title": "Pacing and information",
           "coverage": 1.0,
           "score": {
-            "observed": 9.3651,
-            "lower": 9.3651,
-            "upper": 9.3651
+            "observed": 10.0,
+            "lower": 10.0,
+            "upper": 10.0
           }
         },
         {
@@ -507,9 +752,9 @@
           "title": "Language and voice",
           "coverage": 1.0,
           "score": {
-            "observed": 8.209,
-            "lower": 8.209,
-            "upper": 8.209
+            "observed": 9.1045,
+            "lower": 9.1045,
+            "upper": 9.1045
           }
         },
         {
@@ -527,9 +772,9 @@
           "title": "Freshness and economy",
           "coverage": 1.0,
           "score": {
-            "observed": 2.2826,
-            "lower": 2.2826,
-            "upper": 2.2826
+            "observed": 2.7174,
+            "lower": 2.7174,
+            "upper": 2.7174
           }
         },
         {
@@ -558,21 +803,21 @@
       "scope_id": "unit-0007-b80e8306ee58",
       "label": "Chapter 6",
       "control_state": "VALID",
-      "coverage": 0.9828,
+      "coverage": 0.9921,
       "score": {
-        "observed": 78.2106,
-        "lower": 76.8291,
-        "upper": 78.5448
+        "observed": 88.4106,
+        "lower": 87.6519,
+        "upper": 88.4443
       },
       "domains": [
         {
           "domain_id": "task",
           "title": "Task and scope",
-          "coverage": 0.7549,
+          "coverage": 0.8868,
           "score": {
-            "observed": 5.6364,
-            "lower": 4.2549,
-            "upper": 5.9706
+            "observed": 6.7021,
+            "lower": 5.9434,
+            "upper": 6.7358
           }
         },
         {
@@ -580,9 +825,9 @@
           "title": "Character and arcs",
           "coverage": 1.0,
           "score": {
-            "observed": 13.7143,
-            "lower": 13.7143,
-            "upper": 13.7143
+            "observed": 16.0,
+            "lower": 16.0,
+            "upper": 16.0
           }
         },
         {
@@ -600,9 +845,9 @@
           "title": "World and continuity",
           "coverage": 1.0,
           "score": {
-            "observed": 12.0,
-            "lower": 12.0,
-            "upper": 12.0
+            "observed": 10.8169,
+            "lower": 10.8169,
+            "upper": 10.8169
           }
         },
         {
@@ -620,9 +865,9 @@
           "title": "Language and voice",
           "coverage": 1.0,
           "score": {
-            "observed": 6.5672,
-            "lower": 6.5672,
-            "upper": 6.5672
+            "observed": 9.5522,
+            "lower": 9.5522,
+            "upper": 9.5522
           }
         },
         {
@@ -640,9 +885,9 @@
           "title": "Freshness and economy",
           "coverage": 1.0,
           "score": {
-            "observed": 2.0652,
-            "lower": 2.0652,
-            "upper": 2.0652
+            "observed": 2.8261,
+            "lower": 2.8261,
+            "upper": 2.8261
           }
         },
         {
@@ -668,21 +913,118 @@
       ]
     }
   ],
+  "hierarchical_score": {
+    "profile_version": 1,
+    "profile_id": "balanced-wip-70-30",
+    "method": "weighted_global_local",
+    "local_reducer": "weighted_mean",
+    "score": {
+      "observed": 77.400975,
+      "lower": 76.013695,
+      "upper": 77.65249
+    },
+    "global_component": {
+      "score": {
+        "observed": 74.0536,
+        "lower": 72.2044,
+        "upper": 74.4024
+      },
+      "requested_weight": 7.0,
+      "effective_weight": 0.7
+    },
+    "local_component": {
+      "score": {
+        "observed": 85.211517,
+        "lower": 84.90205,
+        "upper": 85.236033
+      },
+      "requested_weight": 3.0,
+      "effective_weight": 0.3,
+      "selected_weakest_unit_id": null,
+      "unit_weight_assignments": [
+        {
+          "unit_id": "unit-0002-920c59af6477",
+          "weight_class": "ordinary",
+          "class_modifier": 1.0,
+          "effective_weight": 0.166666666667
+        },
+        {
+          "unit_id": "unit-0003-aa9f0ac01ee1",
+          "weight_class": "ordinary",
+          "class_modifier": 1.0,
+          "effective_weight": 0.166666666667
+        },
+        {
+          "unit_id": "unit-0004-39a17c40720a",
+          "weight_class": "ordinary",
+          "class_modifier": 1.0,
+          "effective_weight": 0.166666666667
+        },
+        {
+          "unit_id": "unit-0005-febc528a057c",
+          "weight_class": "ordinary",
+          "class_modifier": 1.0,
+          "effective_weight": 0.166666666667
+        },
+        {
+          "unit_id": "unit-0006-07454b12a420",
+          "weight_class": "ordinary",
+          "class_modifier": 1.0,
+          "effective_weight": 0.166666666667
+        },
+        {
+          "unit_id": "unit-0007-b80e8306ee58",
+          "weight_class": "ordinary",
+          "class_modifier": 1.0,
+          "effective_weight": 0.166666666667
+        }
+      ]
+    },
+    "unit_weight_policy": {
+      "ordinary_unit_weight": 1.0,
+      "unfinished_unit_weight": 1.0,
+      "unfinished_unit_ids": [],
+      "prologue_epilogue_weight": 1.0,
+      "prologue_epilogue_unit_ids": [],
+      "overlap_precedence": "unfinished_before_prologue_epilogue"
+    },
+    "policy": "Explicit deterministic profile over existing global and local score intervals; it does not replace control states, completion handling, or underlying results."
+  },
   "findings": [
     {
       "criterion_ids": [
-        "core.task_and_brief_fidelity.operation",
-        "form.prose.general_prose_fiction.narrative_experience",
-        "core.holistic_artistic_success.threshold_1_functional",
-        "core.holistic_artistic_success.threshold_3_keepworthy"
+        "core.task_and_brief_fidelity.completion_flag",
+        "craft.narrative.characterization.dimensionality",
+        "form.prose.general_prose_fiction.movement"
       ],
       "evidence_refs": [
-        "result.json: orientation.evaluated_scope",
-        "units unit-0002-920c59af6477 through unit-0007-b80e8306ee58"
+        "evidence-0001",
+        "evidence-0002",
+        "evidence-0012"
       ],
-      "finding": "The evaluated artifact is a six-chapter novel opening in which nineteen-year-old programmer Madison falls rapidly for Amelia, a former paramedic and blood-drinking witch, then enters the morally dangerous world of Amelia’s family, symbolic blood magic, and FAWN. The manuscript functions as a coherent supernatural romance and supplies keepworthy characters, conflict, revelations, and future promises.",
+      "finding": "This is an unfinished six-chapter novel opening about Madison, a nineteen-year-old programmer whose rapid romance with Amelia exposes a world of blood-drinking witches, symbolic magic, FAWN research, lethal power, and contested consent. The supplied movement ends with Madison physically weakened but voluntarily entering magical study while the relationship remains loving and morally unstable.",
       "kind": "observation",
-      "why_it_matters": "Revision should preserve this recognizable premise and relationship-centered spine while improving execution; the manuscript does not need a conceptual restart."
+      "why_it_matters": "The evaluation covers the supplied opening movement, not the planned novel. Revision should strengthen what these chapters establish without forcing final closure or resolving future arcs prematurely."
+    },
+    {
+      "criterion_ids": [
+        "scope.long_context.overflow",
+        "core.holistic_artistic_success.threshold_1_functional",
+        "core.holistic_artistic_success.threshold_2_effective",
+        "core.holistic_artistic_success.threshold_3_keepworthy",
+        "core.holistic_artistic_success.threshold_4_exceptional"
+      ],
+      "evidence_refs": [
+        "evidence-0001",
+        "evidence-0002",
+        "evidence-0011",
+        "evidence-0012",
+        "evidence-0015",
+        "evidence-0016"
+      ],
+      "finding": "Every score report has control state VALID. The whole-work observed score is 74.0536, with non-statistical bounds of 72.2044–74.4024 and coverage 0.978. Independent local results are: Chapter One 77.3678 (77.0926–77.4448); Chapter Two 78.5622; Chapter Three 84.0157 (83.6775–84.0297); Chapter Four 92.2371 (91.7524–92.2595); Chapter Five 90.6757; and Chapter Six 88.4106 (87.6519–88.4443).",
+      "kind": "observation",
+      "why_it_matters": "These chapter scores are separate diagnostics, not values to average. The whole-work result governs systemic conclusions, while each local result identifies where revision pressure is concentrated."
     },
     {
       "criterion_ids": [
@@ -694,83 +1036,37 @@
         "task.contract.gray-blood-ch1-6-comparison-v1.canon.magic_uses_drawn_symbols"
       ],
       "evidence_refs": [
-        "organized source units, units unit-0004-39a17c40720a and unit-0006-07454b12a420",
-        "organized source units, unit-0004-39a17c40720a",
-        "organized source units, unit-0007-b80e8306ee58",
-        "result.json, state ledger “Operative basis of magic”"
+        "evidence-0003",
+        "evidence-0004",
+        "evidence-0005",
+        "evidence-0006",
+        "evidence-0007"
       ],
-      "finding": "No validated objective binding requirement fails. All five assessable canon gates pass: depicted witches are female, activation requires a beating heart, engraving requires and consumes one lifeblood source, and magic retains drawn symbols as its operative basis. The witch-human-offspring requirement is NOT_APPLICABLE because the relevant conception does not occur.",
+      "finding": "All five applicable objective, non-negotiable canon gates pass: depicted witches are female, activation requires beginning consumption of a beating heart, engravings require and wholly consume one lifeblood source, and magic operates through drawn symbols. Witch–human-male offspring is NOT_APPLICABLE because that conception does not occur in scope.",
       "kind": "strength",
-      "why_it_matters": "Structural and tonal revision can proceed without rebuilding the core magical canon; the untested offspring rule should simply remain protected in later chapters."
-    },
-    {
-      "criterion_ids": [
-        "scope.long_context.overflow",
-        "core.holistic_artistic_success.threshold_2_effective",
-        "core.holistic_artistic_success.threshold_4_exceptional"
-      ],
-      "evidence_refs": [
-        "result.json: limitations[0]",
-        "result.json: orientation.evaluated_scope"
-      ],
-      "finding": "The whole-work control state is VALID with 0.978 coverage. Its deterministic observed score is 74.0536; the non-statistical uncertainty interval is 72.2044–74.4024. Observed domain scores are task 5.3133, character 14.8571, plot 18.8235, world 10.4118, pacing 6.3492, language 5.8209, effect 6.4865, freshness/economy 2.3913, mechanics 1.6000, and holistic success 6.0000.",
-      "kind": "observation",
-      "why_it_matters": "The report supports an effective, keepworthy WIP rather than exceptional execution. The interval reflects unassessed relevant criteria, not sampling error, so the observed score should remain distinct from its bounds."
-    },
-    {
-      "criterion_ids": [
-        "scope.long_context.overflow",
-        "core.holistic_artistic_success.threshold_2_effective",
-        "core.holistic_artistic_success.threshold_3_keepworthy"
-      ],
-      "evidence_refs": [
-        "unit-0002-920c59af6477",
-        "unit-0003-aa9f0ac01ee1",
-        "unit-0006-07454b12a420",
-        "unit-0007-b80e8306ee58"
-      ],
-      "finding": "The sampled local results remain independent: Chapter One scores 73.3761 with bounds 70.0657–73.4429; Chapter Two scores 81.0185 with bounds 79.3444–81.1630; Chapter Five scores 82.8982 with bounds 82.4864–82.8982; Chapter Six scores 78.2106 with bounds 76.8291–78.5448. These scores are not averaged into a chapter mean.",
-      "kind": "observation",
-      "why_it_matters": "Use the local reports diagnostically: Chapter One needs the heaviest economy and mechanics work, while Chapters Two and Five contain stronger models for revelation, escalation, and consequential character movement."
+      "why_it_matters": "These are the actual hard gates. Tightening tone, pacing, or prose should preserve these mechanisms exactly and should not manufacture a reproduction example merely to activate an otherwise inapplicable check."
     },
     {
       "criterion_ids": [
         "form.prose.novel.long_causality",
-        "form.prose.novel.multiple_arcs",
+        "form.prose.novel.development",
         "form.prose.novel.payoff",
-        "craft.narrative.plot_and_causality.consequence",
-        "craft.narrative.worldbuilding.constraints",
-        "craft.narrative.temporal_and_spatial_continuity.state_update"
+        "craft.narrative.character_arc.local_contribution",
+        "craft.narrative.narrative_momentum.progress"
       ],
       "evidence_refs": [
-        "result.json: distant_links[0].description",
-        "result.json: distant_links[6].description",
-        "result.json: work_state.central_arcs[0]",
-        "result.json: work_state.central_arcs[1]",
-        "unit-0006-07454b12a420; unit-0007-b80e8306ee58"
+        "evidence-0017",
+        "evidence-0018",
+        "evidence-0023",
+        "evidence-0024",
+        "evidence-0028",
+        "evidence-0029",
+        "evidence-0033",
+        "evidence-0002"
       ],
-      "finding": "The strongest systemic achievement is cumulative architecture. Earlier qualifications, blood clues, magical disturbances, choices, injuries, and relationship fears produce later revelations or consequences; multiple arcs remain coordinated; and bodily and magical states carry forward rather than resetting.",
+      "finding": "The six chapters form a strong causal opening movement: concealed medical competence matters during the climber crisis; witnessed killing drives biological disclosure; campus magic leads to FAWN; independent access to magic changes Madison’s romantic choice; and engraving costs lead to quantified moral accounting. The relevant binary verdicts are YES for long causality, development, available payoff, local arc contribution, and progress.",
       "kind": "strength",
-      "why_it_matters": "Preserve the setup-to-payoff chain, persistent blood-loss consequences, and open-thread ledger during cuts. They supply the narrative’s credibility and forward pull."
-    },
-    {
-      "criterion_ids": [
-        "task.contract.gray-blood-ch1-6-comparison-v1.goal.grim_dark_tone",
-        "task.contract.gray-blood-ch1-6-comparison-v1.goal.amelia_darker",
-        "task.contract.gray-blood-ch1-6-comparison-v1.goal.amelia_volatility",
-        "task.contract.gray-blood-ch1-6-comparison-v1.goal.amelia_less_apologetic",
-        "core.voice_and_stylistic_identity.project_fidelity",
-        "craft.narrative.characterization.canon"
-      ],
-      "evidence_refs": [
-        "organized source units, units unit-0002-920c59af6477 and unit-0006-07454b12a420",
-        "organized source units, units unit-0002-920c59af6477 through unit-0007-b80e8306ee58",
-        "organized source units, unit-0004-39a17c40720a",
-        "author brief and supplied artifact scope"
-      ],
-      "finding": "The leading weighted-priority shortfall is tonal and characterological, not a hard-gate violation. Graphic violence and moral darkness are present, but bubbly banter, easy laughter, apologies, reassurance, and defensive softness dominate Amelia’s interpersonal presentation. Whether she is darker than the earlier WIP is CANNOT_ASSESS without that baseline, but her volatility and less-apologetic goals both receive NO verdicts in the supplied artifact.",
-      "kind": "revision_priority",
-      "why_it_matters": "Recast Amelia’s default responses before line polishing: use controlled menace, sharper wit, pragmatic statements, selective silence, and rarer vulnerability. This would strengthen grim-dark pressure without removing her affection or flattening her complexity."
+      "why_it_matters": "This causal spine is the manuscript’s most reliable asset. Compress scenes around these irreversible turns while preserving the sequence of clue, decision, consequence, and changed state."
     },
     {
       "criterion_ids": [
@@ -779,17 +1075,62 @@
         "task.contract.gray-blood-ch1-6-comparison-v1.goal.madison_dark_path_setup",
         "task.contract.gray-blood-ch1-6-comparison-v1.goal.activation_as_trauma",
         "task.contract.gray-blood-ch1-6-comparison-v1.goal.amelia_power_attraction",
-        "task.contract.gray-blood-ch1-6-comparison-v1.goal.amelia_affection_power_balance",
-        "craft.narrative.theme_and_subtext.counterpoint"
+        "task.contract.gray-blood-ch1-6-comparison-v1.goal.amelia_affection_power_balance"
       ],
       "evidence_refs": [
-        "organized source units, units unit-0004-39a17c40720a and unit-0007-b80e8306ee58",
-        "organized source units, units unit-0003-aa9f0ac01ee1 and unit-0006-07454b12a420",
-        "organized source units, units unit-0003-aa9f0ac01ee1, unit-0005-febc528a057c, unit-0006-07454b12a420, and unit-0007-b80e8306ee58"
+        "evidence-0004",
+        "evidence-0050",
+        "evidence-0051",
+        "evidence-0052"
       ],
-      "finding": "Most other weighted character goals succeed. Madison visibly grapples with killing, activation, coercion, and lifeblood while translating magic into a programmable system; her fascination increasingly competes with moral alarm. Activation remains traumatic, and Amelia’s affection coexists with appetite, addiction, power, and lethal capability.",
+      "finding": "Several high-weight author goals score YES. Madison visibly grapples with killing, activation, coercion, and lifeblood; her programmer mindset becomes a method for modeling magic; fascination competes with alarm strongly enough to establish a darker trajectory; activation lands as lasting trauma; and Amelia’s affection coexists with addiction, lethal power, and morally uneasy attraction to blood.",
       "kind": "strength",
-      "why_it_matters": "These tensions are the manuscript’s most distinctive long-range engine. Revision should intensify the delay and cost of Madison’s accommodations rather than changing her programmer-driven trajectory."
+      "why_it_matters": "These priorities give the project its distinctive long-range engine. Revision should retain Madison’s escalating system-building and ensure each new technical insight also creates an ethical or relational cost."
+    },
+    {
+      "criterion_ids": [
+        "task.contract.gray-blood-ch1-6-comparison-v1.goal.grim_dark_tone",
+        "task.contract.gray-blood-ch1-6-comparison-v1.goal.amelia_darker",
+        "task.contract.gray-blood-ch1-6-comparison-v1.goal.amelia_volatility",
+        "task.contract.gray-blood-ch1-6-comparison-v1.goal.amelia_less_apologetic",
+        "core.audience_and_purpose_fit.tone",
+        "core.voice_and_stylistic_identity.project_fidelity",
+        "craft.narrative.characterization.canon"
+      ],
+      "evidence_refs": [
+        "evidence-0004",
+        "evidence-0005",
+        "evidence-0011",
+        "evidence-0015",
+        "evidence-0016",
+        "evidence-0048",
+        "evidence-0049"
+      ],
+      "finding": "The largest systemic weighted-goal miss is tonal. Sustained giggling, reassurance, romantic comedy, guilt, and apology produce NO verdicts for grim-dark tone, controlled volatility, reduced apologetic framing, tonal fit, project fidelity, and characterization fidelity. Whether Amelia is darker than the earlier WIP is formally CANNOT_ASSESS because that baseline was not supplied, but her absolute presentation still conflicts with the stated direction.",
+      "kind": "revision_priority",
+      "why_it_matters": "Revise Amelia across all six chapters, not only at violent peaks: replace apology loops with concise factual admissions, darker amusement, pragmatic self-justification, or controlled silence. Preserve genuine affection, but make warmth a choice, mask, or costly exception rather than her default register."
+    },
+    {
+      "criterion_ids": [
+        "craft.narrative.worldbuilding.rules",
+        "craft.narrative.worldbuilding.consistency",
+        "craft.narrative.worldbuilding.constraints",
+        "craft.narrative.worldbuilding.consequences",
+        "craft.narrative.worldbuilding.no_default_furniture",
+        "core.freshness_and_non_genericness.unpredictable_specificity"
+      ],
+      "evidence_refs": [
+        "evidence-0002",
+        "evidence-0011",
+        "evidence-0016",
+        "evidence-0034",
+        "evidence-0036",
+        "evidence-0037",
+        "evidence-0038"
+      ],
+      "finding": "The blood-magic system is specific, consistent, constrained, and consequential. Strongholds, blood potency, intent, activation, freework, engraving, stored blood, coercion, and programming analogies produce YES verdicts across rules, consistency, constraints, consequences, non-default worldbuilding, and unpredictable specificity.",
+      "kind": "strength",
+      "why_it_matters": "This system distinguishes the novel from generic vampire or witch fiction. Keep the rules and costs, but increasingly teach them through failed attempts, tactical choices, bodily effects, or disagreement rather than reference-style explanation."
     },
     {
       "criterion_ids": [
@@ -798,22 +1139,26 @@
         "craft.narrative.pacing_and_narrative_time.allocation",
         "craft.narrative.pacing_and_narrative_time.local_global",
         "craft.narrative.pacing_and_narrative_time.no_stall",
+        "craft.narrative.exposition_and_information_management.embedding",
+        "craft.narrative.exposition_and_information_management.priority",
         "craft.narrative.exposition_and_information_management.no_redundancy",
         "craft.narrative.exposition_and_information_management.no_dump",
         "craft.narrative.dialogue.no_exposition",
-        "core.economy_and_relevance.length_fit",
-        "penalty.repetition.beat"
+        "core.economy_and_relevance.earns_place",
+        "core.economy_and_relevance.no_restatement",
+        "core.economy_and_relevance.length_fit"
       ],
       "evidence_refs": [
-        "Recurring throughout units 0002-0007",
-        "unit-0004-39a17c40720a",
-        "unit-0006-07454b12a420, drinking-game setup",
-        "unit-0007-b80e8306ee58, Zoe’s mechanics recap",
-        "unit-0007-b80e8306ee58, repeated mobility-assistance beats"
+        "evidence-0002",
+        "evidence-0011",
+        "evidence-0012",
+        "evidence-0015",
+        "evidence-0046",
+        "evidence-0047"
       ],
-      "finding": "A systemic economy problem spans romance, instruction, and recovery: repeated flirting and laughter, long anatomy or mechanics lessons, party setup, and repeated mobility assistance consume space after their meaning is established. This is broader than any single chapter and depresses pacing, information management, and freshness/economy.",
+      "finding": "Pacing and information management are the broadest systemic craft weakness. Binary NOs cluster around extended flirtation, the piano catalog, anatomy and mechanics lectures, repeated explanations, party reactions, reassurance loops, and low-consequence social beats. The whole-work pacing-and-information score is 6.3492, while freshness-and-economy is only 2.3913.",
       "kind": "revision_priority",
-      "why_it_matters": "Cut or combine equivalent reaction cycles, retain only the rule needed for the current decision, and convert later explanations into conflict, experiment, or consequence. Give reclaimed space to the breach of trust, coercion ethics, and the aftermath of quantified killing."
+      "why_it_matters": "Perform a compression pass organized by dramatic yield: retain the first decisive instance of attraction, explanation, or reassurance; cut equivalent repetitions; convert later mechanics into obstacle-driven demonstrations; and give saved space to activation aftermath, the death-count confrontation, coercion, and Madison’s moral choices."
     },
     {
       "criterion_ids": [
@@ -823,48 +1168,109 @@
         "core.mechanics_and_presentation.grammar",
         "core.mechanics_and_presentation.punctuation",
         "core.mechanics_and_presentation.spelling",
-        "core.mechanics_and_presentation.cleanliness",
-        "core.freshness_and_non_genericness.no_cliche",
-        "core.freshness_and_non_genericness.no_default_metaphors"
+        "core.mechanics_and_presentation.cleanliness"
       ],
       "evidence_refs": [
-        "unit-0002-920c59af6477",
-        "unit-0003-aa9f0ac01ee1",
-        "unit-0005-febc528a057c",
-        "unit-0007-b80e8306ee58"
+        "evidence-0008",
+        "evidence-0011",
+        "evidence-0015",
+        "evidence-0016"
       ],
-      "finding": "A second systemic revision layer is sentence-level polish. Agreement and tense errors, malformed clauses, punctuation defects, misspellings, stray debris, stock romantic shorthand, and default metaphors recur across the manuscript. The mechanics domain’s observed score is 1.6000, and the whole-work binary verdicts for grammar, punctuation, spelling, and cleanliness are NO.",
+      "finding": "Copy-level defects are systemic rather than isolated: the verdicts are NO for diction control, syntax, awkwardness, grammar, punctuation, spelling, and cleanliness. The evidence includes malformed constructions, tense and agreement slips, incorrect word choices, inconsistent names, stray characters, and markup debris; the whole-work mechanics score is 1.6.",
       "kind": "revision_priority",
-      "why_it_matters": "Perform the structural and tonal pass first, then run a dedicated copyedit and cliché pass. Correctness work done before major cuts would waste effort, while leaving these defects afterward would continue to interrupt otherwise distinctive voice and imagery."
+      "why_it_matters": "Run a dedicated mechanical pass after structural cuts. Correct repeated lexical errors globally, normalize names and dialogue punctuation, remove debris, and then read each chapter aloud for missing words, duplicated clauses, and tense drift."
     },
     {
       "criterion_ids": [
-        "craft.narrative.plot_and_causality.no_convenience",
-        "craft.narrative.plot_and_causality.causal_chain"
+        "core.freshness_and_non_genericness.no_cliche",
+        "core.freshness_and_non_genericness.no_default_metaphors",
+        "core.freshness_and_non_genericness.unpredictable_specificity",
+        "core.emotional_and_intellectual_effect.restraint"
       ],
       "evidence_refs": [
-        "unit-0003-aa9f0ac01ee1, climber scene",
-        "unit-0006-07454b12a420, feeding scene"
+        "evidence-0002",
+        "evidence-0008",
+        "evidence-0011",
+        "evidence-0015",
+        "evidence-0016"
       ],
-      "finding": "Two notable causal defects are localized rather than systemic: the fatal climber lands beside the exact person able to turn the accident into the central supernatural revelation, and Amelia delays intervention while Madison is dangerously drained despite established protectiveness and medical competence. The broader causal-chain criterion still passes.",
+      "finding": "Original story-specific material is repeatedly filtered through familiar romantic shorthand, default metaphors, and explanatory emotional summaries. The manuscript therefore scores YES for unpredictable specificity but NO for avoiding clichés, default metaphors, and over-explanation of effects the scene has already conveyed.",
       "kind": "risk",
-      "why_it_matters": "Give the climber convergence an earlier causal reason, and supply a credible constraint or misjudgment delaying Amelia’s intervention. Narrow repairs can remove the sense of authorial convenience without restructuring the surrounding chapters."
+      "why_it_matters": "Preserve concrete blood, code, medical, and symbolic perceptions while cutting transferable phrases and post-scene interpretation. Let touch, recoil, calculation, silence, or magical cost carry emotion before adding narration."
     },
     {
       "criterion_ids": [
+        "craft.narrative.continuity_and_canon_integrity.facts",
+        "craft.narrative.continuity_and_canon_integrity.world"
+      ],
+      "evidence_refs": [
+        "evidence-0040"
+      ],
+      "finding": "A localized canon defect remains in explicit ages, aging limits, and institutional demographic benchmarks. Both fact continuity and world continuity receive NO verdicts even though the core magic rules remain stable.",
+      "kind": "revision_priority",
+      "why_it_matters": "Reconcile the Chapter Four aging exchange and associated demographic figures against the controlling brief, then search the manuscript for every dependent calculation. This is a local canon repair, not a failure of the validated binding gates."
+    },
+    {
+      "criterion_ids": [
+        "craft.narrative.plot_and_causality.no_convenience"
+      ],
+      "evidence_refs": [
+        "evidence-0015"
+      ],
+      "finding": "The climber’s fatal fall beside a medically qualified witch is the principal isolated causality defect. The NO verdict reflects an unprepared convergence that chiefly exists to force the supernatural revelation.",
+      "kind": "risk",
+      "why_it_matters": "Seed a causal reason for Amelia and Madison to be near the climber, connect the accident to an established hazard or magical disturbance, or make an earlier character decision materially create the convergence."
+    },
+    {
+      "criterion_ids": [
+        "core.task_and_brief_fidelity.completion_flag",
         "form.prose.novel.macro_structure",
         "form.prose.novel.ending",
         "craft.narrative.character_arc.end_state",
-        "core.task_and_brief_fidelity.intervention",
-        "task.contract.gray-blood-ch1-6-comparison-v1.goal.katherine_motivation"
+        "craft.narrative.continuity_and_canon_integrity.threads",
+        "craft.narrative.theme_and_subtext.open_questions",
+        "penalty.unflagged_incomplete.status",
+        "penalty.unflagged_incomplete.truncation"
       ],
       "evidence_refs": [
-        "result.json: limitations",
-        "author brief and result.json limitations"
+        "evidence-0001",
+        "evidence-0002",
+        "evidence-0036",
+        "evidence-0058"
       ],
-      "finding": "Several conclusions remain unavailable by design: the complete novel’s macrostructure, ending, and final character states; exact rewrite-intervention fidelity without the source draft; Katherine’s immediate-visit motivation; and future resolution of turning, Robin, blood batteries, coercion, and retained lifeblood. These are CANNOT_ASSESS or outside the supplied scope, not demonstrated failures.",
+      "finding": "The WIP is correctly flagged and ends at a deliberate chapter boundary. Whole-novel macrostructure, final resolution, and final character states are CANNOT_ASSESS rather than failures. Blood batteries, coercive magic, reproduction, Robin, retained lifeblood, activation aftermath, and Madison’s darker trajectory remain purposeful open threads.",
       "kind": "observation",
-      "why_it_matters": "Treat the current result as an opening-movement diagnosis. Later review should explicitly test these deferred obligations instead of allowing strong chapter-level setup to stand in for completed novel-scale payoff."
+      "why_it_matters": "Future revision should maintain visible causal pressure on these promises, but the current evaluation does not require their completion or penalize absent Katherine, grimoire, antagonist, or endgame material."
+    },
+    {
+      "criterion_ids": [
+        "task.contract.gray-blood-ch1-6-comparison-v1.goal.katherine_motivation",
+        "task.contract.gray-blood-ch1-6-comparison-v1.goal.chapter_title_relevance"
+      ],
+      "evidence_refs": [
+        "evidence-0053",
+        "evidence-0054"
+      ],
+      "finding": "Two lower-weight priorities have different states: chapter-title relevance scores YES, while Katherine’s immediate-visit motivation is CANNOT_ASSESS because she does not appear or announce a visit in the supplied chapters.",
+      "kind": "observation",
+      "why_it_matters": "Keep the title system where its computational or mathematical relation is legible. Defer judgment on Katherine until her entrance is drafted; her absence here is not a gate failure."
+    },
+    {
+      "criterion_ids": [
+        "core.holistic_artistic_success.threshold_1_functional",
+        "core.holistic_artistic_success.threshold_2_effective",
+        "core.holistic_artistic_success.threshold_3_keepworthy",
+        "core.holistic_artistic_success.threshold_4_exceptional"
+      ],
+      "evidence_refs": [
+        "evidence-0011",
+        "evidence-0012",
+        "evidence-0015",
+        "evidence-0016"
+      ],
+      "finding": "Holistically, the manuscript is functional, effective, and keepworthy, but not yet exceptional. Its causal revelations, distinctive magic, moral-romantic conflict, and Madison’s analytical trajectory justify continued development; tonal mismatch, repetition, exposition, looseness, and mechanical defects prevent top-tier finish.",
+      "kind": "observation",
+      "why_it_matters": "The highest-value revision order is: recalibrate Amelia and the grim-dark register; compress repetition and lectures; complete a rigorous copyedit; then repair the isolated age-canon and climber-convenience defects."
     }
   ],
   "warnings": [
@@ -874,9 +1280,9 @@
     "The apparent discrepancy between Amelia's account of Robin's recent departure and FAWN's belief that Robin predates them is unresolved within the supplied scope.",
     "The opening retrospective frame implies later narration, but the temporal distance and narrator's ultimate circumstances are not supplied.",
     "Canon checks based on absence—such as no male witches, no activation without a beating heart, and no prohibited witch-human offspring—apply only to the material provided.",
-    "All control states are VALID, but score intervals are non-statistical bounds caused by unassessed relevant criteria; they are not confidence intervals.",
-    "The artifact is an explicitly disclosed work in progress. Whole-novel structure, ending, and final arc resolution must not be inferred from these six chapters.",
-    "Weighted author goals are scored priorities rather than gates. Only the validated objective binding canon requirements were treated as non-negotiable gates.",
-    "The sampled chapter scores are independent diagnostics and were not averaged; whole-work conclusions come from the global pass."
+    "The manuscript is an explicitly incomplete work in progress. Whole-novel ending, macrostructure, final character state, and unavailable future payoffs were not scored as failures.",
+    "Observed scores are distinct from their non-statistical lower and upper bounds. Those bounds reflect unassessed relevant criteria, not sampling error or confidence intervals.",
+    "Local chapter scores are independent diagnostics and were not averaged. Whole-work conclusions come from the global pass.",
+    "Weighted author goals are revision priorities, not hard gates. Only the validated objective, non-negotiable canon requirements were treated as gates."
   ]
 }

@@ -1,41 +1,41 @@
 {
   "$schema": "https://raw.githubusercontent.com/HaileyStorm/Creative-Writing-Rubrics/main/schema/hbq_score_report.schema.json",
   "active_nominal_points": 100.0,
-  "artifact_id": "gray-blood-rewrite-ch01-06-unit-0003-aa9f0ac01ee1",
+  "artifact_id": "gray-blood-rewrite-ch01-06-chapter-unit-0003-aa9f0ac01ee1",
   "base_score": {
-    "lower": 84.4873,
-    "observed": 86.1614,
-    "upper": 86.3059
+    "lower": 85.7646,
+    "observed": 85.7646,
+    "upper": 85.7646
   },
-  "bundle_id": "prose.novel",
+  "bundle_id": "prose.chapter",
   "bundle_version": 1,
-  "confidence": 0.9517,
-  "coverage": 0.9818,
+  "confidence": 0.947,
+  "coverage": 1.0,
   "domains": [
     {
       "active": true,
-      "confidence": 0.9292,
-      "coverage": 0.7402,
+      "confidence": 0.8947,
+      "coverage": 1.0,
       "domain_id": "task",
       "nominal_points": 7.0,
       "questions": [
         {
-          "confidence": 0.93,
+          "confidence": 0.84,
           "evidence": [
             {
-              "reference": "result.json: limitations; unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, climber aftermath"
             }
           ],
           "module_id": "core.task_and_brief_fidelity",
           "question_id": "core.task_and_brief_fidelity.intervention",
-          "verdict": "CANNOT_ASSESS",
+          "verdict": "YES",
           "weight": 2.0
         },
         {
-          "confidence": 0.98,
+          "confidence": 1.0,
           "evidence": [
             {
-              "reference": "result.json: limitations[0]"
+              "reference": "WIP_CHAPTER_CONTEXT.json"
             }
           ],
           "module_id": "core.task_and_brief_fidelity",
@@ -44,10 +44,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 1.0,
+          "confidence": 0.99,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1: opening"
+              "reference": "unit-0003-aa9f0ac01ee1, opening"
             }
           ],
           "module_id": "core.task_and_brief_fidelity",
@@ -56,10 +56,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.91,
+          "confidence": 0.86,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, scene transition"
             }
           ],
           "module_id": "core.length_and_scope_fit",
@@ -71,7 +71,7 @@
           "confidence": 0.83,
           "evidence": [
             {
-              "reference": "result.json: limitations[0]"
+              "reference": "result.json, unit-0003 ending_state"
             }
           ],
           "module_id": "core.length_and_scope_fit",
@@ -80,13 +80,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.94,
+          "confidence": 0.91,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1: piano scene"
-            },
-            {
-              "reference": "unit-0003-aa9f0ac01ee1: climber scene"
+              "reference": "unit-0003-aa9f0ac01ee1, ending"
             }
           ],
           "module_id": "core.length_and_scope_fit",
@@ -95,10 +92,10 @@
           "weight": 2.0
         },
         {
-          "confidence": 0.88,
+          "confidence": 0.78,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1: piano scene"
+              "reference": "unit-0003-aa9f0ac01ee1, piano scene"
             }
           ],
           "module_id": "core.length_and_scope_fit",
@@ -110,7 +107,7 @@
           "confidence": 0.98,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1: ending"
+              "reference": "unit-0003-aa9f0ac01ee1, ending"
             }
           ],
           "module_id": "core.length_and_scope_fit",
@@ -119,22 +116,22 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.74,
+          "confidence": 0.73,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1: piano scene"
+              "reference": "unit-0003-aa9f0ac01ee1, piano scene"
             }
           ],
           "module_id": "core.length_and_scope_fit",
           "question_id": "core.length_and_scope_fit.no_padding",
-          "verdict": "YES",
+          "verdict": "NO",
           "weight": 2.0
         },
         {
-          "confidence": 0.97,
+          "confidence": 0.96,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1: magical disposal sequence"
+              "reference": "unit-0003-aa9f0ac01ee1, climbing accident"
             }
           ],
           "module_id": "core.length_and_scope_fit",
@@ -143,10 +140,10 @@
           "weight": 2.0
         },
         {
-          "confidence": 0.96,
+          "confidence": 0.89,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1: post-disposal scene"
+              "reference": "unit-0003-aa9f0ac01ee1, Savannah phone call"
             }
           ],
           "module_id": "core.audience_and_purpose_fit",
@@ -155,13 +152,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.91,
+          "confidence": 0.76,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1: piano reflection"
-            },
-            {
-              "reference": "unit-0003-aa9f0ac01ee1: bedroom transition"
+              "reference": "unit-0003-aa9f0ac01ee1, piano scene"
             }
           ],
           "module_id": "core.audience_and_purpose_fit",
@@ -170,10 +164,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.87,
+          "confidence": 0.92,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1: magical disposal sequence"
+              "reference": "unit-0003-aa9f0ac01ee1, climber discovery"
             }
           ],
           "module_id": "core.audience_and_purpose_fit",
@@ -182,10 +176,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.98,
+          "confidence": 0.94,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1: climber scene"
+              "reference": "unit-0003-aa9f0ac01ee1, body destruction"
             }
           ],
           "module_id": "core.audience_and_purpose_fit",
@@ -194,13 +188,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.94,
+          "confidence": 0.91,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1: climber scene"
-            },
-            {
-              "reference": "unit-0003-aa9f0ac01ee1: piano scene"
+              "reference": "unit-0003-aa9f0ac01ee1, climber discovery"
             }
           ],
           "module_id": "core.audience_and_purpose_fit",
@@ -209,10 +200,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.87,
+          "confidence": 0.82,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1: heading"
+              "reference": "result.json, unit-0003 chronology"
             }
           ],
           "module_id": "core.audience_and_purpose_fit",
@@ -221,13 +212,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.99,
+          "confidence": 0.97,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1: climber scene"
-            },
-            {
-              "reference": "unit-0003-aa9f0ac01ee1: post-disposal scene"
+              "reference": "unit-0003-aa9f0ac01ee1, first spell"
             }
           ],
           "module_id": "core.audience_and_purpose_fit",
@@ -236,10 +224,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.88,
+          "confidence": 0.86,
           "evidence": [
             {
-              "reference": "result.json: limitations[0]"
+              "reference": "result.json, limitations"
             }
           ],
           "module_id": "core.audience_and_purpose_fit",
@@ -251,50 +239,11 @@
           "confidence": 0.99,
           "evidence": [
             {
-              "reference": "result.json: limitations[1]"
+              "reference": "unit-0003-aa9f0ac01ee1, climbing accident"
             }
           ],
-          "module_id": "form.prose.novel",
-          "question_id": "form.prose.novel.macro_structure",
-          "verdict": "CANNOT_ASSESS",
-          "weight": 3.0
-        },
-        {
-          "confidence": 0.96,
-          "evidence": [
-            {
-              "reference": "result.json: distant_links[0]"
-            },
-            {
-              "reference": "result.json: distant_links[3]"
-            }
-          ],
-          "module_id": "form.prose.novel",
-          "question_id": "form.prose.novel.long_causality",
-          "verdict": "YES",
-          "weight": 3.0
-        },
-        {
-          "confidence": 0.97,
-          "evidence": [
-            {
-              "reference": "result.json: limitations[1]"
-            }
-          ],
-          "module_id": "form.prose.novel",
-          "question_id": "form.prose.novel.multiple_arcs",
-          "verdict": "CANNOT_ASSESS",
-          "weight": 2.25
-        },
-        {
-          "confidence": 0.94,
-          "evidence": [
-            {
-              "reference": "result.json: units[2].summary"
-            }
-          ],
-          "module_id": "form.prose.novel",
-          "question_id": "form.prose.novel.pacing_variation",
+          "module_id": "form.prose.general_prose_fiction",
+          "question_id": "form.prose.general_prose_fiction.narrative_experience",
           "verdict": "YES",
           "weight": 2.25
         },
@@ -302,97 +251,100 @@
           "confidence": 0.97,
           "evidence": [
             {
-              "reference": "result.json: state_ledgers, Madison and Amelia, unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, hike"
             }
           ],
-          "module_id": "form.prose.novel",
-          "question_id": "form.prose.novel.development",
+          "module_id": "form.prose.general_prose_fiction",
+          "question_id": "form.prose.general_prose_fiction.character_action",
           "verdict": "YES",
           "weight": 2.25
-        },
-        {
-          "confidence": 0.96,
-          "evidence": [
-            {
-              "reference": "result.json: work_state.motifs"
-            },
-            {
-              "reference": "result.json: work_state.motifs"
-            }
-          ],
-          "module_id": "form.prose.novel",
-          "question_id": "form.prose.novel.recurrence",
-          "verdict": "YES",
-          "weight": 2.25
-        },
-        {
-          "confidence": 0.96,
-          "evidence": [
-            {
-              "reference": "result.json: distant_links[0]"
-            },
-            {
-              "reference": "result.json: distant_links[1]"
-            }
-          ],
-          "module_id": "form.prose.novel",
-          "question_id": "form.prose.novel.payoff",
-          "verdict": "YES",
-          "weight": 3.0
         },
         {
           "confidence": 0.99,
           "evidence": [
             {
-              "reference": "result.json: limitations[0]"
+              "reference": "unit-0003-aa9f0ac01ee1, aftermath"
             }
           ],
-          "module_id": "form.prose.novel",
-          "question_id": "form.prose.novel.middle",
-          "verdict": "CANNOT_ASSESS",
-          "weight": 3.0
+          "module_id": "form.prose.general_prose_fiction",
+          "question_id": "form.prose.general_prose_fiction.movement",
+          "verdict": "YES",
+          "weight": 2.25
+        },
+        {
+          "confidence": 0.9,
+          "evidence": [
+            {
+              "reference": "unit-0003-aa9f0ac01ee1, transition to hike"
+            }
+          ],
+          "module_id": "form.prose.general_prose_fiction",
+          "question_id": "form.prose.general_prose_fiction.mode_control",
+          "verdict": "YES",
+          "weight": 2.25
+        },
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "reference": "unit-0003-aa9f0ac01ee1, hike setup"
+            }
+          ],
+          "module_id": "form.prose.general_prose_fiction",
+          "question_id": "form.prose.general_prose_fiction.reader_orientation",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.75,
+          "evidence": [
+            {
+              "reference": "unit-0003-aa9f0ac01ee1, piano response"
+            }
+          ],
+          "module_id": "form.prose.general_prose_fiction",
+          "question_id": "form.prose.general_prose_fiction.proportion",
+          "verdict": "NO",
+          "weight": 2.25
         },
         {
           "confidence": 1.0,
           "evidence": [
             {
-              "reference": "result.json: limitations[1]"
+              "reference": "WIP_CHAPTER_CONTEXT.json"
             }
           ],
-          "module_id": "form.prose.novel",
-          "question_id": "form.prose.novel.ending",
-          "verdict": "CANNOT_ASSESS",
-          "weight": 3.0
+          "module_id": "form.prose.general_prose_fiction",
+          "question_id": "form.prose.general_prose_fiction.completion",
+          "verdict": "NOT_APPLICABLE",
+          "weight": 2.25
         }
       ],
       "score": {
-        "lower": 4.7696,
-        "observed": 6.4437,
-        "upper": 6.5882
+        "lower": 5.7233,
+        "observed": 5.7233,
+        "upper": 5.7233
       },
       "title": "Task and scope",
       "weights": {
-        "applicable": 51.0,
-        "failed": 3.0,
-        "passed": 34.75,
-        "unassessed": 13.25
+        "applicable": 39.75,
+        "failed": 7.25,
+        "passed": 32.5,
+        "unassessed": 0.0
       }
     },
     {
       "active": true,
-      "confidence": 0.9698,
+      "confidence": 0.9605,
       "coverage": 1.0,
       "domain_id": "character",
       "nominal_points": 16.0,
       "questions": [
         {
-          "confidence": 0.98,
+          "confidence": 0.96,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1: piano scene"
-            },
-            {
-              "reference": "unit-0003-aa9f0ac01ee1: phone call"
+              "reference": "unit-0003-aa9f0ac01ee1, climber discovery"
             }
           ],
           "module_id": "craft.narrative.characterization",
@@ -401,13 +353,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.99,
+          "confidence": 0.98,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1: magical disposal scene"
-            },
-            {
-              "reference": "unit-0003-aa9f0ac01ee1: aftermath"
+              "reference": "unit-0003-aa9f0ac01ee1, body destruction"
             }
           ],
           "module_id": "craft.narrative.characterization",
@@ -416,13 +365,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.96,
+          "confidence": 0.94,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1: phone call"
-            },
-            {
-              "reference": "unit-0003-aa9f0ac01ee1: ending"
+              "reference": "unit-0003-aa9f0ac01ee1, Savannah phone call"
             }
           ],
           "module_id": "craft.narrative.characterization",
@@ -434,10 +380,7 @@
           "confidence": 0.98,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1: post-disposal scene"
-            },
-            {
-              "reference": "unit-0003-aa9f0ac01ee1: ending"
+              "reference": "unit-0003-aa9f0ac01ee1, ending"
             }
           ],
           "module_id": "craft.narrative.characterization",
@@ -446,10 +389,13 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.99,
+          "confidence": 0.98,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, climber discovery"
+            },
+            {
+              "reference": "unit-0003-aa9f0ac01ee1, aftermath"
             }
           ],
           "module_id": "craft.narrative.characterization",
@@ -458,10 +404,13 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.98,
+          "confidence": 0.96,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, climber aftermath"
+            },
+            {
+              "reference": "unit-0003-aa9f0ac01ee1, ending"
             }
           ],
           "module_id": "craft.narrative.characterization",
@@ -470,10 +419,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.99,
+          "confidence": 0.98,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1.txt, climber aftermath"
             }
           ],
           "module_id": "craft.narrative.characterization",
@@ -482,13 +431,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.93,
+          "confidence": 0.9,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
-            },
-            {
-              "reference": "author brief"
+              "reference": "unit-0003-aa9f0ac01ee1.txt, piano scene"
             }
           ],
           "module_id": "craft.narrative.characterization",
@@ -500,10 +446,7 @@
           "confidence": 0.94,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
-            },
-            {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1.txt, climber cleanup"
             }
           ],
           "module_id": "craft.narrative.characterization",
@@ -512,10 +455,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.98,
+          "confidence": 0.97,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1.txt, opening"
             }
           ],
           "module_id": "craft.narrative.character_arc",
@@ -527,7 +470,7 @@
           "confidence": 0.99,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1.txt, climber revelation"
             }
           ],
           "module_id": "craft.narrative.character_arc",
@@ -536,10 +479,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.98,
+          "confidence": 0.97,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1.txt, closing exchange"
             }
           ],
           "module_id": "craft.narrative.character_arc",
@@ -548,10 +491,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.97,
+          "confidence": 0.96,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1.txt, ending"
             }
           ],
           "module_id": "craft.narrative.character_arc",
@@ -560,13 +503,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.96,
+          "confidence": 0.95,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
-            },
-            {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1.txt, piano aftermath"
             }
           ],
           "module_id": "craft.narrative.character_arc",
@@ -575,10 +515,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.92,
+          "confidence": 0.94,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1.txt, ending"
             }
           ],
           "module_id": "craft.narrative.character_arc",
@@ -590,10 +530,7 @@
           "confidence": 0.99,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
-            },
-            {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1.txt, post-cleanup phone call"
             }
           ],
           "module_id": "craft.narrative.character_arc",
@@ -602,8 +539,12 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.99,
-          "evidence": [],
+          "confidence": 1.0,
+          "evidence": [
+            {
+              "reference": "result.json, limitations"
+            }
+          ],
           "module_id": "craft.narrative.character_arc",
           "question_id": "craft.narrative.character_arc.end_state",
           "verdict": "NOT_APPLICABLE",
@@ -625,19 +566,16 @@
     },
     {
       "active": true,
-      "confidence": 0.9718,
+      "confidence": 0.9611,
       "coverage": 1.0,
       "domain_id": "plot",
       "nominal_points": 20.0,
       "questions": [
         {
-          "confidence": 0.96,
+          "confidence": 0.94,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
-            },
-            {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1.txt, hike before the fall"
             }
           ],
           "module_id": "craft.narrative.plot_and_causality",
@@ -646,13 +584,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.96,
+          "confidence": 0.97,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
-            },
-            {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1.txt, immediately before the fall"
             }
           ],
           "module_id": "craft.narrative.plot_and_causality",
@@ -661,13 +596,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.99,
+          "confidence": 0.98,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
-            },
-            {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1.txt, climber revelation"
             }
           ],
           "module_id": "craft.narrative.plot_and_causality",
@@ -676,13 +608,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.98,
+          "confidence": 0.97,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
-            },
-            {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1.txt, Savannah phone call"
             }
           ],
           "module_id": "craft.narrative.plot_and_causality",
@@ -694,10 +623,7 @@
           "confidence": 0.99,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
-            },
-            {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1.txt, fall through first spell"
             }
           ],
           "module_id": "craft.narrative.plot_and_causality",
@@ -706,10 +632,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.98,
+          "confidence": 0.97,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1.txt, aftermath"
             }
           ],
           "module_id": "craft.narrative.plot_and_causality",
@@ -718,13 +644,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.97,
+          "confidence": 0.96,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
-            },
-            {
-              "reference": "result.json, distant_links"
+              "reference": "unit-0003-aa9f0ac01ee1.txt, climber revelation"
             }
           ],
           "module_id": "craft.narrative.plot_and_causality",
@@ -733,10 +656,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.96,
+          "confidence": 0.86,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1.txt, Savannah phone call"
             }
           ],
           "module_id": "craft.narrative.plot_and_causality",
@@ -748,10 +671,7 @@
           "confidence": 0.98,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
-            },
-            {
-              "reference": "result.json, distant_links"
+              "reference": "unit-0003-aa9f0ac01ee1.txt, piano scene"
             }
           ],
           "module_id": "craft.narrative.foreshadowing_setup_and_payoff",
@@ -760,10 +680,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.95,
+          "confidence": 0.94,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1.txt, hike"
             }
           ],
           "module_id": "craft.narrative.foreshadowing_setup_and_payoff",
@@ -775,7 +695,7 @@
           "confidence": 0.99,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1.txt, first spell"
             }
           ],
           "module_id": "craft.narrative.foreshadowing_setup_and_payoff",
@@ -784,10 +704,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.93,
+          "confidence": 0.92,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1.txt, piano performance"
             }
           ],
           "module_id": "craft.narrative.foreshadowing_setup_and_payoff",
@@ -796,10 +716,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.98,
+          "confidence": 0.97,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1.txt, climber aftermath"
             }
           ],
           "module_id": "craft.narrative.foreshadowing_setup_and_payoff",
@@ -808,10 +728,10 @@
           "weight": 2.0
         },
         {
-          "confidence": 0.95,
+          "confidence": 0.96,
           "evidence": [
             {
-              "reference": "result.json, distant_links"
+              "reference": "unit-0003-aa9f0ac01ee1.txt, ending"
             }
           ],
           "module_id": "craft.narrative.foreshadowing_setup_and_payoff",
@@ -823,10 +743,7 @@
           "confidence": 0.96,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
-            },
-            {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1.txt, piano discussion and climber aftermath"
             }
           ],
           "module_id": "craft.narrative.foreshadowing_setup_and_payoff",
@@ -835,13 +752,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.94,
+          "confidence": 0.91,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
-            },
-            {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1.txt, Savannah phone call"
             }
           ],
           "module_id": "craft.narrative.foreshadowing_setup_and_payoff",
@@ -853,7 +767,7 @@
           "confidence": 0.99,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1.txt, magical cleanup"
             }
           ],
           "module_id": "craft.narrative.narrative_momentum",
@@ -865,7 +779,7 @@
           "confidence": 0.99,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1.txt, final paragraph"
             }
           ],
           "module_id": "craft.narrative.narrative_momentum",
@@ -877,10 +791,7 @@
           "confidence": 0.99,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
-            },
-            {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1.txt, Savannah phone call"
             }
           ],
           "module_id": "craft.narrative.narrative_momentum",
@@ -889,10 +800,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.93,
+          "confidence": 0.96,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1.txt, post-cleanup narration"
             }
           ],
           "module_id": "craft.narrative.narrative_momentum",
@@ -901,10 +812,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.98,
+          "confidence": 0.99,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1.txt, Savannah phone call"
             }
           ],
           "module_id": "craft.narrative.narrative_momentum",
@@ -916,7 +827,7 @@
           "confidence": 0.99,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, climber-fall scene"
             }
           ],
           "module_id": "craft.narrative.narrative_momentum",
@@ -928,7 +839,7 @@
           "confidence": 0.99,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, Amelia beside the climber"
             }
           ],
           "module_id": "craft.narrative.narrative_momentum",
@@ -940,40 +851,232 @@
           "confidence": 0.96,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, closing paragraph"
             }
           ],
           "module_id": "craft.narrative.narrative_momentum",
           "question_id": "craft.narrative.narrative_momentum.no_false_hook",
           "verdict": "YES",
           "weight": 1.5
+        },
+        {
+          "confidence": 0.93,
+          "evidence": [
+            {
+              "reference": "unit-0003-aa9f0ac01ee1, opening paragraph"
+            }
+          ],
+          "module_id": "craft.narrative.opening",
+          "question_id": "craft.narrative.opening.entry",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "reference": "unit-0003-aa9f0ac01ee1, opening paragraphs"
+            }
+          ],
+          "module_id": "craft.narrative.opening",
+          "question_id": "craft.narrative.opening.orientation",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.95,
+          "evidence": [
+            {
+              "reference": "unit-0003-aa9f0ac01ee1, piano scene"
+            }
+          ],
+          "module_id": "craft.narrative.opening",
+          "question_id": "craft.narrative.opening.intrigue",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "reference": "unit-0003-aa9f0ac01ee1, piano scene"
+            }
+          ],
+          "module_id": "craft.narrative.opening",
+          "question_id": "craft.narrative.opening.voice",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "reference": "unit-0003-aa9f0ac01ee1, first nocturne reflection"
+            }
+          ],
+          "module_id": "craft.narrative.opening",
+          "question_id": "craft.narrative.opening.tone",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.95,
+          "evidence": [
+            {
+              "reference": "unit-0003-aa9f0ac01ee1, piano discussion"
+            }
+          ],
+          "module_id": "craft.narrative.opening",
+          "question_id": "craft.narrative.opening.promise",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.94,
+          "evidence": [
+            {
+              "reference": "unit-0003-aa9f0ac01ee1, after Amelia performs"
+            }
+          ],
+          "module_id": "craft.narrative.opening",
+          "question_id": "craft.narrative.opening.withholding",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.86,
+          "evidence": [
+            {
+              "reference": "unit-0003-aa9f0ac01ee1, opening transition"
+            }
+          ],
+          "module_id": "craft.narrative.opening",
+          "question_id": "craft.narrative.opening.no_preamble",
+          "verdict": "YES",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "reference": "unit-0003-aa9f0ac01ee1, closing paragraph"
+            }
+          ],
+          "module_id": "craft.narrative.ending_and_closure",
+          "question_id": "craft.narrative.ending_and_closure.changed_state",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.97,
+          "evidence": [
+            {
+              "reference": "unit-0003-aa9f0ac01ee1, final exchange"
+            }
+          ],
+          "module_id": "craft.narrative.ending_and_closure",
+          "question_id": "craft.narrative.ending_and_closure.resolution",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "reference": "unit-0003-aa9f0ac01ee1, final exchange"
+            }
+          ],
+          "module_id": "craft.narrative.ending_and_closure",
+          "question_id": "craft.narrative.ending_and_closure.expectations",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "reference": "unit-0003-aa9f0ac01ee1, final sentence"
+            }
+          ],
+          "module_id": "craft.narrative.ending_and_closure",
+          "question_id": "craft.narrative.ending_and_closure.emphasis",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "reference": "unit-0003-aa9f0ac01ee1, closing paragraph"
+            }
+          ],
+          "module_id": "craft.narrative.ending_and_closure",
+          "question_id": "craft.narrative.ending_and_closure.resonance",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "reference": "unit-0003-aa9f0ac01ee1, closing paragraph"
+            }
+          ],
+          "module_id": "craft.narrative.ending_and_closure",
+          "question_id": "craft.narrative.ending_and_closure.openness",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.97,
+          "evidence": [
+            {
+              "reference": "unit-0003-aa9f0ac01ee1, final sentence"
+            }
+          ],
+          "module_id": "craft.narrative.ending_and_closure",
+          "question_id": "craft.narrative.ending_and_closure.no_overclosure",
+          "verdict": "YES",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.97,
+          "evidence": [
+            {
+              "reference": "unit-0003-aa9f0ac01ee1, final exchange"
+            }
+          ],
+          "module_id": "craft.narrative.ending_and_closure",
+          "question_id": "craft.narrative.ending_and_closure.no_abruptness",
+          "verdict": "YES",
+          "weight": 2.0
         }
       ],
       "score": {
-        "lower": 18.8235,
-        "observed": 18.8235,
-        "upper": 18.8235
+        "lower": 19.2982,
+        "observed": 19.2982,
+        "upper": 19.2982
       },
       "title": "Plot architecture and payoff",
       "weights": {
-        "applicable": 34.0,
+        "applicable": 57.0,
         "failed": 2.0,
-        "passed": 32.0,
+        "passed": 55.0,
         "unassessed": 0.0
       }
     },
     {
       "active": true,
-      "confidence": 0.966,
+      "confidence": 0.9649,
       "coverage": 1.0,
       "domain_id": "world",
       "nominal_points": 12.0,
       "questions": [
         {
-          "confidence": 0.88,
+          "confidence": 0.91,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, first spell"
             }
           ],
           "module_id": "craft.narrative.worldbuilding",
@@ -985,7 +1088,7 @@
           "confidence": 0.95,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, concealment sequence"
             }
           ],
           "module_id": "craft.narrative.worldbuilding",
@@ -997,7 +1100,7 @@
           "confidence": 0.97,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, after successive spells"
             }
           ],
           "module_id": "craft.narrative.worldbuilding",
@@ -1006,10 +1109,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.86,
+          "confidence": 0.91,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, Savannah phone call"
             }
           ],
           "module_id": "craft.narrative.worldbuilding",
@@ -1018,10 +1121,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.9,
+          "confidence": 0.98,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, Savannah phone call"
             }
           ],
           "module_id": "craft.narrative.worldbuilding",
@@ -1033,7 +1136,7 @@
           "confidence": 0.97,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, Amelia directing Madison"
             }
           ],
           "module_id": "craft.narrative.worldbuilding",
@@ -1045,7 +1148,7 @@
           "confidence": 0.99,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, concealment sequence"
             }
           ],
           "module_id": "craft.narrative.worldbuilding",
@@ -1057,7 +1160,7 @@
           "confidence": 0.99,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, revelation aftermath"
             }
           ],
           "module_id": "craft.narrative.worldbuilding",
@@ -1066,10 +1169,10 @@
           "weight": 2.0
         },
         {
-          "confidence": 0.96,
+          "confidence": 0.97,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, Amelia drawing symbols"
             }
           ],
           "module_id": "craft.narrative.worldbuilding",
@@ -1078,10 +1181,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.96,
+          "confidence": 0.98,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1; result.json distant_links, paramedic-background payoff"
             }
           ],
           "module_id": "craft.narrative.continuity_and_canon_integrity",
@@ -1093,7 +1196,7 @@
           "confidence": 0.99,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, spell sequence"
             }
           ],
           "module_id": "craft.narrative.continuity_and_canon_integrity",
@@ -1102,10 +1205,10 @@
           "weight": 2.0
         },
         {
-          "confidence": 0.98,
+          "confidence": 0.99,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, Savannah phone call; author brief, Blood Types/Potency"
             }
           ],
           "module_id": "craft.narrative.continuity_and_canon_integrity",
@@ -1114,10 +1217,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.98,
+          "confidence": 0.99,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, first spell; author brief, Spellcasting Methods"
             }
           ],
           "module_id": "craft.narrative.continuity_and_canon_integrity",
@@ -1126,10 +1229,13 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.99,
+          "confidence": 0.97,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, opening"
+            },
+            {
+              "reference": "unit-0003-aa9f0ac01ee1, scene transition"
             }
           ],
           "module_id": "craft.narrative.continuity_and_canon_integrity",
@@ -1138,10 +1244,13 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.97,
+          "confidence": 0.96,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, piano scene"
+            },
+            {
+              "reference": "unit-0003-aa9f0ac01ee1, hiking scene"
             }
           ],
           "module_id": "craft.narrative.continuity_and_canon_integrity",
@@ -1150,10 +1259,13 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.96,
+          "confidence": 0.93,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, piano aftermath"
+            },
+            {
+              "reference": "unit-0003-aa9f0ac01ee1, climber scene"
             }
           ],
           "module_id": "craft.narrative.continuity_and_canon_integrity",
@@ -1162,26 +1274,34 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.99,
-          "evidence": [],
+          "confidence": 0.95,
+          "evidence": [
+            {
+              "reference": "result.json, limitations"
+            }
+          ],
           "module_id": "craft.narrative.continuity_and_canon_integrity",
           "question_id": "craft.narrative.continuity_and_canon_integrity.supersession",
           "verdict": "NOT_APPLICABLE",
           "weight": 1.5
         },
         {
-          "confidence": 0.98,
-          "evidence": [],
+          "confidence": 0.94,
+          "evidence": [
+            {
+              "reference": "result.json, limitations"
+            }
+          ],
           "module_id": "craft.narrative.continuity_and_canon_integrity",
           "question_id": "craft.narrative.continuity_and_canon_integrity.conflicts",
           "verdict": "NOT_APPLICABLE",
           "weight": 1.5
         },
         {
-          "confidence": 0.99,
+          "confidence": 0.98,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, second major scene opening"
             }
           ],
           "module_id": "craft.narrative.temporal_and_spatial_continuity",
@@ -1190,10 +1310,13 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.99,
+          "confidence": 0.97,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, opening"
+            },
+            {
+              "reference": "unit-0003-aa9f0ac01ee1, Sunday transition"
             }
           ],
           "module_id": "craft.narrative.temporal_and_spatial_continuity",
@@ -1202,10 +1325,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.91,
+          "confidence": 0.86,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, ending"
             }
           ],
           "module_id": "craft.narrative.temporal_and_spatial_continuity",
@@ -1214,10 +1337,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.99,
+          "confidence": 0.97,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, climber fall"
             }
           ],
           "module_id": "craft.narrative.temporal_and_spatial_continuity",
@@ -1226,10 +1349,13 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.98,
+          "confidence": 0.97,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, cleanup sequence"
+            },
+            {
+              "reference": "unit-0003-aa9f0ac01ee1, cleanup sequence"
             }
           ],
           "module_id": "craft.narrative.temporal_and_spatial_continuity",
@@ -1238,10 +1364,13 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.99,
+          "confidence": 0.96,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, hiking scene"
+            },
+            {
+              "reference": "unit-0003-aa9f0ac01ee1, spell sequence"
             }
           ],
           "module_id": "craft.narrative.temporal_and_spatial_continuity",
@@ -1250,10 +1379,13 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.99,
+          "confidence": 0.97,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, cleanup sequence"
+            },
+            {
+              "reference": "unit-0003-aa9f0ac01ee1, cleanup sequence"
             }
           ],
           "module_id": "craft.narrative.temporal_and_spatial_continuity",
@@ -1277,16 +1409,19 @@
     },
     {
       "active": true,
-      "confidence": 0.8978,
+      "confidence": 0.9337,
       "coverage": 1.0,
       "domain_id": "pacing",
       "nominal_points": 10.0,
       "questions": [
         {
-          "confidence": 0.72,
+          "confidence": 0.91,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, extended piano scene"
+            },
+            {
+              "reference": "unit-0003-aa9f0ac01ee1, climber fall"
             }
           ],
           "module_id": "craft.narrative.pacing_and_narrative_time",
@@ -1295,10 +1430,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.98,
+          "confidence": 0.95,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, scene transition"
             }
           ],
           "module_id": "craft.narrative.pacing_and_narrative_time",
@@ -1310,7 +1445,7 @@
           "confidence": 0.96,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1, climber aftermath"
+              "reference": "unit-0003-aa9f0ac01ee1, exsanguination revelation"
             }
           ],
           "module_id": "craft.narrative.pacing_and_narrative_time",
@@ -1319,10 +1454,13 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.79,
+          "confidence": 0.89,
           "evidence": [
             {
               "reference": "unit-0003-aa9f0ac01ee1, piano scene"
+            },
+            {
+              "reference": "unit-0003-aa9f0ac01ee1, transition summary"
             }
           ],
           "module_id": "craft.narrative.pacing_and_narrative_time",
@@ -1331,10 +1469,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.94,
+          "confidence": 0.97,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1, revelation at the body"
+              "reference": "unit-0003-aa9f0ac01ee1, climber scene"
             }
           ],
           "module_id": "craft.narrative.pacing_and_narrative_time",
@@ -1343,10 +1481,13 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.95,
+          "confidence": 0.96,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1, transition from hike to fall"
+              "reference": "unit-0003-aa9f0ac01ee1, piano scene"
+            },
+            {
+              "reference": "unit-0003-aa9f0ac01ee1, hiking scene"
             }
           ],
           "module_id": "craft.narrative.pacing_and_narrative_time",
@@ -1355,20 +1496,26 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.72,
+          "confidence": 0.88,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1, repeated piano performances"
+              "reference": "unit-0003-aa9f0ac01ee1, piano scene"
+            },
+            {
+              "reference": "unit-0003-aa9f0ac01ee1, Savannah call"
             }
           ],
           "module_id": "craft.narrative.pacing_and_narrative_time",
           "question_id": "craft.narrative.pacing_and_narrative_time.local_global",
-          "verdict": "NO",
+          "verdict": "YES",
           "weight": 1.5
         },
         {
-          "confidence": 0.91,
+          "confidence": 0.93,
           "evidence": [
+            {
+              "reference": "unit-0003-aa9f0ac01ee1, piano scene"
+            },
             {
               "reference": "unit-0003-aa9f0ac01ee1, piano scene"
             }
@@ -1379,10 +1526,13 @@
           "weight": 2.0
         },
         {
-          "confidence": 0.95,
+          "confidence": 0.97,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1, climbing accident"
+              "reference": "unit-0003-aa9f0ac01ee1, fall"
+            },
+            {
+              "reference": "unit-0003-aa9f0ac01ee1, aftermath"
             }
           ],
           "module_id": "craft.narrative.exposition_and_information_management",
@@ -1391,10 +1541,13 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.94,
+          "confidence": 0.96,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1, Savannah phone call"
+              "reference": "unit-0003-aa9f0ac01ee1, revelation"
+            },
+            {
+              "reference": "unit-0003-aa9f0ac01ee1, first spell"
             }
           ],
           "module_id": "craft.narrative.exposition_and_information_management",
@@ -1403,10 +1556,13 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.93,
+          "confidence": 0.97,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1, Madison overhearing the call"
+              "reference": "unit-0003-aa9f0ac01ee1, hiking scene"
+            },
+            {
+              "reference": "unit-0003-aa9f0ac01ee1, Savannah call"
             }
           ],
           "module_id": "craft.narrative.exposition_and_information_management",
@@ -1415,8 +1571,11 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.87,
+          "confidence": 0.92,
           "evidence": [
+            {
+              "reference": "unit-0003-aa9f0ac01ee1, piano scene"
+            },
             {
               "reference": "unit-0003-aa9f0ac01ee1, piano scene"
             }
@@ -1427,22 +1586,28 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.76,
+          "confidence": 0.85,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1, first nocturne response"
+              "reference": "unit-0003-aa9f0ac01ee1, opening"
+            },
+            {
+              "reference": "unit-0003-aa9f0ac01ee1, Sunday transition"
             }
           ],
           "module_id": "craft.narrative.exposition_and_information_management",
           "question_id": "craft.narrative.exposition_and_information_management.no_redundancy",
-          "verdict": "NO",
+          "verdict": "YES",
           "weight": 2.0
         },
         {
-          "confidence": 0.9,
+          "confidence": 0.91,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1, climber aftermath"
+              "reference": "unit-0003-aa9f0ac01ee1, musical reflection"
+            },
+            {
+              "reference": "unit-0003-aa9f0ac01ee1, Savannah call"
             }
           ],
           "module_id": "craft.narrative.exposition_and_information_management",
@@ -1451,10 +1616,13 @@
           "weight": 2.0
         },
         {
-          "confidence": 0.96,
+          "confidence": 0.98,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1, first spellcasting observation"
+              "reference": "unit-0003-aa9f0ac01ee1, revelation"
+            },
+            {
+              "reference": "unit-0003-aa9f0ac01ee1, spell sequence"
             }
           ],
           "module_id": "craft.narrative.exposition_and_information_management",
@@ -1463,10 +1631,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.91,
+          "confidence": 0.96,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1, transition to hike"
+              "reference": "unit-0003-aa9f0ac01ee1, scene transition"
             }
           ],
           "module_id": "craft.narrative.transitions_and_connective_tissue",
@@ -1475,10 +1643,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.98,
+          "confidence": 0.99,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1, opening of second major scene"
+              "reference": "unit-0003-aa9f0ac01ee1, scene transition"
             }
           ],
           "module_id": "craft.narrative.transitions_and_connective_tissue",
@@ -1487,10 +1655,13 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.95,
+          "confidence": 0.96,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1, valley and cliff"
+              "reference": "unit-0003-aa9f0ac01ee1, Sunday scene opening"
+            },
+            {
+              "reference": "unit-0003-aa9f0ac01ee1, ending"
             }
           ],
           "module_id": "craft.narrative.transitions_and_connective_tissue",
@@ -1502,7 +1673,7 @@
           "confidence": 0.99,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1, phone call"
+              "reference": "unit-0003-aa9f0ac01ee1, hiking dialogue"
             }
           ],
           "module_id": "craft.narrative.transitions_and_connective_tissue",
@@ -1514,7 +1685,10 @@
           "confidence": 0.94,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1, cleanup-to-phone transition"
+              "reference": "unit-0003-aa9f0ac01ee1, summary-to-scene transition"
+            },
+            {
+              "reference": "unit-0003-aa9f0ac01ee1, closing reflection"
             }
           ],
           "module_id": "craft.narrative.transitions_and_connective_tissue",
@@ -1523,10 +1697,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.92,
+          "confidence": 0.93,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1, response to the fall"
+              "reference": "unit-0003-aa9f0ac01ee1, scene break before the hike"
             }
           ],
           "module_id": "craft.narrative.transitions_and_connective_tissue",
@@ -1535,10 +1709,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.94,
+          "confidence": 0.88,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1, closing transition"
+              "reference": "unit-0003-aa9f0ac01ee1, opening of hike sequence"
             }
           ],
           "module_id": "craft.narrative.transitions_and_connective_tissue",
@@ -1548,42 +1722,45 @@
         }
       ],
       "score": {
-        "lower": 6.9841,
-        "observed": 6.9841,
-        "upper": 6.9841
+        "lower": 8.0952,
+        "observed": 8.0952,
+        "upper": 8.0952
       },
       "title": "Pacing and information",
       "weights": {
         "applicable": 31.5,
-        "failed": 9.5,
-        "passed": 22.0,
+        "failed": 6.0,
+        "passed": 25.5,
         "unassessed": 0.0
       }
     },
     {
       "active": true,
-      "confidence": 0.9249,
+      "confidence": 0.9404,
       "coverage": 1.0,
       "domain_id": "language",
       "nominal_points": 10.0,
       "questions": [
         {
-          "confidence": 0.84,
+          "confidence": 0.97,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1, magical cleanup"
+              "reference": "unit-0003-aa9f0ac01ee1, immediately after Amelia reveals the exsanguination"
+            },
+            {
+              "reference": "unit-0003-aa9f0ac01ee1, hike before the fall"
             }
           ],
           "module_id": "core.language_craft",
           "question_id": "core.language_craft.diction",
-          "verdict": "YES",
+          "verdict": "NO",
           "weight": 1.5
         },
         {
-          "confidence": 0.86,
+          "confidence": 0.91,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1, dispersal spell"
+              "reference": "unit-0003-aa9f0ac01ee1, climber’s fall"
             }
           ],
           "module_id": "core.language_craft",
@@ -1595,7 +1772,7 @@
           "confidence": 0.94,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1, Amelia takes control"
+              "reference": "unit-0003-aa9f0ac01ee1, after the exsanguination revelation"
             }
           ],
           "module_id": "core.language_craft",
@@ -1604,10 +1781,13 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.93,
+          "confidence": 0.92,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1, climber’s fall"
+              "reference": "unit-0003-aa9f0ac01ee1, piano scene"
+            },
+            {
+              "reference": "unit-0003-aa9f0ac01ee1, destruction of the climber’s remains"
             }
           ],
           "module_id": "core.language_craft",
@@ -1616,10 +1796,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.91,
+          "confidence": 0.9,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1, spell sequence"
+              "reference": "unit-0003-aa9f0ac01ee1, after the first three spells"
             }
           ],
           "module_id": "core.language_craft",
@@ -1628,10 +1808,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.96,
+          "confidence": 0.97,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1, bone-crushing spell"
+              "reference": "unit-0003-aa9f0ac01ee1, disposal spell"
             }
           ],
           "module_id": "core.language_craft",
@@ -1640,10 +1820,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.96,
+          "confidence": 0.92,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1, climber’s fall"
+              "reference": "unit-0003-aa9f0ac01ee1, bone-crushing spell"
             }
           ],
           "module_id": "core.language_craft",
@@ -1652,10 +1832,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.93,
+          "confidence": 0.94,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1, Amelia’s command"
+              "reference": "unit-0003-aa9f0ac01ee1, Amelia’s warning before the first spell"
             }
           ],
           "module_id": "core.language_craft",
@@ -1664,10 +1844,13 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.97,
+          "confidence": 0.98,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1, reaction to exsanguination"
+              "reference": "unit-0003-aa9f0ac01ee1, discussion of Chopin’s Op. 27 nocturnes"
+            },
+            {
+              "reference": "unit-0003-aa9f0ac01ee1, exsanguination revelation"
             }
           ],
           "module_id": "core.language_craft",
@@ -1679,7 +1862,7 @@
           "confidence": 0.97,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1, Madison’s reflection"
+              "reference": "unit-0003-aa9f0ac01ee1, Amelia’s call with Savannah"
             }
           ],
           "module_id": "core.voice_and_stylistic_identity",
@@ -1688,10 +1871,13 @@
           "weight": 2.0
         },
         {
-          "confidence": 0.96,
+          "confidence": 0.95,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1, post-cleanup exchange"
+              "reference": "unit-0003-aa9f0ac01ee1, hike"
+            },
+            {
+              "reference": "unit-0003-aa9f0ac01ee1, first destruction spell"
             }
           ],
           "module_id": "core.voice_and_stylistic_identity",
@@ -1700,10 +1886,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.9,
+          "confidence": 0.92,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1, closing descent"
+              "reference": "unit-0003-aa9f0ac01ee1, after Amelia explains the drained body"
             }
           ],
           "module_id": "core.voice_and_stylistic_identity",
@@ -1712,22 +1898,25 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.94,
+          "confidence": 0.98,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, piano scene"
+            },
+            {
+              "reference": "author brief, VI. Character Development Notes"
             }
           ],
           "module_id": "core.voice_and_stylistic_identity",
           "question_id": "core.voice_and_stylistic_identity.project_fidelity",
-          "verdict": "YES",
+          "verdict": "NO",
           "weight": 2.0
         },
         {
           "confidence": 0.96,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, after the exsanguination revelation"
             }
           ],
           "module_id": "core.voice_and_stylistic_identity",
@@ -1739,7 +1928,7 @@
           "confidence": 0.97,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, exsanguination revelation"
             }
           ],
           "module_id": "core.voice_and_stylistic_identity",
@@ -1748,13 +1937,13 @@
           "weight": 2.0
         },
         {
-          "confidence": 0.84,
+          "confidence": 0.9,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, hike dialogue"
             },
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, Amelia’s call with Savannah"
             }
           ],
           "module_id": "craft.narrative.dialogue",
@@ -1763,13 +1952,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.95,
+          "confidence": 0.96,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
-            },
-            {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, Amelia’s lowered-voice call with Savannah"
             }
           ],
           "module_id": "craft.narrative.dialogue",
@@ -1778,13 +1964,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.89,
+          "confidence": 0.9,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
-            },
-            {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, after Amelia destroys the evidence"
             }
           ],
           "module_id": "craft.narrative.dialogue",
@@ -1793,13 +1976,13 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.86,
+          "confidence": 0.94,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, end of piano exchange"
             },
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, climber scene"
             }
           ],
           "module_id": "craft.narrative.dialogue",
@@ -1808,10 +1991,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.95,
+          "confidence": 0.94,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, before the first spell"
             }
           ],
           "module_id": "craft.narrative.dialogue",
@@ -1820,10 +2003,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.94,
+          "confidence": 0.91,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, piano bench exchange"
             }
           ],
           "module_id": "craft.narrative.dialogue",
@@ -1832,10 +2015,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.98,
+          "confidence": 0.97,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, after Amelia offers her hands"
             }
           ],
           "module_id": "craft.narrative.dialogue",
@@ -1847,7 +2030,7 @@
           "confidence": 0.88,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, Amelia’s call with Savannah"
             }
           ],
           "module_id": "craft.narrative.dialogue",
@@ -1857,21 +2040,21 @@
         }
       ],
       "score": {
-        "lower": 9.5522,
-        "observed": 9.5522,
-        "upper": 9.5522
+        "lower": 8.5075,
+        "observed": 8.5075,
+        "upper": 8.5075
       },
       "title": "Language and voice",
       "weights": {
         "applicable": 33.5,
-        "failed": 1.5,
-        "passed": 32.0,
+        "failed": 5.0,
+        "passed": 28.5,
         "unassessed": 0.0
       }
     },
     {
       "active": true,
-      "confidence": 0.957,
+      "confidence": 0.9541,
       "coverage": 1.0,
       "domain_id": "effect",
       "nominal_points": 8.0,
@@ -1880,10 +2063,7 @@
           "confidence": 0.97,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
-            },
-            {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, closing sentence"
             }
           ],
           "module_id": "craft.narrative.theme_and_subtext",
@@ -1892,10 +2072,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.95,
+          "confidence": 0.96,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, after Amelia destroys the evidence"
             }
           ],
           "module_id": "craft.narrative.theme_and_subtext",
@@ -1904,13 +2084,13 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.96,
+          "confidence": 0.94,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, piano discussion"
             },
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, Amelia’s call with Savannah"
             }
           ],
           "module_id": "craft.narrative.theme_and_subtext",
@@ -1919,13 +2099,13 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.97,
+          "confidence": 0.98,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, Amelia’s account of the climber"
             },
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, Savannah phone call"
             }
           ],
           "module_id": "craft.narrative.theme_and_subtext",
@@ -1937,7 +2117,10 @@
           "confidence": 0.97,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, piano scene"
+            },
+            {
+              "reference": "unit-0003-aa9f0ac01ee1, drained climber scene"
             }
           ],
           "module_id": "craft.narrative.theme_and_subtext",
@@ -1949,7 +2132,7 @@
           "confidence": 0.98,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, closing paragraph"
             }
           ],
           "module_id": "craft.narrative.theme_and_subtext",
@@ -1961,7 +2144,7 @@
           "confidence": 0.97,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, closing paragraph"
             }
           ],
           "module_id": "craft.narrative.theme_and_subtext",
@@ -1970,13 +2153,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.92,
+          "confidence": 0.94,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
-            },
-            {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, climber aftermath"
             }
           ],
           "module_id": "core.emotional_and_intellectual_effect",
@@ -1988,10 +2168,7 @@
           "confidence": 0.95,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
-            },
-            {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, climbing accident"
             }
           ],
           "module_id": "core.emotional_and_intellectual_effect",
@@ -2000,13 +2177,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.98,
+          "confidence": 0.97,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
-            },
-            {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, after Amelia destroys the body"
             }
           ],
           "module_id": "core.emotional_and_intellectual_effect",
@@ -2015,16 +2189,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.98,
+          "confidence": 0.96,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
-            },
-            {
-              "reference": "unit-0003-aa9f0ac01ee1"
-            },
-            {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, exsanguination-to-cleanup transition"
             }
           ],
           "module_id": "core.emotional_and_intellectual_effect",
@@ -2033,13 +2201,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.89,
+          "confidence": 0.86,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
-            },
-            {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, Madison understands exsanguination"
             }
           ],
           "module_id": "core.emotional_and_intellectual_effect",
@@ -2048,10 +2213,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.98,
+          "confidence": 0.97,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, final sentence"
             }
           ],
           "module_id": "core.emotional_and_intellectual_effect",
@@ -2075,22 +2240,16 @@
     },
     {
       "active": true,
-      "confidence": 0.94,
+      "confidence": 0.9013,
       "coverage": 1.0,
       "domain_id": "fresh",
       "nominal_points": 5.0,
       "questions": [
         {
-          "confidence": 0.96,
+          "confidence": 0.9,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
-            },
-            {
-              "reference": "unit-0003-aa9f0ac01ee1"
-            },
-            {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, piano performance"
             }
           ],
           "module_id": "core.freshness_and_non_genericness",
@@ -2099,13 +2258,10 @@
           "weight": 2.0
         },
         {
-          "confidence": 0.91,
+          "confidence": 0.83,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
-            },
-            {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, revelation scene"
             }
           ],
           "module_id": "core.freshness_and_non_genericness",
@@ -2114,31 +2270,22 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.94,
+          "confidence": 0.89,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
-            },
-            {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, discussion of Chopin"
             }
           ],
           "module_id": "core.freshness_and_non_genericness",
           "question_id": "core.freshness_and_non_genericness.no_llm_phrasing",
-          "verdict": "YES",
+          "verdict": "NO",
           "weight": 2.0
         },
         {
-          "confidence": 0.95,
+          "confidence": 0.91,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
-            },
-            {
-              "reference": "unit-0003-aa9f0ac01ee1"
-            },
-            {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, Madison processes Amelia’s revelation"
             }
           ],
           "module_id": "core.freshness_and_non_genericness",
@@ -2147,13 +2294,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.88,
+          "confidence": 0.82,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
-            },
-            {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, return hike"
             }
           ],
           "module_id": "core.freshness_and_non_genericness",
@@ -2162,13 +2306,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.99,
+          "confidence": 0.98,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
-            },
-            {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, magical cleanup"
             }
           ],
           "module_id": "core.freshness_and_non_genericness",
@@ -2177,10 +2318,10 @@
           "weight": 2.0
         },
         {
-          "confidence": 0.98,
+          "confidence": 0.94,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, first spell"
             }
           ],
           "module_id": "core.freshness_and_non_genericness",
@@ -2189,10 +2330,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.99,
+          "confidence": 0.97,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, Sunday hike opening"
             }
           ],
           "module_id": "core.freshness_and_non_genericness",
@@ -2201,10 +2342,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.97,
+          "confidence": 0.94,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, extended piano sequence"
             }
           ],
           "module_id": "core.economy_and_relevance",
@@ -2213,10 +2354,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.96,
+          "confidence": 0.93,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, conclusion of piano exchange"
             }
           ],
           "module_id": "core.economy_and_relevance",
@@ -2225,40 +2366,34 @@
           "weight": 2.5
         },
         {
-          "confidence": 0.88,
+          "confidence": 0.9,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
-            },
-            {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, after exsanguination"
             }
           ],
           "module_id": "core.economy_and_relevance",
           "question_id": "core.economy_and_relevance.functional_repetition",
-          "verdict": "NO",
+          "verdict": "YES",
           "weight": 2.0
         },
         {
-          "confidence": 0.91,
+          "confidence": 0.88,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
-            },
-            {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, piano scene"
             }
           ],
           "module_id": "core.economy_and_relevance",
           "question_id": "core.economy_and_relevance.detail_relevance",
-          "verdict": "YES",
+          "verdict": "NO",
           "weight": 1.0
         },
         {
-          "confidence": 0.94,
+          "confidence": 0.88,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, musical reflection"
             }
           ],
           "module_id": "core.economy_and_relevance",
@@ -2267,10 +2402,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.97,
+          "confidence": 0.91,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, continuation of piano performance"
             }
           ],
           "module_id": "core.economy_and_relevance",
@@ -2279,10 +2414,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.84,
+          "confidence": 0.78,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, piano scene"
             }
           ],
           "module_id": "core.economy_and_relevance",
@@ -2292,30 +2427,30 @@
         }
       ],
       "score": {
-        "lower": 2.2826,
-        "observed": 2.2826,
-        "upper": 2.2826
+        "lower": 2.0652,
+        "observed": 2.0652,
+        "upper": 2.0652
       },
       "title": "Freshness and economy",
       "weights": {
         "applicable": 23.0,
-        "failed": 12.5,
-        "passed": 10.5,
+        "failed": 13.5,
+        "passed": 9.5,
         "unassessed": 0.0
       }
     },
     {
       "active": true,
-      "confidence": 0.9593,
+      "confidence": 0.9473,
       "coverage": 1.0,
       "domain_id": "mechanics",
       "nominal_points": 4.0,
       "questions": [
         {
-          "confidence": 0.96,
+          "confidence": 0.92,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, hike"
             }
           ],
           "module_id": "core.mechanics_and_presentation",
@@ -2324,10 +2459,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.98,
+          "confidence": 0.96,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, opening dialogue"
             }
           ],
           "module_id": "core.mechanics_and_presentation",
@@ -2339,10 +2474,10 @@
           "confidence": 0.99,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, climber introduction"
             },
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, exsanguination reaction"
             }
           ],
           "module_id": "core.mechanics_and_presentation",
@@ -2351,10 +2486,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.94,
+          "confidence": 0.96,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, heading"
             }
           ],
           "module_id": "core.mechanics_and_presentation",
@@ -2363,10 +2498,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.97,
+          "confidence": 0.88,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, climber scene"
             }
           ],
           "module_id": "core.mechanics_and_presentation",
@@ -2375,10 +2510,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.96,
+          "confidence": 0.97,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, opening dialogue"
             }
           ],
           "module_id": "core.mechanics_and_presentation",
@@ -2387,10 +2522,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.93,
+          "confidence": 0.95,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, complete ending"
             }
           ],
           "module_id": "core.mechanics_and_presentation",
@@ -2414,7 +2549,7 @@
     },
     {
       "active": true,
-      "confidence": 0.9625,
+      "confidence": 0.95,
       "coverage": 1.0,
       "domain_id": "holistic",
       "nominal_points": 8.0,
@@ -2423,7 +2558,7 @@
           "confidence": 0.99,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, turning point"
             }
           ],
           "module_id": "core.holistic_artistic_success",
@@ -2432,10 +2567,10 @@
           "weight": 2.0
         },
         {
-          "confidence": 0.96,
+          "confidence": 0.93,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, magical cleanup"
             }
           ],
           "module_id": "core.holistic_artistic_success",
@@ -2444,10 +2579,10 @@
           "weight": 2.0
         },
         {
-          "confidence": 0.93,
+          "confidence": 0.94,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, closing aftermath"
             }
           ],
           "module_id": "core.holistic_artistic_success",
@@ -2456,13 +2591,10 @@
           "weight": 2.0
         },
         {
-          "confidence": 0.97,
+          "confidence": 0.94,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
-            },
-            {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, closing reflection"
             }
           ],
           "module_id": "core.holistic_artistic_success",
@@ -2486,16 +2618,16 @@
     }
   ],
   "final_score": {
-    "lower": 79.3444,
-    "observed": 81.0185,
-    "upper": 81.163
+    "lower": 78.5622,
+    "observed": 78.5622,
+    "upper": 78.5622
   },
   "hard_gate_status": "VALID",
   "hard_gates": [
     {
       "evidence": [
         {
-          "reference": "author brief; result.json; unit-0003-aa9f0ac01ee1"
+          "reference": "supplied execution context"
         }
       ],
       "module_id": "scope.long_context",
@@ -2511,14 +2643,14 @@
       "cap_points": 5.0,
       "coverage": 1.0,
       "deduction": {
-        "lower": 0.0,
-        "observed": 0.0,
-        "upper": 0.0
+        "lower": 2.9167,
+        "observed": 2.9167,
+        "upper": 2.9167
       },
       "module_id": "penalty.purple_prose",
       "questions": [
         {
-          "confidence": 0.99,
+          "confidence": 0.97,
           "evidence": [
             {
               "reference": "unit-0003-aa9f0ac01ee1"
@@ -2529,29 +2661,29 @@
           "weight": 2.0
         },
         {
-          "confidence": 0.92,
+          "confidence": 0.9,
           "evidence": [
             {
               "reference": "unit-0003-aa9f0ac01ee1"
             }
           ],
           "question_id": "penalty.purple_prose.proportion",
-          "verdict": "YES",
+          "verdict": "NO",
           "weight": 2.0
         },
         {
-          "confidence": 0.96,
+          "confidence": 0.88,
           "evidence": [
             {
               "reference": "unit-0003-aa9f0ac01ee1"
             }
           ],
           "question_id": "penalty.purple_prose.specificity",
-          "verdict": "YES",
+          "verdict": "NO",
           "weight": 1.5
         },
         {
-          "confidence": 0.94,
+          "confidence": 0.86,
           "evidence": [
             {
               "reference": "unit-0003-aa9f0ac01ee1"
@@ -2562,36 +2694,30 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.95,
-          "evidence": [
-            {
-              "reference": "unit-0003-aa9f0ac01ee1"
-            },
-            {
-              "reference": "unit-0003-aa9f0ac01ee1"
-            }
-          ],
-          "question_id": "penalty.purple_prose.metaphor",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
           "confidence": 0.91,
           "evidence": [
             {
               "reference": "unit-0003-aa9f0ac01ee1"
             }
           ],
-          "question_id": "penalty.purple_prose.attention",
-          "verdict": "YES",
-          "weight": 2.0
+          "question_id": "penalty.purple_prose.metaphor",
+          "verdict": "NO",
+          "weight": 1.5
         },
         {
-          "confidence": 0.95,
+          "confidence": 0.84,
           "evidence": [
             {
               "reference": "unit-0003-aa9f0ac01ee1"
-            },
+            }
+          ],
+          "question_id": "penalty.purple_prose.attention",
+          "verdict": "NO",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.96,
+          "evidence": [
             {
               "reference": "unit-0003-aa9f0ac01ee1"
             }
@@ -2604,8 +2730,8 @@
       "title": "Purple prose penalty",
       "weights": {
         "applicable": 12.0,
-        "failed": 0.0,
-        "passed": 12.0,
+        "failed": 7.0,
+        "passed": 5.0,
         "unassessed": 0.0
       }
     },
@@ -2613,17 +2739,17 @@
       "cap_points": 8.0,
       "coverage": 1.0,
       "deduction": {
-        "lower": 5.1429,
-        "observed": 5.1429,
-        "upper": 5.1429
+        "lower": 4.2857,
+        "observed": 4.2857,
+        "upper": 4.2857
       },
       "module_id": "penalty.repetition",
       "questions": [
         {
-          "confidence": 0.89,
+          "confidence": 0.97,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, piano sequence"
             }
           ],
           "question_id": "penalty.repetition.lexical",
@@ -2642,7 +2768,7 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.96,
+          "confidence": 0.91,
           "evidence": [
             {
               "reference": "unit-0003-aa9f0ac01ee1"
@@ -2653,11 +2779,8 @@
           "weight": 2.0
         },
         {
-          "confidence": 0.98,
+          "confidence": 0.95,
           "evidence": [
-            {
-              "reference": "unit-0003-aa9f0ac01ee1"
-            },
             {
               "reference": "unit-0003-aa9f0ac01ee1"
             }
@@ -2667,10 +2790,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.89,
+          "confidence": 0.92,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1"
+              "reference": "unit-0003-aa9f0ac01ee1, piano sequence"
             }
           ],
           "question_id": "penalty.repetition.beat",
@@ -2678,18 +2801,18 @@
           "weight": 2.0
         },
         {
-          "confidence": 0.91,
+          "confidence": 0.92,
           "evidence": [
             {
               "reference": "unit-0003-aa9f0ac01ee1"
             }
           ],
           "question_id": "penalty.repetition.dialogue",
-          "verdict": "NO",
+          "verdict": "YES",
           "weight": 1.5
         },
         {
-          "confidence": 0.97,
+          "confidence": 0.9,
           "evidence": [
             {
               "reference": "unit-0003-aa9f0ac01ee1"
@@ -2700,10 +2823,10 @@
           "weight": 2.0
         },
         {
-          "confidence": 0.92,
+          "confidence": 0.94,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1, transition from the piano scene to the hike"
+              "reference": "result.json, unit-0003 ending_state"
             }
           ],
           "question_id": "penalty.repetition.long_range",
@@ -2714,8 +2837,8 @@
       "title": "Repetition penalty",
       "weights": {
         "applicable": 14.0,
-        "failed": 9.0,
-        "passed": 5.0,
+        "failed": 7.5,
+        "passed": 6.5,
         "unassessed": 0.0
       }
     },
@@ -2730,10 +2853,10 @@
       "module_id": "penalty.unflagged_incomplete",
       "questions": [
         {
-          "confidence": 0.99,
+          "confidence": 1.0,
           "evidence": [
             {
-              "reference": "result.json, limitations"
+              "reference": "WIP_CHAPTER_CONTEXT.json"
             }
           ],
           "question_id": "penalty.unflagged_incomplete.status",
@@ -2741,10 +2864,10 @@
           "weight": 3.0
         },
         {
-          "confidence": 0.97,
+          "confidence": 0.98,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1, final paragraph"
+              "reference": "unit-0003-aa9f0ac01ee1, ending"
             }
           ],
           "question_id": "penalty.unflagged_incomplete.unit",
@@ -2755,7 +2878,7 @@
           "confidence": 0.99,
           "evidence": [
             {
-              "reference": "unit-0003-aa9f0ac01ee1, final paragraph"
+              "reference": "unit-0003-aa9f0ac01ee1, final sentence"
             }
           ],
           "question_id": "penalty.unflagged_incomplete.truncation",
@@ -2773,9 +2896,9 @@
     }
   ],
   "penalty_deduction": {
-    "lower": 5.1429,
-    "observed": 5.1429,
-    "upper": 5.1429
+    "lower": 7.2024,
+    "observed": 7.2024,
+    "upper": 7.2024
   },
   "standard": {
     "id": "HBQ-RS",
@@ -2784,40 +2907,40 @@
   "status": "SCORED",
   "supplemental": [
     {
-      "confidence": 0.86,
+      "confidence": 0.93,
       "evidence": [
         {
-          "reference": "result.json, unit-0003 summary"
+          "reference": "unit-0003-aa9f0ac01ee1"
         }
       ],
       "module_id": "core.task_and_brief_fidelity",
       "question_id": "core.task_and_brief_fidelity.operation",
-      "verdict": "CANNOT_ASSESS"
+      "verdict": "YES"
     },
     {
-      "confidence": 0.95,
+      "confidence": 0.9,
       "evidence": [
         {
-          "reference": "result.json, limitations"
+          "reference": "result.json, distant_links[0]"
         }
       ],
       "module_id": "core.task_and_brief_fidelity",
       "question_id": "core.task_and_brief_fidelity.sources",
-      "verdict": "CANNOT_ASSESS"
+      "verdict": "YES"
     },
     {
-      "confidence": 0.88,
+      "confidence": 0.96,
       "evidence": [
         {
-          "reference": "unit-0003-aa9f0ac01ee1, climber scene"
+          "reference": "unit-0003-aa9f0ac01ee1, piano sequence"
         }
       ],
       "module_id": "core.task_and_brief_fidelity",
       "question_id": "core.task_and_brief_fidelity.inclusions",
-      "verdict": "YES"
+      "verdict": "NO"
     },
     {
-      "confidence": 0.99,
+      "confidence": 0.87,
       "evidence": [
         {
           "reference": "result.json, limitations"
@@ -2825,13 +2948,13 @@
       ],
       "module_id": "core.task_and_brief_fidelity",
       "question_id": "core.task_and_brief_fidelity.exclusions",
-      "verdict": "NOT_APPLICABLE"
+      "verdict": "YES"
     },
     {
-      "confidence": 0.96,
+      "confidence": 0.99,
       "evidence": [
         {
-          "reference": "unit-0003-aa9f0ac01ee1, climber scene"
+          "reference": "unit-0003-aa9f0ac01ee1"
         }
       ],
       "module_id": "core.task_and_brief_fidelity",
@@ -2842,7 +2965,7 @@
       "confidence": 0.99,
       "evidence": [
         {
-          "reference": "author brief and result.json"
+          "reference": "result.json, unit-0003"
         }
       ],
       "module_id": "core.task_and_brief_fidelity",
@@ -2850,21 +2973,21 @@
       "verdict": "NOT_APPLICABLE"
     },
     {
-      "confidence": 0.91,
+      "confidence": 0.98,
       "evidence": [
         {
-          "reference": "unit-0003-aa9f0ac01ee1, section transition"
+          "reference": "WIP_CHAPTER_CONTEXT.json"
         }
       ],
       "module_id": "core.task_and_brief_fidelity",
       "question_id": "core.task_and_brief_fidelity.structure",
-      "verdict": "YES"
+      "verdict": "NOT_APPLICABLE"
     },
     {
-      "confidence": 0.99,
+      "confidence": 0.98,
       "evidence": [
         {
-          "reference": "unit-0003-aa9f0ac01ee1, heading"
+          "reference": "unit-0003-aa9f0ac01ee1"
         }
       ],
       "module_id": "core.task_and_brief_fidelity",
@@ -2872,10 +2995,10 @@
       "verdict": "NOT_APPLICABLE"
     },
     {
-      "confidence": 0.99,
+      "confidence": 1.0,
       "evidence": [
         {
-          "reference": "author brief"
+          "reference": "WIP_CHAPTER_CONTEXT.json"
         }
       ],
       "module_id": "core.task_and_brief_fidelity",
@@ -2883,10 +3006,10 @@
       "verdict": "NOT_APPLICABLE"
     },
     {
-      "confidence": 0.99,
+      "confidence": 1.0,
       "evidence": [
         {
-          "reference": "author brief"
+          "reference": "result.json, orientation"
         }
       ],
       "module_id": "core.length_and_scope_fit",
@@ -2894,87 +3017,10 @@
       "verdict": "NOT_APPLICABLE"
     },
     {
-      "confidence": 0.99,
-      "evidence": [
-        {
-          "reference": "unit-0003-aa9f0ac01ee1, body-disposal sequence"
-        }
-      ],
-      "module_id": "form.prose.general_prose_fiction",
-      "question_id": "form.prose.general_prose_fiction.narrative_experience",
-      "verdict": "YES"
-    },
-    {
       "confidence": 0.98,
       "evidence": [
         {
-          "reference": "unit-0003-aa9f0ac01ee1, climber's fall"
-        }
-      ],
-      "module_id": "form.prose.general_prose_fiction",
-      "question_id": "form.prose.general_prose_fiction.character_action",
-      "verdict": "YES"
-    },
-    {
-      "confidence": 0.99,
-      "evidence": [
-        {
-          "reference": "unit-0003-aa9f0ac01ee1, aftermath of the spells"
-        }
-      ],
-      "module_id": "form.prose.general_prose_fiction",
-      "question_id": "form.prose.general_prose_fiction.movement",
-      "verdict": "YES"
-    },
-    {
-      "confidence": 0.94,
-      "evidence": [
-        {
-          "reference": "unit-0003-aa9f0ac01ee1, opening of hike section"
-        }
-      ],
-      "module_id": "form.prose.general_prose_fiction",
-      "question_id": "form.prose.general_prose_fiction.mode_control",
-      "verdict": "YES"
-    },
-    {
-      "confidence": 0.97,
-      "evidence": [
-        {
-          "reference": "unit-0003-aa9f0ac01ee1, hike scene"
-        }
-      ],
-      "module_id": "form.prose.general_prose_fiction",
-      "question_id": "form.prose.general_prose_fiction.reader_orientation",
-      "verdict": "YES"
-    },
-    {
-      "confidence": 0.82,
-      "evidence": [
-        {
-          "reference": "unit-0003-aa9f0ac01ee1, piano scene"
-        }
-      ],
-      "module_id": "form.prose.general_prose_fiction",
-      "question_id": "form.prose.general_prose_fiction.proportion",
-      "verdict": "YES"
-    },
-    {
-      "confidence": 0.98,
-      "evidence": [
-        {
-          "reference": "unit-0003-aa9f0ac01ee1, closing scene"
-        }
-      ],
-      "module_id": "form.prose.general_prose_fiction",
-      "question_id": "form.prose.general_prose_fiction.completion",
-      "verdict": "YES"
-    },
-    {
-      "confidence": 0.95,
-      "evidence": [
-        {
-          "reference": "result.json, distant_links, setup unit-0002 to payoff unit-0003"
+          "reference": "result.json, distant_links[0]"
         }
       ],
       "module_id": "scope.long_context",
@@ -2982,10 +3028,10 @@
       "verdict": "YES"
     },
     {
-      "confidence": 0.96,
+      "confidence": 0.98,
       "evidence": [
         {
-          "reference": "unit-0003-aa9f0ac01ee1, Savannah call aftermath"
+          "reference": "result.json, state_ledgers: The climber's lifeblood"
         }
       ],
       "module_id": "scope.long_context",
@@ -2993,13 +3039,10 @@
       "verdict": "YES"
     },
     {
-      "confidence": 0.94,
+      "confidence": 0.97,
       "evidence": [
         {
-          "reference": "result.json, distant_links, setup unit-0002 to payoff unit-0003"
-        },
-        {
-          "reference": "result.json, distant_links, setup unit-0002 to payoff unit-0003"
+          "reference": "result.json, distant_links[3]"
         }
       ],
       "module_id": "scope.long_context",
@@ -3010,10 +3053,7 @@
       "confidence": 0.97,
       "evidence": [
         {
-          "reference": "result.json, Amelia state in unit-0002"
-        },
-        {
-          "reference": "result.json, Amelia state in unit-0003"
+          "reference": "result.json, state_ledgers: The climber's lifeblood"
         }
       ],
       "module_id": "scope.long_context",
@@ -3021,57 +3061,48 @@
       "verdict": "YES"
     },
     {
-      "confidence": 0.91,
+      "confidence": 0.99,
       "evidence": [
         {
-          "reference": "result.json, limitations"
-        },
-        {
-          "reference": "author brief, Character Development Notes"
+          "reference": "WIP_CHAPTER_CONTEXT.json"
         }
       ],
       "module_id": "scope.long_context",
       "question_id": "scope.long_context.documents",
-      "verdict": "YES"
+      "verdict": "NOT_APPLICABLE"
     },
     {
-      "confidence": 0.98,
+      "confidence": 0.99,
       "evidence": [
         {
-          "reference": "result.json, limitations"
+          "reference": "WIP_CHAPTER_CONTEXT.json"
         }
       ],
       "module_id": "scope.long_context",
       "question_id": "scope.long_context.uncertainty",
-      "verdict": "YES"
+      "verdict": "NOT_APPLICABLE"
     },
     {
-      "confidence": 0.94,
+      "confidence": 0.99,
       "evidence": [
         {
-          "reference": "result.json, distant_links"
-        },
-        {
-          "reference": "result.json, distant_links"
+          "reference": "result.json orientation"
         }
       ],
       "module_id": "scope.long_context",
       "question_id": "scope.long_context.no_first",
-      "verdict": "YES"
+      "verdict": "NOT_APPLICABLE"
     },
     {
-      "confidence": 0.94,
+      "confidence": 0.99,
       "evidence": [
         {
-          "reference": "result.json, distant_links, units 0004 to 0006"
-        },
-        {
-          "reference": "result.json, distant_links, units 0002 to 0007"
+          "reference": "result.json units"
         }
       ],
       "module_id": "scope.long_context",
       "question_id": "scope.long_context.no_recent",
-      "verdict": "YES"
+      "verdict": "NOT_APPLICABLE"
     }
   ],
   "task_contract": null

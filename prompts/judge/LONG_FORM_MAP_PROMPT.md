@@ -10,6 +10,6 @@ Build a whole-work map from the supplied deterministic units. Return one JSON ob
 4. Build state ledgers for characters, knowledge, relationships, injuries, objects, locations, and world rules when those states change.
 5. Identify load-bearing units and distant setup/payoff links.
 6. Distinguish an open promise from a contradiction and from something that cannot yet be assessed.
-7. Record limitations caused by missing context or work-in-progress status. Do not treat unavailable future material as a defect.
+7. Record limitations caused by missing context or work-in-progress status. Do not treat unavailable future material as a defect, contradiction, broken promise, or failed ending; distinguish it from continuity evidence inside the supplied scope.
 
 Use only supplied unit IDs. Keep summaries compact. Do not reproduce long passages or invent events.

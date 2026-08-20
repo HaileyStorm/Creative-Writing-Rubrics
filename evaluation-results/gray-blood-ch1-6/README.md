@@ -8,12 +8,12 @@ Madison, the first-person narrator, is a nineteen-year-old computer-science stud
 
 ## What was evaluated
 
-- The automated `cwr longform` workflow: route, frozen task contract, source-preserving segmentation, whole-work map, complete `prose.novel` judging, four independent local diagnostics per draft, synthesis, and reports.
+- The automated `cwr longform` workflow: route, frozen task contract, source-preserving segmentation, whole-work map, complete `prose.novel` judging, an independent complete `prose.chapter` result for every substantive chapter, synthesis, and reports.
 - 221 static bundle leaves plus 18 frozen task-contract leaves per draft, judged with GPT-5.6 Sol at Medium.
 - Route selection, maps, and evidence-grounded synthesis with GPT-5.6 Sol at High.
 - The same frozen 28-leaf chapter diagnostic selection for all twelve corresponding chapters, judged with GPT-5.6 Sol at Medium.
 
-Whole-work scoring used the complete six-chapter source. Local scores and fixed chapter diagnostics remained independent and were never averaged. Open-ended synthesis organized the findings but could not alter a binary verdict or deterministic score.
+Whole-work scoring used the complete six-chapter source. Local scores and fixed chapter diagnostics remain independently available. A separately labeled custom composite combines the whole-work result with the equal-chapter mean under a disclosed 70/30 profile; it does not replace either view. Open-ended synthesis organized the findings but could not alter a binary verdict or deterministic score.
 
 ## Result in brief
 
@@ -23,6 +23,15 @@ The original remains the stronger base across these chapters. It leads by 4.86 p
 | --- | --- | ---: | ---: | ---: |
 | Original | `VALID` / `SCORED` | 78.92 | 76.41–79.57 | 96.83% |
 | Rewrite | `VALID` / `SCORED` | 74.05 | 72.20–74.40 | 97.80% |
+
+For readers who want one compact scorecard, the optional `balanced-wip-70-30` profile gives 70% weight to the canonical whole-work score and 30% to the equal-weight mean of all six complete chapter results:
+
+| Six-chapter draft | Custom-weighted composite | Bounds | Whole-work weight | Chapter-trajectory weight |
+| --- | ---: | ---: | ---: | ---: |
+| Original | 81.04 | 79.25–81.50 | 70% | 30% |
+| Rewrite | 77.40 | 76.01–77.65 | 70% | 30% |
+
+That headline is a declared view, not a new ground truth. The [original scorecard](automated/original/scorecard.html) and [rewrite scorecard](automated/rewrite/scorecard.html) print the exact profile beside the canonical score. The full offline reports add the domain and chapter hierarchy: [original](automated/original/report.html) and [rewrite](automated/rewrite/report.html).
 
 - **Control state** reports only objective, explicit non-negotiable requirements. Both drafts satisfy every applicable requirement; the offspring rule is `NOT_APPLICABLE` because that situation does not occur in these chapters.
 - **Coverage** is the weighted share of applicable selected criteria that received an assessable `YES` or `NO` verdict.
@@ -46,7 +55,7 @@ Author goals—such as a grim-dark tone or a darker Amelia—carry score weight 
 ### Where the rewrite helps
 
 - It slightly improves the weighted task-goal component and resolves a little more of the selected evidence, producing higher coverage.
-- Chapter 3 remains its clearest local success: the crisis, explanation, and magical demonstration are better integrated in the matched diagnostic pass.
+- Chapter 5 is the rewrite's clearest complete local-score win, rising from 86.59 to 90.68. Its Chapter 3 crisis/explanation sequence also improves on one fixed diagnostic leaf, although the complete local score remains narrowly lower than the original.
 - Madison's programmer lens, moral grappling, and early dark-path setup remain intact.
 
 ### Where the rewrite loses ground
@@ -72,7 +81,22 @@ Each chapter diagnostic contains the same 28 selected leaves. It records paired 
 | 5 | 0 | 1 | 0 | Direct motive explanation reduces dramatized characterization. |
 | 6 | 0 | 3 | 0 | The largest local regression, concentrated in exposition, pacing, and ending force. |
 
-The automated local-score reports provide a second lens on representative units. They are deliberately shown one by one in [`automated/original/report.md`](automated/original/report.md) and [`automated/rewrite/report.md`](automated/rewrite/report.md), not collapsed into a chapter average.
+The automated local-score reports provide a second, complete lens: every substantive chapter receives all 228 static `prose.chapter` leaves independently. This is the normal scope-correct local route; using `prose.novel` on one chapter is available only as an explicit deep-diagnostic mode. The chart and table retain each chapter's result rather than collapsing it into the canonical whole-work score.
+
+![Complete chapter-local score comparison](figures/chapter-score-comparison.svg)
+
+| Chapter | Original | Rewrite | Difference (rewrite − original) |
+| ---: | ---: | ---: | ---: |
+| 1 | 78.73 | 77.37 | −1.36 |
+| 2 | 82.77 | 78.56 | −4.21 |
+| 3 | 84.47 | 84.02 | −0.45 |
+| 4 | 93.20 | 92.24 | −0.96 |
+| 5 | 86.59 | 90.68 | +4.09 |
+| 6 | 90.20 | 88.41 | −1.79 |
+
+These local results are diagnostic views of individual chapters. The whole-work pass remains the source of manuscript-level conclusions. Full details appear in [`automated/original/report.md`](automated/original/report.md) and [`automated/rewrite/report.md`](automated/rewrite/report.md).
+
+Complete local coverage does not change either canonical whole-work score: those scores already come from the complete-source global pass. It adds a different and useful scale of evidence. The chapter view shows the rewrite close in Chapters 3 and 4, clearly stronger in Chapter 5, and weaker elsewhere—especially Chapter 2. The optional composite summarizes those two scales only because its 70/30 policy is printed beside it.
 
 ## Most useful revision priorities
 
@@ -89,7 +113,7 @@ The full ranked comparison and evidence references are in [`comparative-synthesi
 
 - [`manifest.json`](manifest.json) records scope, routes, counts, and top-level results.
 - [`whole/`](whole/) contains both complete 239-verdict runs and their full deterministic score breakdowns.
-- [`automated/`](automated/) contains the two generated narrative reports, local-score figures, and eight complete sampled-unit runs.
+- [`automated/`](automated/) contains the two generated JSON/Markdown/HTML reports, embeddable scorecards, local-score figures, and twelve complete chapter-local runs.
 - [`chapters/`](chapters/) contains twelve matched selected-question diagnostics and their verdicts.
 - [`maps/`](maps/) contains sanitized unit maps, state ledgers, promises, motifs, and continuity conflicts.
 - [`render_figures.py`](render_figures.py) regenerates the two comparison SVGs from the published score and diagnostic files.

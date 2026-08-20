@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/HaileyStorm/Creative-Writing-Rubrics/main/schema/hbq_hierarchical_score_profile.schema.json",
+  "title": "HBQ-RS hierarchical score profile",
+  "type": "object",
+  "required": ["profile_version", "profile_id", "global_weight", "local_weight", "local_reducer"],
+  "properties": {
+    "profile_version": {"const": 1},
+    "profile_id": {"type": "string", "pattern": "^[a-z0-9_.-]+$"},
+    "global_weight": {"type": "number", "minimum": 0},
+    "local_weight": {"type": "number", "minimum": 0},
+    "local_reducer": {"enum": ["weighted_mean", "weakest_unit"]},
+    "unfinished_unit_ids": {
+      "type": "array",
+      "items": {"type": "string", "pattern": "^unit-[0-9]{4}-[0-9a-f]{12}$"},
+      "uniqueItems": true
+    },
+    "unfinished_unit_weight": {"type": "number", "minimum": 0},
+    "prologue_epilogue_weight": {"type": "number", "minimum": 0}
+  },
+  "dependentRequired": {
+    "unfinished_unit_ids": ["unfinished_unit_weight"],
+    "unfinished_unit_weight": ["unfinished_unit_ids"]
+  },
+  "additionalProperties": false
+}

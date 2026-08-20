@@ -66,6 +66,8 @@ class _LongFormHandler(BaseHTTPRequestHandler):
             data = _input_json(prompt)
             profile = data["artifact_profile"]
             unit_ids = [unit["unit_id"] for unit in data["unit_inventory"]]
+            local_limit = data.get("local_sample_limit")
+            selected_unit_ids = unit_ids[:local_limit] if local_limit is not None else unit_ids
             content = {
                 "route_version": 1,
                 "artifact_profile": {
@@ -82,8 +84,9 @@ class _LongFormHandler(BaseHTTPRequestHandler):
                     {"catalog_id": "craft.synthetic", "reason": "The module measures clear execution."},
                 ],
                 "sampling_plan": {
-                    "unit_ids": unit_ids,
-                    "strata": [{"name": "all synthetic chapters", "unit_ids": unit_ids}],
+                    "coverage_mode": "complete" if selected_unit_ids == unit_ids else "sampled",
+                    "unit_ids": selected_unit_ids,
+                    "strata": [{"name": "synthetic local units", "unit_ids": selected_unit_ids}],
                     "global_map_required": True,
                     "rationale": "The two-unit fixture can be read in full.",
                 },
@@ -199,10 +202,19 @@ class _LongFormHandler(BaseHTTPRequestHandler):
             verdicts = [
                 {
                     "question_id": question["question_id"],
-                    "verdict": "YES",
+                    "verdict": (
+                        "NOT_APPLICABLE"
+                        if question.get("applies_when") == "Only when a finished work is supplied."
+                        and '"completion_only_criterion_verdict": "NOT_APPLICABLE"' in prompt
+                        else "YES"
+                    ),
                     "confidence": 0.9,
                     "evidence": [{"reference": "unit:synthetic", "quote": "Synthetic evidence."}],
-                    "note": "The positive criterion is satisfied in this fixture.",
+                    "note": (
+                        "The declared work in progress does not activate this completion-only criterion."
+                        if question.get("applies_when") == "Only when a finished work is supplied."
+                        else "The positive criterion is satisfied in this fixture."
+                    ),
                 }
                 for question in _questions(prompt)
             ]
@@ -328,7 +340,8 @@ def test_provider_workflow_runs_every_pass_persists_and_resumes(tmp_path: Path, 
 
     summary = run_longform_judge(**arguments)
     assert summary["status"] == "VALID"
-    assert summary["sampled_units"] == 2
+    assert summary["local_units"] == 2
+    assert summary["local_coverage_mode"] == "complete"
     assert handler.stages[:2] == ["route", "map"]
     assert handler.stages[-1] == "synthesis"
     assert handler.stages.count("binary") == 3
@@ -354,6 +367,171 @@ def test_provider_workflow_runs_every_pass_persists_and_resumes(tmp_path: Path, 
     resumed = run_longform_judge(**arguments, resume=True)
     assert resumed == summary
     assert len(handler.stages) == calls
+
+
+def test_provider_scope_auto_local_bundle_and_explicit_hierarchy(tmp_path: Path, endpoint) -> None:
+    base_url, handler = endpoint
+    registry, bundles_path = _catalog(tmp_path)
+    bundles = json.loads(bundles_path.read_text(encoding="utf-8"))
+    chapter_bundle = json.loads(json.dumps(bundles[0]))
+    chapter_bundle["bundle_id"] = "prose.chapter"
+    chapter_bundle["title"] = "Synthetic chapter"
+    chapter_bundle["valid_scopes"] = ["chapter"]
+    bundles.append(chapter_bundle)
+    bundles_path.write_text(json.dumps(bundles), encoding="utf-8")
+    artifact = tmp_path / "story.txt"
+    artifact.write_text(TEXT, encoding="utf-8")
+    brief = tmp_path / "brief.txt"
+    brief.write_text("Prefer quiet tension.", encoding="utf-8")
+
+    stages_before = len(handler.stages)
+    output = tmp_path / "auto"
+    summary = run_longform_judge(
+        artifact_path=artifact,
+        brief_paths=[brief],
+        output_dir=output,
+        provider="openai",
+        model="fake-local",
+        registry=registry,
+        bundles=bundles_path,
+        artifact_kind="prose_fiction",
+        bundle_id="prose.synthetic",
+        base_url=base_url,
+        hierarchical_score_profile={
+            "profile_version": 1,
+            "profile_id": "equal.global.local",
+            "global_weight": 1,
+            "local_weight": 1,
+            "local_reducer": "weighted_mean",
+        },
+    )
+    assert len(handler.stages) - stages_before == 6
+    assert summary["global_bundle_id"] == "prose.synthetic"
+    assert summary["local_bundle_id"] == "prose.chapter"
+    assert summary["local_bundle_mode"] == "scope_auto"
+    report = json.loads((output / "report.json").read_text(encoding="utf-8"))
+    assert report["route"]["global_bundle_id"] == "prose.synthetic"
+    assert report["route"]["local_bundle_id"] == "prose.chapter"
+    assert report["route"]["local_bundle_mode"] == "scope_auto"
+    assert report["hierarchical_score"]["score"]["observed"] == 100.0
+    assert report["global_result"]["score"]["observed"] == 100.0
+    local_id = report["route"]["local_unit_ids"][0]
+    global_run = json.loads(
+        (output / ".private" / "evaluations" / "global" / "run.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    local_run = json.loads(
+        (output / ".private" / "evaluations" / local_id / "run.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    assert global_run["configuration"]["bundle_id"] == "prose.synthetic"
+    assert local_run["configuration"]["bundle_id"] == "prose.chapter"
+    markdown = (output / "report.md").read_text(encoding="utf-8")
+    assert "Hierarchical score (explicit profile)" in markdown
+    assert "Whole-work result" in markdown
+    assert "Local units" in markdown
+
+    deep_output = tmp_path / "deep"
+    deep = run_longform_judge(
+        artifact_path=artifact,
+        brief_paths=[brief],
+        output_dir=deep_output,
+        provider="openai",
+        model="fake-local",
+        registry=registry,
+        bundles=bundles_path,
+        artifact_kind="prose_fiction",
+        bundle_id="prose.synthetic",
+        local_bundle_id="prose.synthetic",
+        base_url=base_url,
+    )
+    assert deep["local_bundle_id"] == "prose.synthetic"
+    assert deep["local_bundle_mode"] == "explicit_global_deep"
+
+
+def test_explicit_local_limit_enables_reduced_diagnostic_coverage(tmp_path: Path, endpoint) -> None:
+    base_url, _handler = endpoint
+    registry, bundles = _catalog(tmp_path)
+    artifact = tmp_path / "story.txt"
+    brief = tmp_path / "brief.txt"
+    artifact.write_text(TEXT, encoding="utf-8")
+    brief.write_text("Prefer quiet tension.", encoding="utf-8")
+    output = tmp_path / "run"
+    summary = run_longform_judge(
+        artifact_path=artifact,
+        brief_paths=[brief],
+        output_dir=output,
+        provider="openai",
+        model="fake-local",
+        registry=registry,
+        bundles=bundles,
+        artifact_kind="prose_fiction",
+        bundle_id="prose.synthetic",
+        base_url=base_url,
+        local_sample_limit=1,
+    )
+    assert summary["local_units"] == 1
+    assert summary["local_coverage_mode"] == "sampled"
+    report = json.loads((output / "report.json").read_text(encoding="utf-8"))
+    assert len(report["route"]["local_unit_ids"]) == 1
+    assert "explicitly bounded diagnostic sample" in (output / "report.md").read_text(encoding="utf-8")
+
+
+def test_wip_completion_only_gate_is_not_a_failure_or_active_gate(tmp_path: Path, endpoint) -> None:
+    base_url, handler = endpoint
+    registry, bundles = _catalog(tmp_path)
+    modules = json.loads(registry.read_text(encoding="utf-8"))
+    modules[0]["tree"].append(
+        {
+            "id": "craft.synthetic.finished",
+            "type": "question",
+            "criterion_key": "craft.synthetic.finished",
+            "text": "Does the finished work deliver final closure?",
+            "pass_answer": "YES",
+            "weight": 1.0,
+            "question_type": "hard_gate",
+            "severity": "material",
+            "applies_when": "Only when a finished work is supplied.",
+            "evidence_policy": {"required": True, "minimum_references": 1, "reference_style": "unit"},
+        }
+    )
+    registry.write_text(json.dumps(modules), encoding="utf-8")
+    artifact = tmp_path / "story.txt"
+    brief = tmp_path / "brief.txt"
+    artifact.write_text(TEXT, encoding="utf-8")
+    brief.write_text("Prefer quiet tension.", encoding="utf-8")
+    output = tmp_path / "run"
+    summary = run_longform_judge(
+        artifact_path=artifact,
+        brief_paths=[brief],
+        output_dir=output,
+        provider="openai",
+        model="fake-local",
+        registry=registry,
+        bundles=bundles,
+        artifact_kind="prose_fiction",
+        bundle_id="prose.synthetic",
+        completion_status="work_in_progress",
+        base_url=base_url,
+    )
+    assert summary["status"] == "VALID"
+    verdicts = [
+        json.loads(line)
+        for line in (output / ".private" / "evaluations" / "global" / "verdicts.jsonl")
+        .read_text(encoding="utf-8")
+        .splitlines()
+    ]
+    completion_verdict = next(
+        item for item in verdicts if item["question_id"] == "craft.synthetic.finished"
+    )
+    assert completion_verdict["verdict"] == "NOT_APPLICABLE"
+    report = json.loads((output / "report.json").read_text(encoding="utf-8"))
+    assert report["completion_contract"]["completion_only_criterion_verdict"] == "NOT_APPLICABLE"
+    global_prompt = next(prompt for prompt in handler.binary_prompts if "Chapter One" in _artifact(prompt))
+    assert "Never return NO merely because the declared work in progress" in global_prompt
+    assert "applicable_binding_requirements" in global_prompt
 
 
 def test_task_contract_override_is_validated_before_provider_contact(tmp_path: Path) -> None:
@@ -646,11 +824,12 @@ def test_structured_outputs_frozen_ordinals_and_criterion_synthesis(tmp_path: Pa
         frozen_sample_ordinals=[2],
         openai_structured_outputs=True,
     )
-    assert summary["sampled_units"] == 1
+    assert summary["local_units"] == 1
+    assert summary["local_coverage_mode"] == "sampled"
     report = json.loads((output / "report.json").read_text(encoding="utf-8"))
     segmentation = json.loads((output / ".private" / "segmentation.json").read_text(encoding="utf-8"))
     expected_unit = segmentation["units"][1]["unit_id"]
-    assert report["route"]["sampled_unit_ids"] == [expected_unit]
+    assert report["route"]["local_unit_ids"] == [expected_unit]
     structured = [
         request
         for request in handler.requests
@@ -712,6 +891,88 @@ def test_disclosure_enumerates_payload_hashes_and_call_ceiling(tmp_path: Path, c
     assert disclosure["payloads"]["route"]["request"]["sha256"]
     assert disclosure["payloads"]["global_judge"]["organized_source"]["sha256"]
     assert disclosure["payloads"]["synthesis"]["raw_source_included"] is False
+    assert disclosure["completion_contract"]["completion_status"] == "work_in_progress"
+    assert disclosure["completion_contract"]["completion_only_criterion_verdict"] == "NOT_APPLICABLE"
+
+
+def test_plan_only_stops_after_route_and_writes_reviewable_plan(tmp_path: Path, endpoint) -> None:
+    base_url, handler = endpoint
+    registry, bundles = _catalog(tmp_path)
+    artifact = tmp_path / "story.txt"
+    brief = tmp_path / "brief.txt"
+    artifact.write_text(TEXT, encoding="utf-8")
+    brief.write_text("Prefer quiet tension.", encoding="utf-8")
+    output = tmp_path / "plan-run"
+    summary = run_longform_judge(
+        artifact_path=artifact,
+        brief_paths=[brief],
+        output_dir=output,
+        provider="openai",
+        model="fake-local",
+        registry=registry,
+        bundles=bundles,
+        artifact_kind="prose_fiction",
+        base_url=base_url,
+        plan_only=True,
+    )
+    assert summary["status"] == "PLANNED"
+    assert handler.stages == ["route"]
+    plan = json.loads((output / "plan.json").read_text(encoding="utf-8"))
+    assert plan["selected_bundle_id"] == "prose.synthetic"
+    assert plan["selected_module_ids"] == ["craft.synthetic"]
+    assert "without --plan-only" in plan["next_step"]
+    assert not (output / ".private" / "passes" / "map" / "result.json").exists()
+
+
+def test_reviewed_stack_override_preserves_plan_and_resumes_exactly(
+    tmp_path: Path, endpoint
+) -> None:
+    base_url, _handler = endpoint
+    registry, bundles = _catalog(tmp_path)
+    artifact = tmp_path / "story.txt"
+    brief = tmp_path / "brief.txt"
+    artifact.write_text(TEXT, encoding="utf-8")
+    brief.write_text("Prefer quiet tension.", encoding="utf-8")
+    original_dir = tmp_path / "original-plan"
+    run_longform_judge(
+        artifact_path=artifact,
+        brief_paths=[brief],
+        output_dir=original_dir,
+        provider="openai",
+        model="fake-local",
+        registry=registry,
+        bundles=bundles,
+        artifact_kind="prose_fiction",
+        base_url=base_url,
+        plan_only=True,
+    )
+    original = json.loads((original_dir / "plan.json").read_text(encoding="utf-8"))
+    contract_path = tmp_path / "reviewed-contract.json"
+    contract_path.write_text(json.dumps(original["task_contract"]), encoding="utf-8")
+    approved_dir = tmp_path / "approved-plan"
+    arguments = {
+        "artifact_path": artifact,
+        "brief_paths": [brief],
+        "output_dir": approved_dir,
+        "provider": "openai",
+        "model": "fake-local",
+        "registry": registry,
+        "bundles": bundles,
+        "artifact_kind": "prose_fiction",
+        "base_url": base_url,
+        "bundle_id": original["selected_bundle_id"],
+        "module_ids": original["selected_module_ids"],
+        "task_contract_path": contract_path,
+        "sampling_plan_override": original["sampling_plan"],
+    }
+    run_longform_judge(**arguments, plan_only=True)
+    approved = json.loads((approved_dir / "plan.json").read_text(encoding="utf-8"))
+    assert approved["task_contract"] == original["task_contract"]
+    assert approved["sampling_plan"] == original["sampling_plan"]
+
+    summary = run_longform_judge(**arguments, resume=True)
+    assert summary["status"] == "VALID"
+    assert (approved_dir / "report.json").is_file()
 
 
 @pytest.mark.parametrize(

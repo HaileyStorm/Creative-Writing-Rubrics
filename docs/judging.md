@@ -80,13 +80,13 @@ cwr longform manuscript.txt \
   --brief author-notes.txt \
   --artifact-kind prose_fiction \
   --scope manuscript \
-  --completion-status work_in_progress \
+  --wip \
   --provider codex \
   --model gpt-5.6-sol \
   --structured-reasoning high \
   --judge-reasoning medium \
-  --local-sample-limit 4 \
   --binary-workers 3 \
+  --html-report \
   --allow-remote \
   --output-dir ../cwr-runs/manuscript
 ```
@@ -99,11 +99,33 @@ artifact + brief
   → frozen weighted goals and, when user-supplied, explicit binding requirements
   → deterministic source-preserving segmentation
   → whole-work map and state ledgers
-  → complete-source global judging + independent sampled-unit diagnostics
-  → deterministic score + narrative JSON/Markdown/SVG report
+  → complete-source global judging + scope-correct diagnostics for every local unit
+  → deterministic score + progressive JSON/Markdown/SVG/HTML report
 ```
 
-Route selection can choose only IDs from the local catalog; it cannot invent rubric leaves, weights, or scoring rules. The global judge receives the complete source divided into stable units. `--local-sample-limit` gives route selection a hard ceiling of 64 representative local units. Each selected unit is scored independently for diagnosis, and those results are never averaged into the manuscript score. `--binary-workers` safely overlaps disjoint global/local run directories, up to 8 workers; keep it modest for endpoint limits. The final synthesis can explain the evidence but cannot change verdicts or scores.
+Automatic route selection is itself an LLM call through the configured endpoint. The route prompt includes the declared bounded text sample, originating prompt, and brief; the model may choose only IDs from the local catalog, and deterministic validation rejects invented IDs, incompatible scopes, new weights, or new scoring rules. The global judge receives the complete source divided into stable units, and every unit is scored independently by default. Chaptered manuscripts automatically use the unique chapter-scope bundle for local evaluation; `--local-bundle` is an explicit override for deep diagnostics. Local results never silently alter the canonical manuscript score. `--binary-workers` safely overlaps disjoint global/local run directories, up to 8 workers, without changing coverage. The final synthesis can explain the evidence but cannot change verdicts or scores.
+
+Each scope has one canonical evaluation in a workflow. The manuscript view references the already-produced chapter result; it does not rejudge the chapter for each chart or card. If scene diagnostics are added beneath a chapter, they remain separate children rather than being averaged back into the chapter score. The parent is judged at the parent scope; smaller scopes explain where its strengths and problems occur.
+
+`--wip` is the explicit shortcut for `--completion-status work_in_progress`. Completion-only whole-work criteria resolve as `NOT_APPLICABLE` rather than failures; evidence that should already exist inside the supplied scope can still be `CANNOT_ASSESS`, and ordinary craft, continuity, applicable requirements, and weighted goals remain active.
+
+For constrained local hardware, `--local-sample-limit N` explicitly switches local coverage to a bounded diagnostic sample (maximum 64). The whole-work pass still receives the complete source, and the report labels the local coverage as sampled. Omit the flag for complete local coverage.
+
+### Optional composite and offline report
+
+The report keeps the canonical whole-work result, domain breakdown, and local trajectory as separate views. A saved hierarchical profile can add a visibly non-canonical headline without replacing any of them:
+
+```bash
+cwr init-score-profile manuscript.txt -o weights.json
+cwr longform manuscript.txt --brief author-notes.txt --wip \
+  --provider codex --model gpt-5.6-sol --allow-remote \
+  --hierarchical-score-profile weights.json --html-report \
+  --output-dir ../cwr-runs/manuscript
+```
+
+The generated starter profile uses 70% whole-work and 30% equal-weight local mean. Edit `global_weight`, `local_weight`, or choose `weakest_unit` as the local reducer. Ordinary units remain equal-weight. If needed, repeat `--unfinished-unit-ordinal` while creating the profile to apply one shared `--unfinished-unit-weight`; `--prologue-epilogue-weight` is another shared class modifier. Arbitrary per-chapter weights are intentionally unsupported.
+
+`--html-report` writes a self-contained offline `report.html` plus a compact `scorecard.html`. The card prints the custom component weights, reducer, and active class modifiers. Render an existing strict report with `cwr render-report report.json -o report.html`; add `--scorecard` for the compact embeddable form. The browser editor previews and downloads a profile locally; it has no network calls, telemetry, storage, or server dependency.
 
 Automatic bundle/module selection is useful for a standalone evaluation. For matched revisions, `--bundle prose.novel` freezes the complete bundle stack, `--task-contract contract.json` freezes the weighted author goals and objective requirements, and repeated `--frozen-sample-ordinal N` flags select the same one-based unit positions in each draft. A contract is artifact-bound, so give each draft a copy with its own `artifact_id`; keep every other contract field identical for a controlled comparison.
 
@@ -111,6 +133,22 @@ Generic OpenAI-compatible endpoints receive the strict response schema in the pr
 
 Use `--driving-prompt` when the text was generated from a prompt. A brief, driving prompt, or sample text can inform route selection and weighted goals, but author taste and subjective intent are not gates. Automatic routing cannot create binding requirements; only atomic, objective, explicitly non-negotiable requirements in a user-supplied, artifact-bound `--task-contract` control eligibility.
 
-The workflow directory contains public-facing `report.json`, `report.md`, `local-scores.svg`, and a concise summary. Its `.private/` subtree retains source copies, prompts, maps, response checkpoints, exact evidence quotations, and the underlying score reports. Keep the entire directory private unless you deliberately sanitize an export.
+### Multiple samples
+
+`cwr batch` is a thin manifest wrapper around the existing runners; it does not introduce a second judging engine. A job may use `workflow: longform` (the default) for global plus multi-part diagnostics or `workflow: single` for one exact artifact score with no redundant global/local pass. One manifest may mix both. `html_report` is long-form-only; set a single job's override to `false` when the shared defaults enable it. Paths are resolved relative to the manifest file, each job has its own resumable directory, and the same explicit remote-disclosure gate applies:
+
+```bash
+cwr batch examples/batch_manifest.yaml --allow-remote
+```
+
+Choose exactly one `routing_policy`:
+
+- `individual`: the configured LLM routes and grades every sample independently, with no confirmation pause;
+- `shared`: the configured LLM chooses the stack from `shared_route_source_job_id` once, then that validated bundle/module stack is frozen across all jobs. Each artifact still receives its own bounded planning pass for scope, units, and task context before any grading begins;
+- `review`: the configured LLM prepares every route first and stops. Inspect `plans/*/plan.json`, optionally add paired `approved_bundle_id` and `approved_module_ids` overrides to a job, then run the same manifest with `--accept-reviewed`.
+
+In `review` mode, every job reaches `PLANNED` before the command returns; no grading starts during that phase. The later `--accept-reviewed` invocation revalidates the complete plan set before any grading begins, then resumes those exact plans. Pass `--resume` as well when continuing a partially graded accepted batch. The runner writes `batch.json` and a self-contained `batch-status.html`, refreshed after each durable transition. The page auto-reloads locally but has no controls that bypass the CLI, no server dependency, no upload path, and no template or theme editor. `--resume` retains the same checkpoint binding rules as the underlying runner.
+
+The workflow directory contains public-facing `report.json`, `report.md`, `local-scores.svg`, and a concise summary; `--html-report` adds `report.html` and `scorecard.html`. Its `.private/` subtree retains source copies, prompts, maps, response checkpoints, exact evidence quotations, and the underlying score reports. Keep the entire directory private unless you deliberately sanitize an export.
 
 `cwr judge` automates binary verdict collection and scoring. Task-question generation and the optional open-review prompts remain separate steps because they answer different questions and must not silently rewrite the deterministic score.

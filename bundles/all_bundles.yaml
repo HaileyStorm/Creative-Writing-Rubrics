@@ -1107,6 +1107,7 @@
   - chapter
   - artifact
   profile: {}
+  task_contract_domain_id: hard
   module_ids:
   - core.task_and_brief_fidelity
   - core.substantive_task_engagement_true_non_refusal
@@ -1235,6 +1236,7 @@
   valid_scopes:
   - manuscript
   profile: {}
+  task_contract_domain_id: scope
   module_ids:
   - scope.manuscript
   - op.critique.full_manuscript_critique
@@ -1423,7 +1425,7 @@
     components:
     - module_id: form.poetry.general_poetry
       weight: 1.5
-      include_group_ids: &id001
+      include_group_ids:
       - form.poetry.general_poetry.image_language
     score_mode: weighted_binary_mean
   - domain_id: sound
@@ -1432,7 +1434,7 @@
     components:
     - module_id: form.poetry.general_poetry
       weight: 1.0
-      include_group_ids: &id002
+      include_group_ids:
       - form.poetry.general_poetry.sound_rhythm
     score_mode: weighted_binary_mean
   - domain_id: form
@@ -1441,7 +1443,7 @@
     components:
     - module_id: form.poetry.general_poetry
       weight: 1.0
-      include_group_ids: &id003
+      include_group_ids:
       - form.poetry.general_poetry.form_lineation
     score_mode: weighted_binary_mean
   - domain_id: movement
@@ -1450,7 +1452,7 @@
     components:
     - module_id: form.poetry.general_poetry
       weight: 1.5
-      include_group_ids: &id004
+      include_group_ids:
       - form.poetry.general_poetry.movement_effect
     - module_id: core.emotional_and_intellectual_effect
       weight: 1.0
@@ -1564,7 +1566,7 @@
     components:
     - module_id: form.poetry.haiku_in_english
       weight: 1.0
-      include_group_ids: &id005
+      include_group_ids:
       - form.poetry.haiku_in_english.form
     score_mode: weighted_binary_mean
   - domain_id: season
@@ -1573,7 +1575,7 @@
     components:
     - module_id: form.poetry.haiku_in_english
       weight: 1.0
-      include_group_ids: &id006
+      include_group_ids:
       - form.poetry.haiku_in_english.season
     score_mode: weighted_binary_mean
   - domain_id: cut
@@ -1582,7 +1584,7 @@
     components:
     - module_id: form.poetry.haiku_in_english
       weight: 1.0
-      include_group_ids: &id007
+      include_group_ids:
       - form.poetry.haiku_in_english.cut_juxtaposition
     score_mode: weighted_binary_mean
   - domain_id: language
@@ -1591,7 +1593,7 @@
     components:
     - module_id: form.poetry.haiku_in_english
       weight: 1.0
-      include_group_ids: &id008
+      include_group_ids:
       - form.poetry.haiku_in_english.haiku_quality
     - module_id: core.freshness_and_non_genericness
       weight: 1.0
@@ -1602,7 +1604,7 @@
     components:
     - module_id: form.poetry.haiku_in_english
       weight: 1.0
-      include_group_ids: &id009
+      include_group_ids:
       - form.poetry.haiku_in_english.sequence
     score_mode: weighted_binary_mean
   - domain_id: mechanics
@@ -2380,7 +2382,7 @@
     components:
     - module_id: form.poetry.sonnet
       weight: 1.0
-      include_group_ids: &id010
+      include_group_ids:
       - form.poetry.sonnet.architecture
     score_mode: weighted_binary_mean
   - domain_id: meter
@@ -2389,7 +2391,7 @@
     components:
     - module_id: form.poetry.sonnet
       weight: 1.0
-      include_group_ids: &id011
+      include_group_ids:
       - form.poetry.sonnet.meter
     score_mode: weighted_binary_mean
   - domain_id: rhyme
@@ -2398,7 +2400,7 @@
     components:
     - module_id: form.poetry.sonnet
       weight: 1.0
-      include_group_ids: &id012
+      include_group_ids:
       - form.poetry.sonnet.rhyme
     score_mode: weighted_binary_mean
   - domain_id: movement
@@ -2407,7 +2409,7 @@
     components:
     - module_id: form.poetry.sonnet
       weight: 1.0
-      include_group_ids: &id013
+      include_group_ids:
       - form.poetry.sonnet.argument_volta
     score_mode: weighted_binary_mean
   - domain_id: language
@@ -2416,7 +2418,7 @@
     components:
     - module_id: form.poetry.sonnet
       weight: 1.0
-      include_group_ids: &id014
+      include_group_ids:
       - form.poetry.sonnet.language
     - module_id: core.freshness_and_non_genericness
       weight: 1.0
@@ -5297,7 +5299,8 @@
     components:
     - module_id: form.poetry.general_poetry
       weight: 1.5
-      include_group_ids: *id001
+      include_group_ids:
+      - form.poetry.general_poetry.image_language
     score_mode: weighted_binary_mean
   - domain_id: sound
     title: Sound, rhythm, and syntax
@@ -5305,7 +5308,8 @@
     components:
     - module_id: form.poetry.general_poetry
       weight: 1.0
-      include_group_ids: *id002
+      include_group_ids:
+      - form.poetry.general_poetry.sound_rhythm
     score_mode: weighted_binary_mean
   - domain_id: form
     title: Form and lineation
@@ -5313,7 +5317,8 @@
     components:
     - module_id: form.poetry.general_poetry
       weight: 1.0
-      include_group_ids: *id003
+      include_group_ids:
+      - form.poetry.general_poetry.form_lineation
     score_mode: weighted_binary_mean
   - domain_id: movement
     title: Movement, thought, and effect
@@ -5321,7 +5326,8 @@
     components:
     - module_id: form.poetry.general_poetry
       weight: 1.5
-      include_group_ids: *id004
+      include_group_ids:
+      - form.poetry.general_poetry.movement_effect
     - module_id: core.emotional_and_intellectual_effect
       weight: 1.0
     score_mode: weighted_binary_mean
@@ -5552,7 +5558,8 @@
     components:
     - module_id: form.poetry.haiku_in_english
       weight: 1.0
-      include_group_ids: *id005
+      include_group_ids:
+      - form.poetry.haiku_in_english.form
     score_mode: weighted_binary_mean
   - domain_id: season
     title: Seasonal field and immediacy
@@ -5560,7 +5567,8 @@
     components:
     - module_id: form.poetry.haiku_in_english
       weight: 1.0
-      include_group_ids: *id006
+      include_group_ids:
+      - form.poetry.haiku_in_english.season
     score_mode: weighted_binary_mean
   - domain_id: cut
     title: Cut and juxtaposition
@@ -5568,7 +5576,8 @@
     components:
     - module_id: form.poetry.haiku_in_english
       weight: 1.0
-      include_group_ids: *id007
+      include_group_ids:
+      - form.poetry.haiku_in_english.cut_juxtaposition
     score_mode: weighted_binary_mean
   - domain_id: language
     title: Compression and language
@@ -5576,7 +5585,8 @@
     components:
     - module_id: form.poetry.haiku_in_english
       weight: 1.0
-      include_group_ids: *id008
+      include_group_ids:
+      - form.poetry.haiku_in_english.haiku_quality
     - module_id: core.freshness_and_non_genericness
       weight: 1.0
     score_mode: weighted_binary_mean
@@ -5586,7 +5596,8 @@
     components:
     - module_id: form.poetry.haiku_in_english
       weight: 1.0
-      include_group_ids: *id009
+      include_group_ids:
+      - form.poetry.haiku_in_english.sequence
     score_mode: weighted_binary_mean
   - domain_id: mechanics
     title: Presentation
@@ -5689,7 +5700,8 @@
     components:
     - module_id: form.poetry.haiku_in_english
       weight: 1.0
-      include_group_ids: *id005
+      include_group_ids:
+      - form.poetry.haiku_in_english.form
     score_mode: weighted_binary_mean
   - domain_id: season
     title: Seasonal field and immediacy
@@ -5697,7 +5709,8 @@
     components:
     - module_id: form.poetry.haiku_in_english
       weight: 1.0
-      include_group_ids: *id006
+      include_group_ids:
+      - form.poetry.haiku_in_english.season
     score_mode: weighted_binary_mean
   - domain_id: cut
     title: Cut and juxtaposition
@@ -5705,7 +5718,8 @@
     components:
     - module_id: form.poetry.haiku_in_english
       weight: 1.0
-      include_group_ids: *id007
+      include_group_ids:
+      - form.poetry.haiku_in_english.cut_juxtaposition
     score_mode: weighted_binary_mean
   - domain_id: language
     title: Compression and language
@@ -5713,7 +5727,8 @@
     components:
     - module_id: form.poetry.haiku_in_english
       weight: 1.0
-      include_group_ids: *id008
+      include_group_ids:
+      - form.poetry.haiku_in_english.haiku_quality
     - module_id: core.freshness_and_non_genericness
       weight: 1.0
     score_mode: weighted_binary_mean
@@ -5723,7 +5738,8 @@
     components:
     - module_id: form.poetry.haiku_in_english
       weight: 1.0
-      include_group_ids: *id009
+      include_group_ids:
+      - form.poetry.haiku_in_english.sequence
     score_mode: weighted_binary_mean
   - domain_id: mechanics
     title: Presentation
@@ -6774,7 +6790,8 @@
     components:
     - module_id: form.poetry.sonnet
       weight: 1.0
-      include_group_ids: *id010
+      include_group_ids:
+      - form.poetry.sonnet.architecture
     score_mode: weighted_binary_mean
   - domain_id: meter
     title: Meter and rhythm
@@ -6782,7 +6799,8 @@
     components:
     - module_id: form.poetry.sonnet
       weight: 1.0
-      include_group_ids: *id011
+      include_group_ids:
+      - form.poetry.sonnet.meter
     score_mode: weighted_binary_mean
   - domain_id: rhyme
     title: Rhyme and musicality
@@ -6790,7 +6808,8 @@
     components:
     - module_id: form.poetry.sonnet
       weight: 1.0
-      include_group_ids: *id012
+      include_group_ids:
+      - form.poetry.sonnet.rhyme
     score_mode: weighted_binary_mean
   - domain_id: movement
     title: Argument, volta, and closure
@@ -6798,7 +6817,8 @@
     components:
     - module_id: form.poetry.sonnet
       weight: 1.0
-      include_group_ids: *id013
+      include_group_ids:
+      - form.poetry.sonnet.argument_volta
     score_mode: weighted_binary_mean
   - domain_id: language
     title: Language and imagery
@@ -6806,7 +6826,8 @@
     components:
     - module_id: form.poetry.sonnet
       weight: 1.0
-      include_group_ids: *id014
+      include_group_ids:
+      - form.poetry.sonnet.language
     - module_id: core.freshness_and_non_genericness
       weight: 1.0
     score_mode: weighted_binary_mean
@@ -6904,7 +6925,8 @@
     components:
     - module_id: form.poetry.sonnet
       weight: 1.0
-      include_group_ids: *id010
+      include_group_ids:
+      - form.poetry.sonnet.architecture
     score_mode: weighted_binary_mean
   - domain_id: meter
     title: Meter and rhythm
@@ -6912,7 +6934,8 @@
     components:
     - module_id: form.poetry.sonnet
       weight: 1.0
-      include_group_ids: *id011
+      include_group_ids:
+      - form.poetry.sonnet.meter
     score_mode: weighted_binary_mean
   - domain_id: rhyme
     title: Rhyme and musicality
@@ -6920,7 +6943,8 @@
     components:
     - module_id: form.poetry.sonnet
       weight: 1.0
-      include_group_ids: *id012
+      include_group_ids:
+      - form.poetry.sonnet.rhyme
     score_mode: weighted_binary_mean
   - domain_id: movement
     title: Argument, volta, and closure
@@ -6928,7 +6952,8 @@
     components:
     - module_id: form.poetry.sonnet
       weight: 1.0
-      include_group_ids: *id013
+      include_group_ids:
+      - form.poetry.sonnet.argument_volta
     score_mode: weighted_binary_mean
   - domain_id: language
     title: Language and imagery
@@ -6936,7 +6961,8 @@
     components:
     - module_id: form.poetry.sonnet
       weight: 1.0
-      include_group_ids: *id014
+      include_group_ids:
+      - form.poetry.sonnet.language
     - module_id: core.freshness_and_non_genericness
       weight: 1.0
     score_mode: weighted_binary_mean
@@ -7034,7 +7060,8 @@
     components:
     - module_id: form.poetry.sonnet
       weight: 1.0
-      include_group_ids: *id010
+      include_group_ids:
+      - form.poetry.sonnet.architecture
     score_mode: weighted_binary_mean
   - domain_id: meter
     title: Meter and rhythm
@@ -7042,7 +7069,8 @@
     components:
     - module_id: form.poetry.sonnet
       weight: 1.0
-      include_group_ids: *id011
+      include_group_ids:
+      - form.poetry.sonnet.meter
     score_mode: weighted_binary_mean
   - domain_id: rhyme
     title: Rhyme and musicality
@@ -7050,7 +7078,8 @@
     components:
     - module_id: form.poetry.sonnet
       weight: 1.0
-      include_group_ids: *id012
+      include_group_ids:
+      - form.poetry.sonnet.rhyme
     score_mode: weighted_binary_mean
   - domain_id: movement
     title: Argument, volta, and closure
@@ -7058,7 +7087,8 @@
     components:
     - module_id: form.poetry.sonnet
       weight: 1.0
-      include_group_ids: *id013
+      include_group_ids:
+      - form.poetry.sonnet.argument_volta
     score_mode: weighted_binary_mean
   - domain_id: language
     title: Language and imagery
@@ -7066,7 +7096,8 @@
     components:
     - module_id: form.poetry.sonnet
       weight: 1.0
-      include_group_ids: *id014
+      include_group_ids:
+      - form.poetry.sonnet.language
     - module_id: core.freshness_and_non_genericness
       weight: 1.0
     score_mode: weighted_binary_mean
@@ -7165,7 +7196,8 @@
     components:
     - module_id: form.poetry.sonnet
       weight: 1.0
-      include_group_ids: *id010
+      include_group_ids:
+      - form.poetry.sonnet.architecture
     score_mode: weighted_binary_mean
   - domain_id: meter
     title: Meter and rhythm
@@ -7173,7 +7205,8 @@
     components:
     - module_id: form.poetry.sonnet
       weight: 1.0
-      include_group_ids: *id011
+      include_group_ids:
+      - form.poetry.sonnet.meter
     score_mode: weighted_binary_mean
   - domain_id: rhyme
     title: Rhyme and musicality
@@ -7181,7 +7214,8 @@
     components:
     - module_id: form.poetry.sonnet
       weight: 1.0
-      include_group_ids: *id012
+      include_group_ids:
+      - form.poetry.sonnet.rhyme
     score_mode: weighted_binary_mean
   - domain_id: movement
     title: Argument, volta, and closure
@@ -7189,7 +7223,8 @@
     components:
     - module_id: form.poetry.sonnet
       weight: 1.0
-      include_group_ids: *id013
+      include_group_ids:
+      - form.poetry.sonnet.argument_volta
     score_mode: weighted_binary_mean
   - domain_id: language
     title: Language and imagery
@@ -7197,7 +7232,8 @@
     components:
     - module_id: form.poetry.sonnet
       weight: 1.0
-      include_group_ids: *id014
+      include_group_ids:
+      - form.poetry.sonnet.language
     - module_id: core.freshness_and_non_genericness
       weight: 1.0
     score_mode: weighted_binary_mean
@@ -7295,7 +7331,8 @@
     components:
     - module_id: form.poetry.sonnet
       weight: 1.0
-      include_group_ids: *id010
+      include_group_ids:
+      - form.poetry.sonnet.architecture
     score_mode: weighted_binary_mean
   - domain_id: meter
     title: Meter and rhythm
@@ -7303,7 +7340,8 @@
     components:
     - module_id: form.poetry.sonnet
       weight: 1.0
-      include_group_ids: *id011
+      include_group_ids:
+      - form.poetry.sonnet.meter
     score_mode: weighted_binary_mean
   - domain_id: rhyme
     title: Rhyme and musicality
@@ -7311,7 +7349,8 @@
     components:
     - module_id: form.poetry.sonnet
       weight: 1.0
-      include_group_ids: *id012
+      include_group_ids:
+      - form.poetry.sonnet.rhyme
     score_mode: weighted_binary_mean
   - domain_id: movement
     title: Argument, volta, and closure
@@ -7319,7 +7358,8 @@
     components:
     - module_id: form.poetry.sonnet
       weight: 1.0
-      include_group_ids: *id013
+      include_group_ids:
+      - form.poetry.sonnet.argument_volta
     score_mode: weighted_binary_mean
   - domain_id: language
     title: Language and imagery
@@ -7327,7 +7367,8 @@
     components:
     - module_id: form.poetry.sonnet
       weight: 1.0
-      include_group_ids: *id014
+      include_group_ids:
+      - form.poetry.sonnet.language
     - module_id: core.freshness_and_non_genericness
       weight: 1.0
     score_mode: weighted_binary_mean
@@ -10408,7 +10449,7 @@
     components:
     - module_id: form.visual.visual_craft_and_artifact_control
       weight: 1.0
-      include_question_ids: &id015
+      include_question_ids:
       - form.visual.visual_craft_and_artifact_control.composition
       - form.visual.visual_craft_and_artifact_control.value
       - form.visual.visual_craft_and_artifact_control.perspective
@@ -10419,7 +10460,7 @@
     components:
     - module_id: form.visual.visual_craft_and_artifact_control
       weight: 1.0
-      include_question_ids: &id016
+      include_question_ids:
       - form.visual.visual_craft_and_artifact_control.color
       - form.visual.visual_craft_and_artifact_control.edges
     score_mode: weighted_binary_mean
@@ -10429,7 +10470,7 @@
     components:
     - module_id: form.visual.visual_craft_and_artifact_control
       weight: 1.0
-      include_question_ids: &id017
+      include_question_ids:
       - form.visual.visual_craft_and_artifact_control.anatomy
       - form.visual.visual_craft_and_artifact_control.artifacts
       - form.visual.visual_craft_and_artifact_control.resolution
@@ -10534,7 +10575,10 @@
     components:
     - module_id: form.visual.visual_craft_and_artifact_control
       weight: 1.0
-      include_question_ids: *id015
+      include_question_ids:
+      - form.visual.visual_craft_and_artifact_control.composition
+      - form.visual.visual_craft_and_artifact_control.value
+      - form.visual.visual_craft_and_artifact_control.perspective
     score_mode: weighted_binary_mean
   - domain_id: style
     title: Style and aesthetic control
@@ -10542,7 +10586,9 @@
     components:
     - module_id: form.visual.visual_craft_and_artifact_control
       weight: 1.0
-      include_question_ids: *id016
+      include_question_ids:
+      - form.visual.visual_craft_and_artifact_control.color
+      - form.visual.visual_craft_and_artifact_control.edges
     score_mode: weighted_binary_mean
   - domain_id: artifacts
     title: Generation-artifact control
@@ -10550,7 +10596,10 @@
     components:
     - module_id: form.visual.visual_craft_and_artifact_control
       weight: 1.0
-      include_question_ids: *id017
+      include_question_ids:
+      - form.visual.visual_craft_and_artifact_control.anatomy
+      - form.visual.visual_craft_and_artifact_control.artifacts
+      - form.visual.visual_craft_and_artifact_control.resolution
     score_mode: weighted_binary_mean
   - domain_id: purpose
     title: Audience and production fit
@@ -10652,7 +10701,10 @@
     components:
     - module_id: form.visual.visual_craft_and_artifact_control
       weight: 1.0
-      include_question_ids: *id015
+      include_question_ids:
+      - form.visual.visual_craft_and_artifact_control.composition
+      - form.visual.visual_craft_and_artifact_control.value
+      - form.visual.visual_craft_and_artifact_control.perspective
     score_mode: weighted_binary_mean
   - domain_id: style
     title: Style and aesthetic control
@@ -10660,7 +10712,9 @@
     components:
     - module_id: form.visual.visual_craft_and_artifact_control
       weight: 1.0
-      include_question_ids: *id016
+      include_question_ids:
+      - form.visual.visual_craft_and_artifact_control.color
+      - form.visual.visual_craft_and_artifact_control.edges
     score_mode: weighted_binary_mean
   - domain_id: artifacts
     title: Generation-artifact control
@@ -10668,7 +10722,10 @@
     components:
     - module_id: form.visual.visual_craft_and_artifact_control
       weight: 1.0
-      include_question_ids: *id017
+      include_question_ids:
+      - form.visual.visual_craft_and_artifact_control.anatomy
+      - form.visual.visual_craft_and_artifact_control.artifacts
+      - form.visual.visual_craft_and_artifact_control.resolution
     score_mode: weighted_binary_mean
   - domain_id: purpose
     title: Audience and production fit
@@ -10770,7 +10827,10 @@
     components:
     - module_id: form.visual.visual_craft_and_artifact_control
       weight: 1.0
-      include_question_ids: *id015
+      include_question_ids:
+      - form.visual.visual_craft_and_artifact_control.composition
+      - form.visual.visual_craft_and_artifact_control.value
+      - form.visual.visual_craft_and_artifact_control.perspective
     score_mode: weighted_binary_mean
   - domain_id: style
     title: Style and aesthetic control
@@ -10778,7 +10838,9 @@
     components:
     - module_id: form.visual.visual_craft_and_artifact_control
       weight: 1.0
-      include_question_ids: *id016
+      include_question_ids:
+      - form.visual.visual_craft_and_artifact_control.color
+      - form.visual.visual_craft_and_artifact_control.edges
     score_mode: weighted_binary_mean
   - domain_id: artifacts
     title: Generation-artifact control
@@ -10786,7 +10848,10 @@
     components:
     - module_id: form.visual.visual_craft_and_artifact_control
       weight: 1.0
-      include_question_ids: *id017
+      include_question_ids:
+      - form.visual.visual_craft_and_artifact_control.anatomy
+      - form.visual.visual_craft_and_artifact_control.artifacts
+      - form.visual.visual_craft_and_artifact_control.resolution
     score_mode: weighted_binary_mean
   - domain_id: purpose
     title: Audience and production fit
@@ -10888,7 +10953,10 @@
     components:
     - module_id: form.visual.visual_craft_and_artifact_control
       weight: 1.0
-      include_question_ids: *id015
+      include_question_ids:
+      - form.visual.visual_craft_and_artifact_control.composition
+      - form.visual.visual_craft_and_artifact_control.value
+      - form.visual.visual_craft_and_artifact_control.perspective
     score_mode: weighted_binary_mean
   - domain_id: style
     title: Style and aesthetic control
@@ -10896,7 +10964,9 @@
     components:
     - module_id: form.visual.visual_craft_and_artifact_control
       weight: 1.0
-      include_question_ids: *id016
+      include_question_ids:
+      - form.visual.visual_craft_and_artifact_control.color
+      - form.visual.visual_craft_and_artifact_control.edges
     score_mode: weighted_binary_mean
   - domain_id: artifacts
     title: Generation-artifact control
@@ -10904,7 +10974,10 @@
     components:
     - module_id: form.visual.visual_craft_and_artifact_control
       weight: 1.0
-      include_question_ids: *id017
+      include_question_ids:
+      - form.visual.visual_craft_and_artifact_control.anatomy
+      - form.visual.visual_craft_and_artifact_control.artifacts
+      - form.visual.visual_craft_and_artifact_control.resolution
     score_mode: weighted_binary_mean
   - domain_id: purpose
     title: Audience and production fit
@@ -11006,7 +11079,10 @@
     components:
     - module_id: form.visual.visual_craft_and_artifact_control
       weight: 1.0
-      include_question_ids: *id015
+      include_question_ids:
+      - form.visual.visual_craft_and_artifact_control.composition
+      - form.visual.visual_craft_and_artifact_control.value
+      - form.visual.visual_craft_and_artifact_control.perspective
     score_mode: weighted_binary_mean
   - domain_id: style
     title: Style and aesthetic control
@@ -11014,7 +11090,9 @@
     components:
     - module_id: form.visual.visual_craft_and_artifact_control
       weight: 1.0
-      include_question_ids: *id016
+      include_question_ids:
+      - form.visual.visual_craft_and_artifact_control.color
+      - form.visual.visual_craft_and_artifact_control.edges
     score_mode: weighted_binary_mean
   - domain_id: artifacts
     title: Generation-artifact control
@@ -11022,7 +11100,10 @@
     components:
     - module_id: form.visual.visual_craft_and_artifact_control
       weight: 1.0
-      include_question_ids: *id017
+      include_question_ids:
+      - form.visual.visual_craft_and_artifact_control.anatomy
+      - form.visual.visual_craft_and_artifact_control.artifacts
+      - form.visual.visual_craft_and_artifact_control.resolution
     score_mode: weighted_binary_mean
   - domain_id: purpose
     title: Audience and production fit
@@ -11124,7 +11205,10 @@
     components:
     - module_id: form.visual.visual_craft_and_artifact_control
       weight: 1.0
-      include_question_ids: *id015
+      include_question_ids:
+      - form.visual.visual_craft_and_artifact_control.composition
+      - form.visual.visual_craft_and_artifact_control.value
+      - form.visual.visual_craft_and_artifact_control.perspective
     score_mode: weighted_binary_mean
   - domain_id: style
     title: Style and aesthetic control
@@ -11132,7 +11216,9 @@
     components:
     - module_id: form.visual.visual_craft_and_artifact_control
       weight: 1.0
-      include_question_ids: *id016
+      include_question_ids:
+      - form.visual.visual_craft_and_artifact_control.color
+      - form.visual.visual_craft_and_artifact_control.edges
     score_mode: weighted_binary_mean
   - domain_id: artifacts
     title: Generation-artifact control
@@ -11140,7 +11226,10 @@
     components:
     - module_id: form.visual.visual_craft_and_artifact_control
       weight: 1.0
-      include_question_ids: *id017
+      include_question_ids:
+      - form.visual.visual_craft_and_artifact_control.anatomy
+      - form.visual.visual_craft_and_artifact_control.artifacts
+      - form.visual.visual_craft_and_artifact_control.resolution
     score_mode: weighted_binary_mean
   - domain_id: purpose
     title: Audience and production fit
@@ -11364,7 +11453,10 @@
     components:
     - module_id: form.visual.visual_craft_and_artifact_control
       weight: 1.0
-      include_question_ids: *id015
+      include_question_ids:
+      - form.visual.visual_craft_and_artifact_control.composition
+      - form.visual.visual_craft_and_artifact_control.value
+      - form.visual.visual_craft_and_artifact_control.perspective
     score_mode: weighted_binary_mean
   - domain_id: style
     title: Style and aesthetic control
@@ -11372,7 +11464,9 @@
     components:
     - module_id: form.visual.visual_craft_and_artifact_control
       weight: 1.0
-      include_question_ids: *id016
+      include_question_ids:
+      - form.visual.visual_craft_and_artifact_control.color
+      - form.visual.visual_craft_and_artifact_control.edges
     score_mode: weighted_binary_mean
   - domain_id: artifacts
     title: Generation-artifact control
@@ -11380,7 +11474,10 @@
     components:
     - module_id: form.visual.visual_craft_and_artifact_control
       weight: 1.0
-      include_question_ids: *id017
+      include_question_ids:
+      - form.visual.visual_craft_and_artifact_control.anatomy
+      - form.visual.visual_craft_and_artifact_control.artifacts
+      - form.visual.visual_craft_and_artifact_control.resolution
     score_mode: weighted_binary_mean
   - domain_id: purpose
     title: Audience and production fit

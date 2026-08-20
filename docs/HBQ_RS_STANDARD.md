@@ -55,10 +55,10 @@ The judge returns a verdict, confidence, concise note, and one or more artifact 
 
 ## 4. Scoring
 
-Let a domain `d` be worth `P_d` points. Each selected applicable question `i` has leaf weight `w_i` and component multiplier `m_i`. For assessed questions, `x_i = 1` for YES and `0` for NO.
+Let a domain `d` be worth `P_d` points. Each selected applicable question `i` has leaf weight `w_i`, bundle-component multiplier `m_i`, and ancestor-group multiplier product `g_i`. For assessed questions, `x_i = 1` for YES and `0` for NO.
 
 ```text
-observed_domain_d = P_d × Σ(w_i m_i x_i) / Σ(w_i m_i), over YES/NO leaves
+observed_domain_d = P_d × Σ(w_i m_i g_i x_i) / Σ(w_i m_i g_i), over YES/NO leaves
 ```
 
 Questions marked `NOT_APPLICABLE` are removed. Questions marked `CANNOT_ASSESS` create an interval:
@@ -70,6 +70,7 @@ coverage_d = assessed_weight / applicable_weight
 ```
 
 The observed score is reported only with coverage. Below the bundle threshold it is `PROVISIONAL`; it must not drive unattended acceptance.
+If no point-bearing question is assessable, the observed score is `null` and the status is likewise provisional rather than `SCORED`.
 
 ### Penalties
 
@@ -90,6 +91,14 @@ final_upper    = max(0, base_upper − penalty_lower)
 Hard-gate status is reported separately as `VALID`, `INVALID`, or `UNRESOLVED`.
 
 Author preferences, aesthetic targets, revision priorities, and inferred goals are never hard gates. They may receive explicit weight in the task domain, but failure lowers the quality result rather than invalidating the artifact. Broad catch-all questions such as “does it satisfy every inclusion?” are diagnostic only; binding requirements must be split into independently answerable leaves before judging.
+
+### Scope composition
+
+A score belongs to one exact evaluation scope: artifact bytes, scope-correct bundle, materialized weight profile, task contract, question set, and verdicts. Within a hierarchy, evaluate that scope once and reuse its result in every view. Do not recompute a chapter merely because it appears beneath a manuscript card.
+
+Parent scores are not reconstructed by averaging child scores. A chapter score may include chapter opening/closure and across-scene criteria that no individual scene can answer; penalty caps, conditional activation, coverage, and hard gates also make normalized child scores non-associative. Scene results therefore remain diagnostic children unless an explicit, disclosed composite profile says otherwise.
+
+Two runs produce the same deterministic score only when their materialized scoring inputs and verdicts are the same. A fresh model call with different map context is a new evaluation, even if the visible prose is identical.
 
 ## 5. Controlled subjective assessment
 
@@ -117,7 +126,7 @@ A manuscript, collection, visual sequence, or long narration requires hierarchic
 - construct a whole-work map;
 - track characters, state, chronology, promises, motifs, and threads;
 - evaluate opening and ending against one another;
-- sample local units stratified by function and position;
+- evaluate every substantive local unit by default, or explicitly declare a bounded stratified sample;
 - test recurring patterns and distant dependencies;
 - separate systemic defects from isolated imperfections;
 - report retrieval and context limitations.

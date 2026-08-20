@@ -4,7 +4,9 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 from pathlib import Path
+import time
 from typing import Any, Sequence
 
 from jsonschema import Draft202012Validator
@@ -27,7 +29,14 @@ from .core import (
 from .pack import pack_book
 from .paths import book_root, bundles_path, prompts_dir, registry_path, schema_dir
 from .runner import run_judge
+from .html_config import render_workflow_configurator
+from .html_report import render_html_report, render_html_scorecard
+from .html_status import render_workflow_status, summarize_workflow_progress
+from .html_weights import render_weight_configurator
+from .longform import segment_longform
 from .longform_runner import run_longform_judge
+from .weights import make_weight_profile, materialize_weight_profile
+from .batch import run_longform_batch
 
 
 def _load_registry(args: argparse.Namespace) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
@@ -47,6 +56,163 @@ def _load_task_contract(path: str | None) -> dict[str, Any] | None:
     if errors:
         raise HBQError(f"Task contract violates its strict schema: {errors[0].message}")
     return value
+
+
+def _load_weight_profile(path: str | None) -> dict[str, Any] | None:
+    if path is None:
+        return None
+    value = load_data(path)
+    if not isinstance(value, dict):
+        raise HBQError("Weight profile must be a JSON or YAML object")
+    return value
+
+
+def _load_hierarchical_score_profile(path: str | None) -> dict[str, Any] | None:
+    if path is None:
+        return None
+    value = load_data(path)
+    if not isinstance(value, dict):
+        raise HBQError("Hierarchical score profile must be a JSON or YAML object")
+    return _load_hierarchical_score_profile_from_value(value)
+
+
+def _cmd_init_score_profile(args: argparse.Namespace) -> int:
+    source = Path(args.artifact)
+    text = source.read_text(encoding="utf-8-sig")
+    segmentation = segment_longform(text, artifact_id=source.stem or "artifact")
+    eligible_units = [
+        unit for unit in segmentation["units"] if unit["local_evaluation"]["eligible"]
+    ]
+    by_ordinal = {unit["ordinal"]: unit for unit in eligible_units}
+    requested_ordinals = list(dict.fromkeys(args.unfinished_unit_ordinal))
+    missing = sorted(set(requested_ordinals) - set(by_ordinal))
+    if missing:
+        available = ", ".join(str(ordinal) for ordinal in sorted(by_ordinal))
+        raise HBQError(
+            "Unfinished unit ordinals are not eligible source units: "
+            + ", ".join(str(ordinal) for ordinal in missing)
+            + f"; eligible ordinals are {available}"
+        )
+    profile: dict[str, Any] = {
+        "profile_version": 1,
+        "profile_id": args.profile_id,
+        "global_weight": args.global_weight,
+        "local_weight": args.local_weight,
+        "local_reducer": args.local_reducer,
+    }
+    if requested_ordinals:
+        profile["unfinished_unit_ids"] = [by_ordinal[ordinal]["unit_id"] for ordinal in requested_ordinals]
+        profile["unfinished_unit_weight"] = args.unfinished_unit_weight
+    if args.prologue_epilogue_weight is not None:
+        profile["prologue_epilogue_weight"] = args.prologue_epilogue_weight
+    _load_hierarchical_score_profile_from_value(profile)
+    write_data(args.output, profile, fmt="json")
+    return 0
+
+
+def _load_hierarchical_score_profile_from_value(value: dict[str, Any]) -> dict[str, Any]:
+    errors = sorted(
+        Draft202012Validator(
+            load_data(schema_dir() / "hbq_hierarchical_score_profile.schema.json")
+        ).iter_errors(value),
+        key=lambda error: list(error.path),
+    )
+    if errors:
+        raise HBQError(f"Hierarchical score profile violates its strict schema: {errors[0].message}")
+    total = float(value["global_weight"]) + float(value["local_weight"])
+    if not math.isfinite(total) or total <= 0:
+        raise HBQError("global_weight and local_weight must have a positive sum")
+    return value
+
+
+def _cmd_render_report(args: argparse.Namespace) -> int:
+    report = load_data(args.report)
+    if not isinstance(report, dict):
+        raise HBQError("Long-form report must be a JSON or YAML object")
+    html = (
+        render_html_scorecard(
+            report,
+            layout=args.card_layout,
+        )
+        if args.scorecard
+        else render_html_report(report, title=args.title)
+    )
+    target = Path(args.output)
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text(html, encoding="utf-8")
+    return 0
+
+
+def _cmd_configure(args: argparse.Namespace) -> int:
+    modules, bundles = _load_registry(args)
+    catalog = {
+        "modules": [
+            {
+                key: module.get(key)
+                for key in (
+                    "module_id", "title", "description", "artifact_types", "valid_scopes"
+                )
+            }
+            for module in modules
+        ],
+        "bundles": [
+            {
+                key: bundle.get(key)
+                for key in (
+                    "bundle_id", "title", "description", "artifact_types", "valid_scopes", "module_ids"
+                )
+            }
+            for bundle in bundles
+        ],
+    }
+    target = Path(args.output)
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text(render_workflow_configurator(catalog, title=args.title), encoding="utf-8")
+    return 0
+
+
+def _cmd_init_weight_profile(args: argparse.Namespace) -> int:
+    modules, bundles = _load_registry(args)
+    profile = make_weight_profile(
+        modules,
+        resolve_bundle(bundles, args.bundle_id),
+        profile_id=args.profile_id,
+    )
+    write_data(args.output, profile, fmt=args.format)
+    return 0
+
+
+def _cmd_status(args: argparse.Namespace) -> int:
+    target = Path(args.output or Path(args.output_dir) / "status.html").resolve()
+    target.parent.mkdir(parents=True, exist_ok=True)
+    while True:
+        progress = summarize_workflow_progress(args.output_dir)
+        rendered = render_workflow_status(
+            progress,
+            refresh_seconds=args.interval if args.watch else None,
+        )
+        temporary = target.with_name(f".{target.name}.tmp")
+        temporary.write_text(rendered, encoding="utf-8")
+        temporary.replace(target)
+        if not args.watch or progress["complete"]:
+            print(json.dumps({**progress, "status_html": str(target)}, ensure_ascii=False, indent=2))
+            return 0
+        time.sleep(args.interval)
+
+
+def _cmd_configure_weights(args: argparse.Namespace) -> int:
+    modules, bundles = _load_registry(args)
+    target = Path(args.output)
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text(
+        render_weight_configurator(
+            modules,
+            resolve_bundle(bundles, args.bundle_id),
+            title=args.title,
+        ),
+        encoding="utf-8",
+    )
+    return 0
 
 
 def _cmd_validate(args: argparse.Namespace) -> int:
@@ -72,9 +238,14 @@ def _cmd_validate(args: argparse.Namespace) -> int:
 
 def _cmd_compile(args: argparse.Namespace) -> int:
     modules, bundles = _load_registry(args)
-    packet = compile_bundle(
+    modules, bundle, _ = materialize_weight_profile(
         modules,
         resolve_bundle(bundles, args.bundle_id),
+        _load_weight_profile(args.weight_profile),
+    )
+    packet = compile_bundle(
+        modules,
+        bundle,
         task_contract=_load_task_contract(args.task_contract),
     )
     write_data(args.output, packet, fmt=args.format)
@@ -83,9 +254,14 @@ def _cmd_compile(args: argparse.Namespace) -> int:
 
 def _cmd_score(args: argparse.Namespace) -> int:
     modules, bundles = _load_registry(args)
-    report = score_bundle(
+    modules, bundle, _ = materialize_weight_profile(
         modules,
         resolve_bundle(bundles, args.bundle_id),
+        _load_weight_profile(args.weight_profile),
+    )
+    report = score_bundle(
+        modules,
+        bundle,
         load_verdicts(args.verdicts),
         artifact_id=args.artifact_id,
         task_contract=_load_task_contract(args.task_contract),
@@ -270,6 +446,7 @@ def _cmd_judge(args: argparse.Namespace) -> int:
         bundles=args.bundles,
         context_paths=args.context,
         task_contract_path=args.task_contract,
+        weight_profile=_load_weight_profile(args.weight_profile),
         question_ids=args.question_id,
         batch_size=args.batch_size,
         base_url=args.base_url,
@@ -291,6 +468,9 @@ def _cmd_judge(args: argparse.Namespace) -> int:
 
 
 def _cmd_longform(args: argparse.Namespace) -> int:
+    driving_prompt = args.driving_prompt
+    if args.driving_prompt_file:
+        driving_prompt = Path(args.driving_prompt_file).read_text(encoding="utf-8-sig")
     summary = run_longform_judge(
         artifact_path=args.artifact,
         brief_paths=args.brief,
@@ -303,9 +483,15 @@ def _cmd_longform(args: argparse.Namespace) -> int:
         declared_scope=args.declared_scope,
         completion_status=args.completion_status,
         artifact_id=args.artifact_id,
-        driving_prompt=args.driving_prompt,
+        driving_prompt=driving_prompt,
         bundle_id=args.bundle_id,
+        module_ids=args.module_id,
         task_contract_path=args.task_contract,
+        weight_profile=_load_weight_profile(args.weight_profile),
+        local_weight_profile=_load_weight_profile(args.local_weight_profile),
+        hierarchical_score_profile=_load_hierarchical_score_profile(
+            args.hierarchical_score_profile
+        ),
         local_bundle_id=args.local_bundle_id,
         route_sample_char_limit=args.route_sample_char_limit,
         local_sample_limit=args.local_sample_limit,
@@ -323,8 +509,33 @@ def _cmd_longform(args: argparse.Namespace) -> int:
         allow_remote=args.allow_remote,
         resume=args.resume,
         dry_run=args.dry_run,
+        plan_only=args.plan_only,
         timeout=args.timeout,
         strict_ai=args.strict_ai,
+    )
+    report_path = Path(args.output_dir) / "report.json"
+    if args.html_report and report_path.is_file():
+        report = load_data(report_path)
+        if not isinstance(report, dict):
+            raise HBQError("Completed long-form workflow did not produce an object report")
+        (Path(args.output_dir) / "report.html").write_text(
+            render_html_report(report), encoding="utf-8"
+        )
+        (Path(args.output_dir) / "scorecard.html").write_text(
+            render_html_scorecard(report), encoding="utf-8"
+        )
+    print(json.dumps(summary, ensure_ascii=False, indent=2))
+    return 0
+
+
+def _cmd_batch(args: argparse.Namespace) -> int:
+    summary = run_longform_batch(
+        args.manifest,
+        registry=args.registry,
+        bundles=args.bundles,
+        allow_remote=args.allow_remote,
+        resume=args.resume,
+        accept_reviewed=args.accept_reviewed,
     )
     print(json.dumps(summary, ensure_ascii=False, indent=2))
     return 0
@@ -351,6 +562,7 @@ def build_parser() -> argparse.ArgumentParser:
     compile_parser = subparsers.add_parser("compile", help="compile one bundle into a flat judge packet")
     compile_parser.add_argument("bundle_id")
     compile_parser.add_argument("--task-contract", help="frozen task-contract JSON/YAML")
+    compile_parser.add_argument("--weight-profile", help="strict scoring-weight profile JSON/YAML")
     compile_parser.add_argument("-o", "--output")
     compile_parser.add_argument("--format", choices=["json", "yaml"], default="json")
     compile_parser.set_defaults(func=_cmd_compile)
@@ -360,6 +572,7 @@ def build_parser() -> argparse.ArgumentParser:
     score.add_argument("verdicts", help="verdict JSON/JSONL/YAML")
     score.add_argument("--artifact-id")
     score.add_argument("--task-contract", help="same frozen task contract used during judging")
+    score.add_argument("--weight-profile", help="strict scoring-weight profile JSON/YAML")
     score.add_argument("-o", "--output")
     score.add_argument("--format", choices=["json", "yaml"], default="json")
     score.set_defaults(func=_cmd_score)
@@ -399,6 +612,100 @@ def build_parser() -> argparse.ArgumentParser:
     pack.add_argument("--format", choices=["json", "yaml"], default="json")
     pack.set_defaults(func=_cmd_pack)
 
+    configure = subparsers.add_parser(
+        "configure",
+        help="write an optional self-contained local workflow setup page",
+    )
+    configure.add_argument("-o", "--output", required=True, help="HTML output path")
+    configure.add_argument("--title", default="HBQ-RS long-form workflow setup")
+    configure.set_defaults(func=_cmd_configure)
+
+    weight_profile = subparsers.add_parser(
+        "init-weight-profile",
+        help="write every effective scoring weight for one bundle as editable JSON/YAML",
+    )
+    weight_profile.add_argument("bundle_id")
+    weight_profile.add_argument("-o", "--output", required=True)
+    weight_profile.add_argument("--profile-id", default="custom")
+    weight_profile.add_argument("--format", choices=["json", "yaml"], default="json")
+    weight_profile.set_defaults(func=_cmd_init_weight_profile)
+
+    status = subparsers.add_parser(
+        "status",
+        help="render an optional local progress page from durable workflow checkpoints",
+    )
+    status.add_argument("output_dir", help="long-form workflow directory")
+    status.add_argument("-o", "--output", help="HTML path; defaults to OUTPUT_DIR/status.html")
+    status.add_argument(
+        "--watch",
+        action="store_true",
+        help="keep regenerating the page until report.json is complete",
+    )
+    status.add_argument("--interval", type=int, choices=range(1, 61), default=3)
+    status.set_defaults(func=_cmd_status)
+
+    configure_weights = subparsers.add_parser(
+        "configure-weights",
+        help="write an optional offline editor for every scoring weight in one bundle",
+    )
+    configure_weights.add_argument("bundle_id")
+    configure_weights.add_argument("-o", "--output", required=True)
+    configure_weights.add_argument("--title", default="HBQ-RS scoring weights")
+    configure_weights.set_defaults(func=_cmd_configure_weights)
+
+    profile = subparsers.add_parser(
+        "init-score-profile",
+        help="create a strict, manuscript-bound starter profile for an optional composite score",
+    )
+    profile.add_argument("artifact", help="UTF-8 long-form text whose unit IDs the profile will bind")
+    profile.add_argument("-o", "--output", required=True, help="profile JSON path")
+    profile.add_argument("--profile-id", default="balanced-70-30")
+    profile.add_argument("--global-weight", type=float, default=7.0)
+    profile.add_argument("--local-weight", type=float, default=3.0)
+    profile.add_argument(
+        "--local-reducer", choices=["weighted_mean", "weakest_unit"], default="weighted_mean"
+    )
+    profile.add_argument(
+        "--unfinished-unit-ordinal",
+        action="append",
+        type=int,
+        default=[],
+        help="mark an unfinished source unit; repeatable, with one shared modifier",
+    )
+    profile.add_argument("--unfinished-unit-weight", type=float, default=0.5)
+    profile.add_argument(
+        "--prologue-epilogue-weight",
+        type=float,
+        help="shared modifier for units deterministically headed Prologue or Epilogue",
+    )
+    profile.set_defaults(func=_cmd_init_score_profile)
+
+    report = subparsers.add_parser(
+        "render-report", help="render a strict long-form report as self-contained offline HTML"
+    )
+    report.add_argument("report", help="long-form report JSON/YAML")
+    report.add_argument("-o", "--output", required=True, help="HTML output path")
+    report.add_argument("--scorecard", action="store_true", help="render only the embeddable scorecard")
+    report.add_argument(
+        "--card-layout", choices=["summary", "compact", "minimal"], default="summary"
+    )
+    report.add_argument("--title", default="HBQ-RS long-form evaluation")
+    report.set_defaults(func=_cmd_render_report)
+
+    batch = subparsers.add_parser(
+        "batch",
+        help="route and grade multiple long-form samples from a strict manifest",
+    )
+    batch.add_argument("manifest", help="batch manifest JSON/YAML")
+    batch.add_argument("--allow-remote", action="store_true")
+    batch.add_argument("--resume", action="store_true")
+    batch.add_argument(
+        "--accept-reviewed",
+        action="store_true",
+        help="grade review-policy jobs from their persisted, accepted plans",
+    )
+    batch.set_defaults(func=_cmd_batch)
+
     judge = subparsers.add_parser(
         "judge",
         help="run a bundle through an OpenAI-compatible endpoint or Codex CLI, then score it",
@@ -410,6 +717,7 @@ def build_parser() -> argparse.ArgumentParser:
     judge.add_argument("--output-dir", required=True, help="new run directory, or an existing run with --resume")
     judge.add_argument("--context", action="append", default=[], help="additional UTF-8 brief/canon file; repeatable")
     judge.add_argument("--task-contract", help="frozen task contract with weighted goals and binding requirements")
+    judge.add_argument("--weight-profile", help="strict scoring-weight profile JSON/YAML")
     judge.add_argument("--question-id", action="append", default=[], help="limit to a selected leaf; repeatable")
     judge.add_argument("--batch-size", type=int, default=12)
     judge.add_argument("--base-url", default="http://127.0.0.1:8000/v1")
@@ -433,13 +741,29 @@ def build_parser() -> argparse.ArgumentParser:
     )
     longform.add_argument("artifact", help="UTF-8 long-form text to evaluate")
     longform.add_argument("--brief", action="append", default=[], help="author brief or notes; repeatable")
-    longform.add_argument("--driving-prompt", default="", help="prompt that originally drove the artifact")
+    driving_prompt = longform.add_mutually_exclusive_group()
+    driving_prompt.add_argument(
+        "--driving-prompt", default="", help="prompt that originally drove the artifact"
+    )
+    driving_prompt.add_argument(
+        "--driving-prompt-file",
+        help="UTF-8 file containing the human, competition, workshop, or model prompt",
+    )
     longform.add_argument("--artifact-kind", default="prose_fiction")
     longform.add_argument("--scope", dest="declared_scope", default="manuscript")
-    longform.add_argument(
+    completion = longform.add_mutually_exclusive_group()
+    completion.add_argument(
         "--completion-status",
         choices=["complete", "work_in_progress", "excerpt", "unknown"],
         default="work_in_progress",
+        help="declared completion state; defaults to work_in_progress",
+    )
+    completion.add_argument(
+        "--wip",
+        dest="completion_status",
+        action="store_const",
+        const="work_in_progress",
+        help="explicit work-in-progress mode; completion-only criteria are not treated as failures",
     )
     longform.add_argument("--artifact-id")
     longform.add_argument(
@@ -448,16 +772,35 @@ def build_parser() -> argparse.ArgumentParser:
         help="freeze one complete bundle instead of automatic bundle/module selection",
     )
     longform.add_argument(
+        "--module",
+        dest="module_id",
+        action="append",
+        default=[],
+        help="with --bundle, freeze one selected in-bundle module; repeatable",
+    )
+    longform.add_argument(
         "--task-contract",
         help="freeze a validated task contract instead of using the route model's contract",
+    )
+    longform.add_argument(
+        "--hierarchical-score-profile",
+        help="optional JSON/YAML policy for a separate global-plus-local headline score",
+    )
+    longform.add_argument(
+        "--weight-profile",
+        help="optional scoring-weight profile for the whole-work bundle",
+    )
+    longform.add_argument(
+        "--local-weight-profile",
+        help="optional scoring-weight profile for the local unit bundle",
     )
     longform.add_argument("--local-bundle", dest="local_bundle_id")
     longform.add_argument("--route-sample-chars", dest="route_sample_char_limit", type=int, default=12000)
     longform.add_argument(
         "--local-sample-limit",
         type=int,
-        default=4,
-        help="maximum independently scored local units; the whole work is always judged globally",
+        default=None,
+        help="explicitly sample at most this many local units; omitted means evaluate every unit",
     )
     longform.add_argument(
         "--frozen-sample-ordinal",
@@ -470,7 +813,7 @@ def build_parser() -> argparse.ArgumentParser:
         "--binary-workers",
         type=int,
         default=1,
-        help="bounded parallel workers for the global and sampled-unit binary passes",
+        help="bounded parallel workers for global and local binary passes; does not reduce coverage",
     )
     longform.add_argument("--provider", choices=["openai", "codex"], required=True)
     longform.add_argument("--model", required=True)
@@ -501,8 +844,18 @@ def build_parser() -> argparse.ArgumentParser:
     longform.add_argument("--allow-remote", action="store_true")
     longform.add_argument("--resume", action="store_true")
     longform.add_argument("--dry-run", action="store_true")
+    longform.add_argument(
+        "--plan-only",
+        action="store_true",
+        help="run only automatic route/module planning; inspect plan.json before resuming",
+    )
     longform.add_argument("--timeout", type=float, default=600.0)
     longform.add_argument("--strict-ai", action="store_true", help="apply the stricter AI-output judge prefix")
+    longform.add_argument(
+        "--html-report",
+        action="store_true",
+        help="on completion, also write self-contained report.html and scorecard.html",
+    )
     longform.set_defaults(func=_cmd_longform)
     return parser
 

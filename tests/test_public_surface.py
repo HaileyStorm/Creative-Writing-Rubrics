@@ -90,14 +90,14 @@ def test_strict_judge_response_schema_is_public() -> None:
 def test_published_long_form_evaluation_is_complete_and_sanitized() -> None:
     root = book_root() / "evaluation-results" / "gray-blood-ch1-6"
     manifest = json.loads((root / "manifest.json").read_text(encoding="utf-8"))
-    assert manifest["accepted_binary_verdicts_published"] == 2582
+    assert manifest["accepted_binary_verdicts_published"] == 3550
     assert manifest["publication"] == {
         "private_prose_included": False,
         "evidence_quotes_included": False,
         "local_paths_included": False,
         "scores_and_verdict_states_complete": True,
         "automated_longform_reports": 2,
-        "sampled_local_score_reports": 8,
+        "local_score_reports": 12,
         "selected_question_diagnostic_reports": 12,
         "whole_score_reports": 2,
     }
@@ -148,7 +148,7 @@ def test_published_long_form_evaluation_is_complete_and_sanitized() -> None:
     )
     score_validator = Draft202012Validator(score_schema)
     score_paths = list(root.rglob("*-score.json"))
-    assert len(score_paths) == 10
+    assert len(score_paths) == 14
     for path in score_paths:
         score_validator.validate(json.loads(path.read_text(encoding="utf-8")))
 
@@ -208,6 +208,7 @@ def test_built_distributions_include_the_intended_public_surface(tmp_path: Path)
 
     assert "hbqrs/book/manifest.json" in names
     assert "hbqrs/book/schema/hbq_judge_response.schema.json" in names
+    assert "hbqrs/book/schema/hbq_batch.schema.json" in names
     assert any(name.startswith("hbqrs/book/sources/") for name in names)
     assert "Requires-Dist: jsonschema>=4.0" in metadata
     assert not any("evaluation-results/" in name for name in names)

@@ -12,6 +12,7 @@ artifact_types:
 valid_scopes:
 - manuscript
 profile: {}
+task_contract_domain_id: scope
 module_ids:
 - scope.manuscript
 - op.critique.full_manuscript_critique

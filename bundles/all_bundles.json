@@ -1611,6 +1611,7 @@
       "artifact"
     ],
     "profile": {},
+    "task_contract_domain_id": "hard",
     "module_ids": [
       "core.task_and_brief_fidelity",
       "core.substantive_task_engagement_true_non_refusal",
@@ -1799,6 +1800,7 @@
       "manuscript"
     ],
     "profile": {},
+    "task_contract_domain_id": "scope",
     "module_ids": [
       "scope.manuscript",
       "op.critique.full_manuscript_critique",

@@ -50,19 +50,18 @@
     },
     "sampling_plan": {
       "type": "object",
-      "required": ["unit_ids", "strata", "global_map_required", "rationale"],
+      "required": ["coverage_mode", "unit_ids", "strata", "global_map_required", "rationale"],
       "properties": {
+        "coverage_mode": {"enum": ["complete", "sampled"], "description": "complete covers every unit marked local_evaluation.eligible; sampled is allowed only by an explicit caller bound."},
         "unit_ids": {
           "type": "array",
           "minItems": 1,
-          "maxItems": 64,
           "items": {"type": "string", "pattern": "^unit-[0-9]{4}-[0-9a-f]{12}$"},
           "uniqueItems": true
         },
         "strata": {
           "type": "array",
           "minItems": 1,
-          "maxItems": 64,
           "items": {
             "type": "object",
             "required": ["name", "unit_ids"],

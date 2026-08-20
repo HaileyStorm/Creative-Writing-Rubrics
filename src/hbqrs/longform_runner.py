@@ -22,12 +22,16 @@ from .longform import (
     build_route_sample,
     build_workflow_report,
     catalog_snapshot,
+    complete_local_evaluation_plan,
     make_map_request,
     make_route_request,
+    make_completion_contract,
     normalize_score_result,
     render_local_scores_svg,
     render_workflow_markdown,
+    resolve_local_bundle_plan,
     segment_longform,
+    validate_hierarchical_score_profile,
     validate_long_form_map,
     validate_route_selection,
     validate_task_contract,
@@ -50,7 +54,7 @@ from .runner import (
 )
 
 
-MAX_LOCAL_SAMPLES = 64
+MAX_EXPLICIT_LOCAL_SAMPLE_LIMIT = 64
 MAX_BINARY_WORKERS = 8
 MAX_DYNAMIC_CRITERIA = 128
 
@@ -501,6 +505,31 @@ def _contract_judge_context(contract: Mapping[str, Any]) -> dict[str, Any]:
     return {"context_version": 1, "task_contract_questions": questions}
 
 
+def _completion_judge_context(
+    completion_status: str, *, scope_kind: str, scope_id: str
+) -> dict[str, Any]:
+    contract = make_completion_contract(completion_status)
+    contract.update({"context_version": 1, "scope_kind": scope_kind, "scope_id": scope_id})
+    if contract["incomplete"]:
+        contract["judge_rules"] = [
+            "Return NOT_APPLICABLE, with a completion-status reason, for a criterion whose activation requires a finished work or unavailable later material.",
+            "Never return NO merely because the declared work in progress does not yet contain future completion, closure, or payoff.",
+            "Evaluate prose craft, supplied-scope continuity, and other evidence currently present in the normal way.",
+            "Evaluate explicit binding requirements and weighted goals when their applies_to scope includes this supplied scope.",
+            "Use CANNOT_ASSESS only when evidence that should exist inside the supplied scope is unavailable or genuinely indeterminate.",
+        ]
+        if scope_kind == "local":
+            contract["judge_rules"].append(
+                "Treat this supplied unit as locally inspectable, while keeping whole-work completion and later-unit outcomes NOT_APPLICABLE."
+            )
+    else:
+        contract["judge_rules"] = [
+            "Evaluate completion-dependent criteria according to the declared completion status and supplied evidence.",
+            "Use CANNOT_ASSESS only when required supplied evidence is unavailable or genuinely indeterminate.",
+        ]
+    return contract
+
+
 def _criterion_summaries(output_dir: Path, *, scope_id: str) -> list[dict[str, Any]]:
     verdicts_path = output_dir / "verdicts.jsonl"
     if not verdicts_path.is_file():
@@ -643,7 +672,13 @@ def _freeze_sampling_ordinals(
 ) -> dict[str, Any]:
     value = deepcopy(dict(route))
     unit_ids = [segmentation["units"][ordinal - 1]["unit_id"] for ordinal in ordinals]
+    eligible_unit_ids = [
+        unit["unit_id"]
+        for unit in segmentation["units"]
+        if unit["local_evaluation"]["eligible"]
+    ]
     value["sampling_plan"] = {
+        "coverage_mode": "complete" if unit_ids == eligible_unit_ids else "sampled",
         "unit_ids": unit_ids,
         "strata": [{"name": "frozen ordinal comparison", "unit_ids": unit_ids}],
         "global_map_required": True,
@@ -685,6 +720,7 @@ def _run_binary_scope(
     bundles_path: Path,
     context_paths: Sequence[Path],
     task_contract_path: Path | None,
+    weight_profile: Mapping[str, Any] | None,
     provider: str,
     model: str,
     batch_size: int,
@@ -710,6 +746,7 @@ def _run_binary_scope(
         bundles=bundles_path,
         context_paths=context_paths,
         task_contract_path=task_contract_path,
+        weight_profile=weight_profile,
         batch_size=batch_size,
         base_url=base_url,
         api_key_env=api_key_env,
@@ -748,11 +785,16 @@ def run_longform_judge(
     artifact_id: str | None = None,
     driving_prompt: str = "",
     bundle_id: str | None = None,
+    module_ids: Sequence[str] = (),
     task_contract_path: str | Path | None = None,
+    weight_profile: Mapping[str, Any] | None = None,
+    local_weight_profile: Mapping[str, Any] | None = None,
     local_bundle_id: str | None = None,
+    hierarchical_score_profile: Mapping[str, Any] | None = None,
     route_sample_char_limit: int = 12000,
-    local_sample_limit: int = 4,
+    local_sample_limit: int | None = None,
     frozen_sample_ordinals: Sequence[int] = (),
+    sampling_plan_override: Mapping[str, Any] | None = None,
     binary_workers: int = 1,
     batch_size: int = 12,
     base_url: str = "http://127.0.0.1:8000/v1",
@@ -766,6 +808,7 @@ def run_longform_judge(
     allow_remote: bool = False,
     resume: bool = False,
     dry_run: bool = False,
+    plan_only: bool = False,
     timeout: float = 600.0,
     strict_ai: bool = False,
 ) -> dict[str, Any]:
@@ -773,7 +816,9 @@ def run_longform_judge(
 
     The same OpenAI-compatible or Codex provider is used for every model pass.
     The global artifact contains the complete source, explicitly partitioned by
-    deterministic unit headers.  Local results remain independent diagnostics.
+    deterministic unit headers.  By default every deterministic unit also gets
+    an independent local diagnostic; ``local_sample_limit`` is an explicit
+    coverage-reduction option.  Worker count changes scheduling, never coverage.
     """
 
     if provider not in {"openai", "codex"}:
@@ -782,8 +827,10 @@ def run_longform_judge(
         raise HBQError("model cannot be empty")
     if route_sample_char_limit < 1:
         raise HBQError("route_sample_char_limit must be positive")
-    if not 1 <= local_sample_limit <= MAX_LOCAL_SAMPLES:
-        raise HBQError(f"local_sample_limit must be between 1 and {MAX_LOCAL_SAMPLES}")
+    if local_sample_limit is not None and not 1 <= local_sample_limit <= MAX_EXPLICIT_LOCAL_SAMPLE_LIMIT:
+        raise HBQError(
+            f"local_sample_limit must be between 1 and {MAX_EXPLICIT_LOCAL_SAMPLE_LIMIT}"
+        )
     if not 1 <= binary_workers <= MAX_BINARY_WORKERS:
         raise HBQError(f"binary_workers must be between 1 and {MAX_BINARY_WORKERS}")
     if batch_size < 1:
@@ -812,7 +859,38 @@ def run_longform_judge(
     available_bundles = load_bundles(bundles_path)
     artifact_id = artifact_id or source_path.stem
     segmentation = segment_longform(source["text"], artifact_id=artifact_id)
-    frozen_ordinals = tuple(frozen_sample_ordinals)
+    eligible_unit_ids = [
+        unit["unit_id"]
+        for unit in segmentation["units"]
+        if unit["local_evaluation"]["eligible"]
+    ]
+    if hierarchical_score_profile is not None:
+        hierarchical_score_profile = validate_hierarchical_score_profile(
+            hierarchical_score_profile,
+            unit_ids=eligible_unit_ids,
+            unit_headings={unit["unit_id"]: unit["heading"] for unit in segmentation["units"]},
+        )
+    if sampling_plan_override is not None and frozen_sample_ordinals:
+        raise HBQError("sampling_plan_override cannot be combined with frozen_sample_ordinals")
+    sampling_plan_override = (
+        deepcopy(dict(sampling_plan_override)) if sampling_plan_override is not None else None
+    )
+    override_unit_ids = (
+        sampling_plan_override.get("unit_ids") if sampling_plan_override is not None else None
+    )
+    if sampling_plan_override is not None and not isinstance(override_unit_ids, list):
+        raise HBQError("sampling_plan_override must contain unit_ids")
+    unit_ordinal_by_id = {
+        unit["unit_id"]: unit["ordinal"] for unit in segmentation["units"]
+    }
+    if override_unit_ids is not None and any(
+        not isinstance(unit_id, str) or unit_id not in unit_ordinal_by_id
+        for unit_id in override_unit_ids
+    ):
+        raise HBQError("sampling_plan_override references an unknown unit")
+    frozen_ordinals = tuple(
+        unit_ordinal_by_id[unit_id] for unit_id in override_unit_ids
+    ) if override_unit_ids is not None else tuple(frozen_sample_ordinals)
     if any(isinstance(value, bool) or not isinstance(value, int) for value in frozen_ordinals):
         raise HBQError("frozen_sample_ordinals must contain integers")
     if len(set(frozen_ordinals)) != len(frozen_ordinals):
@@ -821,10 +899,20 @@ def run_longform_judge(
         raise HBQError("frozen_sample_ordinals must be in ascending order")
     if any(value < 1 or value > segmentation["unit_count"] for value in frozen_ordinals):
         raise HBQError("frozen_sample_ordinals must reference existing one-based unit ordinals")
-    if len(frozen_ordinals) > local_sample_limit:
+    if local_sample_limit is not None and len(frozen_ordinals) > local_sample_limit:
         raise HBQError("frozen_sample_ordinals exceed local_sample_limit")
+    frozen_module_ids = tuple(module_ids)
+    if len(set(frozen_module_ids)) != len(frozen_module_ids):
+        raise HBQError("module_ids must be unique")
+    if frozen_module_ids and bundle_id is None:
+        raise HBQError("module_ids require an explicit bundle_id")
     if bundle_id is not None:
-        resolve_bundle(available_bundles, bundle_id)
+        frozen_bundle = resolve_bundle(available_bundles, bundle_id)
+        unknown_modules = sorted(set(frozen_module_ids) - set(frozen_bundle.get("module_ids", [])))
+        if unknown_modules:
+            raise HBQError(
+                f"Selected modules are not in bundle {bundle_id}: {unknown_modules}"
+            )
     task_contract_override: dict[str, Any] | None = None
     task_contract_record: dict[str, Any] | None = None
     if task_contract_path is not None:
@@ -837,6 +925,7 @@ def run_longform_judge(
             artifact_id=artifact_id,
             unit_ids=[unit["unit_id"] for unit in segmentation["units"]],
             work_scope_aliases=[declared_scope],
+            expected_completion_status=completion_status,
         )
         task_contract_record = _record_without_text(_read_text_record(contract_path))
     endpoint = _endpoint_url(base_url) if provider == "openai" else None
@@ -863,6 +952,7 @@ def run_longform_judge(
     )
     if frozen_ordinals:
         route_request["required_sample_ordinals"] = list(frozen_ordinals)
+        route_request["local_coverage_mode"] = "sampled"
     route_instructions = (prompts_dir() / "judge" / "ROUTE_SELECTION_PROMPT.md").read_text(encoding="utf-8")
     map_instructions = (prompts_dir() / "judge" / "LONG_FORM_MAP_PROMPT.md").read_text(encoding="utf-8")
     synthesis_instructions = (prompts_dir() / "judge" / "LONG_FORM_SYNTHESIS_PROMPT.md").read_text(
@@ -870,11 +960,21 @@ def run_longform_judge(
     )
     route_prompt = _structured_prompt("route", route_instructions, route_request)
     organized_source = _organized_source(segmentation)
-    maximum_local_scopes = len(frozen_ordinals) if frozen_ordinals else min(local_sample_limit, segmentation["unit_count"])
+    eligible_local_unit_count = sum(
+        1 for unit in segmentation["units"] if unit["local_evaluation"]["eligible"]
+    )
+    maximum_local_scopes = (
+        len(frozen_ordinals)
+        if frozen_ordinals
+        else eligible_local_unit_count
+        if local_sample_limit is None
+        else min(local_sample_limit, eligible_local_unit_count)
+    )
     maximum_questions = _question_count(modules) + MAX_DYNAMIC_CRITERIA
     maximum_binary_batches = (1 + maximum_local_scopes) * ((maximum_questions + batch_size - 1) // batch_size)
-    maximum_provider_calls = 3 + maximum_binary_batches
+    maximum_provider_calls = 1 if plan_only else 3 + maximum_binary_batches
     route_sample_disclosure = {key: value for key, value in route_sample_record.items() if key != "text"}
+    completion_contract = make_completion_contract(completion_status)
     disclosure = {
         "destination": destination_label,
         "remote": remote,
@@ -883,6 +983,18 @@ def run_longform_judge(
         "artifact": _record_without_text(source),
         "briefs": [_record_without_text(record) for record in briefs],
         "task_contract": task_contract_record,
+        "completion_contract": completion_contract,
+        "hierarchical_score": {
+            "enabled": hierarchical_score_profile is not None,
+            "profile": deepcopy(hierarchical_score_profile),
+            "provider_calls": 0,
+            "source": "existing deterministic score intervals",
+        },
+        "scoring_weight_profiles": {
+            "global": deepcopy(weight_profile),
+            "local": deepcopy(local_weight_profile),
+            "provider_calls": 0,
+        },
         "maximum_provider_calls": maximum_provider_calls,
         "payloads": {
             "route": {
@@ -900,13 +1012,23 @@ def run_longform_judge(
             "global_judge": {
                 "organized_source": _payload_record(organized_source),
                 "briefs": [_record_without_text(record) for record in briefs],
-                "generated_dependencies": ["validated long-form map", "scope task contract"],
+                "generated_dependencies": [
+                    "validated long-form map",
+                    "scope task contract",
+                    "completion-status judge context",
+                ],
             },
-            "local_judges": {
+            "local_evaluations": {
                 "maximum_scopes": maximum_local_scopes,
                 "frozen_ordinals": list(frozen_ordinals),
+                "coverage_mode": "sampled" if frozen_ordinals or local_sample_limit is not None else "complete",
                 "candidate_units": [_record_without_text(unit) for unit in segmentation["units"]],
-                "generated_dependencies": ["validated route", "validated long-form map", "scope task contract"],
+                "generated_dependencies": [
+                    "validated route",
+                    "validated long-form map",
+                    "scope task contract",
+                    "completion-status judge context",
+                ],
             },
             "synthesis": {
                 "instructions": _payload_record(synthesis_instructions),
@@ -916,6 +1038,7 @@ def run_longform_judge(
         },
         "openai_structured_outputs": openai_structured_outputs if provider == "openai" else None,
         "output_dir": str(Path(output_dir).resolve()),
+        "plan_only": plan_only,
     }
     print(json.dumps({"disclosure": disclosure}, ensure_ascii=False, indent=2), file=sys.stderr)
     if remote and not allow_remote and not dry_run:
@@ -935,11 +1058,16 @@ def run_longform_judge(
         "completion_status": completion_status,
         "driving_prompt_sha256": hashlib.sha256(driving_prompt.encode("utf-8")).hexdigest(),
         "bundle_id": bundle_id,
+        "module_ids": list(frozen_module_ids),
         "task_contract": task_contract_record,
+        "weight_profile": deepcopy(weight_profile),
+        "local_weight_profile": deepcopy(local_weight_profile),
         "local_bundle_id": local_bundle_id,
+        "hierarchical_score_profile": deepcopy(hierarchical_score_profile),
         "route_sample_char_limit": route_sample_char_limit,
         "local_sample_limit": local_sample_limit,
         "frozen_sample_ordinals": list(frozen_ordinals),
+        "sampling_plan_override": deepcopy(sampling_plan_override),
         "binary_workers": binary_workers,
         "batch_size": batch_size,
         "provider": provider,
@@ -1013,20 +1141,35 @@ def run_longform_judge(
         frozen_bundle = resolve_bundle(available_bundles, bundle_id)
         route_raw = deepcopy(route_raw)
         route_raw["selected_bundle_id"] = bundle_id
-        route_raw["selected_module_ids"] = list(frozen_bundle.get("module_ids", []))
+        route_raw["selected_module_ids"] = list(
+            frozen_module_ids or tuple(frozen_bundle.get("module_ids", []))
+        )
         route_raw["selection_reasons"] = [
             {"catalog_id": bundle_id, "reason": "Explicit caller override for a frozen comparison route."}
         ]
-    if frozen_ordinals:
+    if sampling_plan_override is not None:
+        route_raw = deepcopy(route_raw)
+        route_raw["sampling_plan"] = deepcopy(sampling_plan_override)
+    elif frozen_ordinals:
         route_raw = _freeze_sampling_ordinals(route_raw, segmentation, frozen_ordinals)
+    elif local_sample_limit is None:
+        route_raw = complete_local_evaluation_plan(route_raw, segmentation)
     try:
         route = validate_route_selection(
             route_raw,
             segmentation=segmentation,
             modules=modules,
             bundles=available_bundles,
-            local_sample_limit=local_sample_limit,
+            local_sample_limit=(
+                None
+                if sampling_plan_override is not None
+                and sampling_plan_override.get("coverage_mode") == "complete"
+                else len(frozen_ordinals)
+                if frozen_ordinals
+                else local_sample_limit
+            ),
             binding_contract_approved=False,
+            expected_completion_status=completion_status,
         )
         if task_contract_override is None:
             _validate_source_excerpts(
@@ -1044,6 +1187,48 @@ def run_longform_judge(
             route["task_contract"],
             driving_prompt=driving_prompt,
             project_context=project_context,
+        )
+
+    local_bundle_plan = resolve_local_bundle_plan(
+        bundles=available_bundles,
+        global_bundle_id=route["selected_bundle_id"],
+        artifact_kind=artifact_kind,
+        segmentation=segmentation,
+        explicit_local_bundle_id=local_bundle_id,
+    )
+    plan = {
+        "format_version": 1,
+        "status": "PLANNED",
+        "artifact_id": artifact_id,
+        "artifact_kind": artifact_kind,
+        "declared_scope": declared_scope,
+        "completion_status": completion_status,
+        "selected_bundle_id": route["selected_bundle_id"],
+        "selected_module_ids": deepcopy(route["selected_module_ids"]),
+        "selection_reasons": deepcopy(route["selection_reasons"]),
+        "task_contract": deepcopy(route["task_contract"]),
+        "sampling_plan": deepcopy(route["sampling_plan"]),
+        "local_bundle_plan": deepcopy(local_bundle_plan),
+        "next_step": (
+            "Inspect this plan. Resume the same command without --plan-only to accept it, "
+            "or start a new output directory with explicit --bundle/--module overrides."
+        ),
+    }
+    _write_or_verify(destination / "plan.json", _json_bytes(plan))
+    if plan_only:
+        return {
+            "status": "PLANNED",
+            "output_dir": str(destination),
+            "plan": str(destination / "plan.json"),
+            "selected_bundle_id": route["selected_bundle_id"],
+            "selected_module_ids": deepcopy(route["selected_module_ids"]),
+            "local_unit_count": len(route["sampling_plan"]["unit_ids"]),
+        }
+    if hierarchical_score_profile is not None:
+        validate_hierarchical_score_profile(
+            hierarchical_score_profile,
+            unit_ids=route["sampling_plan"]["unit_ids"],
+            unit_headings={unit["unit_id"]: unit["heading"] for unit in segmentation["units"]},
         )
 
     map_request = make_map_request(segmentation, route)
@@ -1072,10 +1257,12 @@ def run_longform_judge(
 
     selected_bundle = resolve_bundle(available_bundles, route["selected_bundle_id"])
     global_bundle = _derive_bundle(selected_bundle, route["selected_module_ids"])
-    local_bundle = global_bundle
-    selected_local_bundle_id = local_bundle_id or route["selected_bundle_id"]
-    if selected_local_bundle_id != route["selected_bundle_id"]:
-        local_bundle = deepcopy(resolve_bundle(available_bundles, selected_local_bundle_id))
+    selected_local_bundle_id = local_bundle_plan["local_bundle_id"]
+    local_bundle = (
+        global_bundle
+        if selected_local_bundle_id == route["selected_bundle_id"]
+        else deepcopy(resolve_bundle(available_bundles, selected_local_bundle_id))
+    )
     runtime_bundles = [global_bundle]
     if local_bundle["bundle_id"] != global_bundle["bundle_id"]:
         runtime_bundles.append(local_bundle)
@@ -1102,10 +1289,18 @@ def run_longform_judge(
         context_path = contracts_dir / "work.judge-context.json"
         _write_or_verify(context_path, _json_bytes(_contract_judge_context(global_contract)))
         global_contract_context.append(context_path)
+    completion_contexts_dir = generated_inputs / "completion-contexts"
+    global_completion_context = completion_contexts_dir / "work.json"
+    _write_or_verify(
+        global_completion_context,
+        _json_bytes(
+            _completion_judge_context(completion_status, scope_kind="global", scope_id="work")
+        ),
+    )
     map_result_path = private / "passes" / "map" / "result.json"
     contexts = [*brief_copies, map_result_path]
     unit_by_id = {unit["unit_id"]: unit for unit in segmentation["units"]}
-    sampled_unit_ids = list(route["sampling_plan"]["unit_ids"])
+    local_unit_ids = list(route["sampling_plan"]["unit_ids"])
 
     def evaluate_global() -> dict[str, Any]:
         return _run_binary_scope(
@@ -1117,8 +1312,9 @@ def run_longform_judge(
             output_dir=private / "evaluations" / "global",
             registry_path=registry_path,
             bundles_path=runtime_bundles_path,
-            context_paths=[*contexts, *global_contract_context],
+            context_paths=[*contexts, *global_contract_context, global_completion_context],
             task_contract_path=global_contract_path,
+            weight_profile=weight_profile,
             provider=provider,
             model=model,
             batch_size=batch_size,
@@ -1143,6 +1339,14 @@ def run_longform_judge(
             local_contract_path = contracts_dir / f"{unit_id}.json"
             _write_or_verify(local_contract_path, _json_bytes(_runtime_contract(local_contract)))
         local_contexts = list(contexts)
+        local_completion_context = completion_contexts_dir / f"{unit_id}.json"
+        _write_or_verify(
+            local_completion_context,
+            _json_bytes(
+                _completion_judge_context(completion_status, scope_kind="local", scope_id=unit_id)
+            ),
+        )
+        local_contexts.append(local_completion_context)
         if local_contract_path is not None:
             context_path = contracts_dir / f"{unit_id}.judge-context.json"
             _write_or_verify(context_path, _json_bytes(_contract_judge_context(local_contract)))
@@ -1158,6 +1362,7 @@ def run_longform_judge(
             bundles_path=runtime_bundles_path,
             context_paths=local_contexts,
             task_contract_path=local_contract_path,
+            weight_profile=local_weight_profile,
             provider=provider,
             model=model,
             batch_size=batch_size,
@@ -1174,12 +1379,12 @@ def run_longform_judge(
 
     if binary_workers == 1:
         global_evaluation = evaluate_global()
-        local_evaluations = [evaluate_local(unit_id) for unit_id in sampled_unit_ids]
+        local_evaluations = [evaluate_local(unit_id) for unit_id in local_unit_ids]
     else:
         global_evaluation, local_evaluations = _run_binary_jobs(
             evaluate_global,
-            [(unit_id, lambda unit_id=unit_id: evaluate_local(unit_id)) for unit_id in sampled_unit_ids],
-            max_workers=min(binary_workers, 1 + len(sampled_unit_ids)),
+            [(unit_id, lambda unit_id=unit_id: evaluate_local(unit_id)) for unit_id in local_unit_ids],
+            max_workers=min(binary_workers, 1 + len(local_unit_ids)),
         )
     global_result = global_evaluation["result"]
     local_results = [evaluation["result"] for evaluation in local_evaluations]
@@ -1193,7 +1398,7 @@ def run_longform_judge(
 
     synthesis_schema = _synthesis_schema(
         criterion_results=criterion_results,
-        scope_ids=["work", *sampled_unit_ids],
+        scope_ids=["work", *local_unit_ids],
     )
     synthesis_request = {
         "request_version": 1,
@@ -1202,9 +1407,12 @@ def run_longform_judge(
             "source_sha256": segmentation["source_sha256"],
             "unit_count": segmentation["unit_count"],
         },
+        "completion_contract": completion_contract,
         "task_contract": route["task_contract"],
         "route": {
-            "bundle_id": route["selected_bundle_id"],
+            "global_bundle_id": local_bundle_plan["global_bundle_id"],
+            "local_bundle_id": local_bundle_plan["local_bundle_id"],
+            "local_bundle_mode": local_bundle_plan["local_bundle_mode"],
             "module_ids": route["selected_module_ids"],
             "sampling_plan": route["sampling_plan"],
         },
@@ -1214,7 +1422,7 @@ def run_longform_judge(
         "criterion_results": criterion_results,
         "evidence_reference_catalog": evidence_reference_catalog,
         "allowed_evidence_refs": _allowed_synthesis_references(
-            criterion_results, ["work", *sampled_unit_ids]
+            criterion_results, ["work", *local_unit_ids]
         ),
         "response_schema": synthesis_schema,
     }
@@ -1239,7 +1447,7 @@ def run_longform_judge(
         _validate_synthesis_references(
             synthesis,
             criterion_results=criterion_results,
-            scope_ids=["work", *sampled_unit_ids],
+            scope_ids=["work", *local_unit_ids],
         )
     except HBQError as exc:
         _reject_structured_checkpoint(private / "passes" / "synthesis", reason=str(exc))
@@ -1252,6 +1460,10 @@ def run_longform_judge(
         work_map=work_map,
         global_result=global_result,
         local_results=local_results,
+        global_bundle_id=local_bundle_plan["global_bundle_id"],
+        local_bundle_id=local_bundle_plan["local_bundle_id"],
+        local_bundle_mode=local_bundle_plan["local_bundle_mode"],
+        hierarchical_score_profile=hierarchical_score_profile,
         findings=synthesis["findings"],
         warnings=warnings,
     )
@@ -1266,9 +1478,13 @@ def run_longform_judge(
         "workflow_id": f"longform-{config_sha256[:16]}",
         "artifact_id": artifact_id,
         "unit_count": segmentation["unit_count"],
-        "sampled_units": len(local_results),
+        "local_units": len(local_results),
+        "local_coverage_mode": route["sampling_plan"]["coverage_mode"],
         "bundle_id": route["selected_bundle_id"],
+        "global_bundle_id": local_bundle_plan["global_bundle_id"],
         "local_bundle_id": selected_local_bundle_id,
+        "local_bundle_mode": local_bundle_plan["local_bundle_mode"],
+        "hierarchical_score": report["hierarchical_score"],
         "output_dir": str(destination),
         "report": str(report_path),
         "markdown": str(markdown_path),

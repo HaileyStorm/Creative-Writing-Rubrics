@@ -7,9 +7,11 @@
     "report_version",
     "artifact",
     "route",
+    "completion_contract",
     "orientation",
     "global_result",
     "local_results",
+    "hierarchical_score",
     "findings",
     "warnings"
   ],
@@ -27,13 +29,33 @@
     },
     "route": {
       "type": "object",
-      "required": ["bundle_id", "module_ids", "weighted_goal_count", "binding_requirement_count", "sampled_unit_ids"],
+      "required": ["global_bundle_id", "local_bundle_id", "local_bundle_mode", "module_ids", "weighted_goal_count", "binding_requirement_count", "local_coverage_mode", "local_unit_ids", "non_substantive_unit_ids"],
       "properties": {
-        "bundle_id": {"type": "string", "pattern": "^[a-z0-9_.]+$"},
+        "global_bundle_id": {"type": "string", "pattern": "^[a-z0-9_.]+$"},
+        "local_bundle_id": {"type": "string", "pattern": "^[a-z0-9_.]+$"},
+        "local_bundle_mode": {"enum": ["scope_auto", "explicit", "explicit_global_deep", "global_fallback_no_scope_bundle", "global_fallback_mixed_or_nonchapter"]},
         "module_ids": {"type": "array", "items": {"type": "string", "pattern": "^[a-z0-9_.]+$"}, "uniqueItems": true},
         "weighted_goal_count": {"type": "integer", "minimum": 0},
         "binding_requirement_count": {"type": "integer", "minimum": 0},
-        "sampled_unit_ids": {"type": "array", "items": {"type": "string", "pattern": "^unit-[0-9]{4}-[0-9a-f]{12}$"}, "uniqueItems": true}
+        "local_coverage_mode": {"enum": ["complete", "sampled"], "description": "complete covers all substantive deterministic units; sampled is an explicit diagnostic reduction."},
+        "local_unit_ids": {"type": "array", "minItems": 1, "description": "Substantive units evaluated independently in deterministic source order.", "items": {"type": "string", "pattern": "^unit-[0-9]{4}-[0-9a-f]{12}$"}, "uniqueItems": true},
+        "non_substantive_unit_ids": {"type": "array", "description": "Brief non-prose front-matter units retained in whole-work evaluation but omitted from local diagnostics.", "items": {"type": "string", "pattern": "^unit-[0-9]{4}-[0-9a-f]{12}$"}, "uniqueItems": true}
+      },
+      "additionalProperties": false
+    },
+    "completion_contract": {
+      "type": "object",
+      "required": ["contract_version", "completion_status", "incomplete", "completion_only_criterion_verdict", "unavailable_supplied_evidence_verdict", "assess_supplied_scope_craft", "assess_supplied_scope_continuity", "applicable_binding_requirements", "applicable_weighted_goals"],
+      "properties": {
+        "contract_version": {"const": 1},
+        "completion_status": {"enum": ["complete", "work_in_progress", "excerpt", "unknown"]},
+        "incomplete": {"type": "boolean"},
+        "completion_only_criterion_verdict": {"enum": ["EVALUATE", "NOT_APPLICABLE", "CANNOT_ASSESS"]},
+        "unavailable_supplied_evidence_verdict": {"const": "CANNOT_ASSESS"},
+        "assess_supplied_scope_craft": {"const": true},
+        "assess_supplied_scope_continuity": {"const": true},
+        "applicable_binding_requirements": {"const": "evaluate"},
+        "applicable_weighted_goals": {"const": "score"}
       },
       "additionalProperties": false
     },
@@ -67,6 +89,12 @@
     "local_results": {
       "type": "array",
       "items": {"$ref": "#/$defs/result"}
+    },
+    "hierarchical_score": {
+      "anyOf": [
+        {"$ref": "#/$defs/hierarchical_score"},
+        {"type": "null"}
+      ]
     },
     "findings": {
       "type": "array",
@@ -127,7 +155,70 @@
             {"type": "null"}
           ]
         },
-        "domains": {"type": "array", "items": {"$ref": "#/$defs/domain"}}
+        "domains": {"type": "array", "items": {"$ref": "#/$defs/domain"}},
+        "weight_profile": {"type": ["object", "null"]}
+      },
+      "additionalProperties": false
+    },
+    "hierarchical_component": {
+      "type": "object",
+      "required": ["score", "requested_weight", "effective_weight"],
+      "properties": {
+        "score": {"anyOf": [{"$ref": "#/$defs/interval"}, {"type": "null"}]},
+        "requested_weight": {"type": "number", "minimum": 0},
+        "effective_weight": {"type": "number", "minimum": 0, "maximum": 1}
+      },
+      "additionalProperties": false
+    },
+    "hierarchical_score": {
+      "type": "object",
+      "required": ["profile_version", "profile_id", "method", "local_reducer", "score", "global_component", "local_component", "unit_weight_policy", "policy"],
+      "properties": {
+        "profile_version": {"const": 1},
+        "profile_id": {"type": "string", "pattern": "^[a-z0-9_.-]+$"},
+        "method": {"const": "weighted_global_local"},
+        "local_reducer": {"enum": ["weighted_mean", "weakest_unit"]},
+        "score": {"$ref": "#/$defs/interval"},
+        "global_component": {"$ref": "#/$defs/hierarchical_component"},
+        "local_component": {
+          "type": "object",
+          "required": ["score", "requested_weight", "effective_weight", "selected_weakest_unit_id", "unit_weight_assignments"],
+          "properties": {
+            "score": {"anyOf": [{"$ref": "#/$defs/interval"}, {"type": "null"}]},
+            "requested_weight": {"type": "number", "minimum": 0},
+            "effective_weight": {"type": "number", "minimum": 0, "maximum": 1},
+            "selected_weakest_unit_id": {"anyOf": [{"type": "string", "pattern": "^unit-[0-9]{4}-[0-9a-f]{12}$"}, {"type": "null"}]},
+            "unit_weight_assignments": {
+              "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["unit_id", "weight_class", "class_modifier", "effective_weight"],
+                  "properties": {
+                    "unit_id": {"type": "string", "pattern": "^unit-[0-9]{4}-[0-9a-f]{12}$"},
+                    "weight_class": {"enum": ["ordinary", "unfinished", "prologue_epilogue"]},
+                    "class_modifier": {"type": "number", "minimum": 0},
+                    "effective_weight": {"type": "number", "minimum": 0, "maximum": 1}
+                },
+                "additionalProperties": false
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "unit_weight_policy": {
+          "type": "object",
+          "required": ["ordinary_unit_weight", "unfinished_unit_weight", "unfinished_unit_ids", "prologue_epilogue_weight", "prologue_epilogue_unit_ids", "overlap_precedence"],
+          "properties": {
+            "ordinary_unit_weight": {"const": 1.0},
+            "unfinished_unit_weight": {"type": "number", "minimum": 0},
+            "unfinished_unit_ids": {"type": "array", "items": {"type": "string", "pattern": "^unit-[0-9]{4}-[0-9a-f]{12}$"}, "uniqueItems": true},
+            "prologue_epilogue_weight": {"type": "number", "minimum": 0},
+            "prologue_epilogue_unit_ids": {"type": "array", "items": {"type": "string", "pattern": "^unit-[0-9]{4}-[0-9a-f]{12}$"}, "uniqueItems": true},
+            "overlap_precedence": {"const": "unfinished_before_prologue_epilogue"}
+          },
+          "additionalProperties": false
+        },
+        "policy": {"type": "string", "minLength": 1}
       },
       "additionalProperties": false
     }

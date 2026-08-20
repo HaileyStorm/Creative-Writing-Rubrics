@@ -25,11 +25,16 @@ College student and programmer Madison falls rapidly for Amelia, then discovers 
 - **Coverage** is the weighted share of applicable selected criteria that received a YES or NO verdict.
 - **Observed score** is the deterministic score from relevant criteria that received a YES or NO verdict.
 - **Uncertainty bounds** are the non-statistical lowest and highest scores still possible if unassessed relevant criteria later resolve as failures or passes. They are not a confidence interval.
-- Local unit scores are diagnostics. They are shown independently and are never averaged into a whole-work grade.
+- Local unit scores are independent diagnostics. They remain separate unless an explicit hierarchical score profile is shown below.
+- **Work-in-progress rule:** criteria that require an unavailable finished work are NOT_APPLICABLE, not failures. Craft, continuity, applicable explicit requirements, and weighted goals are still evaluated on the supplied scope.
 
 ## Route
 
-Bundle `prose.novel` with 29 selected modules, 12 weighted author goals, and 6 binding requirements.
+Whole-work bundle `prose.novel` with 29 selected modules, 12 weighted author goals, and 6 binding requirements.
+Local bundle `prose.chapter`; selection mode `scope_auto`.
+Declared completion status: `work_in_progress`.
+Local coverage is complete across all 6 substantive deterministic units.
+1 brief non-prose front-matter unit(s) remain in the whole-work evaluation but are omitted from local diagnostics.
 
 ## Whole-work result
 
@@ -52,88 +57,103 @@ Bundle `prose.novel` with 29 selected modules, 12 weighted author goals, and 6 b
 | Mechanics | 100.0% | 1.6 | 1.6–1.6 |
 | Holistic artistic success | 100.0% | 6.0 | 6.0–6.0 |
 
-## Sampled units
+## Local units
 
 | Unit | Control state | Coverage | Observed score | Uncertainty bounds |
 |---|---:|---:|---:|---:|
-| Chapter 1 | VALID | 94.2% | 75.6 | 70.8–76.6 |
-| Chapter 3 | VALID | 96.4% | 86.2 | 83.2–86.8 |
-| Chapter 5 | VALID | 98.7% | 87.1 | 85.8–87.1 |
-| Chapter 6 | VALID | 98.5% | 84.8 | 83.4–84.9 |
+| Chapter 1 | VALID | 100.0% | 78.7 | 78.7–78.7 |
+| Chapter 2 | VALID | 99.4% | 82.8 | 82.2–82.8 |
+| Chapter 3 | VALID | 100.0% | 84.5 | 84.5–84.5 |
+| Chapter 4 | VALID | 100.0% | 93.2 | 93.2–93.2 |
+| Chapter 5 | VALID | 100.0% | 86.6 | 86.6–86.6 |
+| Chapter 6 | VALID | 100.0% | 90.2 | 90.2–90.2 |
+
+## Hierarchical score (explicit profile)
+
+Profile `balanced-wip-70-30` combines existing intervals only; it makes no model call and does not replace control states, completion handling, or the underlying whole-work and local results.
+Local reducer: `weighted_mean`.
+
+| Result | Observed score | Uncertainty bounds |
+|---|---:|---:|
+| Hierarchical score | 81.0 | 79.3–81.5 |
+
+| Component | Requested weight | Effective weight | Observed score | Uncertainty bounds |
+|---|---:|---:|---:|---:|
+| Whole work | 7 | 70.0% | 78.9 | 76.4–79.6 |
+| Local `weighted_mean` | 3 | 30.0% | 86.0 | 85.9–86.0 |
+
+Ordinary units have equal weight 1. Shared unfinished and prologue/epilogue modifiers are normalized over the evaluated local units.
+
+| Unit ID | Weight class | Class modifier | Effective local weight |
+|---|---|---:|---:|
+| `unit-0002-e3373399775a` | `ordinary` | 1 | 16.7% |
+| `unit-0003-a790dad00537` | `ordinary` | 1 | 16.7% |
+| `unit-0004-d56cc8561b6b` | `ordinary` | 1 | 16.7% |
+| `unit-0005-ea246b1652fb` | `ordinary` | 1 | 16.7% |
+| `unit-0006-71f0cc119f96` | `ordinary` | 1 | 16.7% |
+| `unit-0007-25dfed4ef40f` | `ordinary` | 1 | 16.7% |
 
 ## Findings
 
-### Observation: This is a valid evaluation of six opening chapters, not a completed novel. College programmer Madison falls rapidly for Amelia, discovers that Amelia is a witch whose symbolic magic consumes blood and death-derived power, and enters a dangerous magical community while their romance deepens. The whole-work observed score is 78.9174, with a non-statistical uncertainty range of 76.4053–79.5715 and 0.9683 coverage. The relevant criteria return YES: the excerpt functions as novel prose, changes knowledge and relationships, and clears the functional artistic threshold.
+### Observation: This explicitly incomplete six-chapter opening follows nineteen-year-old programmer Madison as her rapid romance with Amelia exposes a hidden society of female witches whose drawn-symbol magic consumes blood and, at its highest costs, death. Madison’s analytical curiosity and moral unease confront Amelia’s affection, addiction, lethal history, and formidable power; FAWN and its witch-human members broaden the conflict beyond the couple. The verdicts confirm substantive dramatized fiction, dimensional central characters, and a distinctive narrator rather than an outline or failed complete novel.
 
-Revision should preserve the working premise, central relationship, and forward movement. The score describes this supplied opening only; it does not judge the absent middle or ending.
- Evidence: `evidence-0055`, `evidence-0056`, `evidence-0064`, `evidence-0065`.
- Criteria: `core.task_and_brief_fidelity.completion_flag`, `form.prose.general_prose_fiction.narrative_experience`, `form.prose.general_prose_fiction.movement`, `core.holistic_artistic_success.threshold_1_functional`.
+Revision should preserve the central collision among romance, programmable magic, and moral compromise. Future closure, Katherine’s arrival, and other planned arcs are outside this excerpt and should not be treated as present failures.
+ Evidence: `evidence-0007`, `evidence-0005`, `evidence-0006`, `evidence-0064`.
+ Criteria: `core.task_and_brief_fidelity.completion_flag`, `craft.narrative.characterization.dimensionality`, `core.voice_and_stylistic_identity.distinctive`, `form.prose.general_prose_fiction.narrative_experience`.
 
-### Strength: All assessable objective canon gates pass with YES verdicts: every depicted witch is female, activation requires beginning consumption while the heart beats, engraving requires and exhausts one lifeblood source, and magic operates through drawn symbols. The offspring requirement is NOT_APPLICABLE because the relevant conception never occurs.
+### Observation: The deterministic whole-work result is VALID with 96.83% coverage: observed 78.9174, with non-statistical bounds of 76.4053–79.5715 for relevant unassessed criteria. Independent local results are Chapter One 78.7261; Chapter Two 82.7749, bounded 82.2347–82.8317; Chapter Three 84.4680; Chapter Four 93.2002; Chapter Five 86.5865; and Chapter Six 90.1999. These chapter scores are reported separately and are not averaged into the whole-work judgment.
 
-These rules form a reliable foundation for later plotting. Future revisions should preserve them exactly; the unobserved offspring case and unresolved trans/intersex specifics should remain unasserted until canon supplies them.
+The global score should guide manuscript-level priorities, while each local score identifies a chapter’s own revision condition. The bounds reflect assessment coverage, not statistical confidence or predicted final-novel quality.
+ Evidence: `evidence-0001`, `evidence-0007`.
+ Criteria: `scope.long_context.overflow`, `core.task_and_brief_fidelity.completion_flag`.
+
+### Strength: Every applicable objective canon gate passes: all depicted witches are female; activation requires beginning heart consumption while the heart beats; magic retains drawn symbols as its operative basis; and engraving requires and exhausts one complete lifeblood source. Witch-plus-human-male offspring is NOT_APPLICABLE because no such conception or offspring occurs in scope.
+
+These rules can remain stable during revision. Preserve their costs and distinctions, and do not add explanations about offspring or unresolved sex/gender specifics unless later canon authorizes them.
  Evidence: `evidence-0002`, `evidence-0003`, `evidence-0004`, `evidence-0005`, `evidence-0006`.
- Criteria: `task.contract.gray-blood-ch1-6-comparison-v1.canon.witches_female_only`, `task.contract.gray-blood-ch1-6-comparison-v1.canon.activation_requires_heart`, `task.contract.gray-blood-ch1-6-comparison-v1.canon.engraving_requires_lifeblood`, `task.contract.gray-blood-ch1-6-comparison-v1.canon.engraving_consumes_one_source`, `task.contract.gray-blood-ch1-6-comparison-v1.canon.magic_uses_drawn_symbols`, `task.contract.gray-blood-ch1-6-comparison-v1.canon.witch_human_offspring_human`.
+ Criteria: `task.contract.gray-blood-ch1-6-comparison-v1.canon.witches_female_only`, `task.contract.gray-blood-ch1-6-comparison-v1.canon.activation_requires_heart`, `task.contract.gray-blood-ch1-6-comparison-v1.canon.witch_human_offspring_human`, `task.contract.gray-blood-ch1-6-comparison-v1.canon.engraving_requires_lifeblood`, `task.contract.gray-blood-ch1-6-comparison-v1.canon.engraving_consumes_one_source`, `task.contract.gray-blood-ch1-6-comparison-v1.canon.magic_uses_drawn_symbols`.
 
-### Strength: Plot architecture is the strongest systemic result: the global plot domain scores 20.0/20.0, and all cited criteria return YES. Character decisions cause the FAWN encounter, blood-loss injury, relationship changes, and deeper magical access; early medical concealment and blood behavior receive earned later disclosures rather than arbitrary answers.
+### Strength: Plot architecture is the clearest systemic strength. Early blood response and concealed medical history earn later addiction and EMS revelations; witnessed death causes investigation and entry into FAWN; bodily risk changes Madison’s condition and relationships; and each chapter changes knowledge, access, or moral position. Open threads—including coercive magic, witch creation, the climber’s stored lifeblood, grimoire review, and blood-loss recovery—remain visibly active rather than forgotten.
 
-The revision should retain this causal spine. Compression can target repeated banter or explanation without removing the decisions, consequences, and setup/payoff links that make the opening cohere.
- Evidence: `evidence-0017`, `evidence-0022`, `evidence-0023`, `evidence-0026`, `evidence-0032`.
- Criteria: `craft.narrative.plot_and_causality.causal_chain`, `craft.narrative.plot_and_causality.decision`, `craft.narrative.plot_and_causality.consequence`, `craft.narrative.plot_and_causality.escalation`, `craft.narrative.foreshadowing_setup_and_payoff.earned`, `craft.narrative.narrative_momentum.progress`, `form.prose.novel.long_causality`.
+Protect this causal spine while cutting material around it. The open threads are productive WIP promises, so later chapters should advance them in consequence-driven scenes rather than prematurely closing them or repeating their setup.
+ Evidence: `evidence-0017`, `evidence-0006`, `evidence-0022`, `evidence-0005`, `evidence-0041`, `evidence-0032`.
+ Criteria: `form.prose.novel.long_causality`, `craft.narrative.plot_and_causality.causal_chain`, `craft.narrative.foreshadowing_setup_and_payoff.earned`, `craft.narrative.continuity_and_canon_integrity.threads`, `craft.narrative.narrative_momentum.progress`.
 
-### Strength: The three weighted priorities governing Madison all receive YES verdicts. She repeatedly chooses dangerous access, analyzes magic as programmable symbolic logic, and remains fascinated while confronting activation, coercion, blood storage, and killing. Her darker trajectory is established proportionately for an opening rather than prematurely completed.
+### Strength: Several weighted author goals are already effective. Madison repeatedly grapples with killing, coercion, blood storage, and her own continued participation; her programmer lens turns magic into a system she wants to learn and optimize; and calculated risk, scalable-power fascination, and moral slippage credibly establish a darker path. Activation is traumatic, while Amelia’s pleasure in blood and power coexists with tenderness, coercive capability, lethal magic, and ninety-four acquired lifeblood sources.
 
-Keep her curiosity active beside her objections. The most productive next step is to make each new technical insight create a concrete ethical temptation or cost, so mastery and moral slippage continue developing together.
- Evidence: `evidence-0005`, `evidence-0022`, `evidence-0023`, `evidence-0031`.
- Criteria: `task.contract.gray-blood-ch1-6-comparison-v1.goal.madison_moral_grappling`, `task.contract.gray-blood-ch1-6-comparison-v1.goal.madison_programmer_lens`, `task.contract.gray-blood-ch1-6-comparison-v1.goal.madison_dark_path_setup`, `craft.narrative.character_arc.local_contribution`, `craft.narrative.characterization.agency`, `craft.narrative.theme_and_subtext.open_questions`.
+Keep Madison’s technical insight causally tied to increasingly compromising choices. Preserve Amelia’s simultaneous affection and danger, since that contradiction supplies more pressure than either uncomplicated romance or uncomplicated villainy.
+ Evidence: `evidence-0005`, `evidence-0022`, `evidence-0003`, `evidence-0006`.
+ Criteria: `task.contract.gray-blood-ch1-6-comparison-v1.goal.madison_moral_grappling`, `task.contract.gray-blood-ch1-6-comparison-v1.goal.madison_programmer_lens`, `task.contract.gray-blood-ch1-6-comparison-v1.goal.madison_dark_path_setup`, `task.contract.gray-blood-ch1-6-comparison-v1.goal.activation_as_trauma`, `task.contract.gray-blood-ch1-6-comparison-v1.goal.amelia_power_attraction`, `task.contract.gray-blood-ch1-6-comparison-v1.goal.amelia_affection_power_balance`.
 
-### Revision Priority: The principal weighted-goal shortfall is systemic: all four darker-Amelia and grim-dark criteria cited here return NO. Graphic death and moral danger are present, but frequent laughter, apology, reassurance, and buoyant romance repeatedly restore a gentler baseline, so the darker incidents do not govern the work's dominant tonal identity.
+### Revision Priority: The principal weighted-goal shortfall is systemic tonal and character framing, not insufficient violent content. Graphic death and morally dark mechanics are present, but buoyant romance, easy laughter, apologies, and reassurance repeatedly restore a lighter default. Amelia’s isolated cold or angry moments therefore do not yet produce the requested darker, more volatile, less forgiveness-seeking baseline.
 
-This is a scored priority, not a failed canon gate. Revise Amelia's default response pattern: replace some apologies with direct factual justification, darker amusement, controlled anger, or unsettling calm; let tenderness coexist with unresolved danger instead of automatically neutralizing it.
- Evidence: `evidence-0003`, `evidence-0006`, `evidence-0014`, `evidence-0024`, `evidence-0038`, `evidence-0048`.
- Criteria: `task.contract.gray-blood-ch1-6-comparison-v1.goal.grim_dark_tone`, `task.contract.gray-blood-ch1-6-comparison-v1.goal.amelia_darker`, `task.contract.gray-blood-ch1-6-comparison-v1.goal.amelia_volatility`, `task.contract.gray-blood-ch1-6-comparison-v1.goal.amelia_less_apologetic`, `core.audience_and_purpose_fit.tone`, `core.audience_and_purpose_fit.genre_signals`, `core.emotional_and_intellectual_effect.intended_effect`, `craft.narrative.characterization.canon`.
+Revise Amelia’s ordinary responses before adding more atrocities: replace habitual giggling, blushing, and apologetic reassurance with sharper amusement, pragmatic statements, controlled silence, impatience, or unsettling composure. Let tenderness remain, but make it coexist with a stable harder edge. These are scored priorities, not objective canon gates.
+ Evidence: `evidence-0014`, `evidence-0016`, `evidence-0048`, `evidence-0006`, `evidence-0025`, `evidence-0003`, `evidence-0024`.
+ Criteria: `core.audience_and_purpose_fit.tone`, `core.audience_and_purpose_fit.genre_signals`, `core.emotional_and_intellectual_effect.intended_effect`, `task.contract.gray-blood-ch1-6-comparison-v1.goal.grim_dark_tone`, `task.contract.gray-blood-ch1-6-comparison-v1.goal.amelia_darker`, `task.contract.gray-blood-ch1-6-comparison-v1.goal.amelia_volatility`, `task.contract.gray-blood-ch1-6-comparison-v1.goal.amelia_less_apologetic`, `craft.narrative.characterization.canon`.
 
-### Strength: The manuscript already contains the material needed to darken Amelia without flattening her: every cited criterion returns YES. Activation is traumatic, blood and power exert morally uneasy attraction, affection coexists with coercion and lethal capacity, and service, addiction, restraint, self-interest, and killing remain in productive contradiction.
+### Revision Priority: Pacing and information problems recur across the excerpt. Courtship, furniture assembly, piano cataloguing, game-night logistics, repeated reassurance, and long instructional exchanges often outlast their new dramatic value. The anatomy lesson is the clearest exposition block, while later conversations sometimes reteach rules already established. Individual chapters still move and vary effectively, but the whole opening achieves less progression than its length suggests.
 
-Build the tonal revision from these established contradictions rather than adding unrelated cruelty. More decisive behavior, sharper boundaries, and less reassurance can intensify existing complexity while preserving the credible love story.
- Evidence: `evidence-0003`, `evidence-0005`, `evidence-0006`, `evidence-0022`.
- Criteria: `task.contract.gray-blood-ch1-6-comparison-v1.goal.activation_as_trauma`, `task.contract.gray-blood-ch1-6-comparison-v1.goal.amelia_power_attraction`, `task.contract.gray-blood-ch1-6-comparison-v1.goal.amelia_affection_power_balance`, `craft.narrative.characterization.dimensionality`, `craft.narrative.theme_and_subtext.counterpoint`, `core.emotional_and_intellectual_effect.conceptual_interest`.
+Cut or combine repeated romantic beats, shorten the piano and social catalogues, and distribute technical rules into demonstrations, failed attempts, decisions, and consequences. Preserve one strong version of each intimacy or explanation beat and use the recovered space to intensify moral pressure.
+ Evidence: `evidence-0011`, `evidence-0012`, `evidence-0025`, `evidence-0003`, `evidence-0006`, `evidence-0005`, `evidence-0009`.
+ Criteria: `core.length_and_scope_fit.density`, `core.length_and_scope_fit.no_padding`, `craft.narrative.pacing_and_narrative_time.allocation`, `craft.narrative.pacing_and_narrative_time.no_stall`, `craft.narrative.exposition_and_information_management.priority`, `craft.narrative.exposition_and_information_management.no_redundancy`, `craft.narrative.exposition_and_information_management.no_dump`, `craft.narrative.dialogue.no_exposition`, `core.economy_and_relevance.length_fit`.
 
-### Revision Priority: Pacing and information management show a systemic NO pattern, though its local form varies. Chapter One overallocates space to courtship and furniture assembly; Chapter Three stalls in the anatomy lecture; Chapter Five delays its consequential material with drinking-game setup; Chapter Six lingers on social, travel, and recovery transitions. The whole-work pacing domain is 6.8254.
+### Revision Priority: Mechanical defects are systemic rather than isolated: malformed clauses, tense shifts, missing or incorrect words, dialogue-tag punctuation errors, misspellings, and visible debris recur across chapters. The verdicts distinguish these errors from intentional fragments and from otherwise effective cadence, imagery, and paragraph movement.
 
-Cut by function, not by a uniform percentage. Preserve the blood accident, activation revelation, coercive game, and kill-count confrontation; compress setup already understood, distribute technical rules across demonstrations, and enter or leave scenes closer to the choice or consequence.
- Evidence: `evidence-0011`, `evidence-0025`, `evidence-0038`, `evidence-0104`, `evidence-0215`, `evidence-0458`.
- Criteria: `core.length_and_scope_fit.density`, `craft.narrative.pacing_and_narrative_time.allocation`, `craft.narrative.pacing_and_narrative_time.local_global`, `craft.narrative.pacing_and_narrative_time.no_stall`, `craft.narrative.exposition_and_information_management.priority`, `craft.narrative.exposition_and_information_management.no_dump`, `craft.narrative.dialogue.no_exposition`, `core.audience_and_purpose_fit.explanation`.
+Run a dedicated copyedit only after structural tightening. Correct grammar, tense, dialogue punctuation, wrong-word substitutions, names, and artifacts in separate passes so line repair is not wasted on material that will be cut.
+ Evidence: `evidence-0022`, `evidence-0003`, `evidence-0025`.
+ Criteria: `core.language_craft.syntax`, `core.language_craft.no_awkwardness`, `core.mechanics_and_presentation.grammar`, `core.mechanics_and_presentation.punctuation`, `core.mechanics_and_presentation.spelling`, `core.mechanics_and_presentation.cleanliness`.
 
-### Revision Priority: A separate systemic repetition problem extends beyond slow scenes. NO verdicts identify recurring laughter, giggling, blushing, kissing, apology, reassurance, exhaustion, and explanatory glosses that reiterate already-legible emotion. By contrast, functional recurrences such as blood, hearts, concealment, and programming do change meaning and should remain.
+### Risk: Madison’s profane, analytical, self-mocking voice and the manuscript’s finger-fangs, blood-written symbols, lifeblood economy, heartbeat magic, and programming analogies are distinctive. That originality is weakened by familiar emotional metaphors, explicit interpretation after images already land, and repeated laughter, kissing, reassurance, and attraction beats.
 
-During a repetition pass, remove or transform mannerisms and duplicated emotional interpretation while protecting motif development. Each retained recurrence should escalate pressure, reverse meaning, disclose information, or produce a consequence.
- Evidence: `evidence-0003`, `evidence-0005`, `evidence-0006`, `evidence-0025`, `evidence-0049`.
- Criteria: `core.economy_and_relevance.earns_place`, `core.economy_and_relevance.no_restatement`, `core.economy_and_relevance.length_fit`, `penalty.repetition.lexical`, `penalty.repetition.semantic`, `penalty.repetition.beat`, `penalty.repetition.explanation`, `core.emotional_and_intellectual_effect.restraint`.
+Retain the story-specific technical and bodily perceptions, but replace inherited emotional shorthand with observations only Madison would make. After a gesture or image communicates the feeling, remove the explanatory gloss unless it adds contradiction or new information.
+ Evidence: `evidence-0006`, `evidence-0005`, `evidence-0003`, `evidence-0025`.
+ Criteria: `core.voice_and_stylistic_identity.distinctive`, `core.voice_and_stylistic_identity.sustained`, `core.language_craft.images`, `core.freshness_and_non_genericness.unpredictable_specificity`, `core.freshness_and_non_genericness.no_cliche`, `core.freshness_and_non_genericness.no_default_metaphors`, `core.emotional_and_intellectual_effect.restraint`, `penalty.repetition.lexical`, `penalty.repetition.beat`, `penalty.repetition.explanation`.
 
-### Revision Priority: Mechanical defects are pervasive rather than isolated: grammar, punctuation, spelling, cleanliness, syntax, and freedom from awkwardness receive global NO verdicts, producing a mechanics score of 1.6. Visible problems include tense shifts, missing words, malformed clauses, misspellings, dialogue-tag punctuation errors, and a stray character. Formatting and general speaker legibility still receive YES verdicts.
+### Risk: Two defects are local rather than systemic: Chapter Four renders the established name “Savannah” as “Savanna,” and Chapter Two’s climber falls beside the protagonists through an expressly coincidental event that conveniently forces the central revelation. Neither overturns the otherwise strong continuity and causality verdicts.
 
-Complete a dedicated copyedit after structural compression. Correcting mechanics earlier risks polishing passages likely to be cut, but leaving them afterward will continue interrupting otherwise effective horror, intimacy, and conceptual work.
- Evidence: `evidence-0022`, `evidence-0025`, `evidence-0118`, `evidence-0232`, `evidence-0475`, `evidence-0493`.
- Criteria: `core.mechanics_and_presentation.grammar`, `core.mechanics_and_presentation.punctuation`, `core.mechanics_and_presentation.spelling`, `core.mechanics_and_presentation.cleanliness`, `core.language_craft.syntax`, `core.language_craft.no_awkwardness`, `core.mechanics_and_presentation.formatting`, `core.mechanics_and_presentation.dialogue_mechanics`.
-
-### Strength: The manuscript is keepworthy but not yet exceptional: threshold_3_keepworthy is YES and threshold_4_exceptional is NO. Madison's profane programmer voice is distinctive, sustained, and owned; finger-fangs, blood-written symbols, lifeblood engraving, batteries, and symbolic-code analogies provide unusual specificity; and the world's costs remain intelligible and consequential.
-
-Revision should expose these project-specific assets more clearly by removing generic romance language, redundant explanation, and copy noise. The work does not need a new premise or a more ornate style; it needs stronger selection and control.
- Evidence: `evidence-0003`, `evidence-0005`, `evidence-0006`, `evidence-0022`, `evidence-0036`, `evidence-0037`, `evidence-0052`.
- Criteria: `core.voice_and_stylistic_identity.distinctive`, `core.voice_and_stylistic_identity.sustained`, `core.voice_and_stylistic_identity.ownership`, `craft.narrative.narrative_momentum.voice_pull`, `craft.narrative.worldbuilding.rules`, `craft.narrative.worldbuilding.constraints`, `craft.narrative.worldbuilding.integration`, `core.freshness_and_non_genericness.unpredictable_specificity`, `core.holistic_artistic_success.threshold_3_keepworthy`, `core.holistic_artistic_success.threshold_4_exceptional`.
-
-### Observation: The four sampled local results must remain independent: Chapter One scores 75.6380 with uncertainty 70.7818–76.5658; Chapter Three 86.2436 with 83.2460–86.8146; Chapter Five 87.0711 with 85.8336–87.1193; and Chapter Six 84.8077 with 83.3801–84.9242. Each is VALID, clears effective and keepworthy thresholds, and fails the exceptional threshold.
-
-These scores locate different revision pressures but must not be averaged. Chapter One needs the heaviest economy and mechanics work; Chapter Three needs exposition compression; Chapters Five and Six need tighter social or connective passages while retaining their stronger consequence chains.
- Evidence: `unit-0002-e3373399775a`, `unit-0004-d56cc8561b6b`, `unit-0006-71f0cc119f96`, `unit-0007-25dfed4ef40f`.
- Criteria: `core.holistic_artistic_success.threshold_2_effective`, `core.holistic_artistic_success.threshold_3_keepworthy`, `core.holistic_artistic_success.threshold_4_exceptional`, `core.length_and_scope_fit.form`, `core.task_and_brief_fidelity.completion_flag`.
-
-### Observation: Several conclusions remain unavailable rather than negative. Complete-novel structure, middle, ending, final character states, and total payoff return CANNOT_ASSESS; Katherine's motivation also cannot be assessed because she does not appear. Open threads—including coercive magic, witch creation, the grimoire review, stored climber lifeblood, blood-loss recovery, and the individual accounting behind the engraved repertoire—are appropriately active in this WIP.
-
-Do not manufacture closure to improve an opening-scope evaluation. Preserve these promises visibly and plan later payoffs; only treat them as defects if subsequent manuscript scope forgets, contradicts, or resolves them without preparation.
- Evidence: `evidence-0004`, `evidence-0007`, `evidence-0021`, `evidence-0041`, `evidence-0072`, `evidence-0073`.
- Criteria: `form.prose.novel.macro_structure`, `form.prose.novel.middle`, `form.prose.novel.ending`, `form.prose.novel.payoff`, `craft.narrative.character_arc.end_state`, `task.contract.gray-blood-ch1-6-comparison-v1.goal.katherine_motivation`, `scope.long_context.uncertainty`.
+Correct the name during copyediting. For the climber, add a small causal connection to Amelia’s choices, the location, or prior magical activity if possible; otherwise acknowledge the coincidence economically and ensure no later major turn relies on the same device.
+ Evidence: `evidence-0428`, `evidence-0006`.
+ Criteria: `craft.narrative.continuity_and_canon_integrity.facts`, `craft.narrative.plot_and_causality.no_convenience`.
 
 ## Limitations
 
@@ -145,7 +165,7 @@ Do not manufacture closure to improve an opening-scope evaluation. Preserve thes
 - No male witch is depicted, and every identified witch in scope is a woman, but the manuscript excerpt does not independently explain the full female-only rule or the unresolved trans/intersex specifics.
 - Normal witch-plus-human-male conception is not depicted or explained, so that offspring rule cannot be assessed from these units.
 - Engraved spells are used and their lifeblood cost is explained, but no new engraving is performed on-page; exact source consumption is therefore established through explanation rather than a witnessed engraving sequence.
-- The whole-work observed score is distinct from its 76.4053–79.5715 uncertainty range; the range reflects unassessed relevant criteria and is not a statistical confidence interval.
-- Sampled chapter scores are independent diagnostics and must not be averaged into a manuscript score.
-- Grim-dark tone and characterization targets are weighted author priorities, not objective gates. The assessable non-negotiable canon gates pass; the offspring gate is not applicable in the supplied events.
-- The artifact is an explicitly incomplete WIP. Complete-novel structure, ending, final arcs, Katherine's motivation, and other absent future material remain unassessed rather than failed.
+- The manuscript is an explicitly incomplete WIP. Whole-novel macrostructure, middle, ending, final character states, and ultimate payoff remain unassessed rather than failed.
+- The whole-work observed score is distinct from its 76.4053–79.5715 uncertainty bounds; those bounds arise from relevant unassessed criteria and are not statistical confidence intervals.
+- Katherine’s immediate-visit motivation, normal witch-plus-human-male offspring, exact witch-creation mechanics, and the identity of the early journal as the grimoire cannot be assessed from the supplied chapters.
+- Weighted author goals concerning tone and characterization are revision priorities, not binding canon gates.

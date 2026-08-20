@@ -1,29 +1,29 @@
 {
   "$schema": "https://raw.githubusercontent.com/HaileyStorm/Creative-Writing-Rubrics/main/schema/hbq_score_report.schema.json",
   "active_nominal_points": 100.0,
-  "artifact_id": "gray-blood-original-ch01-06-unit-0007-25dfed4ef40f",
+  "artifact_id": "gray-blood-original-ch01-06-chapter-unit-0007-25dfed4ef40f",
   "base_score": {
-    "lower": 86.5229,
-    "observed": 87.9505,
-    "upper": 88.0671
+    "lower": 91.057,
+    "observed": 91.057,
+    "upper": 91.057
   },
-  "bundle_id": "prose.novel",
+  "bundle_id": "prose.chapter",
   "bundle_version": 1,
-  "confidence": 0.936,
-  "coverage": 0.9846,
+  "confidence": 0.9216,
+  "coverage": 1.0,
   "domains": [
     {
       "active": true,
-      "confidence": 0.9091,
-      "coverage": 0.7794,
+      "confidence": 0.8822,
+      "coverage": 1.0,
       "domain_id": "task",
       "nominal_points": 7.0,
       "questions": [
         {
-          "confidence": 0.86,
+          "confidence": 0.91,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, serial-killer conversation"
+              "reference": "result.json, unit-0007-25dfed4ef40f summary"
             }
           ],
           "module_id": "core.task_and_brief_fidelity",
@@ -35,7 +35,7 @@
           "confidence": 0.99,
           "evidence": [
             {
-              "reference": "result.json, limitations[0]"
+              "reference": "WIP_CHAPTER_CONTEXT.json"
             }
           ],
           "module_id": "core.task_and_brief_fidelity",
@@ -47,7 +47,7 @@
           "confidence": 0.99,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, opening"
+              "reference": "unit-0007-25dfed4ef40f.txt, opening bedroom scene"
             }
           ],
           "module_id": "core.task_and_brief_fidelity",
@@ -56,10 +56,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.92,
+          "confidence": 0.86,
           "evidence": [
             {
-              "reference": "result.json, unit-0007 chronology"
+              "reference": "unit-0007-25dfed4ef40f.txt, closing scene"
             }
           ],
           "module_id": "core.length_and_scope_fit",
@@ -68,10 +68,10 @@
           "weight": 2.0
         },
         {
-          "confidence": 0.91,
+          "confidence": 0.9,
           "evidence": [
             {
-              "reference": "result.json, unit-0007 summary"
+              "reference": "WIP_CHAPTER_CONTEXT.json"
             }
           ],
           "module_id": "core.length_and_scope_fit",
@@ -80,10 +80,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.9,
+          "confidence": 0.86,
           "evidence": [
             {
-              "reference": "result.json, unit-0007 summary"
+              "reference": "unit-0007-25dfed4ef40f.txt, grimoire discussion"
             }
           ],
           "module_id": "core.length_and_scope_fit",
@@ -92,10 +92,10 @@
           "weight": 2.0
         },
         {
-          "confidence": 0.82,
+          "confidence": 0.75,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, closing magic lesson"
+              "reference": "unit-0007-25dfed4ef40f.txt, closing instruction scene"
             }
           ],
           "module_id": "core.length_and_scope_fit",
@@ -104,10 +104,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.93,
+          "confidence": 0.83,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, ending"
+              "reference": "unit-0007-25dfed4ef40f.txt, final paragraph"
             }
           ],
           "module_id": "core.length_and_scope_fit",
@@ -116,10 +116,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.87,
+          "confidence": 0.75,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, game-night scene"
+              "reference": "unit-0007-25dfed4ef40f.txt, game-night scene"
             }
           ],
           "module_id": "core.length_and_scope_fit",
@@ -128,10 +128,10 @@
           "weight": 2.0
         },
         {
-          "confidence": 0.91,
+          "confidence": 0.86,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, engraving disclosure"
+              "reference": "unit-0007-25dfed4ef40f.txt, engraving confrontation"
             }
           ],
           "module_id": "core.length_and_scope_fit",
@@ -140,10 +140,10 @@
           "weight": 2.0
         },
         {
-          "confidence": 0.91,
+          "confidence": 0.9,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, closing magic lesson"
+              "reference": "unit-0007-25dfed4ef40f.txt, closing instruction scene"
             }
           ],
           "module_id": "core.audience_and_purpose_fit",
@@ -152,10 +152,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.88,
+          "confidence": 0.93,
           "evidence": [
             {
-              "reference": "author brief, Amelia character-development notes"
+              "reference": "author brief, Core Concept & Tone"
             }
           ],
           "module_id": "core.audience_and_purpose_fit",
@@ -167,7 +167,7 @@
           "confidence": 0.82,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, Zoe's explanation"
+              "reference": "unit-0007-25dfed4ef40f.txt, walk to Zoe's dorm"
             }
           ],
           "module_id": "core.audience_and_purpose_fit",
@@ -176,10 +176,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.9,
+          "confidence": 0.92,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, Zoe's account"
+              "reference": "unit-0007-25dfed4ef40f.txt, Zoe's account of Miriam"
             }
           ],
           "module_id": "core.audience_and_purpose_fit",
@@ -188,10 +188,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.94,
+          "confidence": 0.9,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, Madison's text to Zoe"
+              "reference": "unit-0007-25dfed4ef40f.txt, Madison and Zoe text exchange"
             }
           ],
           "module_id": "core.audience_and_purpose_fit",
@@ -200,10 +200,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.9,
+          "confidence": 0.81,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, heading"
+              "reference": "unit-0007-25dfed4ef40f.txt, title"
             }
           ],
           "module_id": "core.audience_and_purpose_fit",
@@ -212,22 +212,22 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.8,
+          "confidence": 0.89,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, serial-killer conversation"
+              "reference": "unit-0007-25dfed4ef40f.txt, engraving explanation"
             }
           ],
           "module_id": "core.audience_and_purpose_fit",
           "question_id": "core.audience_and_purpose_fit.genre_signals",
-          "verdict": "NO",
+          "verdict": "YES",
           "weight": 1.5
         },
         {
           "confidence": 0.94,
           "evidence": [
             {
-              "reference": "result.json, limitations[0]"
+              "reference": "WIP_CHAPTER_CONTEXT.json"
             }
           ],
           "module_id": "core.audience_and_purpose_fit",
@@ -236,74 +236,14 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.99,
-          "evidence": [
-            {
-              "reference": "result.json, limitations[3]"
-            }
-          ],
-          "module_id": "form.prose.novel",
-          "question_id": "form.prose.novel.macro_structure",
-          "verdict": "CANNOT_ASSESS",
-          "weight": 3.0
-        },
-        {
-          "confidence": 0.95,
-          "evidence": [
-            {
-              "reference": "unit-0007-25dfed4ef40f, EMS disclosure"
-            }
-          ],
-          "module_id": "form.prose.novel",
-          "question_id": "form.prose.novel.long_causality",
-          "verdict": "YES",
-          "weight": 3.0
-        },
-        {
           "confidence": 0.98,
           "evidence": [
             {
-              "reference": "result.json, limitations[0]"
+              "reference": "unit-0007-25dfed4ef40f.txt, garden scene"
             }
           ],
-          "module_id": "form.prose.novel",
-          "question_id": "form.prose.novel.multiple_arcs",
-          "verdict": "CANNOT_ASSESS",
-          "weight": 2.25
-        },
-        {
-          "confidence": 0.86,
-          "evidence": [
-            {
-              "reference": "result.json, unit-0007 summary"
-            }
-          ],
-          "module_id": "form.prose.novel",
-          "question_id": "form.prose.novel.pacing_variation",
-          "verdict": "YES",
-          "weight": 2.25
-        },
-        {
-          "confidence": 0.96,
-          "evidence": [
-            {
-              "reference": "result.json, Madison state ledger, unit-0007"
-            }
-          ],
-          "module_id": "form.prose.novel",
-          "question_id": "form.prose.novel.development",
-          "verdict": "YES",
-          "weight": 2.25
-        },
-        {
-          "confidence": 0.95,
-          "evidence": [
-            {
-              "reference": "result.json, work_state motifs"
-            }
-          ],
-          "module_id": "form.prose.novel",
-          "question_id": "form.prose.novel.recurrence",
+          "module_id": "form.prose.general_prose_fiction",
+          "question_id": "form.prose.general_prose_fiction.narrative_experience",
           "verdict": "YES",
           "weight": 2.25
         },
@@ -311,64 +251,100 @@
           "confidence": 0.94,
           "evidence": [
             {
-              "reference": "result.json, distant_links[1]"
+              "reference": "unit-0007-25dfed4ef40f.txt, arrival at Amelia's house"
             }
           ],
-          "module_id": "form.prose.novel",
-          "question_id": "form.prose.novel.payoff",
+          "module_id": "form.prose.general_prose_fiction",
+          "question_id": "form.prose.general_prose_fiction.character_action",
           "verdict": "YES",
-          "weight": 3.0
+          "weight": 2.25
+        },
+        {
+          "confidence": 0.97,
+          "evidence": [
+            {
+              "reference": "unit-0007-25dfed4ef40f.txt, engraving confrontation"
+            }
+          ],
+          "module_id": "form.prose.general_prose_fiction",
+          "question_id": "form.prose.general_prose_fiction.movement",
+          "verdict": "YES",
+          "weight": 2.25
+        },
+        {
+          "confidence": 0.85,
+          "evidence": [
+            {
+              "reference": "unit-0007-25dfed4ef40f.txt, transition after text exchange"
+            }
+          ],
+          "module_id": "form.prose.general_prose_fiction",
+          "question_id": "form.prose.general_prose_fiction.mode_control",
+          "verdict": "YES",
+          "weight": 2.25
+        },
+        {
+          "confidence": 0.87,
+          "evidence": [
+            {
+              "reference": "unit-0007-25dfed4ef40f.txt, Wednesday opening"
+            }
+          ],
+          "module_id": "form.prose.general_prose_fiction",
+          "question_id": "form.prose.general_prose_fiction.reader_orientation",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.79,
+          "evidence": [
+            {
+              "reference": "unit-0007-25dfed4ef40f.txt, response to Amelia's count"
+            }
+          ],
+          "module_id": "form.prose.general_prose_fiction",
+          "question_id": "form.prose.general_prose_fiction.proportion",
+          "verdict": "YES",
+          "weight": 2.25
         },
         {
           "confidence": 0.99,
           "evidence": [
             {
-              "reference": "result.json, orientation.evaluated_scope"
+              "reference": "WIP_CHAPTER_CONTEXT.json"
             }
           ],
-          "module_id": "form.prose.novel",
-          "question_id": "form.prose.novel.middle",
-          "verdict": "CANNOT_ASSESS",
-          "weight": 3.0
-        },
-        {
-          "confidence": 0.99,
-          "evidence": [
-            {
-              "reference": "result.json, limitations[0]"
-            }
-          ],
-          "module_id": "form.prose.novel",
-          "question_id": "form.prose.novel.ending",
-          "verdict": "CANNOT_ASSESS",
-          "weight": 3.0
+          "module_id": "form.prose.general_prose_fiction",
+          "question_id": "form.prose.general_prose_fiction.completion",
+          "verdict": "NOT_APPLICABLE",
+          "weight": 2.25
         }
       ],
       "score": {
-        "lower": 5.0441,
-        "observed": 6.4717,
-        "upper": 6.5882
+        "lower": 6.7358,
+        "observed": 6.7358,
+        "upper": 6.7358
       },
       "title": "Task and scope",
       "weights": {
-        "applicable": 51.0,
-        "failed": 3.0,
-        "passed": 36.75,
-        "unassessed": 11.25
+        "applicable": 39.75,
+        "failed": 1.5,
+        "passed": 38.25,
+        "unassessed": 0.0
       }
     },
     {
       "active": true,
-      "confidence": 0.9571,
+      "confidence": 0.9505,
       "coverage": 1.0,
       "domain_id": "character",
       "nominal_points": 16.0,
       "questions": [
         {
-          "confidence": 0.97,
+          "confidence": 0.96,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, Amelia's moral defense"
+              "reference": "unit-0007-25dfed4ef40f.txt, serial-killer conversation"
             }
           ],
           "module_id": "craft.narrative.characterization",
@@ -380,7 +356,7 @@
           "confidence": 0.97,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, engraving confrontation"
+              "reference": "unit-0007-25dfed4ef40f.txt, engraving confrontation"
             }
           ],
           "module_id": "craft.narrative.characterization",
@@ -392,7 +368,7 @@
           "confidence": 0.91,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, Amelia's moral defense"
+              "reference": "unit-0007-25dfed4ef40f.txt, engraving confrontation"
             }
           ],
           "module_id": "craft.narrative.characterization",
@@ -401,10 +377,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.97,
+          "confidence": 0.95,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, Madison's text to Zoe"
+              "reference": "unit-0007-25dfed4ef40f.txt, response to engraving cost"
             }
           ],
           "module_id": "craft.narrative.characterization",
@@ -413,10 +389,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.98,
+          "confidence": 0.95,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, Madison presses Amelia for her engraving count"
+              "reference": "unit-0007-25dfed4ef40f.txt, Madison committing to return to FAWN"
             }
           ],
           "module_id": "craft.narrative.characterization",
@@ -425,10 +401,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.96,
+          "confidence": 0.91,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, Madison and Zoe crossing campus"
+              "reference": "unit-0007-25dfed4ef40f.txt, Madison and Zoe on making witches"
             }
           ],
           "module_id": "craft.narrative.characterization",
@@ -437,10 +413,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.99,
+          "confidence": 0.98,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, bedroom confrontation"
+              "reference": "unit-0007-25dfed4ef40f"
             }
           ],
           "module_id": "craft.narrative.characterization",
@@ -449,25 +425,22 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.93,
+          "confidence": 0.96,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, Amelia responds to the serial-killer question"
-            },
-            {
-              "reference": "author brief, VI. Character Development Notes"
+              "reference": "unit-0007-25dfed4ef40f"
             }
           ],
           "module_id": "craft.narrative.characterization",
           "question_id": "craft.narrative.characterization.canon",
-          "verdict": "NO",
+          "verdict": "YES",
           "weight": 1.5
         },
         {
           "confidence": 0.91,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, engraving-count confrontation"
+              "reference": "unit-0007-25dfed4ef40f"
             }
           ],
           "module_id": "craft.narrative.characterization",
@@ -476,10 +449,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.98,
+          "confidence": 0.97,
           "evidence": [
             {
-              "reference": "result.json, Madison state ledger, unit-0007 change"
+              "reference": "result.json/work_state.central_arcs"
             }
           ],
           "module_id": "craft.narrative.character_arc",
@@ -491,7 +464,7 @@
           "confidence": 0.99,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, Madison confronts Amelia"
+              "reference": "unit-0007-25dfed4ef40f"
             }
           ],
           "module_id": "craft.narrative.character_arc",
@@ -500,10 +473,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.98,
+          "confidence": 0.97,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, Amelia resists giving the count"
+              "reference": "unit-0007-25dfed4ef40f"
             }
           ],
           "module_id": "craft.narrative.character_arc",
@@ -515,7 +488,7 @@
           "confidence": 0.96,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, after the ninety-four-source revelation"
+              "reference": "unit-0007-25dfed4ef40f"
             }
           ],
           "module_id": "craft.narrative.character_arc",
@@ -527,7 +500,7 @@
           "confidence": 0.99,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, Madison walking to lunch"
+              "reference": "unit-0007-25dfed4ef40f"
             }
           ],
           "module_id": "craft.narrative.character_arc",
@@ -539,7 +512,7 @@
           "confidence": 0.86,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, Madison discussing her adaptation"
+              "reference": "unit-0007-25dfed4ef40f"
             }
           ],
           "module_id": "craft.narrative.character_arc",
@@ -551,7 +524,7 @@
           "confidence": 0.99,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, closing study sequence"
+              "reference": "unit-0007-25dfed4ef40f"
             }
           ],
           "module_id": "craft.narrative.character_arc",
@@ -560,8 +533,12 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.99,
-          "evidence": [],
+          "confidence": 1.0,
+          "evidence": [
+            {
+              "reference": "WIP_CHAPTER_CONTEXT.json"
+            }
+          ],
           "module_id": "craft.narrative.character_arc",
           "question_id": "craft.narrative.character_arc.end_state",
           "verdict": "NOT_APPLICABLE",
@@ -569,30 +546,30 @@
         }
       ],
       "score": {
-        "lower": 14.8571,
-        "observed": 14.8571,
-        "upper": 14.8571
+        "lower": 16.0,
+        "observed": 16.0,
+        "upper": 16.0
       },
       "title": "Character and arcs",
       "weights": {
         "applicable": 21.0,
-        "failed": 1.5,
-        "passed": 19.5,
+        "failed": 0.0,
+        "passed": 21.0,
         "unassessed": 0.0
       }
     },
     {
       "active": true,
-      "confidence": 0.9628,
+      "confidence": 0.9356,
       "coverage": 1.0,
       "domain_id": "plot",
       "nominal_points": 20.0,
       "questions": [
         {
-          "confidence": 0.97,
+          "confidence": 0.96,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, Amelia anticipates the engraving question"
+              "reference": "unit-0007-25dfed4ef40f"
             }
           ],
           "module_id": "craft.narrative.plot_and_causality",
@@ -604,7 +581,7 @@
           "confidence": 0.98,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, Zoe explains engraving"
+              "reference": "unit-0007-25dfed4ef40f"
             }
           ],
           "module_id": "craft.narrative.plot_and_causality",
@@ -616,7 +593,7 @@
           "confidence": 0.97,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, Madison decides to return to FAWN"
+              "reference": "unit-0007-25dfed4ef40f"
             }
           ],
           "module_id": "craft.narrative.plot_and_causality",
@@ -628,10 +605,7 @@
           "confidence": 0.99,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, Madison's text to Zoe"
-            },
-            {
-              "reference": "unit-0007-25dfed4ef40f, Amelia's accounting"
+              "reference": "unit-0007-25dfed4ef40f"
             }
           ],
           "module_id": "craft.narrative.plot_and_causality",
@@ -640,10 +614,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.95,
+          "confidence": 0.94,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, Madison calculates Amelia's killing rate"
+              "reference": "unit-0007-25dfed4ef40f"
             }
           ],
           "module_id": "craft.narrative.plot_and_causality",
@@ -655,7 +629,7 @@
           "confidence": 0.96,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, Madison responds to the count"
+              "reference": "unit-0007-25dfed4ef40f"
             }
           ],
           "module_id": "craft.narrative.plot_and_causality",
@@ -667,22 +641,19 @@
           "confidence": 0.96,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, Amelia reveals the count"
-            },
-            {
-              "reference": "result.json, distant_links"
+              "reference": "result.json/units[unit-0007-25dfed4ef40f]"
             }
           ],
           "module_id": "craft.narrative.plot_and_causality",
           "question_id": "craft.narrative.plot_and_causality.reversal",
-          "verdict": "YES",
+          "verdict": "NOT_APPLICABLE",
           "weight": 1.0
         },
         {
           "confidence": 0.91,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, Madison reacts to Zoe's explanation"
+              "reference": "unit-0007-25dfed4ef40f"
             }
           ],
           "module_id": "craft.narrative.plot_and_causality",
@@ -694,10 +665,7 @@
           "confidence": 0.98,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, Amelia explains leaving EMS"
-            },
-            {
-              "reference": "result.json, distant_links"
+              "reference": "result.json/distant_links"
             }
           ],
           "module_id": "craft.narrative.foreshadowing_setup_and_payoff",
@@ -706,10 +674,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.88,
+          "confidence": 0.89,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, EMS disclosure"
+              "reference": "result.json/state_ledgers/Amelia's EMS history"
             }
           ],
           "module_id": "craft.narrative.foreshadowing_setup_and_payoff",
@@ -721,7 +689,7 @@
           "confidence": 0.99,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, Amelia defers the grimoire review"
+              "reference": "result.json/units[unit-0007-25dfed4ef40f].promises_opened"
             }
           ],
           "module_id": "craft.narrative.foreshadowing_setup_and_payoff",
@@ -730,10 +698,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.94,
+          "confidence": 0.92,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, Amelia's EMS confession"
+              "reference": "unit-0007-25dfed4ef40f"
             }
           ],
           "module_id": "craft.narrative.foreshadowing_setup_and_payoff",
@@ -742,13 +710,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.98,
+          "confidence": 0.97,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, Amelia gives Madison the heart token"
-            },
-            {
-              "reference": "result.json, unit-0006 ending_state"
+              "reference": "unit-0007-25dfed4ef40f"
             }
           ],
           "module_id": "craft.narrative.foreshadowing_setup_and_payoff",
@@ -757,13 +722,10 @@
           "weight": 2.0
         },
         {
-          "confidence": 0.97,
+          "confidence": 0.98,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, promised future review"
-            },
-            {
-              "reference": "result.json, distant_links"
+              "reference": "result.json/distant_links"
             }
           ],
           "module_id": "craft.narrative.foreshadowing_setup_and_payoff",
@@ -775,7 +737,7 @@
           "confidence": 0.97,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, magical heart token"
+              "reference": "unit-0007-25dfed4ef40f"
             }
           ],
           "module_id": "craft.narrative.foreshadowing_setup_and_payoff",
@@ -784,10 +746,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.94,
+          "confidence": 0.93,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, Amelia's response"
+              "reference": "unit-0007-25dfed4ef40f"
             }
           ],
           "module_id": "craft.narrative.foreshadowing_setup_and_payoff",
@@ -799,7 +761,7 @@
           "confidence": 0.99,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, bedroom confrontation"
+              "reference": "unit-0007-25dfed4ef40f"
             }
           ],
           "module_id": "craft.narrative.narrative_momentum",
@@ -811,7 +773,7 @@
           "confidence": 0.99,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, garden heart scene"
+              "reference": "unit-0007-25dfed4ef40f"
             }
           ],
           "module_id": "craft.narrative.narrative_momentum",
@@ -823,10 +785,7 @@
           "confidence": 0.99,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, after Madison commits to FAWN, game night, and dates"
-            },
-            {
-              "reference": "unit-0007-25dfed4ef40f, Madison's moral calculation"
+              "reference": "unit-0007-25dfed4ef40f"
             }
           ],
           "module_id": "craft.narrative.narrative_momentum",
@@ -835,10 +794,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.96,
+          "confidence": 0.87,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, Zoe text exchange"
+              "reference": "unit-0007-25dfed4ef40f"
             }
           ],
           "module_id": "craft.narrative.narrative_momentum",
@@ -847,10 +806,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.98,
+          "confidence": 0.99,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, closing magic lesson"
+              "reference": "unit-0007-25dfed4ef40f"
             }
           ],
           "module_id": "craft.narrative.narrative_momentum",
@@ -859,10 +818,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.98,
+          "confidence": 0.96,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, grimoire conversation"
+              "reference": "unit-0007-25dfed4ef40f, Amelia's engraving-count disclosure"
             }
           ],
           "module_id": "craft.narrative.narrative_momentum",
@@ -871,10 +830,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.97,
+          "confidence": 0.95,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, garden bench scene"
+              "reference": "unit-0007-25dfed4ef40f, garden-bench scene"
             }
           ],
           "module_id": "craft.narrative.narrative_momentum",
@@ -883,16 +842,211 @@
           "weight": 2.0
         },
         {
-          "confidence": 0.9,
+          "confidence": 0.91,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, final scene"
+              "reference": "unit-0007-25dfed4ef40f, final dorm-room scene"
             }
           ],
           "module_id": "craft.narrative.narrative_momentum",
           "question_id": "craft.narrative.narrative_momentum.no_false_hook",
           "verdict": "YES",
           "weight": 1.5
+        },
+        {
+          "confidence": 0.87,
+          "evidence": [
+            {
+              "reference": "unit-0007-25dfed4ef40f, opening line"
+            }
+          ],
+          "module_id": "craft.narrative.opening",
+          "question_id": "craft.narrative.opening.entry",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.94,
+          "evidence": [
+            {
+              "reference": "unit-0007-25dfed4ef40f, opening paragraph"
+            }
+          ],
+          "module_id": "craft.narrative.opening",
+          "question_id": "craft.narrative.opening.orientation",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.88,
+          "evidence": [
+            {
+              "reference": "unit-0007-25dfed4ef40f, opening phone call"
+            }
+          ],
+          "module_id": "craft.narrative.opening",
+          "question_id": "craft.narrative.opening.intrigue",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.97,
+          "evidence": [
+            {
+              "reference": "unit-0007-25dfed4ef40f, opening phone call"
+            }
+          ],
+          "module_id": "craft.narrative.opening",
+          "question_id": "craft.narrative.opening.voice",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.84,
+          "evidence": [
+            {
+              "reference": "unit-0007-25dfed4ef40f, opening paragraph"
+            }
+          ],
+          "module_id": "craft.narrative.opening",
+          "question_id": "craft.narrative.opening.tone",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.9,
+          "evidence": [
+            {
+              "reference": "unit-0007-25dfed4ef40f, opening phone call"
+            }
+          ],
+          "module_id": "craft.narrative.opening",
+          "question_id": "craft.narrative.opening.promise",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.94,
+          "evidence": [
+            {
+              "reference": "unit-0007-25dfed4ef40f, opening paragraph"
+            }
+          ],
+          "module_id": "craft.narrative.opening",
+          "question_id": "craft.narrative.opening.withholding",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.92,
+          "evidence": [
+            {
+              "reference": "unit-0007-25dfed4ef40f, opening line"
+            }
+          ],
+          "module_id": "craft.narrative.opening",
+          "question_id": "craft.narrative.opening.no_preamble",
+          "verdict": "YES",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "reference": "unit-0007-25dfed4ef40f, concluding lesson"
+            }
+          ],
+          "module_id": "craft.narrative.ending_and_closure",
+          "question_id": "craft.narrative.ending_and_closure.changed_state",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.91,
+          "evidence": [
+            {
+              "reference": "unit-0007-25dfed4ef40f, final line"
+            }
+          ],
+          "module_id": "craft.narrative.ending_and_closure",
+          "question_id": "craft.narrative.ending_and_closure.resolution",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.94,
+          "evidence": [
+            {
+              "reference": "unit-0007-25dfed4ef40f, magical-heart scene"
+            },
+            {
+              "reference": "unit-0007-25dfed4ef40f, dorm-room confrontation"
+            }
+          ],
+          "module_id": "craft.narrative.ending_and_closure",
+          "question_id": "craft.narrative.ending_and_closure.expectations",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.82,
+          "evidence": [
+            {
+              "reference": "unit-0007-25dfed4ef40f, final line"
+            }
+          ],
+          "module_id": "craft.narrative.ending_and_closure",
+          "question_id": "craft.narrative.ending_and_closure.emphasis",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.78,
+          "evidence": [
+            {
+              "reference": "unit-0007-25dfed4ef40f, concluding paragraph"
+            }
+          ],
+          "module_id": "craft.narrative.ending_and_closure",
+          "question_id": "craft.narrative.ending_and_closure.resonance",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.93,
+          "evidence": [
+            {
+              "reference": "unit-0007-25dfed4ef40f, promised grimoire review"
+            }
+          ],
+          "module_id": "craft.narrative.ending_and_closure",
+          "question_id": "craft.narrative.ending_and_closure.openness",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.94,
+          "evidence": [
+            {
+              "reference": "unit-0007-25dfed4ef40f, final line"
+            }
+          ],
+          "module_id": "craft.narrative.ending_and_closure",
+          "question_id": "craft.narrative.ending_and_closure.no_overclosure",
+          "verdict": "YES",
+          "weight": 2.0
+        },
+        {
+          "confidence": 1.0,
+          "evidence": [
+            {
+              "reference": "WIP_CHAPTER_CONTEXT.json"
+            }
+          ],
+          "module_id": "craft.narrative.ending_and_closure",
+          "question_id": "craft.narrative.ending_and_closure.no_abruptness",
+          "verdict": "NOT_APPLICABLE",
+          "weight": 2.0
         }
       ],
       "score": {
@@ -902,24 +1056,24 @@
       },
       "title": "Plot architecture and payoff",
       "weights": {
-        "applicable": 34.0,
+        "applicable": 54.0,
         "failed": 0.0,
-        "passed": 34.0,
+        "passed": 54.0,
         "unassessed": 0.0
       }
     },
     {
       "active": true,
-      "confidence": 0.9628,
+      "confidence": 0.9612,
       "coverage": 1.0,
       "domain_id": "world",
       "nominal_points": 12.0,
       "questions": [
         {
-          "confidence": 0.98,
+          "confidence": 0.97,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, Zoe's explanation"
+              "reference": "unit-0007-25dfed4ef40f, light-symbol demonstration"
             }
           ],
           "module_id": "craft.narrative.worldbuilding",
@@ -931,7 +1085,7 @@
           "confidence": 0.96,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, Zoe's explanation"
+              "reference": "unit-0007-25dfed4ef40f, light-symbol aftermath"
             }
           ],
           "module_id": "craft.narrative.worldbuilding",
@@ -943,7 +1097,7 @@
           "confidence": 0.99,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, engraving-cost disclosure"
+              "reference": "unit-0007-25dfed4ef40f, engraving-cost explanation"
             }
           ],
           "module_id": "craft.narrative.worldbuilding",
@@ -952,10 +1106,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.92,
+          "confidence": 0.9,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, serial-killer discussion"
+              "reference": "unit-0007-25dfed4ef40f, Zoe's account of Miriam"
             }
           ],
           "module_id": "craft.narrative.worldbuilding",
@@ -964,7 +1118,7 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.97,
+          "confidence": 0.98,
           "evidence": [
             {
               "reference": "unit-0007-25dfed4ef40f, Amelia's EMS disclosure"
@@ -979,7 +1133,10 @@
           "confidence": 0.96,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, walk to Amelia's house"
+              "reference": "unit-0007-25dfed4ef40f, Amelia's EMS disclosure"
+            },
+            {
+              "reference": "unit-0007-25dfed4ef40f, Madison's hypovolemia recovery"
             }
           ],
           "module_id": "craft.narrative.worldbuilding",
@@ -991,7 +1148,7 @@
           "confidence": 0.97,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, light-symbol demonstration"
+              "reference": "unit-0007-25dfed4ef40f, elemental lesson"
             }
           ],
           "module_id": "craft.narrative.worldbuilding",
@@ -1000,10 +1157,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.86,
+          "confidence": 0.83,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, Zoe's explanation"
+              "reference": "unit-0007-25dfed4ef40f, walk to Zoe's dorm"
             }
           ],
           "module_id": "craft.narrative.worldbuilding",
@@ -1012,10 +1169,13 @@
           "weight": 2.0
         },
         {
-          "confidence": 0.98,
+          "confidence": 0.96,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, elemental-symbol lesson"
+              "reference": "unit-0007-25dfed4ef40f, elemental lesson"
+            },
+            {
+              "reference": "unit-0007-25dfed4ef40f, engraving-cost explanation"
             }
           ],
           "module_id": "craft.narrative.worldbuilding",
@@ -1024,10 +1184,13 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.94,
+          "confidence": 0.93,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, walk with Zoe"
+              "reference": "unit-0007-25dfed4ef40f, Zoe and Madison's walk"
+            },
+            {
+              "reference": "unit-0007-25dfed4ef40f, walk to Amelia's house"
             }
           ],
           "module_id": "craft.narrative.continuity_and_canon_integrity",
@@ -1039,7 +1202,7 @@
           "confidence": 0.97,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, Zoe's explanation"
+              "reference": "unit-0007-25dfed4ef40f, Zoe's magic explanation"
             }
           ],
           "module_id": "craft.narrative.continuity_and_canon_integrity",
@@ -1048,10 +1211,10 @@
           "weight": 2.0
         },
         {
-          "confidence": 0.96,
+          "confidence": 0.97,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, Zoe's explanation"
+              "reference": "unit-0007-25dfed4ef40f, Zoe's magic explanation"
             }
           ],
           "module_id": "craft.narrative.continuity_and_canon_integrity",
@@ -1060,10 +1223,13 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.96,
+          "confidence": 0.98,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, Zoe's explanation"
+              "reference": "unit-0007-25dfed4ef40f, Amelia's sustained-light explanation"
+            },
+            {
+              "reference": "unit-0007-25dfed4ef40f, engraving-count disclosure"
             }
           ],
           "module_id": "craft.narrative.continuity_and_canon_integrity",
@@ -1075,7 +1241,7 @@
           "confidence": 0.98,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, Wednesday opening"
+              "reference": "unit-0007-25dfed4ef40f"
             }
           ],
           "module_id": "craft.narrative.continuity_and_canon_integrity",
@@ -1087,7 +1253,7 @@
           "confidence": 0.99,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, Wednesday text exchange"
+              "reference": "unit-0007-25dfed4ef40f"
             }
           ],
           "module_id": "craft.narrative.continuity_and_canon_integrity",
@@ -1096,10 +1262,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.98,
+          "confidence": 0.99,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, final scene"
+              "reference": "unit-0007-25dfed4ef40f"
             }
           ],
           "module_id": "craft.narrative.continuity_and_canon_integrity",
@@ -1108,10 +1274,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.99,
+          "confidence": 0.95,
           "evidence": [
             {
-              "reference": "result.json, limitations and state ledgers"
+              "reference": "author brief"
             }
           ],
           "module_id": "craft.narrative.continuity_and_canon_integrity",
@@ -1120,22 +1286,22 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.98,
+          "confidence": 0.92,
           "evidence": [
             {
-              "reference": "result.json, limitations"
+              "reference": "unit-0007-25dfed4ef40f"
             }
           ],
           "module_id": "craft.narrative.continuity_and_canon_integrity",
           "question_id": "craft.narrative.continuity_and_canon_integrity.conflicts",
-          "verdict": "NOT_APPLICABLE",
+          "verdict": "YES",
           "weight": 1.5
         },
         {
-          "confidence": 0.99,
+          "confidence": 0.98,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, transition to Wednesday"
+              "reference": "unit-0007-25dfed4ef40f"
             }
           ],
           "module_id": "craft.narrative.temporal_and_spatial_continuity",
@@ -1147,7 +1313,7 @@
           "confidence": 0.97,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, Madison's calculation"
+              "reference": "unit-0007-25dfed4ef40f"
             }
           ],
           "module_id": "craft.narrative.temporal_and_spatial_continuity",
@@ -1156,10 +1322,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.94,
+          "confidence": 0.97,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, trip to game night"
+              "reference": "unit-0007-25dfed4ef40f"
             }
           ],
           "module_id": "craft.narrative.temporal_and_spatial_continuity",
@@ -1171,7 +1337,7 @@
           "confidence": 0.98,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, game-night scene"
+              "reference": "unit-0007-25dfed4ef40f"
             }
           ],
           "module_id": "craft.narrative.temporal_and_spatial_continuity",
@@ -1180,10 +1346,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.96,
+          "confidence": 0.99,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, lifeblood accounting"
+              "reference": "unit-0007-25dfed4ef40f"
             }
           ],
           "module_id": "craft.narrative.temporal_and_spatial_continuity",
@@ -1192,10 +1358,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.97,
+          "confidence": 0.98,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, elemental-symbol demonstration"
+              "reference": "unit-0007-25dfed4ef40f"
             }
           ],
           "module_id": "craft.narrative.temporal_and_spatial_continuity",
@@ -1207,7 +1373,7 @@
           "confidence": 0.99,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, meeting Zoe"
+              "reference": "unit-0007-25dfed4ef40f"
             }
           ],
           "module_id": "craft.narrative.temporal_and_spatial_continuity",
@@ -1223,24 +1389,24 @@
       },
       "title": "World and continuity",
       "weights": {
-        "applicable": 32.5,
+        "applicable": 34.0,
         "failed": 0.0,
-        "passed": 32.5,
+        "passed": 34.0,
         "unassessed": 0.0
       }
     },
     {
       "active": true,
-      "confidence": 0.89,
+      "confidence": 0.9089,
       "coverage": 1.0,
       "domain_id": "pacing",
       "nominal_points": 10.0,
       "questions": [
         {
-          "confidence": 0.91,
+          "confidence": 0.9,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, closing lesson"
+              "reference": "unit-0007-25dfed4ef40f"
             }
           ],
           "module_id": "craft.narrative.pacing_and_narrative_time",
@@ -1249,10 +1415,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.95,
+          "confidence": 0.93,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, post-calculus transition"
+              "reference": "unit-0007-25dfed4ef40f"
             }
           ],
           "module_id": "craft.narrative.pacing_and_narrative_time",
@@ -1261,10 +1427,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.96,
+          "confidence": 0.95,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, Madison and Amelia's engraving-count confrontation"
+              "reference": "unit-0007-25dfed4ef40f"
             }
           ],
           "module_id": "craft.narrative.pacing_and_narrative_time",
@@ -1273,10 +1439,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.86,
+          "confidence": 0.91,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, transition into Wednesday lunch"
+              "reference": "unit-0007-25dfed4ef40f"
             }
           ],
           "module_id": "craft.narrative.pacing_and_narrative_time",
@@ -1285,10 +1451,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.9,
+          "confidence": 0.88,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, Madison and Zoe's walk"
+              "reference": "unit-0007-25dfed4ef40f"
             }
           ],
           "module_id": "craft.narrative.pacing_and_narrative_time",
@@ -1297,10 +1463,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.9,
+          "confidence": 0.91,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, scene breaks throughout Chapter Six"
+              "reference": "unit-0007-25dfed4ef40f"
             }
           ],
           "module_id": "craft.narrative.pacing_and_narrative_time",
@@ -1309,10 +1475,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.84,
+          "confidence": 0.9,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, end of Zoe's game-night scene"
+              "reference": "unit-0007-25dfed4ef40f"
             }
           ],
           "module_id": "craft.narrative.pacing_and_narrative_time",
@@ -1324,19 +1490,19 @@
           "confidence": 0.84,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, Zoe's game-night scene"
+              "reference": "unit-0007-25dfed4ef40f"
             }
           ],
           "module_id": "craft.narrative.pacing_and_narrative_time",
           "question_id": "craft.narrative.pacing_and_narrative_time.no_stall",
-          "verdict": "NO",
+          "verdict": "YES",
           "weight": 2.0
         },
         {
-          "confidence": 0.95,
+          "confidence": 0.97,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, Zoe's explanation of magical intent"
+              "reference": "unit-0007-25dfed4ef40f"
             }
           ],
           "module_id": "craft.narrative.exposition_and_information_management",
@@ -1345,10 +1511,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.92,
+          "confidence": 0.94,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, Madison questioning Amelia"
+              "reference": "unit-0007-25dfed4ef40f"
             }
           ],
           "module_id": "craft.narrative.exposition_and_information_management",
@@ -1357,10 +1523,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.94,
+          "confidence": 0.95,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, Madison and Zoe's walk"
+              "reference": "unit-0007-25dfed4ef40f"
             }
           ],
           "module_id": "craft.narrative.exposition_and_information_management",
@@ -1369,22 +1535,22 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.82,
+          "confidence": 0.91,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, post-calculus transition"
+              "reference": "unit-0007-25dfed4ef40f"
             }
           ],
           "module_id": "craft.narrative.exposition_and_information_management",
           "question_id": "craft.narrative.exposition_and_information_management.priority",
-          "verdict": "NO",
+          "verdict": "YES",
           "weight": 1.0
         },
         {
-          "confidence": 0.83,
+          "confidence": 0.88,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, Zoe's explanation"
+              "reference": "unit-0007-25dfed4ef40f"
             }
           ],
           "module_id": "craft.narrative.exposition_and_information_management",
@@ -1393,10 +1559,10 @@
           "weight": 2.0
         },
         {
-          "confidence": 0.88,
+          "confidence": 0.85,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, Zoe's engraving explanation"
+              "reference": "unit-0007-25dfed4ef40f"
             }
           ],
           "module_id": "craft.narrative.exposition_and_information_management",
@@ -1405,10 +1571,10 @@
           "weight": 2.0
         },
         {
-          "confidence": 0.85,
+          "confidence": 0.91,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, Amelia deferring the witch-making explanation"
+              "reference": "unit-0007-25dfed4ef40f"
             }
           ],
           "module_id": "craft.narrative.exposition_and_information_management",
@@ -1417,10 +1583,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.93,
+          "confidence": 0.96,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, transition from Madison's day to her adaptation"
+              "reference": "unit-0007-25dfed4ef40f"
             }
           ],
           "module_id": "craft.narrative.transitions_and_connective_tissue",
@@ -1429,10 +1595,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.94,
+          "confidence": 0.97,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, opening of Wednesday sequence"
+              "reference": "unit-0007-25dfed4ef40f"
             }
           ],
           "module_id": "craft.narrative.transitions_and_connective_tissue",
@@ -1441,10 +1607,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.96,
+          "confidence": 0.98,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, opening of Zoe dorm sequence"
+              "reference": "unit-0007-25dfed4ef40f"
             }
           ],
           "module_id": "craft.narrative.transitions_and_connective_tissue",
@@ -1453,10 +1619,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.98,
+          "confidence": 0.99,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, Madison and Zoe's dialogue"
+              "reference": "unit-0007-25dfed4ef40f"
             }
           ],
           "module_id": "craft.narrative.transitions_and_connective_tissue",
@@ -1465,10 +1631,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.95,
+          "confidence": 0.96,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, text-message exchange"
+              "reference": "unit-0007-25dfed4ef40f"
             }
           ],
           "module_id": "craft.narrative.transitions_and_connective_tissue",
@@ -1480,7 +1646,7 @@
           "confidence": 0.86,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, transition to Amelia's house"
+              "reference": "unit-0007-25dfed4ef40f, final teaching scene"
             }
           ],
           "module_id": "craft.narrative.transitions_and_connective_tissue",
@@ -1489,43 +1655,43 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.78,
+          "confidence": 0.82,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, transition after Miriam's backstory"
+              "reference": "unit-0007-25dfed4ef40f, Zoe game-night scene"
             }
           ],
           "module_id": "craft.narrative.transitions_and_connective_tissue",
           "question_id": "craft.narrative.transitions_and_connective_tissue.no_bridge_filler",
-          "verdict": "NO",
+          "verdict": "YES",
           "weight": 2.0
         }
       ],
       "score": {
-        "lower": 8.4127,
-        "observed": 8.4127,
-        "upper": 8.4127
+        "lower": 10.0,
+        "observed": 10.0,
+        "upper": 10.0
       },
       "title": "Pacing and information",
       "weights": {
         "applicable": 31.5,
-        "failed": 5.0,
-        "passed": 26.5,
+        "failed": 0.0,
+        "passed": 31.5,
         "unassessed": 0.0
       }
     },
     {
       "active": true,
-      "confidence": 0.919,
+      "confidence": 0.8584,
       "coverage": 1.0,
       "domain_id": "language",
       "nominal_points": 10.0,
       "questions": [
         {
-          "confidence": 0.91,
+          "confidence": 0.65,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, reaction to Amelia's lifeblood count"
+              "reference": "unit-0007-25dfed4ef40f, walk to Zoe's dorm"
             }
           ],
           "module_id": "core.language_craft",
@@ -1534,10 +1700,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.92,
+          "confidence": 0.97,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, Madison explaining her degree choice"
+              "reference": "unit-0007-25dfed4ef40f, Madison's dorm conversation"
             }
           ],
           "module_id": "core.language_craft",
@@ -1546,7 +1712,7 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.9,
+          "confidence": 0.86,
           "evidence": [
             {
               "reference": "unit-0007-25dfed4ef40f, magical-heart scene"
@@ -1558,10 +1724,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.88,
+          "confidence": 0.84,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, engraving-count confrontation"
+              "reference": "unit-0007-25dfed4ef40f, engraving confrontation"
             }
           ],
           "module_id": "core.language_craft",
@@ -1570,10 +1736,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.89,
+          "confidence": 0.83,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, response to the count of ninety-four"
+              "reference": "unit-0007-25dfed4ef40f, engraving confrontation"
             }
           ],
           "module_id": "core.language_craft",
@@ -1582,10 +1748,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.95,
+          "confidence": 0.94,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, elemental-symbol demonstration"
+              "reference": "unit-0007-25dfed4ef40f, elemental-symbol lesson"
             }
           ],
           "module_id": "core.language_craft",
@@ -1594,7 +1760,7 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.8,
+          "confidence": 0.73,
           "evidence": [
             {
               "reference": "unit-0007-25dfed4ef40f, magical-heart scene"
@@ -1606,10 +1772,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.93,
+          "confidence": 0.9,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, Madison calculating Amelia's killing rate"
+              "reference": "unit-0007-25dfed4ef40f, engraving confrontation"
             }
           ],
           "module_id": "core.language_craft",
@@ -1621,7 +1787,7 @@
           "confidence": 0.99,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, walk to Zoe's dorm"
+              "reference": "unit-0007-25dfed4ef40f, opening line"
             }
           ],
           "module_id": "core.language_craft",
@@ -1633,7 +1799,7 @@
           "confidence": 0.91,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, closing magical lesson"
+              "reference": "unit-0007-25dfed4ef40f, final teaching scene"
             }
           ],
           "module_id": "core.voice_and_stylistic_identity",
@@ -1642,10 +1808,10 @@
           "weight": 2.0
         },
         {
-          "confidence": 0.94,
+          "confidence": 0.88,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, Madison reflecting on the syllabus"
+              "reference": "unit-0007-25dfed4ef40f, engraving confrontation"
             }
           ],
           "module_id": "core.voice_and_stylistic_identity",
@@ -1654,10 +1820,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.89,
+          "confidence": 0.83,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, Madison's text exchange with Zoe"
+              "reference": "unit-0007-25dfed4ef40f, text exchange with Zoe"
             }
           ],
           "module_id": "core.voice_and_stylistic_identity",
@@ -1666,10 +1832,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.92,
+          "confidence": 0.84,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, final scene"
+              "reference": "unit-0007-25dfed4ef40f, final teaching scene"
             }
           ],
           "module_id": "core.voice_and_stylistic_identity",
@@ -1678,10 +1844,10 @@
           "weight": 2.0
         },
         {
-          "confidence": 0.9,
+          "confidence": 0.87,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, engraved-spell confrontation"
+              "reference": "unit-0007-25dfed4ef40f, engraving confrontation"
             }
           ],
           "module_id": "core.voice_and_stylistic_identity",
@@ -1690,10 +1856,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.96,
+          "confidence": 0.93,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, calculus transition"
+              "reference": "unit-0007-25dfed4ef40f, walk with Zoe"
             }
           ],
           "module_id": "core.voice_and_stylistic_identity",
@@ -1702,10 +1868,10 @@
           "weight": 2.0
         },
         {
-          "confidence": 0.88,
+          "confidence": 0.85,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, walk to Zoe's dorm"
+              "reference": "unit-0007-25dfed4ef40f, walk with Zoe"
             }
           ],
           "module_id": "craft.narrative.dialogue",
@@ -1714,10 +1880,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.95,
+          "confidence": 0.92,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, engraved-spell confrontation"
+              "reference": "unit-0007-25dfed4ef40f, engraving confrontation"
             }
           ],
           "module_id": "craft.narrative.dialogue",
@@ -1726,10 +1892,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.83,
+          "confidence": 0.8,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, engraved-spell confrontation"
+              "reference": "unit-0007-25dfed4ef40f, walk with Zoe"
             }
           ],
           "module_id": "craft.narrative.dialogue",
@@ -1738,10 +1904,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.94,
+          "confidence": 0.9,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, engraved-spell confrontation"
+              "reference": "unit-0007-25dfed4ef40f, engraving confrontation"
             }
           ],
           "module_id": "craft.narrative.dialogue",
@@ -1750,10 +1916,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.93,
+          "confidence": 0.92,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, engraved-spell confrontation"
+              "reference": "unit-0007-25dfed4ef40f, engraving confrontation"
             }
           ],
           "module_id": "craft.narrative.dialogue",
@@ -1762,10 +1928,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.95,
+          "confidence": 0.89,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, opening bedroom conversation"
+              "reference": "unit-0007-25dfed4ef40f, Madison's dorm conversation"
             }
           ],
           "module_id": "craft.narrative.dialogue",
@@ -1774,10 +1940,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.97,
+          "confidence": 0.91,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, opening bedroom conversation"
+              "reference": "unit-0007-25dfed4ef40f, serial-killer conversation"
             }
           ],
           "module_id": "craft.narrative.dialogue",
@@ -1786,10 +1952,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.94,
+          "confidence": 0.62,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, walk to Zoe's dorm"
+              "reference": "unit-0007-25dfed4ef40f, walk with Zoe"
             }
           ],
           "module_id": "craft.narrative.dialogue",
@@ -1813,16 +1979,16 @@
     },
     {
       "active": true,
-      "confidence": 0.9341,
+      "confidence": 0.9076,
       "coverage": 1.0,
       "domain_id": "effect",
       "nominal_points": 8.0,
       "questions": [
         {
-          "confidence": 0.96,
+          "confidence": 0.94,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, garden bench"
+              "reference": "unit-0007-25dfed4ef40f, heart-token and engraving scenes"
             }
           ],
           "module_id": "craft.narrative.theme_and_subtext",
@@ -1831,10 +1997,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.94,
+          "confidence": 0.91,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, engraved-spell confrontation"
+              "reference": "unit-0007-25dfed4ef40f, engraving confrontation"
             }
           ],
           "module_id": "craft.narrative.theme_and_subtext",
@@ -1843,10 +2009,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.96,
+          "confidence": 0.92,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, Amelia morality and engraving exchanges"
+              "reference": "unit-0007-25dfed4ef40f, Amelia's moral defense and later disclosure"
             }
           ],
           "module_id": "craft.narrative.theme_and_subtext",
@@ -1855,10 +2021,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.97,
+          "confidence": 0.95,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, engraved-spell confrontation"
+              "reference": "unit-0007-25dfed4ef40f, serial-killer conversation"
             }
           ],
           "module_id": "craft.narrative.theme_and_subtext",
@@ -1867,10 +2033,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.96,
+          "confidence": 0.94,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, elemental-symbol lesson"
+              "reference": "unit-0007-25dfed4ef40f, engraving confrontation"
             }
           ],
           "module_id": "craft.narrative.theme_and_subtext",
@@ -1879,10 +2045,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.91,
+          "confidence": 0.9,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, final scene"
+              "reference": "unit-0007-25dfed4ef40f, engraving confrontation"
             }
           ],
           "module_id": "craft.narrative.theme_and_subtext",
@@ -1891,10 +2057,10 @@
           "weight": 2.0
         },
         {
-          "confidence": 0.96,
+          "confidence": 0.93,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, engraved-spell confrontation"
+              "reference": "unit-0007-25dfed4ef40f, engraving confrontation"
             }
           ],
           "module_id": "craft.narrative.theme_and_subtext",
@@ -1903,10 +2069,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.88,
+          "confidence": 0.82,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, engraved-spell confrontation"
+              "reference": "unit-0007-25dfed4ef40f, Madison and Amelia engraving discussion"
             }
           ],
           "module_id": "core.emotional_and_intellectual_effect",
@@ -1915,10 +2081,10 @@
           "weight": 2.0
         },
         {
-          "confidence": 0.94,
+          "confidence": 0.88,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, engraved-spell confrontation"
+              "reference": "unit-0007-25dfed4ef40f, aftermath of the ninety-four-source disclosure"
             }
           ],
           "module_id": "core.emotional_and_intellectual_effect",
@@ -1927,10 +2093,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.98,
+          "confidence": 0.96,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, engraving-cost explanation"
+              "reference": "unit-0007-25dfed4ef40f, serial-killer conversation"
             }
           ],
           "module_id": "core.emotional_and_intellectual_effect",
@@ -1939,10 +2105,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.97,
+          "confidence": 0.93,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, chapter sequence"
+              "reference": "unit-0007-25dfed4ef40f, garden-bench scene"
             }
           ],
           "module_id": "core.emotional_and_intellectual_effect",
@@ -1951,22 +2117,22 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.82,
+          "confidence": 0.87,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, engraved-spell confrontation"
+              "reference": "unit-0007-25dfed4ef40f, serial-killer conversation"
             }
           ],
           "module_id": "core.emotional_and_intellectual_effect",
           "question_id": "core.emotional_and_intellectual_effect.restraint",
-          "verdict": "YES",
+          "verdict": "NO",
           "weight": 1.5
         },
         {
-          "confidence": 0.96,
+          "confidence": 0.91,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, ending"
+              "reference": "unit-0007-25dfed4ef40f, chapter ending"
             }
           ],
           "module_id": "core.emotional_and_intellectual_effect",
@@ -1976,30 +2142,30 @@
         }
       ],
       "score": {
-        "lower": 8.0,
-        "observed": 8.0,
-        "upper": 8.0
+        "lower": 7.3514,
+        "observed": 7.3514,
+        "upper": 7.3514
       },
       "title": "Theme and effect",
       "weights": {
         "applicable": 18.5,
-        "failed": 0.0,
-        "passed": 18.5,
+        "failed": 1.5,
+        "passed": 17.0,
         "unassessed": 0.0
       }
     },
     {
       "active": true,
-      "confidence": 0.8941,
+      "confidence": 0.8717,
       "coverage": 1.0,
       "domain_id": "fresh",
       "nominal_points": 5.0,
       "questions": [
         {
-          "confidence": 0.9,
+          "confidence": 0.95,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, dorm-room conversation"
+              "reference": "unit-0007-25dfed4ef40f, serial-killer conversation"
             }
           ],
           "module_id": "core.freshness_and_non_genericness",
@@ -2008,22 +2174,22 @@
           "weight": 2.0
         },
         {
-          "confidence": 0.86,
+          "confidence": 0.84,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, magical-heart scene"
+              "reference": "unit-0007-25dfed4ef40f, garden-bench love declaration"
             }
           ],
           "module_id": "core.freshness_and_non_genericness",
           "question_id": "core.freshness_and_non_genericness.no_stock_beats",
-          "verdict": "NO",
+          "verdict": "YES",
           "weight": 1.5
         },
         {
-          "confidence": 0.91,
+          "confidence": 0.9,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, engraved-spell confrontation"
+              "reference": "unit-0007-25dfed4ef40f, Madison and Zoe dialogue"
             }
           ],
           "module_id": "core.freshness_and_non_genericness",
@@ -2035,31 +2201,31 @@
           "confidence": 0.93,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, elemental-symbol lesson"
+              "reference": "unit-0007-25dfed4ef40f, calculus arrival"
             }
           ],
           "module_id": "core.freshness_and_non_genericness",
           "question_id": "core.freshness_and_non_genericness.no_default_metaphors",
-          "verdict": "YES",
-          "weight": 1.5
-        },
-        {
-          "confidence": 0.84,
-          "evidence": [
-            {
-              "reference": "unit-0007-25dfed4ef40f, opening bedroom conversation"
-            }
-          ],
-          "module_id": "core.freshness_and_non_genericness",
-          "question_id": "core.freshness_and_non_genericness.no_emotion_summary",
           "verdict": "NO",
           "weight": 1.5
         },
         {
-          "confidence": 0.98,
+          "confidence": 0.83,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, garden bench"
+              "reference": "unit-0007-25dfed4ef40f, engraving-count confrontation"
+            }
+          ],
+          "module_id": "core.freshness_and_non_genericness",
+          "question_id": "core.freshness_and_non_genericness.no_emotion_summary",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.97,
+          "evidence": [
+            {
+              "reference": "unit-0007-25dfed4ef40f, Amelia’s first post-activation spell"
             }
           ],
           "module_id": "core.freshness_and_non_genericness",
@@ -2068,7 +2234,7 @@
           "weight": 2.0
         },
         {
-          "confidence": 0.96,
+          "confidence": 0.89,
           "evidence": [
             {
               "reference": "unit-0007-25dfed4ef40f, elemental-symbol lesson"
@@ -2083,7 +2249,7 @@
           "confidence": 0.99,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, dorm-room conversation"
+              "reference": "unit-0007-25dfed4ef40f, game-night aftermath"
             }
           ],
           "module_id": "core.freshness_and_non_genericness",
@@ -2092,10 +2258,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.9,
+          "confidence": 0.76,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, Zoe/Madison walk"
+              "reference": "unit-0007-25dfed4ef40f, Zoe’s game night"
             }
           ],
           "module_id": "core.economy_and_relevance",
@@ -2104,10 +2270,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.88,
+          "confidence": 0.82,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, walk to Amelia's"
+              "reference": "unit-0007-25dfed4ef40f, walk to Zoe’s dorm"
             }
           ],
           "module_id": "core.economy_and_relevance",
@@ -2116,22 +2282,22 @@
           "weight": 2.5
         },
         {
-          "confidence": 0.86,
+          "confidence": 0.85,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, Zoe's dorm stairwell"
+              "reference": "unit-0007-25dfed4ef40f, lifeblood calculation"
             }
           ],
           "module_id": "core.economy_and_relevance",
           "question_id": "core.economy_and_relevance.functional_repetition",
-          "verdict": "NO",
+          "verdict": "YES",
           "weight": 2.0
         },
         {
-          "confidence": 0.91,
+          "confidence": 0.9,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, game-night conclusion"
+              "reference": "unit-0007-25dfed4ef40f, final magical lesson"
             }
           ],
           "module_id": "core.economy_and_relevance",
@@ -2140,10 +2306,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.87,
+          "confidence": 0.8,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, Madison's dorm"
+              "reference": "unit-0007-25dfed4ef40f, dorm-room conversation"
             }
           ],
           "module_id": "core.economy_and_relevance",
@@ -2152,10 +2318,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.84,
+          "confidence": 0.88,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, transition to game night"
+              "reference": "unit-0007-25dfed4ef40f, extended closing lesson"
             }
           ],
           "module_id": "core.economy_and_relevance",
@@ -2164,10 +2330,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.78,
+          "confidence": 0.72,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, garden heart scene"
+              "reference": "unit-0007-25dfed4ef40f, light-symbol demonstration"
             }
           ],
           "module_id": "core.economy_and_relevance",
@@ -2177,21 +2343,21 @@
         }
       ],
       "score": {
-        "lower": 2.2826,
-        "observed": 2.2826,
-        "upper": 2.2826
+        "lower": 3.0435,
+        "observed": 3.0435,
+        "upper": 3.0435
       },
       "title": "Freshness and economy",
       "weights": {
         "applicable": 23.0,
-        "failed": 12.5,
-        "passed": 10.5,
+        "failed": 9.0,
+        "passed": 14.0,
         "unassessed": 0.0
       }
     },
     {
       "active": true,
-      "confidence": 0.9353,
+      "confidence": 0.9407,
       "coverage": 1.0,
       "domain_id": "mechanics",
       "nominal_points": 4.0,
@@ -2200,7 +2366,7 @@
           "confidence": 0.99,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, serial-killer conversation"
+              "reference": "unit-0007-25dfed4ef40f, opening and first bedroom scene"
             }
           ],
           "module_id": "core.mechanics_and_presentation",
@@ -2224,7 +2390,7 @@
           "confidence": 0.99,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, engraving-count conversation"
+              "reference": "unit-0007-25dfed4ef40f, multiple chapter passages"
             }
           ],
           "module_id": "core.mechanics_and_presentation",
@@ -2233,10 +2399,10 @@
           "weight": 1.0
         },
         {
-          "confidence": 0.93,
+          "confidence": 0.96,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, recurring scene breaks"
+              "reference": "unit-0007-25dfed4ef40f, recurring scene separators"
             }
           ],
           "module_id": "core.mechanics_and_presentation",
@@ -2248,31 +2414,31 @@
           "confidence": 0.96,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, engraving-count conversation"
-            }
-          ],
-          "module_id": "core.mechanics_and_presentation",
-          "question_id": "core.mechanics_and_presentation.dialogue_mechanics",
-          "verdict": "YES",
-          "weight": 1.0
-        },
-        {
-          "confidence": 0.8,
-          "evidence": [
-            {
               "reference": "unit-0007-25dfed4ef40f, serial-killer conversation"
             }
           ],
           "module_id": "core.mechanics_and_presentation",
-          "question_id": "core.mechanics_and_presentation.typography",
+          "question_id": "core.mechanics_and_presentation.dialogue_mechanics",
           "verdict": "NO",
           "weight": 1.0
         },
         {
-          "confidence": 0.91,
+          "confidence": 0.93,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, heading"
+              "reference": "unit-0007-25dfed4ef40f, text-message exchange"
+            }
+          ],
+          "module_id": "core.mechanics_and_presentation",
+          "question_id": "core.mechanics_and_presentation.typography",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.83,
+          "evidence": [
+            {
+              "reference": "unit-0007-25dfed4ef40f, transition into symbol lesson"
             }
           ],
           "module_id": "core.mechanics_and_presentation",
@@ -2296,16 +2462,16 @@
     },
     {
       "active": true,
-      "confidence": 0.9175,
+      "confidence": 0.935,
       "coverage": 1.0,
       "domain_id": "holistic",
       "nominal_points": 8.0,
       "questions": [
         {
-          "confidence": 0.97,
+          "confidence": 0.99,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, engraving-count revelation"
+              "reference": "unit-0007-25dfed4ef40f, first bedroom scene"
             }
           ],
           "module_id": "core.holistic_artistic_success",
@@ -2314,10 +2480,10 @@
           "weight": 2.0
         },
         {
-          "confidence": 0.86,
+          "confidence": 0.88,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, garden heart scene"
+              "reference": "unit-0007-25dfed4ef40f, engraving-count disclosure"
             }
           ],
           "module_id": "core.holistic_artistic_success",
@@ -2326,10 +2492,10 @@
           "weight": 2.0
         },
         {
-          "confidence": 0.9,
+          "confidence": 0.89,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, closing magic lesson"
+              "reference": "unit-0007-25dfed4ef40f, closing lesson"
             }
           ],
           "module_id": "core.holistic_artistic_success",
@@ -2338,10 +2504,10 @@
           "weight": 2.0
         },
         {
-          "confidence": 0.94,
+          "confidence": 0.98,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, Zoe's backstory"
+              "reference": "unit-0007-25dfed4ef40f, representative prose errors"
             }
           ],
           "module_id": "core.holistic_artistic_success",
@@ -2365,16 +2531,16 @@
     }
   ],
   "final_score": {
-    "lower": 83.3801,
-    "observed": 84.8077,
-    "upper": 84.9242
+    "lower": 90.1999,
+    "observed": 90.1999,
+    "upper": 90.1999
   },
   "hard_gate_status": "VALID",
   "hard_gates": [
     {
       "evidence": [
         {
-          "reference": "evaluation packet, complete prompt"
+          "reference": "author brief; result.json; WIP_CHAPTER_CONTEXT.json; unit-0007-25dfed4ef40f.txt; Questions"
         }
       ],
       "module_id": "scope.long_context",
@@ -2400,7 +2566,7 @@
           "confidence": 0.98,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, engraving-count conversation"
+              "reference": "unit-0007-25dfed4ef40f, engraved-spells conversation"
             }
           ],
           "question_id": "penalty.purple_prose.clarity",
@@ -2408,10 +2574,10 @@
           "weight": 2.0
         },
         {
-          "confidence": 0.96,
+          "confidence": 0.97,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, garden heart scene"
+              "reference": "unit-0007-25dfed4ef40f, garden-bench heart scene"
             }
           ],
           "question_id": "penalty.purple_prose.proportion",
@@ -2419,10 +2585,10 @@
           "weight": 2.0
         },
         {
-          "confidence": 0.96,
+          "confidence": 0.98,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, garden heart scene"
+              "reference": "unit-0007-25dfed4ef40f, garden-bench heart scene"
             }
           ],
           "question_id": "penalty.purple_prose.specificity",
@@ -2430,10 +2596,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.94,
+          "confidence": 0.95,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, elemental-symbol lesson"
+              "reference": "unit-0007-25dfed4ef40f, garden-bench heart scene"
             }
           ],
           "question_id": "penalty.purple_prose.tone",
@@ -2441,7 +2607,7 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.93,
+          "confidence": 0.98,
           "evidence": [
             {
               "reference": "unit-0007-25dfed4ef40f, elemental-symbol lesson"
@@ -2452,10 +2618,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.97,
+          "confidence": 0.98,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, garden heart scene"
+              "reference": "unit-0007-25dfed4ef40f, garden-bench heart scene"
             }
           ],
           "question_id": "penalty.purple_prose.attention",
@@ -2463,10 +2629,13 @@
           "weight": 2.0
         },
         {
-          "confidence": 0.97,
+          "confidence": 0.96,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, walk with Zoe"
+              "reference": "unit-0007-25dfed4ef40f, text-message sequence"
+            },
+            {
+              "reference": "unit-0007-25dfed4ef40f, closing magic lesson"
             }
           ],
           "question_id": "penalty.purple_prose.fatigue",
@@ -2486,17 +2655,17 @@
       "cap_points": 8.0,
       "coverage": 1.0,
       "deduction": {
-        "lower": 3.1429,
-        "observed": 3.1429,
-        "upper": 3.1429
+        "lower": 0.8571,
+        "observed": 0.8571,
+        "upper": 0.8571
       },
       "module_id": "penalty.repetition",
       "questions": [
         {
-          "confidence": 0.97,
+          "confidence": 0.93,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, walk with Zoe"
+              "reference": "unit-0007-25dfed4ef40f, walk to Zoe's dorm"
             }
           ],
           "question_id": "penalty.repetition.lexical",
@@ -2504,10 +2673,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.86,
+          "confidence": 0.96,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, engraving-count conversation"
+              "reference": "unit-0007-25dfed4ef40f, engraved-spells conversation"
             }
           ],
           "question_id": "penalty.repetition.syntax",
@@ -2515,21 +2684,24 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.87,
+          "confidence": 0.94,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, walk with Zoe"
+              "reference": "unit-0007-25dfed4ef40f, engraved-spells conversation"
             }
           ],
           "question_id": "penalty.repetition.semantic",
-          "verdict": "NO",
+          "verdict": "YES",
           "weight": 2.0
         },
         {
-          "confidence": 0.95,
+          "confidence": 0.97,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, garden heart scene"
+              "reference": "unit-0007-25dfed4ef40f, heart-token scene"
+            },
+            {
+              "reference": "unit-0007-25dfed4ef40f, lifeblood accounting"
             }
           ],
           "question_id": "penalty.repetition.image",
@@ -2537,21 +2709,24 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.9,
+          "confidence": 0.91,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, arrival at Amelia's"
+              "reference": "unit-0007-25dfed4ef40f, opening Amelia confrontation"
+            },
+            {
+              "reference": "unit-0007-25dfed4ef40f, closing Amelia confrontation"
             }
           ],
           "question_id": "penalty.repetition.beat",
-          "verdict": "NO",
+          "verdict": "YES",
           "weight": 2.0
         },
         {
-          "confidence": 0.92,
+          "confidence": 0.94,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, engraving-count conversation"
+              "reference": "unit-0007-25dfed4ef40f, engraved-spells conversation"
             }
           ],
           "question_id": "penalty.repetition.dialogue",
@@ -2559,10 +2734,10 @@
           "weight": 1.5
         },
         {
-          "confidence": 0.85,
+          "confidence": 0.9,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f, response to ninety-four sources"
+              "reference": "unit-0007-25dfed4ef40f, engraved-spells conversation"
             }
           ],
           "question_id": "penalty.repetition.explanation",
@@ -2570,10 +2745,13 @@
           "weight": 2.0
         },
         {
-          "confidence": 0.91,
+          "confidence": 0.96,
           "evidence": [
             {
-              "reference": "result.json: work_state.central_arcs; units unit-0002 through unit-0007"
+              "reference": "result.json, work_state.central_arcs"
+            },
+            {
+              "reference": "result.json, unit-0007 summary"
             }
           ],
           "question_id": "penalty.repetition.long_range",
@@ -2584,8 +2762,8 @@
       "title": "Repetition penalty",
       "weights": {
         "applicable": 14.0,
-        "failed": 5.5,
-        "passed": 8.5,
+        "failed": 1.5,
+        "passed": 12.5,
         "unassessed": 0.0
       }
     },
@@ -2603,7 +2781,7 @@
           "confidence": 1.0,
           "evidence": [
             {
-              "reference": "result.json: limitations[0]"
+              "reference": "WIP_CHAPTER_CONTEXT.json"
             }
           ],
           "question_id": "penalty.unflagged_incomplete.status",
@@ -2611,10 +2789,10 @@
           "weight": 3.0
         },
         {
-          "confidence": 0.99,
+          "confidence": 1.0,
           "evidence": [
             {
-              "reference": "result.json: limitations[0]"
+              "reference": "WIP_CHAPTER_CONTEXT.json"
             }
           ],
           "question_id": "penalty.unflagged_incomplete.unit",
@@ -2622,10 +2800,10 @@
           "weight": 3.0
         },
         {
-          "confidence": 0.96,
+          "confidence": 0.99,
           "evidence": [
             {
-              "reference": "unit-0007-25dfed4ef40f.txt: final paragraph"
+              "reference": "unit-0007-25dfed4ef40f, final paragraph"
             }
           ],
           "question_id": "penalty.unflagged_incomplete.truncation",
@@ -2643,9 +2821,9 @@
     }
   ],
   "penalty_deduction": {
-    "lower": 3.1429,
-    "observed": 3.1429,
-    "upper": 3.1429
+    "lower": 0.8571,
+    "observed": 0.8571,
+    "upper": 0.8571
   },
   "standard": {
     "id": "HBQ-RS",
@@ -2654,10 +2832,13 @@
   "status": "SCORED",
   "supplemental": [
     {
-      "confidence": 0.85,
+      "confidence": 0.95,
       "evidence": [
         {
-          "reference": "result.json: units[unit-0007].summary"
+          "reference": "author brief, V. Plot Points & Scene Ideas"
+        },
+        {
+          "reference": "unit-0007-25dfed4ef40f, Amelia confrontation"
         }
       ],
       "module_id": "core.task_and_brief_fidelity",
@@ -2665,43 +2846,55 @@
       "verdict": "YES"
     },
     {
-      "confidence": 0.99,
+      "confidence": 0.97,
       "evidence": [
         {
-          "reference": "caller-supplied brief"
+          "reference": "author brief, V. Immediate/Recent"
+        },
+        {
+          "reference": "unit-0007-25dfed4ef40f, walk to Zoe's dorm"
         }
       ],
       "module_id": "core.task_and_brief_fidelity",
       "question_id": "core.task_and_brief_fidelity.sources",
-      "verdict": "NOT_APPLICABLE"
-    },
-    {
-      "confidence": 0.72,
-      "evidence": [
-        {
-          "reference": "author brief: V. Plot Points & Scene Ideas"
-        }
-      ],
-      "module_id": "core.task_and_brief_fidelity",
-      "question_id": "core.task_and_brief_fidelity.inclusions",
-      "verdict": "CANNOT_ASSESS"
+      "verdict": "YES"
     },
     {
       "confidence": 0.98,
       "evidence": [
         {
-          "reference": "result.json: limitations[4]"
+          "reference": "author brief, VI. Amelia"
+        },
+        {
+          "reference": "unit-0007-25dfed4ef40f, EMS disclosure"
+        }
+      ],
+      "module_id": "core.task_and_brief_fidelity",
+      "question_id": "core.task_and_brief_fidelity.inclusions",
+      "verdict": "NO"
+    },
+    {
+      "confidence": 0.93,
+      "evidence": [
+        {
+          "reference": "author brief, IV. Fundamental Symbols"
+        },
+        {
+          "reference": "unit-0007-25dfed4ef40f, closing lesson"
         }
       ],
       "module_id": "core.task_and_brief_fidelity",
       "question_id": "core.task_and_brief_fidelity.exclusions",
-      "verdict": "NOT_APPLICABLE"
+      "verdict": "YES"
     },
     {
-      "confidence": 0.99,
+      "confidence": 1.0,
       "evidence": [
         {
-          "reference": "result.json: units[unit-0007].povs"
+          "reference": "result.json, unit-0007"
+        },
+        {
+          "reference": "author brief, I. Core Concept & Tone"
         }
       ],
       "module_id": "core.task_and_brief_fidelity",
@@ -2709,10 +2902,10 @@
       "verdict": "NOT_APPLICABLE"
     },
     {
-      "confidence": 0.99,
+      "confidence": 1.0,
       "evidence": [
         {
-          "reference": "author brief: I. Core Concept & Tone"
+          "reference": "author brief, I. Core Concept & Tone"
         }
       ],
       "module_id": "core.task_and_brief_fidelity",
@@ -2720,10 +2913,10 @@
       "verdict": "NOT_APPLICABLE"
     },
     {
-      "confidence": 0.97,
+      "confidence": 0.99,
       "evidence": [
         {
-          "reference": "unit-0007-25dfed4ef40f.txt: heading"
+          "reference": "WIP_CHAPTER_CONTEXT.json"
         }
       ],
       "module_id": "core.task_and_brief_fidelity",
@@ -2731,21 +2924,21 @@
       "verdict": "NOT_APPLICABLE"
     },
     {
-      "confidence": 0.96,
+      "confidence": 0.99,
       "evidence": [
         {
-          "reference": "unit-0007-25dfed4ef40f.txt: heading and subsequent narrative"
+          "reference": "author brief, VII. Meta/Technical Notes"
         }
       ],
       "module_id": "core.task_and_brief_fidelity",
       "question_id": "core.task_and_brief_fidelity.format",
-      "verdict": "YES"
+      "verdict": "NOT_APPLICABLE"
     },
     {
       "confidence": 1.0,
       "evidence": [
         {
-          "reference": "author brief: I. Core Concept & Tone"
+          "reference": "WIP_CHAPTER_CONTEXT.json"
         }
       ],
       "module_id": "core.task_and_brief_fidelity",
@@ -2756,7 +2949,7 @@
       "confidence": 1.0,
       "evidence": [
         {
-          "reference": "result.json: limitations[0]"
+          "reference": "WIP_CHAPTER_CONTEXT.json"
         }
       ],
       "module_id": "core.length_and_scope_fit",
@@ -2764,87 +2957,13 @@
       "verdict": "NOT_APPLICABLE"
     },
     {
-      "confidence": 0.99,
-      "evidence": [
-        {
-          "reference": "unit-0007-25dfed4ef40f.txt: Amelia bedroom scene"
-        }
-      ],
-      "module_id": "form.prose.general_prose_fiction",
-      "question_id": "form.prose.general_prose_fiction.narrative_experience",
-      "verdict": "YES"
-    },
-    {
       "confidence": 0.98,
       "evidence": [
         {
-          "reference": "unit-0007-25dfed4ef40f.txt: engraving-count confrontation"
-        }
-      ],
-      "module_id": "form.prose.general_prose_fiction",
-      "question_id": "form.prose.general_prose_fiction.character_action",
-      "verdict": "YES"
-    },
-    {
-      "confidence": 0.99,
-      "evidence": [
+          "reference": "unit-0007-25dfed4ef40f, engraved-spells conversation"
+        },
         {
-          "reference": "unit-0007-25dfed4ef40f.txt: engraving-count confrontation"
-        }
-      ],
-      "module_id": "form.prose.general_prose_fiction",
-      "question_id": "form.prose.general_prose_fiction.movement",
-      "verdict": "YES"
-    },
-    {
-      "confidence": 0.94,
-      "evidence": [
-        {
-          "reference": "unit-0007-25dfed4ef40f.txt: elemental-symbol lesson"
-        }
-      ],
-      "module_id": "form.prose.general_prose_fiction",
-      "question_id": "form.prose.general_prose_fiction.mode_control",
-      "verdict": "YES"
-    },
-    {
-      "confidence": 0.96,
-      "evidence": [
-        {
-          "reference": "unit-0007-25dfed4ef40f.txt: walk to Amelia's house"
-        }
-      ],
-      "module_id": "form.prose.general_prose_fiction",
-      "question_id": "form.prose.general_prose_fiction.reader_orientation",
-      "verdict": "YES"
-    },
-    {
-      "confidence": 0.9,
-      "evidence": [
-        {
-          "reference": "unit-0007-25dfed4ef40f.txt: final instruction scene"
-        }
-      ],
-      "module_id": "form.prose.general_prose_fiction",
-      "question_id": "form.prose.general_prose_fiction.proportion",
-      "verdict": "YES"
-    },
-    {
-      "confidence": 0.99,
-      "evidence": [
-        {
-          "reference": "result.json: limitations[0]"
-        }
-      ],
-      "module_id": "form.prose.general_prose_fiction",
-      "question_id": "form.prose.general_prose_fiction.completion",
-      "verdict": "NOT_APPLICABLE"
-    },
-    {
-      "confidence": 0.98,
-      "evidence": [
-        {
-          "reference": "result.json: distant_links, setup unit-0002 to payoff unit-0007"
+          "reference": "result.json, Climber's lifeblood ledger, unit-0003-a790dad00537"
         }
       ],
       "module_id": "scope.long_context",
@@ -2852,10 +2971,10 @@
       "verdict": "YES"
     },
     {
-      "confidence": 0.97,
+      "confidence": 0.98,
       "evidence": [
         {
-          "reference": "result.json: state_ledgers, entity \"Climber's lifeblood\""
+          "reference": "unit-0007-25dfed4ef40f, engraved-spells conversation"
         }
       ],
       "module_id": "scope.long_context",
@@ -2866,7 +2985,10 @@
       "confidence": 0.97,
       "evidence": [
         {
-          "reference": "result.json: distant_links, unit-0006 to unit-0007"
+          "reference": "unit-0007-25dfed4ef40f, engraved-spells conversation"
+        },
+        {
+          "reference": "result.json, distant_links"
         }
       ],
       "module_id": "scope.long_context",
@@ -2877,7 +2999,10 @@
       "confidence": 0.99,
       "evidence": [
         {
-          "reference": "result.json: state_ledgers, entity \"Climber's lifeblood\""
+          "reference": "unit-0007-25dfed4ef40f, engraved-spells conversation"
+        },
+        {
+          "reference": "result.json, Climber's lifeblood current_state"
         }
       ],
       "module_id": "scope.long_context",
@@ -2886,20 +3011,16 @@
     },
     {
       "confidence": 0.96,
-      "evidence": [
-        {
-          "reference": "result.json: limitations[4]"
-        }
-      ],
+      "evidence": [],
       "module_id": "scope.long_context",
       "question_id": "scope.long_context.documents",
-      "verdict": "YES"
+      "verdict": "CANNOT_ASSESS"
     },
     {
-      "confidence": 0.99,
+      "confidence": 0.94,
       "evidence": [
         {
-          "reference": "result.json: state_ledgers, entity \"Amelia's journal or grimoire\""
+          "reference": "unit-0007-25dfed4ef40f, elemental-symbol lesson"
         }
       ],
       "module_id": "scope.long_context",
@@ -2907,10 +3028,10 @@
       "verdict": "YES"
     },
     {
-      "confidence": 0.98,
+      "confidence": 0.91,
       "evidence": [
         {
-          "reference": "result.json: state_ledgers, climber lifeblood changes"
+          "reference": "unit-0007-25dfed4ef40f, engraving-count disclosure"
         }
       ],
       "module_id": "scope.long_context",
@@ -2918,10 +3039,10 @@
       "verdict": "YES"
     },
     {
-      "confidence": 0.98,
+      "confidence": 0.9,
       "evidence": [
         {
-          "reference": "result.json: distant_links, Amelia EMS history"
+          "reference": "unit-0007-25dfed4ef40f, Madison’s response to Amelia’s lifetime count"
         }
       ],
       "module_id": "scope.long_context",

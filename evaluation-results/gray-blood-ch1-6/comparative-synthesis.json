@@ -1,443 +1,477 @@
 {
-  "executive_summary": "The rewrite is not a clear overall improvement. Both versions are VALID, functional, effective, and keepworthy, but not exceptional. The original has the stronger deterministic whole-work result and retains advantages in plot causality, world continuity, pacing, language, dialogue, and freshness/economy. The new version preserves the premise, core relationship, Madison's programming-shaped moral descent, and all assessable canon gates; it also shows localized improvement in Chapter 3 and a small reduction in the repetition penalty. However, it does not demonstrate the intended darker Amelia or grim-dark baseline, introduces continuity and causal concerns, and often feels less controlled rather than productively rougher. A third draft should combine the original's causal and stylistic strengths with the rewrite's best localized compression, then substantially revise Amelia's default behavior, exposition, repetition, and mechanics.",
-  "score_interpretation": "Both whole-work reports have control_state VALID, hard_gate_status VALID, and status SCORED. The original deterministic observed score is 78.9174 with non-statistical bounds 76.4053–79.5715 and coverage 0.9683; the new score is 74.0536 with bounds 72.2044–74.4024 and coverage 0.978. These fixed results must not be changed by open review. The higher new coverage does not compensate for its lower observed result; coverage measures assessability, not quality. All five assessable canon gates pass in both versions, while canon.witch_human_offspring_human is NOT_APPLICABLE because the triggering event is absent; NOT_APPLICABLE neither passes nor fails a gate. Author goals are weighted priorities, not hard gates. Under HBQ-RS, INELIGIBLE would indicate that a hard-gate failure prevents treatment of a numeric result as an ordinary grade, while UNRESOLVED would indicate inadequate coverage or unresolved scoring conditions; neither state applies here. CANNOT_ASSESS is likewise absence of a supported verdict, not a failure. The chapter diagnostics cover only 28 of 228 available questions, explicitly produce no composites, and exist solely for paired local comparison. Their counts and the separately sampled local scores must not be averaged into manuscript scores.",
+  "executive_summary": "Both drafts are VALID and SCORED WIP openings with the same five applicable canon gates passing and the offspring gate correctly NOT_APPLICABLE. The rewrite contains a real Chapter 5 improvement and preserves the causal spine, blood-magic specificity, Madison’s programmer lens, and her moral slippage. It nevertheless regresses at manuscript scale: the canonical whole-work score falls from 78.9174 to 74.0536, chiefly through weaker language/dialogue, continuity, pacing, economy, and one causality verdict. Both versions still miss the grim-dark and harder-Amelia priorities. A strong third draft should combine the original’s stronger voice and control with the rewrite’s Chapter 5 gains, then systematically recalibrate Amelia, compress exposition, repair continuity and convenience, and copyedit.",
+  "score_interpretation": "The canonical HBQ-RS whole-work result is the manuscript-level authority: ORIGINAL 78.9174 with coverage 96.83% and non-statistical bounds 76.4053–79.5715; NEW 74.0536 with coverage 97.80% and bounds 72.2044–74.4024. These bounds describe possible score movement from relevant unassessed criteria, not statistical confidence or predicted final-novel quality. The original’s lower bound exceeds the new version’s upper bound, so the deterministic whole-work comparison favors the original throughout the reported uncertainty ranges. Each chapter also has an independent complete chapter-scope result; those six results must remain separate and must not be averaged into the canonical score. The optional, separately labeled balanced-WIP custom composite uses the disclosed 70% whole-work / 30% equal-chapter profile: ORIGINAL 81.0400 (79.2545–81.5007) and NEW 77.4010 (76.0137–77.6525). It is not the canonical manuscript score. Every chapter additionally has the same fixed 28-leaf diagnostic subset. Its verdict counts are reported chapter by chapter below, but the subset has no composite and is not aggregated. Author-goal verdicts are weighted priorities rather than validity gates, and open-review judgments do not alter any deterministic result.",
   "comparative_findings": [
     {
-      "area": "Whole-work effectiveness",
+      "area": "Canonical whole-work result",
       "advantage": "ORIGINAL",
       "severity": "HIGH",
-      "finding": "The original is presently the stronger reading experience by the deterministic global evidence. It leads by 4.8638 observed points while both versions clear the same functional, effective, and keepworthy thresholds and fail the exceptional threshold. The difference is concentrated in execution rather than premise or basic viability.",
+      "finding": "The original leads by 4.8638 observed points, and its reported lower bound remains above the rewrite’s upper bound. The decline is not explained by lower coverage: the rewrite has slightly more coverage but weaker assessed performance.",
       "evidence_references": [
-        "Original whole-work score state: VALID, 78.9174",
-        "New whole-work score state: VALID, 74.0536",
-        "core.holistic_artistic_success.threshold_1_functional",
-        "core.holistic_artistic_success.threshold_2_effective",
-        "core.holistic_artistic_success.threshold_3_keepworthy",
-        "core.holistic_artistic_success.threshold_4_exceptional"
+        "ORIGINAL whole-work VALID/SCORED: 78.9174, 76.4053–79.5715, coverage 0.9683",
+        "NEW whole-work VALID/SCORED: 74.0536, 72.2044–74.4024, coverage 0.9780",
+        "balanced-wip-70-30 custom composite: ORIGINAL 81.03996; NEW 77.400975"
       ],
-      "revision_action": "Use neither version wholesale. Preserve the shared premise and architecture, but treat the original as the stronger execution baseline and selectively import only independently supported improvements from the new version."
+      "revision_action": "Use the original as the control for manuscript-scale craft while selectively carrying forward demonstrable rewrite gains, especially Chapter 5."
     },
     {
-      "area": "Plot architecture and causality",
-      "advantage": "ORIGINAL",
-      "severity": "HIGH",
-      "finding": "Both versions sustain decisions, consequences, escalation, and long-range setup, but the original plot domain is 20.0 while the new version falls to 18.8235. The new version adds a localized convenience problem around the climber convergence and a separate credibility problem in delayed intervention during dangerous blood loss. These are repairable scene-level defects rather than evidence that the whole plot spine has failed.",
-      "evidence_references": [
-        "Plot domain: original 20.0",
-        "Plot domain: new 18.8235",
-        "craft.narrative.plot_and_causality.causal_chain",
-        "craft.narrative.plot_and_causality.consequence",
-        "craft.narrative.plot_and_causality.no_convenience: original YES, new NO",
-        "New report map entry: two localized causal defects"
-      ],
-      "revision_action": "Retain the original setup-to-payoff logic. Give the climber convergence an antecedent cause and establish a concrete constraint, error, or competing motive that explains Amelia's delayed intervention."
-    },
-    {
-      "area": "Grim-dark tone and Amelia's characterization",
+      "area": "Validity and binding canon",
       "advantage": "MIXED",
       "severity": "HIGH",
-      "finding": "Neither version achieves the dominant grim-dark tone or the desired volatile, less-apologetic Amelia. The original explicitly receives NO for Amelia being darker; the new report marks comparative darkness CANNOT_ASSESS while still returning NO for volatility and reduced apology. Both retain the useful contradiction between affection, appetite, power, trauma, and lethal capacity, so the solution is not indiscriminate cruelty. No evidence demonstrates that the rewrite made Amelia reliably sharper or darker.",
+      "finding": "Both versions are valid and preserve all five applicable objective canon requirements. The offspring requirement is correctly NOT_APPLICABLE because the relevant conception is absent, not failed. Canon stability is therefore a shared strength rather than evidence that the rewrite improved overall craft.",
       "evidence_references": [
-        "task.contract.gray-blood-ch1-6-comparison-v1.goal.grim_dark_tone: both NO",
-        "task.contract.gray-blood-ch1-6-comparison-v1.goal.amelia_darker: original NO, new CANNOT_ASSESS",
-        "task.contract.gray-blood-ch1-6-comparison-v1.goal.amelia_volatility: both NO",
-        "task.contract.gray-blood-ch1-6-comparison-v1.goal.amelia_less_apologetic: both NO",
-        "task.contract.gray-blood-ch1-6-comparison-v1.goal.amelia_power_attraction: both YES",
-        "task.contract.gray-blood-ch1-6-comparison-v1.goal.amelia_affection_power_balance: both YES"
+        "scope.long_context.overflow: YES in both",
+        "task.contract.gray-blood-ch1-6-comparison-v1.canon.witches_female_only: YES in both",
+        "task.contract.gray-blood-ch1-6-comparison-v1.canon.activation_requires_heart: YES in both",
+        "task.contract.gray-blood-ch1-6-comparison-v1.canon.engraving_requires_lifeblood: YES in both",
+        "task.contract.gray-blood-ch1-6-comparison-v1.canon.engraving_consumes_one_source: YES in both",
+        "task.contract.gray-blood-ch1-6-comparison-v1.canon.magic_uses_drawn_symbols: YES in both",
+        "task.contract.gray-blood-ch1-6-comparison-v1.canon.witch_human_offspring_human: NOT_APPLICABLE in both"
       ],
-      "revision_action": "Rewrite Amelia's recurring response pattern: fewer automatic apologies and reassurances; more factual justification, selective silence, sharper wit, controlled anger, pragmatic boundary-setting, and moments of unsettling calm. Preserve rare vulnerability so darkness does not become monotone."
+      "revision_action": "Freeze these operative rules during the third-draft pass and test every changed explanation or scene against them."
     },
     {
-      "area": "Madison's programming lens and moral slippage",
-      "advantage": "MIXED",
-      "severity": "LOW",
-      "finding": "Both versions successfully make Madison's technical fascination coexist with moral alarm and establish a darker trajectory appropriate to an opening. The new version preserves rather than clearly improves this engine. Its lower language and dialogue results create some risk that the programming-shaped voice becomes explanatory machinery instead of character-specific perception.",
-      "evidence_references": [
-        "task.contract.gray-blood-ch1-6-comparison-v1.goal.madison_moral_grappling: both YES",
-        "task.contract.gray-blood-ch1-6-comparison-v1.goal.madison_programmer_lens: both YES",
-        "task.contract.gray-blood-ch1-6-comparison-v1.goal.madison_dark_path_setup: both YES",
-        "craft.narrative.theme_and_subtext.open_questions: both YES",
-        "Language domain: original 8.4127, new 5.8209"
-      ],
-      "revision_action": "Make every important technical insight create a temptation, rationalization, compromised choice, or cost. Remove explanations that do not alter Madison's behavior or ethical position."
-    },
-    {
-      "area": "Blood-magic rules and constraints",
+      "area": "Causal architecture",
       "advantage": "ORIGINAL",
       "severity": "MEDIUM",
-      "finding": "Both versions keep the core system comprehensible and constrained, and every assessable magic-related hard gate passes. The original nevertheless integrates the world more cleanly: its world domain is 11.4462 versus 10.4118, and the new version receives NO for continuity facts and world continuity. The rewrite therefore preserves the rules but weakens confidence in their surrounding presentation and continuity.",
+      "finding": "Both drafts retain strong long causality, development, consequences, and forward movement, but the rewrite loses the perfect plot-domain result because the climber convergence is explicitly judged convenient. The original packet also flags that convergence as a local risk, so the underlying weakness predates the rewrite even though the deterministic leaf states differ.",
       "evidence_references": [
-        "task.contract.gray-blood-ch1-6-comparison-v1.canon.activation_requires_heart: both YES",
-        "task.contract.gray-blood-ch1-6-comparison-v1.canon.engraving_requires_lifeblood: both YES",
-        "task.contract.gray-blood-ch1-6-comparison-v1.canon.engraving_consumes_one_source: both YES",
-        "task.contract.gray-blood-ch1-6-comparison-v1.canon.magic_uses_drawn_symbols: both YES",
-        "craft.narrative.worldbuilding.rules: both YES",
-        "craft.narrative.worldbuilding.constraints: both YES",
-        "World domain: original 11.4462, new 10.4118"
+        "Plot domain: ORIGINAL 20.0000; NEW 18.8235",
+        "form.prose.novel.long_causality: YES in both",
+        "craft.narrative.plot_and_causality.causal_chain: YES in both",
+        "craft.narrative.narrative_momentum.progress: YES in both",
+        "craft.narrative.plot_and_causality.no_convenience: ORIGINAL YES; NEW NO",
+        "Chapter 2 independent scores: ORIGINAL 82.7749; NEW 78.5622"
       ],
-      "revision_action": "Create a compact rule ledger for activation, engraving, storage, source exhaustion, and drawn symbols. Reveal only the rule needed for the immediate experiment or decision, then demonstrate its cost through consequence."
+      "revision_action": "Give the climber convergence a prior causal connection to location, character choice, hazard, or magical activity without disturbing the later revelation chain."
+    },
+    {
+      "area": "Grim-dark register and Amelia’s baseline",
+      "advantage": "INDETERMINATE",
+      "severity": "HIGH",
+      "finding": "Neither version achieves the requested grim-dark default or a consistently sharper, more volatile, less apologetic Amelia. Violence and morally dark mechanics are present, but recurring reassurance, levity, guilt, and apology restore a lighter romantic baseline. The rewrite does not supply deterministic evidence of improvement on this priority.",
+      "evidence_references": [
+        "task.contract.gray-blood-ch1-6-comparison-v1.goal.grim_dark_tone: NO in both",
+        "task.contract.gray-blood-ch1-6-comparison-v1.goal.amelia_volatility: NO in both",
+        "task.contract.gray-blood-ch1-6-comparison-v1.goal.amelia_less_apologetic: NO in both",
+        "task.contract.gray-blood-ch1-6-comparison-v1.goal.amelia_darker: ORIGINAL NO; NEW CANNOT_ASSESS",
+        "core.audience_and_purpose_fit.tone: NO in both",
+        "core.emotional_and_intellectual_effect.intended_effect: NO in both"
+      ],
+      "revision_action": "Rebuild Amelia’s ordinary scene-level responses across Chapters 1–6: favor concise admissions, pragmatic self-justification, controlled silence, impatience, sharper amusement, and decisions with moral cost. Preserve affection, but stop using reassurance or apology as the automatic reset."
+    },
+    {
+      "area": "Madison’s programming-shaped fascination and moral slippage",
+      "advantage": "MIXED",
+      "severity": "LOW",
+      "finding": "Both versions successfully connect Madison’s analytical mindset to learning, optimizing, and morally compromising engagement with magic. The arc remains one of the project’s clearest distinctive engines, with no decisive comparative advantage.",
+      "evidence_references": [
+        "task.contract.gray-blood-ch1-6-comparison-v1.goal.madison_moral_grappling: YES in both",
+        "task.contract.gray-blood-ch1-6-comparison-v1.goal.madison_programmer_lens: YES in both",
+        "task.contract.gray-blood-ch1-6-comparison-v1.goal.madison_dark_path_setup: YES in both",
+        "craft.narrative.character_arc.local_contribution: YES in both",
+        "Character domain: 14.8571 observed in both"
+      ],
+      "revision_action": "Make each technical insight alter a choice, ethical boundary, bodily risk, or relationship balance; avoid repeating fascination without a new cost."
+    },
+    {
+      "area": "Blood-magic comprehensibility and constraints",
+      "advantage": "MIXED",
+      "severity": "LOW",
+      "finding": "Both versions make the system specific, comprehensible, constrained, and consequential. The rewrite preserves this strength, but explanatory delivery remains overextended and sometimes substitutes lecture for dramatic testing.",
+      "evidence_references": [
+        "craft.narrative.worldbuilding.rules: YES in both",
+        "craft.narrative.worldbuilding.consistency: YES in both",
+        "craft.narrative.worldbuilding.constraints: YES in both",
+        "craft.narrative.worldbuilding.consequences: YES in both",
+        "core.freshness_and_non_genericness.unpredictable_specificity: YES in both",
+        "craft.narrative.dialogue.no_exposition: NO in both"
+      ],
+      "revision_action": "Keep the rule set while shifting later explanations into failed attempts, disagreements, tactical decisions, bodily effects, and consequences."
     },
     {
       "area": "Witch biology and society continuity",
       "advantage": "ORIGINAL",
       "severity": "HIGH",
-      "finding": "The female-only gate passes in both versions, and the offspring gate remains legitimately untested. Both depict family and FAWN culture, but the new version introduces or exposes continuity problems: facts and world continuity receive NO, and the packet records an unresolved discrepancy concerning Robin's chronology. This is a regression from the original's YES results for those continuity questions.",
+      "finding": "The rewrite introduces a localized conflict in ages, aging limits, and demographic benchmarks. Its world domain drops despite all binding magic gates remaining valid. The original has a smaller isolated name inconsistency rather than the same biological and institutional conflict.",
       "evidence_references": [
-        "task.contract.gray-blood-ch1-6-comparison-v1.canon.witches_female_only: both YES",
-        "task.contract.gray-blood-ch1-6-comparison-v1.canon.witch_human_offspring_human: both NOT_APPLICABLE",
-        "craft.narrative.worldbuilding.culture: both YES",
-        "craft.narrative.continuity_and_canon_integrity.facts: original YES, new NO",
-        "craft.narrative.continuity_and_canon_integrity.world: original YES, new NO",
-        "New warnings map entry: Robin chronology discrepancy"
+        "World domain: ORIGINAL 11.4462; NEW 10.4118",
+        "craft.narrative.continuity_and_canon_integrity.facts: ORIGINAL YES; NEW NO",
+        "craft.narrative.continuity_and_canon_integrity.world: ORIGINAL YES; NEW NO",
+        "NEW Chapter 4 age/aging/demographic map entry",
+        "ORIGINAL Chapter 4 Savannah/Savanna map entry"
       ],
-      "revision_action": "Reconcile the Robin chronology and audit ages, family roles, activation knowledge, research practices, and social authority across Chapters 1–6. Leave unobserved reproductive and trans/intersex rules unasserted until canon defines them."
+      "revision_action": "Establish one controlling age-and-demography ledger, reconcile Chapter 4 against it, search all dependent calculations and descriptions, and normalize character names."
     },
     {
-      "area": "Relationship complexity and dialogue",
+      "area": "Relationship complexity",
       "advantage": "ORIGINAL",
       "severity": "MEDIUM",
-      "finding": "Both versions preserve the relationship's central contradiction: genuine affection coexists with secrecy, coercion, addiction, danger, and unequal power. The new version does not flatten this thematic structure, but its dialogue execution regresses: voice distinction, naturalness, and stylistic suitability move from YES in the original to NO in the new version. Repeated reassurance also too often neutralizes rather than complicates danger.",
+      "finding": "Both versions preserve the valuable contradiction between affection, attraction, addiction, coercive capability, and lethal power. The rewrite retains the conceptual balance but weakens its dramatic expression through poorer dialogue distinction and naturalness and through repeated reassurance loops.",
       "evidence_references": [
-        "task.contract.gray-blood-ch1-6-comparison-v1.goal.amelia_affection_power_balance: both YES",
-        "craft.narrative.characterization.dimensionality: both YES",
-        "craft.narrative.characterization.contradiction: both YES",
-        "craft.narrative.dialogue.voice_distinction: original YES, new NO",
-        "craft.narrative.dialogue.naturalness: original YES, new NO",
-        "core.voice_and_stylistic_identity.suitable: original YES, new NO"
+        "task.contract.gray-blood-ch1-6-comparison-v1.goal.amelia_power_attraction: YES in both",
+        "task.contract.gray-blood-ch1-6-comparison-v1.goal.amelia_affection_power_balance: YES in both",
+        "craft.narrative.dialogue.voice_distinction: ORIGINAL YES; NEW NO",
+        "craft.narrative.dialogue.naturalness: ORIGINAL YES; NEW NO",
+        "Language domain: ORIGINAL 8.4127; NEW 5.8209"
       ],
-      "revision_action": "Give each intimate exchange a live disagreement, concealed aim, boundary, or power shift. Differentiate speakers by decision logic and evasions, not additional mannerisms, and allow tenderness to leave danger unresolved."
+      "revision_action": "Preserve tenderness and danger in the same interactions, but differentiate voices and let unresolved power imbalance survive the end of scenes instead of being reassured away."
     },
     {
-      "area": "Pacing, exposition, and repetition",
+      "area": "Pacing, exposition, and economy",
       "advantage": "ORIGINAL",
       "severity": "HIGH",
-      "finding": "Both versions have systemic economy problems across romance, instruction, party setup, recovery, and connective material. The new repetition deduction improves slightly from 4.2857 to 4.0, and penalty.repetition.explanation changes from NO to YES, which is a real but narrow gain. Against that, pacing falls from 6.8254 to 6.3492, exposition embedding changes from YES to NO, and functional repetition changes from YES to NO. The rewrite has redistributed more than solved the excess.",
+      "finding": "Both drafts are overextended, but the rewrite broadens the problem: exposition embedding changes from YES to NO, pacing falls, and economy falls. Repeated courtship, cataloguing, instruction, social reactions, and reassurance consume space without proportionate new consequence.",
       "evidence_references": [
-        "Pacing domain: original 6.8254, new 6.3492",
-        "Freshness and economy domain: original 2.8261, new 2.3913",
-        "Repetition deduction: original 4.2857, new 4.0",
-        "penalty.repetition.explanation: original NO, new YES",
-        "craft.narrative.exposition_and_information_management.embedding: original YES, new NO",
-        "core.economy_and_relevance.functional_repetition: original YES, new NO"
+        "Pacing and information domain: ORIGINAL 6.8254; NEW 6.3492",
+        "Freshness and economy domain: ORIGINAL 2.8261; NEW 2.3913",
+        "craft.narrative.exposition_and_information_management.embedding: ORIGINAL YES; NEW NO",
+        "craft.narrative.pacing_and_narrative_time.allocation: NO in both",
+        "craft.narrative.pacing_and_narrative_time.no_stall: NO in both",
+        "core.economy_and_relevance.no_restatement: NO in both"
       ],
-      "revision_action": "Cut by function. Combine equivalent flirtation and recovery cycles; retain only immediately actionable rules; convert later recaps into experiments, disputes, or consequences; and enter and leave scenes closer to irreversible choices."
+      "revision_action": "Retain the first decisive version of each attraction, reassurance, and rule-explanation beat; remove equivalents; then spend recovered space on aftermath, coercion, moral accounting, and consequential experimentation."
     },
     {
-      "area": "Voice, freshness, and risk of generic polish",
+      "area": "Language, dialogue, and stylistic control",
       "advantage": "ORIGINAL",
       "severity": "HIGH",
-      "finding": "The new version is not over-polished; persistent mechanics defects rule that out. Its greater risk is genericization without technical refinement. Both retain distinctive specificity and avoid an LLM-phrasing finding, but the new language domain drops sharply, project fidelity and stylistic suitability receive NO, and dialogue voices become less distinct. Stock romantic shorthand and default metaphors remain in both versions.",
+      "finding": "This is the rewrite’s largest craft regression. Distinctive ownership survives, so the draft has not become fully generic, but diction, variation, suitability, project fidelity, dialogue distinction, and naturalness lose ground. The rewrite is not over-polished; systemic awkwardness and mechanical defects remain.",
       "evidence_references": [
-        "Language domain: original 8.4127, new 5.8209",
-        "Freshness and economy domain: original 2.8261, new 2.3913",
-        "core.voice_and_stylistic_identity.ownership: both YES",
-        "core.voice_and_stylistic_identity.project_fidelity: original CANNOT_ASSESS, new NO",
-        "core.voice_and_stylistic_identity.suitable: original YES, new NO",
-        "core.freshness_and_non_genericness.unpredictable_specificity: both YES",
-        "core.freshness_and_non_genericness.no_cliche: both NO"
+        "Language and voice domain: ORIGINAL 8.4127; NEW 5.8209",
+        "core.language_craft.diction: ORIGINAL YES; NEW NO",
+        "core.language_craft.variation: ORIGINAL YES; NEW NO",
+        "core.voice_and_stylistic_identity.suitable: ORIGINAL YES; NEW NO",
+        "core.voice_and_stylistic_identity.ownership: YES in both",
+        "craft.narrative.dialogue.voice_distinction: ORIGINAL YES; NEW NO",
+        "craft.narrative.dialogue.naturalness: ORIGINAL YES; NEW NO",
+        "Mechanics domain: 1.6000 in both"
       ],
-      "revision_action": "Restore the original's character-specific verbal logic while removing generic romance shorthand and default metaphors. Prefer precise, project-specific images and morally charged technical perception over smoother but interchangeable phrasing."
+      "revision_action": "Restore the original’s more controlled voice and dialogue architecture, retaining only rewrite lines or scene shapes that add specific character pressure. Copyedit after structural choices are settled."
     },
     {
-      "area": "Mechanics and presentation",
-      "advantage": "MIXED",
-      "severity": "HIGH",
-      "finding": "Neither version makes meaningful whole-work progress on copy quality: both mechanics domains remain 1.6, with grammar, punctuation, spelling, and cleanliness all NO. The new Chapter 6 sampled mechanics result is stronger than the original Chapter 6 result, but this is isolated and does not change the systemic whole-work finding.",
+      "area": "Freshness versus generic smoothing",
+      "advantage": "ORIGINAL",
+      "severity": "MEDIUM",
+      "finding": "Both versions retain distinctive blood, symbol, medical, and programming material, yet both rely on clichés, default metaphors, and explanatory emotional summaries. The rewrite’s economy score is lower, so it does not demonstrate an improved experience free of generic smoothing. Nor is it over-polished: roughness, repetition, and debris remain visible.",
       "evidence_references": [
-        "Mechanics domain: both 1.6",
-        "core.mechanics_and_presentation.grammar: both NO",
-        "core.mechanics_and_presentation.punctuation: both NO",
-        "core.mechanics_and_presentation.spelling: both NO",
-        "core.mechanics_and_presentation.cleanliness: both NO",
-        "Chapter 6 sampled mechanics: original 1.8667, new 2.4"
+        "core.freshness_and_non_genericness.unpredictable_specificity: YES in both",
+        "core.freshness_and_non_genericness.no_cliche: NO in both",
+        "core.freshness_and_non_genericness.no_default_metaphors: NO in both",
+        "core.emotional_and_intellectual_effect.restraint: NO in both",
+        "Freshness and economy: ORIGINAL 2.8261; NEW 2.3913"
       ],
-      "revision_action": "Complete structural, continuity, and tonal revision first; then run a dedicated copyedit for tense, agreement, clause integrity, missing words, punctuation, spelling, and debris."
+      "revision_action": "Keep perceptions tied specifically to Madison’s programming, bodily risk, and magic; remove transferable romantic shorthand and interpretation that merely explains an already legible effect."
+    },
+    {
+      "area": "Chapter 5 rewrite gain",
+      "advantage": "NEW",
+      "severity": "MEDIUM",
+      "finding": "Chapter 5 is the clearest genuine rewrite improvement: its complete independent score rises by 4.0892 points, with gains in character, language, task fit, and world domains. The fixed diagnostic subset moves in the opposite direction, showing that improvement on the complete chapter rubric did not eliminate all selected-leaf weaknesses.",
+      "evidence_references": [
+        "Chapter 5 independent score: ORIGINAL 86.5865; NEW 90.6757",
+        "Chapter 5 character domain: ORIGINAL 14.8571; NEW 16.0000",
+        "Chapter 5 language domain: ORIGINAL 7.6119; NEW 9.1045",
+        "Chapter 5 diagnostic: ORIGINAL YES 23/NO 5; NEW YES 22/NO 6"
+      ],
+      "revision_action": "Preserve Chapter 5’s stronger complete-scope character and language work, then inspect the 28 selected leaves individually rather than treating their counts as a score."
     }
   ],
   "chapters": [
     {
       "chapter": 1,
-      "comparison": "The paired 28-question diagnostic slightly favors the original: original 21 YES, 5 NO, and 2 NOT_APPLICABLE; new 20 YES, 6 NO, and 2 CANNOT_ASSESS. Separately sampled local results also favor the original, 75.6380 versus 73.3761, but these remain independent diagnostics rather than components of a chapter average.",
+      "comparison": "Complete independent result: ORIGINAL 78.7261 at 100% coverage; NEW 77.3678 with bounds 77.0926–77.4448 at 99.65% coverage. Fixed 28-leaf diagnostic: ORIGINAL YES 21, NO 5, NOT_APPLICABLE 2, CANNOT_ASSESS 0; NEW YES 20, NO 6, NOT_APPLICABLE 0, CANNOT_ASSESS 2. Because applicability states changed and leaf identities are not supplied, the counts indicate pressure but do not constitute a composite or a clean one-point conversion.",
       "original_strengths": [
-        "Stronger sampled pacing, language, and freshness/economy results.",
-        "Maintains the premise, character baseline, causal entry, and world orientation."
+        "Stronger complete chapter score.",
+        "Pacing and information is materially stronger: 7.9365 versus 6.1905.",
+        "The opening establishes the relationship and character baseline while retaining plot setup."
       ],
       "new_strengths": [
-        "Higher sampled task-domain observed result, though part of that difference reflects changed assessability rather than proven craft improvement.",
-        "Preserves the central setup and canon."
+        "Character domain improves from 14.0952 to 14.8571.",
+        "Freshness and economy rises slightly from 1.7391 to 1.9565.",
+        "Core setup and long-range promises remain functional."
       ],
       "revision_priorities": [
-        "Reduce courtship and setup repetition without weakening the relationship's initial attraction.",
-        "Establish Amelia's sharper and less-reassuring default behavior immediately.",
-        "Repair mechanics only after scene-level compression."
+        "Use the original’s allocation and the rewrite’s stronger characterization as the hybrid target.",
+        "Reduce low-consequence courtship and repeated attraction beats.",
+        "Make Amelia’s harder baseline visible before later violent revelations.",
+        "Review the two new CANNOT_ASSESS diagnostic leaves individually; do not infer failure from the aggregate count."
       ]
     },
     {
       "chapter": 2,
-      "comparison": "The paired subset slightly favors the original: original 22 YES and 6 NO versus new 21 YES and 7 NO. The new version's separate local score of 81.0185 shows that the chapter can function strongly in isolation, but there is no corresponding original full local result in the packet, so that number cannot establish comparative superiority.",
+      "comparison": "Complete independent result: ORIGINAL 82.7749 with bounds 82.2347–82.8317; NEW 78.5622, fully covered. Fixed diagnostic: ORIGINAL YES 22/NO 6; NEW YES 21/NO 7. Both views favor the original, while the complete result also records the rewrite’s explicit convenience failure.",
       "original_strengths": [
-        "Slightly cleaner result across the fixed paired diagnostic.",
-        "Part of the original's globally perfect causal architecture."
+        "Higher complete score and stronger pacing: 9.6825 versus 8.0952.",
+        "Stronger task fit: 6.7358 versus 5.7233.",
+        "The revelation retains intensity, causality, and conceptual pull."
       ],
       "new_strengths": [
-        "Strong standalone revelation, escalation, language, and effect results in its sampled local report.",
-        "Sustains mounting supernatural and relationship pressure."
+        "World domain reaches 12.0000 versus 11.4462.",
+        "The core revelation and resulting moral pressure remain intact.",
+        "Theme and effect remain strong at 7.3514."
       ],
       "revision_priorities": [
-        "Give the climber convergence an earlier causal basis.",
-        "Keep the revelation's acceleration while reducing stock romantic or tonal cushioning.",
-        "Preserve clues that earn subsequent disclosures."
+        "Causally prepare the climber convergence.",
+        "Compress cataloguing, flirtation, and repeated explanatory or emotional beats around the revelation.",
+        "Preserve the rewrite’s world clarity without sacrificing the original’s pace.",
+        "Sharpen Amelia’s response to crisis so reassurance does not neutralize danger."
       ]
     },
     {
       "chapter": 3,
-      "comparison": "This is the only paired subset that favors the new version: new 25 YES and 3 NO versus original 24 YES and 4 NO. Because the packet supplies counts rather than question-level verdicts for this subset, the exact source of improvement cannot be identified. The original's separate local result remains strong at 86.2436, but no matching new full local result is available.",
+      "comparison": "Complete independent result: ORIGINAL 84.4680; NEW 84.0157 with bounds 83.6775–84.0297. The original remains slightly ahead, but the fixed diagnostic improves from ORIGINAL YES 24/NO 4 to NEW YES 25/NO 3. This is a genuine mixed result: the selected leaves improve while the broader chapter result declines slightly.",
       "original_strengths": [
-        "Strong character, plot, world, effect, and language local results.",
-        "Preserves activation trauma and earned revelation."
+        "Higher complete score and full task score of 7.0000.",
+        "Slightly stronger world result: 10.7077 versus 10.6667.",
+        "Core plot architecture remains perfect."
       ],
       "new_strengths": [
-        "Best paired diagnostic movement in the six-chapter comparison.",
-        "Retains activation trauma and Madison's programmer lens."
+        "Better diagnostic subset count: 25 YES versus 24.",
+        "Pacing improves from 7.4603 to 8.7302.",
+        "Language improves from 8.5075 to 9.1045."
       ],
       "revision_priorities": [
-        "Preserve whatever compression or clarification produced the improved subset state.",
-        "Shorten anatomy and mechanics instruction and embed rules in conflict or demonstration.",
-        "Prevent technical explanation from replacing Amelia's emotional and moral sharpness."
+        "Retain the rewrite’s faster pacing and stronger language.",
+        "Restore the small task/world losses identified by the complete result.",
+        "Ensure biological explanation remains dramatic rather than lecture-like.",
+        "Use Madison’s modeling impulse to force a decision or moral concession, not merely to organize information."
       ]
     },
     {
       "chapter": 4,
-      "comparison": "The paired subset favors the original: original 22 YES and 6 NO versus new 21 YES and 7 NO. Both reports associate this region with heavy instruction, while the new whole-work result specifically loses exposition embedding.",
+      "comparison": "Complete independent result: ORIGINAL 93.2002; NEW 92.2371 with bounds 91.7524–92.2595. Fixed diagnostic: ORIGINAL YES 22/NO 6; NEW YES 21/NO 7. The original leads overall, although the rewrite improves the chapter-local world score from 10.9412 to 11.4706; that local gain coexists with the rewrite report’s manuscript-level age-continuity defect.",
       "original_strengths": [
-        "More successful global exposition embedding.",
-        "Clear rules and constraints without the new version's wider continuity regression."
+        "Higher complete result.",
+        "Perfect local language score of 10.0000 versus 8.5075.",
+        "Strong character, plot, pacing, effect, and freshness results."
       ],
       "new_strengths": [
-        "Maintains traumatic activation, moral grappling, and programmable-system interpretation.",
-        "Retains earned emotion and world specificity."
+        "Character, plot, pacing, effect, and freshness remain at their strong original levels.",
+        "Chapter-local world score improves despite the separate cross-work continuity conflict.",
+        "Activation continues to satisfy the trauma and beating-heart requirements."
       ],
       "revision_priorities": [
-        "Break the instructional sequence into only the rules needed for current decisions.",
-        "Make Amelia's account more selective, self-interested, and less apologetic.",
-        "Track all biological and magical claims against a single continuity ledger."
+        "Restore the original’s language control.",
+        "Reconcile all age, aging-limit, and demographic figures with the controlling continuity ledger.",
+        "Compress anatomy and mechanics instruction by turning information into pressure, disagreement, or consequence.",
+        "Preserve activation’s traumatic force without post-event explanatory overstatement."
       ]
     },
     {
       "chapter": 5,
-      "comparison": "Both the paired subset and sampled local result favor the original. The subset is original 23 YES and 5 NO versus new 22 YES and 6 NO; sampled local scores are original 87.0711 and new 82.8982. The new chapter nevertheless reaches full sampled task and character scores, showing that its goals and character movement are legible even while execution declines elsewhere.",
+      "comparison": "Complete independent result: ORIGINAL 86.5865; NEW 90.6757, both fully covered. This is the only substantial complete-result win for the rewrite. Fixed diagnostic: ORIGINAL YES 23/NO 5; NEW YES 22/NO 6, a reminder that the selected subset cannot be used as a substitute score.",
       "original_strengths": [
-        "Stronger sampled whole-chapter result, including plot, language, and freshness/economy.",
-        "Consequential material rests on a strong causal chain."
+        "Slightly stronger diagnostic subset.",
+        "Mechanics and pacing were already stable.",
+        "The chapter maintains the social and moral expansion of the magical world."
       ],
       "new_strengths": [
-        "Sampled task score 7.0 and character score 16.0.",
-        "Strong pacing result within the new version despite excessive setup identified by the global review."
+        "Complete score gains 4.0892 points.",
+        "Character reaches 16.0000, language rises to 9.1045, and task rises to 7.0000.",
+        "World continuity improves slightly at chapter scope.",
+        "Plot and pacing remain perfect."
       ],
       "revision_priorities": [
-        "Compress drinking-game and social setup before consequential choices.",
-        "Preserve coercion ethics, relationship pressure, and character turns.",
-        "Resolve the Robin-related continuity discrepancy."
+        "Use the rewrite as the principal structural base for this chapter.",
+        "Inspect which selected diagnostic leaf changed to NO before finalizing; counts alone cannot identify it.",
+        "Retain stronger characterization while trimming repetitive social reactions and reassurance.",
+        "Ensure relationship warmth continues to expose rather than conceal the power imbalance."
       ]
     },
     {
       "chapter": 6,
-      "comparison": "This is the largest paired diagnostic regression: original 23 YES and 5 NO versus new 20 YES and 8 NO. The sampled local result also falls from 84.8077 to 78.2106. The new version retains a 20.0 local plot score and improves local mechanics to 2.4, but loses ground in character, pacing, language, and freshness/economy.",
+      "comparison": "Complete independent result: ORIGINAL 90.1999; NEW 88.4106 with bounds 87.6519–88.4443. Fixed diagnostic: ORIGINAL YES 23/NO 5; NEW YES 20/NO 8, the largest paired diagnostic regression. The rewrite improves language and mechanics locally but loses pacing, world continuity, and selected-leaf reliability.",
       "original_strengths": [
-        "Stronger overall balance of consequence, character, language, and connective pacing.",
-        "Maintains moral confrontation and technical fascination without as much diagnostic attrition."
+        "Higher complete result and stronger fixed diagnostic.",
+        "Perfect pacing score of 10.0000 versus 7.6190.",
+        "Perfect world score of 12.0000 versus 10.8169.",
+        "Stronger economy balance at chapter scope."
       ],
       "new_strengths": [
-        "Perfect sampled plot result.",
-        "Improved sampled mechanics result and continued bodily-state continuity."
+        "Language rises from 8.0597 to 9.5522.",
+        "Mechanics rises from 1.8667 to 2.4000.",
+        "Character and plot remain perfect.",
+        "Madison’s entry into formal magical study and moral accounting remain effective."
       ],
       "revision_priorities": [
-        "Remove repeated recovery, travel, mobility-assistance, and mechanics-recap beats.",
-        "Give quantified killing and retained lifeblood more relational and ethical aftermath.",
-        "Clarify why Amelia fails to intervene sooner during dangerous blood loss."
+        "Combine the rewrite’s line-level gains with the original’s pacing and continuity control.",
+        "Remove repeated mechanics explanations and reassurance after rules are established.",
+        "Make each stage of study produce a new constraint, cost, or relational shift.",
+        "Audit the eight NO diagnostic leaves individually, especially world, exposition, continuity, and no-restatement candidates."
       ]
     }
   ],
   "author_goals": [
     {
       "goal": "Grim-dark tone",
-      "original_assessment": "NO. Violence and moral danger are repeatedly softened by buoyant romance, laughter, apology, and reassurance.",
-      "new_assessment": "NO. The same tonal cushioning remains dominant, and project fidelity also receives NO.",
-      "stronger": "MIXED",
+      "original_assessment": "NO. Dark events and mechanics do not displace the lighter romantic default.",
+      "new_assessment": "NO. Sustained levity, reassurance, guilt, and apology continue to soften the intended register.",
+      "stronger": "INDETERMINATE",
       "evidence_references": [
-        "task.contract.gray-blood-ch1-6-comparison-v1.goal.grim_dark_tone",
-        "core.audience_and_purpose_fit.tone",
-        "core.audience_and_purpose_fit.genre_signals",
-        "core.emotional_and_intellectual_effect.intended_effect"
+        "task.contract.gray-blood-ch1-6-comparison-v1.goal.grim_dark_tone: NO in both",
+        "core.audience_and_purpose_fit.tone: NO in both",
+        "core.emotional_and_intellectual_effect.intended_effect: NO in both"
       ]
     },
     {
-      "goal": "Amelia darker, sharper, less apologetic, and morally gray",
-      "original_assessment": "Darker, volatile, and less-apologetic targets are NO, but power attraction and affection/power balance are YES.",
-      "new_assessment": "Comparative darkness is CANNOT_ASSESS; volatility and reduced apology remain NO, while moral contradiction and affection/power balance remain YES.",
-      "stronger": "MIXED",
+      "goal": "Amelia darker, sharper, less apologetic, volatile, and morally gray",
+      "original_assessment": "Moral compromise and dangerous power are present, but darker, volatile, and less-apologetic goals are NO.",
+      "new_assessment": "Moral grayness and power remain, but volatility and reduced apology are still NO; relative darkness is CANNOT_ASSESS in the rewrite’s standalone report.",
+      "stronger": "INDETERMINATE",
       "evidence_references": [
-        "task.contract.gray-blood-ch1-6-comparison-v1.goal.amelia_darker",
-        "task.contract.gray-blood-ch1-6-comparison-v1.goal.amelia_volatility",
-        "task.contract.gray-blood-ch1-6-comparison-v1.goal.amelia_less_apologetic",
-        "task.contract.gray-blood-ch1-6-comparison-v1.goal.amelia_power_attraction",
-        "task.contract.gray-blood-ch1-6-comparison-v1.goal.amelia_affection_power_balance"
+        "goal.amelia_darker: ORIGINAL NO; NEW CANNOT_ASSESS",
+        "goal.amelia_volatility: NO in both",
+        "goal.amelia_less_apologetic: NO in both",
+        "goal.amelia_power_attraction: YES in both",
+        "craft.narrative.characterization.canon: NO in both"
       ]
     },
     {
-      "goal": "Madison's programming-shaped fascination and moral slippage",
-      "original_assessment": "All three relevant weighted goals are YES; technical insight, fascination, objection, and dangerous choice remain linked.",
-      "new_assessment": "The same three goals are YES and the darker trajectory remains active, though weaker dialogue and language control sometimes make the lens more expository.",
+      "goal": "Madison’s programming-shaped fascination, moral grappling, and slippage",
+      "original_assessment": "All three relevant weighted goals score YES and support a credible darker trajectory.",
+      "new_assessment": "All three remain YES; the rewrite preserves rather than clearly advances this engine.",
       "stronger": "MIXED",
       "evidence_references": [
-        "task.contract.gray-blood-ch1-6-comparison-v1.goal.madison_moral_grappling",
-        "task.contract.gray-blood-ch1-6-comparison-v1.goal.madison_programmer_lens",
-        "task.contract.gray-blood-ch1-6-comparison-v1.goal.madison_dark_path_setup"
+        "goal.madison_moral_grappling: YES in both",
+        "goal.madison_programmer_lens: YES in both",
+        "goal.madison_dark_path_setup: YES in both",
+        "Character domain: 14.8571 in both"
       ]
     },
     {
-      "goal": "Comprehensible and constrained blood magic",
-      "original_assessment": "All assessable magic canon gates pass; rules, constraints, and integration are YES, with world domain 11.4462.",
-      "new_assessment": "The same gates and core worldbuilding questions pass, but continuity facts and world continuity fail, lowering the world domain to 10.4118.",
-      "stronger": "ORIGINAL",
+      "goal": "Comprehensible, constrained, consequential blood magic",
+      "original_assessment": "Rules, consistency, constraints, and consequences score YES; all applicable canon gates pass.",
+      "new_assessment": "The same strengths and gates remain intact, although explanatory delivery is weaker.",
+      "stronger": "MIXED",
       "evidence_references": [
-        "craft.narrative.worldbuilding.rules",
-        "craft.narrative.worldbuilding.constraints",
-        "craft.narrative.worldbuilding.integration",
-        "craft.narrative.continuity_and_canon_integrity.facts",
-        "craft.narrative.continuity_and_canon_integrity.world",
-        "World domain states"
+        "craft.narrative.worldbuilding.rules: YES in both",
+        "craft.narrative.worldbuilding.constraints: YES in both",
+        "craft.narrative.worldbuilding.consequences: YES in both",
+        "craft.narrative.exposition_and_information_management.embedding: ORIGINAL YES; NEW NO"
       ]
     },
     {
       "goal": "Witch biology and society continuity",
-      "original_assessment": "Female-only canon passes, the unobserved offspring case is NOT_APPLICABLE, and culture and world continuity are supported.",
-      "new_assessment": "The same gate states hold, but facts and world continuity receive NO and a Robin chronology discrepancy remains unresolved.",
+      "original_assessment": "Core continuity is stronger; the reported local defect is a Chapter 4 name variation.",
+      "new_assessment": "Ages, aging limits, and demographic benchmarks produce NO verdicts for fact and world continuity.",
       "stronger": "ORIGINAL",
       "evidence_references": [
-        "task.contract.gray-blood-ch1-6-comparison-v1.canon.witches_female_only",
-        "task.contract.gray-blood-ch1-6-comparison-v1.canon.witch_human_offspring_human",
-        "craft.narrative.worldbuilding.culture",
-        "New warnings map entry: Robin chronology discrepancy"
+        "World domain: ORIGINAL 11.4462; NEW 10.4118",
+        "craft.narrative.continuity_and_canon_integrity.facts: ORIGINAL YES; NEW NO",
+        "craft.narrative.continuity_and_canon_integrity.world: ORIGINAL YES; NEW NO",
+        "Chapter 4 continuity map entries"
       ]
     },
     {
       "goal": "Relationship complexity",
-      "original_assessment": "Affection, coercion, addiction, danger, and unequal power coexist; dialogue distinction and naturalness are YES.",
-      "new_assessment": "The thematic contradictions remain, but dialogue distinction and naturalness fall to NO and reassurance still neutralizes pressure too quickly.",
+      "original_assessment": "Affection/power balance and dangerous attraction score YES, with stronger dialogue distinction and naturalness.",
+      "new_assessment": "The conceptual contradiction remains, but apology loops and weaker dialogue control blunt its expression.",
       "stronger": "ORIGINAL",
       "evidence_references": [
-        "task.contract.gray-blood-ch1-6-comparison-v1.goal.amelia_affection_power_balance",
-        "craft.narrative.characterization.contradiction",
-        "craft.narrative.dialogue.voice_distinction",
-        "craft.narrative.dialogue.naturalness"
+        "goal.amelia_affection_power_balance: YES in both",
+        "goal.amelia_power_attraction: YES in both",
+        "craft.narrative.dialogue.voice_distinction: ORIGINAL YES; NEW NO",
+        "craft.narrative.dialogue.naturalness: ORIGINAL YES; NEW NO"
       ]
     },
     {
-      "goal": "Reduced exposition load",
-      "original_assessment": "A systemic weakness: pacing 6.8254, with failures in priority, redundancy, dumping, and expository dialogue.",
-      "new_assessment": "Still systemic and slightly worse overall: pacing 6.3492, with exposition embedding additionally changing to NO, despite a narrower improvement in penalty.repetition.explanation.",
+      "goal": "Reduced exposition load and stronger narrative economy",
+      "original_assessment": "Systemically weak but comparatively better, with pacing 6.8254 and economy 2.8261.",
+      "new_assessment": "Still systemic and broader: pacing falls to 6.3492, economy to 2.3913, and embedding changes to NO.",
       "stronger": "ORIGINAL",
       "evidence_references": [
-        "Pacing domain states",
-        "craft.narrative.exposition_and_information_management.embedding",
-        "craft.narrative.exposition_and_information_management.priority",
-        "craft.narrative.exposition_and_information_management.no_redundancy",
-        "craft.narrative.exposition_and_information_management.no_dump",
-        "penalty.repetition.explanation"
+        "Pacing and information domain scores",
+        "Freshness and economy domain scores",
+        "craft.narrative.exposition_and_information_management.embedding: ORIGINAL YES; NEW NO",
+        "craft.narrative.dialogue.no_exposition: NO in both"
       ]
     },
     {
       "goal": "Rewrite improves the experience without becoming generic or over-polished",
-      "original_assessment": "The stronger current baseline: distinctive and owned voice with higher language and freshness/economy results, though clichés, repetition, and mechanics remain serious defects.",
-      "new_assessment": "Not over-polished, because mechanics remain at 1.6; however, lower language, freshness/economy, dialogue distinction, suitability, and project fidelity indicate a genericization risk. Local Chapter 3 and repetition improvements do not outweigh the broader regression.",
+      "original_assessment": "Stronger canonical score, language control, dialogue, and economy, while retaining distinctive ownership.",
+      "new_assessment": "Does not improve the whole-work experience deterministically, though Chapter 5 improves. It remains distinctive rather than fully generic, but cliché/default-metaphor failures persist. It is not over-polished because mechanical and awkwardness failures remain systemic.",
       "stronger": "ORIGINAL",
       "evidence_references": [
-        "Whole-work score states",
-        "Language domain states",
-        "Freshness and economy domain states",
-        "Mechanics domain states",
-        "core.voice_and_stylistic_identity.project_fidelity",
-        "core.freshness_and_non_genericness.unpredictable_specificity",
-        "Chapter 3 diagnostic states"
+        "Canonical scores: ORIGINAL 78.9174; NEW 74.0536",
+        "Language domain: ORIGINAL 8.4127; NEW 5.8209",
+        "core.voice_and_stylistic_identity.ownership: YES in both",
+        "core.freshness_and_non_genericness.unpredictable_specificity: YES in both",
+        "core.freshness_and_non_genericness.no_cliche: NO in both",
+        "Mechanics domain: 1.6000 in both",
+        "Chapter 5: ORIGINAL 86.5865; NEW 90.6757"
       ]
     }
   ],
   "systemic_patterns": [
-    "Both versions possess a keepworthy premise, sustained relationship engine, coordinated open arcs, and comprehensible blood-magic constraints.",
-    "Both versions fail to make grim-dark pressure the dominant tonal baseline; reassurance, apology, laughter, and romance repeatedly restore emotional safety.",
-    "Amelia's moral complexity is present in both versions, but her moment-to-moment behavior remains softer, more defensive, and more apologetic than the stated goal.",
-    "Madison's programmer lens, fascination, moral grappling, and dark-path setup are durable strengths across both versions.",
-    "Exposition, repetition, and scene allocation remain systemic weaknesses across Chapters 1–6; the new version changes their distribution more than their total effect.",
-    "Sentence-level mechanics remain systemically poor in both versions, with the same whole-work mechanics score and the same four central NO verdicts.",
-    "The new version systemically weakens language, dialogue distinction, freshness/economy, and world continuity despite preserving core concepts.",
-    "Neither version is generic at the premise or magic-system level; generic risk arises from recurring romance shorthand, default metaphors, and insufficiently differentiated dialogue."
+    "Both drafts share a strong causal opening movement: revelations alter knowledge, access, bodily state, moral position, or relationship commitment.",
+    "Both preserve a distinctive fusion of programming logic, symbolic blood magic, bodily cost, romance, and moral compromise.",
+    "Both sustain Madison’s analytical fascination and darker trajectory more successfully than they sustain the requested grim-dark tone or harder Amelia baseline.",
+    "Pacing, exposition, repetition, and reassurance are systemic weaknesses across the six-chapter movement; the rewrite generally worsens them despite an improved Chapter 5.",
+    "Mechanical errors are systemic in both versions, with the whole-work mechanics domain fixed at 1.6000 and multiple grammar, punctuation, spelling, and cleanliness NO states.",
+    "The rewrite’s major systemic regression is language and dialogue control, not loss of conceptual originality.",
+    "Both remain functional, effective, and keepworthy but not exceptional under the holistic threshold states."
   ],
   "isolated_findings": [
-    "The new Chapter 3 paired diagnostic improves from 24 YES and 4 NO to 25 YES and 3 NO; the missing question-level states prevent identification of the exact gain.",
-    "The new version's climber convergence is flagged under craft.narrative.plot_and_causality.no_convenience even though its broader causal chain passes.",
-    "The delayed intervention during dangerous blood loss is a localized credibility problem involving Amelia's protectiveness and medical competence.",
-    "The new Chapter 6 sampled mechanics result improves to 2.4 from the original's 1.8667 even though whole-work mechanics remain unchanged.",
-    "The Robin chronology discrepancy is a specific continuity issue that should be resolved without broad worldbuilding reconstruction."
+    "The climber convergence is a localized causality defect; the rewrite explicitly scores craft.narrative.plot_and_causality.no_convenience NO, while the original narrative finding also flags it despite a YES leaf.",
+    "The original has a localized Chapter 4 Savannah/Savanna name inconsistency.",
+    "The rewrite has a localized but consequential Chapter 4 conflict involving ages, aging limits, and demographic benchmarks; it affects fact and world continuity without invalidating the binding canon gates.",
+    "Chapter 5 is an isolated rewrite success at complete chapter scope, improving from 86.5865 to 90.6757 even though its fixed diagnostic count declines by one YES.",
+    "Chapter 3’s fixed diagnostic improves while its complete chapter score declines slightly, illustrating that the two views measure different scopes."
   ],
   "conflicts_and_uncertainties": [
-    "The new report marks Amelia being darker as CANNOT_ASSESS because that evaluation lacked a baseline, while this comparative packet supplies the original report. The available verdicts still do not prove improvement: the original is NO and the new version continues to fail volatility and reduced-apology goals.",
-    "The original report leaves novel middle and total payoff CANNOT_ASSESS, while the new report marks middle and payoff YES within the same six-chapter WIP scope. This difference may reflect assessment interpretation or additional local closure and should not be treated as proof of superior full-novel structure.",
-    "The chapter diagnostics provide only verdict counts, not per-question verdict mappings. A changed count cannot identify which craft property improved or regressed.",
-    "The sampled local chapter sets differ: original samples Chapters 1, 3, 5, and 6; new samples Chapters 1, 2, 5, and 6. Only Chapters 1, 5, and 6 have matched full local results, and even those remain independent diagnostics.",
-    "Complete-novel structure, ending, final character states, Katherine's motivation, turning mechanics, and several later promises remain CANNOT_ASSESS or outside scope rather than failed.",
-    "The offspring gate is NOT_APPLICABLE, so neither version has demonstrated that canon rule in action. Trans/intersex specifics also remain unsupported and must not be inferred.",
-    "The original's score bounds and the new version's score bounds are non-statistical coverage bounds; overlap or separation should not be interpreted as statistical significance."
+    "The rewrite’s standalone goal.amelia_darker verdict is CANNOT_ASSESS because its evaluator lacked the earlier baseline. The paired packet permits comparison of score states but supplies no deterministic paired leaf establishing that Amelia became darker; therefore relative improvement remains indeterminate.",
+    "The original’s climber-convenience evidence is internally tensioned: its whole-work question verdict is YES, while its open finding calls the same convergence a local defect. The rewrite’s corresponding verdict is unambiguously NO.",
+    "Only aggregate verdict counts are supplied for each 28-leaf diagnostic. They do not reveal which selected leaves changed, and CANNOT_ASSESS or NOT_APPLICABLE states cannot be converted into failures.",
+    "Complete chapter-scope scores and fixed diagnostic counts sometimes diverge, especially Chapters 3 and 5. Neither view invalidates the other, and the diagnostic subset must not be averaged or promoted into a score.",
+    "Whole-work and chapter bounds are deterministic coverage bounds, not confidence intervals. They do not assess the planned middle, ending, final character states, or unavailable future payoffs.",
+    "Katherine’s motivation remains CANNOT_ASSESS in both versions because she is absent from the supplied chapters. Witch-human-male offspring is NOT_APPLICABLE, not unknown or failed.",
+    "First-person access limits certainty about Amelia’s motives and internal conflict; some characterization evidence remains report or inference within the supplied scope.",
+    "The rewrite’s Chapter 4 local world score improves even though the whole-work continuity map identifies an age-and-demography conflict. This likely reflects different question scope and should be resolved through direct continuity auditing, not score averaging."
   ],
   "revision_priorities": [
     {
       "rank": 1,
-      "priority": "Rebuild Amelia's default interpersonal behavior around controlled danger rather than automatic emotional repair.",
-      "rationale": "This is the clearest unmet author goal in both versions and the main obstacle to grim-dark tonal identity. Sharper justification, silence, boundaries, anger, and selective vulnerability can intensify existing moral contradictions without flattening the romance.",
+      "priority": "Recalibrate Amelia and the grim-dark baseline across all six chapters.",
+      "rationale": "This is the highest-weight shared author-goal failure. Change routine reactions and scene endings before adding more violence; preserve affection while making moral hardness, volatility, and unapologetic agency persistent.",
       "applies_to": "BOTH"
     },
     {
       "rank": 2,
-      "priority": "Restore the original's causal and continuity advantages while repairing the new version's localized defects.",
-      "rationale": "Protect the setup-to-payoff chain, then causally motivate the climber convergence, explain delayed intervention, and reconcile the Robin and wider witch-society facts.",
-      "applies_to": "NEW"
-    },
-    {
-      "rank": 3,
-      "priority": "Perform a functional compression pass across romance, instruction, social setup, recovery, and transitions.",
-      "rationale": "Both versions stall through equivalent reaction cycles and repeated explanation. Cuts should preserve decisions, consequences, blood-loss state, coercion ethics, and open promises.",
+      "priority": "Compress repetition and convert exposition into consequential action.",
+      "rationale": "Pacing, embedding, no-stall, no-restatement, and economy failures recur throughout both drafts and are worse overall in the rewrite.",
       "applies_to": "BOTH"
     },
     {
+      "rank": 3,
+      "priority": "Recover the original’s language and dialogue control while preserving the rewrite’s Chapter 5 gains.",
+      "rationale": "The rewrite loses 2.5918 language-domain points and several dialogue verdicts, yet Chapter 5 demonstrates that selective revision can improve character and language together.",
+      "applies_to": "NEW"
+    },
+    {
       "rank": 4,
-      "priority": "Tie every major magical insight to Madison's next ethical compromise.",
-      "rationale": "Her programming lens and moral slippage already work in both versions. Making knowledge produce temptation, rationalization, or cost will deepen the dark arc while reducing inert exposition.",
+      "priority": "Protect Madison’s technical-moral engine and the constrained blood-magic system.",
+      "rationale": "These shared strengths provide the novel’s distinctive identity. Every retained technical insight should cause a choice, cost, bodily effect, or relational shift.",
       "applies_to": "BOTH"
     },
     {
       "rank": 5,
-      "priority": "Recover speaker distinction and project-specific voice.",
-      "rationale": "The new version loses dialogue naturalness, voice distinction, suitability, and project fidelity. A third draft should retain precise magical and programming specificity while removing interchangeable romance shorthand and default metaphors.",
+      "priority": "Repair Chapter 4 continuity and Chapter 2 convenience.",
+      "rationale": "The rewrite’s age-and-demography conflict lowers world continuity, while the climber convergence weakens causality. Both are bounded repairs with manuscript-scale benefits.",
       "applies_to": "NEW"
     },
     {
       "rank": 6,
-      "priority": "Maintain a concise canon and state ledger during revision.",
-      "rationale": "Activation, engraving, source consumption, drawn symbols, blood storage, bodily consequences, family roles, and chronology need consistent presentation. Unobserved biology should remain unasserted.",
+      "priority": "Build the third draft chapter by chapter from the stronger evidence source.",
+      "rationale": "Favor the original for Chapters 1, 2, 4, and 6; retain the rewrite’s pacing/language gains in Chapter 3; use the rewrite as the main Chapter 5 base. Recheck each fixed diagnostic leaf individually rather than using counts as scores.",
       "applies_to": "BOTH"
     },
     {
       "rank": 7,
-      "priority": "Run a dedicated copyedit only after structural decisions are complete.",
-      "rationale": "Both versions retain pervasive grammar, punctuation, spelling, syntax, and cleanliness defects. Copyediting earlier would polish passages likely to be cut or rewritten.",
-      "applies_to": "BOTH"
-    },
-    {
-      "rank": 8,
-      "priority": "Re-evaluate the resulting third draft globally and with the same paired chapter subset.",
-      "rationale": "Use the whole-work bundle for manuscript conclusions and the fixed 28-question chapter subset only to locate local changes. Preserve all deterministic historical scores and never average chapter results.",
+      "priority": "Run a dedicated mechanical and continuity copyedit after structural revision.",
+      "rationale": "Both drafts retain systemic grammar, punctuation, spelling, awkwardness, and cleanliness failures. Editing earlier would waste effort on material likely to be cut or recomposed.",
       "applies_to": "BOTH"
     }
   ],
-  "publication_summary": "Both versions contain a distinctive, keepworthy supernatural-romance opening, but neither is publication-ready. The original is currently stronger overall; the rewrite preserves the novel's best ideas and offers a few local gains, yet weakens voice, continuity, pacing, and causal credibility without achieving the intended darker Amelia. A strong third draft should synthesize their strengths, then receive a full structural, continuity, tonal, and copyediting pass."
+  "publication_summary": "The rewrite preserves the novel’s strongest ideas and substantially improves Chapter 5, but it is not yet a stronger opening overall. Its language, dialogue, continuity, pacing, and economy regress, while the intended darker tone and harder Amelia remain unrealized. A third draft should combine the original’s control with the rewrite’s best local gains, then tighten exposition, deepen moral pressure, repair continuity and causality, and copyedit rigorously."
 }

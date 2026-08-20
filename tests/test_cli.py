@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 
 import hbqrs.cli as cli
+import pytest
 from hbqrs.cli import build_parser, main
 from hbqrs.pack import pack_book
 
@@ -47,6 +48,8 @@ def test_short_output_option_is_consistent_across_commands() -> None:
         ["export", "questions", "-o", "result.jsonl"],
         ["render-judge", "--bundle", "prose.scene", "-o", "result.txt"],
         ["pack", "-o", "result.json"],
+        ["init-score-profile", "draft.txt", "-o", "profile.json"],
+        ["render-report", "report.json", "-o", "report.html"],
     )
     parser = build_parser()
     for argv in cases:
@@ -120,6 +123,19 @@ def test_longform_command_dispatches_workflow(monkeypatch, capsys, tmp_path: Pat
     brief = tmp_path / "brief.txt"
     artifact.write_text("Chapter One\n\nTest.", encoding="utf-8")
     brief.write_text("Prefer quiet tension.", encoding="utf-8")
+    score_profile = tmp_path / "score-profile.json"
+    score_profile.write_text(
+        json.dumps(
+            {
+                "profile_version": 1,
+                "profile_id": "balanced",
+                "global_weight": 7,
+                "local_weight": 3,
+                "local_reducer": "weighted_mean",
+            }
+        ),
+        encoding="utf-8",
+    )
     captured: dict[str, object] = {}
 
     def fake_run_longform_judge(**kwargs: object) -> dict[str, object]:
@@ -138,6 +154,13 @@ def test_longform_command_dispatches_workflow(monkeypatch, capsys, tmp_path: Pat
                 "codex",
                 "--model",
                 "gpt-5.6-sol",
+                "--wip",
+                "--bundle",
+                "prose.novel",
+                "--module",
+                "core.language_craft",
+                "--hierarchical-score-profile",
+                str(score_profile),
                 "--output-dir",
                 str(tmp_path / "run"),
                 "--frozen-sample-ordinal",
@@ -154,15 +177,172 @@ def test_longform_command_dispatches_workflow(monkeypatch, capsys, tmp_path: Pat
     assert captured["artifact_path"] == str(artifact)
     assert captured["brief_paths"] == [str(brief)]
     assert captured["artifact_kind"] == "prose_fiction"
-    assert captured["bundle_id"] is None
+    assert captured["completion_status"] == "work_in_progress"
+    assert captured["bundle_id"] == "prose.novel"
+    assert captured["module_ids"] == ["core.language_craft"]
     assert captured["task_contract_path"] is None
+    assert captured["hierarchical_score_profile"] == {
+        "profile_version": 1,
+        "profile_id": "balanced",
+        "global_weight": 7,
+        "local_weight": 3,
+        "local_reducer": "weighted_mean",
+    }
     assert captured["structured_reasoning"] == "high"
     assert captured["judge_reasoning"] == "medium"
-    assert captured["local_sample_limit"] == 4
+    assert captured["local_sample_limit"] is None
     assert captured["frozen_sample_ordinals"] == [1, 3]
     assert captured["binary_workers"] == 1
     assert captured["openai_structured_outputs"] is True
+    assert captured["plan_only"] is False
     assert json.loads(capsys.readouterr().out)["status"] == "DRY_RUN"
+
+
+def test_longform_html_renders_for_a_valid_control_state(monkeypatch, tmp_path: Path) -> None:
+    artifact = tmp_path / "manuscript.txt"
+    artifact.write_text("Chapter One\n\nTest.", encoding="utf-8")
+    output = tmp_path / "run"
+
+    def fake_run_longform_judge(**kwargs: object) -> dict[str, object]:
+        output.mkdir(parents=True, exist_ok=True)
+        (output / "report.json").write_text("{}", encoding="utf-8")
+        return {"status": "VALID"}
+
+    monkeypatch.setattr(cli, "run_longform_judge", fake_run_longform_judge)
+    monkeypatch.setattr(cli, "render_html_report", lambda report: "full")
+    monkeypatch.setattr(cli, "render_html_scorecard", lambda report: "card")
+    assert main(
+        [
+            "longform", str(artifact), "--provider", "codex", "--model", "gpt-5.6-sol",
+            "--output-dir", str(output), "--html-report",
+        ]
+    ) == 0
+    assert (output / "report.html").read_text(encoding="utf-8") == "full"
+    assert (output / "scorecard.html").read_text(encoding="utf-8") == "card"
+
+
+def test_init_weight_profile_and_configurator_commands(tmp_path: Path) -> None:
+    profile = tmp_path / "weights.json"
+    setup = tmp_path / "setup.html"
+    weight_setup = tmp_path / "weights.html"
+    assert main(["init-weight-profile", "prose.scene", "-o", str(profile)]) == 0
+    value = json.loads(profile.read_text(encoding="utf-8"))
+    assert value["bundle_id"] == "prose.scene"
+    assert value["domain_weights"]
+    assert value["component_weights"]
+    assert value["group_weights"]
+    assert value["question_weights"]
+    assert main(["configure", "-o", str(setup)]) == 0
+    html = setup.read_text(encoding="utf-8")
+    assert "Automatic route selection" in html
+    assert "Confirm compatible modules" in html
+    assert main(["configure-weights", "prose.scene", "-o", str(weight_setup)]) == 0
+    weight_html = weight_setup.read_text(encoding="utf-8")
+    assert "Every deterministic scoring layer" not in weight_html
+    assert "Penalty caps" in weight_html
+    assert "--weight-profile" in weight_html
+
+
+def test_longform_wip_flag_is_explicit_and_mutually_exclusive() -> None:
+    parser = build_parser()
+    args = parser.parse_args(
+        [
+            "longform",
+            "draft.txt",
+            "--provider",
+            "codex",
+            "--model",
+            "gpt-5.6-sol",
+            "--output-dir",
+            "run",
+            "--wip",
+        ]
+    )
+    assert args.completion_status == "work_in_progress"
+    with pytest.raises(SystemExit):
+        parser.parse_args(
+            [
+                "longform",
+                "draft.txt",
+                "--provider",
+                "codex",
+                "--model",
+                "gpt-5.6-sol",
+                "--output-dir",
+                "run",
+                "--wip",
+                "--completion-status",
+                "complete",
+            ]
+        )
+
+
+def test_init_score_profile_binds_shared_modifiers_to_segmented_units(
+    tmp_path: Path,
+) -> None:
+    artifact = tmp_path / "draft.txt"
+    artifact.write_text(
+        "Gray Blood\n\nChapter One\n\nComplete chapter.\n\nChapter Two\n\nPartial chapter.",
+        encoding="utf-8",
+    )
+    output = tmp_path / "weights.json"
+    assert (
+        main(
+            [
+                "init-score-profile",
+                str(artifact),
+                "-o",
+                str(output),
+                "--unfinished-unit-ordinal",
+                "3",
+                "--unfinished-unit-weight",
+                "0.4",
+                "--prologue-epilogue-weight",
+                "0.75",
+            ]
+        )
+        == 0
+    )
+    profile = json.loads(output.read_text(encoding="utf-8"))
+    assert profile["global_weight"] == 7.0
+    assert profile["local_weight"] == 3.0
+    assert profile["unfinished_unit_weight"] == 0.4
+    assert len(profile["unfinished_unit_ids"]) == 1
+    assert profile["unfinished_unit_ids"][0].startswith("unit-0003-")
+    assert profile["prologue_epilogue_weight"] == 0.75
+    assert "unit_weights" not in profile
+
+
+def test_init_score_profile_rejects_noneligible_front_matter_ordinal(
+    tmp_path: Path,
+) -> None:
+    artifact = tmp_path / "draft.txt"
+    artifact.write_text("Title\n\nChapter One\n\nProse.", encoding="utf-8")
+    with pytest.raises(SystemExit):
+        main(
+            [
+                "init-score-profile",
+                str(artifact),
+                "-o",
+                str(tmp_path / "weights.json"),
+                "--unfinished-unit-ordinal",
+                "1",
+            ]
+        )
+
+
+def test_render_report_writes_full_and_compact_html(tmp_path: Path) -> None:
+    from hbqrs.html_report import render_html_report
+    from test_html_report import _report
+
+    report_path = tmp_path / "report.json"
+    report_path.write_text(json.dumps(_report()), encoding="utf-8")
+    full = tmp_path / "report.html"
+    compact = tmp_path / "scorecard.html"
+    assert main(["render-report", str(report_path), "-o", str(full)]) == 0
+    assert main(["render-report", str(report_path), "-o", str(compact), "--scorecard"]) == 0
+    assert "<!doctype html>" in full.read_text(encoding="utf-8").lower()
+    assert "Custom-weighted composite" in compact.read_text(encoding="utf-8")
 
 
 def test_validate() -> None:

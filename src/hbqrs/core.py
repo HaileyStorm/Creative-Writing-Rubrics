@@ -255,6 +255,12 @@ def validate_registry(
     for bundle in bundles:
         bundle_id = bundle.get("bundle_id", "<missing>")
         domains = bundle.get("domains", [])
+        domain_ids = {str(domain.get("domain_id")) for domain in domains}
+        task_contract_domain_id = str(bundle.get("task_contract_domain_id", "task"))
+        if "task_contract_domain_id" in bundle and task_contract_domain_id not in domain_ids:
+            errors.append(
+                f"Bundle {bundle_id} task_contract_domain_id {task_contract_domain_id!r} is not a domain"
+            )
         try:
             total = sum(float(domain.get("points", 0)) for domain in domains)
             if not math.isclose(total, 100.0, abs_tol=1e-8):
@@ -386,6 +392,10 @@ def compile_bundle(
         used_module_ids.add(module_id)
         questions: list[dict[str, Any]] = []
         for leaf, ancestors, group_weight in walk_tree(module_by_id[module_id].get("tree", [])):
+            if leaf.get("question_type") not in SCORED_TYPES:
+                raise HBQError(
+                    f"Penalty module {module_id} in {bundle_id} contains non-scored question {leaf.get('id')}"
+                )
             questions.append(
                 {
                     "module_id": module_id,
@@ -439,7 +449,7 @@ def compile_bundle(
         contract_id = str(task_contract.get("contract_id", "")).strip()
         if not contract_id or any(character not in "abcdefghijklmnopqrstuvwxyz0123456789_.-" for character in contract_id):
             raise HBQError("Task contract requires a non-empty contract_id")
-        domain_id = str(task_contract.get("domain_id", "task"))
+        domain_id = str(bundle.get("task_contract_domain_id", "task"))
         domain = next((item for item in bundle.get("domains", []) if str(item.get("domain_id")) == domain_id), None)
         if domain is None:
             raise HBQError(f"Task contract domain {domain_id!r} is not present in bundle {bundle_id}")
@@ -952,6 +962,8 @@ def score_bundle(
         status = "INELIGIBLE"
     elif hard_gate_status == "UNRESOLVED":
         status = "UNRESOLVED"
+    elif base_observed is None:
+        status = str(bundle.get("coverage_policy", {}).get("below_threshold_status", "PROVISIONAL"))
     elif weighted_coverage < minimum_coverage:
         status = str(bundle.get("coverage_policy", {}).get("below_threshold_status", "PROVISIONAL"))
     else:

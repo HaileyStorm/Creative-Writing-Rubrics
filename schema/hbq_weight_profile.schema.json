@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/HaileyStorm/Creative-Writing-Rubrics/main/schema/hbq_weight_profile.schema.json",
+  "title": "HBQ-RS scoring weight override profile",
+  "type": "object",
+  "required": ["profile_version", "profile_id"],
+  "properties": {
+    "profile_version": {"const": 1},
+    "profile_id": {"type": "string", "pattern": "^[a-z0-9_.-]+$"},
+    "bundle_id": {"type": "string", "minLength": 1},
+    "domain_weights": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/domain_weight"}
+    },
+    "component_weights": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/component_weight"}
+    },
+    "group_weights": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/group_weight"}
+    },
+    "question_weights": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/question_weight"}
+    },
+    "penalty_caps": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/penalty_cap"}
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "domain_weight": {
+      "type": "object",
+      "required": ["domain_id", "weight"],
+      "properties": {
+        "domain_id": {"type": "string", "minLength": 1},
+        "weight": {"type": "number", "minimum": 0}
+      },
+      "additionalProperties": false
+    },
+    "component_weight": {
+      "type": "object",
+      "required": ["domain_id", "module_id", "weight"],
+      "properties": {
+        "domain_id": {"type": "string", "minLength": 1},
+        "module_id": {"type": "string", "minLength": 1},
+        "weight": {"type": "number", "exclusiveMinimum": 0}
+      },
+      "additionalProperties": false
+    },
+    "group_weight": {
+      "type": "object",
+      "required": ["group_id", "weight"],
+      "properties": {
+        "group_id": {"type": "string", "minLength": 1},
+        "weight": {"type": "number", "exclusiveMinimum": 0}
+      },
+      "additionalProperties": false
+    },
+    "question_weight": {
+      "type": "object",
+      "required": ["question_id", "weight"],
+      "properties": {
+        "question_id": {"type": "string", "minLength": 1},
+        "weight": {"type": "number", "exclusiveMinimum": 0}
+      },
+      "additionalProperties": false
+    },
+    "penalty_cap": {
+      "type": "object",
+      "required": ["module_id", "cap_points"],
+      "properties": {
+        "module_id": {"type": "string", "minLength": 1},
+        "cap_points": {"type": "number", "minimum": 0}
+      },
+      "additionalProperties": false
+    }
+  }
+}

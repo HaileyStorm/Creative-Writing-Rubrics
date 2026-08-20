@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/HaileyStorm/Creative-Writing-Rubrics/schema/hbq_batch.schema.json",
+  "title": "HBQ-RS long-form batch manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["batch_version", "batch_id", "routing_policy", "defaults", "jobs"],
+  "properties": {
+    "batch_version": {"const": 1},
+    "batch_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,79}$"},
+    "routing_policy": {"enum": ["individual", "shared", "review"]},
+    "shared_route_source_job_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,79}$"},
+    "defaults": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["provider", "model", "output_root", "artifact_kind", "declared_scope", "completion_status"],
+      "properties": {
+        "provider": {"enum": ["openai", "codex"]},
+        "model": {"type": "string", "minLength": 1},
+        "output_root": {"type": "string", "minLength": 1},
+        "artifact_kind": {"type": "string", "minLength": 1},
+        "declared_scope": {"type": "string", "minLength": 1},
+        "completion_status": {"enum": ["complete", "work_in_progress", "excerpt", "unknown"]},
+        "base_url": {"type": "string", "minLength": 1},
+        "api_key_env": {"type": "string", "pattern": "^[A-Za-z_][A-Za-z0-9_]*$"},
+        "batch_size": {"type": "integer", "minimum": 1},
+        "binary_workers": {"type": "integer", "minimum": 1, "maximum": 8},
+        "route_sample_char_limit": {"type": "integer", "minimum": 1},
+        "local_sample_limit": {"type": ["integer", "null"], "minimum": 1, "maximum": 64},
+        "temperature": {"type": ["number", "null"], "minimum": 0, "maximum": 2},
+        "allow_model_mismatch": {"type": "boolean"},
+        "openai_structured_outputs": {"type": "boolean"},
+        "structured_reasoning": {"enum": ["low", "medium", "high", "xhigh", "max"]},
+        "judge_reasoning": {"enum": ["low", "medium", "high", "xhigh", "max"]},
+        "codex_bin": {"type": "string", "minLength": 1},
+        "timeout": {"type": "number", "exclusiveMinimum": 0},
+        "strict_ai": {"type": "boolean"},
+        "html_report": {"type": "boolean"},
+        "workflow": {"enum": ["longform", "single"]},
+        "local_bundle_id": {"type": ["string", "null"]},
+        "task_contract_path": {"type": ["string", "null"]},
+        "weight_profile_path": {"type": ["string", "null"]},
+        "local_weight_profile_path": {"type": ["string", "null"]},
+        "hierarchical_score_profile_path": {"type": ["string", "null"]}
+      }
+    },
+    "jobs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["job_id", "artifact"],
+        "properties": {
+          "job_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,79}$"},
+          "artifact": {"type": "string", "minLength": 1},
+          "workflow": {"enum": ["longform", "single"]},
+          "html_report": {"type": "boolean"},
+          "artifact_id": {"type": ["string", "null"]},
+          "brief_paths": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+          "driving_prompt_file": {"type": ["string", "null"]},
+          "artifact_kind": {"type": "string", "minLength": 1},
+          "declared_scope": {"type": "string", "minLength": 1},
+          "completion_status": {"enum": ["complete", "work_in_progress", "excerpt", "unknown"]},
+          "approved_bundle_id": {"type": "string", "minLength": 1},
+          "approved_module_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"routing_policy": {"const": "shared"}}},
+      "then": {"required": ["shared_route_source_job_id"]},
+      "else": {"not": {"required": ["shared_route_source_job_id"]}}
+    }
+  ]
+}

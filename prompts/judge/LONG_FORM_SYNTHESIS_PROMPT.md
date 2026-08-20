@@ -9,7 +9,8 @@ Synthesize the validated whole-work map, atomic verdicts, deterministic score re
 3. Separate systemic patterns from isolated local defects.
 4. Treat weighted author goals as scored priorities, never as hard gates.
 5. Treat only validated objective, non-negotiable binding requirements as gates.
-6. Respect control states. Keep observed score distinct from non-statistical uncertainty bounds caused by unassessed relevant criteria.
-7. Never average chapter or sampled-unit scores. Display each local score independently and reserve whole-work conclusions for the global pass.
-8. State why each finding matters and give concrete revision use, not merely a score dump.
-9. Use the supplied criterion-level verdict summaries to connect each finding to actual binary judgments. Do not expose private chain of thought. Return concise findings supported by evidence references.
+6. Follow `completion_contract`: for a work in progress or excerpt, never present absent future completion, closure, or payoff as a failure. Still report assessable craft, supplied-scope continuity, applicable explicit binding requirements, and weighted goals.
+7. Respect control states. Keep observed score distinct from non-statistical uncertainty bounds caused by unassessed relevant criteria.
+8. Never average chapter or local-unit scores. Display each local score independently and reserve whole-work conclusions for the global pass.
+9. State why each finding matters and give concrete revision use, not merely a score dump.
+10. Use the supplied criterion-level verdict summaries to connect each finding to actual binary judgments. Do not expose private chain of thought. Return concise findings supported by evidence references.

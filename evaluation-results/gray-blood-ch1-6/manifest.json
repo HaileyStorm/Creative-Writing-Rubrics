@@ -9,7 +9,7 @@
     "scores_and_verdict_states_complete": true,
     "whole_score_reports": 2,
     "automated_longform_reports": 2,
-    "sampled_local_score_reports": 8,
+    "local_score_reports": 12,
     "selected_question_diagnostic_reports": 12
   },
   "routes": {
@@ -28,7 +28,12 @@
       "static_leaves": 221,
       "dynamic_task_leaves": 18
     },
-    "chapter_diagnostics": {
+    "chapter_local": {
+      "bundle": "prose.chapter",
+      "leaves_per_chapter": 228,
+      "coverage": "all six chapters"
+    },
+    "selected_question_diagnostics": {
       "bundle": "prose.chapter",
       "leaves_per_chapter": 28,
       "composite_scores_produced": false
@@ -46,8 +51,8 @@
       },
       "coverage": 0.9683,
       "whole_verdict_count": 239,
-      "sampled_local_verdict_count": 884,
-      "sampled_local_result_count": 4
+      "local_verdict_count": 1368,
+      "local_result_count": 6
     },
     "rewrite": {
       "artifact_id": "gray-blood-rewrite-ch01-06",
@@ -60,15 +65,16 @@
       },
       "coverage": 0.978,
       "whole_verdict_count": 239,
-      "sampled_local_verdict_count": 884,
-      "sampled_local_result_count": 4
+      "local_verdict_count": 1368,
+      "local_result_count": 6
     }
   },
-  "accepted_binary_verdicts_published": 2582,
+  "accepted_binary_verdicts_published": 3550,
   "rubric_release": "creative-writing-rubrics 1.1.0",
   "notes": [
     "Observed scores are deterministic results from assessed leaves, not probabilities or universal literary grades.",
-    "Sampled local results and matched chapter diagnostics are never averaged into the whole-work result.",
+    "The canonical whole-work score, complete chapter-local results, and matched chapter diagnostics remain separately available.",
+    "The optional custom-weighted composite uses the disclosed balanced-wip-70-30 profile: 70% whole-work and 30% equal-weight chapter mean.",
     "Open synthesis organizes evidence but cannot alter binary verdicts or deterministic scores."
   ]
 }

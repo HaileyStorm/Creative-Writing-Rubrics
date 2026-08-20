@@ -1,0 +1,23 @@
+batch_version: 1
+batch_id: workshop-round
+routing_policy: review
+defaults:
+  provider: openai
+  model: local-model
+  base_url: http://127.0.0.1:8000/v1
+  output_root: ../../cwr-runs/workshop-round
+  artifact_kind: prose_fiction
+  declared_scope: manuscript
+  completion_status: work_in_progress
+  binary_workers: 2
+  html_report: true
+jobs:
+  - job_id: draft-a
+    artifact: draft-a.txt
+    brief_paths:
+      - judging-brief.txt
+  - job_id: draft-b
+    artifact: draft-b.txt
+    workflow: single
+    html_report: false
+    driving_prompt_file: originating-prompt.txt
