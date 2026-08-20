@@ -26,11 +26,12 @@ classifiers = [
   "Topic :: Scientific/Engineering :: Artificial Intelligence",
   "Topic :: Text Processing",
 ]
-dependencies = ["pyyaml>=6.0"]
+dependencies = ["pyyaml>=6.0", "jsonschema>=4.0"]
 
 [project.optional-dependencies]
+# Compatibility alias for existing `.[schema]` installs; validation is now available in the base package.
 schema = ["jsonschema>=4.0"]
-dev = ["pytest>=8.0", "jsonschema>=4.0"]
+dev = ["hatchling>=1.27", "pytest>=8.0"]
 
 [project.scripts]
 cwr = "hbqrs.cli:main"
@@ -68,6 +69,8 @@ packages = ["src/hbqrs"]
 "prompts" = "hbqrs/book/prompts"
 "examples" = "hbqrs/book/examples"
 "docs" = "hbqrs/book/docs"
+"sources" = "hbqrs/book/sources"
+"manifest.json" = "hbqrs/book/manifest.json"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

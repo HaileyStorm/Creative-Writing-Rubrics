@@ -1,6 +1,9 @@
 from __future__ import annotations
 
 import re
+import subprocess
+import sys
+import zipfile
 from pathlib import Path
 
 from hbqrs import book_root
@@ -68,3 +71,35 @@ def test_open_review_schema_exists() -> None:
     schema = book_root() / "schema" / "open_review.schema.json"
     assert schema.is_file()
     assert "open review" in schema.read_text(encoding="utf-8").lower()
+
+
+def test_built_wheel_includes_provenance_and_validation_runtime(tmp_path: Path) -> None:
+    root = book_root()
+    subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "pip",
+            "wheel",
+            "--disable-pip-version-check",
+            "--no-cache-dir",
+            "--no-deps",
+            "--no-build-isolation",
+            "--wheel-dir",
+            str(tmp_path),
+            str(root),
+        ],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    wheel = next(tmp_path.glob("creative_writing_rubrics-*.whl"))
+
+    with zipfile.ZipFile(wheel) as archive:
+        names = set(archive.namelist())
+        metadata_name = next(name for name in names if name.endswith(".dist-info/METADATA"))
+        metadata = archive.read(metadata_name).decode("utf-8")
+
+    assert "hbqrs/book/manifest.json" in names
+    assert any(name.startswith("hbqrs/book/sources/") for name in names)
+    assert "Requires-Dist: jsonschema>=4.0" in metadata

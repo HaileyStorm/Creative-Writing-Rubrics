@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from hbqrs.cli import main
+from hbqrs.cli import build_parser, main
 from hbqrs.pack import pack_book
 
 
@@ -26,6 +26,30 @@ def test_show_and_export(capsys, tmp_path: Path) -> None:
     rows = [json.loads(line) for line in out.read_text(encoding="utf-8").splitlines() if line]
     assert rows
     assert all(row["bundle_id"] == "prose.scene" for row in rows)
+
+
+def test_compile_accepts_documented_short_output_option(tmp_path: Path) -> None:
+    out = tmp_path / "scene.json"
+    assert main(["compile", "prose.scene", "-o", str(out)]) == 0
+    packet = json.loads(out.read_text(encoding="utf-8"))
+    assert packet["bundle_id"] == "prose.scene"
+    assert packet["counts"]["domain_questions"] > 0
+
+
+def test_short_output_option_is_consistent_across_commands() -> None:
+    cases = (
+        ["validate", "-o", "result.json"],
+        ["compile", "prose.scene", "-o", "result.json"],
+        ["score", "prose.scene", "verdicts.jsonl", "-o", "result.json"],
+        ["list", "bundles", "-o", "result.json"],
+        ["show", "prose.scene", "-o", "result.json"],
+        ["export", "questions", "-o", "result.jsonl"],
+        ["render-judge", "--bundle", "prose.scene", "-o", "result.txt"],
+        ["pack", "-o", "result.json"],
+    )
+    parser = build_parser()
+    for argv in cases:
+        assert parser.parse_args(argv).output == argv[-1]
 
 
 def test_score_example(capsys) -> None:

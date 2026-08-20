@@ -258,13 +258,13 @@ def build_parser() -> argparse.ArgumentParser:
     validate = subparsers.add_parser("validate", help="validate registry and bundles")
     validate.add_argument("--module-schema", default=str(schema_dir() / "hbq_rubric.schema.json"))
     validate.add_argument("--bundle-schema", default=str(schema_dir() / "hbq_bundle.schema.json"))
-    validate.add_argument("--output")
+    validate.add_argument("-o", "--output")
     validate.add_argument("--format", choices=["json", "yaml"], default="json")
     validate.set_defaults(func=_cmd_validate)
 
     compile_parser = subparsers.add_parser("compile", help="compile one bundle into a flat judge packet")
     compile_parser.add_argument("bundle_id")
-    compile_parser.add_argument("--output")
+    compile_parser.add_argument("-o", "--output")
     compile_parser.add_argument("--format", choices=["json", "yaml"], default="json")
     compile_parser.set_defaults(func=_cmd_compile)
 
@@ -272,26 +272,26 @@ def build_parser() -> argparse.ArgumentParser:
     score.add_argument("bundle_id")
     score.add_argument("verdicts", help="verdict JSON/JSONL/YAML")
     score.add_argument("--artifact-id")
-    score.add_argument("--output")
+    score.add_argument("-o", "--output")
     score.add_argument("--format", choices=["json", "yaml"], default="json")
     score.set_defaults(func=_cmd_score)
 
     list_parser = subparsers.add_parser("list", help="list available modules or bundles")
     list_parser.add_argument("what", choices=["modules", "bundles"])
-    list_parser.add_argument("--output")
+    list_parser.add_argument("-o", "--output")
     list_parser.add_argument("--format", choices=["json", "yaml"], default="json")
     list_parser.set_defaults(func=_cmd_list)
 
     show = subparsers.add_parser("show", help="show one module or bundle")
     show.add_argument("identifier")
-    show.add_argument("--output")
+    show.add_argument("-o", "--output")
     show.add_argument("--format", choices=["json", "yaml"], default="json")
     show.set_defaults(func=_cmd_show)
 
     export = subparsers.add_parser("export", help="export flattened questions as JSONL")
     export.add_argument("what", choices=["questions"])
     export.add_argument("--bundle", dest="bundle_id", help="limit export to one compiled bundle")
-    export.add_argument("--output")
+    export.add_argument("-o", "--output")
     export.set_defaults(func=_cmd_export)
 
     render = subparsers.add_parser(
@@ -301,12 +301,12 @@ def build_parser() -> argparse.ArgumentParser:
     render.add_argument("--bundle", dest="bundle_id", required=True)
     render.add_argument("--artifact", help="path to the draft or other artifact text")
     render.add_argument("--question-id", help="render a single leaf instead of the full bundle")
-    render.add_argument("--output")
+    render.add_argument("-o", "--output")
     render.set_defaults(func=_cmd_render_judge)
 
     pack = subparsers.add_parser("pack", help="rebuild aggregate JSON/YAML/JSONL from per-file YAML")
     pack.add_argument("--root", default=str(root))
-    pack.add_argument("--output")
+    pack.add_argument("-o", "--output")
     pack.add_argument("--format", choices=["json", "yaml"], default="json")
     pack.set_defaults(func=_cmd_pack)
     return parser
