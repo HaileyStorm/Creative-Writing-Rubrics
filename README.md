@@ -59,7 +59,7 @@ print(report["status"], report["final_score"])
 ## How judging works
 
 1. Pick a **bundle** for the artifact and operation (`prose.scene`, `poetry.sonnet.shakespearean`, `default.first_pass_screening`, …).
-2. Optionally generate ephemeral hard/task questions from the brief with `prompts/judge/TASK_DECOMPOSITION_PROMPT.md` *before* candidates are visible.
+2. Optionally generate ephemeral hard/task questions from the brief with `prompts/judge/TASK_DECOMPOSITION_PROMPT.md` *before* candidates are visible. This begins the LLM-as-judge phase; the final score is still aggregated deterministically.
 3. Ask each selected leaf with `prompts/judge/JUDGE_PREFIX.md` + `BINARY_EVALUATION_PROMPT.md`.
 4. Collect JSONL verdicts: `YES`, `NO`, `NOT_APPLICABLE`, or `CANNOT_ASSESS`.
 5. Run `cwr score`. Hard gates decide eligibility; scored leaves decide quality; penalties are capped; missing evidence widens an interval instead of counting as failure.
