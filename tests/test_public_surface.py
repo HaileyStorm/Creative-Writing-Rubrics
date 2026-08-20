@@ -124,14 +124,18 @@ def test_published_long_form_evaluation_is_complete_and_sanitized() -> None:
     assert not any(audit["forbidden_pattern_hits"].values())
     assert not any(count for row in audit["exact_source_prose_ngram_hits"].values() for count in row.values())
     audited_files = [path for path in public_files if path.name != "privacy-audit.json"]
+    # The audit commits to repository LF bytes; Git may materialize text as CRLF on Windows.
+    audited_payloads = {
+        path: path.read_bytes().replace(b"\r\n", b"\n") for path in audited_files
+    }
     digest = hashlib.sha256()
     for path in sorted(audited_files, key=lambda item: item.relative_to(root).as_posix()):
         digest.update(path.relative_to(root).as_posix().encode("utf-8"))
         digest.update(b"\0")
-        digest.update(path.read_bytes())
+        digest.update(audited_payloads[path])
         digest.update(b"\0")
     assert len(audited_files) == audit["audited_file_count"]
-    assert sum(path.stat().st_size for path in audited_files) == audit["audited_total_bytes"]
+    assert sum(map(len, audited_payloads.values())) == audit["audited_total_bytes"]
     assert digest.hexdigest() == audit["audited_tree_sha256"]
 
     verdict_schema = json.loads((book_root() / "schema" / "hbq_verdict.schema.json").read_text(encoding="utf-8"))
@@ -172,7 +176,8 @@ def test_published_long_form_evaluation_is_complete_and_sanitized() -> None:
         if "published_verdicts_sha256" not in provenance:
             continue
         verdict_path = path.with_name(path.name.replace("-provenance.json", "-verdicts.jsonl"))
-        assert provenance["published_verdicts_sha256"] == hashlib.sha256(verdict_path.read_bytes()).hexdigest()
+        verdict_payload = verdict_path.read_bytes().replace(b"\r\n", b"\n")
+        assert provenance["published_verdicts_sha256"] == hashlib.sha256(verdict_payload).hexdigest()
         for batch in provenance["batches"]:
             assert {"prompt_sha256", "response_sha256", "checkpoint_sha256"} <= set(batch)
         published_hash_bindings += 1

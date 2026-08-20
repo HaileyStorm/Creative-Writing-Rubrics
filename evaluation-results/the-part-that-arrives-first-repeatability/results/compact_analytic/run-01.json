@@ -1,0 +1,121 @@
+{
+  "dimensions": [
+    {
+      "dimension_id": "narrative_architecture",
+      "evidence": [
+        {
+          "explanation": "The recall notice immediately converts an intimate working routine into a timed conflict over bodily autonomy and shared control.",
+          "quote": "ACTUATION DEADLINE: 96:00:00"
+        },
+        {
+          "explanation": "The snapped line turns the climactic performance into a consequential test of the new relationship rather than a simple demonstration of recovered skill.",
+          "quote": "June opened the autonomy gate."
+        },
+        {
+          "explanation": "The final sentence resolves the opening motif through changed, reciprocal action rather than restored normality.",
+          "quote": "For once, neither arrived first."
+        }
+      ],
+      "rationale": "The story builds a clear progression from rupture through failed reenactment, renegotiation, and improvised performance. Its repeated calibration scenes are purposeful but occasionally make the long middle feel slightly overextended.",
+      "score": 4
+    },
+    {
+      "dimension_id": "character_relationships",
+      "evidence": [
+        {
+          "explanation": "Mica articulates the genuinely shared and irreducibly divided nature of their embodiment with unusual precision.",
+          "quote": "Mine when I move. Yours when I load your bones. Both where that distinction fails."
+        },
+        {
+          "explanation": "Mica's apology preserves her agency instead of collapsing reconciliation into submission.",
+          "quote": "I am sorry. I am not sorry I accepted."
+        },
+        {
+          "explanation": "Mara insists that benign intent does not erase her bodily boundaries, producing credible interpersonal consequences.",
+          "quote": "I know she didn't mean it. I need both of you to stop deciding that means I don't get to mind."
+        }
+      ],
+      "rationale": "June, Mica, and Mara have distinct needs, boundaries, and powers. Their choices injure trust, alter collaboration, and require negotiated repair; no relationship is reduced to a vehicle for the premise.",
+      "score": 5
+    },
+    {
+      "dimension_id": "worldbuilding_integration",
+      "evidence": [
+        {
+          "explanation": "The technology is introduced through embodied craft, making shared control immediately legible in action.",
+          "quote": "the handoff looked like a single hand changing its mind."
+        },
+        {
+          "explanation": "The broader setting is characterized through machines' socially responsive behavior rather than detached exposition.",
+          "quote": "The workshop was full of machines that knew how not to be there."
+        },
+        {
+          "explanation": "Technical mechanics and social governance are fused in a concise rule with direct dramatic consequences.",
+          "quote": "Mica has one active motor embodiment under this agreement."
+        }
+      ],
+      "rationale": "Haptics, robotics, consent protocols, repair culture, architecture, and climate adaptation enter through work and relationships. The setting is unusually specific, coherent, and inseparable from the conflict.",
+      "score": 5
+    },
+    {
+      "dimension_id": "prose_voice",
+      "evidence": [
+        {
+          "explanation": "The sentence renders predictive shared control in precise, sensuous language while establishing the story's central motif.",
+          "quote": "She entered the gap, held the pin upright, and waited for June to decide that maybe had become yes."
+        },
+        {
+          "explanation": "A compact image gives bodily estrangement both visual force and grammatical intelligence.",
+          "quote": "It looked like a sentence from which the subject had been removed."
+        },
+        {
+          "explanation": "The prose converts choreography into a lucid account of distributed causality without losing rhythm.",
+          "quote": "Not command. Not imitation. A sequence with no stable first cause once it was underway."
+        }
+      ],
+      "rationale": "The voice is controlled, tactile, and distinctive. Recurrent images of seams, arrival, weight, and handspace accrue meaning without sacrificing readability, and the dialogue remains sharply individuated.",
+      "score": 5
+    },
+    {
+      "dimension_id": "emotional_reader_effect",
+      "evidence": [
+        {
+          "explanation": "The bodily phantom makes continuity of mind emotionally insufficient, giving the loss immediate physical force.",
+          "quote": "Mica's old body did not contain Mica now. June understood that. Her wrist did not."
+        },
+        {
+          "explanation": "The performance reframes separation as plurality in a concise, earned emotional turn.",
+          "quote": "Her hand felt suddenly divided. Not amputated. Plural."
+        },
+        {
+          "explanation": "The ending refuses premature consolation while allowing companionship to persist.",
+          "quote": "“Not yet,” she said. Mara nodded. They sat there anyway."
+        }
+      ],
+      "rationale": "Tension arises from small contacts, withheld data, consent, phantom sensation, and performance risk. The story earns grief and tenderness without treating migration as death or reconciliation as completion.",
+      "score": 5
+    },
+    {
+      "dimension_id": "thematic_complexity",
+      "evidence": [
+        {
+          "explanation": "Mica identifies how intimacy can become coercive when one person's loss is allowed to govern another's bodily choice.",
+          "quote": "I was afraid your experience of losing the old body would become authority over my experience of remaining in it."
+        },
+        {
+          "explanation": "Mara locates personhood not in a simple physical boundary but in negotiated agency.",
+          "quote": "No. It runs through your decisions. Worse location."
+        },
+        {
+          "explanation": "The revised final image values a small autonomous contribution over the spectacle of seamless fusion.",
+          "quote": "Mica held one hinged square no larger than a postage stamp. That square changed the whole shadow."
+        }
+      ],
+      "rationale": "The story sustains tensions among disability, identity, autonomy, interdependence, grief, consent, and artistic ownership. Meaning emerges through embodied decisions and altered choreography, with no side granted a simplifying moral victory.",
+      "score": 5
+    }
+  ],
+  "method": "compact_analytic_v1",
+  "overall_rationale": "An exceptional adult speculative story whose technology, relationships, imagery, and ethical questions operate as one system. Its length and repeated rehearsal cycles slightly soften the pacing, but the cumulative design and transformed closing motif are unusually controlled and memorable.",
+  "overall_score": 5
+}

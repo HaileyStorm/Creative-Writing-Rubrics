@@ -1,0 +1,91 @@
+{
+  "format_version": 1,
+  "study_id": "the-part-that-arrives-first-repeatability-v1",
+  "frozen_before_execution": true,
+  "source": {
+    "path": "source.md",
+    "sha256": "ed6fb2e19f07174f56eb02e0a5d4c4419eecba324752881439b9b2992f082729",
+    "bytes": 64490,
+    "words": 10649,
+    "publication_authorized": true,
+    "artifact_kind": "prose_fiction",
+    "declared_scope": "story",
+    "completion_status": "complete"
+  },
+  "repetitions": 5,
+  "stopping_rule": "Run exactly five complete fresh-session repetitions per arm; do not stop or extend because of observed scores.",
+  "schedule": {
+    "kind": "balanced randomized blocks",
+    "seed": 560820,
+    "maximum_parallel_arms": 2
+  },
+  "provider": {
+    "kind": "codex_cli",
+    "model": "gpt-5.6-sol",
+    "seed_control": "unsupported",
+    "temperature_control": "unsupported",
+    "fresh_sessions": true,
+    "tools": "disabled",
+    "network": "disabled"
+  },
+  "arms": [
+    {
+      "arm_id": "hbq_batched_24",
+      "method": "HBQ-RS binary leaves with deterministic aggregation",
+      "bundle_id": "prose.short_story",
+      "question_count": 178,
+      "question_id_sequence_sha256": "5b6762046ad41f59519eadeff7f9fb63a5fd1df7978ca9d49db1c103ce6f246a",
+      "batch_size": 24,
+      "reasoning": "medium"
+    },
+    {
+      "arm_id": "hbq_single_batch",
+      "method": "The same HBQ-RS binary leaves in one large model response",
+      "bundle_id": "prose.short_story",
+      "question_count": 178,
+      "question_id_sequence_sha256": "5b6762046ad41f59519eadeff7f9fb63a5fd1df7978ca9d49db1c103ce6f246a",
+      "batch_size": 256,
+      "reasoning": "medium"
+    },
+    {
+      "arm_id": "compact_analytic",
+      "method": "Six anchored 1-5 craft dimensions plus a separate overall rating",
+      "prompt": "arms/compact-analytic.prompt.md",
+      "schema": "arms/compact-analytic.schema.json",
+      "reasoning": "high"
+    },
+    {
+      "arm_id": "holistic_anchored",
+      "method": "One anchored 1-7 whole-story judgment",
+      "prompt": "arms/holistic-anchored.prompt.md",
+      "schema": "arms/holistic-anchored.schema.json",
+      "reasoning": "high"
+    }
+  ],
+  "primary_metrics": {
+    "hbq_leaf_repeatability": [
+      "exact all-run agreement",
+      "modal-label proportion",
+      "flip rate",
+      "nominal Krippendorff alpha",
+      "label prevalence"
+    ],
+    "numeric_repeatability": [
+      "mean",
+      "sample standard deviation",
+      "range",
+      "mean absolute pairwise difference"
+    ],
+    "cross_batch_comparison": [
+      "same-question agreement",
+      "score difference",
+      "relative instability"
+    ]
+  },
+  "interpretation_limits": [
+    "One story and five repetitions support a descriptive case study, not universal model or rubric superiority.",
+    "Native scales are reported separately and are not subtracted from each other.",
+    "High repeatability does not by itself prove literary validity.",
+    "Illustrative subtle findings are exploratory and are labeled as such."
+  ]
+}

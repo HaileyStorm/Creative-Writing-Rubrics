@@ -1,0 +1,163 @@
+{
+  "format_version": 1,
+  "study_id": "the-part-that-arrives-first-repeatability-v1",
+  "source_sha256": "ed6fb2e19f07174f56eb02e0a5d4c4419eecba324752881439b9b2992f082729",
+  "files": {
+    "batching-comparison.svg": {
+      "bytes": 2656,
+      "sha256": "ecf58e7a14738ba3c34ae1d19c1f21c1420b1a8c4b5d9f39e4823acc1c17d95e"
+    },
+    "compact_analytic/provenance.json": {
+      "bytes": 1655,
+      "sha256": "e13c592d1c08ed51daf28ec612f7c7936cf845b134c27b7e0a41a0f6626a9487"
+    },
+    "compact_analytic/run-01.json": {
+      "bytes": 6869,
+      "sha256": "de6e4d7d4ead7a0c15334eb7b636d4c1ddf9369936f18938de9c770db55f06d5"
+    },
+    "compact_analytic/run-02.json": {
+      "bytes": 7550,
+      "sha256": "c1b088a919dbb0095201d7918cdfa108e60be1c5dfe560422225929e3e3fd572"
+    },
+    "compact_analytic/run-03.json": {
+      "bytes": 6912,
+      "sha256": "a7aa5f3910923ea251d38d43e3994a71f5b98ba27c9b95553167891a7ba75014"
+    },
+    "compact_analytic/run-04.json": {
+      "bytes": 7505,
+      "sha256": "51a9d9b1976473dea0983419268c6ea2a728e6822c3354df5e0e12652a970186"
+    },
+    "compact_analytic/run-05.json": {
+      "bytes": 7438,
+      "sha256": "b2b4ceb74956404bb4257170deb30ef178fe8d6c3431bcaf554d06d29a50142a"
+    },
+    "hbq_batched_24/provenance.json": {
+      "bytes": 2581,
+      "sha256": "5c89884326eae5a43e34fe41ad35ce98e7426a2e5a81fcd7287fe21c3064978f"
+    },
+    "hbq_batched_24/run-01-score.json": {
+      "bytes": 97789,
+      "sha256": "2206f169e07a0e727e34325b26d15c4652c5b00084482c88daa3363d95d43c22"
+    },
+    "hbq_batched_24/run-01-verdicts.jsonl": {
+      "bytes": 104640,
+      "sha256": "12d90a4f67d4f657c9686d027e7e63ac7c4f3da14995cf80e2582170922313ff"
+    },
+    "hbq_batched_24/run-02-score.json": {
+      "bytes": 92746,
+      "sha256": "4d38bae0fc241846b5e8d25b3f35bfd699d12f41ea80ba709d8add6a3b0093f7"
+    },
+    "hbq_batched_24/run-02-verdicts.jsonl": {
+      "bytes": 100665,
+      "sha256": "b7741331eabef213109a1c4e7d35141a49a632612f0c49f9ea9e50cc3435df61"
+    },
+    "hbq_batched_24/run-03-score.json": {
+      "bytes": 99998,
+      "sha256": "5d3e272c74e46edf553c5835ff60d9242ac2bdeb28e18831823d8a1ac9e26896"
+    },
+    "hbq_batched_24/run-03-verdicts.jsonl": {
+      "bytes": 105750,
+      "sha256": "b3e6d4a6c431a45483d83aa9722519b74e663c16fcc11ff9a9e2101ce58d7da1"
+    },
+    "hbq_batched_24/run-04-score.json": {
+      "bytes": 94684,
+      "sha256": "c7034e738784b2e393783cd781207f566cffea7ea0d6b05ad7419c272d52a578"
+    },
+    "hbq_batched_24/run-04-verdicts.jsonl": {
+      "bytes": 100968,
+      "sha256": "3d5693380014b6a96cc6940dc325cbc12e7f9e8679caab1bcbebe9cce75c8538"
+    },
+    "hbq_batched_24/run-05-score.json": {
+      "bytes": 96703,
+      "sha256": "c2e89625e8055c861e9bcb4b14b20194e09a441c8e4a4900d0bee77e24ea88fa"
+    },
+    "hbq_batched_24/run-05-verdicts.jsonl": {
+      "bytes": 103046,
+      "sha256": "dfce42f961a4fdcfa8eb89522542468d8084f4b93dad849813a86911de1f3883"
+    },
+    "hbq_single_batch/provenance.json": {
+      "bytes": 2584,
+      "sha256": "8ef3b203a734c54343fb786adbb43ffab04d657ff3893a55c7dafd87bd472a54"
+    },
+    "hbq_single_batch/run-01-score.json": {
+      "bytes": 86195,
+      "sha256": "5c51a74477c7bc30ed1b28d7b9f70e9ab909154a72af08fccaf257c7dab1e442"
+    },
+    "hbq_single_batch/run-01-verdicts.jsonl": {
+      "bytes": 84925,
+      "sha256": "1ce9442b6c30943f0c3ae95e6254a23352c215c016d45cd68e854a29156c7603"
+    },
+    "hbq_single_batch/run-02-score.json": {
+      "bytes": 91263,
+      "sha256": "c2396e88fdd8e1ad19188c5c301f2c7a57ffad2ad8b93e79469075f7738dbda1"
+    },
+    "hbq_single_batch/run-02-verdicts.jsonl": {
+      "bytes": 89364,
+      "sha256": "92eb7da8a2be18f0216a7b30184798c42de6627a86a8f6eee814c417a4fdfa10"
+    },
+    "hbq_single_batch/run-03-score.json": {
+      "bytes": 87270,
+      "sha256": "cfe268eaff206b8c922cbdae9fe835e40a3aff8d63f904adb701e615173175bf"
+    },
+    "hbq_single_batch/run-03-verdicts.jsonl": {
+      "bytes": 87913,
+      "sha256": "5fc4686bef9add0b28f39cbf673b098363b572dee4d89c8903657f5428e2eb2f"
+    },
+    "hbq_single_batch/run-04-score.json": {
+      "bytes": 82130,
+      "sha256": "a25377d5f92981f8e0864ff6cce26ed7529a9a0f258a0c753205a038621eabca"
+    },
+    "hbq_single_batch/run-04-verdicts.jsonl": {
+      "bytes": 84654,
+      "sha256": "34b9c2187d944b995967e881c5860080fe22508af78cb3b4a83c3f809ce80685"
+    },
+    "hbq_single_batch/run-05-score.json": {
+      "bytes": 87308,
+      "sha256": "0397d3696a95269e3b2201402b335d7d7124208d94e7591311ef9ea3c4a5b643"
+    },
+    "hbq_single_batch/run-05-verdicts.jsonl": {
+      "bytes": 85103,
+      "sha256": "dc3fb5f7e77a43336bef82fb30ac5e8c0216a5c2d50feb94c93f3aa50804863f"
+    },
+    "holistic_anchored/provenance.json": {
+      "bytes": 1656,
+      "sha256": "4e87100b60fac0edbc96317f617e46d178411d65d304efd36d8dfc97b5fe2410"
+    },
+    "holistic_anchored/run-01.json": {
+      "bytes": 2291,
+      "sha256": "1589c7d3847da3691a5b032376d9a1cc26e5f987a364d1b58469d973f71f41d5"
+    },
+    "holistic_anchored/run-02.json": {
+      "bytes": 2393,
+      "sha256": "5ecb83770277939ca0ad9f08c92f6dd49fbcd98e2d4356f0a6565fddcd97120a"
+    },
+    "holistic_anchored/run-03.json": {
+      "bytes": 2604,
+      "sha256": "da79f02023f35ca82459a846d9765241256300641fbc7309dcaacab6928f9bfb"
+    },
+    "holistic_anchored/run-04.json": {
+      "bytes": 2170,
+      "sha256": "e039cab419d8bb1bddba35e916ad5cc55b8def81eb09490a5bff108cfe844db3"
+    },
+    "holistic_anchored/run-05.json": {
+      "bytes": 2328,
+      "sha256": "c20cdd42d03662f76d3ce3472e5fab4112fcd700d1919b0722b1f1bdf00fd3f9"
+    },
+    "leaf-agreement.svg": {
+      "bytes": 1804,
+      "sha256": "00881a8e67ae00b978b92daf0cb55959d38656a4cb976b55712b5ccba4ae209d"
+    },
+    "leaf-repeatability.json": {
+      "bytes": 124084,
+      "sha256": "852bce7352fab0f6d341c9d9249bf0bd4bf844f4522cbf3f6669188f584b03ae"
+    },
+    "score-distributions.svg": {
+      "bytes": 3895,
+      "sha256": "071731d9e96391d63726e938e365f5417c77c6421da987b8504bfd4ea24767f3"
+    },
+    "summary.json": {
+      "bytes": 6662,
+      "sha256": "d064e9480d569a6a3389e3a1f3dd9f40c3bbf103a5180b1da63a33cfb8c32213"
+    }
+  }
+}

@@ -1,0 +1,76 @@
+{
+  "format_version": 1,
+  "arm_id": "hbq_single_batch",
+  "source_sha256": "ed6fb2e19f07174f56eb02e0a5d4c4419eecba324752881439b9b2992f082729",
+  "bundle_id": "prose.short_story",
+  "question_count": 178,
+  "question_id_sequence_sha256": "5b6762046ad41f59519eadeff7f9fb63a5fd1df7978ca9d49db1c103ce6f246a",
+  "batch_size": 256,
+  "runs": [
+    {
+      "run_id": "run-01",
+      "reported_provider": {
+        "provider": "openai",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "medium"
+      },
+      "provider_batches": 1,
+      "verdicts_sha256": "1ce9442b6c30943f0c3ae95e6254a23352c215c016d45cd68e854a29156c7603",
+      "score_sha256": "5c51a74477c7bc30ed1b28d7b9f70e9ab909154a72af08fccaf257c7dab1e442",
+      "status": "SCORED",
+      "hard_gate_status": "VALID"
+    },
+    {
+      "run_id": "run-02",
+      "reported_provider": {
+        "provider": "openai",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "medium"
+      },
+      "provider_batches": 1,
+      "verdicts_sha256": "92eb7da8a2be18f0216a7b30184798c42de6627a86a8f6eee814c417a4fdfa10",
+      "score_sha256": "c2396e88fdd8e1ad19188c5c301f2c7a57ffad2ad8b93e79469075f7738dbda1",
+      "status": "SCORED",
+      "hard_gate_status": "VALID"
+    },
+    {
+      "run_id": "run-03",
+      "reported_provider": {
+        "provider": "openai",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "medium"
+      },
+      "provider_batches": 1,
+      "verdicts_sha256": "5fc4686bef9add0b28f39cbf673b098363b572dee4d89c8903657f5428e2eb2f",
+      "score_sha256": "cfe268eaff206b8c922cbdae9fe835e40a3aff8d63f904adb701e615173175bf",
+      "status": "SCORED",
+      "hard_gate_status": "VALID"
+    },
+    {
+      "run_id": "run-04",
+      "reported_provider": {
+        "provider": "openai",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "medium"
+      },
+      "provider_batches": 1,
+      "verdicts_sha256": "34b9c2187d944b995967e881c5860080fe22508af78cb3b4a83c3f809ce80685",
+      "score_sha256": "a25377d5f92981f8e0864ff6cce26ed7529a9a0f258a0c753205a038621eabca",
+      "status": "SCORED",
+      "hard_gate_status": "VALID"
+    },
+    {
+      "run_id": "run-05",
+      "reported_provider": {
+        "provider": "openai",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "medium"
+      },
+      "provider_batches": 1,
+      "verdicts_sha256": "dc3fb5f7e77a43336bef82fb30ac5e8c0216a5c2d50feb94c93f3aa50804863f",
+      "score_sha256": "0397d3696a95269e3b2201402b335d7d7124208d94e7591311ef9ea3c4a5b643",
+      "status": "SCORED",
+      "hard_gate_status": "VALID"
+    }
+  ]
+}

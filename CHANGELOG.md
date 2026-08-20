@@ -11,6 +11,7 @@
 - Added a strict selected-question diagnostic report; partial bundle runs no longer produce misleading composite scores.
 - Added `applies_when` and source references to judge packets, plus task-contract support in compile, score, render, and judge commands.
 - Reframed the Gray Blood comparison as two matched six-chapter evaluations with valid whole-work scores and fixed-subset chapter diagnostics.
+- Published a complete short story and a frozen five-run repeatability study comparing batched HBQ, single-batch HBQ, compact analytic, and holistic judging.
 - Kept all stable registry, bundle, criterion, and question IDs unchanged.
 
 ## 1.0.0 — 2026-08-20

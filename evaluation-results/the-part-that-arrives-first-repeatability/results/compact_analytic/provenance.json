@@ -1,0 +1,54 @@
+{
+  "format_version": 1,
+  "arm_id": "compact_analytic",
+  "source_sha256": "ed6fb2e19f07174f56eb02e0a5d4c4419eecba324752881439b9b2992f082729",
+  "prompt_sha256": "b2982b60a5b59971040a632ad2c463e5b8b994801e4aaaf4c0263e2feab6e26e",
+  "schema_sha256": "89b16f68d51960572ef14ead993ef9abeee67b4490b1b8a307fa66ee04bf87fc",
+  "runs": [
+    {
+      "run_id": "run-01",
+      "reported_provider": {
+        "provider": "openai",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "high"
+      },
+      "result_sha256": "de6e4d7d4ead7a0c15334eb7b636d4c1ddf9369936f18938de9c770db55f06d5"
+    },
+    {
+      "run_id": "run-02",
+      "reported_provider": {
+        "provider": "openai",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "high"
+      },
+      "result_sha256": "c1b088a919dbb0095201d7918cdfa108e60be1c5dfe560422225929e3e3fd572"
+    },
+    {
+      "run_id": "run-03",
+      "reported_provider": {
+        "provider": "openai",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "high"
+      },
+      "result_sha256": "a7aa5f3910923ea251d38d43e3994a71f5b98ba27c9b95553167891a7ba75014"
+    },
+    {
+      "run_id": "run-04",
+      "reported_provider": {
+        "provider": "openai",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "high"
+      },
+      "result_sha256": "51a9d9b1976473dea0983419268c6ea2a728e6822c3354df5e0e12652a970186"
+    },
+    {
+      "run_id": "run-05",
+      "reported_provider": {
+        "provider": "openai",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "high"
+      },
+      "result_sha256": "b2b4ceb74956404bb4257170deb30ef178fe8d6c3431bcaf554d06d29a50142a"
+    }
+  ]
+}

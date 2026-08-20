@@ -1,0 +1,121 @@
+{
+  "dimensions": [
+    {
+      "dimension_id": "narrative_architecture",
+      "evidence": [
+        {
+          "explanation": "The opening establishes the shared-action motif that the recall crisis will destabilize and the ending will transform.",
+          "quote": "Mica always arrived first."
+        },
+        {
+          "explanation": "The public failure at the performance converts accumulated technical and relational conflict into a decisive choice rather than a merely mechanical climax.",
+          "quote": "June opened the autonomy gate."
+        },
+        {
+          "explanation": "The final sentence resolves the opening motif without erasing uncertainty or restoring the prior relationship.",
+          "quote": "For once, neither arrived first."
+        }
+      ],
+      "rationale": "The story sustains a long but purposeful arc: recall, rupture, bodily relearning, interpersonal consequences, rehearsal conflict, and an improvisational climax all causally build toward a changed form of coexistence. Recurring movements and images provide unusually strong structural cohesion.",
+      "score": 5
+    },
+    {
+      "dimension_id": "character_relationships",
+      "evidence": [
+        {
+          "explanation": "Mica asserts bodily agency in terms that credibly complicate June's ownership of the shared prosthesis.",
+          "quote": "Mine when I move. Yours when I load your bones. Both where that distinction fails."
+        },
+        {
+          "explanation": "Mara refuses to let good intentions erase her own bodily boundaries, giving the secondary relationship real agency and consequence.",
+          "quote": "I know she didn't mean it. I need both of you to stop deciding that means I don't get to mind."
+        },
+        {
+          "explanation": "Mica's apology preserves disagreement rather than manufacturing easy reconciliation.",
+          "quote": "I am sorry. I am not sorry I accepted."
+        }
+      ],
+      "rationale": "June, Mica, and Mara each possess distinct claims, vulnerabilities, and powers of refusal. Their choices alter trust, touch, work, and performance, while reconciliation proceeds through renegotiated consent rather than sentimental resolution.",
+      "score": 5
+    },
+    {
+      "dimension_id": "worldbuilding_integration",
+      "evidence": [
+        {
+          "explanation": "The setting's social intelligence appears through ordinary behavior, making machine etiquette part of lived space rather than detached exposition.",
+          "quote": "The workshop was full of machines that knew how not to be there."
+        },
+        {
+          "explanation": "Technical information becomes immediately legible through June's embodied perception and the conflict over withheld data.",
+          "quote": "The trace became a thorn hedge."
+        },
+        {
+          "explanation": "The performance makes control modes, haptics, and shared embodiment dramatically consequential and visually comprehensible.",
+          "quote": "The audience could see the negotiation."
+        }
+      ],
+      "rationale": "A dense ecology of robots, interfaces, maintenance practices, consent protocols, and architecture enters naturally through work and relationships. The technology remains specific and intelligible while continually generating action, ethics, and imagery.",
+      "score": 5
+    },
+    {
+      "dimension_id": "prose_voice",
+      "evidence": [
+        {
+          "explanation": "The image renders deactivated machinery as both material object and relational absence without collapsing those meanings.",
+          "quote": "It looked like a sentence from which the subject had been removed."
+        },
+        {
+          "explanation": "The compact phrasing gives bodily estrangement a precise paradoxical force.",
+          "quote": "Her hand felt suddenly divided. Not amputated. Plural."
+        },
+        {
+          "explanation": "Rhythmic parallelism turns the improvised performance into a lucid account of distributed causality.",
+          "quote": "Hand to digit, digit to paper, paper to light, light to screen."
+        }
+      ],
+      "rationale": "The prose is precise, sensuous, and rhythmically controlled, with a distinctive vocabulary of color, mechanics, touch, and negotiated space. Its recurring metaphors illuminate rather than obscure the physical action.",
+      "score": 5
+    },
+    {
+      "dimension_id": "emotional_reader_effect",
+      "evidence": [
+        {
+          "explanation": "The phantom movement makes the separation visceral while preserving the distinction between Mica's continuity and June's bodily loss.",
+          "quote": "Mica's old body did not contain Mica now. June understood that. Her wrist did not."
+        },
+        {
+          "explanation": "The performance error creates genuine suspense because its stakes are pride, trust, consent, and shared agency rather than physical catastrophe.",
+          "quote": "The stakes were small enough to reveal exactly how much of them belonged to pride."
+        },
+        {
+          "explanation": "The ending earns tenderness by allowing uncertainty to remain and companionship to continue within it.",
+          "quote": "\"Not yet,\" she said. Mara nodded. They sat there anyway."
+        }
+      ],
+      "rationale": "The story controls attention across grief, anger, humor, bodily unease, and performance tension. Its strongest emotional effects arise from exact physical details and honest disagreement, culminating in a moving but deliberately incomplete accommodation.",
+      "score": 5
+    },
+    {
+      "dimension_id": "thematic_complexity",
+      "evidence": [
+        {
+          "explanation": "The central ethical problem is articulated as an inseparable overlap of autonomy and dependence, not a simple ownership dispute.",
+          "quote": "Because I was afraid your experience of losing the old body would become authority over my experience of remaining in it."
+        },
+        {
+          "explanation": "Mara identifies the social cost of hybrid personhood through a concrete relational seam rather than abstract argument.",
+          "quote": "When you disagree, everyone around you has to remember the seam. You hate that because the seam runs through your skin."
+        },
+        {
+          "explanation": "The climax discovers plurality without treating separation, unity, control, or surrender as a complete answer.",
+          "quote": "Not one hand. Not two. A shape whose anatomy changed depending on which screen the eye trusted."
+        }
+      ],
+      "rationale": "Themes of disability, bodily autonomy, continuity, consent, grief, performance, and co-agency emerge through material decisions and recurring gestures. The story sustains productive contradictions—Mica remains yet is lost, the body is shared yet asymmetrical, adaptation is both injury and desire—without resolving them didactically.",
+      "score": 5
+    }
+  ],
+  "method": "compact_analytic_v1",
+  "overall_rationale": "This is an exceptional finished work whose architecture, character conflict, technical setting, prose, and thematic argument reinforce one another. Its considerable length is justified by accumulating embodied detail and relational consequence, and the transformed return to the opening motif provides a memorable, earned resolution without simplifying the central ambiguity.",
+  "overall_score": 5
+}

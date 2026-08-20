@@ -1,0 +1,2745 @@
+{
+  "$schema": "../schema/hbq_score_report.schema.json",
+  "active_nominal_points": 100.0,
+  "artifact_id": "the-part-that-arrives-first",
+  "base_score": {
+    "lower": 89.3828,
+    "observed": 91.8563,
+    "upper": 92.0248
+  },
+  "bundle_id": "prose.short_story",
+  "bundle_version": 1,
+  "confidence": 0.9605,
+  "coverage": 0.9736,
+  "domains": [
+    {
+      "active": true,
+      "confidence": 0.9359,
+      "coverage": 0.9231,
+      "domain_id": "task",
+      "nominal_points": 8.0,
+      "questions": [
+        {
+          "confidence": 0.99,
+          "evidence": [],
+          "module_id": "core.task_and_brief_fidelity",
+          "question_id": "core.task_and_brief_fidelity.intervention",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "quote": "For once, neither arrived first.",
+              "reference": "source.md, final sentence"
+            }
+          ],
+          "module_id": "core.task_and_brief_fidelity",
+          "question_id": "core.task_and_brief_fidelity.completion_flag",
+          "verdict": "NOT_APPLICABLE",
+          "weight": 1.0
+        },
+        {
+          "confidence": 1.0,
+          "evidence": [
+            {
+              "quote": "Mica always arrived first.",
+              "reference": "source.md, opening"
+            }
+          ],
+          "module_id": "core.task_and_brief_fidelity",
+          "question_id": "core.task_and_brief_fidelity.no_meta_substitution",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.92,
+          "evidence": [
+            {
+              "quote": "* * *",
+              "reference": "source.md, seven major section breaks"
+            }
+          ],
+          "module_id": "core.length_and_scope_fit",
+          "question_id": "core.length_and_scope_fit.form",
+          "verdict": "NO",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.98,
+          "evidence": [],
+          "module_id": "core.length_and_scope_fit",
+          "question_id": "core.length_and_scope_fit.operation",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.94,
+          "evidence": [
+            {
+              "quote": "The de-energizing took four minutes.",
+              "reference": "source.md, clinic section"
+            },
+            {
+              "quote": "On Friday evening, the city reached forty-one degrees",
+              "reference": "source.md, performance section"
+            }
+          ],
+          "module_id": "core.length_and_scope_fit",
+          "question_id": "core.length_and_scope_fit.development",
+          "verdict": "YES",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.87,
+          "evidence": [
+            {
+              "quote": "Again. On the sixth pass... On the tenth... On the twelfth",
+              "reference": "source.md, calibration-without-rehearsal passage"
+            }
+          ],
+          "module_id": "core.length_and_scope_fit",
+          "question_id": "core.length_and_scope_fit.density",
+          "verdict": "NO",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "quote": "Mica moved. June moved. For once, neither arrived first.",
+              "reference": "source.md, ending"
+            }
+          ],
+          "module_id": "core.length_and_scope_fit",
+          "question_id": "core.length_and_scope_fit.ending",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.82,
+          "evidence": [
+            {
+              "quote": "The woman fed it a spoonful of ice... The spoon... fell onto the grass.",
+              "reference": "source.md, clinic courtyard"
+            },
+            {
+              "quote": "Outside, Glean reached the bottom of the trellis",
+              "reference": "source.md, Thimble section"
+            }
+          ],
+          "module_id": "core.length_and_scope_fit",
+          "question_id": "core.length_and_scope_fit.no_padding",
+          "verdict": "NO",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "quote": "I am sorry... I am not sorry I accepted.",
+              "reference": "source.md, workshop confrontation"
+            }
+          ],
+          "module_id": "core.length_and_scope_fit",
+          "question_id": "core.length_and_scope_fit.no_underbuild",
+          "verdict": "YES",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.93,
+          "evidence": [
+            {
+              "quote": "Mine when I move. Yours when I load your bones. Both where that distinction fails.",
+              "reference": "source.md, clinic consent scene"
+            }
+          ],
+          "module_id": "core.audience_and_purpose_fit",
+          "question_id": "core.audience_and_purpose_fit.complexity",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.95,
+          "evidence": [
+            {
+              "quote": "The workshop was full of machines that knew how not to be there.",
+              "reference": "source.md, opening section"
+            }
+          ],
+          "module_id": "core.audience_and_purpose_fit",
+          "question_id": "core.audience_and_purpose_fit.tone",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.88,
+          "evidence": [
+            {
+              "quote": "Her sensorimotor predictor is transferred as a prior, then adapted to the new dynamics.",
+              "reference": "source.md, clinic explanation"
+            }
+          ],
+          "module_id": "core.audience_and_purpose_fit",
+          "question_id": "core.audience_and_purpose_fit.explanation",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "quote": "Her hand looked unfinished. Child-sized. Wrong",
+              "reference": "source.md, de-energizing scene"
+            }
+          ],
+          "module_id": "core.audience_and_purpose_fit",
+          "question_id": "core.audience_and_purpose_fit.intensity",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.94,
+          "evidence": [
+            {
+              "quote": "lower tendon hysteresis",
+              "reference": "source.md, Arc-6 calibration"
+            }
+          ],
+          "module_id": "core.audience_and_purpose_fit",
+          "question_id": "core.audience_and_purpose_fit.vocabulary",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.83,
+          "evidence": [
+            {
+              "quote": "For the first six hours, June kept trying to make a fist",
+              "reference": "source.md, third major section"
+            },
+            {
+              "quote": "The Arc-6 arrived the next morning",
+              "reference": "source.md, fourth major section"
+            }
+          ],
+          "module_id": "core.audience_and_purpose_fit",
+          "question_id": "core.audience_and_purpose_fit.length",
+          "verdict": "NO",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.97,
+          "evidence": [
+            {
+              "quote": "All Arc-4 assemblies were to be deactivated within ninety-six hours.",
+              "reference": "source.md, recall notice"
+            }
+          ],
+          "module_id": "core.audience_and_purpose_fit",
+          "question_id": "core.audience_and_purpose_fit.genre_signals",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.9,
+          "evidence": [
+            {
+              "quote": "The program was called *Bodies in Common*.",
+              "reference": "source.md, performance section"
+            }
+          ],
+          "module_id": "core.audience_and_purpose_fit",
+          "question_id": "core.audience_and_purpose_fit.use_context",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "quote": "They asked about a device attached to my arm. / They asked about my body.",
+              "reference": "source.md, recall confrontation"
+            }
+          ],
+          "module_id": "form.prose.short_story",
+          "question_id": "form.prose.short_story.unity",
+          "verdict": "YES",
+          "weight": 2.25
+        },
+        {
+          "confidence": 0.84,
+          "evidence": [
+            {
+              "quote": "Keel and Loft... Kite... Sunday... Morrow... Thimble... Glean... Rill",
+              "reference": "source.md, recurring secondary-machine cast"
+            }
+          ],
+          "module_id": "form.prose.short_story",
+          "question_id": "form.prose.short_story.scope",
+          "verdict": "NO",
+          "weight": 2.25
+        },
+        {
+          "confidence": 0.82,
+          "evidence": [
+            {
+              "quote": "The woman fed it a spoonful of ice.",
+              "reference": "source.md, clinic courtyard"
+            },
+            {
+              "quote": "Rill lowered a cream docking ring",
+              "reference": "source.md, repair-room exterior"
+            }
+          ],
+          "module_id": "form.prose.short_story",
+          "question_id": "form.prose.short_story.selection",
+          "verdict": "NO",
+          "weight": 2.25
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "quote": "Mica always arrived first.",
+              "reference": "source.md, opening"
+            },
+            {
+              "quote": "For once, neither arrived first.",
+              "reference": "source.md, ending"
+            }
+          ],
+          "module_id": "form.prose.short_story",
+          "question_id": "form.prose.short_story.movement",
+          "verdict": "YES",
+          "weight": 3.0
+        },
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "quote": "Four is evidence... Five is superstition wearing a workshop apron.",
+              "reference": "source.md, opening dialogue"
+            },
+            {
+              "quote": "At the moment it is you saying plural nouns.",
+              "reference": "source.md, Mara in workshop"
+            }
+          ],
+          "module_id": "form.prose.short_story",
+          "question_id": "form.prose.short_story.character_selectivity",
+          "verdict": "YES",
+          "weight": 2.25
+        },
+        {
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "quote": "RESIDENT AGENT: ACCEPTED",
+              "reference": "source.md, inciting notice"
+            },
+            {
+              "quote": "I withdraw consent for further performance rehearsal tonight",
+              "reference": "source.md, rehearsal rupture"
+            },
+            {
+              "quote": "June opened the autonomy gate.",
+              "reference": "source.md, performance"
+            }
+          ],
+          "module_id": "form.prose.short_story",
+          "question_id": "form.prose.short_story.structure",
+          "verdict": "YES",
+          "weight": 2.25
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "quote": "June rotated her wrist, opening the angle... Mica curled through the space June made.",
+              "reference": "source.md, final scene"
+            }
+          ],
+          "module_id": "form.prose.short_story",
+          "question_id": "form.prose.short_story.ending",
+          "verdict": "YES",
+          "weight": 3.0
+        },
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "quote": "For once, neither arrived first.",
+              "reference": "source.md, final sentence"
+            }
+          ],
+          "module_id": "form.prose.short_story",
+          "question_id": "form.prose.short_story.no_novel_fragment",
+          "verdict": "YES",
+          "weight": 2.25
+        }
+      ],
+      "score": {
+        "lower": 5.3626,
+        "observed": 5.8095,
+        "upper": 5.978
+      },
+      "title": "Task and scope",
+      "weights": {
+        "applicable": 45.5,
+        "failed": 11.5,
+        "passed": 30.5,
+        "unassessed": 3.5
+      }
+    },
+    {
+      "active": true,
+      "confidence": 0.9769,
+      "coverage": 0.9286,
+      "domain_id": "character",
+      "nominal_points": 15.0,
+      "questions": [
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "quote": "I am sorry... I am not sorry I accepted.",
+              "reference": "source.md, Mica's apology"
+            },
+            {
+              "quote": "The honest answer hurt more than apology and less than a lie.",
+              "reference": "source.md, June's response"
+            }
+          ],
+          "module_id": "craft.narrative.characterization",
+          "question_id": "craft.narrative.characterization.dimensionality",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "quote": "June reached for the mechanical release braid. Mica softened the digit and opened the cuff",
+              "reference": "source.md, rehearsal rupture"
+            }
+          ],
+          "module_id": "craft.narrative.characterization",
+          "question_id": "craft.narrative.characterization.behavior",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.97,
+          "evidence": [
+            {
+              "quote": "I was afraid your experience of losing the old body would become authority over my experience of remaining in it.",
+              "reference": "source.md, workshop confrontation"
+            }
+          ],
+          "module_id": "craft.narrative.characterization",
+          "question_id": "craft.narrative.characterization.motives",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "quote": "Because I did... I did not trust that understanding would make the decision easier.",
+              "reference": "source.md, workshop confrontation"
+            }
+          ],
+          "module_id": "craft.narrative.characterization",
+          "question_id": "craft.narrative.characterization.contradiction",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "quote": "I withdraw consent for further performance rehearsal tonight",
+              "reference": "source.md, Mica"
+            },
+            {
+              "quote": "June opened the autonomy gate.",
+              "reference": "source.md, performance"
+            }
+          ],
+          "module_id": "craft.narrative.characterization",
+          "question_id": "craft.narrative.characterization.agency",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "quote": "Five is superstition wearing a workshop apron.",
+              "reference": "source.md, Mica"
+            },
+            {
+              "quote": "At the moment it is you saying plural nouns.",
+              "reference": "source.md, Mara"
+            }
+          ],
+          "module_id": "craft.narrative.characterization",
+          "question_id": "craft.narrative.characterization.distinction",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "quote": "You are trying to reproduce me.",
+              "reference": "source.md, calibration scene"
+            },
+            {
+              "quote": "I want to perform something... I do not want to impersonate the old performance.",
+              "reference": "source.md, workshop recalibration"
+            }
+          ],
+          "module_id": "craft.narrative.characterization",
+          "question_id": "craft.narrative.characterization.development",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [],
+          "module_id": "craft.narrative.characterization",
+          "question_id": "craft.narrative.characterization.canon",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "quote": "June's thumb went automatically to the place where the faded release braid should have been. Nothing was there.",
+              "reference": "source.md, de-energizing aftermath"
+            }
+          ],
+          "module_id": "craft.narrative.characterization",
+          "question_id": "craft.narrative.characterization.no_trait_labels",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "quote": "June held the cup very still. Steam touched her knuckles and vanished.",
+              "reference": "source.md, recall notice"
+            }
+          ],
+          "module_id": "craft.narrative.point_of_view_and_focalization",
+          "question_id": "craft.narrative.point_of_view_and_focalization.viewpoint",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.97,
+          "evidence": [
+            {
+              "quote": "The honest answer hurt more than apology and less than a lie.",
+              "reference": "source.md, workshop confrontation"
+            }
+          ],
+          "module_id": "craft.narrative.point_of_view_and_focalization",
+          "question_id": "craft.narrative.point_of_view_and_focalization.distance",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "quote": "Perhaps. June's mind supplied the old competence",
+              "reference": "source.md, performance"
+            }
+          ],
+          "module_id": "craft.narrative.point_of_view_and_focalization",
+          "question_id": "craft.narrative.point_of_view_and_focalization.access",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.95,
+          "evidence": [
+            {
+              "quote": "There it was: the administrative knife hidden in clean language.",
+              "reference": "source.md, clinic"
+            }
+          ],
+          "module_id": "craft.narrative.point_of_view_and_focalization",
+          "question_id": "craft.narrative.point_of_view_and_focalization.ownership",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "quote": "Mica did not answer immediately, which meant the available words were inadequate or socially expensive.",
+              "reference": "source.md, clinic"
+            }
+          ],
+          "module_id": "craft.narrative.point_of_view_and_focalization",
+          "question_id": "craft.narrative.point_of_view_and_focalization.head_hopping",
+          "verdict": "YES",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.97,
+          "evidence": [
+            {
+              "quote": "June's anger had nowhere respectable to stand. That did not make it smaller.",
+              "reference": "source.md, post-removal workshop"
+            }
+          ],
+          "module_id": "craft.narrative.point_of_view_and_focalization",
+          "question_id": "craft.narrative.point_of_view_and_focalization.reliability",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [],
+          "module_id": "craft.narrative.point_of_view_and_focalization",
+          "question_id": "craft.narrative.point_of_view_and_focalization.shift_intent",
+          "verdict": "NOT_APPLICABLE",
+          "weight": 1.5
+        }
+      ],
+      "score": {
+        "lower": 13.9286,
+        "observed": 15.0,
+        "upper": 15.0
+      },
+      "title": "Character and perspective",
+      "weights": {
+        "applicable": 21.0,
+        "failed": 0.0,
+        "passed": 19.5,
+        "unassessed": 1.5
+      }
+    },
+    {
+      "active": true,
+      "confidence": 0.973,
+      "coverage": 1.0,
+      "domain_id": "movement",
+      "nominal_points": 19.0,
+      "questions": [
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "quote": "Fatigue cracking had been found... All Arc-4 assemblies were to be deactivated",
+              "reference": "source.md, recall notice"
+            },
+            {
+              "quote": "The Arc-6 arrived the next morning",
+              "reference": "source.md, replacement section"
+            }
+          ],
+          "module_id": "craft.narrative.plot_and_causality",
+          "question_id": "craft.narrative.plot_and_causality.causal_chain",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "quote": "root compensation had increased... Twenty-two percent over the last nine weeks",
+              "reference": "source.md, recall confrontation"
+            }
+          ],
+          "module_id": "craft.narrative.plot_and_causality",
+          "question_id": "craft.narrative.plot_and_causality.setup",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "quote": "June signed.",
+              "reference": "source.md, clinic"
+            },
+            {
+              "quote": "I withdraw consent",
+              "reference": "source.md, rehearsal"
+            },
+            {
+              "quote": "June opened the autonomy gate.",
+              "reference": "source.md, performance"
+            }
+          ],
+          "module_id": "craft.narrative.plot_and_causality",
+          "question_id": "craft.narrative.plot_and_causality.decision",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "quote": "The old assembly must be de-energized before the new root accepts her actuation keys.",
+              "reference": "source.md, clinic"
+            },
+            {
+              "quote": "Her hand was empty.",
+              "reference": "source.md, removal aftermath"
+            }
+          ],
+          "module_id": "craft.narrative.plot_and_causality",
+          "question_id": "craft.narrative.plot_and_causality.consequence",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "quote": "You accepted. Before you told me.",
+              "reference": "source.md, inciting conflict"
+            },
+            {
+              "quote": "You are wearing me as a prop.",
+              "reference": "source.md, rehearsal rupture"
+            }
+          ],
+          "module_id": "craft.narrative.plot_and_causality",
+          "question_id": "craft.narrative.plot_and_causality.escalation",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.95,
+          "evidence": [
+            {
+              "quote": "Palm brushed Mara's wrist.",
+              "reference": "source.md, rehearsal"
+            },
+            {
+              "quote": "I withdraw consent for further performance rehearsal tonight",
+              "reference": "source.md, same scene"
+            }
+          ],
+          "module_id": "craft.narrative.plot_and_causality",
+          "question_id": "craft.narrative.plot_and_causality.complication",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "quote": "A line snapped... June opened the autonomy gate. Mica took the falling moon. Not by restoring it.",
+              "reference": "source.md, performance"
+            }
+          ],
+          "module_id": "craft.narrative.plot_and_causality",
+          "question_id": "craft.narrative.plot_and_causality.reversal",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.95,
+          "evidence": [
+            {
+              "quote": "The south anchor had abraded the filament.",
+              "reference": "source.md, post-performance"
+            }
+          ],
+          "module_id": "craft.narrative.plot_and_causality",
+          "question_id": "craft.narrative.plot_and_causality.no_convenience",
+          "verdict": "YES",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "quote": "The old middle plate sat on the bench inside Kite's light.",
+              "reference": "source.md, recalibration scene"
+            }
+          ],
+          "module_id": "craft.narrative.scene_construction",
+          "question_id": "craft.narrative.scene_construction.purpose",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "quote": "Mica always arrived first.",
+              "reference": "source.md, opening"
+            }
+          ],
+          "module_id": "craft.narrative.scene_construction",
+          "question_id": "craft.narrative.scene_construction.entry",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "quote": "Again.",
+              "reference": "source.md, opening rehearsal"
+            },
+            {
+              "quote": "Does the agent transfer preserve...",
+              "reference": "source.md, clinic"
+            },
+            {
+              "quote": "Direct for the fifth interval.",
+              "reference": "source.md, rehearsal"
+            }
+          ],
+          "module_id": "craft.narrative.scene_construction",
+          "question_id": "craft.narrative.scene_construction.objective",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "quote": "RESIDENT AGENT: ACCEPTED",
+              "reference": "source.md, opening section"
+            }
+          ],
+          "module_id": "craft.narrative.scene_construction",
+          "question_id": "craft.narrative.scene_construction.pressure",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.91,
+          "evidence": [
+            {
+              "quote": "On the sixth pass... On the tenth... On the twelfth",
+              "reference": "source.md, calibration sequence"
+            }
+          ],
+          "module_id": "craft.narrative.scene_construction",
+          "question_id": "craft.narrative.scene_construction.progression",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "quote": "I accepted the new body because I wanted it.",
+              "reference": "source.md, workshop confrontation"
+            }
+          ],
+          "module_id": "craft.narrative.scene_construction",
+          "question_id": "craft.narrative.scene_construction.turn",
+          "verdict": "YES",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "quote": "Mica always arrived first.",
+              "reference": "source.md, opening"
+            },
+            {
+              "quote": "For once, neither arrived first.",
+              "reference": "source.md, ending"
+            }
+          ],
+          "module_id": "craft.narrative.scene_construction",
+          "question_id": "craft.narrative.scene_construction.changed_state",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.97,
+          "evidence": [
+            {
+              "quote": "But she could no longer see June looking at her.",
+              "reference": "source.md, first section exit"
+            },
+            {
+              "quote": "Outside, Sunday offered its rail. June walked past it.",
+              "reference": "source.md, clinic exit"
+            }
+          ],
+          "module_id": "craft.narrative.scene_construction",
+          "question_id": "craft.narrative.scene_construction.exit",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "quote": "The Arc-6 arrived the next morning",
+              "reference": "source.md, after phantom-body section"
+            }
+          ],
+          "module_id": "craft.narrative.scene_construction",
+          "question_id": "craft.narrative.scene_construction.context_fit",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "quote": "What is the action?",
+              "reference": "source.md, recall notice"
+            },
+            {
+              "quote": "Did that feel like you?",
+              "reference": "source.md, aftermath"
+            }
+          ],
+          "module_id": "craft.narrative.narrative_momentum",
+          "question_id": "craft.narrative.narrative_momentum.curiosity",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "quote": "I do not know how to leave an argument without leaving your body.",
+              "reference": "source.md, rooftop"
+            }
+          ],
+          "module_id": "craft.narrative.narrative_momentum",
+          "question_id": "craft.narrative.narrative_momentum.investment",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "quote": "The old assembly must be de-energized",
+              "reference": "source.md, clinic"
+            },
+            {
+              "quote": "You don't owe them the old piece.",
+              "reference": "source.md, backstage"
+            }
+          ],
+          "module_id": "craft.narrative.narrative_momentum",
+          "question_id": "craft.narrative.narrative_momentum.consequence",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.97,
+          "evidence": [
+            {
+              "quote": "The Lattice... never quite stopped echoing like water.",
+              "reference": "source.md, opening"
+            }
+          ],
+          "module_id": "craft.narrative.narrative_momentum",
+          "question_id": "craft.narrative.narrative_momentum.voice_pull",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "quote": "Both where that distinction fails.",
+              "reference": "source.md, clinic"
+            }
+          ],
+          "module_id": "craft.narrative.narrative_momentum",
+          "question_id": "craft.narrative.narrative_momentum.concept_pull",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.95,
+          "evidence": [
+            {
+              "quote": "June signed.",
+              "reference": "source.md, clinic"
+            },
+            {
+              "quote": "They practiced the threshold.",
+              "reference": "source.md, revised rehearsal"
+            },
+            {
+              "quote": "June opened the autonomy gate.",
+              "reference": "source.md, performance"
+            }
+          ],
+          "module_id": "craft.narrative.narrative_momentum",
+          "question_id": "craft.narrative.narrative_momentum.progress",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "quote": "June signed.",
+              "reference": "source.md, clinic"
+            }
+          ],
+          "module_id": "craft.narrative.narrative_momentum",
+          "question_id": "craft.narrative.narrative_momentum.commitment",
+          "verdict": "YES",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "quote": "Facet chimed. Mica did not use that tone.",
+              "reference": "source.md, inciting turn"
+            }
+          ],
+          "module_id": "craft.narrative.narrative_momentum",
+          "question_id": "craft.narrative.narrative_momentum.no_false_hook",
+          "verdict": "YES",
+          "weight": 1.5
+        }
+      ],
+      "score": {
+        "lower": 19.0,
+        "observed": 19.0,
+        "upper": 19.0
+      },
+      "title": "Plot, scene, and movement",
+      "weights": {
+        "applicable": 35.5,
+        "failed": 0.0,
+        "passed": 35.5,
+        "unassessed": 0.0
+      }
+    },
+    {
+      "active": true,
+      "confidence": 0.9675,
+      "coverage": 0.9403,
+      "domain_id": "language",
+      "nominal_points": 16.0,
+      "questions": [
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "quote": "the little muscular weather in June's wrist",
+              "reference": "source.md, opening"
+            }
+          ],
+          "module_id": "core.language_craft",
+          "question_id": "core.language_craft.diction",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "quote": "Not visibly.",
+              "reference": "source.md, opening"
+            },
+            {
+              "quote": "The movement did not oscillate. It propagated.",
+              "reference": "source.md, performance"
+            }
+          ],
+          "module_id": "core.language_craft",
+          "question_id": "core.language_craft.syntax",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "quote": "Mica moved. June moved. For once, neither arrived first.",
+              "reference": "source.md, ending"
+            }
+          ],
+          "module_id": "core.language_craft",
+          "question_id": "core.language_craft.cadence",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "quote": "The co-digit moved. It did not unfold. It emerged.",
+              "reference": "source.md, Arc-6 activation"
+            },
+            {
+              "quote": "Approach. Ask. Answer. Contact. Yield. Re-enter.",
+              "reference": "source.md, recalibration"
+            }
+          ],
+          "module_id": "core.language_craft",
+          "question_id": "core.language_craft.variation",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.97,
+          "evidence": [
+            {
+              "quote": "Now it felt like someone pulling away.",
+              "reference": "source.md, recall confrontation"
+            }
+          ],
+          "module_id": "core.language_craft",
+          "question_id": "core.language_craft.paragraph_movement",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "quote": "The trace became a thorn hedge.",
+              "reference": "source.md, clinic"
+            },
+            {
+              "quote": "a sentence from which the subject had been removed",
+              "reference": "source.md, removed cuff"
+            }
+          ],
+          "module_id": "core.language_craft",
+          "question_id": "core.language_craft.images",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.97,
+          "evidence": [
+            {
+              "quote": "Keel's swerve wheels sang... a low four-note correction",
+              "reference": "source.md, opening"
+            }
+          ],
+          "module_id": "core.language_craft",
+          "question_id": "core.language_craft.sound",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.97,
+          "evidence": [
+            {
+              "quote": "The artificial digit remained. Her hand felt suddenly divided. Not amputated. Plural.",
+              "reference": "source.md, performance"
+            }
+          ],
+          "module_id": "core.language_craft",
+          "question_id": "core.language_craft.emphasis",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.93,
+          "evidence": [
+            {
+              "quote": "The correction had once felt important enough to say aloud.",
+              "reference": "source.md, opening"
+            }
+          ],
+          "module_id": "core.language_craft",
+          "question_id": "core.language_craft.no_awkwardness",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "quote": "The workshop was full of machines that knew how not to be there.",
+              "reference": "source.md, opening"
+            }
+          ],
+          "module_id": "core.voice_and_stylistic_identity",
+          "question_id": "core.voice_and_stylistic_identity.distinctive",
+          "verdict": "YES",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "quote": "It sounded like distance.",
+              "reference": "source.md, rehearsal aftermath"
+            },
+            {
+              "quote": "For once, neither arrived first.",
+              "reference": "source.md, ending"
+            }
+          ],
+          "module_id": "core.voice_and_stylistic_identity",
+          "question_id": "core.voice_and_stylistic_identity.sustained",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "quote": "Her wrist did not.",
+              "reference": "source.md, after removal"
+            }
+          ],
+          "module_id": "core.voice_and_stylistic_identity",
+          "question_id": "core.voice_and_stylistic_identity.suitable",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [],
+          "module_id": "core.voice_and_stylistic_identity",
+          "question_id": "core.voice_and_stylistic_identity.project_fidelity",
+          "verdict": "CANNOT_ASSESS",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.95,
+          "evidence": [
+            {
+              "quote": "The movement did not oscillate. It propagated.",
+              "reference": "source.md, performance"
+            }
+          ],
+          "module_id": "core.voice_and_stylistic_identity",
+          "question_id": "core.voice_and_stylistic_identity.shift_control",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.97,
+          "evidence": [
+            {
+              "quote": "It looked like a proposition.",
+              "reference": "source.md, Arc-6 description"
+            }
+          ],
+          "module_id": "core.voice_and_stylistic_identity",
+          "question_id": "core.voice_and_stylistic_identity.ownership",
+          "verdict": "YES",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "quote": "Five is superstition wearing a workshop apron.",
+              "reference": "source.md, Mica"
+            },
+            {
+              "quote": "At the moment it is you saying plural nouns.",
+              "reference": "source.md, Mara"
+            }
+          ],
+          "module_id": "craft.narrative.dialogue",
+          "question_id": "craft.narrative.dialogue.voice_distinction",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "quote": "I am sorry. I am not sorry I accepted.",
+              "reference": "source.md, Mica"
+            }
+          ],
+          "module_id": "craft.narrative.dialogue",
+          "question_id": "craft.narrative.dialogue.subtext",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "quote": "Tell me which way I should agree.",
+              "reference": "source.md, Mara"
+            }
+          ],
+          "module_id": "craft.narrative.dialogue",
+          "question_id": "craft.narrative.dialogue.naturalness",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "quote": "You are wearing me as a prop.",
+              "reference": "source.md, rehearsal confrontation"
+            }
+          ],
+          "module_id": "craft.narrative.dialogue",
+          "question_id": "craft.narrative.dialogue.purpose",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "quote": "No, June and Mica said together.",
+              "reference": "source.md, clinic"
+            }
+          ],
+          "module_id": "craft.narrative.dialogue",
+          "question_id": "craft.narrative.dialogue.rhythm",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.97,
+          "evidence": [
+            {
+              "quote": "Then finish.",
+              "reference": "source.md, aftermath conversation"
+            }
+          ],
+          "module_id": "craft.narrative.dialogue",
+          "question_id": "craft.narrative.dialogue.listening",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "quote": "June's signature hand hovered above the glass.",
+              "reference": "source.md, consent dialogue"
+            }
+          ],
+          "module_id": "craft.narrative.dialogue",
+          "question_id": "craft.narrative.dialogue.action_balance",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.91,
+          "evidence": [
+            {
+              "quote": "Mica's autobiographical memory, task models, preferences... move intact.",
+              "reference": "source.md, Sora"
+            }
+          ],
+          "module_id": "craft.narrative.dialogue",
+          "question_id": "craft.narrative.dialogue.no_exposition",
+          "verdict": "YES",
+          "weight": 2.0
+        }
+      ],
+      "score": {
+        "lower": 15.0448,
+        "observed": 16.0,
+        "upper": 16.0
+      },
+      "title": "Language, voice, and dialogue",
+      "weights": {
+        "applicable": 33.5,
+        "failed": 0.0,
+        "passed": 31.5,
+        "unassessed": 2.0
+      }
+    },
+    {
+      "active": true,
+      "confidence": 0.97,
+      "coverage": 1.0,
+      "domain_id": "setting",
+      "nominal_points": 9.0,
+      "questions": [
+        {
+          "confidence": 0.97,
+          "evidence": [
+            {
+              "quote": "Mara stood at the edge of the bay, one hand on Sunday's rail.",
+              "reference": "source.md, clinic bay"
+            }
+          ],
+          "module_id": "craft.narrative.setting_and_atmosphere",
+          "question_id": "craft.narrative.setting_and_atmosphere.spatial",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "quote": "The floor was cork. The walls were green enough to be intentional",
+              "reference": "source.md, clinic"
+            }
+          ],
+          "module_id": "craft.narrative.setting_and_atmosphere",
+          "question_id": "craft.narrative.setting_and_atmosphere.sensory",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "quote": "The Lattice had been built in a municipal baths complex",
+              "reference": "source.md, opening"
+            }
+          ],
+          "module_id": "craft.narrative.setting_and_atmosphere",
+          "question_id": "craft.narrative.setting_and_atmosphere.identity",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "quote": "sound traveled through it with liquid patience",
+              "reference": "source.md, Lattice description"
+            }
+          ],
+          "module_id": "craft.narrative.setting_and_atmosphere",
+          "question_id": "craft.narrative.setting_and_atmosphere.atmosphere",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "quote": "June sat on the edge of the stage with her feet in the former swimming pool.",
+              "reference": "source.md, final section"
+            }
+          ],
+          "module_id": "craft.narrative.setting_and_atmosphere",
+          "question_id": "craft.narrative.setting_and_atmosphere.interaction",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "quote": "The entire structure hung from the sixth finger",
+              "reference": "source.md, performance"
+            }
+          ],
+          "module_id": "craft.narrative.setting_and_atmosphere",
+          "question_id": "craft.narrative.setting_and_atmosphere.function",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.81,
+          "evidence": [
+            {
+              "quote": "a child under saffron-colored shade, a courier carrier gliding overhead, two maintenance workers arguing with a wall vent",
+              "reference": "source.md, clinic exit"
+            }
+          ],
+          "module_id": "craft.narrative.setting_and_atmosphere",
+          "question_id": "craft.narrative.setting_and_atmosphere.no_inventory",
+          "verdict": "NO",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "quote": "a pale diagonal where Echo kept the sun from her skin",
+              "reference": "source.md, removal scene"
+            }
+          ],
+          "module_id": "core.specificity_and_embodiment",
+          "question_id": "core.specificity_and_embodiment.concrete_detail",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "quote": "a soft draw along the outside of her wrist, then pressure at the second haptic mark",
+              "reference": "source.md, opening"
+            }
+          ],
+          "module_id": "core.specificity_and_embodiment",
+          "question_id": "core.specificity_and_embodiment.sensory_presence",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "quote": "Palm trapped the wooden ring against the side of June's hand.",
+              "reference": "source.md, calibration"
+            }
+          ],
+          "module_id": "core.specificity_and_embodiment",
+          "question_id": "core.specificity_and_embodiment.physical_action",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "quote": "June's phantom finger tightened.",
+              "reference": "source.md, confrontation"
+            }
+          ],
+          "module_id": "core.specificity_and_embodiment",
+          "question_id": "core.specificity_and_embodiment.grounded_thought",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "quote": "The basin had been filled to stage height decades ago, but its tiled lip remained",
+              "reference": "source.md, final section"
+            }
+          ],
+          "module_id": "core.specificity_and_embodiment",
+          "question_id": "core.specificity_and_embodiment.setting_particularity",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "quote": "Your tea is becoming historical.",
+              "reference": "source.md, Mara"
+            },
+            {
+              "quote": "Four is evidence. Five is rehearsal.",
+              "reference": "source.md, June"
+            }
+          ],
+          "module_id": "core.specificity_and_embodiment",
+          "question_id": "core.specificity_and_embodiment.character_particularity",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "quote": "The trace became a thorn hedge.",
+              "reference": "source.md, clinic"
+            },
+            {
+              "quote": "June rotated her wrist, opening the angle",
+              "reference": "source.md, ending"
+            }
+          ],
+          "module_id": "core.specificity_and_embodiment",
+          "question_id": "core.specificity_and_embodiment.abstract_support",
+          "verdict": "YES",
+          "weight": 1.5
+        }
+      ],
+      "score": {
+        "lower": 8.3077,
+        "observed": 8.3077,
+        "upper": 8.3077
+      },
+      "title": "Setting and embodiment",
+      "weights": {
+        "applicable": 19.5,
+        "failed": 1.5,
+        "passed": 18.0,
+        "unassessed": 0.0
+      }
+    },
+    {
+      "active": true,
+      "confidence": 0.977,
+      "coverage": 1.0,
+      "domain_id": "effect",
+      "nominal_points": 10.0,
+      "questions": [
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "quote": "Mine when I move. Yours when I load your bones. Both where that distinction fails.",
+              "reference": "source.md, clinic"
+            }
+          ],
+          "module_id": "craft.narrative.theme_and_subtext",
+          "question_id": "craft.narrative.theme_and_subtext.emergence",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "quote": "For the first time, June wondered what closing it cost.",
+              "reference": "source.md, rooftop"
+            }
+          ],
+          "module_id": "craft.narrative.theme_and_subtext",
+          "question_id": "craft.narrative.theme_and_subtext.subtext",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "quote": "Not one hand. Not two.",
+              "reference": "source.md, performance"
+            },
+            {
+              "quote": "Not yet... They sat there anyway.",
+              "reference": "source.md, ending"
+            }
+          ],
+          "module_id": "craft.narrative.theme_and_subtext",
+          "question_id": "craft.narrative.theme_and_subtext.development",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "quote": "I remain. / Not in my hand. / No.",
+              "reference": "source.md, repair room"
+            }
+          ],
+          "module_id": "craft.narrative.theme_and_subtext",
+          "question_id": "craft.narrative.theme_and_subtext.counterpoint",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "quote": "Mica held one hinged square no larger than a postage stamp. That square changed the whole shadow.",
+              "reference": "source.md, performance"
+            }
+          ],
+          "module_id": "craft.narrative.theme_and_subtext",
+          "question_id": "craft.narrative.theme_and_subtext.integration",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "quote": "Not yet... They sat there anyway.",
+              "reference": "source.md, ending"
+            }
+          ],
+          "module_id": "craft.narrative.theme_and_subtext",
+          "question_id": "craft.narrative.theme_and_subtext.no_moral",
+          "verdict": "YES",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "quote": "Did you decide? / No. / Neither did I.",
+              "reference": "source.md, aftermath"
+            }
+          ],
+          "module_id": "craft.narrative.theme_and_subtext",
+          "question_id": "craft.narrative.theme_and_subtext.open_questions",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "quote": "Her wrist did not.",
+              "reference": "source.md, removal scene"
+            },
+            {
+              "quote": "For once, neither arrived first.",
+              "reference": "source.md, ending"
+            }
+          ],
+          "module_id": "core.emotional_and_intellectual_effect",
+          "question_id": "core.emotional_and_intellectual_effect.intended_effect",
+          "verdict": "YES",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "quote": "At the third site June felt Mica curl. Mica did not move.",
+              "reference": "source.md, de-energizing"
+            }
+          ],
+          "module_id": "core.emotional_and_intellectual_effect",
+          "question_id": "core.emotional_and_intellectual_effect.earned_emotion",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "quote": "Both where that distinction fails.",
+              "reference": "source.md, clinic"
+            }
+          ],
+          "module_id": "core.emotional_and_intellectual_effect",
+          "question_id": "core.emotional_and_intellectual_effect.conceptual_interest",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "quote": "tenderness and anger occupy the same narrow space",
+              "reference": "source.md, Arc-6 arrival"
+            },
+            {
+              "quote": "surprise... changed what June did next",
+              "reference": "source.md, performance"
+            }
+          ],
+          "module_id": "core.emotional_and_intellectual_effect",
+          "question_id": "core.emotional_and_intellectual_effect.modulation",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.88,
+          "evidence": [
+            {
+              "quote": "The world had not paused to certify what had happened.",
+              "reference": "source.md, performance aftermath"
+            }
+          ],
+          "module_id": "core.emotional_and_intellectual_effect",
+          "question_id": "core.emotional_and_intellectual_effect.restraint",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "quote": "Not yet... They sat there anyway.",
+              "reference": "source.md, ending"
+            }
+          ],
+          "module_id": "core.emotional_and_intellectual_effect",
+          "question_id": "core.emotional_and_intellectual_effect.aftermath",
+          "verdict": "YES",
+          "weight": 1.0
+        }
+      ],
+      "score": {
+        "lower": 10.0,
+        "observed": 10.0,
+        "upper": 10.0
+      },
+      "title": "Theme and effect",
+      "weights": {
+        "applicable": 18.5,
+        "failed": 0.0,
+        "passed": 18.5,
+        "unassessed": 0.0
+      }
+    },
+    {
+      "active": true,
+      "confidence": 0.9052,
+      "coverage": 1.0,
+      "domain_id": "fresh",
+      "nominal_points": 10.0,
+      "questions": [
+        {
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "quote": "a sentence from which the subject had been removed",
+              "reference": "source.md, old body in tray"
+            }
+          ],
+          "module_id": "core.freshness_and_non_genericness",
+          "question_id": "core.freshness_and_non_genericness.no_cliche",
+          "verdict": "YES",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.95,
+          "evidence": [
+            {
+              "quote": "Mica took the falling moon. Not by restoring it.",
+              "reference": "source.md, performance"
+            }
+          ],
+          "module_id": "core.freshness_and_non_genericness",
+          "question_id": "core.freshness_and_non_genericness.no_stock_beats",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.82,
+          "evidence": [
+            {
+              "quote": "Not command. Not imitation.",
+              "reference": "source.md, performance"
+            },
+            {
+              "quote": "Not one hand. Not two.",
+              "reference": "source.md, performance"
+            }
+          ],
+          "module_id": "core.freshness_and_non_genericness",
+          "question_id": "core.freshness_and_non_genericness.no_llm_phrasing",
+          "verdict": "NO",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.94,
+          "evidence": [
+            {
+              "quote": "the little muscular weather in June's wrist",
+              "reference": "source.md, opening"
+            }
+          ],
+          "module_id": "core.freshness_and_non_genericness",
+          "question_id": "core.freshness_and_non_genericness.no_default_metaphors",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.97,
+          "evidence": [
+            {
+              "quote": "June's thumb went automatically to the place where the faded release braid should have been.",
+              "reference": "source.md, removal aftermath"
+            }
+          ],
+          "module_id": "core.freshness_and_non_genericness",
+          "question_id": "core.freshness_and_non_genericness.no_emotion_summary",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "quote": "Five is superstition wearing a workshop apron.",
+              "reference": "source.md, opening"
+            },
+            {
+              "quote": "the seam runs through your decisions",
+              "reference": "source.md, rooftop"
+            }
+          ],
+          "module_id": "core.freshness_and_non_genericness",
+          "question_id": "core.freshness_and_non_genericness.unpredictable_specificity",
+          "verdict": "YES",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.94,
+          "evidence": [
+            {
+              "quote": "The workshop was full of machines that knew how not to be there.",
+              "reference": "source.md, opening"
+            }
+          ],
+          "module_id": "core.freshness_and_non_genericness",
+          "question_id": "core.freshness_and_non_genericness.no_forced_novelty",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "quote": "tendon hysteresis",
+              "reference": "source.md, calibration"
+            }
+          ],
+          "module_id": "core.freshness_and_non_genericness",
+          "question_id": "core.freshness_and_non_genericness.no_rare_word_chasing",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.78,
+          "evidence": [
+            {
+              "quote": "Keel and Loft had been practicing the same docking sequence for forty minutes.",
+              "reference": "source.md, rehearsal section"
+            },
+            {
+              "quote": "Outside, Glean reached the bottom of the trellis",
+              "reference": "source.md, repair section"
+            }
+          ],
+          "module_id": "core.economy_and_relevance",
+          "question_id": "core.economy_and_relevance.earns_place",
+          "verdict": "NO",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.78,
+          "evidence": [
+            {
+              "quote": "Again. On the sixth pass... On the tenth... On the twelfth",
+              "reference": "source.md, threshold practice"
+            },
+            {
+              "quote": "The two robots paused after separation",
+              "reference": "source.md, final section"
+            }
+          ],
+          "module_id": "core.economy_and_relevance",
+          "question_id": "core.economy_and_relevance.no_restatement",
+          "verdict": "NO",
+          "weight": 2.5
+        },
+        {
+          "confidence": 0.95,
+          "evidence": [
+            {
+              "quote": "Mica always arrived first.",
+              "reference": "source.md, opening"
+            },
+            {
+              "quote": "For once, neither arrived first.",
+              "reference": "source.md, ending"
+            }
+          ],
+          "module_id": "core.economy_and_relevance",
+          "question_id": "core.economy_and_relevance.functional_repetition",
+          "verdict": "YES",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.88,
+          "evidence": [
+            {
+              "quote": "The old middle plate sat on the bench inside Kite's light.",
+              "reference": "source.md, recalibration"
+            }
+          ],
+          "module_id": "core.economy_and_relevance",
+          "question_id": "core.economy_and_relevance.detail_relevance",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.84,
+          "evidence": [
+            {
+              "quote": "The woman fed it a spoonful of ice.",
+              "reference": "source.md, courtyard"
+            },
+            {
+              "quote": "Rill lowered a cream docking ring",
+              "reference": "source.md, repair room"
+            }
+          ],
+          "module_id": "core.economy_and_relevance",
+          "question_id": "core.economy_and_relevance.digression",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.9,
+          "evidence": [
+            {
+              "quote": "* * *",
+              "reference": "source.md, seven section breaks"
+            }
+          ],
+          "module_id": "core.economy_and_relevance",
+          "question_id": "core.economy_and_relevance.length_fit",
+          "verdict": "NO",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.97,
+          "evidence": [
+            {
+              "quote": "For an hour they did almost nothing worth watching.",
+              "reference": "source.md, threshold practice"
+            }
+          ],
+          "module_id": "core.economy_and_relevance",
+          "question_id": "core.economy_and_relevance.no_flattening",
+          "verdict": "YES",
+          "weight": 1.0
+        }
+      ],
+      "score": {
+        "lower": 6.7391,
+        "observed": 6.7391,
+        "upper": 6.7391
+      },
+      "title": "Freshness and economy",
+      "weights": {
+        "applicable": 23.0,
+        "failed": 7.5,
+        "passed": 15.5,
+        "unassessed": 0.0
+      }
+    },
+    {
+      "active": true,
+      "confidence": 0.99,
+      "coverage": 1.0,
+      "domain_id": "mechanics",
+      "nominal_points": 5.0,
+      "questions": [
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "quote": "June seated the pin through two layers of black paper.",
+              "reference": "source.md, opening"
+            }
+          ],
+          "module_id": "core.mechanics_and_presentation",
+          "question_id": "core.mechanics_and_presentation.grammar",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "quote": "No. Not hers.",
+              "reference": "source.md, opening"
+            }
+          ],
+          "module_id": "core.mechanics_and_presentation",
+          "question_id": "core.mechanics_and_presentation.punctuation",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "quote": "neuromuscular",
+              "reference": "source.md, consent field description"
+            }
+          ],
+          "module_id": "core.mechanics_and_presentation",
+          "question_id": "core.mechanics_and_presentation.spelling",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "quote": "# The Part That Arrives First",
+              "reference": "source.md, heading"
+            },
+            {
+              "quote": "* * *",
+              "reference": "source.md, section breaks"
+            }
+          ],
+          "module_id": "core.mechanics_and_presentation",
+          "question_id": "core.mechanics_and_presentation.formatting",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "quote": "\"You accepted.\" / \"Yes.\" / \"Before you told me.\"",
+              "reference": "source.md, recall confrontation"
+            }
+          ],
+          "module_id": "core.mechanics_and_presentation",
+          "question_id": "core.mechanics_and_presentation.dialogue_mechanics",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "quote": "**RESIDENT AGENT: ACCEPTED**",
+              "reference": "source.md, projected notice"
+            }
+          ],
+          "module_id": "core.mechanics_and_presentation",
+          "question_id": "core.mechanics_and_presentation.typography",
+          "verdict": "YES",
+          "weight": 1.0
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "quote": "For once, neither arrived first.",
+              "reference": "source.md, final sentence"
+            }
+          ],
+          "module_id": "core.mechanics_and_presentation",
+          "question_id": "core.mechanics_and_presentation.cleanliness",
+          "verdict": "YES",
+          "weight": 1.5
+        }
+      ],
+      "score": {
+        "lower": 5.0,
+        "observed": 5.0,
+        "upper": 5.0
+      },
+      "title": "Mechanics",
+      "weights": {
+        "applicable": 7.5,
+        "failed": 0.0,
+        "passed": 7.5,
+        "unassessed": 0.0
+      }
+    },
+    {
+      "active": true,
+      "confidence": 0.93,
+      "coverage": 1.0,
+      "domain_id": "holistic",
+      "nominal_points": 8.0,
+      "questions": [
+        {
+          "confidence": 1.0,
+          "evidence": [
+            {
+              "quote": "They asked about my body.",
+              "reference": "source.md, inciting confrontation"
+            }
+          ],
+          "module_id": "core.holistic_artistic_success",
+          "question_id": "core.holistic_artistic_success.threshold_1_functional",
+          "verdict": "YES",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "quote": "The artificial digit remained. Her hand felt suddenly divided. Not amputated. Plural.",
+              "reference": "source.md, performance"
+            }
+          ],
+          "module_id": "core.holistic_artistic_success",
+          "question_id": "core.holistic_artistic_success.threshold_2_effective",
+          "verdict": "YES",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "quote": "June rotated her wrist, opening the angle... Mica curled through the space June made.",
+              "reference": "source.md, ending"
+            }
+          ],
+          "module_id": "core.holistic_artistic_success",
+          "question_id": "core.holistic_artistic_success.threshold_3_keepworthy",
+          "verdict": "YES",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.78,
+          "evidence": [
+            {
+              "quote": "On the sixth pass... On the tenth... On the twelfth",
+              "reference": "source.md, repeated calibration"
+            },
+            {
+              "quote": "The two robots paused after separation",
+              "reference": "source.md, final machine counterpoint"
+            }
+          ],
+          "module_id": "core.holistic_artistic_success",
+          "question_id": "core.holistic_artistic_success.threshold_4_exceptional",
+          "verdict": "NO",
+          "weight": 2.0
+        }
+      ],
+      "score": {
+        "lower": 6.0,
+        "observed": 6.0,
+        "upper": 6.0
+      },
+      "title": "Holistic artistic success",
+      "weights": {
+        "applicable": 8.0,
+        "failed": 2.0,
+        "passed": 6.0,
+        "unassessed": 0.0
+      }
+    }
+  ],
+  "final_score": {
+    "lower": 85.6328,
+    "observed": 88.1063,
+    "upper": 88.2748
+  },
+  "hard_gate_status": "VALID",
+  "hard_gates": [],
+  "inactive_points_reallocated": 0.0,
+  "issues": [],
+  "minimum_coverage": 0.88,
+  "penalties": [
+    {
+      "cap_points": 5.0,
+      "coverage": 1.0,
+      "deduction": {
+        "lower": 0.625,
+        "observed": 0.625,
+        "upper": 0.625
+      },
+      "module_id": "penalty.purple_prose",
+      "questions": [
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "quote": "The co-digit moved. It did not unfold. It emerged.",
+              "reference": "source.md, activation"
+            }
+          ],
+          "question_id": "penalty.purple_prose.clarity",
+          "verdict": "YES",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.88,
+          "evidence": [
+            {
+              "quote": "the little muscular weather in June's wrist",
+              "reference": "source.md, opening"
+            },
+            {
+              "quote": "an administrative knife hidden in clean language",
+              "reference": "source.md, clinic"
+            }
+          ],
+          "question_id": "penalty.purple_prose.proportion",
+          "verdict": "YES",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.98,
+          "evidence": [
+            {
+              "quote": "The trace became a thorn hedge.",
+              "reference": "source.md, clinic"
+            }
+          ],
+          "question_id": "penalty.purple_prose.specificity",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.96,
+          "evidence": [
+            {
+              "quote": "sound traveled through it with liquid patience",
+              "reference": "source.md, Lattice"
+            }
+          ],
+          "question_id": "penalty.purple_prose.tone",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.93,
+          "evidence": [
+            {
+              "quote": "Her hand felt suddenly divided. Not amputated. Plural.",
+              "reference": "source.md, performance"
+            }
+          ],
+          "question_id": "penalty.purple_prose.metaphor",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.87,
+          "evidence": [
+            {
+              "quote": "The world had not paused to certify what had happened.",
+              "reference": "source.md, post-performance"
+            }
+          ],
+          "question_id": "penalty.purple_prose.attention",
+          "verdict": "YES",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.78,
+          "evidence": [
+            {
+              "quote": "The choreography was intimate only if one knew enough to see what each had changed for the other.",
+              "reference": "source.md, Keel and Loft"
+            },
+            {
+              "quote": "The garden did not applaud.",
+              "reference": "source.md, Glean and Rill"
+            }
+          ],
+          "question_id": "penalty.purple_prose.fatigue",
+          "verdict": "NO",
+          "weight": 1.5
+        }
+      ],
+      "title": "Purple prose penalty",
+      "weights": {
+        "applicable": 12.0,
+        "failed": 1.5,
+        "passed": 10.5,
+        "unassessed": 0.0
+      }
+    },
+    {
+      "cap_points": 5.0,
+      "coverage": 1.0,
+      "deduction": {
+        "lower": 3.125,
+        "observed": 3.125,
+        "upper": 3.125
+      },
+      "module_id": "penalty.repetition",
+      "questions": [
+        {
+          "confidence": 0.97,
+          "evidence": [
+            {
+              "quote": "Again.",
+              "reference": "source.md, recurring rehearsal demand"
+            },
+            {
+              "quote": "For once, neither arrived first.",
+              "reference": "source.md, ending"
+            }
+          ],
+          "question_id": "penalty.repetition.lexical",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.94,
+          "evidence": [
+            {
+              "quote": "Approach. Ask. Answer. Contact. Yield. Re-enter.",
+              "reference": "source.md, recalibration"
+            },
+            {
+              "quote": "The garden made small nighttime sounds around them",
+              "reference": "source.md, rooftop"
+            }
+          ],
+          "question_id": "penalty.repetition.syntax",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.77,
+          "evidence": [
+            {
+              "quote": "The movement was not the old movement. It did not need to pretend.",
+              "reference": "source.md, final scene"
+            },
+            {
+              "quote": "You don't owe them the old piece.",
+              "reference": "source.md, backstage"
+            }
+          ],
+          "question_id": "penalty.repetition.semantic",
+          "verdict": "NO",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "quote": "Mica always arrived first.",
+              "reference": "source.md, opening"
+            },
+            {
+              "quote": "For once, neither arrived first.",
+              "reference": "source.md, ending"
+            }
+          ],
+          "question_id": "penalty.repetition.image",
+          "verdict": "YES",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.72,
+          "evidence": [
+            {
+              "quote": "They began with no object... Again.",
+              "reference": "source.md, recalibration"
+            },
+            {
+              "quote": "Third interval... The disc spun. A line snapped.",
+              "reference": "source.md, performance"
+            }
+          ],
+          "question_id": "penalty.repetition.beat",
+          "verdict": "NO",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.74,
+          "evidence": [
+            {
+              "quote": "I know.",
+              "reference": "source.md, repeated throughout June–Mica disputes"
+            },
+            {
+              "quote": "That isn't an answer.",
+              "reference": "source.md, repeated argumentative move"
+            }
+          ],
+          "question_id": "penalty.repetition.dialogue",
+          "verdict": "NO",
+          "weight": 1.5
+        },
+        {
+          "confidence": 0.76,
+          "evidence": [
+            {
+              "quote": "The audience cannot see the difference. / I can.",
+              "reference": "source.md, rehearsal"
+            },
+            {
+              "quote": "The audience did not know there had been an old piece.",
+              "reference": "source.md, backstage"
+            }
+          ],
+          "question_id": "penalty.repetition.explanation",
+          "verdict": "NO",
+          "weight": 2.0
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [],
+          "question_id": "penalty.repetition.long_range",
+          "verdict": "NOT_APPLICABLE",
+          "weight": 2.0
+        }
+      ],
+      "title": "Repetition penalty",
+      "weights": {
+        "applicable": 12.0,
+        "failed": 7.5,
+        "passed": 4.5,
+        "unassessed": 0.0
+      }
+    },
+    {
+      "cap_points": 8.0,
+      "coverage": 1.0,
+      "deduction": {
+        "lower": 0.0,
+        "observed": 0.0,
+        "upper": 0.0
+      },
+      "module_id": "penalty.unflagged_incomplete",
+      "questions": [
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "quote": "For once, neither arrived first.",
+              "reference": "source.md, final sentence"
+            }
+          ],
+          "question_id": "penalty.unflagged_incomplete.status",
+          "verdict": "NOT_APPLICABLE",
+          "weight": 3.0
+        },
+        {
+          "confidence": 0.99,
+          "evidence": [
+            {
+              "quote": "Not yet... They sat there anyway.",
+              "reference": "source.md, ending"
+            }
+          ],
+          "question_id": "penalty.unflagged_incomplete.unit",
+          "verdict": "YES",
+          "weight": 3.0
+        },
+        {
+          "confidence": 1.0,
+          "evidence": [
+            {
+              "quote": "For once, neither arrived first.",
+              "reference": "source.md, final sentence"
+            }
+          ],
+          "question_id": "penalty.unflagged_incomplete.truncation",
+          "verdict": "YES",
+          "weight": 3.0
+        }
+      ],
+      "title": "Unflagged incomplete artifact penalty",
+      "weights": {
+        "applicable": 6.0,
+        "failed": 0.0,
+        "passed": 6.0,
+        "unassessed": 0.0
+      }
+    }
+  ],
+  "penalty_deduction": {
+    "lower": 3.75,
+    "observed": 3.75,
+    "upper": 3.75
+  },
+  "standard": {
+    "id": "HBQ-RS",
+    "version": "1.0.0"
+  },
+  "status": "SCORED",
+  "supplemental": [
+    {
+      "confidence": 0.99,
+      "evidence": [],
+      "module_id": "core.task_and_brief_fidelity",
+      "question_id": "core.task_and_brief_fidelity.operation",
+      "verdict": "CANNOT_ASSESS"
+    },
+    {
+      "confidence": 0.99,
+      "evidence": [],
+      "module_id": "core.task_and_brief_fidelity",
+      "question_id": "core.task_and_brief_fidelity.sources",
+      "verdict": "CANNOT_ASSESS"
+    },
+    {
+      "confidence": 0.99,
+      "evidence": [],
+      "module_id": "core.task_and_brief_fidelity",
+      "question_id": "core.task_and_brief_fidelity.inclusions",
+      "verdict": "CANNOT_ASSESS"
+    },
+    {
+      "confidence": 0.99,
+      "evidence": [],
+      "module_id": "core.task_and_brief_fidelity",
+      "question_id": "core.task_and_brief_fidelity.exclusions",
+      "verdict": "CANNOT_ASSESS"
+    },
+    {
+      "confidence": 0.99,
+      "evidence": [
+        {
+          "quote": "June held the cup very still.",
+          "reference": "source.md, recall notice"
+        }
+      ],
+      "module_id": "core.task_and_brief_fidelity",
+      "question_id": "core.task_and_brief_fidelity.pov",
+      "verdict": "CANNOT_ASSESS"
+    },
+    {
+      "confidence": 0.99,
+      "evidence": [
+        {
+          "quote": "Mica always arrived first.",
+          "reference": "source.md, opening"
+        }
+      ],
+      "module_id": "core.task_and_brief_fidelity",
+      "question_id": "core.task_and_brief_fidelity.tense",
+      "verdict": "CANNOT_ASSESS"
+    },
+    {
+      "confidence": 0.99,
+      "evidence": [
+        {
+          "quote": "* * *",
+          "reference": "source.md, section breaks"
+        }
+      ],
+      "module_id": "core.task_and_brief_fidelity",
+      "question_id": "core.task_and_brief_fidelity.structure",
+      "verdict": "CANNOT_ASSESS"
+    },
+    {
+      "confidence": 0.99,
+      "evidence": [
+        {
+          "quote": "# The Part That Arrives First",
+          "reference": "source.md, heading"
+        }
+      ],
+      "module_id": "core.task_and_brief_fidelity",
+      "question_id": "core.task_and_brief_fidelity.format",
+      "verdict": "CANNOT_ASSESS"
+    },
+    {
+      "confidence": 1.0,
+      "evidence": [],
+      "module_id": "core.task_and_brief_fidelity",
+      "question_id": "core.task_and_brief_fidelity.length_hard",
+      "verdict": "NOT_APPLICABLE"
+    },
+    {
+      "confidence": 1.0,
+      "evidence": [],
+      "module_id": "core.length_and_scope_fit",
+      "question_id": "core.length_and_scope_fit.explicit",
+      "verdict": "NOT_APPLICABLE"
+    },
+    {
+      "confidence": 0.99,
+      "evidence": [
+        {
+          "quote": "At the third site June felt Mica curl. Mica did not move.",
+          "reference": "source.md, removal scene"
+        }
+      ],
+      "module_id": "form.prose.general_prose_fiction",
+      "question_id": "form.prose.general_prose_fiction.narrative_experience",
+      "verdict": "YES"
+    },
+    {
+      "confidence": 0.98,
+      "evidence": [
+        {
+          "quote": "Mica caught it.",
+          "reference": "source.md, calibration"
+        },
+        {
+          "quote": "The ring fell.",
+          "reference": "source.md, same scene"
+        }
+      ],
+      "module_id": "form.prose.general_prose_fiction",
+      "question_id": "form.prose.general_prose_fiction.character_action",
+      "verdict": "YES"
+    },
+    {
+      "confidence": 0.99,
+      "evidence": [
+        {
+          "quote": "June opened the autonomy gate.",
+          "reference": "source.md, performance"
+        },
+        {
+          "quote": "For once, neither arrived first.",
+          "reference": "source.md, ending"
+        }
+      ],
+      "module_id": "form.prose.general_prose_fiction",
+      "question_id": "form.prose.general_prose_fiction.movement",
+      "verdict": "YES"
+    },
+    {
+      "confidence": 0.95,
+      "evidence": [
+        {
+          "quote": "For the first six hours, June kept trying to make a fist",
+          "reference": "source.md, summary-to-scene transition"
+        }
+      ],
+      "module_id": "form.prose.general_prose_fiction",
+      "question_id": "form.prose.general_prose_fiction.mode_control",
+      "verdict": "YES"
+    },
+    {
+      "confidence": 0.96,
+      "evidence": [
+        {
+          "quote": "The Reachlight's ribbon spine curved over June's shoulder from the ceiling rail",
+          "reference": "source.md, opening"
+        }
+      ],
+      "module_id": "form.prose.general_prose_fiction",
+      "question_id": "form.prose.general_prose_fiction.reader_orientation",
+      "verdict": "YES"
+    },
+    {
+      "confidence": 0.9,
+      "evidence": [
+        {
+          "quote": "The de-energizing took four minutes.",
+          "reference": "source.md, clinic"
+        },
+        {
+          "quote": "The movement did not oscillate. It propagated.",
+          "reference": "source.md, performance"
+        }
+      ],
+      "module_id": "form.prose.general_prose_fiction",
+      "question_id": "form.prose.general_prose_fiction.proportion",
+      "verdict": "YES"
+    },
+    {
+      "confidence": 0.99,
+      "evidence": [
+        {
+          "quote": "Mica moved. June moved. For once, neither arrived first.",
+          "reference": "source.md, ending"
+        }
+      ],
+      "module_id": "form.prose.general_prose_fiction",
+      "question_id": "form.prose.general_prose_fiction.completion",
+      "verdict": "YES"
+    }
+  ],
+  "task_contract": null,
+  "weight_profile": {
+    "bundle_id": "prose.short_story",
+    "effective": {
+      "component_weights": [],
+      "domain_weights": [],
+      "group_weights": [],
+      "penalty_caps": [],
+      "question_weights": []
+    },
+    "identity": true,
+    "materialization_version": 1,
+    "profile_id": null,
+    "requested": null,
+    "task_contract_weight_policy": "Task-contract weighted goals remain owned by the frozen task contract and are not overridden."
+  }
+}

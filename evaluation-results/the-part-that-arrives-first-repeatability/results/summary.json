@@ -1,0 +1,252 @@
+{
+  "format_version": 1,
+  "study_id": "the-part-that-arrives-first-repeatability-v1",
+  "source_sha256": "ed6fb2e19f07174f56eb02e0a5d4c4419eecba324752881439b9b2992f082729",
+  "repetitions_per_arm": 5,
+  "arms": {
+    "hbq_batched_24": {
+      "question_count": 178,
+      "exact_all_run_agreement_count": 150,
+      "exact_all_run_agreement_rate": 0.8426966292134831,
+      "mean_modal_label_proportion": 0.952808988764045,
+      "mean_pairwise_flip_rate": 0.07865168539325842,
+      "nominal_krippendorff_alpha": 0.7708172209332302,
+      "label_prevalence": {
+        "CANNOT_ASSESS": 63,
+        "NO": 71,
+        "NOT_APPLICABLE": 42,
+        "YES": 714
+      },
+      "observed_score": {
+        "values": [
+          91.5452,
+          89.9921,
+          91.122,
+          86.3553,
+          88.9802
+        ],
+        "mean": 89.59896,
+        "sample_standard_deviation": 2.071608926173083,
+        "minimum": 86.3553,
+        "maximum": 91.5452,
+        "range": 5.189899999999994,
+        "mean_absolute_pairwise_difference": 2.5043199999999985
+      },
+      "evidence_quote_exact_match": {
+        "exact": 758,
+        "total": 1183,
+        "rate": 0.6407438715131023
+      }
+    },
+    "hbq_single_batch": {
+      "question_count": 178,
+      "exact_all_run_agreement_count": 160,
+      "exact_all_run_agreement_rate": 0.898876404494382,
+      "mean_modal_label_proportion": 0.9719101123595506,
+      "mean_pairwise_flip_rate": 0.048314606741573035,
+      "nominal_krippendorff_alpha": 0.8690865131060747,
+      "label_prevalence": {
+        "CANNOT_ASSESS": 82,
+        "NO": 82,
+        "NOT_APPLICABLE": 29,
+        "YES": 697
+      },
+      "observed_score": {
+        "values": [
+          88.1063,
+          88.1063,
+          89.9069,
+          87.474,
+          85.2793
+        ],
+        "mean": 87.77456,
+        "sample_standard_deviation": 1.6646047212476558,
+        "minimum": 85.2793,
+        "maximum": 89.9069,
+        "range": 4.627599999999987,
+        "mean_absolute_pairwise_difference": 1.977499999999995
+      },
+      "evidence_quote_exact_match": {
+        "exact": 794,
+        "total": 1118,
+        "rate": 0.7101967799642218
+      }
+    },
+    "compact_analytic": {
+      "evidence_quote_exact_match": {
+        "exact": 78,
+        "total": 90,
+        "rate": 0.8666666666666667
+      },
+      "overall_score": {
+        "values": [
+          5,
+          5,
+          5,
+          5,
+          5
+        ],
+        "mean": 5.0,
+        "sample_standard_deviation": 0.0,
+        "minimum": 5,
+        "maximum": 5,
+        "range": 0,
+        "mean_absolute_pairwise_difference": 0.0
+      },
+      "dimension_scores": {
+        "character_relationships": {
+          "values": [
+            5,
+            5,
+            5,
+            5,
+            5
+          ],
+          "mean": 5.0,
+          "sample_standard_deviation": 0.0,
+          "minimum": 5,
+          "maximum": 5,
+          "range": 0,
+          "mean_absolute_pairwise_difference": 0.0
+        },
+        "emotional_reader_effect": {
+          "values": [
+            5,
+            5,
+            5,
+            5,
+            5
+          ],
+          "mean": 5.0,
+          "sample_standard_deviation": 0.0,
+          "minimum": 5,
+          "maximum": 5,
+          "range": 0,
+          "mean_absolute_pairwise_difference": 0.0
+        },
+        "narrative_architecture": {
+          "values": [
+            4,
+            4,
+            5,
+            4,
+            5
+          ],
+          "mean": 4.4,
+          "sample_standard_deviation": 0.5477225575051661,
+          "minimum": 4,
+          "maximum": 5,
+          "range": 1,
+          "mean_absolute_pairwise_difference": 0.6
+        },
+        "prose_voice": {
+          "values": [
+            5,
+            5,
+            5,
+            5,
+            5
+          ],
+          "mean": 5.0,
+          "sample_standard_deviation": 0.0,
+          "minimum": 5,
+          "maximum": 5,
+          "range": 0,
+          "mean_absolute_pairwise_difference": 0.0
+        },
+        "thematic_complexity": {
+          "values": [
+            5,
+            5,
+            5,
+            5,
+            5
+          ],
+          "mean": 5.0,
+          "sample_standard_deviation": 0.0,
+          "minimum": 5,
+          "maximum": 5,
+          "range": 0,
+          "mean_absolute_pairwise_difference": 0.0
+        },
+        "worldbuilding_integration": {
+          "values": [
+            5,
+            5,
+            5,
+            5,
+            5
+          ],
+          "mean": 5.0,
+          "sample_standard_deviation": 0.0,
+          "minimum": 5,
+          "maximum": 5,
+          "range": 0,
+          "mean_absolute_pairwise_difference": 0.0
+        }
+      },
+      "dimension_exact_all_run_agreement_rate": 0.8333333333333334
+    },
+    "holistic_anchored": {
+      "evidence_quote_exact_match": {
+        "exact": 16,
+        "total": 20,
+        "rate": 0.8
+      },
+      "score": {
+        "values": [
+          6,
+          6,
+          6,
+          6,
+          6
+        ],
+        "mean": 6.0,
+        "sample_standard_deviation": 0.0,
+        "minimum": 6,
+        "maximum": 6,
+        "range": 0,
+        "mean_absolute_pairwise_difference": 0.0
+      }
+    }
+  },
+  "cross_batch": {
+    "same_run_leaf_agreement": {
+      "values": [
+        0.9325842696629213,
+        0.9325842696629213,
+        0.898876404494382,
+        0.9101123595505618,
+        0.9550561797752809
+      ],
+      "mean": 0.9258426966292135,
+      "sample_standard_deviation": 0.021902908640020143,
+      "minimum": 0.898876404494382,
+      "maximum": 0.9550561797752809,
+      "range": 0.0561797752808989,
+      "mean_absolute_pairwise_difference": 0.02696629213483146
+    },
+    "batched_24_minus_single_batch_score": {
+      "values": [
+        3.4388999999999896,
+        1.885799999999989,
+        1.2151000000000067,
+        -1.118700000000004,
+        3.70089999999999
+      ],
+      "mean": 1.8243999999999942,
+      "sample_standard_deviation": 1.9470950516089311,
+      "minimum": -1.118700000000004,
+      "maximum": 3.70089999999999,
+      "range": 4.819599999999994,
+      "mean_absolute_pairwise_difference": 2.372599999999994
+    },
+    "mean_absolute_score_difference": 2.271879999999996
+  },
+  "interpretation_limits": [
+    "One story and five repetitions support a descriptive case study, not universal model or rubric superiority.",
+    "Native scales are reported separately and are not subtracted from each other.",
+    "High repeatability does not by itself prove literary validity.",
+    "Illustrative subtle findings are exploratory and are labeled as such."
+  ]
+}

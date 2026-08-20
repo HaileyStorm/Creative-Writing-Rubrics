@@ -124,6 +124,7 @@ Stable IDs (`module_id`, `question_id`, `bundle_id`, `criterion_key`) are the pu
 
 ## Guides
 
+- [Repeatability study with a complete published story](evaluation-results/the-part-that-arrives-first-repeatability/)
 - [Real long-form draft comparison](https://github.com/HaileyStorm/Creative-Writing-Rubrics/tree/main/evaluation-results/gray-blood-ch1-6)
 - [Run a headless judge](docs/judging.md)
 - [Embed in another app](docs/apps.md)
@@ -154,4 +155,4 @@ Apache License 2.0. See [LICENSE](LICENSE) and [NOTICE](NOTICE). Bibliography en
 
 ## Verification
 
-The release is tested from a fresh clone and isolated wheel install, through the CLI and Python APIs, against strict schemas and both a fake local OpenAI-compatible endpoint and GPT-5.6 via Codex CLI. The public six-chapter case study includes the full publishable score breakdowns and diagnostics; the private manuscript is not distributed.
+The release is tested from a fresh clone and isolated wheel install, through the CLI and Python APIs, against strict schemas and both a fake local OpenAI-compatible endpoint and GPT-5.6 via Codex CLI. The public six-chapter case study includes the full publishable score breakdowns and diagnostics; the private manuscript is not distributed. A separate five-run study publishes its complete story, frozen design, detailed outputs, and repeatability analysis.

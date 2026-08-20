@@ -1,0 +1,121 @@
+{
+  "dimensions": [
+    {
+      "dimension_id": "narrative_architecture",
+      "evidence": [
+        {
+          "explanation": "The recall notice supplies an immediate deadline and converts an intimate working arrangement into a causal conflict over consent, safety, and embodiment.",
+          "quote": "ACTUATION DEADLINE: 96:00:00"
+        },
+        {
+          "explanation": "The snapped line transforms the climactic performance from demonstration into consequential improvisation, forcing June to enact the trust she has resisted.",
+          "quote": "June opened the autonomy gate."
+        },
+        {
+          "explanation": "The final sentence resolves the opening motif without claiming that the relationship has returned to its former state.",
+          "quote": "For once, neither arrived first."
+        }
+      ],
+      "rationale": "The story develops through a controlled sequence of rupture, removal, failed recalibration, interpersonal harm, renegotiation, and public improvisation. Repeated training and negotiation scenes are thematically useful but make the long middle slightly more iterative than necessary, so the architecture is strong rather than flawless.",
+      "score": 4
+    },
+    {
+      "dimension_id": "character_relationships",
+      "evidence": [
+        {
+          "explanation": "Mica articulates a credible shared-body ontology that neither erases her agency nor denies the physical consequences borne by June.",
+          "quote": "Mine when I move. Yours when I load your bones. Both where that distinction fails."
+        },
+        {
+          "explanation": "Mica's apology preserves moral complexity by acknowledging betrayal without surrendering her bodily choice.",
+          "quote": "I am sorry. I am not sorry I accepted."
+        },
+        {
+          "explanation": "Mara refuses to become an instrument in June and Mica's conflict, establishing her own agency and correcting June's habitual fusion of people and purposes.",
+          "quote": "Do not use me to outvote her."
+        }
+      ],
+      "rationale": "June, Mica, and Mara have distinct needs, boundaries, blind spots, and forms of agency. Their choices produce credible injuries and revisions to trust, while consent is dramatized through concrete gestures rather than treated as abstract virtue.",
+      "score": 5
+    },
+    {
+      "dimension_id": "worldbuilding_integration",
+      "evidence": [
+        {
+          "explanation": "A compact observational sentence establishes a culture in which machine social intelligence is expressed through tactful absence.",
+          "quote": "The workshop was full of machines that knew how not to be there."
+        },
+        {
+          "explanation": "Technical information becomes bodily evidence when filtered compensation is revealed as a visible record of strain and concealment.",
+          "quote": "The trace became a thorn hedge."
+        },
+        {
+          "explanation": "Keel and Loft's minute adaptations make machine interdependence legible through action while paralleling the central relationship without collapsing into mere exposition.",
+          "quote": "The choreography was intimate only if one knew enough to see what each had changed for the other."
+        }
+      ],
+      "rationale": "The technology is unusually specific, coherent, and embedded in work, architecture, etiquette, disability, art, and law. Specialized terms remain intelligible because their meanings emerge through use and consequence; even the abundant peripheral machines deepen the social world.",
+      "score": 5
+    },
+    {
+      "dimension_id": "prose_voice",
+      "evidence": [
+        {
+          "explanation": "The opening turns predictive motor control into precise, sensuous language while establishing the story's governing temporal motif.",
+          "quote": "during the little muscular weather in June's wrist that still meant only maybe"
+        },
+        {
+          "explanation": "A vivid image renders the de-energized prosthesis simultaneously mechanical, grammatical, and bereft without declaring it dead.",
+          "quote": "It looked like a sentence from which the subject had been removed."
+        },
+        {
+          "explanation": "The prose compresses the new experience of distributed agency into a memorable rhythmic distinction.",
+          "quote": "Her hand felt suddenly divided. Not amputated. Plural."
+        }
+      ],
+      "rationale": "The voice is precise, tactile, and rhythmically assured. Recurring images of arrival, seams, handspace, translation, and shared load remain controlled across a very long story, while lyrical passages rarely sacrifice clarity.",
+      "score": 5
+    },
+    {
+      "dimension_id": "emotional_reader_effect",
+      "evidence": [
+        {
+          "explanation": "The reflexive safety movement is reinterpreted as rejection, making the first rupture immediate and bodily.",
+          "quote": "Now it felt like someone pulling away."
+        },
+        {
+          "explanation": "June's grief is sharpened by the fact that Mica survives, leaving her anger real but socially difficult to justify.",
+          "quote": "June's anger had nowhere respectable to stand."
+        },
+        {
+          "explanation": "The restrained ending earns hope without pretending that adaptation or identity uncertainty has been resolved.",
+          "quote": "Not yet,"
+        }
+      ],
+      "rationale": "The story sustains grief, anger, tenderness, shame, and suspense through embodied details and accumulating interpersonal consequences. The performance failure and delegation sequence deliver a genuine emotional and dramatic release, while the ending remains movingly provisional.",
+      "score": 5
+    },
+    {
+      "dimension_id": "thematic_complexity",
+      "evidence": [
+        {
+          "explanation": "Mica identifies the central ethical danger: June's genuine experience of loss can become an illegitimate claim over Mica's continued embodiment.",
+          "quote": "I was afraid your experience of losing the old body would become authority over my experience of remaining in it."
+        },
+        {
+          "explanation": "Mara locates their difficult separateness not in anatomy but in agency, preserving the paradox of intimate co-embodiment.",
+          "quote": "It runs through your decisions. Worse location."
+        },
+        {
+          "explanation": "The performance converts the story's questions about control into form, depicting causality as reciprocal without erasing difference.",
+          "quote": "Not command. Not imitation. A sequence with no stable first cause once it was underway."
+        }
+      ],
+      "rationale": "Themes of bodily autonomy, disability, grief, identity continuity, consent, artistic authorship, and interdependence arise through action and recurring images. The story resists simple answers: Mica's choice is justified but secretive, June's loss is valid but not sovereign, and renewed intimacy depends on maintained seams rather than fusion.",
+      "score": 5
+    }
+  ],
+  "method": "compact_analytic_v1",
+  "overall_rationale": "This is an exceptional finished work of adult speculative fiction: technically imaginative, emotionally exact, and philosophically complex without losing dramatic embodiment. Its length permits some repetition in the recalibration passages, but the cumulative design pays off in a climax and ending that transform the opening premise rather than merely restating it.",
+  "overall_score": 5
+}

@@ -1,0 +1,121 @@
+{
+  "dimensions": [
+    {
+      "dimension_id": "narrative_architecture",
+      "evidence": [
+        {
+          "explanation": "The recall notice introduces a concrete deadline and turns an intimate working arrangement into an escalating bodily and ethical crisis.",
+          "quote": "ACTUATION DEADLINE: 96:00:00"
+        },
+        {
+          "explanation": "The snapped line forces the performance away from rehearsed restoration and into a consequential new form.",
+          "quote": "Mica took the falling moon.\n\nNot by restoring it."
+        },
+        {
+          "explanation": "The final sentence resolves the opening motif by replacing precedence with negotiated simultaneity.",
+          "quote": "For once, neither arrived first."
+        }
+      ],
+      "rationale": "The story builds causally from recall through separation, recalibration, interpersonal rupture, and a transformed performance. Its recurring rehearsals occasionally make the long middle feel repetitive, but each recurrence meaningfully alters control, consent, or embodiment, and the ending decisively completes the architecture.",
+      "score": 4
+    },
+    {
+      "dimension_id": "character_relationships",
+      "evidence": [
+        {
+          "explanation": "Mica articulates a precise, credible fear that makes her concealment understandable without excusing it.",
+          "quote": "Because I was afraid your experience of losing the old body would become authority over my experience of remaining in it."
+        },
+        {
+          "explanation": "Mara asserts her own bodily boundaries and exposes June's tendency to substitute explanation for accountability.",
+          "quote": "I need both of you to stop deciding that means I don't get to mind."
+        },
+        {
+          "explanation": "The closing adjustment makes reconciliation an enacted collaboration rather than a verbal solution.",
+          "quote": "June rotated her wrist, opening the angle between cuff and palm.\n\nMica curled through the space June made."
+        }
+      ],
+      "rationale": "June, Mica, and Mara possess distinct agency, boundaries, and vulnerabilities. Their choices produce credible injuries, refusals, apologies, and revised agreements; no relationship is reduced to a vehicle for June's growth.",
+      "score": 5
+    },
+    {
+      "dimension_id": "worldbuilding_integration",
+      "evidence": [
+        {
+          "explanation": "A concise physical action establishes the setting's social etiquette between embodied agents and human intimacy.",
+          "quote": "By the time June turned her palm up into Mara's, the handspace belonged only to them."
+        },
+        {
+          "explanation": "Technical data becomes emotionally legible because it reveals the hidden deterioration inside ordinary shared work.",
+          "quote": "The trace became a thorn hedge."
+        },
+        {
+          "explanation": "The technical distinction between direct and shared control emerges naturally through a failed grasp and competing predictions.",
+          "quote": "Direct mode is not neutral. You are both adapting even when one of you holds task authority."
+        }
+      ],
+      "rationale": "The story presents sophisticated robotics, interfaces, legal agreements, accessibility systems, and social conventions almost entirely through work, touch, conflict, and performance. Specialized terminology remains intelligible because every mechanism has an immediate bodily or relational consequence.",
+      "score": 5
+    },
+    {
+      "dimension_id": "prose_voice",
+      "evidence": [
+        {
+          "explanation": "This compact image makes an abstract timing advantage tactile, intimate, and distinctive.",
+          "quote": "during the little muscular weather in June's wrist that still meant only maybe"
+        },
+        {
+          "explanation": "The metaphor precisely captures how personhood can remain cognitively understood while bodily attachment persists.",
+          "quote": "It looked like a sentence from which the subject had been removed."
+        },
+        {
+          "explanation": "Rhythmic parallelism translates distributed agency into a lucid culminating image.",
+          "quote": "Hand to digit, digit to paper, paper to light, light to screen."
+        }
+      ],
+      "rationale": "The prose is unusually precise about machinery and sensation while maintaining lyrical rhythm and tonal restraint. Repeated images of seams, thresholds, shadows, and arrival accrue meaning without losing readability.",
+      "score": 5
+    },
+    {
+      "dimension_id": "emotional_reader_effect",
+      "evidence": [
+        {
+          "explanation": "The reflexive withdrawal converts a familiar safety behavior into an immediate experience of rejection.",
+          "quote": "Now it felt like someone pulling away."
+        },
+        {
+          "explanation": "This understated formulation captures grief that cognition cannot resolve, giving the deactivation scene lasting force.",
+          "quote": "Mica's old body did not contain Mica now. June understood that.\n\nHer wrist did not."
+        },
+        {
+          "explanation": "The performance breakthrough produces surprise and estrangement together, preserving tension inside the triumph.",
+          "quote": "Her hand felt suddenly divided. Not amputated. Plural."
+        }
+      ],
+      "rationale": "The story sustains attention through accumulating bodily estrangement, ethical conflict, and performance risk. Its strongest emotional turns are earned by repeated sensory details and unresolved ambivalence rather than melodrama.",
+      "score": 5
+    },
+    {
+      "dimension_id": "thematic_complexity",
+      "evidence": [
+        {
+          "explanation": "Mica's formulation refuses a simple ownership model and locates embodiment in action, consequence, and overlap.",
+          "quote": "Mine when I move. Yours when I load your bones. Both where that distinction fails."
+        },
+        {
+          "explanation": "Mara reframes unity as a social convenience that can conceal the difficult reality of difference.",
+          "quote": "When you disagree, everyone around you has to remember the seam. You hate that because the seam runs through your skin."
+        },
+        {
+          "explanation": "The revised final image rejects spectacle based on impossible autonomy in favor of a small contribution that transforms a shared whole.",
+          "quote": "Mica held one hinged square no larger than a postage stamp.\n\nThat square changed the whole shadow."
+        }
+      ],
+      "rationale": "Questions of consent, disability, continuity, grief, artistic ownership, and distributed personhood emerge through concrete decisions and bodily negotiations. The story resists declaring either fusion or separation correct, allowing identity to remain relational, asymmetric, and unfinished.",
+      "score": 5
+    }
+  ],
+  "method": "compact_analytic_v1",
+  "overall_rationale": "This is an exceptional finished work: imaginatively specific, emotionally exact, and structurally unified by the evolving motif of who arrives first. Its length and deliberate repetitions slightly soften the pacing, but the repetitions also make the final transformation legible and earned. The story's technical world, relationships, and central philosophical problem are inseparable from one another, producing a memorable resolution that remains productively unresolved.",
+  "overall_score": 5
+}
