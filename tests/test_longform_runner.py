@@ -209,7 +209,12 @@ class _LongFormHandler(BaseHTTPRequestHandler):
                         else "YES"
                     ),
                     "confidence": 0.9,
-                    "evidence": [{"reference": "unit:synthetic", "quote": "Synthetic evidence."}],
+                    "evidence": [{
+                        "kind": "summary",
+                        "reference": "unit:synthetic",
+                        "exact_quote": None,
+                        "summary": "Synthetic evidence.",
+                    }],
                     "note": (
                         "The declared work in progress does not activate this completion-only criterion."
                         if question.get("applies_when") == "Only when a finished work is supplied."

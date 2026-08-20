@@ -5,7 +5,9 @@ Apply the supplied HBQ-RS bundle to the supplied artifact and evidence packet.
 For each selected question:
 - return exactly one verdict: YES, NO, NOT_APPLICABLE, or CANNOT_ASSESS;
 - return confidence from 0.0 to 1.0;
-- cite the minimum necessary artifact span, source ID, image region, panel, or audio timestamp;
+- provide each evidence item with nonblank `reference`, `kind`, `exact_quote`, and `summary` fields; set `kind` to `exact_quote` or `summary`, put the nonblank selected value in its matching field, and set the other field to JSON `null`;
+- use `exact_quote` only for a contiguous, verbatim substring of the supplied artifact or context; do not combine, normalize, or paraphrase it;
+- use `summary` for an evidence description that is not a verbatim quote; never place a summary in `exact_quote`;
 - provide a concise note of at most two sentences;
 - do not rely on a verdict for a neighboring question;
 - do not infer whole-work success from an excerpt;

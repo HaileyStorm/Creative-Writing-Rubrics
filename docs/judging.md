@@ -31,6 +31,8 @@ cwr judge draft.txt \
 
 Codex runs ephemerally with user configuration, project rules, shell, agents, apps, browsing, computer use, image tools, skills, and tool suggestions disabled. It receives the artifact through standard input and must return a response matching `schema/hbq_judge_response.schema.json`; the reported OpenAI provider, model, and reasoning effort must match the request. Use `--context brief.txt` for a brief, canon note, or other declared evidence; the option is repeatable. Use `--strict-ai` when the artifact was AI-generated or AI-modified and the stricter judge prefix is appropriate.
 
+Judge evidence is typed. An `exact_quote` must be a nonblank contiguous substring of the supplied artifact or context and is checked before a checkpoint is accepted; non-verbatim support belongs in `summary`. The model-facing schema uses an explicit `kind` discriminator and nullable wire fields for strict Structured Outputs compatibility, then the runner stores the normalized compact form. Older normalized verdicts that used `quote` remain valid input to the scorer.
+
 Use `--task-contract contract.json` when a brief should affect scoring or eligibility. The file must match `schema/hbq_task_contract.schema.json`. `weighted_goals` affect the task-domain score; only atomic, objective, explicitly non-negotiable `binding_requirements` become hard gates. Context, preferences, aspirations, and inferred author intent are never silently promoted into gates. The same contract can be supplied to `cwr compile`, `cwr render-judge`, and `cwr score`.
 
 `--temperature` applies only to the OpenAI-compatible backend. `--reasoning` applies only to Codex CLI; unsupported combinations fail instead of being ignored.

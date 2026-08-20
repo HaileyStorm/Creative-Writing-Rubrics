@@ -379,6 +379,79 @@ def _render_prompt(
     return "\n".join(sections).rstrip() + "\n"
 
 
+def _validate_exact_quotes(
+    evidence: Sequence[Mapping[str, Any]],
+    *,
+    artifact_text: str,
+    context_texts: Sequence[str],
+    question_id: str,
+) -> None:
+    sources = (artifact_text, *context_texts)
+    for index, item in enumerate(evidence, start=1):
+        quote = item.get("exact_quote")
+        if quote is None:
+            continue
+        if not isinstance(quote, str) or not quote.strip():
+            raise HBQError(f"Evidence item {index} for {question_id} has an empty exact_quote")
+        if not any(quote in source for source in sources):
+            raise HBQError(
+                f"Evidence item {index} for {question_id} has an exact_quote that does not occur verbatim "
+                "in the supplied artifact or context"
+            )
+
+
+def _normalize_evidence(evidence: Sequence[Mapping[str, Any]], *, question_id: str) -> list[dict[str, str]]:
+    normalized: list[dict[str, str]] = []
+    for index, item in enumerate(evidence, start=1):
+        reference = item.get("reference")
+        kind = item.get("kind")
+        exact_quote = item.get("exact_quote")
+        summary = item.get("summary")
+        if not isinstance(reference, str) or not reference.strip():
+            raise HBQError(f"Evidence item {index} for {question_id} has an empty reference")
+        if kind == "exact_quote":
+            if not isinstance(exact_quote, str) or not exact_quote.strip() or summary is not None:
+                raise HBQError(
+                    f"Evidence item {index} for {question_id} must contain one nonblank exact_quote and null summary"
+                )
+            normalized.append({"reference": reference, "exact_quote": exact_quote})
+        elif kind == "summary":
+            if not isinstance(summary, str) or not summary.strip() or exact_quote is not None:
+                raise HBQError(
+                    f"Evidence item {index} for {question_id} must contain one nonblank summary and null exact_quote"
+                )
+            normalized.append({"reference": reference, "summary": summary})
+        else:
+            raise HBQError(f"Evidence item {index} for {question_id} has invalid kind {kind!r}")
+    return normalized
+
+
+def _validate_typed_checkpoint_evidence(evidence: Sequence[Mapping[str, Any]], *, question_id: str) -> None:
+    if not evidence:
+        raise HBQError(
+            f"Response checkpoint evidence for {question_id} must contain exactly one nonblank exact_quote or summary"
+        )
+    for index, item in enumerate(evidence, start=1):
+        reference = item.get("reference")
+        exact_quote = item.get("exact_quote")
+        summary = item.get("summary")
+        allowed_keys = {"reference", "exact_quote", "summary"}
+        if set(item) - allowed_keys or "quote" in item:
+            raise HBQError(f"Response checkpoint evidence item {index} for {question_id} is not typed")
+        if not isinstance(reference, str) or not reference.strip():
+            raise HBQError(f"Response checkpoint evidence item {index} for {question_id} has an empty reference")
+        has_exact_quote = isinstance(exact_quote, str) and bool(exact_quote.strip())
+        has_summary = isinstance(summary, str) and bool(summary.strip())
+        if has_exact_quote == has_summary:
+            raise HBQError(
+                f"Response checkpoint evidence item {index} for {question_id} must contain exactly one "
+                "nonblank exact_quote or summary"
+            )
+        expected_keys = {"reference", "exact_quote"} if has_exact_quote else {"reference", "summary"}
+        if set(item) != expected_keys:
+            raise HBQError(f"Response checkpoint evidence item {index} for {question_id} is not compact typed evidence")
+
+
 def _normalize_batch(
     payload: Mapping[str, Any],
     *,
@@ -387,6 +460,8 @@ def _normalize_batch(
     bundle_id: str,
     judge_id: str,
     run_id: str,
+    artifact_text: str,
+    context_texts: Sequence[str],
 ) -> list[dict[str, Any]]:
     strict_errors = sorted(
         Draft202012Validator(_response_schema()).iter_errors(payload),
@@ -412,6 +487,17 @@ def _normalize_batch(
         verdict = str(item.get("verdict", "")).upper()
         if verdict not in VERDICTS:
             raise HBQError(f"Judge returned invalid verdict {verdict!r} for {question_id}")
+        wire_evidence = item.get("evidence")
+        if not isinstance(wire_evidence, list) or not all(isinstance(entry, dict) for entry in wire_evidence):
+            raise HBQError(f"Judge returned invalid evidence for {question_id}")
+        evidence = _normalize_evidence(wire_evidence, question_id=question_id)
+        _validate_exact_quotes(
+            evidence,
+            artifact_text=artifact_text,
+            context_texts=context_texts,
+            question_id=question_id,
+        )
+        item["evidence"] = evidence
         item.update(
             {
                 "artifact_id": artifact_id,
@@ -465,7 +551,12 @@ def _verdicts_bytes(verdicts: Sequence[Mapping[str, Any]]) -> bytes:
     return "".join(json.dumps(item, ensure_ascii=False, sort_keys=True) + "\n" for item in verdicts).encode("utf-8")
 
 
-def _load_checkpoints(output_dir: Path) -> tuple[list[dict[str, Any]], int, str | None]:
+def _load_checkpoints(
+    output_dir: Path,
+    *,
+    artifact_text: str,
+    context_texts: Sequence[str],
+) -> tuple[list[dict[str, Any]], int, str | None]:
     response_dir = output_dir / "responses"
     paths = sorted(response_dir.glob("batch-[0-9][0-9][0-9][0-9].json")) if response_dir.is_dir() else []
     verdicts: list[dict[str, Any]] = []
@@ -476,8 +567,9 @@ def _load_checkpoints(output_dir: Path) -> tuple[list[dict[str, Any]], int, str 
             record = json.loads(raw)
         except json.JSONDecodeError as exc:
             raise HBQError(f"Invalid response checkpoint {path.name}: {exc}") from exc
-        if not isinstance(record, dict) or record.get("format_version") != 1 or record.get("batch") != expected_batch:
+        if not isinstance(record, dict) or record.get("format_version") not in {1, 2} or record.get("batch") != expected_batch:
             raise HBQError(f"Response checkpoints are not a contiguous ordered sequence at {path.name}")
+        checkpoint_format_version = record["format_version"]
         if record.get("previous_checkpoint_sha256") != previous_sha256:
             raise HBQError(f"Response checkpoint chain is broken at {path.name}")
         prompt_path = path.with_suffix(".prompt.txt.gz")
@@ -497,6 +589,21 @@ def _load_checkpoints(output_dir: Path) -> tuple[list[dict[str, Any]], int, str 
         question_ids = [item.get("question_id") for item in normalized]
         if record.get("question_ids") != question_ids:
             raise HBQError(f"Response checkpoint {path.name} question order does not match its verdicts")
+        for item in normalized:
+            question_id = item.get("question_id")
+            evidence = item.get("evidence")
+            if not isinstance(question_id, str) or not isinstance(evidence, list) or not all(
+                isinstance(entry, dict) for entry in evidence
+            ):
+                raise HBQError(f"Response checkpoint {path.name} contains invalid normalized evidence")
+            if checkpoint_format_version == 2:
+                _validate_typed_checkpoint_evidence(evidence, question_id=question_id)
+            _validate_exact_quotes(
+                evidence,
+                artifact_text=artifact_text,
+                context_texts=context_texts,
+                question_id=question_id,
+            )
         verdicts.extend(normalized)
         if record.get("verdicts_sha256") != _sha256_bytes(_verdicts_bytes(verdicts)):
             raise HBQError(f"Response checkpoint {path.name} verdict hash is invalid")
@@ -694,7 +801,11 @@ def run_judge(
         _write_json(schema_path, _response_schema())
 
     completed = _load_completed(verdicts_path)
-    checkpointed, checkpoint_count, previous_checkpoint_sha256 = _load_checkpoints(destination)
+    checkpointed, checkpoint_count, previous_checkpoint_sha256 = _load_checkpoints(
+        destination,
+        artifact_text=str(artifact["text"]),
+        context_texts=[str(item["text"]) for item in contexts],
+    )
     if completed != checkpointed[: len(completed)] or len(completed) > len(checkpointed):
         raise HBQError("verdicts.jsonl does not match the ordered response checkpoints")
     if len(completed) < len(checkpointed):
@@ -779,10 +890,12 @@ def run_judge(
             bundle_id=bundle_id,
             judge_id=judge_id,
             run_id=run_id,
+            artifact_text=str(artifact["text"]),
+            context_texts=[str(item["text"]) for item in contexts],
         )
         next_completed = [*completed, *normalized]
         response_record = {
-            "format_version": 1,
+            "format_version": 2,
             "batch": batch_number,
             "question_ids": expected,
             "prompt_sha256": _sha256_bytes(prompt_bytes),

@@ -43,13 +43,105 @@
         ],
         "properties": {
           "reference": {
-            "type": "string"
+            "type": "string",
+            "pattern": "\\S"
+          },
+          "exact_quote": {
+            "type": "string",
+            "pattern": "\\S",
+            "maxLength": 500
+          },
+          "summary": {
+            "type": "string",
+            "pattern": "\\S",
+            "maxLength": 500
           },
           "quote": {
             "type": "string",
+            "description": "Legacy untyped evidence retained for normalized historical verdict compatibility; new judge responses use exact_quote or summary.",
             "maxLength": 500
           }
         },
+        "oneOf": [
+          {
+            "required": [
+              "exact_quote"
+            ],
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "summary"
+                  ]
+                },
+                {
+                  "required": [
+                    "quote"
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "required": [
+              "summary"
+            ],
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "exact_quote"
+                  ]
+                },
+                {
+                  "required": [
+                    "quote"
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "required": [
+              "quote"
+            ],
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "exact_quote"
+                  ]
+                },
+                {
+                  "required": [
+                    "summary"
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "exact_quote"
+                  ]
+                },
+                {
+                  "required": [
+                    "summary"
+                  ]
+                },
+                {
+                  "required": [
+                    "quote"
+                  ]
+                }
+              ]
+            }
+          }
+        ],
         "additionalProperties": true
       }
     },

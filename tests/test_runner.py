@@ -2,12 +2,14 @@ from __future__ import annotations
 
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import gzip
+import hashlib
 import json
 from pathlib import Path
 import subprocess
 import threading
 
 import pytest
+from jsonschema import Draft202012Validator
 
 from hbqrs import HBQError, book_root
 from hbqrs.runner import _call_codex, _normalize_batch, _parse_model_json, run_judge
@@ -26,6 +28,12 @@ class _FakeOpenAIHandler(BaseHTTPRequestHandler):
     calls = 0
     response_model: str | None = None
     fail_on_call: int | None = None
+    evidence_item: dict[str, object] = {
+        "kind": "exact_quote",
+        "reference": "line:1",
+        "exact_quote": "A short test scene.",
+        "summary": None,
+    }
 
     def do_POST(self) -> None:  # noqa: N802 - standard-library handler API
         type(self).calls += 1
@@ -45,7 +53,7 @@ class _FakeOpenAIHandler(BaseHTTPRequestHandler):
                 "question_id": item["question_id"],
                 "verdict": "YES",
                 "confidence": 0.8,
-                "evidence": [{"reference": "line:1", "quote": "A short test scene."}],
+                "evidence": [dict(type(self).evidence_item)],
                 "note": "The requested operation is assessable.",
             }
             for item in _questions_from_prompt(prompt)
@@ -83,6 +91,12 @@ def fake_openai_endpoint():
     _FakeOpenAIHandler.calls = 0
     _FakeOpenAIHandler.response_model = None
     _FakeOpenAIHandler.fail_on_call = None
+    _FakeOpenAIHandler.evidence_item = {
+        "kind": "exact_quote",
+        "reference": "line:1",
+        "exact_quote": "A short test scene.",
+        "summary": None,
+    }
     server = ThreadingHTTPServer(("127.0.0.1", 0), _FakeOpenAIHandler)
     thread = threading.Thread(target=server.serve_forever, daemon=True)
     thread.start()
@@ -293,7 +307,7 @@ def test_provider_specific_options_are_rejected(tmp_path: Path) -> None:
         _run(tmp_path, reasoning="high")
 
 
-def test_strict_model_response_rejects_missing_note_and_quote() -> None:
+def test_strict_model_response_rejects_missing_note_and_typed_evidence() -> None:
     payload = {
         "verdicts": [
             {
@@ -312,7 +326,275 @@ def test_strict_model_response_rejects_missing_note_and_quote() -> None:
             bundle_id="prose.scene",
             judge_id="judge",
             run_id="run",
+            artifact_text="A short test scene.",
+            context_texts=[],
         )
+
+
+def test_strict_model_response_rejects_empty_evidence() -> None:
+    payload = {
+        "verdicts": [
+            {
+                "question_id": QUESTION_ID,
+                "verdict": "CANNOT_ASSESS",
+                "confidence": 0.8,
+                "evidence": [],
+                "note": "The supplied scope does not support assessment.",
+            }
+        ]
+    }
+    with pytest.raises(HBQError, match="strict response schema"):
+        _normalize_batch(
+            payload,
+            expected_ids=[QUESTION_ID],
+            artifact_id="artifact",
+            bundle_id="prose.scene",
+            judge_id="judge",
+            run_id="run",
+            artifact_text="A short test scene.",
+            context_texts=[],
+        )
+
+
+def test_exact_quote_must_be_grounded_in_artifact_or_context() -> None:
+    payload = {
+        "verdicts": [
+            {
+                "question_id": QUESTION_ID,
+                "verdict": "YES",
+                "confidence": 0.8,
+                "evidence": [
+                    {
+                        "kind": "exact_quote",
+                        "reference": "context:1",
+                        "exact_quote": "Context-only evidence.",
+                        "summary": None,
+                    }
+                ],
+                "note": "The requested operation is assessable.",
+            }
+        ]
+    }
+    normalized = _normalize_batch(
+        payload,
+        expected_ids=[QUESTION_ID],
+        artifact_id="artifact",
+        bundle_id="prose.scene",
+        judge_id="judge",
+        run_id="run",
+        artifact_text="A short test scene.",
+        context_texts=["Context-only evidence."],
+    )
+    assert normalized[0]["evidence"][0]["exact_quote"] == "Context-only evidence."
+
+    payload["verdicts"][0]["evidence"][0]["exact_quote"] = "Invented evidence."
+    with pytest.raises(HBQError, match="does not occur verbatim"):
+        _normalize_batch(
+            payload,
+            expected_ids=[QUESTION_ID],
+            artifact_id="artifact",
+            bundle_id="prose.scene",
+            judge_id="judge",
+            run_id="run",
+            artifact_text="A short test scene.",
+            context_texts=["Context-only evidence."],
+        )
+
+
+def test_strict_model_response_rejects_empty_exact_quote() -> None:
+    payload = {
+        "verdicts": [
+            {
+                "question_id": QUESTION_ID,
+                "verdict": "YES",
+                "confidence": 0.8,
+                "evidence": [
+                    {"kind": "exact_quote", "reference": "line:1", "exact_quote": "   ", "summary": None}
+                ],
+                "note": "The requested operation is assessable.",
+            }
+        ]
+    }
+    with pytest.raises(HBQError, match="nonblank exact_quote"):
+        _normalize_batch(
+            payload,
+            expected_ids=[QUESTION_ID],
+            artifact_id="artifact",
+            bundle_id="prose.scene",
+            judge_id="judge",
+            run_id="run",
+            artifact_text="A short test scene.",
+            context_texts=[],
+        )
+
+
+def test_summary_evidence_is_preserved_without_quote_grounding() -> None:
+    payload = {
+        "verdicts": [
+            {
+                "question_id": QUESTION_ID,
+                "verdict": "YES",
+                "confidence": 0.8,
+                "evidence": [
+                    {
+                        "kind": "summary",
+                        "reference": "line:1",
+                        "exact_quote": None,
+                        "summary": "The scene makes the operation explicit.",
+                    }
+                ],
+                "note": "The requested operation is assessable.",
+            }
+        ]
+    }
+    normalized = _normalize_batch(
+        payload,
+        expected_ids=[QUESTION_ID],
+        artifact_id="artifact",
+        bundle_id="prose.scene",
+        judge_id="judge",
+        run_id="run",
+        artifact_text="A short test scene.",
+        context_texts=[],
+    )
+    assert normalized[0]["evidence"] == [
+        {"reference": "line:1", "summary": "The scene makes the operation explicit."}
+    ]
+
+
+@pytest.mark.parametrize(
+    ("evidence", "message"),
+    [
+        (
+            {"kind": "exact_quote", "reference": " ", "exact_quote": "A short test scene.", "summary": None},
+            "empty reference",
+        ),
+        (
+            {
+                "kind": "exact_quote",
+                "reference": "line:1",
+                "exact_quote": "A short test scene.",
+                "summary": "A summary cannot accompany an exact quote.",
+            },
+            "one nonblank exact_quote and null summary",
+        ),
+    ],
+)
+def test_evidence_wire_discriminator_enforces_one_nonblank_value(
+    evidence: dict[str, object],
+    message: str,
+) -> None:
+    payload = {
+        "verdicts": [
+            {
+                "question_id": QUESTION_ID,
+                "verdict": "YES",
+                "confidence": 0.8,
+                "evidence": [evidence],
+                "note": "The requested operation is assessable.",
+            }
+        ]
+    }
+    with pytest.raises(HBQError, match=message):
+        _normalize_batch(
+            payload,
+            expected_ids=[QUESTION_ID],
+            artifact_id="artifact",
+            bundle_id="prose.scene",
+            judge_id="judge",
+            run_id="run",
+            artifact_text="A short test scene.",
+            context_texts=[],
+        )
+
+
+def test_normalized_verdict_schema_retains_legacy_quote_records() -> None:
+    schema = json.loads((book_root() / "schema" / "hbq_verdict.schema.json").read_text(encoding="utf-8"))
+    validator = Draft202012Validator(schema)
+    base = {
+        "artifact_id": "artifact",
+        "bundle_id": "prose.scene",
+        "question_id": QUESTION_ID,
+        "verdict": "YES",
+        "confidence": 0.8,
+    }
+    validator.validate({**base, "evidence": [{"reference": "line:1", "quote": "Legacy evidence."}]})
+    validator.validate({**base, "evidence": [{"reference": "line:1"}]})
+    validator.validate({**base, "evidence": []})
+
+
+def test_resume_rejects_ungrounded_checkpoint_quote_before_provider_call(
+    tmp_path: Path,
+    fake_openai_endpoint,
+) -> None:
+    base_url, handler = fake_openai_endpoint
+    _run(tmp_path, base_url=base_url)
+    checkpoint_path = tmp_path / "run" / "responses" / "batch-0001.json"
+    checkpoint = json.loads(checkpoint_path.read_text(encoding="utf-8"))
+    verdict = checkpoint["normalized_verdicts"][0]
+    verdict["evidence"][0]["exact_quote"] = "Not present in this artifact."
+    checkpoint["verdicts_sha256"] = hashlib.sha256(
+        (json.dumps(verdict, ensure_ascii=False, sort_keys=True) + "\n").encode("utf-8")
+    ).hexdigest()
+    checkpoint_path.write_text(json.dumps(checkpoint), encoding="utf-8")
+
+    with pytest.raises(HBQError, match="does not occur verbatim"):
+        _run(tmp_path, base_url=base_url, resume=True)
+    assert handler.calls == 1
+
+
+@pytest.mark.parametrize(
+    "evidence",
+    [
+        [],
+        [{"reference": "line:1"}],
+        [
+            {
+                "reference": "line:1",
+                "exact_quote": "A short test scene.",
+                "summary": "A second evidence representation.",
+            }
+        ],
+    ],
+)
+def test_resume_rejects_non_typed_current_checkpoint_evidence_before_provider_call(
+    tmp_path: Path,
+    fake_openai_endpoint,
+    evidence: list[dict[str, object]],
+) -> None:
+    base_url, handler = fake_openai_endpoint
+    _run(tmp_path, base_url=base_url)
+    checkpoint_path = tmp_path / "run" / "responses" / "batch-0001.json"
+    checkpoint = json.loads(checkpoint_path.read_text(encoding="utf-8"))
+    assert checkpoint["format_version"] == 2
+    verdict = checkpoint["normalized_verdicts"][0]
+    verdict["evidence"] = evidence
+    checkpoint["verdicts_sha256"] = hashlib.sha256(
+        (json.dumps(verdict, ensure_ascii=False, sort_keys=True) + "\n").encode("utf-8")
+    ).hexdigest()
+    checkpoint_path.write_text(json.dumps(checkpoint), encoding="utf-8")
+
+    with pytest.raises(HBQError, match="exactly one nonblank exact_quote or summary"):
+        _run(tmp_path, base_url=base_url, resume=True)
+    assert handler.calls == 1
+
+
+def test_runner_rejects_ungrounded_exact_quote_before_checkpoint(
+    tmp_path: Path,
+    fake_openai_endpoint,
+) -> None:
+    base_url, handler = fake_openai_endpoint
+    handler.evidence_item = {
+        "kind": "exact_quote",
+        "reference": "line:1",
+        "exact_quote": "Not present in this artifact.",
+        "summary": None,
+    }
+
+    with pytest.raises(HBQError, match="does not occur verbatim"):
+        _run(tmp_path, base_url=base_url)
+    assert handler.calls == 1
+    assert not (tmp_path / "run" / "responses" / "batch-0001.json").exists()
 
 
 def test_strict_model_response_rejects_top_level_list() -> None:
@@ -374,7 +656,14 @@ def test_codex_backend_uses_schema_and_read_only_ephemeral_exec(tmp_path: Path, 
                     "question_id": item["question_id"],
                     "verdict": "YES",
                     "confidence": 0.9,
-                    "evidence": [{"reference": "line:1", "quote": "A short test scene."}],
+                    "evidence": [
+                        {
+                            "kind": "exact_quote",
+                            "reference": "line:1",
+                            "exact_quote": "A short test scene.",
+                            "summary": None,
+                        }
+                    ],
                     "note": "The operation can be assessed from the supplied scene.",
                 }
                 for item in questions
@@ -398,7 +687,10 @@ def test_codex_backend_uses_schema_and_read_only_ephemeral_exec(tmp_path: Path, 
     schema = json.loads((tmp_path / "run" / "response.schema.json").read_text(encoding="utf-8"))
     verdict_schema = schema["properties"]["verdicts"]["items"]
     assert verdict_schema["additionalProperties"] is False
-    assert verdict_schema["properties"]["evidence"]["items"]["additionalProperties"] is False
+    evidence_schema = verdict_schema["properties"]["evidence"]["items"]
+    assert evidence_schema["additionalProperties"] is False
+    assert evidence_schema["required"] == ["kind", "reference", "exact_quote", "summary"]
+    assert not {"oneOf", "anyOf", "not"}.intersection(evidence_schema)
     response = json.loads((tmp_path / "run" / "responses" / "batch-0001.json").read_text(encoding="utf-8"))
     assert "stderr_tail" not in response["provider"]
 
