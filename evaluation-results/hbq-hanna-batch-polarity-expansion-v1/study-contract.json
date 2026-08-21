@@ -1,0 +1,53 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-hanna-batch-polarity-expansion-v1",
+  "status": "preregistered_development_only_no_empirical_results",
+  "frozen_before_execution": true,
+  "parent_study": "hbq-hanna-batch-polarity-pilot-v1",
+  "stories": ["hanna-225", "hanna-178", "hanna-817", "hanna-382"],
+  "reused_story": "hanna-225",
+  "new_stories": ["hanna-178", "hanna-817", "hanna-382"],
+  "conditions": [
+    "global_positive_batch32",
+    "global_negative_batch32",
+    "single_positive_batch1",
+    "single_negative_batch1"
+  ],
+  "latin_rows": {
+    "L0": ["global_positive_batch32", "global_negative_batch32", "single_positive_batch1", "single_negative_batch1"],
+    "L1": ["global_negative_batch32", "single_positive_batch1", "single_negative_batch1", "global_positive_batch32"],
+    "L2": ["single_positive_batch1", "single_negative_batch1", "global_positive_batch32", "global_negative_batch32"],
+    "L3": ["single_negative_batch1", "global_positive_batch32", "global_negative_batch32", "single_positive_batch1"]
+  },
+  "story_rows": {
+    "hanna-225": ["L0", "L1", "L2"],
+    "hanna-178": ["L1", "L2", "L3"],
+    "hanna-817": ["L2", "L3", "L0"],
+    "hanna-382": ["L3", "L0", "L1"]
+  },
+  "geometry": {
+    "calls_per_story": 198,
+    "reused_calls": 198,
+    "new_provider_calls": 594,
+    "combined_session_commitments": 792
+  },
+  "twelfth_story_rule": {
+    "status": "frozen_before_expansion_execution",
+    "existing_prefix_size": 11,
+    "selector": "from the authoritative frozen HANNA repeatability selection, retain its declared ordered first eleven IDs and choose the first remaining eligible ID in that same frozen order; reject a missing, duplicate, reordered, or outcome-derived authority input",
+    "selection_time": "during preparation before any expansion attempt directory may exist",
+    "result_is_not_used_by_this_four_story_package": true
+  },
+  "metrics": {
+    "repeatability": ["canonical_leaf_flip_rate", "coverage_change", "confidence_by_stability"],
+    "cross_story": ["condition_summary", "exploratory_signed_kendall_tau_b", "exploratory_spearman"],
+    "confidence": "diagnostic_only_not_human_calibration"
+  },
+  "human_ratings_policy": "Use only published HANNA ratings supplied offline to analysis. No fresh or live human judging is permitted.",
+  "decision_policy": {
+    "recommendation": null,
+    "promotion": "forbidden",
+    "automatic_follow_on": "forbidden",
+    "outcome_dependent_selection": "forbidden"
+  }
+}
