@@ -185,10 +185,10 @@ def _valid_hbq_batch32(work: Path, *, run_number: int = 1) -> tuple[object, obje
     compiled = core.compile_bundle(core.load_modules(paths.registry_path()), bundle)
     roles = {"hard_gate": 0, "domain": 1, "penalty": 2, "supplemental": 3}
     ids = [item["question"]["id"] for item in sorted(core.compiled_questions(compiled), key=lambda item: roles.get(item["role"], 99))]
-    configuration = {"artifact": {"sha256": contract["source"]["sha256"], "bytes": contract["source"]["bytes"]}, "bundle_id": "prose.short_story", "question_ids": ids, "artifact_id": "the-part-that-arrives-first", "provider": "codex", "model": "gpt-5.6-sol", "reasoning": "high", "batch_size": 32, "strict_ai": True, "prompts": [{"sha256": contract["asset_hashes"]["binary_prompt"]}, {"sha256": contract["asset_hashes"]["judge_prefix"]}], "response_schema": {"sha256": contract["asset_hashes"]["response_schema"]}}
+    configuration = {"artifact": {"sha256": contract["source"]["sha256"], "bytes": contract["source"]["bytes"]}, "bundle_id": "prose.short_story", "question_ids": ids, "artifact_id": "the-part-that-arrives-first", "provider": "codex", "model": "gpt-5.6-sol", "reasoning": "high", "batch_size": 32, "retry_policy": {"batch_attempts": 3}, "strict_ai": True, "prompts": [{"sha256": contract["asset_hashes"]["binary_prompt"]}, {"sha256": contract["asset_hashes"]["judge_prefix"]}], "response_schema": {"sha256": contract["asset_hashes"]["response_schema"]}}
     base = work / "hbq_short_story_batch32" / f"run-{run_number:02d}"
     run_id = f"run-{run_number:02d}"
-    _write_json(base / "run.json", {"format_version": 1, "run_id": run_id, "config_sha256": hashlib.sha256(analysis._runner_json_bytes(configuration)).hexdigest(), "configuration": configuration})
+    _write_json(base / "run.json", {"format_version": 2, "run_id": run_id, "config_sha256": hashlib.sha256(analysis._runner_json_bytes(configuration)).hexdigest(), "configuration": configuration})
     all_verdicts = []
     previous = None
     for batch, start in enumerate(range(0, len(ids), 32), start=1):
@@ -198,7 +198,10 @@ def _valid_hbq_batch32(work: Path, *, run_number: int = 1) -> tuple[object, obje
         prompt = f"batch-{batch}".encode()
         (base / "responses").mkdir(parents=True, exist_ok=True)
         (base / "responses" / f"batch-{batch:04d}.prompt.txt.gz").write_bytes(gzip.compress(prompt, mtime=0))
-        response = {"format_version": 2, "batch": batch, "question_ids": chunk, "prompt_sha256": hashlib.sha256(prompt).hexdigest(), "response_sha256": "0" * 64, "previous_checkpoint_sha256": previous, "verdicts_sha256": hashlib.sha256(analysis._verdicts_bytes(all_verdicts)).hexdigest(), "provider": {"reported": {"provider": "openai", "model": "gpt-5.6-sol", "reasoning_effort": "high", "session_id": f"hbq-{run_number}-{batch}"}}, "normalized_verdicts": verdicts}
+        message = f'{{"content":"batch-{batch}"}}'.encode()
+        message_path = base / "responses" / f"batch-{batch:04d}.message.json"
+        message_path.write_bytes(message)
+        response = {"format_version": 3, "batch": batch, "question_ids": chunk, "prompt_sha256": hashlib.sha256(prompt).hexdigest(), "response_sha256": hashlib.sha256(message).hexdigest(), "response_artifact": {"path": message_path.relative_to(base).as_posix(), "bytes": len(message), "sha256": hashlib.sha256(message).hexdigest()}, "retry_policy": {"batch_attempts": 3}, "accepted_attempt": 1, "rejected_chain": {"count": 0, "head_sha256": None}, "previous_checkpoint_sha256": previous, "verdicts_sha256": hashlib.sha256(analysis._verdicts_bytes(all_verdicts)).hexdigest(), "provider": {"reported": {"provider": "openai", "model": "gpt-5.6-sol", "reasoning_effort": "high", "session_id": f"hbq-{run_number}-{batch}"}}, "normalized_verdicts": verdicts}
         response_path = base / "responses" / f"batch-{batch:04d}.json"
         _write_json(response_path, response)
         previous = hashlib.sha256(response_path.read_bytes()).hexdigest()
@@ -237,6 +240,63 @@ def test_hbq_rejects_broken_chain_and_swapped_batch_chunk(tmp_path: Path) -> Non
     _write_json(first, record)
     with pytest.raises(Exception, match="question order"):
         analysis._validate_hbq_run(tmp_path / "swap", 1)
+
+
+def test_hbq_legacy_manifest_and_checkpoint_message_fallback(tmp_path: Path) -> None:
+    analysis, _, base = _valid_hbq_batch32(tmp_path / "legacy")
+    manifest = json.loads((base / "run.json").read_text(encoding="utf-8"))
+    manifest["format_version"] = 1
+    manifest["configuration"].pop("retry_policy")
+    manifest["config_sha256"] = hashlib.sha256(analysis._runner_json_bytes(manifest["configuration"])).hexdigest()
+    _write_json(base / "run.json", manifest)
+    previous = None
+    for checkpoint in sorted((base / "responses").glob("batch-[0-9][0-9][0-9][0-9].json")):
+        record = json.loads(checkpoint.read_text(encoding="utf-8"))
+        record["format_version"] = 2
+        for key in ("retry_policy", "accepted_attempt", "response_artifact", "rejected_chain"):
+            record.pop(key)
+        record["previous_checkpoint_sha256"] = previous
+        _write_json(checkpoint, record)
+        previous = hashlib.sha256(checkpoint.read_bytes()).hexdigest()
+    _, score, _ = analysis._validate_hbq_run(tmp_path / "legacy", 1)
+    assert score["retry_provenance"]["accepted_attempts"] == []
+
+
+def test_hbq_rejects_unbound_v3_response_and_rejected_retry_chain(tmp_path: Path) -> None:
+    analysis, _, base = _valid_hbq_batch32(tmp_path / "retry")
+    checkpoint = base / "responses" / "batch-0006.json"
+    record = json.loads(checkpoint.read_text(encoding="utf-8"))
+    record["response_artifact"]["sha256"] = "0" * 64
+    _write_json(checkpoint, record)
+    with pytest.raises(Exception, match="artifact"):
+        analysis._validate_hbq_run(tmp_path / "retry", 1)
+    analysis, _, base = _valid_hbq_batch32(tmp_path / "retry-chain")
+    checkpoint = base / "responses" / "batch-0006.json"
+    record = json.loads(checkpoint.read_text(encoding="utf-8"))
+    rejected = base / "responses" / "rejected" / "batch-0006"
+    rejected.mkdir(parents=True)
+    raw = b'{"content":"invalid"}'
+    raw_path = rejected / "attempt-0001.message.txt"
+    raw_path.write_bytes(raw)
+    attempt = {"format_version": 2, "batch": 6, "attempt": 1, "sequence": 1, "previous_rejected_sha256": None, "stage": "grounding", "retry_policy": {"batch_attempts": 3}, "prompt_sha256": record["prompt_sha256"], "raw_content": {"path": raw_path.relative_to(base).as_posix(), "bytes": len(raw), "sha256": hashlib.sha256(raw).hexdigest()}, "provider": None, "error": {"class": "HBQError", "message": "fixture"}}
+    attempt_path = rejected / "attempt-0001.json"
+    _write_json(attempt_path, attempt)
+    record["accepted_attempt"] = 2
+    record["rejected_chain"] = {"count": 1, "head_sha256": hashlib.sha256(attempt_path.read_bytes()).hexdigest()}
+    _write_json(checkpoint, record)
+    _, score, _ = analysis._validate_hbq_run(tmp_path / "retry-chain", 1)
+    assert score["retry_provenance"]["rejected_attempt_count"] == 1
+    raw_path.unlink()
+    attempt["format_version"] = 3
+    attempt["raw_content"] = {"encoding": "utf-8", "text": raw.decode(), "bytes": len(raw), "sha256": hashlib.sha256(raw).hexdigest()}
+    _write_json(attempt_path, attempt)
+    record["rejected_chain"] = {"count": 1, "head_sha256": hashlib.sha256(attempt_path.read_bytes()).hexdigest()}
+    _write_json(checkpoint, record)
+    _, score, _ = analysis._validate_hbq_run(tmp_path / "retry-chain", 1)
+    assert score["retry_provenance"]["rejected_attempt_count"] == 1
+    (rejected / "attempt-0002.message.txt").write_bytes(b"orphan")
+    with pytest.raises(Exception, match="unmatched"):
+        analysis._validate_hbq_run(tmp_path / "retry-chain", 1)
 
 
 def test_global_45_session_duplicate_is_rejected() -> None:

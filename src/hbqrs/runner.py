@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from copy import deepcopy
 from datetime import datetime, timezone
 import gzip
 import hashlib
@@ -13,6 +14,7 @@ import shutil
 import subprocess
 import sys
 from typing import Any, Mapping, Sequence
+import uuid
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlparse
 from urllib.request import HTTPRedirectHandler, Request, build_opener
@@ -35,6 +37,42 @@ from .weights import materialize_weight_profile
 
 
 MAX_RESPONSE_BYTES = 16 * 1024 * 1024
+NOUS_REASONING = "max"
+NOUS_MODEL_POLICIES = {
+    "deepseek/deepseek-v4-flash-0731": {
+        "provider_canonical_model": "deepseek/deepseek-v4-flash-20260731",
+        "required_reasoning_effort": "max",
+    },
+    "deepseek/deepseek-v4-pro-0813": {
+        "provider_canonical_model": "deepseek/deepseek-v4-pro-20260813",
+        "required_reasoning_effort": "max",
+    },
+}
+NOUS_LAUNCHER_PATH = Path.home() / ".codex" / "tools" / "launch-bridge.ps1"
+NOUS_TRANSPORT_POLICY = {
+    "schema": "codex-nous-tool-free-judge-transport-v1",
+    "logical_requests_per_attempt": 1,
+    "max_physical_attempts_per_logical_request": 2,
+    "retry_policy_version": "hardened-v2-provider-attempts-v1",
+    "retryable_statuses": [408, 409, 425, 429],
+}
+
+
+class _ProviderAttemptFailure(HBQError):
+    """A provider failure whose retry policy and received bytes are explicit."""
+
+    def __init__(
+        self,
+        message: str,
+        *,
+        retryable: bool,
+        content: str | None = None,
+        provider_record: Mapping[str, Any] | None = None,
+    ) -> None:
+        super().__init__(message)
+        self.retryable = retryable
+        self.content = content
+        self.provider_record = dict(provider_record) if provider_record is not None else None
 
 
 class _NoRedirect(HTTPRedirectHandler):
@@ -172,22 +210,61 @@ def _call_openai(
         with build_opener(_NoRedirect).open(request, timeout=timeout) as opened:
             body = opened.read(MAX_RESPONSE_BYTES + 1)
             if len(body) > MAX_RESPONSE_BYTES:
-                raise HBQError(f"OpenAI-compatible response exceeded {MAX_RESPONSE_BYTES} bytes")
+                raise _ProviderAttemptFailure(
+                    f"OpenAI-compatible response exceeded {MAX_RESPONSE_BYTES} bytes",
+                    retryable=True,
+                )
             response = json.loads(body.decode("utf-8"))
     except HTTPError as exc:
-        detail = exc.read(2000).decode("utf-8", errors="replace")
-        raise HBQError(f"OpenAI-compatible endpoint returned HTTP {exc.code}: {detail}") from exc
-    except (URLError, TimeoutError, json.JSONDecodeError) as exc:
-        raise HBQError(f"OpenAI-compatible endpoint failed: {exc}") from exc
+        detail = exc.read(MAX_RESPONSE_BYTES + 1)
+        if len(detail) > MAX_RESPONSE_BYTES:
+            detail = detail[:MAX_RESPONSE_BYTES]
+        content = detail.decode("utf-8", errors="replace")
+        raise _ProviderAttemptFailure(
+            f"OpenAI-compatible endpoint returned HTTP {exc.code}: {content[:2000]}",
+            retryable=exc.code == 408 or exc.code == 429 or exc.code >= 500,
+            content=content,
+        ) from exc
+    except (URLError, TimeoutError) as exc:
+        raise _ProviderAttemptFailure(
+            f"OpenAI-compatible endpoint failed: {exc}", retryable=True
+        ) from exc
+    except json.JSONDecodeError as exc:
+        raise _ProviderAttemptFailure(
+            f"OpenAI-compatible endpoint returned invalid JSON: {exc}",
+            retryable=True,
+            content=body.decode("utf-8", errors="replace"),
+        ) from exc
+    raw_response = body.decode("utf-8", errors="replace")
+    if not isinstance(response, Mapping):
+        raise _ProviderAttemptFailure(
+            "OpenAI-compatible response envelope must be an object",
+            retryable=True,
+            content=raw_response,
+        )
     effective_model = response.get("model")
     if not isinstance(effective_model, str) or not effective_model:
-        raise HBQError("OpenAI-compatible response did not report its effective model")
-    if effective_model != model and not allow_model_mismatch:
-        raise HBQError(
-            f"OpenAI-compatible endpoint reported model {effective_model!r}, not requested {model!r}; "
-            "pass --allow-model-mismatch only if this aliasing is expected"
+        raise _ProviderAttemptFailure(
+            "OpenAI-compatible response did not report its effective model",
+            retryable=False,
+            content=raw_response,
+            provider_record=dict(response),
         )
-    return _openai_content(response), dict(response)
+    if effective_model != model and not allow_model_mismatch:
+        raise _ProviderAttemptFailure(
+            f"OpenAI-compatible endpoint reported model {effective_model!r}, not requested {model!r}; "
+            "pass --allow-model-mismatch only if this aliasing is expected",
+            retryable=False,
+            content=raw_response,
+            provider_record=dict(response),
+        )
+    try:
+        content = _openai_content(response)
+    except HBQError as exc:
+        raise _ProviderAttemptFailure(
+            str(exc), retryable=True, content=raw_response, provider_record=dict(response)
+        ) from exc
+    return content, dict(response)
 
 
 def _command_argv(executable: str, arguments: Sequence[str]) -> list[str]:
@@ -228,8 +305,11 @@ def _call_codex(
     response_schema: Path,
     batch_number: int,
     timeout: float,
+    attempt_number: int = 1,
 ) -> tuple[str, dict[str, Any]]:
-    message_path = output_dir / "responses" / f"batch-{batch_number:04d}.message.json"
+    message_path = output_dir / "responses" / f"batch-{batch_number:04d}.attempt-{attempt_number:04d}.message.json"
+    if message_path.exists():
+        raise HBQError(f"Codex attempt output path already exists: {message_path.name}")
     message_path.parent.mkdir(parents=True, exist_ok=True)
     arguments = [
         "exec",
@@ -297,7 +377,10 @@ def _call_codex(
             check=False,
         )
     except (OSError, subprocess.TimeoutExpired) as exc:
-        raise HBQError(f"Codex CLI failed to run: {exc}") from exc
+        raise _ProviderAttemptFailure(
+            f"Codex CLI failed to run: {exc}",
+            retryable=isinstance(exc, subprocess.TimeoutExpired),
+        ) from exc
     if completed.returncode != 0:
         error_start = completed.stderr.rfind("ERROR:")
         if error_start >= 0:
@@ -305,9 +388,20 @@ def _call_codex(
         else:
             lines = [line.strip() for line in completed.stderr.splitlines() if line.strip()]
             detail = "\n".join(lines[-12:])[:4000] or "no structured provider error was reported"
-        raise HBQError(f"Codex CLI exited {completed.returncode}: {detail}")
+        content = message_path.read_text(encoding="utf-8") if message_path.is_file() else completed.stdout or None
+        lower_detail = detail.lower()
+        permanent = any(token in lower_detail for token in ("authentication", "unauthorized", "invalid model", "unknown model", "configuration"))
+        raise _ProviderAttemptFailure(
+            f"Codex CLI exited {completed.returncode}: {detail}",
+            retryable=not permanent,
+            content=content,
+            provider_record={"reported": _codex_reported_settings(completed.stderr)},
+        )
     if not message_path.is_file():
-        raise HBQError("Codex CLI completed without writing its final response")
+        raise _ProviderAttemptFailure(
+            "Codex CLI completed without writing its final response",
+            retryable=True,
+        )
     reported = _codex_reported_settings(completed.stderr)
     expected = {"model": model, "provider": "openai", "reasoning_effort": reasoning}
     mismatches = {
@@ -316,13 +410,442 @@ def _call_codex(
         if reported.get(key) != value
     }
     if mismatches:
-        raise HBQError(f"Codex CLI effective settings did not match the request: {json.dumps(mismatches)}")
+        raise _ProviderAttemptFailure(
+            f"Codex CLI effective settings did not match the request: {json.dumps(mismatches)}",
+            retryable=False,
+            content=message_path.read_text(encoding="utf-8"),
+            provider_record={"reported": reported},
+        )
     return message_path.read_text(encoding="utf-8"), {
         "command": [executable, *arguments[:-1], "<prompt-via-stdin>"],
         "reported": reported,
     }
 
 
+def _grok_cli_version(*, executable: str, timeout: float) -> str:
+    """Return the installed CLI version without starting a provider session."""
+
+    try:
+        completed = subprocess.run(
+            _command_argv(executable, ["--version"]),
+            text=True,
+            encoding="utf-8",
+            capture_output=True,
+            timeout=min(timeout, 30.0),
+            check=False,
+        )
+    except (OSError, subprocess.TimeoutExpired) as exc:
+        raise HBQError(f"Grok CLI version check failed: {exc}") from exc
+    if completed.returncode != 0:
+        detail = completed.stderr.strip()[:1000] or "no version output was reported"
+        raise HBQError(f"Grok CLI version check exited {completed.returncode}: {detail}")
+    version = completed.stdout.strip()
+    if not version:
+        raise HBQError("Grok CLI version check completed without a version")
+    return version[:500]
+
+
+def _grok_structured_output(
+    *,
+    stdout: str,
+    model: str,
+    reasoning: str,
+    cli_version: str,
+    allow_unattested_reasoning: bool,
+) -> tuple[str, dict[str, Any]]:
+    """Accept only the empirically mapped Grok Build headless envelope."""
+
+    try:
+        envelope = json.loads(stdout)
+    except json.JSONDecodeError as exc:
+        raise HBQError(f"Grok CLI returned invalid JSON output: {exc}") from exc
+    if not isinstance(envelope, Mapping):
+        raise HBQError("Grok CLI output envelope must be an object")
+    structured = envelope.get("structuredOutput")
+    if not isinstance(structured, Mapping):
+        raise HBQError("Grok CLI output envelope lacks an object structuredOutput")
+    model_usage = envelope.get("modelUsage")
+    if not isinstance(model_usage, Mapping) or len(model_usage) != 1:
+        raise HBQError("Grok CLI output envelope must contain exactly one modelUsage entry")
+    reported_model, usage = next(iter(model_usage.items()))
+    session_id = envelope.get("sessionId")
+    request_id = envelope.get("requestId")
+    missing = [
+        key
+        for key, value in {
+            "sessionId": session_id,
+            "requestId": request_id,
+        }.items()
+        if not isinstance(value, str) or not value
+    ]
+    if missing or not isinstance(reported_model, str) or not reported_model or not isinstance(usage, Mapping):
+        raise HBQError(
+            "Grok CLI output envelope is not yet an accepted attested mapping; "
+            f"missing {', '.join(missing) if missing else 'modelUsage metadata'}"
+        )
+    if envelope.get("stopReason") != "end_turn" or envelope.get("num_turns") != 1:
+        raise HBQError("Grok CLI output envelope did not complete exactly one normal turn")
+    if not allow_unattested_reasoning:
+        raise HBQError("Grok Build CLI does not attest reasoning; pass --allow-unattested-reasoning")
+    approved_model = {"grok-4.6": "grok-4.6-build"}.get(model)
+    if reported_model != approved_model:
+        raise HBQError(
+            "Grok CLI effective settings did not match the request: "
+            + json.dumps(
+                {
+                    "model": {"expected": model, "reported": reported_model},
+                }
+            )
+        )
+    return json.dumps(dict(structured), ensure_ascii=False), {
+        "cli_version": cli_version,
+        "requested": {"model": model, "reasoning_effort": reasoning},
+        "reported": {
+            "provider": "grok",
+            "model": reported_model,
+        },
+        "session_id_sha256": _sha256_bytes(session_id.encode("utf-8")),
+        "request_id_sha256": _sha256_bytes(request_id.encode("utf-8")),
+        "reasoning_attested": False,
+        "reasoning_attestation": "not_reported_by_grok_build_cli",
+    }
+
+
+def _provider_artifact(output_dir: Path, path: Path) -> dict[str, Any]:
+    raw = path.read_bytes()
+    return {"path": path.relative_to(output_dir).as_posix(), "bytes": len(raw), "sha256": _sha256_bytes(raw)}
+
+
+def _provider_tree_digest(output_dir: Path, path: Path) -> dict[str, Any]:
+    files = sorted(item for item in path.rglob("*") if item.is_file())
+    entries = [
+        {"path": item.relative_to(path).as_posix(), "bytes": len(item.read_bytes()), "sha256": _sha256_bytes(item.read_bytes())}
+        for item in files
+    ]
+    return {"path": path.relative_to(output_dir).as_posix(), "files": len(entries), "sha256": _sha256_bytes(_json_bytes(entries))}
+
+
+def _validate_provider_artifacts(output_dir: Path, record: Mapping[str, Any]) -> None:
+    provider = record.get("provider")
+    artifacts = provider.get("provider_artifacts") if isinstance(provider, Mapping) else None
+    if artifacts is None:
+        return
+    if not isinstance(artifacts, Mapping):
+        raise HBQError("Accepted provider artifacts are malformed")
+    for name, item in artifacts.items():
+        if not isinstance(name, str) or not isinstance(item, Mapping):
+            raise HBQError("Accepted provider artifacts are malformed")
+        relative = item.get("path")
+        if not isinstance(relative, str):
+            raise HBQError("Accepted provider artifact lacks a path")
+        path = output_dir / relative
+        try:
+            path.resolve().relative_to(output_dir.resolve())
+        except ValueError as exc:
+            raise HBQError("Accepted provider artifact path escapes the run") from exc
+        if name == "evidence_tree":
+            if not path.is_dir() or _provider_tree_digest(output_dir, path) != dict(item):
+                raise HBQError("Accepted provider evidence artifact is not bound")
+        elif not path.is_file() or _provider_artifact(output_dir, path) != dict(item):
+            raise HBQError("Accepted provider artifact is not bound")
+
+
+def _call_grok(
+    *,
+    executable: str,
+    model: str,
+    reasoning: str,
+    prompt: str,
+    output_dir: Path,
+    response_schema: Path,
+    batch_number: int,
+    timeout: float,
+    attempt_number: int = 1,
+    allow_unattested_reasoning: bool = False,
+) -> tuple[str, dict[str, Any]]:
+    """Run one isolated Grok Build CLI structured-output evaluation.
+
+    The command deliberately has no resume/continue flag, uses a fresh UUID,
+    limits execution to one turn, and permits no tool surface.  Its native JSON
+    envelope is verified before any content reaches the common rubric parser.
+    """
+
+    prompt_path = output_dir / "responses" / f"batch-{batch_number:04d}.attempt-{attempt_number:04d}.prompt.txt"
+    if prompt_path.exists():
+        raise HBQError(f"Grok attempt prompt path already exists: {prompt_path.name}")
+    try:
+        schema_text = response_schema.read_text(encoding="utf-8")
+        json.loads(schema_text)
+    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+        raise HBQError(f"Cannot read Grok JSON Schema {response_schema}: {exc}") from exc
+    prompt_path.parent.mkdir(parents=True, exist_ok=True)
+    _atomic_write(prompt_path, prompt.encode("utf-8"))
+    try:
+        cli_version = _grok_cli_version(executable=executable, timeout=timeout)
+    except HBQError as exc:
+        raise _ProviderAttemptFailure(str(exc), retryable=False) from exc
+    session_id = str(uuid.uuid4())
+    arguments = [
+        "--prompt-file",
+        str(prompt_path),
+        "--model",
+        model,
+        "--reasoning-effort",
+        reasoning,
+        "--output-format",
+        "json",
+        "--json-schema",
+        schema_text,
+        "--session-id",
+        session_id,
+        "--max-turns",
+        "1",
+        "--no-leader",
+        "--no-subagents",
+        "--disable-web-search",
+        "--no-plan",
+        "--tools",
+        "",
+        "--permission-mode",
+        "dontAsk",
+        "--sandbox",
+        "read-only",
+        "--verbatim",
+        "--cwd",
+        str(output_dir),
+        "--system-prompt-override",
+        "Act as an isolated structured-output evaluator. Do not use memory, tools, web, plans, or subagents.",
+    ]
+    try:
+        completed = subprocess.run(
+            _command_argv(executable, arguments),
+            text=True,
+            encoding="utf-8",
+            capture_output=True,
+            timeout=timeout,
+            check=False,
+        )
+    except (OSError, subprocess.TimeoutExpired) as exc:
+        raise _ProviderAttemptFailure(
+            f"Grok CLI failed to run: {exc}",
+            retryable=isinstance(exc, subprocess.TimeoutExpired),
+        ) from exc
+    if completed.returncode != 0:
+        detail = completed.stderr.strip()[:4000] or "no structured provider error was reported"
+        lower_detail = detail.lower()
+        permanent = any(token in lower_detail for token in ("authentication", "unauthorized", "invalid model", "unknown model", "schema", "configuration"))
+        raise _ProviderAttemptFailure(
+            f"Grok CLI exited {completed.returncode}: {detail}",
+            retryable=not permanent,
+            content=completed.stdout or None,
+            provider_record={
+                "cli_version": cli_version,
+                "requested": {"model": model, "reasoning_effort": reasoning},
+            },
+        )
+    try:
+        content, record = _grok_structured_output(
+            stdout=completed.stdout,
+            model=model,
+            reasoning=reasoning,
+            cli_version=cli_version,
+            allow_unattested_reasoning=allow_unattested_reasoning,
+        )
+        envelope_path = output_dir / "responses" / f"batch-{batch_number:04d}.attempt-{attempt_number:04d}.grok.envelope.json"
+        _atomic_write(envelope_path, completed.stdout.encode("utf-8"))
+        record["provider_artifacts"] = {"grok_envelope": _provider_artifact(output_dir, envelope_path)}
+        return content, record
+    except HBQError as exc:
+        raise _ProviderAttemptFailure(
+            str(exc),
+            retryable=False,
+            content=completed.stdout,
+            provider_record={
+                "cli_version": cli_version,
+                "requested": {"model": model, "reasoning_effort": reasoning},
+            },
+        ) from exc
+
+
+def _nous_launcher_argv(arguments: Sequence[str]) -> list[str]:
+    launcher = NOUS_LAUNCHER_PATH
+    if not launcher.is_file():
+        raise _ProviderAttemptFailure("Canonical Nous bridge launcher is unavailable", retryable=False)
+    # The pinned launcher rejects noncanonical/reparse invocation before it can load credentials.
+    return ["powershell.exe", "-NoProfile", "-NonInteractive", "-File", str(launcher), *arguments]
+
+
+def _run_nous_launcher(arguments: Sequence[str], *, timeout: float) -> subprocess.CompletedProcess[str]:
+    try:
+        return subprocess.run(
+            _nous_launcher_argv(arguments),
+            text=True,
+            encoding="utf-8",
+            capture_output=True,
+            timeout=timeout,
+            check=False,
+        )
+    except subprocess.TimeoutExpired as exc:
+        raise _ProviderAttemptFailure("Nous bridge launcher timed out", retryable=True) from exc
+    except OSError as exc:
+        raise _ProviderAttemptFailure(f"Nous bridge launcher failed to run: {exc}", retryable=False) from exc
+
+
+def _nous_failure(*, completed: subprocess.CompletedProcess[str], label: str) -> _ProviderAttemptFailure:
+    detail = (completed.stderr or completed.stdout or "no bridge error was reported").strip()[:4000]
+    permanent_terms = (
+        "http 402",
+        "stop marker",
+        "credential",
+        "authentication",
+        "unauthorized",
+        "judge request",
+        "schema",
+        "canonical installed",
+        "model",
+        "reasoning",
+    )
+    return _ProviderAttemptFailure(
+        f"Nous bridge {label} exited {completed.returncode}: {detail}",
+        retryable=not any(term in detail.lower() for term in permanent_terms),
+        content=completed.stdout or completed.stderr or None,
+    )
+
+
+def _call_nous(
+    *,
+    model: str,
+    reasoning: str,
+    prompt: str,
+    output_dir: Path,
+    response_schema: Path,
+    batch_number: int,
+    timeout: float,
+    attempt_number: int = 1,
+    allow_unattested_reasoning: bool = False,
+) -> tuple[str, dict[str, Any]]:
+    """Use the hardened bridge's tool-free judge mode, never direct HTTP."""
+
+    policy = NOUS_MODEL_POLICIES.get(model)
+    if policy is None or reasoning != NOUS_REASONING:
+        raise _ProviderAttemptFailure(
+            "Nous requires an allowlisted Flash-0731 or Pro-0813 model and reasoning 'max'", retryable=False
+        )
+    try:
+        schema = json.loads(response_schema.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+        raise _ProviderAttemptFailure(f"Cannot read Nous JSON Schema {response_schema}: {exc}", retryable=False) from exc
+    if not isinstance(schema, dict):
+        raise _ProviderAttemptFailure("Nous JSON Schema must be an object", retryable=False)
+    response_dir = output_dir / "responses"
+    stem = f"batch-{batch_number:04d}.attempt-{attempt_number:04d}.nous"
+    request_path = response_dir / f"{stem}.request.json"
+    result_path = response_dir / f"{stem}.result.json"
+    evidence_root = response_dir / f"{stem}.evidence"
+    if any(path.exists() for path in (request_path, result_path, evidence_root)):
+        raise _ProviderAttemptFailure(f"Nous attempt path already exists: {stem}", retryable=False)
+    request = {
+        "schema": "codex-nous-tool-free-judge-request-v1",
+        "model": model,
+        "reasoning_effort": reasoning,
+        "messages": [
+            {"role": "system", "content": "You are a careful HBQ-RS evaluator. Do not use tools or reveal chain-of-thought."},
+            {"role": "user", "content": prompt},
+        ],
+        "response_format": {
+            "type": "json_schema",
+            "json_schema": {"name": "hbqrs_judge", "strict": True, "schema": schema},
+        },
+    }
+    _atomic_write(request_path, _json_bytes(request))
+    evidence_root.mkdir(parents=True, exist_ok=False)
+    proof_run = _run_nous_launcher(["-ProveLock", "-EvidenceRoot", str(evidence_root)], timeout=timeout)
+    if proof_run.returncode != 0:
+        raise _nous_failure(completed=proof_run, label="serialization proof")
+    try:
+        proof_payload = json.loads(proof_run.stdout)
+        proof_path = Path(proof_payload["proof_path"])
+    except (json.JSONDecodeError, KeyError, TypeError) as exc:
+        raise _ProviderAttemptFailure("Nous bridge returned an invalid serialization proof", retryable=False, content=proof_run.stdout) from exc
+    if not proof_path.is_file():
+        raise _ProviderAttemptFailure("Nous bridge did not create its serialization proof", retryable=False, content=proof_run.stdout)
+    judge_run = _run_nous_launcher(
+        [
+            "-JudgeRequest", str(request_path),
+            "-JudgeResult", str(result_path),
+            "-EvidenceRoot", str(evidence_root),
+            "-SerializationProof", str(proof_path),
+        ],
+        timeout=timeout,
+    )
+    if judge_run.returncode != 0:
+        raise _nous_failure(completed=judge_run, label="judge")
+    try:
+        outcome = json.loads(result_path.read_text(encoding="utf-8"))
+        result = outcome["result"]
+        metadata = outcome["metadata"]
+    except (OSError, UnicodeError, json.JSONDecodeError, KeyError, TypeError) as exc:
+        raise _ProviderAttemptFailure("Nous bridge result is malformed", retryable=True, content=judge_run.stdout) from exc
+    if (
+        outcome.get("schema") != "codex-nous-tool-free-judge-result-v1"
+        or not isinstance(result, Mapping)
+        or not isinstance(metadata, Mapping)
+        or metadata.get("requested_provider") != "nous"
+        or metadata.get("requested_model") != model
+        or metadata.get("provider_reported_model") not in {model, policy["provider_canonical_model"]}
+        or metadata.get("provider_canonical_model") != policy["provider_canonical_model"]
+        or metadata.get("judge_model_policy") != {"requested_model": model, **policy}
+        or metadata.get("requested_reasoning_effort") != NOUS_REASONING
+        or metadata.get("tool_free") is not True
+        or metadata.get("tool_mode") != "judge"
+        or metadata.get("tool_call_count") != 0
+        or metadata.get("judge_transport_policy") != NOUS_TRANSPORT_POLICY
+        or metadata.get("logical_provider_request_count") != 1
+        or not isinstance(metadata.get("physical_http_attempt_count"), int)
+        or not 1 <= metadata["physical_http_attempt_count"] <= NOUS_TRANSPORT_POLICY["max_physical_attempts_per_logical_request"]
+        or not isinstance(metadata.get("recovered_request_count"), int)
+        or not 0 <= metadata["recovered_request_count"] <= 1
+    ):
+        raise _ProviderAttemptFailure("Nous bridge result does not satisfy the tool-free judge contract", retryable=False, content=result_path.read_text(encoding="utf-8"))
+    reported_effort = metadata.get("provider_reported_reasoning_effort")
+    exact_gate_eligible = metadata.get("exact_gate_eligible")
+    if not isinstance(exact_gate_eligible, bool):
+        raise _ProviderAttemptFailure("Nous bridge exact-gate status is malformed", retryable=False, content=result_path.read_text(encoding="utf-8"))
+    evidence_validation = metadata.get("evidence_validation")
+    if not isinstance(evidence_validation, Mapping) or evidence_validation.get("valid") is not True:
+        raise _ProviderAttemptFailure("Nous bridge evidence validation is not valid", retryable=False, content=result_path.read_text(encoding="utf-8"))
+    if evidence_validation.get("exact_gate_eligible") != exact_gate_eligible:
+        raise _ProviderAttemptFailure("Nous bridge evidence validation disagrees with exact-gate status", retryable=False, content=result_path.read_text(encoding="utf-8"))
+    if reported_effort not in (None, "", NOUS_REASONING):
+        raise _ProviderAttemptFailure("Nous bridge reported an unexpected reasoning effort", retryable=False, content=result_path.read_text(encoding="utf-8"))
+    reasoning_attested = reported_effort == NOUS_REASONING
+    if (not reasoning_attested or not exact_gate_eligible) and not allow_unattested_reasoning:
+        raise _ProviderAttemptFailure(
+            "Nous bridge did not establish an exact reasoning gate; pass --allow-unattested-reasoning for provisional evidence",
+            retryable=False,
+            content=result_path.read_text(encoding="utf-8"),
+        )
+    return json.dumps(dict(result), ensure_ascii=False), {
+        "requested": {"model": model, "reasoning_effort": NOUS_REASONING},
+        "reported": {"provider": "nous", "model": metadata["provider_reported_model"]},
+        "provider_canonical_model": policy["provider_canonical_model"],
+        "reasoning_attested": reasoning_attested,
+        "reasoning_attestation": "provider_reported_max" if reasoning_attested else "provider_did_not_report_reasoning_effort",
+        "tool_free": True,
+        "evidence_sha256": _sha256_bytes(_json_bytes({"result": result, "metadata": metadata})),
+        "serialization_proof_sha256": _sha256_bytes(proof_path.read_bytes()),
+        "exact_gate_eligible": exact_gate_eligible,
+        "transport_policy": NOUS_TRANSPORT_POLICY,
+        "logical_provider_request_count": 1,
+        "physical_http_attempt_count": metadata["physical_http_attempt_count"],
+        "recovered_request_count": metadata["recovered_request_count"],
+        "provider_artifacts": {
+            "judge_request": _provider_artifact(output_dir, request_path),
+            "judge_result": _provider_artifact(output_dir, result_path),
+            "serialization_proof": _provider_artifact(output_dir, proof_path),
+            "evidence_tree": _provider_tree_digest(output_dir, evidence_root),
+        },
+    }
 def _question_payload(records: Sequence[Mapping[str, Any]]) -> list[dict[str, Any]]:
     result: list[dict[str, Any]] = []
     for record in records:
@@ -547,6 +1070,223 @@ def _write_verdicts(path: Path, verdicts: Sequence[Mapping[str, Any]]) -> None:
     _atomic_write(path, _verdicts_bytes(verdicts))
 
 
+def _next_codex_message_attempt(output_dir: Path, batch_number: int) -> int:
+    response_dir = output_dir / "responses"
+    prefix = f"batch-{batch_number:04d}.attempt-"
+    highest = 0
+    for path in response_dir.glob(f"{prefix}*"):
+        value = path.name.removeprefix(prefix).split(".", 1)[0]
+        if value.isdigit():
+            highest = max(highest, int(value))
+    return highest + 1
+
+
+def _write_accepted_response_artifact(
+    *, output_dir: Path, batch_number: int, content: str
+) -> dict[str, Any]:
+    """Persist the exact accepted model message before its checkpoint binds it."""
+
+    response_dir = output_dir / "responses"
+    prefix = f"batch-{batch_number:04d}.accepted-"
+    highest = 0
+    for candidate in response_dir.glob(f"{prefix}*.message.txt"):
+        suffix = candidate.name.removeprefix(prefix).removesuffix(".message.txt")
+        if suffix.isdigit():
+            highest = max(highest, int(suffix))
+    path = response_dir / f"{prefix}{highest + 1:04d}.message.txt"
+    raw = content.encode("utf-8")
+    _atomic_write(path, raw)
+    return {
+        "path": path.relative_to(output_dir).as_posix(),
+        "bytes": len(raw),
+        "sha256": _sha256_bytes(raw),
+    }
+
+
+def _sanitized_provider_record(record: Mapping[str, Any] | None) -> dict[str, Any] | None:
+    if record is None:
+        return None
+    result: dict[str, Any] = {}
+    for key in (
+        "id", "model", "cli_version", "session_id_sha256", "request_id_sha256",
+        "reasoning_attestation", "evidence_sha256", "serialization_proof_sha256",
+    ):
+        value = record.get(key)
+        if isinstance(value, str):
+            result[key] = value
+    for key in ("reasoning_attested", "tool_free"):
+        if isinstance(record.get(key), bool):
+            result[key] = record[key]
+    for key in ("logical_provider_request_count", "physical_http_attempt_count", "recovered_request_count"):
+        if isinstance(record.get(key), int) and not isinstance(record.get(key), bool):
+            result[key] = record[key]
+    if record.get("transport_policy") == NOUS_TRANSPORT_POLICY:
+        result["transport_policy"] = deepcopy(NOUS_TRANSPORT_POLICY)
+    requested = record.get("requested")
+    if isinstance(requested, Mapping):
+        result["requested"] = {
+            key: value
+            for key, value in requested.items()
+            if key in {"model", "reasoning_effort"} and isinstance(value, str)
+        }
+    reported = record.get("reported")
+    if isinstance(reported, Mapping):
+        result["reported"] = {
+            key: value
+            for key, value in reported.items()
+            if key in {"model", "provider", "reasoning_effort"} and isinstance(value, str)
+        }
+    return result
+
+
+def _write_rejected_attempt(
+    *,
+    output_dir: Path,
+    batch_number: int,
+    prompt_sha256: str,
+    content: str | None,
+    provider_record: Mapping[str, Any] | None,
+    error: Exception,
+    stage: str,
+    batch_attempts: int,
+) -> Path:
+    attempt_dir = output_dir / "responses" / "rejected" / f"batch-{batch_number:04d}"
+    attempt_dir.mkdir(parents=True, exist_ok=True)
+    records = sorted(attempt_dir.glob("attempt-[0-9][0-9][0-9][0-9].json"))
+    for index, existing in enumerate(records, start=1):
+        if existing.name != f"attempt-{index:04d}.json":
+            raise HBQError(f"Rejected attempts are not contiguous at {existing}")
+    attempt_number = len(records) + 1
+    stem = f"attempt-{attempt_number:04d}"
+    record_path = attempt_dir / f"{stem}.json"
+    if record_path.exists():
+        raise HBQError(f"Rejected attempt path already exists: {record_path}")
+    previous_sha256 = _sha256_bytes(records[-1].read_bytes()) if records else None
+    all_records = sorted((output_dir / "responses" / "rejected").glob("batch-*/attempt-[0-9][0-9][0-9][0-9].json"))
+    sequences: list[int] = []
+    for existing in all_records:
+        try:
+            value = json.loads(existing.read_bytes())
+        except json.JSONDecodeError as exc:
+            raise HBQError(f"Cannot append after invalid rejected attempt {existing}") from exc
+        sequence = value.get("sequence") if isinstance(value, Mapping) else None
+        if not isinstance(sequence, int) or isinstance(sequence, bool) or sequence < 1:
+            raise HBQError(f"Cannot append after legacy or invalid rejected attempt {existing}")
+        sequences.append(sequence)
+    if sequences and sorted(sequences) != list(range(1, len(sequences) + 1)):
+        raise HBQError("Cannot append after noncontiguous rejected attempt sequences")
+    raw_text = content or ""
+    raw = raw_text.encode("utf-8")
+    record = {
+        "format_version": 3,
+        "batch": batch_number,
+        "attempt": attempt_number,
+        "sequence": len(sequences) + 1,
+        "previous_rejected_sha256": previous_sha256,
+        "stage": stage,
+        "retry_policy": {"batch_attempts": batch_attempts},
+        "prompt_sha256": prompt_sha256,
+        "raw_content": {
+            "encoding": "utf-8",
+            "text": raw_text,
+            "bytes": len(raw),
+            "sha256": _sha256_bytes(raw),
+        },
+        "provider": _sanitized_provider_record(provider_record),
+        "error": {"class": type(error).__name__, "message": str(error)[:4000]},
+    }
+    _write_json(record_path, record)
+    return record_path
+
+
+def _rejected_chain_binding(
+    output_dir: Path,
+    *,
+    batch_number: int,
+    prompt_sha256: str,
+    batch_attempts: int,
+) -> dict[str, Any]:
+    """Validate and bind all rejected retries preceding one accepted batch."""
+
+    root = output_dir / "responses" / "rejected"
+    records = sorted((root / f"batch-{batch_number:04d}").glob("attempt-[0-9][0-9][0-9][0-9].json"))
+    previous: str | None = None
+    for index, path in enumerate(records, start=1):
+        if path.name != f"attempt-{index:04d}.json":
+            raise HBQError(f"Rejected attempts are not contiguous at {path}")
+        try:
+            record = json.loads(path.read_bytes())
+        except json.JSONDecodeError as exc:
+            raise HBQError(f"Invalid rejected attempt {path}") from exc
+        raw_content = record.get("raw_content") if isinstance(record, Mapping) else None
+        if isinstance(record, Mapping) and record.get("format_version") == 2:
+            raw_path = path.with_suffix(".message.txt")
+            raw = raw_path.read_bytes() if raw_path.is_file() else None
+            valid_raw = (
+                raw is not None
+                and raw_content.get("bytes") == len(raw)
+                and raw_content.get("sha256") == _sha256_bytes(raw)
+                and raw_content.get("path") == raw_path.relative_to(output_dir).as_posix()
+            ) if isinstance(raw_content, Mapping) else False
+        elif isinstance(record, Mapping) and record.get("format_version") == 3:
+            raw_text = raw_content.get("text") if isinstance(raw_content, Mapping) else None
+            raw = raw_text.encode("utf-8") if isinstance(raw_text, str) else None
+            valid_raw = (
+                raw is not None
+                and raw_content.get("encoding") == "utf-8"
+                and raw_content.get("bytes") == len(raw)
+                and raw_content.get("sha256") == _sha256_bytes(raw)
+            ) if isinstance(raw_content, Mapping) else False
+        else:
+            valid_raw = False
+        if (
+            not isinstance(record, Mapping)
+            or record.get("format_version") not in {2, 3}
+            or record.get("batch") != batch_number
+            or record.get("attempt") != index
+            or record.get("prompt_sha256") != prompt_sha256
+            or record.get("retry_policy") != {"batch_attempts": batch_attempts}
+            or record.get("previous_rejected_sha256") != previous
+            or not isinstance(raw_content, Mapping)
+            or not valid_raw
+        ):
+            raise HBQError(f"Rejected attempt {path} is not a valid bound record")
+        previous = _sha256_bytes(path.read_bytes())
+    return {"count": len(records), "head_sha256": previous}
+
+
+def _validate_rejected_attempt_store(output_dir: Path) -> None:
+    """Reject unpaired retry bytes and global sequence tampering before resume."""
+
+    root = output_dir / "responses" / "rejected"
+    if not root.is_dir():
+        return
+    records = sorted(root.glob("batch-*/attempt-[0-9][0-9][0-9][0-9].json"))
+    expected_raw: set[Path] = set()
+    parsed_records: list[tuple[Path, Mapping[str, Any]]] = []
+    for path in records:
+        try:
+            record = json.loads(path.read_bytes())
+        except json.JSONDecodeError as exc:
+            raise HBQError(f"Invalid rejected attempt {path}") from exc
+        if not isinstance(record, Mapping):
+            raise HBQError(f"Rejected attempt {path} must be an object")
+        parsed_records.append((path, record))
+        if record.get("format_version") == 2:
+            expected_raw.add(path.with_suffix(".message.txt"))
+    raw_files = set(root.glob("batch-*/attempt-[0-9][0-9][0-9][0-9].message.txt"))
+    if raw_files != expected_raw:
+        raise HBQError("Rejected attempt store has unmatched raw message artifacts")
+    sequences: list[int] = []
+    for path, record in parsed_records:
+        sequence = record.get("sequence")
+        if not isinstance(sequence, int) or isinstance(sequence, bool):
+            raise HBQError(f"Rejected attempt {path} lacks a global sequence")
+        sequences.append(sequence)
+    if sorted(sequences) != list(range(1, len(sequences) + 1)):
+        raise HBQError("Rejected attempt store has noncontiguous global sequences")
+
+
 def _verdicts_bytes(verdicts: Sequence[Mapping[str, Any]]) -> bytes:
     return "".join(json.dumps(item, ensure_ascii=False, sort_keys=True) + "\n" for item in verdicts).encode("utf-8")
 
@@ -556,7 +1296,9 @@ def _load_checkpoints(
     *,
     artifact_text: str,
     context_texts: Sequence[str],
+    batch_attempts: int,
 ) -> tuple[list[dict[str, Any]], int, str | None]:
+    _validate_rejected_attempt_store(output_dir)
     response_dir = output_dir / "responses"
     paths = sorted(response_dir.glob("batch-[0-9][0-9][0-9][0-9].json")) if response_dir.is_dir() else []
     verdicts: list[dict[str, Any]] = []
@@ -567,7 +1309,7 @@ def _load_checkpoints(
             record = json.loads(raw)
         except json.JSONDecodeError as exc:
             raise HBQError(f"Invalid response checkpoint {path.name}: {exc}") from exc
-        if not isinstance(record, dict) or record.get("format_version") not in {1, 2} or record.get("batch") != expected_batch:
+        if not isinstance(record, dict) or record.get("format_version") not in {1, 2, 3} or record.get("batch") != expected_batch:
             raise HBQError(f"Response checkpoints are not a contiguous ordered sequence at {path.name}")
         checkpoint_format_version = record["format_version"]
         if record.get("previous_checkpoint_sha256") != previous_sha256:
@@ -596,7 +1338,7 @@ def _load_checkpoints(
                 isinstance(entry, dict) for entry in evidence
             ):
                 raise HBQError(f"Response checkpoint {path.name} contains invalid normalized evidence")
-            if checkpoint_format_version == 2:
+            if checkpoint_format_version in {2, 3}:
                 _validate_typed_checkpoint_evidence(evidence, question_id=question_id)
             _validate_exact_quotes(
                 evidence,
@@ -604,6 +1346,54 @@ def _load_checkpoints(
                 context_texts=context_texts,
                 question_id=question_id,
             )
+        if checkpoint_format_version == 3:
+            if record.get("retry_policy") != {"batch_attempts": batch_attempts}:
+                raise HBQError(f"Response checkpoint {path.name} retry policy does not match this run")
+            accepted_attempt = record.get("accepted_attempt")
+            if (
+                not isinstance(accepted_attempt, int)
+                or isinstance(accepted_attempt, bool)
+                or not 1 <= accepted_attempt <= batch_attempts
+            ):
+                raise HBQError(f"Response checkpoint {path.name} has invalid accepted attempt")
+            response_artifact = record.get("response_artifact")
+            if not isinstance(response_artifact, Mapping):
+                raise HBQError(f"Response checkpoint {path.name} lacks its accepted response artifact")
+            relative_path = response_artifact.get("path")
+            expected_bytes = response_artifact.get("bytes")
+            expected_sha256 = response_artifact.get("sha256")
+            if (
+                not isinstance(relative_path, str)
+                or not isinstance(expected_bytes, int)
+                or isinstance(expected_bytes, bool)
+                or not isinstance(expected_sha256, str)
+            ):
+                raise HBQError(f"Response checkpoint {path.name} has an invalid accepted response artifact")
+            artifact_path = output_dir / relative_path
+            try:
+                artifact_path.resolve().relative_to(output_dir.resolve())
+                artifact_bytes = artifact_path.read_bytes()
+            except (OSError, ValueError) as exc:
+                raise HBQError(
+                    f"Response checkpoint {path.name} accepted response artifact is unavailable"
+                ) from exc
+            if (
+                len(artifact_bytes) != expected_bytes
+                or _sha256_bytes(artifact_bytes) != expected_sha256
+                or _sha256_bytes(artifact_bytes) != record.get("response_sha256")
+            ):
+                raise HBQError(f"Response checkpoint {path.name} accepted response artifact is not bound")
+            _validate_provider_artifacts(output_dir, record)
+            rejected_chain = _rejected_chain_binding(
+                output_dir,
+                batch_number=expected_batch,
+                prompt_sha256=_sha256_bytes(prompt_bytes),
+                batch_attempts=batch_attempts,
+            )
+            if record.get("rejected_chain") != rejected_chain:
+                raise HBQError(f"Response checkpoint {path.name} rejected retry chain is not bound")
+            if accepted_attempt > 1 and rejected_chain["count"] < 1:
+                raise HBQError(f"Response checkpoint {path.name} accepted after retries without rejected evidence")
         verdicts.extend(normalized)
         if record.get("verdicts_sha256") != _sha256_bytes(_verdicts_bytes(verdicts)):
             raise HBQError(f"Response checkpoint {path.name} verdict hash is invalid")
@@ -625,12 +1415,14 @@ def run_judge(
     weight_profile: Mapping[str, Any] | None = None,
     question_ids: Sequence[str] = (),
     batch_size: int = 12,
+    batch_attempts: int = 3,
     base_url: str = "http://127.0.0.1:8000/v1",
     api_key_env: str = "OPENAI_API_KEY",
     temperature: float | None = None,
     allow_model_mismatch: bool = False,
     reasoning: str = "medium",
     codex_bin: str = "codex",
+    grok_bin: str = "grok",
     allow_remote: bool = False,
     resume: bool = False,
     dry_run: bool = False,
@@ -638,25 +1430,30 @@ def run_judge(
     artifact_id: str | None = None,
     judge_id: str | None = None,
     strict_ai: bool = False,
+    allow_unattested_reasoning: bool = False,
 ) -> dict[str, Any]:
     """Judge one artifact against one bundle, checkpointing every batch."""
 
-    if provider not in {"openai", "codex"}:
-        raise HBQError("provider must be 'openai' or 'codex'")
+    if provider not in {"openai", "codex", "grok", "nous"}:
+        raise HBQError("provider must be 'openai', 'codex', 'grok', or 'nous'")
     if not model.strip():
         raise HBQError("--model cannot be empty")
     if batch_size < 1:
         raise HBQError("--batch-size must be at least 1")
+    if not isinstance(batch_attempts, int) or isinstance(batch_attempts, bool) or batch_attempts < 1:
+        raise HBQError("batch_attempts must be a positive integer")
     if timeout <= 0:
         raise HBQError("--timeout must be positive")
     if temperature is not None and not 0 <= temperature <= 2:
         raise HBQError("--temperature must be between 0 and 2")
-    if provider == "codex" and temperature is not None:
-        raise HBQError("--temperature is supported by the OpenAI-compatible provider, not Codex CLI")
+    if provider in {"codex", "grok", "nous"} and temperature is not None:
+        raise HBQError("--temperature is supported by the OpenAI-compatible provider, not CLI providers")
     if provider == "openai" and reasoning != "medium":
-        raise HBQError("--reasoning is supported by Codex CLI, not the OpenAI-compatible provider")
-    if provider == "codex" and allow_model_mismatch:
+        raise HBQError("--reasoning is supported by Codex CLI or Grok Build CLI, not the OpenAI-compatible provider")
+    if provider in {"codex", "grok", "nous"} and allow_model_mismatch:
         raise HBQError("--allow-model-mismatch applies only to OpenAI-compatible endpoints")
+    if provider not in {"grok", "nous"} and allow_unattested_reasoning:
+        raise HBQError("--allow-unattested-reasoning applies only to Grok Build CLI or Nous")
 
     artifact = _read_text_record(Path(artifact_path))
     contexts = [_read_text_record(Path(path)) for path in context_paths]
@@ -694,6 +1491,8 @@ def run_judge(
             f"{task_contract.get('artifact_id')!r} does not match judged artifact_id {artifact_id!r}"
         )
     judge_id = judge_id or f"{provider}:{model}"
+    if provider == "nous" and (model not in NOUS_MODEL_POLICIES or reasoning != NOUS_REASONING):
+        raise HBQError("Nous requires an allowlisted Flash-0731 or Pro-0813 model and reasoning 'max'")
     modules = load_modules(registry)
     bundle = resolve_bundle(load_bundles(bundles), bundle_id)
     modules, bundle, weight_audit = materialize_weight_profile(
@@ -725,9 +1524,18 @@ def run_judge(
     strict_schema_record = _read_text_record(schema_dir() / "hbq_judge_response.schema.json")
     binary_prompt = "\n\n".join(str(item["text"]).strip() for item in prompt_records)
     endpoint = _endpoint_url(base_url) if provider == "openai" else None
-    remote = provider == "codex" or not _is_loopback_url(str(endpoint))
+    remote = provider in {"codex", "grok", "nous"} or not _is_loopback_url(str(endpoint))
+    configured_batches = (len(selected_ids) + batch_size - 1) // batch_size
     disclosure_inputs = {
-        "destination": "Codex CLI -> authenticated OpenAI service" if provider == "codex" else endpoint,
+        "destination": (
+            "Codex CLI -> authenticated OpenAI service"
+            if provider == "codex"
+            else "Grok Build CLI -> authenticated xAI service"
+            if provider == "grok"
+            else "Nous hardened tool-free bridge -> authenticated Nous service"
+            if provider == "nous"
+            else endpoint
+        ),
         "remote": remote,
         "artifact": _manifest_inputs([artifact])[0],
         "contexts": _manifest_inputs(contexts),
@@ -736,6 +1544,13 @@ def run_judge(
         "judge_instructions": _manifest_inputs(prompt_records),
         "questions": _question_payload(questions),
         "output_dir": str(Path(output_dir).resolve()),
+        "batch_attempts": batch_attempts,
+        "allow_unattested_reasoning": allow_unattested_reasoning if provider in {"grok", "nous"} else None,
+        "maximum_provider_sends": configured_batches * batch_attempts,
+        "maximum_physical_http_attempts": (
+            configured_batches * batch_attempts * NOUS_TRANSPORT_POLICY["max_physical_attempts_per_logical_request"]
+            if provider == "nous" else None
+        ),
     }
     if remote and not allow_remote and not dry_run:
         print(json.dumps({"disclosure": disclosure_inputs}, ensure_ascii=False, indent=2), file=sys.stderr)
@@ -755,9 +1570,10 @@ def run_judge(
         "api_key_env": api_key_env if provider == "openai" else None,
         "temperature": temperature if provider == "openai" else None,
         "allow_model_mismatch": allow_model_mismatch if provider == "openai" else None,
-        "reasoning": reasoning if provider == "codex" else None,
+        "reasoning": reasoning if provider in {"codex", "grok", "nous"} else None,
         "codex_bin": codex_bin if provider == "codex" else None,
         "batch_size": batch_size,
+        "retry_policy": {"batch_attempts": batch_attempts},
         "artifact_id": artifact_id,
         "judge_id": judge_id,
         "strict_ai": strict_ai,
@@ -766,7 +1582,16 @@ def run_judge(
         "questions_sha256": _sha256_bytes(_json_bytes(_question_payload(questions))),
         "compiled_bundle_sha256": _sha256_bytes(_json_bytes(compiled)),
     }
+    if provider == "grok":
+        configuration["grok_bin"] = grok_bin
+    if provider in {"grok", "nous"}:
+        configuration["allow_unattested_reasoning"] = allow_unattested_reasoning
+    if provider == "nous":
+        configuration["nous_transport_policy"] = deepcopy(NOUS_TRANSPORT_POLICY)
+        configuration["nous_model_policy"] = {"requested_model": model, **NOUS_MODEL_POLICIES[model]}
     config_sha256 = _sha256_bytes(_json_bytes(configuration))
+    legacy_configuration = {key: value for key, value in configuration.items() if key != "retry_policy"}
+    legacy_config_sha256 = _sha256_bytes(_json_bytes(legacy_configuration))
     now = datetime.now(timezone.utc)
     run_id = f"{now.strftime('%Y%m%dT%H%M%SZ')}-{config_sha256[:10]}"
     destination = Path(output_dir).resolve()
@@ -775,22 +1600,35 @@ def run_judge(
     score_path = destination / "score.json"
     diagnostic_path = destination / "diagnostic.json"
     schema_path = destination / "response.schema.json"
+    active_config_sha256 = config_sha256
 
     if manifest_path.is_file():
         if not resume:
             raise HBQError(f"Run already exists at {destination}; pass --resume to continue it")
         prior = load_data(manifest_path)
-        if prior.get("format_version") != 1:
+        manifest_format_version = prior.get("format_version")
+        if manifest_format_version not in {1, 2}:
             raise HBQError("Cannot resume: unsupported run manifest format")
-        if prior.get("config_sha256") != config_sha256:
+        if manifest_format_version == 1:
+            if batch_attempts != 3:
+                raise HBQError("Cannot resume a legacy run with a non-default batch_attempts policy")
+            expected_config_sha256 = legacy_config_sha256
+        else:
+            expected_config_sha256 = config_sha256
+        if prior.get("config_sha256") != expected_config_sha256:
+            prior_configuration = prior.get("configuration")
+            prior_retry_policy = prior_configuration.get("retry_policy") if isinstance(prior_configuration, Mapping) else None
+            if manifest_format_version == 2 and prior_retry_policy != configuration["retry_policy"]:
+                raise HBQError("Cannot resume: batch_attempts retry policy changed")
             raise HBQError("Cannot resume: artifact, prompts, bundle, questions, or provider settings changed")
+        active_config_sha256 = expected_config_sha256
         run_id = str(prior["run_id"])
     else:
         if destination.exists() and any(destination.iterdir()):
             raise HBQError(f"Output directory is not empty: {destination}")
         destination.mkdir(parents=True, exist_ok=True)
         manifest = {
-            "format_version": 1,
+            "format_version": 2,
             "run_id": run_id,
             "created_at": now.isoformat(),
             "config_sha256": config_sha256,
@@ -805,6 +1643,7 @@ def run_judge(
         destination,
         artifact_text=str(artifact["text"]),
         context_texts=[str(item["text"]) for item in contexts],
+        batch_attempts=batch_attempts,
     )
     if completed != checkpointed[: len(completed)] or len(completed) > len(checkpointed):
         raise HBQError("verdicts.jsonl does not match the ordered response checkpoints")
@@ -827,12 +1666,15 @@ def run_judge(
         completed_by_id[str(question_id)] = item
     pending = [item for item in questions if item["question"]["id"] not in completed_by_id]
 
+    pending_batches = (len(pending) + batch_size - 1) // batch_size
     disclosure = {
         **disclosure_inputs,
         "question_count": len(selected_ids),
         "pending_questions": len(pending),
-        "batches": (len(pending) + batch_size - 1) // batch_size,
-        "config_sha256": config_sha256,
+        "batches": pending_batches,
+        "batch_attempts": batch_attempts,
+        "maximum_provider_sends": pending_batches * batch_attempts,
+        "config_sha256": active_config_sha256,
     }
     print(json.dumps({"disclosure": disclosure}, ensure_ascii=False, indent=2), file=sys.stderr)
     if dry_run:
@@ -860,46 +1702,131 @@ def run_judge(
                 raise HBQError(f"Prompt checkpoint {prompt_path.name} does not match the resumed batch")
         else:
             _atomic_write(prompt_path, gzip.compress(prompt_bytes, mtime=0))
-        if provider == "openai":
-            content, provider_record = _call_openai(
-                endpoint=str(endpoint),
-                api_key_env=api_key_env,
-                model=model,
-                system_prompt="You are a careful HBQ-RS binary evaluator. Do not use tools or reveal chain-of-thought.",
-                user_prompt=prompt,
-                temperature=temperature,
-                allow_model_mismatch=allow_model_mismatch,
-                timeout=timeout,
-            )
-        else:
-            content, provider_record = _call_codex(
-                executable=codex_bin,
-                model=model,
-                reasoning=reasoning,
-                prompt=prompt,
-                output_dir=destination,
-                response_schema=schema_path,
-                batch_number=batch_number,
-                timeout=timeout,
-            )
         expected = [str(item["question"]["id"]) for item in batch]
-        normalized = _normalize_batch(
-            _parse_model_json(content),
-            expected_ids=expected,
-            artifact_id=artifact_id,
-            bundle_id=bundle_id,
-            judge_id=judge_id,
-            run_id=run_id,
-            artifact_text=str(artifact["text"]),
-            context_texts=[str(item["text"]) for item in contexts],
-        )
+        last_error: Exception | None = None
+        normalized: list[dict[str, Any]] | None = None
+        content = ""
+        provider_record: dict[str, Any] | None = None
+        for attempt_index in range(1, batch_attempts + 1):
+            try:
+                if provider == "openai":
+                    content, provider_record = _call_openai(
+                        endpoint=str(endpoint),
+                        api_key_env=api_key_env,
+                        model=model,
+                        system_prompt="You are a careful HBQ-RS binary evaluator. Do not use tools or reveal chain-of-thought.",
+                        user_prompt=prompt,
+                        temperature=temperature,
+                        allow_model_mismatch=allow_model_mismatch,
+                        timeout=timeout,
+                    )
+                elif provider == "codex":
+                    codex_message_attempt = _next_codex_message_attempt(destination, batch_number)
+                    content, provider_record = _call_codex(
+                        executable=codex_bin,
+                        model=model,
+                        reasoning=reasoning,
+                        prompt=prompt,
+                        output_dir=destination,
+                        response_schema=schema_path,
+                        batch_number=batch_number,
+                        timeout=timeout,
+                        attempt_number=codex_message_attempt,
+                    )
+                else:
+                    cli_message_attempt = _next_codex_message_attempt(destination, batch_number)
+                    if provider == "grok":
+                        content, provider_record = _call_grok(
+                            executable=grok_bin,
+                            model=model,
+                            reasoning=reasoning,
+                            prompt=prompt,
+                            output_dir=destination,
+                            response_schema=schema_path,
+                            batch_number=batch_number,
+                            timeout=timeout,
+                            attempt_number=cli_message_attempt,
+                            allow_unattested_reasoning=allow_unattested_reasoning,
+                        )
+                    else:
+                        content, provider_record = _call_nous(
+                            model=model,
+                            reasoning=reasoning,
+                            prompt=prompt,
+                            output_dir=destination,
+                            response_schema=schema_path,
+                            batch_number=batch_number,
+                            timeout=timeout,
+                            attempt_number=cli_message_attempt,
+                            allow_unattested_reasoning=allow_unattested_reasoning,
+                        )
+            except (HBQError, OSError) as exc:
+                last_error = exc
+                failure = exc if isinstance(exc, _ProviderAttemptFailure) else None
+                _write_rejected_attempt(
+                    output_dir=destination,
+                    batch_number=batch_number,
+                    prompt_sha256=_sha256_bytes(prompt_bytes),
+                    content=failure.content if failure is not None else None,
+                    provider_record=failure.provider_record if failure is not None else None,
+                    error=exc,
+                    stage="provider",
+                    batch_attempts=batch_attempts,
+                )
+                if failure is not None and not failure.retryable:
+                    raise HBQError(
+                        f"Batch {batch_number} provider failure is not retryable: {failure}"
+                    ) from failure
+                continue
+            try:
+                normalized = _normalize_batch(
+                    _parse_model_json(content),
+                    expected_ids=expected,
+                    artifact_id=artifact_id,
+                    bundle_id=bundle_id,
+                    judge_id=judge_id,
+                    run_id=run_id,
+                    artifact_text=str(artifact["text"]),
+                    context_texts=[str(item["text"]) for item in contexts],
+                )
+                break
+            except HBQError as exc:
+                last_error = exc
+                _write_rejected_attempt(
+                    output_dir=destination,
+                    batch_number=batch_number,
+                    prompt_sha256=_sha256_bytes(prompt_bytes),
+                    content=content,
+                    provider_record=provider_record,
+                    error=exc,
+                    stage="model_output",
+                    batch_attempts=batch_attempts,
+                )
+        if normalized is None:
+            detail = str(last_error) if last_error is not None else "no provider or model-output error was recorded"
+            raise HBQError(f"Batch {batch_number} exhausted {batch_attempts} attempts: {detail}")
         next_completed = [*completed, *normalized]
+        response_artifact = _write_accepted_response_artifact(
+            output_dir=destination,
+            batch_number=batch_number,
+            content=content,
+        )
+        rejected_chain = _rejected_chain_binding(
+            destination,
+            batch_number=batch_number,
+            prompt_sha256=_sha256_bytes(prompt_bytes),
+            batch_attempts=batch_attempts,
+        )
         response_record = {
-            "format_version": 2,
+            "format_version": 3,
             "batch": batch_number,
+            "retry_policy": {"batch_attempts": batch_attempts},
+            "accepted_attempt": attempt_index,
             "question_ids": expected,
             "prompt_sha256": _sha256_bytes(prompt_bytes),
             "response_sha256": _sha256_bytes(content.encode("utf-8")),
+            "response_artifact": response_artifact,
+            "rejected_chain": rejected_chain,
             "previous_checkpoint_sha256": previous_checkpoint_sha256,
             "verdicts_sha256": _sha256_bytes(_verdicts_bytes(next_completed)),
             "provider": provider_record,

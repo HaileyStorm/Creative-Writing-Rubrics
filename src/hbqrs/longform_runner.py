@@ -39,16 +39,24 @@ from .longform import (
 from .paths import prompts_dir, schema_dir
 from .runner import (
     MAX_RESPONSE_BYTES,
+    NOUS_MODEL_POLICIES,
+    NOUS_REASONING,
+    NOUS_TRANSPORT_POLICY,
+    _ProviderAttemptFailure,
     _NoRedirect,
     _atomic_write,
     _call_codex,
+    _call_grok,
+    _call_nous,
     _endpoint_url,
     _is_loopback_url,
     _json_bytes,
+    _next_codex_message_attempt,
     _parse_model_json,
     _openai_content,
     _read_text_record,
     _sha256_bytes,
+    _validate_provider_artifacts,
     _write_json,
     run_judge,
 )
@@ -239,6 +247,8 @@ def _run_structured_pass(
     timeout: float,
     resume: bool,
     openai_structured_outputs: bool,
+    grok_bin: str = "grok",
+    allow_unattested_reasoning: bool = False,
 ) -> dict[str, Any]:
     """Execute or resume one strict structured provider pass."""
 
@@ -256,12 +266,16 @@ def _run_structured_pass(
         "api_key_env": api_key_env if provider == "openai" else None,
         "temperature": temperature if provider == "openai" else None,
         "allow_model_mismatch": allow_model_mismatch if provider == "openai" else None,
-        "reasoning": reasoning if provider == "codex" else None,
+        "reasoning": reasoning if provider in {"codex", "grok", "nous"} else None,
         "codex_bin": codex_bin if provider == "codex" else None,
         "openai_structured_outputs": openai_structured_outputs if provider == "openai" else None,
         "prompt_sha256": _sha256_bytes(prompt.encode("utf-8")),
         "schema_sha256": _sha256_bytes(_json_bytes(schema)),
     }
+    if provider == "grok":
+        configuration["grok_bin"] = grok_bin
+    if provider in {"grok", "nous"}:
+        configuration["allow_unattested_reasoning"] = allow_unattested_reasoning
     config_sha256 = _sha256_bytes(_json_bytes(configuration))
     if manifest_path.is_file():
         if not resume:
@@ -286,6 +300,7 @@ def _run_structured_pass(
         response_record = load_data(response_path)
         if not isinstance(response_record, dict) or not isinstance(response_record.get("content"), str):
             raise HBQError(f"Cached {name} response record is invalid")
+        _validate_provider_artifacts(pass_dir, response_record)
         expected_bindings = {
             "config_sha256": config_sha256,
             "prompt_sha256": configuration["prompt_sha256"],
@@ -321,37 +336,54 @@ def _run_structured_pass(
         raise HBQError(f"Cached {name} result lacks its accepted response binding")
 
     attempt_dir = pass_dir / "attempts"
-    attempt_number = (
+    recorded_attempt_number = (
         len(list(attempt_dir.glob("failed-*.json")))
         + len(list(attempt_dir.glob("rejected-*.json")))
         + 1
         if attempt_dir.exists()
         else 1
     )
-    if provider == "openai":
-        content, provider_record = _call_openai_structured(
-            endpoint=str(endpoint),
-            api_key_env=api_key_env,
-            model=model,
-            system_prompt="You are a careful HBQ-RS long-form evaluator. Do not use tools or reveal chain-of-thought.",
-            user_prompt=prompt,
-            temperature=temperature,
-            allow_model_mismatch=allow_model_mismatch,
-            timeout=timeout,
-            response_schema=schema if openai_structured_outputs else None,
-            schema_name=name,
+    attempt_number = max(
+        recorded_attempt_number,
+        _next_codex_message_attempt(pass_dir, batch_number=1),
+    )
+    try:
+        if provider == "openai":
+            content, provider_record = _call_openai_structured(
+                endpoint=str(endpoint), api_key_env=api_key_env, model=model,
+                system_prompt="You are a careful HBQ-RS long-form evaluator. Do not use tools or reveal chain-of-thought.",
+                user_prompt=prompt, temperature=temperature, allow_model_mismatch=allow_model_mismatch,
+                timeout=timeout, response_schema=schema if openai_structured_outputs else None, schema_name=name,
+            )
+        elif provider == "codex":
+            content, provider_record = _call_codex(
+                executable=codex_bin, model=model, reasoning=reasoning, prompt=prompt,
+                output_dir=pass_dir, response_schema=schema_path, batch_number=1,
+                timeout=timeout, attempt_number=attempt_number,
+            )
+        elif provider == "grok":
+            content, provider_record = _call_grok(
+                executable=grok_bin, model=model, reasoning=reasoning, prompt=prompt,
+                output_dir=pass_dir, response_schema=schema_path, batch_number=1,
+                timeout=timeout, attempt_number=attempt_number,
+                allow_unattested_reasoning=allow_unattested_reasoning,
+            )
+        else:
+            content, provider_record = _call_nous(
+                model=model, reasoning=reasoning, prompt=prompt, output_dir=pass_dir,
+                response_schema=schema_path, batch_number=1, timeout=timeout,
+                attempt_number=attempt_number, allow_unattested_reasoning=allow_unattested_reasoning,
+            )
+    except _ProviderAttemptFailure as exc:
+        _write_json(
+            attempt_dir / f"rejected-{attempt_number:04d}.json",
+            {
+                "format_version": 1, "config_sha256": config_sha256,
+                "content": exc.content, "provider": exc.provider_record,
+                "retryable": exc.retryable, "error": {"class": type(exc).__name__, "message": str(exc)},
+            },
         )
-    else:
-        content, provider_record = _call_codex(
-            executable=codex_bin,
-            model=model,
-            reasoning=reasoning,
-            prompt=prompt,
-            output_dir=pass_dir,
-            response_schema=schema_path,
-            batch_number=attempt_number,
-            timeout=timeout,
-        )
+        raise
     content_sha256 = _sha256_bytes(content.encode("utf-8"))
     try:
         result = _parse_model_json(content)
@@ -724,15 +756,18 @@ def _run_binary_scope(
     provider: str,
     model: str,
     batch_size: int,
+    batch_attempts: int,
     base_url: str,
     api_key_env: str,
     temperature: float | None,
     allow_model_mismatch: bool,
     reasoning: str,
     codex_bin: str,
+    grok_bin: str,
     resume: bool,
     timeout: float,
     strict_ai: bool,
+    allow_unattested_reasoning: bool,
 ) -> dict[str, Any]:
     subresume = resume and (output_dir / "run.json").is_file()
     summary = run_judge(
@@ -748,16 +783,19 @@ def _run_binary_scope(
         task_contract_path=task_contract_path,
         weight_profile=weight_profile,
         batch_size=batch_size,
+        batch_attempts=batch_attempts,
         base_url=base_url,
         api_key_env=api_key_env,
         temperature=temperature,
         allow_model_mismatch=allow_model_mismatch,
         reasoning=reasoning,
         codex_bin=codex_bin,
+        grok_bin=grok_bin,
         allow_remote=True,
         resume=subresume,
         timeout=timeout,
         strict_ai=strict_ai,
+        allow_unattested_reasoning=allow_unattested_reasoning,
     )
     if summary.get("score") is None or not (output_dir / "score.json").is_file():
         raise HBQError(f"Long-form {label} pass did not produce a complete score report")
@@ -797,6 +835,7 @@ def run_longform_judge(
     sampling_plan_override: Mapping[str, Any] | None = None,
     binary_workers: int = 1,
     batch_size: int = 12,
+    batch_attempts: int = 3,
     base_url: str = "http://127.0.0.1:8000/v1",
     api_key_env: str = "OPENAI_API_KEY",
     temperature: float | None = None,
@@ -805,24 +844,26 @@ def run_longform_judge(
     structured_reasoning: str = "high",
     judge_reasoning: str = "medium",
     codex_bin: str = "codex",
+    grok_bin: str = "grok",
     allow_remote: bool = False,
     resume: bool = False,
     dry_run: bool = False,
     plan_only: bool = False,
     timeout: float = 600.0,
     strict_ai: bool = False,
+    allow_unattested_reasoning: bool = False,
 ) -> dict[str, Any]:
     """Run and persist route, map, global/local judging, synthesis, and rendering.
 
-    The same OpenAI-compatible or Codex provider is used for every model pass.
+    The same OpenAI-compatible, Codex, or Grok CLI provider is used for every model pass.
     The global artifact contains the complete source, explicitly partitioned by
     deterministic unit headers.  By default every deterministic unit also gets
     an independent local diagnostic; ``local_sample_limit`` is an explicit
     coverage-reduction option.  Worker count changes scheduling, never coverage.
     """
 
-    if provider not in {"openai", "codex"}:
-        raise HBQError("provider must be 'openai' or 'codex'")
+    if provider not in {"openai", "codex", "grok", "nous"}:
+        raise HBQError("provider must be 'openai', 'codex', 'grok', or 'nous'")
     if not model.strip():
         raise HBQError("model cannot be empty")
     if route_sample_char_limit < 1:
@@ -835,18 +876,30 @@ def run_longform_judge(
         raise HBQError(f"binary_workers must be between 1 and {MAX_BINARY_WORKERS}")
     if batch_size < 1:
         raise HBQError("batch_size must be positive")
+    if isinstance(batch_attempts, bool) or not isinstance(batch_attempts, int) or batch_attempts < 1:
+        raise HBQError("batch_attempts must be a positive integer")
     if timeout <= 0:
         raise HBQError("timeout must be positive")
     if temperature is not None and not 0 <= temperature <= 2:
         raise HBQError("temperature must be between 0 and 2")
-    if provider == "codex" and temperature is not None:
+    if provider in {"codex", "grok", "nous"} and temperature is not None:
         raise HBQError("temperature applies only to the OpenAI-compatible provider")
     if provider == "openai" and (structured_reasoning != "high" or judge_reasoning != "medium"):
-        raise HBQError("structured_reasoning and judge_reasoning apply only to Codex CLI")
-    if provider == "codex" and allow_model_mismatch:
+        raise HBQError("structured_reasoning and judge_reasoning apply only to CLI providers")
+    if provider in {"codex", "grok", "nous"} and allow_model_mismatch:
         raise HBQError("allow_model_mismatch applies only to OpenAI-compatible endpoints")
-    if provider == "codex" and openai_structured_outputs:
+    if provider in {"codex", "grok", "nous"} and openai_structured_outputs:
         raise HBQError("openai_structured_outputs applies only to OpenAI-compatible endpoints")
+    if provider == "nous" and (
+        model not in NOUS_MODEL_POLICIES
+        or structured_reasoning != NOUS_REASONING
+        or judge_reasoning != NOUS_REASONING
+    ):
+        raise HBQError(
+            "Nous requires an allowlisted Flash-0731 or Pro-0813 model and both reasoning settings 'max'"
+        )
+    if provider not in {"grok", "nous"} and allow_unattested_reasoning:
+        raise HBQError("allow_unattested_reasoning applies only to Grok Build CLI or Nous")
 
     source_path = Path(artifact_path)
     source = _read_text_record(source_path)
@@ -929,8 +982,16 @@ def run_longform_judge(
         )
         task_contract_record = _record_without_text(_read_text_record(contract_path))
     endpoint = _endpoint_url(base_url) if provider == "openai" else None
-    remote = provider == "codex" or not _is_loopback_url(str(endpoint))
-    destination_label = "Codex CLI -> authenticated OpenAI service" if provider == "codex" else endpoint
+    remote = provider in {"codex", "grok", "nous"} or not _is_loopback_url(str(endpoint))
+    destination_label = (
+        "Codex CLI -> authenticated OpenAI service"
+        if provider == "codex"
+        else "Grok Build CLI -> authenticated xAI service"
+        if provider == "grok"
+        else "Nous hardened tool-free bridge -> authenticated Nous service"
+        if provider == "nous"
+        else endpoint
+    )
     project_context = "\n\n".join(
         f"[BRIEF {index}: {record['name']} | sha256={record['sha256']}]\n{record['text']}"
         for index, record in enumerate(briefs, start=1)
@@ -972,7 +1033,8 @@ def run_longform_judge(
     )
     maximum_questions = _question_count(modules) + MAX_DYNAMIC_CRITERIA
     maximum_binary_batches = (1 + maximum_local_scopes) * ((maximum_questions + batch_size - 1) // batch_size)
-    maximum_provider_calls = 1 if plan_only else 3 + maximum_binary_batches
+    maximum_binary_provider_sends = maximum_binary_batches * batch_attempts
+    maximum_provider_calls = 1 if plan_only else 3 + maximum_binary_provider_sends
     route_sample_disclosure = {key: value for key, value in route_sample_record.items() if key != "text"}
     completion_contract = make_completion_contract(completion_status)
     disclosure = {
@@ -996,6 +1058,13 @@ def run_longform_judge(
             "provider_calls": 0,
         },
         "maximum_provider_calls": maximum_provider_calls,
+        "batch_attempts": batch_attempts,
+        "allow_unattested_reasoning": allow_unattested_reasoning if provider in {"grok", "nous"} else None,
+        "maximum_binary_provider_sends": maximum_binary_provider_sends,
+        "maximum_physical_http_attempts": (
+            maximum_provider_calls * NOUS_TRANSPORT_POLICY["max_physical_attempts_per_logical_request"]
+            if provider == "nous" else None
+        ),
         "payloads": {
             "route": {
                 "request": _payload_record(json.dumps(route_request, ensure_ascii=False, sort_keys=True)),
@@ -1047,7 +1116,7 @@ def run_longform_judge(
         return {"status": "DRY_RUN", **disclosure, "unit_count": segmentation["unit_count"]}
 
     configuration = {
-        "format_version": 1,
+        "format_version": 2,
         "artifact": _record_without_text(source),
         "briefs": [_record_without_text(record) for record in briefs],
         "registry": _record_without_text(registry_record),
@@ -1070,6 +1139,7 @@ def run_longform_judge(
         "sampling_plan_override": deepcopy(sampling_plan_override),
         "binary_workers": binary_workers,
         "batch_size": batch_size,
+        "retry_policy": {"batch_attempts": batch_attempts},
         "provider": provider,
         "model": model,
         "endpoint": endpoint,
@@ -1077,19 +1147,43 @@ def run_longform_judge(
         "temperature": temperature if provider == "openai" else None,
         "allow_model_mismatch": allow_model_mismatch if provider == "openai" else None,
         "openai_structured_outputs": openai_structured_outputs if provider == "openai" else None,
-        "structured_reasoning": structured_reasoning if provider == "codex" else None,
-        "judge_reasoning": judge_reasoning if provider == "codex" else None,
+        "structured_reasoning": structured_reasoning if provider in {"codex", "grok", "nous"} else None,
+        "judge_reasoning": judge_reasoning if provider in {"codex", "grok", "nous"} else None,
         "codex_bin": codex_bin if provider == "codex" else None,
         "strict_ai": strict_ai,
     }
+    if provider == "grok":
+        configuration["grok_bin"] = grok_bin
+    if provider in {"grok", "nous"}:
+        configuration["allow_unattested_reasoning"] = allow_unattested_reasoning
+    if provider == "nous":
+        configuration["nous_transport_policy"] = deepcopy(NOUS_TRANSPORT_POLICY)
+        configuration["nous_model_policy"] = {"requested_model": model, **NOUS_MODEL_POLICIES[model]}
     config_sha256 = _sha256_bytes(_json_bytes(configuration))
+    legacy_configuration = deepcopy(configuration)
+    legacy_configuration["format_version"] = 1
+    legacy_configuration.pop("retry_policy")
+    legacy_config_sha256 = _sha256_bytes(_json_bytes(legacy_configuration))
     destination = Path(output_dir).resolve()
     workflow_path = destination / "workflow.json"
     if workflow_path.is_file():
         if not resume:
             raise HBQError(f"Long-form workflow already exists at {destination}; pass --resume")
         prior = load_data(workflow_path)
-        if prior.get("config_sha256") != config_sha256:
+        workflow_format_version = prior.get("format_version")
+        if workflow_format_version not in {1, 2}:
+            raise HBQError("Cannot resume: unsupported long-form workflow format")
+        if workflow_format_version == 1:
+            if batch_attempts != 3:
+                raise HBQError("Cannot resume a legacy workflow with a non-default batch_attempts policy")
+            expected_config_sha256 = legacy_config_sha256
+        else:
+            expected_config_sha256 = config_sha256
+        if prior.get("config_sha256") != expected_config_sha256:
+            if workflow_format_version == 2 and prior.get("configuration", {}).get("retry_policy") != configuration[
+                "retry_policy"
+            ]:
+                raise HBQError("Cannot resume: batch_attempts retry policy changed")
             raise HBQError("Cannot resume: inputs, catalog, or provider settings changed")
     else:
         if destination.exists() and any(destination.iterdir()):
@@ -1098,7 +1192,7 @@ def run_longform_judge(
         _write_json(
             workflow_path,
             {
-                "format_version": 1,
+                "format_version": 2,
                 "workflow_id": f"longform-{config_sha256[:16]}",
                 "config_sha256": config_sha256,
                 "configuration": configuration,
@@ -1133,6 +1227,8 @@ def run_longform_judge(
         allow_model_mismatch=allow_model_mismatch,
         reasoning=structured_reasoning,
         codex_bin=codex_bin,
+        grok_bin=grok_bin,
+        allow_unattested_reasoning=allow_unattested_reasoning,
         timeout=timeout,
         resume=resume,
         openai_structured_outputs=openai_structured_outputs,
@@ -1245,6 +1341,8 @@ def run_longform_judge(
         allow_model_mismatch=allow_model_mismatch,
         reasoning=structured_reasoning,
         codex_bin=codex_bin,
+        grok_bin=grok_bin,
+        allow_unattested_reasoning=allow_unattested_reasoning,
         timeout=timeout,
         resume=resume,
         openai_structured_outputs=openai_structured_outputs,
@@ -1318,12 +1416,15 @@ def run_longform_judge(
             provider=provider,
             model=model,
             batch_size=batch_size,
+            batch_attempts=batch_attempts,
             base_url=base_url,
             api_key_env=api_key_env,
             temperature=temperature,
             allow_model_mismatch=allow_model_mismatch,
             reasoning=judge_reasoning,
             codex_bin=codex_bin,
+            grok_bin=grok_bin,
+            allow_unattested_reasoning=allow_unattested_reasoning,
             resume=resume,
             timeout=timeout,
             strict_ai=strict_ai,
@@ -1366,12 +1467,15 @@ def run_longform_judge(
             provider=provider,
             model=model,
             batch_size=batch_size,
+            batch_attempts=batch_attempts,
             base_url=base_url,
             api_key_env=api_key_env,
             temperature=temperature,
             allow_model_mismatch=allow_model_mismatch,
             reasoning=judge_reasoning,
             codex_bin=codex_bin,
+            grok_bin=grok_bin,
+            allow_unattested_reasoning=allow_unattested_reasoning,
             resume=resume,
             timeout=timeout,
             strict_ai=strict_ai,
@@ -1439,6 +1543,8 @@ def run_longform_judge(
         allow_model_mismatch=allow_model_mismatch,
         reasoning=structured_reasoning,
         codex_bin=codex_bin,
+        grok_bin=grok_bin,
+        allow_unattested_reasoning=allow_unattested_reasoning,
         timeout=timeout,
         resume=resume,
         openai_structured_outputs=openai_structured_outputs,

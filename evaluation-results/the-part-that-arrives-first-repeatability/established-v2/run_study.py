@@ -178,7 +178,7 @@ def _prompt(instructions: str, source: str) -> str:
 
 def _run_hbq(arm: dict[str, Any], number: int, source: Path, work: Path, timeout: float, contract: dict[str, Any]) -> None:
     output = work / arm["arm_id"] / f"run-{number:02d}"
-    run_judge(artifact_path=source, bundle_id=contract["hbq_runtime"]["bundle_id"], provider="codex", model=contract["provider"]["model"], output_dir=output, registry=registry_path(), bundles=bundles_path(), batch_size=contract["hbq_runtime"]["batch_size"], reasoning=contract["provider"]["reasoning"], allow_remote=True, resume=(output / "run.json").is_file(), timeout=timeout, artifact_id="the-part-that-arrives-first", strict_ai=True)
+    run_judge(artifact_path=source, bundle_id=contract["hbq_runtime"]["bundle_id"], provider="codex", model=contract["provider"]["model"], output_dir=output, registry=registry_path(), bundles=bundles_path(), batch_size=contract["hbq_runtime"]["batch_size"], batch_attempts=contract["hbq_runtime"]["batch_attempts"], reasoning=contract["provider"]["reasoning"], allow_remote=True, resume=(output / "run.json").is_file(), timeout=timeout, artifact_id="the-part-that-arrives-first", strict_ai=True)
 
 
 def _run_native(arm: dict[str, Any], number: int, source: Path, work: Path, timeout: float, contract: dict[str, Any]) -> None:

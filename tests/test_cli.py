@@ -115,6 +115,9 @@ def test_judge_command_dispatches_runner(monkeypatch, capsys, tmp_path: Path) ->
     )
     assert captured["artifact_path"] == str(artifact)
     assert captured["bundle_id"] == "prose.scene"
+    assert captured["batch_attempts"] == 3
+    assert captured["grok_bin"] == "grok"
+    assert captured["allow_unattested_reasoning"] is False
     assert json.loads(capsys.readouterr().out)["status"] == "DRY_RUN"
 
 
@@ -168,6 +171,8 @@ def test_longform_command_dispatches_workflow(monkeypatch, capsys, tmp_path: Pat
                 "--frozen-sample-ordinal",
                 "3",
                 "--openai-structured-outputs",
+                "--batch-attempts",
+                "5",
                 "--allow-remote",
                 "--dry-run",
             ]
@@ -193,6 +198,9 @@ def test_longform_command_dispatches_workflow(monkeypatch, capsys, tmp_path: Pat
     assert captured["local_sample_limit"] is None
     assert captured["frozen_sample_ordinals"] == [1, 3]
     assert captured["binary_workers"] == 1
+    assert captured["batch_attempts"] == 5
+    assert captured["grok_bin"] == "grok"
+    assert captured["allow_unattested_reasoning"] is False
     assert captured["openai_structured_outputs"] is True
     assert captured["plan_only"] is False
     assert json.loads(capsys.readouterr().out)["status"] == "DRY_RUN"

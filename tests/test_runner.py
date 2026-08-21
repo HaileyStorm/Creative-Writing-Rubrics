@@ -12,7 +12,16 @@ import pytest
 from jsonschema import Draft202012Validator
 
 from hbqrs import HBQError, book_root
-from hbqrs.runner import _call_codex, _normalize_batch, _parse_model_json, run_judge
+from hbqrs.runner import (
+    _call_codex,
+    _call_grok,
+    _call_nous,
+    _load_checkpoints,
+    _normalize_batch,
+    _parse_model_json,
+    _validate_provider_artifacts,
+    run_judge,
+)
 
 
 QUESTION_ID = "core.task_and_brief_fidelity.operation"
@@ -28,6 +37,7 @@ class _FakeOpenAIHandler(BaseHTTPRequestHandler):
     calls = 0
     response_model: str | None = None
     fail_on_call: int | None = None
+    evidence_by_call: dict[int, dict[str, object]] = {}
     evidence_item: dict[str, object] = {
         "kind": "exact_quote",
         "reference": "line:1",
@@ -53,7 +63,7 @@ class _FakeOpenAIHandler(BaseHTTPRequestHandler):
                 "question_id": item["question_id"],
                 "verdict": "YES",
                 "confidence": 0.8,
-                "evidence": [dict(type(self).evidence_item)],
+                "evidence": [dict(type(self).evidence_by_call.get(type(self).calls, type(self).evidence_item))],
                 "note": "The requested operation is assessable.",
             }
             for item in _questions_from_prompt(prompt)
@@ -91,6 +101,7 @@ def fake_openai_endpoint():
     _FakeOpenAIHandler.calls = 0
     _FakeOpenAIHandler.response_model = None
     _FakeOpenAIHandler.fail_on_call = None
+    _FakeOpenAIHandler.evidence_by_call = {}
     _FakeOpenAIHandler.evidence_item = {
         "kind": "exact_quote",
         "reference": "line:1",
@@ -169,11 +180,13 @@ def test_openai_runner_checkpoints_diagnostic_subset_and_resumes(tmp_path: Path,
     manifest = json.loads((tmp_path / "run" / "run.json").read_text(encoding="utf-8"))
     assert "A short test scene." not in json.dumps(manifest)
     assert manifest["configuration"]["artifact"]["sha256"]
+    assert manifest["format_version"] == 2
+    assert manifest["configuration"]["retry_policy"] == {"batch_attempts": 3}
     prompt = gzip.decompress((tmp_path / "run" / "responses" / "batch-0001.prompt.txt.gz").read_bytes())
     assert b"A short test scene." in prompt
     assert QUESTION_ID.encode() in prompt
 
-    resumed = _run(tmp_path, base_url=base_url, resume=True)
+    resumed = _run(tmp_path, base_url=base_url, batch_attempts=3, resume=True)
     assert resumed["verdicts"] == 1
     assert handler.calls == 1
 
@@ -225,12 +238,13 @@ def test_task_contract_artifact_id_must_match_judged_artifact(tmp_path: Path) ->
 def test_partial_multi_batch_run_resumes_without_overwrite(tmp_path: Path, fake_openai_endpoint) -> None:
     base_url, handler = fake_openai_endpoint
     handler.fail_on_call = 2
-    with pytest.raises(HBQError, match="HTTP 500"):
+    with pytest.raises(HBQError, match="Batch 2 exhausted 1 attempts"):
         _run(
             tmp_path,
             base_url=base_url,
             question_ids=[QUESTION_ID, SECOND_QUESTION_ID],
             batch_size=1,
+            batch_attempts=1,
         )
     first = (tmp_path / "run" / "responses" / "batch-0001.json").read_bytes()
     assert not (tmp_path / "run" / "responses" / "batch-0002.json").exists()
@@ -242,12 +256,269 @@ def test_partial_multi_batch_run_resumes_without_overwrite(tmp_path: Path, fake_
         base_url=base_url,
         question_ids=[QUESTION_ID, SECOND_QUESTION_ID],
         batch_size=1,
+        batch_attempts=1,
         resume=True,
     )
     assert summary["verdicts"] == 2
     assert handler.calls == 3
     assert (tmp_path / "run" / "responses" / "batch-0001.json").read_bytes() == first
     assert (tmp_path / "run" / "responses" / "batch-0002.json").is_file()
+
+
+def test_retries_ungrounded_model_output_and_retains_private_audit(tmp_path: Path, fake_openai_endpoint) -> None:
+    base_url, handler = fake_openai_endpoint
+    handler.evidence_by_call = {
+        1: {
+            "kind": "exact_quote",
+            "reference": "line:1",
+            "exact_quote": "Not present in this artifact.",
+            "summary": None,
+        }
+    }
+
+    summary = _run(tmp_path, base_url=base_url, batch_attempts=2)
+    assert summary["verdicts"] == 1
+    assert handler.calls == 2
+    checkpoint = json.loads((tmp_path / "run" / "responses" / "batch-0001.json").read_text(encoding="utf-8"))
+    assert checkpoint["format_version"] == 3
+    assert checkpoint["retry_policy"] == {"batch_attempts": 2}
+    assert checkpoint["accepted_attempt"] == 2
+    accepted = checkpoint["response_artifact"]
+    accepted_path = tmp_path / "run" / accepted["path"]
+    assert accepted_path.read_bytes()
+    assert accepted["bytes"] == len(accepted_path.read_bytes())
+    assert accepted["sha256"] == hashlib.sha256(accepted_path.read_bytes()).hexdigest()
+    audit_path = tmp_path / "run" / "responses" / "rejected" / "batch-0001" / "attempt-0001.json"
+    audit = json.loads(audit_path.read_text(encoding="utf-8"))
+    assert audit["attempt"] == 1
+    assert audit["stage"] == "model_output"
+    assert audit["retry_policy"] == {"batch_attempts": 2}
+    assert audit["error"]["class"] == "HBQError"
+    assert audit["provider"] == {"id": "fake-response", "model": "fake-local"}
+    assert "Not present in this artifact." in audit["raw_content"]["text"]
+
+
+def test_retries_provider_failure_and_records_empty_raw_audit(tmp_path: Path, fake_openai_endpoint) -> None:
+    base_url, handler = fake_openai_endpoint
+    handler.fail_on_call = 1
+
+    summary = _run(tmp_path, base_url=base_url, batch_attempts=2)
+    assert summary["verdicts"] == 1
+    assert handler.calls == 2
+    audit_path = tmp_path / "run" / "responses" / "rejected" / "batch-0001" / "attempt-0001.json"
+    audit = json.loads(audit_path.read_text(encoding="utf-8"))
+    assert audit["stage"] == "provider"
+    assert audit["provider"] is None
+    raw = audit["raw_content"]["text"].encode("utf-8")
+    assert audit["raw_content"]["bytes"] == len(raw)
+    if raw:
+        assert raw == b'{"error":"temporary test failure"}'
+
+
+def test_wrong_effective_model_fails_fast_and_retains_provider_envelope(
+    tmp_path: Path, fake_openai_endpoint
+) -> None:
+    base_url, handler = fake_openai_endpoint
+    handler.response_model = "wrong-model"
+    with pytest.raises(HBQError, match="provider failure is not retryable"):
+        _run(tmp_path, base_url=base_url, batch_attempts=3)
+    assert handler.calls == 1
+    audit_path = tmp_path / "run" / "responses" / "rejected" / "batch-0001" / "attempt-0001.json"
+    audit = json.loads(audit_path.read_text(encoding="utf-8"))
+    assert audit["stage"] == "provider"
+    raw = audit["raw_content"]["text"].encode("utf-8")
+    assert audit["raw_content"]["sha256"] == hashlib.sha256(raw).hexdigest()
+    assert '"model": "wrong-model"' in audit["raw_content"]["text"]
+
+
+def test_accepted_checkpoint_binds_rejected_retry_chain_and_detects_tampering(
+    tmp_path: Path, fake_openai_endpoint
+) -> None:
+    base_url, handler = fake_openai_endpoint
+    handler.evidence_by_call = {
+        1: {
+            "kind": "exact_quote",
+            "reference": "line:1",
+            "exact_quote": "Not present in this artifact.",
+            "summary": None,
+        }
+    }
+    _run(tmp_path, base_url=base_url, batch_attempts=2)
+    run_dir = tmp_path / "run"
+    checkpoint_path = run_dir / "responses" / "batch-0001.json"
+    checkpoint = json.loads(checkpoint_path.read_text(encoding="utf-8"))
+    assert checkpoint["rejected_chain"]["count"] == 1
+    record_path = run_dir / "responses" / "rejected" / "batch-0001" / "attempt-0001.json"
+    original_record = record_path.read_bytes()
+    record_path.unlink()
+    with pytest.raises(HBQError, match="rejected retry chain is not bound"):
+        _load_checkpoints(run_dir, artifact_text="A short test scene.", context_texts=[], batch_attempts=2)
+    record_path.write_bytes(original_record)
+
+    record = json.loads(record_path.read_text(encoding="utf-8"))
+    record["previous_rejected_sha256"] = "0" * 64
+    record_path.write_text(json.dumps(record), encoding="utf-8")
+    with pytest.raises(HBQError, match="valid bound record"):
+        _load_checkpoints(run_dir, artifact_text="A short test scene.", context_texts=[], batch_attempts=2)
+    record["previous_rejected_sha256"] = None
+    record_path.write_text(json.dumps(record), encoding="utf-8")
+
+    orphan = record_path.with_name("attempt-0002.message.txt")
+    orphan.write_bytes(b"orphan")
+    with pytest.raises(HBQError, match="unmatched raw"):
+        _load_checkpoints(run_dir, artifact_text="A short test scene.", context_texts=[], batch_attempts=2)
+
+
+def test_resume_allocates_fresh_accepted_artifact_after_precheckpoint_crash(
+    tmp_path: Path, fake_openai_endpoint, monkeypatch
+) -> None:
+    base_url, handler = fake_openai_endpoint
+    from hbqrs.runner import _atomic_write as original_atomic_write
+
+    def crash_before_checkpoint(path: Path, value: bytes) -> None:
+        if path.name == "batch-0001.json":
+            raise RuntimeError("synthetic crash after accepted response artifact")
+        original_atomic_write(path, value)
+
+    monkeypatch.setattr("hbqrs.runner._atomic_write", crash_before_checkpoint)
+    with pytest.raises(RuntimeError, match="synthetic crash"):
+        _run(tmp_path, base_url=base_url)
+    response_dir = tmp_path / "run" / "responses"
+    assert (response_dir / "batch-0001.accepted-0001.message.txt").is_file()
+    assert not (response_dir / "batch-0001.json").exists()
+
+    monkeypatch.setattr("hbqrs.runner._atomic_write", original_atomic_write)
+    summary = _run(tmp_path, base_url=base_url, resume=True)
+    assert summary["verdicts"] == 1
+    checkpoint = json.loads((response_dir / "batch-0001.json").read_text(encoding="utf-8"))
+    assert checkpoint["response_artifact"]["path"] == "responses/batch-0001.accepted-0002.message.txt"
+    assert handler.calls == 2
+
+
+def test_rejected_attempt_atomic_record_leaves_no_orphan_after_write_crash(
+    tmp_path: Path, fake_openai_endpoint, monkeypatch
+) -> None:
+    base_url, handler = fake_openai_endpoint
+    handler.evidence_item = {
+        "kind": "exact_quote",
+        "reference": "line:1",
+        "exact_quote": "Not present in this artifact.",
+        "summary": None,
+    }
+    from hbqrs.runner import _atomic_write as original_atomic_write
+
+    def crash_before_rejection_record(path: Path, value: bytes) -> None:
+        if path.name == "attempt-0001.json":
+            raise RuntimeError("synthetic rejection-record crash")
+        original_atomic_write(path, value)
+
+    monkeypatch.setattr("hbqrs.runner._atomic_write", crash_before_rejection_record)
+    with pytest.raises(RuntimeError, match="synthetic rejection-record crash"):
+        _run(tmp_path, base_url=base_url, batch_attempts=1)
+    rejected_dir = tmp_path / "run" / "responses" / "rejected" / "batch-0001"
+    assert not list(rejected_dir.glob("attempt-*"))
+
+    handler.evidence_item = {
+        "kind": "exact_quote",
+        "reference": "line:1",
+        "exact_quote": "A short test scene.",
+        "summary": None,
+    }
+    monkeypatch.setattr("hbqrs.runner._atomic_write", original_atomic_write)
+    assert _run(tmp_path, base_url=base_url, batch_attempts=1, resume=True)["verdicts"] == 1
+    assert handler.calls == 2
+
+
+def test_exhausted_model_output_retries_leave_no_accepted_checkpoint(tmp_path: Path, fake_openai_endpoint) -> None:
+    base_url, handler = fake_openai_endpoint
+    handler.evidence_item = {
+        "kind": "exact_quote",
+        "reference": "line:1",
+        "exact_quote": "Not present in this artifact.",
+        "summary": None,
+    }
+
+    with pytest.raises(HBQError, match="Batch 1 exhausted 2 attempts"):
+        _run(tmp_path, base_url=base_url, batch_attempts=2)
+    assert handler.calls == 2
+    assert not (tmp_path / "run" / "responses" / "batch-0001.json").exists()
+    audits = sorted((tmp_path / "run" / "responses" / "rejected" / "batch-0001").glob("attempt-*.json"))
+    assert [path.name for path in audits] == ["attempt-0001.json", "attempt-0002.json"]
+
+
+def test_resume_preserves_rejected_attempts_and_can_succeed(tmp_path: Path, fake_openai_endpoint) -> None:
+    base_url, handler = fake_openai_endpoint
+    handler.evidence_item = {
+        "kind": "exact_quote",
+        "reference": "line:1",
+        "exact_quote": "Not present in this artifact.",
+        "summary": None,
+    }
+    with pytest.raises(HBQError, match="Batch 1 exhausted 1 attempts"):
+        _run(tmp_path, base_url=base_url, batch_attempts=1)
+    audit_path = tmp_path / "run" / "responses" / "rejected" / "batch-0001" / "attempt-0001.json"
+    original_audit = audit_path.read_bytes()
+
+    handler.evidence_item = {
+        "kind": "exact_quote",
+        "reference": "line:1",
+        "exact_quote": "A short test scene.",
+        "summary": None,
+    }
+    summary = _run(tmp_path, base_url=base_url, batch_attempts=1, resume=True)
+    assert summary["verdicts"] == 1
+    assert handler.calls == 2
+    assert audit_path.read_bytes() == original_audit
+    assert sorted(audit_path.parent.glob("attempt-*.json")) == [audit_path]
+
+
+def test_prechange_checkpoint_resumes_under_default_retry_policy(tmp_path: Path, fake_openai_endpoint) -> None:
+    base_url, handler = fake_openai_endpoint
+    _run(tmp_path, base_url=base_url)
+    manifest_path = tmp_path / "run" / "run.json"
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    manifest["format_version"] = 1
+    manifest["configuration"].pop("retry_policy")
+    manifest["config_sha256"] = hashlib.sha256(
+        (json.dumps(manifest["configuration"], ensure_ascii=False, sort_keys=True, indent=2) + "\n").encode("utf-8")
+    ).hexdigest()
+    manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+    checkpoint_path = tmp_path / "run" / "responses" / "batch-0001.json"
+    checkpoint = json.loads(checkpoint_path.read_text(encoding="utf-8"))
+    checkpoint["format_version"] = 1
+    verdict = checkpoint["normalized_verdicts"][0]
+    verdict["evidence"] = [{"reference": "line:1", "quote": "A short test scene."}]
+    checkpoint["verdicts_sha256"] = hashlib.sha256(
+        (json.dumps(verdict, ensure_ascii=False, sort_keys=True) + "\n").encode("utf-8")
+    ).hexdigest()
+    checkpoint_path.write_text(json.dumps(checkpoint), encoding="utf-8")
+    (tmp_path / "run" / "verdicts.jsonl").write_text(
+        json.dumps(verdict, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+
+    resumed = _run(tmp_path, base_url=base_url, batch_attempts=3, resume=True)
+    assert resumed["verdicts"] == 1
+    assert handler.calls == 1
+
+    with pytest.raises(HBQError, match="legacy run with a non-default"):
+        _run(tmp_path, base_url=base_url, batch_attempts=2, resume=True)
+
+
+def test_new_run_rejects_changed_retry_policy_on_resume(tmp_path: Path, fake_openai_endpoint) -> None:
+    base_url, handler = fake_openai_endpoint
+    _run(tmp_path, base_url=base_url, batch_attempts=2)
+
+    with pytest.raises(HBQError, match="batch_attempts retry policy changed"):
+        _run(tmp_path, base_url=base_url, batch_attempts=3, resume=True)
+    assert handler.calls == 1
+
+
+@pytest.mark.parametrize("batch_attempts", [0, -1, True, 1.5])
+def test_batch_attempts_must_be_a_positive_integer(tmp_path: Path, batch_attempts: object) -> None:
+    with pytest.raises(HBQError, match="batch_attempts must be a positive integer"):
+        _run(tmp_path, batch_attempts=batch_attempts)
+    assert not (tmp_path / "run").exists()
 
 
 def test_remote_endpoint_requires_explicit_disclosure_gate(tmp_path: Path, capsys) -> None:
@@ -258,6 +529,8 @@ def test_remote_endpoint_requires_explicit_disclosure_gate(tmp_path: Path, capsy
     assert QUESTION_ID in disclosure
     assert "Does the output perform the requested operation" in disclosure
     assert "BINARY_EVALUATION_PROMPT.md" in disclosure
+    assert '"batch_attempts": 3' in disclosure
+    assert '"maximum_provider_sends": 3' in disclosure
 
 
 def test_loopback_endpoint_cannot_redirect_artifact_off_machine(tmp_path: Path) -> None:
@@ -566,7 +839,7 @@ def test_resume_rejects_non_typed_current_checkpoint_evidence_before_provider_ca
     _run(tmp_path, base_url=base_url)
     checkpoint_path = tmp_path / "run" / "responses" / "batch-0001.json"
     checkpoint = json.loads(checkpoint_path.read_text(encoding="utf-8"))
-    assert checkpoint["format_version"] == 2
+    assert checkpoint["format_version"] == 3
     verdict = checkpoint["normalized_verdicts"][0]
     verdict["evidence"] = evidence
     checkpoint["verdicts_sha256"] = hashlib.sha256(
@@ -592,7 +865,7 @@ def test_runner_rejects_ungrounded_exact_quote_before_checkpoint(
     }
 
     with pytest.raises(HBQError, match="does not occur verbatim"):
-        _run(tmp_path, base_url=base_url)
+        _run(tmp_path, base_url=base_url, batch_attempts=1)
     assert handler.calls == 1
     assert not (tmp_path / "run" / "responses" / "batch-0001.json").exists()
 
@@ -695,6 +968,111 @@ def test_codex_backend_uses_schema_and_read_only_ephemeral_exec(tmp_path: Path, 
     assert "stderr_tail" not in response["provider"]
 
 
+def test_codex_retry_requires_an_attempt_scoped_fresh_message(tmp_path: Path, monkeypatch) -> None:
+    message_paths: list[Path] = []
+
+    def fake_run(argv: list[str], **kwargs: object) -> subprocess.CompletedProcess[str]:
+        message_path = Path(argv[argv.index("--output-last-message") + 1])
+        message_paths.append(message_path)
+        if len(message_paths) == 1:
+            questions = _questions_from_prompt(str(kwargs["input"]))
+            payload = {
+                "verdicts": [
+                    {
+                        "question_id": item["question_id"],
+                        "verdict": "YES",
+                        "confidence": 0.9,
+                        "evidence": [
+                            {
+                                "kind": "exact_quote",
+                                "reference": "line:1",
+                                "exact_quote": "Not present in this artifact.",
+                                "summary": None,
+                            }
+                        ],
+                        "note": "The operation can be assessed from the supplied scene.",
+                    }
+                    for item in questions
+                ]
+            }
+            message_path.parent.mkdir(parents=True, exist_ok=True)
+            message_path.write_text(json.dumps(payload), encoding="utf-8")
+        stderr = "model: gpt-5.6-sol\nprovider: openai\nreasoning effort: high\nsession id: fake\nuser\n"
+        return subprocess.CompletedProcess(argv, 0, stdout="", stderr=stderr)
+
+    monkeypatch.setattr("hbqrs.runner.subprocess.run", fake_run)
+    with pytest.raises(HBQError, match="Batch 1 exhausted 2 attempts"):
+        _run(
+            tmp_path,
+            provider="codex",
+            model="gpt-5.6-sol",
+            reasoning="high",
+            codex_bin="python",
+            allow_remote=True,
+            batch_attempts=2,
+        )
+    assert len(message_paths) == 2
+    assert message_paths[0] != message_paths[1]
+    assert message_paths[0].is_file()
+    assert not message_paths[1].exists()
+    assert not (tmp_path / "run" / "responses" / "batch-0001.json").exists()
+
+
+def test_codex_resume_allocates_a_fresh_message_path_after_exhaustion(tmp_path: Path, monkeypatch) -> None:
+    message_paths: list[Path] = []
+
+    def fake_run(argv: list[str], **kwargs: object) -> subprocess.CompletedProcess[str]:
+        message_path = Path(argv[argv.index("--output-last-message") + 1])
+        message_paths.append(message_path)
+        if len(message_paths) == 1:
+            questions = _questions_from_prompt(str(kwargs["input"]))
+            payload = {
+                "verdicts": [
+                    {
+                        "question_id": item["question_id"],
+                        "verdict": "YES",
+                        "confidence": 0.9,
+                        "evidence": [
+                            {
+                                "kind": "exact_quote",
+                                "reference": "line:1",
+                                "exact_quote": "Not present in this artifact.",
+                                "summary": None,
+                            }
+                        ],
+                        "note": "The operation can be assessed from the supplied scene.",
+                    }
+                    for item in questions
+                ]
+            }
+            message_path.parent.mkdir(parents=True, exist_ok=True)
+            message_path.write_text(json.dumps(payload), encoding="utf-8")
+        stderr = "model: gpt-5.6-sol\nprovider: openai\nreasoning effort: high\nsession id: fake\nuser\n"
+        return subprocess.CompletedProcess(argv, 0, stdout="", stderr=stderr)
+
+    monkeypatch.setattr("hbqrs.runner.subprocess.run", fake_run)
+    arguments = {
+        "provider": "codex",
+        "model": "gpt-5.6-sol",
+        "reasoning": "high",
+        "codex_bin": "python",
+        "allow_remote": True,
+        "batch_attempts": 1,
+    }
+    with pytest.raises(HBQError, match="Batch 1 exhausted 1 attempts"):
+        _run(tmp_path, **arguments)
+    with pytest.raises(HBQError, match="Batch 1 exhausted 1 attempts"):
+        _run(tmp_path, resume=True, **arguments)
+
+    assert len(message_paths) == 2
+    assert message_paths[0] != message_paths[1]
+    assert message_paths[0].name.endswith("attempt-0001.message.json")
+    assert message_paths[1].name.endswith("attempt-0002.message.json")
+    assert message_paths[0].is_file()
+    assert not message_paths[1].exists()
+    assert not (tmp_path / "run" / "responses" / "batch-0001.json").exists()
+
+
 def test_codex_backend_rejects_effective_model_mismatch(tmp_path: Path, monkeypatch) -> None:
     def fake_run(argv: list[str], **kwargs: object) -> subprocess.CompletedProcess[str]:
         message_path = Path(argv[argv.index("--output-last-message") + 1])
@@ -717,3 +1095,263 @@ def test_codex_backend_rejects_effective_model_mismatch(tmp_path: Path, monkeypa
             batch_number=1,
             timeout=10,
         )
+
+
+def test_grok_backend_uses_isolated_single_turn_schema_cli(tmp_path: Path, monkeypatch) -> None:
+    schema = tmp_path / "schema.json"
+    schema.write_text('{"type":"object"}', encoding="utf-8")
+    calls: list[list[str]] = []
+
+    def fake_version(*, executable: str, timeout: float) -> str:
+        assert executable == "grok-fixture"
+        assert timeout == 10
+        return "Grok Build CLI 1.0.fixture"
+
+    def fake_run(argv: list[str], **kwargs: object) -> subprocess.CompletedProcess[str]:
+        calls.append(argv)
+        assert argv[argv.index("--model") + 1] == "grok-4.6"
+        assert argv[argv.index("--reasoning-effort") + 1] == "high"
+        assert argv[argv.index("--output-format") + 1] == "json"
+        assert json.loads(argv[argv.index("--json-schema") + 1]) == {"type": "object"}
+        prompt_path = Path(argv[argv.index("--prompt-file") + 1])
+        assert prompt_path.read_text(encoding="utf-8") == "judge this"
+        for flag in ("--no-leader", "--no-subagents", "--disable-web-search", "--no-plan", "--verbatim"):
+            assert flag in argv
+        assert argv[argv.index("--max-turns") + 1] == "1"
+        assert argv[argv.index("--tools") + 1] == ""
+        assert argv[argv.index("--permission-mode") + 1] == "dontAsk"
+        assert argv[argv.index("--sandbox") + 1] == "read-only"
+        return subprocess.CompletedProcess(
+            argv,
+            0,
+            stdout=json.dumps(
+                {
+                    "structuredOutput": {"verdicts": []},
+                    "modelUsage": {"grok-4.6-build": {"input_tokens": 1}},
+                    "sessionId": "fixture-session-id",
+                    "requestId": "fixture-request-id",
+                    "stopReason": "end_turn",
+                    "num_turns": 1,
+                }
+            ),
+            stderr="",
+        )
+
+    monkeypatch.setattr("hbqrs.runner._grok_cli_version", fake_version)
+    monkeypatch.setattr("hbqrs.runner.subprocess.run", fake_run)
+    content, record = _call_grok(
+        executable="grok-fixture",
+        model="grok-4.6",
+        reasoning="high",
+        prompt="judge this",
+        output_dir=tmp_path,
+        response_schema=schema,
+        batch_number=1,
+        timeout=10,
+        allow_unattested_reasoning=True,
+    )
+    assert json.loads(content) == {"verdicts": []}
+    assert len(calls) == 1
+    assert record["cli_version"] == "Grok Build CLI 1.0.fixture"
+    assert record["requested"] == {"model": "grok-4.6", "reasoning_effort": "high"}
+    assert record["reported"] == {
+        "provider": "grok",
+        "model": "grok-4.6-build",
+    }
+    assert "fixture-session-id" not in json.dumps(record)
+    assert "fixture-request-id" not in json.dumps(record)
+    assert record["reasoning_attested"] is False
+
+
+def test_grok_backend_rejects_unattested_output_envelope(tmp_path: Path, monkeypatch) -> None:
+    schema = tmp_path / "schema.json"
+    schema.write_text('{"type":"object"}', encoding="utf-8")
+    monkeypatch.setattr("hbqrs.runner._grok_cli_version", lambda **_: "Grok Build CLI fixture")
+    monkeypatch.setattr(
+        "hbqrs.runner.subprocess.run",
+        lambda argv, **kwargs: subprocess.CompletedProcess(
+            argv, 0, stdout='{"structuredOutput": {}}', stderr=""
+        ),
+    )
+    with pytest.raises(HBQError, match="modelUsage entry"):
+        _call_grok(
+            executable="grok-fixture",
+            model="grok-4.6",
+            reasoning="high",
+            prompt="judge this",
+            output_dir=tmp_path,
+            response_schema=schema,
+            batch_number=1,
+            timeout=10,
+        )
+
+
+def test_grok_backend_requires_explicit_unattested_reasoning_opt_in(tmp_path: Path, monkeypatch) -> None:
+    schema = tmp_path / "schema.json"
+    schema.write_text('{"type":"object"}', encoding="utf-8")
+    monkeypatch.setattr("hbqrs.runner._grok_cli_version", lambda **_: "fixture")
+    monkeypatch.setattr(
+        "hbqrs.runner.subprocess.run",
+        lambda argv, **kwargs: subprocess.CompletedProcess(
+            argv,
+            0,
+            stdout=json.dumps(
+                {
+                    "structuredOutput": {}, "modelUsage": {"grok-4.6-build": {}},
+                    "sessionId": "session", "requestId": "request", "stopReason": "end_turn", "num_turns": 1,
+                }
+            ),
+            stderr="",
+        ),
+    )
+    with pytest.raises(HBQError, match="allow-unattested-reasoning"):
+        _call_grok(
+            executable="grok-fixture", model="grok-4.6", reasoning="high", prompt="judge",
+            output_dir=tmp_path, response_schema=schema, batch_number=1, timeout=10,
+        )
+
+
+def test_nous_backend_uses_only_canonical_tool_free_launcher(tmp_path: Path, monkeypatch) -> None:
+    schema = tmp_path / "schema.json"
+    schema.write_text('{"type":"object"}', encoding="utf-8")
+    launcher = tmp_path / "launch-bridge.ps1"
+    launcher.write_text("fixture", encoding="utf-8")
+    calls: list[list[str]] = []
+
+    def fake_run(argv: list[str], **kwargs: object) -> subprocess.CompletedProcess[str]:
+        calls.append(argv)
+        assert argv[:5] == ["powershell.exe", "-NoProfile", "-NonInteractive", "-File", str(launcher.resolve())]
+        if "-ProveLock" in argv:
+            evidence = Path(argv[argv.index("-EvidenceRoot") + 1])
+            proof = evidence / "proof.json"
+            proof.write_text("{}", encoding="utf-8")
+            return subprocess.CompletedProcess(argv, 0, stdout=json.dumps({"proof_path": str(proof)}), stderr="")
+        request_path = Path(argv[argv.index("-JudgeRequest") + 1])
+        result_path = Path(argv[argv.index("-JudgeResult") + 1])
+        evidence = Path(argv[argv.index("-EvidenceRoot") + 1])
+        proof = Path(argv[argv.index("-SerializationProof") + 1])
+        assert proof.is_file()
+        request = json.loads(request_path.read_text(encoding="utf-8"))
+        assert request["schema"] == "codex-nous-tool-free-judge-request-v1"
+        assert request["model"] in {"deepseek/deepseek-v4-flash-0731", "deepseek/deepseek-v4-pro-0813"}
+        assert request["reasoning_effort"] == "max"
+        assert request["response_format"]["json_schema"]["strict"] is True
+        assert len(request["messages"]) == 2
+        assert evidence.is_dir()
+        canonical = {
+            "deepseek/deepseek-v4-flash-0731": "deepseek/deepseek-v4-flash-20260731",
+            "deepseek/deepseek-v4-pro-0813": "deepseek/deepseek-v4-pro-20260813",
+        }[request["model"]]
+        result_path.write_text(
+            json.dumps(
+                {
+                    "schema": "codex-nous-tool-free-judge-result-v1",
+                    "result": {"verdicts": []},
+                    "metadata": {
+                        "requested_provider": "nous",
+                        "requested_model": request["model"],
+                        "provider_reported_model": canonical,
+                        "provider_canonical_model": canonical,
+                        "requested_reasoning_effort": "max",
+                        "provider_reported_reasoning_effort": None,
+                        "tool_free": True,
+                        "tool_mode": "judge",
+                        "tool_call_count": 0,
+                        "exact_gate_eligible": False,
+                        "logical_provider_request_count": 1,
+                        "physical_http_attempt_count": 1,
+                        "recovered_request_count": 0,
+                        "judge_transport_policy": {
+                            "schema": "codex-nous-tool-free-judge-transport-v1",
+                            "logical_requests_per_attempt": 1,
+                            "max_physical_attempts_per_logical_request": 2,
+                            "retry_policy_version": "hardened-v2-provider-attempts-v1",
+                            "retryable_statuses": [408, 409, 425, 429],
+                        },
+                        "judge_model_policy": {
+                            "requested_model": request["model"],
+                            "provider_canonical_model": canonical,
+                            "required_reasoning_effort": "max",
+                        },
+                        "evidence_validation": {"valid": True, "exact_gate_eligible": False},
+                    },
+                }
+            ),
+            encoding="utf-8",
+        )
+        return subprocess.CompletedProcess(argv, 0, stdout="{}", stderr="")
+
+    monkeypatch.setattr("hbqrs.runner.NOUS_LAUNCHER_PATH", launcher)
+    monkeypatch.setattr("hbqrs.runner.subprocess.run", fake_run)
+    with pytest.raises(HBQError, match="allow-unattested-reasoning"):
+        _call_nous(
+            model="deepseek/deepseek-v4-flash-0731",
+            reasoning="max",
+            prompt="judge this",
+            output_dir=tmp_path / "denied",
+            response_schema=schema,
+            batch_number=1,
+            timeout=10,
+        )
+    content, record = _call_nous(
+        model="deepseek/deepseek-v4-flash-0731",
+        reasoning="max",
+        prompt="judge this",
+        output_dir=tmp_path,
+        response_schema=schema,
+        batch_number=1,
+        timeout=10,
+        allow_unattested_reasoning=True,
+    )
+    assert json.loads(content) == {"verdicts": []}
+    assert len(calls) == 4
+    assert record["reported"] == {"provider": "nous", "model": "deepseek/deepseek-v4-flash-20260731"}
+    assert record["reasoning_attested"] is False
+    assert record["tool_free"] is True
+    pro_content, pro_record = _call_nous(
+        model="deepseek/deepseek-v4-pro-0813", reasoning="max", prompt="judge this",
+        output_dir=tmp_path / "pro", response_schema=schema, batch_number=1, timeout=10,
+        allow_unattested_reasoning=True,
+    )
+    assert json.loads(pro_content) == {"verdicts": []}
+    assert pro_record["provider_canonical_model"] == "deepseek/deepseek-v4-pro-20260813"
+    assert len(calls) == 6
+
+
+def test_nous_backend_rejects_any_nonpinned_model_or_reasoning(tmp_path: Path) -> None:
+    schema = tmp_path / "schema.json"
+    schema.write_text('{"type":"object"}', encoding="utf-8")
+    with pytest.raises(HBQError, match="Nous requires an allowlisted"):
+        _call_nous(
+            model="other-model",
+            reasoning="high",
+            prompt="judge this",
+            output_dir=tmp_path,
+            response_schema=schema,
+            batch_number=1,
+            timeout=10,
+        )
+
+
+def test_provider_artifact_validation_rejects_missing_or_corrupt_files(tmp_path: Path) -> None:
+    artifact = tmp_path / "responses" / "provider.json"
+    artifact.parent.mkdir(parents=True)
+    artifact.write_text("fixture", encoding="utf-8")
+    record = {
+        "provider": {
+            "provider_artifacts": {
+                "grok_envelope": {
+                    "path": "responses/provider.json",
+                    "bytes": 7,
+                    "sha256": hashlib.sha256(b"fixture").hexdigest(),
+                }
+            }
+        }
+    }
+    _validate_provider_artifacts(tmp_path, record)
+    artifact.write_text("tampered", encoding="utf-8")
+    with pytest.raises(HBQError, match="not bound"):
+        _validate_provider_artifacts(tmp_path, record)
+    artifact.unlink()
+    with pytest.raises(HBQError, match="not bound"):
+        _validate_provider_artifacts(tmp_path, record)

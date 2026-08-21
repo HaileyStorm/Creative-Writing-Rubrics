@@ -449,12 +449,14 @@ def _cmd_judge(args: argparse.Namespace) -> int:
         weight_profile=_load_weight_profile(args.weight_profile),
         question_ids=args.question_id,
         batch_size=args.batch_size,
+        batch_attempts=args.batch_attempts,
         base_url=args.base_url,
         api_key_env=args.api_key_env,
         temperature=args.temperature,
         allow_model_mismatch=args.allow_model_mismatch,
         reasoning=args.reasoning,
         codex_bin=args.codex_bin,
+        grok_bin=args.grok_bin,
         allow_remote=args.allow_remote,
         resume=args.resume,
         dry_run=args.dry_run,
@@ -462,6 +464,7 @@ def _cmd_judge(args: argparse.Namespace) -> int:
         artifact_id=args.artifact_id,
         judge_id=args.judge_id,
         strict_ai=args.strict_ai,
+        allow_unattested_reasoning=args.allow_unattested_reasoning,
     )
     print(json.dumps(summary, ensure_ascii=False, indent=2))
     return 0
@@ -498,6 +501,7 @@ def _cmd_longform(args: argparse.Namespace) -> int:
         frozen_sample_ordinals=args.frozen_sample_ordinal,
         binary_workers=args.binary_workers,
         batch_size=args.batch_size,
+        batch_attempts=args.batch_attempts,
         base_url=args.base_url,
         api_key_env=args.api_key_env,
         temperature=args.temperature,
@@ -506,12 +510,14 @@ def _cmd_longform(args: argparse.Namespace) -> int:
         structured_reasoning=args.structured_reasoning,
         judge_reasoning=args.judge_reasoning,
         codex_bin=args.codex_bin,
+        grok_bin=args.grok_bin,
         allow_remote=args.allow_remote,
         resume=args.resume,
         dry_run=args.dry_run,
         plan_only=args.plan_only,
         timeout=args.timeout,
         strict_ai=args.strict_ai,
+        allow_unattested_reasoning=args.allow_unattested_reasoning,
     )
     report_path = Path(args.output_dir) / "report.json"
     if args.html_report and report_path.is_file():
@@ -708,11 +714,11 @@ def build_parser() -> argparse.ArgumentParser:
 
     judge = subparsers.add_parser(
         "judge",
-        help="run a bundle through an OpenAI-compatible endpoint or Codex CLI, then score it",
+        help="run a bundle through an OpenAI-compatible endpoint, Codex CLI, Grok Build CLI, or Nous bridge, then score it",
     )
     judge.add_argument("artifact", help="UTF-8 text artifact to evaluate")
     judge.add_argument("--bundle", dest="bundle_id", required=True)
-    judge.add_argument("--provider", choices=["openai", "codex"], required=True)
+    judge.add_argument("--provider", choices=["openai", "codex", "grok", "nous"], required=True)
     judge.add_argument("--model", required=True)
     judge.add_argument("--output-dir", required=True, help="new run directory, or an existing run with --resume")
     judge.add_argument("--context", action="append", default=[], help="additional UTF-8 brief/canon file; repeatable")
@@ -720,12 +726,24 @@ def build_parser() -> argparse.ArgumentParser:
     judge.add_argument("--weight-profile", help="strict scoring-weight profile JSON/YAML")
     judge.add_argument("--question-id", action="append", default=[], help="limit to a selected leaf; repeatable")
     judge.add_argument("--batch-size", type=int, default=12)
+    judge.add_argument(
+        "--batch-attempts",
+        type=int,
+        default=3,
+        help="maximum provider attempts for a rejected batch; rejected outputs remain auditable",
+    )
     judge.add_argument("--base-url", default="http://127.0.0.1:8000/v1")
     judge.add_argument("--api-key-env", default="OPENAI_API_KEY")
     judge.add_argument("--temperature", type=float)
     judge.add_argument("--allow-model-mismatch", action="store_true")
     judge.add_argument("--reasoning", choices=["low", "medium", "high", "xhigh", "max"], default="medium")
     judge.add_argument("--codex-bin", default="codex")
+    judge.add_argument("--grok-bin", default="grok")
+    judge.add_argument(
+        "--allow-unattested-reasoning",
+        action="store_true",
+        help="allow provisional Grok/Nous results when the provider does not attest reasoning effort",
+    )
     judge.add_argument("--allow-remote", action="store_true")
     judge.add_argument("--resume", action="store_true")
     judge.add_argument("--dry-run", action="store_true")
@@ -815,10 +833,16 @@ def build_parser() -> argparse.ArgumentParser:
         default=1,
         help="bounded parallel workers for global and local binary passes; does not reduce coverage",
     )
-    longform.add_argument("--provider", choices=["openai", "codex"], required=True)
+    longform.add_argument("--provider", choices=["openai", "codex", "grok", "nous"], required=True)
     longform.add_argument("--model", required=True)
     longform.add_argument("--output-dir", required=True, help="new workflow directory, or existing with --resume")
     longform.add_argument("--batch-size", type=int, default=12)
+    longform.add_argument(
+        "--batch-attempts",
+        type=int,
+        default=3,
+        help="maximum provider attempts for each rejected binary batch",
+    )
     longform.add_argument("--base-url", default="http://127.0.0.1:8000/v1")
     longform.add_argument("--api-key-env", default="OPENAI_API_KEY")
     longform.add_argument("--temperature", type=float)
@@ -841,6 +865,12 @@ def build_parser() -> argparse.ArgumentParser:
         help="Codex reasoning for binary rubric batches",
     )
     longform.add_argument("--codex-bin", default="codex")
+    longform.add_argument("--grok-bin", default="grok")
+    longform.add_argument(
+        "--allow-unattested-reasoning",
+        action="store_true",
+        help="allow provisional Grok/Nous results when the provider does not attest reasoning effort",
+    )
     longform.add_argument("--allow-remote", action="store_true")
     longform.add_argument("--resume", action="store_true")
     longform.add_argument("--dry-run", action="store_true")

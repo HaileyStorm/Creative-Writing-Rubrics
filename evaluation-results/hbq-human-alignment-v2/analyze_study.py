@@ -21,6 +21,98 @@ def read_verdicts(path: Path) -> list[dict[str, Any]]: return [json.loads(line) 
 def verdict_bytes(rows: Sequence[Mapping[str, Any]]) -> bytes: return "".join(json.dumps(row, ensure_ascii=False, sort_keys=True)+"\n" for row in rows).encode()
 def checkpoint_files(folder: Path) -> list[Path]: return sorted((folder/"responses").glob("batch-[0-9][0-9][0-9][0-9].json"))
 
+def _retry_policy(frozen: Mapping[str, Any]) -> dict[str, int]:
+    value = frozen.get("runner", {}).get("batch_attempts", 3)
+    if not isinstance(value, int) or isinstance(value, bool) or value < 1:
+        raise ValueError("Frozen batch retry policy is invalid")
+    return {"batch_attempts": value}
+
+def _accepted_response_bytes(folder: Path, checkpoint: Path, record: Mapping[str, Any], policy: Mapping[str, int]) -> tuple[bytes, int | None]:
+    """Bind current checkpoints to their accepted artifact; retain canonical legacy messages."""
+    version = record.get("format_version")
+    if version == 2:
+        message = checkpoint.with_name(f"batch-{record.get('batch'):04d}.message.json")
+        if not message.is_file():
+            raise ValueError("Legacy checkpoint accepted response message is missing")
+        return message.read_bytes(), None
+    if version != 3 or record.get("retry_policy") != policy:
+        raise ValueError("Checkpoint retry policy does not bind to the frozen run")
+    attempt = record.get("accepted_attempt")
+    if not isinstance(attempt, int) or isinstance(attempt, bool) or not 1 <= attempt <= policy["batch_attempts"]:
+        raise ValueError("Checkpoint accepted attempt is outside the frozen retry policy")
+    artifact = record.get("response_artifact")
+    if not isinstance(artifact, Mapping):
+        raise ValueError("Checkpoint accepted response artifact is missing")
+    relative, expected_bytes, expected_sha = artifact.get("path"), artifact.get("bytes"), artifact.get("sha256")
+    if not isinstance(relative, str) or not isinstance(expected_bytes, int) or isinstance(expected_bytes, bool) or not isinstance(expected_sha, str):
+        raise ValueError("Checkpoint accepted response artifact is malformed")
+    try:
+        message = (folder / relative).resolve()
+        message.relative_to(folder.resolve())
+        content = message.read_bytes()
+    except (OSError, ValueError) as exc:
+        raise ValueError("Checkpoint accepted response artifact is unavailable") from exc
+    digest = hashlib.sha256(content).hexdigest()
+    if len(content) != expected_bytes or digest != expected_sha or digest != record.get("response_sha256"):
+        raise ValueError("Checkpoint accepted response artifact hash does not bind")
+    return content, attempt
+
+def _rejected_attempts(folder: Path, policy: Mapping[str, int]) -> list[dict[str, Any]]:
+    records: list[dict[str, Any]] = []
+    rejected = folder / "responses" / "rejected"
+    if not rejected.is_dir():
+        return records
+    record_paths = sorted(rejected.glob("batch-[0-9][0-9][0-9][0-9]/attempt-[0-9][0-9][0-9][0-9].json"))
+    raw_files = set(rejected.glob("batch-[0-9][0-9][0-9][0-9]/attempt-[0-9][0-9][0-9][0-9].message.txt"))
+    expected_raw: set[Path] = set()
+    for record_path in record_paths:
+        record = read_json(record_path)
+        raw = record.get("raw_content", {})
+        version = record.get("format_version")
+        if version == 2:
+            relative = raw.get("path") if isinstance(raw, Mapping) else None
+            try:
+                raw_path = (folder / relative).resolve() if isinstance(relative, str) else None
+                if raw_path is None:
+                    raise ValueError
+                raw_path.relative_to(folder.resolve())
+                content = raw_path.read_bytes()
+            except (OSError, ValueError) as exc:
+                raise ValueError("Rejected retry artifact is unavailable") from exc
+            expected_raw.add(raw_path)
+            raw_valid = raw.get("path") == raw_path.relative_to(folder).as_posix() and raw.get("bytes") == len(content) and raw.get("sha256") == hashlib.sha256(content).hexdigest()
+        elif version == 3 and isinstance(raw, Mapping) and isinstance(raw.get("text"), str):
+            content = raw["text"].encode("utf-8")
+            raw_valid = set(raw) == {"encoding", "text", "bytes", "sha256"} and raw.get("encoding") == "utf-8" and raw.get("bytes") == len(content) and raw.get("sha256") == hashlib.sha256(content).hexdigest()
+        else:
+            raw_valid = False
+        if version not in {2, 3} or record.get("retry_policy") != policy or not isinstance(record.get("batch"), int) or isinstance(record.get("batch"), bool) or not isinstance(record.get("attempt"), int) or isinstance(record.get("attempt"), bool) or not isinstance(record.get("sequence"), int) or isinstance(record.get("sequence"), bool) or not raw_valid:
+            raise ValueError("Rejected retry attempt is not provenance-bound")
+        records.append(record)
+    if raw_files != expected_raw:
+        raise ValueError("Rejected retry artifacts are unmatched")
+    if sorted(record["sequence"] for record in records) != list(range(1, len(records) + 1)):
+        raise ValueError("Rejected retry attempts do not have contiguous global sequences")
+    for batch in {record["batch"] for record in records}:
+        batch_records = [record for record in records if record["batch"] == batch]
+        if [record["attempt"] for record in batch_records] != list(range(1, len(batch_records) + 1)):
+            raise ValueError("Rejected retry attempts do not have contiguous batch order")
+        previous = None
+        for record in batch_records:
+            if record.get("previous_rejected_sha256") != previous:
+                raise ValueError("Rejected retry attempt chain is broken")
+            record_path = rejected / f"batch-{batch:04d}" / f"attempt-{record['attempt']:04d}.json"
+            previous = hashlib.sha256(record_path.read_bytes()).hexdigest()
+    return records
+
+def _rejected_chain(folder: Path, records: Sequence[Mapping[str, Any]], batch: int) -> dict[str, Any]:
+    batch_records = [record for record in records if record.get("batch") == batch]
+    if not batch_records:
+        return {"count": 0, "head_sha256": None}
+    tail = batch_records[-1]
+    path = folder / "responses" / "rejected" / f"batch-{batch:04d}" / f"attempt-{tail['attempt']:04d}.json"
+    return {"count": len(batch_records), "head_sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
+
 def typed_evidence_metrics(rows: Sequence[Mapping[str, Any]], source: str, prompt: str) -> dict[str, Any]:
     result = Counter(total=0, typed_schema_conformant=0, exact_quote=0, exact_quote_grounded=0, summary=0, untyped=0, empty=0)
     for verdict in rows:
@@ -42,8 +134,13 @@ def verify_run(work: Path, frozen: Mapping[str, Any], phase: str, row: Mapping[s
     manifest, score, rows = read_json(folder/"run.json"), read_json(folder/"score.json"), read_verdicts(folder/"verdicts.jsonl")
     configuration = manifest.get("configuration", {})
     inputs = row["external_input"]
-    if manifest.get("format_version") != 1 or not manifest.get("config_sha256") or not isinstance(score.get("status"), str): raise ValueError(f"Malformed run manifest/status for {row['item_id']}")
+    policy = _retry_policy(frozen)
+    manifest_version = manifest.get("format_version")
+    if manifest_version not in {1, 2} or not manifest.get("config_sha256") or not isinstance(score.get("status"), str): raise ValueError(f"Malformed run manifest/status for {row['item_id']}")
     if manifest.get("config_sha256") != hashlib.sha256(_json_bytes(configuration)).hexdigest(): raise ValueError(f"Config hash mismatch for {row['item_id']}")
+    if manifest_version == 1:
+        if policy != {"batch_attempts": 3} or "retry_policy" in configuration: raise ValueError(f"Legacy run manifest cannot prove the frozen retry policy for {row['item_id']}")
+    elif configuration.get("retry_policy") != policy: raise ValueError(f"Run retry policy mismatch for {row['item_id']}")
     if configuration.get("artifact", {}).get("sha256") != inputs["source.md"]["sha256"] or configuration.get("contexts", [{}])[0].get("sha256") != inputs["prompt.md"]["sha256"] or configuration.get("task_contract", {}).get("sha256") != inputs["task-contract.json"]["sha256"]: raise ValueError(f"Run input provenance mismatch for {row['item_id']}")
     task_contract=read_json(work/"inputs"/("development" if phase in {"development","repeatability"} else "confirmatory")/row["item_id"] / "task-contract.json")
     modules=load_modules(registry_path()); bundle=resolve_bundle(load_bundles(bundles_path()), frozen["runner"]["bundle_id"]); compiled=compile_bundle(modules,bundle,task_contract=task_contract)
@@ -53,15 +150,21 @@ def verify_run(work: Path, frozen: Mapping[str, Any], phase: str, row: Mapping[s
     if [compact(item) for item in configuration.get("prompts",[])] != [frozen["package_files"]["BINARY_EVALUATION_PROMPT.md"]] or compact(configuration.get("response_schema")) != frozen["package_files"]["hbq_judge_response.schema.json"]: raise ValueError(f"Prompt/schema fingerprint mismatch for {row['item_id']}")
     if configuration.get("question_ids") != expected or [item.get("question_id") for item in rows] != expected: raise ValueError(f"Question order mismatch for {row['item_id']}")
     if configuration.get("provider") != frozen["provider"]["provider"] or configuration.get("model") != frozen["provider"]["model"] or configuration.get("reasoning") != frozen["provider"]["reasoning"] or configuration.get("strict_ai") is not False or configuration.get("batch_size") != frozen["runner"]["batch_size"]: raise ValueError(f"Run settings mismatch for {row['item_id']}")
-    checkpoints = checkpoint_files(folder); previous=None; accumulated=[]
+    rejected = _rejected_attempts(folder, policy)
+    checkpoints = checkpoint_files(folder); previous=None; accumulated=[]; accepted_attempts=[]
     expected_batches=(len(expected)+frozen["runner"]["batch_size"]-1)//frozen["runner"]["batch_size"]
     if len(checkpoints) != expected_batches: raise ValueError(f"Expected {expected_batches} ordered checkpoints for {row['item_id']}")
     for number, checkpoint in enumerate(checkpoints, 1):
-        record=read_json(checkpoint); prompt=checkpoint.with_suffix(".prompt.txt.gz"); message=checkpoint.with_name(f"batch-{number:04d}.message.json")
+        record=read_json(checkpoint); prompt=checkpoint.with_suffix(".prompt.txt.gz")
         expected_ids=expected[(number-1)*frozen["runner"]["batch_size"]:number*frozen["runner"]["batch_size"]]
-        if record.get("format_version") != 2 or record.get("batch") != number or record.get("previous_checkpoint_sha256") != previous or record.get("question_ids") != expected_ids or not prompt.is_file() or not message.is_file(): raise ValueError(f"Checkpoint chain mismatch for {row['item_id']}")
+        if record.get("format_version") not in {2,3} or record.get("batch") != number or record.get("previous_checkpoint_sha256") != previous or record.get("question_ids") != expected_ids or not prompt.is_file(): raise ValueError(f"Checkpoint chain mismatch for {row['item_id']}")
         if record.get("prompt_sha256") != hashlib.sha256(gzip.decompress(prompt.read_bytes())).hexdigest(): raise ValueError(f"Checkpoint prompt mismatch for {row['item_id']}")
-        if record.get("response_sha256") != hashlib.sha256(message.read_bytes()).hexdigest(): raise ValueError(f"Checkpoint response/message hash mismatch for {row['item_id']}")
+        message, accepted_attempt = _accepted_response_bytes(folder, checkpoint, record, policy)
+        if record.get("response_sha256") != hashlib.sha256(message).hexdigest(): raise ValueError(f"Checkpoint response/message hash mismatch for {row['item_id']}")
+        if accepted_attempt is not None:
+            if record.get("rejected_chain") != _rejected_chain(folder, rejected, number): raise ValueError(f"Checkpoint rejected retry chain mismatch for {row['item_id']}")
+            if accepted_attempt > 1 and not record["rejected_chain"]["count"]: raise ValueError(f"Checkpoint accepted after retry has no rejected evidence for {row['item_id']}")
+            accepted_attempts.append(accepted_attempt)
         accumulated.extend(record.get("normalized_verdicts", []))
         if record.get("verdicts_sha256") != hashlib.sha256(verdict_bytes(accumulated)).hexdigest(): raise ValueError(f"Checkpoint verdict hash mismatch for {row['item_id']}")
         reported=record.get("provider", {}).get("reported", {})
@@ -70,6 +173,7 @@ def verify_run(work: Path, frozen: Mapping[str, Any], phase: str, row: Mapping[s
     if accumulated != rows: raise ValueError(f"Checkpoint/verdicts mismatch for {row['item_id']}")
     recomputed=score_bundle(modules,bundle,rows,artifact_id=row["item_id"],task_contract=task_contract); recomputed["weight_profile"]=configuration.get("weight_profile")
     if recomputed != score: raise ValueError(f"Deterministic score mismatch for {row['item_id']}")
+    score["retry_provenance"] = {"policy": policy, "accepted_checkpoint_count": len(checkpoints), "accepted_attempts": accepted_attempts, "rejected_attempt_count": len(rejected), "rejected_batches": sorted({int(item["batch"]) for item in rejected})}
     return rows, score
 
 def verify_phase_runs(work: Path, frozen: Mapping[str, Any], phase: str) -> None:
@@ -139,18 +243,18 @@ def ordinal_agreement(items: Sequence[Any]) -> dict[str,Any]:
     return {dimension:{"statistic":"mean within-item ordinal concordance = 1 - mean pairwise absolute rating difference / 4","item_count":len(items),"value":statistics.fmean(1-abs(left-right)/4 for item in items for left,right in combinations(item.ratings[dimension],2))} for dimension in RATING_DIMENSIONS}
 
 def repeatability_metrics(work: Path, frozen: Mapping[str,Any]) -> dict[str,Any]:
-    all_leaves=[]; per_item=[]; evidence=[]
+    all_leaves=[]; per_item=[]; evidence=[]; retries=[]
     for repeat in frozen["repeatability"]["items"]:
         row=next(item for item in frozen["partitions"]["development"] if item["item_id"]==repeat["item_id"]); source=(work/"inputs"/"development"/row["item_id"]/"source.md").read_text(encoding="utf-8"); prompt=(work/"inputs"/"development"/row["item_id"]/"prompt.md").read_text(encoding="utf-8"); runs=[]; scores=[]
         session_sets=[]
         for number in range(1,frozen["repeatability"]["repetitions"]+1):
-            verdicts,score=verify_run(work,frozen,"repeatability",row,number); runs.append(verdicts); value=score_value(score); scores.extend([] if value is None else [value]); evidence.append(typed_evidence_metrics(verdicts,source,prompt))
+            verdicts,score=verify_run(work,frozen,"repeatability",row,number); runs.append(verdicts); value=score_value(score); scores.extend([] if value is None else [value]); evidence.append(typed_evidence_metrics(verdicts,source,prompt)); retries.append(score["retry_provenance"])
             checkpoints=checkpoint_files(work/"runs"/"repeatability"/row["item_id"]/f"run-{number:02d}"); session_sets.append({read_json(checkpoint)["provider"]["reported"]["session_id"] for checkpoint in checkpoints})
         columns=list(zip(*[[item["verdict"] for item in run] for run in runs])); all_leaves.extend(columns); per_item.append({"item_id":row["item_id"],"source_model":row["model"],"exact_all_five_leaf_agreement":statistics.fmean(len(set(column))==1 for column in columns),"score":{"values":scores,"standard_deviation":statistics.stdev(scores) if len(scores)>1 else 0.0,"range":max(scores)-min(scores) if scores else None},"session_commitment":{"repetition_session_counts":[len(value) for value in session_sets],"total_distinct_sessions":len(set().union(*session_sets)),"globally_disjoint":not any(left & right for left,right in combinations(session_sets,2))}})
     keys=("total","typed_schema_conformant","exact_quote","exact_quote_grounded","summary","untyped","empty"); sums={key:sum(item[key] for item in evidence) for key in keys}; total=sums["total"]
     deviations=[item["score"]["standard_deviation"] for item in per_item]; ranges=[item["score"]["range"] for item in per_item if item["score"]["range"] is not None]
     if len(per_item) != 11: raise ValueError("Frozen repeatability summary must contain exactly 11 items")
-    return {"item_count":11,"repetitions":frozen["repeatability"]["repetitions"],"per_item":per_item,"leaf_exact_all_five_agreement":statistics.fmean(item["exact_all_five_leaf_agreement"] for item in per_item),"nominal_krippendorff_alpha":alpha_nominal(all_leaves),"within_item_score_standard_deviation":{"mean":statistics.fmean(deviations),"maximum":max(deviations),"minimum":min(deviations)},"within_item_score_range":{"mean":statistics.fmean(ranges) if ranges else None,"maximum":max(ranges) if ranges else None},"evidence":{"total":total,"typed_schema_conformant":sums["typed_schema_conformant"],"typed_schema_conformance_rate":sums["typed_schema_conformant"]/total if total else None,"exact_quote":sums["exact_quote"],"exact_quote_grounded":sums["exact_quote_grounded"],"exact_quote_grounded_rate":sums["exact_quote_grounded"]/sums["exact_quote"] if sums["exact_quote"] else None,"summary":sums["summary"],"summary_prevalence":sums["summary"]/total if total else None,"untyped":sums["untyped"],"empty":sums["empty"]}}
+    return {"item_count":11,"repetitions":frozen["repeatability"]["repetitions"],"per_item":per_item,"leaf_exact_all_five_agreement":statistics.fmean(item["exact_all_five_leaf_agreement"] for item in per_item),"nominal_krippendorff_alpha":alpha_nominal(all_leaves),"within_item_score_standard_deviation":{"mean":statistics.fmean(deviations),"maximum":max(deviations),"minimum":min(deviations)},"within_item_score_range":{"mean":statistics.fmean(ranges) if ranges else None,"maximum":max(ranges) if ranges else None},"retry_provenance":{"policy":_retry_policy(frozen),"accepted_run_count":len(retries),"rejected_attempt_count":sum(item["rejected_attempt_count"] for item in retries),"rejected_run_count":sum(item["rejected_attempt_count"] > 0 for item in retries),"excluded_from_repetition_metrics":True},"evidence":{"total":total,"typed_schema_conformant":sums["typed_schema_conformant"],"typed_schema_conformance_rate":sums["typed_schema_conformant"]/total if total else None,"exact_quote":sums["exact_quote"],"exact_quote_grounded":sums["exact_quote_grounded"],"exact_quote_grounded_rate":sums["exact_quote_grounded"]/sums["exact_quote"] if sums["exact_quote"] else None,"summary":sums["summary"],"summary_prevalence":sums["summary"]/total if total else None,"untyped":sums["untyped"],"empty":sums["empty"]}}
 
 def svg(title, description, body): return f'<svg xmlns="http://www.w3.org/2000/svg" width="960" height="500" viewBox="0 0 960 500" role="img" aria-labelledby="title desc"><title id="title">{title}</title><desc id="desc">{description}</desc><style>text{{font-family:system-ui,sans-serif;fill:#172033}}.m{{fill:#58657a}}</style><rect width="960" height="500" fill="#fbfcff"/>{body}</svg>'
 def correlation_svg(dimensions):

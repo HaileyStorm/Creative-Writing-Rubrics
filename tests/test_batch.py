@@ -24,6 +24,7 @@ def _manifest(tmp_path: Path, policy: str) -> dict[str, object]:
             "artifact_kind": "prose_fiction",
             "declared_scope": "manuscript",
             "completion_status": "work_in_progress",
+            "batch_attempts": 5,
         },
         "jobs": [
             {"job_id": "one", "artifact": "one.txt"},
@@ -132,6 +133,7 @@ def test_review_policy_plans_every_job_then_accepts_or_overrides(tmp_path: Path,
     assert calls[-2]["output_dir"] == tmp_path / "outputs" / "plans" / "one"
     assert calls[-1]["output_dir"] == tmp_path / "outputs" / "approved-plans" / "two"
     assert calls[-2]["resume"] is True and calls[-1]["resume"] is True
+    assert all(call["batch_attempts"] == 5 for call in calls)
     assert calls[4]["task_contract_path"] == (
         tmp_path / "outputs" / ".private" / "approved-plans" / "two" / "task-contract.json"
     )

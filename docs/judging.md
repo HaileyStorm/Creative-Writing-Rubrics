@@ -1,6 +1,6 @@
 # Running a headless judge
 
-`cwr judge` sends one text artifact through one compiled bundle, validates every returned verdict, checkpoints after each batch, and writes the deterministic score. It supports a local or hosted OpenAI-compatible Chat Completions endpoint and the authenticated Codex CLI. A frozen task contract can add weighted author goals and objective binding requirements without mixing the two.
+`cwr judge` sends one text artifact through one compiled bundle, validates every returned verdict, checkpoints after each batch, and writes the deterministic score. It supports a local or hosted OpenAI-compatible Chat Completions endpoint, the authenticated Codex CLI, the authenticated Grok Build CLI, and the Windows Nous tool-free bridge. A frozen task contract can add weighted author goals and objective binding requirements without mixing the two.
 
 ## Local OpenAI-compatible endpoint
 
@@ -31,17 +31,40 @@ cwr judge draft.txt \
 
 Codex runs ephemerally with user configuration, project rules, shell, agents, apps, browsing, computer use, image tools, skills, and tool suggestions disabled. It receives the artifact through standard input and must return a response matching `schema/hbq_judge_response.schema.json`; the reported OpenAI provider, model, and reasoning effort must match the request. Use `--context brief.txt` for a brief, canon note, or other declared evidence; the option is repeatable. Use `--strict-ai` when the artifact was AI-generated or AI-modified and the stricter judge prefix is appropriate.
 
+## Grok Build CLI
+
+```bash
+cwr judge draft.txt --bundle prose.scene \
+  --provider grok --model grok-4.6 --reasoning high \
+  --grok-bin grok --allow-unattested-reasoning \
+  --output-dir runs/grok-scene --allow-remote
+```
+
+Grok runs as a one-turn, no-memory process with subagents, planning, web search, and tools disabled. The supported adapter was capability-tested against Grok Build CLI 1.0.5: a `grok-4.6` request is accepted only when the CLI reports the single `grok-4.6-build` usage key. The CLI does not independently report the requested reasoning effort, so it fails closed unless `--allow-unattested-reasoning` is explicit. Opted-in Grok receipts record `reasoning_attested: false`; treat them as supplemental rather than exact-settings evidence. Other model mappings fail closed until explicitly tested.
+
+## Nous tool-free bridge (Windows)
+
+```powershell
+cwr judge examples/sample_scene.md --bundle prose.scene \
+  --provider nous --model deepseek/deepseek-v4-flash-0731 --reasoning max \
+  --allow-unattested-reasoning --output-dir runs/nous-scene --allow-remote
+```
+
+Nous is available only through the installed canonical Windows launcher, which supplies the shared provider lock, persistent HTTP-402 stop marker, key-safe launch, sealed evidence, and zero-tool judge contract. The adapter allows only `deepseek/deepseek-v4-flash-0731` or `deepseek/deepseek-v4-pro-0813`, both with `max` reasoning, and writes a fresh request, result, evidence root, and serialization proof for every attempt. The provider currently may omit effective reasoning effort; it therefore fails closed unless the same explicit provisional opt-in is supplied. This is supplemental evidence, never a replacement for the GPT-5.6 study arm.
+
 Judge evidence is typed. An `exact_quote` must be a nonblank contiguous substring of the supplied artifact or context and is checked before a checkpoint is accepted; non-verbatim support belongs in `summary`. The model-facing schema uses an explicit `kind` discriminator and nullable wire fields for strict Structured Outputs compatibility, then the runner stores the normalized compact form. Older normalized verdicts that used `quote` remain valid input to the scorer.
 
 Use `--task-contract contract.json` when a brief should affect scoring or eligibility. The file must match `schema/hbq_task_contract.schema.json`. `weighted_goals` affect the task-domain score; only atomic, objective, explicitly non-negotiable `binding_requirements` become hard gates. Context, preferences, aspirations, and inferred author intent are never silently promoted into gates. The same contract can be supplied to `cwr compile`, `cwr render-judge`, and `cwr score`.
 
-`--temperature` applies only to the OpenAI-compatible backend. `--reasoning` applies only to Codex CLI; unsupported combinations fail instead of being ignored.
+`--temperature` applies only to the OpenAI-compatible backend. `--reasoning` applies to Codex, Grok, and Nous providers; unsupported combinations fail instead of being ignored.
 
 For model routing, use the smallest reasoning level that still handles the evidence reliably. In the current GPT-5.6 workflow, Sol Medium is the default for structured binary batches and Sol High is reserved for route selection, long-range mapping, ambiguous judgments, and synthesis. Luna Max remains a reasonable high-volume broad-pass option when a stronger deterministic or Sol review follows. A fake local endpoint proves transport and resume behavior, not literary judgment quality.
 
 ## Batches, subsets, and resume
 
 The default batch contains 12 independent leaves. Increase `--batch-size` to reduce repeated context on a capable model, or lower it when an endpoint has a small context/output limit. To smoke-test or investigate a subset, repeat `--question-id`:
+
+Each binary batch gets at most three provider attempts by default. `--batch-attempts N` changes that positive bound. Failed transport, JSON, schema, or evidence-grounding attempts are retained under `responses/rejected/`; they are auditable but never accepted into the checkpoint chain or score.
 
 ```bash
 cwr judge draft.txt \
@@ -137,7 +160,7 @@ Use `--driving-prompt` when the text was generated from a prompt. A brief, drivi
 
 ### Multiple samples
 
-`cwr batch` is a thin manifest wrapper around the existing runners; it does not introduce a second judging engine. A job may use `workflow: longform` (the default) for global plus multi-part diagnostics or `workflow: single` for one exact artifact score with no redundant global/local pass. One manifest may mix both. `html_report` is long-form-only; set a single job's override to `false` when the shared defaults enable it. Paths are resolved relative to the manifest file, each job has its own resumable directory, and the same explicit remote-disclosure gate applies:
+`cwr batch` is a thin manifest wrapper around the existing runners; it does not introduce a second judging engine. A job may use `workflow: longform` (the default) for global plus multi-part diagnostics or `workflow: single` for one exact artifact score with no redundant global/local pass. One manifest may mix both. `html_report` is long-form-only; set a single job's override to `false` when the shared defaults enable it. Shared defaults such as `batch_size` and `batch_attempts` are frozen into every job's runner configuration. Paths are resolved relative to the manifest file, each job has its own resumable directory, and the same explicit remote-disclosure gate applies:
 
 ```bash
 cwr batch examples/batch_manifest.yaml --allow-remote

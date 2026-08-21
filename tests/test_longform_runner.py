@@ -373,6 +373,26 @@ def test_provider_workflow_runs_every_pass_persists_and_resumes(tmp_path: Path, 
     assert resumed == summary
     assert len(handler.stages) == calls
 
+    workflow_path = output / "workflow.json"
+    workflow = json.loads(workflow_path.read_text(encoding="utf-8"))
+    assert workflow["format_version"] == 2
+    assert workflow["configuration"]["retry_policy"] == {"batch_attempts": 3}
+    with pytest.raises(HBQError, match="batch_attempts retry policy changed"):
+        run_longform_judge(**arguments, resume=True, batch_attempts=4)
+
+    legacy_configuration = dict(workflow["configuration"])
+    legacy_configuration["format_version"] = 1
+    legacy_configuration.pop("retry_policy")
+    workflow["format_version"] = 1
+    workflow["configuration"] = legacy_configuration
+    workflow["config_sha256"] = longform_runner._sha256_bytes(
+        longform_runner._json_bytes(legacy_configuration)
+    )
+    workflow_path.write_text(json.dumps(workflow), encoding="utf-8")
+    assert run_longform_judge(**arguments, resume=True) == summary
+    with pytest.raises(HBQError, match="legacy workflow with a non-default batch_attempts"):
+        run_longform_judge(**arguments, resume=True, batch_attempts=4)
+
 
 def test_provider_scope_auto_local_bundle_and_explicit_hierarchy(tmp_path: Path, endpoint) -> None:
     base_url, handler = endpoint
@@ -644,11 +664,58 @@ def test_codex_routes_high_structured_and_medium_binary_reasoning(tmp_path: Path
     assert handler.stages == ["route", "map", "binary", "binary", "binary", "synthesis"]
 
 
+def test_grok_routes_high_structured_and_medium_binary_reasoning(tmp_path: Path, endpoint, monkeypatch) -> None:
+    base_url, handler = endpoint
+    registry, bundles = _catalog(tmp_path)
+    artifact = tmp_path / "story.txt"
+    brief = tmp_path / "brief.txt"
+    artifact.write_text(TEXT, encoding="utf-8")
+    brief.write_text("Prefer quiet tension.", encoding="utf-8")
+    structured_reasoning: list[str] = []
+    judge_reasoning: list[str] = []
+
+    def fake_grok_call(*, model, reasoning, prompt, **kwargs):
+        target = structured_reasoning if prompt.startswith("HBQ-RS STRUCTURED PASS:") else judge_reasoning
+        target.append(reasoning)
+        return binary_runner._call_openai(
+            endpoint=binary_runner._endpoint_url(base_url),
+            api_key_env="UNSET_TEST_KEY",
+            model=model,
+            system_prompt="Synthetic Grok transport adapter.",
+            user_prompt=prompt,
+            temperature=None,
+            allow_model_mismatch=False,
+            timeout=30,
+        )
+
+    monkeypatch.setattr(longform_runner, "_call_grok", fake_grok_call)
+    monkeypatch.setattr(binary_runner, "_call_grok", fake_grok_call)
+    summary = run_longform_judge(
+        artifact_path=artifact,
+        brief_paths=[brief],
+        output_dir=tmp_path / "grok-run",
+        provider="grok",
+        model="grok-fixture",
+        registry=registry,
+        bundles=bundles,
+        artifact_kind="prose_fiction",
+        grok_bin="grok-fixture",
+        allow_remote=True,
+        batch_size=8,
+    )
+    assert summary["status"] == "VALID"
+    assert structured_reasoning == ["high", "high", "high"]
+    assert judge_reasoning == ["medium", "medium", "medium"]
+    workflow = json.loads((tmp_path / "grok-run" / "workflow.json").read_text(encoding="utf-8"))
+    assert workflow["configuration"]["grok_bin"] == "grok-fixture"
+    assert handler.stages == ["route", "map", "binary", "binary", "binary", "synthesis"]
+
+
 def test_openai_rejects_codex_only_phase_reasoning_controls(tmp_path: Path) -> None:
     registry, bundles = _catalog(tmp_path)
     artifact = tmp_path / "story.txt"
     artifact.write_text(TEXT, encoding="utf-8")
-    with pytest.raises(HBQError, match="apply only to Codex CLI"):
+    with pytest.raises(HBQError, match="apply only to CLI providers"):
         run_longform_judge(
             artifact_path=artifact,
             brief_paths=[],
@@ -659,6 +726,25 @@ def test_openai_rejects_codex_only_phase_reasoning_controls(tmp_path: Path) -> N
             bundles=bundles,
             artifact_kind="prose_fiction",
             structured_reasoning="max",
+        )
+
+
+def test_nous_requires_pinned_model_and_max_reasoning_before_provider_contact(tmp_path: Path) -> None:
+    registry, bundles = _catalog(tmp_path)
+    artifact = tmp_path / "story.txt"
+    artifact.write_text(TEXT, encoding="utf-8")
+    with pytest.raises(HBQError, match="Nous requires an allowlisted"):
+        run_longform_judge(
+            artifact_path=artifact,
+            brief_paths=[],
+            output_dir=tmp_path / "unused-nous",
+            provider="nous",
+            model="deepseek/deepseek-v4-flash-0731",
+            registry=registry,
+            bundles=bundles,
+            artifact_kind="prose_fiction",
+            structured_reasoning="max",
+            judge_reasoning="high",
         )
 
 
@@ -701,6 +787,35 @@ def test_structured_failure_is_retryable_and_cached_result_is_hash_bound(tmp_pat
     (tmp_path / "pass" / "result.json").write_text('{"value": 2}\n', encoding="utf-8")
     with pytest.raises(HBQError, match="do not match the accepted response"):
         longform_runner._run_structured_pass(**arguments, resume=True)
+
+
+def test_structured_provider_failures_persist_and_resume_with_fresh_attempts(tmp_path: Path, monkeypatch) -> None:
+    calls: list[dict[str, object]] = []
+
+    def fake_codex(**kwargs):
+        calls.append(kwargs)
+        if len(calls) < 3:
+            raise __import__("hbqrs.runner", fromlist=["_ProviderAttemptFailure"])._ProviderAttemptFailure(
+                "temporary", retryable=True, content="raw failure", provider_record={"reported": {"model": "m"}}
+            )
+        return '{"value": 1}', {"reported": {"model": "m"}}
+
+    monkeypatch.setattr(longform_runner, "_call_codex", fake_codex)
+    arguments = {
+        "name": "retry-provider", "prompt": "synthetic", "schema": {"type": "object", "required": ["value"], "properties": {"value": {"const": 1}}, "additionalProperties": False},
+        "pass_dir": tmp_path / "pass", "provider": "codex", "model": "m", "endpoint": None,
+        "api_key_env": "UNSET", "temperature": None, "allow_model_mismatch": False,
+        "reasoning": "high", "codex_bin": "codex", "timeout": 5, "openai_structured_outputs": False,
+    }
+    with pytest.raises(HBQError, match="temporary"):
+        longform_runner._run_structured_pass(**arguments, resume=False)
+    with pytest.raises(HBQError, match="temporary"):
+        longform_runner._run_structured_pass(**arguments, resume=True)
+    assert longform_runner._run_structured_pass(**arguments, resume=True) == {"value": 1}
+    assert [call["batch_number"] for call in calls] == [1, 1, 1]
+    assert [call["attempt_number"] for call in calls] == [1, 2, 3]
+    attempts = sorted((tmp_path / "pass" / "attempts").glob("rejected-*.json"))
+    assert [path.name for path in attempts] == ["rejected-0001.json", "rejected-0002.json"]
 
 
 def test_synthesis_rejects_unknown_criterion_and_evidence_ids() -> None:
@@ -892,6 +1007,8 @@ def test_disclosure_enumerates_payload_hashes_and_call_ceiling(tmp_path: Path, c
         )
     disclosure = json.loads(capsys.readouterr().err)["disclosure"]
     assert disclosure["maximum_provider_calls"] >= 3
+    assert disclosure["batch_attempts"] == 3
+    assert disclosure["maximum_binary_provider_sends"] % disclosure["batch_attempts"] == 0
     assert disclosure["payloads"]["route"]["sample"]["excerpts"]
     assert disclosure["payloads"]["route"]["request"]["sha256"]
     assert disclosure["payloads"]["global_judge"]["organized_source"]["sha256"]
@@ -985,6 +1102,7 @@ def test_reviewed_stack_override_preserves_plan_and_resumes_exactly(
     [
         ("temperature", 2.1, "temperature must be between"),
         ("binary_workers", 9, "binary_workers must be between"),
+        ("batch_attempts", 0, "batch_attempts must be a positive integer"),
         ("local_sample_limit", 65, "local_sample_limit must be between"),
     ],
 )

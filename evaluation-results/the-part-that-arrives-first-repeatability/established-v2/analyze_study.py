@@ -62,6 +62,103 @@ def _sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def _retry_policy() -> dict[str, int]:
+    value = CONTRACT["hbq_runtime"].get("batch_attempts", 3)
+    if not isinstance(value, int) or isinstance(value, bool) or value < 1:
+        raise ValueError("Frozen HBQ retry policy is invalid")
+    return {"batch_attempts": value}
+
+
+def _accepted_response_bytes(run_dir: Path, checkpoint: Path, record: dict[str, Any]) -> tuple[bytes, int | None]:
+    """Bind v3 checkpoints to the accepted response artifact; retain v2 evidence."""
+    policy = _retry_policy()
+    if record.get("format_version") == 2:
+        message = checkpoint.with_name(f"batch-{record.get('batch'):04d}.message.json")
+        if not message.is_file():
+            raise ValueError("Legacy checkpoint accepted response message is missing")
+        return message.read_bytes(), None
+    if record.get("format_version") != 3 or record.get("retry_policy") != policy:
+        raise ValueError("HBQ checkpoint retry policy does not bind to the frozen run")
+    attempt = record.get("accepted_attempt")
+    if not isinstance(attempt, int) or isinstance(attempt, bool) or not 1 <= attempt <= policy["batch_attempts"]:
+        raise ValueError("HBQ checkpoint accepted attempt is outside the frozen retry policy")
+    artifact = record.get("response_artifact")
+    if not isinstance(artifact, dict):
+        raise ValueError("HBQ checkpoint accepted response artifact is missing")
+    relative, expected_bytes, expected_sha = artifact.get("path"), artifact.get("bytes"), artifact.get("sha256")
+    if not isinstance(relative, str) or not isinstance(expected_bytes, int) or isinstance(expected_bytes, bool) or not isinstance(expected_sha, str):
+        raise ValueError("HBQ checkpoint accepted response artifact is malformed")
+    try:
+        message = (run_dir / relative).resolve()
+        message.relative_to(run_dir.resolve())
+        content = message.read_bytes()
+    except (OSError, ValueError) as exc:
+        raise ValueError("HBQ checkpoint accepted response artifact is unavailable") from exc
+    digest = hashlib.sha256(content).hexdigest()
+    if len(content) != expected_bytes or digest != expected_sha or digest != record.get("response_sha256"):
+        raise ValueError("HBQ checkpoint accepted response artifact hash does not bind")
+    return content, attempt
+
+
+def _rejected_attempts(run_dir: Path) -> list[dict[str, Any]]:
+    policy = _retry_policy()
+    result: list[dict[str, Any]] = []
+    rejected = run_dir / "responses" / "rejected"
+    if not rejected.is_dir():
+        return result
+    record_paths = sorted(rejected.glob("batch-[0-9][0-9][0-9][0-9]/attempt-[0-9][0-9][0-9][0-9].json"))
+    raw_files = set(rejected.glob("batch-[0-9][0-9][0-9][0-9]/attempt-[0-9][0-9][0-9][0-9].message.txt"))
+    expected_raw: set[Path] = set()
+    for record_path in record_paths:
+        record = _json(record_path)
+        raw = record.get("raw_content", {})
+        version = record.get("format_version")
+        if version == 2:
+            relative = raw.get("path") if isinstance(raw, dict) else None
+            try:
+                raw_path = (run_dir / relative).resolve() if isinstance(relative, str) else None
+                if raw_path is None:
+                    raise ValueError
+                raw_path.relative_to(run_dir.resolve())
+                content = raw_path.read_bytes()
+            except (OSError, ValueError) as exc:
+                raise ValueError("Rejected HBQ retry artifact is unavailable") from exc
+            expected_raw.add(raw_path)
+            raw_valid = raw.get("path") == raw_path.relative_to(run_dir).as_posix() and raw.get("bytes") == len(content) and raw.get("sha256") == hashlib.sha256(content).hexdigest()
+        elif version == 3 and isinstance(raw, dict) and isinstance(raw.get("text"), str):
+            content = raw["text"].encode("utf-8")
+            raw_valid = set(raw) == {"encoding", "text", "bytes", "sha256"} and raw.get("encoding") == "utf-8" and raw.get("bytes") == len(content) and raw.get("sha256") == hashlib.sha256(content).hexdigest()
+        else:
+            raw_valid = False
+        if version not in {2, 3} or record.get("retry_policy") != policy or not isinstance(record.get("batch"), int) or isinstance(record.get("batch"), bool) or not isinstance(record.get("attempt"), int) or isinstance(record.get("attempt"), bool) or not isinstance(record.get("sequence"), int) or isinstance(record.get("sequence"), bool) or not raw_valid:
+            raise ValueError("Rejected HBQ retry attempt is not provenance-bound")
+        result.append(record)
+    if raw_files != expected_raw:
+        raise ValueError("Rejected HBQ retry artifacts are unmatched")
+    if sorted(record["sequence"] for record in result) != list(range(1, len(result) + 1)):
+        raise ValueError("Rejected HBQ retry attempts do not have contiguous global sequences")
+    for batch in {record["batch"] for record in result}:
+        batch_records = [record for record in result if record["batch"] == batch]
+        if [record["attempt"] for record in batch_records] != list(range(1, len(batch_records) + 1)):
+            raise ValueError("Rejected HBQ retry attempts do not have contiguous batch order")
+        previous = None
+        for record in batch_records:
+            if record.get("previous_rejected_sha256") != previous:
+                raise ValueError("Rejected HBQ retry attempt chain is broken")
+            record_path = rejected / f"batch-{batch:04d}" / f"attempt-{record['attempt']:04d}.json"
+            previous = hashlib.sha256(record_path.read_bytes()).hexdigest()
+    return result
+
+
+def _rejected_chain(run_dir: Path, records: Iterable[dict[str, Any]], batch: int) -> dict[str, Any]:
+    batch_records = [record for record in records if record.get("batch") == batch]
+    if not batch_records:
+        return {"count": 0, "head_sha256": None}
+    tail = batch_records[-1]
+    path = run_dir / "responses" / "rejected" / f"batch-{batch:04d}" / f"attempt-{tail['attempt']:04d}.json"
+    return {"count": len(batch_records), "head_sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
+
+
 def _validate_journal(work: Path) -> list[dict[str, Any]]:
     runner = _study_runner()
     path = work / runner.JOURNAL_NAME
@@ -207,8 +304,15 @@ def _validate_hbq_run(work: Path, number: int) -> tuple[list[dict[str, Any]], di
     path = work / arm / f"run-{number:02d}"
     manifest = _json(path / "run.json")
     configuration = manifest.get("configuration")
-    if not isinstance(configuration, dict) or manifest.get("config_sha256") != hashlib.sha256(_runner_json_bytes(configuration)).hexdigest():
+    manifest_version = manifest.get("format_version")
+    if manifest_version not in {1, 2} or not isinstance(configuration, dict) or manifest.get("config_sha256") != hashlib.sha256(_runner_json_bytes(configuration)).hexdigest():
         raise ValueError("HBQ run manifest configuration binding is invalid")
+    policy = _retry_policy()
+    if manifest_version == 1:
+        if policy != {"batch_attempts": 3} or "retry_policy" in configuration:
+            raise ValueError("Legacy HBQ run cannot prove the frozen retry policy")
+    elif configuration.get("retry_policy") != policy:
+        raise ValueError("HBQ run retry policy drifted")
     hbq = CONTRACT["hbq_runtime"]
     expected_ids = _study_runner()._question_sequence()
     if configuration.get("bundle_id") != hbq["bundle_id"] or configuration.get("question_ids") is None:
@@ -225,7 +329,8 @@ def _validate_hbq_run(work: Path, number: int) -> tuple[list[dict[str, Any]], di
     if not {CONTRACT["asset_hashes"]["binary_prompt"], CONTRACT["asset_hashes"]["judge_prefix"]}.issubset(prompt_hashes) or configuration.get("response_schema", {}).get("sha256") != CONTRACT["asset_hashes"]["response_schema"]:
         raise ValueError("HBQ run prompt or response schema drifted")
     source = (HERE / CONTRACT["source"]["path"]).read_text(encoding="utf-8")
-    checkpointed, checkpoint_count, _ = _load_checkpoints(path, artifact_text=source, context_texts=[])
+    rejected = _rejected_attempts(path)
+    checkpointed, checkpoint_count, _ = _load_checkpoints(path, artifact_text=source, context_texts=[], batch_attempts=policy["batch_attempts"])
     expected_batches = hbq["expected_batches_per_repetition"]
     if checkpoint_count != expected_batches or checkpointed != _read_verdicts(path / "verdicts.jsonl") or [item.get("question_id") for item in checkpointed] != ids:
         raise ValueError("HBQ checkpoints are incomplete, unordered, or disagree with verdicts.jsonl")
@@ -233,11 +338,21 @@ def _validate_hbq_run(work: Path, number: int) -> tuple[list[dict[str, Any]], di
     if len(responses) != expected_batches:
         raise ValueError("HBQ batch32 arm must have exactly six response checkpoints")
     sessions: list[str] = []
+    accepted_attempts: list[int] = []
     for batch_number, response_path in enumerate(responses, start=1):
         checkpoint = _json(response_path)
         expected_chunk = ids[(batch_number - 1) * hbq["batch_size"] : batch_number * hbq["batch_size"]]
-        if checkpoint.get("format_version") != 2 or checkpoint.get("batch") != batch_number or checkpoint.get("question_ids") != expected_chunk:
+        if checkpoint.get("format_version") not in {2, 3} or checkpoint.get("batch") != batch_number or checkpoint.get("question_ids") != expected_chunk:
             raise ValueError("HBQ batch checkpoint does not bind to the frozen 32-leaf chunk order")
+        content, accepted_attempt = _accepted_response_bytes(path, response_path, checkpoint)
+        if checkpoint.get("response_sha256") != hashlib.sha256(content).hexdigest():
+            raise ValueError("HBQ checkpoint response hash mismatch")
+        if accepted_attempt is not None:
+            if checkpoint.get("rejected_chain") != _rejected_chain(path, rejected, batch_number):
+                raise ValueError("HBQ checkpoint rejected retry chain mismatch")
+            if accepted_attempt > 1 and not checkpoint["rejected_chain"]["count"]:
+                raise ValueError("HBQ checkpoint accepted after retry has no rejected evidence")
+            accepted_attempts.append(accepted_attempt)
         sessions.append(_expect_provider(checkpoint))
     if any(not verdict.get("evidence") for verdict in checkpointed):
         raise ValueError("HBQ study requires format-version-2 checkpoints with nonempty typed evidence")
@@ -251,6 +366,7 @@ def _validate_hbq_run(work: Path, number: int) -> tuple[list[dict[str, Any]], di
     persisted = {key: value for key, value in score.items() if key != "weight_profile"}
     if recomputed != persisted:
         raise ValueError("HBQ score.json does not match deterministic recomputation from verdicts")
+    score["retry_provenance"] = {"policy": policy, "accepted_checkpoint_count": len(responses), "accepted_attempts": accepted_attempts, "rejected_attempt_count": len(rejected), "rejected_batches": sorted({int(item["batch"]) for item in rejected})}
     return checkpointed, score, sessions
 
 
@@ -354,10 +470,13 @@ def analyze(work: Path, output: Path) -> None:
     for arm in CONTRACT["arms"]:
         sessions: list[str] = []
         if arm["kind"] == "hbq":
+            retry_runs: list[dict[str, Any]] = []
             for number in range(1, 6):
-                _, _, run_sessions = _validate_hbq_run(work, number)
+                _, score, run_sessions = _validate_hbq_run(work, number)
                 sessions.extend(run_sessions)
+                retry_runs.append(score["retry_provenance"])
             metrics, details = _hbq_metrics(work)
+            metrics["retry_provenance"] = {"policy": _retry_policy(), "accepted_run_count": len(retry_runs), "rejected_attempt_count": sum(item["rejected_attempt_count"] for item in retry_runs), "rejected_run_count": sum(item["rejected_attempt_count"] > 0 for item in retry_runs), "excluded_from_repeatability_metrics": True}
         else:
             for number in range(1, 6):
                 _, session = _validate_native_run(work, arm, number)
@@ -374,7 +493,7 @@ def analyze(work: Path, output: Path) -> None:
         expected = {"provider": "openai", "model": "gpt-5.6-sol", "reasoning_effort": "high"}
         if any(item["reported_provider"] != expected for item in proofs):
             raise ValueError(f"Provider identity or reasoning drifted in {arm['arm_id']}")
-        provenance["arms"][arm["arm_id"]] = {"native_scale": arm["native_scale"], "runs": proofs}
+        provenance["arms"][arm["arm_id"]] = {"native_scale": arm["native_scale"], "runs": proofs, **({"retry_provenance": metrics["retry_provenance"]} if arm["kind"] == "hbq" else {})}
     expected_global_sessions = 5 * (CONTRACT["hbq_runtime"]["expected_batches_per_repetition"] + sum(arm["kind"] == "native_rubric" for arm in CONTRACT["arms"]))
     _require_unique_sessions(all_sessions, expected_global_sessions)
     session_hashes = sorted(hashlib.sha256(session.encode("utf-8")).hexdigest() for session in all_sessions)
