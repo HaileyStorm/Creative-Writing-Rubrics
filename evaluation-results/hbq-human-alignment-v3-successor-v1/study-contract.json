@@ -1,0 +1,7 @@
+{
+  "format_version": 2,
+  "study_id": "hbq-human-alignment-v3-successor-v1",
+  "frozen_before_execution": true,
+  "verified54": {"status": "DISABLED", "reason": "authoritative_replay_rejected"},
+  "fresh88_authority": {"frozen_successor_sha256": "b0f6dd24415c388a3104f8c9304ce301193cf0a48631a86c4886bc8ce48468e7", "freeze_receipt_sha256": "eaab5d605a720c86f00e40635e59e9a43bb9c58998a70d9e5bca3907c008f1b0", "replay_status": "rejected"}
+}

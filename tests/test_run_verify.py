@@ -8,81 +8,9 @@ from typing import Any
 
 import pytest
 
-from hbqrs import core, runner, scoring_v2
-from hbqrs import run_verify
-from hbqrs.paths import bundles_path, prompts_dir, registry_path, schema_dir
+from hbqrs import core, runner
 from hbqrs.run_verify import verify_binary_run
-from hbqrs.weights import materialize_weight_profile
-
-
-def _write(path: Path, value: Any) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_bytes(runner._json_bytes(value))
-
-
-def _binding(path: Path) -> dict[str, Any]:
-    path = path.resolve()
-    raw = path.read_bytes()
-    return {"path": str(path), "bytes": len(raw), "sha256": hashlib.sha256(raw).hexdigest()}
-
-
-def _fixture(tmp_path: Path) -> tuple[Path, dict[str, Any]]:
-    inputs = tmp_path / "inputs"
-    artifact, context, task_path = inputs / "source.md", inputs / "prompt.md", inputs / "task.json"
-    inputs.mkdir(parents=True)
-    artifact.write_text("The lantern flickered at dawn.", encoding="utf-8")
-    context.write_text("Write a tense short story about a lantern.", encoding="utf-8")
-    task = {"contract_version": 1, "contract_id": "fixture", "artifact_id": "fixture-story", "context": {"artifact_kind": "short prose fiction", "declared_scope": "complete short story", "completion_status": "complete", "background": [], "constraints": [], "audience": []}, "preferences": [], "priorities": [], "weighted_goals": [{"goal_id": "prompt_response", "atomic_question": "Does the story respond to its originating prompt?", "weight": 2.0, "source": {"kind": "driving_prompt", "reference": "fixture prompt", "exact_excerpt": "Write a tense short story about a lantern."}, "applies_to": ["whole artifact"], "rationale": "Fixture task relevance."}], "binding_requirements": []}
-    _write(task_path, task)
-    binary_prompt = prompts_dir() / "judge" / "BINARY_EVALUATION_PROMPT.md"
-    response_schema = schema_dir() / "hbq_judge_response.schema.json"
-    frozen = {"artifact": _binding(artifact), "contexts": [_binding(context)], "task_contract": _binding(task_path), "registry": _binding(registry_path()), "bundles": _binding(bundles_path()), "prompts": [_binding(binary_prompt)], "response_schema": _binding(response_schema), "score_v1_schema": _binding(schema_dir() / "hbq_score_report.schema.json"), "score_v2_schema": _binding(schema_dir() / "hbq_score_report.v2.schema.json"), "weight_profile": None, "execution": {"artifact_id": "fixture-story", "bundle_id": "prose.short_story", "batch_size": 32, "batch_attempts": 3, "strict_ai": False, "provider": "codex", "model": "gpt-5.6-sol", "reasoning": "high", "codex_bin": "codex"}, "provider": {"provider": "openai", "model": "gpt-5.6-sol", "reasoning_effort": "high"}}
-    modules = core.load_modules(registry_path())
-    bundle = core.resolve_bundle(core.load_bundles(bundles_path()), "prose.short_story")
-    modules, bundle, weight = materialize_weight_profile(modules, bundle, None)
-    compiled = core.compile_bundle(modules, bundle, task_contract=task)
-    order = {"hard_gate": 0, "domain": 1, "penalty": 2, "supplemental": 3}
-    questions = sorted(core.compiled_questions(compiled), key=lambda item: order.get(str(item.get("role")), 99))
-    artifact_record = runner._read_text_record(artifact)
-    context_record = runner._read_text_record(context)
-    task_record = runner._manifest_inputs([runner._read_text_record(task_path)])[0]
-    task_record["contract_id"] = "fixture"
-    prompt_records = [runner._read_text_record(binary_prompt)]
-    binary = "\n\n".join(str(item["text"]).strip() for item in prompt_records)
-    configuration = {"artifact": runner._manifest_inputs([artifact_record])[0], "contexts": runner._manifest_inputs([context_record]), "task_contract": task_record, "weight_profile": weight, "bundle_id": "prose.short_story", "bundle_version": bundle["version"], "question_ids": [str(item["question"]["id"]) for item in questions], "provider": "codex", "model": "gpt-5.6-sol", "endpoint": None, "api_key_env": None, "temperature": None, "allow_model_mismatch": None, "reasoning": "high", "codex_bin": "codex", "batch_size": 32, "retry_policy": {"batch_attempts": 3}, "retry_semantics": "cumulative_batch_attempts_v1", "evidence_normalization_policy": runner.EVIDENCE_NORMALIZATION_POLICY, "validation_feedback_policy": runner.VALIDATION_FEEDBACK_POLICY, "artifact_id": "fixture-story", "judge_id": "codex:gpt-5.6-sol", "strict_ai": False, "prompts": runner._manifest_inputs(prompt_records), "response_schema": runner._manifest_inputs([runner._read_text_record(response_schema)])[0], "questions_sha256": hashlib.sha256(runner._json_bytes(runner._question_payload(questions))).hexdigest(), "compiled_bundle_sha256": hashlib.sha256(runner._json_bytes(compiled)).hexdigest()}
-    run = tmp_path / "run"
-    _write(run / "run.json", {"format_version": 3, "run_id": "fixture-run", "config_sha256": hashlib.sha256(runner._json_bytes(configuration)).hexdigest(), "configuration": configuration})
-    completed: list[dict[str, Any]] = []
-    previous = None
-    for batch, start in enumerate(range(0, len(questions), 32), start=1):
-        selected = questions[start:start + 32]
-        ids = [str(item["question"]["id"]) for item in selected]
-        payload = {"verdicts": [{"question_id": question_id, "verdict": "YES", "confidence": 0.8, "evidence": [{"kind": "exact_quote", "reference": "story", "exact_quote": "lantern", "summary": None}], "note": "grounded"} for question_id in ids]}
-        raw = json.dumps(payload, ensure_ascii=False)
-        audit: list[dict[str, Any]] = []
-        normalized = runner._normalize_batch(payload, expected_ids=ids, artifact_id="fixture-story", bundle_id="prose.short_story", judge_id="codex:gpt-5.6-sol", run_id="fixture-run", artifact_text=artifact.read_text(encoding="utf-8"), context_texts=[context.read_text(encoding="utf-8")], normalization_policy=runner.EVIDENCE_NORMALIZATION_POLICY, repair_audit=audit)
-        prompt = runner._render_prompt(binary_prompt=binary, artifact={"name": artifact.name, "text": artifact.read_text(encoding="utf-8")}, contexts=[{"name": context.name, "text": context.read_text(encoding="utf-8")}], bundle_id="prose.short_story", artifact_id="fixture-story", questions=selected)
-        prompt_bytes = prompt.encode("utf-8")
-        response = run / "responses" / f"batch-{batch:04d}.accepted-0001.message.txt"
-        response.parent.mkdir(parents=True, exist_ok=True)
-        response.write_text(raw, encoding="utf-8")
-        provider_artifact = run / "responses" / f"batch-{batch:04d}.provider.txt"
-        provider_artifact.write_text("provider receipt", encoding="utf-8")
-        completed.extend(normalized)
-        record = {"format_version": 4, "batch": batch, "retry_policy": {"batch_attempts": 3}, "accepted_attempt": 1, "question_ids": ids, "prompt_sha256": hashlib.sha256(prompt_bytes).hexdigest(), "base_prompt_sha256": hashlib.sha256(prompt_bytes).hexdigest(), "effective_prompt_sha256": hashlib.sha256(prompt_bytes).hexdigest(), "validation_feedback_policy": runner.VALIDATION_FEEDBACK_POLICY, "validation_feedback": None, "normalization_policy": runner.EVIDENCE_NORMALIZATION_POLICY, "normalization_audit": audit, "response_sha256": hashlib.sha256(raw.encode("utf-8")).hexdigest(), "response_artifact": {"path": response.relative_to(run).as_posix(), "bytes": response.stat().st_size, "sha256": hashlib.sha256(response.read_bytes()).hexdigest()}, "rejected_chain": {"count": 0, "head_sha256": None}, "previous_checkpoint_sha256": previous, "verdicts_sha256": hashlib.sha256(runner._verdicts_bytes(completed)).hexdigest(), "provider": {"reported": {"provider": "openai", "model": "gpt-5.6-sol", "reasoning_effort": "high", "session_id": f"session-{batch}"}, "provider_artifacts": {"metadata": {"path": provider_artifact.relative_to(run).as_posix(), "bytes": provider_artifact.stat().st_size, "sha256": hashlib.sha256(provider_artifact.read_bytes()).hexdigest()}}}, "normalized_verdicts": normalized}
-        checkpoint = run / "responses" / f"batch-{batch:04d}.json"
-        _write(checkpoint, record)
-        checkpoint.with_suffix(".prompt.txt.gz").write_bytes(gzip.compress(prompt_bytes, mtime=0))
-        previous = hashlib.sha256(checkpoint.read_bytes()).hexdigest()
-    (run / "verdicts.jsonl").write_bytes(runner._verdicts_bytes(completed))
-    parent = core.score_bundle(modules, bundle, completed, artifact_id="fixture-story", task_contract=task)
-    parent["weight_profile"] = weight
-    _write(run / "score.json", parent)
-    descendant = scoring_v2.score_bundle(modules, bundle, completed, artifact_id="fixture-story", task_contract=task)
-    descendant["weight_profile"] = weight
-    descendant["parent_score_sha256"] = hashlib.sha256((run / "score.json").read_bytes()).hexdigest()
-    _write(run / "score.v2.json", descendant)
-    return run, frozen
+from _run_verify_fixture import build_fixture as _fixture, write_json as _write
 
 
 def _rewrite_configuration(run: Path, mutate) -> None:
