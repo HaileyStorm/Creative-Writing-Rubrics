@@ -1,6 +1,6 @@
 # Initial batching study: *The Part That Arrives First*
 
-This initial case study asks a narrow question: when the same GPT-5.6 Sol judge reads the same complete story several times, how stable are its ratings under different rubric shapes and HBQ batching choices? For the current stricter comparison against research implementations derived from published rubrics, see the completed [established-rubric repeatability study v4](established-v4/).
+This case study asks how stable one GPT-5.6 Sol judge is across repeated readings of the same complete story under different rubric shapes and HBQ batch sizes. For the stricter comparison against implementations derived from published rubrics, see the [established-rubric repeatability study v4](established-v4/).
 
 The repository owner supplied the story and explicitly authorized publishing it in full. Read [the complete source](source.md), the [frozen study contract](study-contract.json), or any of the [published run outputs](results/).
 
@@ -15,7 +15,7 @@ The contract was frozen before execution. Each arm ran five times in a fresh Cod
 | Compact analytic | six independently synthesized anchored dimensions | six 1–5 ratings plus an overall 1–5 rating |
 | Holistic anchored | one independently synthesized whole-story judgment | one 1–7 rating |
 
-The comparator prompts use recurring constructs from established narrative-writing rubrics as design references, but their wording and schemas are original to this study. References: [NAPLAN narrative marking guide](https://www.nap.edu.au/docs/default-source/naplan/narrative-writing-marking-guide.pdf?sfvrsn=c85435e_2), [Oregon narrative writing scoring guide](https://www.oregon.gov/ode/educator-resources/essentialskills/ScoringGuides/wriscorguide_narrative_eng.pdf), [Cambridge English mark scheme](https://www.cambridgeinternational.org/Images/521329-june-2024-mark-scheme-paper-21.pdf), and [NZQA crafted writing standard](https://www.nzqa.govt.nz/nqfdocs/ncea-resource/achievements/2019/as91101.pdf).
+Comparator prompts borrow recurring constructs from established narrative-writing rubrics, but their wording and schemas are original. References: [NAPLAN narrative marking guide](https://www.nap.edu.au/docs/default-source/naplan/narrative-writing-marking-guide.pdf?sfvrsn=c85435e_2), [Oregon narrative writing scoring guide](https://www.oregon.gov/ode/educator-resources/essentialskills/ScoringGuides/wriscorguide_narrative_eng.pdf), [Cambridge English mark scheme](https://www.cambridgeinternational.org/Images/521329-june-2024-mark-scheme-paper-21.pdf), and [NZQA crafted writing standard](https://www.nzqa.govt.nz/nqfdocs/ncea-resource/achievements/2019/as91101.pdf).
 
 ## Results
 
@@ -26,29 +26,29 @@ The comparator prompts use recurring constructs from established narrative-writi
 | Compact analytic | overall 5, 5, 5, 5, 5 | five of six dimensions were identical; narrative architecture alternated between 4 and 5 |
 | Holistic anchored | 6, 6, 6, 6, 6 | identical headline rating on every run |
 
-“All-five agreement” means every repetition returned the same verdict for that individual leaf. Modal agreement gives partial credit when four of five agree. Alpha also accounts for the observed label prevalence. The native scales are deliberately not converted into one another.
+“All-five agreement” means every repetition returned the same leaf verdict. Modal agreement gives partial credit when four of five agree; alpha also accounts for label prevalence. Native scales are not converted into one another.
 
 ![Five independent scores under each method](results/score-distributions.svg)
 
 ![HBQ leaf-level agreement](results/leaf-agreement.svg)
 
-The coarse methods look perfectly stable at headline level, but they also hit a ceiling: every holistic result was 6/7 and every analytic overall was 5/5. HBQ exposes much more of the judgment surface. Its verdicts were still strongly concentrated—95.3% or 97.2% mean modal agreement—while retaining visible disagreements that a single rating cannot show.
+The coarse methods were perfectly stable at headline level but hit a ceiling: every holistic result was 6/7 and every analytic overall 5/5. HBQ exposes more of the judgment surface while retaining 95.3% or 97.2% mean modal agreement.
 
 ### Batching mattered
 
-The one-batch HBQ arm was more repeatable in this case, not less. Its exact leaf agreement was 5.6 percentage points higher, its alpha was 0.098 higher, and its score SD was 0.407 lower. The two HBQ modes agreed on 92.6% of leaves within paired repetitions, but the 24-per-batch score averaged 1.824 points higher; the mean paired absolute difference was 2.272 points.
+The one-batch arm was more repeatable here: 5.6 percentage points higher exact leaf agreement, 0.098 higher alpha, and 0.407 lower score SD. The modes agreed on 92.6% of leaves within paired repetitions, but 24-per-batch averaged 1.824 points higher; mean paired absolute difference was 2.272.
 
 ![Paired HBQ scores under the two batching choices](results/batching-comparison.svg)
 
-That is a method effect worth controlling. It does not establish that larger batches are universally better. It does mean a benchmark should freeze batch size, and calibration should resemble the intended production call shape.
+This is a method effect worth controlling, not proof that larger batches are universally better. Benchmarks should freeze batch size and calibrate against the intended call shape.
 
 ## What HBQ caught
 
-The detailed craft findings are useful beyond this batching experiment. [Read the illustrated findings separately](hbq-findings.md); this study keeps only the repeatability evidence behind them.
+See [What HBQ caught in the story](hbq-findings.md) for the illustrated craft findings.
 
 ## Evidence discipline
 
-The published result files preserve every rating and concise justification. An automated check also asked whether text placed in each evidence `quote` field was an exact substring of the source. Exact-match rates were 64.1% for 24-leaf HBQ batches, 71.0% for the single HBQ batch, 86.7% for compact analytic, and 80.0% for holistic. The misses include paraphrases placed in quote-shaped fields, ellipses joining non-contiguous text, and a few encoding substitutions. They do not silently become source quotations. The result is a concrete reason to validate evidence objects separately from verdict schemas.
+Published result files preserve every rating and concise justification. An automated check tested whether each evidence `quote` was an exact source substring: 64.1% for 24-leaf HBQ, 71.0% for one-batch HBQ, 86.7% for compact analytic, and 80.0% for holistic. Misses include paraphrase, joined ellipses, and encoding substitutions; they are not treated as quotations. Evidence objects therefore need validation separate from verdict schemas.
 
 ## Reproduce and inspect
 
@@ -60,4 +60,4 @@ python evaluation-results/the-part-that-arrives-first-repeatability/analyze_stud
   --output-dir /tmp/repeatability-results
 ```
 
-The [runner](run_study.py), [strict comparator prompts and schemas](arms/), [summary](results/summary.json), [per-leaf repeatability table](results/leaf-repeatability.json), run outputs, hashes, and sanitized provider provenance are all included. One story, one judge configuration, and five repetitions support a descriptive case study—not a universal ranking of rubric systems, a human gold standard, or proof that repeatability equals validity.
+The [runner](run_study.py), [strict comparator prompts and schemas](arms/), [summary](results/summary.json), [per-leaf repeatability table](results/leaf-repeatability.json), run outputs, hashes, and sanitized provider provenance are included. One story, one configuration, and five repetitions support a descriptive case study—not a universal ranking, a human gold standard, or proof that repeatability equals validity.
