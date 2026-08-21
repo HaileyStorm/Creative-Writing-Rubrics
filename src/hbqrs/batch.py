@@ -15,9 +15,10 @@ from jsonschema import Draft202012Validator
 
 from .core import HBQError, load_bundles, load_data, load_modules, resolve_bundle
 from .html_report import render_html_report, render_html_scorecard
-from .longform_runner import _derive_bundle, run_longform_judge
+from .longform_runner import _derive_bundle
+from .longform_runner_v2 import run_longform_judge
 from .paths import schema_dir
-from .runner import run_judge
+from .runner_v2 import run_judge
 
 
 def _atomic_json(path: Path, value: Mapping[str, Any]) -> None:

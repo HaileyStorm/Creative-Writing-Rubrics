@@ -40,6 +40,12 @@ A model name is not a reproducible judge. Record the exact checkpoint or revisio
 
 Sampler settings belong to the task. A sampler that helps drafting may hurt grading or exact evidence transfer, so do not carry a creative-generation profile into judging without a separate calibration result. Model confidence is also diagnostic until it is calibrated against repeated decisions and external labels; it does not change canonical score or coverage by default.
 
+## Confidence diagnostics
+
+`report.confidence` remains for compatibility. It is the legacy domain-point-weighted mean across assessed domains, not an effective-leaf calculation.
+
+Versioned score reports carry the optional `confidence_diagnostics` field. Unversioned `score.json` files remain v1 evidence; current runner surfaces leave those parents untouched and atomically write a hash-bound `score.v2.json` descendant. V2 reports secondary role diagnostics for `domain`, `hard_gate`, `penalty`, and `supplemental` leaves using effective leaf weights. They never change the canonical score, coverage, penalties, gates, bounds, or status. An empty or wholly unassessed role has `null` ratios and is rendered as **Not observed**.
+
 ## Intervals and coverage
 
 `CANNOT_ASSESS` widens the interval. If coverage is below the bundle threshold, the result is `PROVISIONAL` and must not drive unattended acceptance. Missing modalities (no audio for an audio leaf) are `CANNOT_ASSESS`, not `NO`.

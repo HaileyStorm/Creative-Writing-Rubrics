@@ -70,23 +70,7 @@ Evidence-grounded evaluation improves auditability. Every material NO verdict sh
 
 ## 10. Refinements over the earlier rubric family
 
-The new system makes the following structural changes:
-
-- replaces 1–5 or 1–10 line items with atomic positive binary leaves;
-- separates hard eligibility from artistic quality;
-- introduces N/A and cannot-assess control states;
-- reports coverage and score intervals;
-- gives every criterion one owner;
-- keeps a small cumulative holistic component;
-- separates user taste from craft;
-- treats excerpts and incomplete artifacts explicitly;
-- rewards form-appropriate length;
-- raises and formalizes purple-prose and repetition penalties;
-- adds AI-pattern, optionality-without-commitment, and sampler-artifact controls;
-- adds complete visual, audio, and multimodal registries;
-- adds long-context and full-manuscript protocols;
-- adds operation rubrics for ideation, outlining, continuation, critique, selection, revision, research, ingestion, and project maintenance;
-- adds meta-rubrics for rubric quality and judge behavior.
+HBQ-RS turns the preceding findings into a static, owned registry of atomic binary leaves with explicit eligibility, applicability, coverage, evidence, and scope rules; it preserves a small holistic component and keeps taste separate from craft. The current standard—not this rationale—defines the operational details: [HBQ-RS standard](HBQ_RS_STANDARD.md), [Rubric Book](RUBRIC_BOOK.md), and the machine-readable registry are the controlling references for modules, penalties, long-form protocols, operation rubrics, and model-pattern controls.
 
 ## 11. Limitations and validation plan
 

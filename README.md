@@ -47,7 +47,7 @@ cwr judge examples/sample_scene.md --bundle prose.scene --provider openai \
   --base-url http://127.0.0.1:8000/v1 --model local-model --output-dir ../cwr-runs/sample
 ```
 
-For a manuscript, `cwr longform` can select a valid bundle/module stack, turn a brief into frozen weighted goals, segment and map the work, run whole-work scoring plus independent local diagnostics, and render a narrative report. Binding requirements come only from an explicit `--task-contract` file:
+For a manuscript, `cwr longform` selects and validates a local stack, freezes declared goals, scores the whole work and local units, and can render an offline report. Binding requirements come only from an explicit `--task-contract` file:
 
 ```bash
 cwr longform manuscript.txt --brief author-notes.txt \
@@ -57,11 +57,11 @@ cwr longform manuscript.txt --brief author-notes.txt \
   --html-report --output-dir ../cwr-runs/manuscript
 ```
 
-`--wip` makes the completion policy explicit: absent future closure or payoff is not a failure, while craft, supplied-scope continuity, applicable requirements, and weighted goals remain active. The local-endpoint example explicitly samples four units. Omit `--local-sample-limit` for the default complete mode, which evaluates every deterministic chapter or section locally as well as the whole work. For chaptered prose, the whole-work pass uses the manuscript bundle while chapter diagnostics automatically use the chapter-scope bundle; pass `--local-bundle` only when you deliberately want a different deep-diagnostic stack.
+`--wip` marks unfinished closure as out of scope without relaxing craft, supplied-scope continuity, applicable requirements, or weighted goals. This example samples four local units; omit `--local-sample-limit` for complete local coverage. Chaptered prose uses a manuscript bundle globally and a chapter-scope bundle locally unless `--local-bundle` overrides it.
 
-The same commands support Codex CLI, the optional Grok Build CLI adapter, and the Windows Nous tool-free bridge. For GPT-5.6, Sol Medium is a good default for binary judging and Sol High for route selection, long-range mapping, ambiguous judgments, and synthesis. Luna Max is useful for broad passes when a stronger model or deterministic check reviews the result. Grok 4.6 and Nous require explicit `--allow-unattested-reasoning` when their providers cannot attest effective reasoning; those opted-in runs are supplemental rather than exact-settings evidence. Nous accepts only `deepseek/deepseek-v4-flash-0731` or the predeclared `deepseek/deepseek-v4-pro-0813` fallback at `max`, uses the shared locked zero-tool launcher, and never replaces the GPT-5.6 study arm. See [Running a headless judge](docs/judging.md) for privacy gates, resume, task contracts, and provider details.
+The same commands support Codex CLI, the optional Grok Build CLI adapter, and the Windows Nous tool-free bridge. For GPT-5.6, use Sol Medium for binary batches and Sol High for routing, long-range mapping, ambiguity, and synthesis; Luna Max is for broad passes that receive stronger or deterministic review. Grok 4.6 and Nous require `--allow-unattested-reasoning` when effective reasoning is not attested, so those runs are supplemental rather than exact-settings evidence. Nous accepts only `deepseek/deepseek-v4-flash-0731` or the predeclared `deepseek/deepseek-v4-pro-0813` fallback at `max`, through the shared locked zero-tool launcher; it never replaces the GPT-5.6 study arm. [Running a headless judge](docs/judging.md) covers privacy, resume, task contracts, and provider details.
 
-Automatic routing is an LLM pass through the configured endpoint, not a filename or browser heuristic. The model sees the declared sample, prompt, and brief, chooses only from the local bundle/module catalog, and the runner then enforces IDs, compatibility, scope, and the strict route schema deterministically. Add `--plan-only` to inspect that choice before judging. For a controlled draft comparison, add `--bundle prose.novel` to freeze the complete rubric stack, `--task-contract contract.json` to reuse the same weighted goals and objective requirements, and repeat `--frozen-sample-ordinal N` to score matched chapter positions. Endpoints that implement OpenAI Structured Outputs can opt in with `--openai-structured-outputs`; generic local endpoints remain prompt-and-validation based.
+Automatic routing is an LLM choice from the local catalog, followed by deterministic checks of IDs, compatibility, scope, and the strict route schema. Use `--plan-only` to inspect it. For a controlled draft comparison, freeze the stack with `--bundle prose.novel`, reuse a task contract, and repeat `--frozen-sample-ordinal N` for matched unit positions. `--openai-structured-outputs` is optional for compatible endpoints; generic local endpoints use prompt-and-validation.
 
 The canonical whole-work score and the complete chapter trajectory are always preserved separately. If one compact headline is useful, create an explicit profile and ask for the optional composite:
 
@@ -73,9 +73,9 @@ cwr longform manuscript.txt --brief author-notes.txt --wip \
   --output-dir ../cwr-runs/manuscript
 ```
 
-The starter profile is 70% whole-work and 30% equal-weight local mean. You can change those component weights or use the weakest-unit reducer. Ordinary chapters cannot be tuned one by one: the only local modifiers are one shared weight for explicitly unfinished units and an optional shared prologue/epilogue weight. The compact card labels custom weighting and prints the effective weights and reducer. Existing report JSON can be rendered later with `cwr render-report report.json -o report.html`, or with `--scorecard` for the embeddable card alone; both files are self-contained and work offline.
+The starter profile is 70% whole-work and 30% equal-weight local mean. You may change component weights or use the weakest-unit reducer, but ordinary chapters cannot be tuned individually: only shared unfinished-unit and prologue/epilogue modifiers are available. Cards label custom weighting and print the effective weights and reducer. `cwr render-report report.json -o report.html` renders an existing report; `--scorecard` produces the embeddable card. Both work offline.
 
-The GUI is always optional; every setup, judging, batching, monitoring, scoring, and report operation has a complete CLI path. `cwr configure -o setup.html` creates a local setup helper for automatic or manual stack selection, WIP/completion policy, endpoint settings, coverage, weights, and a copyable command. It never runs a judge. There is no template editor or theme system.
+The GUI is optional: setup, judging, batching, monitoring, scoring, and reports all have complete CLI paths. `cwr configure -o setup.html` is a local, no-network helper for route, WIP, endpoint, coverage, weights, and a copyable command; it never runs a judge. There is no template editor or theme system.
 
 <p>
   <img src="docs/images/workflow-setup.png" width="49%" alt="Local HBQ-RS workflow setup page">
@@ -84,7 +84,7 @@ The GUI is always optional; every setup, judging, batching, monitoring, scoring,
 
 Both views are self-contained local HTML. The report image uses source-free illustrative data; published study charts below are derived from verified result files.
 
-For multiple samples, `cwr batch batch.yaml --allow-remote` wraps the same runners and may mix `longform` jobs with exact single-artifact jobs. A strict manifest chooses one routing policy: `individual` lets the endpoint route and grade each sample without confirmation; `shared` chooses a stack from one designated sample, freezes it, then plans each artifact before grading; `review` finishes every sample's route plan up front, then `--accept-reviewed` revalidates the full set and grades the accepted or explicitly overridden plans. The batch writes durable per-job outputs plus a small local auto-refreshing status page. See [Running a headless judge](docs/judging.md).
+For multiple samples, `cwr batch batch.yaml --allow-remote` wraps the same runners and may mix long-form and exact single-artifact jobs. Its strict manifest chooses `individual` routing, a stack shared from one designated sample, or a fully planned-and-confirmed `review` route. It writes durable per-job outputs and a small local status page. See [Running a headless judge](docs/judging.md).
 
 Python:
 
@@ -100,19 +100,13 @@ print(report["status"], report["final_score"])
 
 ## How judging works
 
-1. Pick a **bundle** for the artifact and operation (`prose.scene`, `poetry.sonnet.shakespearean`, `default.first_pass_screening`, …), or let the long-form runner select a valid stack from the local catalog.
-2. Freeze the task contract before judging. Author goals and preferences become weighted questions; only atomic, objective, explicitly non-negotiable requirements supplied in an artifact-bound contract can become gates. Automatic routing cannot create them.
-3. Ask each selected leaf with `BINARY_EVALUATION_PROMPT.md`. **This is the LLM-as-judge part.** Add `JUDGE_PREFIX.md` when the artifact is AI-generated or AI-modified.
-4. Collect JSONL verdicts: `YES`, `NO`, `NOT_APPLICABLE`, or `CANNOT_ASSESS`.
-5. Run `cwr score`. Hard gates decide eligibility; scored leaves decide quality; penalties are capped; missing evidence widens an interval instead of counting as failure.
+Choose a local bundle (or let long-form routing choose and validate one), freeze any artifact-bound task contract, collect `YES`, `NO`, `NOT_APPLICABLE`, or `CANNOT_ASSESS` verdicts with the binary prompt, then score deterministically. Author goals are weighted questions; only atomic, objective, explicitly non-negotiable contract requirements can become gates. AI-generated or AI-modified work also receives `JUDGE_PREFIX.md`.
 
 ```text
 artifact + brief → validated route → frozen task contract → stable map → per-leaf verdicts → deterministic score → report
 ```
 
-For long work, global questions see the complete source organized into stable units and every chapter or section receives an independent local result by default. `--local-sample-limit` is an explicit sampled mode for constrained local hardware (maximum 64); `--binary-workers` can evaluate disjoint scopes concurrently (maximum 8) without changing coverage. Local results never silently alter the canonical manuscript score. An optional, visibly custom-weighted composite may combine the preserved whole-work and local views under a saved profile.
-
-Provider or strict-output failures are retried up to three times per binary batch by default. Each rejected response is retained separately for inspection and never enters a verdict checkpoint or score; use `--batch-attempts` to choose a different positive bound.
+For long work, global questions see the complete source; chapters or sections receive independent local results by default. `--local-sample-limit` explicitly samples up to 64 units for constrained hardware, while `--binary-workers` evaluates disjoint scopes concurrently (maximum 8). Local results never alter the canonical manuscript score; a saved profile may add a visibly custom composite. Provider or strict-output failures retry up to three times per binary batch by default; rejected responses remain inspectable but never enter a checkpoint or score.
 
 ## What is in the box
 

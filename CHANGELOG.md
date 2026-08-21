@@ -2,6 +2,7 @@
 
 ## 1.1.0 — 2026-08-20
 
+- Added hash-bound v2 score descendants with optional effective-leaf confidence diagnostics by rubric role; retained immutable v1 score parents and legacy domain-point `report.confidence` compatibility.
 - Added strict task contracts that keep weighted author goals separate from objective binding requirements.
 - Added `cwr longform` for deterministic segmentation, constrained route selection, mapping, complete-source scoring, complete scope-correct local diagnostics by default, explicit WIP handling and opt-in sampling, bounded parallel workers, resumable reports, and accessible SVG/HTML output.
 - Added optional hierarchical score profiles, a manuscript-bound profile generator, and offline full-report and embeddable-scorecard output with disclosed custom weights.

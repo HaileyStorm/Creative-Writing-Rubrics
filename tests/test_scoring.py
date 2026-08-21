@@ -2,10 +2,14 @@
 
 from __future__ import annotations
 
+from copy import deepcopy
+import hashlib
+import json
 from typing import Any
 
 import pytest
 import yaml
+from jsonschema import Draft202012Validator
 
 from hbqrs import HBQError, book_root, compile_bundle, score_bundle, validate_registry, walk_tree
 
@@ -245,6 +249,282 @@ def test_cannot_assess_creates_coverage_and_score_interval(modules, bundle_by_id
     assert report["base_score"]["lower"] < report["base_score"]["upper"]
     assert report["final_score"]["lower"] <= report["final_score"]["observed"]
     assert report["final_score"]["observed"] <= report["final_score"]["upper"]
+
+
+def test_confidence_diagnostics_are_secondary_and_role_separated(modules, bundle_by_id) -> None:
+    contract = _task_contract()
+    compiled, verdicts = _full_verdicts(
+        modules,
+        bundle_by_id["prose.scene"],
+        task_contract=contract,
+    )
+    domain_id = compiled["domain_questions"][0]["question"]["id"]
+    gate_id = compiled["hard_gates"][0]["question"]["id"]
+    penalty_id = compiled["penalty_groups"][0]["questions"][0]["question"]["id"]
+    supplemental_id = compiled["supplemental_questions"][0]["question"]["id"]
+    for verdict in verdicts:
+        if verdict["question_id"] == domain_id:
+            verdict["confidence"] = 0.2
+        elif verdict["question_id"] == gate_id:
+            verdict["confidence"] = 0.4
+        elif verdict["question_id"] == penalty_id:
+            verdict["confidence"] = 0.8
+        elif verdict["question_id"] == supplemental_id:
+            verdict["confidence"] = 0.6
+    report = score_bundle(modules, bundle_by_id["prose.scene"], verdicts, task_contract=contract)
+    diagnostics = report["confidence_diagnostics"]
+    assert diagnostics["status"] == "DESCRIPTIVE_UNCALIBRATED"
+    assert diagnostics["calibration"] == {
+        "status": "UNAVAILABLE",
+        "exact_fingerprint": None,
+        "reason": "A single score has no polarity comparison, repeat judgments, or outcome history; no calibration inference is made.",
+    }
+    assert set(diagnostics["roles"]) == {"domain", "hard_gate", "penalty", "supplemental"}
+    assert diagnostics["roles"]["hard_gate"]["assessed_raw_confidence_weighted_mean"] == pytest.approx(0.4)
+    assert diagnostics["roles"]["supplemental"]["assessed_raw_confidence_weighted_mean"] < 1.0
+    assert diagnostics["roles"]["penalty"]["assessed_raw_confidence_weighted_mean"] < 1.0
+    assert diagnostics["roles"]["domain"]["effective_confidence_mass"]["is_coverage"] is False
+    assert report["hard_gate_status"] == "VALID"
+    assert report["status"] == "SCORED"
+    assert report["coverage"] == pytest.approx(1.0)
+    assert report["penalty_deduction"] == {"observed": 0.0, "lower": 0.0, "upper": 0.0}
+    assert report["final_score"] == {"observed": 100.0, "lower": 100.0, "upper": 100.0}
+
+
+def test_confidence_diagnostics_exclude_not_applicable_and_include_cannot_assess_mass(modules, bundle_by_id) -> None:
+    compiled, verdicts = _full_verdicts(modules, bundle_by_id["prose.scene"])
+    cannot_id = compiled["domain_questions"][0]["question"]["id"]
+    not_applicable_id = compiled["domain_questions"][1]["question"]["id"]
+    for verdict in verdicts:
+        if verdict["question_id"] == cannot_id:
+            verdict.update(_verdict(cannot_id, "CANNOT_ASSESS"))
+        elif verdict["question_id"] == not_applicable_id:
+            verdict.update(_verdict(not_applicable_id, "NOT_APPLICABLE"))
+    report = score_bundle(modules, bundle_by_id["prose.scene"], verdicts)
+    aggregate = report["confidence_diagnostics"]["roles"]["domain"]
+    records = compiled["domain_questions"]
+    expected_applicable = sum(
+        float(record["effective_weight"])
+        for record in records
+        if record["question"]["id"] != not_applicable_id
+    )
+    expected_assessed = sum(
+        float(record["effective_weight"])
+        for record in records
+        if record["question"]["id"] not in {cannot_id, not_applicable_id}
+    )
+    assert aggregate["question_count"] == len(records)
+    assert aggregate["applicable_count"] == len(records) - 1
+    assert aggregate["assessed_count"] == len(records) - 2
+    assert aggregate["applicable_effective_weight"] == pytest.approx(expected_applicable)
+    assert aggregate["assessed_effective_weight"] == pytest.approx(expected_assessed)
+    assert aggregate["assessed_raw_confidence_weighted_mean"] == pytest.approx(1.0)
+    assert aggregate["effective_confidence_mass"]["value"] == pytest.approx(
+        expected_assessed / expected_applicable, abs=0.00005
+    )
+    assert aggregate["effective_confidence_mass"]["is_coverage"] is False
+    assert report["coverage"] < 1.0
+
+
+def test_confidence_only_changes_leave_the_canonical_projection_exactly_unchanged(
+    modules, bundle_by_id
+) -> None:
+    _, verdicts = _full_verdicts(modules, bundle_by_id["prose.scene"])
+    baseline = score_bundle(modules, bundle_by_id["prose.scene"], verdicts)
+    for index, verdict in enumerate(verdicts):
+        verdict["confidence"] = (index % 10) / 10
+    varied_confidence = score_bundle(modules, bundle_by_id["prose.scene"], verdicts)
+
+    def canonical_projection(report: dict[str, Any]) -> dict[str, Any]:
+        return {
+            "status": report["status"],
+            "coverage": report["coverage"],
+            "minimum_coverage": report["minimum_coverage"],
+            "hard_gate_status": report["hard_gate_status"],
+            "hard_gates": report["hard_gates"],
+            "base_score": report["base_score"],
+            "penalty_deduction": report["penalty_deduction"],
+            "final_score": report["final_score"],
+            "domains": [
+                {
+                    "domain_id": domain["domain_id"],
+                    "active": domain["active"],
+                    "coverage": domain["coverage"],
+                    "weights": domain["weights"],
+                    "score": domain["score"],
+                }
+                for domain in report["domains"]
+            ],
+            "penalties": [
+                {
+                    "module_id": penalty["module_id"],
+                    "coverage": penalty["coverage"],
+                    "weights": penalty["weights"],
+                    "deduction": penalty["deduction"],
+                }
+                for penalty in report["penalties"]
+            ],
+        }
+
+    assert canonical_projection(varied_confidence) == canonical_projection(baseline)
+    assert varied_confidence["confidence_diagnostics"] != baseline["confidence_diagnostics"]
+    assert varied_confidence["confidence"] != baseline["confidence"]
+
+
+def test_confidence_diagnostics_mark_empty_and_unassessed_role_ratios_unobserved(
+    modules, bundle_by_id
+) -> None:
+    compiled, verdicts = _full_verdicts(modules, bundle_by_id["default.coarse_outline"])
+    supplemental_ids = {
+        record["question"]["id"] for record in compiled["supplemental_questions"]
+    }
+    for verdict in verdicts:
+        if verdict["question_id"] in supplemental_ids:
+            verdict.update(_verdict(verdict["question_id"], "CANNOT_ASSESS"))
+    report = score_bundle(modules, bundle_by_id["default.coarse_outline"], verdicts)
+    empty_penalty = report["confidence_diagnostics"]["roles"]["penalty"]
+    unassessed_supplemental = report["confidence_diagnostics"]["roles"]["supplemental"]
+
+    assert empty_penalty["question_count"] == 0
+    assert unassessed_supplemental["applicable_count"] == len(supplemental_ids)
+    for aggregate in (empty_penalty, unassessed_supplemental):
+        assert aggregate["assessed_count"] == 0
+        assert aggregate["assessed_raw_confidence_weighted_mean"] is None
+        assert aggregate["assessed_raw_confidence_weighted_median"] is None
+        assert aggregate["effective_confidence_mass"]["value"] is None
+        assert all(
+            share is None
+            for share in aggregate["assessed_effective_weight_threshold_shares"].values()
+        )
+
+
+def test_score_report_schema_accepts_confidence_diagnostics_and_rejects_malformed_values(
+    modules, bundle_by_id
+) -> None:
+    _, verdicts = _full_verdicts(modules, bundle_by_id["prose.scene"])
+    report = score_bundle(modules, bundle_by_id["prose.scene"], verdicts)
+    schema = json.loads((ROOT / "schema" / "hbq_score_report.v2.schema.json").read_text(encoding="utf-8"))
+    validator = Draft202012Validator(schema)
+
+    assert list(validator.iter_errors(report)) == []
+
+    without_diagnostics = deepcopy(report)
+    del without_diagnostics["confidence_diagnostics"]
+    assert list(validator.iter_errors(without_diagnostics)) == []
+
+    from hbqrs.core import score_bundle as score_bundle_v1
+
+    parent = score_bundle_v1(modules, bundle_by_id["prose.scene"], verdicts)
+    parent_schema = json.loads(
+        (ROOT / "schema" / "hbq_score_report.schema.json").read_text(encoding="utf-8")
+    )
+    assert list(Draft202012Validator(parent_schema).iter_errors(parent)) == []
+
+    malformed = deepcopy(report)
+    malformed["confidence_diagnostics"]["roles"]["domain"]["effective_confidence_mass"][
+        "is_coverage"
+    ] = True
+    assert list(validator.iter_errors(malformed))
+
+
+def test_weighted_median_uses_lower_value_at_an_exact_half_tie() -> None:
+    from hbqrs.scoring_v2 import _weighted_median
+
+    assert _weighted_median([(0.2, 1.0), (0.8, 1.0)]) == pytest.approx(0.2)
+
+
+def test_v1_frozen_assets_remain_byte_exact_and_v2_keeps_the_canonical_projection(
+    modules, bundle_by_id
+) -> None:
+    from hbqrs.core import score_bundle as score_bundle_v1
+
+    assert hashlib.sha256((ROOT / "schema" / "hbq_score_report.schema.json").read_bytes()).hexdigest() == (
+        "f0e1fd939774f3c569458f7fd4ce9c6f9b4d942fbc1654badb7b72d09007c87d"
+    )
+    assert hashlib.sha256((ROOT / "src" / "hbqrs" / "core.py").read_bytes()).hexdigest() == (
+        "70b4cd16bd536f2f6ddb8e066f801090a037a39605652b14d6c7f6ff312446cb"
+    )
+    _, verdicts = _full_verdicts(modules, bundle_by_id["prose.scene"])
+    parent = score_bundle_v1(modules, bundle_by_id["prose.scene"], verdicts)
+    descendant = score_bundle(modules, bundle_by_id["prose.scene"], verdicts)
+    for report in (parent, descendant):
+        report.pop("$schema")
+        report.pop("report_version", None)
+        report.pop("confidence_diagnostics", None)
+    assert descendant == parent
+
+
+def test_v2_score_descendant_is_hash_bound_atomic_and_resumable(tmp_path, modules, bundle_by_id) -> None:
+    from hbqrs.core import score_bundle as score_bundle_v1
+    from hbqrs.runner_v2 import persist_v2_descendant
+
+    _, verdicts = _full_verdicts(modules, bundle_by_id["prose.scene"])
+    parent = score_bundle_v1(modules, bundle_by_id["prose.scene"], verdicts)
+    parent["weight_profile"] = None
+    parent_path = tmp_path / "score.json"
+    parent_path.write_text(json.dumps(parent, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    verdicts_path = tmp_path / "verdicts.jsonl"
+    verdicts_path.write_text("\n".join(json.dumps(item) for item in verdicts) + "\n", encoding="utf-8")
+    parent_bytes = parent_path.read_bytes()
+
+    first = persist_v2_descendant(
+        output_dir=tmp_path,
+        registry=ROOT / "registry" / "all_modules.json",
+        bundles=ROOT / "bundles" / "all_bundles.json",
+        weight_profile=None,
+        task_contract_path=None,
+    )
+    second = persist_v2_descendant(
+        output_dir=tmp_path,
+        registry=ROOT / "registry" / "all_modules.json",
+        bundles=ROOT / "bundles" / "all_bundles.json",
+        weight_profile=None,
+        task_contract_path=None,
+    )
+    assert first == second == tmp_path / "score.v2.json"
+    assert parent_path.read_bytes() == parent_bytes
+    descendant = json.loads(first.read_text(encoding="utf-8"))
+    assert descendant["parent_score_sha256"] == hashlib.sha256(parent_bytes).hexdigest()
+
+
+def test_score_report_version_routing_rejects_mixed_or_unknown_contracts(
+    modules, bundle_by_id
+) -> None:
+    from hbqrs.core import score_bundle as score_bundle_v1
+    from hbqrs.scoring_v2 import V2_SCHEMA, score_report_version
+
+    _, verdicts = _full_verdicts(modules, bundle_by_id["prose.scene"])
+    parent = score_bundle_v1(modules, bundle_by_id["prose.scene"], verdicts)
+    descendant = score_bundle(modules, bundle_by_id["prose.scene"], verdicts)
+    assert score_report_version(parent) == 1
+    assert score_report_version(descendant) == 2
+    mixed = deepcopy(descendant)
+    mixed["$schema"] = "../schema/hbq_score_report.schema.json"
+    with pytest.raises(HBQError, match="Unsupported score report version/schema pair"):
+        score_report_version(mixed)
+    legacy_pointer = deepcopy(parent)
+    legacy_pointer["$schema"] = "https://example.invalid/legacy-score-schema.json"
+    assert score_report_version(legacy_pointer) == 1
+    unknown = deepcopy(parent)
+    unknown["report_version"] = 3
+    unknown["$schema"] = V2_SCHEMA
+    with pytest.raises(HBQError, match="Unsupported score report version/schema pair"):
+        score_report_version(unknown)
+
+
+def test_confidence_schema_definitions_match_the_longform_projection_schema() -> None:
+    score_schema = json.loads((ROOT / "schema" / "hbq_score_report.v2.schema.json").read_text(encoding="utf-8"))
+    workflow_schema = json.loads(
+        (ROOT / "schema" / "hbq_long_form_workflow_report.schema.json").read_text(encoding="utf-8")
+    )
+    names = (
+        "assessed_effective_weight_threshold_shares",
+        "confidence_role_aggregate",
+        "confidence_diagnostics",
+    )
+    assert {name: score_schema["$defs"][name] for name in names} == {
+        name: workflow_schema["$defs"][name] for name in names
+    }
 
 
 def test_repetition_penalty_reaches_but_does_not_exceed_cap(modules, bundle_by_id) -> None:

@@ -1,8 +1,8 @@
 # Running a headless judge
 
-`cwr judge` sends one text artifact through one compiled bundle, validates every returned verdict, checkpoints after each batch, and writes the deterministic score. It supports a local or hosted OpenAI-compatible Chat Completions endpoint, the authenticated Codex CLI, the authenticated Grok Build CLI, and the Windows Nous tool-free bridge. A frozen task contract can add weighted author goals and objective binding requirements without mixing the two.
+`cwr judge` compiles one text artifact into a bundle, validates and checkpoints each batch of verdicts, then writes a deterministic score. It supports OpenAI-compatible endpoints, authenticated Codex and Grok Build CLIs, and the Windows Nous tool-free bridge. A frozen task contract may add weighted author goals and objective binding requirements without conflating them.
 
-Read `hard_gate_status` as objective control eligibility, `coverage` as the weighted assessed share, `final_score.observed` as the score over assessed applicable criteria after capped penalties, and `lower`/`upper` as unresolved-evidence bounds rather than confidence intervals. The canonical result belongs to the scope judged; chapter and scene diagnostics do not average back into a manuscript score. See [Benchmarking](benchmarking.md) for the complete reporting definitions.
+`hard_gate_status` is objective eligibility; `coverage` is the weighted assessed share; `final_score.observed` is the assessed-applicable score after capped penalties; and `lower`/`upper` are unresolved-evidence bounds, not confidence intervals. Results belong to their judged scope: chapter and scene diagnostics do not average back into a manuscript. [Benchmarking](benchmarking.md) defines the report fully.
 
 ## Local OpenAI-compatible endpoint
 
@@ -15,9 +15,7 @@ cwr judge draft.txt \
   --output-dir ../cwr-runs/draft-scene
 ```
 
-The endpoint may be a llama.cpp server, LM Studio, Ollama's OpenAI-compatible API, or another service that accepts `POST /v1/chat/completions`. Set the API key in an environment variable and name it with `--api-key-env`; the runner never writes its value. The endpoint must report the effective model it used. If a server returns a known canonical alias instead of the requested name, review that mapping and pass `--allow-model-mismatch` explicitly.
-
-For a non-loopback URL, the runner prints the destination plus each input's path, byte count, and SHA-256 hash, then requires `--allow-remote`.
+The endpoint may be llama.cpp, LM Studio, Ollama's OpenAI-compatible API, or another `POST /v1/chat/completions` service. Put its key in an environment variable named by `--api-key-env`; the runner never writes it. The endpoint must report its effective model. A known canonical alias needs reviewed `--allow-model-mismatch`. For non-loopback URLs, the runner discloses the destination and each input's path, byte count, and SHA-256 hash, then requires `--allow-remote`.
 
 ## Codex CLI
 
@@ -31,7 +29,7 @@ cwr judge draft.txt \
   --output-dir ../cwr-runs/draft-scene-sol
 ```
 
-Codex runs ephemerally with user configuration, project rules, shell, agents, apps, browsing, computer use, image tools, skills, and tool suggestions disabled. It receives the artifact through standard input and must return a response matching `schema/hbq_judge_response.schema.json`; the reported OpenAI provider, model, and reasoning effort must match the request. Use `--context brief.txt` for a brief, canon note, or other declared evidence; the option is repeatable. Use `--strict-ai` when the artifact was AI-generated or AI-modified and the stricter judge prefix is appropriate.
+Codex runs ephemerally with configuration, project rules, shell, agents, apps, browsing, computer use, image tools, skills, and tool suggestions disabled. It receives the artifact on standard input and must match `schema/hbq_judge_response.schema.json`; its reported provider, model, and reasoning must match the request. Repeat `--context brief.txt` for declared evidence. Use `--strict-ai` for AI-generated or AI-modified artifacts when the stricter prefix applies.
 
 ## Grok Build CLI
 
@@ -42,7 +40,7 @@ cwr judge draft.txt --bundle prose.scene \
   --output-dir runs/grok-scene --allow-remote
 ```
 
-Grok runs as a one-turn, no-memory process with subagents, planning, web search, and tools disabled. The supported adapter was capability-tested against Grok Build CLI 1.0.5: a `grok-4.6` request is accepted only when the CLI reports the single `grok-4.6-build` usage key. The CLI does not independently report the requested reasoning effort, so it fails closed unless `--allow-unattested-reasoning` is explicit. Opted-in Grok receipts record `reasoning_attested: false`; treat them as supplemental rather than exact-settings evidence. Other model mappings fail closed until explicitly tested.
+Grok runs once with no memory, subagents, planning, web search, or tools. The supported adapter was capability-tested against Grok Build CLI 1.0.5: `grok-4.6` is accepted only when the CLI reports the single `grok-4.6-build` usage key. Reasoning is not independently attested, so it fails closed unless `--allow-unattested-reasoning` is explicit. Opted-in receipts record `reasoning_attested: false` and remain supplemental evidence. Other mappings fail closed until tested.
 
 ## Nous tool-free bridge (Windows)
 
@@ -52,15 +50,13 @@ cwr judge examples/sample_scene.md --bundle prose.scene \
   --allow-unattested-reasoning --output-dir runs/nous-scene --allow-remote
 ```
 
-Nous is available only through the installed canonical Windows launcher, which supplies the shared provider lock, persistent HTTP-402 stop marker, key-safe launch, sealed evidence, and zero-tool judge contract. The adapter allows only `deepseek/deepseek-v4-flash-0731` or `deepseek/deepseek-v4-pro-0813`, both with `max` reasoning, and writes a fresh request, result, evidence root, and serialization proof for every attempt. The provider currently may omit effective reasoning effort; it therefore fails closed unless the same explicit provisional opt-in is supplied. This is supplemental evidence, never a replacement for the GPT-5.6 study arm.
+Nous is available only through the canonical Windows launcher, which provides the shared provider lock, persistent HTTP-402 stop marker, key-safe launch, sealed evidence, and a zero-tool contract. The adapter allows only `deepseek/deepseek-v4-flash-0731` or `deepseek/deepseek-v4-pro-0813`, both at `max`, and records a fresh request, result, evidence root, and serialization proof per attempt. Because the provider may omit effective reasoning, it fails closed without the same explicit provisional opt-in. It is supplemental evidence, never a GPT-5.6 study replacement.
 
-Judge evidence is typed. An `exact_quote` must be a nonblank contiguous substring of the supplied artifact or context and is checked before a checkpoint is accepted; non-verbatim support belongs in `summary`. The model-facing schema uses an explicit `kind` discriminator and nullable wire fields for strict Structured Outputs compatibility, then the runner stores the normalized compact form. Older normalized verdicts that used `quote` remain valid input to the scorer.
+Evidence is typed: an `exact_quote` must be a nonblank contiguous artifact or context substring before checkpoint acceptance; non-verbatim support belongs in `summary`. The model-facing schema uses `kind` plus nullable wire fields for strict Structured Outputs, then stores a compact normalized form. Older normalized `quote` verdicts still score.
 
-Use `--task-contract contract.json` when a brief should affect scoring or eligibility. The file must match `schema/hbq_task_contract.schema.json`. `weighted_goals` affect the task-domain score; only atomic, objective, explicitly non-negotiable `binding_requirements` become hard gates. Context, preferences, aspirations, and inferred author intent are never silently promoted into gates. The same contract can be supplied to `cwr compile`, `cwr render-judge`, and `cwr score`.
+Use `--task-contract contract.json` when a brief affects scoring or eligibility. It must match `schema/hbq_task_contract.schema.json`; `weighted_goals` affect the task-domain score, while only atomic, objective, explicitly non-negotiable `binding_requirements` become gates. Context, preferences, aspirations, and inferred intent never do. The contract also works with `cwr compile`, `cwr render-judge`, and `cwr score`. `--temperature` is OpenAI-compatible only; `--reasoning` is for Codex, Grok, and Nous, with unsupported combinations failing.
 
-`--temperature` applies only to the OpenAI-compatible backend. `--reasoning` applies to Codex, Grok, and Nous providers; unsupported combinations fail instead of being ignored.
-
-For model routing, use the smallest reasoning level that still handles the evidence reliably. In the current GPT-5.6 workflow, Sol Medium is the default for structured binary batches and Sol High is reserved for route selection, long-range mapping, ambiguous judgments, and synthesis. Luna Max remains a reasonable high-volume broad-pass option when a stronger deterministic or Sol review follows. A fake local endpoint proves transport and resume behavior, not literary judgment quality.
+Use the lowest reasoning level that handles the evidence reliably: Sol Medium for structured binary batches, Sol High for routing, long-range mapping, ambiguity, and synthesis, and Luna Max for broad passes followed by stronger deterministic or Sol review. A fake local endpoint proves transport and resume, not literary judgment quality.
 
 ## Batches, subsets, and resume
 
@@ -118,21 +114,9 @@ cwr longform manuscript.txt \
   --output-dir ../cwr-runs/manuscript
 ```
 
-The flow is:
+The runner selects only from the local catalog, validates IDs, compatibility, scope, weights, and scoring rules, then preserves the source while it segments, maps, judges, scores, and reports. The global pass sees the complete source in stable units; every local unit is independently scored by default. Chaptered manuscripts use the chapter-scope bundle locally unless `--local-bundle` overrides it. `--binary-workers` overlaps disjoint run directories (maximum 8) without changing coverage. Synthesis may explain evidence but cannot alter verdicts or scores.
 
-```text
-artifact + brief
-  → locally constrained bundle/module selection
-  → frozen weighted goals and, when user-supplied, explicit binding requirements
-  → deterministic source-preserving segmentation
-  → whole-work map and state ledgers
-  → complete-source global judging + scope-correct diagnostics for every local unit
-  → deterministic score + progressive JSON/Markdown/SVG/HTML report
-```
-
-Automatic route selection is itself an LLM call through the configured endpoint. The route prompt includes the declared bounded text sample, originating prompt, and brief; the model may choose only IDs from the local catalog, and deterministic validation rejects invented IDs, incompatible scopes, new weights, or new scoring rules. The global judge receives the complete source divided into stable units, and every unit is scored independently by default. Chaptered manuscripts automatically use the unique chapter-scope bundle for local evaluation; `--local-bundle` is an explicit override for deep diagnostics. Local results never silently alter the canonical manuscript score. `--binary-workers` safely overlaps disjoint global/local run directories, up to 8 workers, without changing coverage. The final synthesis can explain the evidence but cannot change verdicts or scores.
-
-Each scope has one canonical evaluation in a workflow. The manuscript view references the already-produced chapter result; it does not rejudge the chapter for each chart or card. If scene diagnostics are added beneath a chapter, they remain separate children rather than being averaged back into the chapter score. The parent is judged at the parent scope; smaller scopes explain where its strengths and problems occur.
+Each scope has one canonical result. The manuscript references its existing chapter result; charts and cards do not rejudge it, and scene diagnostics remain children rather than averages. Parent scopes are judged as parents; smaller scopes locate strengths and problems.
 
 `--wip` is the explicit shortcut for `--completion-status work_in_progress`. Completion-only whole-work criteria resolve as `NOT_APPLICABLE` rather than failures; evidence that should already exist inside the supplied scope can still be `CANNOT_ASSESS`, and ordinary craft, continuity, applicable requirements, and weighted goals remain active.
 

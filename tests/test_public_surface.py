@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import re
 import subprocess
 import sys
@@ -38,6 +39,36 @@ SCAN_DIRS = (
     "CITATION.cff",
     "manifest.json",
 )
+
+
+def test_lazy_public_exports_preserve_attribute_and_from_import_semantics() -> None:
+    import hbqrs
+
+    assert hbqrs.__all__ == ["__version__", *hbqrs._EXPORTS]
+    for name in hbqrs.__all__:
+        assert getattr(hbqrs, name) is not None
+        namespace: dict[str, object] = {}
+        exec(f"from hbqrs import {name}", namespace)
+        assert namespace[name] is getattr(hbqrs, name)
+
+
+def test_multisample_study_fresh_import_has_minimal_hbqrs_closure() -> None:
+    study = book_root() / "evaluation-results" / "hbq-multisample-repeatability-v1" / "study.py"
+    code = """\
+import importlib.util
+import json
+import sys
+spec = importlib.util.spec_from_file_location("multisample_study_probe", sys.argv[1])
+module = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(module)
+print(json.dumps(sorted(name for name in sys.modules if name == "hbqrs" or name.startswith("hbqrs."))))
+"""
+    env = os.environ.copy()
+    source = str(book_root() / "src")
+    env["PYTHONPATH"] = source + os.pathsep + env.get("PYTHONPATH", "")
+    result = subprocess.run([sys.executable, "-c", code, str(study)], check=True, capture_output=True, text=True, env=env)
+
+    assert json.loads(result.stdout) == ["hbqrs", "hbqrs.core", "hbqrs.paths"]
 
 
 def test_public_text_has_no_host_product_language() -> None:

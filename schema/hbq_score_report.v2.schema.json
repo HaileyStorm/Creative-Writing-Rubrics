@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/HaileyStorm/Creative-Writing-Rubrics/main/schema/hbq_score_report.v2.schema.json",
+  "title": "HBQ-RS score report v2",
+  "type": "object",
+  "required": ["$schema", "report_version", "bundle_id", "artifact_id", "hard_gate_status", "coverage", "base_score", "penalty_deduction", "final_score", "domains", "confidence"],
+  "properties": {
+    "$schema": {"const": "../schema/hbq_score_report.v2.schema.json"},
+    "report_version": {"const": 2},
+    "bundle_id": {"type": "string"},
+    "artifact_id": {"type": "string"},
+    "hard_gate_status": {"enum": ["VALID", "INVALID", "UNRESOLVED"]},
+    "coverage": {"type": "number", "minimum": 0, "maximum": 1},
+    "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+    "confidence_diagnostics": {"$ref": "#/$defs/confidence_diagnostics"},
+    "base_score": {"type": "object"},
+    "penalty_deduction": {"type": "object"},
+    "final_score": {"type": "object"},
+    "domains": {"type": "array"},
+    "issues": {"type": "array"}
+  },
+  "additionalProperties": true,
+  "$defs": {
+    "assessed_effective_weight_threshold_shares": {
+      "type": "object",
+      "required": ["gte_0_5", "gte_0_75", "gte_0_9"],
+      "properties": {
+        "gte_0_5": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
+        "gte_0_75": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
+        "gte_0_9": {"type": ["number", "null"], "minimum": 0, "maximum": 1}
+      },
+      "additionalProperties": false
+    },
+    "confidence_role_aggregate": {
+      "type": "object",
+      "required": ["question_count", "applicable_count", "assessed_count", "applicable_effective_weight", "assessed_effective_weight", "assessed_raw_confidence_weighted_mean", "assessed_raw_confidence_weighted_median", "assessed_effective_weight_threshold_shares", "effective_confidence_mass"],
+      "properties": {
+        "question_count": {"type": "integer", "minimum": 0},
+        "applicable_count": {"type": "integer", "minimum": 0},
+        "assessed_count": {"type": "integer", "minimum": 0},
+        "applicable_effective_weight": {"type": "number", "minimum": 0},
+        "assessed_effective_weight": {"type": "number", "minimum": 0},
+        "assessed_raw_confidence_weighted_mean": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
+        "assessed_raw_confidence_weighted_median": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
+        "assessed_effective_weight_threshold_shares": {"$ref": "#/$defs/assessed_effective_weight_threshold_shares"},
+        "effective_confidence_mass": {
+          "type": "object",
+          "required": ["value", "is_coverage"],
+          "properties": {
+            "value": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
+            "is_coverage": {"const": false}
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "confidence_diagnostics": {
+      "type": "object",
+      "required": ["diagnostic_version", "status", "disclosure", "roles", "calibration"],
+      "properties": {
+        "diagnostic_version": {"const": 1},
+        "status": {"const": "DESCRIPTIVE_UNCALIBRATED"},
+        "disclosure": {"type": "string", "minLength": 1},
+        "roles": {
+          "type": "object",
+          "required": ["domain", "hard_gate", "penalty", "supplemental"],
+          "properties": {
+            "domain": {"$ref": "#/$defs/confidence_role_aggregate"},
+            "hard_gate": {"$ref": "#/$defs/confidence_role_aggregate"},
+            "penalty": {"$ref": "#/$defs/confidence_role_aggregate"},
+            "supplemental": {"$ref": "#/$defs/confidence_role_aggregate"}
+          },
+          "additionalProperties": false
+        },
+        "calibration": {
+          "type": "object",
+          "required": ["status", "exact_fingerprint", "reason"],
+          "properties": {
+            "status": {"const": "UNAVAILABLE"},
+            "exact_fingerprint": {"type": "null"},
+            "reason": {"type": "string", "minLength": 1}
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}
