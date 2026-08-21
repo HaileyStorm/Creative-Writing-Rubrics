@@ -42,39 +42,9 @@ The one-batch HBQ arm was more repeatable in this case, not less. Its exact leaf
 
 That is a method effect worth controlling. It does not establish that larger batches are universally better. It does mean a benchmark should freeze batch size, and calibration should resemble the intended production call shape.
 
-## What the detailed rubric caught
+## What HBQ caught
 
-These examples were selected after the study as illustrations; they were not preregistered hypotheses.
-
-### The viewpoint owns its metaphors
-
-> Mica's old body did not contain Mica now. June understood that.
->
-> Her wrist did not.
-
-`craft.narrative.point_of_view_and_focalization.ownership` was `YES` in all ten HBQ runs. The repeated judgments did not merely call the prose vivid: they identified that its mechanical, theatrical, and bodily metaphors plausibly arise from June’s craft-trained perception. The compact and holistic arms praised the tactile prose, but their structured outputs did not isolate this subtler focalization mechanism.
-
-### The dialogue listens
-
-> “You should have told me before you accepted.”
->
-> “Yes.”
->
-> “Would you have changed your answer?”
->
-> “No.”
-
-`craft.narrative.dialogue.listening` was also `YES` in all ten HBQ runs. Across repetitions, the notes consistently recognized that replies answer the pressure inside the preceding line—even when the honest answer worsens the conflict. That is more specific than a general claim that the dialogue is sharp or natural.
-
-### A difficult conflict stays genuinely bilateral
-
-> “Mine when I move. Yours when I load your bones. Both where that distinction fails.”
-
-`craft.narrative.theme_and_subtext.counterpoint` was `YES` in all ten HBQ runs. The compact and holistic arms independently converged on the same difficult judgment: Mica’s autonomy, June’s grief and bodily exposure, Mara’s contact boundaries, and the value of their shared work remain simultaneously valid. The story receives credit for resisting a clean moral winner rather than merely being “complex.”
-
-### The repeated explanation is real, but not simple
-
-`penalty.repetition.semantic` and `penalty.repetition.explanation` were `NO` in all ten HBQ runs: later scenes sometimes re-articulate the autonomy-versus-continuity conflict after action and dialogue have made it legible. All five holistic runs independently named the same limitation. The compact analytic arm was more finely divided: narrative architecture received 4 on three runs and 5 on two, with every rationale acknowledging the recurring calibration scenes but disagreeing on whether each recurrence changed enough to justify the length. This is a useful consistency result for a judgment that is genuinely arguable, not an artificial easy case.
+The detailed craft findings are useful beyond this batching experiment. [Read the illustrated findings separately](hbq-findings.md); this study keeps only the repeatability evidence behind them.
 
 ## Evidence discipline
 
