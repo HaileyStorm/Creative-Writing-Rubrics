@@ -7,7 +7,7 @@ import os
 import tempfile
 from pathlib import Path
 from statistics import fmean
-from typing import Any, Mapping
+from typing import Any, Mapping, Sequence
 
 from hbqrs.run_verify import verify_binary_run
 
@@ -16,13 +16,49 @@ CONTRACT_PATH = HERE / "study-contract.json"
 MATRIX_NAME = "fresh88-verifier-matrix.json"
 RECEIPT_NAME = "fresh88-execution-receipt.json"
 AUTHORITY_PIN = {"frozen_successor_sha256": "b0f6dd24415c388a3104f8c9304ce301193cf0a48631a86c4886bc8ce48468e7", "freeze_receipt_sha256": "eaab5d605a720c86f00e40635e59e9a43bb9c58998a70d9e5bca3907c008f1b0", "replay_status": "rejected"}
-EXECUTION_PIN = {"provider": "codex", "model": "gpt-5.6-sol", "reasoning": "high"}
+EXECUTION = {"artifact_id": "PER_CELL", "bundle_id": "prose.short_story", "batch_size": 32, "batch_attempts": 3,
+             "strict_ai": False, "provider": "codex", "model": "gpt-5.6-sol", "reasoning": "high", "codex_bin": "codex"}
+PROVIDER = {"provider": "openai", "model": "gpt-5.6-sol", "reasoning_effort": "high"}
+_CANONICAL_BINDING_PATHS = {
+    "registry": HERE.parents[1] / "registry" / "all_modules.json",
+    "bundles": HERE.parents[1] / "bundles" / "all_bundles.json",
+    "prompts": HERE.parents[1] / "prompts" / "judge" / "BINARY_EVALUATION_PROMPT.md",
+    "response_schema": HERE.parents[1] / "schema" / "hbq_judge_response.schema.json",
+    "score_v1_schema": HERE.parents[1] / "schema" / "hbq_score_report.schema.json",
+    "score_v2_schema": HERE.parents[1] / "schema" / "hbq_score_report.v2.schema.json",
+    "verdict_schema": HERE.parents[1] / "schema" / "hbq_verdict.schema.json",
+    "task_contract_schema": HERE.parents[1] / "schema" / "hbq_task_contract.schema.json",
+}
+_RUNTIME_FILES = (
+    HERE / "study.py", HERE / "prepare_fresh.py", HERE / "run_fresh.py", HERE / "successor_gate.py",
+    HERE.parents[1] / "src" / "hbqrs" / "__init__.py",
+    HERE.parents[1] / "src" / "hbqrs" / "paths.py",
+    HERE.parents[1] / "src" / "hbqrs" / "run_verify.py",
+    HERE.parents[1] / "src" / "hbqrs" / "runner.py",
+    HERE.parents[1] / "src" / "hbqrs" / "runner_v2.py",
+    HERE.parents[1] / "src" / "hbqrs" / "core.py",
+    HERE.parents[1] / "src" / "hbqrs" / "scoring_v2.py",
+    HERE.parents[1] / "src" / "hbqrs" / "weights.py",
+)
 
 def canonical(value: Any) -> bytes:
     return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
 
 def sha256_path(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+def _binding(path: Path) -> dict[str, Any]:
+    path = path.resolve()
+    return {"path": str(path), "bytes": path.stat().st_size, "sha256": sha256_path(path)}
+
+def canonical_bindings() -> dict[str, Any]:
+    bound = {key: _binding(path) for key, path in _CANONICAL_BINDING_PATHS.items()}
+    prompt = bound.pop("prompts")
+    return {**bound, "prompts": [prompt]}
+
+def runtime_manifest() -> dict[str, Any]:
+    files = {str(path.resolve()): _binding(path) for path in _RUNTIME_FILES}
+    return {"files": files, "sha256": hashlib.sha256(canonical(files)).hexdigest()}
 
 def read_json(path: Path) -> dict[str, Any]:
     try: value = json.loads(path.read_text(encoding="utf-8"))
@@ -72,13 +108,18 @@ def load_execution_contract(work: Path, authority_root: Path) -> dict[str, Any]:
     required = {"format_version", "study_id", "authority_contract_sha256", "origin", "phase", "base_frozen", "cells"}
     if set(plan) != required or plan["format_version"] != 1 or plan["study_id"] != CONTRACT["study_id"] or plan["authority_contract_sha256"] != AUTHORITY_PIN["frozen_successor_sha256"] or plan["origin"] != "fresh_full_successor" or plan["phase"] != "development": raise ValueError("Fresh run execution contract identity drifted")
     base = plan["base_frozen"]
-    for key in ("registry", "bundles", "prompts", "response_schema", "weight_profile", "execution", "provider"):
+    exact_base = {"registry", "bundles", "prompts", "response_schema", "score_v1_schema", "score_v2_schema", "verdict_schema", "task_contract_schema", "weight_profile", "execution", "provider", "runtime_manifest"}
+    if set(base) != exact_base: raise ValueError("Fresh run base contract keys drifted")
+    for key in exact_base:
         if key not in base: raise ValueError(f"Fresh run contract lacks {key}")
-    _bound(base["registry"], "registry"); _bound(base["bundles"], "bundles"); _bound(base["response_schema"], "response schema")
+    bindings = canonical_bindings()
+    for key, expected in bindings.items():
+        if base.get(key) != expected: raise ValueError(f"Canonical {key} binding drifted")
+    if base["runtime_manifest"] != runtime_manifest(): raise ValueError("Runtime source manifest drifted")
+    if base["weight_profile"] is not None: raise ValueError("Fresh successor weight profile must be None")
     if not isinstance(base["prompts"], list) or not base["prompts"]: raise ValueError("Prompt bindings missing")
     for item in base["prompts"]: _bound(item, "prompt")
-    execution, provider = base["execution"], base["provider"]
-    if not isinstance(execution, Mapping) or {key: execution.get(key) for key in EXECUTION_PIN} != EXECUTION_PIN or provider != {"provider":"openai", "model":"gpt-5.6-sol", "reasoning_effort":"high"}: raise ValueError("Fresh successor runtime pin drifted")
+    if base["execution"] != EXECUTION or base["provider"] != PROVIDER: raise ValueError("Fresh successor runtime pin drifted")
     ids, cells = authority["fresh_complement"]["scheduled_item_ids"], plan["cells"]
     source_rows = {row.get("item_id"): row for row in authority.get("selection", {}).get("development", []) if isinstance(row, Mapping)}
     if not isinstance(cells, list) or len(cells) != 88: raise ValueError("Fresh run contract requires exactly 88 cells")
@@ -138,24 +179,33 @@ def freeze_execution_contract(work: Path, artifact_root: Path) -> dict[str, Any]
     if read_json(work / RECEIPT_NAME) != receipt: raise ValueError("Execution receipt reseal mismatch")
     return receipt
 
-def verify_matrix(work: Path, authority_root: Path, artifact_root: Path) -> dict[str, Any]:
-    plan = load_execution_contract(work, authority_root); receipt = read_json(work / RECEIPT_NAME)
-    expected_receipt = {"format_version": 1, "study_id": CONTRACT["study_id"], "execution_contract_sha256": sha256_path(work / "fresh88-execution-contract.json"), "purpose": "pre_execution_raw_verifier_binding"}
-    if receipt != expected_receipt: raise ValueError("Missing or invalid pre-execution receipt")
-    records = []; sessions: set[str] = set(); run_dirs: set[str] = set()
-    for cell in plan["cells"]:
-        if cell["run_dir"] in run_dirs: raise ValueError("Duplicate cell run directory")
-        run_dirs.add(cell["run_dir"]); verified = _verify_cell(cell, plan["base_frozen"], artifact_root); result, found = verified["result"], verified["result"].get("sessions")
+def verify_cells(cells: Sequence[Mapping[str, Any]], base: Mapping[str, Any], artifact_root: Path) -> dict[str, Any]:
+    records: list[dict[str, Any]] = []
+    sessions: set[str] = set()
+    run_dirs: set[str] = set()
+    for cell in cells:
+        run_dir = cell.get("run_dir")
+        if not isinstance(run_dir, str) or run_dir in run_dirs: raise ValueError("Duplicate cell run directory")
+        run_dirs.add(run_dir)
+        verified = _verify_cell(cell, base, artifact_root)
+        result, found = verified["result"], verified["result"].get("sessions")
         if not isinstance(found, list) or not found: raise ValueError("Verified run lacks session commitments")
         for session in found:
             digest = session.get("session_id_sha256") if isinstance(session, Mapping) else None
             if not isinstance(digest, str) or len(digest) != 64 or digest in sessions: raise ValueError("Fresh88 sessions must be study-wide unique")
             sessions.add(digest)
-        records.append({"item_id": cell["item_id"], "origin": cell["origin"], "ordinal": cell["ordinal"], "run_dir": cell["run_dir"], "run_sha256": result["run_sha256"], "verifier": result, "metrics": verified["metrics"]})
+        records.append({"item_id": cell["item_id"], "origin": cell["origin"], "ordinal": cell["ordinal"], "run_dir": run_dir, "run_sha256": result["run_sha256"], "verifier": result, "metrics": verified["metrics"]})
+    return {"records": records, "session_count": len(sessions)}
+
+def verify_matrix(work: Path, authority_root: Path, artifact_root: Path) -> dict[str, Any]:
+    plan = load_execution_contract(work, authority_root); receipt = read_json(work / RECEIPT_NAME)
+    expected_receipt = {"format_version": 1, "study_id": CONTRACT["study_id"], "execution_contract_sha256": sha256_path(work / "fresh88-execution-contract.json"), "purpose": "pre_execution_raw_verifier_binding"}
+    if receipt != expected_receipt: raise ValueError("Missing or invalid pre-execution receipt")
+    verified = verify_cells(plan["cells"], plan["base_frozen"], artifact_root)
     expected = {_under(artifact_root, cell["run_dir"]) for cell in plan["cells"]}
     actual = {path for path in artifact_root.joinpath("runs").glob("*") if path.is_dir()} if (artifact_root / "runs").is_dir() else set()
     if actual != expected: raise ValueError("Raw run directory set has missing or extra cells")
-    core = {"format_version": 1, "study_id": CONTRACT["study_id"], "execution_contract_sha256": receipt["execution_contract_sha256"], "execution_receipt_sha256": sha256_path(work / RECEIPT_NAME), "records": records, "session_count": len(sessions)}
+    core = {"format_version": 1, "study_id": CONTRACT["study_id"], "execution_contract_sha256": receipt["execution_contract_sha256"], "execution_receipt_sha256": sha256_path(work / RECEIPT_NAME), **verified}
     matrix = {**core, "matrix_sha256": hashlib.sha256(canonical(core)).hexdigest()}; atomic_immutable_json(work / MATRIX_NAME, matrix)
     if read_json(work / MATRIX_NAME) != matrix: raise ValueError("Verifier matrix reseal mismatch")
     return matrix

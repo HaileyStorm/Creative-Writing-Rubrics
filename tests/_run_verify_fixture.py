@@ -32,37 +32,48 @@ def build_fixture(
     run_dir: Path | None = None,
     artifact_text: str = "The lantern flickered at dawn.",
     context_text: str = "Write a tense short story about a lantern.",
+    input_paths: tuple[Path, Path, Path] | None = None,
 ) -> tuple[Path, dict[str, Any]]:
     """Materialize a complete run from source inputs; never edits an existing run."""
 
     run = (run_dir or root / "run").resolve()
     if run.exists():
         raise ValueError(f"Fixture run path already exists: {run}")
-    inputs = root / f"inputs-{artifact_id}"
-    if inputs.exists():
-        raise ValueError(f"Fixture input path already exists: {inputs}")
-    artifact, context, task_path = inputs / "source.md", inputs / "prompt.md", inputs / "task.json"
-    inputs.mkdir(parents=True)
-    artifact.write_text(artifact_text, encoding="utf-8")
-    context.write_text(context_text, encoding="utf-8")
-    task = {
-        "contract_version": 1,
-        "contract_id": f"fixture-{artifact_id}",
-        "artifact_id": artifact_id,
-        "context": {
-            "artifact_kind": "short prose fiction", "declared_scope": "complete short story",
-            "completion_status": "complete", "background": [], "constraints": [], "audience": [],
-        },
-        "preferences": [], "priorities": [],
-        "weighted_goals": [{
-            "goal_id": "prompt_response", "atomic_question": "Does the story respond to its originating prompt?",
-            "weight": 2.0,
-            "source": {"kind": "driving_prompt", "reference": "fixture prompt", "exact_excerpt": context_text},
-            "applies_to": ["whole artifact"], "rationale": "Fixture task relevance.",
-        }],
-        "binding_requirements": [],
-    }
-    write_json(task_path, task)
+    if input_paths is None:
+        inputs = root / f"inputs-{artifact_id}"
+        if inputs.exists():
+            raise ValueError(f"Fixture input path already exists: {inputs}")
+        artifact, context, task_path = inputs / "source.md", inputs / "prompt.md", inputs / "task.json"
+        inputs.mkdir(parents=True)
+        artifact.write_text(artifact_text, encoding="utf-8")
+        context.write_text(context_text, encoding="utf-8")
+        task = {
+            "contract_version": 1,
+            "contract_id": f"fixture-{artifact_id}",
+            "artifact_id": artifact_id,
+            "context": {
+                "artifact_kind": "short prose fiction", "declared_scope": "complete short story",
+                "completion_status": "complete", "background": [], "constraints": [], "audience": [],
+            },
+            "preferences": [], "priorities": [],
+            "weighted_goals": [{
+                "goal_id": "prompt_response", "atomic_question": "Does the story respond to its originating prompt?",
+                "weight": 2.0,
+                "source": {"kind": "driving_prompt", "reference": "fixture prompt", "exact_excerpt": context_text},
+                "applies_to": ["whole artifact"], "rationale": "Fixture task relevance.",
+            }],
+            "binding_requirements": [],
+        }
+        write_json(task_path, task)
+    else:
+        artifact, context, task_path = (path.resolve() for path in input_paths)
+        if not all(path.is_file() for path in (artifact, context, task_path)):
+            raise ValueError("Fixture source inputs must exist")
+        artifact_text = artifact.read_text(encoding="utf-8")
+        context_text = context.read_text(encoding="utf-8")
+        task = json.loads(task_path.read_text(encoding="utf-8"))
+        if not isinstance(task, dict) or task.get("artifact_id") != artifact_id:
+            raise ValueError("Fixture task input must bind the artifact identity")
     binary_prompt = prompts_dir() / "judge" / "BINARY_EVALUATION_PROMPT.md"
     response_schema = schema_dir() / "hbq_judge_response.schema.json"
     frozen = {
