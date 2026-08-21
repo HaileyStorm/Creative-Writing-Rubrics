@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from copy import deepcopy
+from datetime import datetime, timezone
 from html import escape
 import json
 import os
@@ -93,10 +94,33 @@ def _status_html(state: Mapping[str, Any]) -> str:
         )
         for job in state["jobs"]
     )
-    return f"""<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta http-equiv=\"refresh\" content=\"10\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>HBQ-RS batch status</title><style>body{{font:16px/1.5 system-ui,sans-serif;max-width:70rem;margin:auto;padding:1rem;color:#172033}}table{{width:100%;border-collapse:collapse}}th,td{{padding:.55rem;border-bottom:1px solid #cad2de;text-align:left}}.note{{color:#546177}}</style></head><body><main><h1>HBQ-RS batch status</h1><p><strong>{escape(str(state['batch_id']))}</strong> · {escape(str(state['routing_policy']))}</p><p class=\"note\">This local page refreshes every 10 seconds. The CLI remains the source of execution and can be stopped or resumed independently.</p><table><thead><tr><th>Job</th><th>Status</th><th>Detail</th></tr></thead><tbody>{rows}</tbody></table></main></body></html>"""
+    updated_at = state.get("updated_at")
+    updated_markup = (
+        f'<time datetime="{escape(str(updated_at), quote=True)}">'
+        f'{escape(str(updated_at))}</time>'
+        if updated_at
+        else "not recorded"
+    )
+    return f"""<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>HBQ-RS batch status</title><style>:root{{color-scheme:light dark;font:16px/1.5 system-ui,sans-serif}}*,*::before,*::after{{box-sizing:border-box}}body{{max-width:70rem;margin:auto;padding:2rem}}main{{border:1px solid #8886;border-radius:1rem;padding:1rem 1.25rem}}p,time{{overflow-wrap:anywhere}}table{{width:100%;border-collapse:collapse;table-layout:fixed}}th,td{{padding:.55rem;border-bottom:1px solid #8885;text-align:left;overflow-wrap:anywhere}}th:nth-child(1){{width:28%}}th:nth-child(2){{width:22%}}.note,.refresh-state{{opacity:.75}}.refresh-control input{{margin-right:.45rem}}input:focus-visible{{outline:3px solid #f59e0b;outline-offset:2px}}@media (max-width:40rem){{body{{width:100%;margin:0;padding:.75rem}}main{{width:100%;padding:.75rem}}th,td{{padding:.45rem .35rem;font-size:.9rem}}}}</style></head><body><main><h1>HBQ-RS batch status</h1><p><strong>{escape(str(state['batch_id']))}</strong> · {escape(str(state['routing_policy']))}</p><p>Last updated: {updated_markup}</p><p class=\"refresh-control\"><label><input id=\"hbqrs-auto-refresh\" type=\"checkbox\" checked> Refresh this local status page every 10 seconds</label></p><p id=\"hbqrs-refresh-state\" class=\"refresh-state\" aria-live=\"polite\">Automatic refresh is on.</p><noscript><p class=\"refresh-state\">Automatic refresh needs scripting. Use your browser's refresh control to update this static page.</p></noscript><p class=\"note\">The CLI remains the source of execution and can be stopped or resumed independently.</p><table><thead><tr><th>Job</th><th>Status</th><th>Detail</th></tr></thead><tbody>{rows}</tbody></table></main><script>(function () {{
+  const toggle = document.getElementById("hbqrs-auto-refresh");
+  const state = document.getElementById("hbqrs-refresh-state");
+  let timer;
+  function update() {{
+    window.clearTimeout(timer);
+    if (toggle.checked) {{
+      state.textContent = "Automatic refresh is on; this page will update in about 10 seconds.";
+      timer = window.setTimeout(function () {{ window.location.reload(); }}, 10000);
+    }} else {{
+      state.textContent = "Automatic refresh is paused. Use your browser's refresh control when you want an update.";
+    }}
+  }}
+  toggle.addEventListener("change", update);
+  update();
+}}());</script></body></html>"""
 
 
-def _write_state(output_root: Path, state: Mapping[str, Any]) -> None:
+def _write_state(output_root: Path, state: dict[str, Any]) -> None:
+    state["updated_at"] = datetime.now(timezone.utc).isoformat()
     _atomic_json(output_root / "batch.json", state)
     (output_root / "batch-status.html").write_text(_status_html(state), encoding="utf-8")
 

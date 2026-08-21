@@ -4,7 +4,7 @@ import pytest
 
 from hbqrs import book_root
 from hbqrs.core import load_bundles
-from hbqrs.html_report import render_html_report, render_html_scorecard
+from hbqrs.html_report import CARD_LAYOUTS, render_html_report, render_html_scorecard
 
 
 UNIT_ONE = "unit-0001-0123456789ab"
@@ -180,11 +180,16 @@ def test_scorecard_is_static_scoped_and_shows_active_modifiers():
     assert "global effective weight 66.7%" in card
     assert "local reducer <code>weighted_mean</code>" in card
     assert "Active local-unit modifiers" in card
-    assert UNIT_ONE in card
+    assert "Chapter One" in card
+    assert UNIT_ONE not in card
     assert "Support this project" in card
     assert "<details open>" in card
     assert "Whole-work domains (2)" in card
     assert "Local trajectory" in card
+    assert "<strong>Format:</strong> Prose" in card
+    assert "<strong>Bundle:</strong> <code>prose.novel</code>" in card
+    assert 'id="hbqrs-scorecard-title"' not in card
+    assert "minmax(min(13rem,100%),1fr)" in card
 
 
 def test_scorecard_layouts_are_explicit_and_self_contained():
@@ -197,6 +202,10 @@ def test_scorecard_layouts_are_explicit_and_self_contained():
     assert "Whole-work domains (2)" not in compact
     assert "Whole-work control state" in compact
     assert "Whole-work control state" not in minimal
+    assert "<strong>Format:</strong> Prose" in minimal
+    assert "Evaluated scope" not in minimal
+    assert "Work in progress" in minimal
+    assert "VALID" in minimal
 
 
 def test_scorecard_omits_custom_headline_without_profile():
@@ -215,6 +224,83 @@ def test_renderer_does_not_mutate_report():
     render_html_report(report)
     render_html_scorecard(report)
     assert report == before
+
+
+def test_scorecards_can_be_combined_without_duplicate_title_ids():
+    cards = "\n".join(render_html_scorecard(_report(), layout=layout) for layout in CARD_LAYOUTS)
+    assert "hbqrs-scorecard-title" not in cards
+    assert cards.count("<h2>HBQ-RS scorecard</h2>") == len(CARD_LAYOUTS)
+
+
+def test_scorecard_uses_labels_for_modifier_and_weakest_unit_disclosures():
+    report = _matrix_report(
+        local_count=1,
+        null_scores=False,
+        control_state="VALID",
+        completion_status="work_in_progress",
+        hierarchy=True,
+        modifiers=True,
+    )
+    card = render_html_scorecard(report)
+    assert "Prologue — an intentionally long unicode label" in card
+    assert UNIT_ONE not in card
+
+
+def test_scorecard_zero_local_coverage_is_not_described_as_complete():
+    card = render_html_scorecard(
+        _matrix_report(
+            local_count=0,
+            null_scores=False,
+            control_state="VALID",
+            completion_status="complete",
+            hierarchy=False,
+        )
+    )
+    assert "No local units or scores were observed." in card
+    assert "complete across 0" not in card
+
+
+@pytest.mark.parametrize("layout", CARD_LAYOUTS)
+def test_scorecard_handles_a_schema_valid_null_whole_work_result(layout: str):
+    report = _report(with_hierarchy=False)
+    report["global_result"] = None
+    card = render_html_scorecard(report, layout=layout)
+    assert "Canonical whole-work score" in card
+    assert "Not observed" in card
+    if layout == "minimal":
+        assert "Not available" in card
+
+
+@pytest.mark.parametrize("bundle_id", ("prose.novel", "poetry.collection", "drama.scene", "game.quest"))
+def test_scorecard_identifies_bundle_and_format_for_each_supported_format(bundle_id: str):
+    report = _matrix_report(
+        local_count=1,
+        null_scores=False,
+        control_state="VALID",
+        completion_status="complete",
+        hierarchy=False,
+        bundle_id=bundle_id,
+    )
+    format_name = bundle_id.split(".", 1)[0].title()
+    for layout in CARD_LAYOUTS:
+        card = render_html_scorecard(report, layout=layout)
+        assert f"<strong>Format:</strong> {format_name}" in card
+        assert f"<strong>Bundle:</strong> <code>{bundle_id}</code>" in card
+        if layout == "minimal":
+            assert "Evaluated scope" not in card
+        else:
+            assert "Evaluated scope" in card
+
+
+def test_report_print_styles_keep_header_with_following_content_and_dark_errors_legible():
+    report = render_html_report(_report())
+    assert '<div class="hbqrs-report-intro"><header class="hbqrs-report-header">' in report
+    assert ".hbqrs-report-intro{break-inside:avoid-page;page-break-inside:avoid}" in report
+    assert ".hbqrs-scorecard{border-color:#777;break-before:avoid-page;page-break-before:avoid}" in report
+    assert '<section class="hbqrs-warnings" aria-labelledby="hbqrs-warnings-title">' in report
+    assert ".hbqrs-warnings{break-inside:avoid-page;page-break-inside:avoid}" in report
+    assert "section,.hbqrs-scorecard{border-color:#777;break-inside:avoid}" not in report
+    assert "@media (prefers-color-scheme:dark){.hbqrs-error{color:#ffb4ab}}" in report
 
 
 def _completion_contract(status: str) -> dict[str, object]:

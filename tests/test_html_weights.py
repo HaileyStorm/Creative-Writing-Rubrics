@@ -14,6 +14,10 @@ def test_weight_configurator_covers_all_layers_and_is_offline(modules, bundle_by
     assert "<script src=" not in html
     assert "innerHTML" not in html
     assert "localStorage" not in html
+    assert 'for="hbqrs-json"' in html
+    assert ".weight-row[hidden]{display:none}" in html
+    assert "overflow-wrap:anywhere" in html
+    assert "@media(prefers-color-scheme:dark){.error{color:#ffb4ab}}" in html
 
 
 def test_weight_configurator_escapes_and_does_not_mutate(modules, bundle_by_id):

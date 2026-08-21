@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pytest
 
-from hbqrs.batch import run_longform_batch, validate_batch_manifest
+from hbqrs.batch import _status_html, run_longform_batch, validate_batch_manifest
 from hbqrs.core import HBQError
 from hbqrs.paths import bundles_path, registry_path
 
@@ -91,7 +91,32 @@ def test_individual_policy_routes_each_job_without_confirmation(tmp_path: Path, 
     assert all(call["upgrade_legacy_normalization"] is False for call in calls)
     status = (tmp_path / "outputs" / "batch-status.html").read_text(encoding="utf-8")
     assert "one.txt" not in status
-    assert "refresh" in status
+    assert '<meta http-equiv="refresh"' not in status
+    assert 'id="hbqrs-auto-refresh"' in status
+    assert "window.location.reload()" in status
+    assert "Last updated:" in status
+    persisted = json.loads((tmp_path / "outputs" / "batch.json").read_text(encoding="utf-8"))
+    assert persisted["updated_at"] in status
+
+
+def test_batch_status_page_is_pausable_accessible_and_static_without_scripting() -> None:
+    status = _status_html(
+        {
+            "batch_id": "example-batch",
+            "routing_policy": "individual",
+            "updated_at": "2026-08-20T12:34:56+00:00",
+            "jobs": [{"job_id": "one", "status": "RUNNING", "detail": "grading"}],
+        }
+    )
+    assert '<meta http-equiv="refresh"' not in status
+    assert 'type="checkbox" checked' in status
+    assert "Automatic refresh is paused." in status
+    assert 'aria-live="polite"' in status
+    assert "input:focus-visible" in status
+    assert "<noscript>" in status
+    assert "window.location.reload()" in status
+    assert '<time datetime="2026-08-20T12:34:56+00:00">' in status
+    assert "<script src=" not in status
 
 
 def test_shared_policy_freezes_designated_llm_route_for_all_jobs(tmp_path: Path, monkeypatch) -> None:

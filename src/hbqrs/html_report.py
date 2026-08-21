@@ -57,11 +57,13 @@ def _safe_json(value: Mapping[str, Any]) -> str:
 
 def _scorecard_css() -> str:
     return """
-.hbqrs-scorecard{--hbq-ink:#172033;--hbq-muted:#546177;--hbq-line:#cad2de;--hbq-panel:#f7f9fc;--hbq-accent:#176b87;color:var(--hbq-ink);background:#fff;border:1px solid var(--hbq-line);border-radius:12px;padding:1rem;font:16px/1.45 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;max-width:58rem}.hbqrs-scorecard *{box-sizing:border-box}.hbqrs-scorecard h2,.hbqrs-scorecard h3{margin:.1rem 0 .55rem}.hbqrs-scorecard p{margin:.35rem 0}.hbqrs-scorecard a{color:#0f607c;text-underline-offset:.15em}.hbqrs-scorecard__scores{display:grid;grid-template-columns:repeat(auto-fit,minmax(13rem,1fr));gap:.75rem;margin:.75rem 0}.hbqrs-scorecard__score{background:var(--hbq-panel);border-left:4px solid var(--hbq-accent);padding:.7rem}.hbqrs-scorecard__value{font-size:1.55rem;font-weight:700}.hbqrs-scorecard dl{display:grid;grid-template-columns:max-content 1fr;gap:.25rem .75rem;margin:.75rem 0}.hbqrs-scorecard dt{font-weight:650}.hbqrs-scorecard dd{margin:0;color:var(--hbq-muted)}.hbqrs-scorecard ul{margin:.35rem 0;padding-left:1.25rem}.hbqrs-scorecard details{border-top:1px solid var(--hbq-line);margin-top:.65rem;padding-top:.55rem}.hbqrs-scorecard summary{cursor:pointer;font-weight:650}.hbqrs-scorecard summary:focus-visible{outline:3px solid #f59e0b;outline-offset:2px}.hbqrs-scorecard__note{color:var(--hbq-muted);font-size:.93rem}.hbqrs-scorecard__footer{border-top:1px solid var(--hbq-line);margin-top:.9rem!important;padding-top:.65rem}.hbqrs-scorecard__table{width:100%;border-collapse:collapse;margin:.5rem 0;font-size:.93rem}.hbqrs-scorecard__table th,.hbqrs-scorecard__table td{padding:.35rem;border-bottom:1px solid var(--hbq-line);text-align:left}.hbqrs-scorecard__table th[scope=row]{font-weight:650}@media (max-width:36rem){.hbqrs-scorecard{padding:.75rem}.hbqrs-scorecard__table{font-size:.82rem}.hbqrs-scorecard__table th,.hbqrs-scorecard__table td{padding:.25rem}}
+.hbqrs-scorecard{--hbq-ink:#172033;--hbq-muted:#546177;--hbq-line:#cad2de;--hbq-panel:#f7f9fc;--hbq-accent:#176b87;color:var(--hbq-ink);background:#fff;border:1px solid var(--hbq-line);border-radius:12px;padding:1rem;font:16px/1.45 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;max-width:58rem}.hbqrs-scorecard *{box-sizing:border-box}.hbqrs-scorecard h2,.hbqrs-scorecard h3{margin:.1rem 0 .55rem}.hbqrs-scorecard p{margin:.35rem 0}.hbqrs-scorecard a{color:#0f607c;text-underline-offset:.15em}.hbqrs-scorecard__scores{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(13rem,100%),1fr));gap:.75rem;margin:.75rem 0}.hbqrs-scorecard__score{background:var(--hbq-panel);border-left:4px solid var(--hbq-accent);padding:.7rem;min-width:0;overflow-wrap:anywhere}.hbqrs-scorecard__value{font-size:1.55rem;font-weight:700}.hbqrs-scorecard dl{display:grid;grid-template-columns:max-content 1fr;gap:.25rem .75rem;margin:.75rem 0}.hbqrs-scorecard dt{font-weight:650}.hbqrs-scorecard dd{margin:0;color:var(--hbq-muted);overflow-wrap:anywhere}.hbqrs-scorecard ul{margin:.35rem 0;padding-left:1.25rem}.hbqrs-scorecard details{border-top:1px solid var(--hbq-line);margin-top:.65rem;padding-top:.55rem}.hbqrs-scorecard summary{cursor:pointer;font-weight:650}.hbqrs-scorecard summary:focus-visible{outline:3px solid #f59e0b;outline-offset:2px}.hbqrs-scorecard__note{color:var(--hbq-muted);font-size:.93rem;overflow-wrap:anywhere}.hbqrs-scorecard__footer{border-top:1px solid var(--hbq-line);margin-top:.9rem!important;padding-top:.65rem}.hbqrs-scorecard__table{width:100%;border-collapse:collapse;margin:.5rem 0;font-size:.93rem}.hbqrs-scorecard__table th,.hbqrs-scorecard__table td{padding:.35rem;border-bottom:1px solid var(--hbq-line);text-align:left}.hbqrs-scorecard__table th[scope=row]{font-weight:650}@media (max-width:36rem){.hbqrs-scorecard{padding:.75rem}.hbqrs-scorecard__table{font-size:.82rem}.hbqrs-scorecard__table th,.hbqrs-scorecard__table td{padding:.25rem}}
 """.strip()
 
 
-def _hierarchy_card(hierarchy: Mapping[str, Any] | None) -> str:
+def _hierarchy_card(
+    hierarchy: Mapping[str, Any] | None, *, unit_labels: Mapping[str, str]
+) -> str:
     if not isinstance(hierarchy, Mapping):
         return ""
     global_component = hierarchy["global_component"]
@@ -73,7 +75,7 @@ def _hierarchy_card(hierarchy: Mapping[str, Any] | None) -> str:
         items = "".join(
             "<li>{}: <code>{}</code>; modifier {}, effective {}</li>".format(
                 _text(str(assignment["weight_class"]).replace("_", " ")),
-                _text(assignment["unit_id"]),
+                _text(unit_labels.get(str(assignment["unit_id"]), str(assignment["unit_id"]))),
                 _text(f"{float(assignment['class_modifier']):.6g}"),
                 _text(_percent(assignment["effective_weight"])),
             )
@@ -81,9 +83,10 @@ def _hierarchy_card(hierarchy: Mapping[str, Any] | None) -> str:
         )
         weights = f"<p><strong>Active local-unit modifiers</strong></p><ul>{items}</ul>"
     weakest = local_component.get("selected_weakest_unit_id")
-    weakest_text = (
-        f" Weakest selected unit: <code>{_text(weakest)}</code>." if weakest is not None else ""
-    )
+    weakest_text = ""
+    if weakest is not None:
+        weakest_label = unit_labels.get(str(weakest), str(weakest))
+        weakest_text = f" Weakest selected unit: <code>{_text(weakest_label)}</code>."
     return """
 <div class="hbqrs-scorecard__score" aria-label="Custom-weighted composite">
   <strong>Custom-weighted composite</strong>
@@ -113,6 +116,7 @@ def _scorecard_markup(report: Mapping[str, Any], *, layout: str = "summary") -> 
     global_result = report["global_result"]
     local_results = report["local_results"]
     hierarchy = report["hierarchical_score"]
+    unit_labels = {str(result["scope_id"]): str(result["label"]) for result in local_results}
     domains = global_result["domains"] if isinstance(global_result, Mapping) else []
     domain_rows = "".join(
         "<li>{}: {} ({}, bounds {})</li>".format(
@@ -135,19 +139,40 @@ def _scorecard_markup(report: Mapping[str, Any], *, layout: str = "summary") -> 
         )
     state = global_result["control_state"] if isinstance(global_result, Mapping) else "Not available"
     coverage = _percent(global_result["coverage"]) if isinstance(global_result, Mapping) else "Not available"
+    bundle_id = str(report["route"]["global_bundle_id"])
+    evaluated_format = bundle_id.split(".", 1)[0].replace("_", " ").title()
+    identity = """
+  <p class="hbqrs-scorecard__note"><strong>Format:</strong> {format} · <strong>Bundle:</strong> <code>{bundle}</code>{minimal_status}</p>
+""".format(
+        format=_text(evaluated_format),
+        bundle=_text(bundle_id),
+        minimal_status=(
+            " · <strong>{}</strong> · <strong>{}</strong>".format(
+                _text(_completion_label(report)), _text(state)
+            )
+            if layout == "minimal"
+            else ""
+        ),
+    )
+    local_coverage = (
+        "{} across {} unit(s)".format(_text(report["route"]["local_coverage_mode"]), len(local_results))
+        if local_results
+        else "No local units or scores were observed."
+    )
     details = "" if layout == "minimal" else """
   <dl>
+    <dt>Evaluated scope</dt><dd>{scope}</dd>
     <dt>Completion</dt><dd>{completion}</dd>
     <dt>Whole-work control state</dt><dd>{state}</dd>
     <dt>Whole-work coverage</dt><dd>{coverage}</dd>
-    <dt>Local coverage</dt><dd>{local_mode} across {local_count} unit(s)</dd>
+    <dt>Local coverage</dt><dd>{local_coverage}</dd>
   </dl>
 """.format(
+        scope=_text(report["orientation"]["evaluated_scope"]),
         completion=_text(_completion_label(report)),
         state=_text(state),
         coverage=_text(coverage),
-        local_mode=_text(report["route"]["local_coverage_mode"]),
-        local_count=len(local_results),
+        local_coverage=local_coverage,
     )
     breakdown = "" if layout != "summary" else """
   <details open>
@@ -160,8 +185,8 @@ def _scorecard_markup(report: Mapping[str, Any], *, layout: str = "summary") -> 
   </details>
 """.format(domain_count=len(domains), domains=domain_rows, local_summary=local_summary)
     return """
-<section class="hbqrs-scorecard" aria-labelledby="hbqrs-scorecard-title">
-  <h2 id="hbqrs-scorecard-title">HBQ-RS scorecard</h2>
+<section class="hbqrs-scorecard">
+  <h2>HBQ-RS scorecard</h2>
   <div class="hbqrs-scorecard__scores">
     {hierarchy}
     <div class="hbqrs-scorecard__score" aria-label="Canonical whole-work score">
@@ -170,15 +195,17 @@ def _scorecard_markup(report: Mapping[str, Any], *, layout: str = "summary") -> 
       <div>Bounds: {global_bounds}</div>
     </div>
   </div>
+  {identity}
   {details}
   {breakdown}
   <p class="hbqrs-scorecard__note">The canonical whole-work result remains separate. A custom-weighted composite is a declared view over existing intervals, never a replacement for the underlying results or their control states.</p>
   <p class="hbqrs-scorecard__note hbqrs-scorecard__footer"><a href="https://github.com/HaileyStorm/Creative-Writing-Rubrics">Creative-Writing-Rubrics</a> · <a href="https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/main/docs/DONATIONS.md">Support this project</a></p>
 </section>
 """.format(
-        hierarchy=_hierarchy_card(hierarchy),
+        hierarchy=_hierarchy_card(hierarchy, unit_labels=unit_labels),
         global_score=_text(_score_text(_result_score(global_result))),
         global_bounds=_text(_bounds_text(_result_score(global_result))),
+        identity=identity,
         details=details,
         breakdown=breakdown,
     )
@@ -250,7 +277,7 @@ def _warning_markup(warnings: Sequence[Any]) -> str:
 
 def _document_css() -> str:
     return _scorecard_css() + """
-body{margin:0;background:#eef2f7;color:#172033;font:16px/1.5 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}main{max-width:72rem;margin:0 auto;padding:1.5rem}.hbqrs-report-header{margin-bottom:1.25rem}.hbqrs-report-header h1{margin:.1rem 0}.hbqrs-report-header p{max-width:70ch;color:#546177}section{background:#fff;border:1px solid #cad2de;border-radius:12px;padding:1rem;margin:1rem 0}h2{margin-top:.1rem}h3{margin-bottom:.35rem}table{border-collapse:collapse;width:100%;overflow-wrap:anywhere}th,td{border-bottom:1px solid #cad2de;padding:.45rem;text-align:left;vertical-align:top}th{background:#f7f9fc}th[scope=row]{font-weight:650}caption{text-align:left;font-weight:700;margin:.3rem 0}.hbqrs-finding{border-left:4px solid #176b87;padding:.1rem .8rem;margin:.75rem 0;background:#f7f9fc}.hbqrs-editor-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(14rem,1fr));gap:.75rem}.hbqrs-editor-grid label{display:block;font-weight:650}.hbqrs-editor-grid input,.hbqrs-editor-grid select{font:inherit;max-width:100%;padding:.35rem;border:1px solid #64748b;border-radius:5px}.hbqrs-editor-actions{display:flex;gap:.75rem;flex-wrap:wrap;margin-top:.75rem}button{font:inherit;font-weight:650;padding:.45rem .7rem;border:1px solid #176b87;background:#176b87;color:#fff;border-radius:5px;cursor:pointer}button:hover{background:#0f5068}button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #f59e0b;outline-offset:2px}.hbqrs-preview{margin-top:1rem;padding:.75rem;background:#f7f9fc;border-left:4px solid #176b87}.hbqrs-error{color:#9f1239;font-weight:650}.hbqrs-muted{color:#546177}.hbqrs-screen-only{display:block}@media (max-width:40rem){main{padding:.75rem}section{padding:.75rem;overflow-x:auto}}@media print{body{background:#fff}main{max-width:none;padding:0}section,.hbqrs-scorecard{border-color:#777;break-inside:avoid}.hbqrs-screen-only{display:none!important}button{display:none}}
+body{margin:0;background:#eef2f7;color:#172033;font:16px/1.5 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}main{max-width:72rem;margin:0 auto;padding:1.5rem}.hbqrs-report-header{margin-bottom:1.25rem}.hbqrs-report-header h1{margin:.1rem 0}.hbqrs-report-header p{max-width:70ch;color:#546177}section{background:#fff;border:1px solid #cad2de;border-radius:12px;padding:1rem;margin:1rem 0}h2{margin-top:.1rem}h3{margin-bottom:.35rem}table{border-collapse:collapse;width:100%;overflow-wrap:anywhere}th,td{border-bottom:1px solid #cad2de;padding:.45rem;text-align:left;vertical-align:top}th{background:#f7f9fc}th[scope=row]{font-weight:650}caption{text-align:left;font-weight:700;margin:.3rem 0}.hbqrs-finding{border-left:4px solid #176b87;padding:.1rem .8rem;margin:.75rem 0;background:#f7f9fc}.hbqrs-editor-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(14rem,1fr));gap:.75rem}.hbqrs-editor-grid label{display:block;font-weight:650}.hbqrs-editor-grid input,.hbqrs-editor-grid select{font:inherit;max-width:100%;padding:.35rem;border:1px solid #64748b;border-radius:5px}.hbqrs-editor-actions{display:flex;gap:.75rem;flex-wrap:wrap;margin-top:.75rem}button{font:inherit;font-weight:650;padding:.45rem .7rem;border:1px solid #176b87;background:#176b87;color:#fff;border-radius:5px;cursor:pointer}button:hover{background:#0f5068}button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #f59e0b;outline-offset:2px}.hbqrs-preview{margin-top:1rem;padding:.75rem;background:#f7f9fc;border-left:4px solid #176b87}.hbqrs-error{color:#9f1239;font-weight:650}.hbqrs-muted{color:#546177}.hbqrs-screen-only{display:block}@media (prefers-color-scheme:dark){.hbqrs-error{color:#ffb4ab}}@media (max-width:40rem){main{padding:.75rem}section{padding:.75rem;overflow-x:auto}}@media print{body{background:#fff}main{max-width:none;padding:0}.hbqrs-report-intro{break-inside:avoid-page;page-break-inside:avoid}.hbqrs-report-header{break-after:avoid-page;page-break-after:avoid}.hbqrs-scorecard{border-color:#777;break-before:avoid-page;page-break-before:avoid}.hbqrs-warnings{break-inside:avoid-page;page-break-inside:avoid}.hbqrs-screen-only{display:none!important}button{display:none}}
 """
 
 
@@ -391,15 +418,15 @@ def render_html_report(
     document = """<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>__TITLE__</title><style>__CSS__</style></head><body><main>
-<header class="hbqrs-report-header"><h1>__TITLE__</h1><p>__PREMISE__</p><p><strong>Evaluated scope:</strong> __SCOPE__</p></header>
-__SCORECARD__
+<div class="hbqrs-report-intro"><header class="hbqrs-report-header"><h1>__TITLE__</h1><p>__PREMISE__</p><p><strong>Evaluated scope:</strong> __SCOPE__</p></header>
+__SCORECARD__</div>
 <section aria-labelledby="hbqrs-domains-title"><h2 id="hbqrs-domains-title">Whole-work domain breakdown</h2>
 <table><caption>Domain scores and uncertainty bounds</caption><thead><tr><th scope="col">Domain</th><th scope="col">Coverage</th><th scope="col">Observed</th><th scope="col">Bounds</th></tr></thead><tbody>__DOMAIN_ROWS__</tbody></table></section>
 <section aria-labelledby="hbqrs-locals-title"><h2 id="hbqrs-locals-title">Local trajectory</h2>
 <table><caption>Independent local diagnostics</caption><thead><tr><th scope="col">Unit</th><th scope="col">Control state</th><th scope="col">Coverage</th><th scope="col">Observed</th><th scope="col">Bounds</th></tr></thead><tbody>__LOCAL_ROWS__</tbody></table>
 <p class="hbqrs-muted">Local diagnostics do not overwrite or average into the canonical whole-work score. They show where the profile is strong, weak, or uneven.</p></section>
 <section aria-labelledby="hbqrs-findings-title"><h2 id="hbqrs-findings-title">Findings and evidence references</h2>__FINDINGS__</section>
-<section aria-labelledby="hbqrs-warnings-title"><h2 id="hbqrs-warnings-title">Warnings</h2>__WARNINGS__</section>
+<section class="hbqrs-warnings" aria-labelledby="hbqrs-warnings-title"><h2 id="hbqrs-warnings-title">Warnings</h2>__WARNINGS__</section>
 <section class="hbqrs-screen-only" aria-labelledby="hbqrs-editor-title"><h2 id="hbqrs-editor-title">Custom composite preview</h2>
 <p>Use this optional view to combine existing global and local intervals under an explicit profile. It does not change the report, its control states, or the canonical whole-work score.</p>
 <div class="hbqrs-editor-grid"><label for="hbqrs-profile-id">Profile ID<input id="hbqrs-profile-id" value="browser-preview" pattern="[a-z0-9_.-]+"></label><label for="hbqrs-global-weight">Global requested weight<input id="hbqrs-global-weight" type="number" min="0" step="0.1" value="1"></label><label for="hbqrs-local-weight">Local requested weight<input id="hbqrs-local-weight" type="number" min="0" step="0.1" value="1"></label><label for="hbqrs-local-reducer">Local reducer<select id="hbqrs-local-reducer"><option value="weighted_mean">Weighted mean</option><option value="weakest_unit">Weakest unit</option></select></label></div>
