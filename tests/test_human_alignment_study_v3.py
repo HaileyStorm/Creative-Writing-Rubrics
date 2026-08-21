@@ -17,15 +17,20 @@ from hbqrs.runner import EVIDENCE_NORMALIZATION_POLICY, VALIDATION_FEEDBACK_POLI
 from hbqrs.weights import materialize_weight_profile
 
 ROOT = Path(__file__).resolve().parents[1] / "evaluation-results" / "hbq-human-alignment-v3"
+SUPPLEMENTAL_ROOT = ROOT.parent / "hbq-human-alignment-supplemental-providers-v1"
 
 
-def module(name: str, filename: str):
-    spec = importlib.util.spec_from_file_location(name, ROOT / filename)
+def _load_module(name: str, path: Path):
+    spec = importlib.util.spec_from_file_location(name, path)
     assert spec and spec.loader
     value = importlib.util.module_from_spec(spec)
     sys.modules[name] = value
     spec.loader.exec_module(value)
     return value
+
+
+def module(name: str, filename: str):
+    return _load_module(name, ROOT / filename)
 
 
 study = module("hanna_v3_study", "study.py")
@@ -34,6 +39,30 @@ analysis = module("hanna_v3_analysis", "analyze_study.py")
 sys.modules["analyze_study"] = analysis
 run_study = module("hanna_v3_run", "run_study.py")
 gate_module = module("hanna_v3_gate", "confirmation_gate.py")
+
+
+@pytest.fixture(autouse=True)
+def _bind_v3_module_aliases(monkeypatch):
+    monkeypatch.setitem(sys.modules, "study", study)
+    monkeypatch.setitem(sys.modules, "analyze_study", analysis)
+
+
+def _load_supplemental_analyzer() -> object:
+    previous_study = sys.modules.get("study")
+    previous_analysis = sys.modules.get("analyze_study")
+    supplemental_study = _load_module("hanna_v3_mixed_order_supplemental_study", SUPPLEMENTAL_ROOT / "study.py")
+    sys.modules["study"] = supplemental_study
+    try:
+        return _load_module("hanna_v3_mixed_order_supplemental_analysis", SUPPLEMENTAL_ROOT / "analyze_study.py")
+    finally:
+        if previous_study is None:
+            sys.modules.pop("study", None)
+        else:
+            sys.modules["study"] = previous_study
+        if previous_analysis is None:
+            sys.modules.pop("analyze_study", None)
+        else:
+            sys.modules["analyze_study"] = previous_analysis
 
 
 def _fingerprint(path: Path) -> dict:
@@ -319,6 +348,9 @@ def test_repeatability_rejects_session_reuse_and_confirmation_gate_binds_v3_hash
     monkeypatch.setattr(gate_module, "validate_frozen_contract", lambda work: frozen)
     monkeypatch.setattr(analysis, "verify_phase_runs", lambda work, contract, phase: None)
     gate_module.create_gate(tmp_path, development)
+    supplemental_analysis = _load_supplemental_analyzer()
+    assert supplemental_analysis is not analysis
+    assert sys.modules["analyze_study"] is analysis
     run_study.gate(tmp_path, frozen)
     (development / "summary.json").write_text("tamper", encoding="utf-8")
     with pytest.raises(ValueError, match="hashes"):

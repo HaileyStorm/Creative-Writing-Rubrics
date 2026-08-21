@@ -3,6 +3,9 @@ from __future__ import annotations
 import importlib.util
 import json
 import sys
+import threading
+import time
+import types
 from pathlib import Path
 
 import pytest
@@ -67,6 +70,7 @@ def test_provider_receipts_require_distinct_artifact_shapes(monkeypatch, tmp_pat
 
 def test_execution_preserves_primary_runner_shape_and_blocks_pro_development(monkeypatch, tmp_path):
     value = frozen()
+    (tmp_path / "frozen-provider-contract.json").write_text("{}", encoding="utf-8")
     monkeypatch.setattr(runner, "load_frozen", lambda _: value)
     monkeypatch.setattr(runner, "phase_rows", lambda *_: [{"item_id": "dev-0", "repetition": 1}])
     folder = tmp_path / "inputs"; folder.mkdir()
@@ -76,9 +80,134 @@ def test_execution_preserves_primary_runner_shape_and_blocks_pro_development(mon
     runner.execute(tmp_path, "grok_4_6_high", "development", 1, 1)
     assert calls[0]["provider"] == "grok" and calls[0]["model"] == "grok-4.6" and calls[0]["strict_ai"] is False and calls[0]["batch_size"] == 32 and calls[0]["allow_unattested_reasoning"] is True
     with pytest.raises(ValueError, match="Nous Pro"):
-        runner.execute(tmp_path, "nous_pro_max", "development", 1, 1)
+        runner.execute(tmp_path, "nous_pro_max", "development", 1, 600)
     with pytest.raises(ValueError, match="maximum"):
         runner.execute(tmp_path, "grok_4_6_high", "development", 5, 1)
+
+
+@pytest.mark.parametrize("workers, timeout, message", [(2, 600, "exactly one"), (4, 600, "exactly one"), (1, 419, "at least 420")])
+def test_nous_preflight_rejects_before_input_paths_or_provider_calls(monkeypatch, tmp_path, workers, timeout, message):
+    monkeypatch.setattr(runner, "load_frozen", lambda _: frozen())
+    monkeypatch.setattr(runner, "primary_input", lambda *_: pytest.fail("invalid Nous execution must not inspect run paths"))
+    monkeypatch.setattr(runner, "run_judge", lambda **_: pytest.fail("invalid Nous execution must not call provider"))
+    with pytest.raises(ValueError, match=message):
+        runner.execute(tmp_path, "nous_flash_max", "development", workers, timeout)
+    assert not (tmp_path / "invocations").exists()
+
+
+def test_nous_invocation_record_exact_repeat_tamper_and_resume(monkeypatch, tmp_path):
+    value = frozen()
+    (tmp_path / "frozen-provider-contract.json").write_text("{}", encoding="utf-8")
+    rows = [{"item_id": "dev-0", "repetition": 1}]
+    folder = tmp_path / "inputs"; folder.mkdir()
+    monkeypatch.setattr(runner, "load_frozen", lambda _: value)
+    monkeypatch.setattr(runner, "phase_rows", lambda *_: rows)
+    monkeypatch.setattr(runner, "primary_input", lambda *_: (folder, {"item_id": "dev-0"}))
+    calls = []
+    def provider_boundary(**kwargs):
+        calls.append(kwargs)
+        output = Path(kwargs["output_dir"]); output.mkdir(parents=True, exist_ok=True); (output / "run.json").write_text("{}", encoding="utf-8")
+        return {"status": "ok"}
+    monkeypatch.setattr(runner, "run_judge", provider_boundary)
+    runner.execute(tmp_path, "nous_flash_max", "development", 1, 600)
+    record_path = tmp_path / "invocations" / "nous_flash_max" / "development.json"
+    record = json.loads(record_path.read_text(encoding="utf-8"))
+    assert record["provider_id"] == "nous_flash_max" and record["workers"] == 1 and record["timeout"] == 600.0
+    assert "nous_transport" in record
+    runner.execute(tmp_path, "nous_flash_max", "development", 1, 600)
+    assert calls[1]["resume"] is True
+    record_path.write_text("forged", encoding="utf-8")
+    with pytest.raises(ValueError, match="Immutable invocation"):
+        runner.execute(tmp_path, "nous_flash_max", "development", 1, 600)
+    assert len(calls) == 2
+
+
+def test_provider_failure_cancels_queued_waits_started_and_never_resumes(monkeypatch, tmp_path):
+    value = frozen()
+    (tmp_path / "frozen-provider-contract.json").write_text("{}", encoding="utf-8")
+    rows = [{"item_id": f"dev-{number}", "repetition": 1} for number in range(100)]
+    folder = tmp_path / "inputs"; folder.mkdir()
+    second_started = threading.Event()
+    second_finished = threading.Event()
+    calls: list[str] = []
+    monkeypatch.setattr(runner, "load_frozen", lambda _: value)
+    monkeypatch.setattr(runner, "phase_rows", lambda *_: rows)
+    monkeypatch.setattr(runner, "primary_input", lambda *_: (folder, {"item_id": "ignored"}))
+    def provider_boundary(**kwargs):
+        item_id = kwargs["artifact_id"]; calls.append(item_id)
+        if item_id == "dev-0":
+            assert second_started.wait(2)
+            raise RuntimeError("provider failed")
+        if item_id == "dev-1":
+            second_started.set(); time.sleep(0.5); second_finished.set()
+        return {"status": "ok"}
+    monkeypatch.setattr(runner, "run_judge", provider_boundary)
+    with pytest.raises(RuntimeError, match="provider failed"):
+        runner.execute(tmp_path, "grok_4_6_high", "development", 2, 600)
+    assert second_finished.is_set() and set(calls) <= {"dev-0", "dev-1"}
+
+
+def test_invocations_are_provider_phase_scoped_and_refuse_backfill_or_partial_records(monkeypatch, tmp_path):
+    value = frozen()
+    (tmp_path / "frozen-provider-contract.json").write_text("{}", encoding="utf-8")
+    rows = [{"item_id": "dev-0", "repetition": 1}]
+    folder = tmp_path / "inputs"; folder.mkdir()
+    monkeypatch.setattr(runner, "load_frozen", lambda _: value)
+    monkeypatch.setattr(runner, "phase_rows", lambda *_: rows)
+    monkeypatch.setattr(runner, "primary_input", lambda *_: (folder, {"item_id": "dev-0"}))
+    monkeypatch.setattr(runner, "run_judge", lambda **_: {"status": "ok"})
+    runner.execute(tmp_path, "grok_4_6_high", "development", 1, 600)
+    monkeypatch.setattr(runner, "_can_run", lambda *_: None)
+    runner.execute(tmp_path, "grok_4_6_high", "repeatability", 1, 600)
+    grok_development = tmp_path / "invocations" / "grok_4_6_high" / "development.json"
+    grok_repeatability = tmp_path / "invocations" / "grok_4_6_high" / "repeatability.json"
+    assert grok_development.is_file() and grok_repeatability.is_file()
+    assert "nous_transport" not in json.loads(grok_development.read_text(encoding="utf-8"))
+    output = tmp_path / "runs" / "nous_flash_max" / "development" / "historical"; output.mkdir(parents=True)
+    with pytest.raises(ValueError, match="backfill"):
+        runner.execute(tmp_path, "nous_flash_max", "development", 1, 600)
+    partial = tmp_path / "invocations" / "nous_flash_max" / "repeatability.json"
+    partial.parent.mkdir(parents=True, exist_ok=True); partial.write_text("{", encoding="utf-8")
+    with pytest.raises(ValueError, match="Immutable invocation"):
+        runner.execute(tmp_path, "nous_flash_max", "repeatability", 1, 600)
+
+
+def test_synchronized_invocation_race_never_clobbers(monkeypatch, tmp_path):
+    value = frozen()
+    (tmp_path / "frozen-provider-contract.json").write_text("{}", encoding="utf-8")
+    folder = tmp_path / "inputs"; folder.mkdir()
+    monkeypatch.setattr(runner, "load_frozen", lambda _: value)
+    monkeypatch.setattr(runner, "phase_rows", lambda *_: [{"item_id": "dev-0", "repetition": 1}])
+    monkeypatch.setattr(runner, "primary_input", lambda *_: (folder, {"item_id": "dev-0"}))
+    monkeypatch.setattr(runner, "run_judge", lambda **_: {"status": "ok"})
+    barrier = threading.Barrier(2)
+    monkeypatch.setattr(runner, "_INVOCATION_TEMP_WRITTEN", lambda: barrier.wait(2))
+    failures: list[BaseException] = []
+    def invoke():
+        try:
+            runner.execute(tmp_path, "grok_4_6_high", "development", 1, 600)
+        except BaseException as error:
+            failures.append(error)
+    first, second = threading.Thread(target=invoke), threading.Thread(target=invoke)
+    first.start(); second.start(); first.join(); second.join()
+    path = tmp_path / "invocations" / "grok_4_6_high" / "development.json"
+    assert path.is_file() and json.loads(path.read_text(encoding="utf-8"))["provider_id"] == "grok_4_6_high"
+    assert not failures
+
+
+def test_runner_binds_its_sibling_analyzer_after_v3_load_order(monkeypatch):
+    v3_root = book_root() / "evaluation-results" / "the-part-that-arrives-first-repeatability" / "supplemental-providers-v3"
+    v3_runner_spec = importlib.util.spec_from_file_location("supplemental_v3_runner_for_order", v3_root / "run_study.py")
+    assert v3_runner_spec and v3_runner_spec.loader
+    v3_runner = importlib.util.module_from_spec(v3_runner_spec); v3_runner_spec.loader.exec_module(v3_runner)
+    monkeypatch.setitem(sys.modules, "run_study", v3_runner)
+    v3_analysis_spec = importlib.util.spec_from_file_location("supplemental_v3_analysis_for_order", v3_root / "analyze_study.py")
+    assert v3_analysis_spec and v3_analysis_spec.loader
+    v3_analysis = importlib.util.module_from_spec(v3_analysis_spec); v3_analysis_spec.loader.exec_module(v3_analysis)
+    monkeypatch.setitem(sys.modules, "study", types.ModuleType("poisoned_study"))
+    monkeypatch.setitem(sys.modules, "analyze_study", v3_analysis)
+    mixed = load("supplemental_hanna_runner_mixed", "run_study.py")
+    assert Path(mixed._ANALYSIS.__file__).resolve() == (ROOT / "analyze_study.py").resolve()
 
 
 def test_later_phases_require_both_complete_development_conditions(monkeypatch, tmp_path):
@@ -86,8 +215,8 @@ def test_later_phases_require_both_complete_development_conditions(monkeypatch, 
     calls = []
     monkeypatch.setattr(runner, "load_frozen", lambda _: value)
     monkeypatch.setattr(runner, "_promotion", lambda *_: {"eligible_provider_ids": ["grok_4_6_high", "nous_flash_max"]})
-    monkeypatch.setattr(analysis, "verify_phase", lambda _work, _frozen, provider_id, phase: calls.append((provider_id, phase)) or [])
-    monkeypatch.setattr(analysis, "verify_study_receipts", lambda _work, _frozen, provider_id: calls.append((provider_id, "study-wide")))
+    monkeypatch.setattr(runner._ANALYSIS, "verify_phase", lambda _work, _frozen, provider_id, phase: calls.append((provider_id, phase)) or [])
+    monkeypatch.setattr(runner._ANALYSIS, "verify_study_receipts", lambda _work, _frozen, provider_id: calls.append((provider_id, "study-wide")))
     runner._can_run("nous_flash_max", "repeatability", tmp_path, tmp_path)
     assert calls == [("grok_4_6_high", "development"), ("grok_4_6_high", "study-wide"), ("nous_flash_max", "development"), ("nous_flash_max", "study-wide")]
 
@@ -96,8 +225,8 @@ def test_confirmatory_waits_for_every_eligible_repeatability_phase(monkeypatch, 
     value = frozen(); calls = []
     monkeypatch.setattr(runner, "load_frozen", lambda _: value)
     monkeypatch.setattr(runner, "_promotion", lambda *_: {"eligible_provider_ids": ["grok_4_6_high", "nous_flash_max"]})
-    monkeypatch.setattr(analysis, "verify_phase", lambda _work, _frozen, provider_id, phase: calls.append((provider_id, phase)) or [])
-    monkeypatch.setattr(analysis, "verify_study_receipts", lambda _work, _frozen, provider_id: calls.append((provider_id, "study-wide")))
+    monkeypatch.setattr(runner._ANALYSIS, "verify_phase", lambda _work, _frozen, provider_id, phase: calls.append((provider_id, phase)) or [])
+    monkeypatch.setattr(runner._ANALYSIS, "verify_study_receipts", lambda _work, _frozen, provider_id: calls.append((provider_id, "study-wide")))
     runner._can_run("grok_4_6_high", "confirmatory", tmp_path, tmp_path)
     assert ("grok_4_6_high", "repeatability") in calls and ("nous_flash_max", "repeatability") in calls
 
@@ -128,6 +257,7 @@ def test_promotion_gate_recomputes_bidirectional_threshold(monkeypatch, tmp_path
 def test_phase_rejects_unmanifested_run_and_studywide_receipt_reuse(monkeypatch, tmp_path):
     value = frozen()
     one = {"item_id": "dev-0", "model": "M0"}
+    monkeypatch.setattr(analysis, "_validate_invocation", lambda *_: {})
     monkeypatch.setattr(analysis, "_selection", lambda *_: [one])
     monkeypatch.setattr(analysis, "verify_run", lambda *_: ([], {}, ["receipt-x"]))
     expected = tmp_path / "runs" / "grok_4_6_high" / "development" / "dev-0" / "run-01" / "run.json"

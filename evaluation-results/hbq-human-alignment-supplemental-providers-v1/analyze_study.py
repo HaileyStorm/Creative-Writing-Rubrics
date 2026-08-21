@@ -16,6 +16,7 @@ from typing import Any, Mapping
 
 from hbqrs.core import compile_bundle, compiled_questions, load_bundles, load_modules, resolve_bundle, score_bundle
 from hbqrs.paths import bundles_path, prompts_dir, registry_path, schema_dir
+from hbqrs import runner as runner_module
 from hbqrs.runner import EVIDENCE_NORMALIZATION_POLICY, NOUS_TRANSPORT_POLICY, VALIDATION_FEEDBACK_POLICY, _json_bytes, _load_checkpoints, _question_payload, _render_prompt, _validate_provider_artifacts
 from hbqrs.weights import materialize_weight_profile
 from study import CONTRACT, HERE, PHASES, _fingerprint, canonical, load_frozen, primary_input, primary_root, provider, sha, validate_dataset_and_metadata, write_json
@@ -54,6 +55,43 @@ def _read(path: Path) -> dict[str, Any]:
     if not isinstance(value, dict):
         raise ValueError(f"Expected object: {path}")
     return value
+
+
+def _binding(path: Path) -> dict[str, Any]:
+    path = path.resolve()
+    return {"path": str(path), "bytes": path.stat().st_size, "sha256": sha(path)}
+
+
+def _validate_invocation(work: Path, provider_id: str, phase: str) -> dict[str, Any]:
+    path = work / "invocations" / provider_id / f"{phase}.json"
+    if not path.is_file():
+        raise ValueError("Provider phase lacks its immutable invocation record")
+    record = _read(path)
+    item = provider(provider_id)
+    workers, timeout = record.get("workers"), record.get("timeout")
+    if isinstance(workers, bool) or not isinstance(workers, int) or not 1 <= workers <= item["maximum_workers"]:
+        raise ValueError("Provider invocation worker binding is invalid")
+    if item["provider"] == "nous" and workers != 1:
+        raise ValueError("Nous invocation worker binding is invalid")
+    if isinstance(timeout, bool) or not isinstance(timeout, (int, float)):
+        raise ValueError("Provider invocation timeout binding is invalid")
+    expected = {
+        "format_version": 1, "study_id": CONTRACT["study_id"],
+        "supplemental_contract_sha256": sha(HERE / "study-contract.json"),
+        "frozen_contract_sha256": sha(work / "frozen-provider-contract.json"),
+        "provider_id": provider_id, "phase": phase, "workers": workers, "timeout": float(timeout),
+        "runner": _binding(Path(runner_module.__file__)), "study_runner": _binding(HERE / "run_study.py"),
+        "study": _binding(HERE / "study.py"), "analyzer": _binding(Path(__file__)),
+        "promotion_gate": _binding(HERE / "promotion_gate.py"),
+    }
+    if item["provider"] == "nous":
+        launcher = runner_module.NOUS_LAUNCHER_PATH
+        expected["nous_transport"] = {"bridge": _binding(launcher.parent / "nous_codex_bridge.py"), "launcher": _binding(launcher)}
+        if timeout < 420:
+            raise ValueError("Nous invocation timeout binding is invalid")
+    if record != expected:
+        raise ValueError("Provider invocation record does not bind the current runtime")
+    return record
 
 
 def _compact(value: Any) -> dict[str, Any] | None:
@@ -206,6 +244,7 @@ def verify_primary_phase(data: Path, frozen: Mapping[str, Any], phase: str, outp
 
 
 def verify_phase(work: Path, frozen: Mapping[str, Any], provider_id: str, phase: str) -> list[str]:
+    _validate_invocation(work, provider_id, phase)
     seen: set[str] = set()
     expected_paths: set[Path] = set()
     repetitions = frozen["selection"]["repeatability"]["repetitions"] if phase == "repeatability" else 1

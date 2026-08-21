@@ -4,6 +4,7 @@ import importlib.util
 import hashlib
 import json
 import gzip
+import subprocess
 from pathlib import Path
 
 import pytest
@@ -32,8 +33,9 @@ def _write_json(path: Path, value: object) -> None:
 def test_contract_preflight_freezes_source_assets_and_runtime() -> None:
     runner = _module("run_study")
     analysis = _module("analyze_study")
-    contract, source = runner.preflight()
-    assert source.name == "source.md"
+    contract = json.loads((ROOT / "study-contract.json").read_text(encoding="utf-8"))
+    with pytest.raises(ValueError, match="Frozen asset hash changed"):
+        runner.preflight()
     assert contract["repetitions"] == 5
     assert contract["provider"]["model"] == "gpt-5.6-sol"
     assert contract["provider"]["reasoning"] == "high"
@@ -46,6 +48,10 @@ def test_contract_preflight_freezes_source_assets_and_runtime() -> None:
         for position, arm_id in enumerate(block):
             positions[arm_id].append(position)
     assert max(max(values.count(position) for position in range(4)) - min(values.count(position) for position in range(4)) for values in positions.values()) == 1
+    for path, key in (("src/hbqrs/runner.py", "runner"), ("src/hbqrs/longform_runner.py", "structured_runner")):
+        blob = subprocess.run(["git", "show", f"a7fda872:{path}"], cwd=book_root(), check=True, capture_output=True).stdout
+        assert hashlib.sha256(blob).hexdigest() == contract["asset_hashes"][key]
+        assert len(blob) > 0
     schedule_hash = runner.schedule_sha256(contract)
     assert analysis._schedule_sha256() == schedule_hash
     assert {event["schedule_sha256"] for event in runner._schedule_events(contract)} == {schedule_hash}
@@ -104,13 +110,13 @@ def test_analyzer_refuses_existing_output_directory(tmp_path: Path) -> None:
     analysis = _module("analyze_study")
     output = tmp_path / "already-there"
     output.mkdir()
-    with pytest.raises(ValueError, match="existing analysis output"):
+    with pytest.raises(ValueError, match="Frozen asset hash changed"):
         analysis.analyze(tmp_path / "work", output)
 
 
 def test_schedule_journal_rejects_missing_reordered_and_duplicate_completions(tmp_path: Path) -> None:
     runner = _module("run_study")
-    contract, _ = runner.preflight()
+    contract = json.loads((ROOT / "study-contract.json").read_text(encoding="utf-8"))
     journal, count = runner._prepare_journal(tmp_path, contract)
     assert count == 0
     plans = runner._schedule_events(contract)
