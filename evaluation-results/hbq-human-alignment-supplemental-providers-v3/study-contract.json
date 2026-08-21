@@ -1,0 +1,37 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-human-alignment-supplemental-providers-v3",
+  "frozen_before_execution": true,
+  "purpose": "A score-blind, batch-8 transport successor bound to the permanently failed v2 batch-16 pilot. GPT-5.6 Sol remains the primary condition.",
+  "parent_v2": {
+    "path": "../hbq-human-alignment-supplemental-providers-v2",
+    "study_id": "hbq-human-alignment-supplemental-providers-v2",
+    "files": {
+      "enable_development.py": "14a45f88ea8e700b27522124cf7db4ba259a949b2801cfb8846323a89854addb",
+      "prepare_transport_successor.py": "66355fb63bec70854d0f07730e808157cbf8c6b85cafe566dab756f4206a0e83",
+      "README.md": "1f27f8dd7350df9404edd31fd11e9d5022335a4814f66c5e9e1db40c1dfdd357",
+      "run_development.py": "861b68607f32fa1bda2af4c710124aa0a5263e37ffc2c8a108520419f33a7bdc",
+      "run_transport_pilot.py": "d46822b94d30ade4c46a96125d0bc3b4f373a14d7e355b8efff33227f57c5e80",
+      "study-contract.json": "dd75c6dbd88c01452bf03af2c1a80169911a0f1fb2bfa588e64644878e8f7692",
+      "study.py": "2e738f5353a1b9959e803b3f51d24de4ee1d6a6051fd28c036c352e564a6e380",
+      "verify_transport_pilot.py": "d6acca791f0d099fb9d2cc99ec68ad55ce5ef0c92242f389c72906d593b4318d"
+    }
+  },
+  "failed_v2": {
+    "source": "The caller supplies the exact immutable v2 work root; its required commitments below identify it without recording a machine-specific path.",
+    "commitments": {
+      "frozen-transport-contract.json": {"bytes": 10170, "sha256": "37fe8263e1d770c2efd8faccdee722bd5c267d5e100dd3e69d6ee900d7aa2b74"},
+      "pilot-execution-claim.json": {"bytes": 847, "sha256": "02c376711fbc17eca4caa93bccf5c088cf64da3e9966aff4444e26c63d33d8fc"},
+      "pilot-invocation.json": {"bytes": 2378, "sha256": "735cae503e894366e4ba8f8daedd925da1f36f734584cc60c56a4931fbeef56d"},
+      "pilot-journal/0001-pilot-01.json": {"bytes": 1403, "sha256": "cc676ff7de1b09c23b83e955caaa5a562f9d45751a9468623e62b7cfc736ce11"},
+      "runs/pilot/pilot-01/responses/rejected/batch-0001/attempt-0001.json": {"bytes": 3255, "sha256": "93df516046a4cd76928f8747d7db725ce723e15056acb5ff9e92c754bd51348f"}
+    },
+    "raw_evidence_tree": {"path": "runs/pilot/pilot-01/responses/batch-0001.attempt-0001.nous.evidence", "files": 7, "sha256": "83b08bf6ad551440601faf89ccc5efd0d1ea23ae0f35ae2fd09eddbcecdde3a3", "excluded": [".evidence-hmac.key"]},
+    "failure": "The first v2 batch-16 cell exhausted its sole logical request after provider HTTP 524 failures. This closes v2 permanently."
+  },
+  "provider": {"provider_id": "nous_flash_max", "provider": "nous", "model": "deepseek/deepseek-v4-flash-0731", "reasoning": "max", "allow_unattested_reasoning": true},
+  "transport_pilot": {"cells": 3, "batch_size": 8, "question_count": 8, "batch_attempts": 1, "workers": 1, "timeout_seconds": 600, "maximum_completion_seconds_exclusive": 100, "success_rule": "Exactly three independent schema-valid provider completions, sequentially, each with one logical provider request, zero recovered retryable failures, distinct bridge sessions, valid raw bridge evidence, and duration below 100 seconds.", "failure_rule": "Any failure permanently closes v3. No automatic size step, Nous Pro, DSPy, paid route, or new-human route follows."},
+  "development": {"batch_size": 8, "enabled_only_after": "transport_pilot_3_of_3", "comparison_status": "unmatched_to_primary_32_and_v2_16", "comparison_rule": "Any full-development result is unmatched to primary batch-32 and v2 batch-16 unless separately frozen paired cells exist."},
+  "privacy": {"pilot": "No HANNA ratings, correlations, scores, or prose-derived public analysis are produced during the pilot.", "human_judging": "Uses only existing HANNA material; no new human judging or contact.", "remote": "Nous receives only the authorized per-cell judge input in the external work directory; no private repository content is sent."},
+  "interpretation_limits": ["This route supplements and never replaces GPT-5.6 Sol.", "The v2 failure does not promote Nous Pro.", "No DSPy prompt optimization is part of v3.", "No paid evaluation is introduced."]
+}
