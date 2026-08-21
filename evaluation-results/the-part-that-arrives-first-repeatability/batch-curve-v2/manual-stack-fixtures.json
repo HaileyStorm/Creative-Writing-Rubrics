@@ -1,0 +1,14 @@
+{
+  "format_version": 1,
+  "status": "independent_manual_fixture_only",
+  "stacks": [
+    {"format_family": "prose_fiction", "bundle_id": "prose.short_story", "question_count": 178, "compiled_bundle_sha256": "6c57bea5407d39be24a7b636089522f516bb5aac660c284443b158c9b6b36b92", "question_id_sequence_sha256": "6155e4252d7eebfabf9750066743d232601361e5ae558aaf2c6b70930d7e2249"},
+    {"format_family": "poetry", "bundle_id": "poetry.free_verse", "question_count": 89, "compiled_bundle_sha256": "db745675e17219eca786a5228d1ce9e53e6b4aab0a57f228c06bee5b4bf1d23f", "question_id_sequence_sha256": "992ea35663b7caefd3162a663ad4024665ff2a855579d605ad91b6fd36d069c8"},
+    {"format_family": "drama", "bundle_id": "drama.screenplay", "question_count": 119, "compiled_bundle_sha256": "dff0c2deaaa2866443ccb039dbb210807748c2ce829909225c0feb4afa056baf", "question_id_sequence_sha256": "9f59d072d659c690b0b5aa7fc6b970d398bb6a4b7d62eb95723fa764709d4cc7"},
+    {"format_family": "hybrid", "bundle_id": "hybrid.creative_nonfiction", "question_count": 123, "compiled_bundle_sha256": "8c612f14cd50aab027775412015b7f613c8296b50cbe75bf0967d51d84d8d7a5", "question_id_sequence_sha256": "ca2a4e8f0eccdc0404522ae1cde932c937015b607b8eb25a0ab46d011c62031c"},
+    {"format_family": "audio", "bundle_id": "audio.audiobook", "question_count": 85, "compiled_bundle_sha256": "2c54690c5d78ca7b90e98460b72a881cc9ef5f43c5fc3e3b1d18def4f6bcce05", "question_id_sequence_sha256": "6af430346c4af076659786eb69575cb7378480524da84680bd9162d2ec7046c1"},
+    {"format_family": "interactive", "bundle_id": "interactive.branching", "question_count": 119, "compiled_bundle_sha256": "0b3ddfe4930379f1322b325ff82d9737b4650a6e0dc646420fd027474770e276", "question_id_sequence_sha256": "20a2a1c7efb6eb6b2d17ec44eb27196ab11247129d91e6cd4791271ce6ffa4f2"},
+    {"format_family": "visual", "bundle_id": "visual.storyboard", "question_count": 53, "compiled_bundle_sha256": "feef24030faf235f74093a93356f766d1c36e918f8cccae955195425ab03bfff", "question_id_sequence_sha256": "34676d549f208dc82789e68c49a82fc8d4b22924381c9b84276a6df946921304"},
+    {"format_family": "project", "bundle_id": "project.world_bible", "question_count": 86, "compiled_bundle_sha256": "0e39ca93d9da35a415bd87a0ea577adc6e08a703113223533a1c89f2a277dd15", "question_id_sequence_sha256": "947f0c666ebbc446269abad52cd4091739a5155c95b05fc65877f24b6fdf8320"}
+  ]
+}
