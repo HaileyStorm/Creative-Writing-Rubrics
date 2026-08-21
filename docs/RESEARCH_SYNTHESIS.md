@@ -94,6 +94,10 @@ This package is a researched design and implementation baseline, not a claim of 
 
 Recommended measurements include balanced accuracy and macro-F1 for binary leaves, Cohen or Fleiss kappa for agreement, calibration error, score-distribution comparison, pairwise preference accuracy, position/length/style bias tests, test–retest stability, and downstream utility: whether selected or revised artifacts are actually accepted more often by users.
 
+Judge studies should vary one condition at a time: checkpoint, role, prompt, polarity, batch shape, or sampler. They should report raw model confidence beside same-input repeat behavior and human-reference agreement rather than treating confidence as truth. Positive and cleanly negated question forms deserve a paired held-out test; any polarity change should be model- and module-specific unless broader evidence supports it.
+
+Local candidates such as Qwen3.8-27B and an Escha-derived checkpoint are evaluation targets, not package dependencies. If the same checkpoint initially fills two workflow roles, measure correlated errors instead of calling the pair an ensemble. Drafting may use a stronger creative sampler than grading; both profiles still need exact fingerprints and task-specific calibration before comparison or promotion.
+
 ## Bibliography
 
 - **`cho_et_al_2026_bineval`** — Sangwoo Cho, Kushal Chawla, Pengshan Cai, Zefang Liu, Chenyang Zhu, Shi-Xiong Zhang, and Sambit Sahu (2026). [Ask, Don't Judge: Binary Questions for Interpretable LLM Evaluation and Self-Improvement](https://arxiv.org/abs/2606.27226). Atomic yes/no decomposition, interpretable aggregation, reduced ceiling effects, and question-level diagnostic feedback.

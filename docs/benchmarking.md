@@ -34,6 +34,12 @@ A leaderboard that drops hard-gate failures into the quality average is lying ab
    - `op.select.rubric_application_quality`
 5. For long work, follow `prompts/judge/LONG_FORM_PROTOCOL.md`. Never publish the mean of chapter scores as a manuscript score.
 
+## Name the judge condition precisely
+
+A model name is not a reproducible judge. Record the exact checkpoint or revision, quantization, serving runtime, prompt and schema versions, sampler settings, role, batch size, and polarity. Two roles using the same checkpoint are useful repeated conditions, but they are not an independent-model ensemble. Treat a later fine-tune or specialized checkpoint as a new condition.
+
+Sampler settings belong to the task. A sampler that helps drafting may hurt grading or exact evidence transfer, so do not carry a creative-generation profile into judging without a separate calibration result. Model confidence is also diagnostic until it is calibrated against repeated decisions and external labels; it does not change canonical score or coverage by default.
+
 ## Intervals and coverage
 
 `CANNOT_ASSESS` widens the interval. If coverage is below the bundle threshold, the result is `PROVISIONAL` and must not drive unattended acceptance. Missing modalities (no audio for an audio leaf) are `CANNOT_ASSESS`, not `NO`.
