@@ -1,0 +1,28 @@
+{
+  "format_version": 1,
+  "assets": {
+    "source": {"path": "../source.md", "bytes": 64490, "sha256": "ed6fb2e19f07174f56eb02e0a5d4c4419eecba324752881439b9b2992f082729"},
+    "superseded_v3_contract": {"path": "../established-v3/study-contract.json", "bytes": 5288, "sha256": "7606a101874a30a5c76f643d365928721f99d8a84972917485f7d5f1bd3635ef"},
+    "v2_metric_helper": {"path": "../established-v2/analyze_study.py", "bytes": 36444, "sha256": "bd05ec43dcff691d2b85d7b3ae5131c6c501471f516408fd8d2e1d266c39a4df"},
+    "binary_prompt": {"path": "../../../prompts/judge/BINARY_EVALUATION_PROMPT.md", "bytes": 1476, "sha256": "6c1cac901d820c1ab866e19f9191896e8c97a6aadf35bdae4eac640fd199a3a2"},
+    "judge_prefix": {"path": "../../../prompts/judge/JUDGE_PREFIX.md", "bytes": 1191, "sha256": "5e3a0990efca93e2cbc3894e635f9fd1b97b6e61ea2981940319cb54994ebb74"},
+    "response_schema": {"path": "../../../schema/hbq_judge_response.schema.json", "bytes": 1977, "sha256": "49c7d824ba5dd957e67968ba3ae6ceb8a7ed9434dfb0dfc654836a76613c7854"},
+    "verdict_schema": {"path": "../../../schema/hbq_verdict.schema.json", "bytes": 3540, "sha256": "2d176506edab164c71d42a73661bcd526e4331dbdce659dfae56168b708a4f19"},
+    "score_report_schema": {"path": "../../../schema/hbq_score_report.schema.json", "bytes": 1072, "sha256": "f0e1fd939774f3c569458f7fd4ce9c6f9b4d942fbc1654badb7b72d09007c87d"},
+    "registry": {"path": "../../../registry/all_modules.json", "bytes": 2189768, "sha256": "e6de0c216b68f1532605181284550cd4aca689a1ad1331631980e098d0055a2c"},
+    "bundle_index": {"path": "../../../bundles/all_bundles.json", "bytes": 513512, "sha256": "06390140d0d1f83b9e8a1a8ab946a4d90ac2b8c6b8d81f84cc44c4cf54a54096"},
+    "short_story_bundle": {"path": "../../../bundles/prose.short_story.yaml", "bytes": 4904, "sha256": "74464c15d4ebc950c3f2db549788ac25beb992bd7eecb517fc9950ab162c5369"},
+    "runner": {"path": "../../../src/hbqrs/runner.py", "bytes": 111615, "sha256": "e2b91682595d10ab8c2a2f55730fa2ffba40b0daa22a15a691d60fdfb9e752d3"},
+    "structured_runner": {"path": "../../../src/hbqrs/longform_runner.py", "bytes": 70948, "sha256": "54dd2ff49060caf6f111fecef2780cfa6836c23699f07fcb09213cbae5516c0c"},
+    "scoring_core": {"path": "../../../src/hbqrs/core.py", "bytes": 45951, "sha256": "70b4cd16bd536f2f6ddb8e066f801090a037a39605652b14d6c7f6ff312446cb"},
+    "paths": {"path": "../../../src/hbqrs/paths.py", "bytes": 1419, "sha256": "dedadb6d9f8e3cf700c16012b29e1a590a2b1175c8ead0cf17c44aa6417b8266"},
+    "study_runner": {"path": "run_study.py", "bytes": 19073, "sha256": "c522b95908d6ccc32df2094bf80290ccca60c171766504273a9e89dc57264266"},
+    "study_analyzer": {"path": "analyze_study.py", "bytes": 25480, "sha256": "73ef6987f4eeb9586d0ae31c3fccd676435bb665ca7c596765eeb949cc2ad3a9"},
+    "naplan_prompt": {"path": "../established-v2/arms/naplan-narrative-2022.prompt.md", "bytes": 1581, "sha256": "07e85ca388debef6219c390de92c93120bbd944deca8af2b4059b613412f188e"},
+    "naplan_schema": {"path": "arms/naplan-narrative-2022.strict.schema.json", "bytes": 1138, "sha256": "e8f7c4ebf78f7574ab818d22124da2f46a4fb1dffd3d2e8cb1ab9118e53def1a"},
+    "cambridge_prompt": {"path": "../established-v2/arms/cambridge-igcse-0500-p2-mj-2024.prompt.md", "bytes": 1027, "sha256": "9ed1c64b3173c55d7d8246b246a1388e8346fe9c4e1ee6a0770893f8e155dd6c"},
+    "cambridge_schema": {"path": "arms/cambridge-igcse-0500-p2-mj-2024.strict.schema.json", "bytes": 1043, "sha256": "cd5997a2aafef9750e60af7c8cf249210c816421c1e2f9b97bcd1db16a3eabce"},
+    "oregon_prompt": {"path": "../established-v2/arms/oregon-narrative-2017.prompt.md", "bytes": 1274, "sha256": "136e023df18f4f0ad3d7c7b71b133ff22c7d7ff8dfdd509659a8daaa83abc47a"},
+    "oregon_schema": {"path": "../established-v2/arms/oregon-narrative-2017.schema.json", "bytes": 1065, "sha256": "6a761c896b9a9c707fa8df637eaf77f347495920acccdaddfabbbc6abb68f178"}
+  }
+}
