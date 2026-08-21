@@ -1,0 +1,64 @@
+{
+  "format_version": 3,
+  "study_id": "hbq-human-alignment-v3",
+  "frozen_before_execution": true,
+  "supersedes": {
+    "study_id": "hbq-human-alignment-v2",
+    "study_contract_sha256": "9ec0aa16f0d3bc4d8f2d06e45c9a96a27bf9ba9ea9ca8719b8163eaab1d18ece",
+    "reason": "Binds current manifest-v3/checkpoint-v4 runner provenance, normalization, validation feedback, recovery, provider artifacts, and session commitments."
+  },
+  "dataset": {
+    "name": "HANNA: Human and AI Generated Narrative Assessment",
+    "repository": "https://github.com/dig-team/hanna-benchmark-asg",
+    "upstream_commit": "282f27536a5d05ad4ce14298abcd70c45668fed2",
+    "csv_url": "https://raw.githubusercontent.com/dig-team/hanna-benchmark-asg/282f27536a5d05ad4ce14298abcd70c45668fed2/hanna_stories_annotations.csv",
+    "license_url": "https://raw.githubusercontent.com/dig-team/hanna-benchmark-asg/282f27536a5d05ad4ce14298abcd70c45668fed2/LICENSE",
+    "csv_sha256": "ef59054d27fa32def06cfdc57243b1dd09c7e71f40b6d9d43fecfbf60e59026b",
+    "license_sha256": "bc03dc792290fc9ec16bd6772b1e5e88038541f323c63762c988cec07a017146",
+    "license": "MIT",
+    "license_attribution": "HANNA benchmark repository, dig-team/hanna-benchmark-asg, MIT License.",
+    "retrieval": "Direct pinned raw GitHub files only; no archive download or expansion.",
+    "raw_prose_policy": "External work directory only; no HANNA story or prompt prose is committed or published."
+  },
+  "selection": {
+    "seed": 560820,
+    "models": 11,
+    "prompt_groups": 96,
+    "partitions": ["development", "confirmatory"],
+    "prompt_groups_per_partition": 48,
+    "items_per_model_quartile_partition": 2,
+    "stratification": "Hash and split unique prompt strings before inspecting ratings. Within partition and Model, rank by three-rater six-dimension mean then Story ID; choose two items per partition-relative rank quartile."
+  },
+  "provider": {
+    "provider": "codex",
+    "model": "gpt-5.6-sol",
+    "reasoning": "high",
+    "fresh_session": true
+  },
+  "runner": {
+    "bundle_id": "prose.short_story",
+    "batch_size": 32,
+    "batch_attempts": 3,
+    "maximum_workers": 4,
+    "allow_remote": true,
+    "weight_profile": {
+      "requested": null,
+      "identity": true,
+      "policy": "This published alignment study uses the exact default HBQ-RS weights; custom profiles are outside the frozen protocol."
+    },
+    "checkpoint_contract": "manifest-v3/checkpoint-v4 with evidence normalization, feedback-bound cumulative retries, repaired-output replay, accepted provider artifacts, and provider session commitments.",
+    "resume": "Only an identical frozen existing run may resume. A fresh repetition may contain several batch sessions, but its complete session set must be globally disjoint from every other repetition."
+  },
+  "repeatability": {
+    "seed": 560820,
+    "repetitions": 5,
+    "items": "One deterministic development story per Model, fixed before execution."
+  },
+  "metrics": {
+    "primary": "Six confirmatory Spearman correlations and macro mean with 1,000 prompt-cluster bootstrap 95% intervals.",
+    "secondary": ["Pearson", "coverage", "unresolved", "source-model strata", "selected-slice ordinal human agreement", "repeatability"],
+    "no_test_set_fitting": true
+  },
+  "human_ratings_policy": "Use only already-published HANNA ratings and published agreement context. This study never recruits, contacts, or newly judges human readers.",
+  "published_human_agreement_context": "The HANNA paper reports ICC(2,k) values in the fair-to-moderate range (approximately .29 to .56) across its dimensions; cite the paper rather than treating this study's selected-slice statistic as a ceiling."
+}
