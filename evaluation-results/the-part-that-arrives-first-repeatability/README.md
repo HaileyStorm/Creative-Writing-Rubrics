@@ -1,6 +1,6 @@
-# Repeatability study: *The Part That Arrives First*
+# Initial batching study: *The Part That Arrives First*
 
-This case study asks a narrow question: when the same GPT-5.6 Sol judge reads the same complete story several times, how stable are its ratings under different rubric shapes and HBQ batching choices?
+This initial case study asks a narrow question: when the same GPT-5.6 Sol judge reads the same complete story several times, how stable are its ratings under different rubric shapes and HBQ batching choices? For the current stricter comparison against research implementations derived from published rubrics, see the completed [established-rubric repeatability study v4](established-v4/).
 
 The repository owner supplied the story and explicitly authorized publishing it in full. Read [the complete source](source.md), the [frozen study contract](study-contract.json), or any of the [published run outputs](results/).
 

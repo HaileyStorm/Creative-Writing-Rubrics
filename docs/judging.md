@@ -2,6 +2,8 @@
 
 `cwr judge` sends one text artifact through one compiled bundle, validates every returned verdict, checkpoints after each batch, and writes the deterministic score. It supports a local or hosted OpenAI-compatible Chat Completions endpoint, the authenticated Codex CLI, the authenticated Grok Build CLI, and the Windows Nous tool-free bridge. A frozen task contract can add weighted author goals and objective binding requirements without mixing the two.
 
+Read `hard_gate_status` as objective control eligibility, `coverage` as the weighted assessed share, `final_score.observed` as the score over assessed applicable criteria after capped penalties, and `lower`/`upper` as unresolved-evidence bounds rather than confidence intervals. The canonical result belongs to the scope judged; chapter and scene diagnostics do not average back into a manuscript score. See [Benchmarking](benchmarking.md) for the complete reporting definitions.
+
 ## Local OpenAI-compatible endpoint
 
 ```bash

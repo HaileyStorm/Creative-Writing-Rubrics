@@ -75,7 +75,7 @@ cwr longform manuscript.txt --brief author-notes.txt --wip \
 
 The starter profile is 70% whole-work and 30% equal-weight local mean. You can change those component weights or use the weakest-unit reducer. Ordinary chapters cannot be tuned one by one: the only local modifiers are one shared weight for explicitly unfinished units and an optional shared prologue/epilogue weight. The compact card labels custom weighting and prints the effective weights and reducer. Existing report JSON can be rendered later with `cwr render-report report.json -o report.html`, or with `--scorecard` for the embeddable card alone; both files are self-contained and work offline.
 
-The optional setup page remains a CLI helper, not a required app: `cwr configure -o setup.html`. It can prepare automatic or manual stack selection, WIP/completion policy, endpoint settings, coverage, weights, and a copyable command. It never runs a judge. There is no template editor or theme system.
+The GUI is always optional; every setup, judging, batching, monitoring, scoring, and report operation has a complete CLI path. `cwr configure -o setup.html` creates a local setup helper for automatic or manual stack selection, WIP/completion policy, endpoint settings, coverage, weights, and a copyable command. It never runs a judge. There is no template editor or theme system.
 
 For multiple samples, `cwr batch batch.yaml --allow-remote` wraps the same runners and may mix `longform` jobs with exact single-artifact jobs. A strict manifest chooses one routing policy: `individual` lets the endpoint route and grade each sample without confirmation; `shared` chooses a stack from one designated sample, freezes it, then plans each artifact before grading; `review` finishes every sample's route plan up front, then `--accept-reviewed` revalidates the full set and grades the accepted or explicitly overridden plans. The batch writes durable per-job outputs plus a small local auto-refreshing status page. See [Running a headless judge](docs/judging.md).
 
@@ -124,10 +124,12 @@ Technique-specific model-build modules (speculation/MTP checks, pruning, refusal
 
 Stable IDs (`module_id`, `question_id`, `bundle_id`, `criterion_key`) are the public contract. Display titles may change.
 
-## Guides
+## Evidence and guides
 
-- [Repeatability study with a complete published story](evaluation-results/the-part-that-arrives-first-repeatability/)
-- [Real long-form draft comparison](https://github.com/HaileyStorm/Creative-Writing-Rubrics/tree/main/evaluation-results/gray-blood-ch1-6)
+- [Established-rubric repeatability study](evaluation-results/the-part-that-arrives-first-repeatability/established-v4/) — five GPT-5.6 Sol runs each of HBQ-RS and three research implementations derived from published rubrics
+- [Authorized complete story: *The Part That Arrives First*](evaluation-results/the-part-that-arrives-first-repeatability/source.md)
+- [Initial batching study](evaluation-results/the-part-that-arrives-first-repeatability/) — the same story under two HBQ batch shapes and two synthesized comparators
+- [Gray Blood chapters 1–6](evaluation-results/gray-blood-ch1-6/) — complete sanitized scoring and verdict data for a private long-form WIP comparison
 - [Run a headless judge](docs/judging.md)
 - [Embed in another app](docs/apps.md)
 - [Benchmarking](docs/benchmarking.md)
@@ -157,4 +159,4 @@ Apache License 2.0. See [LICENSE](LICENSE) and [NOTICE](NOTICE). Bibliography en
 
 ## Verification
 
-The release is tested from a fresh clone and isolated wheel install, through the CLI and Python APIs, against strict schemas and both a fake local OpenAI-compatible endpoint and GPT-5.6 via Codex CLI. The public six-chapter case study includes the full publishable score breakdowns and diagnostics; the private manuscript is not distributed. A separate five-run study publishes its complete story, frozen design, detailed outputs, and repeatability analysis.
+The release is tested from a fresh clone and isolated wheel install, through the CLI and Python APIs, against strict schemas and both a fake local OpenAI-compatible endpoint and GPT-5.6 via Codex CLI. The public six-chapter case study includes the full publishable score breakdowns and diagnostics; the private manuscript is not distributed. The repeatability studies publish their authorized story, frozen designs, detailed outputs, and deterministic analyses.

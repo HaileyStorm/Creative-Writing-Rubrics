@@ -2,6 +2,14 @@
 
 Use the stack as a *structured* judge, not as a single scalar disguised as truth.
 
+## Read a score report
+
+- **Canonical score:** the deterministic result for the artifact at the scope actually judged. A manuscript score is not reconstructed from chapter or scene scores; those remain diagnostic children unless a separately saved composite profile is explicitly reported.
+- **Controls:** `hard_gate_status` reports objective eligibility separately from quality. `VALID` means every applicable binding requirement passed; author preferences and weighted goals can affect score but not this status.
+- **Coverage:** the weighted share of applicable point-bearing criteria resolved `YES` or `NO`. `NOT_APPLICABLE` leaves are excluded; `CANNOT_ASSESS` leaves reduce coverage rather than counting as failures.
+- **Observed score:** the deterministic score from assessed applicable criteria after capped penalties. Report it with coverage and controls, never alone.
+- **Bounds:** `lower` and `upper` are the results if unresolved `CANNOT_ASSESS` criteria resolve adversely or favorably. They are not confidence intervals or error bars.
+
 ## Report the control fields
 
 Every published score should include:
@@ -29,6 +37,8 @@ A leaderboard that drops hard-gate failures into the quality average is lying ab
 ## Intervals and coverage
 
 `CANNOT_ASSESS` widens the interval. If coverage is below the bundle threshold, the result is `PROVISIONAL` and must not drive unattended acceptance. Missing modalities (no audio for an audio leaf) are `CANNOT_ASSESS`, not `NO`.
+
+For worked public examples, see the [established-rubric repeatability study](../evaluation-results/the-part-that-arrives-first-repeatability/established-v4/), its [authorized source story](../evaluation-results/the-part-that-arrives-first-repeatability/source.md), and the sanitized [Gray Blood long-form comparison](../evaluation-results/gray-blood-ch1-6/).
 
 ## Bias controls
 
