@@ -1,0 +1,12 @@
+{
+  "format_version": 2,
+  "study_id": "hbq-polarity-bias-v1-public-synthetic",
+  "status": "public_synthetic_mechanism_only_no_empirical_results",
+  "frozen_before_execution": true,
+  "production_polarity": "positive_production_canonical",
+  "conditions": ["positive_production", "negative_semantic_negation"],
+  "reverse_decode": {"YES": "NO", "NO": "YES", "NOT_APPLICABLE": "NOT_APPLICABLE", "CANNOT_ASSESS": "CANNOT_ASSESS"},
+  "input_corpus": {"filename": "public-synthetic-wording-corpus.json", "file_sha256": "53a01142def5f02a040725f5670f2260d42d6c9529d7dda397b2f5f8b0c49c7b", "records_sha256": "767e4af12497857656f7462c03b37ad9a82cc34a00f4d4f6e75826e51b7f8f01", "record_count": 12, "total_wording_bytes": 1298},
+  "privacy": {"publication": "public synthetic wording plus aggregate metadata only", "forbid_nonpublic_content": true},
+  "interpretation_limits": ["This corpus is public synthetic mechanism-only material, not semantic validity evidence.", "It cannot revise the positive production scorer or polarity.", "Empirical work belongs only in a separately frozen successor with real batch artifacts and results."]
+}
