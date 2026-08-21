@@ -1,0 +1,51 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-hanna-batch-polarity-pilot-v1",
+  "status": "preregistered_development_only_no_empirical_results",
+  "frozen_before_execution": true,
+  "parent": {
+    "study_id": "hbq-human-alignment-v3-successor-v1",
+    "required_phase": "semantic_development_gate",
+    "reused_item_id": "hanna-225",
+    "reused_condition": "global_positive_batch32",
+    "reused_repetition": 1
+  },
+  "conditions": [
+    {"id": "global_positive_batch32", "scope": "global", "polarity": "positive", "negative_question_scope": "none", "batch_size": 32, "leaf_set": "full_short_story"},
+    {"id": "global_negative_batch32", "scope": "global", "polarity": "negative_failure_condition", "negative_question_scope": "mapped_leaves_only", "batch_size": 32, "leaf_set": "full_short_story"},
+    {"id": "single_positive_batch1", "scope": "focal", "polarity": "positive", "negative_question_scope": "none", "batch_size": 1, "leaf_set": "hanna_mapped"},
+    {"id": "single_negative_batch1", "scope": "focal", "polarity": "negative_failure_condition", "negative_question_scope": "mapped_leaves_only", "batch_size": 1, "leaf_set": "hanna_mapped"}
+  ],
+  "stages": [
+    {"stage": 1, "repetition": 1, "new_calls": 60, "purpose": "transport_and_first_factorial_screen"},
+    {"stage": 2, "repetition": 2, "new_calls": 66, "purpose": "minimum_mechanistic_screen"},
+    {"stage": 3, "repetition": 3, "new_calls": 66, "purpose": "resolve_reproduced_signal_or_ambiguity"}
+  ],
+  "condition_order": [
+    ["global_positive_batch32", "global_negative_batch32", "single_positive_batch1", "single_negative_batch1"],
+    ["global_negative_batch32", "single_positive_batch1", "single_negative_batch1", "global_positive_batch32"],
+    ["single_positive_batch1", "single_negative_batch1", "global_positive_batch32", "global_negative_batch32"]
+  ],
+  "metrics": {
+    "correlation_bridge": ["signed_kendall_tau_b", "absolute_kendall_tau_b", "spearman"],
+    "mechanics": ["canonical_leaf_flip_rate", "assessed_state_change", "coverage_change", "dimension_score_change", "repeat_stability", "confidence_by_stability"],
+    "one_story_limit": "Correlation quantities are schema-only and unavailable for the one-story screen."
+  },
+  "decision_policy": {
+    "recommendation": null,
+    "promotion": "forbidden",
+    "stage_3_required_if": ["reproduced_leaf_flip", "direction_disagreement", "coverage_change", "confidence_or_stability_difference"],
+    "later_prefixes": [1, 4, 12, 24, 40, 80],
+    "holdout": "separate_frozen_gate_required",
+    "confidence_adaptive_repeats": {
+      "status": "future_hypothesis_not_active",
+      "requires": ["independent_confidence_calibration", "frozen_threshold_before_outcomes", "equal_call_budget_random_repeat_control", "equal_call_budget_uniform_repeat_control"],
+      "evidence": "Every repeat has a separate sealed response and session commitment.",
+      "aggregation": "Canonicalize polarity first; use a deterministic predeclared reducer and retain every probe.",
+      "production": "No canonical score or coverage change without separate validation.",
+      "future_evaluation": "Require equal-budget improvement over random and uniform repeat controls on repeatability and held-out HANNA overlap-dimension alignment.",
+      "custom_model_calibration": "Optimize uncertainty calibration and stability/correctness; never directly imitate global HANNA ratings, and keep overlap evaluation on untouched holdouts."
+    }
+  },
+  "human_ratings_policy": "Use only published HANNA ratings. No fresh or live human judging is permitted."
+}

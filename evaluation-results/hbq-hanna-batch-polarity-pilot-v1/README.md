@@ -1,0 +1,7 @@
+# HANNA batch and polarity pilot
+
+This is a sealed development protocol, not an empirical result or a scoring recommendation. It isolates two mechanics in one previously verified HANNA development story: full short-story HBQ in batches of 32, and the 27 leaves used by the six HANNA mappings one at a time. The negative conditions reverse only those 27 reviewed mapped leaves; every other global-stack leaf remains positive. Negative `YES`/`NO` answers are decoded back to normal HBQ meaning before comparison.
+
+`hanna-225` is the first screen because it was generated, has a unique prompt, and its published human-overall score is nearest the development median under the frozen selection. Its existing fresh-88 positive/global first repetition is reused only after full parent replay. Stage 1 adds 60 calls; stages 2 and 3 add 66 each. The third stage is conditional on an observed reproducibility, coverage, or confidence signal. No stage chooses wording, changes HBQ, promotes a batch size, or estimates HANNA agreement from this one story.
+
+The later, separately sealed program expands only through `1, 4, 12, 24, 40, 80` story prefixes. It needs a distinct holdout gate. Confidence-adaptive repeats are a future calibration hypothesis, not an active mechanism: they must beat random and uniform repeats at the same call budget on both repeatability and held-out overlap-dimension HANNA alignment. A future custom model is calibrated for uncertainty and stability/correctness, not trained to imitate HANNA globally.
