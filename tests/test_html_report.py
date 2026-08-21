@@ -174,7 +174,7 @@ def test_full_renderer_is_deterministic_self_contained_and_semantic():
     assert "localStorage" not in first
     assert "sessionStorage" not in first
     assert "innerHTML" not in first
-    assert "Custom-weighted composite" in first
+    assert "Custom-weighted composite · noncanonical" in first
     assert "Canonical whole-work score" in first
     assert "Secondary confidence diagnostics (uncalibrated)" in first
     assert "Threshold shares are assessed-effective-weight shares" in first
@@ -237,9 +237,9 @@ def test_scorecard_is_static_scoped_and_shows_active_modifiers():
     assert "<script" not in card
     assert '<meta charset="utf-8">' in card
     assert ".hbqrs-scorecard" in card
-    assert "Custom-weighted composite" in card
-    assert "global effective weight 66.7%" in card
-    assert "local reducer <code>weighted_mean</code>" in card
+    assert "Custom-weighted composite · noncanonical" in card
+    assert "global 66.7%" in card
+    assert "<code>weighted_mean</code>" in card
     assert "Active local-unit modifiers" in card
     assert "Chapter One" in card
     assert UNIT_ONE not in card
@@ -247,10 +247,10 @@ def test_scorecard_is_static_scoped_and_shows_active_modifiers():
     assert "<details open>" in card
     assert "Whole-work domains (2)" in card
     assert "Local trajectory" in card
-    assert "<strong>Format:</strong> Prose" in card
-    assert "<strong>Bundle:</strong> <code>prose.novel</code>" in card
+    assert "Format: Prose" in card
+    assert "Bundle: prose.novel" in card
     assert 'id="hbqrs-scorecard-title"' not in card
-    assert "minmax(min(13rem,100%),1fr)" in card
+    assert "hbqrs-scorecard__hero-value" in card
 
 
 def test_scorecard_layouts_are_explicit_and_self_contained():
@@ -261,20 +261,90 @@ def test_scorecard_layouts_are_explicit_and_self_contained():
     assert "Open full report" not in summary
     assert "Whole-work domains (2)" in summary
     assert "Whole-work domains (2)" not in compact
-    assert "Whole-work control state" in compact
-    assert "Whole-work control state" not in minimal
-    assert "<strong>Format:</strong> Prose" in minimal
+    assert "Control: VALID" in compact
+    assert "Control: VALID" in minimal
+    assert "Format: Prose" in minimal
     assert "Evaluated scope" not in minimal
     assert "Work in progress" in minimal
     assert "VALID" in minimal
+
+
+@pytest.mark.parametrize("layout", CARD_LAYOUTS)
+def test_scorecard_card_hierarchy_chips_and_accessible_visible_fallbacks(layout: str):
+    card = render_html_scorecard(_report(), layout=layout)
+
+    assert '<header class="hbqrs-scorecard__header">' in card
+    assert 'class="hbqrs-scorecard__hero" aria-label="Canonical whole-work score"' in card
+    assert card.index('class="hbqrs-scorecard__hero"') < card.index('class="hbqrs-scorecard__custom"')
+    for text in (
+        "Control: VALID",
+        "Work in progress",
+        "Coverage: 95.0%",
+        "Format: Prose",
+        "Scope: Two chapters of a work in progress.",
+        "Bundle: prose.novel",
+        "Source: sample",
+        "Observed 81.0 · bounds 80.0–82.0",
+        "Coverage 95.0%",
+    ):
+        assert text in card
+    assert 'role="img" aria-label="Canonical whole-work score:' in card
+    assert 'role="progressbar" aria-label="Whole-work coverage"' in card
+    assert 'id="' not in card
+
+
+def test_scorecard_card_styles_cover_mobile_print_dark_and_forced_colors():
+    card = render_html_scorecard(_report())
+
+    for token in (
+        ".hbqrs-scorecard__hero-value",
+        ".hbqrs-scorecard__interval-track",
+        ".hbqrs-scorecard__coverage-fill",
+        "@media (max-width:24.5rem)",
+        "@media (prefers-color-scheme:dark)",
+        "@media (forced-colors:active)",
+        "@page{size:auto;margin:.4in}",
+        "break-inside:avoid-page",
+    ):
+        assert token in card
+    assert "@page{size:letter" not in card
+    assert "@page{size:a4" not in card.casefold()
+    assert "hbqrs-scorecard__table" not in card
+
+
+def _relative_luminance(hex_color: str) -> float:
+    values = [int(hex_color[index : index + 2], 16) / 255 for index in (1, 3, 5)]
+    linear = [
+        value / 12.92 if value <= 0.04045 else ((value + 0.055) / 1.055) ** 2.4
+        for value in values
+    ]
+    return sum(component * coefficient for component, coefficient in zip(linear, (0.2126, 0.7152, 0.0722)))
+
+
+def _contrast_ratio(first: str, second: str) -> float:
+    high, low = sorted((_relative_luminance(first), _relative_luminance(second)), reverse=True)
+    return (high + 0.05) / (low + 0.05)
+
+
+def test_scorecard_focus_and_link_tokens_meet_contrast_targets():
+    card = render_html_scorecard(_report())
+
+    for token in ("--hbq-focus:#9a3412", "--hbq-accent-strong:#084d63", "--hbq-focus:#ffcf70"):
+        assert token in card
+    assert _contrast_ratio("#9a3412", "#ffffff") >= 4.5
+    assert _contrast_ratio("#9a3412", "#f5f8fb") >= 4.5
+    assert _contrast_ratio("#084d63", "#ffffff") >= 4.5
+    assert _contrast_ratio("#084d63", "#f5f8fb") >= 4.5
+    assert _contrast_ratio("#ffcf70", "#101923") >= 3.0
+    assert _contrast_ratio("#b8ecfa", "#101923") >= 4.5
 
 
 def test_scorecard_omits_custom_headline_without_profile():
     report = _report(with_hierarchy=False)
     card = render_html_scorecard(report)
     full = render_html_report(report)
-    assert "Custom-weighted composite" not in card
-    assert "Custom-weighted composite" not in full
+    assert "Custom-weighted composite · noncanonical" not in card
+    assert "Custom-weighted composite · noncanonical" not in full
     assert "Canonical whole-work score" in card
     assert "Canonical whole-work score" in full
 
@@ -290,7 +360,7 @@ def test_renderer_does_not_mutate_report():
 def test_scorecards_can_be_combined_without_duplicate_title_ids():
     cards = "\n".join(render_html_scorecard(_report(), layout=layout) for layout in CARD_LAYOUTS)
     assert "hbqrs-scorecard-title" not in cards
-    assert cards.count("<h2>HBQ-RS scorecard</h2>") == len(CARD_LAYOUTS)
+    assert cards.count('<h2 class="hbqrs-scorecard__title">Scorecard</h2>') == len(CARD_LAYOUTS)
 
 
 def test_scorecard_uses_labels_for_modifier_and_weakest_unit_disclosures():
@@ -408,12 +478,9 @@ def test_scorecard_identifies_bundle_and_format_for_each_supported_format(bundle
     format_name = bundle_id.split(".", 1)[0].title()
     for layout in CARD_LAYOUTS:
         card = render_html_scorecard(report, layout=layout)
-        assert f"<strong>Format:</strong> {format_name}" in card
-        assert f"<strong>Bundle:</strong> <code>{bundle_id}</code>" in card
-        if layout == "minimal":
-            assert "Evaluated scope" not in card
-        else:
-            assert "Evaluated scope" in card
+        assert f"Format: {format_name}" in card
+        assert f"Bundle: {bundle_id}" in card
+        assert "Scope: Two chapters of a work in progress." in card
 
 
 def test_report_print_styles_keep_header_with_following_content_and_dark_errors_legible():
@@ -566,9 +633,9 @@ def test_scorecard_feature_matrix(
     assert "fetch(" not in card
     assert "Open full report" not in card
     if hierarchy and not null_scores:
-        assert "Custom-weighted composite" in card
+        assert "Custom-weighted composite · noncanonical" in card
     else:
-        assert "Custom-weighted composite" not in card
+        assert "Custom-weighted composite · noncanonical" not in card
     if null_scores:
         assert "Not observed" in card
         assert "Not available" in card
@@ -577,10 +644,10 @@ def test_scorecard_feature_matrix(
         assert "Whole-work domains" in card
         assert "Local trajectory" in card
     elif layout == "compact":
-        assert "Whole-work control state" in card
+        assert f"Control: {control_state}" in card
         assert "Whole-work domains" not in card
     else:
-        assert "Whole-work control state" not in card
+        assert f"Control: {control_state}" in card
         assert "Whole-work domains" not in card
     if layout != "minimal":
         assert control_state in card

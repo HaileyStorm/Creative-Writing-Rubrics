@@ -60,7 +60,7 @@ def _safe_json(value: Mapping[str, Any]) -> str:
 
 def _scorecard_css() -> str:
     return """
-.hbqrs-scorecard{--hbq-ink:#172033;--hbq-muted:#546177;--hbq-line:#cad2de;--hbq-panel:#f7f9fc;--hbq-accent:#176b87;color:var(--hbq-ink);background:#fff;border:1px solid var(--hbq-line);border-radius:12px;padding:1rem;font:16px/1.45 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;max-width:58rem}.hbqrs-scorecard *{box-sizing:border-box}.hbqrs-scorecard h2,.hbqrs-scorecard h3{margin:.1rem 0 .55rem}.hbqrs-scorecard p{margin:.35rem 0}.hbqrs-scorecard a{color:#0f607c;text-underline-offset:.15em}.hbqrs-scorecard__scores{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(13rem,100%),1fr));gap:.75rem;margin:.75rem 0}.hbqrs-scorecard__score{background:var(--hbq-panel);border-left:4px solid var(--hbq-accent);padding:.7rem;min-width:0;overflow-wrap:anywhere}.hbqrs-scorecard__value{font-size:1.55rem;font-weight:700}.hbqrs-scorecard dl{display:grid;grid-template-columns:max-content 1fr;gap:.25rem .75rem;margin:.75rem 0}.hbqrs-scorecard dt{font-weight:650}.hbqrs-scorecard dd{margin:0;color:var(--hbq-muted);overflow-wrap:anywhere}.hbqrs-scorecard ul{margin:.35rem 0;padding-left:1.25rem}.hbqrs-scorecard details{border-top:1px solid var(--hbq-line);margin-top:.65rem;padding-top:.55rem}.hbqrs-scorecard summary{cursor:pointer;font-weight:650}.hbqrs-scorecard summary:focus-visible{outline:3px solid #f59e0b;outline-offset:2px}.hbqrs-scorecard__note{color:var(--hbq-muted);font-size:.93rem;overflow-wrap:anywhere}.hbqrs-scorecard__footer{border-top:1px solid var(--hbq-line);margin-top:.9rem!important;padding-top:.65rem}.hbqrs-scorecard__table{width:100%;border-collapse:collapse;margin:.5rem 0;font-size:.93rem}.hbqrs-scorecard__table th,.hbqrs-scorecard__table td{padding:.35rem;border-bottom:1px solid var(--hbq-line);text-align:left}.hbqrs-scorecard__table th[scope=row]{font-weight:650}@media (max-width:36rem){.hbqrs-scorecard{padding:.75rem}.hbqrs-scorecard__table{font-size:.82rem}.hbqrs-scorecard__table th,.hbqrs-scorecard__table td{padding:.25rem}}
+.hbqrs-scorecard{--hbq-ink:#172033;--hbq-muted:#536176;--hbq-line:#c9d3df;--hbq-panel:#f5f8fb;--hbq-panel-strong:#eaf2f7;--hbq-accent:#116b83;--hbq-accent-strong:#084d63;--hbq-good:#176343;--hbq-focus:#9a3412;color:var(--hbq-ink);background:#fff;border:1px solid var(--hbq-line);border-radius:16px;padding:1rem;font:16px/1.42 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;max-width:58rem;box-shadow:0 8px 22px rgba(23,32,51,.08)}.hbqrs-scorecard *{box-sizing:border-box}.hbqrs-scorecard h2,.hbqrs-scorecard h3,.hbqrs-scorecard p{margin:0}.hbqrs-scorecard a{color:var(--hbq-accent-strong);text-underline-offset:.15em}.hbqrs-scorecard__header{display:flex;align-items:start;justify-content:space-between;gap:.75rem}.hbqrs-scorecard__eyebrow{color:var(--hbq-muted);font-size:.76rem;font-weight:750;letter-spacing:.08em;text-transform:uppercase}.hbqrs-scorecard__title{font-size:1.12rem;line-height:1.2;margin-top:.16rem}.hbqrs-scorecard__chips{display:flex;flex-wrap:wrap;gap:.35rem;margin:.7rem 0}.hbqrs-scorecard__chip{display:inline-flex;align-items:center;min-height:1.72rem;max-width:100%;padding:.15rem .48rem;border:1px solid var(--hbq-line);border-radius:999px;background:#fff;color:var(--hbq-ink);font-size:.78rem;font-weight:680;line-height:1.16;overflow-wrap:anywhere}.hbqrs-scorecard__chip--state{border-color:var(--hbq-accent);background:var(--hbq-panel-strong);color:var(--hbq-accent-strong)}.hbqrs-scorecard__hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(12rem,.8fr);gap:1rem;align-items:center;background:linear-gradient(135deg,var(--hbq-panel-strong),#fff);border:1px solid var(--hbq-line);border-radius:12px;padding:.85rem}.hbqrs-scorecard__label{color:var(--hbq-muted);font-size:.78rem;font-weight:750;letter-spacing:.05em;text-transform:uppercase}.hbqrs-scorecard__hero-value{font-size:3rem;font-weight:800;letter-spacing:-.06em;line-height:1;margin:.14rem 0}.hbqrs-scorecard__bounds{color:var(--hbq-muted);font-size:.9rem}.hbqrs-scorecard__interval{margin-top:.65rem}.hbqrs-scorecard__interval-track{position:relative;height:.62rem;border-radius:999px;background:var(--hbq-line);overflow:hidden}.hbqrs-scorecard__interval-range{position:absolute;left:var(--hbq-lower);right:calc(100% - var(--hbq-upper));top:0;bottom:0;background:var(--hbq-accent)}.hbqrs-scorecard__interval-observed{position:absolute;left:calc(var(--hbq-observed) - .32rem);top:-.17rem;width:.96rem;height:.96rem;border:2px solid #fff;border-radius:50%;background:var(--hbq-accent-strong);box-shadow:0 0 0 1px var(--hbq-accent-strong)}.hbqrs-scorecard__interval-text{display:block;margin-top:.28rem;color:var(--hbq-muted);font-size:.78rem}.hbqrs-scorecard__coverage{display:flex;align-items:center;gap:.5rem;margin-top:.75rem;font-size:.84rem}.hbqrs-scorecard__coverage-track{flex:1;min-width:4rem;height:.48rem;overflow:hidden;border-radius:999px;background:var(--hbq-line)}.hbqrs-scorecard__coverage-fill{display:block;width:var(--hbq-coverage);height:100%;background:var(--hbq-good)}.hbqrs-scorecard__coverage-text{white-space:nowrap;font-weight:700}.hbqrs-scorecard__custom{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.2rem .7rem;align-items:center;margin-top:.7rem;padding:.65rem .75rem;border:1px solid var(--hbq-line);border-radius:10px;background:var(--hbq-panel);min-width:0}.hbqrs-scorecard__custom-value{font-size:1.35rem;font-weight:780;letter-spacing:-.03em;line-height:1.1}.hbqrs-scorecard__custom-copy{min-width:0}.hbqrs-scorecard__note{color:var(--hbq-muted);font-size:.83rem;overflow-wrap:anywhere}.hbqrs-scorecard ul{margin:.35rem 0;padding-left:1.15rem}.hbqrs-scorecard details{border-top:1px solid var(--hbq-line);margin-top:.65rem;padding-top:.55rem}.hbqrs-scorecard summary{cursor:pointer;font-weight:720}.hbqrs-scorecard summary:focus-visible,.hbqrs-scorecard a:focus-visible{outline:3px solid var(--hbq-focus);outline-offset:2px}.hbqrs-scorecard__footer{border-top:1px solid var(--hbq-line);margin-top:.75rem!important;padding-top:.55rem}@media (prefers-color-scheme:dark){.hbqrs-scorecard{--hbq-ink:#e9f0f8;--hbq-muted:#b8c4d1;--hbq-line:#40516a;--hbq-panel:#172334;--hbq-panel-strong:#1b3444;--hbq-accent:#65c9e5;--hbq-accent-strong:#b8ecfa;--hbq-good:#87d9a7;--hbq-focus:#ffcf70;background:#101923;box-shadow:none}.hbqrs-scorecard__chip{background:#101923}.hbqrs-scorecard__hero{background:linear-gradient(135deg,var(--hbq-panel-strong),#101923)}.hbqrs-scorecard__interval-observed{border-color:#101923}}@media (forced-colors:active){.hbqrs-scorecard{forced-color-adjust:auto;box-shadow:none}.hbqrs-scorecard__interval-range,.hbqrs-scorecard__coverage-fill{background:Highlight}.hbqrs-scorecard__interval-observed{background:CanvasText;border-color:Canvas;box-shadow:0 0 0 1px CanvasText}.hbqrs-scorecard__chip--state{color:HighlightText;background:Highlight;border-color:Highlight}}@media (max-width:24.5rem){.hbqrs-scorecard{padding:.75rem;border-radius:12px}.hbqrs-scorecard__header,.hbqrs-scorecard__hero{display:block}.hbqrs-scorecard__hero-value{font-size:2.55rem}.hbqrs-scorecard__hero>div+div{margin-top:.7rem}.hbqrs-scorecard__chips{gap:.28rem}.hbqrs-scorecard__chip{font-size:.74rem}.hbqrs-scorecard__custom{grid-template-columns:1fr}}@media print{@page{size:auto;margin:.4in}.hbqrs-scorecard{max-width:none;box-shadow:none;break-inside:avoid-page;page-break-inside:avoid;color:#000;background:#fff}.hbqrs-scorecard__hero{background:#fff}.hbqrs-scorecard__chip{color:#000;background:#fff}.hbqrs-scorecard details{break-inside:avoid-page;page-break-inside:avoid}}
 """.strip()
 
 
@@ -84,7 +84,11 @@ def _hierarchy_card(
             )
             for assignment in modifiers
         )
-        weights = f"<p><strong>Active local-unit modifiers</strong></p><ul>{items}</ul>"
+        weights = (
+            "<details><summary>Active local-unit modifiers ({})</summary><ul>{}</ul></details>".format(
+                len(modifiers), items
+            )
+        )
     weakest = local_component.get("selected_weakest_unit_id")
     weakest_text = ""
     if weakest is not None:
@@ -97,23 +101,17 @@ def _hierarchy_card(
             str(item["role"]): unit_labels.get(str(item["unit_id"]), str(item["unit_id"]))
             for item in trimmed_tail["excluded_units"]
         }
-        trimmed_text = (
-            " Tail trim: {} eligible, {} retained; excluded lowest <code>{}</code> and highest "
-            "<code>{}</code>."
-        ).format(
+        trimmed_text = " Tail trim: {} eligible, {} retained; low <code>{}</code>, high <code>{}</code>.".format(
             _text(trimmed_tail["eligible_unit_count"]),
             _text(trimmed_tail["retained_unit_count"]),
             _text(excluded["lowest_tail"]),
             _text(excluded["highest_tail"]),
         )
     return """
-<div class="hbqrs-scorecard__score" aria-label="Custom-weighted composite">
-  <strong>Custom-weighted composite</strong>
-  <div class="hbqrs-scorecard__value">{score}</div>
-  <div>Bounds: {bounds}</div>
-  <p class="hbqrs-scorecard__note">Profile <code>{profile}</code>; global effective weight {global_weight}, local effective weight {local_weight}; local reducer <code>{reducer}</code>.{weakest}{trimmed}</p>
-  {weights}
-</div>
+<aside class="hbqrs-scorecard__custom" aria-label="Noncanonical custom composite">
+  <div><p class="hbqrs-scorecard__label">Custom-weighted composite · noncanonical</p><div class="hbqrs-scorecard__custom-value">{score}</div><p class="hbqrs-scorecard__note">Bounds {bounds}</p></div>
+  <div class="hbqrs-scorecard__custom-copy"><p class="hbqrs-scorecard__note">Profile <code>{profile}</code> · global {global_weight} · local {local_weight} · <code>{reducer}</code>.{weakest}{trimmed}</p>{weights}</div>
+</aside>
 """.format(
         score=_text(_score_text(hierarchy["score"])),
         bounds=_text(_bounds_text(hierarchy["score"])),
@@ -128,6 +126,29 @@ def _hierarchy_card(
 
 
 CARD_LAYOUTS = ("summary", "compact", "minimal")
+
+
+def _interval_markup(score: Mapping[str, Any] | None, *, label: str) -> str:
+    if not isinstance(score, Mapping):
+        return f'<p class="hbqrs-scorecard__interval-text">{_text(label)} not observed.</p>'
+    lower = float(score["lower"])
+    upper = float(score["upper"])
+    observed = float(score["observed"])
+    return """
+<div class="hbqrs-scorecard__interval" role="img" aria-label="{label}: observed {observed:.1f}; bounds {lower:.1f} to {upper:.1f}">
+  <div class="hbqrs-scorecard__interval-track" aria-hidden="true"><span class="hbqrs-scorecard__interval-range" style="--hbq-lower:{lower:.4f}%;--hbq-upper:{upper:.4f}%"></span><span class="hbqrs-scorecard__interval-observed" style="--hbq-observed:{observed:.4f}%"></span></div>
+  <span class="hbqrs-scorecard__interval-text">Observed {observed:.1f} · bounds {lower:.1f}–{upper:.1f}</span>
+</div>
+""".format(label=_text(label), observed=observed, lower=lower, upper=upper)
+
+
+def _coverage_markup(result: Mapping[str, Any] | None) -> str:
+    if not isinstance(result, Mapping):
+        return '<p class="hbqrs-scorecard__note">Coverage not observed.</p>'
+    coverage = float(result["coverage"])
+    return """
+<div class="hbqrs-scorecard__coverage"><span class="hbqrs-scorecard__coverage-track" role="progressbar" aria-label="Whole-work coverage" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{percent:.1f}"><span class="hbqrs-scorecard__coverage-fill" style="--hbq-coverage:{percent:.4f}%"></span></span><span class="hbqrs-scorecard__coverage-text">Coverage {percent:.1f}%</span></div>
+""".format(percent=coverage * 100)
 
 
 def _confidence_diagnostics_markup(result: Mapping[str, Any] | None) -> str:
@@ -208,38 +229,24 @@ def _scorecard_markup(report: Mapping[str, Any], *, layout: str = "summary") -> 
     coverage = _percent(global_result["coverage"]) if isinstance(global_result, Mapping) else "Not available"
     bundle_id = str(report["route"]["global_bundle_id"])
     evaluated_format = bundle_id.split(".", 1)[0].replace("_", " ").title()
-    identity = """
-  <p class="hbqrs-scorecard__note"><strong>Format:</strong> {format} · <strong>Bundle:</strong> <code>{bundle}</code>{minimal_status}</p>
-""".format(
-        format=_text(evaluated_format),
-        bundle=_text(bundle_id),
-        minimal_status=(
-            " · <strong>{}</strong> · <strong>{}</strong>".format(
-                _text(_completion_label(report)), _text(state)
-            )
-            if layout == "minimal"
-            else ""
-        ),
-    )
     local_coverage = (
         "{} across {} unit(s)".format(_text(report["route"]["local_coverage_mode"]), len(local_results))
         if local_results
         else "No local units or scores were observed."
     )
-    details = "" if layout == "minimal" else """
-  <dl>
-    <dt>Evaluated scope</dt><dd>{scope}</dd>
-    <dt>Completion</dt><dd>{completion}</dd>
-    <dt>Whole-work control state</dt><dd>{state}</dd>
-    <dt>Whole-work coverage</dt><dd>{coverage}</dd>
-    <dt>Local coverage</dt><dd>{local_coverage}</dd>
-  </dl>
-""".format(
-        scope=_text(report["orientation"]["evaluated_scope"]),
-        completion=_text(_completion_label(report)),
-        state=_text(state),
-        coverage=_text(coverage),
-        local_coverage=local_coverage,
+    chips = "".join(
+        '<span class="hbqrs-scorecard__chip{}">{}</span>'.format(
+            modifier, _text(text)
+        )
+        for text, modifier in (
+            (f"Control: {state}", " hbqrs-scorecard__chip--state"),
+            (_completion_label(report), ""),
+            (f"Coverage: {coverage}", ""),
+            (f"Format: {evaluated_format}", ""),
+            (f"Scope: {report['orientation']['evaluated_scope']}", ""),
+            (f"Bundle: {bundle_id}", ""),
+            (f"Source: {report['artifact']['artifact_id']}", ""),
+        )
     )
     breakdown = "" if layout != "summary" else """
   <details open>
@@ -251,30 +258,31 @@ def _scorecard_markup(report: Mapping[str, Any], *, layout: str = "summary") -> 
     <p>{local_summary}</p>
   </details>
 """.format(domain_count=len(domains), domains=domain_rows, local_summary=local_summary)
+    local_readout = "" if layout == "minimal" else """
+  <details>
+    <summary>Local readout</summary>
+    <p class="hbqrs-scorecard__note">{local_coverage}. {local_summary}</p>
+  </details>
+""".format(local_coverage=local_coverage, local_summary=local_summary)
     return """
 <section class="hbqrs-scorecard">
-  <h2>HBQ-RS scorecard</h2>
-  <div class="hbqrs-scorecard__scores">
-    {hierarchy}
-    <div class="hbqrs-scorecard__score" aria-label="Canonical whole-work score">
-      <strong>Canonical whole-work score</strong>
-      <div class="hbqrs-scorecard__value">{global_score}</div>
-      <div>Bounds: {global_bounds}</div>
-    </div>
-  </div>
-  {identity}
-  {details}
+  <header class="hbqrs-scorecard__header"><div><p class="hbqrs-scorecard__eyebrow">HBQ-RS · long-form</p><h2 class="hbqrs-scorecard__title">Scorecard</h2></div></header>
+  <div class="hbqrs-scorecard__chips" aria-label="Evaluation context">{chips}</div>
+  <section class="hbqrs-scorecard__hero" aria-label="Canonical whole-work score"><div><p class="hbqrs-scorecard__label">Canonical whole-work score</p><div class="hbqrs-scorecard__hero-value">{global_score}</div><p class="hbqrs-scorecard__bounds">Bounds {global_bounds}</p>{interval}</div><div>{coverage_bar}</div></section>
+  {hierarchy}
+  {local_readout}
   {breakdown}
   {confidence_diagnostics}
-  <p class="hbqrs-scorecard__note">The canonical whole-work result remains separate. A custom-weighted composite is a declared view over existing intervals, never a replacement for the underlying results or their control states.</p>
   <p class="hbqrs-scorecard__note hbqrs-scorecard__footer"><a href="https://github.com/HaileyStorm/Creative-Writing-Rubrics">Creative-Writing-Rubrics</a> · <a href="https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/main/docs/DONATIONS.md">Support this project</a></p>
 </section>
 """.format(
         hierarchy=_hierarchy_card(hierarchy, unit_labels=unit_labels),
         global_score=_text(_score_text(_result_score(global_result))),
         global_bounds=_text(_bounds_text(_result_score(global_result))),
-        identity=identity,
-        details=details,
+        chips=chips,
+        interval=_interval_markup(_result_score(global_result), label="Canonical whole-work score"),
+        coverage_bar=_coverage_markup(global_result),
+        local_readout=local_readout,
         breakdown=breakdown,
         confidence_diagnostics=_confidence_diagnostics_markup(global_result),
     )
