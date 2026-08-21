@@ -1,123 +1,69 @@
-# Gray Blood, Chapters 1–6: draft comparison
+# Gray Blood, Chapters 1–6: current WIP comparison
 
-This case study compares two versions of the same work-in-progress dark-fantasy novel. *Gray Blood* centers on blood-powered magic, its human cost, and the people willing to treat that cost as a system to be understood or exploited.
+This is a private-work-in-progress evaluation of two six-chapter drafts. It publishes the score structure and every accepted binary verdict, but not manuscript prose, evidence excerpts, prompts, model responses, local paths, or execution identifiers.
 
-Madison, the first-person narrator, is a nineteen-year-old computer-science student whose technical fascination begins to outrun her moral caution. Amelia is her witch partner: affectionate and secretive, medically trained, capable of startling violence, and Madison's first route into the magical world. FAWN is a small research group of witches and human donors whose work gives Madison an independent route to magic—and introduces new questions about consent, coercion, and scalable power.
+## Orientation
 
-“Original” and “rewrite” cover the same six chapters. The evaluation asks whether the rewrite improves the opening while preserving its strongest material: constrained blood magic, Madison's programming-shaped fascination and moral slippage, a darker behavioral register for Amelia, and sustained relationship complexity.
+The opening follows Madison, a technically minded student drawn into blood-powered magic; Amelia, her witch partner; and FAWN, a research group that offers a second route into that world. The comparison asks how the two drafts handle that premise, the relationship, the rules and costs of power, and the opening's movement.
 
-## What was evaluated
+The rewrite leads the current complete whole-work view by 7.89 points. Both runs are `VALID` and `SCORED`; the difference is a diagnostic result for this rubric and scope, not a general verdict on either draft.
 
-- The automated `cwr longform` workflow: route, frozen task contract, source-preserving segmentation, whole-work map, complete `prose.novel` judging, an independent complete `prose.chapter` result for every substantive chapter, synthesis, and reports.
-- 221 static bundle leaves plus 18 frozen task-contract leaves per draft, judged with GPT-5.6 Sol at Medium.
-- Route selection, maps, and evidence-grounded synthesis with GPT-5.6 Sol at High.
-- The same frozen 28-leaf chapter diagnostic selection for all twelve corresponding chapters, judged with GPT-5.6 Sol at Medium.
-
-Whole-work scoring used the complete six-chapter source. Local scores and fixed chapter diagnostics remain independently available. A separately labeled custom composite combines the whole-work result with the equal-chapter mean under a disclosed 70/30 profile; it does not replace either view. Open-ended synthesis organized the findings but could not alter a binary verdict or deterministic score.
-
-## Result in brief
-
-The original remains the stronger base across these chapters. It leads by 4.86 points and is stronger in plot, world continuity, pacing, language and voice, and freshness. The rewrite has slightly higher assessable coverage and a small task-goal-domain advantage, but those gains do not offset its broader losses. Character, theme/effect, mechanics, and holistic components tie in this run.
-
-| Six-chapter draft | Control state | Observed score | Uncertainty bounds | Coverage |
-| --- | --- | ---: | ---: | ---: |
-| Original | `VALID` / `SCORED` | 78.92 | 76.41–79.57 | 96.83% |
-| Rewrite | `VALID` / `SCORED` | 74.05 | 72.20–74.40 | 97.80% |
-
-For readers who want one compact scorecard, the optional `balanced-wip-70-30` profile gives 70% weight to the canonical whole-work score and 30% to the equal-weight mean of all six complete chapter results:
-
-| Six-chapter draft | Custom-weighted composite | Bounds | Whole-work weight | Chapter-trajectory weight |
+| Draft | Whole-work observed | Bounds | Coverage | WIP 70/30 composite |
 | --- | ---: | ---: | ---: | ---: |
-| Original | 81.04 | 79.25–81.50 | 70% | 30% |
-| Rewrite | 77.40 | 76.01–77.65 | 70% | 30% |
+| Original | 75.52 | 75.52–75.52 | 100.00% | 78.67 |
+| Rewrite | 83.41 | 82.95–83.54 | 99.42% | 83.53 |
 
-That headline is a declared view, not a new ground truth. The [original scorecard](automated/original/scorecard.html) and [rewrite scorecard](automated/rewrite/scorecard.html) print the exact profile beside the canonical score. The full offline reports add the domain and chapter hierarchy: [original](automated/original/report.html) and [rewrite](automated/rewrite/report.html).
+`VALID` means every applicable objective control requirement was satisfied. **Coverage** is the weighted share of applicable criteria with a `YES` or `NO` verdict. **Observed** is the deterministic score from those assessed criteria after capped penalties. **Bounds** are the low/high results still possible if any `CANNOT_ASSESS` criteria resolve as failures/passes; they are not confidence intervals.
 
-- **Control state** reports only objective, explicit non-negotiable requirements. Both drafts satisfy every applicable requirement; the offspring rule is `NOT_APPLICABLE` because that situation does not occur in these chapters.
-- **Coverage** is the weighted share of applicable selected criteria that received an assessable `YES` or `NO` verdict.
-- **Observed score** is the deterministic score from assessed criteria after capped penalties. It is not a probability or universal literary grade.
-- **Uncertainty bounds** show the lowest and highest results still possible if currently unassessed relevant criteria resolve as failures or passes. They are not statistical confidence intervals.
+This is a WIP evaluation: completion-only leaves are `NOT_APPLICABLE`, while craft, continuity, and weighted author-goal leaves remain active for the supplied chapters. Author goals influence score but never determine `VALID`. The minimum score-coverage threshold is 80%.
 
-Author goals—such as a grim-dark tone or a darker Amelia—carry score weight but are not control gates. An unfinished novel can miss one of those goals and remain fully judgeable.
+The optional `balanced-wip-70-30` view uses 70% whole-work score and 30% equal-weight chapter mean. It is shown beside—not in place of—the whole-work and chapter views.
 
-![Normalized whole-work domain comparison](figures/domain-comparison.svg)
+## Whole-work domains
 
-## What the comparison found
+![Whole-work domain scores](figures/whole-work-domains.svg)
 
-### Strong material in both drafts
+| Domain | Original | Rewrite | Rewrite − original |
+| --- | ---: | ---: | ---: |
+| task | 5.11 | 5.50 | +0.39 |
+| character | 14.86 | 16.00 | +1.14 |
+| plot | 18.82 | 18.75 | -0.07 |
+| world | 12.00 | 11.45 | -0.55 |
+| pacing | 7.78 | 7.30 | -0.48 |
+| language | 7.01 | 8.57 | +1.56 |
+| effect | 6.49 | 7.35 | +0.86 |
+| fresh | 2.07 | 2.28 | +0.22 |
+| mechanics | 0.53 | 1.07 | +0.53 |
+| holistic | 6.00 | 6.00 | +0.00 |
 
-- Madison's systems-oriented fascination is convincing. She moves from observation to battery research, cost accounting, compiler-like analogies, and sustained symbol study.
-- Blood magic has a coherent causal core: blood classes, stored power, intent, symbols, engraving, sensing, and termination all create usable story pressure.
-- Madison and Amelia's relationship contains real complexity—love, deception, unequal knowledge, bodily risk, access dependency, and competing loyalties through FAWN.
-- The blood economy, three-mother witch household, compromised research group, and programmer protagonist are more distinctive than the surrounding paranormal-romance beat sequence.
-- The original's causal spine is particularly strong: every assessed plot-architecture point lands, with early medical, blood, and relationship setups paying off later.
+The rewrite gains in task, character, language, theme/effect, freshness, and mechanics. The original retains the stronger plot, world, and pacing totals. Holistic score is unchanged. These domain totals keep the comparison useful without pretending that one compact number tells the whole story.
 
-### Where the rewrite helps
+## Chapter view
 
-- It slightly improves the weighted task-goal component and resolves a little more of the selected evidence, producing higher coverage.
-- Chapter 5 is the rewrite's clearest complete local-score win, rising from 86.59 to 90.68. Its Chapter 3 crisis/explanation sequence also improves on one fixed diagnostic leaf, although the complete local score remains narrowly lower than the original.
-- Madison's programmer lens, moral grappling, and early dark-path setup remain intact.
+![Complete chapter-local scores](figures/chapter-local-scores.svg)
 
-### Where the rewrite loses ground
-
-- Plot convenience, continuity, exposition, repetition, and scene allocation cost it more than its task-goal gain recovers.
-- Explicit ages and longevity benchmarks conflict with the supplied canon.
-- Amelia's behavior is repeatedly softened by apology, reassurance, cheerfulness, or defensive explanation, working against the intended darker register.
-- Later rules arrive too often as comprehensive instruction instead of costly action, disagreement, experiment, or failure.
-- Copy-level defects remain pervasive in both versions; neither mechanics component rises above 1.6 of its 4 available points.
-
-## Chapter diagnostics
-
-Each chapter diagnostic contains the same 28 selected leaves. It records paired local verdict changes rather than a partial-bundle “chapter grade.”
-
-![Paired chapter-diagnostic verdict transitions](figures/chapter-verdict-transitions.svg)
-
-| Chapter | Improved in rewrite | Regressed in rewrite | Other state change | Main reading |
-| ---: | ---: | ---: | ---: | --- |
-| 1 | 0 | 1 | 2 | Similar foundation; the rewrite loses one local advantage and changes assessability on two leaves. |
-| 2 | 0 | 1 | 0 | The prolonged piano allocation weakens entry and momentum before the climber sequence. |
-| 3 | 1 | 0 | 0 | The rewrite's clearest win: information is tied more effectively to crisis and demonstration. |
-| 4 | 0 | 1 | 0 | A concrete longevity inconsistency weakens continuity. |
-| 5 | 0 | 1 | 0 | Direct motive explanation reduces dramatized characterization. |
-| 6 | 0 | 3 | 0 | The largest local regression, concentrated in exposition, pacing, and ending force. |
-
-The automated local-score reports provide a second, complete lens: every substantive chapter receives all 228 static `prose.chapter` leaves independently. This is the normal scope-correct local route; using `prose.novel` on one chapter is available only as an explicit deep-diagnostic mode. The chart and table retain each chapter's result rather than collapsing it into the canonical whole-work score.
-
-![Complete chapter-local score comparison](figures/chapter-score-comparison.svg)
-
-| Chapter | Original | Rewrite | Difference (rewrite − original) |
+| Chapter | Original | Rewrite | Rewrite − original |
 | ---: | ---: | ---: | ---: |
-| 1 | 78.73 | 77.37 | −1.36 |
-| 2 | 82.77 | 78.56 | −4.21 |
-| 3 | 84.47 | 84.02 | −0.45 |
-| 4 | 93.20 | 92.24 | −0.96 |
-| 5 | 86.59 | 90.68 | +4.09 |
-| 6 | 90.20 | 88.41 | −1.79 |
+| 1 | 77.14 | 78.26 | +1.12 |
+| 2 | 83.06 | 83.54 | +0.48 |
+| 3 | 88.95 | 84.87 | -4.08 |
+| 4 | 89.27 | 85.75 | -3.52 |
+| 5 | 89.15 | 85.71 | -3.44 |
+| 6 | 88.59 | 84.69 | -3.90 |
 
-These local results are diagnostic views of individual chapters. The whole-work pass remains the source of manuscript-level conclusions. Full details appear in [`automated/original/report.md`](automated/original/report.md) and [`automated/rewrite/report.md`](automated/rewrite/report.md).
+Each chapter received the complete `prose.chapter` bundle. This local view is a second scale of evidence, while the complete six-chapter `prose.novel` pass remains the manuscript-level result.
 
-Complete local coverage does not change either canonical whole-work score: those scores already come from the complete-source global pass. It adds a different and useful scale of evidence. The chapter view shows the rewrite close in Chapters 3 and 4, clearly stronger in Chapter 5, and weaker elsewhere—especially Chapter 2. The optional composite summarizes those two scales only because its 70/30 policy is printed beside it.
+## Reading the publication
 
-## Most useful revision priorities
+- [`reports/original.json`](reports/original.json) and [`reports/rewrite.json`](reports/rewrite.json) contain current global, 70/30, chapter, and domain score reports.
+- [`verdicts/original.jsonl`](verdicts/original.jsonl) and [`verdicts/rewrite.jsonl`](verdicts/rewrite.jsonl) contain every accepted verdict with stable criterion IDs, scope, and confidence—without evidence text.
+- [`comparison.json`](comparison.json) provides machine-readable domain and chapter deltas.
+- [`privacy-audit.json`](privacy-audit.json) and [`verify_publication.py`](verify_publication.py) provide the audit and deterministic public-package checks.
 
-1. Rebuild Amelia's behavioral register around controlled darkness rather than default apology and reassurance. Keep tenderness, but make it selective and costly.
-2. Let rules emerge through experiments, disagreements, errors, and consequences—using the rewrite's Chapter 3 as the model.
-3. Maintain a compact continuity ledger for ages, blood classes, reserves, batteries, replenishment, compulsion, and engraving costs.
-4. Give feeding, coercion, addiction, and killing visible aftermath and accountability.
-5. Advance Madison's moral slippage through a consequential choice: she should recognize a cost and still choose information, access, or optimization.
-6. Compress repeated romance, music, party, travel, recovery, and instructional beats before doing the final copyedit.
+This refresh uses a complete current protocol. It replaces the prior publication; it is **not** a sampled-to-full score comparison.
 
-The full ranked comparison and evidence references are in [`comparative-synthesis.json`](comparative-synthesis.json).
+Results are comparable within this published protocol only. Do not compare its headline directly with an earlier headline: the protocol, reasoning configuration, and accepted-verdict set differ.
 
-## Data and reproducibility
+## Optional excerpt insertion point
 
-- [`manifest.json`](manifest.json) records scope, routes, counts, and top-level results.
-- [`whole/`](whole/) contains both complete 239-verdict runs and their full deterministic score breakdowns.
-- [`automated/`](automated/) contains the two generated JSON/Markdown/HTML reports, embeddable scorecards, local-score figures, and twelve complete chapter-local runs.
-- [`chapters/`](chapters/) contains twelve matched selected-question diagnostics and their verdicts.
-- [`maps/`](maps/) contains sanitized unit maps, state ledgers, promises, motifs, and continuity conflicts.
-- [`render_figures.py`](render_figures.py) regenerates the two comparison SVGs from the published score and diagnostic files.
-
-Strict batch coverage also got a practical test: one 32-leaf response contained only 31 leaves. The runner rejected that batch, preserved the already accepted checkpoints, and resumed from the incomplete boundary; the partial response never entered a score.
-
-The publication includes scores, verdict states, concise evidence references, and derived analysis. Manuscript prose and verbatim evidence quotations remain private.
+No manuscript excerpt is published here. If the author later selects a short, non-sensitive passage, add it only with its relevant criterion results and a fresh privacy audit.

@@ -1,80 +1,63 @@
 {
-  "evaluation_id": "gray-blood-chapters-1-6-comparison-v1.1",
-  "scope": "Two private WIP novel drafts, chapters 1-6; manuscript prose is not included.",
-  "protocol": "cwr longform plus matched six-chapter diagnostics",
-  "publication": {
-    "private_prose_included": false,
-    "evidence_quotes_included": false,
-    "local_paths_included": false,
-    "scores_and_verdict_states_complete": true,
-    "whole_score_reports": 2,
-    "automated_longform_reports": 2,
-    "local_score_reports": 12,
-    "selected_question_diagnostic_reports": 12
+  "evaluation_id": "gray-blood-chapters-1-6-current-comparison-v2",
+  "files": {
+    "README.md": "570c4e82c83b1bbe23abfc94a5270890f23c01a14c958d363d134174d5b1aa31",
+    "comparison.json": "ca459eb9a6e341d68bc3ecc653c783e6297da7167a13a51d3c3195a2de191728",
+    "figures/chapter-local-scores.svg": "0db1d4adc1bdbf192926fa96bd37870825c4bf59a601bcd8d0fda6586798ebe4",
+    "figures/whole-work-domains.svg": "62666032ca893706c30094865848a65eb9e2fa0955856c97c32923d88d3a9193",
+    "reports/original.json": "06f7629bd64343b7a3206db261843e6a8ab051a476af9a21597fd821cb9193ac",
+    "reports/rewrite.json": "a65b3465a6133bbf7adf78975ddf62307559f03d786d77303167ef0bd367d8d7",
+    "sanitize_publication.py": "8ed14953ac08370bce2ca68886a8a507eb49220e9c4efb09aaaf0c9282af101e",
+    "verdicts/original.jsonl": "2bd911605936b53d43c48e6c5da8100073caf7d1bd04d7c1fdde1bdfa11829fb",
+    "verdicts/rewrite.jsonl": "82cd7b7b7bdf0377311bf79ab7a6f9845bffbcad412dc3808853092ae3b8f37a",
+    "verify_publication.py": "750f9ad53fc21cc53b924c565304a8f18e317b8e5f245dd7ae72afb999102d74"
   },
-  "routes": {
-    "binary_judging": {
-      "provider": "codex",
+  "protocol": {
+    "binary_judge": {
       "model": "gpt-5.6-sol",
-      "reasoning": "medium"
-    },
-    "route_map_synthesis": {
       "provider": "codex",
-      "model": "gpt-5.6-sol",
       "reasoning": "high"
     },
-    "whole_bundle": {
-      "bundle": "prose.novel",
-      "static_leaves": 221,
-      "dynamic_task_leaves": 18
+    "bundle_versions": {
+      "prose.chapter": 1,
+      "prose.novel": 1
     },
-    "chapter_local": {
-      "bundle": "prose.chapter",
-      "leaves_per_chapter": 228,
-      "coverage": "all six chapters"
+    "chapter_bundle": "prose.chapter",
+    "chapter_count_per_draft": 6,
+    "chapter_verdicts_per_draft": 1368,
+    "comparison_scope": "complete current six-chapter WIP protocol; not a sampled-to-full comparison",
+    "global_bundle": "prose.novel",
+    "minimum_coverage": 0.8,
+    "orientation_and_synthesis": {
+      "model": "gpt-5.6-sol",
+      "provider": "codex",
+      "reasoning": "high"
     },
-    "selected_question_diagnostics": {
-      "bundle": "prose.chapter",
-      "leaves_per_chapter": 28,
-      "composite_scores_produced": false
-    }
+    "standard": {
+      "id": "HBQ-RS",
+      "version": "1.0.0"
+    },
+    "structured_judge": {
+      "model": "gpt-5.6-sol",
+      "provider": "codex",
+      "reasoning": "high"
+    },
+    "whole_work_verdicts_per_draft": 239
   },
-  "whole": {
+  "publication": {
+    "evidence_text_included": false,
+    "execution_metadata_included": false,
+    "manuscript_prose_included": false,
+    "published_verdicts": 3214
+  },
+  "results": {
     "original": {
-      "artifact_id": "gray-blood-original-ch01-06",
-      "status": "SCORED",
-      "hard_gate_status": "VALID",
-      "score": {
-        "observed": 78.9174,
-        "lower": 76.4053,
-        "upper": 79.5715
-      },
-      "coverage": 0.9683,
-      "whole_verdict_count": 239,
-      "local_verdict_count": 1368,
-      "local_result_count": 6
+      "whole_work_observed": 75.5214,
+      "wip_70_30_observed": 78.6731
     },
     "rewrite": {
-      "artifact_id": "gray-blood-rewrite-ch01-06",
-      "status": "SCORED",
-      "hard_gate_status": "VALID",
-      "score": {
-        "observed": 74.0536,
-        "lower": 72.2044,
-        "upper": 74.4024
-      },
-      "coverage": 0.978,
-      "whole_verdict_count": 239,
-      "local_verdict_count": 1368,
-      "local_result_count": 6
+      "whole_work_observed": 83.4127,
+      "wip_70_30_observed": 83.5297
     }
-  },
-  "accepted_binary_verdicts_published": 3550,
-  "rubric_release": "creative-writing-rubrics 1.1.0",
-  "notes": [
-    "Observed scores are deterministic results from assessed leaves, not probabilities or universal literary grades.",
-    "The canonical whole-work score, complete chapter-local results, and matched chapter diagnostics remain separately available.",
-    "The optional custom-weighted composite uses the disclosed balanced-wip-70-30 profile: 70% whole-work and 30% equal-weight chapter mean.",
-    "Open synthesis organizes evidence but cannot alter binary verdicts or deterministic scores."
-  ]
+  }
 }

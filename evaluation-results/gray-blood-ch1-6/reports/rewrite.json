@@ -1,0 +1,750 @@
+{
+  "chapter_results": [
+    {
+      "chapter": 1,
+      "control_state": "VALID",
+      "coverage": 0.9806,
+      "domains": [
+        {
+          "coverage": 1.0,
+          "domain_id": "task",
+          "score": {
+            "lower": 6.1195,
+            "observed": 6.1195,
+            "upper": 6.1195
+          }
+        },
+        {
+          "coverage": 1.0,
+          "domain_id": "character",
+          "score": {
+            "lower": 14.8571,
+            "observed": 14.8571,
+            "upper": 14.8571
+          }
+        },
+        {
+          "coverage": 1.0,
+          "domain_id": "plot",
+          "score": {
+            "lower": 19.6226,
+            "observed": 19.6226,
+            "upper": 19.6226
+          }
+        },
+        {
+          "coverage": 0.8382,
+          "domain_id": "world",
+          "score": {
+            "lower": 9.0,
+            "observed": 10.7368,
+            "upper": 10.9412
+          }
+        },
+        {
+          "coverage": 1.0,
+          "domain_id": "pacing",
+          "score": {
+            "lower": 6.8254,
+            "observed": 6.8254,
+            "upper": 6.8254
+          }
+        },
+        {
+          "coverage": 1.0,
+          "domain_id": "language",
+          "score": {
+            "lower": 8.5714,
+            "observed": 8.5714,
+            "upper": 8.5714
+          }
+        },
+        {
+          "coverage": 1.0,
+          "domain_id": "effect",
+          "score": {
+            "lower": 6.4865,
+            "observed": 6.4865,
+            "upper": 6.4865
+          }
+        },
+        {
+          "coverage": 1.0,
+          "domain_id": "fresh",
+          "score": {
+            "lower": 1.7391,
+            "observed": 1.7391,
+            "upper": 1.7391
+          }
+        },
+        {
+          "coverage": 1.0,
+          "domain_id": "mechanics",
+          "score": {
+            "lower": 1.0667,
+            "observed": 1.0667,
+            "upper": 1.0667
+          }
+        },
+        {
+          "coverage": 1.0,
+          "domain_id": "holistic",
+          "score": {
+            "lower": 6.0,
+            "observed": 6.0,
+            "upper": 6.0
+          }
+        }
+      ],
+      "score": {
+        "lower": 76.5205,
+        "observed": 78.2574,
+        "upper": 78.4617
+      }
+    },
+    {
+      "chapter": 2,
+      "control_state": "VALID",
+      "coverage": 0.9963,
+      "domains": [
+        {
+          "coverage": 1.0,
+          "domain_id": "task",
+          "score": {
+            "lower": 6.0755,
+            "observed": 6.0755,
+            "upper": 6.0755
+          }
+        },
+        {
+          "coverage": 1.0,
+          "domain_id": "character",
+          "score": {
+            "lower": 16.0,
+            "observed": 16.0,
+            "upper": 16.0
+          }
+        },
+        {
+          "coverage": 1.0,
+          "domain_id": "plot",
+          "score": {
+            "lower": 19.2982,
+            "observed": 19.2982,
+            "upper": 19.2982
+          }
+        },
+        {
+          "coverage": 0.9692,
+          "domain_id": "world",
+          "score": {
+            "lower": 11.6308,
+            "observed": 12.0,
+            "upper": 12.0
+          }
+        },
+        {
+          "coverage": 1.0,
+          "domain_id": "pacing",
+          "score": {
+            "lower": 10.0,
+            "observed": 10.0,
+            "upper": 10.0
+          }
+        },
+        {
+          "coverage": 1.0,
+          "domain_id": "language",
+          "score": {
+            "lower": 8.5075,
+            "observed": 8.5075,
+            "upper": 8.5075
+          }
+        },
+        {
+          "coverage": 1.0,
+          "domain_id": "effect",
+          "score": {
+            "lower": 7.3514,
+            "observed": 7.3514,
+            "upper": 7.3514
+          }
+        },
+        {
+          "coverage": 1.0,
+          "domain_id": "fresh",
+          "score": {
+            "lower": 2.7174,
+            "observed": 2.7174,
+            "upper": 2.7174
+          }
+        },
+        {
+          "coverage": 1.0,
+          "domain_id": "mechanics",
+          "score": {
+            "lower": 1.3333,
+            "observed": 1.3333,
+            "upper": 1.3333
+          }
+        },
+        {
+          "coverage": 1.0,
+          "domain_id": "holistic",
+          "score": {
+            "lower": 6.0,
+            "observed": 6.0,
+            "upper": 6.0
+          }
+        }
+      ],
+      "score": {
+        "lower": 83.17,
+        "observed": 83.5392,
+        "upper": 83.5392
+      }
+    },
+    {
+      "chapter": 3,
+      "control_state": "VALID",
+      "coverage": 1.0,
+      "domains": [
+        {
+          "coverage": 1.0,
+          "domain_id": "task",
+          "score": {
+            "lower": 7.0,
+            "observed": 7.0,
+            "upper": 7.0
+          }
+        },
+        {
+          "coverage": 1.0,
+          "domain_id": "character",
+          "score": {
+            "lower": 14.8571,
+            "observed": 14.8571,
+            "upper": 14.8571
+          }
+        },
+        {
+          "coverage": 1.0,
+          "domain_id": "plot",
+          "score": {
+            "lower": 20.0,
+            "observed": 20.0,
+            "upper": 20.0
+          }
+        },
+        {
+          "coverage": 1.0,
+          "domain_id": "world",
+          "score": {
+            "lower": 11.2727,
+            "observed": 11.2727,
+            "upper": 11.2727
+          }
+        },
+        {
+          "coverage": 1.0,
+          "domain_id": "pacing",
+          "score": {
+            "lower": 9.3651,
+            "observed": 9.3651,
+            "upper": 9.3651
+          }
+        },
+        {
+          "coverage": 1.0,
+          "domain_id": "language",
+          "score": {
+            "lower": 7.9104,
+            "observed": 7.9104,
+            "upper": 7.9104
+          }
+        },
+        {
+          "coverage": 1.0,
+          "domain_id": "effect",
+          "score": {
+            "lower": 7.3514,
+            "observed": 7.3514,
+            "upper": 7.3514
+          }
+        },
+        {
+          "coverage": 1.0,
+          "domain_id": "fresh",
+          "score": {
+            "lower": 2.7174,
+            "observed": 2.7174,
+            "upper": 2.7174
+          }
+        },
+        {
+          "coverage": 1.0,
+          "domain_id": "mechanics",
+          "score": {
+            "lower": 2.4,
+            "observed": 2.4,
+            "upper": 2.4
+          }
+        },
+        {
+          "coverage": 1.0,
+          "domain_id": "holistic",
+          "score": {
+            "lower": 6.0,
+            "observed": 6.0,
+            "upper": 6.0
+          }
+        }
+      ],
+      "score": {
+        "lower": 84.8741,
+        "observed": 84.8741,
+        "upper": 84.8741
+      }
+    },
+    {
+      "chapter": 4,
+      "control_state": "VALID",
+      "coverage": 0.9965,
+      "domains": [
+        {
+          "coverage": 0.9497,
+          "domain_id": "task",
+          "score": {
+            "lower": 6.3836,
+            "observed": 6.7219,
+            "upper": 6.7358
+          }
+        },
+        {
+          "coverage": 1.0,
+          "domain_id": "character",
+          "score": {
+            "lower": 14.8571,
+            "observed": 14.8571,
+            "upper": 14.8571
+          }
+        },
+        {
+          "coverage": 1.0,
+          "domain_id": "plot",
+          "score": {
+            "lower": 20.0,
+            "observed": 20.0,
+            "upper": 20.0
+          }
+        },
+        {
+          "coverage": 1.0,
+          "domain_id": "world",
+          "score": {
+            "lower": 9.3529,
+            "observed": 9.3529,
+            "upper": 9.3529
+          }
+        },
+        {
+          "coverage": 1.0,
+          "domain_id": "pacing",
+          "score": {
+            "lower": 10.0,
+            "observed": 10.0,
+            "upper": 10.0
+          }
+        },
+        {
+          "coverage": 1.0,
+          "domain_id": "language",
+          "score": {
+            "lower": 8.6567,
+            "observed": 8.6567,
+            "upper": 8.6567
+          }
+        },
+        {
+          "coverage": 1.0,
+          "domain_id": "effect",
+          "score": {
+            "lower": 6.4865,
+            "observed": 6.4865,
+            "upper": 6.4865
+          }
+        },
+        {
+          "coverage": 1.0,
+          "domain_id": "fresh",
+          "score": {
+            "lower": 2.6087,
+            "observed": 2.6087,
+            "upper": 2.6087
+          }
+        },
+        {
+          "coverage": 1.0,
+          "domain_id": "mechanics",
+          "score": {
+            "lower": 1.0667,
+            "observed": 1.0667,
+            "upper": 1.0667
+          }
+        },
+        {
+          "coverage": 1.0,
+          "domain_id": "holistic",
+          "score": {
+            "lower": 6.0,
+            "observed": 6.0,
+            "upper": 6.0
+          }
+        }
+      ],
+      "score": {
+        "lower": 85.4123,
+        "observed": 85.7505,
+        "upper": 85.7645
+      }
+    },
+    {
+      "chapter": 5,
+      "control_state": "VALID",
+      "coverage": 1.0,
+      "domains": [
+        {
+          "coverage": 1.0,
+          "domain_id": "task",
+          "score": {
+            "lower": 6.7358,
+            "observed": 6.7358,
+            "upper": 6.7358
+          }
+        },
+        {
+          "coverage": 1.0,
+          "domain_id": "character",
+          "score": {
+            "lower": 14.8571,
+            "observed": 14.8571,
+            "upper": 14.8571
+          }
+        },
+        {
+          "coverage": 1.0,
+          "domain_id": "plot",
+          "score": {
+            "lower": 20.0,
+            "observed": 20.0,
+            "upper": 20.0
+          }
+        },
+        {
+          "coverage": 1.0,
+          "domain_id": "world",
+          "score": {
+            "lower": 12.0,
+            "observed": 12.0,
+            "upper": 12.0
+          }
+        },
+        {
+          "coverage": 1.0,
+          "domain_id": "pacing",
+          "score": {
+            "lower": 10.0,
+            "observed": 10.0,
+            "upper": 10.0
+          }
+        },
+        {
+          "coverage": 1.0,
+          "domain_id": "language",
+          "score": {
+            "lower": 8.5075,
+            "observed": 8.5075,
+            "upper": 8.5075
+          }
+        },
+        {
+          "coverage": 1.0,
+          "domain_id": "effect",
+          "score": {
+            "lower": 7.3514,
+            "observed": 7.3514,
+            "upper": 7.3514
+          }
+        },
+        {
+          "coverage": 1.0,
+          "domain_id": "fresh",
+          "score": {
+            "lower": 2.0652,
+            "observed": 2.0652,
+            "upper": 2.0652
+          }
+        },
+        {
+          "coverage": 1.0,
+          "domain_id": "mechanics",
+          "score": {
+            "lower": 1.3333,
+            "observed": 1.3333,
+            "upper": 1.3333
+          }
+        },
+        {
+          "coverage": 1.0,
+          "domain_id": "holistic",
+          "score": {
+            "lower": 6.0,
+            "observed": 6.0,
+            "upper": 6.0
+          }
+        }
+      ],
+      "score": {
+        "lower": 85.7075,
+        "observed": 85.7075,
+        "upper": 85.7075
+      }
+    },
+    {
+      "chapter": 6,
+      "control_state": "VALID",
+      "coverage": 1.0,
+      "domains": [
+        {
+          "coverage": 1.0,
+          "domain_id": "task",
+          "score": {
+            "lower": 6.7358,
+            "observed": 6.7358,
+            "upper": 6.7358
+          }
+        },
+        {
+          "coverage": 1.0,
+          "domain_id": "character",
+          "score": {
+            "lower": 14.8571,
+            "observed": 14.8571,
+            "upper": 14.8571
+          }
+        },
+        {
+          "coverage": 1.0,
+          "domain_id": "plot",
+          "score": {
+            "lower": 20.0,
+            "observed": 20.0,
+            "upper": 20.0
+          }
+        },
+        {
+          "coverage": 1.0,
+          "domain_id": "world",
+          "score": {
+            "lower": 11.2615,
+            "observed": 11.2615,
+            "upper": 11.2615
+          }
+        },
+        {
+          "coverage": 1.0,
+          "domain_id": "pacing",
+          "score": {
+            "lower": 7.619,
+            "observed": 7.619,
+            "upper": 7.619
+          }
+        },
+        {
+          "coverage": 1.0,
+          "domain_id": "language",
+          "score": {
+            "lower": 7.4627,
+            "observed": 7.4627,
+            "upper": 7.4627
+          }
+        },
+        {
+          "coverage": 1.0,
+          "domain_id": "effect",
+          "score": {
+            "lower": 7.3514,
+            "observed": 7.3514,
+            "upper": 7.3514
+          }
+        },
+        {
+          "coverage": 1.0,
+          "domain_id": "fresh",
+          "score": {
+            "lower": 2.3913,
+            "observed": 2.3913,
+            "upper": 2.3913
+          }
+        },
+        {
+          "coverage": 1.0,
+          "domain_id": "mechanics",
+          "score": {
+            "lower": 1.8667,
+            "observed": 1.8667,
+            "upper": 1.8667
+          }
+        },
+        {
+          "coverage": 1.0,
+          "domain_id": "holistic",
+          "score": {
+            "lower": 6.0,
+            "observed": 6.0,
+            "upper": 6.0
+          }
+        }
+      ],
+      "score": {
+        "lower": 84.6884,
+        "observed": 84.6884,
+        "upper": 84.6884
+      }
+    }
+  ],
+  "display_name": "Rewrite",
+  "draft": "rewrite",
+  "whole_work": {
+    "control_state": "VALID",
+    "coverage": 0.9942,
+    "domains": [
+      {
+        "coverage": 0.9167,
+        "domain_id": "task",
+        "nominal_points": 7.0,
+        "score": {
+          "lower": 5.0417,
+          "observed": 5.5,
+          "upper": 5.625
+        }
+      },
+      {
+        "coverage": 1.0,
+        "domain_id": "character",
+        "nominal_points": 16.0,
+        "score": {
+          "lower": 16.0,
+          "observed": 16.0,
+          "upper": 16.0
+        }
+      },
+      {
+        "coverage": 1.0,
+        "domain_id": "plot",
+        "nominal_points": 20.0,
+        "score": {
+          "lower": 18.75,
+          "observed": 18.75,
+          "upper": 18.75
+        }
+      },
+      {
+        "coverage": 1.0,
+        "domain_id": "world",
+        "nominal_points": 12.0,
+        "score": {
+          "lower": 11.4462,
+          "observed": 11.4462,
+          "upper": 11.4462
+        }
+      },
+      {
+        "coverage": 1.0,
+        "domain_id": "pacing",
+        "nominal_points": 10.0,
+        "score": {
+          "lower": 7.3016,
+          "observed": 7.3016,
+          "upper": 7.3016
+        }
+      },
+      {
+        "coverage": 1.0,
+        "domain_id": "language",
+        "nominal_points": 10.0,
+        "score": {
+          "lower": 8.5714,
+          "observed": 8.5714,
+          "upper": 8.5714
+        }
+      },
+      {
+        "coverage": 1.0,
+        "domain_id": "effect",
+        "nominal_points": 8.0,
+        "score": {
+          "lower": 7.3514,
+          "observed": 7.3514,
+          "upper": 7.3514
+        }
+      },
+      {
+        "coverage": 1.0,
+        "domain_id": "fresh",
+        "nominal_points": 5.0,
+        "score": {
+          "lower": 2.2826,
+          "observed": 2.2826,
+          "upper": 2.2826
+        }
+      },
+      {
+        "coverage": 1.0,
+        "domain_id": "mechanics",
+        "nominal_points": 4.0,
+        "score": {
+          "lower": 1.0667,
+          "observed": 1.0667,
+          "upper": 1.0667
+        }
+      },
+      {
+        "coverage": 1.0,
+        "domain_id": "holistic",
+        "nominal_points": 8.0,
+        "score": {
+          "lower": 6.0,
+          "observed": 6.0,
+          "upper": 6.0
+        }
+      }
+    ],
+    "penalty_deduction": {
+      "lower": 0.8571,
+      "observed": 0.8571,
+      "upper": 0.8571
+    },
+    "score": {
+      "lower": 82.9543,
+      "observed": 83.4127,
+      "upper": 83.5377
+    },
+    "status": "SCORED"
+  },
+  "wip_70_30": {
+    "chapter_mean": {
+      "lower": 83.3955,
+      "observed": 83.8029,
+      "upper": 83.8392
+    },
+    "chapter_weight": 0.3,
+    "profile_id": "balanced-wip-70-30",
+    "score": {
+      "lower": 83.0867,
+      "observed": 83.5297,
+      "upper": 83.6282
+    },
+    "whole_work_weight": 0.7
+  }
+}

@@ -1,0 +1,97 @@
+{
+  "chapter_differences_rewrite_minus_original": [
+    {
+      "chapter": 1,
+      "observed_difference": 1.1194
+    },
+    {
+      "chapter": 2,
+      "observed_difference": 0.4786
+    },
+    {
+      "chapter": 3,
+      "observed_difference": -4.0804
+    },
+    {
+      "chapter": 4,
+      "observed_difference": -3.5218
+    },
+    {
+      "chapter": 5,
+      "observed_difference": -3.4434
+    },
+    {
+      "chapter": 6,
+      "observed_difference": -3.8968
+    }
+  ],
+  "comparison_scope": "Current complete six-chapter WIP protocol only; not a sampled-to-full comparison.",
+  "domain_differences_rewrite_minus_original": [
+    {
+      "domain_id": "task",
+      "observed_difference": 0.3941
+    },
+    {
+      "domain_id": "character",
+      "observed_difference": 1.1429
+    },
+    {
+      "domain_id": "plot",
+      "observed_difference": -0.0735
+    },
+    {
+      "domain_id": "world",
+      "observed_difference": -0.5538
+    },
+    {
+      "domain_id": "pacing",
+      "observed_difference": -0.4762
+    },
+    {
+      "domain_id": "language",
+      "observed_difference": 1.5565
+    },
+    {
+      "domain_id": "effect",
+      "observed_difference": 0.8649
+    },
+    {
+      "domain_id": "fresh",
+      "observed_difference": 0.2174
+    },
+    {
+      "domain_id": "mechanics",
+      "observed_difference": 0.5334
+    },
+    {
+      "domain_id": "holistic",
+      "observed_difference": 0.0
+    }
+  ],
+  "drafts": {
+    "original": {
+      "whole_work": {
+        "lower": 75.5214,
+        "observed": 75.5214,
+        "upper": 75.5214
+      },
+      "wip_70_30": {
+        "lower": 78.6097,
+        "observed": 78.6731,
+        "upper": 78.6757
+      }
+    },
+    "rewrite": {
+      "whole_work": {
+        "lower": 82.9543,
+        "observed": 83.4127,
+        "upper": 83.5377
+      },
+      "wip_70_30": {
+        "lower": 83.0867,
+        "observed": 83.5297,
+        "upper": 83.6282
+      }
+    }
+  }
+}
