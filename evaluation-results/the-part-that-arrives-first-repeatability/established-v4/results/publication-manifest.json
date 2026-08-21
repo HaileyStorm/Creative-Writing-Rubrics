@@ -7,13 +7,23 @@
     "bytes": 5205,
     "sha256": "3267343f9f6653489eca29f45957335458fe304b45a6762695e28d7dd3c81c95"
   },
-  "publication_profile": "summary_provenance_leaf_metrics_and_charts_v1",
+  "publication_profile": "summary_provenance_leaf_and_derived_metrics_v2",
+  "publication_transformations": {
+    "score-distributions.svg": {
+      "kind": "native_axis_correction",
+      "arm_id": "oregon_narrative_2017",
+      "source_axis_minimum": 0,
+      "published_axis_minimum": 6,
+      "axis_maximum": 36
+    }
+  },
   "files": {
     "agreement.svg": {"bytes": 1654, "sha256": "6d8a22b8dcb18366813a4a43074c6dd761ab27029ba8058a1271f670fed8ab41"},
     "comparison.md": {"bytes": 294, "sha256": "40ac01ae35a843aed8aadb843865f9b949c49df5f3efb9f2822d12cc03ab8645"},
+    "derived-repeatability.json": {"bytes": 4223, "sha256": "3d503c3f6251a2ab290aa9b9f69d61bd166a3855a24e6b07b7cf8b528176ea6d"},
     "hbq-leaf-repeatability.json": {"bytes": 46727, "sha256": "91a629730f990dbfbaa30d077abd2baea4143a6202b11ee0877158ab5f40968a"},
     "provenance.json": {"bytes": 24338, "sha256": "98de6d5dd0ea3d5bc975a10b13579f15efca17ce5a9caaf886f9dac086d83419"},
-    "score-distributions.svg": {"bytes": 3607, "sha256": "f2f2d1b84c5b076478c6445b4d27880e7b28e9437fb362956c3b9a09b2599b2f"},
+    "score-distributions.svg": {"bytes": 3607, "sha256": "7a5edd7269366438063e3903064a15fcaa50645eb438797e4f5f773d0fa87d83"},
     "summary.json": {"bytes": 16715, "sha256": "d788fc20f5c00b397e51b068b3e64977c0b44cf9ee33807474b30f133877e60a"}
   }
 }

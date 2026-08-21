@@ -1,0 +1,50 @@
+{
+  "format_version": 1,
+  "study_id": "the-part-that-arrives-first-established-rubrics-v4-strict-schema-batch32",
+  "protocol_contract_sha256": "b641ca777554dc4e27246a0e383f19874d76bcf96df0a86063f0ebc3d5827676",
+  "agreement": {
+    "hbq_short_story_batch32": {
+      "output_units": 178,
+      "all_five_agree": {"numerator": 162, "denominator": 178, "proportion": 0.9101123595505618},
+      "pairwise_repeat_agreement": {"numerator": 1695, "denominator": 1780, "proportion": 0.952247191011236},
+      "modal_judgments": {"numerator": 864, "denominator": 890, "proportion": 0.9707865168539326},
+      "modal_proportion_distribution": {"1.0": 162, "0.8": 7, "0.6": 8, "0.4": 1}
+    },
+    "naplan_narrative_2022": {
+      "output_units": 10,
+      "all_five_agree": {"numerator": 10, "denominator": 10, "proportion": 1.0},
+      "pairwise_repeat_agreement": {"numerator": 100, "denominator": 100, "proportion": 1.0},
+      "modal_judgments": {"numerator": 50, "denominator": 50, "proportion": 1.0}
+    },
+    "cambridge_igcse_0500_p2_mj_2024": {
+      "output_units": 2,
+      "all_five_agree": {"numerator": 1, "denominator": 2, "proportion": 0.5},
+      "pairwise_repeat_agreement": {"numerator": 14, "denominator": 20, "proportion": 0.7},
+      "modal_judgments": {"numerator": 8, "denominator": 10, "proportion": 0.8}
+    },
+    "oregon_narrative_2017": {
+      "output_units": 6,
+      "all_five_agree": {"numerator": 6, "denominator": 6, "proportion": 1.0},
+      "pairwise_repeat_agreement": {"numerator": 60, "denominator": 60, "proportion": 1.0},
+      "modal_judgments": {"numerator": 30, "denominator": 30, "proportion": 1.0}
+    }
+  },
+  "scale_width_normalized_variability": {
+    "hbq_short_story_batch32": {"scale_minimum": 0, "scale_maximum": 100, "scale_width": 100, "sample_standard_deviation_percent_of_width": 3.2755873877825366, "mean_absolute_pairwise_difference_percent_of_width": 4.143280000000004, "range_percent_of_width": 8.29610000000001},
+    "naplan_narrative_2022": {"scale_minimum": 0, "scale_maximum": 47, "scale_width": 47, "sample_standard_deviation_percent_of_width": 0.0, "mean_absolute_pairwise_difference_percent_of_width": 0.0, "range_percent_of_width": 0.0},
+    "cambridge_igcse_0500_p2_mj_2024": {"scale_minimum": 0, "scale_maximum": 40, "scale_width": 40, "sample_standard_deviation_percent_of_width": 1.369306393762915, "mean_absolute_pairwise_difference_percent_of_width": 1.5, "range_percent_of_width": 2.5},
+    "oregon_narrative_2017": {"scale_minimum": 6, "scale_maximum": 36, "scale_width": 30, "sample_standard_deviation_percent_of_width": 0.0, "mean_absolute_pairwise_difference_percent_of_width": 0.0, "range_percent_of_width": 0.0}
+  },
+  "ceiling_exposure": {
+    "hbq_short_story_batch32": {"total_ceiling_hits": 0, "total_observations": 5, "mean_total_gap": 9.3236, "criterion_ceiling": null, "criterion_note": "Binary leaf labels are not ordinal criterion scores."},
+    "naplan_narrative_2022": {"total_ceiling_hits": 5, "total_observations": 5, "mean_total_gap": 0.0, "criterion_ceiling_hits": 50, "criterion_observations": 50, "summed_criterion_gap": 0},
+    "cambridge_igcse_0500_p2_mj_2024": {"total_ceiling_hits": 3, "total_observations": 5, "mean_total_gap": 0.4, "criterion_ceiling_hits": 8, "criterion_observations": 10, "summed_criterion_gap": 2},
+    "oregon_narrative_2017": {"total_ceiling_hits": 5, "total_observations": 5, "mean_total_gap": 0.0, "criterion_ceiling_hits": 30, "criterion_observations": 30, "summed_criterion_gap": 0}
+  },
+  "conformance": {
+    "hbq_short_story_batch32": {"accepted_provider_calls": 30, "rejected_provider_calls": 0, "deterministic_quote_to_summary_repairs": 62, "additional_provider_calls": 0},
+    "naplan_narrative_2022": {"accepted_provider_calls": 5, "rejected_provider_calls": 3, "deterministic_quote_to_summary_repairs": 0, "additional_provider_calls": 3},
+    "cambridge_igcse_0500_p2_mj_2024": {"accepted_provider_calls": 5, "rejected_provider_calls": 0, "deterministic_quote_to_summary_repairs": 0, "additional_provider_calls": 0},
+    "oregon_narrative_2017": {"accepted_provider_calls": 5, "rejected_provider_calls": 3, "deterministic_quote_to_summary_repairs": 0, "additional_provider_calls": 3}
+  }
+}
