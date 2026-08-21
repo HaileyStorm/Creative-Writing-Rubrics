@@ -8,4 +8,4 @@ The matrix is atomically sealed only after all 88 raw runs verify and every acce
 
 Prepare (no provider call):
 `$env:PYTHONPATH='src'; python evaluation-results/hbq-human-alignment-v3-successor-v1/prepare_fresh.py C:\Users\Haile\Documents\cwr-hanna-successor-fresh88-freeze-v3 C:\Users\Haile\Documents\cwr-human-reference-v3-d9038f1\inputs <work> <artifacts>`.
-Use `--dry-run` to validate and print `88` without writing. Then run `$env:PYTHONPATH='src'; python evaluation-results/hbq-human-alignment-v3-successor-v1/run_fresh.py <freeze> <work> <artifacts>`; this is the only command which can contact Codex.
+Use `--dry-run` to validate and print `88` without writing. Then run `$env:PYTHONPATH='src'; python evaluation-results/hbq-human-alignment-v3-successor-v1/run_fresh.py <freeze> <work> <artifacts> --workers 4`; this is the only command which can contact Codex.

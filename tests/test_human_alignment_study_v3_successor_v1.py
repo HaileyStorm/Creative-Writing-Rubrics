@@ -4,7 +4,10 @@ import importlib.util
 import gzip
 import hashlib
 import json
+import os
 import sys
+import threading
+import time
 from pathlib import Path
 
 import pytest
@@ -298,7 +301,8 @@ def test_run_invokes_exact_sol_contract_resumes_and_gates_after_provider_success
     monkeypatch.setattr(run_fresh, "verify_matrix", verify_first_two)
     monkeypatch.setattr(run_fresh, "create_development_gate", lambda *_: {"phase": "semantic_development_gate"})
     result = run_fresh.run(tmp_path / "authority", work, artifacts)
-    assert result == {"matrix": "m" * 64, "gate": {"phase": "semantic_development_gate"}}
+    assert result["matrix"] == "m" * 64 and result["gate"] == {"phase": "semantic_development_gate"}
+    assert [item["ordinal"] for item in result["cells"]] == list(range(1, 89))
     assert len(calls) == 88
     first, second = calls[:2]
     assert first["output_dir"] == artifacts / "runs" / "fresh-001" and first["resume"] is False
@@ -310,6 +314,77 @@ def test_run_invokes_exact_sol_contract_resumes_and_gates_after_provider_success
     result = run_fresh.run(tmp_path / "authority", work, artifacts)
     assert len(calls) == 176 and all(call["resume"] is True for call in calls[88:])
     assert result["matrix"] == "m" * 64
+
+
+def test_run_workers_bound_concurrency_preflight_and_resume(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    inputs, authority = _fresh88_inputs(tmp_path)
+    work, artifacts = tmp_path / "work", tmp_path / "artifacts"
+    monkeypatch.setattr(prepare_fresh, "load_authority", lambda _: authority)
+    prepare_fresh.prepare(tmp_path / "authority", inputs, work, artifacts)
+    monkeypatch.setattr(study, "load_authority", lambda _: authority)
+    active = 0
+    maximum = 0
+    lock = threading.Lock()
+    calls: list[dict] = []
+    def provider_boundary(**kwargs):
+        nonlocal active, maximum
+        with lock:
+            active += 1; maximum = max(maximum, active); calls.append(kwargs)
+        time.sleep(0.01)
+        Path(kwargs["output_dir"]).mkdir(parents=True, exist_ok=True)
+        with lock: active -= 1
+    monkeypatch.setattr(run_fresh, "run_judge", provider_boundary)
+    monkeypatch.setattr(run_fresh, "verify_matrix", lambda *_: {"matrix_sha256": "w" * 64})
+    monkeypatch.setattr(run_fresh, "create_development_gate", lambda *_: {"phase": "semantic_development_gate"})
+    result = run_fresh.run(tmp_path / "authority", work, artifacts, workers=3)
+    assert len(calls) == len(result["cells"]) == 88 and maximum <= 3
+    assert [item["ordinal"] for item in result["cells"]] == list(range(1, 89))
+    run_fresh.run(tmp_path / "authority", work, artifacts, workers=4)
+    assert len(calls) == 176 and all(call["resume"] is True for call in calls[88:])
+    for workers in (0, 5):
+        with pytest.raises(ValueError, match="1 through 4"):
+            run_fresh.run(tmp_path / "authority", work, artifacts, dry_run=True, workers=workers)
+    assert len(calls) == 176
+
+
+@pytest.mark.parametrize("kind, message", [("runs-file", "Runs root"), ("child-file", "Raw run target"), ("unknown-file", "Unknown")])
+def test_run_preflight_rejects_files_without_provider_calls(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, kind: str, message: str) -> None:
+    inputs, authority = _fresh88_inputs(tmp_path)
+    work, artifacts = tmp_path / "work", tmp_path / "artifacts"
+    monkeypatch.setattr(prepare_fresh, "load_authority", lambda _: authority)
+    prepare_fresh.prepare(tmp_path / "authority", inputs, work, artifacts)
+    monkeypatch.setattr(study, "load_authority", lambda _: authority)
+    calls: list[dict] = []
+    monkeypatch.setattr(run_fresh, "run_judge", lambda **kwargs: calls.append(kwargs))
+    runs = artifacts / "runs"
+    if kind == "runs-file":
+        runs.parent.mkdir(parents=True, exist_ok=True); runs.write_text("not a directory", encoding="utf-8")
+    elif kind == "child-file":
+        runs.mkdir(parents=True); (runs / "fresh-001").write_text("not a directory", encoding="utf-8")
+    else:
+        runs.mkdir(parents=True); (runs / "unknown").write_text("not a directory", encoding="utf-8")
+    with pytest.raises(ValueError, match=message):
+        run_fresh.run(tmp_path / "authority", work, artifacts, workers=4)
+    assert calls == []
+
+
+def test_run_preflight_rejects_reparse_and_alias_without_provider_calls(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    inputs, authority = _fresh88_inputs(tmp_path)
+    work, artifacts = tmp_path / "work", tmp_path / "artifacts"
+    monkeypatch.setattr(prepare_fresh, "load_authority", lambda _: authority)
+    prepare_fresh.prepare(tmp_path / "authority", inputs, work, artifacts)
+    monkeypatch.setattr(study, "load_authority", lambda _: authority)
+    calls: list[dict] = []
+    monkeypatch.setattr(run_fresh, "run_judge", lambda **kwargs: calls.append(kwargs))
+    runs, target = artifacts / "runs", artifacts / "runs" / "fresh-001"
+    runs.mkdir(parents=True); target.mkdir()
+    try:
+        os.symlink(target, runs / "fresh-002", target_is_directory=True)
+    except OSError as error:
+        pytest.skip(f"directory symlink unavailable: {error}")
+    with pytest.raises(ValueError, match="non-reparse"):
+        run_fresh.run(tmp_path / "authority", work, artifacts, workers=4)
+    assert calls == []
 
 
 def test_run_refuses_runtime_pin_drift_and_never_gates_after_provider_failure(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
@@ -329,4 +404,4 @@ def test_run_refuses_runtime_pin_drift_and_never_gates_after_provider_failure(mo
     monkeypatch.setattr(run_fresh, "verify_matrix", lambda *_: pytest.fail("incomplete run must not verify"))
     monkeypatch.setattr(run_fresh, "create_development_gate", lambda *_: pytest.fail("provider failure must not gate"))
     with pytest.raises(RuntimeError, match="provider failed"):
-        run_fresh.run(tmp_path / "authority", work, artifacts)
+        run_fresh.run(tmp_path / "authority", work, artifacts, workers=3)
