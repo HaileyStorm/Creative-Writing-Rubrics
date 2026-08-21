@@ -1,0 +1,55 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-human-alignment-supplemental-providers-v2",
+  "frozen_before_execution": true,
+  "purpose": "A score-blind, transport-only successor for the failed Nous Flash v1 HANNA route. GPT-5.6 Sol remains the primary condition; v1 failures remain immutable historical evidence.",
+  "parent_v1": {
+    "path": "../hbq-human-alignment-supplemental-providers-v1",
+    "study_id": "hbq-human-alignment-supplemental-providers-v1",
+    "files": {
+      "study-contract.json": "b72ad42eafdfe67d70fc52adc509dc1eecd00ed47d2a50c24dd6d5dd0afceef5",
+      "study.py": "2839146db034993a20431196c2151f2525b95c22b4e320cbc16486f56287f697",
+      "run_study.py": "f33015ac25d32dc14a64fc4f1cd854e49724622d664d5cc427017c4afe53f522",
+      "analyze_study.py": "0ecf52ddff38c2aab2e5f5242534295828455413dad93896317002ed2026f3a6"
+    },
+    "runner_sha256": "e2b91682595d10ab8c2a2f55730fa2ffba40b0daa22a15a691d60fdfb9e752d3"
+  },
+  "provider": {
+    "provider_id": "nous_flash_max",
+    "provider": "nous",
+    "model": "deepseek/deepseek-v4-flash-0731",
+    "reasoning": "max",
+    "allow_unattested_reasoning": true
+  },
+  "transport_pilot": {
+    "cells": 3,
+    "batch_size": 16,
+    "question_count": 16,
+    "batch_attempts": 1,
+    "workers": 1,
+    "timeout_seconds": 600,
+    "maximum_completion_seconds_exclusive": 100,
+    "success_rule": "Exactly three independent schema-valid provider completions, each with one logical provider request, zero recovered retryable failures, valid provider/model/reasoning/runtime/prompt bindings, and duration below 100 seconds.",
+    "failure_successor": {
+      "study_id": "hbq-human-alignment-supplemental-providers-v3",
+      "batch_size": 8,
+      "rule": "If this pilot fails or reaches the duration boundary, preserve v2 evidence and preregister v3; never mutate v2."
+    }
+  },
+  "development": {
+    "batch_size": 16,
+    "enabled_only_after": "transport_pilot_3_of_3",
+    "comparison_status": "unmatched_to_primary_32",
+    "comparison_rule": "Any full-development comparison is unmatched to primary batch-32 unless separately frozen paired Sol batch-16 cells exist."
+  },
+  "privacy": {
+    "pilot": "No HANNA ratings, correlations, scores, or prose-derived public analysis are produced during the pilot.",
+    "human_judging": "Uses only existing HANNA material; no new human judging or contact.",
+    "remote": "Nous receives only the authorized per-cell judge input in the external work directory; no private repository content is sent."
+  },
+  "interpretation_limits": [
+    "Transport failure does not promote Nous Pro.",
+    "This route supplements and never replaces GPT-5.6 Sol.",
+    "No DSPy prompt optimization is part of this successor."
+  ]
+}

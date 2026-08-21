@@ -1,0 +1,34 @@
+{
+  "format_version": 1,
+  "study_id": "the-part-that-arrives-first-batch-curve-live-v1",
+  "status": "transport_agnostic_callback_mechanism_not_live",
+  "parent": {
+    "contract_path": "../batch-curve-v2/study-contract.json",
+    "contract_sha256": "57cdb3deaab75375bd3ebf808aab3d439d3ce9f9341452926a8e5097f26aced2",
+    "projection_path": "../batch-curve-v2/study-contract.projection.sha256",
+    "projection_sha256": "402b3246af8cf86c243f724a11329701d75074b545f1dd9da57d88adb668493c",
+    "harness_path": "../batch-curve-v2/batch_curve_harness.py",
+    "harness_sha256": "03ec7f313e4d4a073f4bf1ea55dacd6e38f664f91027b1786f56c72a9586dac3"
+  },
+  "prompt_binding": {
+    "binary_prompt_path": "../../../prompts/judge/BINARY_EVALUATION_PROMPT.md",
+    "binary_prompt_sha256": "6c1cac901d820c1ab866e19f9191896e8c97a6aadf35bdae4eac640fd199a3a2",
+    "source_path": "../source.md",
+    "source_sha256": "ed6fb2e19f07174f56eb02e0a5d4c4419eecba324752881439b9b2992f082729",
+    "effective_prompt": "runner_render_prompt_v1: frozen binary prefix plus frozen source and exact frozen question subset"
+  },
+  "schedule": {
+    "cells": 39,
+    "repetitions": 3,
+    "all_in_one_question_count": 178,
+    "source": "parent_fixed_three_block_rotation"
+  },
+  "output_policy": {
+    "external_root": "operator_selected",
+    "resume": "per-cell atomic checkpoints",
+    "raw_response_bodies": "prohibited",
+    "credentials": "prohibited",
+    "callback": "transport_boundary_only_no_concrete_provider_adapter_verified",
+    "recommendation": "none_until_parent_deep_validation_accepts_an_exact_empirical_stack"
+  }
+}
