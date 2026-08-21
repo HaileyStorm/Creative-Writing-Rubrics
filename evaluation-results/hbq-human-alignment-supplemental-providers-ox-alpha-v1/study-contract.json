@@ -1,0 +1,62 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-human-alignment-supplemental-providers-ox-alpha-v1",
+  "frozen_before_execution": true,
+  "purpose": "A zero-paid, outcome-blind, three-item supplemental comparison. GPT-5.6 remains the primary condition; Ox Alpha evidence is always provisional and is never an exact-gate input.",
+  "provider": {
+    "provider_id": "ox_alpha_max",
+    "provider": "nous",
+    "model": "stealth/ox-alpha",
+    "provider_canonical_model": "stealth/ox-alpha",
+    "reported_models": ["stealth/ox-alpha"],
+    "reasoning": "max",
+    "allow_unattested_reasoning": true,
+    "provisional_reasoning": true,
+    "maximum_workers": 1,
+    "evidence_status": "provisional_only"
+  },
+  "selection": {
+    "phase": "development",
+    "item_count": 3,
+    "selection_rule": "Sort the frozen public primary-development selection by story_sha256, prompt_sha256, and item_id; freeze the first three. Do not inspect GPT or Ox outcomes while selecting."
+  },
+  "runtime": {
+    "bundle_id": "prose.short_story",
+    "question_count": 178,
+    "batch_size": 32,
+    "expected_batches_per_item": 6,
+    "batch_attempts": 1,
+    "workers": 1,
+    "maximum_logical_requests": 18,
+    "maximum_physical_http_attempts_per_logical_request": 2,
+    "maximum_physical_http_attempts": 36,
+    "retry_or_fallback": "forbidden"
+  },
+  "remote_disclosure": {
+    "destination": "Nous hardened tool-free judge bridge -> authenticated Nous service",
+    "sent": "Only each selected public primary-development story, its paired public prompt, task contract, HBQ questions, and judge instructions leave the external work root. The canonical bridge may make at most two physical HTTP attempts for one logical request.",
+    "not_sent": "No private prose, private repository content, new human data, credentials, raw local evidence, or unrelated project files."
+  },
+  "zero_cost": {
+    "catalog_binding": "No-purchase public-HANNA pilot. Stop before any paid route, new human work, or provider upgrade.",
+    "no_purchase": true,
+    "stop_on_charge_signal": true,
+    "stop_on_http_402": true
+  },
+  "stop_conditions": [
+    "charge_or_payment_signal",
+    "http_402",
+    "non_2xx_or_recovered_retry",
+    "invalid_or_unshared_evidence_root_proof",
+    "provider_model_mismatch",
+    "schema_runtime_prompt_or_input_drift",
+    "provider_session_or_receipt_reuse",
+    "private_content",
+    "any_failed_cell"
+  ],
+  "interpretation_limits": [
+    "Missing provider max attestation is an expected provisional blocker, not a launch stop.",
+    "All Ox Alpha evidence is provisional even if transport evidence is otherwise valid.",
+    "No exact-gate, promotion, model replacement, or human-alignment claim follows from this three-item pilot."
+  ]
+}

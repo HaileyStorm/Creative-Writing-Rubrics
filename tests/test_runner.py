@@ -1774,7 +1774,7 @@ def test_nous_backend_uses_only_canonical_tool_free_launcher(tmp_path: Path, mon
         assert proof.is_file()
         request = json.loads(request_path.read_text(encoding="utf-8"))
         assert request["schema"] == "codex-nous-tool-free-judge-request-v1"
-        assert request["model"] in {"deepseek/deepseek-v4-flash-0731", "deepseek/deepseek-v4-pro-0813"}
+        assert request["model"] in {"deepseek/deepseek-v4-flash-0731", "deepseek/deepseek-v4-pro-0813", "stealth/ox-alpha"}
         assert request["reasoning_effort"] == "max"
         assert request["response_format"]["json_schema"]["strict"] is True
         assert len(request["messages"]) == 2
@@ -1782,6 +1782,7 @@ def test_nous_backend_uses_only_canonical_tool_free_launcher(tmp_path: Path, mon
         canonical = {
             "deepseek/deepseek-v4-flash-0731": "deepseek/deepseek-v4-flash-20260731",
             "deepseek/deepseek-v4-pro-0813": "deepseek/deepseek-v4-pro-20260813",
+            "stealth/ox-alpha": "stealth/ox-alpha",
         }[request["model"]]
         result_path.write_text(
             json.dumps(
@@ -1856,7 +1857,14 @@ def test_nous_backend_uses_only_canonical_tool_free_launcher(tmp_path: Path, mon
     )
     assert json.loads(pro_content) == {"verdicts": []}
     assert pro_record["provider_canonical_model"] == "deepseek/deepseek-v4-pro-20260813"
-    assert len(calls) == 6
+    ox_content, ox_record = _call_nous(
+        model="stealth/ox-alpha", reasoning="max", prompt="judge this",
+        output_dir=tmp_path / "ox", response_schema=schema, batch_number=1, timeout=10,
+        allow_unattested_reasoning=True,
+    )
+    assert json.loads(ox_content) == {"verdicts": []}
+    assert ox_record["provider_canonical_model"] == "stealth/ox-alpha"
+    assert len(calls) == 8
 
 
 def test_nous_backend_rejects_any_nonpinned_model_or_reasoning(tmp_path: Path) -> None:
@@ -1865,6 +1873,21 @@ def test_nous_backend_rejects_any_nonpinned_model_or_reasoning(tmp_path: Path) -
     with pytest.raises(HBQError, match="Nous requires an allowlisted"):
         _call_nous(
             model="other-model",
+            reasoning="high",
+            prompt="judge this",
+            output_dir=tmp_path,
+            response_schema=schema,
+            batch_number=1,
+            timeout=10,
+        )
+
+
+def test_ox_alpha_requires_requested_max_reasoning(tmp_path: Path) -> None:
+    schema = tmp_path / "schema.json"
+    schema.write_text('{"type":"object"}', encoding="utf-8")
+    with pytest.raises(HBQError, match="allowlisted"):
+        _call_nous(
+            model="stealth/ox-alpha",
             reasoning="high",
             prompt="judge this",
             output_dir=tmp_path,
