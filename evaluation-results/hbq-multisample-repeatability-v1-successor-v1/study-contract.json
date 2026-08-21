@@ -1,0 +1,21 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-multisample-repeatability-v1-successor-v1",
+  "purpose": "Finish the already sealed 330-cell multi-sample schedule after a verified 76-cell prefix. No new human judgment is collected and no paid API is used.",
+  "predecessor": {
+    "file_count": 801,
+    "manifest_sha256": "82eea667468f89d01ab7502a24e875953239fee9f3f2552f2b86cc41a3e6a697",
+    "frozen_contract_sha256": "5fb06e5a4775ecfe1cee10132e52100733c7e765e8eae9865374bb23f1addddd",
+    "journal_sha256": "c8e568e14d60ccf8d2f538ab32c4c67f8484dc0d2094f94039b9582f0c8bda71",
+    "sessions_sha256": "ee03ef608ad9f97ed09f97701de8e00c5e64905a126a4fa16580562b870dd591",
+    "sequence77_artifacts_sha256": "858a7a5754e4d0d6876e70d08f184dae45712d3e97adbb32d64b124581f10fc9",
+    "sequence77_prompt_sha256": "4c5233945dfe02b99e3ddf3c51acc818ef005105cbbefa5ad252428c1e1f58db",
+    "sequence77_schema_sha256": "60d88c9c6611416a5f380807ea646ff96d0a4fe0e89eff8d9c48fcd46c743256"
+  },
+  "predecessor_manifest_serialization": "sorted UTF-8 lines: relative_path, tab, decimal_bytes, tab, lowercase_sha256, newline",
+  "geometry": {"accepted_prefix": 76, "first_successor_sequence": 77, "successor_cells": 254, "combined_cells": 330},
+  "failure_policy": "The five historical rejected attempts and the nine sequence-77 failure artifacts are immutable lineage only. None may be copied or promoted as accepted evidence.",
+  "provider": {"route": "codex_cli", "model": "gpt-5.6-sol", "reasoning": "high", "no_paid_api": true, "fresh_session_policy": "Every new provider session ID must be distinct from the 146 predecessor IDs and all other successor IDs."},
+  "normalization": {"rule": "Use a raw evidence quote unchanged when it is an exact source substring. Otherwise remove exactly one matching outer curly-quote pair only when the interior is an exact source substring. No trimming, fuzzy matching, inner edits, or other normalization is allowed.", "raw_response_policy": "Keep raw response and raw result bytes beside the deterministic projection and audit."},
+  "remote_disclosure": "Each new dispatch uses the v1 Codex route and sends only the already-disclosed source and originating prompt. The operator reviews this before starting; dry-run makes zero provider calls."
+}
