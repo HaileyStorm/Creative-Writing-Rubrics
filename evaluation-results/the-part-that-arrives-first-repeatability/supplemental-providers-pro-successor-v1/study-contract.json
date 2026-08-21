@@ -1,0 +1,55 @@
+{
+  "format_version": 1,
+  "study_id": "the-part-that-arrives-first-supplemental-providers-pro-successor-v1",
+  "frozen_before_execution": true,
+  "successor_of": {
+    "study_contract_path": "../supplemental-providers-v3/study-contract.json",
+    "study_contract_sha256": "1c8533f6285ee3fa38747013b6b4bf83726e5b2d23f07a94e6b5640b45db3ac1",
+    "runner_sha256": "6230035c731044a52f569aa30edf17419c34b8721087a4c8a807f68b3baa9caf",
+    "analyzer_sha256": "9a92f28bbc75d1cc459eb089cf492f3edfaa82554372985d509c3c3f7c558b12"
+  },
+  "provider": {
+    "provider_id": "nous_pro_max",
+    "provider": "nous",
+    "model": "deepseek/deepseek-v4-pro-0813",
+    "reasoning": "max",
+    "allow_unattested_reasoning": true,
+    "reported_models": ["deepseek/deepseek-v4-pro-0813", "deepseek/deepseek-v4-pro-20260813"],
+    "provider_canonical_model": "deepseek/deepseek-v4-pro-20260813",
+    "provisional_reasoning": true,
+    "no_purchase": true,
+    "stop_on_http_402": true
+  },
+  "flash_execution_trigger": {
+    "classification": "operational_inadequacy_incomplete_execution",
+    "external_root_required": true,
+    "provider_id": "nous_flash_max",
+    "journal_path": "providers/nous_flash_max/schedule-journal.jsonl",
+    "journal_sha256": "dd0ba1c0f3d2a5e972591aebdde0ff06eadbed92d8cffe03437a1cbb465f86f6",
+    "planned_event_count": 20,
+    "completed_event_count": 1,
+    "completed_hbq_run_binding_sha256": "4630fdaeeefe0fd6da16dc26e856c987aea72db73f10ed638e359dbf4f4cec90",
+    "completed_hbq_manifest": {"path": "providers/nous_flash_max/hbq/run-01/run.json", "bytes": 12691, "sha256": "4630fdaeeefe0fd6da16dc26e856c987aea72db73f10ed638e359dbf4f4cec90"},
+    "naplan_pass_manifest": {"path": "providers/nous_flash_max/naplan/run-01/pass.json", "bytes": 689, "sha256": "d5eb1833eeb2076fab556d5b8d37f001c15dae1541c991234114dcb1c1f2dbfe"},
+    "required_absent_paths": ["providers/nous_flash_max/naplan/run-01/response.json", "providers/nous_flash_max/naplan/run-01/result.json"],
+    "semantic_rejections": [
+      {"path": "providers/nous_flash_max/naplan/run-01/attempts/rejected-0001.json", "bytes": 8126, "sha256": "6f9af5866de0b303507dda6fc04c43460ca658ad07fa41961c3d3970bd7df7c7", "reason": "naplan_narrative_2022 exact quote is not grounded in the frozen source"},
+      {"path": "providers/nous_flash_max/naplan/run-01/attempts/rejected-0002.json", "bytes": 9596, "sha256": "0f2aa6ac741a1c31b1fdb4e114e5a4cdbab65811ada062ad177c0341b63978ab", "reason": "naplan_narrative_2022 exact quote is not grounded in the frozen source"},
+      {"path": "providers/nous_flash_max/naplan/run-01/attempts/rejected-0003.json", "bytes": 6472, "sha256": "19595b2e660f91f928e17296c611b80a0ec65e38d76e07f9f2afca2d47ff7b18", "reason": "naplan_narrative_2022 exact quote is not grounded in the frozen source"}
+    ]
+  },
+  "repetitions": 5,
+  "schedule": {"kind": "five_block_near_latin", "execution": "serial_in_listed_order", "blocks": [["hbq", "naplan", "cambridge", "oregon"], ["naplan", "cambridge", "oregon", "hbq"], ["cambridge", "oregon", "hbq", "naplan"], ["oregon", "hbq", "naplan", "cambridge"], ["hbq", "naplan", "cambridge", "oregon"]], "maximum_position_imbalance": 1},
+  "parity": {
+    "source": {"path": "../source.md", "sha256": "ed6fb2e19f07174f56eb02e0a5d4c4419eecba324752881439b9b2992f082729", "bytes": 64490},
+    "hbq": {"bundle_id": "prose.short_story", "question_count": 178, "question_id_sequence_sha256": "5bc1c7067a96acddc1513f8e69e0814f282856061e37129ec38cf6e91024d524", "batch_size": 32, "batch_attempts": 3, "expected_batches_per_repetition": 6, "strict_ai": true, "manifest_format_version": 3, "checkpoint_format_version": 4, "evidence_normalization_policy": "invalid_exact_quote_to_summary_v1", "validation_feedback_policy": "validation_feedback_retry_v1", "retry_semantics": "cumulative_batch_attempts_v1"},
+    "native_runtime": {"attempts_per_repetition": 3, "retry_semantics": "cumulative_structured_attempts_v1", "semantic_validation_policy": "native_ids_ranges_totals_grounded_quotes_v1"},
+    "methods": [
+      {"method_id": "hbq", "kind": "hbq", "reference_arm": "hbq_short_story_batch32"},
+      {"method_id": "naplan", "kind": "native", "reference_arm": "naplan_narrative_2022", "prompt": "../established-v2/arms/naplan-narrative-2022.prompt.md", "prompt_sha256": "07e85ca388debef6219c390de92c93120bbd944deca8af2b4059b613412f188e", "schema": "../established-v4/arms/naplan-narrative-2022.strict.schema.json", "schema_sha256": "e8f7c4ebf78f7574ab818d22124da2f46a4fb1dffd3d2e8cb1ab9118e53def1a"},
+      {"method_id": "cambridge", "kind": "native", "reference_arm": "cambridge_igcse_0500_p2_mj_2024", "prompt": "../established-v2/arms/cambridge-igcse-0500-p2-mj-2024.prompt.md", "prompt_sha256": "9ed1c64b3173c55d7d8246b246a1388e8346fe9c4e1ee6a0770893f8e155dd6c", "schema": "../established-v4/arms/cambridge-igcse-0500-p2-mj-2024.strict.schema.json", "schema_sha256": "cd5997a2aafef9750e60af7c8cf249210c816421c1e2f9b97bcd1db16a3eabce"},
+      {"method_id": "oregon", "kind": "native", "reference_arm": "oregon_narrative_2017", "prompt": "../established-v2/arms/oregon-narrative-2017.prompt.md", "prompt_sha256": "136e023df18f4f0ad3d7c7b71b133ff22c7d7ff8dfdd509659a8daaa83abc47a", "schema": "../established-v2/arms/oregon-narrative-2017.schema.json", "schema_sha256": "6a761c896b9a9c707fa8df637eaf77f347495920acccdaddfabbbc6abb68f178"}
+    ]
+  },
+  "implementation_hashes": {"runner": "6897c7579d0def1e16a78b4739842850cdb11c20c3ba303ce4f842d5b8b7bc9d", "analyzer": "e8accfa48270adaf47cfb9274657470697504824489f2ddb8d29cf54e047e1b3"}
+}
