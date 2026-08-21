@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import importlib.util
+import inspect
 import json
 from pathlib import Path
 import subprocess
@@ -74,24 +75,24 @@ def test_local_ordered_runner_persists_exact_first_and_all_in_one_prompts_with_z
     prefix, binary = (module._bound(item["path"], item) for item in inputs["prompts"])
     calls = 0
 
-    def fake_invoke(**kwargs: object) -> tuple[str, dict]:
+    def fake_invoke(*, executable: str, model: str, reasoning: str, prompt: str, output_dir: Path, response_schema: Path, batch_number: int, attempt_number: int, timeout: float) -> tuple[str, dict]:
         nonlocal calls
+        assert timeout == 600
+        inspect.signature(__import__("hbqrs.runner", fromlist=["_call_codex"])._call_codex).bind(executable=executable, model=model, reasoning=reasoning, prompt=prompt, output_dir=output_dir, response_schema=response_schema, batch_number=batch_number, attempt_number=attempt_number, timeout=timeout)
         calls += 1
-        ids = [item["question"]["id"] for item in items if item["question"]["id"] in str(kwargs["prompt"])]
-        # The prompt contains every requested ID only once; retain the canonical order.
-        ids = [item["question"]["id"] for item in items if item["question"]["id"] in str(kwargs["prompt"])]
+        ids = [item["question"]["id"] for item in items if item["question"]["id"] in prompt]
         return json.dumps({"verdicts": harness._fixture_verdicts(ids)}), {"reported": {"provider": "openai", "model": "gpt-5.6-sol", "reasoning_effort": "high", "session_id": f"fresh-{calls}"}}
 
     for size, expected_prompt in ((1, module.effective_prompt(parent["runtime"]["frozen_question_ids"][:1])[0]), (178, module.effective_prompt(parent["runtime"]["frozen_question_ids"])[0])):
         destination = tmp_path / str(size)
-        module.run_ordered(output_dir=destination, source=source, registry=module._bound(inputs["registry"]["path"], inputs["registry"]), bundles=module._bound(inputs["bundles"]["path"], inputs["bundles"]), prefix=prefix, binary=binary, response_schema=module._bound(inputs["response_schema"]["path"], inputs["response_schema"]), question_items=items, batch_size=size, codex_bin="fake", invoke=fake_invoke)
+        module.run_ordered(output_dir=destination, source=source, registry=module._bound(inputs["registry"]["path"], inputs["registry"]), bundles=module._bound(inputs["bundles"]["path"], inputs["bundles"]), prefix=prefix, binary=binary, response_schema=module._bound(inputs["response_schema"]["path"], inputs["response_schema"]), question_items=items, batch_size=size, codex_bin="fake", timeout_seconds=600, invoke=fake_invoke)
         first = (destination / "responses" / "batch-0001.prompt.txt.gz").read_bytes()
         import gzip
         assert gzip.decompress(first).decode("utf-8") == expected_prompt
-        assert module.verify_ordered(run_dir=destination, source=source, prefix=prefix, binary=binary, registry=module._bound(inputs["registry"]["path"], inputs["registry"]), bundles=module._bound(inputs["bundles"]["path"], inputs["bundles"]), score_v1_schema=module._bound(inputs["score_v1_schema"]["path"], inputs["score_v1_schema"]), score_v2_schema=module._bound(inputs["score_v2_schema"]["path"], inputs["score_v2_schema"]), question_items=items, batch_size=size, codex_bin="fake")["verdict_count"] == 178
+        assert module.verify_ordered(run_dir=destination, source=source, prefix=prefix, binary=binary, registry=module._bound(inputs["registry"]["path"], inputs["registry"]), bundles=module._bound(inputs["bundles"]["path"], inputs["bundles"]), score_v1_schema=module._bound(inputs["score_v1_schema"]["path"], inputs["score_v1_schema"]), score_v2_schema=module._bound(inputs["score_v2_schema"]["path"], inputs["score_v2_schema"]), question_items=items, batch_size=size, codex_bin="fake", timeout_seconds=600)["verdict_count"] == 178
     (tmp_path / "178" / "responses" / "attempt-started" / "batch-0001-attempt-0001.json").unlink()
     with pytest.raises(ValueError, match="attempt-started"):
-        module.verify_ordered(run_dir=tmp_path / "178", source=source, prefix=prefix, binary=binary, registry=module._bound(inputs["registry"]["path"], inputs["registry"]), bundles=module._bound(inputs["bundles"]["path"], inputs["bundles"]), score_v1_schema=module._bound(inputs["score_v1_schema"]["path"], inputs["score_v1_schema"]), score_v2_schema=module._bound(inputs["score_v2_schema"]["path"], inputs["score_v2_schema"]), question_items=items, batch_size=178, codex_bin="fake")
+        module.verify_ordered(run_dir=tmp_path / "178", source=source, prefix=prefix, binary=binary, registry=module._bound(inputs["registry"]["path"], inputs["registry"]), bundles=module._bound(inputs["bundles"]["path"], inputs["bundles"]), score_v1_schema=module._bound(inputs["score_v1_schema"]["path"], inputs["score_v1_schema"]), score_v2_schema=module._bound(inputs["score_v2_schema"]["path"], inputs["score_v2_schema"]), question_items=items, batch_size=178, codex_bin="fake", timeout_seconds=600)
 
 
 def test_ordered_runner_resumes_after_a_persisted_rejection_without_resetting_feedback_budget(tmp_path: Path) -> None:
@@ -103,10 +104,10 @@ def test_ordered_runner_resumes_after_a_persisted_rejection_without_resetting_fe
         if calls == 1: raise ValueError("first rejected")
         raise KeyboardInterrupt()
     with pytest.raises(KeyboardInterrupt):
-        module.run_ordered(output_dir=tmp_path / "run", source=source, registry=module._bound(inputs["registry"]["path"], inputs["registry"]), bundles=module._bound(inputs["bundles"]["path"], inputs["bundles"]), prefix=prefix, binary=binary, response_schema=module._bound(inputs["response_schema"]["path"], inputs["response_schema"]), question_items=item, batch_size=1, codex_bin="fake", invoke=interrupted)
+        module.run_ordered(output_dir=tmp_path / "run", source=source, registry=module._bound(inputs["registry"]["path"], inputs["registry"]), bundles=module._bound(inputs["bundles"]["path"], inputs["bundles"]), prefix=prefix, binary=binary, response_schema=module._bound(inputs["response_schema"]["path"], inputs["response_schema"]), question_items=item, batch_size=1, codex_bin="fake", timeout_seconds=600, invoke=interrupted)
     def accepted(**_kwargs: object) -> tuple[str, dict]:
         return json.dumps({"verdicts": harness._fixture_verdicts([item[0]["question"]["id"]])}), {"reported": {"provider": "openai", "model": "gpt-5.6-sol", "reasoning_effort": "high", "session_id": "fresh-resume"}}
-    module.run_ordered(output_dir=tmp_path / "run", source=source, registry=module._bound(inputs["registry"]["path"], inputs["registry"]), bundles=module._bound(inputs["bundles"]["path"], inputs["bundles"]), prefix=prefix, binary=binary, response_schema=module._bound(inputs["response_schema"]["path"], inputs["response_schema"]), question_items=item, batch_size=1, codex_bin="fake", invoke=accepted)
+    module.run_ordered(output_dir=tmp_path / "run", source=source, registry=module._bound(inputs["registry"]["path"], inputs["registry"]), bundles=module._bound(inputs["bundles"]["path"], inputs["bundles"]), prefix=prefix, binary=binary, response_schema=module._bound(inputs["response_schema"]["path"], inputs["response_schema"]), question_items=item, batch_size=1, codex_bin="fake", timeout_seconds=600, invoke=accepted)
     rejected = tmp_path / "run" / "responses" / "rejected" / "batch-0001" / "attempt-0001.json"
     assert rejected.is_file() and (tmp_path / "run" / "responses" / "batch-0001.json").is_file()
 
@@ -118,10 +119,25 @@ def test_real_provider_failure_shape_hashes_rejected_session_and_stops_nonretrya
         from hbqrs import runner as shared
         raise shared._ProviderAttemptFailure("permanent", retryable=False, content="provider raw", provider_record={"reported": {"provider": "openai", "model": "gpt-5.6-sol", "reasoning_effort": "high", "session_id": "raw-session"}})
     with pytest.raises(ValueError, match="exhausted"):
-        module.run_ordered(output_dir=tmp_path / "run", source=source, registry=module._bound(inputs["registry"]["path"], inputs["registry"]), bundles=module._bound(inputs["bundles"]["path"], inputs["bundles"]), prefix=prefix, binary=binary, response_schema=module._bound(inputs["response_schema"]["path"], inputs["response_schema"]), question_items=item, batch_size=1, codex_bin="fake", invoke=refused)
+        module.run_ordered(output_dir=tmp_path / "run", source=source, registry=module._bound(inputs["registry"]["path"], inputs["registry"]), bundles=module._bound(inputs["bundles"]["path"], inputs["bundles"]), prefix=prefix, binary=binary, response_schema=module._bound(inputs["response_schema"]["path"], inputs["response_schema"]), question_items=item, batch_size=1, codex_bin="fake", timeout_seconds=600, invoke=refused)
     record = json.loads((tmp_path / "run" / "responses" / "rejected" / "batch-0001" / "attempt-0001.json").read_text(encoding="utf-8"))
     assert calls == 1 and record["retryable"] is False and record["provider_session_id_sha256"] == hashlib.sha256(b"raw-session").hexdigest() and "raw-session" not in json.dumps(record)
     assert {"format_version", "batch", "attempt", "sequence", "previous_rejected_sha256", "stage", "retry_policy", "prompt_sha256", "base_prompt_sha256", "effective_prompt_sha256", "validation_feedback_policy", "validation_feedback", "raw_content", "provider", "provider_session_id_sha256", "retryable", "error"} == set(record)
+
+
+def test_signature_typeerror_is_local_nonretryable_and_restart_never_invokes(tmp_path: Path) -> None:
+    module = _module(); value = module.contract(); inputs = value["frozen_inputs"]; item = module._question_items(value)[:1]; source = module._bound(inputs["source"]["path"], inputs["source"]); prefix, binary = (module._bound(entry["path"], entry) for entry in inputs["prompts"])
+    common = {"output_dir": tmp_path / "run", "source": source, "registry": module._bound(inputs["registry"]["path"], inputs["registry"]), "bundles": module._bound(inputs["bundles"]["path"], inputs["bundles"]), "prefix": prefix, "binary": binary, "response_schema": module._bound(inputs["response_schema"]["path"], inputs["response_schema"]), "question_items": item, "batch_size": 1, "codex_bin": "fake", "timeout_seconds": 600}
+    def wrong_signature(*, impossible: object) -> tuple[str, dict]:
+        raise AssertionError(impossible)
+    with pytest.raises(ValueError, match="nonretryable programmer"):
+        module.run_ordered(**common, invoke=wrong_signature)
+    record = json.loads((tmp_path / "run" / "responses" / "rejected" / "batch-0001" / "attempt-0001.json").read_text(encoding="utf-8"))
+    assert record["stage"] == "local_invocation_error" and record["retryable"] is False and record["provider"] is None
+    prompt = tmp_path / "run" / "responses" / "batch-0001.prompt.txt.gz"; before = prompt.read_bytes(); before_mtime = prompt.stat().st_mtime_ns
+    with pytest.raises(ValueError, match="persisted nonretryable"):
+        module.run_ordered(**common, invoke=lambda **_: pytest.fail("restart must not invoke"))
+    assert prompt.read_bytes() == before and prompt.stat().st_mtime_ns == before_mtime
 
 
 def test_prepare_requires_clean_pushed_commit_and_records_disclosure_before_any_run(tmp_path: Path) -> None:
@@ -150,6 +166,7 @@ def test_execution_persists_attempt_started_then_private_raw_indexes_without_a_r
     calls: list[Path] = []
 
     def fake_runner(**kwargs: object) -> dict[str, object]:
+        assert kwargs["timeout_seconds"] == 600
         destination = Path(str(kwargs["output_dir"]))
         (destination / "responses" / "rejected" / "batch-0001").mkdir(parents=True, exist_ok=True)
         (destination / "run.json").write_text("{}\n", encoding="utf-8")
@@ -158,7 +175,7 @@ def test_execution_persists_attempt_started_then_private_raw_indexes_without_a_r
         return {}
 
     def fake_verifier(**kwargs: object) -> dict:
-        assert kwargs["batch_size"] >= 1 and kwargs["question_items"]
+        assert kwargs["batch_size"] >= 1 and kwargs["question_items"] and kwargs["timeout_seconds"] == 600
         digest = hashlib.sha256(str(kwargs["run_dir"]).encode("utf-8")).hexdigest()
         return {"run_sha256": "a" * 64, "checkpoint_chain_head_sha256": "d" * 64, "sessions": [{"session_id_sha256": digest}], "rejected_attempt_count": 1}
 

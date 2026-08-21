@@ -13,10 +13,10 @@ from jsonschema import Draft202012Validator
 from ordered_runner import _prompt, _sha
 
 
-def verify(*, run_dir: Path, source: Path, prefix: Path, binary: Path, registry: Path, bundles: Path, score_v1_schema: Path, score_v2_schema: Path, question_items: Sequence[Mapping[str, Any]], batch_size: int, codex_bin: str, artifact_id: str = "the-part-that-arrives-first") -> dict[str, Any]:
+def verify(*, run_dir: Path, source: Path, prefix: Path, binary: Path, registry: Path, bundles: Path, score_v1_schema: Path, score_v2_schema: Path, question_items: Sequence[Mapping[str, Any]], batch_size: int, codex_bin: str, timeout_seconds: int, artifact_id: str = "the-part-that-arrives-first") -> dict[str, Any]:
     root = run_dir.resolve(); manifest = json.loads((root / "run.json").read_text(encoding="utf-8"))
     ids = [str(item["question"]["id"]) for item in question_items]
-    expected = {"format_version": 1, "artifact_id": artifact_id, "bundle_id": "prose.short_story", "strict_ai": True, "contexts": [], "question_ids": ids, "batch_size": batch_size, "batch_attempts": 3, "retry_semantics": "cumulative_batch_attempts_v1", "validation_feedback_policy": shared.VALIDATION_FEEDBACK_POLICY, "checkpoint_format_version": 4, "provider": {"configured": "codex", "reported": "openai", "model": "gpt-5.6-sol", "reasoning": "high"}, "codex_bin": codex_bin}
+    expected = {"format_version": 1, "artifact_id": artifact_id, "bundle_id": "prose.short_story", "strict_ai": True, "contexts": [], "question_ids": ids, "batch_size": batch_size, "batch_attempts": 3, "timeout_seconds": timeout_seconds, "retry_semantics": "cumulative_batch_attempts_v1", "validation_feedback_policy": shared.VALIDATION_FEEDBACK_POLICY, "checkpoint_format_version": 4, "provider": {"configured": "codex", "reported": "openai", "model": "gpt-5.6-sol", "reasoning": "high"}, "codex_bin": codex_bin}
     if manifest != expected: raise ValueError("Ordered run manifest drifted")
     shared._validate_rejected_attempt_store(root)
     all_verdicts: list[dict[str, Any]] = []; sessions: set[str] = set(); previous = None; rejected_count = 0; expected_started: set[str] = set()
@@ -47,11 +47,14 @@ def verify(*, run_dir: Path, source: Path, prefix: Path, binary: Path, registry:
         for attempt, (rejected_path, rejected_record) in enumerate(rejected, 1):
             raw = rejected_record.get("raw_content")
             shared._validate_provider_artifacts(root, rejected_record)
-            rejected_provider = rejected_record.get("provider", {}).get("reported", {})
+            provider_record = rejected_record.get("provider")
+            rejected_provider = provider_record.get("reported", {}) if isinstance(provider_record, Mapping) else {}
             rejected_session = rejected_provider.get("session_id")
             rejected_hash = rejected_record.get("provider_session_id_sha256")
-            if rejected_record.get("format_version") != 4 or rejected_record.get("batch") != number or rejected_record.get("attempt") != attempt or rejected_record.get("base_prompt_sha256") != _sha(prompt.encode("utf-8")) or rejected_record.get("retryable") is not True and rejected_record.get("retryable") is not False or not isinstance(raw, Mapping) or raw.get("encoding") != "utf-8" or not isinstance(raw.get("text"), str) or raw.get("bytes") != len(raw["text"].encode("utf-8")) or raw.get("sha256") != _sha(raw["text"].encode("utf-8")) or rejected_provider.get("provider") != "openai" or rejected_provider.get("model") != "gpt-5.6-sol" or rejected_provider.get("reasoning_effort") != "high" or isinstance(rejected_session, str) or not isinstance(rejected_hash, str) or len(rejected_hash) != 64 or rejected_hash in sessions: raise ValueError("Rejected v4 raw/provider evidence drifted")
-            sessions.add(rejected_hash)
+            stage = rejected_record.get("stage")
+            local = stage == "local_invocation_error"
+            if rejected_record.get("format_version") != 4 or rejected_record.get("batch") != number or rejected_record.get("attempt") != attempt or rejected_record.get("base_prompt_sha256") != _sha(prompt.encode("utf-8")) or rejected_record.get("retryable") is not True and rejected_record.get("retryable") is not False or stage not in {"provider_transport", "model_output", "local_invocation_error"} or local and (rejected_record.get("retryable") is not False or rejected_record.get("provider") is not None or rejected_hash is not None) or not isinstance(raw, Mapping) or raw.get("encoding") != "utf-8" or not isinstance(raw.get("text"), str) or raw.get("bytes") != len(raw["text"].encode("utf-8")) or raw.get("sha256") != _sha(raw["text"].encode("utf-8")) or not local and (rejected_provider.get("provider") != "openai" or rejected_provider.get("model") != "gpt-5.6-sol" or rejected_provider.get("reasoning_effort") != "high" or isinstance(rejected_session, str) or not isinstance(rejected_hash, str) or len(rejected_hash) != 64 or rejected_hash in sessions): raise ValueError("Rejected v4 raw/provider evidence drifted")
+            if not local: sessions.add(rejected_hash)
             rejected_count += 1
         all_verdicts.extend(normalized); previous = _sha(path.read_bytes())
     started_root = root / "responses" / "attempt-started"
