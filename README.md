@@ -78,11 +78,10 @@ The starter profile is 70% whole-work and 30% equal-weight local mean. You may c
 The GUI is optional: setup, judging, batching, monitoring, scoring, and reports all have complete CLI paths. `cwr configure -o setup.html` is a local, no-network helper for route, WIP, endpoint, coverage, weights, and a copyable command; it never runs a judge. There is no template editor or theme system.
 
 <p>
-  <img src="docs/images/workflow-setup.png" width="49%" alt="Local HBQ-RS workflow setup page">
-  <img src="docs/images/report-overview.png" width="49%" alt="Illustrative HBQ-RS long-form report with canonical and custom-weighted scores">
+  <img src="docs/images/workflow-setup.png" width="72%" alt="Local HBQ-RS workflow setup page">
 </p>
 
-Both views are self-contained local HTML. The report image uses source-free illustrative data; published study charts below are derived from verified result files.
+The setup view is self-contained local HTML. Published study charts below are derived from verified result files.
 
 For multiple samples, `cwr batch batch.yaml --allow-remote` wraps the same runners and may mix long-form and exact single-artifact jobs. Its strict manifest chooses `individual` routing, a stack shared from one designated sample, or a fully planned-and-confirmed `review` route. It writes durable per-job outputs and a small local status page. See [Running a headless judge](docs/judging.md).
 
