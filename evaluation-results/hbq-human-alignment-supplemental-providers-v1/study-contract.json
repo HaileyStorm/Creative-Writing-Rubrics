@@ -1,0 +1,48 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-human-alignment-supplemental-providers-v1",
+  "frozen_before_execution": true,
+  "purpose": "Provider-replicated HANNA protocol. It is supplemental to, and never replaces, the frozen GPT-5.6 Sol primary study.",
+  "gpt_primary": {
+    "study_path": "../hbq-human-alignment-v3",
+    "study_id": "hbq-human-alignment-v3",
+    "study_contract_sha256": "d484183607eb55b730ba206d1f58961e2ca2fe72ad30a5ab1ce0e92cc60a4639",
+    "study_sha256": "68140462239a479148c0a2856d45d91424adbd10baa630e2662840574edf9e49",
+    "analyzer_sha256": "00462ef93395e7acd30ac55ca4b105a4b017c76d7eaf47dddc2a0e83c1ab091b",
+    "runner_sha256": "a9467dfa645de42e69916759380cd4d9de4ee7301bcd104b46aba9bb78022e6b",
+    "runtime_files_required": ["src/hbqrs/runner.py", "src/hbqrs/core.py"],
+    "required_runtime_hashes": {
+      "src/hbqrs/runner.py": "e2b91682595d10ab8c2a2f55730fa2ffba40b0daa22a15a691d60fdfb9e752d3",
+      "src/hbqrs/core.py": "70b4cd16bd536f2f6ddb8e066f801090a037a39605652b14d6c7f6ff312446cb"
+    },
+    "development_items": 88,
+    "repeatability_items": 11,
+    "repeatability_repetitions": 5,
+    "confirmatory_items": 88,
+    "prompt_contexts_per_item": 1,
+    "batch_size": 32,
+    "batch_attempts": 3
+  },
+  "providers": [
+    {"provider_id": "grok_4_6_high", "provider": "grok", "model": "grok-4.6", "reasoning": "high", "allow_unattested_reasoning": true, "reported_models": ["grok-4.6-build"], "maximum_workers": 4},
+    {"provider_id": "nous_flash_max", "provider": "nous", "model": "deepseek/deepseek-v4-flash-0731", "reasoning": "max", "allow_unattested_reasoning": true, "reported_models": ["deepseek/deepseek-v4-flash-0731", "deepseek/deepseek-v4-flash-20260731"], "provider_canonical_model": "deepseek/deepseek-v4-flash-20260731", "maximum_workers": 4},
+    {"provider_id": "nous_pro_max", "provider": "nous", "model": "deepseek/deepseek-v4-pro-0813", "reasoning": "max", "allow_unattested_reasoning": true, "reported_models": ["deepseek/deepseek-v4-pro-0813", "deepseek/deepseek-v4-pro-20260813"], "provider_canonical_model": "deepseek/deepseek-v4-pro-20260813", "maximum_workers": 4, "requires_promotion_decision": true}
+  ],
+  "phase_order": ["development", "immutable_analysis_and_promotion", "repeatability", "confirmatory"],
+  "nous_promotion": {
+    "status": "predeclared_not_triggered",
+    "decision_artifact": "promotion-decision.json",
+    "trigger": "Promote Nous Pro only if Flash's generated-only development macro Spearman estimate is at least 0.15 below the frozen GPT development estimate. Public story scores never trigger promotion.",
+    "macro_delta_threshold": 0.15,
+    "no_result_driven_extension": true
+  },
+  "privacy": {
+    "public_outputs": "No HANNA prose, prompts, paths, provider session or request IDs, raw responses, or private-work identifiers.",
+    "human_ratings": "Use only already-published HANNA ratings. No new human judging or contact."
+  },
+  "interpretation_limits": [
+    "Providers are separate supplemental conditions. They do not replace GPT-5.6 Sol primary results.",
+    "Provider reasoning is provisional when it is not provider-attested.",
+    "Paired provider deltas are descriptive, prompt-cluster bootstrap summaries; they are not a new rubric scale or literary ground truth."
+  ]
+}
