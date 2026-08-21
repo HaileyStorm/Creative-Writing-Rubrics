@@ -1,0 +1,2141 @@
+{
+  "leaves": [
+    {
+      "question_id": "core.task_and_brief_fidelity.intervention",
+      "labels": [
+        "CANNOT_ASSESS",
+        "CANNOT_ASSESS",
+        "CANNOT_ASSESS",
+        "CANNOT_ASSESS",
+        "CANNOT_ASSESS"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "core.task_and_brief_fidelity.completion_flag",
+      "labels": [
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "core.task_and_brief_fidelity.no_meta_substitution",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "core.length_and_scope_fit.form",
+      "labels": [
+        "NO",
+        "YES",
+        "NO",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": false,
+      "modal_label_proportion": 0.6
+    },
+    {
+      "question_id": "core.length_and_scope_fit.operation",
+      "labels": [
+        "CANNOT_ASSESS",
+        "CANNOT_ASSESS",
+        "CANNOT_ASSESS",
+        "CANNOT_ASSESS",
+        "CANNOT_ASSESS"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "core.length_and_scope_fit.development",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "core.length_and_scope_fit.density",
+      "labels": [
+        "NO",
+        "YES",
+        "NO",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": false,
+      "modal_label_proportion": 0.6
+    },
+    {
+      "question_id": "core.length_and_scope_fit.ending",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "core.length_and_scope_fit.no_padding",
+      "labels": [
+        "YES",
+        "YES",
+        "NO",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": false,
+      "modal_label_proportion": 0.8
+    },
+    {
+      "question_id": "core.length_and_scope_fit.no_underbuild",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "core.audience_and_purpose_fit.complexity",
+      "labels": [
+        "CANNOT_ASSESS",
+        "CANNOT_ASSESS",
+        "CANNOT_ASSESS",
+        "CANNOT_ASSESS",
+        "CANNOT_ASSESS"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "core.audience_and_purpose_fit.tone",
+      "labels": [
+        "CANNOT_ASSESS",
+        "CANNOT_ASSESS",
+        "CANNOT_ASSESS",
+        "CANNOT_ASSESS",
+        "CANNOT_ASSESS"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "core.audience_and_purpose_fit.explanation",
+      "labels": [
+        "CANNOT_ASSESS",
+        "CANNOT_ASSESS",
+        "CANNOT_ASSESS",
+        "CANNOT_ASSESS",
+        "CANNOT_ASSESS"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "core.audience_and_purpose_fit.intensity",
+      "labels": [
+        "CANNOT_ASSESS",
+        "CANNOT_ASSESS",
+        "CANNOT_ASSESS",
+        "CANNOT_ASSESS",
+        "CANNOT_ASSESS"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "core.audience_and_purpose_fit.vocabulary",
+      "labels": [
+        "CANNOT_ASSESS",
+        "CANNOT_ASSESS",
+        "CANNOT_ASSESS",
+        "CANNOT_ASSESS",
+        "CANNOT_ASSESS"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "core.audience_and_purpose_fit.length",
+      "labels": [
+        "CANNOT_ASSESS",
+        "CANNOT_ASSESS",
+        "CANNOT_ASSESS",
+        "CANNOT_ASSESS",
+        "CANNOT_ASSESS"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "core.audience_and_purpose_fit.genre_signals",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "core.audience_and_purpose_fit.use_context",
+      "labels": [
+        "CANNOT_ASSESS",
+        "CANNOT_ASSESS",
+        "CANNOT_ASSESS",
+        "CANNOT_ASSESS",
+        "CANNOT_ASSESS"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "form.prose.short_story.unity",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "form.prose.short_story.scope",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "form.prose.short_story.selection",
+      "labels": [
+        "NO",
+        "YES",
+        "NO",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": false,
+      "modal_label_proportion": 0.6
+    },
+    {
+      "question_id": "form.prose.short_story.movement",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "form.prose.short_story.character_selectivity",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "form.prose.short_story.structure",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "form.prose.short_story.ending",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "form.prose.short_story.no_novel_fragment",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "craft.narrative.characterization.dimensionality",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "craft.narrative.characterization.behavior",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "craft.narrative.characterization.motives",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "craft.narrative.characterization.contradiction",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "craft.narrative.characterization.agency",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "craft.narrative.characterization.distinction",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "craft.narrative.characterization.development",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "craft.narrative.characterization.canon",
+      "labels": [
+        "CANNOT_ASSESS",
+        "CANNOT_ASSESS",
+        "CANNOT_ASSESS",
+        "CANNOT_ASSESS",
+        "CANNOT_ASSESS"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "craft.narrative.characterization.no_trait_labels",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "craft.narrative.point_of_view_and_focalization.viewpoint",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "craft.narrative.point_of_view_and_focalization.distance",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "craft.narrative.point_of_view_and_focalization.access",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "craft.narrative.point_of_view_and_focalization.ownership",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "craft.narrative.point_of_view_and_focalization.head_hopping",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "craft.narrative.point_of_view_and_focalization.reliability",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "craft.narrative.point_of_view_and_focalization.shift_intent",
+      "labels": [
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "craft.narrative.plot_and_causality.causal_chain",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "craft.narrative.plot_and_causality.setup",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "craft.narrative.plot_and_causality.decision",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "craft.narrative.plot_and_causality.consequence",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "craft.narrative.plot_and_causality.escalation",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "craft.narrative.plot_and_causality.complication",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "craft.narrative.plot_and_causality.reversal",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "craft.narrative.plot_and_causality.no_convenience",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "craft.narrative.scene_construction.purpose",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "craft.narrative.scene_construction.entry",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "craft.narrative.scene_construction.objective",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "craft.narrative.scene_construction.pressure",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "craft.narrative.scene_construction.progression",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "craft.narrative.scene_construction.turn",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "craft.narrative.scene_construction.changed_state",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "craft.narrative.scene_construction.exit",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "craft.narrative.scene_construction.context_fit",
+      "labels": [
+        "YES",
+        "YES",
+        "NOT_APPLICABLE",
+        "CANNOT_ASSESS",
+        "YES"
+      ],
+      "exact_all_run_agreement": false,
+      "modal_label_proportion": 0.6
+    },
+    {
+      "question_id": "craft.narrative.narrative_momentum.curiosity",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "craft.narrative.narrative_momentum.investment",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "craft.narrative.narrative_momentum.consequence",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "craft.narrative.narrative_momentum.voice_pull",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "craft.narrative.narrative_momentum.concept_pull",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "craft.narrative.narrative_momentum.progress",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "craft.narrative.narrative_momentum.commitment",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "craft.narrative.narrative_momentum.no_false_hook",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "core.language_craft.diction",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "core.language_craft.syntax",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "core.language_craft.cadence",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "core.language_craft.variation",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "core.language_craft.paragraph_movement",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "core.language_craft.images",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "core.language_craft.sound",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "core.language_craft.emphasis",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "core.language_craft.no_awkwardness",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "core.voice_and_stylistic_identity.distinctive",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "core.voice_and_stylistic_identity.sustained",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "core.voice_and_stylistic_identity.suitable",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "core.voice_and_stylistic_identity.project_fidelity",
+      "labels": [
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "core.voice_and_stylistic_identity.shift_control",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "core.voice_and_stylistic_identity.ownership",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "craft.narrative.dialogue.voice_distinction",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "craft.narrative.dialogue.subtext",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "craft.narrative.dialogue.naturalness",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "craft.narrative.dialogue.purpose",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "craft.narrative.dialogue.rhythm",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "craft.narrative.dialogue.listening",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "craft.narrative.dialogue.action_balance",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "craft.narrative.dialogue.no_exposition",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "craft.narrative.setting_and_atmosphere.spatial",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "craft.narrative.setting_and_atmosphere.sensory",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "craft.narrative.setting_and_atmosphere.identity",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "craft.narrative.setting_and_atmosphere.atmosphere",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "craft.narrative.setting_and_atmosphere.interaction",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "craft.narrative.setting_and_atmosphere.function",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "craft.narrative.setting_and_atmosphere.no_inventory",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "core.specificity_and_embodiment.concrete_detail",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "core.specificity_and_embodiment.sensory_presence",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "core.specificity_and_embodiment.physical_action",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "core.specificity_and_embodiment.grounded_thought",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "core.specificity_and_embodiment.setting_particularity",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "core.specificity_and_embodiment.character_particularity",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "core.specificity_and_embodiment.abstract_support",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "craft.narrative.theme_and_subtext.emergence",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "craft.narrative.theme_and_subtext.subtext",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "craft.narrative.theme_and_subtext.development",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "craft.narrative.theme_and_subtext.counterpoint",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "craft.narrative.theme_and_subtext.integration",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "craft.narrative.theme_and_subtext.no_moral",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "craft.narrative.theme_and_subtext.open_questions",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "core.emotional_and_intellectual_effect.intended_effect",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "core.emotional_and_intellectual_effect.earned_emotion",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "core.emotional_and_intellectual_effect.conceptual_interest",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "core.emotional_and_intellectual_effect.modulation",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "core.emotional_and_intellectual_effect.restraint",
+      "labels": [
+        "NO",
+        "NO",
+        "NO",
+        "NO",
+        "NO"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "core.emotional_and_intellectual_effect.aftermath",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "core.freshness_and_non_genericness.no_cliche",
+      "labels": [
+        "YES",
+        "YES",
+        "NO",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": false,
+      "modal_label_proportion": 0.8
+    },
+    {
+      "question_id": "core.freshness_and_non_genericness.no_stock_beats",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "core.freshness_and_non_genericness.no_llm_phrasing",
+      "labels": [
+        "NO",
+        "NO",
+        "NO",
+        "NO",
+        "NO"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "core.freshness_and_non_genericness.no_default_metaphors",
+      "labels": [
+        "NO",
+        "NO",
+        "NO",
+        "YES",
+        "NO"
+      ],
+      "exact_all_run_agreement": false,
+      "modal_label_proportion": 0.8
+    },
+    {
+      "question_id": "core.freshness_and_non_genericness.no_emotion_summary",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "core.freshness_and_non_genericness.unpredictable_specificity",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "core.freshness_and_non_genericness.no_forced_novelty",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "core.freshness_and_non_genericness.no_rare_word_chasing",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "core.economy_and_relevance.earns_place",
+      "labels": [
+        "NO",
+        "YES",
+        "NO",
+        "YES",
+        "NO"
+      ],
+      "exact_all_run_agreement": false,
+      "modal_label_proportion": 0.6
+    },
+    {
+      "question_id": "core.economy_and_relevance.no_restatement",
+      "labels": [
+        "NO",
+        "YES",
+        "NO",
+        "YES",
+        "NO"
+      ],
+      "exact_all_run_agreement": false,
+      "modal_label_proportion": 0.6
+    },
+    {
+      "question_id": "core.economy_and_relevance.functional_repetition",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "core.economy_and_relevance.detail_relevance",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "core.economy_and_relevance.digression",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "core.economy_and_relevance.length_fit",
+      "labels": [
+        "NO",
+        "NO",
+        "NO",
+        "NO",
+        "NO"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "core.economy_and_relevance.no_flattening",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "core.mechanics_and_presentation.grammar",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "core.mechanics_and_presentation.punctuation",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "core.mechanics_and_presentation.spelling",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "core.mechanics_and_presentation.formatting",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "core.mechanics_and_presentation.dialogue_mechanics",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "core.mechanics_and_presentation.typography",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "core.mechanics_and_presentation.cleanliness",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "core.holistic_artistic_success.threshold_1_functional",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "core.holistic_artistic_success.threshold_2_effective",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "core.holistic_artistic_success.threshold_3_keepworthy",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "core.holistic_artistic_success.threshold_4_exceptional",
+      "labels": [
+        "NO",
+        "NO",
+        "NO",
+        "NO",
+        "NO"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "penalty.purple_prose.clarity",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "penalty.purple_prose.proportion",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "penalty.purple_prose.specificity",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "penalty.purple_prose.tone",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "penalty.purple_prose.metaphor",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "penalty.purple_prose.attention",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "penalty.purple_prose.fatigue",
+      "labels": [
+        "NO",
+        "YES",
+        "NO",
+        "YES",
+        "NO"
+      ],
+      "exact_all_run_agreement": false,
+      "modal_label_proportion": 0.6
+    },
+    {
+      "question_id": "penalty.repetition.lexical",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "penalty.repetition.syntax",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "penalty.repetition.semantic",
+      "labels": [
+        "NO",
+        "NO",
+        "NO",
+        "YES",
+        "NO"
+      ],
+      "exact_all_run_agreement": false,
+      "modal_label_proportion": 0.8
+    },
+    {
+      "question_id": "penalty.repetition.image",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "penalty.repetition.beat",
+      "labels": [
+        "NO",
+        "YES",
+        "NO",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": false,
+      "modal_label_proportion": 0.6
+    },
+    {
+      "question_id": "penalty.repetition.dialogue",
+      "labels": [
+        "NO",
+        "NO",
+        "NO",
+        "YES",
+        "NO"
+      ],
+      "exact_all_run_agreement": false,
+      "modal_label_proportion": 0.8
+    },
+    {
+      "question_id": "penalty.repetition.explanation",
+      "labels": [
+        "NO",
+        "NO",
+        "NO",
+        "NO",
+        "NO"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "penalty.repetition.long_range",
+      "labels": [
+        "YES",
+        "NOT_APPLICABLE",
+        "NO",
+        "NOT_APPLICABLE",
+        "YES"
+      ],
+      "exact_all_run_agreement": false,
+      "modal_label_proportion": 0.4
+    },
+    {
+      "question_id": "penalty.unflagged_incomplete.status",
+      "labels": [
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "penalty.unflagged_incomplete.unit",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "penalty.unflagged_incomplete.truncation",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "core.task_and_brief_fidelity.operation",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "CANNOT_ASSESS"
+      ],
+      "exact_all_run_agreement": false,
+      "modal_label_proportion": 0.8
+    },
+    {
+      "question_id": "core.task_and_brief_fidelity.sources",
+      "labels": [
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "core.task_and_brief_fidelity.inclusions",
+      "labels": [
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "CANNOT_ASSESS",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE"
+      ],
+      "exact_all_run_agreement": false,
+      "modal_label_proportion": 0.8
+    },
+    {
+      "question_id": "core.task_and_brief_fidelity.exclusions",
+      "labels": [
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "core.task_and_brief_fidelity.pov",
+      "labels": [
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "core.task_and_brief_fidelity.tense",
+      "labels": [
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "core.task_and_brief_fidelity.structure",
+      "labels": [
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "core.task_and_brief_fidelity.format",
+      "labels": [
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "core.task_and_brief_fidelity.length_hard",
+      "labels": [
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "core.length_and_scope_fit.explicit",
+      "labels": [
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "form.prose.general_prose_fiction.narrative_experience",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "form.prose.general_prose_fiction.character_action",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "form.prose.general_prose_fiction.movement",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "form.prose.general_prose_fiction.mode_control",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "form.prose.general_prose_fiction.reader_orientation",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "form.prose.general_prose_fiction.proportion",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    },
+    {
+      "question_id": "form.prose.general_prose_fiction.completion",
+      "labels": [
+        "YES",
+        "YES",
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "exact_all_run_agreement": true,
+      "modal_label_proportion": 1.0
+    }
+  ]
+}
+

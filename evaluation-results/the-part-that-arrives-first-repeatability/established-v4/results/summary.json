@@ -1,0 +1,606 @@
+{
+  "format_version": 4,
+  "study_id": "the-part-that-arrives-first-established-rubrics-v4-strict-schema-batch32",
+  "protocol_contract_sha256": "b641ca777554dc4e27246a0e383f19874d76bcf96df0a86063f0ebc3d5827676",
+  "schedule_sha256": "88bb8850e11e64fe0de43f7e8c396e3dfb38bc7c8045fff5c4a14f3d75e39866",
+  "repetitions": 5,
+  "native_scales_are_not_cross_compared": true,
+  "arms": {
+    "hbq_short_story_batch32": {
+      "question_count": 178,
+      "exact_all_run_agreement_rate": 0.9101123595505618,
+      "mean_modal_label_proportion": 0.9707865168539327,
+      "nominal_krippendorff_alpha": 0.8616957801335363,
+      "observed_score": {
+        "values": [
+          88.5994,
+          92.7236,
+          86.538,
+          94.8341,
+          90.6869
+        ],
+        "mean": 90.6764,
+        "sample_standard_deviation": 3.2755873877825366,
+        "minimum": 86.538,
+        "maximum": 94.8341,
+        "range": 8.29610000000001,
+        "mean_absolute_pairwise_difference": 4.143280000000004
+      },
+      "typed_evidence": {
+        "verdict_denominator": 890,
+        "verdicts_with_nonempty_typed_evidence": 890,
+        "verdict_nonempty_typed_evidence_rate": 1.0,
+        "evidence_item_denominator": 1120,
+        "typed_evidence_item_count": 1120,
+        "typed_evidence_item_rate": 1.0,
+        "exact_quote_count": 854,
+        "summary_count": 266,
+        "untyped_or_empty_count": 0,
+        "invalid_exact_quote_count": 0,
+        "exact_quote_denominator": 854,
+        "exact_quote_grounded_rate": 1.0
+      },
+      "retry_provenance": {
+        "policy": {
+          "batch_attempts": 3,
+          "retry_semantics": "cumulative_batch_attempts_v1",
+          "evidence_normalization_policy": "invalid_exact_quote_to_summary_v1"
+        },
+        "accepted_run_count": 5,
+        "rejected_attempt_count": 0,
+        "rejected_run_count": 0,
+        "recovered_acceptance_count": 0,
+        "normalization_repair_count": 62,
+        "runs": [
+          {
+            "accepted_checkpoint_count": 6,
+            "accepted_attempts": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "rejected_attempt_count": 0,
+            "rejected_batches": [],
+            "recovered_acceptance_count": 0,
+            "normalization_repair_count": 2
+          },
+          {
+            "accepted_checkpoint_count": 6,
+            "accepted_attempts": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "rejected_attempt_count": 0,
+            "rejected_batches": [],
+            "recovered_acceptance_count": 0,
+            "normalization_repair_count": 11
+          },
+          {
+            "accepted_checkpoint_count": 6,
+            "accepted_attempts": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "rejected_attempt_count": 0,
+            "rejected_batches": [],
+            "recovered_acceptance_count": 0,
+            "normalization_repair_count": 18
+          },
+          {
+            "accepted_checkpoint_count": 6,
+            "accepted_attempts": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "rejected_attempt_count": 0,
+            "rejected_batches": [],
+            "recovered_acceptance_count": 0,
+            "normalization_repair_count": 15
+          },
+          {
+            "accepted_checkpoint_count": 6,
+            "accepted_attempts": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "rejected_attempt_count": 0,
+            "rejected_batches": [],
+            "recovered_acceptance_count": 0,
+            "normalization_repair_count": 16
+          }
+        ],
+        "excluded_from_repeatability_metrics": true
+      }
+    },
+    "naplan_narrative_2022": {
+      "criterion_count": 10,
+      "criterion_exact_all_run_agreement_rate": 1.0,
+      "criterion_mean_modal_score_proportion": 1.0,
+      "criteria": {
+        "audience": {
+          "values": [
+            6,
+            6,
+            6,
+            6,
+            6
+          ],
+          "exact_all_run_agreement": true,
+          "modal_score_proportion": 1.0
+        },
+        "text_structure": {
+          "values": [
+            4,
+            4,
+            4,
+            4,
+            4
+          ],
+          "exact_all_run_agreement": true,
+          "modal_score_proportion": 1.0
+        },
+        "ideas": {
+          "values": [
+            5,
+            5,
+            5,
+            5,
+            5
+          ],
+          "exact_all_run_agreement": true,
+          "modal_score_proportion": 1.0
+        },
+        "character_and_setting": {
+          "values": [
+            4,
+            4,
+            4,
+            4,
+            4
+          ],
+          "exact_all_run_agreement": true,
+          "modal_score_proportion": 1.0
+        },
+        "vocabulary": {
+          "values": [
+            5,
+            5,
+            5,
+            5,
+            5
+          ],
+          "exact_all_run_agreement": true,
+          "modal_score_proportion": 1.0
+        },
+        "cohesion": {
+          "values": [
+            4,
+            4,
+            4,
+            4,
+            4
+          ],
+          "exact_all_run_agreement": true,
+          "modal_score_proportion": 1.0
+        },
+        "paragraphing": {
+          "values": [
+            2,
+            2,
+            2,
+            2,
+            2
+          ],
+          "exact_all_run_agreement": true,
+          "modal_score_proportion": 1.0
+        },
+        "sentence_structure": {
+          "values": [
+            6,
+            6,
+            6,
+            6,
+            6
+          ],
+          "exact_all_run_agreement": true,
+          "modal_score_proportion": 1.0
+        },
+        "punctuation": {
+          "values": [
+            5,
+            5,
+            5,
+            5,
+            5
+          ],
+          "exact_all_run_agreement": true,
+          "modal_score_proportion": 1.0
+        },
+        "spelling": {
+          "values": [
+            6,
+            6,
+            6,
+            6,
+            6
+          ],
+          "exact_all_run_agreement": true,
+          "modal_score_proportion": 1.0
+        }
+      },
+      "total_score": {
+        "values": [
+          47,
+          47,
+          47,
+          47,
+          47
+        ],
+        "mean": 47.0,
+        "sample_standard_deviation": 0.0,
+        "minimum": 47,
+        "maximum": 47,
+        "range": 0,
+        "mean_absolute_pairwise_difference": 0.0
+      },
+      "exact_quote_grounded_rate": 1.0,
+      "retry_provenance": {
+        "policy": {
+          "attempts_per_repetition": 3,
+          "retry_semantics": "cumulative_structured_attempts_v1",
+          "semantic_validation_policy": "native_ids_ranges_totals_grounded_quotes_v1"
+        },
+        "attempt_count": 8,
+        "rejected_attempt_count": 3,
+        "failed_attempt_count": 0,
+        "semantic_rejection_count": 3,
+        "rejected_session_count": 3,
+        "rejected_session_commitment_sha256": "aaa45520e2e3acf8fab047630ccfadf49d4aa6a8306e152b2b9b83e9a5e25a06",
+        "runs": [
+          {
+            "run_id": "run-01",
+            "attempt_count": 1,
+            "rejected_attempt_count": 0,
+            "failed_attempt_count": 0,
+            "semantic_rejection_count": 0,
+            "attempt_records": []
+          },
+          {
+            "run_id": "run-02",
+            "attempt_count": 1,
+            "rejected_attempt_count": 0,
+            "failed_attempt_count": 0,
+            "semantic_rejection_count": 0,
+            "attempt_records": []
+          },
+          {
+            "run_id": "run-03",
+            "attempt_count": 2,
+            "rejected_attempt_count": 1,
+            "failed_attempt_count": 0,
+            "semantic_rejection_count": 1,
+            "attempt_records": [
+              {
+                "path": "attempts/rejected-0001.json",
+                "bytes": 7963,
+                "sha256": "be5db26d4bb7c6d6551a50898cbadf8d999b87b5d57b0575fc4983c93cdcaa2c"
+              }
+            ]
+          },
+          {
+            "run_id": "run-04",
+            "attempt_count": 2,
+            "rejected_attempt_count": 1,
+            "failed_attempt_count": 0,
+            "semantic_rejection_count": 1,
+            "attempt_records": [
+              {
+                "path": "attempts/rejected-0001.json",
+                "bytes": 8583,
+                "sha256": "b6b0d49abdb0e920ba12ca9e9797515fa3413d00b299cec8927bac1c66d4710b"
+              }
+            ]
+          },
+          {
+            "run_id": "run-05",
+            "attempt_count": 2,
+            "rejected_attempt_count": 1,
+            "failed_attempt_count": 0,
+            "semantic_rejection_count": 1,
+            "attempt_records": [
+              {
+                "path": "attempts/rejected-0001.json",
+                "bytes": 8005,
+                "sha256": "a2bafbabf50ced22b104adb2f15810f8af60ec80509bf96807d24912e310656d"
+              }
+            ]
+          }
+        ],
+        "excluded_from_repeatability_metrics": true
+      }
+    },
+    "cambridge_igcse_0500_p2_mj_2024": {
+      "criterion_count": 2,
+      "criterion_exact_all_run_agreement_rate": 0.5,
+      "criterion_mean_modal_score_proportion": 0.8,
+      "criteria": {
+        "content_and_structure": {
+          "values": [
+            16,
+            16,
+            15,
+            16,
+            15
+          ],
+          "exact_all_run_agreement": false,
+          "modal_score_proportion": 0.6
+        },
+        "style_and_accuracy": {
+          "values": [
+            24,
+            24,
+            24,
+            24,
+            24
+          ],
+          "exact_all_run_agreement": true,
+          "modal_score_proportion": 1.0
+        }
+      },
+      "total_score": {
+        "values": [
+          40,
+          40,
+          39,
+          40,
+          39
+        ],
+        "mean": 39.6,
+        "sample_standard_deviation": 0.5477225575051661,
+        "minimum": 39,
+        "maximum": 40,
+        "range": 1,
+        "mean_absolute_pairwise_difference": 0.6
+      },
+      "exact_quote_grounded_rate": 1.0,
+      "retry_provenance": {
+        "policy": {
+          "attempts_per_repetition": 3,
+          "retry_semantics": "cumulative_structured_attempts_v1",
+          "semantic_validation_policy": "native_ids_ranges_totals_grounded_quotes_v1"
+        },
+        "attempt_count": 5,
+        "rejected_attempt_count": 0,
+        "failed_attempt_count": 0,
+        "semantic_rejection_count": 0,
+        "rejected_session_count": 0,
+        "rejected_session_commitment_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "runs": [
+          {
+            "run_id": "run-01",
+            "attempt_count": 1,
+            "rejected_attempt_count": 0,
+            "failed_attempt_count": 0,
+            "semantic_rejection_count": 0,
+            "attempt_records": []
+          },
+          {
+            "run_id": "run-02",
+            "attempt_count": 1,
+            "rejected_attempt_count": 0,
+            "failed_attempt_count": 0,
+            "semantic_rejection_count": 0,
+            "attempt_records": []
+          },
+          {
+            "run_id": "run-03",
+            "attempt_count": 1,
+            "rejected_attempt_count": 0,
+            "failed_attempt_count": 0,
+            "semantic_rejection_count": 0,
+            "attempt_records": []
+          },
+          {
+            "run_id": "run-04",
+            "attempt_count": 1,
+            "rejected_attempt_count": 0,
+            "failed_attempt_count": 0,
+            "semantic_rejection_count": 0,
+            "attempt_records": []
+          },
+          {
+            "run_id": "run-05",
+            "attempt_count": 1,
+            "rejected_attempt_count": 0,
+            "failed_attempt_count": 0,
+            "semantic_rejection_count": 0,
+            "attempt_records": []
+          }
+        ],
+        "excluded_from_repeatability_metrics": true
+      }
+    },
+    "oregon_narrative_2017": {
+      "criterion_count": 6,
+      "criterion_exact_all_run_agreement_rate": 1.0,
+      "criterion_mean_modal_score_proportion": 1.0,
+      "criteria": {
+        "ideas_and_content": {
+          "values": [
+            6,
+            6,
+            6,
+            6,
+            6
+          ],
+          "exact_all_run_agreement": true,
+          "modal_score_proportion": 1.0
+        },
+        "organization": {
+          "values": [
+            6,
+            6,
+            6,
+            6,
+            6
+          ],
+          "exact_all_run_agreement": true,
+          "modal_score_proportion": 1.0
+        },
+        "voice": {
+          "values": [
+            6,
+            6,
+            6,
+            6,
+            6
+          ],
+          "exact_all_run_agreement": true,
+          "modal_score_proportion": 1.0
+        },
+        "word_choice": {
+          "values": [
+            6,
+            6,
+            6,
+            6,
+            6
+          ],
+          "exact_all_run_agreement": true,
+          "modal_score_proportion": 1.0
+        },
+        "sentence_fluency": {
+          "values": [
+            6,
+            6,
+            6,
+            6,
+            6
+          ],
+          "exact_all_run_agreement": true,
+          "modal_score_proportion": 1.0
+        },
+        "conventions": {
+          "values": [
+            6,
+            6,
+            6,
+            6,
+            6
+          ],
+          "exact_all_run_agreement": true,
+          "modal_score_proportion": 1.0
+        }
+      },
+      "total_score": {
+        "values": [
+          36,
+          36,
+          36,
+          36,
+          36
+        ],
+        "mean": 36.0,
+        "sample_standard_deviation": 0.0,
+        "minimum": 36,
+        "maximum": 36,
+        "range": 0,
+        "mean_absolute_pairwise_difference": 0.0
+      },
+      "exact_quote_grounded_rate": 1.0,
+      "retry_provenance": {
+        "policy": {
+          "attempts_per_repetition": 3,
+          "retry_semantics": "cumulative_structured_attempts_v1",
+          "semantic_validation_policy": "native_ids_ranges_totals_grounded_quotes_v1"
+        },
+        "attempt_count": 8,
+        "rejected_attempt_count": 3,
+        "failed_attempt_count": 0,
+        "semantic_rejection_count": 3,
+        "rejected_session_count": 3,
+        "rejected_session_commitment_sha256": "cce476f888222cf36a478403d6c7194c2bc33f3de67952700d36fea8de224921",
+        "runs": [
+          {
+            "run_id": "run-01",
+            "attempt_count": 1,
+            "rejected_attempt_count": 0,
+            "failed_attempt_count": 0,
+            "semantic_rejection_count": 0,
+            "attempt_records": []
+          },
+          {
+            "run_id": "run-02",
+            "attempt_count": 1,
+            "rejected_attempt_count": 0,
+            "failed_attempt_count": 0,
+            "semantic_rejection_count": 0,
+            "attempt_records": []
+          },
+          {
+            "run_id": "run-03",
+            "attempt_count": 3,
+            "rejected_attempt_count": 2,
+            "failed_attempt_count": 0,
+            "semantic_rejection_count": 2,
+            "attempt_records": [
+              {
+                "path": "attempts/rejected-0001.json",
+                "bytes": 6145,
+                "sha256": "8e39f40621ea04bf08c365c5d5a079efa7955e44d5029eb43a26cc536f02f417"
+              },
+              {
+                "path": "attempts/rejected-0002.json",
+                "bytes": 6197,
+                "sha256": "ef412554d01fdd9c32860498f4a4363b4c3ac22e41a8ccde3cee31f6e3a12cc8"
+              }
+            ]
+          },
+          {
+            "run_id": "run-04",
+            "attempt_count": 1,
+            "rejected_attempt_count": 0,
+            "failed_attempt_count": 0,
+            "semantic_rejection_count": 0,
+            "attempt_records": []
+          },
+          {
+            "run_id": "run-05",
+            "attempt_count": 2,
+            "rejected_attempt_count": 1,
+            "failed_attempt_count": 0,
+            "semantic_rejection_count": 1,
+            "attempt_records": [
+              {
+                "path": "attempts/rejected-0001.json",
+                "bytes": 6155,
+                "sha256": "a67e28cc8a4156a50e57a4a87eb0cf59ed9574203981fbc6a8a629529c89ea79"
+              }
+            ]
+          }
+        ],
+        "excluded_from_repeatability_metrics": true
+      }
+    }
+  }
+}
+
