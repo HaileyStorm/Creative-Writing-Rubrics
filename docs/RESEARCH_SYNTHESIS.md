@@ -82,6 +82,8 @@ Judge studies should vary one condition at a time: checkpoint, role, prompt, pol
 
 Local candidates such as Qwen3.8-27B and an Escha-derived checkpoint are evaluation targets, not package dependencies. If the same checkpoint initially fills two workflow roles, measure correlated errors instead of calling the pair an ensemble. Drafting may use a stronger creative sampler than grading; both profiles still need exact fingerprints and task-specific calibration before comparison or promotion.
 
+A custom grader may also learn better confidence estimates, but confidence should mean uncertainty about its own verdict rather than resemblance to a benchmark score. Calibrate it first against repeated-verdict stability and available reference labels, then test whether spending a fixed retry budget on low-confidence leaves improves repeatability and held-out HANNA agreement. HANNA can supervise or select changes only where its dimensions overlap HBQ, with prompt-level holdouts kept untouched; it should not become a hidden training target for the rest of the rubric.
+
 ## Bibliography
 
 - **`cho_et_al_2026_bineval`** — Sangwoo Cho, Kushal Chawla, Pengshan Cai, Zefang Liu, Chenyang Zhu, Shi-Xiong Zhang, and Sambit Sahu (2026). [Ask, Don't Judge: Binary Questions for Interpretable LLM Evaluation and Self-Improvement](https://arxiv.org/abs/2606.27226). Atomic yes/no decomposition, interpretable aggregation, reduced ceiling effects, and question-level diagnostic feedback.
