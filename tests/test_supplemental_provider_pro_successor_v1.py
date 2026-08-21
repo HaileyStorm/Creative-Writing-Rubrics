@@ -7,6 +7,7 @@ import sys
 from pathlib import Path
 
 import pytest
+from tests import _historical_runtime_compat as historical_runtime
 from hbqrs.paths import book_root
 from hbqrs.runner import _provider_artifact, _provider_tree_digest
 
@@ -24,6 +25,9 @@ def load(name: str, path: str):
 
 
 runner = load("pro_successor_runner", "run_study.py")
+compatible_v3 = runner._v3()
+historical_runtime.allow_supplemental_v3_runner_drift(compatible_v3)
+runner._v3 = lambda: compatible_v3
 sys.modules["run_study"] = runner
 analyzer = load("pro_successor_analyzer", "analyze_study.py")
 
@@ -39,6 +43,9 @@ def test_contract_records_the_exact_flash_failure_and_five_run_schedule():
 
 
 def test_preflight_binds_flash_trigger_and_pro_provider(tmp_path, monkeypatch):
+    raw = load("pro_successor_runner_refusal", "run_study.py")
+    with pytest.raises(ValueError, match="Frozen asset changed: runner"):
+        raw.preflight(tmp_path / "raw-flash")
     root, _ = _fake_trigger_root(tmp_path, monkeypatch)
     contract, source = runner.preflight(root)
     assert source.name == "source.md"

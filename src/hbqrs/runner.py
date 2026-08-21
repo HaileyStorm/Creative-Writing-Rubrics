@@ -454,12 +454,28 @@ def _grok_cli_version(*, executable: str, timeout: float) -> str:
     return version[:500]
 
 
+class _GrokEnvelopeFailure(HBQError):
+    """An inadmissible Grok envelope with any attestable response metadata."""
+
+    def __init__(
+        self,
+        message: str,
+        *,
+        retryable: bool = False,
+        provider_record: Mapping[str, Any] | None = None,
+    ) -> None:
+        super().__init__(message)
+        self.retryable = retryable
+        self.provider_record = dict(provider_record) if provider_record is not None else None
+
+
 def _grok_structured_output(
     *,
     stdout: str,
     model: str,
     reasoning: str,
     cli_version: str,
+    expected_session_id: str,
     allow_unattested_reasoning: bool,
 ) -> tuple[str, dict[str, Any]]:
     """Accept only the empirically mapped Grok Build headless envelope."""
@@ -470,9 +486,6 @@ def _grok_structured_output(
         raise HBQError(f"Grok CLI returned invalid JSON output: {exc}") from exc
     if not isinstance(envelope, Mapping):
         raise HBQError("Grok CLI output envelope must be an object")
-    structured = envelope.get("structuredOutput")
-    if not isinstance(structured, Mapping):
-        raise HBQError("Grok CLI output envelope lacks an object structuredOutput")
     model_usage = envelope.get("modelUsage")
     if not isinstance(model_usage, Mapping) or len(model_usage) != 1:
         raise HBQError("Grok CLI output envelope must contain exactly one modelUsage entry")
@@ -485,28 +498,14 @@ def _grok_structured_output(
             "sessionId": session_id,
             "requestId": request_id,
         }.items()
-        if not isinstance(value, str) or not value
+        if not isinstance(value, str) or not value.strip()
     ]
     if missing or not isinstance(reported_model, str) or not reported_model or not isinstance(usage, Mapping):
         raise HBQError(
             "Grok CLI output envelope is not yet an accepted attested mapping; "
             f"missing {', '.join(missing) if missing else 'modelUsage metadata'}"
         )
-    if envelope.get("stopReason") != "end_turn" or envelope.get("num_turns") != 1:
-        raise HBQError("Grok CLI output envelope did not complete exactly one normal turn")
-    if not allow_unattested_reasoning:
-        raise HBQError("Grok Build CLI does not attest reasoning; pass --allow-unattested-reasoning")
-    approved_model = {"grok-4.6": "grok-4.6-build"}.get(model)
-    if reported_model != approved_model:
-        raise HBQError(
-            "Grok CLI effective settings did not match the request: "
-            + json.dumps(
-                {
-                    "model": {"expected": model, "reported": reported_model},
-                }
-            )
-        )
-    return json.dumps(dict(structured), ensure_ascii=False), {
+    record = {
         "cli_version": cli_version,
         "requested": {"model": model, "reasoning_effort": reasoning},
         "reported": {
@@ -518,6 +517,58 @@ def _grok_structured_output(
         "reasoning_attested": False,
         "reasoning_attestation": "not_reported_by_grok_build_cli",
     }
+    if session_id != expected_session_id:
+        raise _GrokEnvelopeFailure(
+            "Grok CLI output envelope sessionId does not match the fresh request",
+            provider_record=record,
+        )
+    num_turns = envelope.get("num_turns")
+    if (
+        envelope.get("stopReason") != "end_turn"
+        or not isinstance(num_turns, int)
+        or isinstance(num_turns, bool)
+        or num_turns != 1
+    ):
+        raise _GrokEnvelopeFailure(
+            "Grok CLI output envelope did not complete exactly one normal turn",
+            provider_record=record,
+        )
+    if not allow_unattested_reasoning:
+        raise _GrokEnvelopeFailure(
+            "Grok Build CLI does not attest reasoning; pass --allow-unattested-reasoning",
+            provider_record=record,
+        )
+    approved_model = {"grok-4.6": "grok-4.6-build"}.get(model)
+    if reported_model != approved_model:
+        raise _GrokEnvelopeFailure(
+            "Grok CLI effective settings did not match the request: "
+            + json.dumps(
+                {
+                    "model": {"expected": model, "reported": reported_model},
+                }
+            ),
+            provider_record=record,
+        )
+    structured = envelope.get("structuredOutput")
+    structured_error = envelope.get("structuredOutputError")
+    has_structured_error = isinstance(structured_error, str) and bool(structured_error.strip())
+    if isinstance(structured, Mapping):
+        if has_structured_error:
+            raise _GrokEnvelopeFailure(
+                "Grok CLI output envelope contradicts its structured output with an error",
+                provider_record=record,
+            )
+        return json.dumps(dict(structured), ensure_ascii=False), record
+    if has_structured_error:
+        raise _GrokEnvelopeFailure(
+            "Grok CLI reported a schema-output failure",
+            retryable=True,
+            provider_record=record,
+        )
+    raise _GrokEnvelopeFailure(
+        "Grok CLI output envelope lacks an object structuredOutput",
+        provider_record=record,
+    )
 
 
 def _provider_artifact(output_dir: Path, path: Path) -> dict[str, Any]:
@@ -658,12 +709,20 @@ def _call_grok(
             model=model,
             reasoning=reasoning,
             cli_version=cli_version,
+            expected_session_id=session_id,
             allow_unattested_reasoning=allow_unattested_reasoning,
         )
         envelope_path = output_dir / "responses" / f"batch-{batch_number:04d}.attempt-{attempt_number:04d}.grok.envelope.json"
         _atomic_write(envelope_path, completed.stdout.encode("utf-8"))
         record["provider_artifacts"] = {"grok_envelope": _provider_artifact(output_dir, envelope_path)}
         return content, record
+    except _GrokEnvelopeFailure as exc:
+        raise _ProviderAttemptFailure(
+            str(exc),
+            retryable=exc.retryable,
+            content=completed.stdout,
+            provider_record=exc.provider_record,
+        ) from exc
     except HBQError as exc:
         raise _ProviderAttemptFailure(
             str(exc),

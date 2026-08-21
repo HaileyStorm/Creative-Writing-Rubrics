@@ -8,6 +8,7 @@ from types import SimpleNamespace
 
 import pytest
 
+from tests import _historical_runtime_compat as historical_runtime
 from hbqrs.paths import book_root, bundles_path, registry_path
 from hbqrs import longform_runner, runner as binary_runner
 
@@ -15,11 +16,21 @@ from hbqrs import longform_runner, runner as binary_runner
 ROOT = book_root() / "evaluation-results" / "the-part-that-arrives-first-repeatability" / "established-v4"
 
 
-def _module(name: str):
+def _raw_module(name: str):
     spec = importlib.util.spec_from_file_location(name, ROOT / f"{name}.py")
     assert spec and spec.loader
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
+    return module
+
+
+def _module(name: str):
+    module = _raw_module(name)
+    if name == "run_study":
+        historical_runtime.allow_asset_manifest_runner_drift(module)
+    elif name == "analyze_study":
+        runner = _module("run_study")
+        module._runner = lambda: runner
     return module
 
 
@@ -56,6 +67,8 @@ def _make_run(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, *, repaired_quote
 
 
 def test_preflight_hashes_schedule_and_exact_predecessor() -> None:
+    with pytest.raises(ValueError, match="Frozen asset changed: runner"):
+        _raw_module("run_study").preflight()
     runner = _module("run_study")
     contract, source = runner.preflight()
     assert source.name == "source.md"

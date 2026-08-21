@@ -1319,6 +1319,7 @@ def test_grok_backend_uses_isolated_single_turn_schema_cli(tmp_path: Path, monke
     schema = tmp_path / "schema.json"
     schema.write_text('{"type":"object"}', encoding="utf-8")
     calls: list[list[str]] = []
+    session_ids: list[str] = []
 
     def fake_version(*, executable: str, timeout: float) -> str:
         assert executable == "grok-fixture"
@@ -1339,6 +1340,8 @@ def test_grok_backend_uses_isolated_single_turn_schema_cli(tmp_path: Path, monke
         assert argv[argv.index("--tools") + 1] == ""
         assert argv[argv.index("--permission-mode") + 1] == "dontAsk"
         assert argv[argv.index("--sandbox") + 1] == "read-only"
+        session_id = argv[argv.index("--session-id") + 1]
+        session_ids.append(session_id)
         return subprocess.CompletedProcess(
             argv,
             0,
@@ -1346,7 +1349,7 @@ def test_grok_backend_uses_isolated_single_turn_schema_cli(tmp_path: Path, monke
                 {
                     "structuredOutput": {"verdicts": []},
                     "modelUsage": {"grok-4.6-build": {"input_tokens": 1}},
-                    "sessionId": "fixture-session-id",
+                    "sessionId": session_id,
                     "requestId": "fixture-request-id",
                     "stopReason": "end_turn",
                     "num_turns": 1,
@@ -1376,7 +1379,7 @@ def test_grok_backend_uses_isolated_single_turn_schema_cli(tmp_path: Path, monke
         "provider": "grok",
         "model": "grok-4.6-build",
     }
-    assert "fixture-session-id" not in json.dumps(record)
+    assert session_ids[0] not in json.dumps(record)
     assert "fixture-request-id" not in json.dumps(record)
     assert record["reasoning_attested"] is False
 
@@ -1408,25 +1411,345 @@ def test_grok_backend_requires_explicit_unattested_reasoning_opt_in(tmp_path: Pa
     schema = tmp_path / "schema.json"
     schema.write_text('{"type":"object"}', encoding="utf-8")
     monkeypatch.setattr("hbqrs.runner._grok_cli_version", lambda **_: "fixture")
-    monkeypatch.setattr(
-        "hbqrs.runner.subprocess.run",
-        lambda argv, **kwargs: subprocess.CompletedProcess(
+    def fake_run(argv: list[str], **kwargs: object) -> subprocess.CompletedProcess[str]:
+        return subprocess.CompletedProcess(
             argv,
             0,
             stdout=json.dumps(
                 {
                     "structuredOutput": {}, "modelUsage": {"grok-4.6-build": {}},
-                    "sessionId": "session", "requestId": "request", "stopReason": "end_turn", "num_turns": 1,
+                    "sessionId": argv[argv.index("--session-id") + 1],
+                    "requestId": "request",
+                    "stopReason": "end_turn",
+                    "num_turns": 1,
                 }
             ),
             stderr="",
-        ),
-    )
+        )
+    monkeypatch.setattr("hbqrs.runner.subprocess.run", fake_run)
     with pytest.raises(HBQError, match="allow-unattested-reasoning"):
         _call_grok(
             executable="grok-fixture", model="grok-4.6", reasoning="high", prompt="judge",
             output_dir=tmp_path, response_schema=schema, batch_number=1, timeout=10,
         )
+
+
+def test_grok_schema_output_failure_retries_only_after_attested_envelope(tmp_path: Path, monkeypatch) -> None:
+    first_envelope = {
+        "text": '{"verdicts": []}',
+        "structuredOutput": None,
+        "structuredOutputError": "model did not produce structured output",
+        "modelUsage": {"grok-4.6-build": {"input_tokens": 1}},
+        "requestId": "schema-failure-request",
+        "stopReason": "end_turn",
+        "num_turns": 1,
+    }
+    accepted_envelope = {
+            "structuredOutput": {
+                "verdicts": [
+                    {
+                        "question_id": QUESTION_ID,
+                        "verdict": "YES",
+                        "confidence": 0.8,
+                        "evidence": [
+                            {
+                                "kind": "exact_quote",
+                                "reference": "source.md",
+                                "exact_quote": "A short test scene.",
+                                "summary": None,
+                            }
+                        ],
+                        "note": "The requested operation is assessable.",
+                    }
+                ]
+            },
+            "modelUsage": {"grok-4.6-build": {"input_tokens": 1}},
+            "requestId": "accepted-request",
+            "stopReason": "end_turn",
+            "num_turns": 1,
+    }
+    calls = 0
+    first_stdout: str | None = None
+    first_session_id: str | None = None
+
+    def fake_run(argv: list[str], **kwargs: object) -> subprocess.CompletedProcess[str]:
+        nonlocal calls, first_session_id, first_stdout
+        calls += 1
+        envelope = dict(first_envelope if calls == 1 else accepted_envelope)
+        session_id = argv[argv.index("--session-id") + 1]
+        envelope["sessionId"] = session_id
+        stdout = json.dumps(envelope)
+        if calls == 1:
+            first_session_id = session_id
+            first_stdout = stdout
+        return subprocess.CompletedProcess(argv, 0, stdout=stdout, stderr="")
+
+    monkeypatch.setattr("hbqrs.runner._grok_cli_version", lambda **_: "Grok Build CLI fixture")
+    monkeypatch.setattr("hbqrs.runner.subprocess.run", fake_run)
+
+    assert _run(
+        tmp_path,
+        provider="grok",
+        model="grok-4.6",
+        grok_bin="grok-fixture",
+        reasoning="high",
+        allow_unattested_reasoning=True,
+        allow_remote=True,
+        batch_attempts=2,
+    )["verdicts"] == 1
+    assert calls == 2
+    assert first_stdout is not None
+    assert first_session_id is not None
+    rejected = json.loads(
+        (tmp_path / "run" / "responses" / "rejected" / "batch-0001" / "attempt-0001.json").read_text(encoding="utf-8")
+    )
+    assert rejected["stage"] == "provider"
+    assert rejected["raw_content"]["text"] == first_stdout
+    assert rejected["provider"]["session_id_sha256"] == hashlib.sha256(first_session_id.encode()).hexdigest()
+    assert rejected["provider"]["request_id_sha256"] == hashlib.sha256(b"schema-failure-request").hexdigest()
+    assert first_session_id not in json.dumps(rejected["provider"])
+    assert "schema-failure-request" not in json.dumps(rejected["provider"])
+    assert rejected["error"]["message"] == "Grok CLI reported a schema-output failure"
+    checkpoint = json.loads((tmp_path / "run" / "responses" / "batch-0001.json").read_text(encoding="utf-8"))
+    assert checkpoint["accepted_attempt"] == 2
+
+
+@pytest.mark.parametrize(
+    ("mutation", "expected"),
+    [
+        (lambda envelope: envelope.update({"stopReason": "cancelled"}), "exactly one normal turn"),
+        (lambda envelope: envelope.update({"modelUsage": {"unexpected-model": {}}}), "effective settings"),
+        (lambda envelope: envelope.pop("sessionId"), "accepted attested mapping"),
+        (lambda envelope: envelope.update({"structuredOutputError": ""}), "lacks an object structuredOutput"),
+    ],
+)
+def test_grok_schema_output_failure_keeps_identity_and_envelope_gates_nonretryable(
+    tmp_path: Path,
+    monkeypatch,
+    mutation,
+    expected: str,
+) -> None:
+    schema = tmp_path / "schema.json"
+    schema.write_text('{"type":"object"}', encoding="utf-8")
+    envelope = {
+        "structuredOutput": None,
+        "structuredOutputError": "model did not produce structured output",
+        "modelUsage": {"grok-4.6-build": {"input_tokens": 1}},
+        "sessionId": "fixture-session-id",
+        "requestId": "fixture-request-id",
+        "stopReason": "end_turn",
+        "num_turns": 1,
+    }
+    mutation(envelope)
+    monkeypatch.setattr("hbqrs.runner._grok_cli_version", lambda **_: "Grok Build CLI fixture")
+    def fake_run(argv: list[str], **kwargs: object) -> subprocess.CompletedProcess[str]:
+        response = dict(envelope)
+        if "sessionId" in response:
+            response["sessionId"] = argv[argv.index("--session-id") + 1]
+        return subprocess.CompletedProcess(argv, 0, stdout=json.dumps(response), stderr="")
+    monkeypatch.setattr("hbqrs.runner.subprocess.run", fake_run)
+
+    with pytest.raises(HBQError, match=expected) as exc_info:
+        _call_grok(
+            executable="grok-fixture",
+            model="grok-4.6",
+            reasoning="high",
+            prompt="judge this",
+            output_dir=tmp_path,
+            response_schema=schema,
+            batch_number=1,
+            timeout=10,
+            allow_unattested_reasoning=True,
+        )
+    assert getattr(exc_info.value, "retryable") is False
+
+
+def test_grok_malformed_envelope_is_nonretryable(tmp_path: Path, monkeypatch) -> None:
+    schema = tmp_path / "schema.json"
+    schema.write_text('{"type":"object"}', encoding="utf-8")
+    monkeypatch.setattr("hbqrs.runner._grok_cli_version", lambda **_: "Grok Build CLI fixture")
+    monkeypatch.setattr(
+        "hbqrs.runner.subprocess.run",
+        lambda argv, **kwargs: subprocess.CompletedProcess(argv, 0, stdout="{not-json", stderr=""),
+    )
+
+    with pytest.raises(HBQError, match="invalid JSON output") as exc_info:
+        _call_grok(
+            executable="grok-fixture",
+            model="grok-4.6",
+            reasoning="high",
+            prompt="judge this",
+            output_dir=tmp_path,
+            response_schema=schema,
+            batch_number=1,
+            timeout=10,
+            allow_unattested_reasoning=True,
+        )
+    assert getattr(exc_info.value, "retryable") is False
+
+
+@pytest.mark.parametrize("num_turns", [True, 1.0])
+def test_grok_schema_output_failure_requires_an_exact_integer_turn(tmp_path: Path, monkeypatch, num_turns: object) -> None:
+    schema = tmp_path / "schema.json"
+    schema.write_text('{"type":"object"}', encoding="utf-8")
+    envelope = {
+        "structuredOutput": None,
+        "structuredOutputError": "model did not produce structured output",
+        "modelUsage": {"grok-4.6-build": {}},
+        "requestId": "fixture-request-id",
+        "stopReason": "end_turn",
+        "num_turns": num_turns,
+    }
+    monkeypatch.setattr("hbqrs.runner._grok_cli_version", lambda **_: "Grok Build CLI fixture")
+    def fake_run(argv: list[str], **kwargs: object) -> subprocess.CompletedProcess[str]:
+        response = dict(envelope)
+        response["sessionId"] = argv[argv.index("--session-id") + 1]
+        return subprocess.CompletedProcess(argv, 0, stdout=json.dumps(response), stderr="")
+    monkeypatch.setattr("hbqrs.runner.subprocess.run", fake_run)
+
+    with pytest.raises(HBQError, match="exactly one normal turn") as exc_info:
+        _call_grok(
+            executable="grok-fixture", model="grok-4.6", reasoning="high", prompt="judge",
+            output_dir=tmp_path, response_schema=schema, batch_number=1, timeout=10,
+            allow_unattested_reasoning=True,
+        )
+    assert getattr(exc_info.value, "retryable") is False
+
+
+def test_grok_rejects_contradictory_structured_output_and_error(tmp_path: Path, monkeypatch) -> None:
+    schema = tmp_path / "schema.json"
+    schema.write_text('{"type":"object"}', encoding="utf-8")
+    envelope = {
+        "structuredOutput": {"verdicts": []},
+        "structuredOutputError": "model did not produce structured output",
+        "modelUsage": {"grok-4.6-build": {}},
+        "requestId": "fixture-request-id",
+        "stopReason": "end_turn",
+        "num_turns": 1,
+    }
+    monkeypatch.setattr("hbqrs.runner._grok_cli_version", lambda **_: "Grok Build CLI fixture")
+    def fake_run(argv: list[str], **kwargs: object) -> subprocess.CompletedProcess[str]:
+        response = dict(envelope)
+        response["sessionId"] = argv[argv.index("--session-id") + 1]
+        return subprocess.CompletedProcess(argv, 0, stdout=json.dumps(response), stderr="")
+    monkeypatch.setattr("hbqrs.runner.subprocess.run", fake_run)
+
+    with pytest.raises(HBQError, match="contradicts its structured output") as exc_info:
+        _call_grok(
+            executable="grok-fixture", model="grok-4.6", reasoning="high", prompt="judge",
+            output_dir=tmp_path, response_schema=schema, batch_number=1, timeout=10,
+            allow_unattested_reasoning=True,
+        )
+    assert getattr(exc_info.value, "retryable") is False
+
+
+@pytest.mark.parametrize("identifier", ["sessionId", "requestId"])
+def test_grok_rejects_whitespace_identity_ids(tmp_path: Path, monkeypatch, identifier: str) -> None:
+    schema = tmp_path / "schema.json"
+    schema.write_text('{"type":"object"}', encoding="utf-8")
+    envelope = {
+        "structuredOutput": None,
+        "structuredOutputError": "model did not produce structured output",
+        "modelUsage": {"grok-4.6-build": {}},
+        "sessionId": "fixture-session-id",
+        "requestId": "fixture-request-id",
+        "stopReason": "end_turn",
+        "num_turns": 1,
+    }
+    envelope[identifier] = " \t "
+    monkeypatch.setattr("hbqrs.runner._grok_cli_version", lambda **_: "Grok Build CLI fixture")
+    def fake_run(argv: list[str], **kwargs: object) -> subprocess.CompletedProcess[str]:
+        response = dict(envelope)
+        if identifier != "sessionId":
+            response["sessionId"] = argv[argv.index("--session-id") + 1]
+        return subprocess.CompletedProcess(argv, 0, stdout=json.dumps(response), stderr="")
+    monkeypatch.setattr("hbqrs.runner.subprocess.run", fake_run)
+
+    with pytest.raises(HBQError, match="accepted attested mapping") as exc_info:
+        _call_grok(
+            executable="grok-fixture", model="grok-4.6", reasoning="high", prompt="judge",
+            output_dir=tmp_path, response_schema=schema, batch_number=1, timeout=10,
+            allow_unattested_reasoning=True,
+        )
+    assert getattr(exc_info.value, "retryable") is False
+
+
+@pytest.mark.parametrize("matches_request", [False, True])
+def test_grok_binds_response_session_to_the_fresh_request(tmp_path: Path, monkeypatch, matches_request: bool) -> None:
+    schema = tmp_path / "schema.json"
+    schema.write_text('{"type":"object"}', encoding="utf-8")
+    requested_session: list[str] = []
+    envelope = {
+        "structuredOutput": {"verdicts": []},
+        "modelUsage": {"grok-4.6-build": {}},
+        "requestId": "fixture-request-id",
+        "stopReason": "end_turn",
+        "num_turns": 1,
+    }
+    monkeypatch.setattr("hbqrs.runner._grok_cli_version", lambda **_: "Grok Build CLI fixture")
+    def fake_run(argv: list[str], **kwargs: object) -> subprocess.CompletedProcess[str]:
+        session_id = argv[argv.index("--session-id") + 1]
+        requested_session.append(session_id)
+        response = dict(envelope)
+        response["sessionId"] = session_id if matches_request else "unrelated-session-id"
+        return subprocess.CompletedProcess(argv, 0, stdout=json.dumps(response), stderr="")
+    monkeypatch.setattr("hbqrs.runner.subprocess.run", fake_run)
+
+    if not matches_request:
+        with pytest.raises(HBQError, match="sessionId does not match") as exc_info:
+            _call_grok(
+                executable="grok-fixture", model="grok-4.6", reasoning="high", prompt="judge",
+                output_dir=tmp_path, response_schema=schema, batch_number=1, timeout=10,
+                allow_unattested_reasoning=True,
+            )
+        assert getattr(exc_info.value, "retryable") is False
+        return
+    _, record = _call_grok(
+        executable="grok-fixture", model="grok-4.6", reasoning="high", prompt="judge",
+        output_dir=tmp_path, response_schema=schema, batch_number=1, timeout=10,
+        allow_unattested_reasoning=True,
+    )
+    assert record["session_id_sha256"] == hashlib.sha256(requested_session[0].encode()).hexdigest()
+    assert requested_session[0] not in json.dumps(record)
+
+
+def test_grok_schema_output_failure_cannot_expand_cumulative_resume_attempts(tmp_path: Path, monkeypatch) -> None:
+    stdout = json.dumps(
+        {
+            "structuredOutput": None,
+            "structuredOutputError": "model did not produce structured output",
+            "modelUsage": {"grok-4.6-build": {"input_tokens": 1}},
+            "requestId": "schema-failure-request",
+            "stopReason": "end_turn",
+            "num_turns": 1,
+        }
+    )
+    calls = 0
+
+    def fake_run(argv: list[str], **kwargs: object) -> subprocess.CompletedProcess[str]:
+        nonlocal calls
+        calls += 1
+        envelope = json.loads(stdout)
+        envelope["sessionId"] = argv[argv.index("--session-id") + 1]
+        return subprocess.CompletedProcess(argv, 0, stdout=json.dumps(envelope), stderr="")
+
+    monkeypatch.setattr("hbqrs.runner._grok_cli_version", lambda **_: "Grok Build CLI fixture")
+    monkeypatch.setattr("hbqrs.runner.subprocess.run", fake_run)
+    arguments = {
+        "provider": "grok",
+        "model": "grok-4.6",
+        "grok_bin": "grok-fixture",
+        "reasoning": "high",
+        "allow_unattested_reasoning": True,
+        "allow_remote": True,
+        "batch_attempts": 1,
+    }
+    with pytest.raises(HBQError, match="Batch 1 exhausted 1 cumulative attempts"):
+        _run(tmp_path, **arguments)
+    assert calls == 1
+    with pytest.raises(HBQError, match="Batch 1 exhausted 1 cumulative attempts"):
+        _run(tmp_path, resume=True, **arguments)
+    assert calls == 1
 
 
 def test_nous_backend_uses_only_canonical_tool_free_launcher(tmp_path: Path, monkeypatch) -> None:

@@ -9,6 +9,7 @@ import tempfile
 
 import pytest
 
+from tests import _historical_runtime_compat as historical_runtime
 from hbqrs import compile_bundle, load_bundles, load_modules
 from hbqrs.paths import book_root, bundles_path, registry_path
 
@@ -21,11 +22,17 @@ def _json(name: str) -> dict:
     return json.loads((ROOT / name).read_text(encoding="utf-8"))
 
 
-def _harness():
+def _raw_harness():
     spec = importlib.util.spec_from_file_location("batch_curve_v2", ROOT / "batch_curve_harness.py")
     assert spec and spec.loader
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
+    return module
+
+
+def _harness():
+    module = _raw_harness()
+    historical_runtime.allow_batch_curve_runner_drift(module, _json("study-contract.json"))
     return module
 
 
@@ -38,8 +45,10 @@ def _compiled():
 def test_frozen_contract_binds_every_execution_and_interpretation_field() -> None:
     harness, contract = _harness(), _json("study-contract.json")
     _, compiled = _compiled()
+    with pytest.raises(ValueError, match="Frozen runner revision drifted"):
+        _raw_harness().validate_contract(contract, compiled)
     harness.validate_contract(contract, compiled)
-    assert contract["runtime"]["runner_revision_sha256"] == hashlib.sha256((book_root() / "src" / "hbqrs" / "runner.py").read_bytes()).hexdigest()
+    assert contract["runtime"]["runner_revision_sha256"] != hashlib.sha256((book_root() / "src" / "hbqrs" / "runner.py").read_bytes()).hexdigest()
     assert contract["runtime"]["harness"]["sha256"] == hashlib.sha256((ROOT / "batch_curve_harness.py").read_bytes()).hexdigest()
     assert (ROOT / "study-contract.projection.sha256").read_text(encoding="ascii").strip() == harness.contract_projection_sha256(contract)
     for path, value in ((["runtime", "evidence_normalization_policy"], "changed"), (["screening", "stopping_rule"], "changed"), (["metrics", "repeatability", "formulas", "exact_all_three_leaf_agreement"], "changed"), (["recommendation_policy", "hard_cap"], "changed"), (["cross_format_empirical_protocol", "reporting"], "changed")):

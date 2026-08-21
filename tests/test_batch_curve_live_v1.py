@@ -8,17 +8,31 @@ from pathlib import Path
 
 import pytest
 
+from tests import _historical_runtime_compat as historical_runtime
 from hbqrs.paths import book_root
 
 
 ROOT = book_root() / "evaluation-results" / "the-part-that-arrives-first-repeatability" / "batch-curve-live-v1"
 
 
-def _live():
+def _raw_live():
     spec = importlib.util.spec_from_file_location("batch_curve_live_v1", ROOT / "batch_curve_live.py")
     assert spec and spec.loader
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
+    return module
+
+
+def _live():
+    module = _raw_live()
+    parent_root = ROOT.parent / "batch-curve-v2"
+    contract = json.loads((parent_root / "study-contract.json").read_text(encoding="utf-8"))
+    spec = importlib.util.spec_from_file_location("batch_curve_v2_compat", parent_root / "batch_curve_harness.py")
+    assert spec and spec.loader
+    parent = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(parent)
+    historical_runtime.allow_batch_curve_runner_drift(parent, contract)
+    module._parent_harness = lambda: parent
     return module
 
 
@@ -45,6 +59,8 @@ TRANSPORT = {
 
 def test_parent_projection_and_effective_prompt_bind_the_exact_frozen_subset() -> None:
     live, contract = _live(), _contract()
+    with pytest.raises(ValueError, match="Frozen runner revision drifted"):
+        _raw_live().validate_execution_contract(contract)
     live.validate_execution_contract(contract)
     planned = live.plans(contract)
     assert len(planned) == 39

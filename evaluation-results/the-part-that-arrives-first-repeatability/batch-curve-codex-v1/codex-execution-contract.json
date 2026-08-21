@@ -1,0 +1,55 @@
+{
+  "format_version": 1,
+  "study_id": "the-part-that-arrives-first-batch-curve-codex-v1",
+  "status": "preregistered_concrete_codex_execution_no_empirical_results",
+  "parent": {
+    "v2_contract": {"path": "../batch-curve-v2/study-contract.json", "bytes": 22155, "sha256": "57cdb3deaab75375bd3ebf808aab3d439d3ce9f9341452926a8e5097f26aced2"},
+    "v2_harness": {"path": "../batch-curve-v2/batch_curve_harness.py", "bytes": 51168, "sha256": "03ec7f313e4d4a073f4bf1ea55dacd6e38f664f91027b1786f56c72a9586dac3"},
+    "live_contract": {"path": "../batch-curve-live-v1/execution-contract.json", "bytes": 1606, "sha256": "ed08b6da77d5986ebb660e95472bb242cebb1f679b4daaf977fab9dfb087e219"},
+    "live_adapter": {"path": "../batch-curve-live-v1/batch_curve_live.py", "bytes": 32531, "sha256": "560f162b588fccee7e0a3bfc2d90a890b730167da97732c435985015472d61b3"}
+  },
+  "execution": {
+    "provider": "codex",
+    "reported_provider": "openai",
+    "model": "gpt-5.6-sol",
+    "reasoning": "high",
+    "strict_ai": true,
+    "fresh_sessions": true,
+    "batch_attempts": 3,
+    "retry_semantics": "cumulative_batch_attempts_v1",
+    "validation_feedback_policy": "validation_feedback_retry_v1",
+    "checkpoint_format_version": 4,
+    "cells": 39,
+    "question_count": 178,
+    "codex_argv_template": ["exec", "--ephemeral", "--ignore-user-config", "--ignore-rules", "--strict-config", "--disable", "shell_tool", "--disable", "unified_exec", "--disable", "code_mode_host", "--disable", "hooks", "--disable", "memories", "--disable", "plugins", "--disable", "multi_agent", "--disable", "apps", "--disable", "browser_use", "--disable", "computer_use", "--disable", "image_generation", "--disable", "view_image", "--disable", "workspace_dependencies", "--disable", "skill_search", "--disable", "tool_suggest", "-c", "web_search=\"disabled\"", "--skip-git-repo-check", "--sandbox", "read-only", "--color", "never", "--model", "gpt-5.6-sol", "-c", "model_reasoning_effort=\"high\"", "--output-schema", "{response_schema}", "--output-last-message", "{message_path}", "--cd", "{output_dir}", "-"]
+  },
+  "frozen_inputs": {
+    "source": {"path": "../source.md", "bytes": 64490, "sha256": "ed6fb2e19f07174f56eb02e0a5d4c4419eecba324752881439b9b2992f082729"},
+    "registry": {"path": "../../../registry/all_modules.json", "bytes": 2189768, "sha256": "e6de0c216b68f1532605181284550cd4aca689a1ad1331631980e098d0055a2c"},
+    "bundles": {"path": "../../../bundles/all_bundles.json", "bytes": 513512, "sha256": "06390140d0d1f83b9e8a1a8ab946a4d90ac2b8c6b8d81f84cc44c4cf54a54096"},
+    "prompts": [
+      {"path": "../../../prompts/judge/JUDGE_PREFIX.md", "bytes": 1191, "sha256": "5e3a0990efca93e2cbc3894e635f9fd1b97b6e61ea2981940319cb54994ebb74"},
+      {"path": "../../../prompts/judge/BINARY_EVALUATION_PROMPT.md", "bytes": 1476, "sha256": "6c1cac901d820c1ab866e19f9191896e8c97a6aadf35bdae4eac640fd199a3a2"}
+    ],
+    "response_schema": {"path": "../../../schema/hbq_judge_response.schema.json", "bytes": 1977, "sha256": "49c7d824ba5dd957e67968ba3ae6ceb8a7ed9434dfb0dfc654836a76613c7854"},
+    "verdict_schema": {"path": "../../../schema/hbq_verdict.schema.json", "bytes": 3540, "sha256": "2d176506edab164c71d42a73661bcd526e4331dbdce659dfae56168b708a4f19"},
+    "score_v1_schema": {"path": "../../../schema/hbq_score_report.schema.json", "bytes": 1072, "sha256": "f0e1fd939774f3c569458f7fd4ce9c6f9b4d942fbc1654badb7b72d09007c87d"},
+    "score_v2_schema": {"path": "../../../schema/hbq_score_report.v2.schema.json", "bytes": 4236, "sha256": "83105e4fe51a0cede99e510fcc9144f5feb3a2742ff38f3efca9b328800218f8"},
+    "runtime": [
+      {"path": "../../../src/hbqrs/runner.py", "bytes": 113571, "sha256": "ef87816de970738a44d16fbbd105f2309cb0e3750557502a2f68ee7f7b71d95c"},
+      {"path": "../../../src/hbqrs/scoring_v2.py", "bytes": 8227, "sha256": "80592c5ffb5972ad391bd5e870da8311c888307081e5eed86c9b160b69148049"},
+      {"path": "../../../src/hbqrs/weights.py", "bytes": 18150, "sha256": "6893e8cdbb7ae5de1bb732f6004df558c73838c80bb75d1b2cadb651cc37f139"},
+      {"path": "../../../src/hbqrs/core.py", "bytes": 45951, "sha256": "70b4cd16bd536f2f6ddb8e066f801090a037a39605652b14d6c7f6ff312446cb"}
+    ],
+    "adapter": {"path": "batch_curve_codex.py", "bytes": 21272, "sha256": "b18138bf3b20e4e8f5a01fedbe04ab34f7e21dddc6ab4182e79f40a618287157"},
+    "ordered_runner": {"path": "ordered_runner.py", "bytes": 10353, "sha256": "83b185bcd2f2a6450ef594fb03469de872e3828fe18f401bd6c7aa46e1baf78f"},
+    "ordered_verifier": {"path": "ordered_verify.py", "bytes": 9422, "sha256": "134e4f10ec317fc0579f430ade686f5ead6bb6ec41046250d915d4bb825720c3"}
+  },
+  "privacy": {
+    "remote_destination": "OpenAI Codex service at chatgpt.com/backend-api/codex/responses",
+    "outbound": "frozen source, strict-AI prefix and binary prompt, and one frozen question partition",
+    "raw_evidence": "private operator-selected external evidence root; never delete accepted or rejected raw provider evidence for publication",
+    "public_projection": "only path, byte, and SHA-256 commitments to private raw evidence"
+  },
+  "recommendation": {"screening_recommendation": null, "above_24_requires": "deep exact-stack HANNA evidence"}
+}

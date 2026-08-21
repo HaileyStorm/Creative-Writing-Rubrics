@@ -2,6 +2,7 @@ from __future__ import annotations
 import hashlib, importlib.util, json, sys
 from pathlib import Path
 import pytest
+from tests import _historical_runtime_compat as historical_runtime
 from hbqrs.paths import book_root
 from hbqrs.runner import _provider_artifact, _provider_tree_digest
 
@@ -9,7 +10,7 @@ ROOT=book_root()/"evaluation-results"/"the-part-that-arrives-first-repeatability
 sys.path.insert(0,str(ROOT))
 def load(name:str,file:str):
     spec=importlib.util.spec_from_file_location(name,ROOT/file); assert spec and spec.loader; module=importlib.util.module_from_spec(spec); sys.modules[name]=module; spec.loader.exec_module(module); return module
-runner=load("supplemental_runner","run_study.py"); sys.modules["run_study"]=runner; analyzer=load("supplemental_analyzer","analyze_study.py")
+runner=load("supplemental_runner","run_study.py"); historical_runtime.allow_supplemental_v3_runner_drift(runner); sys.modules["run_study"]=runner; analyzer=load("supplemental_analyzer","analyze_study.py")
 FIXTURES=json.loads((ROOT/"fixtures"/"provider-receipts.json").read_text())
 def add_artifacts(tmp_path:Path,receipt:dict,provider:str)->dict:
     result={"provider":json.loads(json.dumps(receipt))}; artifacts={}
@@ -21,6 +22,8 @@ def add_artifacts(tmp_path:Path,receipt:dict,provider:str)->dict:
     result["provider"]["provider_artifacts"]=artifacts
     return result
 def test_preflight_pins_reference_assets_and_exact_public_protocol():
+    raw=load("supplemental_runner_refusal","run_study.py")
+    with pytest.raises(ValueError,match="Frozen asset changed: runner"): raw.preflight()
     contract,source=runner.preflight()
     assert source.name=="source.md" and contract["repetitions"]==5 and contract["asset_hashes"]==runner.asset_hashes()
     assert contract["reference_established_v4_sha256"]==runner.sha(ROOT.parent/"established-v4"/"study-contract.json")
