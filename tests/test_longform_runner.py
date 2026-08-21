@@ -320,7 +320,9 @@ def _catalog(tmp_path: Path) -> tuple[Path, Path]:
     return registry, bundles
 
 
-def test_provider_workflow_runs_every_pass_persists_and_resumes(tmp_path: Path, endpoint) -> None:
+def test_provider_workflow_runs_every_pass_persists_and_resumes(
+    tmp_path: Path, endpoint, monkeypatch
+) -> None:
     base_url, handler = endpoint
     registry, bundles = _catalog(tmp_path)
     artifact = tmp_path / "story.txt"
@@ -343,6 +345,21 @@ def test_provider_workflow_runs_every_pass_persists_and_resumes(tmp_path: Path, 
         "binary_workers": 3,
     }
 
+    structured_calls: list[dict[str, object]] = []
+    binary_calls: list[dict[str, object]] = []
+    original_structured = longform_runner._run_structured_pass
+    original_binary = longform_runner.run_judge
+
+    def capture_structured(**kwargs):
+        structured_calls.append(kwargs)
+        return original_structured(**kwargs)
+
+    def capture_binary(**kwargs):
+        binary_calls.append(kwargs)
+        return original_binary(**kwargs)
+
+    monkeypatch.setattr(longform_runner, "_run_structured_pass", capture_structured)
+    monkeypatch.setattr(longform_runner, "run_judge", capture_binary)
     summary = run_longform_judge(**arguments)
     assert summary["status"] == "VALID"
     assert summary["local_units"] == 2
@@ -375,14 +392,20 @@ def test_provider_workflow_runs_every_pass_persists_and_resumes(tmp_path: Path, 
 
     workflow_path = output / "workflow.json"
     workflow = json.loads(workflow_path.read_text(encoding="utf-8"))
-    assert workflow["format_version"] == 2
+    assert workflow["format_version"] == 3
     assert workflow["configuration"]["retry_policy"] == {"batch_attempts": 3}
+    assert workflow["configuration"]["upgrade_legacy_normalization"] is False
+    assert all(call["upgrade_legacy_normalization"] is False for call in binary_calls)
+    assert all("upgrade_legacy_normalization" not in call for call in structured_calls)
+    with pytest.raises(HBQError, match="inputs, catalog, or provider settings changed"):
+        run_longform_judge(**arguments, resume=True, upgrade_legacy_normalization=True)
     with pytest.raises(HBQError, match="batch_attempts retry policy changed"):
         run_longform_judge(**arguments, resume=True, batch_attempts=4)
 
     legacy_configuration = dict(workflow["configuration"])
     legacy_configuration["format_version"] = 1
     legacy_configuration.pop("retry_policy")
+    legacy_configuration.pop("upgrade_legacy_normalization")
     workflow["format_version"] = 1
     workflow["configuration"] = legacy_configuration
     workflow["config_sha256"] = longform_runner._sha256_bytes(
@@ -390,8 +413,26 @@ def test_provider_workflow_runs_every_pass_persists_and_resumes(tmp_path: Path, 
     )
     workflow_path.write_text(json.dumps(workflow), encoding="utf-8")
     assert run_longform_judge(**arguments, resume=True) == summary
+    normalization_upgrade = output / ".private" / "normalization-upgrade-v1.json"
+    assert not normalization_upgrade.exists()
+
+    def stop_after_upgrade_capture(**kwargs):
+        binary_calls.append(kwargs)
+        if kwargs["upgrade_legacy_normalization"]:
+            raise RuntimeError("upgrade reached binary runner")
+        return original_binary(**kwargs)
+
+    monkeypatch.setattr(longform_runner, "run_judge", stop_after_upgrade_capture)
+    with pytest.raises(RuntimeError, match="upgrade reached binary runner"):
+        run_longform_judge(**arguments, resume=True, upgrade_legacy_normalization=True)
+    assert json.loads(normalization_upgrade.read_text(encoding="utf-8"))["upgrade_legacy_normalization"] is True
+    assert any(call["upgrade_legacy_normalization"] is True for call in binary_calls)
+    with pytest.raises(HBQError, match="cannot be downgraded"):
+        run_longform_judge(**arguments, resume=True)
     with pytest.raises(HBQError, match="legacy workflow with a non-default batch_attempts"):
-        run_longform_judge(**arguments, resume=True, batch_attempts=4)
+        run_longform_judge(
+            **arguments, resume=True, batch_attempts=4, upgrade_legacy_normalization=True
+        )
 
 
 def test_provider_scope_auto_local_bundle_and_explicit_hierarchy(tmp_path: Path, endpoint) -> None:
@@ -1008,6 +1049,7 @@ def test_disclosure_enumerates_payload_hashes_and_call_ceiling(tmp_path: Path, c
     disclosure = json.loads(capsys.readouterr().err)["disclosure"]
     assert disclosure["maximum_provider_calls"] >= 3
     assert disclosure["batch_attempts"] == 3
+    assert disclosure["upgrade_legacy_normalization"] is False
     assert disclosure["maximum_binary_provider_sends"] % disclosure["batch_attempts"] == 0
     assert disclosure["payloads"]["route"]["sample"]["excerpts"]
     assert disclosure["payloads"]["route"]["request"]["sha256"]
@@ -1015,6 +1057,53 @@ def test_disclosure_enumerates_payload_hashes_and_call_ceiling(tmp_path: Path, c
     assert disclosure["payloads"]["synthesis"]["raw_source_included"] is False
     assert disclosure["completion_contract"]["completion_status"] == "work_in_progress"
     assert disclosure["completion_contract"]["completion_only_criterion_verdict"] == "NOT_APPLICABLE"
+
+
+def test_binary_scope_propagates_legacy_normalization_upgrade_only_to_runner(
+    tmp_path: Path, monkeypatch
+) -> None:
+    output = tmp_path / "scope"
+    output.mkdir()
+    (output / "run.json").write_text("{}", encoding="utf-8")
+    captured: dict[str, object] = {}
+
+    def stop_after_capture(**kwargs):
+        captured.update(kwargs)
+        raise RuntimeError("captured")
+
+    monkeypatch.setattr(longform_runner, "run_judge", stop_after_capture)
+    with pytest.raises(RuntimeError, match="captured"):
+        longform_runner._run_binary_scope(
+            artifact_path=tmp_path / "artifact.txt",
+            artifact_id="artifact",
+            scope_id="work",
+            label="Whole work",
+            bundle_id="prose.synthetic",
+            output_dir=output,
+            registry_path=tmp_path / "registry.json",
+            bundles_path=tmp_path / "bundles.json",
+            context_paths=[],
+            task_contract_path=None,
+            weight_profile=None,
+            provider="openai",
+            model="fake-local",
+            batch_size=12,
+            batch_attempts=3,
+            base_url="http://127.0.0.1:8000/v1",
+            api_key_env="OPENAI_API_KEY",
+            temperature=None,
+            allow_model_mismatch=False,
+            reasoning="medium",
+            codex_bin="codex",
+            grok_bin="grok",
+            resume=True,
+            timeout=600.0,
+            strict_ai=False,
+            allow_unattested_reasoning=False,
+            upgrade_legacy_normalization=True,
+        )
+    assert captured["resume"] is True
+    assert captured["upgrade_legacy_normalization"] is True
 
 
 def test_plan_only_stops_after_route_and_writes_reviewable_plan(tmp_path: Path, endpoint) -> None:
@@ -1103,6 +1192,7 @@ def test_reviewed_stack_override_preserves_plan_and_resumes_exactly(
         ("temperature", 2.1, "temperature must be between"),
         ("binary_workers", 9, "binary_workers must be between"),
         ("batch_attempts", 0, "batch_attempts must be a positive integer"),
+        ("upgrade_legacy_normalization", True, "requires resume"),
         ("local_sample_limit", 65, "local_sample_limit must be between"),
     ],
 )

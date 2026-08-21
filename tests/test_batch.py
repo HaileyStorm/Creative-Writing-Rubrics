@@ -88,6 +88,7 @@ def test_individual_policy_routes_each_job_without_confirmation(tmp_path: Path, 
     assert state["phase"] == "complete"
     assert len(calls) == 2
     assert all(call["plan_only"] is False and call["bundle_id"] is None for call in calls)
+    assert all(call["upgrade_legacy_normalization"] is False for call in calls)
     status = (tmp_path / "outputs" / "batch-status.html").read_text(encoding="utf-8")
     assert "one.txt" not in status
     assert "refresh" in status
@@ -214,6 +215,46 @@ def test_batch_rejects_output_that_contains_its_manifest_or_an_unrelated_state(
             allow_remote=True, resume=True,
         )
 
+
+def test_batch_binds_and_propagates_legacy_normalization_upgrade(
+    tmp_path: Path, monkeypatch
+) -> None:
+    calls: list[dict[str, object]] = []
+    _install_fake(monkeypatch, calls)
+    manifest = _manifest(tmp_path, "individual")
+    path = _write_manifest(tmp_path, manifest)
+    run_longform_batch(
+        path, registry="registry.jsonl", bundles="bundles.jsonl", allow_remote=True,
+    )
+    state_path = tmp_path / "outputs" / "batch.json"
+    state = json.loads(state_path.read_text(encoding="utf-8"))
+    assert state["configuration"]["upgrade_legacy_normalization"]["defaults"] is False
+    assert all(
+        value is False
+        for value in state["configuration"]["upgrade_legacy_normalization"]["jobs"].values()
+    )
+
+    manifest["defaults"]["upgrade_legacy_normalization"] = True
+    path.write_text(json.dumps(manifest), encoding="utf-8")
+    with pytest.raises(HBQError, match="upgrade_legacy_normalization policy changed"):
+        run_longform_batch(
+            path, registry="registry.jsonl", bundles="bundles.jsonl", allow_remote=True, resume=True,
+        )
+
+    legacy_root = tmp_path / "legacy-outputs"
+    legacy_root.mkdir()
+    (legacy_root / "batch.json").write_text(
+        json.dumps({"format_version": 1, "batch_id": "test-batch", "routing_policy": "individual"}),
+        encoding="utf-8",
+    )
+    manifest["defaults"]["output_root"] = "legacy-outputs"
+    path.write_text(json.dumps(manifest), encoding="utf-8")
+    calls.clear()
+    state = run_longform_batch(
+        path, registry="registry.jsonl", bundles="bundles.jsonl", allow_remote=True, resume=True,
+    )
+    assert state["configuration"]["upgrade_legacy_normalization"]["defaults"] is True
+    assert all(call["upgrade_legacy_normalization"] is True for call in calls)
 
 def test_batch_renders_html_for_a_valid_control_state(tmp_path: Path, monkeypatch) -> None:
     calls: list[dict[str, object]] = []

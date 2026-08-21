@@ -132,6 +132,10 @@ def _job_kwargs(
         "binary_workers": defaults.get("binary_workers", 1),
         "batch_size": defaults.get("batch_size", 12),
         "batch_attempts": defaults.get("batch_attempts", 3),
+        "upgrade_legacy_normalization": job.get(
+            "upgrade_legacy_normalization",
+            defaults.get("upgrade_legacy_normalization", False),
+        ),
         "base_url": defaults.get("base_url", "http://127.0.0.1:8000/v1"),
         "api_key_env": defaults.get("api_key_env", "OPENAI_API_KEY"),
         "temperature": defaults.get("temperature"),
@@ -224,6 +228,10 @@ def _run_single_job(
         allow_remote=allow_remote, resume=resume,
         timeout=defaults.get("timeout", 600.0), artifact_id=job.get("artifact_id"),
         strict_ai=defaults.get("strict_ai", False),
+        upgrade_legacy_normalization=job.get(
+            "upgrade_legacy_normalization",
+            defaults.get("upgrade_legacy_normalization", False),
+        ),
     )
 
 
@@ -293,17 +301,38 @@ def run_longform_batch(
     prior_state = load_data(prior_state_path) if prior_state_path.is_file() else None
     if prior_state is not None and not isinstance(prior_state, dict):
         raise HBQError("Existing batch.json must contain an object")
+    batch_configuration = {
+        "upgrade_legacy_normalization": {
+            "defaults": defaults.get("upgrade_legacy_normalization", False),
+            "jobs": {
+                str(job["job_id"]): job.get(
+                    "upgrade_legacy_normalization",
+                    defaults.get("upgrade_legacy_normalization", False),
+                )
+                for job in jobs
+            },
+        }
+    }
+    if any(batch_configuration["upgrade_legacy_normalization"]["jobs"].values()) and not resume:
+        raise HBQError("upgrade_legacy_normalization requires --resume for a batch")
     if isinstance(prior_state, dict) and (
-        prior_state.get("format_version") != 1
+        prior_state.get("format_version") not in {1, 2}
         or prior_state.get("batch_id") != manifest["batch_id"]
         or prior_state.get("routing_policy") != manifest["routing_policy"]
     ):
         raise HBQError("Existing batch.json does not belong to this batch manifest")
+    if (
+        isinstance(prior_state, dict)
+        and prior_state.get("format_version") == 2
+        and prior_state.get("configuration") != batch_configuration
+    ):
+        raise HBQError("Cannot resume: upgrade_legacy_normalization policy changed")
     if prior_state is not None and not (resume or accept_reviewed):
         raise HBQError(f"Batch output already exists at {output_root}; pass --resume")
     state: dict[str, Any] = {
-        "format_version": 1, "batch_id": manifest["batch_id"],
+        "format_version": 2, "batch_id": manifest["batch_id"],
         "routing_policy": manifest["routing_policy"],
+        "configuration": batch_configuration,
         "phase": "review_execution" if accept_reviewed else "running",
         "previous_phase": prior_state.get("phase") if isinstance(prior_state, dict) else None,
         "jobs": [{"job_id": job["job_id"], "status": "PENDING", "detail": ""} for job in jobs],

@@ -19,6 +19,7 @@ from hbqrs.runner import (
     _load_checkpoints,
     _normalize_batch,
     _parse_model_json,
+    _validate_legacy_rejection_boundary,
     _validate_provider_artifacts,
     run_judge,
 )
@@ -180,8 +181,9 @@ def test_openai_runner_checkpoints_diagnostic_subset_and_resumes(tmp_path: Path,
     manifest = json.loads((tmp_path / "run" / "run.json").read_text(encoding="utf-8"))
     assert "A short test scene." not in json.dumps(manifest)
     assert manifest["configuration"]["artifact"]["sha256"]
-    assert manifest["format_version"] == 2
+    assert manifest["format_version"] == 3
     assert manifest["configuration"]["retry_policy"] == {"batch_attempts": 3}
+    assert manifest["configuration"]["evidence_normalization_policy"] == "invalid_exact_quote_to_summary_v1"
     prompt = gzip.decompress((tmp_path / "run" / "responses" / "batch-0001.prompt.txt.gz").read_bytes())
     assert b"A short test scene." in prompt
     assert QUESTION_ID.encode() in prompt
@@ -238,7 +240,7 @@ def test_task_contract_artifact_id_must_match_judged_artifact(tmp_path: Path) ->
 def test_partial_multi_batch_run_resumes_without_overwrite(tmp_path: Path, fake_openai_endpoint) -> None:
     base_url, handler = fake_openai_endpoint
     handler.fail_on_call = 2
-    with pytest.raises(HBQError, match="Batch 2 exhausted 1 attempts"):
+    with pytest.raises(HBQError, match="Batch 2 exhausted 1 cumulative attempts"):
         _run(
             tmp_path,
             base_url=base_url,
@@ -251,21 +253,21 @@ def test_partial_multi_batch_run_resumes_without_overwrite(tmp_path: Path, fake_
     assert len((tmp_path / "run" / "verdicts.jsonl").read_text(encoding="utf-8").splitlines()) == 1
 
     handler.fail_on_call = None
-    summary = _run(
+    with pytest.raises(HBQError, match="Batch 2 exhausted 1 cumulative attempts"):
+        _run(
         tmp_path,
         base_url=base_url,
         question_ids=[QUESTION_ID, SECOND_QUESTION_ID],
         batch_size=1,
         batch_attempts=1,
-        resume=True,
-    )
-    assert summary["verdicts"] == 2
-    assert handler.calls == 3
+            resume=True,
+        )
+    assert handler.calls == 2
     assert (tmp_path / "run" / "responses" / "batch-0001.json").read_bytes() == first
-    assert (tmp_path / "run" / "responses" / "batch-0002.json").is_file()
+    assert not (tmp_path / "run" / "responses" / "batch-0002.json").exists()
 
 
-def test_retries_ungrounded_model_output_and_retains_private_audit(tmp_path: Path, fake_openai_endpoint) -> None:
+def test_normalizes_ungrounded_model_quote_without_retry_and_retains_audit(tmp_path: Path, fake_openai_endpoint) -> None:
     base_url, handler = fake_openai_endpoint
     handler.evidence_by_call = {
         1: {
@@ -278,24 +280,59 @@ def test_retries_ungrounded_model_output_and_retains_private_audit(tmp_path: Pat
 
     summary = _run(tmp_path, base_url=base_url, batch_attempts=2)
     assert summary["verdicts"] == 1
-    assert handler.calls == 2
+    assert handler.calls == 1
     checkpoint = json.loads((tmp_path / "run" / "responses" / "batch-0001.json").read_text(encoding="utf-8"))
-    assert checkpoint["format_version"] == 3
+    assert checkpoint["format_version"] == 4
     assert checkpoint["retry_policy"] == {"batch_attempts": 2}
-    assert checkpoint["accepted_attempt"] == 2
+    assert checkpoint["accepted_attempt"] == 1
     accepted = checkpoint["response_artifact"]
     accepted_path = tmp_path / "run" / accepted["path"]
     assert accepted_path.read_bytes()
     assert accepted["bytes"] == len(accepted_path.read_bytes())
     assert accepted["sha256"] == hashlib.sha256(accepted_path.read_bytes()).hexdigest()
-    audit_path = tmp_path / "run" / "responses" / "rejected" / "batch-0001" / "attempt-0001.json"
-    audit = json.loads(audit_path.read_text(encoding="utf-8"))
-    assert audit["attempt"] == 1
-    assert audit["stage"] == "model_output"
-    assert audit["retry_policy"] == {"batch_attempts": 2}
-    assert audit["error"]["class"] == "HBQError"
-    assert audit["provider"] == {"id": "fake-response", "model": "fake-local"}
-    assert "Not present in this artifact." in audit["raw_content"]["text"]
+    assert checkpoint["normalized_verdicts"][0]["evidence"] == [{"reference": "line:1", "summary": "Not present in this artifact."}]
+    assert checkpoint["normalization_audit"] == [{
+        "question_id": QUESTION_ID,
+        "evidence_index": 1,
+        "raw_sha256": hashlib.sha256(b"Not present in this artifact.").hexdigest(),
+        "from": "exact_quote",
+        "to": "summary",
+        "reason": "not_verbatim",
+    }]
+    assert not (tmp_path / "run" / "responses" / "rejected").exists()
+
+
+def test_failed_attempt_repair_audit_does_not_leak_into_later_acceptance(tmp_path: Path, monkeypatch) -> None:
+    calls = 0
+
+    def fake_call(**kwargs: object) -> tuple[str, dict[str, object]]:
+        nonlocal calls
+        calls += 1
+        questions = _questions_from_prompt(str(kwargs["user_prompt"]))
+        valid = {
+            "question_id": questions[0]["question_id"], "verdict": "YES", "confidence": 0.8,
+            "evidence": [{"kind": "exact_quote", "reference": "line:1", "exact_quote": "A short test scene.", "summary": None}],
+            "note": "The requested operation is assessable.",
+        }
+        if calls == 1:
+            repaired_then_invalid = {
+                **valid,
+                "evidence": [{"kind": "exact_quote", "reference": "line:1", "exact_quote": "Not present in this artifact.", "summary": None}],
+            }
+            payload = {"verdicts": [repaired_then_invalid, {**valid, "question_id": "unexpected.question"}]}
+        else:
+            payload = {"verdicts": [valid]}
+        return json.dumps(payload), {"id": f"fake-{calls}", "model": "fake-local"}
+
+    monkeypatch.setattr("hbqrs.runner._call_openai", fake_call)
+    assert _run(tmp_path, batch_attempts=2)["verdicts"] == 1
+    assert calls == 2
+    checkpoint_path = tmp_path / "run" / "responses" / "batch-0001.json"
+    checkpoint = json.loads(checkpoint_path.read_text(encoding="utf-8"))
+    assert checkpoint["normalization_audit"] == []
+    assert checkpoint["normalized_verdicts"][0]["evidence"] == [{"reference": "line:1", "exact_quote": "A short test scene."}]
+    assert _run(tmp_path, resume=True, batch_attempts=2)["verdicts"] == 1
+    assert calls == 2
 
 
 def test_retries_provider_failure_and_records_empty_raw_audit(tmp_path: Path, fake_openai_endpoint) -> None:
@@ -331,7 +368,7 @@ def test_wrong_effective_model_fails_fast_and_retains_provider_envelope(
     assert '"model": "wrong-model"' in audit["raw_content"]["text"]
 
 
-def test_accepted_checkpoint_binds_rejected_retry_chain_and_detects_tampering(
+def test_accepted_checkpoint_binds_normalization_audit_and_detects_tampering(
     tmp_path: Path, fake_openai_endpoint
 ) -> None:
     base_url, handler = fake_openai_endpoint
@@ -347,25 +384,10 @@ def test_accepted_checkpoint_binds_rejected_retry_chain_and_detects_tampering(
     run_dir = tmp_path / "run"
     checkpoint_path = run_dir / "responses" / "batch-0001.json"
     checkpoint = json.loads(checkpoint_path.read_text(encoding="utf-8"))
-    assert checkpoint["rejected_chain"]["count"] == 1
-    record_path = run_dir / "responses" / "rejected" / "batch-0001" / "attempt-0001.json"
-    original_record = record_path.read_bytes()
-    record_path.unlink()
-    with pytest.raises(HBQError, match="rejected retry chain is not bound"):
-        _load_checkpoints(run_dir, artifact_text="A short test scene.", context_texts=[], batch_attempts=2)
-    record_path.write_bytes(original_record)
-
-    record = json.loads(record_path.read_text(encoding="utf-8"))
-    record["previous_rejected_sha256"] = "0" * 64
-    record_path.write_text(json.dumps(record), encoding="utf-8")
-    with pytest.raises(HBQError, match="valid bound record"):
-        _load_checkpoints(run_dir, artifact_text="A short test scene.", context_texts=[], batch_attempts=2)
-    record["previous_rejected_sha256"] = None
-    record_path.write_text(json.dumps(record), encoding="utf-8")
-
-    orphan = record_path.with_name("attempt-0002.message.txt")
-    orphan.write_bytes(b"orphan")
-    with pytest.raises(HBQError, match="unmatched raw"):
+    assert checkpoint["rejected_chain"]["count"] == 0
+    checkpoint["normalization_audit"][0]["reason"] = "tampered"
+    checkpoint_path.write_text(json.dumps(checkpoint), encoding="utf-8")
+    with pytest.raises(HBQError, match="repair audit are not replayable"):
         _load_checkpoints(run_dir, artifact_text="A short test scene.", context_texts=[], batch_attempts=2)
 
 
@@ -399,12 +421,7 @@ def test_rejected_attempt_atomic_record_leaves_no_orphan_after_write_crash(
     tmp_path: Path, fake_openai_endpoint, monkeypatch
 ) -> None:
     base_url, handler = fake_openai_endpoint
-    handler.evidence_item = {
-        "kind": "exact_quote",
-        "reference": "line:1",
-        "exact_quote": "Not present in this artifact.",
-        "summary": None,
-    }
+    handler.fail_on_call = 1
     from hbqrs.runner import _atomic_write as original_atomic_write
 
     def crash_before_rejection_record(path: Path, value: bytes) -> None:
@@ -418,18 +435,13 @@ def test_rejected_attempt_atomic_record_leaves_no_orphan_after_write_crash(
     rejected_dir = tmp_path / "run" / "responses" / "rejected" / "batch-0001"
     assert not list(rejected_dir.glob("attempt-*"))
 
-    handler.evidence_item = {
-        "kind": "exact_quote",
-        "reference": "line:1",
-        "exact_quote": "A short test scene.",
-        "summary": None,
-    }
+    handler.fail_on_call = None
     monkeypatch.setattr("hbqrs.runner._atomic_write", original_atomic_write)
     assert _run(tmp_path, base_url=base_url, batch_attempts=1, resume=True)["verdicts"] == 1
     assert handler.calls == 2
 
 
-def test_exhausted_model_output_retries_leave_no_accepted_checkpoint(tmp_path: Path, fake_openai_endpoint) -> None:
+def test_quote_only_model_output_is_accepted_without_retry(tmp_path: Path, fake_openai_endpoint) -> None:
     base_url, handler = fake_openai_endpoint
     handler.evidence_item = {
         "kind": "exact_quote",
@@ -438,38 +450,20 @@ def test_exhausted_model_output_retries_leave_no_accepted_checkpoint(tmp_path: P
         "summary": None,
     }
 
-    with pytest.raises(HBQError, match="Batch 1 exhausted 2 attempts"):
-        _run(tmp_path, base_url=base_url, batch_attempts=2)
-    assert handler.calls == 2
-    assert not (tmp_path / "run" / "responses" / "batch-0001.json").exists()
-    audits = sorted((tmp_path / "run" / "responses" / "rejected" / "batch-0001").glob("attempt-*.json"))
-    assert [path.name for path in audits] == ["attempt-0001.json", "attempt-0002.json"]
+    assert _run(tmp_path, base_url=base_url, batch_attempts=2)["verdicts"] == 1
+    assert handler.calls == 1
+    assert (tmp_path / "run" / "responses" / "batch-0001.json").is_file()
 
 
-def test_resume_preserves_rejected_attempts_and_can_succeed(tmp_path: Path, fake_openai_endpoint) -> None:
+def test_resume_cumulative_exhaustion_makes_no_provider_call(tmp_path: Path, fake_openai_endpoint) -> None:
     base_url, handler = fake_openai_endpoint
-    handler.evidence_item = {
-        "kind": "exact_quote",
-        "reference": "line:1",
-        "exact_quote": "Not present in this artifact.",
-        "summary": None,
-    }
-    with pytest.raises(HBQError, match="Batch 1 exhausted 1 attempts"):
+    handler.fail_on_call = 1
+    with pytest.raises(HBQError, match="Batch 1 exhausted 1 cumulative attempts"):
         _run(tmp_path, base_url=base_url, batch_attempts=1)
-    audit_path = tmp_path / "run" / "responses" / "rejected" / "batch-0001" / "attempt-0001.json"
-    original_audit = audit_path.read_bytes()
-
-    handler.evidence_item = {
-        "kind": "exact_quote",
-        "reference": "line:1",
-        "exact_quote": "A short test scene.",
-        "summary": None,
-    }
-    summary = _run(tmp_path, base_url=base_url, batch_attempts=1, resume=True)
-    assert summary["verdicts"] == 1
-    assert handler.calls == 2
-    assert audit_path.read_bytes() == original_audit
-    assert sorted(audit_path.parent.glob("attempt-*.json")) == [audit_path]
+    handler.fail_on_call = None
+    with pytest.raises(HBQError, match="Batch 1 exhausted 1 cumulative attempts"):
+        _run(tmp_path, base_url=base_url, batch_attempts=1, resume=True)
+    assert handler.calls == 1
 
 
 def test_prechange_checkpoint_resumes_under_default_retry_policy(tmp_path: Path, fake_openai_endpoint) -> None:
@@ -479,6 +473,9 @@ def test_prechange_checkpoint_resumes_under_default_retry_policy(tmp_path: Path,
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     manifest["format_version"] = 1
     manifest["configuration"].pop("retry_policy")
+    manifest["configuration"].pop("retry_semantics")
+    manifest["configuration"].pop("evidence_normalization_policy")
+    manifest["configuration"].pop("validation_feedback_policy")
     manifest["config_sha256"] = hashlib.sha256(
         (json.dumps(manifest["configuration"], ensure_ascii=False, sort_keys=True, indent=2) + "\n").encode("utf-8")
     ).hexdigest()
@@ -505,12 +502,204 @@ def test_prechange_checkpoint_resumes_under_default_retry_policy(tmp_path: Path,
         _run(tmp_path, base_url=base_url, batch_attempts=2, resume=True)
 
 
+@pytest.mark.parametrize("format_version", [1, 2, 3])
+def test_accepted_legacy_checkpoint_formats_remain_readable(
+    tmp_path: Path, fake_openai_endpoint, format_version: int
+) -> None:
+    base_url, _ = fake_openai_endpoint
+    _run(tmp_path, base_url=base_url)
+    run_dir = tmp_path / "run"
+    checkpoint_path = run_dir / "responses" / "batch-0001.json"
+    checkpoint = json.loads(checkpoint_path.read_text(encoding="utf-8"))
+    checkpoint["format_version"] = format_version
+    for key in (
+        "base_prompt_sha256", "effective_prompt_sha256", "validation_feedback_policy", "validation_feedback",
+        "normalization_policy", "normalization_audit", "recovered_from_rejected",
+    ):
+        checkpoint.pop(key, None)
+    checkpoint_path.write_text(json.dumps(checkpoint), encoding="utf-8")
+    loaded, count, _ = _load_checkpoints(run_dir, artifact_text="A short test scene.", context_texts=[], batch_attempts=3)
+    assert count == 1
+    assert loaded[0]["question_id"] == QUESTION_ID
+
+
+@pytest.mark.parametrize("source_attempt", [1, 2, 3])
+def test_legacy_quote_rejection_requires_explicit_upgrade_then_recovers_without_provider_call(
+    tmp_path: Path, fake_openai_endpoint, source_attempt: int
+) -> None:
+    base_url, handler = fake_openai_endpoint
+    handler.evidence_item = {
+        "kind": "summary", "reference": "line:1", "exact_quote": None, "summary": "Valid but wrong ID response."
+    }
+
+    original = _FakeOpenAIHandler.do_POST
+
+    def wrong_id_once(self: BaseHTTPRequestHandler) -> None:
+        type(self).calls += 1
+        length = int(self.headers["Content-Length"])
+        request = json.loads(self.rfile.read(length))
+        body = json.dumps({
+            "id": "fake-response", "model": request["model"],
+            "choices": [{"message": {"role": "assistant", "content": json.dumps({"verdicts": [{
+                "question_id": "unexpected.question", "verdict": "YES", "confidence": 0.8,
+                "evidence": [{"kind": "summary", "reference": "line:1", "exact_quote": None, "summary": "Wrong ID."}],
+                "note": "Wrong ID.",
+            }]})}}],
+        }).encode("utf-8")
+        self.send_response(200); self.send_header("Content-Type", "application/json"); self.send_header("Content-Length", str(len(body))); self.end_headers(); self.wfile.write(body)
+
+    _FakeOpenAIHandler.do_POST = wrong_id_once
+    try:
+        with pytest.raises(HBQError, match="cumulative attempts"):
+            _run(tmp_path, base_url=base_url, batch_attempts=1)
+    finally:
+        _FakeOpenAIHandler.do_POST = original
+    run_dir = tmp_path / "run"
+    rejected_path = run_dir / "responses" / "rejected" / "batch-0001" / "attempt-0001.json"
+    rejected = json.loads(rejected_path.read_text(encoding="utf-8"))
+    raw_text = json.dumps({"verdicts": [{
+        "question_id": QUESTION_ID, "verdict": "YES", "confidence": 0.8,
+        "evidence": [{"kind": "exact_quote", "reference": "line:1", "exact_quote": "Not present in this artifact.", "summary": None}],
+        "note": "Quote-only recovery fixture.",
+    }]})
+    raw = raw_text.encode("utf-8")
+    rejected.update({
+        "format_version": 3,
+        "prompt_sha256": rejected["base_prompt_sha256"],
+        "raw_content": {"encoding": "utf-8", "text": raw_text, "bytes": len(raw), "sha256": hashlib.sha256(raw).hexdigest()},
+    })
+    for key in ("base_prompt_sha256", "effective_prompt_sha256", "validation_feedback"):
+        rejected.pop(key, None)
+    rejected_path.write_text(json.dumps(rejected), encoding="utf-8")
+    previous_path = rejected_path
+    for attempt in range(2, source_attempt + 1):
+        repeated = dict(rejected)
+        repeated["attempt"] = attempt
+        repeated["sequence"] = attempt
+        repeated["previous_rejected_sha256"] = hashlib.sha256(previous_path.read_bytes()).hexdigest()
+        previous_path = rejected_path.with_name(f"attempt-{attempt:04d}.json")
+        previous_path.write_text(json.dumps(repeated), encoding="utf-8")
+    manifest_path = run_dir / "run.json"
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    manifest["format_version"] = 2
+    for key in ("retry_semantics", "evidence_normalization_policy", "validation_feedback_policy"):
+        manifest["configuration"].pop(key)
+    manifest["config_sha256"] = hashlib.sha256(
+        (json.dumps(manifest["configuration"], ensure_ascii=False, sort_keys=True, indent=2) + "\n").encode("utf-8")
+    ).hexdigest()
+    manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+
+    with pytest.raises(HBQError, match="cumulative attempts"):
+        _run(tmp_path, base_url=base_url, batch_attempts=1, resume=True)
+    assert handler.calls == 1
+    assert _run(tmp_path, base_url=base_url, batch_attempts=1, resume=True, upgrade_legacy_normalization=True)["verdicts"] == 1
+    assert handler.calls == 1
+    assert (run_dir / "normalization-upgrade-v1.json").is_file()
+    checkpoint = json.loads((run_dir / "responses" / "batch-0001.json").read_text(encoding="utf-8"))
+    assert checkpoint["accepted_attempt"] == source_attempt
+    assert checkpoint["validation_feedback"] is None
+    assert checkpoint["effective_prompt_sha256"] == checkpoint["base_prompt_sha256"]
+    assert checkpoint["recovered_from_rejected"]["attempt"] == source_attempt
+    assert _run(tmp_path, base_url=base_url, batch_attempts=1, resume=True, upgrade_legacy_normalization=True)["verdicts"] == 1
+
+
+def test_legacy_upgrade_sidecar_freezes_exact_old_format_boundary(tmp_path: Path) -> None:
+    rejected_dir = tmp_path / "responses" / "rejected" / "batch-0001"
+    rejected_dir.mkdir(parents=True)
+    first = rejected_dir / "attempt-0001.json"
+    first.write_text(json.dumps({"format_version": 3}), encoding="utf-8")
+    heads = [{"batch": "batch-0001", "count": 1, "head_sha256": hashlib.sha256(first.read_bytes()).hexdigest()}]
+    _validate_legacy_rejection_boundary(tmp_path, heads)
+    with pytest.raises(HBQError, match="old-format|must freeze"):
+        _validate_legacy_rejection_boundary(tmp_path, [])
+    with pytest.raises(HBQError, match="malformed"):
+        _validate_legacy_rejection_boundary(tmp_path, [{"batch": "batch-0001", "count": 0, "head_sha256": "x"}])
+    with pytest.raises(HBQError, match="malformed"):
+        _validate_legacy_rejection_boundary(tmp_path, [None])  # type: ignore[list-item]
+    with pytest.raises(HBQError, match="malformed"):
+        _validate_legacy_rejection_boundary(tmp_path, [{**heads[0], "batch": "batch-1"}])
+    with pytest.raises(HBQError, match="no longer binds"):
+        _validate_legacy_rejection_boundary(tmp_path, [{**heads[0], "head_sha256": "0" * 64}])
+    second = rejected_dir / "attempt-0002.json"
+    second.write_text(json.dumps({"format_version": 3}), encoding="utf-8")
+    with pytest.raises(HBQError, match="beyond its frozen boundary"):
+        _validate_legacy_rejection_boundary(tmp_path, heads)
+
+
+def test_legacy_upgrade_sidecar_rejects_noncanonical_batch_directory(tmp_path: Path) -> None:
+    invalid = tmp_path / "responses" / "rejected" / "batch-1"
+    invalid.mkdir(parents=True)
+    (invalid / "attempt-0001.json").write_text(json.dumps({"format_version": 3}), encoding="utf-8")
+    with pytest.raises(HBQError, match="invalid rejected batch directory"):
+        _validate_legacy_rejection_boundary(tmp_path, [])
+
+
+def test_legacy_strict_retry_writes_self_consistent_v4_feedback_policy(tmp_path: Path, monkeypatch) -> None:
+    calls = 0
+
+    def fake_call(**kwargs: object) -> tuple[str, dict[str, object]]:
+        nonlocal calls
+        calls += 1
+        question_id = _questions_from_prompt(str(kwargs["user_prompt"]))[0]["question_id"]
+        if calls == 1:
+            payload = {"verdicts": []}
+        else:
+            payload = {"verdicts": [{
+                "question_id": question_id, "verdict": "YES", "confidence": 0.8,
+                "evidence": [{"kind": "exact_quote", "reference": "line:1", "exact_quote": "A short test scene.", "summary": None}],
+                "note": "Valid retry.",
+            }]}
+        return json.dumps(payload), {"id": f"fake-{calls}", "model": "fake-local"}
+
+    monkeypatch.setattr("hbqrs.runner._call_openai", fake_call)
+    with pytest.raises(HBQError, match="cumulative attempts"):
+        _run(tmp_path, batch_attempts=1)
+    run_dir = tmp_path / "run"
+    rejected_path = run_dir / "responses" / "rejected" / "batch-0001" / "attempt-0001.json"
+    rejected = json.loads(rejected_path.read_text(encoding="utf-8"))
+    rejected["format_version"] = 3
+    rejected["prompt_sha256"] = rejected["base_prompt_sha256"]
+    rejected["retry_policy"] = {"batch_attempts": 2}
+    for key in ("base_prompt_sha256", "effective_prompt_sha256", "validation_feedback_policy", "validation_feedback"):
+        rejected.pop(key, None)
+    rejected_path.write_text(json.dumps(rejected), encoding="utf-8")
+    manifest_path = run_dir / "run.json"
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    manifest["format_version"] = 2
+    manifest["configuration"]["retry_policy"] = {"batch_attempts": 2}
+    for key in ("retry_semantics", "evidence_normalization_policy", "validation_feedback_policy"):
+        manifest["configuration"].pop(key)
+    manifest["config_sha256"] = hashlib.sha256(
+        (json.dumps(manifest["configuration"], ensure_ascii=False, sort_keys=True, indent=2) + "\n").encode("utf-8")
+    ).hexdigest()
+    manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+    assert _run(tmp_path, batch_attempts=2, resume=True)["verdicts"] == 1
+    checkpoint = json.loads((run_dir / "responses" / "batch-0001.json").read_text(encoding="utf-8"))
+    assert checkpoint["validation_feedback_policy"] is None
+    assert checkpoint["validation_feedback"] is None
+    assert checkpoint["effective_prompt_sha256"] == checkpoint["base_prompt_sha256"]
+    assert _run(tmp_path, batch_attempts=2, resume=True)["verdicts"] == 1
+    assert calls == 2
+
+
 def test_new_run_rejects_changed_retry_policy_on_resume(tmp_path: Path, fake_openai_endpoint) -> None:
     base_url, handler = fake_openai_endpoint
     _run(tmp_path, base_url=base_url, batch_attempts=2)
 
     with pytest.raises(HBQError, match="batch_attempts retry policy changed"):
         _run(tmp_path, base_url=base_url, batch_attempts=3, resume=True)
+    assert handler.calls == 1
+
+
+def test_v4_checkpoint_binds_prompt_hash_to_base_prompt(tmp_path: Path, fake_openai_endpoint) -> None:
+    base_url, handler = fake_openai_endpoint
+    _run(tmp_path, base_url=base_url)
+    checkpoint_path = tmp_path / "run" / "responses" / "batch-0001.json"
+    checkpoint = json.loads(checkpoint_path.read_text(encoding="utf-8"))
+    checkpoint["prompt_sha256"] = "0" * 64
+    checkpoint_path.write_text(json.dumps(checkpoint), encoding="utf-8")
+    with pytest.raises(HBQError, match="prompt hash does not match its base prompt"):
+        _run(tmp_path, base_url=base_url, resume=True)
     assert handler.calls == 1
 
 
@@ -672,6 +861,46 @@ def test_exact_quote_must_be_grounded_in_artifact_or_context() -> None:
             artifact_text="A short test scene.",
             context_texts=["Context-only evidence."],
         )
+
+
+@pytest.mark.parametrize("quote", ["a short test scene.", "A  short test scene.", "A short test scene. Extra", "A short test scene.\nExtra"])
+def test_new_policy_converts_non_verbatim_quote_variants_to_summary(quote: str) -> None:
+    artifact = "A short test scene."
+    payload = {
+        "verdicts": [{
+            "question_id": QUESTION_ID,
+            "verdict": "YES",
+            "confidence": 0.8,
+            "evidence": [{"kind": "exact_quote", "reference": "line:1", "exact_quote": quote, "summary": None}],
+            "note": "The requested operation is assessable.",
+        }]
+    }
+    audit: list[dict[str, object]] = []
+    normalized = _normalize_batch(
+        payload,
+        expected_ids=[QUESTION_ID], artifact_id="artifact", bundle_id="prose.scene", judge_id="judge", run_id="run",
+        artifact_text=artifact, context_texts=[], normalization_policy="invalid_exact_quote_to_summary_v1", repair_audit=audit,
+    )
+    assert artifact == "A short test scene."
+    assert normalized[0]["evidence"] == [{"reference": "line:1", "summary": quote}]
+    assert audit[0]["raw_sha256"] == hashlib.sha256(quote.encode("utf-8")).hexdigest()
+
+
+def test_new_policy_keeps_byte_exact_quote_without_audit() -> None:
+    payload = {
+        "verdicts": [{
+            "question_id": QUESTION_ID, "verdict": "YES", "confidence": 0.8,
+            "evidence": [{"kind": "exact_quote", "reference": "line:1", "exact_quote": "A short test scene.", "summary": None}],
+            "note": "The requested operation is assessable.",
+        }]
+    }
+    audit: list[dict[str, object]] = []
+    normalized = _normalize_batch(
+        payload, expected_ids=[QUESTION_ID], artifact_id="artifact", bundle_id="prose.scene", judge_id="judge", run_id="run",
+        artifact_text="A short test scene.", context_texts=[], normalization_policy="invalid_exact_quote_to_summary_v1", repair_audit=audit,
+    )
+    assert normalized[0]["evidence"] == [{"reference": "line:1", "exact_quote": "A short test scene."}]
+    assert audit == []
 
 
 def test_strict_model_response_rejects_empty_exact_quote() -> None:
@@ -839,7 +1068,7 @@ def test_resume_rejects_non_typed_current_checkpoint_evidence_before_provider_ca
     _run(tmp_path, base_url=base_url)
     checkpoint_path = tmp_path / "run" / "responses" / "batch-0001.json"
     checkpoint = json.loads(checkpoint_path.read_text(encoding="utf-8"))
-    assert checkpoint["format_version"] == 3
+    assert checkpoint["format_version"] == 4
     verdict = checkpoint["normalized_verdicts"][0]
     verdict["evidence"] = evidence
     checkpoint["verdicts_sha256"] = hashlib.sha256(
@@ -852,7 +1081,7 @@ def test_resume_rejects_non_typed_current_checkpoint_evidence_before_provider_ca
     assert handler.calls == 1
 
 
-def test_runner_rejects_ungrounded_exact_quote_before_checkpoint(
+def test_runner_normalizes_ungrounded_exact_quote_before_checkpoint(
     tmp_path: Path,
     fake_openai_endpoint,
 ) -> None:
@@ -864,10 +1093,10 @@ def test_runner_rejects_ungrounded_exact_quote_before_checkpoint(
         "summary": None,
     }
 
-    with pytest.raises(HBQError, match="does not occur verbatim"):
-        _run(tmp_path, base_url=base_url, batch_attempts=1)
+    assert _run(tmp_path, base_url=base_url, batch_attempts=1)["verdicts"] == 1
     assert handler.calls == 1
-    assert not (tmp_path / "run" / "responses" / "batch-0001.json").exists()
+    checkpoint = json.loads((tmp_path / "run" / "responses" / "batch-0001.json").read_text(encoding="utf-8"))
+    assert checkpoint["normalized_verdicts"][0]["evidence"][0]["summary"] == "Not present in this artifact."
 
 
 def test_strict_model_response_rejects_top_level_list() -> None:
@@ -968,40 +1197,55 @@ def test_codex_backend_uses_schema_and_read_only_ephemeral_exec(tmp_path: Path, 
     assert "stderr_tail" not in response["provider"]
 
 
-def test_codex_retry_requires_an_attempt_scoped_fresh_message(tmp_path: Path, monkeypatch) -> None:
+def test_codex_retry_binds_validation_feedback_and_uses_fresh_message(tmp_path: Path, monkeypatch) -> None:
     message_paths: list[Path] = []
+    prompts: list[str] = []
 
     def fake_run(argv: list[str], **kwargs: object) -> subprocess.CompletedProcess[str]:
         message_path = Path(argv[argv.index("--output-last-message") + 1])
         message_paths.append(message_path)
+        prompts.append(str(kwargs["input"]))
+        questions = _questions_from_prompt(str(kwargs["input"]))
         if len(message_paths) == 1:
-            questions = _questions_from_prompt(str(kwargs["input"]))
+            payload = {"verdicts": [{
+                "question_id": "unexpected.question", "verdict": "YES", "confidence": 0.9,
+                "evidence": [{"kind": "summary", "reference": "line:1", "exact_quote": None, "summary": "Wrong ID."}],
+                "note": "The operation can be assessed from the supplied scene.",
+            }]}
+        else:
             payload = {
-                "verdicts": [
-                    {
-                        "question_id": item["question_id"],
-                        "verdict": "YES",
-                        "confidence": 0.9,
-                        "evidence": [
-                            {
-                                "kind": "exact_quote",
-                                "reference": "line:1",
-                                "exact_quote": "Not present in this artifact.",
-                                "summary": None,
-                            }
-                        ],
-                        "note": "The operation can be assessed from the supplied scene.",
-                    }
-                    for item in questions
-                ]
+                "verdicts": [{
+                    "question_id": item["question_id"], "verdict": "YES", "confidence": 0.9,
+                    "evidence": [{"kind": "exact_quote", "reference": "line:1", "exact_quote": "A short test scene.", "summary": None}],
+                    "note": "The operation can be assessed from the supplied scene.",
+                } for item in questions]
             }
-            message_path.parent.mkdir(parents=True, exist_ok=True)
-            message_path.write_text(json.dumps(payload), encoding="utf-8")
+        message_path.parent.mkdir(parents=True, exist_ok=True)
+        message_path.write_text(json.dumps(payload), encoding="utf-8")
         stderr = "model: gpt-5.6-sol\nprovider: openai\nreasoning effort: high\nsession id: fake\nuser\n"
         return subprocess.CompletedProcess(argv, 0, stdout="", stderr=stderr)
 
     monkeypatch.setattr("hbqrs.runner.subprocess.run", fake_run)
-    with pytest.raises(HBQError, match="Batch 1 exhausted 2 attempts"):
+    assert _run(
+            tmp_path,
+            provider="codex",
+            model="gpt-5.6-sol",
+            reasoning="high",
+            codex_bin="python",
+            allow_remote=True,
+            batch_attempts=2,
+        )["verdicts"] == 1
+    assert len(message_paths) == 2
+    assert message_paths[0] != message_paths[1]
+    assert message_paths[0].is_file()
+    assert message_paths[1].is_file()
+    assert "## Validation feedback" in prompts[1]
+    checkpoint = json.loads((tmp_path / "run" / "responses" / "batch-0001.json").read_text(encoding="utf-8"))
+    assert checkpoint["validation_feedback"]["version"] == "validation_feedback_retry_v1"
+    checkpoint["validation_feedback"] = None
+    checkpoint["effective_prompt_sha256"] = checkpoint["base_prompt_sha256"]
+    (tmp_path / "run" / "responses" / "batch-0001.json").write_text(json.dumps(checkpoint), encoding="utf-8")
+    with pytest.raises(HBQError, match="effective prompt is not bound"):
         _run(
             tmp_path,
             provider="codex",
@@ -1010,41 +1254,18 @@ def test_codex_retry_requires_an_attempt_scoped_fresh_message(tmp_path: Path, mo
             codex_bin="python",
             allow_remote=True,
             batch_attempts=2,
+            resume=True,
         )
-    assert len(message_paths) == 2
-    assert message_paths[0] != message_paths[1]
-    assert message_paths[0].is_file()
-    assert not message_paths[1].exists()
-    assert not (tmp_path / "run" / "responses" / "batch-0001.json").exists()
 
 
-def test_codex_resume_allocates_a_fresh_message_path_after_exhaustion(tmp_path: Path, monkeypatch) -> None:
+def test_codex_resume_after_exhaustion_makes_no_provider_call(tmp_path: Path, monkeypatch) -> None:
     message_paths: list[Path] = []
 
     def fake_run(argv: list[str], **kwargs: object) -> subprocess.CompletedProcess[str]:
         message_path = Path(argv[argv.index("--output-last-message") + 1])
         message_paths.append(message_path)
         if len(message_paths) == 1:
-            questions = _questions_from_prompt(str(kwargs["input"]))
-            payload = {
-                "verdicts": [
-                    {
-                        "question_id": item["question_id"],
-                        "verdict": "YES",
-                        "confidence": 0.9,
-                        "evidence": [
-                            {
-                                "kind": "exact_quote",
-                                "reference": "line:1",
-                                "exact_quote": "Not present in this artifact.",
-                                "summary": None,
-                            }
-                        ],
-                        "note": "The operation can be assessed from the supplied scene.",
-                    }
-                    for item in questions
-                ]
-            }
+            payload = {"verdicts": []}
             message_path.parent.mkdir(parents=True, exist_ok=True)
             message_path.write_text(json.dumps(payload), encoding="utf-8")
         stderr = "model: gpt-5.6-sol\nprovider: openai\nreasoning effort: high\nsession id: fake\nuser\n"
@@ -1059,17 +1280,14 @@ def test_codex_resume_allocates_a_fresh_message_path_after_exhaustion(tmp_path: 
         "allow_remote": True,
         "batch_attempts": 1,
     }
-    with pytest.raises(HBQError, match="Batch 1 exhausted 1 attempts"):
+    with pytest.raises(HBQError, match="Batch 1 exhausted 1 cumulative attempts"):
         _run(tmp_path, **arguments)
-    with pytest.raises(HBQError, match="Batch 1 exhausted 1 attempts"):
+    with pytest.raises(HBQError, match="Batch 1 exhausted 1 cumulative attempts"):
         _run(tmp_path, resume=True, **arguments)
 
-    assert len(message_paths) == 2
-    assert message_paths[0] != message_paths[1]
+    assert len(message_paths) == 1
     assert message_paths[0].name.endswith("attempt-0001.message.json")
-    assert message_paths[1].name.endswith("attempt-0002.message.json")
     assert message_paths[0].is_file()
-    assert not message_paths[1].exists()
     assert not (tmp_path / "run" / "responses" / "batch-0001.json").exists()
 
 

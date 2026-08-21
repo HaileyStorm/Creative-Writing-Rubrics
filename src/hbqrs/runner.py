@@ -56,6 +56,15 @@ NOUS_TRANSPORT_POLICY = {
     "retry_policy_version": "hardened-v2-provider-attempts-v1",
     "retryable_statuses": [408, 409, 425, 429],
 }
+EVIDENCE_NORMALIZATION_POLICY = "invalid_exact_quote_to_summary_v1"
+VALIDATION_FEEDBACK_POLICY = "validation_feedback_retry_v1"
+VALIDATION_FEEDBACK_SUFFIX = (
+    "\n\n## Validation feedback\n"
+    "The previous response was rejected: {error}\n"
+    "Return exactly the expected question IDs. For evidence that is not a byte-exact "
+    "substring of the supplied artifact or context, use kind `summary` rather than an "
+    "approximate or composite exact quote. Return only the requested JSON object.\n"
+)
 
 
 class _ProviderAttemptFailure(HBQError):
@@ -923,7 +932,15 @@ def _validate_exact_quotes(
             )
 
 
-def _normalize_evidence(evidence: Sequence[Mapping[str, Any]], *, question_id: str) -> list[dict[str, str]]:
+def _normalize_evidence(
+    evidence: Sequence[Mapping[str, Any]],
+    *,
+    question_id: str,
+    artifact_text: str,
+    context_texts: Sequence[str],
+    normalization_policy: str | None = None,
+    repair_audit: list[dict[str, Any]] | None = None,
+) -> list[dict[str, str]]:
     normalized: list[dict[str, str]] = []
     for index, item in enumerate(evidence, start=1):
         reference = item.get("reference")
@@ -937,7 +954,30 @@ def _normalize_evidence(evidence: Sequence[Mapping[str, Any]], *, question_id: s
                 raise HBQError(
                     f"Evidence item {index} for {question_id} must contain one nonblank exact_quote and null summary"
                 )
-            normalized.append({"reference": reference, "exact_quote": exact_quote})
+            if any(exact_quote in source for source in (artifact_text, *context_texts)):
+                normalized.append({"reference": reference, "exact_quote": exact_quote})
+            elif normalization_policy == EVIDENCE_NORMALIZATION_POLICY:
+                normalized.append({"reference": reference, "summary": exact_quote})
+                if repair_audit is None:
+                    raise HBQError("Evidence normalization audit is required by this policy")
+                repair_audit.append(
+                    {
+                        "question_id": question_id,
+                        "evidence_index": index,
+                        "raw_sha256": _sha256_bytes(exact_quote.encode("utf-8")),
+                        "from": "exact_quote",
+                        "to": "summary",
+                        "reason": "not_verbatim",
+                    }
+                )
+            else:
+                # Keep this strict check byte-exact and separate from the policy repair.
+                _validate_exact_quotes(
+                    [{"exact_quote": exact_quote}],
+                    artifact_text=artifact_text,
+                    context_texts=context_texts,
+                    question_id=question_id,
+                )
         elif kind == "summary":
             if not isinstance(summary, str) or not summary.strip() or exact_quote is not None:
                 raise HBQError(
@@ -985,6 +1025,8 @@ def _normalize_batch(
     run_id: str,
     artifact_text: str,
     context_texts: Sequence[str],
+    normalization_policy: str | None = None,
+    repair_audit: list[dict[str, Any]] | None = None,
 ) -> list[dict[str, Any]]:
     strict_errors = sorted(
         Draft202012Validator(_response_schema()).iter_errors(payload),
@@ -1013,7 +1055,14 @@ def _normalize_batch(
         wire_evidence = item.get("evidence")
         if not isinstance(wire_evidence, list) or not all(isinstance(entry, dict) for entry in wire_evidence):
             raise HBQError(f"Judge returned invalid evidence for {question_id}")
-        evidence = _normalize_evidence(wire_evidence, question_id=question_id)
+        evidence = _normalize_evidence(
+            wire_evidence,
+            question_id=question_id,
+            artifact_text=artifact_text,
+            context_texts=context_texts,
+            normalization_policy=normalization_policy,
+            repair_audit=repair_audit,
+        )
         _validate_exact_quotes(
             evidence,
             artifact_text=artifact_text,
@@ -1139,11 +1188,153 @@ def _sanitized_provider_record(record: Mapping[str, Any] | None) -> dict[str, An
     return result
 
 
+def _feedback_for_rejection(
+    *,
+    base_prompt: str,
+    base_prompt_sha256: str,
+    previous_rejection: tuple[Path, Mapping[str, Any]] | None,
+) -> tuple[str, dict[str, Any] | None]:
+    if previous_rejection is None:
+        return base_prompt, None
+    previous_path, previous = previous_rejection
+    error = previous.get("error")
+    message = error.get("message") if isinstance(error, Mapping) else None
+    if not isinstance(message, str) or not message:
+        raise HBQError(f"Rejected attempt {previous_path} lacks validation feedback text")
+    previous_sha256 = _sha256_bytes(previous_path.read_bytes())
+    suffix = VALIDATION_FEEDBACK_SUFFIX.format(error=message)
+    feedback = {
+        "version": VALIDATION_FEEDBACK_POLICY,
+        "base_prompt_sha256": base_prompt_sha256,
+        "previous_rejected_sha256": previous_sha256,
+        "error": message,
+        "suffix": suffix,
+    }
+    return base_prompt + suffix, feedback
+
+
+def _rejected_records(output_dir: Path, batch_number: int) -> list[tuple[Path, Mapping[str, Any]]]:
+    root = output_dir / "responses" / "rejected" / f"batch-{batch_number:04d}"
+    records: list[tuple[Path, Mapping[str, Any]]] = []
+    for index, path in enumerate(sorted(root.glob("attempt-[0-9][0-9][0-9][0-9].json")), start=1):
+        if path.name != f"attempt-{index:04d}.json":
+            raise HBQError(f"Rejected attempts are not contiguous at {path}")
+        try:
+            record = json.loads(path.read_bytes())
+        except json.JSONDecodeError as exc:
+            raise HBQError(f"Invalid rejected attempt {path}") from exc
+        if not isinstance(record, Mapping):
+            raise HBQError(f"Rejected attempt {path} must be an object")
+        records.append((path, record))
+    return records
+
+
+def _recovered_rejection_prompt(
+    *,
+    base_prompt: str,
+    base_prompt_sha256: str,
+    source_path: Path,
+    source: Mapping[str, Any],
+) -> tuple[str, dict[str, Any] | None]:
+    format_version = source.get("format_version")
+    if format_version in {2, 3}:
+        if source.get("prompt_sha256") != base_prompt_sha256:
+            raise HBQError(f"Recovered legacy rejection {source_path} is not bound to the base prompt")
+        return base_prompt, None
+    if format_version != 4:
+        raise HBQError(f"Recovered rejection {source_path} has an unsupported format")
+    feedback_policy = source.get("validation_feedback_policy")
+    feedback = source.get("validation_feedback")
+    if feedback_policy is None:
+        if feedback is not None:
+            raise HBQError(f"Recovered rejection {source_path} has unbound validation feedback")
+        effective_prompt = base_prompt
+        normalized_feedback = None
+    elif feedback_policy == VALIDATION_FEEDBACK_POLICY and isinstance(feedback, Mapping):
+        suffix = feedback.get("suffix")
+        if not isinstance(suffix, str):
+            raise HBQError(f"Recovered rejection {source_path} has invalid validation feedback")
+        effective_prompt = base_prompt + suffix
+        normalized_feedback = dict(feedback)
+    else:
+        raise HBQError(f"Recovered rejection {source_path} has invalid validation feedback")
+    effective_prompt_sha256 = _sha256_bytes(effective_prompt.encode("utf-8"))
+    if (
+        source.get("base_prompt_sha256") != base_prompt_sha256
+        or source.get("effective_prompt_sha256") != effective_prompt_sha256
+        or source.get("prompt_sha256") != effective_prompt_sha256
+    ):
+        raise HBQError(f"Recovered rejection {source_path} effective prompt is not bound")
+    return effective_prompt, normalized_feedback
+
+
+def _recover_normalized_rejection(
+    *,
+    records: Sequence[tuple[Path, Mapping[str, Any]]],
+    expected_ids: Sequence[str],
+    artifact_id: str,
+    bundle_id: str,
+    judge_id: str,
+    run_id: str,
+    artifact_text: str,
+    context_texts: Sequence[str],
+    normalization_policy: str | None,
+) -> tuple[list[dict[str, Any]], str, Mapping[str, Any] | None, Path, int, list[dict[str, Any]]] | None:
+    if normalization_policy != EVIDENCE_NORMALIZATION_POLICY:
+        return None
+    for path, record in reversed(records):
+        if record.get("stage") != "model_output":
+            continue
+        raw_content = record.get("raw_content")
+        content = raw_content.get("text") if isinstance(raw_content, Mapping) else None
+        if not isinstance(content, str):
+            continue
+        try:
+            _normalize_batch(
+                _parse_model_json(content),
+                expected_ids=expected_ids,
+                artifact_id=artifact_id,
+                bundle_id=bundle_id,
+                judge_id=judge_id,
+                run_id=run_id,
+                artifact_text=artifact_text,
+                context_texts=context_texts,
+            )
+        except HBQError:
+            pass
+        else:
+            continue
+        audit: list[dict[str, Any]] = []
+        try:
+            normalized = _normalize_batch(
+                _parse_model_json(content),
+                expected_ids=expected_ids,
+                artifact_id=artifact_id,
+                bundle_id=bundle_id,
+                judge_id=judge_id,
+                run_id=run_id,
+                artifact_text=artifact_text,
+                context_texts=context_texts,
+                normalization_policy=normalization_policy,
+                repair_audit=audit,
+            )
+        except HBQError:
+            continue
+        if audit:
+            attempt = record.get("attempt")
+            if isinstance(attempt, int) and not isinstance(attempt, bool):
+                return normalized, content, record.get("provider") if isinstance(record.get("provider"), Mapping) else None, path, attempt, audit
+    return None
+
+
 def _write_rejected_attempt(
     *,
     output_dir: Path,
     batch_number: int,
-    prompt_sha256: str,
+    base_prompt_sha256: str,
+    effective_prompt_sha256: str,
+    validation_feedback_policy: str | None,
+    feedback: Mapping[str, Any] | None,
     content: str | None,
     provider_record: Mapping[str, Any] | None,
     error: Exception,
@@ -1152,10 +1343,7 @@ def _write_rejected_attempt(
 ) -> Path:
     attempt_dir = output_dir / "responses" / "rejected" / f"batch-{batch_number:04d}"
     attempt_dir.mkdir(parents=True, exist_ok=True)
-    records = sorted(attempt_dir.glob("attempt-[0-9][0-9][0-9][0-9].json"))
-    for index, existing in enumerate(records, start=1):
-        if existing.name != f"attempt-{index:04d}.json":
-            raise HBQError(f"Rejected attempts are not contiguous at {existing}")
+    records = [path for path, _ in _rejected_records(output_dir, batch_number)]
     attempt_number = len(records) + 1
     stem = f"attempt-{attempt_number:04d}"
     record_path = attempt_dir / f"{stem}.json"
@@ -1178,14 +1366,18 @@ def _write_rejected_attempt(
     raw_text = content or ""
     raw = raw_text.encode("utf-8")
     record = {
-        "format_version": 3,
+        "format_version": 4,
         "batch": batch_number,
         "attempt": attempt_number,
         "sequence": len(sequences) + 1,
         "previous_rejected_sha256": previous_sha256,
         "stage": stage,
         "retry_policy": {"batch_attempts": batch_attempts},
-        "prompt_sha256": prompt_sha256,
+        "prompt_sha256": effective_prompt_sha256,
+        "base_prompt_sha256": base_prompt_sha256,
+        "effective_prompt_sha256": effective_prompt_sha256,
+        "validation_feedback_policy": validation_feedback_policy,
+        "validation_feedback": dict(feedback) if feedback is not None else None,
         "raw_content": {
             "encoding": "utf-8",
             "text": raw_text,
@@ -1203,13 +1395,15 @@ def _rejected_chain_binding(
     output_dir: Path,
     *,
     batch_number: int,
-    prompt_sha256: str,
+    base_prompt: str,
     batch_attempts: int,
+    normalization_policy: str | None,
+    allow_legacy_rejection_records: bool = False,
 ) -> dict[str, Any]:
     """Validate and bind all rejected retries preceding one accepted batch."""
 
-    root = output_dir / "responses" / "rejected"
-    records = sorted((root / f"batch-{batch_number:04d}").glob("attempt-[0-9][0-9][0-9][0-9].json"))
+    records = [path for path, _ in _rejected_records(output_dir, batch_number)]
+    base_prompt_sha256 = _sha256_bytes(base_prompt.encode("utf-8"))
     previous: str | None = None
     for index, path in enumerate(records, start=1):
         if path.name != f"attempt-{index:04d}.json":
@@ -1228,7 +1422,7 @@ def _rejected_chain_binding(
                 and raw_content.get("sha256") == _sha256_bytes(raw)
                 and raw_content.get("path") == raw_path.relative_to(output_dir).as_posix()
             ) if isinstance(raw_content, Mapping) else False
-        elif isinstance(record, Mapping) and record.get("format_version") == 3:
+        elif isinstance(record, Mapping) and record.get("format_version") in {3, 4}:
             raw_text = raw_content.get("text") if isinstance(raw_content, Mapping) else None
             raw = raw_text.encode("utf-8") if isinstance(raw_text, str) else None
             valid_raw = (
@@ -1239,16 +1433,45 @@ def _rejected_chain_binding(
             ) if isinstance(raw_content, Mapping) else False
         else:
             valid_raw = False
+        valid_policy_record = True
+        if isinstance(record, Mapping) and record.get("format_version") == 4:
+            feedback = record.get("validation_feedback")
+            feedback_policy = record.get("validation_feedback_policy")
+            if normalization_policy is None:
+                expected_effective = base_prompt
+                valid_feedback = feedback_policy is None and feedback is None
+            elif index == 1 and feedback is None:
+                expected_effective = base_prompt
+                valid_feedback = feedback_policy == VALIDATION_FEEDBACK_POLICY
+            elif isinstance(feedback, Mapping) and feedback_policy == VALIDATION_FEEDBACK_POLICY:
+                expected_effective, expected_feedback = _feedback_for_rejection(
+                    base_prompt=base_prompt,
+                    base_prompt_sha256=base_prompt_sha256,
+                    previous_rejection=(records[index - 2], json.loads(records[index - 2].read_bytes())) if index > 1 else None,
+                )
+                valid_feedback = dict(feedback) == expected_feedback
+            else:
+                expected_effective = ""
+                valid_feedback = False
+            valid_policy_record = (
+                record.get("base_prompt_sha256") == base_prompt_sha256
+                and record.get("effective_prompt_sha256") == _sha256_bytes(expected_effective.encode("utf-8"))
+                and record.get("prompt_sha256") == record.get("effective_prompt_sha256")
+                and valid_feedback
+            )
+        elif normalization_policy is not None and not allow_legacy_rejection_records:
+            valid_policy_record = False
         if (
             not isinstance(record, Mapping)
-            or record.get("format_version") not in {2, 3}
+            or record.get("format_version") not in {2, 3, 4}
             or record.get("batch") != batch_number
             or record.get("attempt") != index
-            or record.get("prompt_sha256") != prompt_sha256
+            or (record.get("prompt_sha256") != base_prompt_sha256 if record.get("format_version") in {2, 3} else False)
             or record.get("retry_policy") != {"batch_attempts": batch_attempts}
             or record.get("previous_rejected_sha256") != previous
             or not isinstance(raw_content, Mapping)
             or not valid_raw
+            or not valid_policy_record
         ):
             raise HBQError(f"Rejected attempt {path} is not a valid bound record")
         previous = _sha256_bytes(path.read_bytes())
@@ -1287,6 +1510,85 @@ def _validate_rejected_attempt_store(output_dir: Path) -> None:
         raise HBQError("Rejected attempt store has noncontiguous global sequences")
 
 
+def _legacy_rejection_heads(output_dir: Path) -> list[dict[str, Any]]:
+    root = output_dir / "responses" / "rejected"
+    result: list[dict[str, Any]] = []
+    if not root.is_dir():
+        return result
+    for directory in sorted(path for path in root.glob("batch-*") if path.is_dir()):
+        records = sorted(directory.glob("attempt-[0-9][0-9][0-9][0-9].json"))
+        if records:
+            formats = []
+            for path in records:
+                try:
+                    value = json.loads(path.read_bytes())
+                except json.JSONDecodeError as exc:
+                    raise HBQError(f"Invalid rejected attempt {path}") from exc
+                formats.append(value.get("format_version") if isinstance(value, Mapping) else None)
+            if any(value not in {2, 3} for value in formats):
+                raise HBQError("Legacy normalization upgrade cannot freeze non-legacy rejected records")
+            result.append({
+                "batch": directory.name,
+                "count": len(records),
+                "head_sha256": _sha256_bytes(records[-1].read_bytes()),
+            })
+    return result
+
+
+def _validate_legacy_rejection_boundary(output_dir: Path, heads: Sequence[Mapping[str, Any]]) -> None:
+    expected_heads: dict[str, tuple[int, str]] = {}
+    for item in heads:
+        if not isinstance(item, Mapping):
+            raise HBQError("Legacy normalization upgrade sidecar is malformed")
+        batch = item.get("batch")
+        count = item.get("count")
+        head_sha256 = item.get("head_sha256")
+        if (
+            not isinstance(batch, str)
+            or len(batch) != len("batch-0000")
+            or not batch.startswith("batch-")
+            or not batch.removeprefix("batch-").isdigit()
+            or batch in expected_heads
+            or not isinstance(count, int)
+            or isinstance(count, bool)
+            or count < 1
+            or not isinstance(head_sha256, str)
+        ):
+            raise HBQError("Legacy normalization upgrade sidecar is malformed")
+        expected_heads[batch] = (count, head_sha256)
+    actual_directories = sorted(
+        path for path in (output_dir / "responses" / "rejected").glob("batch-*") if path.is_dir()
+    ) if (output_dir / "responses" / "rejected").is_dir() else []
+    legacy_seen = False
+    for directory in actual_directories:
+        batch_number = directory.name.removeprefix("batch-")
+        if len(batch_number) != 4 or not batch_number.isdigit():
+            raise HBQError("Legacy normalization upgrade sidecar encountered an invalid rejected batch directory")
+        records = [path for path, _ in _rejected_records(output_dir, int(batch_number))]
+        frozen = expected_heads.get(directory.name)
+        for index, path in enumerate(records, start=1):
+            record = json.loads(path.read_bytes())
+            format_version = record.get("format_version") if isinstance(record, Mapping) else None
+            if format_version in {2, 3}:
+                legacy_seen = True
+                if frozen is None or index > frozen[0]:
+                    raise HBQError("Legacy normalization upgrade sidecar permits an old-format record beyond its frozen boundary")
+            elif format_version == 4:
+                if frozen is not None and index <= frozen[0]:
+                    raise HBQError("Legacy normalization upgrade sidecar has a non-legacy record inside its frozen boundary")
+            else:
+                raise HBQError("Legacy normalization upgrade sidecar encountered an unsupported rejected record")
+        if frozen is not None:
+            count, head_sha256 = frozen
+            if len(records) < count or _sha256_bytes(records[count - 1].read_bytes()) != head_sha256:
+                raise HBQError("Legacy normalization upgrade sidecar no longer binds rejected history")
+    if legacy_seen and not expected_heads:
+        raise HBQError("Legacy normalization upgrade sidecar must freeze every legacy rejected batch")
+    for batch in expected_heads:
+        if not (output_dir / "responses" / "rejected" / batch).is_dir():
+            raise HBQError("Legacy normalization upgrade sidecar has an extra frozen batch")
+
+
 def _verdicts_bytes(verdicts: Sequence[Mapping[str, Any]]) -> bytes:
     return "".join(json.dumps(item, ensure_ascii=False, sort_keys=True) + "\n" for item in verdicts).encode("utf-8")
 
@@ -1297,6 +1599,8 @@ def _load_checkpoints(
     artifact_text: str,
     context_texts: Sequence[str],
     batch_attempts: int,
+    normalization_policy: str | None = EVIDENCE_NORMALIZATION_POLICY,
+    allow_legacy_rejection_records: bool = False,
 ) -> tuple[list[dict[str, Any]], int, str | None]:
     _validate_rejected_attempt_store(output_dir)
     response_dir = output_dir / "responses"
@@ -1309,7 +1613,7 @@ def _load_checkpoints(
             record = json.loads(raw)
         except json.JSONDecodeError as exc:
             raise HBQError(f"Invalid response checkpoint {path.name}: {exc}") from exc
-        if not isinstance(record, dict) or record.get("format_version") not in {1, 2, 3} or record.get("batch") != expected_batch:
+        if not isinstance(record, dict) or record.get("format_version") not in {1, 2, 3, 4} or record.get("batch") != expected_batch:
             raise HBQError(f"Response checkpoints are not a contiguous ordered sequence at {path.name}")
         checkpoint_format_version = record["format_version"]
         if record.get("previous_checkpoint_sha256") != previous_sha256:
@@ -1323,7 +1627,9 @@ def _load_checkpoints(
             prompt_bytes = gzip.decompress(prompt_path.read_bytes())
         except (OSError, EOFError) as exc:
             raise HBQError(f"Cannot read prompt checkpoint {prompt_path.name}: {exc}") from exc
-        if record.get("prompt_sha256") != _sha256_bytes(prompt_bytes):
+        base_prompt = prompt_bytes.decode("utf-8")
+        base_prompt_sha256 = _sha256_bytes(prompt_bytes)
+        if checkpoint_format_version in {1, 2, 3} and record.get("prompt_sha256") != base_prompt_sha256:
             raise HBQError(f"Prompt checkpoint {prompt_path.name} hash does not match {path.name}")
         normalized = record.get("normalized_verdicts")
         if not isinstance(normalized, list) or not all(isinstance(item, dict) for item in normalized):
@@ -1338,7 +1644,7 @@ def _load_checkpoints(
                 isinstance(entry, dict) for entry in evidence
             ):
                 raise HBQError(f"Response checkpoint {path.name} contains invalid normalized evidence")
-            if checkpoint_format_version in {2, 3}:
+            if checkpoint_format_version in {2, 3, 4}:
                 _validate_typed_checkpoint_evidence(evidence, question_id=question_id)
             _validate_exact_quotes(
                 evidence,
@@ -1346,14 +1652,14 @@ def _load_checkpoints(
                 context_texts=context_texts,
                 question_id=question_id,
             )
-        if checkpoint_format_version == 3:
+        if checkpoint_format_version in {3, 4}:
             if record.get("retry_policy") != {"batch_attempts": batch_attempts}:
                 raise HBQError(f"Response checkpoint {path.name} retry policy does not match this run")
             accepted_attempt = record.get("accepted_attempt")
             if (
                 not isinstance(accepted_attempt, int)
                 or isinstance(accepted_attempt, bool)
-                or not 1 <= accepted_attempt <= batch_attempts
+                or accepted_attempt < 1
             ):
                 raise HBQError(f"Response checkpoint {path.name} has invalid accepted attempt")
             response_artifact = record.get("response_artifact")
@@ -1387,13 +1693,98 @@ def _load_checkpoints(
             rejected_chain = _rejected_chain_binding(
                 output_dir,
                 batch_number=expected_batch,
-                prompt_sha256=_sha256_bytes(prompt_bytes),
+                base_prompt=base_prompt,
                 batch_attempts=batch_attempts,
+                normalization_policy=normalization_policy if checkpoint_format_version == 4 else None,
+                allow_legacy_rejection_records=allow_legacy_rejection_records,
             )
             if record.get("rejected_chain") != rejected_chain:
                 raise HBQError(f"Response checkpoint {path.name} rejected retry chain is not bound")
             if accepted_attempt > 1 and rejected_chain["count"] < 1:
                 raise HBQError(f"Response checkpoint {path.name} accepted after retries without rejected evidence")
+            if checkpoint_format_version == 4:
+                if record.get("normalization_policy") != normalization_policy:
+                    raise HBQError(f"Response checkpoint {path.name} normalization policy does not match this run")
+                expected_feedback_policy = (
+                    VALIDATION_FEEDBACK_POLICY
+                    if normalization_policy == EVIDENCE_NORMALIZATION_POLICY
+                    else None
+                )
+                if record.get("validation_feedback_policy") != expected_feedback_policy:
+                    raise HBQError(f"Response checkpoint {path.name} validation feedback policy is not bound")
+                if record.get("base_prompt_sha256") != base_prompt_sha256:
+                    raise HBQError(f"Response checkpoint {path.name} base prompt hash does not match")
+                if record.get("prompt_sha256") != base_prompt_sha256:
+                    raise HBQError(f"Response checkpoint {path.name} prompt hash does not match its base prompt")
+                recovered = record.get("recovered_from_rejected")
+                if recovered is None:
+                    prior = _rejected_records(output_dir, expected_batch)
+                    if normalization_policy == EVIDENCE_NORMALIZATION_POLICY:
+                        effective_prompt, expected_feedback = _feedback_for_rejection(
+                            base_prompt=base_prompt,
+                            base_prompt_sha256=base_prompt_sha256,
+                            previous_rejection=prior[-1] if prior else None,
+                        )
+                    else:
+                        effective_prompt, expected_feedback = base_prompt, None
+                    if accepted_attempt != rejected_chain["count"] + 1 or accepted_attempt > batch_attempts:
+                        raise HBQError(f"Response checkpoint {path.name} has an invalid cumulative accepted attempt")
+                elif isinstance(recovered, Mapping):
+                    relative = recovered.get("path")
+                    source_attempt = recovered.get("attempt")
+                    source_sha256 = recovered.get("sha256")
+                    if (
+                        not isinstance(relative, str)
+                        or not isinstance(source_attempt, int)
+                        or isinstance(source_attempt, bool)
+                        or not isinstance(source_sha256, str)
+                    ):
+                        raise HBQError(f"Response checkpoint {path.name} has an invalid recovered rejection binding")
+                    source_path = output_dir / relative
+                    sources = _rejected_records(output_dir, expected_batch)
+                    if (
+                        not 1 <= source_attempt <= len(sources)
+                        or source_path != sources[source_attempt - 1][0]
+                        or source_sha256 != _sha256_bytes(source_path.read_bytes())
+                        or accepted_attempt != source_attempt
+                    ):
+                        raise HBQError(f"Response checkpoint {path.name} recovered rejection is not bound")
+                    source = sources[source_attempt - 1][1]
+                    source_raw = source.get("raw_content")
+                    source_text = source_raw.get("text") if isinstance(source_raw, Mapping) else None
+                    if source.get("stage") != "model_output" or not isinstance(source_text, str) or artifact_bytes != source_text.encode("utf-8"):
+                        raise HBQError(f"Response checkpoint {path.name} recovered response does not match its rejection")
+                    effective_prompt, expected_feedback = _recovered_rejection_prompt(
+                        base_prompt=base_prompt,
+                        base_prompt_sha256=base_prompt_sha256,
+                        source_path=source_path,
+                        source=source,
+                    )
+                else:
+                    raise HBQError(f"Response checkpoint {path.name} has an invalid recovered rejection binding")
+                if (
+                    record.get("validation_feedback") != expected_feedback
+                    or record.get("effective_prompt_sha256") != _sha256_bytes(effective_prompt.encode("utf-8"))
+                ):
+                    raise HBQError(f"Response checkpoint {path.name} effective prompt is not bound")
+                audit: list[dict[str, Any]] = []
+                try:
+                    replayed = _normalize_batch(
+                        _parse_model_json(artifact_bytes.decode("utf-8")),
+                        expected_ids=question_ids,
+                        artifact_id=str(normalized[0].get("artifact_id")) if normalized else "",
+                        bundle_id=str(normalized[0].get("bundle_id")) if normalized else "",
+                        judge_id=str(normalized[0].get("judge_id")) if normalized else "",
+                        run_id=str(normalized[0].get("run_id")) if normalized else "",
+                        artifact_text=artifact_text,
+                        context_texts=context_texts,
+                        normalization_policy=normalization_policy,
+                        repair_audit=audit,
+                    )
+                except HBQError as exc:
+                    raise HBQError(f"Response checkpoint {path.name} raw response cannot be replayed") from exc
+                if replayed != normalized or record.get("normalization_audit") != audit:
+                    raise HBQError(f"Response checkpoint {path.name} normalized verdicts or repair audit are not replayable")
         verdicts.extend(normalized)
         if record.get("verdicts_sha256") != _sha256_bytes(_verdicts_bytes(verdicts)):
             raise HBQError(f"Response checkpoint {path.name} verdict hash is invalid")
@@ -1431,6 +1822,7 @@ def run_judge(
     judge_id: str | None = None,
     strict_ai: bool = False,
     allow_unattested_reasoning: bool = False,
+    upgrade_legacy_normalization: bool = False,
 ) -> dict[str, Any]:
     """Judge one artifact against one bundle, checkpointing every batch."""
 
@@ -1454,6 +1846,8 @@ def run_judge(
         raise HBQError("--allow-model-mismatch applies only to OpenAI-compatible endpoints")
     if provider not in {"grok", "nous"} and allow_unattested_reasoning:
         raise HBQError("--allow-unattested-reasoning applies only to Grok Build CLI or Nous")
+    if not isinstance(upgrade_legacy_normalization, bool):
+        raise HBQError("upgrade_legacy_normalization must be a boolean")
 
     artifact = _read_text_record(Path(artifact_path))
     contexts = [_read_text_record(Path(path)) for path in context_paths]
@@ -1574,6 +1968,9 @@ def run_judge(
         "codex_bin": codex_bin if provider == "codex" else None,
         "batch_size": batch_size,
         "retry_policy": {"batch_attempts": batch_attempts},
+        "retry_semantics": "cumulative_batch_attempts_v1",
+        "evidence_normalization_policy": EVIDENCE_NORMALIZATION_POLICY,
+        "validation_feedback_policy": VALIDATION_FEEDBACK_POLICY,
         "artifact_id": artifact_id,
         "judge_id": judge_id,
         "strict_ai": strict_ai,
@@ -1590,7 +1987,12 @@ def run_judge(
         configuration["nous_transport_policy"] = deepcopy(NOUS_TRANSPORT_POLICY)
         configuration["nous_model_policy"] = {"requested_model": model, **NOUS_MODEL_POLICIES[model]}
     config_sha256 = _sha256_bytes(_json_bytes(configuration))
-    legacy_configuration = {key: value for key, value in configuration.items() if key != "retry_policy"}
+    pre_grounding_configuration = {
+        key: value for key, value in configuration.items()
+        if key not in {"retry_semantics", "evidence_normalization_policy", "validation_feedback_policy"}
+    }
+    pre_grounding_config_sha256 = _sha256_bytes(_json_bytes(pre_grounding_configuration))
+    legacy_configuration = {key: value for key, value in pre_grounding_configuration.items() if key != "retry_policy"}
     legacy_config_sha256 = _sha256_bytes(_json_bytes(legacy_configuration))
     now = datetime.now(timezone.utc)
     run_id = f"{now.strftime('%Y%m%dT%H%M%SZ')}-{config_sha256[:10]}"
@@ -1601,34 +2003,69 @@ def run_judge(
     diagnostic_path = destination / "diagnostic.json"
     schema_path = destination / "response.schema.json"
     active_config_sha256 = config_sha256
+    active_normalization_policy: str | None = EVIDENCE_NORMALIZATION_POLICY
+    legacy_rejection_compat = False
 
     if manifest_path.is_file():
         if not resume:
             raise HBQError(f"Run already exists at {destination}; pass --resume to continue it")
         prior = load_data(manifest_path)
         manifest_format_version = prior.get("format_version")
-        if manifest_format_version not in {1, 2}:
+        if manifest_format_version not in {1, 2, 3}:
             raise HBQError("Cannot resume: unsupported run manifest format")
         if manifest_format_version == 1:
             if batch_attempts != 3:
                 raise HBQError("Cannot resume a legacy run with a non-default batch_attempts policy")
             expected_config_sha256 = legacy_config_sha256
-        else:
+        elif manifest_format_version == 3:
             expected_config_sha256 = config_sha256
+        else:
+            expected_config_sha256 = pre_grounding_config_sha256
         if prior.get("config_sha256") != expected_config_sha256:
             prior_configuration = prior.get("configuration")
             prior_retry_policy = prior_configuration.get("retry_policy") if isinstance(prior_configuration, Mapping) else None
-            if manifest_format_version == 2 and prior_retry_policy != configuration["retry_policy"]:
+            if manifest_format_version in {2, 3} and prior_retry_policy != configuration["retry_policy"]:
                 raise HBQError("Cannot resume: batch_attempts retry policy changed")
             raise HBQError("Cannot resume: artifact, prompts, bundle, questions, or provider settings changed")
         active_config_sha256 = expected_config_sha256
         run_id = str(prior["run_id"])
+        if manifest_format_version in {1, 2}:
+            active_normalization_policy = None
+            if upgrade_legacy_normalization:
+                sidecar_path = destination / "normalization-upgrade-v1.json"
+                immutable_upgrade = {
+                    "format_version": 1,
+                    "prior_manifest_sha256": _sha256_bytes(manifest_path.read_bytes()),
+                    "prior_config_sha256": expected_config_sha256,
+                    "evidence_normalization_policy": EVIDENCE_NORMALIZATION_POLICY,
+                    "validation_feedback_policy": VALIDATION_FEEDBACK_POLICY,
+                    "retry_semantics": "cumulative_batch_attempts_v1",
+                }
+                if sidecar_path.exists():
+                    existing_upgrade = load_data(sidecar_path)
+                    if not isinstance(existing_upgrade, Mapping):
+                        raise HBQError("Legacy normalization upgrade sidecar is malformed")
+                    if set(existing_upgrade) != {*immutable_upgrade, "prior_rejected_chain_heads"}:
+                        raise HBQError("Legacy normalization upgrade sidecar is malformed")
+                    if {key: existing_upgrade.get(key) for key in immutable_upgrade} != immutable_upgrade:
+                        raise HBQError("Legacy normalization upgrade sidecar does not match this run")
+                    heads = existing_upgrade.get("prior_rejected_chain_heads")
+                    if not isinstance(heads, list):
+                        raise HBQError("Legacy normalization upgrade sidecar is malformed")
+                    _validate_legacy_rejection_boundary(destination, heads)
+                else:
+                    heads = _legacy_rejection_heads(destination)
+                    _validate_legacy_rejection_boundary(destination, heads)
+                    policy_upgrade = {**immutable_upgrade, "prior_rejected_chain_heads": heads}
+                    _write_json(sidecar_path, policy_upgrade)
+                active_normalization_policy = EVIDENCE_NORMALIZATION_POLICY
+                legacy_rejection_compat = True
     else:
         if destination.exists() and any(destination.iterdir()):
             raise HBQError(f"Output directory is not empty: {destination}")
         destination.mkdir(parents=True, exist_ok=True)
         manifest = {
-            "format_version": 2,
+            "format_version": 3,
             "run_id": run_id,
             "created_at": now.isoformat(),
             "config_sha256": config_sha256,
@@ -1644,6 +2081,8 @@ def run_judge(
         artifact_text=str(artifact["text"]),
         context_texts=[str(item["text"]) for item in contexts],
         batch_attempts=batch_attempts,
+        normalization_policy=active_normalization_policy,
+        allow_legacy_rejection_records=legacy_rejection_compat,
     )
     if completed != checkpointed[: len(completed)] or len(completed) > len(checkpointed):
         raise HBQError("verdicts.jsonl does not match the ordered response checkpoints")
@@ -1667,13 +2106,17 @@ def run_judge(
     pending = [item for item in questions if item["question"]["id"] not in completed_by_id]
 
     pending_batches = (len(pending) + batch_size - 1) // batch_size
+    remaining_provider_sends = sum(
+        max(0, batch_attempts - len(_rejected_records(destination, checkpoint_count + offset + 1)))
+        for offset in range(pending_batches)
+    )
     disclosure = {
         **disclosure_inputs,
         "question_count": len(selected_ids),
         "pending_questions": len(pending),
         "batches": pending_batches,
         "batch_attempts": batch_attempts,
-        "maximum_provider_sends": pending_batches * batch_attempts,
+        "maximum_provider_sends": remaining_provider_sends,
         "config_sha256": active_config_sha256,
     }
     print(json.dumps({"disclosure": disclosure}, ensure_ascii=False, indent=2), file=sys.stderr)
@@ -1703,11 +2146,68 @@ def run_judge(
         else:
             _atomic_write(prompt_path, gzip.compress(prompt_bytes, mtime=0))
         expected = [str(item["question"]["id"]) for item in batch]
+        base_prompt_sha256 = _sha256_bytes(prompt_bytes)
+        records = _rejected_records(destination, batch_number)
+        rejected_chain = _rejected_chain_binding(
+            destination,
+            batch_number=batch_number,
+            base_prompt=prompt,
+            batch_attempts=batch_attempts,
+            normalization_policy=active_normalization_policy,
+            allow_legacy_rejection_records=legacy_rejection_compat,
+        )
         last_error: Exception | None = None
         normalized: list[dict[str, Any]] | None = None
         content = ""
         provider_record: dict[str, Any] | None = None
-        for attempt_index in range(1, batch_attempts + 1):
+        repair_audit: list[dict[str, Any]] = []
+        recovered_from_rejected: dict[str, Any] | None = None
+        accepted_attempt = 0
+        feedback: dict[str, Any] | None = None
+        recovered = _recover_normalized_rejection(
+            records=records,
+            expected_ids=expected,
+            artifact_id=artifact_id,
+            bundle_id=bundle_id,
+            judge_id=judge_id,
+            run_id=run_id,
+            artifact_text=str(artifact["text"]),
+            context_texts=[str(item["text"]) for item in contexts],
+            normalization_policy=active_normalization_policy,
+        )
+        if recovered is not None:
+            normalized, content, recovered_provider, source_path, accepted_attempt, repair_audit = recovered
+            provider_record = dict(recovered_provider) if recovered_provider is not None else None
+            source_records = _rejected_records(destination, batch_number)
+            feedback_prompt, feedback = _recovered_rejection_prompt(
+                base_prompt=prompt,
+                base_prompt_sha256=base_prompt_sha256,
+                source_path=source_path,
+                source=source_records[accepted_attempt - 1][1],
+            )
+            if active_normalization_policy != EVIDENCE_NORMALIZATION_POLICY:
+                feedback_prompt, feedback = prompt, None
+            recovered_from_rejected = {
+                "path": source_path.relative_to(destination).as_posix(),
+                "attempt": accepted_attempt,
+                "sha256": _sha256_bytes(source_path.read_bytes()),
+            }
+        else:
+            remaining_attempts = batch_attempts - len(records)
+            if remaining_attempts <= 0:
+                detail = str(records[-1][1].get("error", {}).get("message", "no accepted response")) if records else "no accepted response"
+                raise HBQError(f"Batch {batch_number} exhausted {batch_attempts} cumulative attempts: {detail}")
+        for _ in range(max(0, batch_attempts - len(records)) if normalized is None else 0):
+            if active_normalization_policy == EVIDENCE_NORMALIZATION_POLICY:
+                effective_prompt, feedback = _feedback_for_rejection(
+                    base_prompt=prompt,
+                    base_prompt_sha256=base_prompt_sha256,
+                    previous_rejection=records[-1] if records else None,
+                )
+            else:
+                effective_prompt, feedback = prompt, None
+            effective_prompt_sha256 = _sha256_bytes(effective_prompt.encode("utf-8"))
+            attempt_index = len(records) + 1
             try:
                 if provider == "openai":
                     content, provider_record = _call_openai(
@@ -1715,7 +2215,7 @@ def run_judge(
                         api_key_env=api_key_env,
                         model=model,
                         system_prompt="You are a careful HBQ-RS binary evaluator. Do not use tools or reveal chain-of-thought.",
-                        user_prompt=prompt,
+                        user_prompt=effective_prompt,
                         temperature=temperature,
                         allow_model_mismatch=allow_model_mismatch,
                         timeout=timeout,
@@ -1726,7 +2226,7 @@ def run_judge(
                         executable=codex_bin,
                         model=model,
                         reasoning=reasoning,
-                        prompt=prompt,
+                        prompt=effective_prompt,
                         output_dir=destination,
                         response_schema=schema_path,
                         batch_number=batch_number,
@@ -1740,7 +2240,7 @@ def run_judge(
                             executable=grok_bin,
                             model=model,
                             reasoning=reasoning,
-                            prompt=prompt,
+                            prompt=effective_prompt,
                             output_dir=destination,
                             response_schema=schema_path,
                             batch_number=batch_number,
@@ -1752,7 +2252,7 @@ def run_judge(
                         content, provider_record = _call_nous(
                             model=model,
                             reasoning=reasoning,
-                            prompt=prompt,
+                            prompt=effective_prompt,
                             output_dir=destination,
                             response_schema=schema_path,
                             batch_number=batch_number,
@@ -1766,19 +2266,28 @@ def run_judge(
                 _write_rejected_attempt(
                     output_dir=destination,
                     batch_number=batch_number,
-                    prompt_sha256=_sha256_bytes(prompt_bytes),
+                    base_prompt_sha256=base_prompt_sha256,
+                    effective_prompt_sha256=effective_prompt_sha256,
+                    validation_feedback_policy=(
+                        VALIDATION_FEEDBACK_POLICY
+                        if active_normalization_policy == EVIDENCE_NORMALIZATION_POLICY
+                        else None
+                    ),
+                    feedback=feedback,
                     content=failure.content if failure is not None else None,
                     provider_record=failure.provider_record if failure is not None else None,
                     error=exc,
                     stage="provider",
                     batch_attempts=batch_attempts,
                 )
+                records = _rejected_records(destination, batch_number)
                 if failure is not None and not failure.retryable:
                     raise HBQError(
                         f"Batch {batch_number} provider failure is not retryable: {failure}"
                     ) from failure
                 continue
             try:
+                attempt_repair_audit: list[dict[str, Any]] = []
                 normalized = _normalize_batch(
                     _parse_model_json(content),
                     expected_ids=expected,
@@ -1788,23 +2297,35 @@ def run_judge(
                     run_id=run_id,
                     artifact_text=str(artifact["text"]),
                     context_texts=[str(item["text"]) for item in contexts],
+                    normalization_policy=active_normalization_policy,
+                    repair_audit=attempt_repair_audit,
                 )
+                repair_audit = attempt_repair_audit
+                accepted_attempt = attempt_index
                 break
             except HBQError as exc:
                 last_error = exc
                 _write_rejected_attempt(
                     output_dir=destination,
                     batch_number=batch_number,
-                    prompt_sha256=_sha256_bytes(prompt_bytes),
+                    base_prompt_sha256=base_prompt_sha256,
+                    effective_prompt_sha256=effective_prompt_sha256,
+                    validation_feedback_policy=(
+                        VALIDATION_FEEDBACK_POLICY
+                        if active_normalization_policy == EVIDENCE_NORMALIZATION_POLICY
+                        else None
+                    ),
+                    feedback=feedback,
                     content=content,
                     provider_record=provider_record,
                     error=exc,
                     stage="model_output",
                     batch_attempts=batch_attempts,
                 )
+                records = _rejected_records(destination, batch_number)
         if normalized is None:
             detail = str(last_error) if last_error is not None else "no provider or model-output error was recorded"
-            raise HBQError(f"Batch {batch_number} exhausted {batch_attempts} attempts: {detail}")
+            raise HBQError(f"Batch {batch_number} exhausted {batch_attempts} cumulative attempts: {detail}")
         next_completed = [*completed, *normalized]
         response_artifact = _write_accepted_response_artifact(
             output_dir=destination,
@@ -1814,16 +2335,28 @@ def run_judge(
         rejected_chain = _rejected_chain_binding(
             destination,
             batch_number=batch_number,
-            prompt_sha256=_sha256_bytes(prompt_bytes),
+            base_prompt=prompt,
             batch_attempts=batch_attempts,
+            normalization_policy=active_normalization_policy,
+            allow_legacy_rejection_records=legacy_rejection_compat,
         )
         response_record = {
-            "format_version": 3,
+            "format_version": 4,
             "batch": batch_number,
             "retry_policy": {"batch_attempts": batch_attempts},
-            "accepted_attempt": attempt_index,
+            "accepted_attempt": accepted_attempt,
             "question_ids": expected,
-            "prompt_sha256": _sha256_bytes(prompt_bytes),
+            "prompt_sha256": base_prompt_sha256,
+            "base_prompt_sha256": base_prompt_sha256,
+            "effective_prompt_sha256": _sha256_bytes((feedback_prompt if recovered is not None else effective_prompt).encode("utf-8")),
+            "validation_feedback_policy": (
+                VALIDATION_FEEDBACK_POLICY
+                if active_normalization_policy == EVIDENCE_NORMALIZATION_POLICY
+                else None
+            ),
+            "validation_feedback": feedback,
+            "normalization_policy": active_normalization_policy,
+            "normalization_audit": repair_audit,
             "response_sha256": _sha256_bytes(content.encode("utf-8")),
             "response_artifact": response_artifact,
             "rejected_chain": rejected_chain,
@@ -1832,6 +2365,8 @@ def run_judge(
             "provider": provider_record,
             "normalized_verdicts": normalized,
         }
+        if recovered_from_rejected is not None:
+            response_record["recovered_from_rejected"] = recovered_from_rejected
         response_path = destination / "responses" / f"batch-{batch_number:04d}.json"
         if response_path.exists():
             raise HBQError(f"Refusing to overwrite response checkpoint {response_path.name}")

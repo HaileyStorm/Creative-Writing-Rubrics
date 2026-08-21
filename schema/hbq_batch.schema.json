@@ -25,6 +25,7 @@
         "api_key_env": {"type": "string", "pattern": "^[A-Za-z_][A-Za-z0-9_]*$"},
         "batch_size": {"type": "integer", "minimum": 1},
         "batch_attempts": {"type": "integer", "minimum": 1},
+        "upgrade_legacy_normalization": {"type": "boolean", "default": false},
         "binary_workers": {"type": "integer", "minimum": 1, "maximum": 8},
         "route_sample_char_limit": {"type": "integer", "minimum": 1},
         "local_sample_limit": {"type": ["integer", "null"], "minimum": 1, "maximum": 64},
@@ -65,6 +66,7 @@
           "artifact_kind": {"type": "string", "minLength": 1},
           "declared_scope": {"type": "string", "minLength": 1},
           "completion_status": {"enum": ["complete", "work_in_progress", "excerpt", "unknown"]},
+          "upgrade_legacy_normalization": {"type": "boolean"},
           "approved_bundle_id": {"type": "string", "minLength": 1},
           "approved_module_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
         }

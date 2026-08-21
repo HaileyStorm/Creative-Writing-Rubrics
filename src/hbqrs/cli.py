@@ -436,6 +436,8 @@ def _cmd_pack(args: argparse.Namespace) -> int:
 
 
 def _cmd_judge(args: argparse.Namespace) -> int:
+    if args.upgrade_legacy_normalization and not args.resume:
+        raise HBQError("--upgrade-legacy-normalization requires --resume")
     summary = run_judge(
         artifact_path=args.artifact,
         bundle_id=args.bundle_id,
@@ -465,12 +467,15 @@ def _cmd_judge(args: argparse.Namespace) -> int:
         judge_id=args.judge_id,
         strict_ai=args.strict_ai,
         allow_unattested_reasoning=args.allow_unattested_reasoning,
+        upgrade_legacy_normalization=args.upgrade_legacy_normalization,
     )
     print(json.dumps(summary, ensure_ascii=False, indent=2))
     return 0
 
 
 def _cmd_longform(args: argparse.Namespace) -> int:
+    if args.upgrade_legacy_normalization and not args.resume:
+        raise HBQError("--upgrade-legacy-normalization requires --resume")
     driving_prompt = args.driving_prompt
     if args.driving_prompt_file:
         driving_prompt = Path(args.driving_prompt_file).read_text(encoding="utf-8-sig")
@@ -518,6 +523,7 @@ def _cmd_longform(args: argparse.Namespace) -> int:
         timeout=args.timeout,
         strict_ai=args.strict_ai,
         allow_unattested_reasoning=args.allow_unattested_reasoning,
+        upgrade_legacy_normalization=args.upgrade_legacy_normalization,
     )
     report_path = Path(args.output_dir) / "report.json"
     if args.html_report and report_path.is_file():
@@ -730,7 +736,7 @@ def build_parser() -> argparse.ArgumentParser:
         "--batch-attempts",
         type=int,
         default=3,
-        help="maximum provider attempts for a rejected batch; rejected outputs remain auditable",
+        help="maximum cumulative provider attempts per batch; new-policy retries include validation feedback",
     )
     judge.add_argument("--base-url", default="http://127.0.0.1:8000/v1")
     judge.add_argument("--api-key-env", default="OPENAI_API_KEY")
@@ -746,6 +752,11 @@ def build_parser() -> argparse.ArgumentParser:
     )
     judge.add_argument("--allow-remote", action="store_true")
     judge.add_argument("--resume", action="store_true")
+    judge.add_argument(
+        "--upgrade-legacy-normalization",
+        action="store_true",
+        help="on --resume only, upgrade legacy rejected evidence normalization with an immutable audit sidecar",
+    )
     judge.add_argument("--dry-run", action="store_true")
     judge.add_argument("--timeout", type=float, default=600.0)
     judge.add_argument("--artifact-id")
@@ -841,7 +852,7 @@ def build_parser() -> argparse.ArgumentParser:
         "--batch-attempts",
         type=int,
         default=3,
-        help="maximum provider attempts for each rejected binary batch",
+        help="maximum cumulative provider attempts per binary batch; new-policy retries include validation feedback",
     )
     longform.add_argument("--base-url", default="http://127.0.0.1:8000/v1")
     longform.add_argument("--api-key-env", default="OPENAI_API_KEY")
@@ -873,6 +884,11 @@ def build_parser() -> argparse.ArgumentParser:
     )
     longform.add_argument("--allow-remote", action="store_true")
     longform.add_argument("--resume", action="store_true")
+    longform.add_argument(
+        "--upgrade-legacy-normalization",
+        action="store_true",
+        help="on --resume only, upgrade legacy binary evidence normalization with immutable audit sidecars",
+    )
     longform.add_argument("--dry-run", action="store_true")
     longform.add_argument(
         "--plan-only",

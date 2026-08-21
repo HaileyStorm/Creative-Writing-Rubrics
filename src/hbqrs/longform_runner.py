@@ -768,6 +768,7 @@ def _run_binary_scope(
     timeout: float,
     strict_ai: bool,
     allow_unattested_reasoning: bool,
+    upgrade_legacy_normalization: bool,
 ) -> dict[str, Any]:
     subresume = resume and (output_dir / "run.json").is_file()
     summary = run_judge(
@@ -796,6 +797,7 @@ def _run_binary_scope(
         timeout=timeout,
         strict_ai=strict_ai,
         allow_unattested_reasoning=allow_unattested_reasoning,
+        upgrade_legacy_normalization=upgrade_legacy_normalization,
     )
     if summary.get("score") is None or not (output_dir / "score.json").is_file():
         raise HBQError(f"Long-form {label} pass did not produce a complete score report")
@@ -852,6 +854,7 @@ def run_longform_judge(
     timeout: float = 600.0,
     strict_ai: bool = False,
     allow_unattested_reasoning: bool = False,
+    upgrade_legacy_normalization: bool = False,
 ) -> dict[str, Any]:
     """Run and persist route, map, global/local judging, synthesis, and rendering.
 
@@ -900,6 +903,10 @@ def run_longform_judge(
         )
     if provider not in {"grok", "nous"} and allow_unattested_reasoning:
         raise HBQError("allow_unattested_reasoning applies only to Grok Build CLI or Nous")
+    if not isinstance(upgrade_legacy_normalization, bool):
+        raise HBQError("upgrade_legacy_normalization must be a boolean")
+    if upgrade_legacy_normalization and not resume:
+        raise HBQError("upgrade_legacy_normalization requires resume")
 
     source_path = Path(artifact_path)
     source = _read_text_record(source_path)
@@ -1059,6 +1066,7 @@ def run_longform_judge(
         },
         "maximum_provider_calls": maximum_provider_calls,
         "batch_attempts": batch_attempts,
+        "upgrade_legacy_normalization": upgrade_legacy_normalization,
         "allow_unattested_reasoning": allow_unattested_reasoning if provider in {"grok", "nous"} else None,
         "maximum_binary_provider_sends": maximum_binary_provider_sends,
         "maximum_physical_http_attempts": (
@@ -1116,7 +1124,7 @@ def run_longform_judge(
         return {"status": "DRY_RUN", **disclosure, "unit_count": segmentation["unit_count"]}
 
     configuration = {
-        "format_version": 2,
+        "format_version": 3,
         "artifact": _record_without_text(source),
         "briefs": [_record_without_text(record) for record in briefs],
         "registry": _record_without_text(registry_record),
@@ -1140,6 +1148,7 @@ def run_longform_judge(
         "binary_workers": binary_workers,
         "batch_size": batch_size,
         "retry_policy": {"batch_attempts": batch_attempts},
+        "upgrade_legacy_normalization": upgrade_legacy_normalization,
         "provider": provider,
         "model": model,
         "endpoint": endpoint,
@@ -1160,27 +1169,34 @@ def run_longform_judge(
         configuration["nous_transport_policy"] = deepcopy(NOUS_TRANSPORT_POLICY)
         configuration["nous_model_policy"] = {"requested_model": model, **NOUS_MODEL_POLICIES[model]}
     config_sha256 = _sha256_bytes(_json_bytes(configuration))
-    legacy_configuration = deepcopy(configuration)
+    prior_v2_configuration = deepcopy(configuration)
+    prior_v2_configuration["format_version"] = 2
+    prior_v2_configuration.pop("upgrade_legacy_normalization")
+    prior_v2_config_sha256 = _sha256_bytes(_json_bytes(prior_v2_configuration))
+    legacy_configuration = deepcopy(prior_v2_configuration)
     legacy_configuration["format_version"] = 1
     legacy_configuration.pop("retry_policy")
     legacy_config_sha256 = _sha256_bytes(_json_bytes(legacy_configuration))
     destination = Path(output_dir).resolve()
     workflow_path = destination / "workflow.json"
+    workflow_format_version: int | None = None
     if workflow_path.is_file():
         if not resume:
             raise HBQError(f"Long-form workflow already exists at {destination}; pass --resume")
         prior = load_data(workflow_path)
         workflow_format_version = prior.get("format_version")
-        if workflow_format_version not in {1, 2}:
+        if workflow_format_version not in {1, 2, 3}:
             raise HBQError("Cannot resume: unsupported long-form workflow format")
         if workflow_format_version == 1:
             if batch_attempts != 3:
                 raise HBQError("Cannot resume a legacy workflow with a non-default batch_attempts policy")
             expected_config_sha256 = legacy_config_sha256
+        elif workflow_format_version == 2:
+            expected_config_sha256 = prior_v2_config_sha256
         else:
             expected_config_sha256 = config_sha256
         if prior.get("config_sha256") != expected_config_sha256:
-            if workflow_format_version == 2 and prior.get("configuration", {}).get("retry_policy") != configuration[
+            if workflow_format_version in {2, 3} and prior.get("configuration", {}).get("retry_policy") != configuration[
                 "retry_policy"
             ]:
                 raise HBQError("Cannot resume: batch_attempts retry policy changed")
@@ -1192,7 +1208,7 @@ def run_longform_judge(
         _write_json(
             workflow_path,
             {
-                "format_version": 2,
+                "format_version": 3,
                 "workflow_id": f"longform-{config_sha256[:16]}",
                 "config_sha256": config_sha256,
                 "configuration": configuration,
@@ -1201,6 +1217,27 @@ def run_longform_judge(
         )
 
     private = destination / ".private"
+    if workflow_path.is_file() and workflow_format_version in {1, 2}:
+        normalization_upgrade_path = private / "normalization-upgrade-v1.json"
+        normalization_upgrade = {
+            "format_version": 1,
+            "prior_workflow_sha256": _sha256_bytes(workflow_path.read_bytes()),
+            "upgrade_legacy_normalization": True,
+        }
+        if normalization_upgrade_path.is_file():
+            if not upgrade_legacy_normalization:
+                raise HBQError(
+                    "Cannot resume: legacy normalization was upgraded and cannot be downgraded"
+                )
+            _write_or_verify(
+                normalization_upgrade_path,
+                _json_bytes(normalization_upgrade),
+            )
+        elif upgrade_legacy_normalization:
+            _write_or_verify(
+                normalization_upgrade_path,
+                _json_bytes(normalization_upgrade),
+            )
     inputs_dir = private / "inputs"
     source_copy = inputs_dir / "artifact.txt"
     _write_or_verify(source_copy, source_path.read_bytes())
@@ -1428,6 +1465,7 @@ def run_longform_judge(
             resume=resume,
             timeout=timeout,
             strict_ai=strict_ai,
+            upgrade_legacy_normalization=upgrade_legacy_normalization,
         )
 
     def evaluate_local(unit_id: str) -> dict[str, Any]:
@@ -1479,6 +1517,7 @@ def run_longform_judge(
             resume=resume,
             timeout=timeout,
             strict_ai=strict_ai,
+            upgrade_legacy_normalization=upgrade_legacy_normalization,
         )
 
     if binary_workers == 1:

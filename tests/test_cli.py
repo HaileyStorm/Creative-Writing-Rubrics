@@ -118,6 +118,7 @@ def test_judge_command_dispatches_runner(monkeypatch, capsys, tmp_path: Path) ->
     assert captured["batch_attempts"] == 3
     assert captured["grok_bin"] == "grok"
     assert captured["allow_unattested_reasoning"] is False
+    assert captured["upgrade_legacy_normalization"] is False
     assert json.loads(capsys.readouterr().out)["status"] == "DRY_RUN"
 
 
@@ -201,9 +202,53 @@ def test_longform_command_dispatches_workflow(monkeypatch, capsys, tmp_path: Pat
     assert captured["batch_attempts"] == 5
     assert captured["grok_bin"] == "grok"
     assert captured["allow_unattested_reasoning"] is False
+    assert captured["upgrade_legacy_normalization"] is False
     assert captured["openai_structured_outputs"] is True
     assert captured["plan_only"] is False
     assert json.loads(capsys.readouterr().out)["status"] == "DRY_RUN"
+
+
+def test_resume_normalization_upgrade_is_explicit_and_help_describes_cumulative_retries(
+    monkeypatch, capsys, tmp_path: Path
+) -> None:
+    artifact = tmp_path / "artifact.txt"
+    artifact.write_text("test", encoding="utf-8")
+    captured: dict[str, object] = {}
+
+    def fake_run_judge(**kwargs: object) -> dict[str, object]:
+        captured.update(kwargs)
+        return {"status": "DRY_RUN"}
+
+    monkeypatch.setattr(cli, "run_judge", fake_run_judge)
+    assert main(
+        [
+            "judge", str(artifact), "--bundle", "prose.scene", "--provider", "openai",
+            "--model", "fake-local", "--output-dir", str(tmp_path / "run"), "--resume",
+            "--upgrade-legacy-normalization", "--dry-run",
+        ]
+    ) == 0
+    assert captured["upgrade_legacy_normalization"] is True
+    with pytest.raises(SystemExit):
+        main(
+            [
+                "judge", str(artifact), "--bundle", "prose.scene", "--provider", "openai",
+                "--model", "fake-local", "--output-dir", str(tmp_path / "new-run"),
+                "--upgrade-legacy-normalization", "--dry-run",
+            ]
+        )
+    with pytest.raises(SystemExit):
+        main(["judge", "--help"])
+    help_text = capsys.readouterr().out
+    assert "--upgrade-legacy-normalization" in help_text
+    parser = build_parser()
+    subparsers = next(
+        action for action in parser._actions if action.dest == "command"
+    )
+    judge = subparsers.choices["judge"]
+    batch_attempts = next(action for action in judge._actions if action.dest == "batch_attempts")
+    assert batch_attempts.help == (
+        "maximum cumulative provider attempts per batch; new-policy retries include validation feedback"
+    )
 
 
 def test_longform_html_renders_for_a_valid_control_state(monkeypatch, tmp_path: Path) -> None:
