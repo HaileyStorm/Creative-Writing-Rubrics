@@ -11,11 +11,14 @@ from html import escape
 import json
 from typing import Any, Mapping, Sequence
 
-from .longform import _schema, _validate_schema
+from .longform import _schema, _validate_schema, validate_hierarchical_score_provenance
 
 
 def _validate_report(report: Mapping[str, Any]) -> None:
     _validate_schema(report, _schema("hbq_long_form_workflow_report.schema.json"), "Long-form workflow report")
+    hierarchy = report["hierarchical_score"]
+    if isinstance(hierarchy, Mapping):
+        validate_hierarchical_score_provenance(hierarchy, local_results=report["local_results"])
 
 
 def _text(value: Any) -> str:
@@ -87,12 +90,28 @@ def _hierarchy_card(
     if weakest is not None:
         weakest_label = unit_labels.get(str(weakest), str(weakest))
         weakest_text = f" Weakest selected unit: <code>{_text(weakest_label)}</code>."
+    trimmed_tail = local_component.get("trimmed_tail")
+    trimmed_text = ""
+    if isinstance(trimmed_tail, Mapping):
+        excluded = {
+            str(item["role"]): unit_labels.get(str(item["unit_id"]), str(item["unit_id"]))
+            for item in trimmed_tail["excluded_units"]
+        }
+        trimmed_text = (
+            " Tail trim: {} eligible, {} retained; excluded lowest <code>{}</code> and highest "
+            "<code>{}</code>."
+        ).format(
+            _text(trimmed_tail["eligible_unit_count"]),
+            _text(trimmed_tail["retained_unit_count"]),
+            _text(excluded["lowest_tail"]),
+            _text(excluded["highest_tail"]),
+        )
     return """
 <div class="hbqrs-scorecard__score" aria-label="Custom-weighted composite">
   <strong>Custom-weighted composite</strong>
   <div class="hbqrs-scorecard__value">{score}</div>
   <div>Bounds: {bounds}</div>
-  <p class="hbqrs-scorecard__note">Profile <code>{profile}</code>; global effective weight {global_weight}, local effective weight {local_weight}; local reducer <code>{reducer}</code>.{weakest}</p>
+  <p class="hbqrs-scorecard__note">Profile <code>{profile}</code>; global effective weight {global_weight}, local effective weight {local_weight}; local reducer <code>{reducer}</code>.{weakest}{trimmed}</p>
   {weights}
 </div>
 """.format(
@@ -103,11 +122,59 @@ def _hierarchy_card(
         local_weight=_text(_percent(local_component["effective_weight"])),
         reducer=_text(hierarchy["local_reducer"]),
         weakest=weakest_text,
+        trimmed=trimmed_text,
         weights=weights,
     )
 
 
 CARD_LAYOUTS = ("summary", "compact", "minimal")
+
+
+def _confidence_diagnostics_markup(result: Mapping[str, Any] | None) -> str:
+    if not isinstance(result, Mapping):
+        return ""
+    diagnostics = result.get("confidence_diagnostics")
+    if not isinstance(diagnostics, Mapping):
+        return ""
+    rows = "".join(
+        "<li><strong>{}</strong>: raw mean {}; lower weighted median {}; assessed-effective-weight share at 75% {}; mass {}</li>".format(
+            _text(role.replace("_", " ")),
+            _text(
+                "Not observed"
+                if aggregate["assessed_raw_confidence_weighted_mean"] is None
+                else _percent(aggregate["assessed_raw_confidence_weighted_mean"])
+            ),
+            _text(
+                "Not observed"
+                if aggregate["assessed_raw_confidence_weighted_median"] is None
+                else _percent(aggregate["assessed_raw_confidence_weighted_median"])
+            ),
+            _text(
+                "Not observed"
+                if aggregate["assessed_effective_weight_threshold_shares"]["gte_0_75"] is None
+                else _percent(aggregate["assessed_effective_weight_threshold_shares"]["gte_0_75"])
+            ),
+            _text(
+                "Not observed"
+                if aggregate["effective_confidence_mass"]["value"] is None
+                else _percent(aggregate["effective_confidence_mass"]["value"])
+            ),
+        )
+        for role, aggregate in diagnostics["roles"].items()
+    )
+    calibration = diagnostics["calibration"]
+    return """
+  <details class="hbqrs-scorecard__diagnostics">
+    <summary>Secondary confidence diagnostics (uncalibrated)</summary>
+    <p class="hbqrs-scorecard__note">Raw evaluator-confidence descriptives only: not score, coverage, or probability of correctness.</p>
+    <ul>{rows}</ul>
+    <p class="hbqrs-scorecard__note">Threshold shares are assessed-effective-weight shares; the lower weighted median selects the lower confidence at an exact-half tie. Effective confidence mass is confidence-weighted applicable question weight, not coverage. Calibration: {status}; {reason}</p>
+  </details>
+""".format(
+        rows=rows,
+        status=_text(calibration["status"].lower()),
+        reason=_text(calibration["reason"]),
+    )
 
 
 def _scorecard_markup(report: Mapping[str, Any], *, layout: str = "summary") -> str:
@@ -198,6 +265,7 @@ def _scorecard_markup(report: Mapping[str, Any], *, layout: str = "summary") -> 
   {identity}
   {details}
   {breakdown}
+  {confidence_diagnostics}
   <p class="hbqrs-scorecard__note">The canonical whole-work result remains separate. A custom-weighted composite is a declared view over existing intervals, never a replacement for the underlying results or their control states.</p>
   <p class="hbqrs-scorecard__note hbqrs-scorecard__footer"><a href="https://github.com/HaileyStorm/Creative-Writing-Rubrics">Creative-Writing-Rubrics</a> · <a href="https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/main/docs/DONATIONS.md">Support this project</a></p>
 </section>
@@ -208,6 +276,7 @@ def _scorecard_markup(report: Mapping[str, Any], *, layout: str = "summary") -> 
         identity=identity,
         details=details,
         breakdown=breakdown,
+        confidence_diagnostics=_confidence_diagnostics_markup(global_result),
     )
 
 
@@ -346,12 +415,27 @@ def _editor_script() -> str:
     }
     let localScore = null;
     let weakest = null;
-    const normalized = positive.reduce((sum, entry) => sum + entry[1], 0);
+    let trimmed = null;
+    let retained = positive;
+    let normalized = positive.reduce((sum, entry) => sum + entry[1], 0);
     if (value.local_weight > 0) {
       if (value.local_reducer === 'weakest_unit') {
         const selected = positive.reduce((best, entry) => !best || Number(interval(entry[0]).observed) < Number(interval(best[0]).observed) ? entry : best, null);
         localScore = interval(selected[0]);
         weakest = selected[0].scope_id;
+      } else if (value.local_reducer === 'trim_one_per_tail') {
+        if (positive.length < 3) {
+          write('hbqrs-preview-status', 'Trim one per tail requires at least three positive-weight local score intervals.');
+          $('hbqrs-preview-status').className = 'hbqrs-error';
+          write('hbqrs-preview-value', 'Not available');
+          return null;
+        }
+        const lowest = positive.reduce((best, entry) => !best || Number(interval(entry[0]).observed) < Number(interval(best[0]).observed) ? entry : best, null);
+        const highest = positive.reduce((best, entry) => !best || Number(interval(entry[0]).observed) >= Number(interval(best[0]).observed) ? entry : best, null);
+        retained = positive.filter((entry) => entry[2] !== lowest[2] && entry[2] !== highest[2]);
+        normalized = retained.reduce((sum, entry) => sum + entry[1], 0);
+        localScore = weighted(retained.map((entry) => interval(entry[0])), retained.map((entry) => entry[1]));
+        trimmed = {lowest, highest};
       } else {
         localScore = weighted(positive.map((entry) => interval(entry[0])), positive.map((entry) => entry[1]));
       }
@@ -363,11 +447,12 @@ def _editor_script() -> str:
     const score = weighted(components, componentWeights);
     const total = value.global_weight + value.local_weight;
     write('hbqrs-preview-value', `${fmt(score.observed)} (bounds ${fmt(score.lower)}–${fmt(score.upper)})`);
-    write('hbqrs-preview-components', `Effective global ${pct(value.global_weight / total)}; effective local ${pct(value.local_weight / total)}; reducer ${value.local_reducer}${weakest ? `; weakest ${weakest}` : ''}.`);
+    write('hbqrs-preview-components', `Effective global ${pct(value.global_weight / total)}; effective local ${pct(value.local_weight / total)}; reducer ${value.local_reducer}${weakest ? `; weakest ${weakest}` : ''}${trimmed ? `; trimmed low ${trimmed.lowest[0].scope_id}, high ${trimmed.highest[0].scope_id}` : ''}.`);
     const selectedLabels = Array.from($('hbqrs-unfinished-units').selectedOptions).map((option) => option.textContent).join(', ');
     const prologue = value.prologue_epilogue_weight === undefined ? '' : ` Shared prologue/epilogue modifier ${value.prologue_epilogue_weight.toFixed(3)}.`;
-    const effectiveWeight = (result) => normalized > 0 ? pct(modifierFor(result) / normalized) : '0.0%';
-    write('hbqrs-preview-weights', `${selectedLabels ? `Shared unfinished-unit modifier ${value.unfinished_unit_weight.toFixed(3)} for ${selectedLabels}.` : 'All ordinary local units retain equal requested weight.'}${prologue} Effective local weights: ${locals.map((result) => `${result.label}: ${effectiveWeight(result)}`).join(' · ')}`);
+    const retainedIndices = new Set(retained.map((entry) => entry[2]));
+    const effectiveWeight = (result, index) => retainedIndices.has(index) && normalized > 0 ? pct(modifierFor(result) / normalized) : '0.0%';
+    write('hbqrs-preview-weights', `${selectedLabels ? `Shared unfinished-unit modifier ${value.unfinished_unit_weight.toFixed(3)} for ${selectedLabels}.` : 'All ordinary local units retain equal requested weight.'}${prologue} Effective local weights: ${locals.map((result, index) => `${result.label}: ${effectiveWeight(result, index)}`).join(' · ')}`);
     write('hbqrs-preview-status', 'Preview calculated from existing intervals only. It is not the canonical whole-work score.');
     $('hbqrs-preview-status').className = 'hbqrs-muted';
     return value;
@@ -429,10 +514,10 @@ __SCORECARD__</div>
 <section class="hbqrs-warnings" aria-labelledby="hbqrs-warnings-title"><h2 id="hbqrs-warnings-title">Warnings</h2>__WARNINGS__</section>
 <section class="hbqrs-screen-only" aria-labelledby="hbqrs-editor-title"><h2 id="hbqrs-editor-title">Custom composite preview</h2>
 <p>Use this optional view to combine existing global and local intervals under an explicit profile. It does not change the report, its control states, or the canonical whole-work score.</p>
-<div class="hbqrs-editor-grid"><label for="hbqrs-profile-id">Profile ID<input id="hbqrs-profile-id" value="browser-preview" pattern="[a-z0-9_.-]+"></label><label for="hbqrs-global-weight">Global requested weight<input id="hbqrs-global-weight" type="number" min="0" step="0.1" value="1"></label><label for="hbqrs-local-weight">Local requested weight<input id="hbqrs-local-weight" type="number" min="0" step="0.1" value="1"></label><label for="hbqrs-local-reducer">Local reducer<select id="hbqrs-local-reducer"><option value="weighted_mean">Weighted mean</option><option value="weakest_unit">Weakest unit</option></select></label></div>
+<div class="hbqrs-editor-grid"><label for="hbqrs-profile-id">Profile ID<input id="hbqrs-profile-id" value="browser-preview" pattern="[a-z0-9_.-]+"></label><label for="hbqrs-global-weight">Global requested weight<input id="hbqrs-global-weight" type="number" min="0" step="0.1" value="1"></label><label for="hbqrs-local-weight">Local requested weight<input id="hbqrs-local-weight" type="number" min="0" step="0.1" value="1"></label><label for="hbqrs-local-reducer">Local reducer<select id="hbqrs-local-reducer"><option value="weighted_mean">Weighted mean</option><option value="weakest_unit">Weakest unit</option><option value="trim_one_per_tail">Trim one low and one high local result (3+ units)</option></select></label></div>
 <div class="hbqrs-editor-grid"><label for="hbqrs-unfinished-modifier">Shared unfinished-unit modifier<input id="hbqrs-unfinished-modifier" type="number" min="0" step="0.1" value="1"></label><label for="hbqrs-unfinished-units">Units carrying that modifier<select id="hbqrs-unfinished-units" multiple size="4" aria-describedby="hbqrs-unfinished-help"></select></label><label for="hbqrs-prologue-epilogue-modifier">Shared prologue/epilogue modifier<input id="hbqrs-prologue-epilogue-modifier" type="number" min="0" step="0.1" value="1"></label></div><p id="hbqrs-unfinished-help" class="hbqrs-muted">Ordinary local chapters stay equal-weight. Select only units that are genuinely unfinished, then apply one shared modifier. The prologue/epilogue modifier applies only to deterministically recognized headings. Neither control enables arbitrary per-chapter tuning.</p>
 <div class="hbqrs-preview" aria-live="polite"><h3>Non-canonical preview</h3><p id="hbqrs-preview-value">Not calculated</p><p id="hbqrs-preview-components"></p><p id="hbqrs-preview-weights"></p><p id="hbqrs-preview-status" class="hbqrs-muted"></p></div><div class="hbqrs-editor-actions"><button id="hbqrs-download-profile" type="button">Download strict profile JSON</button></div>
-<p class="hbqrs-muted">Formula: reduce selected local intervals by the chosen local reducer, then take the requested global/local weighted mean. Unit weights are normalized inside the local component. Zero-weight units are excluded; weakest-unit selection uses the lowest observed local score, breaking ties by source order.</p></section>
+<p class="hbqrs-muted">Formula: reduce selected local intervals by the chosen local reducer, then take the requested global/local weighted mean. Unit weights are normalized inside the local component. Zero-weight units are excluded; weakest-unit selection breaks lowest-score ties by source order. Tail trim removes the earliest lowest and latest highest observed local results, then requires at least three eligible units.</p></section>
 <section class="hbqrs-screen-only" aria-labelledby="hbqrs-embed-title"><h2 id="hbqrs-embed-title">Embeddable scorecard</h2><p>Choose a fixed layout, then copy the complete self-contained fragment. No remote asset loads when the card renders; its repository and support links open only when selected.</p><label for="hbqrs-card-layout">Card layout<select id="hbqrs-card-layout"><option value="summary">Summary: scores, domains, and local trajectory</option><option value="compact">Compact: scores, control, and coverage</option><option value="minimal">Minimal: scores and disclosed weights</option></select></label><label for="hbqrs-embed-code">Embed code<textarea id="hbqrs-embed-code" readonly rows="10"></textarea></label><div class="hbqrs-editor-actions"><button id="hbqrs-select-embed" type="button">Select embed code for copying</button></div></section>
 </main><script id="hbqrs-report-data" type="application/json">__DATA__</script><script id="hbqrs-embed-data" type="application/json">__EMBEDS__</script><script>__SCRIPT__</script></body></html>"""
     embeds = {layout: render_html_scorecard(report, layout=layout) for layout in CARD_LAYOUTS}

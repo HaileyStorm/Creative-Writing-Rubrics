@@ -366,6 +366,31 @@ def test_init_score_profile_binds_shared_modifiers_to_segmented_units(
     assert "unit_weights" not in profile
 
 
+def test_init_score_profile_exports_trim_profile_that_the_cli_reloads(tmp_path: Path) -> None:
+    artifact = tmp_path / "draft.txt"
+    artifact.write_text(
+        "Chapter One\n\nFirst.\n\nChapter Two\n\nSecond.\n\nChapter Three\n\nThird.",
+        encoding="utf-8",
+    )
+    output = tmp_path / "profile.json"
+    assert (
+        main(
+            [
+                "init-score-profile",
+                str(artifact),
+                "-o",
+                str(output),
+                "--local-reducer",
+                "trim_one_per_tail",
+            ]
+        )
+        == 0
+    )
+    profile = json.loads(output.read_text(encoding="utf-8"))
+    assert profile["local_reducer"] == "trim_one_per_tail"
+    assert cli._load_hierarchical_score_profile(output) == profile
+
+
 def test_init_score_profile_rejects_noneligible_front_matter_ordinal(
     tmp_path: Path,
 ) -> None:

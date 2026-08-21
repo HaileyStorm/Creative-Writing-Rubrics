@@ -2,7 +2,7 @@ from copy import deepcopy
 
 import pytest
 
-from hbqrs import book_root
+from hbqrs import HBQError, book_root
 from hbqrs.core import load_bundles
 from hbqrs.html_report import CARD_LAYOUTS, render_html_report, render_html_scorecard
 
@@ -44,8 +44,34 @@ def _result(scope_id: str, label: str, observed: float):
     }
 
 
+def _confidence_diagnostics():
+    aggregate = {
+        "question_count": 1,
+        "applicable_count": 1,
+        "assessed_count": 1,
+        "applicable_effective_weight": 1.0,
+        "assessed_effective_weight": 1.0,
+        "assessed_raw_confidence_weighted_mean": 0.8,
+        "assessed_raw_confidence_weighted_median": 0.8,
+        "assessed_effective_weight_threshold_shares": {"gte_0_5": 1.0, "gte_0_75": 1.0, "gte_0_9": 0.0},
+        "effective_confidence_mass": {"value": 0.8, "is_coverage": False},
+    }
+    return {
+        "diagnostic_version": 1,
+        "status": "DESCRIPTIVE_UNCALIBRATED",
+        "disclosure": "Raw evaluator confidence is secondary to canonical scoring.",
+        "roles": {role: deepcopy(aggregate) for role in ("domain", "hard_gate", "penalty", "supplemental")},
+        "calibration": {
+            "status": "UNAVAILABLE",
+            "exact_fingerprint": None,
+            "reason": "A single score has no polarity comparison, repeat judgments, or outcome history; no calibration inference is made.",
+        },
+    }
+
+
 def _report(with_hierarchy: bool = True):
     global_result = _result("work", "Whole work", 81)
+    global_result["confidence_diagnostics"] = _confidence_diagnostics()
     local_results = [_result(UNIT_ONE, "Chapter One", 78), _result(UNIT_TWO, "Chapter Two", 84)]
     hierarchy = None
     if with_hierarchy:
@@ -65,6 +91,7 @@ def _report(with_hierarchy: bool = True):
                 "requested_weight": 1,
                 "effective_weight": 1 / 3,
                 "selected_weakest_unit_id": None,
+                "trimmed_tail": None,
                 "unit_weight_assignments": [
                     {
                         "unit_id": UNIT_ONE,
@@ -149,6 +176,8 @@ def test_full_renderer_is_deterministic_self_contained_and_semantic():
     assert "innerHTML" not in first
     assert "Custom-weighted composite" in first
     assert "Canonical whole-work score" in first
+    assert "Secondary confidence diagnostics (uncalibrated)" in first
+    assert "Threshold shares are assessed-effective-weight shares" in first
     assert "Whole-work domain breakdown" in first
     assert "Local trajectory" in first
     assert "Findings and evidence references" in first
@@ -157,6 +186,38 @@ def test_full_renderer_is_deterministic_self_contained_and_semantic():
     assert "@media print" in first
     assert "Shared unfinished-unit modifier" in first
     assert "arbitrary per-chapter tuning" in first
+
+
+def test_confidence_diagnostics_render_unassessed_ratios_as_not_observed():
+    report = _report()
+    aggregate = report["global_result"]["confidence_diagnostics"]["roles"]["penalty"]
+    aggregate["assessed_count"] = 0
+    aggregate["assessed_effective_weight"] = 0.0
+    aggregate["assessed_raw_confidence_weighted_mean"] = None
+    aggregate["assessed_raw_confidence_weighted_median"] = None
+    aggregate["assessed_effective_weight_threshold_shares"] = {
+        "gte_0_5": None,
+        "gte_0_75": None,
+        "gte_0_9": None,
+    }
+    aggregate["effective_confidence_mass"]["value"] = None
+
+    card = render_html_scorecard(report)
+    assert "lower weighted median Not observed" in card
+    assert "assessed-effective-weight share at 75% Not observed" in card
+    assert "mass Not observed" in card
+
+
+def test_confidence_diagnostic_calibration_reason_remains_html_escaped():
+    report = _report()
+    report["global_result"]["confidence_diagnostics"]["calibration"]["reason"] = (
+        '<img src="https://example.invalid/track.png">'
+    )
+
+    card = render_html_scorecard(report)
+
+    assert "<img" not in card
+    assert "&lt;img src=&quot;https://example.invalid/track.png&quot;&gt;" in card
 
 
 def test_renderer_escapes_embedded_json_and_visible_text():
@@ -244,6 +305,69 @@ def test_scorecard_uses_labels_for_modifier_and_weakest_unit_disclosures():
     card = render_html_scorecard(report)
     assert "Prologue — an intentionally long unicode label" in card
     assert UNIT_ONE not in card
+
+
+def test_scorecard_discloses_tail_trim_with_labels_and_counts():
+    report = _matrix_report(
+        local_count=3,
+        null_scores=False,
+        control_state="VALID",
+        completion_status="work_in_progress",
+        hierarchy=True,
+        modifiers=False,
+    )
+    hierarchy = report["hierarchical_score"]
+    hierarchy["local_reducer"] = "trim_one_per_tail"
+    hierarchy["score"] = _interval(80.5)
+    hierarchy["local_component"]["score"] = _interval(80)
+    hierarchy["local_component"]["trimmed_tail"] = {
+        "eligible_unit_count": 3,
+        "retained_unit_count": 1,
+        "tie_rule": "lowest observed: earliest source-order tie; highest observed: latest source-order tie",
+        "excluded_units": [
+            {
+                "unit_id": UNIT_ONE,
+                "role": "lowest_tail",
+                "weight_class": "ordinary",
+                "source_index": 0,
+                "reason": "lowest observed score; earliest source-order tie",
+            },
+            {
+                "unit_id": UNIT_THREE,
+                "role": "highest_tail",
+                "weight_class": "ordinary",
+                "source_index": 2,
+                "reason": "highest observed score; latest source-order tie",
+            },
+        ],
+    }
+    assignments = hierarchy["local_component"]["unit_weight_assignments"]
+    assignments[0]["effective_weight"] = 0.0
+    assignments[1]["effective_weight"] = 1.0
+    assignments[2]["effective_weight"] = 0.0
+
+    card = render_html_scorecard(report)
+
+    assert "Tail trim: 3 eligible, 1 retained" in card
+    assert "Prologue — an intentionally long unicode label" in card
+    assert "Epilogue — 终章" in card
+    assert UNIT_ONE not in card and UNIT_THREE not in card
+
+
+@pytest.mark.parametrize("reducer, weakest, trimmed_tail", [
+    ("weighted_mean", UNIT_ONE, None),
+    ("weakest_unit", None, None),
+    ("trim_one_per_tail", None, None),
+])
+def test_scorecard_rejects_incoherent_reducer_metadata(reducer, weakest, trimmed_tail):
+    report = _report()
+    hierarchy = report["hierarchical_score"]
+    hierarchy["local_reducer"] = reducer
+    hierarchy["local_component"]["selected_weakest_unit_id"] = weakest
+    hierarchy["local_component"]["trimmed_tail"] = trimmed_tail
+
+    with pytest.raises(HBQError, match="strict schema"):
+        render_html_scorecard(report)
 
 
 def test_scorecard_zero_local_coverage_is_not_described_as_complete():
@@ -355,7 +479,7 @@ def _matrix_report(
             result["score"] = None
             for domain in result["domains"]:
                 domain["score"] = None
-    if hierarchy:
+    if hierarchy and not null_scores:
         assignments = []
         for index, result in enumerate(locals_):
             assignments.append(
@@ -382,6 +506,7 @@ def _matrix_report(
                 "requested_weight": 0.0 if not locals_ else 1.0,
                 "effective_weight": 0.0 if not locals_ else 0.5,
                 "selected_weakest_unit_id": locals_[0]["scope_id"] if modifiers and locals_ else None,
+                "trimmed_tail": None,
                 "unit_weight_assignments": assignments,
             },
             "unit_weight_policy": {
@@ -440,7 +565,7 @@ def test_scorecard_feature_matrix(
     assert "src=" not in card
     assert "fetch(" not in card
     assert "Open full report" not in card
-    if hierarchy:
+    if hierarchy and not null_scores:
         assert "Custom-weighted composite" in card
     else:
         assert "Custom-weighted composite" not in card
@@ -460,7 +585,7 @@ def test_scorecard_feature_matrix(
     if layout != "minimal":
         assert control_state in card
         assert completion_status.replace("_", " ").title() in card or completion_status == "work_in_progress"
-    if modifiers:
+    if modifiers and not null_scores:
         assert "Active local-unit modifiers" in card
     if local_count == 3 and layout == "summary":
         assert "naïve café 🧭" in card

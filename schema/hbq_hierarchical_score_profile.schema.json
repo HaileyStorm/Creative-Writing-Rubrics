@@ -9,7 +9,7 @@
     "profile_id": {"type": "string", "pattern": "^[a-z0-9_.-]+$"},
     "global_weight": {"type": "number", "minimum": 0},
     "local_weight": {"type": "number", "minimum": 0},
-    "local_reducer": {"enum": ["weighted_mean", "weakest_unit"]},
+    "local_reducer": {"enum": ["weighted_mean", "weakest_unit", "trim_one_per_tail"]},
     "unfinished_unit_ids": {
       "type": "array",
       "items": {"type": "string", "pattern": "^unit-[0-9]{4}-[0-9a-f]{12}$"},
@@ -22,5 +22,15 @@
     "unfinished_unit_ids": ["unfinished_unit_weight"],
     "unfinished_unit_weight": ["unfinished_unit_ids"]
   },
+  "allOf": [
+    {
+      "if": {"properties": {"local_reducer": {"const": "trim_one_per_tail"}}, "required": ["local_reducer"]},
+      "then": {"properties": {"local_weight": {"exclusiveMinimum": 0}}}
+    },
+    {
+      "if": {"properties": {"local_reducer": {"const": "weakest_unit"}}, "required": ["local_reducer"]},
+      "then": {"properties": {"local_weight": {"exclusiveMinimum": 0}}}
+    }
+  ],
   "additionalProperties": false
 }

@@ -9,13 +9,17 @@ import pytest
 from hbqrs import HBQError
 from hbqrs.longform import (
     build_route_sample,
+    build_workflow_report,
     compute_hierarchical_score,
     complete_local_evaluation_plan,
     make_completion_contract,
+    normalize_score_result,
+    render_workflow_markdown,
     render_chapter_comparison_svg,
     resolve_local_bundle_plan,
     run_longform_workflow,
     segment_longform,
+    validate_hierarchical_score_provenance,
     validate_long_form_map,
     validate_route_selection,
     validate_task_contract,
@@ -219,6 +223,63 @@ def _result(observed: float):
             }
         ],
     }
+
+
+def _confidence_diagnostics() -> dict[str, object]:
+    aggregate = {
+        "question_count": 1,
+        "applicable_count": 1,
+        "assessed_count": 1,
+        "applicable_effective_weight": 1.0,
+        "assessed_effective_weight": 1.0,
+        "assessed_raw_confidence_weighted_mean": 0.8,
+        "assessed_raw_confidence_weighted_median": 0.8,
+        "assessed_effective_weight_threshold_shares": {"gte_0_5": 1.0, "gte_0_75": 1.0, "gte_0_9": 0.0},
+        "effective_confidence_mass": {"value": 0.8, "is_coverage": False},
+    }
+    return {
+        "diagnostic_version": 1,
+        "status": "DESCRIPTIVE_UNCALIBRATED",
+        "disclosure": "Raw evaluator confidence is secondary to canonical scoring.",
+        "roles": {role: deepcopy(aggregate) for role in ("domain", "hard_gate", "penalty", "supplemental")},
+        "calibration": {
+            "status": "UNAVAILABLE",
+            "exact_fingerprint": None,
+            "reason": "A single score has no polarity comparison, repeat judgments, or outcome history; no calibration inference is made.",
+        },
+    }
+
+
+def test_normalize_score_result_retains_secondary_confidence_diagnostics():
+    diagnostics = _confidence_diagnostics()
+    result = normalize_score_result(
+        {
+            "hard_gate_status": "VALID",
+            "coverage": 1.0,
+            "final_score": {"observed": 80.0, "lower": 75.0, "upper": 85.0},
+            "domains": [],
+            "confidence_diagnostics": diagnostics,
+        },
+        scope_id="work",
+        label="Whole work",
+    )
+    assert result["confidence_diagnostics"] == diagnostics
+    assert result["coverage"] == 1.0
+    assert result["score"] == {"observed": 80.0, "lower": 75.0, "upper": 85.0}
+
+
+def test_markdown_text_neutralizes_markup_links_autolinks_and_bare_addresses() -> None:
+    from hbqrs.longform import _markdown_text
+
+    rendered = _markdown_text(
+        "*emphasis* _underscore_ ~~strike~~ \\slash user@example.com example.invalid "
+        "<mailto:user@example.com> [link](https://example.invalid)\nnext"
+    )
+    for raw in ("*", "_", "~", "\\", "@", "example.invalid", "https://", "\n"):
+        assert raw not in rendered
+    assert "&#42;emphasis&#42;" in rendered
+    assert "user&#64;example&#46;com" in rendered
+    assert "&#91;link&#93;&#40;https&#58;&#47;&#47;example&#46;invalid&#41; next" in rendered
 
 
 def test_segmentation_preserves_source_spans_hashes_and_stable_ids():
@@ -554,6 +615,35 @@ def test_complete_workflow_renders_explanatory_report_and_independent_scores():
     assert "Observed score" in output["markdown"]
     assert "Uncertainty bounds" in output["markdown"]
     assert "not a confidence interval" in output["markdown"]
+    output["report"]["global_result"]["confidence_diagnostics"] = _confidence_diagnostics()
+    output["report"]["global_result"]["confidence_diagnostics"]["roles"]["penalty"].update(
+        {
+            "assessed_count": 0,
+            "assessed_effective_weight": 0.0,
+            "assessed_raw_confidence_weighted_mean": None,
+            "assessed_raw_confidence_weighted_median": None,
+            "assessed_effective_weight_threshold_shares": {
+                "gte_0_5": None,
+                "gte_0_75": None,
+                "gte_0_9": None,
+            },
+            "effective_confidence_mass": {"value": None, "is_coverage": False},
+        }
+    )
+    markdown_with_diagnostics = render_workflow_markdown(output["report"])
+    assert "Secondary confidence diagnostics" in markdown_with_diagnostics
+    assert "not calibration, coverage, a probability of correctness" in markdown_with_diagnostics
+    assert "Threshold shares are assessed-effective-weight shares" in markdown_with_diagnostics
+    assert "| `penalty` | Not observed | Not observed | Not observed | Not observed |" in markdown_with_diagnostics
+    output["report"]["global_result"]["confidence_diagnostics"]["calibration"]["reason"] = (
+        '<img src="https://example.invalid/track.png"> '
+        "[request](https://example.invalid/track)"
+    )
+    safe_markdown = render_workflow_markdown(output["report"])
+    assert "<img" not in safe_markdown
+    assert "](https://" not in safe_markdown
+    assert "https://" not in safe_markdown
+    assert "&lt;img src=\"https&#58;&#47;&#47;example&#46;invalid&#47;track&#46;png\"&gt;" in safe_markdown
     assert output["report"]["completion_contract"] == make_completion_contract("work_in_progress")
     assert "Work-in-progress rule" in output["markdown"]
     assert "Mara" in output["markdown"] and "viewpoint character" in output["markdown"]
@@ -646,6 +736,222 @@ def test_hierarchical_weakest_unit_preserves_its_interval():
     assert hierarchy["score"] == {"observed": 62.0, "lower": 50.0, "upper": 70.0}
     assert hierarchy["local_component"]["selected_weakest_unit_id"] == unit_ids[0]
     assert hierarchy["global_component"]["score"] is None
+
+
+def test_hierarchical_tail_trim_uses_source_order_ties_and_preserves_inputs():
+    unit_ids = [f"unit-{index:04d}-{index:012x}" for index in range(5)]
+    local_results = [
+        {"scope_id": unit_ids[0], "label": "One", **_result(10.0)},
+        {"scope_id": unit_ids[1], "label": "Two", **_result(55.0), "score": None},
+        {
+            "scope_id": unit_ids[2],
+            "label": "Three",
+            **_result(40.0),
+            "score": {"observed": 40.0, "lower": 20.0, "upper": 70.0},
+        },
+        {
+            "scope_id": unit_ids[3],
+            "label": "Four",
+            **_result(90.0),
+            "score": {"observed": 90.0, "lower": 80.0, "upper": 100.0},
+        },
+        {"scope_id": unit_ids[4], "label": "Five", **_result(90.0)},
+    ]
+    before = deepcopy(local_results)
+    hierarchy = compute_hierarchical_score(
+        {
+            "profile_version": 1,
+            "profile_id": "tail.trim",
+            "global_weight": 0,
+            "local_weight": 1,
+            "local_reducer": "trim_one_per_tail",
+            "unfinished_unit_ids": [unit_ids[1]],
+            "unfinished_unit_weight": 0,
+            "prologue_epilogue_weight": 2,
+        },
+        global_result=None,
+        local_results=local_results,
+        unit_headings={unit_ids[2]: "Prologue"},
+    )
+    assert hierarchy is not None
+    assert hierarchy["score"] == {"observed": 56.666667, "lower": 40.0, "upper": 80.0}
+    assert hierarchy["local_component"]["score"] == hierarchy["score"]
+    assert local_results == before
+    assert [
+        item["effective_weight"] for item in hierarchy["local_component"]["unit_weight_assignments"]
+    ] == pytest.approx([0.0, 0.0, 2 / 3, 1 / 3, 0.0])
+    assert hierarchy["local_component"]["trimmed_tail"] == {
+        "eligible_unit_count": 4,
+        "retained_unit_count": 2,
+        "tie_rule": "lowest observed: earliest source-order tie; highest observed: latest source-order tie",
+        "excluded_units": [
+            {
+                "unit_id": unit_ids[0],
+                "role": "lowest_tail",
+                "weight_class": "ordinary",
+                "source_index": 0,
+                "reason": "lowest observed score; earliest source-order tie",
+            },
+            {
+                "unit_id": unit_ids[4],
+                "role": "highest_tail",
+                "weight_class": "ordinary",
+                "source_index": 4,
+                "reason": "highest observed score; latest source-order tie",
+            },
+        ],
+    }
+
+
+def test_hierarchical_tail_trim_of_three_equal_scores_retains_source_order_median():
+    unit_ids = [f"unit-{index:04d}-{index:012x}" for index in range(3)]
+    hierarchy = compute_hierarchical_score(
+        {
+            "profile_version": 1,
+            "profile_id": "tail.median",
+            "global_weight": 0,
+            "local_weight": 1,
+            "local_reducer": "trim_one_per_tail",
+        },
+        global_result=None,
+        local_results=[
+            {"scope_id": unit_id, "label": str(index), **_result(70.0)}
+            for index, unit_id in enumerate(unit_ids)
+        ],
+    )
+    assert hierarchy is not None
+    assert hierarchy["score"] == {"observed": 70.0, "lower": 70.0, "upper": 70.0}
+    assert hierarchy["local_component"]["trimmed_tail"]["retained_unit_count"] == 1
+    assert [
+        item["unit_id"] for item in hierarchy["local_component"]["trimmed_tail"]["excluded_units"]
+    ] == [unit_ids[0], unit_ids[2]]
+
+
+def test_hierarchical_tail_trim_requires_three_evaluated_positive_weight_units():
+    unit_ids = [f"unit-{index:04d}-{index:012x}" for index in range(3)]
+    profile = {
+        "profile_version": 1,
+        "profile_id": "tail.minimum",
+        "global_weight": 0,
+        "local_weight": 1,
+        "local_reducer": "trim_one_per_tail",
+    }
+    with pytest.raises(HBQError, match="at least three positive-weight local units"):
+        compute_hierarchical_score(
+            profile,
+            global_result=None,
+            local_results=[
+                {"scope_id": unit_ids[0], "label": "One", **_result(70.0)},
+                {"scope_id": unit_ids[1], "label": "Two", **_result(80.0)},
+            ],
+        )
+    with pytest.raises(HBQError, match="Positive unit weight requires an observed score interval"):
+        compute_hierarchical_score(
+            profile,
+            global_result=None,
+            local_results=[
+                {"scope_id": unit_ids[0], "label": "One", **_result(70.0)},
+                {"scope_id": unit_ids[1], "label": "Two", **_result(80.0)},
+                {"scope_id": unit_ids[2], "label": "Three", **_result(90.0), "score": None},
+            ],
+        )
+    with pytest.raises(HBQError, match="strict schema"):
+        compute_hierarchical_score(
+            {**profile, "local_weight": 0},
+            global_result=None,
+            local_results=[
+                {"scope_id": unit_id, "label": str(index), **_result(70.0)}
+                for index, unit_id in enumerate(unit_ids)
+            ],
+        )
+
+
+def test_hierarchical_tail_trim_leaves_wip_canonical_results_and_trajectory_intact():
+    segmentation = segment_longform(TEXT, artifact_id="synthetic-story")
+    route = _route(segmentation)
+    work_map = _map(segmentation)
+    local_results = [
+        {"scope_id": unit["unit_id"], "label": unit["heading"], **_result(60.0 + 20.0 * index)}
+        for index, unit in enumerate(segmentation["units"])
+    ]
+    global_result = {"scope_id": "work", "label": "Whole work", **_result(81.0)}
+    before_global = deepcopy(global_result)
+    before_local = deepcopy(local_results)
+
+    report = build_workflow_report(
+        segmentation=segmentation,
+        route_selection=route,
+        work_map=work_map,
+        global_result=global_result,
+        local_results=local_results,
+        hierarchical_score_profile={
+            "profile_version": 1,
+            "profile_id": "wip.tail.trim",
+            "global_weight": 1,
+            "local_weight": 1,
+            "local_reducer": "trim_one_per_tail",
+        },
+    )
+
+    assert report["completion_contract"] == make_completion_contract("work_in_progress")
+    assert report["global_result"] == before_global
+    assert report["local_results"] == before_local
+    assert global_result == before_global
+    assert local_results == before_local
+    assert report["hierarchical_score"]["local_component"]["trimmed_tail"][
+        "retained_unit_count"
+    ] == 1
+    fabricated = deepcopy(report)
+    fabricated["hierarchical_score"]["local_component"]["trimmed_tail"]["retained_unit_count"] = 99
+    with pytest.raises(HBQError, match="retained-unit count"):
+        render_workflow_markdown(fabricated)
+
+
+@pytest.mark.parametrize(
+    ("mutation", "match"),
+    [
+        ("weighted", "weighted_mean provenance"),
+        ("eligible", "eligible-unit count"),
+        ("retained", "retained-unit count"),
+        ("duplicate_id", "exclusions do not match"),
+        ("duplicate_index", "exclusions do not match"),
+        ("wrong_reason", "exclusions do not match"),
+    ],
+)
+def test_hierarchical_tail_trim_rejects_fabricated_provenance(mutation, match):
+    unit_ids = [f"unit-{index:04d}-{index:012x}" for index in range(3)]
+    local_results = [
+        {"scope_id": unit_id, "label": str(index), **_result(60.0 + 10.0 * index)}
+        for index, unit_id in enumerate(unit_ids)
+    ]
+    hierarchy = compute_hierarchical_score(
+        {
+            "profile_version": 1,
+            "profile_id": "tail.provenance",
+            "global_weight": 0,
+            "local_weight": 1,
+            "local_reducer": "trim_one_per_tail",
+        },
+        global_result=None,
+        local_results=local_results,
+    )
+    assert hierarchy is not None
+    fabricated = deepcopy(hierarchy)
+    if mutation == "weighted":
+        fabricated["local_reducer"] = "weighted_mean"
+    elif mutation == "eligible":
+        fabricated["local_component"]["trimmed_tail"]["eligible_unit_count"] = 2
+    elif mutation == "retained":
+        fabricated["local_component"]["trimmed_tail"]["retained_unit_count"] = 99
+    elif mutation == "duplicate_id":
+        fabricated["local_component"]["trimmed_tail"]["excluded_units"][1]["unit_id"] = unit_ids[0]
+    elif mutation == "duplicate_index":
+        fabricated["local_component"]["trimmed_tail"]["excluded_units"][1]["source_index"] = 0
+    else:
+        fabricated["local_component"]["trimmed_tail"]["excluded_units"][1]["reason"] = "invented"
+
+    with pytest.raises(HBQError, match=match):
+        validate_hierarchical_score_provenance(fabricated, local_results=local_results)
 
 
 @pytest.mark.parametrize(

@@ -675,7 +675,9 @@ def build_parser() -> argparse.ArgumentParser:
     profile.add_argument("--global-weight", type=float, default=7.0)
     profile.add_argument("--local-weight", type=float, default=3.0)
     profile.add_argument(
-        "--local-reducer", choices=["weighted_mean", "weakest_unit"], default="weighted_mean"
+        "--local-reducer",
+        choices=["weighted_mean", "weakest_unit", "trim_one_per_tail"],
+        default="weighted_mean",
     )
     profile.add_argument(
         "--unfinished-unit-ordinal",

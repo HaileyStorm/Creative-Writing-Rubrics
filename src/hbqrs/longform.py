@@ -627,6 +627,10 @@ def normalize_score_result(
         result["label"] = label
         return result
 
+    from .scoring_v2 import score_report_version
+
+    score_report_version(score_report)
+
     state = score_report.get("hard_gate_status", score_report.get("status"))
     if state not in {"VALID", "INVALID", "UNRESOLVED", "PROVISIONAL", "INELIGIBLE"}:
         raise HBQError(f"Score report has unsupported control state: {state!r}")
@@ -657,6 +661,7 @@ def normalize_score_result(
         "score": _interval(score_report.get("final_score")),
         "domains": domains,
         "weight_profile": deepcopy(score_report.get("weight_profile")),
+        "confidence_diagnostics": deepcopy(score_report.get("confidence_diagnostics")),
     }
 
 
@@ -683,6 +688,124 @@ def _weighted_interval(
         )
         for key in ("observed", "lower", "upper")
     }
+
+
+_TAIL_TRIM_TIE_RULE = "lowest observed: earliest source-order tie; highest observed: latest source-order tie"
+_TAIL_TRIM_REASONS = {
+    "lowest_tail": "lowest observed score; earliest source-order tie",
+    "highest_tail": "highest observed score; latest source-order tie",
+}
+
+
+def validate_hierarchical_score_provenance(
+    hierarchy: Mapping[str, Any], *, local_results: Sequence[Mapping[str, Any]]
+) -> None:
+    """Check that a custom composite's reducer metadata matches its local results."""
+
+    if not isinstance(hierarchy, Mapping):
+        raise HBQError("Hierarchical score provenance must be an object")
+    reducer = hierarchy.get("local_reducer")
+    local_component = hierarchy.get("local_component")
+    if not isinstance(local_component, Mapping):
+        raise HBQError("Hierarchical score provenance is missing its local component")
+    assignments = local_component.get("unit_weight_assignments")
+    if not isinstance(assignments, list) or len(assignments) != len(local_results):
+        raise HBQError("Hierarchical score provenance must assign every local unit once")
+    local_ids = [str(result.get("scope_id")) for result in local_results]
+    assignment_ids = [str(item.get("unit_id")) if isinstance(item, Mapping) else "" for item in assignments]
+    if assignment_ids != local_ids or len(assignment_ids) != len(set(assignment_ids)):
+        raise HBQError("Hierarchical score provenance assignments must follow unique local source order")
+
+    weakest = local_component.get("selected_weakest_unit_id")
+    trimmed_tail = local_component.get("trimmed_tail")
+    if reducer == "weighted_mean":
+        if weakest is not None or trimmed_tail is not None:
+            raise HBQError("weighted_mean provenance requires null weakest and tail-trim metadata")
+        return
+
+    positive: list[tuple[int, Mapping[str, Any], Mapping[str, Any], dict[str, float], float]] = []
+    for index, (result, assignment) in enumerate(zip(local_results, assignments)):
+        if not isinstance(assignment, Mapping):
+            raise HBQError("Hierarchical score provenance has an invalid unit assignment")
+        weight = _finite_weight(assignment.get("class_modifier"), "unit class modifier")
+        if weight <= 0:
+            continue
+        interval = _interval(result.get("score"))
+        if interval is None:
+            raise HBQError(
+                f"Positive unit weight requires an observed score interval for {result.get('scope_id')}"
+            )
+        positive.append((index, result, assignment, interval, weight))
+
+    if reducer == "weakest_unit":
+        if not isinstance(weakest, str) or not weakest or trimmed_tail is not None:
+            raise HBQError("weakest_unit provenance requires a selected unit and null tail-trim metadata")
+        if not positive:
+            raise HBQError("weakest_unit requires a positive-weight evaluated local unit")
+        selected = min(positive, key=lambda item: (item[3]["observed"], item[0]))
+        if weakest != str(selected[1]["scope_id"]):
+            raise HBQError("weakest_unit provenance does not match the source-order weakest local result")
+        return
+
+    if reducer != "trim_one_per_tail":
+        raise HBQError("Hierarchical score provenance has an unknown local reducer")
+    if weakest is not None or not isinstance(trimmed_tail, Mapping):
+        raise HBQError("trim_one_per_tail provenance requires tail metadata and null weakest selection")
+    if len(positive) < 3:
+        raise HBQError("trim_one_per_tail requires at least three positive-weight evaluated local units")
+    lowest = min(positive, key=lambda item: (item[3]["observed"], item[0]))
+    highest = max(positive, key=lambda item: (item[3]["observed"], item[0]))
+    retained = [item for item in positive if item[0] not in {lowest[0], highest[0]}]
+    if trimmed_tail.get("eligible_unit_count") != len(positive):
+        raise HBQError("Tail-trim eligible-unit count does not match the local results")
+    if trimmed_tail.get("retained_unit_count") != len(retained):
+        raise HBQError("Tail-trim retained-unit count must equal eligible units minus two")
+    if trimmed_tail.get("tie_rule") != _TAIL_TRIM_TIE_RULE:
+        raise HBQError("Tail-trim provenance has an unexpected tie rule")
+    excluded = trimmed_tail.get("excluded_units")
+    if not isinstance(excluded, list) or len(excluded) != 2:
+        raise HBQError("Tail-trim provenance requires exactly two excluded units")
+    expected_excluded = []
+    for role, item in (("lowest_tail", lowest), ("highest_tail", highest)):
+        source_index, result, assignment, _interval_value, _weight = item
+        expected_excluded.append(
+            {
+                "unit_id": str(result["scope_id"]),
+                "role": role,
+                "weight_class": assignment.get("weight_class"),
+                "source_index": source_index,
+                "reason": _TAIL_TRIM_REASONS[role],
+            }
+        )
+    if excluded != expected_excluded:
+        raise HBQError("Tail-trim exclusions do not match the deterministic tails")
+
+    retained_weight_total = sum(item[4] for item in retained)
+    expected_local_interval = _weighted_interval(
+        [item[3] for item in retained], [item[4] for item in retained]
+    )
+    actual_local_interval = local_component.get("score")
+    if (
+        not isinstance(actual_local_interval, Mapping)
+        or any(
+            isinstance(actual_local_interval.get(key), bool)
+            or not isinstance(actual_local_interval.get(key), (int, float))
+            or not math.isclose(
+                float(actual_local_interval[key]), expected_local_interval[key], abs_tol=1e-9
+            )
+            for key in ("observed", "lower", "upper")
+        )
+    ):
+        raise HBQError("Tail-trim local interval does not match the retained local results")
+    retained_indices = {item[0] for item in retained}
+    for index, (assignment, _result) in enumerate(zip(assignments, local_results)):
+        expected_weight = (
+            round(_finite_weight(assignment.get("class_modifier"), "unit class modifier") / retained_weight_total, 12)
+            if index in retained_indices
+            else 0.0
+        )
+        if assignment.get("effective_weight") != expected_weight:
+            raise HBQError("Tail-trim effective local weights do not match the retained units")
 
 
 def validate_hierarchical_score_profile(
@@ -733,6 +856,8 @@ def validate_hierarchical_score_profile(
         )
     if local_weight > 0 and sum(materialized) <= 0:
         raise HBQError("Positive local_weight requires at least one positive unit weight")
+    if value["local_reducer"] == "trim_one_per_tail" and sum(weight > 0 for weight in materialized) < 3:
+        raise HBQError("trim_one_per_tail requires at least three positive-weight local units")
     return value
 
 
@@ -750,6 +875,9 @@ def compute_hierarchical_score(
     explicitly declared unfinished units and deterministically recognized
     prologue/epilogue headings.  For ``weakest_unit``, zero-modifier units are
     excluded and positive modifier magnitudes do not change weakest selection.
+    ``trim_one_per_tail`` is a noncanonical local summary: it removes the
+    earliest lowest and latest highest observed local results before applying
+    the original positive weights to the retained results.
     """
 
     if profile is None:
@@ -801,14 +929,17 @@ def compute_hierarchical_score(
 
     local_interval: dict[str, float] | None = None
     weakest_unit_id: str | None = None
+    trimmed_tail: dict[str, Any] | None = None
     if local_weight > 0:
         positive = [
-            (result, weight)
-            for result, weight in zip(local_results, materialized_weights)
+            (source_index, result, weight_classes[source_index][0], weight)
+            for source_index, (result, weight) in enumerate(
+                zip(local_results, materialized_weights)
+            )
             if weight > 0
         ]
         intervals: list[dict[str, float]] = []
-        for result, _weight in positive:
+        for _source_index, result, _weight_class, _weight in positive:
             interval = _interval(result.get("score"))
             if interval is None:
                 raise HBQError(
@@ -817,14 +948,75 @@ def compute_hierarchical_score(
             intervals.append(interval)
         if value["local_reducer"] == "weighted_mean":
             local_interval = _weighted_interval(
-                intervals, [weight for _result, weight in positive]
+                intervals, [weight for _source_index, _result, _weight_class, weight in positive]
             )
-        else:
+        elif value["local_reducer"] == "weakest_unit":
             weakest_index = min(
                 range(len(positive)), key=lambda index: (intervals[index]["observed"], index)
             )
-            weakest_unit_id = str(positive[weakest_index][0]["scope_id"])
+            weakest_unit_id = str(positive[weakest_index][1]["scope_id"])
             local_interval = deepcopy(intervals[weakest_index])
+        else:
+            if len(positive) < 3:
+                raise HBQError(
+                    "trim_one_per_tail requires at least three positive-weight evaluated local units"
+                )
+            lowest_index = min(
+                range(len(positive)),
+                key=lambda index: (intervals[index]["observed"], positive[index][0]),
+            )
+            highest_index = max(
+                range(len(positive)),
+                key=lambda index: (intervals[index]["observed"], positive[index][0]),
+            )
+            retained_indices = [
+                index
+                for index in range(len(positive))
+                if index not in {lowest_index, highest_index}
+            ]
+            local_interval = _weighted_interval(
+                [intervals[index] for index in retained_indices],
+                [positive[index][3] for index in retained_indices],
+            )
+            retained_source_indices = {positive[index][0] for index in retained_indices}
+            retained_weight_total = sum(positive[index][3] for index in retained_indices)
+            effective_unit_weights = [
+                round(weight / retained_weight_total, 12)
+                if source_index in retained_source_indices
+                else 0.0
+                for source_index, weight in enumerate(materialized_weights)
+            ]
+
+            def excluded_unit(index: int, role: str, reason: str) -> dict[str, Any]:
+                source_index, result, weight_class, _weight = positive[index]
+                return {
+                    "unit_id": str(result["scope_id"]),
+                    "role": role,
+                    "weight_class": weight_class,
+                    "source_index": source_index,
+                    "reason": reason,
+                }
+
+            trimmed_tail = {
+                "eligible_unit_count": len(positive),
+                "retained_unit_count": len(retained_indices),
+                "tie_rule": (
+                    "lowest observed: earliest source-order tie; "
+                    "highest observed: latest source-order tie"
+                ),
+                "excluded_units": [
+                    excluded_unit(
+                        lowest_index,
+                        "lowest_tail",
+                        "lowest observed score; earliest source-order tie",
+                    ),
+                    excluded_unit(
+                        highest_index,
+                        "highest_tail",
+                        "highest observed score; latest source-order tie",
+                    ),
+                ],
+            }
 
     top_intervals: list[Mapping[str, float]] = []
     top_weights: list[float] = []
@@ -837,7 +1029,7 @@ def compute_hierarchical_score(
         top_intervals.append(local_interval)
         top_weights.append(local_weight)
     score = _weighted_interval(top_intervals, top_weights)
-    return {
+    hierarchy = {
         "profile_version": value["profile_version"],
         "profile_id": value["profile_id"],
         "method": "weighted_global_local",
@@ -853,6 +1045,7 @@ def compute_hierarchical_score(
             "requested_weight": local_weight,
             "effective_weight": round(local_weight / top_total, 12),
             "selected_weakest_unit_id": weakest_unit_id,
+            "trimmed_tail": trimmed_tail,
             "unit_weight_assignments": [
                 {
                     "unit_id": unit_id,
@@ -880,6 +1073,8 @@ def compute_hierarchical_score(
             "it does not replace control states, completion handling, or underlying results."
         ),
     }
+    validate_hierarchical_score_provenance(hierarchy, local_results=local_results)
+    return hierarchy
 
 
 def build_workflow_report(
@@ -955,6 +1150,34 @@ def _md(value: Any) -> str:
     return str(value).replace("|", "\\|").replace("\r", " ").replace("\n", " ")
 
 
+def _markdown_text(value: Any) -> str:
+    """Render untrusted free text without preserving Markdown markup or links."""
+
+    return (
+        str(value)
+        .replace("&", "&amp;")
+        .replace("<", "&lt;")
+        .replace(">", "&gt;")
+        .replace("\\", "&#92;")
+        .replace("*", "&#42;")
+        .replace("_", "&#95;")
+        .replace("~", "&#126;")
+        .replace("[", "&#91;")
+        .replace("]", "&#93;")
+        .replace("(", "&#40;")
+        .replace(")", "&#41;")
+        .replace("!", "&#33;")
+        .replace("`", "&#96;")
+        .replace("/", "&#47;")
+        .replace("|", "&#124;")
+        .replace("@", "&#64;")
+        .replace(".", "&#46;")
+        .replace(":", "&#58;")
+        .replace("\r", " ")
+        .replace("\n", " ")
+    )
+
+
 def _observed_score_text(result: Mapping[str, Any]) -> str:
     score = result.get("score")
     if not isinstance(score, Mapping):
@@ -975,6 +1198,9 @@ def render_workflow_markdown(report: Mapping[str, Any]) -> str:
     _validate_schema(
         report, _schema("hbq_long_form_workflow_report.schema.json"), "Long-form workflow report"
     )
+    hierarchy = report["hierarchical_score"]
+    if isinstance(hierarchy, Mapping):
+        validate_hierarchical_score_provenance(hierarchy, local_results=report["local_results"])
     orientation = report["orientation"]
     lines = [
         "# Long-form evaluation",
@@ -1058,6 +1284,41 @@ def render_workflow_markdown(report: Mapping[str, Any]) -> str:
                     f"{_observed_score_text({'score': domain['score']})} | "
                     f"{_uncertainty_bounds_text({'score': domain['score']})} |"
                 )
+        diagnostics = global_result.get("confidence_diagnostics")
+        if isinstance(diagnostics, Mapping):
+            lines.extend(
+                [
+                    "",
+                    "### Secondary confidence diagnostics",
+                    "",
+                    "Raw evaluator-confidence descriptives only; they are not calibration, coverage, a probability of correctness, or an input to the canonical result.",
+                    "",
+                    "| Role | Assessed raw weighted mean | Lower weighted median | Assessed-effective-weight share at 75% | Effective confidence mass |",
+                    "|---|---:|---:|---:|---:|",
+                ]
+            )
+            for role, aggregate in diagnostics["roles"].items():
+                mean = aggregate["assessed_raw_confidence_weighted_mean"]
+                median = aggregate["assessed_raw_confidence_weighted_median"]
+                threshold_share = aggregate["assessed_effective_weight_threshold_shares"]["gte_0_75"]
+                mass = aggregate["effective_confidence_mass"]["value"]
+                lines.append(
+                    f"| `{role}` | {'Not observed' if mean is None else f'{mean:.1%}'} | "
+                    f"{'Not observed' if median is None else f'{median:.1%}'} | "
+                    f"{'Not observed' if threshold_share is None else f'{threshold_share:.1%}'} | "
+                    f"{'Not observed' if mass is None else f'{mass:.1%}'} |"
+                )
+            calibration = diagnostics["calibration"]
+            lines.extend(
+                [
+                    "",
+                    "Threshold shares are assessed-effective-weight shares; the lower weighted median selects "
+                    "the lower confidence at an exact-half tie. Effective confidence mass is confidence-weighted "
+                    "applicable question weight, not coverage. "
+                    f"Calibration is `{_markdown_text(calibration['status'])}`: "
+                    f"{_markdown_text(calibration['reason'])}",
+                ]
+            )
 
     if report["local_results"]:
         lines.extend(
@@ -1106,6 +1367,21 @@ def render_workflow_markdown(report: Mapping[str, Any]) -> str:
         for unit_weight in local_component["unit_weight_assignments"]:
             lines.append(
                 f"| `{unit_weight['unit_id']}` | `{unit_weight['weight_class']}` | {unit_weight['class_modifier']:.6g} | {unit_weight['effective_weight']:.1%} |"
+            )
+        trimmed_tail = local_component.get("trimmed_tail")
+        if isinstance(trimmed_tail, Mapping):
+            excluded = "; ".join(
+                f"`{_md(item['unit_id'])}` ({_md(item['role'])}: {_md(item['reason'])})"
+                for item in trimmed_tail["excluded_units"]
+            )
+            lines.extend(
+                [
+                    "",
+                    "Tail trim is a noncanonical local summary: "
+                    f"{trimmed_tail['eligible_unit_count']} eligible units, "
+                    f"{trimmed_tail['retained_unit_count']} retained. Excluded {excluded}. "
+                    f"Tie rule: {trimmed_tail['tie_rule']}.",
+                ]
             )
         if local_component["selected_weakest_unit_id"] is not None:
             lines.extend(

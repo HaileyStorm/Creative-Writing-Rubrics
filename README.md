@@ -73,7 +73,7 @@ cwr longform manuscript.txt --brief author-notes.txt --wip \
   --output-dir ../cwr-runs/manuscript
 ```
 
-The starter profile is 70% whole-work and 30% equal-weight local mean. You may change component weights or use the weakest-unit reducer, but ordinary chapters cannot be tuned individually: only shared unfinished-unit and prologue/epilogue modifiers are available. Cards label custom weighting and print the effective weights and reducer. `cwr render-report report.json -o report.html` renders an existing report; `--scorecard` produces the embeddable card. Both work offline.
+The starter profile is 70% whole-work and 30% equal-weight local mean. You may change component weights, use the weakest-unit reducer, or trim one low and one high local result when at least three eligible units exist; ordinary chapters cannot be tuned individually. Only shared unfinished-unit and prologue/epilogue modifiers are available. Cards label custom weighting and print the effective weights and reducer. `cwr render-report report.json -o report.html` renders an existing report; `--scorecard` produces the embeddable card. Both work offline.
 
 The GUI is optional: setup, judging, batching, monitoring, scoring, and reports all have complete CLI paths. `cwr configure -o setup.html` is a local, no-network helper for route, WIP, endpoint, coverage, weights, and a copyable command; it never runs a judge. There is no template editor or theme system.
 

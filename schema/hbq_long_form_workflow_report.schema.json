@@ -156,7 +156,78 @@
           ]
         },
         "domains": {"type": "array", "items": {"$ref": "#/$defs/domain"}},
-        "weight_profile": {"type": ["object", "null"]}
+        "weight_profile": {"type": ["object", "null"]},
+        "confidence_diagnostics": {
+          "anyOf": [
+            {"$ref": "#/$defs/confidence_diagnostics"},
+            {"type": "null"}
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "assessed_effective_weight_threshold_shares": {
+      "type": "object",
+      "required": ["gte_0_5", "gte_0_75", "gte_0_9"],
+      "properties": {
+        "gte_0_5": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
+        "gte_0_75": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
+        "gte_0_9": {"type": ["number", "null"], "minimum": 0, "maximum": 1}
+      },
+      "additionalProperties": false
+    },
+    "confidence_role_aggregate": {
+      "type": "object",
+      "required": ["question_count", "applicable_count", "assessed_count", "applicable_effective_weight", "assessed_effective_weight", "assessed_raw_confidence_weighted_mean", "assessed_raw_confidence_weighted_median", "assessed_effective_weight_threshold_shares", "effective_confidence_mass"],
+      "properties": {
+        "question_count": {"type": "integer", "minimum": 0},
+        "applicable_count": {"type": "integer", "minimum": 0},
+        "assessed_count": {"type": "integer", "minimum": 0},
+        "applicable_effective_weight": {"type": "number", "minimum": 0},
+        "assessed_effective_weight": {"type": "number", "minimum": 0},
+        "assessed_raw_confidence_weighted_mean": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
+        "assessed_raw_confidence_weighted_median": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
+        "assessed_effective_weight_threshold_shares": {"$ref": "#/$defs/assessed_effective_weight_threshold_shares"},
+        "effective_confidence_mass": {
+          "type": "object",
+          "required": ["value", "is_coverage"],
+          "properties": {
+            "value": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
+            "is_coverage": {"const": false}
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "confidence_diagnostics": {
+      "type": "object",
+      "required": ["diagnostic_version", "status", "disclosure", "roles", "calibration"],
+      "properties": {
+        "diagnostic_version": {"const": 1},
+        "status": {"const": "DESCRIPTIVE_UNCALIBRATED"},
+        "disclosure": {"type": "string", "minLength": 1},
+        "roles": {
+          "type": "object",
+          "required": ["domain", "hard_gate", "penalty", "supplemental"],
+          "properties": {
+            "domain": {"$ref": "#/$defs/confidence_role_aggregate"},
+            "hard_gate": {"$ref": "#/$defs/confidence_role_aggregate"},
+            "penalty": {"$ref": "#/$defs/confidence_role_aggregate"},
+            "supplemental": {"$ref": "#/$defs/confidence_role_aggregate"}
+          },
+          "additionalProperties": false
+        },
+        "calibration": {
+          "type": "object",
+          "required": ["status", "exact_fingerprint", "reason"],
+          "properties": {
+            "status": {"const": "UNAVAILABLE"},
+            "exact_fingerprint": {"type": "null"},
+            "reason": {"type": "string", "minLength": 1}
+          },
+          "additionalProperties": false
+        }
       },
       "additionalProperties": false
     },
@@ -177,17 +248,18 @@
         "profile_version": {"const": 1},
         "profile_id": {"type": "string", "pattern": "^[a-z0-9_.-]+$"},
         "method": {"const": "weighted_global_local"},
-        "local_reducer": {"enum": ["weighted_mean", "weakest_unit"]},
+        "local_reducer": {"enum": ["weighted_mean", "weakest_unit", "trim_one_per_tail"]},
         "score": {"$ref": "#/$defs/interval"},
         "global_component": {"$ref": "#/$defs/hierarchical_component"},
         "local_component": {
           "type": "object",
-          "required": ["score", "requested_weight", "effective_weight", "selected_weakest_unit_id", "unit_weight_assignments"],
+          "required": ["score", "requested_weight", "effective_weight", "selected_weakest_unit_id", "trimmed_tail", "unit_weight_assignments"],
           "properties": {
             "score": {"anyOf": [{"$ref": "#/$defs/interval"}, {"type": "null"}]},
             "requested_weight": {"type": "number", "minimum": 0},
             "effective_weight": {"type": "number", "minimum": 0, "maximum": 1},
             "selected_weakest_unit_id": {"anyOf": [{"type": "string", "pattern": "^unit-[0-9]{4}-[0-9a-f]{12}$"}, {"type": "null"}]},
+            "trimmed_tail": {"anyOf": [{"$ref": "#/$defs/trimmed_tail"}, {"type": "null"}]},
             "unit_weight_assignments": {
               "type": "array",
                 "items": {
@@ -203,9 +275,9 @@
               }
             }
           },
-          "additionalProperties": false
-        },
-        "unit_weight_policy": {
+      "additionalProperties": false
+    },
+    "unit_weight_policy": {
           "type": "object",
           "required": ["ordinary_unit_weight", "unfinished_unit_weight", "unfinished_unit_ids", "prologue_epilogue_weight", "prologue_epilogue_unit_ids", "overlap_precedence"],
           "properties": {
@@ -219,6 +291,79 @@
           "additionalProperties": false
         },
         "policy": {"type": "string", "minLength": 1}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"local_reducer": {"const": "trim_one_per_tail"}}, "required": ["local_reducer"]},
+          "then": {
+            "properties": {
+              "local_component": {
+                "required": ["trimmed_tail"],
+                "properties": {
+                  "selected_weakest_unit_id": {"type": "null"},
+                  "trimmed_tail": {"$ref": "#/$defs/trimmed_tail"}
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {"properties": {"local_reducer": {"const": "weakest_unit"}}, "required": ["local_reducer"]},
+          "then": {
+            "properties": {
+              "local_component": {
+                "properties": {
+                  "selected_weakest_unit_id": {"type": "string", "pattern": "^unit-[0-9]{4}-[0-9a-f]{12}$"},
+                  "trimmed_tail": {"type": "null"}
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {"properties": {"local_reducer": {"const": "weighted_mean"}}, "required": ["local_reducer"]},
+          "then": {
+            "properties": {
+              "local_component": {
+                "properties": {
+                  "selected_weakest_unit_id": {"type": "null"},
+                  "trimmed_tail": {"type": "null"}
+                }
+              }
+            }
+          }
+        }
+      ],
+      "additionalProperties": false
+    },
+    "trimmed_tail": {
+      "type": "object",
+      "required": ["eligible_unit_count", "retained_unit_count", "tie_rule", "excluded_units"],
+      "properties": {
+        "eligible_unit_count": {"type": "integer", "minimum": 3},
+        "retained_unit_count": {"type": "integer", "minimum": 1},
+        "tie_rule": {"const": "lowest observed: earliest source-order tie; highest observed: latest source-order tie"},
+        "excluded_units": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": {
+            "type": "object",
+            "required": ["unit_id", "role", "weight_class", "source_index", "reason"],
+            "properties": {
+              "unit_id": {"type": "string", "pattern": "^unit-[0-9]{4}-[0-9a-f]{12}$"},
+              "role": {"enum": ["lowest_tail", "highest_tail"]},
+              "weight_class": {"enum": ["ordinary", "unfinished", "prologue_epilogue"]},
+              "source_index": {"type": "integer", "minimum": 0},
+              "reason": {"type": "string", "minLength": 1}
+            },
+            "additionalProperties": false
+          },
+          "allOf": [
+            {"contains": {"type": "object", "properties": {"role": {"const": "lowest_tail"}}, "required": ["role"]}},
+            {"contains": {"type": "object", "properties": {"role": {"const": "highest_tail"}}, "required": ["role"]}}
+          ]
+        }
       },
       "additionalProperties": false
     }

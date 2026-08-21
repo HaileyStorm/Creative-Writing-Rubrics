@@ -68,6 +68,7 @@ def test_configurator_exposes_requested_controls_and_command_preview():
         "Binary-judge reasoning",
         "Shared unfinished-unit modifier",
         "Shared prologue/epilogue modifier",
+        "Trim one low and one high local result (3+ units)",
         "Write self-contained report and scorecard HTML",
         "Download configuration JSON",
         "Copyable command preview",
@@ -80,6 +81,9 @@ def test_configurator_exposes_requested_controls_and_command_preview():
     assert "individual chapter weight" not in output
     assert "api-key" not in output.casefold()
     assert "password" not in output.casefold()
+    assert "id=\"hbqrs-download-profile\"" in output
+    assert "downloadJson(value.hierarchical_score.profile, 'profile.json')" in output
+    assert "--hierarchical-score-profile', quote('profile.json')" in output
 
 
 def test_configurator_frozen_module_checkboxes_flow_into_config_and_command_preview():
