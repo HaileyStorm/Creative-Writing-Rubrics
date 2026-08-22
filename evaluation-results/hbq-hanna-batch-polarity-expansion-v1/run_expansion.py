@@ -21,6 +21,8 @@ HERE = Path(__file__).resolve().parent
 REPOSITORY = HERE.parents[1]
 STUDY_PATH = HERE / "study.py"
 SCHEMA_PATH = HERE / "response.schema.json"
+LIVE_CALLER_PATH = HERE / "run_expansion_live.py"
+RUNNER_PATH = REPOSITORY / "src" / "hbqrs" / "runner.py"
 EXECUTION_NAME = "expansion-execution-contract.json"
 DISCLOSURE_NAME = "expansion-disclosure.json"
 EVIDENCE_NAME = "expansion-evidence.json"
@@ -86,7 +88,7 @@ def _pushed_runtime(repo: Path) -> dict[str, Any]:
     tracked_dirty = git("status", "--porcelain", "--untracked-files=no")
     if tracked_dirty: raise RuntimeError("Executor requires a clean tracked worktree")
     files: dict[str, dict[str, Any]] = {}
-    for path in (STUDY_PATH, SCHEMA_PATH, HERE / "run_expansion.py", HERE / "study-contract.json"):
+    for path in (STUDY_PATH, SCHEMA_PATH, HERE / "run_expansion.py", LIVE_CALLER_PATH, RUNNER_PATH, HERE / "study-contract.json"):
         relative = path.resolve().relative_to(repo.resolve()).as_posix()
         raw = subprocess.run(["git", "-C", str(repo), "show", f"{revision}:{relative}"], capture_output=True, check=False)
         if raw.returncode: raise RuntimeError("Pushed revision lacks a bound executor file")
@@ -106,7 +108,7 @@ def prepare_execution(work: Path, private_root: Path, *, repo: Path = REPOSITORY
         raise RuntimeError("Execution private root does not match the prepared reused-matrix root")
     if (work / FREEZE_NAME).exists(): raise RuntimeError("Frozen expansion cannot be prepared or restarted")
     disclosure = _disclosure(plan, items, private_root); _immutable(work / DISCLOSURE_NAME, disclosure)
-    contract = {"format_version": 1, "study_id": plan["study_id"], "plan": _safe_fingerprint(work / study.PLAN_NAME), "executor": _safe_fingerprint(HERE / "run_expansion.py"), "response_schema": _safe_fingerprint(SCHEMA_PATH), "pushed_runtime": _pushed_runtime(repo), "disclosure": _safe_fingerprint(work / DISCLOSURE_NAME), "private_raw_root_sha256": _sha(str(private_root.resolve())), "schedule_sha256": _sha(study.canonical([{key: item[key] for key in ("sequence", "story_id", "condition_id", "repetition", "latin_row", "call_in_cell", "question_ids", "prompt_sha256")} for item in items])), "provider": {"provider": "codex", "model": MODEL, "reasoning": REASONING, "fresh_ephemeral_sessions": True, "attempts_per_call": 1}, "restart": "existing valid terminals replay; any partial, invalid, or failed attempt freezes", "recommendation": None, "promotion": "forbidden"}
+    contract = {"format_version": 1, "study_id": plan["study_id"], "plan": _safe_fingerprint(work / study.PLAN_NAME), "executor": _safe_fingerprint(HERE / "run_expansion.py"), "live_caller": _safe_fingerprint(LIVE_CALLER_PATH), "provider_primitive": _safe_fingerprint(RUNNER_PATH), "response_schema": _safe_fingerprint(SCHEMA_PATH), "pushed_runtime": _pushed_runtime(repo), "disclosure": _safe_fingerprint(work / DISCLOSURE_NAME), "private_raw_root_sha256": _sha(str(private_root.resolve())), "schedule_sha256": _sha(study.canonical([{key: item[key] for key in ("sequence", "story_id", "condition_id", "repetition", "latin_row", "call_in_cell", "question_ids", "prompt_sha256")} for item in items])), "provider": {"provider": "codex", "cli_executable": "codex", "model": MODEL, "reasoning": REASONING, "fresh_ephemeral_sessions": True, "attempts_per_call": 1, "parallelism": 1}, "restart": "existing valid terminals replay; any partial, invalid, or failed attempt freezes", "recommendation": None, "promotion": "forbidden"}
     _immutable(work / EXECUTION_NAME, contract)
     return {"status": "prepared_no_provider_contact", "scheduled_calls": 594, "provider_calls": 0, "schedule_sha256": contract["schedule_sha256"]}
 

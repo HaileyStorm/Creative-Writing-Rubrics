@@ -6,7 +6,9 @@ import importlib.util
 import json
 from pathlib import Path
 import shutil
+import subprocess
 import sys
+import time
 
 import pytest
 
@@ -285,3 +287,109 @@ def test_executor_rejects_private_root_substitution_and_freezes_duplicate_respon
     with pytest.raises(RuntimeError, match="frozen"):
         executor.execute(work, private, lambda _item: {"receipt": receipt, "response": duplicate})
     assert json.loads((work / executor.FREEZE_NAME).read_text(encoding="utf-8"))["reason"] == "provider_or_response_failure"
+
+
+def test_live_caller_uses_the_exact_hardened_primitive_and_maps_its_receipt(tmp_path, monkeypatch):
+    live = _load("hanna_expansion_live_callback", "run_expansion_live.py")
+    item = {"sequence": 7, "prompt": "bound prompt"}
+    calls = []
+
+    def fake_codex(**kwargs):
+        calls.append(kwargs)
+        return "[]", {"reported": {"provider": "openai", "model": "gpt-5.6-sol", "reasoning_effort": "high", "session_id": "fresh-7"}}
+
+    monkeypatch.setattr(live, "_call_codex", fake_codex)
+    returned = live._callback(item, tmp_path / "private")
+    assert returned == {"receipt": {"model": "gpt-5.6-sol", "provider": "openai", "reasoning_effort": "high", "session_id": "fresh-7"}, "response": "[]"}
+    assert calls == [{"executable": "codex", "model": live.executor.MODEL, "reasoning": live.executor.REASONING, "prompt": "bound prompt", "output_dir": tmp_path / "private" / live.executor.ATTEMPTS / "0007", "response_schema": live.executor.SCHEMA_PATH, "batch_number": 7, "attempt_number": 1, "timeout": 600.0}]
+
+
+def test_live_caller_and_provider_primitive_are_plan_and_execution_commitments(tmp_path, monkeypatch):
+    study = _load("hanna_expansion_live_commitments_study", "study.py")
+    runtime = study._runtime_files()
+    assert "evaluation-results/hbq-hanna-batch-polarity-expansion-v1/run_expansion_live.py" in runtime
+    assert "src/hbqrs/runner.py" in runtime
+    prepared_root = tmp_path / "prepared"; prepared_root.mkdir()
+    work, private, _, _ = _prepared(study, prepared_root, monkeypatch)
+    plan = json.loads((work / study.PLAN_NAME).read_text(encoding="utf-8"))
+    plan["runtime_files"].pop("evaluation-results/hbq-hanna-batch-polarity-expansion-v1/run_expansion_live.py")
+    work.joinpath(study.PLAN_NAME).write_text(json.dumps(plan), encoding="utf-8")
+    with pytest.raises(ValueError, match="runtime binding drifted"):
+        study.load_plan(work)
+
+    executor = _load("hanna_expansion_live_commitments_executor", "run_expansion.py")
+    execution_work, execution_private = tmp_path / "execution-work", tmp_path / "execution-private"
+    execution_work.mkdir(); execution_private.mkdir()
+    (execution_work / executor.study.PLAN_NAME).write_text("{}", encoding="utf-8")
+    prepared_plan = {"study_id": "hbq-hanna-batch-polarity-expansion-v1", "sources": {}}
+    monkeypatch.setattr(executor.study, "load_plan", lambda _: prepared_plan)
+    monkeypatch.setattr(executor.study, "bound_private_root", lambda _: execution_private.resolve())
+    monkeypatch.setattr(executor, "schedule", lambda _: [])
+    monkeypatch.setattr(executor, "_pushed_runtime", lambda _: {"revision": "fixture"})
+    executor.prepare_execution(execution_work, execution_private)
+    contract = executor.study.read_json(execution_work / executor.EXECUTION_NAME)
+    assert contract["live_caller"] == executor._safe_fingerprint(executor.LIVE_CALLER_PATH)
+    assert contract["provider_primitive"] == executor._safe_fingerprint(executor.RUNNER_PATH)
+    assert contract["provider"]["cli_executable"] == "codex"
+
+
+def test_live_failure_freezes_before_the_next_item_and_has_no_parallel_or_retry_path(tmp_path, monkeypatch):
+    executor = _load("hanna_expansion_live_freeze_executor", "run_expansion.py")
+    work, private = tmp_path / "work", tmp_path / "private"
+    work.mkdir(); private.mkdir()
+    first = {"sequence": 1, "story_id": "hanna-178", "condition_id": "single_positive_batch1", "repetition": 1, "latin_row": "L1", "call_in_cell": 1, "question_ids": ["q"], "prompt": "{}", "prompt_sha256": _digest("{}")}
+    second = {**first, "sequence": 2}
+    calls = []
+
+    monkeypatch.setattr(executor, "prepare_execution", lambda *_args, **_kwargs: {"status": "prepared_no_provider_contact"})
+    monkeypatch.setattr(executor.study, "load_plan", lambda _: {"cells": []})
+    monkeypatch.setattr(executor, "schedule", lambda _: [first, second])
+
+    def fails(item):
+        calls.append(item["sequence"])
+        raise RuntimeError("transport failed")
+
+    with pytest.raises(RuntimeError, match="frozen"):
+        executor.execute(work, private, fails)
+    assert calls == [1]
+    assert json.loads((work / executor.FREEZE_NAME).read_text(encoding="utf-8"))["reason"] == "provider_or_response_failure"
+    live_source = (ROOT / "run_expansion_live.py").read_text(encoding="utf-8")
+    assert "--parallel" not in live_source and "ThreadPoolExecutor" not in live_source and "attempt_number=1" in live_source and "--executable" not in live_source
+
+
+def test_cross_process_live_claim_blocks_a_second_invocation_before_provider_contact(tmp_path, monkeypatch):
+    live = _load("hanna_expansion_live_cross_process", "run_expansion_live.py")
+    work, private, ready = tmp_path / "work", tmp_path / "private", tmp_path / "ready"
+    work.mkdir(); private.mkdir()
+    child = """
+from pathlib import Path
+import importlib.util
+import sys
+import time
+specification = importlib.util.spec_from_file_location('expansion_live_child', sys.argv[1])
+module = importlib.util.module_from_spec(specification)
+specification.loader.exec_module(module)
+def hold(*_args, **_kwargs):
+    Path(sys.argv[4]).write_text('ready', encoding='utf-8')
+    time.sleep(30)
+module.executor.execute = hold
+module.execute_live(Path(sys.argv[2]), Path(sys.argv[3]))
+"""
+    process = subprocess.Popen([sys.executable, "-c", child, str(ROOT / "run_expansion_live.py"), str(work), str(private), str(ready)])
+    try:
+        deadline = time.monotonic() + 10
+        while not ready.exists() and time.monotonic() < deadline:
+            time.sleep(0.02)
+        assert ready.is_file(), "first cross-process live invocation did not reach its held executor"
+        provider_calls = []
+        monkeypatch.setattr(live.executor, "execute", lambda *_args, **_kwargs: provider_calls.append("unexpected"))
+        with pytest.raises(RuntimeError, match="already active"):
+            live.execute_live(work, private)
+        assert provider_calls == []
+    finally:
+        if process.poll() is None:
+            process.terminate()
+        process.wait(timeout=10)
+        lock = private / live.LIVE_LOCK_NAME
+        if lock.exists():
+            lock.rmdir()

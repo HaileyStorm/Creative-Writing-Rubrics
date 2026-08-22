@@ -215,7 +215,12 @@ def planned_cells() -> list[dict[str, Any]]:
 
 
 def _runtime_files() -> dict[str, dict[str, Any]]:
-    files = [HERE / "study.py", CONTRACT_PATH, HERE / "response.schema.json", REPEATABILITY_AUTHORITY_PATH, HERE / "repeatability-authority-contract.json", PILOT_PATH]
+    files = [
+        HERE / "study.py", CONTRACT_PATH, HERE / "response.schema.json",
+        REPEATABILITY_AUTHORITY_PATH, HERE / "repeatability-authority-contract.json",
+        HERE / "run_expansion.py", HERE / "run_expansion_live.py",
+        ROOT / "src" / "hbqrs" / "runner.py", PILOT_PATH,
+    ]
     return {path.relative_to(ROOT).as_posix(): fingerprint(path) for path in files}
 
 
