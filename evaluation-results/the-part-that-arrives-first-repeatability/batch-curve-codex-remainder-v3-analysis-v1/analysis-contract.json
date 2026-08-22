@@ -1,0 +1,58 @@
+{
+  "format_version": 1,
+  "study_id": "the-part-that-arrives-first-batch-curve-codex-remainder-v3",
+  "execution_data_head": "943282bab358ad796b71658dfd48c74cbc0a6aaa",
+  "expected_terminal": {
+    "completed_units": 47,
+    "recorded_preflight_provider_calls": 7,
+    "scheduled_scored_provider_calls": 47
+  },
+  "expected_quote_grounding_rates": {
+    "4": 0.8838951310861424,
+    "8": 0.8558052434456929,
+    "32": 0.6629213483146067,
+    "48": 0.6423220973782772
+  },
+  "repaired_settlement": {
+    "manifest_sha256": "84f01ffd4e38ccb468b71b1fc5ddbd6589617c72ed5113fed9c85b69654b8a63",
+    "analysis_script_sha256": "a7285edfefd1902b4ad5ad3f81b3ac7eb9652d00743be80ceae33e59f872bf71",
+    "format_version": 2,
+    "members": [
+      "repeatability.json",
+      "runtime-bindings.json",
+      "summary.json",
+      "tamper-tests.json",
+      "unit-validation.json"
+    ],
+    "required_tamper_gates": [
+      "canonical_git_blob_tamper_rejected",
+      "private_link_tamper_rejected",
+      "public_score_hash_tamper_rejected"
+    ]
+  },
+  "required_runtime": {
+    "harness": {
+      "path": "evaluation-results/the-part-that-arrives-first-repeatability/batch-curve-v2/batch_curve_harness.py",
+      "sha256": "03ec7f313e4d4a073f4bf1ea55dacd6e38f664f91027b1786f56c72a9586dac3"
+    },
+    "modules": [
+      {"module": "hbqrs", "path": "src/hbqrs/__init__.py", "sha256": "f1e320efdb4c0deecf65101e91ed0a9afff3e37eb516ad70b41abbf8fe8fb4f8"},
+      {"module": "hbqrs.core", "path": "src/hbqrs/core.py", "sha256": "0518be16a4528b893de6af61300ecea58dc56d6b7944b5ae5fd3a3214a3794ef"},
+      {"module": "hbqrs.paths", "path": "src/hbqrs/paths.py", "sha256": "69bc5a8260ec5d5f95b80868469610d4dc1b8bcb3d58ce5f7e4c40f77b6e3fb7"},
+      {"module": "hbqrs.runner", "path": "src/hbqrs/runner.py", "sha256": "0a22bf30781d6bbbde4c9b6a6e214891fe95aefddade6f955f5634f6accde4d2"},
+      {"module": "hbqrs.scoring_v2", "path": "src/hbqrs/scoring_v2.py", "sha256": "80592c5ffb5972ad391bd5e870da8311c888307081e5eed86c9b160b69148049"},
+      {"module": "hbqrs.weights", "path": "src/hbqrs/weights.py", "sha256": "6893e8cdbb7ae5de1bb732f6004df558c73838c80bb75d1b2cadb651cc37f139"}
+    ]
+  },
+  "expected_inherited_failed_preflights": 1,
+  "previous_debug_settlement": {
+    "format_version": 1,
+    "prior_analysis_script_sha256": "16f056109d1881fc3810d005fa1f53ce097c177718414e9cca72bcf76b6e13d4",
+    "status": "retained_debug_provenance_not_used_for_results"
+  },
+  "privacy": {
+    "forbid_private_root": true,
+    "forbid_prompts": true,
+    "forbid_sessions": true
+  }
+}
