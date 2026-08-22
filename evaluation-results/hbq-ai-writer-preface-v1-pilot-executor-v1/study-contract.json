@@ -1,0 +1,49 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-ai-writer-preface-v1-pilot-executor-v1",
+  "purpose": "A separately reviewed, judge-side executor for the frozen Experiment A pilot; it does not amend the sealed v1 protocol or implement writer-side Experiment B.",
+  "base_protocol": {
+    "study_id": "hbq-ai-writer-preface-v1",
+    "study_contract_sha256": "ce4f585056a9ba32db9320bf4c199f3f8f6369d264889f116fabb7916f8bede2",
+    "study_runtime_sha256": "cb91c7073f20eea1c398afd003c04f3d288a1681c46f01ca592589a6c2fe7d31"
+  },
+  "hanna_parent": {
+    "sha256": "ef59054d27fa32def06cfdc57243b1dd09c7e71f40b6d9d43fecfbf60e59026b",
+    "fields": ["Story ID", "Prompt", "Human", "Story", "Model", "Relevance", "Coherence", "Empathy", "Surprise", "Engagement", "Complexity", "Worker ID", "Assignment ID", "Work time in seconds", "Name"],
+    "extraction_recipe": "hanna-story-prompt-extraction-v1: preserve parent CSV row order and emit hanna_item_id,Story,Prompt with LF records"
+  },
+  "provider": {
+    "provider": "codex",
+    "model": "gpt-5.6-sol",
+    "reasoning": "high",
+    "primary": true,
+    "paid_api": false,
+    "human_judgment": false,
+    "fallbacks": "forbidden"
+  },
+  "pilot": {
+    "inputs": 4,
+    "actual_origin_allocation": {"ai_written": 2, "non_ai_written": 2},
+    "arms": ["none", "current_full", "strictness_only"],
+    "fresh_sessions_per_arm": 2,
+    "cells": 24,
+    "question_geometry": "one full compiled HBQ question sequence per cell",
+    "provider_calls_per_cell": 1
+  },
+  "execution": {
+    "unscored_capacity_preflight": "required_before_each_scored_cell_and_never counts as a scored cell",
+    "scored_cells_per_epoch": 1,
+    "scored_attempts_per_cell": 1,
+    "resend_after_any_terminal_or_uncertain_attempt": false,
+    "outcome_dependent_retry_or_stopping": false,
+    "remote_gate": "--allow-remote",
+    "offline_settlement_only": true
+  },
+  "evidence": {
+    "public_root": "commitments, schedule, disclosures, and settlement status only",
+    "private_root": "exact frozen source/context inputs, rendered prompts, raw responses, and provider records",
+    "roots_must_be_disjoint": true,
+    "actual_provenance_never_sent": true
+  },
+  "out_of_scope": ["writer-side Experiment B", "Experiment C", "prompt or rubric modification", "human or paid evaluation", "non-GPT fallback", "automatic production change"]
+}
