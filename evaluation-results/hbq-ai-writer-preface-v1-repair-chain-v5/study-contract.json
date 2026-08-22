@@ -1,0 +1,12 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-ai-writer-preface-v1-repair-chain-v5",
+  "purpose": "One fresh pre-contact-infrastructure recovery attempt for the cell-17 quote-only sensitivity path. The failed v4 attempt is immutable lineage only, never a vote or repair.",
+  "lineage": {
+    "v4_public_settlement_sha256": "abccaeed386bf83521971011f57e9e2e0756adf9b140a365ff52ddc5519288d4",
+    "v4_private_failed_terminal_sha256": "3f7947f9e1dfb3743d8abd1a672063d007eb2a27dadc03bb1dff78387bb2f53f"
+  },
+  "provider": {"provider": "codex", "model": "gpt-5.6-sol", "reasoning": "high", "paid_api": false, "fallbacks": "forbidden"},
+  "recovery": {"kind": "pre_contact_infrastructure_recovery", "max_additional_attempts": 1, "quote_only": true, "same_logical_sample": true, "not_an_independent_vote": true, "remote_gate": "--allow-remote"},
+  "locked_leaf": {"question_id": "craft.narrative.point_of_view_and_focalization.distance", "verdict": "NO", "confidence": 0.99}
+}
