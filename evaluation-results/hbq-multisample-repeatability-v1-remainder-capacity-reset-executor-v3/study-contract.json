@@ -1,0 +1,9 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-multisample-repeatability-v1-remainder-capacity-reset-executor-v3",
+  "base_v2_commit": "25783345f0bb18cf41cc641cd9aae90ab18ed25d",
+  "schedule": {"count": 153, "first_sequence": 178, "last_sequence": 330, "sha256": "96b91f124d2a889f4fa47b70d67c16604927f33928ca4ad5d302713c84f8f086"},
+  "provider": {"provider": "codex", "model": "gpt-5.6-sol", "reasoning": "high", "paid_api": false, "human_judgment": false},
+  "capacity": {"max_age_seconds": 600, "per_send_revalidation": true, "probe_authorizes_provider_contact": false},
+  "execution": {"cells_per_epoch": 1, "resend_after_unresolved_attempt": false, "outcome_selection": false}
+}
