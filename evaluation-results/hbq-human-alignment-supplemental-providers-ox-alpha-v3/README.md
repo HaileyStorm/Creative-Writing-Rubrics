@@ -10,3 +10,5 @@ $env:PYTHONPATH='src'
 ```
 
 Launch still requires a current zero-cost proof. The protocol has no score, label, correlation, or promotion surface.
+
+Historical outcome: the parent launcher timed out before its bridge child returned. The already-started child later recorded the sole cap-1 physical request as HTTP 524 after 127.808 seconds. No result was accepted; the root is permanently closed and must not be resumed.
