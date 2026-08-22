@@ -74,12 +74,6 @@ def _read(path: Path) -> dict[str, Any]:
     return value
 
 
-def _binding(path: Path) -> dict[str, Any]:
-    path = path.resolve()
-    data = path.read_bytes()
-    return {"path": str(path), "bytes": len(data), "sha256": hashlib.sha256(data).hexdigest()}
-
-
 def _frozen_text(path: Path) -> str:
     value = runner_module._read_text_record(path).get("text")
     if not isinstance(value, str):
@@ -120,16 +114,22 @@ def _historical_blob(commit: str, relative_path: str) -> bytes:
     return result.stdout
 
 
+def _historical_path_suffix(path: Any, relative_path: str) -> bool:
+    if not isinstance(path, str):
+        return False
+    expected = [item for item in relative_path.replace("\\", "/").split("/") if item]
+    observed = [item for item in path.replace("\\", "/").split("/") if item]
+    if not expected or any(item in {".", ".."} for item in expected + observed):
+        return False
+    return len(observed) >= len(expected) and [item.casefold() for item in observed[-len(expected):]] == [item.casefold() for item in expected]
+
+
 def _historical_component(record: Mapping[str, Any], name: str, expected: Mapping[str, Any], commit: str) -> dict[str, Any]:
     relative_path, expected_bytes, expected_sha256 = expected.get("relative_path"), expected.get("bytes"), expected.get("sha256")
     observed = record.get(name)
     if not isinstance(relative_path, str) or not isinstance(expected_bytes, int) or not isinstance(expected_sha256, str) or not isinstance(observed, Mapping) or set(observed) != {"path", "bytes", "sha256"}:
         raise ValueError("Historical generation component binding is malformed")
-    try:
-        observed_relative = _relative_path(Path(str(observed["path"])))
-    except (TypeError, ValueError) as exc:
-        raise ValueError("Historical generation component path is malformed") from exc
-    if observed_relative != relative_path or observed.get("bytes") != expected_bytes or observed.get("sha256") != expected_sha256:
+    if not _historical_path_suffix(observed.get("path"), relative_path) or observed.get("bytes") != expected_bytes or observed.get("sha256") != expected_sha256:
         raise ValueError("Immutable invocation generation component binding drifted")
     blob = _historical_blob(commit, relative_path)
     if len(blob) != expected_bytes or hashlib.sha256(blob).hexdigest() != expected_sha256:

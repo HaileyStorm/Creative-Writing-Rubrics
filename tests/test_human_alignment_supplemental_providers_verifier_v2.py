@@ -59,6 +59,16 @@ def test_historical_generation_rejects_current_runner_substitution(tmp_path):
         verifier._generation_runtime(work, "grok_4_6_high", "development")
 
 
+def test_historical_component_paths_are_relocation_safe_but_not_lookalikes():
+    generation = verifier._contract()["historical_generation"]
+    expected = generation["invocations"]["grok_4_6_high/development"]["components"]["runner"]
+    binding = {"path": r"D:\different-clone\src\hbqrs\runner.py", "bytes": expected["bytes"], "sha256": expected["sha256"]}
+    assert verifier._historical_component({"runner": binding}, "runner", expected, generation["package_commit"]) == expected
+    for path in (r"D:\different-clone\src\hbqrs-lookalike\runner.py", r"D:\different-clone\src\hbqrs\runner.py.bak"):
+        with pytest.raises(ValueError, match="component binding drifted"):
+            verifier._historical_component({"runner": {**binding, "path": path}}, "runner", expected, generation["package_commit"])
+
+
 def test_pre_manifest_verifier_drift_requires_a_committed_runtime(monkeypatch, tmp_path):
     drifted = tmp_path / "analyze_study.py"
     drifted.write_bytes(verifier.VERIFIER_RUNTIME_PATH.read_bytes() + b"\n# drift\n")
