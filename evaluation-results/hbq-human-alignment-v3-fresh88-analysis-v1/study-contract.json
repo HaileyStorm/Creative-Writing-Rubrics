@@ -1,0 +1,39 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-human-alignment-v3-fresh88-analysis-v1",
+  "kind": "offline_primary_development_analysis",
+  "analysis_only": true,
+  "predecessor": {
+    "study_id": "hbq-human-alignment-v3-successor-v1",
+    "frozen_successor_sha256": "b0f6dd24415c388a3104f8c9304ce301193cf0a48631a86c4886bc8ce48468e7",
+    "freeze_receipt_sha256": "eaab5d605a720c86f00e40635e59e9a43bb9c58998a70d9e5bca3907c008f1b0",
+    "execution_contract_sha256": "6b3bfcd2407442c9997631cd38d7df7e01bd5017782feb62ad360840399b1726",
+    "execution_receipt_sha256": "bdb84a8243822ba95b40e08dd99220d4afd3d7899f2a90ab7f90ce630d35f7c2",
+    "runtime_source_manifest_sha256": "381e3c8a767da6003a22d8b47695dac722f946fd1d63f771c6ddde655eef2c06"
+  },
+  "dataset": {
+    "csv_name": "hanna_stories_annotations.csv",
+    "license_name": "LICENSE",
+    "csv_sha256": "ef59054d27fa32def06cfdc57243b1dd09c7e71f40b6d9d43fecfbf60e59026b",
+    "license_sha256": "bc03dc792290fc9ec16bd6772b1e5e88038541f323c63762c988cec07a017146",
+    "license": "MIT"
+  },
+  "analysis": {
+    "dimensions": ["Relevance", "Coherence", "Empathy", "Surprise", "Engagement", "Complexity"],
+    "mapping_sets_sha256": "33de035935dc1304cf782d596038354f65efb00b019babe0cf61aa9474d142c5",
+    "primary_generated_only": {"exclude_source_model": "Human", "item_count": 80},
+    "secondary_all_11": {"item_count": 88},
+    "bootstrap": {"cluster": "prompt_group_id", "draws": 1000, "primary_base_seed": 560820, "secondary_base_seed": 560920, "macro_seed": 560820},
+    "output_order": {"canonical_selection": "authority.fresh_complement.item_ids", "execution": "authority.fresh_complement.scheduled_item_ids"}
+  },
+  "analysis_sources": {
+    "analyze.py": {"path": "evaluation-results/hbq-human-alignment-v3-fresh88-analysis-v1/analyze.py", "bytes": 21601, "sha256": "20f411713dcbb2396a138d7a3ed0b85c7bbc148496dd63b45e746a1324fc7de5"},
+    "study.py": {"path": "evaluation-results/hbq-human-alignment-v3-fresh88-analysis-v1/study.py", "bytes": 5175, "sha256": "4d9b099cb17a2d9826c19ac7f6c4c3aa9be66c3f750b32bbe2dbcb75541693c5"}
+  },
+  "outputs": ["summary.json", "items.jsonl", "manifest.json"],
+  "interpretation_limits": [
+    "Only already-published HANNA ratings are used; no new human judging occurs.",
+    "This is an offline development analysis of the frozen Fresh88 run, not a confirmation result.",
+    "HANNA is human-reference context, not literary ground truth."
+  ]
+}
