@@ -5,6 +5,19 @@ failure wording at batch sizes 1 and 4: 30 calls per screen, plus an optional
 balanced confirmation screen. The package contains no story text and no
 production recommendation.
 
+## Recovery status
+
+The first screen produced 12 sealed outbound-only 524s and 18 quarantines.
+Seventeen quarantines were a CRLF prompt-reconstruction verifier defect, not
+model output failures; the immutable no-contact recovery overlay validates
+them as 17 accepted calls (20 leaf records). One quarantine remains a terminal
+schema failure. The public counts and private-evidence hashes are in
+[`recovery-result-manifest.json`](recovery-result-manifest.json).
+
+No confirmation or production recommendation is available. A 12-call retry
+successor is prepared with the original 524 bindings, but it is not executable
+or launched.
+
 `study.py` remains offline. `run_live.py` is the separate private execution
 boundary: it stages positive and reviewed-failure registry projections, freezes
 the 30-call schedule, runtime, disclosure, and fresh zero-cost bindings, then

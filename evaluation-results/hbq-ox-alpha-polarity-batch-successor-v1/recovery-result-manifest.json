@@ -1,0 +1,31 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-ox-alpha-polarity-batch-successor-v1",
+  "kind": "public_recovery_result_summary",
+  "status": "partial_no_contact",
+  "source": {
+    "frozen_sha256": "cf075c3374bb20fd535c13f434e9c0d2cbe1a42584eb9d7bd7b907b5a84fd666",
+    "logical_calls": 30,
+    "status_counts": {"accepted": 0, "eligible_524": 12, "quarantined": 18, "global_stop": 0}
+  },
+  "recovery": {
+    "overlay_sha256": "a4b30c0c8804e9b35caf706d9fa42181d7cf2d5ceddb05515ae4de35daf4fa81",
+    "reclassified_prompt_reconstruction_quarantines": 17,
+    "effective_status_counts": {"accepted": 17, "eligible_524": 12, "quarantined": 1, "global_stop": 0},
+    "accepted_leaf_records": 20,
+    "confirmation_available": false,
+    "production_recommendation": null
+  },
+  "retry_successor": {
+    "contract_sha256": "4560826b17a74c8b0a7704d1203a41734e54305acdd2eb2e9216abc2d6d397a9",
+    "logical_calls": 12,
+    "maximum_physical_calls": 60,
+    "prepared": true,
+    "executable": false,
+    "launched": false
+  },
+  "limits": [
+    "No provider call was made by recovery or retry preparation.",
+    "The remaining 524s cannot support polarity, batch, confirmation, or production conclusions."
+  ]
+}
