@@ -74,7 +74,7 @@ def test_public_verdict_projection_discards_private_fields(tmp_path: Path) -> No
 def refresh_public_integrity(root: Path, sanitizer, forbidden_terms: list[str] | None = None) -> None:
     audit = json.loads((root / "privacy-audit.json").read_text(encoding="utf-8"))
     refreshed = sanitizer.audit_tree(root, forbidden_terms=forbidden_terms)
-    refreshed["exact_source_prose_ngram_hits"] = audit["exact_source_prose_ngram_hits"]
+    refreshed["unpublished_source_prose_ngram_hits"] = audit["unpublished_source_prose_ngram_hits"]
     if forbidden_terms is None:
         refreshed["explicit_private_term_hits"] = audit["explicit_private_term_hits"]
     sanitizer.write_json(root / "privacy-audit.json", refreshed)
@@ -198,6 +198,8 @@ def test_score_views_and_reader_summary_are_consistent() -> None:
     assert protocol["structured_judge"]["reasoning"] == "high"
     assert protocol["orientation_and_synthesis"]["reasoning"] == "high"
     assert "## Orientation" in readme
+    assert "## Case study: four bounded moments" in readme
+    assert "must not be read as causing the +7.89 whole-work difference" in readme
     assert "completion-only leaves are `NOT_APPLICABLE`" in readme
     assert "protocol, reasoning configuration, and accepted-verdict set differ" in readme
     for draft, report in (("original", original), ("rewrite", rewrite)):
@@ -219,6 +221,67 @@ def test_score_views_and_reader_summary_are_consistent() -> None:
         assert delta["observed_difference"] == round(
             new["score"]["observed"] - old["score"]["observed"], 4
         )
+
+
+def test_curated_excerpts_are_exactly_declared_and_bounded() -> None:
+    manifest = json.loads((ROOT / "manifest.json").read_text(encoding="utf-8"))
+    receipt = json.loads((ROOT / "excerpts" / "provenance.json").read_text(encoding="utf-8"))
+    expected_files = [
+        "excerpts/ch01-new-relationship.md",
+        "excerpts/ch03-new-magic-cost.md",
+        "excerpts/ch04-new-engraving.md",
+        "excerpts/ch05-revision-pair.md",
+    ]
+    assert manifest["publication"]["manuscript_prose_included"] is True
+    assert manifest["publication"]["curated_excerpt_files"] == expected_files
+    assert manifest["publication"]["curated_excerpt_word_count"] == 513
+    assert receipt["total_word_count"] == 513
+    assert [entry["file"] for entry in receipt["curated_excerpts"]] == expected_files
+    assert all(entry["word_count"] > 0 for entry in receipt["curated_excerpts"])
+
+
+def test_excerpt_extractor_records_character_and_utf8_byte_boundaries() -> None:
+    extractor = load_module("gray_excerpt_extractor", ROOT / "extract_excerpts.py")
+    raw = "aé\r\nz".encode("utf-8")
+    record, rendered = extractor.segment_record(raw, "fixture", "new", "chapter-01", 1, 4)
+    assert rendered == "é\n"
+    assert record["char_start"] == 1 and record["char_end"] == 4
+    assert record["utf8_byte_start"] == 1 and record["utf8_byte_end"] == 5
+    assert record["excerpt_sha256"] == hashlib.sha256("é\r\n".encode("utf-8")).hexdigest()
+    assert "C:\\Users" not in (ROOT / "extract_excerpts.py").read_text(encoding="utf-8")
+
+
+def test_targeted_excerpt_contract_is_dormant_and_small() -> None:
+    contract = json.loads((ROOT / "targeted-evaluation-contract.json").read_text(encoding="utf-8"))
+    ownership = json.loads((ROOT.parents[1] / "registry" / "criterion_ownership.json").read_text(encoding="utf-8"))
+    assert contract["execution"]["status"] == "not_run"
+    assert contract["execution"]["allow_remote_required"] is True
+    assert len(contract["curated_excerpt_ids"]) == 4
+    assert sum(len(leaves) for leaves in contract["leaf_sets"].values()) == 12
+    assert all(question_id in ownership for leaves in contract["leaf_sets"].values() for question_id in leaves)
+
+
+def test_verifier_rejects_unapproved_excerpt_file_after_integrity_regeneration(tmp_path: Path) -> None:
+    sanitizer = load_module("gray_public_sanitizer_for_extra_excerpt", ROOT / "sanitize_publication.py")
+    verifier = load_module("gray_public_verifier_for_extra_excerpt", ROOT / "verify_publication.py")
+    candidate = tmp_path / "candidate"
+    shutil.copytree(ROOT, candidate, ignore=shutil.ignore_patterns("__pycache__", "*.pyc"))
+    (candidate / "excerpts" / "unapproved.md").write_text("unapproved manuscript text\n", encoding="utf-8")
+    refresh_public_integrity(candidate, sanitizer)
+    assert any("unexpected public package file" in failure for failure in verifier.check(candidate))
+
+
+def test_verifier_rejects_private_path_in_excerpt_receipt(tmp_path: Path) -> None:
+    sanitizer = load_module("gray_public_sanitizer_for_excerpt_path", ROOT / "sanitize_publication.py")
+    verifier = load_module("gray_public_verifier_for_excerpt_path", ROOT / "verify_publication.py")
+    candidate = tmp_path / "candidate"
+    shutil.copytree(ROOT, candidate, ignore=shutil.ignore_patterns("__pycache__", "*.pyc"))
+    receipt_path = candidate / "excerpts" / "provenance.json"
+    receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    receipt["curated_excerpts"][0]["input_path"] = "C:\\private\\chapter-01.txt"
+    receipt_path.write_text(json.dumps(receipt, indent=2) + "\n", encoding="utf-8")
+    refresh_public_integrity(candidate, sanitizer)
+    assert any("forbidden public key" in failure for failure in verifier.check(candidate))
 
 
 def test_public_package_is_lf_only_and_survives_git_lf_projection(tmp_path: Path) -> None:

@@ -132,7 +132,7 @@ Stable IDs (`module_id`, `question_id`, `bundle_id`, `criterion_key`) are the pu
 - [Authorized complete story: *The Part That Arrives First*](evaluation-results/the-part-that-arrives-first-repeatability/source.md)
 - [What HBQ caught in the story](evaluation-results/the-part-that-arrives-first-repeatability/hbq-findings.md) — four concrete craft judgments, including one difficult limitation
 - [Initial batching study](evaluation-results/the-part-that-arrives-first-repeatability/) — the same story under two HBQ batch shapes and two synthesized comparators
-- [Gray Blood chapters 1–6](evaluation-results/gray-blood-ch1-6/) — complete sanitized scoring and verdict data for a private long-form WIP comparison
+- [Gray Blood chapters 1–6](evaluation-results/gray-blood-ch1-6/) — a long-form WIP case study with score structure, verdict ledgers, and four provisionally selected excerpts pending owner confirmation; it keeps all other manuscript prose and execution material private
 - [Run a headless judge](docs/judging.md)
 - [Embed in another app](docs/apps.md)
 - [Benchmarking](docs/benchmarking.md)

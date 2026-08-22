@@ -1,0 +1,50 @@
+{
+  "curated_excerpt_ids": [
+    "gb-new-ch01-relationship-approach-v2",
+    "gb-new-ch03-magic-cost-v1",
+    "gb-new-ch04-engraving-v1",
+    "gb-ch05-revision-pair-relationship-magic-v2"
+  ],
+  "execution": {
+    "allow_remote_required": true,
+    "disclosure_required": "A later run may send only the selected public excerpt, its listed question identifiers, and the structured result schema to the named remote model.",
+    "model": "gpt-5.6-sol",
+    "reasoning": "high",
+    "status": "not_run"
+  },
+  "format_version": 1,
+  "leaf_sets": {
+    "gb-ch05-revision-pair-relationship-magic-v2": [
+      "modifier.genre.romance.agency",
+      "modifier.genre.romance.progression",
+      "craft.narrative.dialogue.subtext"
+    ],
+    "gb-new-ch01-relationship-approach-v2": [
+      "modifier.genre.romance.agency",
+      "modifier.genre.romance.chemistry",
+      "craft.narrative.dialogue.naturalness"
+    ],
+    "gb-new-ch03-magic-cost-v1": [
+      "craft.narrative.worldbuilding.constraints",
+      "craft.narrative.worldbuilding.consequences",
+      "craft.narrative.dialogue.purpose"
+    ],
+    "gb-new-ch04-engraving-v1": [
+      "craft.narrative.worldbuilding.rules",
+      "craft.narrative.worldbuilding.integration",
+      "core.specificity_and_embodiment.physical_action"
+    ]
+  },
+  "result_contract": {
+    "bounded_repair": "For an invalid verbatim span, request one span-only repair with verdict and confidence locked; if that fails, request one fresh single-leaf regrade. Preserve every valid leaf and never select among multiple valid attempts.",
+    "result_fields": [
+      "excerpt_id",
+      "question_id",
+      "verdict",
+      "confidence",
+      "verbatim_span",
+      "attempt_kind"
+    ],
+    "verbatim_span_rule": "Each nonempty verbatim span must occur exactly in the excerpt supplied for that leaf."
+  }
+}

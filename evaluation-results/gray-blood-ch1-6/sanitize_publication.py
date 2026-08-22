@@ -13,8 +13,12 @@ import hashlib
 import json
 import re
 import shutil
+import sys
 from pathlib import Path
 from typing import Any
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from extract_excerpts import build_receipt
 
 
 DOMAIN_ORDER = (
@@ -56,6 +60,30 @@ FORBIDDEN_TEXT_PATTERNS = {
     "run_or_session_identifier": re.compile(r"\b(?:run|session|workflow)_id\b", re.IGNORECASE),
     "verbatim_evidence_field": re.compile(r"\bexact_quote\b", re.IGNORECASE),
 }
+CURATED_EXCERPT_PATHS = (
+    "excerpts/ch01-new-relationship.md",
+    "excerpts/ch03-new-magic-cost.md",
+    "excerpts/ch04-new-engraving.md",
+    "excerpts/ch05-revision-pair.md",
+)
+PUBLIC_FILE_ALLOWLIST = frozenset(
+    {
+        "README.md",
+        "comparison.json",
+        "extract_excerpts.py",
+        "figures/chapter-local-scores.svg",
+        "figures/whole-work-domains.svg",
+        "reports/original.json",
+        "reports/rewrite.json",
+        "sanitize_publication.py",
+        "targeted-evaluation-contract.json",
+        "verdicts/original.jsonl",
+        "verdicts/rewrite.jsonl",
+        "verify_publication.py",
+        "excerpts/provenance.json",
+        *CURATED_EXCERPT_PATHS,
+    }
+)
 
 
 def read_json(path: Path) -> Any:
@@ -259,7 +287,7 @@ def render_readme(original: dict[str, Any], rewrite: dict[str, Any], data: dict[
     lead = new["score"]["observed"] - old["score"]["observed"]
     return f"""# Gray Blood, Chapters 1–6: current WIP comparison
 
-This is a private-work-in-progress evaluation of two six-chapter drafts. It publishes the score structure and every accepted binary verdict, but not manuscript prose, evidence excerpts, prompts, model responses, local paths, or execution identifiers.
+This is a private-work-in-progress evaluation of two six-chapter drafts. It publishes the score structure and every accepted binary verdict, plus four provisionally selected short excerpts used to make the case study legible. The publication authorization is clear; the exact selection remains pending owner confirmation. It does not publish any other manuscript prose, evaluation evidence, prompts, model responses, local paths, or execution identifiers.
 
 ## Orientation
 
@@ -277,6 +305,21 @@ The rewrite leads the current complete whole-work view by {lead:.2f} points. Bot
 This is a WIP evaluation: completion-only leaves are `NOT_APPLICABLE`, while craft, continuity, and weighted author-goal leaves remain active for the supplied chapters. Author goals influence score but never determine `VALID`. The minimum score-coverage threshold is 80%.
 
 The optional `balanced-wip-70-30` view uses 70% whole-work score and 30% equal-weight chapter mean. It is shown beside—not in place of—the whole-work and chapter views.
+
+## Case study: four bounded moments
+
+Gray Blood is a contemporary urban-fantasy WIP about Madison, Amelia, and the costs of blood-powered magic. These four short passages make the comparison concrete: an early move toward romance, the stated cost of power, an embodied magic rule, and a preserved-core/revised-middle relationship passage. They total 513 words. Content note: on-page kissing, strong language and profanity, blood magic, cutting/injury, and a direct description of eating a beating human heart.
+
+- [Chapter 1: early relationship approach](excerpts/ch01-new-relationship.md)
+- [Chapter 3: cost of magic](excerpts/ch03-new-magic-cost.md)
+- [Chapter 4: engraved magic](excerpts/ch04-new-engraving.md)
+- [Chapter 5: revision pair](excerpts/ch05-revision-pair.md)
+
+The whole-work verdict ledgers include checks for the magic constraints represented here—activation requiring a heart and engraving requiring lifeblood—as well as author-goal and craft criteria around the relationship. That is useful context, not excerpt-level evidence: these passages were not individually scored, do not explain any individual leaf, and must not be read as causing the +7.89 whole-work difference. The Chapter 5 pair preserves shared material and exposes a revised middle; it is not a claim that either passage caused a score change.
+
+The real tension is more interesting than a headline. The rewrite gains in character, language, effect, freshness, and mechanics at whole-work scale, while the original has stronger chapter-local scores in chapters 3–6 and leads in plot, world, and pacing totals. The passages show why a future reader or revision system needs both lenses: concise moments can make agency, cost, and physical process vivid, while a long-form evaluation still asks how those moments accumulate into movement and structure.
+
+The selection is deliberately small and incomplete. It is not a representative sample of either chapter, draft, or manuscript, and it should not be used to make safety, quality, or style claims beyond the published protocol. A known original-Chapter-5 source typo is intentionally preserved in the passage.
 
 ## Whole-work domains
 
@@ -303,15 +346,15 @@ Each chapter received the complete `prose.chapter` bundle. This local view is a 
 - [`reports/original.json`](reports/original.json) and [`reports/rewrite.json`](reports/rewrite.json) contain current global, 70/30, chapter, and domain score reports.
 - [`verdicts/original.jsonl`](verdicts/original.jsonl) and [`verdicts/rewrite.jsonl`](verdicts/rewrite.jsonl) contain every accepted verdict with stable criterion IDs, scope, and confidence—without evidence text.
 - [`comparison.json`](comparison.json) provides machine-readable domain and chapter deltas.
+- [`excerpts/provenance.json`](excerpts/provenance.json) binds the four permitted files to draft/chapter IDs, exact character and UTF-8 byte boundaries, input hashes, excerpt hashes, and word counts without disclosing source locations.
+- [`targeted-evaluation-contract.json`](targeted-evaluation-contract.json) freezes a later, small excerpt-level Sol evaluation. It is offline-first and `not_run`: a future executor must disclose the exact public excerpt leaving the machine, receive an explicit allow-remote gate, validate verbatim spans, and use bounded per-leaf repair.
 - [`privacy-audit.json`](privacy-audit.json) and [`verify_publication.py`](verify_publication.py) provide the audit and deterministic public-package checks.
 
 This refresh uses a complete current protocol. It replaces the prior publication; it is **not** a sampled-to-full score comparison.
 
 Results are comparable within this published protocol only. Do not compare its headline directly with an earlier headline: the protocol, reasoning configuration, and accepted-verdict set differ.
 
-## Optional excerpt insertion point
-
-No manuscript excerpt is published here. If the author later selects a short, non-sensitive passage, add it only with its relevant criterion results and a fresh privacy audit.
+The extractor is deterministic and takes source inputs only as command arguments: [`extract_excerpts.py`](extract_excerpts.py). It has no model or network path. The publication verifier permits only these four named excerpt files; adding any prose, evaluation evidence, or execution material fails verification.
 """
 
 
@@ -322,13 +365,14 @@ def normalized_tokens(text: str) -> list[str]:
 def ngram_hits(public_root: Path, private_root: Path, sizes: tuple[int, ...] = (4, 8, 12, 20, 40)) -> dict[str, int]:
     artifact = private_root / ".private/inputs/artifact.txt"
     if not artifact.exists():
-        raise FileNotFoundError(f"No source artifact for privacy audit: {artifact}")
+        artifact = private_root / "chapters-01-06.txt"
+    if not artifact.exists():
+        raise FileNotFoundError(f"No source artifact for privacy audit: {private_root}")
     source = normalized_tokens(artifact.read_text(encoding="utf-8"))
     public = normalized_tokens(
         "\n".join(
             path.read_text(encoding="utf-8", errors="ignore")
-            for path in public_root.rglob("*")
-            if path.is_file() and path.name not in {"privacy-audit.json", "manifest.json"}
+            for path in unpublished_prose_audit_files(public_root)
         )
     )
     results: dict[str, int] = {}
@@ -353,6 +397,15 @@ def files_for_audit(root: Path) -> list[Path]:
     )
 
 
+def unpublished_prose_audit_files(root: Path) -> list[Path]:
+    excerpt_paths = {Path(relative) for relative in CURATED_EXCERPT_PATHS}
+    return [
+        path
+        for path in files_for_audit(root)
+        if path.relative_to(root) not in excerpt_paths
+    ]
+
+
 def audit_tree(
     root: Path,
     original_private: Path | None = None,
@@ -367,13 +420,14 @@ def audit_tree(
     audit: dict[str, Any] = {
         "audited_file_count": len(files),
         "audited_total_bytes": sum(path.stat().st_size for path in files),
+        "curated_excerpt_files": list(CURATED_EXCERPT_PATHS),
         "forbidden_pattern_hits": pattern_hits,
-        "format_version": 2,
+        "format_version": 3,
         "ngram_normalization": "lowercase ASCII alphanumeric tokens; exact contiguous token sequences",
         "tree_sha256": tree_hash(root),
     }
     if original_private and rewrite_private:
-        audit["exact_source_prose_ngram_hits"] = {
+        audit["unpublished_source_prose_ngram_hits"] = {
             "original": ngram_hits(root, original_private),
             "rewrite": ngram_hits(root, rewrite_private),
         }
@@ -418,9 +472,11 @@ def manifest(root: Path, original: dict[str, Any], rewrite: dict[str, Any]) -> d
             "chapter_verdicts_per_draft": 1368,
         },
         "publication": {
+            "curated_excerpt_files": list(CURATED_EXCERPT_PATHS),
+            "curated_excerpt_word_count": 513,
             "evidence_text_included": False,
             "execution_metadata_included": False,
-            "manuscript_prose_included": False,
+            "manuscript_prose_included": True,
             "published_verdicts": 3214,
         },
         "results": {
@@ -446,9 +502,24 @@ def build(args: argparse.Namespace) -> None:
     try:
         write_text_lf(output / "sanitize_publication.py", Path(__file__).read_text(encoding="utf-8"))
         write_text_lf(
+            output / "extract_excerpts.py",
+            Path(__file__).with_name("extract_excerpts.py").read_text(encoding="utf-8"),
+        )
+        write_text_lf(
             output / "verify_publication.py",
             Path(__file__).with_name("verify_publication.py").read_text(encoding="utf-8"),
         )
+        write_text_lf(
+            output / "targeted-evaluation-contract.json",
+            Path(__file__).with_name("targeted-evaluation-contract.json").read_text(encoding="utf-8"),
+        )
+        excerpt_inputs = {key: Path(value).resolve() for key, value in args.excerpt_input}
+        if len(excerpt_inputs) != len(args.excerpt_input):
+            raise ValueError("duplicate excerpt input key")
+        receipt, rendered = build_receipt(excerpt_inputs)
+        for relative, content in rendered.items():
+            write_text_lf(output / relative, content)
+        write_json(output / "excerpts/provenance.json", receipt)
         original, original_verdicts = public_draft(original_private, "original", "Original")
         rewrite, rewrite_verdicts = public_draft(rewrite_private, "rewrite", "Rewrite")
         comparison_data = comparison(original, rewrite)
@@ -489,6 +560,14 @@ def main() -> int:
     parser.add_argument("--original", required=True, help="Private original long-form output root")
     parser.add_argument("--rewrite", required=True, help="Private rewrite long-form output root")
     parser.add_argument("--output", required=True, help="New public package directory")
+    parser.add_argument(
+        "--excerpt-input",
+        action="append",
+        nargs=2,
+        metavar=("KEY", "PATH"),
+        required=True,
+        help="One source input used only to extract the authorized case-study passages",
+    )
     parser.add_argument(
         "--forbidden-term",
         action="append",

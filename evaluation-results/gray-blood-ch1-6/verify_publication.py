@@ -11,11 +11,30 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from sanitize_publication import FORBIDDEN_KEY_PARTS, FORBIDDEN_TEXT_PATTERNS, files_for_audit, tree_hash
+from sanitize_publication import (
+    CURATED_EXCERPT_PATHS,
+    FORBIDDEN_KEY_PARTS,
+    FORBIDDEN_TEXT_PATTERNS,
+    PUBLIC_FILE_ALLOWLIST,
+    files_for_audit,
+    tree_hash,
+)
 
 
 JUDGE = {"model": "gpt-5.6-sol", "provider": "codex", "reasoning": "high"}
 NGRAM_SIZES = {"4", "8", "12", "20", "40"}
+CURATED_EXCERPT_IDS = {
+    "gb-new-ch01-relationship-approach-v2",
+    "gb-new-ch03-magic-cost-v1",
+    "gb-new-ch04-engraving-v1",
+    "gb-ch05-revision-pair-relationship-magic-v2",
+}
+CURATED_WORD_COUNTS = {
+    "gb-new-ch01-relationship-approach-v2": 97,
+    "gb-new-ch03-magic-cost-v1": 104,
+    "gb-new-ch04-engraving-v1": 105,
+    "gb-ch05-revision-pair-relationship-magic-v2": 207,
+}
 
 
 def forbidden_keys(value, location: str = "$") -> list[str]:
@@ -38,6 +57,109 @@ def exact_keys(value, expected: set[str], location: str) -> list[str]:
     if set(value) != expected:
         return [f"invalid metadata keys at {location}"]
     return []
+
+
+def validate_excerpt_receipt(root: Path, expected_files: dict[str, str]) -> list[str]:
+    failures: list[str] = []
+    receipt_path = root / "excerpts" / "provenance.json"
+    try:
+        receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as error:
+        return [f"invalid excerpt receipt: {error}"]
+    failures.extend(
+        exact_keys(
+            receipt,
+            {"authorization", "curated_excerpts", "format_version", "total_word_count", "word_count_method"},
+            "excerpt receipt",
+        )
+    )
+    if receipt.get("format_version") != 1:
+        failures.append("invalid excerpt receipt version")
+    if receipt.get("authorization") != (
+        "The owner provisionally accepted these exact four selections pending confirmation for public case-study use; "
+        "no other Gray Blood manuscript prose is authorized here."
+    ):
+        failures.append("invalid excerpt authorization")
+    if receipt.get("word_count_method") != "non-whitespace tokens in selected source character ranges":
+        failures.append("invalid excerpt word-count method")
+    entries = receipt.get("curated_excerpts")
+    if not isinstance(entries, list) or len(entries) != len(CURATED_EXCERPT_IDS):
+        return failures + ["invalid excerpt receipt entries"]
+    seen_ids: set[str] = set()
+    seen_paths: set[str] = set()
+    total = 0
+    for entry in entries:
+        failures.extend(
+            exact_keys(
+                entry,
+                {"excerpt_id", "file", "published_file_sha256", "segments", "word_count"},
+                "excerpt receipt entry",
+            )
+        )
+        if not isinstance(entry, dict):
+            continue
+        excerpt_id = entry.get("excerpt_id")
+        relative = entry.get("file")
+        if excerpt_id not in CURATED_EXCERPT_IDS:
+            failures.append("unexpected excerpt identifier")
+        else:
+            seen_ids.add(excerpt_id)
+            if entry.get("word_count") != CURATED_WORD_COUNTS[excerpt_id]:
+                failures.append(f"invalid excerpt word count: {excerpt_id}")
+        if relative not in CURATED_EXCERPT_PATHS:
+            failures.append("unexpected curated excerpt path")
+            continue
+        seen_paths.add(relative)
+        published_hash = expected_files.get(relative)
+        if entry.get("published_file_sha256") != published_hash:
+            failures.append(f"excerpt receipt hash mismatch: {relative}")
+        segments = entry.get("segments")
+        if not isinstance(segments, list) or not segments:
+            failures.append(f"invalid excerpt segments: {relative}")
+            continue
+        segment_words = 0
+        for segment in segments:
+            failures.extend(
+                exact_keys(
+                    segment,
+                    {
+                        "chapter_id",
+                        "char_end",
+                        "char_start",
+                        "draft_id",
+                        "excerpt_sha256",
+                        "input_sha256",
+                        "utf8_byte_end",
+                        "utf8_byte_start",
+                        "word_count",
+                    },
+                    "excerpt segment",
+                )
+            )
+            if not isinstance(segment, dict):
+                continue
+            if segment.get("draft_id") not in {"new", "original"} or not re.fullmatch(r"chapter-0[1-6]", str(segment.get("chapter_id"))):
+                failures.append("invalid excerpt draft or chapter identifier")
+            for name in ("input_sha256", "excerpt_sha256"):
+                if not isinstance(segment.get(name), str) or not re.fullmatch(r"[0-9a-f]{64}", segment[name]):
+                    failures.append(f"invalid excerpt hash: {name}")
+            if not all(isinstance(segment.get(name), int) for name in ("char_start", "char_end", "utf8_byte_start", "utf8_byte_end", "word_count")):
+                failures.append("invalid excerpt boundary metadata")
+            elif not (
+                0 <= segment["char_start"] < segment["char_end"]
+                and 0 <= segment["utf8_byte_start"] < segment["utf8_byte_end"]
+                and segment["word_count"] > 0
+            ):
+                failures.append("invalid excerpt boundary range")
+            segment_words += segment.get("word_count", 0) if isinstance(segment.get("word_count"), int) else 0
+        if isinstance(entry.get("word_count"), int) and entry["word_count"] != segment_words:
+            failures.append(f"excerpt segment word-count mismatch: {relative}")
+        total += entry.get("word_count", 0) if isinstance(entry.get("word_count"), int) else 0
+    if seen_ids != CURATED_EXCERPT_IDS or seen_paths != set(CURATED_EXCERPT_PATHS):
+        failures.append("excerpt receipt does not name exactly the authorized excerpts")
+    if receipt.get("total_word_count") != 513 or total != 513:
+        failures.append("invalid total curated excerpt word count")
+    return failures
 
 
 def validate_metadata(manifest: dict, audit: dict, expected_files: dict[str, str]) -> list[str]:
@@ -94,14 +216,23 @@ def validate_metadata(manifest: dict, audit: dict, expected_files: dict[str, str
     failures.extend(
         exact_keys(
             publication,
-            {"evidence_text_included", "execution_metadata_included", "manuscript_prose_included", "published_verdicts"},
+            {
+                "curated_excerpt_files",
+                "curated_excerpt_word_count",
+                "evidence_text_included",
+                "execution_metadata_included",
+                "manuscript_prose_included",
+                "published_verdicts",
+            },
             "manifest.publication",
         )
     )
     if publication != {
+        "curated_excerpt_files": list(CURATED_EXCERPT_PATHS),
+        "curated_excerpt_word_count": 513,
         "evidence_text_included": False,
         "execution_metadata_included": False,
-        "manuscript_prose_included": False,
+        "manuscript_prose_included": True,
         "published_verdicts": 3214,
     }:
         failures.append("invalid manifest publication metadata")
@@ -123,17 +254,18 @@ def validate_metadata(manifest: dict, audit: dict, expected_files: dict[str, str
             {
                 "audited_file_count",
                 "audited_total_bytes",
-                "exact_source_prose_ngram_hits",
+                "curated_excerpt_files",
                 "explicit_private_term_hits",
                 "forbidden_pattern_hits",
                 "format_version",
                 "ngram_normalization",
                 "tree_sha256",
+                "unpublished_source_prose_ngram_hits",
             },
             "privacy-audit",
         )
     )
-    if audit.get("format_version") != 2:
+    if audit.get("format_version") != 3:
         failures.append("invalid privacy-audit version")
     if audit.get("ngram_normalization") != "lowercase ASCII alphanumeric tokens; exact contiguous token sequences":
         failures.append("invalid privacy-audit normalization")
@@ -143,6 +275,8 @@ def validate_metadata(manifest: dict, audit: dict, expected_files: dict[str, str
         failures.append("invalid privacy-audit file count")
     if not isinstance(audit.get("audited_total_bytes"), int) or audit["audited_total_bytes"] <= 0:
         failures.append("invalid privacy-audit byte count")
+    if audit.get("curated_excerpt_files") != list(CURATED_EXCERPT_PATHS):
+        failures.append("invalid privacy-audit curated excerpt files")
     patterns = audit.get("forbidden_pattern_hits")
     if not isinstance(patterns, dict) or set(patterns) != set(FORBIDDEN_TEXT_PATTERNS):
         failures.append("invalid privacy-audit pattern metadata")
@@ -154,7 +288,7 @@ def validate_metadata(manifest: dict, audit: dict, expected_files: dict[str, str
         for key, count in terms.items()
     ):
         failures.append("invalid privacy-audit private-literal metadata")
-    ngrams = audit.get("exact_source_prose_ngram_hits")
+    ngrams = audit.get("unpublished_source_prose_ngram_hits")
     if not isinstance(ngrams, dict) or set(ngrams) != {"original", "rewrite"}:
         failures.append("invalid privacy-audit n-gram metadata")
     elif any(
@@ -177,12 +311,19 @@ def check(root: Path) -> list[str]:
         path.relative_to(root).as_posix(): hashlib.sha256(path.read_bytes()).hexdigest()
         for path in files_for_audit(root)
     }
+    unexpected_paths = set(expected_files) - PUBLIC_FILE_ALLOWLIST
+    missing_paths = PUBLIC_FILE_ALLOWLIST - set(expected_files)
+    if unexpected_paths:
+        failures.append(f"unexpected public package file: {sorted(unexpected_paths)[0]}")
+    if missing_paths:
+        failures.append(f"missing required public package file: {sorted(missing_paths)[0]}")
     for path in files_for_audit(root):
         if b"\r" in path.read_bytes():
             failures.append(f"non-LF byte in audited file: {path.relative_to(root)}")
     if manifest.get("files") != expected_files:
         failures.append("manifest file hashes do not match package")
     failures.extend(validate_metadata(manifest, audit, expected_files))
+    failures.extend(validate_excerpt_receipt(root, expected_files))
     package_text = "\n".join(
         path.read_text(encoding="utf-8", errors="ignore") for path in files_for_audit(root)
     )
@@ -191,9 +332,9 @@ def check(root: Path) -> list[str]:
             failures.append(f"forbidden public pattern: {name}")
         if not isinstance(audit.get("forbidden_pattern_hits"), dict) or audit["forbidden_pattern_hits"].get(name) != 0:
             failures.append(f"privacy audit did not record zero hits: {name}")
-    ngram_hits = audit.get("exact_source_prose_ngram_hits")
+    ngram_hits = audit.get("unpublished_source_prose_ngram_hits")
     if not isinstance(ngram_hits, dict):
-        failures.append("privacy audit has no source-prose n-gram results")
+        failures.append("privacy audit has no unpublished source-prose n-gram results")
     else:
         for draft in ("original", "rewrite"):
             draft_hits = ngram_hits.get(draft)

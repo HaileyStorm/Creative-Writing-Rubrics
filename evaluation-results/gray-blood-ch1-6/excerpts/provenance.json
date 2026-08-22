@@ -1,0 +1,95 @@
+{
+  "authorization": "The owner provisionally accepted these exact four selections pending confirmation for public case-study use; no other Gray Blood manuscript prose is authorized here.",
+  "curated_excerpts": [
+    {
+      "excerpt_id": "gb-new-ch01-relationship-approach-v2",
+      "file": "excerpts/ch01-new-relationship.md",
+      "published_file_sha256": "d312bbc7cd0dee4ee1a5f7e871c5b0b90491337eb4097ef497dcb1d352026954",
+      "segments": [
+        {
+          "chapter_id": "chapter-01",
+          "char_end": 10019,
+          "char_start": 9499,
+          "draft_id": "new",
+          "excerpt_sha256": "dedcf9374fbd921487825ecd44569f8974225a0e50b9f9f6e3763aa3b9d381e1",
+          "input_sha256": "dfbe93c9bb9e94592aee134c4021c66d80409791f02f8cadafc1ce1aa2199a21",
+          "utf8_byte_end": 10336,
+          "utf8_byte_start": 9794,
+          "word_count": 97
+        }
+      ],
+      "word_count": 97
+    },
+    {
+      "excerpt_id": "gb-new-ch03-magic-cost-v1",
+      "file": "excerpts/ch03-new-magic-cost.md",
+      "published_file_sha256": "9036362c8d07ff1c86249ecf7ba34a4875bf082a99e957f8514db833d86ed51d",
+      "segments": [
+        {
+          "chapter_id": "chapter-03",
+          "char_end": 12860,
+          "char_start": 12322,
+          "draft_id": "new",
+          "excerpt_sha256": "b297ad221ca521b9f51a7a4d88864ededc438d34a292d7cb59cfead01f2a3955",
+          "input_sha256": "85fae2cbd45a03334fbb78d2a56188e780eebbce2b865cffaabd4dbf09f11c75",
+          "utf8_byte_end": 13397,
+          "utf8_byte_start": 12839,
+          "word_count": 104
+        }
+      ],
+      "word_count": 104
+    },
+    {
+      "excerpt_id": "gb-new-ch04-engraving-v1",
+      "file": "excerpts/ch04-new-engraving.md",
+      "published_file_sha256": "4fe2dbd4b74ed71a47476758ea8269fdb12571ea66e64b2292cb2a3ab0f7597e",
+      "segments": [
+        {
+          "chapter_id": "chapter-04",
+          "char_end": 10420,
+          "char_start": 9864,
+          "draft_id": "new",
+          "excerpt_sha256": "5b711dcdec663df95d43976a0c1a1a220bfc9cb4b345963e543e9691b50ddf9d",
+          "input_sha256": "e7d87cbf22377117c9d38f37bc67346d9adf02edd41d25f6dcf430cfd9a9af57",
+          "utf8_byte_end": 10708,
+          "utf8_byte_start": 10136,
+          "word_count": 105
+        }
+      ],
+      "word_count": 105
+    },
+    {
+      "excerpt_id": "gb-ch05-revision-pair-relationship-magic-v2",
+      "file": "excerpts/ch05-revision-pair.md",
+      "published_file_sha256": "0310f6f116681c92242212042f919504db52d4f5047b4cb69846ce272dffc373",
+      "segments": [
+        {
+          "chapter_id": "chapter-05",
+          "char_end": 26045,
+          "char_start": 25551,
+          "draft_id": "original",
+          "excerpt_sha256": "f9be0997c1bd98c71054fbe8548078eda638066d58b35896c4a4d3a4efe32975",
+          "input_sha256": "71f0cc119f96a722dbbae234f4ab89932dfaa8b8524b842bcd577444dbc7dfd1",
+          "utf8_byte_end": 26050,
+          "utf8_byte_start": 25556,
+          "word_count": 96
+        },
+        {
+          "chapter_id": "chapter-05",
+          "char_end": 26237,
+          "char_start": 25679,
+          "draft_id": "new",
+          "excerpt_sha256": "f68523ba73b3c549c32d5aa3d7548519928c0a91f1f1da2a7127eef48749be64",
+          "input_sha256": "809de72e5d2e8f11e4df3032e48588f983969dc591ce2c42712c46f5d7b1660d",
+          "utf8_byte_end": 27534,
+          "utf8_byte_start": 26946,
+          "word_count": 111
+        }
+      ],
+      "word_count": 207
+    }
+  ],
+  "format_version": 1,
+  "total_word_count": 513,
+  "word_count_method": "non-whitespace tokens in selected source character ranges"
+}

@@ -1,7 +1,27 @@
 {
-  "audited_file_count": 10,
-  "audited_total_bytes": 563826,
-  "exact_source_prose_ngram_hits": {
+  "audited_file_count": 17,
+  "audited_total_bytes": 593159,
+  "curated_excerpt_files": [
+    "excerpts/ch01-new-relationship.md",
+    "excerpts/ch03-new-magic-cost.md",
+    "excerpts/ch04-new-engraving.md",
+    "excerpts/ch05-revision-pair.md"
+  ],
+  "explicit_private_term_hits": {
+    "b763de4f4af34dd90c7ead392c75590d090e08051abedfa530551a903ad3f79d": 0,
+    "c2d372ee03df63d6fb18c8dd1399d0ca82339a9951915c968128ca127d0cbdaa": 0
+  },
+  "forbidden_pattern_hits": {
+    "private_execution_path": 0,
+    "run_or_session_identifier": 0,
+    "unix_home_path": 0,
+    "verbatim_evidence_field": 0,
+    "windows_absolute_path": 0
+  },
+  "format_version": 3,
+  "ngram_normalization": "lowercase ASCII alphanumeric tokens; exact contiguous token sequences",
+  "tree_sha256": "4bfe58bd48e5433e6201f98534098a08f2a5158957e132ff8392e104a9062581",
+  "unpublished_source_prose_ngram_hits": {
     "original": {
       "12": 0,
       "20": 0,
@@ -16,19 +36,5 @@
       "40": 0,
       "8": 0
     }
-  },
-  "explicit_private_term_hits": {
-    "b763de4f4af34dd90c7ead392c75590d090e08051abedfa530551a903ad3f79d": 0,
-    "c2d372ee03df63d6fb18c8dd1399d0ca82339a9951915c968128ca127d0cbdaa": 0
-  },
-  "forbidden_pattern_hits": {
-    "private_execution_path": 0,
-    "run_or_session_identifier": 0,
-    "unix_home_path": 0,
-    "verbatim_evidence_field": 0,
-    "windows_absolute_path": 0
-  },
-  "format_version": 2,
-  "ngram_normalization": "lowercase ASCII alphanumeric tokens; exact contiguous token sequences",
-  "tree_sha256": "95cf7449e07df878e6109f747ea19ecbbadfb7611d832480c6116c1d8658514f"
+  }
 }
