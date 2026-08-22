@@ -122,13 +122,21 @@ def test_published_long_form_evaluation_is_complete_and_sanitized() -> None:
     manifest = json.loads((root / "manifest.json").read_text(encoding="utf-8"))
     assert manifest["evaluation_id"] == "gray-blood-chapters-1-6-current-comparison-v2"
     assert manifest["publication"] == {
+        "curated_excerpt_authorship": {
+            "excerpts/ch01-new-relationship.md": "gpt-5.6-pro-rewrite",
+            "excerpts/ch03-new-magic-cost.md": "gpt-5.6-pro-rewrite",
+            "excerpts/ch04-new-engraving.md": "gpt-5.6-pro-rewrite",
+            "excerpts/ch05-pro-illusion-consent.md": "gpt-5.6-pro-rewrite",
+            "excerpts/ch05-revision-pair.md": "author-original-vs-gpt-5.6-pro-rewrite",
+        },
         "curated_excerpt_files": [
             "excerpts/ch01-new-relationship.md",
             "excerpts/ch03-new-magic-cost.md",
             "excerpts/ch04-new-engraving.md",
             "excerpts/ch05-revision-pair.md",
+            "excerpts/ch05-pro-illusion-consent.md",
         ],
-        "curated_excerpt_word_count": 513,
+        "curated_excerpt_word_count": 1235,
         "evidence_text_included": False,
         "execution_metadata_included": False,
         "manuscript_prose_included": True,

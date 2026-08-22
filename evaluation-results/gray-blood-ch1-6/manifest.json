@@ -1,23 +1,24 @@
 {
   "evaluation_id": "gray-blood-chapters-1-6-current-comparison-v2",
   "files": {
-    "README.md": "130f435eb36d3e7b1179c9050b0e0057a7989e852b408afaed11b2e814f2e851",
+    "README.md": "a6855464fa4c4f600d03dd3e2c861f3bd76ccd36be5de983ae14b4a1faf6148c",
     "comparison.json": "ca459eb9a6e341d68bc3ecc653c783e6297da7167a13a51d3c3195a2de191728",
-    "excerpts/ch01-new-relationship.md": "d312bbc7cd0dee4ee1a5f7e871c5b0b90491337eb4097ef497dcb1d352026954",
-    "excerpts/ch03-new-magic-cost.md": "9036362c8d07ff1c86249ecf7ba34a4875bf082a99e957f8514db833d86ed51d",
-    "excerpts/ch04-new-engraving.md": "4fe2dbd4b74ed71a47476758ea8269fdb12571ea66e64b2292cb2a3ab0f7597e",
-    "excerpts/ch05-revision-pair.md": "0310f6f116681c92242212042f919504db52d4f5047b4cb69846ce272dffc373",
-    "excerpts/provenance.json": "a3bc3c14cdc423413e6f181d64455d65d7f87044cab8ec5db0e732de71cb558f",
-    "extract_excerpts.py": "b946bdcc595ddef27839963be649e09bf5554905c6f0e1b210844cf2933b1161",
+    "excerpts/ch01-new-relationship.md": "c10d120be052328ad95ab3b65b7fd79feb7d64170a79e177300574b147ca2a21",
+    "excerpts/ch03-new-magic-cost.md": "37ca11e49f2f40053e7736233dc8171f5d8b6ffe43c8a8cddfcf958dfc4ee1a8",
+    "excerpts/ch04-new-engraving.md": "02af0a91a10bd3f7410ef3322f86107dec032e14cb868c28ad0a2f49c94f597d",
+    "excerpts/ch05-pro-illusion-consent.md": "d9af824926e9a41f5a0d13120a54dc0e166fee84c606d2fe5df804c3452f7a5b",
+    "excerpts/ch05-revision-pair.md": "a68321e81e6e3aec83c242125e768c77bb31d90b3a93d86fc418229712853755",
+    "excerpts/provenance.json": "f1f2c6c65c1b4d2ebc789922fd89c26d64133b40942e0edf024090896cff2124",
+    "extract_excerpts.py": "768cfb1642a0ede0912bf9a1ec69483a987b66b84e6190d00cc1e07d70304f6b",
     "figures/chapter-local-scores.svg": "0db1d4adc1bdbf192926fa96bd37870825c4bf59a601bcd8d0fda6586798ebe4",
     "figures/whole-work-domains.svg": "62666032ca893706c30094865848a65eb9e2fa0955856c97c32923d88d3a9193",
     "reports/original.json": "06f7629bd64343b7a3206db261843e6a8ab051a476af9a21597fd821cb9193ac",
     "reports/rewrite.json": "a65b3465a6133bbf7adf78975ddf62307559f03d786d77303167ef0bd367d8d7",
-    "sanitize_publication.py": "9445b77cbbaab150d9309e02cee9777b0418d3369ea560c947f1737df9776e05",
-    "targeted-evaluation-contract.json": "a3255fc461cb0cb57d20f4162f4e1a65295952e3aba407b87ef279749a1009e6",
+    "sanitize_publication.py": "6b60b4fd3411972615b28f0e176641e56722900d66597c9580694fed67e490bc",
+    "targeted-evaluation-contract.json": "35ce1a3ed9d397af2d808f387981c31c9405417f6eff6bcb5d91114213b0d944",
     "verdicts/original.jsonl": "2bd911605936b53d43c48e6c5da8100073caf7d1bd04d7c1fdde1bdfa11829fb",
     "verdicts/rewrite.jsonl": "82cd7b7b7bdf0377311bf79ab7a6f9845bffbcad412dc3808853092ae3b8f37a",
-    "verify_publication.py": "473538851070e86f4ea2e8f4bea1e9e5fafdefa1fc433fd2c9bd817b1444dfde"
+    "verify_publication.py": "8bd50ffb7269d1bb3ec19100cb0fa456f2ebfbb492179b60b2a21088d042c0b1"
   },
   "protocol": {
     "binary_judge": {
@@ -52,13 +53,21 @@
     "whole_work_verdicts_per_draft": 239
   },
   "publication": {
+    "curated_excerpt_authorship": {
+      "excerpts/ch01-new-relationship.md": "gpt-5.6-pro-rewrite",
+      "excerpts/ch03-new-magic-cost.md": "gpt-5.6-pro-rewrite",
+      "excerpts/ch04-new-engraving.md": "gpt-5.6-pro-rewrite",
+      "excerpts/ch05-pro-illusion-consent.md": "gpt-5.6-pro-rewrite",
+      "excerpts/ch05-revision-pair.md": "author-original-vs-gpt-5.6-pro-rewrite"
+    },
     "curated_excerpt_files": [
       "excerpts/ch01-new-relationship.md",
       "excerpts/ch03-new-magic-cost.md",
       "excerpts/ch04-new-engraving.md",
-      "excerpts/ch05-revision-pair.md"
+      "excerpts/ch05-revision-pair.md",
+      "excerpts/ch05-pro-illusion-consent.md"
     ],
-    "curated_excerpt_word_count": 513,
+    "curated_excerpt_word_count": 1235,
     "evidence_text_included": false,
     "execution_metadata_included": false,
     "manuscript_prose_included": true,

@@ -12,6 +12,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from sanitize_publication import (
+    CURATED_EXCERPT_AUTHORSHIP,
     CURATED_EXCERPT_PATHS,
     FORBIDDEN_KEY_PARTS,
     FORBIDDEN_TEXT_PATTERNS,
@@ -28,12 +29,14 @@ CURATED_EXCERPT_IDS = {
     "gb-new-ch03-magic-cost-v1",
     "gb-new-ch04-engraving-v1",
     "gb-ch05-revision-pair-relationship-magic-v2",
+    "gb-new-ch05-illusion-consent-v1",
 }
 CURATED_WORD_COUNTS = {
     "gb-new-ch01-relationship-approach-v2": 97,
     "gb-new-ch03-magic-cost-v1": 104,
     "gb-new-ch04-engraving-v1": 105,
     "gb-ch05-revision-pair-relationship-magic-v2": 207,
+    "gb-new-ch05-illusion-consent-v1": 722,
 }
 
 
@@ -69,19 +72,23 @@ def validate_excerpt_receipt(root: Path, expected_files: dict[str, str]) -> list
     failures.extend(
         exact_keys(
             receipt,
-            {"authorization", "curated_excerpts", "format_version", "total_word_count", "word_count_method"},
+            {"authorization", "curated_excerpts", "format_version", "published_newline_projection", "total_word_count", "word_count_method"},
             "excerpt receipt",
         )
     )
     if receipt.get("format_version") != 1:
         failures.append("invalid excerpt receipt version")
     if receipt.get("authorization") != (
-        "The owner provisionally accepted these exact four selections pending confirmation for public case-study use; "
+        "The owner confirmed these exact five selections for public case-study use; "
         "no other Gray Blood manuscript prose is authorized here."
     ):
         failures.append("invalid excerpt authorization")
     if receipt.get("word_count_method") != "non-whitespace tokens in selected source character ranges":
         failures.append("invalid excerpt word-count method")
+    if receipt.get("published_newline_projection") != (
+        "Source line endings are rendered as Markdown paragraph breaks; source character segments and excerpt hashes remain exact."
+    ):
+        failures.append("invalid excerpt newline projection")
     entries = receipt.get("curated_excerpts")
     if not isinstance(entries, list) or len(entries) != len(CURATED_EXCERPT_IDS):
         return failures + ["invalid excerpt receipt entries"]
@@ -92,7 +99,7 @@ def validate_excerpt_receipt(root: Path, expected_files: dict[str, str]) -> list
         failures.extend(
             exact_keys(
                 entry,
-                {"excerpt_id", "file", "published_file_sha256", "segments", "word_count"},
+                {"authorship", "excerpt_id", "file", "published_file_sha256", "segments", "word_count"},
                 "excerpt receipt entry",
             )
         )
@@ -110,6 +117,8 @@ def validate_excerpt_receipt(root: Path, expected_files: dict[str, str]) -> list
             failures.append("unexpected curated excerpt path")
             continue
         seen_paths.add(relative)
+        if entry.get("authorship") != CURATED_EXCERPT_AUTHORSHIP[relative]:
+            failures.append(f"invalid excerpt authorship: {relative}")
         published_hash = expected_files.get(relative)
         if entry.get("published_file_sha256") != published_hash:
             failures.append(f"excerpt receipt hash mismatch: {relative}")
@@ -123,12 +132,14 @@ def validate_excerpt_receipt(root: Path, expected_files: dict[str, str]) -> list
                 exact_keys(
                     segment,
                     {
+                        "authorship_role",
                         "chapter_id",
                         "char_end",
                         "char_start",
                         "draft_id",
                         "excerpt_sha256",
                         "input_sha256",
+                        "model",
                         "utf8_byte_end",
                         "utf8_byte_start",
                         "word_count",
@@ -140,6 +151,10 @@ def validate_excerpt_receipt(root: Path, expected_files: dict[str, str]) -> list
                 continue
             if segment.get("draft_id") not in {"new", "original"} or not re.fullmatch(r"chapter-0[1-6]", str(segment.get("chapter_id"))):
                 failures.append("invalid excerpt draft or chapter identifier")
+            expected_authorship = "author-original" if segment.get("draft_id") == "original" else "gpt-5.6-pro-rewrite"
+            expected_model = None if segment.get("draft_id") == "original" else "gpt-5.6-pro"
+            if segment.get("authorship_role") != expected_authorship or segment.get("model") != expected_model:
+                failures.append("invalid excerpt segment authorship")
             for name in ("input_sha256", "excerpt_sha256"):
                 if not isinstance(segment.get(name), str) or not re.fullmatch(r"[0-9a-f]{64}", segment[name]):
                     failures.append(f"invalid excerpt hash: {name}")
@@ -157,7 +172,7 @@ def validate_excerpt_receipt(root: Path, expected_files: dict[str, str]) -> list
         total += entry.get("word_count", 0) if isinstance(entry.get("word_count"), int) else 0
     if seen_ids != CURATED_EXCERPT_IDS or seen_paths != set(CURATED_EXCERPT_PATHS):
         failures.append("excerpt receipt does not name exactly the authorized excerpts")
-    if receipt.get("total_word_count") != 513 or total != 513:
+    if receipt.get("total_word_count") != 1235 or total != 1235:
         failures.append("invalid total curated excerpt word count")
     return failures
 
@@ -217,6 +232,7 @@ def validate_metadata(manifest: dict, audit: dict, expected_files: dict[str, str
         exact_keys(
             publication,
             {
+                "curated_excerpt_authorship",
                 "curated_excerpt_files",
                 "curated_excerpt_word_count",
                 "evidence_text_included",
@@ -228,8 +244,9 @@ def validate_metadata(manifest: dict, audit: dict, expected_files: dict[str, str
         )
     )
     if publication != {
+        "curated_excerpt_authorship": CURATED_EXCERPT_AUTHORSHIP,
         "curated_excerpt_files": list(CURATED_EXCERPT_PATHS),
-        "curated_excerpt_word_count": 513,
+        "curated_excerpt_word_count": 1235,
         "evidence_text_included": False,
         "execution_metadata_included": False,
         "manuscript_prose_included": True,

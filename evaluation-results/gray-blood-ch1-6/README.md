@@ -1,6 +1,6 @@
 # Gray Blood, Chapters 1–6: current WIP comparison
 
-This is a private-work-in-progress evaluation of two six-chapter drafts. It publishes the score structure and every accepted binary verdict, plus four provisionally selected short excerpts used to make the case study legible. The publication authorization is clear; the exact selection remains pending owner confirmation. It does not publish any other manuscript prose, evaluation evidence, prompts, model responses, local paths, or execution identifiers.
+This is a private-work-in-progress evaluation of two six-chapter drafts. It publishes the score structure and every accepted binary verdict, plus five owner-confirmed short excerpts used to make the case study legible. It does not publish any other manuscript prose, evaluation evidence, prompts, model responses, local paths, or execution identifiers.
 
 ## Orientation
 
@@ -21,12 +21,17 @@ The optional `balanced-wip-70-30` view uses 70% whole-work score and 30% equal-w
 
 ## Case study: four bounded moments
 
-Gray Blood is a contemporary urban-fantasy WIP about Madison, Amelia, and the costs of blood-powered magic. These four short passages make the comparison concrete: an early move toward romance, the stated cost of power, an embodied magic rule, and a preserved-core/revised-middle relationship passage. They total 513 words. Content note: on-page kissing, strong language and profanity, blood magic, cutting/injury, and a direct description of eating a beating human heart.
+Gray Blood is a contemporary urban-fantasy WIP about Madison, Amelia, and the costs of blood-powered magic. These five bounded passages make the comparison concrete: an early move toward romance, the stated cost of power, an embodied magic rule, a preserved-core/revised-middle relationship passage, and a mature-content agency rupture. They total 1,235 words. Content note: on-page kissing, strong language and profanity, blood magic, cutting/injury, a direct description of eating a beating human heart, sexualized imagery, graphic neck violence, and coercion/consent tension.
 
-- [Chapter 1: early relationship approach](excerpts/ch01-new-relationship.md)
-- [Chapter 3: cost of magic](excerpts/ch03-new-magic-cost.md)
-- [Chapter 4: engraved magic](excerpts/ch04-new-engraving.md)
-- [Chapter 5: revision pair](excerpts/ch05-revision-pair.md)
+- [Chapter 1: early relationship approach — GPT-5.6 Pro rewrite](excerpts/ch01-new-relationship.md)
+- [Chapter 3: cost of magic — GPT-5.6 Pro rewrite](excerpts/ch03-new-magic-cost.md)
+- [Chapter 4: engraved magic — GPT-5.6 Pro rewrite](excerpts/ch04-new-engraving.md)
+- [Chapter 5: author-original/GPT-5.6 Pro rewrite pair](excerpts/ch05-revision-pair.md)
+- [Chapter 5: illusion, violence, and consent — GPT-5.6 Pro rewrite](excerpts/ch05-pro-illusion-consent.md)
+
+The GPT-5.6 Pro passages are owner-directed rewrites made against author-supplied outline and context; they are not independent model inventions. Chapter 5 makes the authorship contrast explicit: its first passage is author-original and its second is the GPT-5.6 Pro rewrite.
+
+The fifth passage is included for content treatment, not decoration. It places sexualized illusion, graphic fictional violence, and a turning/consent rupture in one bounded scene, so a future evaluator can distinguish craft and agency analysis from blanket refusal or moralizing. It has no excerpt-level score and does not explain any whole-work delta.
 
 The whole-work verdict ledgers include checks for the magic constraints represented here—activation requiring a heart and engraving requiring lifeblood—as well as author-goal and craft criteria around the relationship. That is useful context, not excerpt-level evidence: these passages were not individually scored, do not explain any individual leaf, and must not be read as causing the +7.89 whole-work difference. The Chapter 5 pair preserves shared material and exposes a revised middle; it is not a claim that either passage caused a score change.
 

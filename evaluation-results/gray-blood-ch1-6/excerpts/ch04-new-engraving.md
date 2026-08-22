@@ -1,3 +1,3 @@
-# Chapter 4: an embodied rule of magic
+# Chapter 4: an embodied rule of magic — GPT-5.6 Pro rewrite
 
 “Alright, this spell just points the way to, um, magic residue. It’ll make, like, a compass, you’ll see. I’ve engraved it, so it’s just one symbol, and it doesn’t take much power, so I can cut it small. Um. Engraving is personal, you pick the symbol, and mine looks like … this,” she said, cutting a continuous line that formed most of circle which then extended to a line with a little hook on the end, vaguely arrow-like. The blood seeped up along the line as she drew; I could tell she was cutting just deep enough to make sure the full line got filled.

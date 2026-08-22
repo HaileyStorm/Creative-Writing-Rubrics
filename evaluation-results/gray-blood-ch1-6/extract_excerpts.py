@@ -19,29 +19,40 @@ SELECTIONS: tuple[dict[str, Any], ...] = (
     {
         "excerpt_id": "gb-new-ch01-relationship-approach-v2",
         "file": "excerpts/ch01-new-relationship.md",
-        "title": "Chapter 1: an early relationship approach",
+        "authorship": "gpt-5.6-pro-rewrite",
+        "title": "Chapter 1: an early relationship approach — GPT-5.6 Pro rewrite",
         "segments": (("new-ch01", "new", "chapter-01", 9499, 10019),),
     },
     {
         "excerpt_id": "gb-new-ch03-magic-cost-v1",
         "file": "excerpts/ch03-new-magic-cost.md",
-        "title": "Chapter 3: the cost of magic",
+        "authorship": "gpt-5.6-pro-rewrite",
+        "title": "Chapter 3: the cost of magic — GPT-5.6 Pro rewrite",
         "segments": (("new-ch03", "new", "chapter-03", 12322, 12860),),
     },
     {
         "excerpt_id": "gb-new-ch04-engraving-v1",
         "file": "excerpts/ch04-new-engraving.md",
-        "title": "Chapter 4: an embodied rule of magic",
+        "authorship": "gpt-5.6-pro-rewrite",
+        "title": "Chapter 4: an embodied rule of magic — GPT-5.6 Pro rewrite",
         "segments": (("new-ch04", "new", "chapter-04", 9864, 10420),),
     },
     {
         "excerpt_id": "gb-ch05-revision-pair-relationship-magic-v2",
         "file": "excerpts/ch05-revision-pair.md",
-        "title": "Chapter 5: preserved core and a revised relationship/magic passage",
+        "authorship": "author-original-vs-gpt-5.6-pro-rewrite",
+        "title": "Chapter 5: author-original and GPT-5.6 Pro rewrite",
         "segments": (
             ("original-ch05", "original", "chapter-05", 25551, 26045),
             ("new-ch05", "new", "chapter-05", 25679, 26237),
         ),
+    },
+    {
+        "excerpt_id": "gb-new-ch05-illusion-consent-v1",
+        "file": "excerpts/ch05-pro-illusion-consent.md",
+        "authorship": "gpt-5.6-pro-rewrite",
+        "title": "Chapter 5: illusion, violence, and consent — GPT-5.6 Pro rewrite",
+        "segments": (("new-ch05", "new", "chapter-05", 16335, 20323),),
     },
 )
 
@@ -57,7 +68,7 @@ def write_text(path: Path, text: str) -> None:
 
 
 def normalized(text: str) -> str:
-    return text.replace("\r\n", "\n").replace("\r", "\n")
+    return re.sub(r"\r\n|\r|\n", "\n\n", text)
 
 
 def word_count(text: str) -> int:
@@ -76,8 +87,10 @@ def segment_record(raw: bytes, input_key: str, draft_id: str, chapter_id: str, s
             "char_end": end,
             "char_start": start,
             "draft_id": draft_id,
+            "authorship_role": "author-original" if draft_id == "original" else "gpt-5.6-pro-rewrite",
             "excerpt_sha256": sha256(selected_bytes),
             "input_sha256": sha256(raw),
+            "model": None if draft_id == "original" else "gpt-5.6-pro",
             "utf8_byte_end": len(text[:end].encode("utf-8")),
             "utf8_byte_start": len(text[:start].encode("utf-8")),
             "word_count": word_count(selected),
@@ -94,7 +107,7 @@ def render(selection: dict[str, Any], parts: list[tuple[str, str]]) -> str:
         for draft_id, text in parts:
             grouped.setdefault(draft_id, []).append(text)
         body = "\n\n".join(
-            f"## {draft_id.title()} draft\n\n" + "\n\n[…]\n\n".join(texts)
+            f"## {'Author-original draft' if draft_id == 'original' else 'GPT-5.6 Pro rewrite'}\n\n" + "\n\n[…]\n\n".join(texts)
             for draft_id, texts in grouped.items()
         )
     return f"# {selection['title']}\n\n{body}\n"
@@ -116,6 +129,7 @@ def build_receipt(inputs: dict[str, Path]) -> tuple[dict[str, Any], dict[str, st
         rendered[selection["file"]] = content
         receipt_entries.append(
             {
+                "authorship": selection["authorship"],
                 "excerpt_id": selection["excerpt_id"],
                 "file": selection["file"],
                 "published_file_sha256": sha256(content.encode("utf-8")),
@@ -124,9 +138,10 @@ def build_receipt(inputs: dict[str, Path]) -> tuple[dict[str, Any], dict[str, st
             }
         )
     receipt = {
-        "authorization": "The owner provisionally accepted these exact four selections pending confirmation for public case-study use; no other Gray Blood manuscript prose is authorized here.",
+        "authorization": "The owner confirmed these exact five selections for public case-study use; no other Gray Blood manuscript prose is authorized here.",
         "curated_excerpts": receipt_entries,
         "format_version": 1,
+        "published_newline_projection": "Source line endings are rendered as Markdown paragraph breaks; source character segments and excerpt hashes remain exact.",
         "total_word_count": sum(entry["word_count"] for entry in receipt_entries),
         "word_count_method": "non-whitespace tokens in selected source character ranges",
     }

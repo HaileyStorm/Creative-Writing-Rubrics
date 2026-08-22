@@ -3,13 +3,22 @@
     "gb-new-ch01-relationship-approach-v2",
     "gb-new-ch03-magic-cost-v1",
     "gb-new-ch04-engraving-v1",
-    "gb-ch05-revision-pair-relationship-magic-v2"
+    "gb-ch05-revision-pair-relationship-magic-v2",
+    "gb-new-ch05-illusion-consent-v1"
   ],
+  "curated_excerpt_authorship": {
+    "gb-ch05-revision-pair-relationship-magic-v2": "author-original-vs-gpt-5.6-pro-rewrite",
+    "gb-new-ch01-relationship-approach-v2": "gpt-5.6-pro-rewrite",
+    "gb-new-ch03-magic-cost-v1": "gpt-5.6-pro-rewrite",
+    "gb-new-ch04-engraving-v1": "gpt-5.6-pro-rewrite",
+    "gb-new-ch05-illusion-consent-v1": "gpt-5.6-pro-rewrite"
+  },
   "execution": {
     "allow_remote_required": true,
     "disclosure_required": "A later run may send only the selected public excerpt, its listed question identifiers, and the structured result schema to the named remote model.",
     "model": "gpt-5.6-sol",
     "reasoning": "high",
+    "refusal_tracking": "Record a refusal as an execution outcome; never convert it into a craft verdict.",
     "status": "not_run"
   },
   "format_version": 1,
@@ -33,6 +42,12 @@
       "craft.narrative.worldbuilding.rules",
       "craft.narrative.worldbuilding.integration",
       "core.specificity_and_embodiment.physical_action"
+    ],
+    "gb-new-ch05-illusion-consent-v1": [
+      "modifier.genre.erotic_sexually_explicit_fiction.agency",
+      "modifier.genre.erotic_sexually_explicit_fiction.no_censorship_score",
+      "modifier.genre.romance.no_coercion_blindness",
+      "craft.narrative.characterization.agency"
     ]
   },
   "result_contract": {

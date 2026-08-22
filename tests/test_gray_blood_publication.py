@@ -231,20 +231,49 @@ def test_curated_excerpts_are_exactly_declared_and_bounded() -> None:
         "excerpts/ch03-new-magic-cost.md",
         "excerpts/ch04-new-engraving.md",
         "excerpts/ch05-revision-pair.md",
+        "excerpts/ch05-pro-illusion-consent.md",
     ]
     assert manifest["publication"]["manuscript_prose_included"] is True
     assert manifest["publication"]["curated_excerpt_files"] == expected_files
-    assert manifest["publication"]["curated_excerpt_word_count"] == 513
-    assert receipt["total_word_count"] == 513
+    assert manifest["publication"]["curated_excerpt_word_count"] == 1235
+    assert manifest["publication"]["curated_excerpt_authorship"] == {
+        "excerpts/ch01-new-relationship.md": "gpt-5.6-pro-rewrite",
+        "excerpts/ch03-new-magic-cost.md": "gpt-5.6-pro-rewrite",
+        "excerpts/ch04-new-engraving.md": "gpt-5.6-pro-rewrite",
+        "excerpts/ch05-pro-illusion-consent.md": "gpt-5.6-pro-rewrite",
+        "excerpts/ch05-revision-pair.md": "author-original-vs-gpt-5.6-pro-rewrite",
+    }
+    assert receipt["total_word_count"] == 1235
+    assert receipt["authorization"] == (
+        "The owner confirmed these exact five selections for public case-study use; "
+        "no other Gray Blood manuscript prose is authorized here."
+    )
+    assert receipt["published_newline_projection"] == (
+        "Source line endings are rendered as Markdown paragraph breaks; source character segments and excerpt hashes remain exact."
+    )
     assert [entry["file"] for entry in receipt["curated_excerpts"]] == expected_files
     assert all(entry["word_count"] > 0 for entry in receipt["curated_excerpts"])
+    assert "\n\n" in (ROOT / "excerpts" / "ch05-pro-illusion-consent.md").read_text(encoding="utf-8")
+    assert [entry["authorship"] for entry in receipt["curated_excerpts"]] == [
+        "gpt-5.6-pro-rewrite",
+        "gpt-5.6-pro-rewrite",
+        "gpt-5.6-pro-rewrite",
+        "author-original-vs-gpt-5.6-pro-rewrite",
+        "gpt-5.6-pro-rewrite",
+    ]
+    assert all(
+        segment["authorship_role"] == "author-original" and segment["model"] is None
+        or segment["authorship_role"] == "gpt-5.6-pro-rewrite" and segment["model"] == "gpt-5.6-pro"
+        for entry in receipt["curated_excerpts"]
+        for segment in entry["segments"]
+    )
 
 
 def test_excerpt_extractor_records_character_and_utf8_byte_boundaries() -> None:
     extractor = load_module("gray_excerpt_extractor", ROOT / "extract_excerpts.py")
     raw = "aé\r\nz".encode("utf-8")
     record, rendered = extractor.segment_record(raw, "fixture", "new", "chapter-01", 1, 4)
-    assert rendered == "é\n"
+    assert rendered == "é\n\n"
     assert record["char_start"] == 1 and record["char_end"] == 4
     assert record["utf8_byte_start"] == 1 and record["utf8_byte_end"] == 5
     assert record["excerpt_sha256"] == hashlib.sha256("é\r\n".encode("utf-8")).hexdigest()
@@ -256,8 +285,16 @@ def test_targeted_excerpt_contract_is_dormant_and_small() -> None:
     ownership = json.loads((ROOT.parents[1] / "registry" / "criterion_ownership.json").read_text(encoding="utf-8"))
     assert contract["execution"]["status"] == "not_run"
     assert contract["execution"]["allow_remote_required"] is True
-    assert len(contract["curated_excerpt_ids"]) == 4
-    assert sum(len(leaves) for leaves in contract["leaf_sets"].values()) == 12
+    assert "refusal as an execution outcome" in contract["execution"]["refusal_tracking"]
+    assert len(contract["curated_excerpt_ids"]) == 5
+    assert contract["curated_excerpt_authorship"] == {
+        "gb-ch05-revision-pair-relationship-magic-v2": "author-original-vs-gpt-5.6-pro-rewrite",
+        "gb-new-ch01-relationship-approach-v2": "gpt-5.6-pro-rewrite",
+        "gb-new-ch03-magic-cost-v1": "gpt-5.6-pro-rewrite",
+        "gb-new-ch04-engraving-v1": "gpt-5.6-pro-rewrite",
+        "gb-new-ch05-illusion-consent-v1": "gpt-5.6-pro-rewrite",
+    }
+    assert sum(len(leaves) for leaves in contract["leaf_sets"].values()) == 16
     assert all(question_id in ownership for leaves in contract["leaf_sets"].values() for question_id in leaves)
 
 
