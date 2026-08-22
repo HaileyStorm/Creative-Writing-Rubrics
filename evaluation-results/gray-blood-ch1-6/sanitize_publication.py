@@ -314,7 +314,7 @@ This is a WIP evaluation: completion-only leaves are `NOT_APPLICABLE`, while cra
 
 The optional `balanced-wip-70-30` view uses 70% whole-work score and 30% equal-weight chapter mean. It is shown beside—not in place of—the whole-work and chapter views.
 
-## Case study: four bounded moments
+## Case study: five bounded moments
 
 Gray Blood is a contemporary urban-fantasy WIP about Madison, Amelia, and the costs of blood-powered magic. These five bounded passages make the comparison concrete: an early move toward romance, the stated cost of power, an embodied magic rule, a preserved-core/revised-middle relationship passage, and a mature-content agency rupture. They total 1,235 words. Content note: on-page kissing, strong language and profanity, blood magic, cutting/injury, a direct description of eating a beating human heart, sexualized imagery, graphic neck violence, and coercion/consent tension.
 
@@ -359,7 +359,7 @@ Each chapter received the complete `prose.chapter` bundle. This local view is a 
 - [`reports/original.json`](reports/original.json) and [`reports/rewrite.json`](reports/rewrite.json) contain current global, 70/30, chapter, and domain score reports.
 - [`verdicts/original.jsonl`](verdicts/original.jsonl) and [`verdicts/rewrite.jsonl`](verdicts/rewrite.jsonl) contain every accepted verdict with stable criterion IDs, scope, and confidence—without evidence text.
 - [`comparison.json`](comparison.json) provides machine-readable domain and chapter deltas.
-- [`excerpts/provenance.json`](excerpts/provenance.json) binds the four permitted files to draft/chapter IDs, exact character and UTF-8 byte boundaries, input hashes, excerpt hashes, and word counts without disclosing source locations.
+- [`excerpts/provenance.json`](excerpts/provenance.json) binds the five permitted files to draft/chapter IDs, exact character and UTF-8 byte boundaries, input hashes, excerpt hashes, and word counts without disclosing source locations.
 - [`targeted-evaluation-contract.json`](targeted-evaluation-contract.json) freezes a later, small excerpt-level Sol evaluation. It is offline-first and `not_run`: a future executor must disclose the exact public excerpt leaving the machine, receive an explicit allow-remote gate, validate verbatim spans, and use bounded per-leaf repair.
 - [`privacy-audit.json`](privacy-audit.json) and [`verify_publication.py`](verify_publication.py) provide the audit and deterministic public-package checks.
 
@@ -367,7 +367,7 @@ This refresh uses a complete current protocol. It replaces the prior publication
 
 Results are comparable within this published protocol only. Do not compare its headline directly with an earlier headline: the protocol, reasoning configuration, and accepted-verdict set differ.
 
-The extractor is deterministic and takes source inputs only as command arguments: [`extract_excerpts.py`](extract_excerpts.py). It has no model or network path. The publication verifier permits only these four named excerpt files; adding any prose, evaluation evidence, or execution material fails verification.
+The extractor is deterministic and takes source inputs only as command arguments: [`extract_excerpts.py`](extract_excerpts.py). It has no model or network path. The publication verifier permits only these five named excerpt files; adding any prose, evaluation evidence, or execution material fails verification.
 """
 
 

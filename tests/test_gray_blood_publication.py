@@ -198,7 +198,9 @@ def test_score_views_and_reader_summary_are_consistent() -> None:
     assert protocol["structured_judge"]["reasoning"] == "high"
     assert protocol["orientation_and_synthesis"]["reasoning"] == "high"
     assert "## Orientation" in readme
-    assert "## Case study: four bounded moments" in readme
+    assert "## Case study: five bounded moments" in readme
+    assert "five permitted files" in readme
+    assert "four bounded moments" not in readme
     assert "must not be read as causing the +7.89 whole-work difference" in readme
     assert "completion-only leaves are `NOT_APPLICABLE`" in readme
     assert "protocol, reasoning configuration, and accepted-verdict set differ" in readme

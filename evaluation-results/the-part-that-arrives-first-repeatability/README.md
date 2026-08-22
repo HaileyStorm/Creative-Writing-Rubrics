@@ -42,6 +42,15 @@ The coarse methods were perfectly stable at headline level but hit a ceiling: ev
 
 ### Batching mattered
 
+| Question | 24 leaves at a time | All 178 leaves together |
+| --- | --- | --- |
+| Repeated story beats (`repetition.beat`) | YES, YES, NO, NO, NO | NO, NO, NO, NO, NO |
+| Long-range resets (`repetition.long_range`) | N/A, N/A, YES, YES, YES | N/A, N/A, N/A, N/A, N/A |
+| Repeated meaning (`repetition.semantic`) | NO, NO, NO, NO, NO | NO, NO, NO, NO, NO |
+| Over-explanation (`repetition.explanation`) | NO, NO, NO, NO, NO | NO, NO, NO, NO, NO |
+
+Two questions stayed steady in either shape. The other two show the practical risk: batching changed both the answer and, for the long-range question, whether the judge thought the question applied at all.
+
 The one-batch arm was more repeatable here: 5.6 percentage points higher exact leaf agreement, 0.098 higher alpha, and 0.407 lower score SD. The modes agreed on 92.6% of leaves within paired repetitions, but 24-per-batch averaged 1.824 points higher; mean paired absolute difference was 2.272.
 
 ![Paired HBQ scores under the two batching choices](results/batching-comparison.svg)
