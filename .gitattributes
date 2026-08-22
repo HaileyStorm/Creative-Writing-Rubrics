@@ -1,1 +1,3 @@
 * text=auto eol=lf
+prompts/judge/JUDGE_PREFIX.md text eol=crlf
+prompts/judge/BINARY_EVALUATION_PROMPT.md -text
