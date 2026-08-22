@@ -1,0 +1,9 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-ai-writer-preface-v1-analysis-v1",
+  "kind": "offline_aggregate_analysis",
+  "primary_policy": "Use only completed original cells; cell 17 remains missing and cell 18 remains a structural failure. Equal-weight valid inputs within each arm; no imputation.",
+  "sensitivity_policy": "A valid cell-17 quote repair may replace its failed leaf only in a separately labelled sensitivity view. It is not an additional vote. Cell 18 is excluded and not repaired.",
+  "decision_policy": "No automatic wording, rubric, scorer, routing, or production decision.",
+  "public_output": "Hashes, counts, aggregate statistics, concise interpretation, and limitations only. No prose, prompt, raw response, private path, item ID, question ID, session ID, or request ID."
+}
