@@ -50,6 +50,38 @@
         "model_cost_usd": 0.00710294
       },
       "interpretation": "Useful staged-matrix suggestion only; not causal evidence and not a requirement to score all 2145 leaves in every targeted experiment."
+    },
+    {
+      "label": "repeat-slot-contract",
+      "item_id": "c642f8127e37419384ad801dcb8ebb6f",
+      "source_record_sha256": "c38b19c6fd76841ccbd5044228636223722e12fbc03ec1d9fadb71d139d161c9",
+      "result_hash": "de1f7acc34e89c5e74d1ae60e66377da748d07bc528e75684f0182df8607c1a1",
+      "output_hash": "ab2aafa21765f345bd17636fd41124283d079e65946c88d4e6d3fb7fa3dfa5a7",
+      "request_hash": "b54f8a0bfc7de4b8fcf148b0fc22b95578c8550ab9e650d1a4836e8fcdfc008a",
+      "started_at": "2026-08-22T23:31:29+00:00",
+      "finished_at": "2026-08-22T23:32:23+00:00",
+      "usage_telemetry": {
+        "status": "reported",
+        "total_cost_usd": 0.00704922,
+        "model_cost_usd": 0.00704922
+      },
+      "interpretation": "Adopted as a scheduler and aggregation design input: stable repeat slots, repair-not-vote, and reduce-then-weight."
+    },
+    {
+      "label": "small-product-bakeoff",
+      "item_id": "b6e12d47841e4f108be57137150654ef",
+      "source_record_sha256": "10e81b1a1cb1f6607c3066309aa1809d6bb8f8c5470b4883d7440d27b627a673",
+      "result_hash": "be41a0b1cae4c267e2a4d9818ef38c798a734a145c9925e193dec41b0a748c21",
+      "output_hash": "65fd5bb3b9e5b7b8c8b98bae69a80551ee53dcbbee4b7bd51a49d19eabcce578",
+      "request_hash": "9ac8d4133cf7027a01cd26457acf994a8beb1eae9a233a0c5412cb622487fb1c",
+      "started_at": "2026-08-22T23:31:29+00:00",
+      "finished_at": "2026-08-22T23:32:22+00:00",
+      "usage_telemetry": {
+        "status": "reported",
+        "total_cost_usd": 0.00713558,
+        "model_cost_usd": 0.00713558
+      },
+      "interpretation": "Adopted only as a sparse four-arm development baseline; suggested thresholds, metric scope, and cost tie-break require product judgment."
     }
   ]
 }

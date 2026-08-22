@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "status": "completed_provisional_advisory",
-  "run_count": 2,
+  "run_count": 4,
   "result_kind": "repair_design_comparison_input",
   "not_evidence_of": [
     "judge_quality",
@@ -15,18 +15,33 @@
     "compare_singleton_with_24_before_other_batch_sizes",
     "treat_178_as_capacity_stress_only",
     "vary_batch_polarity_and_wording_one_factor_at_a_time",
-    "use_development_reuse_then_a_small_frozen_holdout"
+    "use_development_reuse_then_a_small_frozen_holdout",
+    "repeat_slots_are_leaf_by_repeat_index_and_repair_is_not_an_extra_vote",
+    "reduce_each_leaf_before_existing_deterministic_rubric_weighting",
+    "use_sparse_3_stories_by_3_repeats_by_4_arms_as_development_design_input"
   ],
   "corrections": [
     "2145_is_a_registry_count_not_a_batch_size",
     "one_story_retry_evidence_cannot_rule_out_stable_but_wrong_leaf_verdicts",
-    "targeted_experiments_need_not_score_all_2145_leaves"
+    "targeted_experiments_need_not_score_all_2145_leaves",
+    "a_tied_arm_is_not_automatically_decided_by_cost_without_product_quality_tradeoffs",
+    "quote_and_coverage_metrics_remain_protocol_aware_while_a_uniform_evidence_wrapper_can_be_tested_separately",
+    "suggested_kill_and_promote_thresholds_are_heuristics_not_universal_facts"
   ],
   "runtime_status": {
     "requested_model": "grok-4.6",
     "reported_model": "grok-4.6-build",
     "requested_reasoning_effort": "high",
     "reasoning_attested": false,
-    "cost_status": "included_weekly_allowance_telemetry_not_incremental_paid_evaluation"
+    "cost_status": "included_weekly_allowance_telemetry_not_incremental_paid_evaluation",
+    "two_lane_canary": {
+      "route_max_concurrency": 2,
+      "shared_started_at": "2026-08-22T23:31:29+00:00",
+      "completed_at": [
+        "2026-08-22T23:32:22+00:00",
+        "2026-08-22T23:32:23+00:00"
+      ],
+      "interpretation": "two_bounded_calls_overlapped_not_a_throughput_or_quality_guarantee"
+    }
   }
 }
