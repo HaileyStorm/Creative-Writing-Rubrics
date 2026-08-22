@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "status": "completed_provisional_advisory",
+  "run_count": 2,
+  "result_kind": "repair_design_comparison_input",
+  "not_evidence_of": [
+    "judge_quality",
+    "causal_effect",
+    "model_promotion",
+    "paid_evaluation"
+  ],
+  "adopted_direction": [
+    "preserve_full_2145_leaf_registry_coverage",
+    "separate_frozen_rollup_checks_from_leaf_behavior",
+    "compare_singleton_with_24_before_other_batch_sizes",
+    "treat_178_as_capacity_stress_only",
+    "vary_batch_polarity_and_wording_one_factor_at_a_time",
+    "use_development_reuse_then_a_small_frozen_holdout"
+  ],
+  "corrections": [
+    "2145_is_a_registry_count_not_a_batch_size",
+    "one_story_retry_evidence_cannot_rule_out_stable_but_wrong_leaf_verdicts",
+    "targeted_experiments_need_not_score_all_2145_leaves"
+  ],
+  "runtime_status": {
+    "requested_model": "grok-4.6",
+    "reported_model": "grok-4.6-build",
+    "requested_reasoning_effort": "high",
+    "reasoning_attested": false,
+    "cost_status": "included_weekly_allowance_telemetry_not_incremental_paid_evaluation"
+  }
+}

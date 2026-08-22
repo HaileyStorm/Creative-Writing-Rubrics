@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "study": "hbq-grok-build-broker-comparison-v1",
+  "methodological_status": "provisional_advisory_design_input_not_judge_evaluation_or_causal_evidence",
+  "privacy": {
+    "input_classification": "public_synthetic",
+    "raw_prompts_published": false,
+    "raw_conversation_published": false,
+    "source_paths_published": false,
+    "session_identifiers_published": false
+  },
+  "shared_runtime": {
+    "route": "grok-build-grok-4.6",
+    "adapter": "grok_exec",
+    "execution_policy": "isolated_one_turn_read_only",
+    "requested_model": "grok-4.6",
+    "reported_model": "grok-4.6-build",
+    "requested_reasoning_effort": "high",
+    "reasoning_attestation": "not_reported_by_grok_build_cli",
+    "reasoning_attested": false,
+    "cli_version": "grok 1.0.5 (5115b46bc9) [stable]",
+    "zero_charge_only": true,
+    "telemetry_interpretation": "included_weekly_allowance_accounting_on_owner_attested_saved_session_route_not_incremental_paid_evaluation"
+  },
+  "runs": [
+    {
+      "label": "overlap-repair-ladder",
+      "item_id": "728934874c4448e68fe03eafbad9f34d",
+      "source_record_sha256": "0fcec4b183080d485a878a1dc090716cbab367650265312fa12fdda8287d046a",
+      "result_hash": "bdcca1a97dff530de623b2fe5758056d7317957cea82a703abfb8ec508ebcd90",
+      "output_hash": "28ca2d3f1a09a417b2e8be10a395f010be74cc7f07fa3c3f1543d95ad44ae6f4",
+      "request_hash": "fd7fe326f13189e09ae3942a9aa699d040f5c7da05f51a27034c721c44bcc611",
+      "usage_telemetry": {
+        "status": "reported",
+        "total_cost_usd": 0.0079934,
+        "model_cost_usd": 0.0079934
+      },
+      "interpretation": "Useful repair-order suggestions only. Its 2145-as-batch framing and leaf-noise overclaim are not adopted."
+    },
+    {
+      "label": "smallest-falsifiable-matrix",
+      "item_id": "de1e0165f31e4d889563c5224e61ac78",
+      "source_record_sha256": "1920a8c25262ce0ef4bfc6b01b465ed02ca8c9d4c6983af78a68e401958ceb15",
+      "result_hash": "29da504f906ca59e1a958959df7c05c88e461f0b7a18bfcd5918bf158cfec052",
+      "output_hash": "a5a5db7ab06632fcda3707fe5e6aa263944bc15092abb749b7075ae3996896c9",
+      "request_hash": "6e2608183a05634585e9ea90943d690115b61bc959aa53386e058355069d5d65",
+      "usage_telemetry": {
+        "status": "reported",
+        "total_cost_usd": 0.00710294,
+        "model_cost_usd": 0.00710294
+      },
+      "interpretation": "Useful staged-matrix suggestion only; not causal evidence and not a requirement to score all 2145 leaves in every targeted experiment."
+    }
+  ]
+}
