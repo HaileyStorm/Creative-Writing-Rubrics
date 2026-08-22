@@ -132,6 +132,7 @@ Stable IDs (`module_id`, `question_id`, `bundle_id`, `criterion_key`) are the pu
 - [Authorized complete story: *The Part That Arrives First*](evaluation-results/the-part-that-arrives-first-repeatability/source.md)
 - [What HBQ caught in the story](evaluation-results/the-part-that-arrives-first-repeatability/hbq-findings.md) — four concrete craft judgments, including one difficult limitation
 - [Initial batching study](evaluation-results/the-part-that-arrives-first-repeatability/) — the same story under two HBQ batch shapes and two synthesized comparators
+- [Paired-polarity pilot analysis](evaluation-results/hbq-hanna-polarity-paired-analysis-v1/) — one-story evidence that positive and flipped wording can disagree; averaging both did not improve the HANNA comparison
 - [*Gray Blood*, chapters 1–6](evaluation-results/gray-blood-ch1-6/) — complete score and verdict reports with five authorized excerpts, clearly labeled author-original or GPT-5.6 Pro rewrite; the remaining manuscript stays private
 - [Run a headless judge](docs/judging.md)
 - [Embed in another app](docs/apps.md)
