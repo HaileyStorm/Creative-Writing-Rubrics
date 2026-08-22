@@ -1,0 +1,30 @@
+{
+  "format_version": 2,
+  "authority_id": "hbq-hanna-repeatability-twelfth-authority-v2",
+  "status": "frozen_before_expansion_execution",
+  "source_frozen_contract": {
+    "study_id": "hbq-human-alignment-v3-successor-v1",
+    "format_version": 2,
+    "sha256": "b0f6dd24415c388a3104f8c9304ce301193cf0a48631a86c4886bc8ce48468e7"
+  },
+  "first_eleven_story_ids": [
+    "hanna-178", "hanna-225", "hanna-817", "hanna-382", "hanna-523", "hanna-445", "hanna-907", "hanna-52", "hanna-594", "hanna-1035", "hanna-731"
+  ],
+  "eligible_partition": "development",
+  "metadata_fields": [
+    "item_id", "model", "story_id", "source_sha256", "prompt_sha256", "task_contract_sha256"
+  ],
+  "ranking_namespace": "hbq-hanna-repeatability-twelfth-authority-v1",
+  "ranking": "legacy-byte-compatible namespace projection: sha256(canonical_json({authority_id:ranking_namespace,candidate_metadata})) ascending, then item_id",
+  "outcome_inputs": "forbidden",
+  "supersedes": [
+    {
+      "authority_sha256": "c81d74509d43575f280b42127c5a17f708b28b570362cc19d8439065b6d22e47",
+      "reason": "v1 bound the authority contract to an absolute checkout path; v2 binds its relative package identity, byte count, and SHA-256 instead."
+    },
+    {
+      "authority_sha256": "7cd2fd4ca85a4a831b5deb646491726ac1cf4a65545cf6f96e127d33f496af9b",
+      "reason": "The first v2 transport repair accidentally rekeyed the hash draw with its artifact ID. This replacement preserves the already sealed v1 metadata-only selection."
+    }
+  ]
+}

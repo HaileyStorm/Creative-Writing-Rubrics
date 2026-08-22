@@ -27,6 +27,7 @@ ROOT = RESULTS.parent
 CONTRACT_PATH = HERE / "study-contract.json"
 RESPONSE_SCHEMA_PATH = HERE / "response.schema.json"
 PILOT_PATH = RESULTS / "hbq-hanna-batch-polarity-pilot-v1" / "study.py"
+REPEATABILITY_AUTHORITY_PATH = HERE / "freeze_repeatability_authority.py"
 PLAN_NAME = "expansion-contract.json"
 REUSED_MATRIX_NAME = "hanna-225-reused-verified.json"
 STORIES = ("hanna-225", "hanna-178", "hanna-817", "hanna-382")
@@ -69,10 +70,35 @@ def _matches(binding: Any) -> bool:
     return path.is_file() and type(binding["bytes"]) is int and binding["bytes"] == path.stat().st_size and binding["sha256"] == sha256_bytes(path.read_bytes())
 
 
+def _unique_object(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+    value: dict[str, Any] = {}
+    for key, item in pairs:
+        if key in value:
+            raise ValueError(f"Duplicate object key: {key}")
+        value[key] = item
+    return value
+
+
+def _reject_constant(value: str) -> None:
+    raise ValueError(f"Non-finite JSON constant: {value}")
+
+
+def _reject_non_finite(value: Any) -> None:
+    if isinstance(value, float) and not math.isfinite(value):
+        raise ValueError("Non-finite JSON number")
+    if isinstance(value, Mapping):
+        for item in value.values():
+            _reject_non_finite(item)
+    elif isinstance(value, list):
+        for item in value:
+            _reject_non_finite(item)
+
+
 def read_json(path: Path) -> dict[str, Any]:
     try:
-        value = json.loads(path.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError) as error:
+        value = json.loads(path.read_text(encoding="utf-8"), object_pairs_hook=_unique_object, parse_constant=_reject_constant)
+        _reject_non_finite(value)
+    except (OSError, json.JSONDecodeError, ValueError) as error:
         raise ValueError(f"Invalid JSON: {path}") from error
     if not isinstance(value, dict):
         raise ValueError(f"Expected JSON object: {path}")
@@ -118,6 +144,11 @@ def _module(path: Path, name: str) -> Any:
 @lru_cache(maxsize=1)
 def pilot() -> Any:
     return _module(PILOT_PATH, "hbq_hanna_batch_polarity_expansion_pilot")
+
+
+@lru_cache(maxsize=1)
+def repeatability_authority() -> Any:
+    return _module(REPEATABILITY_AUTHORITY_PATH, "hbq_hanna_batch_polarity_expansion_authority")
 
 
 def load_contract() -> dict[str, Any]:
@@ -184,24 +215,15 @@ def planned_cells() -> list[dict[str, Any]]:
 
 
 def _runtime_files() -> dict[str, dict[str, Any]]:
-    files = [HERE / "study.py", CONTRACT_PATH, HERE / "response.schema.json", PILOT_PATH]
+    files = [HERE / "study.py", CONTRACT_PATH, HERE / "response.schema.json", REPEATABILITY_AUTHORITY_PATH, HERE / "repeatability-authority-contract.json", PILOT_PATH]
     return {path.relative_to(ROOT).as_posix(): fingerprint(path) for path in files}
 
 
-def _frozen_twelfth(repeatability_authority: Path) -> dict[str, Any]:
+def _frozen_twelfth(authority_path: Path) -> dict[str, Any]:
     """Select the twelfth ID only from a frozen ordered, pre-outcome authority."""
-    authority = read_json(repeatability_authority)
-    required = {"format_version", "status", "ordered_story_ids", "first_eleven_story_ids"}
-    if set(authority) != required or authority["format_version"] != 1 or authority["status"] != "frozen_before_expansion_execution":
-        raise ValueError("Twelfth-story authority is not a frozen pre-outcome input")
+    authority = repeatability_authority().verify_authority(authority_path)
     ordered, first_eleven = authority["ordered_story_ids"], authority["first_eleven_story_ids"]
-    if (not isinstance(ordered, list) or not isinstance(first_eleven, list) or not all(isinstance(item, str) and item for item in ordered)
-            or len(ordered) != len(set(ordered)) or len(first_eleven) != 11 or len(set(first_eleven)) != 11 or ordered[:11] != first_eleven):
-        raise ValueError("Twelfth-story authority does not contain an ordered frozen prefix of eleven")
-    choices = [item for item in ordered[11:] if isinstance(item, str) and item not in first_eleven]
-    if not choices:
-        raise ValueError("Twelfth-story authority has no remaining eligible item")
-    return {"authority": fingerprint(repeatability_authority), "first_eleven_story_ids": first_eleven, "twelfth_story_id": choices[0]}
+    return {"authority": fingerprint(authority_path), "first_eleven_story_ids": first_eleven, "twelfth_story_id": ordered[11]}
 
 
 def _fresh_parent_inputs(parent_work: Path, parent_artifacts: Path, parent_authority: Path, parent_runtime_root: Path, story_ids: Sequence[str]) -> dict[str, dict[str, Any]]:
