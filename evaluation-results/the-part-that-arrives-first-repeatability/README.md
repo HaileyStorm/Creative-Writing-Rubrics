@@ -4,6 +4,12 @@ This case study asks how stable one GPT-5.6 Sol judge is across repeated reading
 
 The repository owner supplied the story and explicitly authorized publishing it in full. Read [the complete source](source.md), the [frozen study contract](study-contract.json), or any of the [published run outputs](results/).
 
+## The story at a glance
+
+> “Mica had moved in the fraction before commitment, during the little muscular weather in June's wrist that still meant only *maybe*. She entered the gap, held the pin upright, and waited for June to decide that maybe had become yes.”
+
+Mica is June's co-digit: an embodied second agent sharing the work of one augmented hand. Their apparently seamless collaboration turns shared agency, authorship, and consent into the story's pressure points. This opening is here to orient the reader; every run in the study evaluated the [complete story](source.md), not this passage as a separate sample.
+
 ## Design
 
 The contract was frozen before execution. Each arm ran five times in a fresh Codex session with tools and network access disabled. Runs used `gpt-5.6-sol`: Medium reasoning for the 178 HBQ leaves and High reasoning for the two coarser comparators. There was no temperature or seed control and no result-driven stopping.
