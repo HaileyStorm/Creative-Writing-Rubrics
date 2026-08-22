@@ -9,19 +9,20 @@
   },
   "current_stack": {
     "source": {"path": "../source.md", "bytes": 64490, "sha256": "ed6fb2e19f07174f56eb02e0a5d4c4419eecba324752881439b9b2992f082729"},
-    "registry": {"path": "../../../registry/all_modules.json", "bytes": 2189768, "sha256": "e6de0c216b68f1532605181284550cd4aca689a1ad1331631980e098d0055a2c"},
-    "bundles": {"path": "../../../bundles/all_bundles.json", "bytes": 513512, "sha256": "06390140d0d1f83b9e8a1a8ab946a4d90ac2b8c6b8d81f84cc44c4cf54a54096"},
-    "prefix": {"path": "../../../prompts/judge/JUDGE_PREFIX.md", "bytes": 1191, "sha256": "5e3a0990efca93e2cbc3894e635f9fd1b97b6e61ea2981940319cb54994ebb74"},
-    "binary": {"path": "../../../prompts/judge/BINARY_EVALUATION_PROMPT.md", "bytes": 1476, "sha256": "6c1cac901d820c1ab866e19f9191896e8c97a6aadf35bdae4eac640fd199a3a2"},
+    "registry": {"path": "../../../registry/all_modules.json", "bytes": 2137882, "sha256": "578207ef59f127a0bd52e7f38a25b9629ca2cfcdd73f49c944d9eee0bcbde928"},
+    "bundles": {"path": "../../../bundles/all_bundles.json", "bytes": 496524, "sha256": "c354bfecda29c0f747252f1cd9fea9971b4b17615eccf5512725c51741aed974"},
+    "prefix": {"path": "../../../prompts/judge/JUDGE_PREFIX.md", "bytes": 1184, "sha256": "ba48be75c55502d762f1029745b6a4b3b4d12674317f20906443467a00f8f3a5"},
+    "binary": {"path": "../../../prompts/judge/BINARY_EVALUATION_PROMPT.md", "bytes": 1460, "sha256": "3dd432228d2ad747e9a3958320e1b7eccf725bbc985aec1cd74eeb865254bd1c"},
     "response_schema": {"path": "../../../schema/hbq_judge_response.schema.json", "bytes": 1977, "sha256": "49c7d824ba5dd957e67968ba3ae6ceb8a7ed9434dfb0dfc654836a76613c7854"},
     "preflight_schema": {"path": "capacity-preflight.schema.json", "bytes": 186, "sha256": "14525b379495e40620191600048d55828fde49e7cedc09ea6e3a0ff58858c16d"},
-    "score_v1_schema": {"path": "../../../schema/hbq_score_report.schema.json", "bytes": 1072, "sha256": "f0e1fd939774f3c569458f7fd4ce9c6f9b4d942fbc1654badb7b72d09007c87d"},
+    "score_v1_schema": {"path": "../../../schema/hbq_score_report.schema.json", "bytes": 1020, "sha256": "e9bf341a501ced78db81dae6ef1cd84b43eb9a740966034a5652d5b9a0dfdc4c"},
     "score_v2_schema": {"path": "../../../schema/hbq_score_report.v2.schema.json", "bytes": 4236, "sha256": "83105e4fe51a0cede99e510fcc9144f5feb3a2742ff38f3efca9b328800218f8"},
-    "v2_contract": {"path": "../batch-curve-v2/study-contract.json", "bytes": 22155, "sha256": "57cdb3deaab75375bd3ebf808aab3d439d3ce9f9341452926a8e5097f26aced2"},
+    "v2_contract": {"path": "../batch-curve-v2/study-contract.json", "bytes": 21721, "sha256": "c8f9fc463359eeb42689e1a8b0fa1adb0768ebbcc8a31148c1f2f92f2d566c57"},
     "harness": {"path": "../batch-curve-v2/batch_curve_harness.py", "bytes": 51168, "sha256": "03ec7f313e4d4a073f4bf1ea55dacd6e38f664f91027b1786f56c72a9586dac3"},
     "runner": {"path": "../../../src/hbqrs/runner.py", "bytes": 124714, "sha256": "0a22bf30781d6bbbde4c9b6a6e214891fe95aefddade6f955f5634f6accde4d2"},
-    "core": {"path": "../../../src/hbqrs/core.py", "bytes": 45951, "sha256": "70b4cd16bd536f2f6ddb8e066f801090a037a39605652b14d6c7f6ff312446cb"},
-    "scoring_v2": {"path": "../../../src/hbqrs/scoring_v2.py", "bytes": 8227, "sha256": "80592c5ffb5972ad391bd5e870da8311c888307081e5eed86c9b160b69148049"}
+    "core": {"path": "../../../src/hbqrs/core.py", "bytes": 45093, "sha256": "0518be16a4528b893de6af61300ecea58dc56d6b7944b5ae5fd3a3214a3794ef"},
+    "scoring_v2": {"path": "../../../src/hbqrs/scoring_v2.py", "bytes": 8227, "sha256": "80592c5ffb5972ad391bd5e870da8311c888307081e5eed86c9b160b69148049"},
+    "executor": {"path": "batch_recovery.py", "bytes": 41603, "sha256": "261c4fff512c8ed94e2fa4a027b13122514c5109707cdd58b2583c0e0fdd0ffd"}
   },
   "execution": {"provider": "codex", "model": "gpt-5.6-sol", "reasoning": "high", "logical_units": 47, "max_physical_attempts_per_unit": 1, "planned_epoch_preflights": 6, "preflight_epoch_units": 8, "timeout_seconds": 600, "preflight_max_age_minutes": 15, "result_status": "incomplete_nonlive_analysis_pending"},
   "privacy": {"remote_destination": "OpenAI Codex service at chatgpt.com/backend-api/codex/responses", "outbound": "frozen source, strict-AI prompts, and one frozen unfinished question partition", "raw_evidence": "private operator-selected external evidence root", "public_projection": "path, byte, and SHA-256 commitments only"}

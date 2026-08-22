@@ -19,5 +19,10 @@ Every preflight attempt, including a failed or malformed response, is retained
 as a separate terminal provider-call record. These calls are reported apart
 from the fixed 47 scored calls.
 
+The v2 bindings inherited at `8778cd9` described CRLF/mixed working-tree
+bytes, not the canonical clean LF checkout. They are pre-live provenance only
+and are non-executable from a clean checkout; this successor binds exact clean
+checkout bytes instead.
+
 This produces recovery evidence, not a batch-size recommendation. Analysis
 remains non-live and a recommendation stays disabled.

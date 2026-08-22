@@ -71,6 +71,24 @@ def test_exact_current_stack_and_47_unit_schedule() -> None:
     assert not any(row["parent_cell"] == 36 and row["batch"] <= 31 for row in rows)
 
 
+def test_clean_checkout_bytes_bind_plan_prepare_and_reject_altered_binding(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    module = _module(); value = module.contract()
+    for name, binding in value["current_stack"].items():
+        path = module._stack(name)
+        assert path.stat().st_size == binding["bytes"] and module._sha_path(path) == binding["sha256"]
+    assert len(module.plan()) == 47
+    with _external_temp() as outer:
+        work, private = Path(outer) / "work", Path(outer) / "private"
+        receipt = module.prepare(work, private, subprocess_run=_run, executable_resolver=lambda _: str(work.parent / "codex.exe"))
+        assert receipt["schedule"] == module.plan()
+    altered_path = tmp_path / "altered-modules.json"
+    altered_path.write_bytes(module._stack("registry").read_bytes() + b"\n")
+    altered = json.loads(json.dumps(value)); altered["current_stack"]["registry"]["path"] = str(altered_path)
+    monkeypatch.setattr(module, "contract", lambda: altered)
+    with pytest.raises(ValueError, match="Bound bytes drifted"):
+        module.plan()
+
+
 def test_prepare_rejects_dirty_or_untracked_or_untracked_self_source(tmp_path: Path) -> None:
     module = _module()
     with pytest.raises(ValueError, match="clean committed pushed"):

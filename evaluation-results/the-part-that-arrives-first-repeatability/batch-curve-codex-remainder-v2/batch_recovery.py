@@ -104,7 +104,7 @@ def contract() -> dict[str, Any]:
         raise ValueError("Recovery contract shape drifted")
     if set(value["lineage"]) != {"remainder_contract", "remainder_module", "codex_v1_contract"}:
         raise ValueError("Recovery lineage binding set drifted")
-    required_stack = {"source", "registry", "bundles", "prefix", "binary", "response_schema", "preflight_schema", "score_v1_schema", "score_v2_schema", "v2_contract", "harness", "runner", "core", "scoring_v2"}
+    required_stack = {"source", "registry", "bundles", "prefix", "binary", "response_schema", "preflight_schema", "score_v1_schema", "score_v2_schema", "v2_contract", "harness", "runner", "core", "scoring_v2", "executor"}
     if set(value["current_stack"]) != required_stack:
         raise ValueError("Current runtime binding set drifted")
     for binding in [*value["lineage"].values(), *value["current_stack"].values()]:
