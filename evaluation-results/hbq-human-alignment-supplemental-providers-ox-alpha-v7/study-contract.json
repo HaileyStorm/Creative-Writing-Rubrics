@@ -1,0 +1,58 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-human-alignment-supplemental-providers-ox-alpha-v7",
+  "frozen_before_execution": true,
+  "purpose": "Outcome-blind, four-leaf Ox Alpha transport successor. It is bound to the immutable uncertain v6 root; GPT-5.6 remains primary.",
+  "parent_v6": {
+    "path": "../hbq-human-alignment-supplemental-providers-ox-alpha-v6",
+    "study_id": "hbq-human-alignment-supplemental-providers-ox-alpha-v6",
+    "commit": "c36f380",
+    "source_files_are_verified_before_freeze": true
+  },
+  "uncertain_v6": {
+    "source": "The caller supplies the exact immutable uncertain v6 root; no machine-specific path is recorded in the package.",
+    "required_state": "One cap-1 request-v2 HTTP 200 completed at raw duration 111.5274232 seconds, with four schema-valid verdicts plus run, verdict, diagnostic, accepted-message, request, result, checkpoint, and raw-evidence artifacts, but no journal or semantic receipt. V6 first failed because its checkpoint selector globbed request and result JSON as checkpoints; byte-normalizing expected prompt assets or source/context text is a second deterministic latent verifier defect. The v6 root is permanently blocked and uncertain; it cannot be resumed, mutated, or followed by a live child run.",
+    "complete_tree_is_verified": true,
+    "later_mutation_forbidden": true
+  },
+  "provider": {
+    "provider_id": "ox_alpha_max",
+    "provider": "nous",
+    "model": "stealth/ox-alpha",
+    "provider_canonical_model": "stealth/ox-alpha",
+    "reasoning": "max",
+    "allow_unattested_reasoning": true,
+    "evidence_status": "provisional_only"
+  },
+  "transport_pilot": {
+    "cells": 3,
+    "batch_size": 4,
+    "question_count": 4,
+    "batch_attempts": 1,
+    "workers": 1,
+    "timeout_seconds": 240,
+    "maximum_http_seconds_exclusive": 150,
+    "required_shared_runner_option": "max_physical_http_attempts_per_logical_request=1",
+    "required_request_schema": "codex-nous-tool-free-judge-request-v2",
+    "selection": "Three public HANNA cells, each using exactly the first four question IDs retained by immutable v6 from its v4 eight-leaf parent cell.",
+    "success_rule": "Exactly three serial, distinct, schema-valid completions. Each has one logical request, exactly one physical 2xx HTTP attempt below 150 seconds, zero recovered failures, raw evidence, payload, bridge receipt, and a distinct session.",
+    "failure_rule": "Only a normal launcher return with a stable sealed Judge non-2xx receipt, exactly one total physical HTTP attempt, and a sealed zero-HTTP ProveLock sibling permanently closes the fresh root. An outer timeout or any absent, unstable, ambiguous, recovered, non-cap-1, validation-drift, or duplicate-completion state records an uncertain blocked root. Both states are immutable and authorize no retry, escalation, paid route, DSPy, or human route.",
+    "sla_revision_evidence": "The raw-HTTP ceiling remains below 150 seconds. The exact v6 four-leaf predecessor took 111.5274232 seconds, confirming the endpoint floor without changing the cap-1 transport policy."
+  },
+  "execution": {
+    "status": "preregistered_cap1_unexecuted",
+    "required_shared_runner_option": "max_physical_http_attempts_per_logical_request=1",
+    "required_request_schema": "codex-nous-tool-free-judge-request-v2",
+    "launch_gate": "Fresh zero-cost catalog and usage proof plus reviewed shared cap-1 runtime are required before launch."
+  },
+  "privacy": {
+    "pilot": "Raw HBQ verdicts, rationales, and diagnostics are retained as transport evidence. No HANNA human labels or ratings, composite scores, correlations, rankings, human-reference comparisons, or alignment analysis are produced.",
+    "human_judging": "Existing public HANNA inputs only; no new human judging.",
+    "remote": "Nous receives the frozen public source and paired prompt, frozen task contract, four requested questions, the active judge instruction, and strict response schema for one cell at a time."
+  },
+  "interpretation_limits": [
+    "This supplements and never replaces GPT-5.6.",
+    "Provider max-effort attestation remains provisional.",
+    "A transport pass does not establish scoring or alignment performance."
+  ]
+}
