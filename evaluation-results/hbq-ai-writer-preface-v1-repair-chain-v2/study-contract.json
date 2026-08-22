@@ -1,0 +1,24 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-ai-writer-preface-v1-repair-chain-v2",
+  "purpose": "A sealed, quote-only continuation of the cell-17 sensitivity repair. It preserves both the original cell-17 failure and the first valid quote repair, and may repair at most three additional canonical quote failures without creating another vote.",
+  "lineage": {
+    "original_package": "hbq-ai-writer-preface-v1-pilot-executor-v1",
+    "original_executor_sha256": "202ad7b21a689bea3e1f52cbf19db3bdcd1bfc5d86c8863e56807a0407f96d61",
+    "original_contract_sha256": "9e1e9d0949ea7bbf1dbee1752eb42c88c36b1c4c0b816908734ddc72047a5072",
+    "original_public_binding_sha256": "a67777e8c1dfd0fb2bc8cf8cde09b6475f2fdeab7486b0882d879ef7c34ef32a",
+    "original_journal_sha256": "09769864e16c0e399e41281365705ada057e75867b9cedc04bfccc8acd8d376b",
+    "original_cell17_terminal_sha256": "6a70abff5e1d3dfe212cd90b09098ee6fecbe6dd5d8f92b956ece89ce78a37e9",
+    "original_cell17_raw_response_sha256": "5dbbfc312c1635ded870e55e5da7b8afd3076d94b865bc651d0670e74b4f5eef",
+    "continuation_package": "hbq-ai-writer-preface-v1-continuation-v1",
+    "continuation_executor_sha256": "92df593963f8f2a0919081bb0902d89af178d58e70842efa0788a80f0f723883",
+    "continuation_contract_sha256": "5a90b4a31654c849111f27e16465c44df6ef400a5271e10146b8f8325f9ff960",
+    "continuation_public_binding_sha256": "d2019da145446834015c2b671d94c556de595b12c90f1e31004dafbe00ef0e70",
+    "continuation_journal_sha256": "23bcf9494b326c46605e1d19e970036e57c31e2eec80cbe7969b84bd67a49e4b",
+    "continuation_settlement_sha256": "9251f134a60a880cac49c93ada0900150f5e10b2c42b3e4172e197353ab6483f",
+    "first_quote_repair_terminal_sha256": "5d0f04c3cc52c8190dddf5c0738c754aa26cf43b1acc7b1fc0ad44486a1ae915"
+  },
+  "provider": {"provider": "codex", "model": "gpt-5.6-sol", "reasoning": "high", "paid_api": false, "fallbacks": "forbidden"},
+  "repair": {"target_sequence": 17, "kind": "quote_only", "max_additional_attempts": 3, "first_valid_repair_wins": true, "same_logical_sample": true, "not_an_independent_vote": true, "remote_gate": "--allow-remote"},
+  "analysis": {"primary": "original cell 17 remains missing", "sensitivity": "available only when the complete combined cell canonically validates", "automatic_wording_decision": false}
+}
