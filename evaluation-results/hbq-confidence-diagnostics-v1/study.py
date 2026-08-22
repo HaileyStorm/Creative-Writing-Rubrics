@@ -25,7 +25,9 @@ FINGERPRINT_REQUIRED = {
     "schema_sha256", "compiled_bundle_sha256", "questions_sha256", "runtime_sha256",
     "corpus_sha256", "selection_sha256",
 }
+FRESH_FINGERPRINT_REQUIRED = FINGERPRINT_REQUIRED | {"accepted_artifacts_sha256"}
 CONDITION_FIELDS = {"phase", "arm_id", "bundle_id", "batch_size", "polarity", "task_contract_sha256", "weight_profile_sha256"}
+FRESH_CONDITION_FIELDS = CONDITION_FIELDS | {"accepted_artifacts_sha256"}
 REASONING_ATTESTATIONS = {"provider_attested", "not_reported_by_grok_build_cli"}
 
 
@@ -78,6 +80,18 @@ def _fingerprint(value: Any) -> dict[str, str]:
     return dict(sorted(value.items()))
 
 
+def _fresh_fingerprint(value: Any) -> dict[str, str]:
+    if not isinstance(value, Mapping) or not FINGERPRINT_REQUIRED <= set(value) or not set(value) <= FRESH_FINGERPRINT_REQUIRED:
+        raise ValueError("Model fingerprint must be complete, safe, and string-valued")
+    if "accepted_artifacts_sha256" not in value:
+        raise ValueError("Fresh88 model fingerprint must include its accepted-artifact digest")
+    base = _fingerprint({key: value[key] for key in FINGERPRINT_REQUIRED})
+    digest = value["accepted_artifacts_sha256"]
+    if not isinstance(digest, str) or len(digest) != 64 or any(character not in "0123456789abcdef" for character in digest):
+        raise ValueError("Fresh88 accepted-artifact digest is malformed")
+    return {**base, "accepted_artifacts_sha256": digest}
+
+
 def _fingerprint_key(value: Mapping[str, str]) -> str:
     return hashlib.sha256(canonical(value)).hexdigest()
 
@@ -87,18 +101,20 @@ def _authority(value: Any) -> dict[str, dict[str, Any]]:
         raise ValueError("Evidence authority must be a nonempty manifest-binding map")
     parsed: dict[str, dict[str, Any]] = {}
     for name, item in value.items():
-        if not isinstance(name, str) or not name or not isinstance(item, Mapping) or set(item) != {"bytes", "sha256"}:
+        expected_fields = {"item_count", "sha256"} if name == "accepted_artifacts" else {"bytes", "sha256"}
+        if not isinstance(name, str) or not name or not isinstance(item, Mapping) or set(item) != expected_fields:
             raise ValueError("Evidence authority binding is malformed")
-        size = item["bytes"]
+        size_key = "item_count" if name == "accepted_artifacts" else "bytes"
+        size = item[size_key]
         digest = item["sha256"]
         if isinstance(size, bool) or not isinstance(size, int) or size < 0 or not isinstance(digest, str) or len(digest) != 64 or any(character not in "0123456789abcdef" for character in digest):
             raise ValueError("Evidence authority binding is malformed")
-        parsed[name] = {"bytes": size, "sha256": digest}
+        parsed[name] = {size_key: size, "sha256": digest}
     return dict(sorted(parsed.items()))
 
 
-def _condition(value: Any) -> dict[str, str | int]:
-    if not isinstance(value, Mapping) or not value or not set(value) <= CONDITION_FIELDS:
+def _condition(value: Any, *, allowed_fields: set[str] = CONDITION_FIELDS) -> dict[str, str | int]:
+    if not isinstance(value, Mapping) or not value or not set(value) <= allowed_fields:
         raise ValueError("Exact condition fields are malformed")
     parsed: dict[str, str | int] = {}
     for key, item in value.items():
@@ -291,9 +307,13 @@ def _fresh_records(payload: Mapping[str, Any]) -> list[dict[str, Any]]:
     for model in models:
         if not isinstance(model, Mapping) or set(model) != {"model_fingerprint", "condition", "authority", "selection_digest", "records"}:
             raise ValueError("Fresh88 model has an unsupported field")
-        fingerprint = _fingerprint(model["model_fingerprint"])
-        condition = _condition(model["condition"])
+        fingerprint = _fresh_fingerprint(model["model_fingerprint"])
+        condition = _condition(model["condition"], allowed_fields=FRESH_CONDITION_FIELDS)
         authority = _authority(model["authority"])
+        accepted = authority.get("accepted_artifacts")
+        accepted_digest = fingerprint["accepted_artifacts_sha256"]
+        if condition.get("accepted_artifacts_sha256") != accepted_digest or not isinstance(accepted, Mapping) or accepted.get("sha256") != accepted_digest or accepted.get("item_count") != 88:
+            raise ValueError("Fresh88 accepted-artifact digest binding drifted")
         key = _fingerprint_key(fingerprint)
         records = model["records"]
         if key in fingerprints or not isinstance(records, list) or len(records) != 88:

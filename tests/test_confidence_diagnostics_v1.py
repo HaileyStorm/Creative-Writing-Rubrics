@@ -17,6 +17,11 @@ assert spec and spec.loader
 study = importlib.util.module_from_spec(spec)
 sys.modules[spec.name] = study
 spec.loader.exec_module(study)
+prepare_spec = importlib.util.spec_from_file_location("prepare_fresh88_input", PACKAGE / "prepare_fresh88_input.py")
+assert prepare_spec and prepare_spec.loader
+prepare = importlib.util.module_from_spec(prepare_spec)
+sys.modules[prepare_spec.name] = prepare
+prepare_spec.loader.exec_module(prepare)
 
 
 def _seal(directory: Path, payload: dict) -> None:
@@ -36,12 +41,18 @@ def _fingerprint(model: str) -> dict[str, str]:
     }
 
 
-def _authority() -> dict:
-    return {"parent_manifest": {"bytes": 42, "sha256": "a" * 64}}
+def _authority(*, fresh: bool = False) -> dict:
+    result = {"parent_manifest": {"bytes": 42, "sha256": "a" * 64}}
+    if fresh:
+        result["accepted_artifacts"] = {"item_count": 88, "sha256": "1" * 64}
+    return result
 
 
-def _condition() -> dict:
-    return {"phase": "development", "arm_id": "hbq", "bundle_id": "prose.short_story", "batch_size": 32, "polarity": "as_frozen", "task_contract_sha256": "b" * 64, "weight_profile_sha256": "c" * 64}
+def _condition(*, fresh: bool = False) -> dict:
+    result = {"phase": "development", "arm_id": "hbq", "bundle_id": "prose.short_story", "batch_size": 32, "polarity": "as_frozen", "task_contract_sha256": "b" * 64, "weight_profile_sha256": "c" * 64}
+    if fresh:
+        result["accepted_artifacts_sha256"] = "1" * 64
+    return result
 
 
 def _repeat_payload() -> dict:
@@ -59,8 +70,8 @@ def _fresh_payload() -> dict:
         records.append({"item_id": f"opaque-{index}", "source_model": "Human" if index < 8 else "Generated", "score": float(index), "hanna_overall": human, "hanna_dimensions": {name: human for name in study.FRESH_DIMENSIONS}, "mapped_scores": {name: index % 3 / 2 for name in study.FRESH_DIMENSIONS}, "mapped_confidences": {name: 0.5 + (index % 5) / 10 for name in study.FRESH_DIMENSIONS}, "verdicts": [{"verdict": "YES" if index % 2 else "NO", "confidence": 0.5 + (index % 5) / 10, "effective_weight": 1.0, "role": "domain"}, {"verdict": "NOT_APPLICABLE", "confidence": 0.9, "effective_weight": 0.5, "role": "hard_gate"}]})
     digest = hashlib.sha256(study.canonical([{"item_id": item["item_id"], "source_model": item["source_model"], "hanna_overall": item["hanna_overall"], "hanna_dimensions": item["hanna_dimensions"]} for item in records])).hexdigest()
     def model(name: str) -> dict:
-        fingerprint = _fingerprint(name); fingerprint.pop("reasoning_effort"); fingerprint["requested_reasoning_effort"] = "high"; fingerprint["reasoning_attestation"] = "provider_attested"
-        return {"model_fingerprint": fingerprint, "condition": _condition(), "authority": _authority(), "selection_digest": digest, "records": records}
+        fingerprint = _fingerprint(name); fingerprint.pop("reasoning_effort"); fingerprint["requested_reasoning_effort"] = "high"; fingerprint["reasoning_attestation"] = "provider_attested"; fingerprint["accepted_artifacts_sha256"] = "1" * 64
+        return {"model_fingerprint": fingerprint, "condition": _condition(fresh=True), "authority": _authority(fresh=True), "selection_digest": digest, "records": records}
     return {"format_version": 1, "kind": "fresh88_confidence_evidence", "models": [model("fresh"), model("grok")]}
 
 
@@ -77,6 +88,32 @@ def test_repeat_diagnostics_keep_proxy_and_canonical_boundaries(tmp_path: Path) 
     assert model["equal_budget_resampling"]["status"] == "observed_repeat_bootstrap_only"
     assert model["role_stratified_noncanonical_diagnostics"]["domain"]["effective_confidence_mass_is_not_coverage"] is True
     assert "opaque-1" not in (tmp_path / "output" / "summary.json").read_text(encoding="utf-8")
+    assert "accepted_artifacts_sha256" not in model["model_fingerprint"]
+
+
+def test_repeat_rejects_fresh_only_placeholder_and_authority_shape(tmp_path: Path) -> None:
+    payload = _repeat_payload()
+    payload["models"][0]["model_fingerprint"]["accepted_artifacts_sha256"] = "1" * 64
+    repeat = tmp_path / "repeat"; _seal(repeat, payload)
+    with pytest.raises(ValueError, match="complete"):
+        study.analyze(repeat, None, tmp_path / "output")
+    payload = _fresh_payload()
+    payload["models"][0]["authority"]["parent_manifest"] = {"item_count": 88, "sha256": "a" * 64}
+    fresh = tmp_path / "fresh"; _seal(fresh, payload)
+    with pytest.raises(ValueError, match="authority"):
+        study.analyze(None, fresh, tmp_path / "output2")
+    payload = _fresh_payload()
+    payload["models"][0]["authority"]["accepted_artifacts"] = {"bytes": 88, "sha256": "1" * 64}
+    fresh = tmp_path / "fresh2"; _seal(fresh, payload)
+    with pytest.raises(ValueError, match="authority"):
+        study.analyze(None, fresh, tmp_path / "output3")
+
+
+def test_stale_projection_rejects_before_output_write(tmp_path: Path) -> None:
+    model = {"condition": {"accepted_artifacts_sha256": "1" * 64}}
+    with pytest.raises(ValueError, match="projection"):
+        prepare.require_projection_digest(model, {"item_count": 88, "sha256": "2" * 64})
+    assert not (tmp_path / "output").exists()
 
 
 def test_fresh88_separates_fingerprints_and_refuses_brier_claims(tmp_path: Path) -> None:
@@ -168,6 +205,11 @@ def test_rejects_selection_parity_and_reasoning_attestation_drift(tmp_path: Path
     fresh = tmp_path / "fresh2"; _seal(fresh, payload)
     with pytest.raises(ValueError, match="attestation"):
         study.analyze(None, fresh, tmp_path / "output2")
+    payload = _fresh_payload()
+    payload["models"][1]["model_fingerprint"]["accepted_artifacts_sha256"] = "2" * 64
+    fresh = tmp_path / "fresh-artifact"; _seal(fresh, payload)
+    with pytest.raises(ValueError, match="accepted-artifact"):
+        study.analyze(None, fresh, tmp_path / "output-artifact")
     payload = _fresh_payload()
     payload["models"][1]["condition"]["task_contract_sha256"] = "d" * 64
     fresh = tmp_path / "fresh3"; _seal(fresh, payload)

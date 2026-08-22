@@ -97,19 +97,26 @@ def fingerprint(configuration: Mapping[str, Any], *, runtime_sha256: str, corpus
     return values
 
 
-def private_model(root: Path, items: list[dict[str, Any]], mappings: Mapping[str, Any], *, score_name: str, run_path: str, runtime_sha256: str, corpus_sha256: str, selection_sha256: str, authority: dict[str, dict[str, Any]], reasoning_attestation: str, parent_mapping: bool) -> dict[str, Any]:
-    records, first, task_contracts = [], None, []
+def private_model(root: Path, items: list[dict[str, Any]], mappings: Mapping[str, Any], *, score_name: str, run_path: str, runtime_sha256: str, corpus_sha256: str, selection_sha256: str, authority: dict[str, dict[str, Any]], reasoning_attestation: str, parent_mapping: bool, ordered_item_ids: list[str]) -> dict[str, Any]:
+    records, first, task_contracts, accepted_artifacts = [], None, [], []
     expected = {str(item["item_id"]) for item in items}
     actual = {path.name for path in root.iterdir() if path.is_dir()}
     if actual != expected:
         raise ValueError("Private run root does not contain the exact Fresh88 item set")
-    for public in sorted(items, key=lambda item: str(item["item_id"])):
-        item_id = str(public["item_id"])
+    public_by_id = {str(item["item_id"]): item for item in items}
+    if len(ordered_item_ids) != 88 or len(set(ordered_item_ids)) != 88 or set(ordered_item_ids) != set(public_by_id):
+        raise ValueError("Verifier receipt does not preserve the exact ordered 88-item projection")
+    for item_id in ordered_item_ids:
+        public = public_by_id[item_id]
         folder = root / item_id / run_path
         run_path_json, score_path = folder / "run.json", folder / score_name
+        verdict_path = folder / "verdicts.jsonl"
         if not run_path_json.is_file() or not score_path.is_file() or folder.is_symlink():
             raise ValueError("Private Fresh88 run is incomplete or aliased")
         run, score = read(run_path_json), read(score_path)
+        if not verdict_path.is_file():
+            raise ValueError("Private run lacks accepted verdict bytes")
+        accepted_artifacts.append({"item_id": item_id, "run": binding(run_path_json), "score": binding(score_path), "verdicts": binding(verdict_path)})
         configuration = run.get("configuration")
         if not isinstance(configuration, Mapping) or configuration.get("artifact_id") != item_id:
             raise ValueError("Private run configuration does not bind its item")
@@ -118,10 +125,7 @@ def private_model(root: Path, items: list[dict[str, Any]], mappings: Mapping[str
             raise ValueError("Private run configuration lacks a task-contract binding")
         task_contracts.append({"item_id": item_id, "task_contract_sha256": task["sha256"]})
         leaf_rows = ordered_questions(score, configuration.get("question_ids"))
-        raw_path = folder / "verdicts.jsonl"
-        if not raw_path.is_file():
-            raise ValueError("Private run lacks its complete accepted verdict metadata")
-        raw_rows = [json.loads(line) for line in raw_path.read_text(encoding="utf-8").splitlines() if line.strip()]
+        raw_rows = [json.loads(line) for line in verdict_path.read_text(encoding="utf-8").splitlines() if line.strip()]
         raw_by_id = {row.get("question_id"): row for row in raw_rows if isinstance(row, Mapping)}
         if len(raw_by_id) != len(raw_rows) or any(not isinstance(item_id, str) or not isinstance(row.get("confidence"), (int, float)) or row.get("verdict") not in {"YES", "NO", "NOT_APPLICABLE", "CANNOT_ASSESS"} for item_id, row in raw_by_id.items()):
             raise ValueError("Private verdict metadata is malformed or duplicated")
@@ -147,8 +151,10 @@ def private_model(root: Path, items: list[dict[str, Any]], mappings: Mapping[str
         raise ValueError("No private runs found")
     selection_digest = hashlib.sha256(canonical([{"item_id": item["item_id"], "source_model": item["source_model"], "hanna_overall": item["hanna_overall"], "hanna_dimensions": item["hanna_dimensions"]} for item in records])).hexdigest()
     configuration = read(root / records[0]["item_id"] / run_path / "run.json")["configuration"]
-    condition = {"phase": "development", "arm_id": "hbq_short_story_batch32", "bundle_id": str(configuration["bundle_id"]), "batch_size": int(configuration["batch_size"]), "polarity": "as_frozen", "task_contract_sha256": hashlib.sha256(canonical(task_contracts)).hexdigest(), "weight_profile_sha256": hashlib.sha256(canonical(configuration["weight_profile"])).hexdigest()}
-    return {"model_fingerprint": first, "condition": condition, "authority": authority, "selection_digest": selection_digest, "records": records}
+    accepted_digest = hashlib.sha256(canonical(accepted_artifacts)).hexdigest()
+    first["accepted_artifacts_sha256"] = accepted_digest
+    condition = {"phase": "development", "arm_id": "hbq_short_story_batch32", "bundle_id": str(configuration["bundle_id"]), "batch_size": int(configuration["batch_size"]), "polarity": "as_frozen", "task_contract_sha256": hashlib.sha256(canonical(task_contracts)).hexdigest(), "weight_profile_sha256": hashlib.sha256(canonical(configuration["weight_profile"])).hexdigest(), "accepted_artifacts_sha256": accepted_digest}
+    return {"model_fingerprint": first, "condition": condition, "authority": {**authority, "accepted_artifacts": {"item_count": len(accepted_artifacts), "sha256": accepted_digest}}, "selection_digest": selection_digest, "records": records}
 
 
 def write(output: Path, payload: dict[str, Any]) -> None:
@@ -159,6 +165,12 @@ def write(output: Path, payload: dict[str, Any]) -> None:
     input_path.write_bytes(canonical(payload) + b"\n")
     manifest = {"format_version": 1, "kind": payload["kind"], "files": {"confidence-input.json": binding(input_path)}}
     (output / "manifest.json").write_bytes(canonical(manifest) + b"\n")
+
+
+def require_projection_digest(model: Mapping[str, Any], projection: Mapping[str, Any]) -> None:
+    digest = model.get("condition", {}).get("accepted_artifacts_sha256") if isinstance(model.get("condition"), Mapping) else None
+    if projection.get("item_count") != 88 or digest != projection.get("sha256"):
+        raise ValueError("Consumed accepted artifacts do not match the verifier replay projection")
 
 
 def replay_receipt(directory: Path, kind: str) -> dict[str, Any]:
@@ -197,6 +209,9 @@ def main() -> int:
         raise ValueError("Fresh88 verifier replay runtime does not match the parent analysis-source contract")
     if fresh_replay.get("inputs", {}).get("artifact_root_marker") != binding(args.fresh88_artifact_root.resolve() / "runs" / "hanna-10" / "run.json"):
         raise ValueError("Fresh88 verifier replay was sealed against a different consumed artifact root")
+    fresh_projection = fresh_replay.get("result", {}).get("accepted_projection")
+    if not isinstance(fresh_projection, Mapping) or fresh_projection.get("item_count") != 88 or not isinstance(fresh_projection.get("sha256"), str) or not isinstance(fresh_projection.get("item_ids"), list):
+        raise ValueError("Fresh88 verifier replay lacks its canonical accepted-artifact projection")
     fresh_authority = {"fresh88_primary_summary": binding(args.fresh88_primary_output.resolve() / "summary.json"), "fresh88_primary_items": binding(args.fresh88_primary_output.resolve() / "items.jsonl"), "fresh88_primary_manifest": binding(args.fresh88_primary_output.resolve() / "manifest.json"), "fresh88_verifier_replay_receipt": binding(fresh_replay_dir / "receipt.json")}
     grok_runtime = grok_manifest["verifier_runtime"]["analyzer"]["sha256"]
     grok_corpus = corpus["root_commitment"]["sha256"]
@@ -206,10 +221,17 @@ def main() -> int:
         raise ValueError("Grok verifier-v2 replay does not bind the completed corpus")
     if grok_replay.get("inputs", {}).get("raw_frozen_contract") != binding(args.grok_work_root.resolve() / "frozen-provider-contract.json"):
         raise ValueError("Grok verifier replay was sealed against a different consumed raw root")
+    grok_projection = grok_replay.get("result", {}).get("accepted_projection")
+    if not isinstance(grok_projection, Mapping) or grok_projection.get("item_count") != 88 or not isinstance(grok_projection.get("sha256"), str) or not isinstance(grok_projection.get("item_ids"), list):
+        raise ValueError("Grok verifier replay lacks its canonical accepted-artifact projection")
     grok_authority = {**fresh_authority, "grok_verifier_manifest": binding(args.grok_verifier_manifest.resolve()), "grok_verifier_replay_receipt": binding(grok_replay_dir / "receipt.json")}
     fresh_root = args.fresh88_artifact_root.resolve() / "runs"
     grok_root = args.grok_work_root.resolve() / "runs" / "grok_4_6_high" / "development"
-    payload = {"format_version": 1, "kind": "fresh88_confidence_evidence", "models": [private_model(fresh_root, items, summary["mapping_sets"], score_name="score.v2.json", run_path=".", runtime_sha256=fresh_runtime, corpus_sha256=fresh_corpus, selection_sha256=selection_sha256, authority=fresh_authority, reasoning_attestation="provider_attested", parent_mapping=True), private_model(grok_root, items, summary["mapping_sets"], score_name="score.json", run_path="run-01", runtime_sha256=grok_runtime, corpus_sha256=grok_corpus, selection_sha256=selection_sha256, authority=grok_authority, reasoning_attestation="not_reported_by_grok_build_cli", parent_mapping=False)]}
+    fresh = private_model(fresh_root, items, summary["mapping_sets"], score_name="score.v2.json", run_path=".", runtime_sha256=fresh_runtime, corpus_sha256=fresh_corpus, selection_sha256=selection_sha256, authority=fresh_authority, reasoning_attestation="provider_attested", parent_mapping=True, ordered_item_ids=fresh_projection["item_ids"])
+    grok = private_model(grok_root, items, summary["mapping_sets"], score_name="score.json", run_path="run-01", runtime_sha256=grok_runtime, corpus_sha256=grok_corpus, selection_sha256=selection_sha256, authority=grok_authority, reasoning_attestation="not_reported_by_grok_build_cli", parent_mapping=False, ordered_item_ids=grok_projection["item_ids"])
+    require_projection_digest(fresh, fresh_projection)
+    require_projection_digest(grok, grok_projection)
+    payload = {"format_version": 1, "kind": "fresh88_confidence_evidence", "models": [fresh, grok]}
     write(args.output_dir.resolve(), payload)
     return 0
 
