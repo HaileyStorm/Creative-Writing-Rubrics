@@ -1,0 +1,19 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-ai-writer-preface-v1-continuation-v1",
+  "purpose": "A separately frozen continuation of the preface pilot after the original cell 17 terminal failure. It preserves the original experiment and records any cell-17 repair only as sensitivity evidence.",
+  "parent": {
+    "executor_package": "hbq-ai-writer-preface-v1-pilot-executor-v1",
+    "executor_sha256": "202ad7b21a689bea3e1f52cbf19db3bdcd1bfc5d86c8863e56807a0407f96d61",
+    "contract_sha256": "9e1e9d0949ea7bbf1dbee1752eb42c88c36b1c4c0b816908734ddc72047a5072",
+    "executor_binding_sha256": "a67777e8c1dfd0fb2bc8cf8cde09b6475f2fdeab7486b0882d879ef7c34ef32a",
+    "schedule_sha256": "47bff87a30a4adf135cd3c27187f6977017a0d6f8f5b7a65e61017f17b220788",
+    "journal_through_cell_17_sha256": "09769864e16c0e399e41281365705ada057e75867b9cedc04bfccc8acd8d376b",
+    "cell_17_terminal_sha256": "6a70abff5e1d3dfe212cd90b09098ee6fecbe6dd5d8f92b956ece89ce78a37e9",
+    "cell_17_raw_response_sha256": "5dbbfc312c1635ded870e55e5da7b8afd3076d94b865bc651d0670e74b4f5eef"
+  },
+  "provider": {"provider": "codex", "model": "gpt-5.6-sol", "reasoning": "high", "paid_api": false, "fallbacks": "forbidden"},
+  "execution": {"suffix_sequences": [18, 19, 20, 21, 22, 23, 24], "one_scored_attempt_per_suffix_cell": true, "fresh_unscored_capacity_preflight": true, "continue_after_later_structural_failure": true, "remote_gate": "--allow-remote"},
+  "repair": {"target_sequence": 17, "max_remote_attempts": 2, "quote_only_first": true, "full_single_leaf_regrade_only_after_invalid_quote_repair": true, "not_an_independent_vote": true},
+  "analysis": {"primary": "original valid cells only; missing cell 17 remains missing", "sensitivity": "valid repair of cell 17 reported separately", "automatic_wording_decision": false}
+}
