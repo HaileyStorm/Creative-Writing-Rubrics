@@ -1,0 +1,41 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-human-alignment-supplemental-providers-fresh88-baseline-v1",
+  "status": "analysis_only_preregistered",
+  "purpose": "Analysis-only Grok-versus-Fresh88 comparison. It is supplemental and never replaces the Fresh88 GPT-5.6 Sol primary.",
+  "parents": {
+    "fresh88_primary": {
+      "study_id": "hbq-human-alignment-v3-fresh88-analysis-v1",
+      "phase": "development",
+      "files": ["summary.json", "items.jsonl", "manifest.json"],
+      "item_count": 88
+    },
+    "grok_generation": {
+      "study_id": "hbq-human-alignment-supplemental-providers-v1",
+      "provider_id": "grok_4_6_high",
+      "phase": "development",
+      "required_items": 88,
+      "required_receipt_sessions": 528
+    },
+    "historical_verifier": {
+      "study_id": "hbq-human-alignment-supplemental-providers-verifier-v2",
+      "role": "raw-run verification only; it does not establish the Fresh88 baseline"
+    }
+  },
+  "comparison": {
+    "score_delta": "Grok HBQ observed score minus Fresh88 HBQ observed score",
+    "cluster": "prompt_group_id",
+    "bootstrap_seed": 561721,
+    "bootstrap_draws": 1000,
+    "required_hanna_metrics": ["Relevance", "Coherence", "Empathy", "Surprise", "Engagement", "Complexity"]
+  },
+  "privacy": {
+    "public_outputs": "No HANNA prose, prompts, private work paths, provider request/session IDs, or raw responses.",
+    "human_judging": "Use only published HANNA ratings; no new human judging or contact."
+  },
+  "interpretation_limits": [
+    "This is a provider comparison condition, not a new rubric scale or literary ground truth.",
+    "The historical Grok v1 corpus remains historical raw evidence; this successor must not relabel it as Fresh88 generation.",
+    "Provider reasoning attestation is reported as provenance when absent."
+  ]
+}
