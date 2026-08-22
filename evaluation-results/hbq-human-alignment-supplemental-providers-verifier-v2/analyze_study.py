@@ -6,6 +6,7 @@ import gzip
 import hashlib
 import importlib.util
 import json
+import base64
 import subprocess
 import sys
 from pathlib import Path
@@ -16,7 +17,6 @@ from hbqrs import paths as paths_module
 from hbqrs import runner as runner_module
 from hbqrs import weights as weights_module
 from hbqrs.core import compile_bundle, score_bundle
-from hbqrs.paths import prompts_dir
 from hbqrs.runner import EVIDENCE_NORMALIZATION_POLICY, VALIDATION_FEEDBACK_POLICY, _json_bytes, _load_checkpoints, _question_payload, _render_prompt
 
 HERE = Path(__file__).resolve().parent
@@ -137,6 +137,23 @@ def _historical_component(record: Mapping[str, Any], name: str, expected: Mappin
     return {"relative_path": relative_path, "bytes": expected_bytes, "sha256": expected_sha256}
 
 
+def _historical_binary_prompt() -> tuple[str, dict[str, Any]]:
+    generation = _contract().get("historical_generation")
+    inputs = generation.get("inputs") if isinstance(generation, Mapping) else None
+    prompt = inputs.get("binary_prompt") if isinstance(inputs, Mapping) else None
+    chunks = prompt.get("base64_chunks") if isinstance(prompt, Mapping) else None
+    if not isinstance(prompt, Mapping) or set(prompt) != {"relative_path", "bytes", "sha256", "base64_chunks"} or not isinstance(prompt.get("relative_path"), str) or not isinstance(prompt.get("bytes"), int) or not isinstance(prompt.get("sha256"), str) or not isinstance(chunks, list) or not chunks or not all(isinstance(chunk, str) for chunk in chunks):
+        raise ValueError("Verifier contract historical binary prompt binding is malformed")
+    try:
+        raw = base64.b64decode("".join(chunks), validate=True)
+        text = raw.decode("utf-8-sig")
+    except (UnicodeError, ValueError) as exc:
+        raise ValueError("Verifier contract historical binary prompt payload is invalid") from exc
+    if len(raw) != prompt["bytes"] or hashlib.sha256(raw).hexdigest() != prompt["sha256"]:
+        raise ValueError("Verifier contract historical binary prompt payload hash drifted")
+    return text, {"relative_path": prompt["relative_path"], "bytes": prompt["bytes"], "sha256": prompt["sha256"]}
+
+
 def _generation_runtime(work: Path, provider_id: str, phase: str) -> dict[str, Any]:
     contract = _contract()
     generation = contract.get("historical_generation")
@@ -171,7 +188,8 @@ def _generation_runtime(work: Path, provider_id: str, phase: str) -> dict[str, A
     bound = {name: _historical_component(record, name, value, commit) for name, value in components.items() if isinstance(value, Mapping)}
     if set(bound) != set(components):
         raise ValueError("Verifier contract historical component entry is malformed")
-    return {"package_commit": commit, "frozen_provider_contract_sha256": generation["frozen_provider_contract_sha256"], "invocation": {"relative_path": f"invocations/{provider_id}/{phase}.json", "sha256": expected["sha256"]}, "components": bound}
+    _, binary_prompt = _historical_binary_prompt()
+    return {"package_commit": commit, "frozen_provider_contract_sha256": generation["frozen_provider_contract_sha256"], "invocation": {"relative_path": f"invocations/{provider_id}/{phase}.json", "sha256": expected["sha256"]}, "components": bound, "inputs": {"binary_prompt": binary_prompt}}
 
 
 def receipt(run: Path, record: Mapping[str, Any], expected: Mapping[str, Any]) -> str:
@@ -207,7 +225,7 @@ def verify_run(work: Path, frozen: Mapping[str, Any], provider_id: str, phase: s
     if config.get("weight_profile") != default_weight or config.get("questions_sha256") != hashlib.sha256(_json_bytes(_question_payload(rows))).hexdigest() or config.get("compiled_bundle_sha256") != hashlib.sha256(_json_bytes(compile_bundle(modules, bundle, task_contract=task_contract))).hexdigest():
         raise ValueError("Provider run weight/question binding drifted")
     source, prompt = _frozen_text(folder / "source.md"), _frozen_text(folder / "prompt.md")
-    binary = _frozen_text(prompts_dir() / "judge" / "BINARY_EVALUATION_PROMPT.md")
+    binary, _ = _historical_binary_prompt()
     expected_prompts = [_render_prompt(binary_prompt=binary, artifact={"name": "source.md", "text": source}, contexts=[{"name": "prompt.md", "text": prompt}], bundle_id="prose.short_story", artifact_id=str(selection["item_id"]), questions=rows[offset:offset + 32]).encode("utf-8") for offset in range(0, len(rows), 32)]
     checkpoints = GENERATION_ANALYSIS._checkpoint_files(run)
     if len(checkpoints) != len(expected_prompts):
