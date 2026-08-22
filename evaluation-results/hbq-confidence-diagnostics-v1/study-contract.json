@@ -1,0 +1,23 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-confidence-diagnostics-v1",
+  "status": "analysis_only_preregistered",
+  "purpose": "Offline, aggregate-only confidence diagnostics. Confidence remains noncanonical and no output is a score, coverage, calibration, or promotion decision.",
+  "inputs": {
+    "sealed_directory": {
+      "required_files": ["confidence-input.json", "manifest.json"],
+      "manifest_files_exact": ["confidence-input.json"],
+      "forbidden_content": ["prose", "prompt", "evidence", "session", "request", "response"]
+    },
+    "repeat_kind": "repeatability_confidence_evidence",
+    "fresh88_kind": "fresh88_confidence_evidence"
+  },
+  "outputs": ["summary.json", "manifest.json"],
+  "limits": [
+    "Leave-one-repeat-out consensus is an empirical proxy, not human truth; tied leave-out labels are excluded before Brier, ECE, and reliability calculations.",
+    "Fresh88 and Grok HANNA association is not leaf-level calibration and must not emit Brier, ECE, or reliability claims.",
+    "Confidence effects are reported only as role-stratified YES-rate and effective-confidence-mass diagnostics, never confidence-weighted HBQ scores or coverage.",
+    "Equal-budget resampling is conditional on a complete rectangular repeat matrix, uses an abstaining tie rule, and is descriptive only.",
+    "Fresh88 reports dimension-specific mapped HBQ/HANNA associations separately for the 80 generated-story primary and the all-88 secondary."
+  ]
+}
