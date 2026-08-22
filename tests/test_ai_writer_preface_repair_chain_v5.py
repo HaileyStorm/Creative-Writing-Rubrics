@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import importlib.util
+import hashlib
 import json
 import sys
 from pathlib import Path
@@ -72,3 +73,15 @@ def test_actual_v4_parent_prepares_and_renders_without_provider_contact(tmp_path
     preview = executor.render_next_disclosure(work, private, *roots)
     assert preview["provider_calls"] == 0 and preview["status"] == "pending" and preview["disclosure"]["locked"] == executor.LOCKED
     with pytest.raises(ValueError, match="allow-remote"): executor.execute_one(work, private, *roots)
+
+
+def test_published_recovery_summary_is_bound_and_path_free():
+    summary_path = PACKAGE / "results" / "summary.json"
+    manifest = json.loads((PACKAGE / "results" / "manifest.json").read_text(encoding="utf-8"))
+    summary = json.loads(summary_path.read_text(encoding="utf-8"))
+    assert summary["status"] == "valid_quote_repair" and summary["provider_calls"] == 1
+    assert summary["locked"] == {"question_id": "craft.narrative.point_of_view_and_focalization.distance", "verdict": "NO", "confidence": 0.99}
+    assert summary["primary_analysis"] == {"missing_original_cell": 17, "no_imputation": True, "original_expected_cells": 23, "original_valid_cells": 22}
+    assert manifest["files"]["summary.json"] == {"bytes": summary_path.stat().st_size, "sha256": hashlib.sha256(summary_path.read_bytes()).hexdigest()}
+    text = summary_path.read_text(encoding="utf-8")
+    assert "C:\\Users\\" not in text and "He stares at the wall" not in text

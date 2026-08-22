@@ -1,0 +1,35 @@
+{
+  "evidence": {
+    "exact_quote_bytes": 206,
+    "exact_quote_sha256": "446b2634e51056a6aa0644950329b1c6ee539a3955b4cc2487e5ee5cd7549499",
+    "normalized_verdicts_sha256": "a866c7554f5bb19ff7b573046964a75bd3a7e5b74933fefac7025a1704568ffc",
+    "private_terminal_sha256": "9591a84fa35f53e2bca6b329daa9a682d2b41538ecd162ecb9197929abf0769d",
+    "provider_record_sha256": "f71bd7e09524853164c0c44272ff7b4e42e7ba62db7fb77f82739ccf00894cdc",
+    "response_sha256": "7dd6fe0b0916e21943678425505114ef198318298726b95ac2035a706d3f98be"
+  },
+  "format_version": 1,
+  "locked": {
+    "confidence": 0.99,
+    "question_id": "craft.narrative.point_of_view_and_focalization.distance",
+    "verdict": "NO"
+  },
+  "primary_analysis": {
+    "missing_original_cell": 17,
+    "no_imputation": true,
+    "original_expected_cells": 23,
+    "original_valid_cells": 22
+  },
+  "provider": {
+    "model": "gpt-5.6-sol",
+    "provider": "codex",
+    "reasoning": "high"
+  },
+  "provider_calls": 1,
+  "recovery_attempts": 1,
+  "status": "valid_quote_repair",
+  "study_id": "hbq-ai-writer-preface-v1-repair-chain-v5",
+  "v4_lineage": {
+    "counts_as_repair": false,
+    "counts_as_vote": false
+  }
+}

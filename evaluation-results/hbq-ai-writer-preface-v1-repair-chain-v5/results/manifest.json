@@ -1,0 +1,38 @@
+{
+  "analysis": {
+    "executor.py": {
+      "bytes": 12836,
+      "sha256": "a904f08d03a83520d837392ab480d575fdfc42079dbdf1adaadb2e637affb54e"
+    },
+    "study-contract.json": {
+      "bytes": 968,
+      "sha256": "de6bcca753e520b5a31bd0894af61f45dd096a60f234ad4183cc7a83e0c69332"
+    }
+  },
+  "files": {
+    "summary.json": {
+      "bytes": 1177,
+      "sha256": "b40c5d5e917dd44ce8f768ff383645768e846e4a1a31c7cb18988c1e3a1050ca"
+    }
+  },
+  "format_version": 1,
+  "source_evidence": {
+    "offline_settlement": {
+      "bytes": 620,
+      "sha256": "e335b7a8c86d4418cc53fe518ab2f9b634cbf26add6272d6e50747bed9e114d4"
+    },
+    "outbound_disclosures": {
+      "bytes": 696,
+      "sha256": "14a73895ee56a90b1aaa2ec5c2b4d7c84dce4646d2767539e87db77f1847325c"
+    },
+    "private_terminal": {
+      "bytes": 3253,
+      "sha256": "9591a84fa35f53e2bca6b329daa9a682d2b41538ecd162ecb9197929abf0769d"
+    },
+    "recovery_journal": {
+      "bytes": 174,
+      "sha256": "2173cc2d66dbd341d2dc5fcb531ba9fc34bec9d856d76f73fb512585fb63491d"
+    }
+  },
+  "study_id": "hbq-ai-writer-preface-v1-repair-chain-v5"
+}

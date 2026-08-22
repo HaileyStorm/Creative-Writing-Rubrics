@@ -10,3 +10,8 @@ The only permitted remote action is one authenticated ChatGPT/Codex
 original NO/0.99 lock for
 `craft.narrative.point_of_view_and_focalization.distance`. Offline operations
 make no provider calls; execution requires explicit `--allow-remote`.
+
+The completed recovery is published in `results/`: one Sol/high subscription
+call returned a valid exact quote while preserving the locked `NO / 0.99`.
+The original primary analysis remains 22 valid cells of 23, with cell 17
+unimputed; the repair is supplemental evidence, not a retroactive primary vote.
