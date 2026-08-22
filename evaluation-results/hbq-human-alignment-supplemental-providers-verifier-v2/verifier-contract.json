@@ -1,0 +1,39 @@
+{
+  "format_version": 1,
+  "verifier_id": "hbq-human-alignment-supplemental-providers-verifier-v2",
+  "algorithm": "historical_generation_v1_raw_utf8_sig_verification_v1",
+  "required_siblings": {
+    "README.md": {
+      "bytes": 768,
+      "sha256": "8de82a97352a4de20b0b3f55b8e3298e0f603c5274f4af5f7589514c03e6f0d3"
+    }
+  },
+  "historical_generation": {
+    "package_commit": "44518ababfa9d6a89baeddff2afe5cf5ccfe4e8f",
+    "frozen_provider_contract_sha256": "4c9736f4fa58d8f0ed21197e0fb44e105a8ea35e622805a443f72986ed58c0a4",
+    "provider": {"provider_id": "grok_4_6_high", "provider": "grok", "model": "grok-4.6", "reasoning": "high", "allow_unattested_reasoning": true, "reported_models": ["grok-4.6-build"], "maximum_workers": 4},
+    "invocations": {
+      "grok_4_6_high/development": {
+        "sha256": "b79f054498905c9230105b77bd884e1c0dfec9af39f88cb41bd90429d4955882",
+        "settings": {
+          "format_version": 1,
+          "study_id": "hbq-human-alignment-supplemental-providers-v1",
+          "provider_id": "grok_4_6_high",
+          "phase": "development",
+          "workers": 2,
+          "timeout": 3600.0,
+          "supplemental_contract_sha256": "b72ad42eafdfe67d70fc52adc509dc1eecd00ed47d2a50c24dd6d5dd0afceef5",
+          "frozen_contract_sha256": "4c9736f4fa58d8f0ed21197e0fb44e105a8ea35e622805a443f72986ed58c0a4"
+        },
+        "components": {
+          "analyzer": {"relative_path": "evaluation-results/hbq-human-alignment-supplemental-providers-v1/analyze_study.py", "bytes": 30310, "sha256": "0ecf52ddff38c2aab2e5f5242534295828455413dad93896317002ed2026f3a6"},
+          "promotion_gate": {"relative_path": "evaluation-results/hbq-human-alignment-supplemental-providers-v1/promotion_gate.py", "bytes": 6244, "sha256": "5b5d917fc223a34759c99721eaf6bbfc7eb14a52d19473d5f04cb363cfb7b2db"},
+          "runner": {"relative_path": "src/hbqrs/runner.py", "bytes": 113571, "sha256": "ef87816de970738a44d16fbbd105f2309cb0e3750557502a2f68ee7f7b71d95c"},
+          "study": {"relative_path": "evaluation-results/hbq-human-alignment-supplemental-providers-v1/study.py", "bytes": 13458, "sha256": "2839146db034993a20431196c2151f2525b95c22b4e320cbc16486f56287f697"},
+          "study_runner": {"relative_path": "evaluation-results/hbq-human-alignment-supplemental-providers-v1/run_study.py", "bytes": 9814, "sha256": "f33015ac25d32dc14a64fc4f1cd854e49724622d664d5cc427017c4afe53f522"}
+        }
+      }
+    },
+    "corpus": {"provider_id": "grok_4_6_high", "phase": "development", "run_count": 88, "checkpoint_count": 528}
+  }
+}
