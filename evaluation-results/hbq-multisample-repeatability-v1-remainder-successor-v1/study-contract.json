@@ -1,0 +1,15 @@
+{
+  "closed_successor": {
+    "execution_contract_sha256": "27b37be23f3f24f1c904b809cc454c81a536f3f610d5e43c95838623139a8ccf",
+    "file_count": 1008,
+    "journal_sha256": "df0e6eafc4f6f7c91a419e7e1cbc6b46e36fa1abba9dae24bb9393890246fcaa",
+    "manifest_sha256": "1fbf47b97a9cc1f71242e0ec32afef9a2faab89ccdf6943d4e253118c3e5f01e",
+    "partial_output_manifest_sha256": "c471a4f5b2dd188a1307e8318c46185fba00cf6617672a550951992c8230aa85",
+    "partial_sequence": 178,
+    "predecessor_binding_sha256": "3a63744f2cef2748b17a31dd53e23ac62aa802283e12dd983cae813151ed939e"
+  },
+  "format_version": 1,
+  "outcome_blind_schedule": "The successor schedules only cells 178-330 from the closed sealed plan. It never reads or reuses partial verdicts from sequence 178.",
+  "retry_after": "2026-08-28T01:21:00+00:00",
+  "study_id": "hbq-multisample-repeatability-v1-remainder-successor-v1"
+}
