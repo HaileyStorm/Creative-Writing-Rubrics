@@ -1,0 +1,35 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-human-alignment-supplemental-providers-ox-alpha-v3",
+  "frozen_before_execution": true,
+  "purpose": "Score-blind 16-leaf transport successor bound to the permanently failed Ox Alpha v2 root. GPT-5.6 remains primary.",
+  "parent_v2": {
+    "path": "../hbq-human-alignment-supplemental-providers-ox-alpha-v2",
+    "study_id": "hbq-human-alignment-supplemental-providers-ox-alpha-v2",
+    "files": {
+      "README.md": "749ddfb96179fb7f8888c51275dcb9a14d4cb2f72b4d326c7650a4d6afec98af",
+      "analyze_pilot.py": "1c086dddd34a410a138541fdfc617dcb108ed3abede97bc2591115fbdfd095b2",
+      "prepare_pilot.py": "cdcbf11fd4beb2ccd5ddfea2c0f0670d08fd1ac197934ed0ddd2e4b9401cc686",
+      "run_pilot.py": "7e3864db190f13066c6b100b7c78eba2dd3b772b71ec185e61d0718c9113f4c8",
+      "study-contract.json": "4a9b94fd5a4d3801fc3354d9d3f645c05266e65d29541cec519a358eeff81bb4",
+      "study.py": "ce3719c554b3b990eb0a5c729146c14f918eeb125e3baaf2b574fe5191a5c3e6"
+    }
+  },
+  "failed_v2": {
+    "commitments": {
+      "frozen-ox-alpha-v2-contract.json": {"bytes": 608066, "sha256": "2d66d247f09d6f64510403adf1de3d2f810cf35b2e25878a6e8bf668c23c4767"},
+      "pilot-execution-claim.json": {"bytes": 334, "sha256": "696c6919d2a45a4e7b2538c8c8ade2fe286c86f0ea398b6095b66c9fca432db1"},
+      "pilot-invocation.json": {"bytes": 1665, "sha256": "3e5a4babdb6de61bdcdfe41ec76d57662ced5e9d464cb1a61b1447ae50cacb2d"},
+      "pilot-journal/0001-ox-alpha-v2-01.json": {"bytes": 1595, "sha256": "8773b45e68b2129851d7f5d35f591c1cbfd2f1e090e1d4d5bba32f3ddc34b259"},
+      "runs/ox-alpha-v2-01/responses/rejected/batch-0001/attempt-0001.json": {"bytes": 3255, "sha256": "56fd4dbbe1e8415b419797edff5d9c7790c5c8a40078974e6649aff1421ce2e8"}
+    },
+    "raw_evidence_tree": {"path": "runs/ox-alpha-v2-01/responses/batch-0001.attempt-0001.nous.evidence", "files": 7, "sha256": "742fa22e6e801ae391f36bbeb8b757fe771e96e1ee471fca3a154c9aa0b38284", "excluded": [".evidence-hmac.key"]},
+    "complete_work_tree": {"files": 17, "sha256": "8c3ce072789cf01a7d7198d4799bd80aac77b85d38c690b9e25bd49a8d86447f"},
+    "failure": "The first v2 logical request recorded two HTTP 524 attempts and permanently closed v2."
+  },
+  "provider": {"provider_id": "ox_alpha_max", "provider": "nous", "model": "stealth/ox-alpha", "provider_canonical_model": "stealth/ox-alpha", "reasoning": "max", "allow_unattested_reasoning": true, "evidence_status": "provisional_only"},
+  "transport_pilot": {"cells": 3, "batch_size": 16, "question_count": 16, "batch_attempts": 1, "workers": 1, "timeout_seconds": 100, "maximum_http_seconds_exclusive": 100, "required_shared_runner_option": "max_physical_http_attempts_per_logical_request=1", "success_rule": "Exactly three distinct, schema-valid completions in sequence. Each binds one logical request, exactly one physical 2xx HTTP attempt below 100 seconds, zero recovered failures, its raw evidence, payload, bridge receipt, and a distinct session.", "failure_rule": "Any 524, non-2xx, recovery, second physical attempt, drift, duplicate session or receipt permanently closes the fresh root. No retry, escalation, paid route, DSPy, or human route follows."},
+  "execution": {"status": "preregistered_cap1_unexecuted", "required_shared_runner_option": "max_physical_http_attempts_per_logical_request=1", "required_request_schema": "codex-nous-tool-free-judge-request-v2", "launch_gate": "Fresh zero-cost catalog and usage proof plus a reviewed shared cap-1 runtime are required before launch."},
+  "privacy": {"pilot": "No HANNA labels, scores, correlations, or public prose analysis are produced.", "human_judging": "Existing public HANNA inputs only; no new human judging.", "remote": "Nous receives the frozen public source and paired prompt, frozen task contract, 16 requested questions, the exact active judge instruction, and the strict response schema for each cell."},
+  "interpretation_limits": ["This supplements and never replaces GPT-5.6.", "Provider max-effort attestation remains provisional.", "A transport pass does not establish scoring or alignment performance."]
+}

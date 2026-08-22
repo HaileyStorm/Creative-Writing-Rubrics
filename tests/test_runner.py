@@ -3,6 +3,7 @@ from __future__ import annotations
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import gzip
 import hashlib
+import hmac
 import json
 from pathlib import Path
 import subprocess
@@ -12,6 +13,7 @@ import pytest
 from jsonschema import Draft202012Validator
 
 from hbqrs import HBQError, book_root
+from hbqrs import runner as runner_module
 from hbqrs.runner import (
     _call_codex,
     _call_grok,
@@ -1825,6 +1827,7 @@ def test_nous_backend_uses_only_canonical_tool_free_launcher(tmp_path: Path, mon
 
     monkeypatch.setattr("hbqrs.runner.NOUS_LAUNCHER_PATH", launcher)
     monkeypatch.setattr("hbqrs.runner.subprocess.run", fake_run)
+    monkeypatch.setattr("hbqrs.runner._validate_nous_judge_evidence", lambda **_: None)
     with pytest.raises(HBQError, match="allow-unattested-reasoning"):
         _call_nous(
             model="deepseek/deepseek-v4-flash-0731",
@@ -1867,6 +1870,137 @@ def test_nous_backend_uses_only_canonical_tool_free_launcher(tmp_path: Path, mon
     assert len(calls) == 8
 
 
+def _write_bound_nous_judge_evidence(
+    *, root: Path, request: dict[str, object], result: dict[str, object], transport_policy: dict[str, object]
+) -> dict[str, object]:
+    root.mkdir()
+    key = b"n" * 32
+    (root / ".evidence-hmac.key").write_bytes(key)
+    run = root / "judge-run"
+    run.mkdir()
+    model_policy = {
+        "requested_model": "stealth/ox-alpha",
+        "provider_canonical_model": "stealth/ox-alpha",
+        "required_reasoning_effort": "max",
+    }
+    boundary = {
+        "request_schema": request["schema"],
+        "request_sha256": runner_module._sha256_bytes(runner_module._nous_canonical_bytes(request)),
+        "response_format": request["response_format"],
+        "zero_tools": True,
+        "transport_policy": transport_policy,
+        "model_policy": model_policy,
+    }
+    outcome_metadata = {
+        "judge_request_sha256": boundary["request_sha256"],
+        "judge_response_schema_sha256": runner_module._sha256_bytes(
+            runner_module._nous_canonical_bytes(request["response_format"])
+        ),
+        "judge_result_sha256": runner_module._sha256_bytes(runner_module._nous_canonical_bytes(result)),
+        "judge_transport_policy": transport_policy,
+        "judge_model_policy": model_policy,
+    }
+    records = [
+        ("judge_boundary", boundary),
+        *[("message", {"direction": "outbound", "message": message}) for message in request["messages"]],
+        ("message", {"direction": "inbound", "message": {"role": "assistant", "content": json.dumps(result)}}),
+        ("outcome", {"status": "success", "metadata": outcome_metadata}),
+    ]
+    previous = "0" * 64
+    events: list[dict[str, object]] = []
+    for sequence, (event_type, data) in enumerate(records):
+        base = {
+            "sequence": sequence,
+            "timestamp": "2026-08-21T00:00:00+00:00",
+            "event_type": event_type,
+            "previous_entry_sha256": previous,
+            "data": data,
+        }
+        digest = runner_module._sha256_bytes(runner_module._nous_canonical_bytes(base))
+        events.append({
+            **base,
+            "entry_sha256": digest,
+            "hmac_sha256": hmac.new(key, digest.encode("ascii"), hashlib.sha256).hexdigest(),
+        })
+        previous = digest
+    events_bytes = b"".join(runner_module._nous_canonical_bytes(event) + b"\n" for event in events)
+    (run / "events.jsonl").write_bytes(events_bytes)
+    manifest = {"schema": "codex-nous-evidence-v1", "run_id": "judge-run"}
+    manifest_bytes = runner_module._nous_canonical_bytes(manifest)
+    (run / "manifest.json").write_bytes(manifest_bytes)
+    receipt = {
+        "schema": "codex-nous-outcome-v1",
+        "run_id": "judge-run",
+        "sealed_at": "2026-08-21T00:00:00+00:00",
+        "status": "success",
+        "event_count": len(events),
+        "terminal_chain_sha256": previous,
+        "events_sha256": runner_module._sha256_bytes(events_bytes),
+        "manifest_sha256": runner_module._sha256_bytes(manifest_bytes),
+        "bridge_sha256": "b" * 64,
+        "outcome": {"metadata": outcome_metadata},
+    }
+    receipt_sha256 = runner_module._sha256_bytes(runner_module._nous_canonical_bytes(receipt))
+    receipt["receipt_sha256"] = receipt_sha256
+    receipt["hmac_sha256"] = hmac.new(key, receipt_sha256.encode("ascii"), hashlib.sha256).hexdigest()
+    (run / "receipt.json").write_bytes(runner_module._nous_canonical_bytes(receipt))
+    return {
+        **outcome_metadata,
+        "run_id": "judge-run",
+        "evidence_path": str(run),
+        "receipt_sha256": receipt_sha256,
+        "terminal_chain_sha256": previous,
+        "evidence_validation": {"valid": True},
+    }
+
+
+def test_nous_evidence_replay_independently_binds_default_v1_and_rejects_hash_tamper(tmp_path: Path) -> None:
+    request = {
+        "schema": "codex-nous-tool-free-judge-request-v1",
+        "model": "stealth/ox-alpha",
+        "reasoning_effort": "max",
+        "messages": [{"role": "user", "content": "synthetic"}],
+        "response_format": {"type": "json_schema", "json_schema": {"name": "x", "strict": True, "schema": {"type": "object"}}},
+    }
+    original_request_bytes = runner_module._nous_canonical_bytes(request)
+    result = {"verdicts": []}
+    policy = {
+        "schema": "codex-nous-tool-free-judge-transport-v1",
+        "logical_requests_per_attempt": 1,
+        "max_physical_attempts_per_logical_request": 2,
+        "retry_policy_version": "hardened-v2-provider-attempts-v1",
+        "retryable_statuses": [408, 409, 425, 429],
+    }
+    metadata = _write_bound_nous_judge_evidence(root=tmp_path / "evidence", request=request, result=result, transport_policy=policy)
+    runner_module._validate_nous_judge_evidence(
+        evidence_root=tmp_path / "evidence",
+        request=request,
+        result=result,
+        metadata=metadata,
+        transport_policy=policy,
+        model_policy={
+            "requested_model": "stealth/ox-alpha",
+            "provider_canonical_model": "stealth/ox-alpha",
+            "required_reasoning_effort": "max",
+        },
+    )
+    assert runner_module._nous_canonical_bytes(request) == original_request_bytes
+    metadata["judge_result_sha256"] = "0" * 64
+    with pytest.raises(HBQError, match="does not bind"):
+        runner_module._validate_nous_judge_evidence(
+            evidence_root=tmp_path / "evidence",
+            request=request,
+            result=result,
+            metadata=metadata,
+            transport_policy=policy,
+            model_policy={
+                "requested_model": "stealth/ox-alpha",
+                "provider_canonical_model": "stealth/ox-alpha",
+                "required_reasoning_effort": "max",
+            },
+        )
+
+
 def test_nous_backend_rejects_any_nonpinned_model_or_reasoning(tmp_path: Path) -> None:
     schema = tmp_path / "schema.json"
     schema.write_text('{"type":"object"}', encoding="utf-8")
@@ -1880,6 +2014,102 @@ def test_nous_backend_rejects_any_nonpinned_model_or_reasoning(tmp_path: Path) -
             batch_number=1,
             timeout=10,
         )
+
+
+def test_nous_one_physical_attempt_uses_the_v2_request_contract(tmp_path: Path, monkeypatch) -> None:
+    schema = tmp_path / "schema.json"
+    schema.write_text('{"type":"object"}', encoding="utf-8")
+    launcher = tmp_path / "launch-bridge.ps1"
+    launcher.write_text("fixture", encoding="utf-8")
+
+    def fake_run(argv: list[str], **kwargs: object) -> subprocess.CompletedProcess[str]:
+        if "-ProveLock" in argv:
+            evidence = Path(argv[argv.index("-EvidenceRoot") + 1])
+            proof = evidence / "proof.json"
+            proof.write_text("{}", encoding="utf-8")
+            return subprocess.CompletedProcess(argv, 0, stdout=json.dumps({"proof_path": str(proof)}), stderr="")
+        request_path = Path(argv[argv.index("-JudgeRequest") + 1])
+        result_path = Path(argv[argv.index("-JudgeResult") + 1])
+        request = json.loads(request_path.read_text(encoding="utf-8"))
+        assert request["schema"] == "codex-nous-tool-free-judge-request-v2"
+        assert request["max_physical_http_attempts_per_logical_request"] == 1
+        result_path.write_text(
+            json.dumps(
+                {
+                    "schema": "codex-nous-tool-free-judge-result-v1",
+                    "result": {"verdicts": []},
+                    "metadata": {
+                        "requested_provider": "nous",
+                        "requested_model": request["model"],
+                        "provider_reported_model": "stealth/ox-alpha",
+                        "provider_canonical_model": "stealth/ox-alpha",
+                        "requested_reasoning_effort": "max",
+                        "provider_reported_reasoning_effort": None,
+                        "tool_free": True,
+                        "tool_mode": "judge",
+                        "tool_call_count": 0,
+                        "exact_gate_eligible": False,
+                        "logical_provider_request_count": 1,
+                        "physical_http_attempt_count": 1,
+                        "recovered_request_count": 0,
+                        "judge_transport_policy": {
+                            "schema": "codex-nous-tool-free-judge-transport-v1",
+                            "logical_requests_per_attempt": 1,
+                            "max_physical_attempts_per_logical_request": 1,
+                            "retry_policy_version": "hardened-v2-provider-attempts-v1",
+                            "retryable_statuses": [408, 409, 425, 429],
+                        },
+                        "judge_model_policy": {
+                            "requested_model": "stealth/ox-alpha",
+                            "provider_canonical_model": "stealth/ox-alpha",
+                            "required_reasoning_effort": "max",
+                        },
+                        "evidence_validation": {"valid": True, "exact_gate_eligible": False},
+                    },
+                }
+            ),
+            encoding="utf-8",
+        )
+        return subprocess.CompletedProcess(argv, 0, stdout="{}", stderr="")
+
+    monkeypatch.setattr("hbqrs.runner.NOUS_LAUNCHER_PATH", launcher)
+    monkeypatch.setattr("hbqrs.runner.subprocess.run", fake_run)
+    monkeypatch.setattr("hbqrs.runner._validate_nous_judge_evidence", lambda **_: None)
+    content, record = _call_nous(
+        model="stealth/ox-alpha",
+        reasoning="max",
+        prompt="judge this",
+        output_dir=tmp_path,
+        response_schema=schema,
+        batch_number=1,
+        timeout=10,
+        allow_unattested_reasoning=True,
+        max_physical_http_attempts_per_logical_request=1,
+    )
+    assert json.loads(content) == {"verdicts": []}
+    assert record["transport_policy"]["max_physical_attempts_per_logical_request"] == 1
+
+
+@pytest.mark.parametrize("cap", [0, 2, True, "1"])
+def test_nous_one_physical_attempt_rejects_malformed_caps(tmp_path: Path, cap: object) -> None:
+    schema = tmp_path / "schema.json"
+    schema.write_text('{"type":"object"}', encoding="utf-8")
+    with pytest.raises(HBQError, match="exactly 1"):
+        _call_nous(
+            model="stealth/ox-alpha",
+            reasoning="max",
+            prompt="judge this",
+            output_dir=tmp_path,
+            response_schema=schema,
+            batch_number=1,
+            timeout=10,
+            max_physical_http_attempts_per_logical_request=cap,  # type: ignore[arg-type]
+        )
+
+
+def test_non_nous_runner_rejects_a_physical_attempt_cap(tmp_path: Path) -> None:
+    with pytest.raises(HBQError, match="applies only to Nous"):
+        _run(tmp_path, max_physical_http_attempts_per_logical_request=1)
 
 
 def test_ox_alpha_requires_requested_max_reasoning(tmp_path: Path) -> None:

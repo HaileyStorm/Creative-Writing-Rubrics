@@ -1,0 +1,41 @@
+{
+  "format_version": 1,
+  "study_id": "the-part-that-arrives-first-batch-curve-codex-remainder-v1",
+  "status": "preregistered_remainder_no_live_executor",
+  "closed_parent": {
+    "git_commit": "ae234403707f2005383188a185123d7a85a16002",
+    "public_root": "C:/Users/Haile/Documents/cwr-batch-curve-codex-v1-20260821-ae23440-r1",
+    "private_root": "C:/Users/Haile/Documents/cwr-batch-curve-codex-v1-20260821-ae23440-private-r1",
+    "preexecution_receipt": {"relative_path": "preexecution-disclosure-receipt.json", "bytes": 2276, "sha256": "8e1489f70951586113c743b0dffa7f9a06d9ee72e0a3589449ebe675eb88f138"},
+    "claims": {"relative_directory": "claims", "expected_names": []},
+    "completed_cells": {"count": 35, "relative_directory": "cells", "manifest_sha256": "efe9b5d7aa78f6bf808d0da0037ab0e6a21ed622250b29f58503b5489b0540bd"},
+    "partial_cell": {
+      "sequence": 36,
+      "size": 4,
+      "repetition": 3,
+      "public_checkpoint": {"relative_path": "cells/cell-36.json", "bytes": 302, "sha256": "5a5f8b39f4a492473dde0d97b9078b885a5a80cdb11f582a6385bdb0efd496cf"},
+      "private_run": {"relative_path": "runs/cell-36/run.json", "bytes": 8421, "sha256": "ad5476e656a9215e8809de84bf3453ebfb4976c91daa82a741b1840db12b09c2"},
+      "private_tree": {"relative_directory": "runs/cell-36", "file_count": 163, "manifest_sha256": "cd024a721ee3c746bb47e3b886d9a30ed6c56f477389ecbf6d0cd30f95a33fd4"},
+      "accepted_prefix": {"batch_start": 1, "batch_end": 31, "manifest_sha256": "4a788a8b4ab90540820bbfc2d7e0f5cc622fdaeea0e0edb08f510f9b8c4a605c"},
+      "quota_rejections": {"batch": 32, "attempts": 3, "manifest_sha256": "0de1ded0f78c91dd2ee6d8a875de3b8b3824351c55dcffbba6057a3ca4b5231e", "retry_after": "2026-08-27T19:21:00-06:00"}
+    }
+  },
+  "remainder": {
+    "question_count": 178,
+    "cells": [
+      {"parent_cell": 36, "size": 4, "repetition": 3, "batch_start": 32, "batch_end": 45},
+      {"parent_cell": 37, "size": 32, "repetition": 3, "batch_start": 1, "batch_end": 6},
+      {"parent_cell": 38, "size": 8, "repetition": 3, "batch_start": 1, "batch_end": 23},
+      {"parent_cell": 39, "size": 48, "repetition": 3, "batch_start": 1, "batch_end": 4}
+    ],
+    "scheduled_provider_calls": 47,
+    "prohibitions": ["no_in_place_resume", "no_repeat_of_parent_cell_36_batches_1_through_31", "no_provider_call_from_this_package"]
+  },
+  "quota_gate": {
+    "not_before": "2026-08-27T19:21:00-06:00",
+    "required_record": "current-quota-preflight.json",
+    "required_availability": "available",
+    "evidence_class": "operator_observed_current_quota_preflight",
+    "max_age_minutes": 15
+  }
+}

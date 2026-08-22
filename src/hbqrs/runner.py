@@ -6,6 +6,7 @@ from copy import deepcopy
 from datetime import datetime, timezone
 import gzip
 import hashlib
+import hmac
 import ipaddress
 import json
 import os
@@ -69,6 +70,25 @@ VALIDATION_FEEDBACK_SUFFIX = (
     "substring of the supplied artifact or context, use kind `summary` rather than an "
     "approximate or composite exact quote. Return only the requested JSON object.\n"
 )
+
+
+def _nous_transport_policy(
+    max_physical_http_attempts_per_logical_request: int | None,
+) -> dict[str, Any]:
+    if max_physical_http_attempts_per_logical_request is None:
+        return deepcopy(NOUS_TRANSPORT_POLICY)
+    if (
+        not isinstance(max_physical_http_attempts_per_logical_request, int)
+        or isinstance(max_physical_http_attempts_per_logical_request, bool)
+        or max_physical_http_attempts_per_logical_request != 1
+    ):
+        raise HBQError(
+            "Nous max_physical_http_attempts_per_logical_request must be exactly 1 when set"
+        )
+    return {
+        **NOUS_TRANSPORT_POLICY,
+        "max_physical_attempts_per_logical_request": 1,
+    }
 
 
 class _ProviderAttemptFailure(HBQError):
@@ -784,6 +804,160 @@ def _nous_failure(*, completed: subprocess.CompletedProcess[str], label: str) ->
     )
 
 
+def _nous_canonical_bytes(value: Any) -> bytes:
+    return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
+
+
+def _read_nous_json(path: Path, *, label: str) -> dict[str, Any]:
+    try:
+        value = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+        raise _ProviderAttemptFailure(f"Nous {label} is unreadable", retryable=False) from exc
+    if not isinstance(value, dict):
+        raise _ProviderAttemptFailure(f"Nous {label} must be a JSON object", retryable=False)
+    return value
+
+
+def _validate_nous_judge_evidence(
+    *,
+    evidence_root: Path,
+    request: Mapping[str, Any],
+    result: Mapping[str, Any],
+    metadata: Mapping[str, Any],
+    transport_policy: Mapping[str, Any],
+    model_policy: Mapping[str, Any],
+) -> None:
+    """Independently bind the bridge's sealed judge evidence to this exact call."""
+    try:
+        root = evidence_root.resolve(strict=True)
+        selected = Path(metadata["evidence_path"]).resolve(strict=True)
+    except (KeyError, OSError, RuntimeError) as exc:
+        raise _ProviderAttemptFailure("Nous bridge did not return a readable evidence path", retryable=False) from exc
+    if selected.parent != root or not selected.is_dir():
+        raise _ProviderAttemptFailure("Nous bridge evidence path is outside this attempt root", retryable=False)
+    try:
+        children = [child.resolve(strict=True) for child in root.iterdir() if child.is_dir()]
+    except OSError as exc:
+        raise _ProviderAttemptFailure("Nous evidence root is unreadable", retryable=False) from exc
+    judge_runs = []
+    for child in children:
+        events_path = child / "events.jsonl"
+        try:
+            is_judge_run = events_path.is_file() and any(
+                isinstance(record, dict) and record.get("event_type") == "judge_boundary"
+                for record in (
+                    json.loads(line)
+                    for line in events_path.read_text(encoding="utf-8").splitlines()
+                )
+            )
+        except (OSError, UnicodeError, json.JSONDecodeError):
+            is_judge_run = False
+        if is_judge_run:
+            judge_runs.append(child)
+    if judge_runs != [selected]:
+        raise _ProviderAttemptFailure("Nous evidence root must contain exactly one judge run", retryable=False)
+    try:
+        key = (root / ".evidence-hmac.key").read_bytes()
+    except OSError as exc:
+        raise _ProviderAttemptFailure("Nous evidence key is unreadable", retryable=False) from exc
+    if len(key) != 32:
+        raise _ProviderAttemptFailure("Nous evidence key is malformed", retryable=False)
+    try:
+        events_bytes = (selected / "events.jsonl").read_bytes()
+        event_lines = events_bytes.decode("utf-8").splitlines()
+        events = [json.loads(line) for line in event_lines]
+    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+        raise _ProviderAttemptFailure("Nous evidence events are unreadable", retryable=False) from exc
+    if not events or any(not isinstance(event, dict) for event in events):
+        raise _ProviderAttemptFailure("Nous evidence events are malformed", retryable=False)
+    previous = "0" * 64
+    for sequence, event in enumerate(events):
+        try:
+            base = {
+                name: event[name]
+                for name in ("sequence", "timestamp", "event_type", "previous_entry_sha256", "data")
+            }
+            digest = _sha256_bytes(_nous_canonical_bytes(base))
+            signature = hmac.new(key, digest.encode("ascii"), hashlib.sha256).hexdigest()
+        except (KeyError, TypeError, ValueError) as exc:
+            raise _ProviderAttemptFailure("Nous evidence event is malformed", retryable=False) from exc
+        if (
+            event.get("sequence") != sequence
+            or event.get("previous_entry_sha256") != previous
+            or event.get("entry_sha256") != digest
+            or not hmac.compare_digest(str(event.get("hmac_sha256", "")), signature)
+        ):
+            raise _ProviderAttemptFailure("Nous evidence event chain is not valid", retryable=False)
+        previous = digest
+    receipt = _read_nous_json(selected / "receipt.json", label="evidence receipt")
+    unsigned_receipt = {name: value for name, value in receipt.items() if name not in {"receipt_sha256", "hmac_sha256"}}
+    receipt_sha256 = _sha256_bytes(_nous_canonical_bytes(unsigned_receipt))
+    receipt_signature = hmac.new(key, receipt_sha256.encode("ascii"), hashlib.sha256).hexdigest()
+    if (
+        receipt.get("schema") != "codex-nous-outcome-v1"
+        or receipt.get("status") != "success"
+        or receipt.get("event_count") != len(events)
+        or receipt.get("terminal_chain_sha256") != previous
+        or receipt.get("events_sha256") != _sha256_bytes(events_bytes)
+        or receipt.get("receipt_sha256") != receipt_sha256
+        or not hmac.compare_digest(str(receipt.get("hmac_sha256", "")), receipt_signature)
+        or metadata.get("receipt_sha256") != receipt_sha256
+        or metadata.get("terminal_chain_sha256") != previous
+    ):
+        raise _ProviderAttemptFailure("Nous evidence receipt is not bound to this judge run", retryable=False)
+    manifest_path = selected / "manifest.json"
+    manifest = _read_nous_json(manifest_path, label="evidence manifest")
+    try:
+        manifest_sha256 = _sha256_bytes(manifest_path.read_bytes())
+    except OSError as exc:
+        raise _ProviderAttemptFailure("Nous evidence manifest is unreadable", retryable=False) from exc
+    if (
+        receipt.get("manifest_sha256") != manifest_sha256
+        or manifest.get("run_id") != receipt.get("run_id")
+        or metadata.get("run_id") != receipt.get("run_id")
+    ):
+        raise _ProviderAttemptFailure("Nous evidence manifest is not bound to its receipt", retryable=False)
+    boundaries = [event["data"] for event in events if event.get("event_type") == "judge_boundary"]
+    outcomes = [event["data"] for event in events if event.get("event_type") == "outcome"]
+    inbound = [
+        event["data"]
+        for event in events
+        if event.get("event_type") == "message"
+        and isinstance(event.get("data"), Mapping)
+        and event["data"].get("direction") == "inbound"
+    ]
+    if len(boundaries) != 1 or len(outcomes) != 1 or len(inbound) != 1:
+        raise _ProviderAttemptFailure("Nous evidence lacks one sealed judge boundary, outcome, and terminal response", retryable=False)
+    boundary = boundaries[0]
+    outcome = outcomes[0]
+    if not all(isinstance(value, Mapping) for value in (boundary, outcome, inbound[0])):
+        raise _ProviderAttemptFailure("Nous judge evidence records are malformed", retryable=False)
+    expected_request_sha256 = _sha256_bytes(_nous_canonical_bytes(dict(request)))
+    expected_schema_sha256 = _sha256_bytes(_nous_canonical_bytes(request["response_format"]))
+    expected_result_sha256 = _sha256_bytes(_nous_canonical_bytes(dict(result)))
+    terminal_message = inbound[0].get("message")
+    try:
+        terminal_result = json.loads(terminal_message["content"])
+    except (KeyError, TypeError, json.JSONDecodeError) as exc:
+        raise _ProviderAttemptFailure("Nous terminal judge response is malformed", retryable=False) from exc
+    if (
+        outcome.get("status") != "success"
+        or receipt.get("outcome") != {name: value for name, value in outcome.items() if name != "status"}
+        or boundary.get("request_schema") != request.get("schema")
+        or boundary.get("request_sha256") != expected_request_sha256
+        or boundary.get("response_format") != request.get("response_format")
+        or boundary.get("transport_policy") != transport_policy
+        or boundary.get("model_policy") != model_policy
+        or metadata.get("judge_request_sha256") != expected_request_sha256
+        or metadata.get("judge_response_schema_sha256") != expected_schema_sha256
+        or metadata.get("judge_result_sha256") != expected_result_sha256
+        or _nous_canonical_bytes(terminal_result) != _nous_canonical_bytes(dict(result))
+        or not isinstance(outcome.get("metadata"), Mapping)
+        or any(metadata.get(name) != value for name, value in outcome["metadata"].items())
+    ):
+        raise _ProviderAttemptFailure("Nous judge evidence does not bind this request and result", retryable=False)
+
+
 def _call_nous(
     *,
     model: str,
@@ -795,6 +969,7 @@ def _call_nous(
     timeout: float,
     attempt_number: int = 1,
     allow_unattested_reasoning: bool = False,
+    max_physical_http_attempts_per_logical_request: int | None = None,
 ) -> tuple[str, dict[str, Any]]:
     """Use the hardened bridge's tool-free judge mode, never direct HTTP."""
 
@@ -803,6 +978,7 @@ def _call_nous(
         raise _ProviderAttemptFailure(
             "Nous requires an allowlisted model and reasoning 'max'", retryable=False
         )
+    transport_policy = _nous_transport_policy(max_physical_http_attempts_per_logical_request)
     try:
         schema = json.loads(response_schema.read_text(encoding="utf-8"))
     except (OSError, UnicodeError, json.JSONDecodeError) as exc:
@@ -817,7 +993,11 @@ def _call_nous(
     if any(path.exists() for path in (request_path, result_path, evidence_root)):
         raise _ProviderAttemptFailure(f"Nous attempt path already exists: {stem}", retryable=False)
     request = {
-        "schema": "codex-nous-tool-free-judge-request-v1",
+        "schema": (
+            "codex-nous-tool-free-judge-request-v2"
+            if transport_policy["max_physical_attempts_per_logical_request"] == 1
+            else "codex-nous-tool-free-judge-request-v1"
+        ),
         "model": model,
         "reasoning_effort": reasoning,
         "messages": [
@@ -829,6 +1009,8 @@ def _call_nous(
             "json_schema": {"name": "hbqrs_judge", "strict": True, "schema": schema},
         },
     }
+    if transport_policy["max_physical_attempts_per_logical_request"] == 1:
+        request["max_physical_http_attempts_per_logical_request"] = 1
     _atomic_write(request_path, _json_bytes(request))
     evidence_root.mkdir(parents=True, exist_ok=False)
     proof_run = _run_nous_launcher(["-ProveLock", "-EvidenceRoot", str(evidence_root)], timeout=timeout)
@@ -871,10 +1053,10 @@ def _call_nous(
         or metadata.get("tool_free") is not True
         or metadata.get("tool_mode") != "judge"
         or metadata.get("tool_call_count") != 0
-        or metadata.get("judge_transport_policy") != NOUS_TRANSPORT_POLICY
+        or metadata.get("judge_transport_policy") != transport_policy
         or metadata.get("logical_provider_request_count") != 1
         or not isinstance(metadata.get("physical_http_attempt_count"), int)
-        or not 1 <= metadata["physical_http_attempt_count"] <= NOUS_TRANSPORT_POLICY["max_physical_attempts_per_logical_request"]
+        or not 1 <= metadata["physical_http_attempt_count"] <= transport_policy["max_physical_attempts_per_logical_request"]
         or not isinstance(metadata.get("recovered_request_count"), int)
         or not 0 <= metadata["recovered_request_count"] <= 1
     ):
@@ -883,6 +1065,14 @@ def _call_nous(
     exact_gate_eligible = metadata.get("exact_gate_eligible")
     if not isinstance(exact_gate_eligible, bool):
         raise _ProviderAttemptFailure("Nous bridge exact-gate status is malformed", retryable=False, content=result_path.read_text(encoding="utf-8"))
+    _validate_nous_judge_evidence(
+        evidence_root=evidence_root,
+        request=request,
+        result=result,
+        metadata=metadata,
+        transport_policy=transport_policy,
+        model_policy={"requested_model": model, **policy},
+    )
     evidence_validation = metadata.get("evidence_validation")
     if not isinstance(evidence_validation, Mapping) or evidence_validation.get("valid") is not True:
         raise _ProviderAttemptFailure("Nous bridge evidence validation is not valid", retryable=False, content=result_path.read_text(encoding="utf-8"))
@@ -907,7 +1097,7 @@ def _call_nous(
         "evidence_sha256": _sha256_bytes(_json_bytes({"result": result, "metadata": metadata})),
         "serialization_proof_sha256": _sha256_bytes(proof_path.read_bytes()),
         "exact_gate_eligible": exact_gate_eligible,
-        "transport_policy": NOUS_TRANSPORT_POLICY,
+        "transport_policy": transport_policy,
         "logical_provider_request_count": 1,
         "physical_http_attempt_count": metadata["physical_http_attempt_count"],
         "recovered_request_count": metadata["recovered_request_count"],
@@ -1240,8 +1430,11 @@ def _sanitized_provider_record(record: Mapping[str, Any] | None) -> dict[str, An
     for key in ("logical_provider_request_count", "physical_http_attempt_count", "recovered_request_count"):
         if isinstance(record.get(key), int) and not isinstance(record.get(key), bool):
             result[key] = record[key]
-    if record.get("transport_policy") == NOUS_TRANSPORT_POLICY:
+    transport_policy = record.get("transport_policy")
+    if transport_policy == NOUS_TRANSPORT_POLICY:
         result["transport_policy"] = deepcopy(NOUS_TRANSPORT_POLICY)
+    elif transport_policy == _nous_transport_policy(1):
+        result["transport_policy"] = _nous_transport_policy(1)
     requested = record.get("requested")
     if isinstance(requested, Mapping):
         result["requested"] = {
@@ -1894,6 +2087,7 @@ def run_judge(
     strict_ai: bool = False,
     allow_unattested_reasoning: bool = False,
     upgrade_legacy_normalization: bool = False,
+    max_physical_http_attempts_per_logical_request: int | None = None,
 ) -> dict[str, Any]:
     """Judge one artifact against one bundle, checkpointing every batch."""
 
@@ -1917,6 +2111,13 @@ def run_judge(
         raise HBQError("--allow-model-mismatch applies only to OpenAI-compatible endpoints")
     if provider not in {"grok", "nous"} and allow_unattested_reasoning:
         raise HBQError("--allow-unattested-reasoning applies only to Grok Build CLI or Nous")
+    if provider != "nous" and max_physical_http_attempts_per_logical_request is not None:
+        raise HBQError("max_physical_http_attempts_per_logical_request applies only to Nous")
+    nous_transport_policy = (
+        _nous_transport_policy(max_physical_http_attempts_per_logical_request)
+        if provider == "nous"
+        else None
+    )
     if not isinstance(upgrade_legacy_normalization, bool):
         raise HBQError("upgrade_legacy_normalization must be a boolean")
 
@@ -2013,7 +2214,7 @@ def run_judge(
         "allow_unattested_reasoning": allow_unattested_reasoning if provider in {"grok", "nous"} else None,
         "maximum_provider_sends": configured_batches * batch_attempts,
         "maximum_physical_http_attempts": (
-            configured_batches * batch_attempts * NOUS_TRANSPORT_POLICY["max_physical_attempts_per_logical_request"]
+            configured_batches * batch_attempts * nous_transport_policy["max_physical_attempts_per_logical_request"]
             if provider == "nous" else None
         ),
     }
@@ -2055,7 +2256,7 @@ def run_judge(
     if provider in {"grok", "nous"}:
         configuration["allow_unattested_reasoning"] = allow_unattested_reasoning
     if provider == "nous":
-        configuration["nous_transport_policy"] = deepcopy(NOUS_TRANSPORT_POLICY)
+        configuration["nous_transport_policy"] = nous_transport_policy
         configuration["nous_model_policy"] = {"requested_model": model, **NOUS_MODEL_POLICIES[model]}
     config_sha256 = _sha256_bytes(_json_bytes(configuration))
     pre_grounding_configuration = {
@@ -2332,6 +2533,7 @@ def run_judge(
                             timeout=timeout,
                             attempt_number=cli_message_attempt,
                             allow_unattested_reasoning=allow_unattested_reasoning,
+                            max_physical_http_attempts_per_logical_request=max_physical_http_attempts_per_logical_request,
                         )
             except (HBQError, OSError) as exc:
                 last_error = exc
