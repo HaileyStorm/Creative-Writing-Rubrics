@@ -31,13 +31,9 @@ Gray Blood is a contemporary urban-fantasy WIP about Madison, Amelia, and the co
 
 The GPT-5.6 Pro passages are owner-directed rewrites made against author-supplied outline and context; they are not independent model inventions. Chapter 5 makes the authorship contrast explicit: its first passage is author-original and its second is the GPT-5.6 Pro rewrite.
 
-The fifth passage is included for content treatment, not decoration. It places sexualized illusion, graphic fictional violence, and a turning/consent rupture in one bounded scene, so a future evaluator can distinguish craft and agency analysis from blanket refusal or moralizing. It has no excerpt-level score and does not explain any whole-work delta.
+The fifth passage tests whether an evaluator can discuss sexualized illusion, graphic fictional violence, and consent without refusing or moralizing. None of these excerpts was scored separately, so they do not explain the +7.89 whole-work difference.
 
-The whole-work verdict ledgers include checks for the magic constraints represented here—activation requiring a heart and engraving requiring lifeblood—as well as author-goal and craft criteria around the relationship. That is useful context, not excerpt-level evidence: these passages were not individually scored, do not explain any individual leaf, and must not be read as causing the +7.89 whole-work difference. The Chapter 5 pair preserves shared material and exposes a revised middle; it is not a claim that either passage caused a score change.
-
-The real tension is more interesting than a headline. The rewrite gains in character, language, effect, freshness, and mechanics at whole-work scale, while the original has stronger chapter-local scores in chapters 3–6 and leads in plot, world, and pacing totals. The passages show why a future reader or revision system needs both lenses: concise moments can make agency, cost, and physical process vivid, while a long-form evaluation still asks how those moments accumulate into movement and structure.
-
-The selection is deliberately small and incomplete. It is not a representative sample of either chapter, draft, or manuscript, and it should not be used to make safety, quality, or style claims beyond the published protocol. A known original-Chapter-5 source typo is intentionally preserved in the passage.
+At whole-work scale, the rewrite leads in character, language, effect, freshness, and mechanics; the original leads in plot, world, pacing, and chapters 3–6. The excerpts illustrate particular choices, while the full evaluation measures how those choices accumulate across the draft. The selection is intentionally incomplete, and a known typo in the original Chapter 5 passage is preserved.
 
 ## Whole-work domains
 
@@ -79,7 +75,7 @@ Each chapter received the complete `prose.chapter` bundle. This local view is a 
 - [`verdicts/original.jsonl`](verdicts/original.jsonl) and [`verdicts/rewrite.jsonl`](verdicts/rewrite.jsonl) contain every accepted verdict with stable criterion IDs, scope, and confidence—without evidence text.
 - [`comparison.json`](comparison.json) provides machine-readable domain and chapter deltas.
 - [`excerpts/provenance.json`](excerpts/provenance.json) binds the five permitted files to draft/chapter IDs, exact character and UTF-8 byte boundaries, input hashes, excerpt hashes, and word counts without disclosing source locations.
-- [`targeted-evaluation-contract.json`](targeted-evaluation-contract.json) freezes a later, small excerpt-level Sol evaluation. It is offline-first and `not_run`: a future executor must disclose the exact public excerpt leaving the machine, receive an explicit allow-remote gate, validate verbatim spans, and use bounded per-leaf repair.
+- [`targeted-evaluation-contract.json`](targeted-evaluation-contract.json) freezes a small, not-yet-run excerpt-level Sol evaluation with exact-excerpt disclosure, verbatim-quote validation, and bounded per-leaf repair.
 - [`privacy-audit.json`](privacy-audit.json) and [`verify_publication.py`](verify_publication.py) provide the audit and deterministic public-package checks.
 
 This refresh uses a complete current protocol. It replaces the prior publication; it is **not** a sampled-to-full score comparison.

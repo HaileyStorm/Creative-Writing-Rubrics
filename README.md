@@ -75,7 +75,7 @@ cwr longform manuscript.txt --brief author-notes.txt --wip \
   --output-dir ../cwr-runs/manuscript
 ```
 
-The starter profile is 70% whole-work and 30% equal-weight local mean. You may change component weights, use the weakest-unit reducer, or trim one low and one high eligible local result when at least three exist; ordinary chapters cannot be tuned individually. Only shared unfinished-unit and prologue/epilogue modifiers are available. Cards label custom weighting, effective weights, and reducer. `cwr render-report report.json -o report.html` renders an existing report; `--scorecard` produces an embeddable card. Both work offline.
+The default profile is 70% whole-work and 30% equal-weight local mean. Profiles can instead use the weakest-unit reducer or, with at least three local results, discard one high and one low result before averaging. Chapter weights are not individually tunable; only shared unfinished-unit and prologue/epilogue modifiers are supported. Reports label custom weights and reducers. `cwr render-report report.json -o report.html` renders offline; `--scorecard` creates an embeddable card.
 
 The GUI is optional: setup, judging, batching, monitoring, scoring, and reports have CLI paths. `cwr configure -o setup.html` is a local, no-network helper for route, WIP, endpoint, coverage, weights, and a copyable command; it never runs a judge. There is no template editor or theme system.
 
@@ -132,7 +132,7 @@ Stable IDs (`module_id`, `question_id`, `bundle_id`, `criterion_key`) are the pu
 - [Authorized complete story: *The Part That Arrives First*](evaluation-results/the-part-that-arrives-first-repeatability/source.md)
 - [What HBQ caught in the story](evaluation-results/the-part-that-arrives-first-repeatability/hbq-findings.md) — four concrete craft judgments, including one difficult limitation
 - [Initial batching study](evaluation-results/the-part-that-arrives-first-repeatability/) — the same story under two HBQ batch shapes and two synthesized comparators
-- [Gray Blood chapters 1–6](evaluation-results/gray-blood-ch1-6/) — a long-form WIP case study with score structure, verdict ledgers, four GPT-5.6 Pro rewrite excerpts, and one author-original/GPT-5.6 Pro rewrite pair, including a mature-content/agency case; it keeps all other manuscript prose and execution material private
+- [*Gray Blood*, chapters 1–6](evaluation-results/gray-blood-ch1-6/) — complete score and verdict reports with five authorized excerpts, clearly labeled author-original or GPT-5.6 Pro rewrite; the remaining manuscript stays private
 - [Run a headless judge](docs/judging.md)
 - [Embed in another app](docs/apps.md)
 - [Benchmarking](docs/benchmarking.md)

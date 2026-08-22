@@ -201,7 +201,8 @@ def test_score_views_and_reader_summary_are_consistent() -> None:
     assert "## Case study: five bounded moments" in readme
     assert "five permitted files" in readme
     assert "four bounded moments" not in readme
-    assert "must not be read as causing the +7.89 whole-work difference" in readme
+    assert "do not explain the +7.89 whole-work difference" in readme
+    assert "known typo in the original Chapter 5 passage is preserved" in readme
     assert "completion-only leaves are `NOT_APPLICABLE`" in readme
     assert "protocol, reasoning configuration, and accepted-verdict set differ" in readme
     for draft, report in (("original", original), ("rewrite", rewrite)):

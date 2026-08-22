@@ -8,7 +8,7 @@ The repository owner supplied the story and explicitly authorized publishing it 
 
 > “Mica had moved in the fraction before commitment, during the little muscular weather in June's wrist that still meant only *maybe*. She entered the gap, held the pin upright, and waited for June to decide that maybe had become yes.”
 
-Mica is June's co-digit: an embodied second agent sharing the work of one augmented hand. Their apparently seamless collaboration turns shared agency, authorship, and consent into the story's pressure points. This opening is here to orient the reader; every run in the study evaluated the [complete story](source.md), not this passage as a separate sample.
+Mica is June's co-digit, a second embodied agent who shares control of one augmented hand. The story tests what that arrangement means for agency, authorship, and consent. Every run evaluated the [complete story](source.md).
 
 ## Design
 
@@ -38,7 +38,7 @@ Comparator prompts borrow recurring constructs from established narrative-writin
 
 ![HBQ leaf-level agreement](results/leaf-agreement.svg)
 
-The coarse methods were perfectly stable at headline level but hit a ceiling: every holistic result was 6/7 and every analytic overall 5/5. HBQ exposes more of the judgment surface while retaining 95.3% or 97.2% mean modal agreement.
+The coarse methods were stable but ceiling-bound: every holistic result was 6/7 and every analytic overall was 5/5. HBQ recorded more variation while retaining 95.3% or 97.2% mean modal agreement.
 
 ### Batching mattered
 
@@ -61,9 +61,9 @@ This is a method effect worth controlling, not proof that larger batches are uni
 
 See [What HBQ caught in the story](hbq-findings.md) for the illustrated craft findings.
 
-## Evidence discipline
+## Quote validation
 
-Published result files preserve every rating and concise justification. An automated check tested whether each evidence `quote` was an exact source substring: 64.1% for 24-leaf HBQ, 71.0% for one-batch HBQ, 86.7% for compact analytic, and 80.0% for holistic. Misses include paraphrase, joined ellipses, and encoding substitutions; they are not treated as quotations. Evidence objects therefore need validation separate from verdict schemas.
+Result files include every rating and justification. Exact-substring validation passed for 64.1% of quotations in 24-leaf HBQ, 71.0% in one-batch HBQ, 86.7% in compact analytic, and 80.0% in holistic. Paraphrases, joined ellipses, and encoding substitutions failed validation and are not treated as quotations.
 
 ## Reproduce and inspect
 
