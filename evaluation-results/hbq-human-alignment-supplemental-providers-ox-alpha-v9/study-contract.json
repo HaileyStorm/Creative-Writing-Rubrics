@@ -1,0 +1,12 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-human-alignment-supplemental-providers-ox-alpha-v9",
+  "status": "preregistered_unit_retry_successor_unexecuted",
+  "frozen_before_execution": true,
+  "parent": {"study_id": "hbq-human-alignment-supplemental-providers-ox-alpha-v8", "commit": "73308d2", "failed_root": "immutable sealed 524 failure; never resume or mutate"},
+  "provider": {"provider_id": "ox_alpha_max", "provider": "nous", "model": "stealth/ox-alpha", "provider_canonical_model": "stealth/ox-alpha", "reasoning": "max", "allow_unattested_reasoning": true, "evidence_status": "provisional_only"},
+  "protocol": {"units": 135, "batch_size": 4, "last_batch_size": 3, "attempts_per_unit": 5, "maximum_eligible_524": 135, "maximum_physical_requests": 270, "request_schema": "codex-nous-tool-free-judge-request-v2", "cap": 1, "rounds": "Every unresolved unit is visited in frozen order once per round; accepted or quarantined units are never retried."},
+  "pause": {"consecutive_eligible_524": 6, "same_unit_minutes": 15, "after_three_consecutive_minutes": 30, "fresh_proof_after_hours": 24},
+  "zero_cost": {"no_purchase": true, "stop_on_charge_signal": true, "stop_on_http_402": true},
+  "limits": ["No paid route, human judging, DSPy, fallback, promotion, or exact-gate claim.", "GPT remains primary; Ox is provisional. Any non-524, malformed 2xx, timeout without a sealed terminal receipt, drift, inbound completion, result, verdict, or uncertain evidence quarantines its unit."]
+}
