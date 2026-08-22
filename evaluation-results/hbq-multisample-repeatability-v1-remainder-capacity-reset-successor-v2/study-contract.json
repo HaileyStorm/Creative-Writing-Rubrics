@@ -1,0 +1,35 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-multisample-repeatability-v1-remainder-capacity-reset-successor-v2",
+  "supersedes": {
+    "study_id": "hbq-multisample-repeatability-v1-remainder-successor-v1",
+    "study_contract_sha256": "339cbad16b6814f21629df2085062c03df17ee22cb7ad2bcde3ee48905a545ab",
+    "scope": "capacity timing only"
+  },
+  "schedule": {
+    "count": 153,
+    "first_sequence": 178,
+    "last_sequence": 330,
+    "sha256": "96b91f124d2a889f4fa47b70d67c16604927f33928ca4ad5d302713c84f8f086"
+  },
+  "provider": {
+    "provider": "codex",
+    "model": "gpt-5.6-sol",
+    "reasoning": "high",
+    "paid_api": false,
+    "human_judgment": false
+  },
+  "capacity_gate": {
+    "probe_kind": "external_current_capacity_evidence_v2",
+    "max_age_seconds": 600,
+    "launch_time_revalidation_required": true,
+    "probe_authorizes_provider_contact": false
+  },
+  "runtime": {
+    "source_files": [
+      "run_capacity_reset.py"
+    ],
+    "provider_dispatch": false,
+    "executor_present": false
+  }
+}
