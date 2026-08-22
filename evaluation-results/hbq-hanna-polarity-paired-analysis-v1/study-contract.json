@@ -1,0 +1,28 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-hanna-polarity-paired-analysis-v1",
+  "kind": "offline_aggregate_reanalysis",
+  "source_study_id": "hbq-hanna-batch-polarity-pilot-v1",
+  "scope": "one_story_descriptive_only",
+  "inputs": {
+    "pilot": {
+      "study.py": "9208600ef428734a95cc33be7e559592c1306b302d50d2bca660050f04cb2b08",
+      "study-contract.json": "5b42a11bd71c48000d184a64a62cc7fe22b570f50646396cbed9e18a6306c78e",
+      "polarity-pairs.json": "e719dec00b18d88c8434990ede7407c6a607506ad2fce1711edfcbad0838837a"
+    },
+    "parent_verdicts": "a18ad5b71635935039aebcb331be6661a413454b06c4207182518af712c9771e",
+    "hanna_csv": "ef59054d27fa32def06cfdc57243b1dd09c7e71f40b6d9d43fecfbf60e59026b",
+    "stages": {
+      "stage1": {"plan": "01ef49a2659c06260907e02d6db8e1c91082c49aecf9f21b1ebce02beac0e358", "evidence": "a1316ef696fc6f7302887b81e0158c9acb7db8c0777f2080d5e53153e18f19c0", "raw": "166b3af763d459d7561000884eb7d0c976ad2ce57514ae145ad5ee896279ddba"},
+      "stage2": {"plan": "01ef49a2659c06260907e02d6db8e1c91082c49aecf9f21b1ebce02beac0e358", "evidence": "8c028661962d28af004e6f0e1c04ce6b7755b636226de4ecaf51f3b999fe9049", "raw": "b949cd7fa31e5492867b8f580350a7602f17fa80ec2b6ff46f72875c69b3206a"},
+      "stage3": {"plan": "01ef49a2659c06260907e02d6db8e1c91082c49aecf9f21b1ebce02beac0e358", "evidence": "da7ba79162df9a214103ec6282cffec7e615e075ff7be65ee6cde7fb90f58aef", "raw": "89e57632b5ddbe227558b15c2e7cd5a8ebbf67c2ba65080dadc6615a24e2dccf"}
+    }
+  },
+  "reporting": {
+    "raw_prose": "forbidden",
+    "raw_prompt": "forbidden",
+    "raw_provider_responses": "forbidden",
+    "recommendation": null,
+    "production_change": "forbidden"
+  }
+}

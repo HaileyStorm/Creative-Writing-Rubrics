@@ -1,0 +1,20 @@
+{
+  "analysis": {
+    "analyze.py": {
+      "bytes": 15898,
+      "sha256": "31bb45196ca9fea0d757df76ba90db879d730c2d4a10965d9bfc26053fe8bc0d"
+    },
+    "study-contract.json": {
+      "bytes": 1677,
+      "sha256": "fe3acbf01a38dc3122cdaaa1255b23ca5b6d45389840d9915ed40552d3f4e636"
+    }
+  },
+  "files": {
+    "summary.json": {
+      "bytes": 6908,
+      "sha256": "c2187761bada7841b7c059ff33ba57b065ecf93395ece1cc6b1c2ef8d58209e5"
+    }
+  },
+  "format_version": 1,
+  "study_id": "hbq-hanna-polarity-paired-analysis-v1"
+}

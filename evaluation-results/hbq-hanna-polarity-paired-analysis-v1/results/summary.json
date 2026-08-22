@@ -1,0 +1,220 @@
+{
+  "evidence_binding": {
+    "hanna_csv": {
+      "bytes": 13219167,
+      "sha256": "ef59054d27fa32def06cfdc57243b1dd09c7e71f40b6d9d43fecfbf60e59026b"
+    },
+    "parent_verdicts": {
+      "bytes": 93951,
+      "sha256": "a18ad5b71635935039aebcb331be6661a413454b06c4207182518af712c9771e"
+    },
+    "pilot": {
+      "polarity-pairs.json": {
+        "bytes": 4657,
+        "sha256": "e719dec00b18d88c8434990ede7407c6a607506ad2fce1711edfcbad0838837a"
+      },
+      "study-contract.json": {
+        "bytes": 3571,
+        "sha256": "5b42a11bd71c48000d184a64a62cc7fe22b570f50646396cbed9e18a6306c78e"
+      },
+      "study.py": {
+        "bytes": 42197,
+        "sha256": "9208600ef428734a95cc33be7e559592c1306b302d50d2bca660050f04cb2b08"
+      }
+    },
+    "stages": {
+      "stage1": {
+        "evidence": {
+          "bytes": 47030,
+          "sha256": "a1316ef696fc6f7302887b81e0158c9acb7db8c0777f2080d5e53153e18f19c0"
+        },
+        "plan": {
+          "bytes": 85440,
+          "sha256": "01ef49a2659c06260907e02d6db8e1c91082c49aecf9f21b1ebce02beac0e358"
+        },
+        "raw": {
+          "bytes": 254042,
+          "sha256": "166b3af763d459d7561000884eb7d0c976ad2ce57514ae145ad5ee896279ddba"
+        }
+      },
+      "stage2": {
+        "evidence": {
+          "bytes": 51736,
+          "sha256": "8c028661962d28af004e6f0e1c04ce6b7755b636226de4ecaf51f3b999fe9049"
+        },
+        "plan": {
+          "bytes": 85440,
+          "sha256": "01ef49a2659c06260907e02d6db8e1c91082c49aecf9f21b1ebce02beac0e358"
+        },
+        "raw": {
+          "bytes": 633564,
+          "sha256": "b949cd7fa31e5492867b8f580350a7602f17fa80ec2b6ff46f72875c69b3206a"
+        }
+      },
+      "stage3": {
+        "evidence": {
+          "bytes": 51738,
+          "sha256": "da7ba79162df9a214103ec6282cffec7e615e075ff7be65ee6cde7fb90f58aef"
+        },
+        "plan": {
+          "bytes": 85440,
+          "sha256": "01ef49a2659c06260907e02d6db8e1c91082c49aecf9f21b1ebce02beac0e358"
+        },
+        "raw": {
+          "bytes": 1013539,
+          "sha256": "89e57632b5ddbe227558b15c2e7cd5a8ebbf67c2ba65080dadc6615a24e2dccf"
+        }
+      }
+    }
+  },
+  "focal_batch1": {
+    "disagreement": {
+      "any_matched_polarity_disagreement_leaf_count": 7,
+      "any_six_observation_instability_leaf_count": 9,
+      "focal_leaf_count": 27,
+      "matched_pair_count": 81,
+      "matched_pair_disagreement_count": 8
+    },
+    "negative": {
+      "cell_count": 3,
+      "dimension_means": {
+        "Coherence": 0.0,
+        "Complexity": 0.0,
+        "Empathy": 0.0,
+        "Engagement": 0.4666666666666666,
+        "Relevance": 0.1111111111111111,
+        "Surprise": 0.3333333333333333
+      },
+      "mean_confidence": 0.9609876543209875,
+      "mean_coverage": 1.0,
+      "mean_yes_fraction": 0.16049382716049382
+    },
+    "paired": {
+      "cell_count": 6,
+      "dimension_means": {
+        "Coherence": 0.0,
+        "Complexity": 0.06666666666666667,
+        "Empathy": 0.03333333333333333,
+        "Engagement": 0.5333333333333333,
+        "Relevance": 0.2222222222222222,
+        "Surprise": 0.3666666666666667
+      },
+      "mean_confidence": 0.9552469135802468,
+      "mean_coverage": 1.0,
+      "mean_yes_fraction": 0.2098765432098765
+    },
+    "positive": {
+      "cell_count": 3,
+      "dimension_means": {
+        "Coherence": 0.0,
+        "Complexity": 0.13333333333333333,
+        "Empathy": 0.06666666666666667,
+        "Engagement": 0.6,
+        "Relevance": 0.3333333333333333,
+        "Surprise": 0.39999999999999997
+      },
+      "mean_confidence": 0.9495061728395061,
+      "mean_coverage": 1.0,
+      "mean_yes_fraction": 0.25925925925925924
+    },
+    "stability": {
+      "negative": {
+        "leaf_count": 27,
+        "stable_confidence_mean": 0.9807936507936508,
+        "stable_leaf_count": 21,
+        "unstable_confidence_mean": 0.8916666666666667,
+        "unstable_leaf_count": 6
+      },
+      "paired": {
+        "leaf_count": 27,
+        "stable_confidence_mean": 0.9826851851851851,
+        "stable_leaf_count": 18,
+        "unstable_confidence_mean": 0.9003703703703704,
+        "unstable_leaf_count": 9
+      },
+      "positive": {
+        "leaf_count": 27,
+        "stable_confidence_mean": 0.965,
+        "stable_leaf_count": 22,
+        "unstable_confidence_mean": 0.8813333333333333,
+        "unstable_leaf_count": 5
+      }
+    }
+  },
+  "format_version": 1,
+  "global_batch32_controls": {
+    "global_negative_batch32": {
+      "cell_count": 3,
+      "dimension_means": {
+        "Coherence": 0.0,
+        "Complexity": 0.0,
+        "Empathy": 0.0,
+        "Engagement": 0.26666666666666666,
+        "Relevance": 0.2222222222222222,
+        "Surprise": 0.20000000000000004
+      },
+      "mean_confidence": 0.9175977653631285,
+      "mean_coverage": 0.9180633147113594,
+      "mean_yes_fraction": 0.158145875937287
+    },
+    "global_positive_batch32": {
+      "cell_count": 3,
+      "dimension_means": {
+        "Coherence": 0.0,
+        "Complexity": 0.0,
+        "Empathy": 0.0,
+        "Engagement": 0.4666666666666666,
+        "Relevance": 0.2222222222222222,
+        "Surprise": 0.20000000000000004
+      },
+      "mean_confidence": 0.9159590316573557,
+      "mean_coverage": 0.9087523277467412,
+      "mean_yes_fraction": 0.20128319550776985
+    }
+  },
+  "hanna_dimension_targets": {
+    "primary_endpoint_aligned": {
+      "Coherence": 0.41666666666666663,
+      "Complexity": 0.25,
+      "Empathy": 0.33333333333333337,
+      "Engagement": 0.33333333333333337,
+      "Relevance": 0.5,
+      "Surprise": 0.16666666666666669
+    },
+    "sensitivity_divide_by_max": {
+      "Coherence": 0.5333333333333333,
+      "Complexity": 0.4,
+      "Empathy": 0.4666666666666667,
+      "Engagement": 0.4666666666666667,
+      "Relevance": 0.6,
+      "Surprise": 0.33333333333333337
+    }
+  },
+  "interpretation_limits": [
+    "Descriptive one-story analysis; no production recommendation.",
+    "Same-polarity batch-32 controls are not equal-call-budget comparisons.",
+    "The focal paired average did not beat focal positive on mean absolute dimension error for this story.",
+    "That ordering is unchanged under endpoint-aligned and divide-by-maximum HANNA normalization.",
+    "Paired averaging remains a hypothesis for separately preregistered, held-out evaluation."
+  ],
+  "mean_absolute_dimension_error": {
+    "primary_endpoint_aligned": {
+      "negative": 0.28148148148148144,
+      "paired": 0.26296296296296295,
+      "positive": 0.24444444444444444
+    },
+    "sensitivity_divide_by_max": {
+      "negative": 0.3148148148148148,
+      "paired": 0.2962962962962963,
+      "positive": 0.27777777777777773
+    }
+  },
+  "production_change": "forbidden",
+  "recommendation": null,
+  "reconstruction": {
+    "canonical_verdict_count": 1236,
+    "cell_count": 12
+  },
+  "scope": "one_story_descriptive_only",
+  "study_id": "hbq-hanna-polarity-paired-analysis-v1"
+}
