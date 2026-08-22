@@ -1,0 +1,36 @@
+{
+  "format_version": 3,
+  "study_id": "the-part-that-arrives-first-batch-curve-codex-remainder-v3",
+  "status": "preregistered_live_recovery_no_results",
+  "lineage": {
+    "remainder_contract": {"path": "../batch-curve-codex-remainder-v1/remainder-contract.json", "bytes": 2616, "sha256": "8f7d783f6ad194ddfc7dc90e8e0e0331d7da1fbcccf376676bea209e67b1dbcc"},
+    "remainder_module": {"path": "../batch-curve-codex-remainder-v1/remainder_successor.py", "bytes": 20426, "sha256": "354832eac95bb3f6bdc706619423e81957a682851665bf066e867ef91038be9e"},
+    "codex_v1_contract": {"path": "../batch-curve-codex-v1/codex-execution-contract.json", "bytes": 5221, "sha256": "b2d8bef708de7f9089ca335aa5dde4e52a0d828cf7ce49d7d929cb73cd4f5802"},
+    "v2_contract": {"path": "../batch-curve-codex-remainder-v2/study-contract.json", "bytes": 3797, "sha256": "a13f20ccfebf172d3b8ded86e920593b90a883b5a1a34b53a4c2a80af413eaad"}
+  },
+  "current_stack": {
+    "source": {"path": "../source.md", "bytes": 64490, "sha256": "ed6fb2e19f07174f56eb02e0a5d4c4419eecba324752881439b9b2992f082729"},
+    "registry": {"path": "../../../registry/all_modules.json", "bytes": 2137882, "sha256": "578207ef59f127a0bd52e7f38a25b9629ca2cfcdd73f49c944d9eee0bcbde928"},
+    "bundles": {"path": "../../../bundles/all_bundles.json", "bytes": 496524, "sha256": "c354bfecda29c0f747252f1cd9fea9971b4b17615eccf5512725c51741aed974"},
+    "prefix": {"path": "../../../prompts/judge/JUDGE_PREFIX.md", "bytes": 1184, "sha256": "ba48be75c55502d762f1029745b6a4b3b4d12674317f20906443467a00f8f3a5"},
+    "binary": {"path": "../../../prompts/judge/BINARY_EVALUATION_PROMPT.md", "bytes": 1460, "sha256": "3dd432228d2ad747e9a3958320e1b7eccf725bbc985aec1cd74eeb865254bd1c"},
+    "response_schema": {"path": "../../../schema/hbq_judge_response.schema.json", "bytes": 1977, "sha256": "49c7d824ba5dd957e67968ba3ae6ceb8a7ed9434dfb0dfc654836a76613c7854"},
+    "preflight_schema": {"path": "capacity-preflight.schema.json", "bytes": 205, "sha256": "6059acdb9925be69d3e7ee5dc942673b75d2a1c22afecb3f0609d572c06d7e45"},
+    "score_v1_schema": {"path": "../../../schema/hbq_score_report.schema.json", "bytes": 1020, "sha256": "e9bf341a501ced78db81dae6ef1cd84b43eb9a740966034a5652d5b9a0dfdc4c"},
+    "score_v2_schema": {"path": "../../../schema/hbq_score_report.v2.schema.json", "bytes": 4236, "sha256": "83105e4fe51a0cede99e510fcc9144f5feb3a2742ff38f3efca9b328800218f8"},
+    "v2_contract": {"path": "../batch-curve-v2/study-contract.json", "bytes": 21721, "sha256": "c8f9fc463359eeb42689e1a8b0fa1adb0768ebbcc8a31148c1f2f92f2d566c57"},
+    "harness": {"path": "../batch-curve-v2/batch_curve_harness.py", "bytes": 51168, "sha256": "03ec7f313e4d4a073f4bf1ea55dacd6e38f664f91027b1786f56c72a9586dac3"},
+    "runner": {"path": "../../../src/hbqrs/runner.py", "bytes": 124714, "sha256": "0a22bf30781d6bbbde4c9b6a6e214891fe95aefddade6f955f5634f6accde4d2"},
+    "core": {"path": "../../../src/hbqrs/core.py", "bytes": 45093, "sha256": "0518be16a4528b893de6af61300ecea58dc56d6b7944b5ae5fd3a3214a3794ef"},
+    "scoring_v2": {"path": "../../../src/hbqrs/scoring_v2.py", "bytes": 8227, "sha256": "80592c5ffb5972ad391bd5e870da8311c888307081e5eed86c9b160b69148049"},
+    "executor": {"path": "batch_recovery.py", "bytes": 28882, "sha256": "8f6cc9227179adf519015cbd3465caf4acf16fafbfa8fc7e05bbcc874c82c242"}
+  },
+  "predecessor": {
+    "v2_public": {"path": "C:\\Users\\Haile\\Documents\\cwr-batch-curve-v2-live-8cd6ee5-20260822", "files": [{"path": "preexecution-disclosure-receipt.json", "bytes": 31782, "sha256": "07b01c53060024233de2ac39b37b0cb9489ae04ec59e40b92b07b46b2b70fa8a"}, {"path": "preflights/epoch-0001/refresh-0001.json", "bytes": 1294, "sha256": "0d34d440284aefb1d7eeaaacfb97f1e2dd901923ba1f40983437dc819d6f5044"}]},
+    "v2_private": {"path": "C:\\Users\\Haile\\Documents\\cwr-batch-curve-v2-private-8cd6ee5-20260822", "files": [{"path": "preflights/epoch-0001/refresh-0001.json/preflight-outcome.json", "bytes": 1270, "sha256": "243ca2a11b5cd178a00cd2d11f94e76c4a50d133a12d7b8e9a75f49aaef3a65e"}]},
+    "old_schema": {"path": "../batch-curve-codex-remainder-v2/capacity-preflight.schema.json", "bytes": 186, "sha256": "14525b379495e40620191600048d55828fde49e7cedc09ea6e3a0ff58858c16d"},
+    "attempt": {"logical_attempt": 1, "epoch": 1, "refresh": 1, "status": "failed_invalid_json_schema", "scored_provider_calls": 0}
+  },
+  "execution": {"provider": "codex", "model": "gpt-5.6-sol", "reasoning": "high", "logical_units": 47, "max_physical_attempts_per_unit": 1, "planned_epoch_preflights": 6, "preflight_epoch_units": 8, "timeout_seconds": 600, "preflight_max_age_minutes": 15, "inherited_preflight_provider_calls": 1, "inherited_scored_provider_calls": 0, "result_status": "incomplete_nonlive_analysis_pending"},
+  "privacy": {"remote_destination": "OpenAI Codex service at chatgpt.com/backend-api/codex/responses", "outbound": "frozen source, strict-AI prompts, and one frozen unfinished question partition", "raw_evidence": "private operator-selected external evidence root", "public_projection": "path, byte, and SHA-256 commitments only"}
+}
