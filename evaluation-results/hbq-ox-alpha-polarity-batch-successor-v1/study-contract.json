@@ -1,0 +1,30 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-ox-alpha-polarity-batch-successor-v1",
+  "status": "preregistered_development_screen_unexecuted",
+  "frozen_before_execution": true,
+  "parent": {
+    "study_id": "hbq-human-alignment-supplemental-providers-ox-alpha-v9",
+    "use": "provenance_and_source_selection_only",
+    "provider_results_reused": false
+  },
+  "stories": ["hanna-827", "hanna-957", "hanna-201"],
+  "question_ids": [
+    "core.task_and_brief_fidelity.operation",
+    "form.prose.short_story.unity",
+    "craft.narrative.plot_and_causality.causal_chain",
+    "core.freshness_and_non_genericness.unpredictable_specificity"
+  ],
+  "conditions": [
+    {"id": "positive_batch1", "polarity": "positive", "batch_size": 1},
+    {"id": "negative_failure_batch1", "polarity": "negative_failure", "batch_size": 1},
+    {"id": "positive_batch4", "polarity": "positive", "batch_size": 4},
+    {"id": "negative_failure_batch4", "polarity": "negative_failure", "batch_size": 4}
+  ],
+  "geometry": {"screen_provider_calls": 30, "confirmation_provider_calls": 30, "maximum_planned_provider_calls": 60},
+  "quote_policy": {"normalization": "invalid_exact_quote_to_summary_v1", "repair_calls_in_primary_metrics": false},
+  "availability": {"eligible_524_attempt_ceiling": 5, "pause_after_consecutive_eligible_524": 6, "same_unit_cooldown_minutes": 15, "after_three_consecutive_minutes": 30, "stop_on_http_402_or_charge_signal": true},
+  "analysis": {"paired_mean": "diagnostic_only_when_both_canonical_verdicts_are_scoreable", "production_recommendation": "forbidden", "confirmation": "optional_balanced_second_screen_only_after_first_stage_gate"},
+  "confirmation_gate": {"accepted_records": 48, "matched_story_leaf_blocks": 12, "zero_terminal_attrition": true},
+  "limits": ["No provider call, human judging, or paid route is performed by this package.", "Negative responses are canonicalized before comparison.", "This screen cannot change production polarity or select a production ensemble."]
+}
