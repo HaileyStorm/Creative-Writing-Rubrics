@@ -67,7 +67,7 @@
   "limitations": [
     "Aggregate-only public projection: no fixture text, per-slot records, prompts, responses, private evidence, or session identifiers.",
     "This staged synthetic diagnostic does not establish a general result or authorize a prompt, rubric, leaf, ownership, split, or weight change.",
-    "The result identifies one likely wording or polarity issue for scope.passage.status and four fixture-isolation issues; it does not establish their repair.",
+    "The result suggests one possible wording or polarity lead for scope.passage.status and four additional fixture/oracle-isolation or activation-boundary leads; causal diagnosis remains unresolved.",
     "The sealed private settlement remains the verification authority."
   ],
   "opaque_private_receipt_commitments": {

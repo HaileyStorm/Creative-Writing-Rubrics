@@ -11,7 +11,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 AGGREGATE_NAME = "s2-public-aggregate.v1.json"
 README_NAME = "README.md"
-AGGREGATE_SHA256 = "7b34f6e1c476ed3488dc6751ffa47e498a023855af17233dccb526d2a1f70168"
+AGGREGATE_SHA256 = "49d6ef3843062580bbbda0b362756634f993613600269d4176be0bb157c9d453"
 ALLOWED_FILES = {AGGREGATE_NAME, README_NAME, Path(__file__).name}
 EXPECTED_LEAVES = [
     "craft.narrative.character_arc.end_state",
@@ -50,8 +50,8 @@ REQUIRED_READER_CLAIMS = (
     "10 of 15 scored cells passed",
     "5 of 5 completed-but-unscored NOT_APPLICABLE controls matched",
     "No promotion follows from this result.",
-    "one likely wording or polarity issue for\n`scope.passage.status` and four fixture-isolation issues",
-    "does not identify fixtures,\ncells, slot outcomes, or their expected states",
+    "one possible wording or polarity lead for\n`scope.passage.status` and four additional fixture/oracle-isolation or\nactivation-boundary leads; causal diagnosis remains unresolved",
+    "does not identify\nfixtures, cells, slot outcomes, or their expected states",
     "sealed private settlement remains the authority",
 )
 
@@ -134,7 +134,7 @@ def check(root: Path = HERE) -> list[str]:
     if data["limitations"] != [
         "Aggregate-only public projection: no fixture text, per-slot records, prompts, responses, private evidence, or session identifiers.",
         "This staged synthetic diagnostic does not establish a general result or authorize a prompt, rubric, leaf, ownership, split, or weight change.",
-        "The result identifies one likely wording or polarity issue for scope.passage.status and four fixture-isolation issues; it does not establish their repair.",
+        "The result suggests one possible wording or polarity lead for scope.passage.status and four additional fixture/oracle-isolation or activation-boundary leads; causal diagnosis remains unresolved.",
         "The sealed private settlement remains the verification authority.",
     ]:
         failures.append("aggregate limitations differ from the public contract")

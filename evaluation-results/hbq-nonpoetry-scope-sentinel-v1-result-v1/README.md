@@ -21,11 +21,12 @@ leaf, ownership, split, or weight change.
 
 ## What the diagnostic makes plausible
 
-The result supports one likely wording or polarity issue for
-`scope.passage.status` and four fixture-isolation issues. These are leads for a
-smallest-possible repair design, not proof of a repair or a general claim about
-non-poetry evaluation. The aggregate deliberately does not identify fixtures,
-cells, slot outcomes, or their expected states.
+The result suggests one possible wording or polarity lead for
+`scope.passage.status` and four additional fixture/oracle-isolation or
+activation-boundary leads; causal diagnosis remains unresolved. These are leads
+for a smallest-possible repair design, not proof of a repair or a general claim
+about non-poetry evaluation. The aggregate deliberately does not identify
+fixtures, cells, slot outcomes, or their expected states.
 
 The sealed private settlement remains the authority for receipt-level
 verification. This public package binds its aggregate and opaque private

@@ -14,7 +14,7 @@ sys.dont_write_bytecode = True
 
 ROOT = Path(__file__).resolve().parents[1] / "evaluation-results" / "hbq-nonpoetry-scope-sentinel-v1-result-v1"
 AGGREGATE = ROOT / "s2-public-aggregate.v1.json"
-EXPECTED_SHA256 = "7b34f6e1c476ed3488dc6751ffa47e498a023855af17233dccb526d2a1f70168"
+EXPECTED_SHA256 = "49d6ef3843062580bbbda0b362756634f993613600269d4176be0bb157c9d453"
 
 
 def _verifier():
