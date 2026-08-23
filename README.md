@@ -1,8 +1,8 @@
 # Creative-Writing-Rubrics
 
-**creative-writing-rubrics 1.1.0 · HBQ-RS 1.0.0** — composable binary-question rubrics for creative writing, draft judging, open critique, model and dataset evaluation, benchmarking, and synthetic data.
+**HBQ-RS 1.2.0** — Creative-Writing-Rubrics supplies composable binary-question rubrics for creative writing, draft judging, open critique, model and dataset evaluation, benchmarking, and synthetic data.
 
-The package ships **277 modules**, **2,139 atomic leaves**, **85 bundle presets**, and deterministic scoring. A judge answers one yes/no leaf at a time; aggregation is code, not another model call.
+The package ships **278 modules**, **2,145 atomic leaves**, **85 bundle presets**, and deterministic scoring. A judge answers one yes/no leaf at a time; aggregation is code, not another model call.
 
 ## Install
 

@@ -1,7 +1,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: sampler.batch_diversity
   version: 1
   title: Batch diversity
@@ -143,7 +143,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: sampler.closure_and_commitment_preservation
   version: 1
   title: Closure and commitment preservation
@@ -286,7 +286,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: sampler.freshness_gain
   version: 1
   title: Freshness gain
@@ -429,7 +429,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: sampler.model_specific_sampler_profile
   version: 1
   title: Model-specific sampler profile
@@ -572,7 +572,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: sampler.optionality_without_drift
   version: 1
   title: Optionality without drift
@@ -687,7 +687,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: sampler.productive_divergence
   version: 1
   title: Productive divergence
@@ -802,7 +802,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: sampler.sampler_artifact_audit
   version: 1
   title: Sampler artifact audit
@@ -959,7 +959,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: sampler.sampler_benefit_versus_cost
   version: 1
   title: Sampler benefit-versus-cost
@@ -1102,7 +1102,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: sampler.single_sample_creative_quality
   version: 1
   title: Single-sample creative quality
@@ -1231,7 +1231,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: sampler.structure_aware_sampling_fit
   version: 1
   title: Structure-aware sampling fit

@@ -279,7 +279,7 @@ def _catalog(tmp_path: Path) -> tuple[Path, Path]:
         ],
     }
     bundle = {
-        "standard": {"id": "HBQ-RS", "version": "1.0.0"},
+        "standard": {"id": "HBQ-RS", "version": "1.2.0"},
         "bundle_id": "prose.synthetic",
         "version": 1,
         "title": "Synthetic prose",

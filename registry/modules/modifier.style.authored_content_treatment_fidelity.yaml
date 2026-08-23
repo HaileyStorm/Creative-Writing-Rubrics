@@ -1,0 +1,145 @@
+$schema: ../schema/hbq_rubric.schema.json
+standard:
+  id: HBQ-RS
+  version: 1.2.0
+module_id: modifier.style.authored_content_treatment_fidelity
+version: 1
+title: Authored content-treatment fidelity
+kind: modifier
+description: Measures fidelity to explicitly selected, observable content-treatment targets without treating greater
+  explicitness as intrinsically better.
+origin: user_requirement
+owner_domains:
+- style.content_treatment_fidelity
+artifact_types:
+- creative_text
+valid_scopes:
+- any
+activation: Opt in only when the effective project, structural-unit, Action, or Run MaturityProfile, or an explicit
+  user instruction, selects one or more observable content-treatment axes. Do not activate from topic, genre, audience,
+  rating, or sexual, violent, mature, or other subject matter alone.
+requires: []
+incompatible_with: []
+default_evidence_scope:
+  current_artifact: true
+  neighboring_units: 0
+  project_sources: effective MaturityProfile projection and explicit current instruction when supplied
+tree:
+- id: modifier.style.authored_content_treatment_fidelity.profile_fidelity
+  type: group
+  title: Selected content-treatment profile fidelity
+  score_mode: weighted_mean
+  weight: 1.0
+  children:
+  - id: modifier.style.authored_content_treatment_fidelity.directness_level
+    type: question
+    criterion_key: modifier.style.authored_content_treatment_fidelity.directness_level
+    text: Does the artifact match the selected directness level, avoiding treatment that is either more evasive
+      or more explicit than the effective target?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: This module is explicitly active through the effective project, structural-unit, Action, or Run
+      MaturityProfile or an explicit user instruction, and that selection declares a directness-level target. Topic,
+      genre, audience, rating, and subject matter alone do not activate this criterion.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.style.authored_content_treatment_fidelity.detail_density
+    type: question
+    criterion_key: modifier.style.authored_content_treatment_fidelity.detail_density
+    text: Does the artifact match the selected detail density, neither summarizing away material chosen for detail
+      nor adding granular depiction beyond the effective target?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: This module is explicitly active through the effective project, structural-unit, Action, or Run
+      MaturityProfile or an explicit user instruction, and that selection declares a detail-density target. Topic,
+      genre, audience, rating, and subject matter alone do not activate this criterion.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.style.authored_content_treatment_fidelity.lexical_specificity
+    type: question
+    criterion_key: modifier.style.authored_content_treatment_fidelity.lexical_specificity
+    text: Does the artifact match the selected lexical specificity, avoiding both vagueness below the effective
+      target and anatomical, technical, or other specificity beyond it?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: This module is explicitly active through the effective project, structural-unit, Action, or Run
+      MaturityProfile or an explicit user instruction, and that selection declares a lexical-specificity target.
+      Topic, genre, audience, rating, and subject matter alone do not activate this criterion.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.style.authored_content_treatment_fidelity.euphemism_alignment
+    type: question
+    criterion_key: modifier.style.authored_content_treatment_fidelity.euphemism_alignment
+    text: Where preferred or disfavored euphemism patterns are declared, does the artifact follow those patterns
+      without substituting undeclared coyness or bluntness?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: This module is explicitly active through the effective project, structural-unit, Action, or Run
+      MaturityProfile or an explicit user instruction, and that selection declares a preferred or disfavored euphemism-pattern
+      target. Topic, genre, audience, rating, and subject matter alone do not activate this criterion. Return NOT_APPLICABLE
+      when no preferred or disfavored euphemism patterns are declared.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.style.authored_content_treatment_fidelity.treatment_register
+    type: question
+    criterion_key: modifier.style.authored_content_treatment_fidelity.treatment_register
+    text: Does the artifact sustain the selected treatment register without drifting into a softer, harsher, clinical,
+      lyrical, comic, horrific, erotic, brutal, or other neighboring register?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: This module is explicitly active through the effective project, structural-unit, Action, or Run
+      MaturityProfile or an explicit user instruction, and that selection declares a treatment-register target.
+      Topic, genre, audience, rating, and subject matter alone do not activate this criterion.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  - id: modifier.style.authored_content_treatment_fidelity.depiction_scope
+    type: question
+    criterion_key: modifier.style.authored_content_treatment_fidelity.depiction_scope
+    text: Does the artifact match the selected depiction scope, neither eliding material chosen for direct depiction
+      nor expanding material chosen for summary or omission?
+    pass_answer: 'YES'
+    weight: 1.0
+    question_type: scored
+    severity: material
+    applies_when: This module is explicitly active through the effective project, structural-unit, Action, or Run
+      MaturityProfile or an explicit user instruction, and that selection declares a depiction-scope target. Topic,
+      genre, audience, rating, and subject matter alone do not activate this criterion.
+    evidence_policy:
+      required: true
+      minimum_references: 1
+      reference_style: artifact span, unit ID, timestamp, or source ID
+    tags: []
+  tags: []
+  description: Each selected axis is judged against its effective target; unselected axes are not applicable.
+modifier_actions: []
+research_basis: []
+notes:
+- 'This module measures profile fidelity: greater directness, detail, lexical specificity, or explicitness is not
+  intrinsically higher quality, and both under-target and over-target treatment can receive NO.'
+- This is a style-fidelity rubric, not a moderation, permission, refusal, safety, consent, audience, or moral gate.
+- Apply only selected axes; an undeclared axis receives NOT_APPLICABLE rather than an inferred target.

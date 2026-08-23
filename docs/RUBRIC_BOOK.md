@@ -1,4 +1,4 @@
-# Creative Rubric Book — HBQ-RS 1.0.0
+# Creative Rubric Book — HBQ-RS 1.2.0
 
 ## Purpose
 
@@ -5253,6 +5253,36 @@ Escalation, urgency, vulnerability, threat logic, reversals, pacing, cause-and-e
   _weight 1.5; scored; material; YES = pass._
 - `modifier.genre.thriller_suspense.no_stakes_inflation` — **Does the work avoid increasing nominal stakes without changing concrete risk, cost, or choice?**  
   _weight 2; scored; material; YES = pass._
+
+### `modifier.style.authored_content_treatment_fidelity` — Authored content-treatment fidelity
+Measures fidelity to explicitly selected, observable content-treatment targets without treating greater explicitness as intrinsically better.
+
+- **Owner domain(s):** style.content_treatment_fidelity
+- **Artifact types:** creative_text
+- **Valid scopes:** any
+- **Activation:** Opt in only when the effective project, structural-unit, Action, or Run MaturityProfile, or an explicit user instruction, selects one or more observable content-treatment axes. Do not activate from topic, genre, audience, rating, or sexual, violent, mature, or other subject matter alone.
+
+##### Selected content-treatment profile fidelity
+Each selected axis is judged against its effective target; unselected axes are not applicable.
+
+- `modifier.style.authored_content_treatment_fidelity.directness_level` — **Does the artifact match the selected directness level, avoiding treatment that is either more evasive or more explicit than the effective target?**
+  _weight 1; scored; material; YES = pass._
+  Applies when: This module is explicitly active through the effective project, structural-unit, Action, or Run MaturityProfile or an explicit user instruction, and that selection declares a directness-level target. Topic, genre, audience, rating, and subject matter alone do not activate this criterion.
+- `modifier.style.authored_content_treatment_fidelity.detail_density` — **Does the artifact match the selected detail density, neither summarizing away material chosen for detail nor adding granular depiction beyond the effective target?**
+  _weight 1; scored; material; YES = pass._
+  Applies when: This module is explicitly active through the effective project, structural-unit, Action, or Run MaturityProfile or an explicit user instruction, and that selection declares a detail-density target. Topic, genre, audience, rating, and subject matter alone do not activate this criterion.
+- `modifier.style.authored_content_treatment_fidelity.lexical_specificity` — **Does the artifact match the selected lexical specificity, avoiding both vagueness below the effective target and anatomical, technical, or other specificity beyond it?**
+  _weight 1; scored; material; YES = pass._
+  Applies when: This module is explicitly active through the effective project, structural-unit, Action, or Run MaturityProfile or an explicit user instruction, and that selection declares a lexical-specificity target. Topic, genre, audience, rating, and subject matter alone do not activate this criterion.
+- `modifier.style.authored_content_treatment_fidelity.euphemism_alignment` — **Where preferred or disfavored euphemism patterns are declared, does the artifact follow those patterns without substituting undeclared coyness or bluntness?**
+  _weight 1; scored; material; YES = pass._
+  Applies when: This module is explicitly active through the effective project, structural-unit, Action, or Run MaturityProfile or an explicit user instruction, and that selection declares a preferred or disfavored euphemism-pattern target. Topic, genre, audience, rating, and subject matter alone do not activate this criterion. Return NOT_APPLICABLE when no preferred or disfavored euphemism patterns are declared.
+- `modifier.style.authored_content_treatment_fidelity.treatment_register` — **Does the artifact sustain the selected treatment register without drifting into a softer, harsher, clinical, lyrical, comic, horrific, erotic, brutal, or other neighboring register?**
+  _weight 1; scored; material; YES = pass._
+  Applies when: This module is explicitly active through the effective project, structural-unit, Action, or Run MaturityProfile or an explicit user instruction, and that selection declares a treatment-register target. Topic, genre, audience, rating, and subject matter alone do not activate this criterion.
+- `modifier.style.authored_content_treatment_fidelity.depiction_scope` — **Does the artifact match the selected depiction scope, neither eliding material chosen for direct depiction nor expanding material chosen for summary or omission?**
+  _weight 1; scored; material; YES = pass._
+  Applies when: This module is explicitly active through the effective project, structural-unit, Action, or Run MaturityProfile or an explicit user instruction, and that selection declares a depiction-scope target. Topic, genre, audience, rating, and subject matter alone do not activate this criterion.
 
 ## Multimodal Artifact
 

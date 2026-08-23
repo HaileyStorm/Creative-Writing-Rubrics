@@ -16,10 +16,12 @@ from collections.abc import Mapping, Sequence
 from pathlib import Path
 from typing import Any
 
+import yaml
+
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 sys.path.insert(0, str(ROOT / "src"))
-from hbqrs.core import compile_bundle, compiled_questions, load_data, score_bundle  # noqa: E402
+from hbqrs.core import compile_bundle, compiled_questions, score_bundle  # noqa: E402
 
 ARMS = ("none", "current_full", "strictness_only")
 STATES = {"YES", "NO", "NOT_APPLICABLE", "CANNOT_ASSESS"}
@@ -49,20 +51,6 @@ def _bound_file(path: Path, expected: Mapping[str, Any], label: str) -> dict[str
     path_digest = expected.get("path_sha256")
     if path_digest is not None and path_digest != sha_bytes(str(path.resolve()).encode("utf-8")):
         raise ValueError(f"{label} bound path drifted")
-    return found
-
-
-def _bound_tree(path: Path, expected: Mapping[str, Any], label: str) -> dict[str, Any]:
-    if set(expected) != {"files", "sha256"} or not path.is_dir():
-        raise ValueError(f"{label} tree binding is malformed")
-    entries = []
-    for child in sorted(path.rglob("*")):
-        if child.is_file():
-            contents = child.read_bytes()
-            entries.append({"path": child.relative_to(path).as_posix(), "bytes": len(contents), "sha256": sha_bytes(contents)})
-    found = {"files": len(entries), "sha256": sha_bytes(canonical(entries))}
-    if found != dict(expected):
-        raise ValueError(f"{label} tree binding drifted")
     return found
 
 
@@ -152,33 +140,43 @@ def contract() -> dict[str, Any]:
 CONTRACT = contract()
 
 
+def _historical_snapshot_bytes(
+    historical: Mapping[str, Any],
+    key: str,
+    snapshot: Path | None = None,
+) -> bytes:
+    binding_value = historical.get(key)
+    blob_key = f"{key}_git_blob"
+    if not isinstance(binding_value, Mapping) or set(binding_value) != {"path", "bytes", "sha256"}:
+        raise ValueError(f"Historical {key} authority is malformed")
+    if snapshot is not None:
+        try:
+            raw = snapshot.read_bytes()
+        except OSError as exc:
+            raise ValueError(f"Historical {key} snapshot is unavailable") from exc
+    else:
+        commit, blob, relative = historical.get("commit"), historical.get(blob_key), binding_value.get("path")
+        if not all(isinstance(value, str) and value for value in (commit, blob, relative)):
+            raise ValueError(f"Historical {key} git authority is malformed")
+        try:
+            resolved = subprocess.run(["git", "-C", str(ROOT), "rev-parse", f"{commit}:{relative}"], text=True, encoding="utf-8", capture_output=True, check=True).stdout.strip()
+            if resolved != blob:
+                raise ValueError(f"Historical {key} commit/blob binding drifted")
+            raw = subprocess.run(["git", "-C", str(ROOT), "cat-file", "blob", blob], capture_output=True, check=True).stdout
+        except (OSError, subprocess.CalledProcessError) as exc:
+            raise ValueError(f"Historical {key} git snapshot is unavailable") from exc
+    if {"bytes": len(raw), "sha256": sha_bytes(raw)} != {field: binding_value[field] for field in ("bytes", "sha256")}:
+        raise ValueError(f"Historical {key} binding drifted")
+    return raw
+
+
 def _aggregate_bytes(snapshot: Path | None = None) -> tuple[list[dict[str, Any]], dict[str, Any]]:
     """Load the pinned scoring aggregate, never the unresolved historical tree."""
     authority = read_object(COMPATIBILITY_AUTHORITY)
     historical = authority.get("historical_functional_reconstruction")
     if not isinstance(historical, Mapping) or historical.get("identity") != "functional_reconstruction_not_original_full_tree":
         raise ValueError("Historical registry compatibility authority is malformed")
-    aggregate = historical.get("aggregate")
-    if not isinstance(aggregate, Mapping) or set(aggregate) != {"path", "bytes", "sha256"}:
-        raise ValueError("Historical registry aggregate authority is malformed")
-    if snapshot is not None:
-        try:
-            raw = snapshot.read_bytes()
-        except OSError as exc:
-            raise ValueError("Historical registry snapshot is unavailable") from exc
-    else:
-        commit, blob, relative = historical.get("commit"), historical.get("git_blob"), aggregate.get("path")
-        if not all(isinstance(value, str) and value for value in (commit, blob, relative)):
-            raise ValueError("Historical registry git authority is malformed")
-        try:
-            resolved = subprocess.run(["git", "-C", str(ROOT), "rev-parse", f"{commit}:{relative}"], text=True, encoding="utf-8", capture_output=True, check=True).stdout.strip()
-            if resolved != blob:
-                raise ValueError("Historical registry commit/blob binding drifted")
-            raw = subprocess.run(["git", "-C", str(ROOT), "cat-file", "blob", blob], capture_output=True, check=True).stdout
-        except (OSError, subprocess.CalledProcessError) as exc:
-            raise ValueError("Historical registry git snapshot is unavailable") from exc
-    if {"bytes": len(raw), "sha256": sha_bytes(raw)} != {key: aggregate[key] for key in ("bytes", "sha256")}:
-        raise ValueError("Historical registry aggregate binding drifted")
+    raw = _historical_snapshot_bytes(historical, "aggregate", snapshot)
     try:
         modules = json.loads(raw)
     except json.JSONDecodeError as exc:
@@ -188,14 +186,76 @@ def _aggregate_bytes(snapshot: Path | None = None) -> tuple[list[dict[str, Any]]
     return modules, authority
 
 
-def _current_additive_modules(historical_modules: Sequence[Mapping[str, Any]], authority: Mapping[str, Any], path: Path | None = None) -> list[dict[str, Any]]:
-    """Verify the separately named current additive registry without calling it historical."""
-    current = authority.get("current_additive_registry")
-    if not isinstance(current, Mapping) or current.get("identity") != "current_additive_registry_not_historical_identity":
-        raise ValueError("Current additive registry authority is malformed")
-    aggregate, addition = current.get("aggregate"), current.get("addition")
-    if not isinstance(aggregate, Mapping) or set(aggregate) != {"path", "bytes", "sha256"} or not isinstance(addition, Mapping):
-        raise ValueError("Current additive registry aggregate authority is malformed")
+def _historical_bundle() -> dict[str, Any]:
+    """Load the historical scoring bundle from the pinned reconstruction commit."""
+    authority = read_object(COMPATIBILITY_AUTHORITY)
+    historical = authority.get("historical_functional_reconstruction")
+    if not isinstance(historical, Mapping) or historical.get("identity") != "functional_reconstruction_not_original_full_tree":
+        raise ValueError("Historical registry compatibility authority is malformed")
+    try:
+        bundle = yaml.safe_load(_historical_snapshot_bytes(historical, "bundle"))
+    except yaml.YAMLError as exc:
+        raise ValueError("Historical scoring bundle is invalid YAML") from exc
+    if not isinstance(bundle, dict) or bundle.get("bundle_id") != "prose.short_story":
+        raise ValueError("Historical scoring bundle is not prose.short_story")
+    return bundle
+
+
+def _version_without_drift(value: Mapping[str, Any], expected_version: str, label: str) -> dict[str, Any]:
+    standard = value.get("standard")
+    if not isinstance(standard, Mapping) or set(standard) != {"id", "version"} or standard.get("id") != "HBQ-RS" or standard.get("version") != expected_version:
+        raise ValueError(f"{label} standard identity drifted")
+    normalized = dict(value)
+    normalized["standard"] = {"id": "HBQ-RS", "version": "__identity_only__"}
+    return normalized
+
+
+def _identity_only_book_evolution(
+    historical_modules: Sequence[Mapping[str, Any]],
+    current_modules: Sequence[Mapping[str, Any]],
+    current: Mapping[str, Any],
+) -> None:
+    identity = current.get("standard_identity")
+    addition = current.get("addition")
+    if not isinstance(identity, Mapping) or set(identity) != {"id", "historical_version", "current_version"}:
+        raise ValueError("Current book standard identity authority is malformed")
+    if not all(isinstance(identity.get(field), str) and identity[field] for field in ("id", "historical_version", "current_version")) or identity["id"] != "HBQ-RS" or identity["historical_version"] == identity["current_version"]:
+        raise ValueError("Current book standard identity authority is malformed")
+    if not isinstance(addition, Mapping) or not isinstance(addition.get("module_id"), str) or not isinstance(addition.get("canonical_json_sha256"), str):
+        raise ValueError("Current book addition authority is malformed")
+    historical_by_id = {module.get("module_id"): module for module in historical_modules}
+    current_by_id = {module.get("module_id"): module for module in current_modules}
+    if len(historical_by_id) != len(historical_modules) or len(current_by_id) != len(current_modules):
+        raise ValueError("Registry module IDs are not unique")
+    addition_id = addition["module_id"]
+    if set(current_by_id) - set(historical_by_id) != {addition_id} or set(historical_by_id) - set(current_by_id):
+        raise ValueError("Current registry is not the declared exact one-module addition")
+    for module_id, historical_module in historical_by_id.items():
+        current_module = current_by_id[module_id]
+        if _version_without_drift(historical_module, identity["historical_version"], f"Historical module {module_id}") != _version_without_drift(current_module, identity["current_version"], f"Current module {module_id}"):
+            raise ValueError("Current registry changed historical module content beyond standard.version")
+    addition_module = current_by_id[addition_id]
+    _version_without_drift(addition_module, identity["current_version"], f"Current addition {addition_id}")
+    if sha_bytes(canonical(addition_module)) != addition["canonical_json_sha256"]:
+        raise ValueError("Current registry addition binding drifted")
+
+
+def _identity_only_bundle_evolution(historical_bundle: Mapping[str, Any], current_bundle: Mapping[str, Any], current: Mapping[str, Any]) -> None:
+    identity = current.get("standard_identity")
+    if not isinstance(identity, Mapping):
+        raise ValueError("Current book standard identity authority is malformed")
+    if _version_without_drift(historical_bundle, str(identity.get("historical_version", "")), "Historical scoring bundle") != _version_without_drift(current_bundle, str(identity.get("current_version", "")), "Current scoring bundle"):
+        raise ValueError("Current scoring bundle changed beyond standard.version")
+
+
+def _current_book_modules(historical_modules: Sequence[Mapping[str, Any]], authority: Mapping[str, Any], path: Path | None = None) -> list[dict[str, Any]]:
+    """Verify the current whole-book identity evolution without relabeling history."""
+    current = authority.get("current_book")
+    if not isinstance(current, Mapping) or current.get("identity") != "current_book_not_historical_identity":
+        raise ValueError("Current book authority is malformed")
+    aggregate = current.get("aggregate")
+    if not isinstance(aggregate, Mapping) or set(aggregate) != {"path", "bytes", "sha256"}:
+        raise ValueError("Current book aggregate authority is malformed")
     source = path or ROOT / str(aggregate["path"])
     raw = source.read_bytes()
     if {"bytes": len(raw), "sha256": sha_bytes(raw)} != {key: aggregate[key] for key in ("bytes", "sha256")}:
@@ -206,16 +266,29 @@ def _current_additive_modules(historical_modules: Sequence[Mapping[str, Any]], a
         raise ValueError("Current additive registry aggregate is invalid JSON") from exc
     if not isinstance(modules, list) or len(modules) != current.get("module_count") or not all(isinstance(module, dict) for module in modules):
         raise ValueError("Current additive registry module count drifted")
-    historical_by_id = {module.get("module_id"): module for module in historical_modules}
-    current_by_id = {module.get("module_id"): module for module in modules}
-    if len(historical_by_id) != len(historical_modules) or len(current_by_id) != len(modules):
-        raise ValueError("Registry module IDs are not unique")
-    addition_id = addition.get("module_id")
-    if set(current_by_id) - set(historical_by_id) != {addition_id} or set(historical_by_id) - set(current_by_id) or any(current_by_id[module_id] != module for module_id, module in historical_by_id.items()):
-        raise ValueError("Current registry is not the declared exact one-module addition")
-    if sha_bytes(canonical(current_by_id.get(addition_id))) != addition.get("canonical_json_sha256"):
-        raise ValueError("Current registry addition binding drifted")
+    _identity_only_book_evolution(historical_modules, modules, current)
     return modules
+
+
+def _current_bundle(authority: Mapping[str, Any], historical_bundle: Mapping[str, Any], path: Path | None = None) -> dict[str, Any]:
+    current = authority.get("current_book")
+    if not isinstance(current, Mapping) or current.get("identity") != "current_book_not_historical_identity":
+        raise ValueError("Current book authority is malformed")
+    binding_value = current.get("bundle")
+    if not isinstance(binding_value, Mapping) or set(binding_value) != {"path", "bytes", "sha256"}:
+        raise ValueError("Current scoring bundle authority is malformed")
+    source = path or ROOT / str(binding_value["path"])
+    raw = source.read_bytes()
+    if {"bytes": len(raw), "sha256": sha_bytes(raw)} != {field: binding_value[field] for field in ("bytes", "sha256")}:
+        raise ValueError("Current scoring bundle binding drifted")
+    try:
+        bundle = yaml.safe_load(raw)
+    except yaml.YAMLError as exc:
+        raise ValueError("Current scoring bundle is invalid YAML") from exc
+    if not isinstance(bundle, dict) or bundle.get("bundle_id") != "prose.short_story":
+        raise ValueError("Current scoring bundle is not prose.short_story")
+    _identity_only_bundle_evolution(historical_bundle, bundle, current)
+    return bundle
 
 
 def _exact_binding(path: Path, expected: Mapping[str, Any], label: str) -> dict[str, Any]:
@@ -311,10 +384,9 @@ def _parent_bindings(original_public: Path, original_private: Path, continuation
     original_tree = compatibility.get("original_executor_registry_tree")
     if not isinstance(original_tree, Mapping) or binding_value.get("runtime", {}).get("registry") != {key: original_tree.get(key) for key in ("files", "sha256")}:
         raise ValueError("Original executor registry binding is not the declared unresolved historical tree")
-    unchanged_bundles = compatibility.get("unchanged_bundles")
-    if not isinstance(unchanged_bundles, Mapping) or binding_value.get("runtime", {}).get("bundles") != dict(unchanged_bundles):
-        raise ValueError("Original executor bundle binding is not the declared unchanged bundle set")
-    _bound_tree(ROOT / "bundles", binding_value.get("runtime", {}).get("bundles", {}), "HBQ bundles")
+    original_bundles = compatibility.get("original_executor_bundle_tree")
+    if not isinstance(original_bundles, Mapping) or binding_value.get("runtime", {}).get("bundles") != {key: original_bundles.get(key) for key in ("files", "sha256")}:
+        raise ValueError("Original executor bundle binding is not the declared historical bundle tree")
     _bound_file(original_private / "pilot-inputs.json", binding_value.get("private_manifest", {}), "Pilot input manifest")
     input_bindings = binding_value.get("inputs")
     if not isinstance(input_bindings, list) or len(input_bindings) != 4:
@@ -440,7 +512,7 @@ def _load_records(original_public: Path, original_private: Path, continuation_pu
     events = {int(row["sequence"]): row for row in originals + continuation if row.get("event") == "completed" and isinstance(row.get("sequence"), int)}
     failure_sequences = set(evidence["terminal_failure_sequences"])
     modules, _ = _aggregate_bytes()
-    bundle = load_data(ROOT / "bundles" / "prose.short_story.yaml")
+    bundle = _historical_bundle()
     parent = _load_parent_executor()
     expected_ids = {int(cell["sequence"]): _historical_prompt(parent, parent._item(original_private, str(cell["item_id"])), cell, modules, bundle) for cell in schedule}
     records: list[dict[str, Any]] = []
@@ -493,19 +565,26 @@ def _repair_substitution(original_public: Path, original_private: Path, continua
         raise ValueError("Quote repair normalization does not match sealed repair verdict")
     metadata, hanna = _metadata(original_private, private_manifest)
     modules, _ = _aggregate_bytes()
-    bundle = load_data(ROOT / "bundles" / "prose.short_story.yaml")
+    bundle = _historical_bundle()
     item_id = str(cell17["item_id"])
     task = read_object(original_private / "inputs" / item_id / "task-contract.json")
     record = {"sequence": 17, "arm": str(cell17["arm"]), "session": int(cell17["fresh_session"]), "item": item_id, "metadata": metadata[item_id], "hanna": hanna[item_id], "verdicts": normalized, "metrics": _score(normalized, item_id, task, modules, bundle), "terminal_sha256": sha_bytes(raw_path.read_bytes()), "verdicts_sha256": sha_bytes(canonical(normalized))}
     return {"record": record, "repaired_leaf_count": 1, "repair_attempt_id": str(repair["repair_attempt_id"]), "whole_cell_substitution_status": "valid"}
 
 
-def verify_current_additive_rescoring(original_public: Path, original_private: Path, continuation_public: Path, continuation_private: Path, current_registry: Path | None = None) -> dict[str, int]:
-    """Check the named 1.2 addition against historical scoring without relabeling it."""
+def verify_current_book_rescoring(
+    original_public: Path,
+    original_private: Path,
+    continuation_public: Path,
+    continuation_private: Path,
+    current_registry: Path | None = None,
+    current_bundle: Path | None = None,
+) -> dict[str, int]:
+    """Check the named whole-book evolution against historical scoring without relabeling it."""
     records, _, _, _ = _load_records(original_public, original_private, continuation_public, continuation_private)
     historical_modules, authority = _aggregate_bytes()
-    current_modules = _current_additive_modules(historical_modules, authority, current_registry)
-    bundle = load_data(ROOT / "bundles" / "prose.short_story.yaml")
+    current_modules = _current_book_modules(historical_modules, authority, current_registry)
+    bundle = _current_bundle(authority, _historical_bundle(), current_bundle)
     for record in records:
         task = read_object(original_private / "inputs" / str(record["item"]) / "task-contract.json")
         if _score(record["verdicts"], str(record["item"]), task, current_modules, bundle) != record["metrics"]:

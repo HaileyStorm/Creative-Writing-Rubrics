@@ -3,7 +3,7 @@ Copyright 2026 Hailey Collet
 
 This package is an original synthesis of hierarchical binary-question rubrics,
 judge protocols, and deterministic score aggregation for creative writing and
-related generation tasks (HBQ-RS 1.0.0).
+related generation tasks (HBQ-RS 1.2.0).
 
 Bibliographic entries in sources/bibliography.json and the discussion in
 docs/RESEARCH_SYNTHESIS.md identify research that informed the design

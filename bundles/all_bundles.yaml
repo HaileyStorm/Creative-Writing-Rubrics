@@ -1,7 +1,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: audio.audiobook
   version: 1
   title: Audiobook narration
@@ -140,7 +140,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: audio.character_voice
   version: 1
   title: Character voice performance
@@ -279,7 +279,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: audio.drama_production
   version: 1
   title: Audio drama production
@@ -419,7 +419,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: audio.poetry_reading
   version: 1
   title: Poetry reading
@@ -558,7 +558,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: default.coarse_outline
   version: 1
   title: Coarse outline
@@ -680,7 +680,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: default.consistency_check
   version: 1
   title: Consistency check and repair proposals
@@ -811,7 +811,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: default.continuation
   version: 1
   title: Continuation
@@ -966,7 +966,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: default.fine_scene_outline
   version: 1
   title: Fine scene outline
@@ -1092,7 +1092,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: default.first_pass_screening
   version: 1
   title: First-pass screening
@@ -1225,7 +1225,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: default.full_manuscript_critique
   version: 1
   title: Full-manuscript critique
@@ -1385,7 +1385,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: default.general_poem
   version: 1
   title: Default General poem
@@ -1523,7 +1523,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: default.haiku
   version: 1
   title: Default English haiku — contemporary
@@ -1666,7 +1666,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: default.ideation
   version: 1
   title: Ideation
@@ -1788,7 +1788,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: default.model_a_finalist_adjudication
   version: 1
   title: Finalist adjudication
@@ -1929,7 +1929,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: default.model_b_scene_draft
   version: 1
   title: Fast-model scene draft
@@ -2091,7 +2091,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: default.research_task
   version: 1
   title: Research task
@@ -2200,7 +2200,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: default.restrained_final_pass
   version: 1
   title: Restrained final pass
@@ -2343,7 +2343,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: default.sonnet
   version: 1
   title: Default Shakespearean sonnet
@@ -2480,7 +2480,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: default.targeted_rewrite
   version: 1
   title: Targeted rewrite
@@ -2620,7 +2620,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: drama.audio_drama_script
   version: 1
   title: Audio drama script
@@ -2760,7 +2760,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: drama.monologue
   version: 1
   title: Monologue
@@ -2900,7 +2900,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: drama.screenplay
   version: 1
   title: Screenplay / teleplay
@@ -3040,7 +3040,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: drama.stage_play
   version: 1
   title: Stage play
@@ -3180,7 +3180,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: game.quest
   version: 1
   title: Game narrative / quest writing
@@ -3320,7 +3320,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: hybrid.adaptation
   version: 1
   title: Adaptation
@@ -3461,7 +3461,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: hybrid.creative_nonfiction
   version: 1
   title: Creative nonfiction
@@ -3602,7 +3602,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: hybrid.epistolary
   version: 1
   title: Epistolary / document fiction
@@ -3743,7 +3743,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: hybrid.memoir
   version: 1
   title: Memoir / autobiographical narrative
@@ -3884,7 +3884,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: hybrid.personal_essay
   version: 1
   title: Personal or literary essay
@@ -4025,7 +4025,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: hybrid.transcreation
   version: 1
   title: Translation or transcreation
@@ -4166,7 +4166,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: interactive.branching
   version: 1
   title: Interactive or branching fiction
@@ -4306,7 +4306,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: multimodal.scene_package
   version: 1
   title: Multimodal scene package
@@ -4437,7 +4437,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: poetry.ballad
   version: 1
   title: Ballad
@@ -4556,7 +4556,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: poetry.blank_verse
   version: 1
   title: Blank verse
@@ -4675,7 +4675,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: poetry.collection
   version: 1
   title: Poetry sequence or collection
@@ -4794,7 +4794,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: poetry.dramatic_monologue
   version: 1
   title: Dramatic monologue poem
@@ -4913,7 +4913,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: poetry.elegy
   version: 1
   title: Elegy
@@ -5032,7 +5032,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: poetry.fixed_form
   version: 1
   title: Generic fixed-form verse
@@ -5151,7 +5151,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: poetry.free_verse
   version: 1
   title: Free verse poem
@@ -5259,7 +5259,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: poetry.general
   version: 1
   title: General poem
@@ -5396,7 +5396,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: poetry.ghazal
   version: 1
   title: Ghazal
@@ -5515,7 +5515,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: poetry.haiku.contemporary
   version: 1
   title: English haiku — contemporary
@@ -5657,7 +5657,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: poetry.haiku.strict_575
   version: 1
   title: English haiku — strict 5–7–5
@@ -5799,7 +5799,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: poetry.limerick
   version: 1
   title: Limerick
@@ -5918,7 +5918,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: poetry.lyric_song
   version: 1
   title: Lyric / song lyric
@@ -6037,7 +6037,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: poetry.narrative_long
   version: 1
   title: Narrative or long poem
@@ -6156,7 +6156,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: poetry.ode
   version: 1
   title: Ode
@@ -6275,7 +6275,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: poetry.pantoum
   version: 1
   title: Pantoum
@@ -6394,7 +6394,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: poetry.prose_poem
   version: 1
   title: Prose poem
@@ -6513,7 +6513,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: poetry.rondeau
   version: 1
   title: Rondeau
@@ -6632,7 +6632,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: poetry.sestina
   version: 1
   title: Sestina
@@ -6751,7 +6751,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: poetry.sonnet.contemporary
   version: 1
   title: Contemporary sonnet
@@ -6887,7 +6887,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: poetry.sonnet.miltonic
   version: 1
   title: Miltonic sonnet
@@ -7022,7 +7022,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: poetry.sonnet.petrarchan
   version: 1
   title: Petrarchan sonnet
@@ -7157,7 +7157,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: poetry.sonnet.shakespearean
   version: 1
   title: Shakespearean sonnet
@@ -7293,7 +7293,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: poetry.sonnet.spenserian
   version: 1
   title: Spenserian sonnet
@@ -7428,7 +7428,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: poetry.spoken_word
   version: 1
   title: Spoken-word / performance poetry
@@ -7547,7 +7547,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: poetry.tanka
   version: 1
   title: Tanka in English
@@ -7666,7 +7666,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: poetry.villanelle
   version: 1
   title: Villanelle
@@ -7785,7 +7785,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: project.ingestion
   version: 1
   title: Project ingestion and reconstruction
@@ -7906,7 +7906,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: project.revision_plan
   version: 1
   title: Revision plan
@@ -8018,7 +8018,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: project.timeline
   version: 1
   title: Timeline and canon ledger
@@ -8130,7 +8130,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: project.world_bible
   version: 1
   title: World-bible artifact
@@ -8242,7 +8242,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: prose.chapter
   version: 1
   title: Chapter
@@ -8428,7 +8428,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: prose.fanfiction
   version: 1
   title: Fanfiction / canon continuation
@@ -8612,7 +8612,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: prose.flash
   version: 1
   title: Flash fiction / drabble
@@ -8776,7 +8776,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: prose.long_form
   version: 1
   title: Long-form prose
@@ -8958,7 +8958,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: prose.novel
   version: 1
   title: Novel
@@ -9139,7 +9139,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: prose.novella
   version: 1
   title: Novella
@@ -9320,7 +9320,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: prose.scene
   version: 1
   title: Scene
@@ -9488,7 +9488,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: prose.serial
   version: 1
   title: Serial or episodic fiction
@@ -9670,7 +9670,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: prose.short_form
   version: 1
   title: Short-form prose
@@ -9833,7 +9833,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: prose.short_story
   version: 1
   title: Short story
@@ -9996,7 +9996,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: prose.vignette
   version: 1
   title: Vignette / slice-of-life
@@ -10160,7 +10160,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: sampler.candidate_batch
   version: 1
   title: Creative-sampler candidate batch
@@ -10289,7 +10289,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: selection.pairwise_finalists
   version: 1
   title: Pairwise finalist selection
@@ -10399,7 +10399,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: visual.book_cover
   version: 1
   title: Book cover
@@ -10525,7 +10525,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: visual.character_design
   version: 1
   title: Character design sheet
@@ -10651,7 +10651,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: visual.character_portrait
   version: 1
   title: Character portrait
@@ -10777,7 +10777,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: visual.comic_page
   version: 1
   title: Sequential art / comic page
@@ -10903,7 +10903,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: visual.environment
   version: 1
   title: Environment / location illustration
@@ -11029,7 +11029,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: visual.map
   version: 1
   title: Map
@@ -11155,7 +11155,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: visual.scene_illustration
   version: 1
   title: Scene illustration
@@ -11281,7 +11281,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: visual.sequence_continuity
   version: 1
   title: Visual narrative continuity
@@ -11403,7 +11403,7 @@
 - $schema: ../schema/hbq_bundle.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   bundle_id: visual.storyboard
   version: 1
   title: Storyboard

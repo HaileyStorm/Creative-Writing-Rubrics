@@ -40,16 +40,34 @@ SCAN_DIRS = (
     "manifest.json",
 )
 
+INTENTIONAL_HOST_INTEGRATION_DOCS = {Path("docs/PALIMPSEST_HANDOFF.md")}
+INTENTIONAL_HOST_INTEGRATION_REFERENCES = {
+    Path("README.md"): (
+        "[Palimpsest integration handoff](docs/PALIMPSEST_HANDOFF.md)",
+    ),
+}
+
 
 def test_lazy_public_exports_preserve_attribute_and_from_import_semantics() -> None:
     import hbqrs
 
+    assert hbqrs.__version__ == "1.2.0"
     assert hbqrs.__all__ == ["__version__", *hbqrs._EXPORTS]
     for name in hbqrs.__all__:
         assert getattr(hbqrs, name) is not None
         namespace: dict[str, object] = {}
         exec(f"from hbqrs import {name}", namespace)
         assert namespace[name] is getattr(hbqrs, name)
+
+
+def test_citation_uses_the_current_hbq_rs_release_identity() -> None:
+    import hbqrs
+    import yaml
+
+    citation = yaml.safe_load((book_root() / "CITATION.cff").read_text(encoding="utf-8"))
+    assert citation["version"] == hbqrs.__version__
+    assert citation["date-released"] == "2026-08-22"
+    assert "HBQ-RS 1.2.0" in citation["abstract"]
 
 
 def test_multisample_study_fresh_import_has_minimal_hbqrs_closure() -> None:
@@ -82,9 +100,13 @@ def test_public_text_has_no_host_product_language() -> None:
         elif path.is_dir():
             targets.extend(item for item in path.rglob("*") if item.is_file())
     for path in targets:
+        if path.relative_to(root) in INTENTIONAL_HOST_INTEGRATION_DOCS:
+            continue
         if path.suffix.lower() not in {".md", ".json", ".jsonl", ".yaml", ".yml", ".py", ".toml", ".cff", ".txt"}:
             continue
         text = path.read_text(encoding="utf-8")
+        for allowed_reference in INTENTIONAL_HOST_INTEGRATION_REFERENCES.get(path.relative_to(root), ()):
+            text = text.replace(allowed_reference, "[host integration handoff]")
         for needle in HOST_MARKERS:
             if re.search(needle, text):
                 hits.append(f"{path.relative_to(root)}: {needle}")

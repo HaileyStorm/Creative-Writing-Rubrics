@@ -6,12 +6,13 @@ authors:
   - family-names: Collet
     given-names: Hailey
 license: Apache-2.0
-version: 1.0.0
-date-released: "2026-08-20"
+version: 1.2.0
+date-released: "2026-08-22"
 abstract: >
-  HBQ-RS 1.0.0 — a composable hierarchical binary-question rubric stack for
-  creative writing, multimedia narrative, draft judging, benchmarking, and
-  synthetic-data generation, with deterministic score aggregation.
+  HBQ-RS 1.2.0, distributed as Creative-Writing-Rubrics — a composable
+  hierarchical binary-question rubric stack for creative writing, multimedia
+  narrative, draft judging, benchmarking, and synthetic-data generation, with
+  deterministic score aggregation.
 keywords:
   - creative writing
   - rubrics

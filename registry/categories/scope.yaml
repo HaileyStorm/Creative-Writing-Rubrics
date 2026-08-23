@@ -1,7 +1,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: scope.act
   version: 1
   title: Act or part scope overlay
@@ -138,7 +138,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: scope.beat
   version: 1
   title: Beat scope overlay
@@ -262,7 +262,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: scope.chapter
   version: 1
   title: Chapter scope overlay
@@ -413,7 +413,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: scope.long_context
   version: 1
   title: Long-context integrity overlay
@@ -578,7 +578,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: scope.manuscript
   version: 1
   title: Full-manuscript scope overlay
@@ -741,7 +741,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: scope.micro
   version: 1
   title: Micro-level scope overlay
@@ -869,7 +869,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: scope.passage
   version: 1
   title: Passage or extract scope overlay
@@ -992,7 +992,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: scope.poetry_collection
   version: 1
   title: Poetry sequence or collection scope overlay
@@ -1129,7 +1129,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: scope.poetry_line
   version: 1
   title: Poetry line scope overlay
@@ -1253,7 +1253,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: scope.poetry_poem
   version: 1
   title: Single-poem scope overlay
@@ -1375,7 +1375,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: scope.poetry_stanza
   version: 1
   title: Poetry stanza scope overlay
@@ -1497,7 +1497,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: scope.scene
   version: 1
   title: Scene scope overlay
@@ -1634,7 +1634,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: scope.sequence
   version: 1
   title: Multi-chapter sequence or arc scope overlay
@@ -1784,7 +1784,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: scope.series
   version: 1
   title: Series or project-corpus scope overlay

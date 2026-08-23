@@ -1,7 +1,7 @@
 $schema: ../schema/hbq_rubric.schema.json
 standard:
   id: HBQ-RS
-  version: 1.0.0
+  version: 1.2.0
 module_id: craft.narrative.point_of_view_and_focalization
 version: 1
 title: Point of view and focalization

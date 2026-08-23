@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.2.0 — 2026-08-22
+
+- Unified the current public identity at HBQ-RS 1.2.0. The 1.0.0, 277-module, 2,139-leaf inventory remains historical provenance.
+- Upstreamed the six-leaf, opt-in `modifier.style.authored_content_treatment_fidelity` module with stable IDs; the current registry is 278 modules, 2,145 leaves, and 85 bundles.
+
 ## 1.1.0 — 2026-08-20
 
 - Added hash-bound v2 score descendants with optional effective-leaf confidence diagnostics by rubric role; retained immutable v1 score parents and legacy domain-point `report.confidence` compatibility.

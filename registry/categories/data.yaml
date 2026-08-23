@@ -1,7 +1,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: data.eval.answer_required_purity
   version: 1
   title: Answer-required purity
@@ -144,7 +144,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: data.eval.automatic_grader_validity
   version: 1
   title: Automatic-grader validity
@@ -287,7 +287,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: data.eval.benchmark_fitness
   version: 1
   title: Benchmark fitness
@@ -430,7 +430,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: data.eval.category_balance
   version: 1
   title: Category balance
@@ -559,7 +559,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: data.eval.context_length_balance
   version: 1
   title: Context-length balance
@@ -688,7 +688,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: data.eval.dataset_provenance_and_reproducibility
   version: 1
   title: Dataset provenance and reproducibility
@@ -831,7 +831,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: data.eval.evaluation_determinism
   version: 1
   title: Evaluation determinism
@@ -974,7 +974,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: data.eval.split_isolation
   version: 1
   title: Split isolation
@@ -1104,7 +1104,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: data.eval.task_tail_coverage
   version: 1
   title: Task-tail coverage
@@ -1289,7 +1289,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: data.eval.transformation_fidelity
   version: 1
   title: Transformation fidelity

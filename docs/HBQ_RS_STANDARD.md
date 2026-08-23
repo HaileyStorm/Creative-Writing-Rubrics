@@ -1,4 +1,4 @@
-# HBQ-RS: Hierarchical Binary-Question Rubric Stack
+# HBQ-RS 1.2.0: Hierarchical Binary-Question Rubric Stack
 
 ## Status and purpose
 

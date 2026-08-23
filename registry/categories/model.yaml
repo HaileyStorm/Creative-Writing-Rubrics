@@ -1,7 +1,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: model.release.code_capability_retention
   version: 1
   title: Code capability retention
@@ -141,7 +141,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: model.release.commonsense_and_causal_reasoning_retention
   version: 1
   title: Commonsense and causal-reasoning retention
@@ -282,7 +282,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: model.release.creative_sampler_regression
   version: 1
   title: Creative-sampler regression
@@ -438,7 +438,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: model.release.creative_writing_capability_retention
   version: 1
   title: Creative-writing capability retention
@@ -580,7 +580,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: model.release.dspark_mtp_equivalence_and_benefit
   version: 1
   title: DSpark/MTP equivalence and benefit
@@ -737,7 +737,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: model.release.instruction_following_retention
   version: 1
   title: Instruction-following retention
@@ -879,7 +879,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: model.release.judge_reliability
   version: 1
   title: Judge reliability
@@ -1050,7 +1050,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: model.release.knowledge_retention
   version: 1
   title: Knowledge retention
@@ -1190,7 +1190,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: model.release.long_context_retention
   version: 1
   title: Long-context retention
@@ -1332,7 +1332,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: model.release.math_capability_retention
   version: 1
   title: Math capability retention
@@ -1472,7 +1472,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: model.release.multimodal_retention
   version: 1
   title: Multimodal retention
@@ -1616,7 +1616,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: model.release.provider_runtime_fidelity
   version: 1
   title: Provider/runtime fidelity
@@ -1786,7 +1786,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: model.release.quantization_retention
   version: 1
   title: Quantization retention
@@ -1942,7 +1942,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: model.release.reap_candidate_non_inferiority
   version: 1
   title: REAP candidate non-inferiority
@@ -2098,7 +2098,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: model.release.release_readiness
   version: 1
   title: Release readiness
@@ -2268,7 +2268,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: model.release.revision_and_editorial_capability_retention
   version: 1
   title: Revision and editorial capability retention
@@ -2396,7 +2396,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: model.release.tail_expert_preservation
   version: 1
   title: Tail-expert preservation
@@ -2566,7 +2566,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: model.release.true_abliteration_non_refusal_behavior
   version: 1
   title: True-abliteration/non-refusal behavior

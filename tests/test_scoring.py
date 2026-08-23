@@ -84,12 +84,14 @@ def _task_contract() -> dict[str, Any]:
 
 def test_inventory_counts(modules, bundles, manifest) -> None:
     questions = sum(1 for module in modules for _ in walk_tree(module["tree"]))
-    assert len(modules) == 277
+    assert len(modules) == 278
     assert len(bundles) == 85
-    assert questions == 2139
-    assert manifest["module_count"] == 277
-    assert manifest["question_count"] == 2139
+    assert questions == 2145
+    assert manifest["module_count"] == 278
+    assert manifest["question_count"] == 2145
     assert manifest["bundle_count"] == 85
+    assert manifest["package"] == "creative-writing-rubrics"
+    assert manifest["standard"] == {"id": "HBQ-RS", "version": "1.2.0"}
 
 
 def test_aggregate_parity_and_criterion_ownership(modules, bundles) -> None:
@@ -112,6 +114,58 @@ def test_aggregate_parity_and_criterion_ownership(modules, bundles) -> None:
                 "question_id": leaf["id"],
             }
     assert actual_owners == expected_owners
+
+
+def test_authored_content_treatment_fidelity_module_contract(module_by_id, bundles) -> None:
+    module = module_by_id["modifier.style.authored_content_treatment_fidelity"]
+    expected_ids = [
+        "modifier.style.authored_content_treatment_fidelity.directness_level",
+        "modifier.style.authored_content_treatment_fidelity.detail_density",
+        "modifier.style.authored_content_treatment_fidelity.lexical_specificity",
+        "modifier.style.authored_content_treatment_fidelity.euphemism_alignment",
+        "modifier.style.authored_content_treatment_fidelity.treatment_register",
+        "modifier.style.authored_content_treatment_fidelity.depiction_scope",
+    ]
+    axes = [
+        "directness-level",
+        "detail-density",
+        "lexical-specificity",
+        "preferred or disfavored euphemism-pattern",
+        "treatment-register",
+        "depiction-scope",
+    ]
+    bidirectional_targets = [
+        "more evasive or more explicit",
+        "neither summarizing away material chosen for detail nor adding granular depiction",
+        "vagueness below the effective target and anatomical, technical, or other specificity beyond it",
+        "undeclared coyness or bluntness",
+        "softer, harsher",
+        "neither eliding material chosen for direct depiction nor expanding material chosen for summary or omission",
+    ]
+    leaves = [leaf for leaf, _, _ in walk_tree(module["tree"])]
+    assert module["kind"] == "modifier"
+    assert module["requires"] == []
+    assert module["incompatible_with"] == []
+    assert module["modifier_actions"] == []
+    assert "Opt in only" in module["activation"]
+    assert "Do not activate from topic, genre, audience, rating" in module["activation"]
+    assert [leaf["id"] for leaf in leaves] == expected_ids
+    assert [leaf["criterion_key"] for leaf in leaves] == expected_ids
+    assert all(leaf["id"] == leaf["criterion_key"] for leaf in leaves)
+    assert all(leaf["question_type"] == "scored" and not leaf.get("hard_gate", False) for leaf in leaves)
+    assert all("explicitly active" in leaf["applies_when"] for leaf in leaves)
+    assert all("Topic, genre, audience, rating, and subject matter alone do not activate" in leaf["applies_when"] for leaf in leaves)
+    assert all(
+        f"declares a {axis} target" in leaf["applies_when"]
+        for leaf, axis in zip(leaves, axes)
+    )
+    assert "Return NOT_APPLICABLE when no preferred or disfavored euphemism patterns are declared." in leaves[3]["applies_when"]
+    assert "unselected axes are not applicable" in module["tree"][0]["description"]
+    assert module["notes"][2] == "Apply only selected axes; an undeclared axis receives NOT_APPLICABLE rather than an inferred target."
+    assert all(target in leaf["text"] for leaf, target in zip(leaves, bidirectional_targets))
+    assert module["notes"][1] == "This is a style-fidelity rubric, not a moderation, permission, refusal, safety, consent, audience, or moral gate."
+    assert not {"permission", "refusal", "moderation", "safety", "consent", "audience", "moral"} & set(module)
+    assert module["module_id"] not in json.dumps(bundles)
 
 
 def test_registry_and_schema_validation(modules, bundles) -> None:

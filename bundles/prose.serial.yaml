@@ -1,7 +1,7 @@
 $schema: ../schema/hbq_bundle.schema.json
 standard:
   id: HBQ-RS
-  version: 1.0.0
+  version: 1.2.0
 bundle_id: prose.serial
 version: 1
 title: Serial or episodic fiction

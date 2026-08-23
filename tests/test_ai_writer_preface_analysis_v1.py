@@ -4,6 +4,7 @@ from __future__ import annotations
 import importlib.util
 import json
 import shutil
+from copy import deepcopy
 from pathlib import Path
 
 import pytest
@@ -100,20 +101,44 @@ def test_historical_registry_snapshot_refuses_missing_or_wrong_content(tmp_path:
         analysis._aggregate_bytes(wrong)
 
 
-def test_analysis_does_not_compare_the_historical_registry_tree_to_live_files(monkeypatch: pytest.MonkeyPatch, tmp_path: Path):
-    original = analysis._bound_tree
-
-    def bound_tree(path: Path, expected: object, label: str):
-        if label == "HBQ registry":
-            pytest.fail("analysis must resolve the hash-bound aggregate instead of the live registry tree")
-        return original(path, expected, label)
-
-    monkeypatch.setattr(analysis, "_bound_tree", bound_tree)
-    analysis.analyze(PUBLIC, PRIVATE, CONT_PUBLIC, CONT_PRIVATE, tmp_path / "out")
+def test_historical_scoring_bundle_resolves_from_the_pinned_git_snapshot():
+    bundle = analysis._historical_bundle()
+    authority = analysis.read_object(PACKAGE / "historical-registry-compatibility.json")
+    historical = authority["historical_functional_reconstruction"]
+    assert bundle["bundle_id"] == "prose.short_story"
+    assert bundle["standard"] == {"id": "HBQ-RS", "version": "1.0.0"}
+    assert historical["bundle"]["sha256"] == "7ea60d4fbc1b9992dce6496a0c2771fa817a80a9384a0532ac85034b279e9319"
 
 
-def test_current_additive_registry_preserves_all_completed_historical_scores():
-    assert analysis.verify_current_additive_rescoring(PUBLIC, PRIVATE, CONT_PUBLIC, CONT_PRIVATE) == {
+def test_current_book_permits_only_the_declared_standard_version_change_and_one_addition():
+    historical = [{"module_id": "example.historical", "standard": {"id": "HBQ-RS", "version": "1.0.0"}, "title": "Historical"}]
+    addition = {"module_id": "example.addition", "standard": {"id": "HBQ-RS", "version": "1.2.0"}, "title": "Addition"}
+    authority = {
+        "standard_identity": {"id": "HBQ-RS", "historical_version": "1.0.0", "current_version": "1.2.0"},
+        "addition": {"module_id": "example.addition", "canonical_json_sha256": analysis.sha_bytes(analysis.canonical(addition))},
+    }
+    current = [deepcopy(historical[0]), addition]
+    current[0]["standard"]["version"] = "1.2.0"
+    analysis._identity_only_book_evolution(historical, current, authority)
+    changed = deepcopy(current)
+    changed[0]["title"] = "Changed"
+    with pytest.raises(ValueError, match="beyond standard.version"):
+        analysis._identity_only_book_evolution(historical, changed, authority)
+
+
+def test_current_bundle_permits_only_the_declared_standard_version_change():
+    historical = {"standard": {"id": "HBQ-RS", "version": "1.0.0"}, "bundle_id": "prose.short_story", "title": "Short story"}
+    current = deepcopy(historical)
+    current["standard"]["version"] = "1.2.0"
+    authority = {"standard_identity": {"id": "HBQ-RS", "historical_version": "1.0.0", "current_version": "1.2.0"}}
+    analysis._identity_only_bundle_evolution(historical, current, authority)
+    current["title"] = "Changed"
+    with pytest.raises(ValueError, match="beyond standard.version"):
+        analysis._identity_only_bundle_evolution(historical, current, authority)
+
+
+def test_current_book_preserves_all_completed_historical_scores():
+    assert analysis.verify_current_book_rescoring(PUBLIC, PRIVATE, CONT_PUBLIC, CONT_PRIVATE) == {
         "sealed_cells_with_question_id_payload_prompt_parity": 24,
         "rescored_completed_cells_with_metric_parity": 22,
     }

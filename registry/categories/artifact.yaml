@@ -1,7 +1,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: artifact.support.asset_manifest
   version: 1
   title: Asset manifest
@@ -137,7 +137,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: artifact.support.character_sheet
   version: 1
   title: Character sheet
@@ -306,7 +306,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: artifact.support.glossary_and_pronunciation_lexicon
   version: 1
   title: Glossary and pronunciation lexicon
@@ -442,7 +442,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: artifact.support.illustration_brief
   version: 1
   title: Illustration brief
@@ -578,7 +578,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: artifact.support.logline
   version: 1
   title: Logline
@@ -719,7 +719,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: artifact.support.narration_direction_sheet
   version: 1
   title: Narration direction sheet
@@ -855,7 +855,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: artifact.support.outline
   version: 1
   title: Outline
@@ -996,7 +996,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: artifact.support.pitch_query_blurb
   version: 1
   title: Pitch / query / blurb
@@ -1137,7 +1137,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: artifact.support.place_setting_sheet
   version: 1
   title: Place / setting sheet
@@ -1292,7 +1292,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: artifact.support.premise_story_seed
   version: 1
   title: Premise / story seed
@@ -1433,7 +1433,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: artifact.support.project_decision_log
   version: 1
   title: Project decision log
@@ -1569,7 +1569,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: artifact.support.project_style_guide
   version: 1
   title: Project style guide
@@ -1706,7 +1706,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: artifact.support.relationship_faction_item_sheet
   version: 1
   title: Relationship / faction / item sheet
@@ -1861,7 +1861,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: artifact.support.research_brief_or_dossier
   version: 1
   title: Research brief or dossier
@@ -2017,7 +2017,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: artifact.support.revision_plan
   version: 1
   title: Revision plan
@@ -2172,7 +2172,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: artifact.support.scene_card_or_beat_sheet
   version: 1
   title: Scene card or beat sheet
@@ -2308,7 +2308,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: artifact.support.synopsis
   version: 1
   title: Synopsis
@@ -2449,7 +2449,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: artifact.support.timeline_and_canon_ledger
   version: 1
   title: Timeline and canon ledger
@@ -2604,7 +2604,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: artifact.support.world_bible
   version: 1
   title: World bible

@@ -1,7 +1,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: meta.dynamic_task_question_decomposition
   version: 1
   title: Dynamic task-question decomposition
@@ -181,7 +181,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: meta.human_review_escalation
   version: 1
   title: Human review escalation
@@ -345,7 +345,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: meta.judge_bias_and_calibration_control
   version: 1
   title: Judge bias and calibration control
@@ -524,7 +524,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: meta.user_rubric_normalization
   version: 1
   title: User-rubric normalization and validation

@@ -172,6 +172,7 @@
   "Target-audience overlay": "modifier.genre.target_audience_overlay",
   "Thriller / suspense": "modifier.genre.thriller_suspense",
   "User taste and project preference": "modifier.preference.user_taste",
+  "Authored content-treatment fidelity": "modifier.style.authored_content_treatment_fidelity",
   "Cliché and AI-pattern audit": "op.critique.clich_and_ai_pattern_audit",
   "Consistency audit": "op.critique.consistency_audit",
   "Full-manuscript critique": "op.critique.full_manuscript_critique",

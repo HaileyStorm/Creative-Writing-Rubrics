@@ -4,15 +4,15 @@ This is a future-integration handoff, not an instruction to migrate either repos
 
 ## Authority and boundary
 
-Palimpsest's project specification remains authoritative for product behavior, persistence, local-first disclosure, and the built-in `Rubric Book/` package. Creative-Writing-Rubrics (CWR) remains authoritative for its own published HBQ-RS source, schemas, tooling, and documentation. Keep the application boundary described in [Using HBQ-RS inside another application](apps.md): CWR supplies rubric data and deterministic scoring; Palimpsest owns projects, canon, manuscript/publication state, desktop RPC, and promotion decisions.
+Palimpsest's project specification remains authoritative for product behavior, persistence, local-first disclosure, and the built-in `Rubric Book/` package. Creative-Writing-Rubrics (CWR) remains authoritative for its own published HBQ-RS 1.2.0 source, schemas, tooling, and documentation. Keep the application boundary described in [Using HBQ-RS inside another application](apps.md): CWR supplies rubric data and deterministic scoring; Palimpsest owns projects, canon, manuscript/publication state, desktop RPC, and promotion decisions.
 
 The proposed mount is a Git submodule at `Palimpsest/Rubric Book`. It must be an exact gitlink to an owner-approved CWR commit. Never track a branch, tag, `main`, or any other floating update. The CWR SHA observed while this handoff was written was `57c62fabcfc18f92bb92beb7697003f7a6ebdce7`; it is a discovery snapshot only, not a future pin.
 
 ## Why it is not drop-in
 
-The observed CWR registry has 277 modules, 2,139 leaves, and 85 bundles. Palimpsest currently requires 278 modules, 2,145 leaves, and 85 bundles, including `modifier.style.authored_content_treatment_fidelity`. Treat that as a schema/API migration, not a copy or replacement. Do not remove, rename, or reinterpret Palimpsest stable IDs or historical verdicts merely to match CWR.
+The pre-upstream CWR registry had 277 modules, 2,139 leaves, and 85 bundles. The current CWR registry has 278 modules, 2,145 leaves, and 85 bundles, including `modifier.style.authored_content_treatment_fidelity`; Palimpsest's requirement is now upstream. Treat this as a schema/API migration, not a copy or replacement. Do not remove, rename, or reinterpret Palimpsest stable IDs or historical verdicts merely to match CWR.
 
-Expose the integration through `palimpsest.hbq`, not CWR internals. The adapter should load the pinned book, compile and score through a stable Palimpsest-facing API, and translate only through an explicit, tested compatibility map. It must preserve control states, deterministic aggregation, stable IDs, and source-traceable dynamic questions. An owner-approved migration contract decides how a CWR revision relates to Palimpsest's additional criterion; the adapter implements and enforces that decision.
+Expose the integration through `palimpsest.hbq`, not CWR internals. The adapter should load the pinned book, compile and score through a stable Palimpsest-facing API, and translate only through an explicit, tested compatibility map. It must preserve control states, deterministic aggregation, stable IDs, and source-traceable dynamic questions. An owner-approved migration contract decides how the selected CWR revision maps through the adapter; the adapter implements and enforces that decision.
 
 ## Source, build, and provenance rules
 
@@ -46,8 +46,8 @@ Rollback is a normal Git revert of the integration commit (including `.gitmodule
 Begin an implementation migration only after an owner has approved all of the following:
 
 1. The exact CWR commit and licensing/distribution treatment.
-2. A deterministic inventory diff and explicit disposition for `modifier.style.authored_content_treatment_fidelity` and every other ID/count mismatch.
+2. A deterministic inventory diff and explicit disposition for any remaining ID/count mismatch.
 3. The `palimpsest.hbq` adapter contract, generated-output workflow, and fixture-backed compatibility map.
 4. The saved-project manifest versioning, upgrade/replay behavior, release/build inclusion, and rollback acceptance tests.
 
-Deferred decisions include the exact pin, whether the added Palimpsest criterion is upstreamed, adapted, or retained locally, the long-term ownership of any compatibility map, and the project-manifest upgrade policy. Resolve them in the migration issue before adding the submodule.
+Deferred decisions include the exact pin, the long-term ownership of any compatibility map, and the project-manifest upgrade policy. Resolve them in the migration issue before adding the submodule.

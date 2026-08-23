@@ -1,7 +1,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: artifact.support.asset_manifest
   version: 1
   title: Asset manifest
@@ -137,7 +137,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: artifact.support.character_sheet
   version: 1
   title: Character sheet
@@ -306,7 +306,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: artifact.support.glossary_and_pronunciation_lexicon
   version: 1
   title: Glossary and pronunciation lexicon
@@ -442,7 +442,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: artifact.support.illustration_brief
   version: 1
   title: Illustration brief
@@ -578,7 +578,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: artifact.support.logline
   version: 1
   title: Logline
@@ -719,7 +719,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: artifact.support.narration_direction_sheet
   version: 1
   title: Narration direction sheet
@@ -855,7 +855,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: artifact.support.outline
   version: 1
   title: Outline
@@ -996,7 +996,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: artifact.support.pitch_query_blurb
   version: 1
   title: Pitch / query / blurb
@@ -1137,7 +1137,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: artifact.support.place_setting_sheet
   version: 1
   title: Place / setting sheet
@@ -1292,7 +1292,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: artifact.support.premise_story_seed
   version: 1
   title: Premise / story seed
@@ -1433,7 +1433,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: artifact.support.project_decision_log
   version: 1
   title: Project decision log
@@ -1569,7 +1569,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: artifact.support.project_style_guide
   version: 1
   title: Project style guide
@@ -1706,7 +1706,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: artifact.support.relationship_faction_item_sheet
   version: 1
   title: Relationship / faction / item sheet
@@ -1861,7 +1861,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: artifact.support.research_brief_or_dossier
   version: 1
   title: Research brief or dossier
@@ -2017,7 +2017,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: artifact.support.revision_plan
   version: 1
   title: Revision plan
@@ -2172,7 +2172,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: artifact.support.scene_card_or_beat_sheet
   version: 1
   title: Scene card or beat sheet
@@ -2308,7 +2308,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: artifact.support.synopsis
   version: 1
   title: Synopsis
@@ -2449,7 +2449,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: artifact.support.timeline_and_canon_ledger
   version: 1
   title: Timeline and canon ledger
@@ -2604,7 +2604,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: artifact.support.world_bible
   version: 1
   title: World bible
@@ -2759,7 +2759,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: core.audience_and_purpose_fit
   version: 1
   title: Audience and purpose fit
@@ -2921,7 +2921,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: core.change_authorization
   version: 1
   title: Change authorization
@@ -3081,7 +3081,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: core.coherence_and_comprehensibility
   version: 1
   title: Coherence and comprehensibility
@@ -3229,7 +3229,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: core.economy_and_relevance
   version: 1
   title: Economy and relevance
@@ -3376,7 +3376,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: core.emotional_and_intellectual_effect
   version: 1
   title: Emotional and intellectual effect
@@ -3507,7 +3507,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: core.freshness_and_non_genericness
   version: 1
   title: Freshness and non-genericness
@@ -3669,7 +3669,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: core.holistic_artistic_success
   version: 1
   title: Holistic artistic success
@@ -3780,7 +3780,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: core.internal_logic_and_plausibility
   version: 1
   title: Internal logic and plausibility
@@ -3924,7 +3924,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: core.language_craft
   version: 1
   title: Language craft
@@ -4098,7 +4098,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: core.length_and_scope_fit
   version: 2
   title: Length and scope fit
@@ -4247,7 +4247,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: core.mechanics_and_presentation
   version: 1
   title: Mechanics and presentation
@@ -4391,7 +4391,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: core.project_and_source_fidelity
   version: 1
   title: Project and source fidelity
@@ -4566,7 +4566,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: core.specificity_and_embodiment
   version: 1
   title: Specificity and embodiment
@@ -4710,7 +4710,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: core.substantive_task_engagement_true_non_refusal
   version: 1
   title: Substantive task engagement / true non-refusal
@@ -4856,7 +4856,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: core.task_and_brief_fidelity
   version: 2
   title: Task and brief fidelity
@@ -5074,7 +5074,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: core.voice_and_stylistic_identity
   version: 1
   title: Voice and stylistic identity
@@ -5205,7 +5205,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: craft.narrative.character_arc
   version: 1
   title: Character arc
@@ -5377,7 +5377,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: craft.narrative.characterization
   version: 1
   title: Characterization
@@ -5560,7 +5560,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: craft.narrative.continuity_and_canon_integrity
   version: 1
   title: Continuity and canon integrity
@@ -5743,7 +5743,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: craft.narrative.dialogue
   version: 1
   title: Dialogue
@@ -5913,7 +5913,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: craft.narrative.ending_and_closure
   version: 1
   title: Ending and closure
@@ -6083,7 +6083,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: craft.narrative.exposition_and_information_management
   version: 1
   title: Exposition and information management
@@ -6238,7 +6238,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: craft.narrative.foreshadowing_setup_and_payoff
   version: 1
   title: Foreshadowing, setup, and payoff
@@ -6408,7 +6408,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: craft.narrative.narrative_momentum
   version: 1
   title: Narrative momentum
@@ -6576,7 +6576,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: craft.narrative.opening
   version: 1
   title: Opening
@@ -6746,7 +6746,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: craft.narrative.pacing_and_narrative_time
   version: 1
   title: Pacing and narrative time
@@ -6915,7 +6915,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: craft.narrative.plot_and_causality
   version: 1
   title: Plot and causality
@@ -7084,7 +7084,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: craft.narrative.point_of_view_and_focalization
   version: 1
   title: Point of view and focalization
@@ -7238,7 +7238,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: craft.narrative.scene_construction
   version: 1
   title: Scene construction
@@ -7423,7 +7423,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: craft.narrative.setting_and_atmosphere
   version: 1
   title: Setting and atmosphere
@@ -7577,7 +7577,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: craft.narrative.temporal_and_spatial_continuity
   version: 1
   title: Temporal and spatial continuity
@@ -7731,7 +7731,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: craft.narrative.tension_conflict_and_stakes
   version: 1
   title: Tension, conflict, and stakes
@@ -7900,7 +7900,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: craft.narrative.theme_and_subtext
   version: 1
   title: Theme and subtext
@@ -8054,7 +8054,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: craft.narrative.transitions_and_connective_tissue
   version: 1
   title: Transitions and connective tissue
@@ -8209,7 +8209,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: craft.narrative.worldbuilding
   version: 1
   title: Worldbuilding
@@ -8392,7 +8392,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: data.eval.answer_required_purity
   version: 1
   title: Answer-required purity
@@ -8535,7 +8535,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: data.eval.automatic_grader_validity
   version: 1
   title: Automatic-grader validity
@@ -8678,7 +8678,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: data.eval.benchmark_fitness
   version: 1
   title: Benchmark fitness
@@ -8821,7 +8821,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: data.eval.category_balance
   version: 1
   title: Category balance
@@ -8950,7 +8950,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: data.eval.context_length_balance
   version: 1
   title: Context-length balance
@@ -9079,7 +9079,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: data.eval.dataset_provenance_and_reproducibility
   version: 1
   title: Dataset provenance and reproducibility
@@ -9222,7 +9222,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: data.eval.evaluation_determinism
   version: 1
   title: Evaluation determinism
@@ -9365,7 +9365,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: data.eval.split_isolation
   version: 1
   title: Split isolation
@@ -9495,7 +9495,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: data.eval.task_tail_coverage
   version: 1
   title: Task-tail coverage
@@ -9680,7 +9680,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: data.eval.transformation_fidelity
   version: 1
   title: Transformation fidelity
@@ -9851,7 +9851,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: form.audio.audio_drama_production
   version: 1
   title: Audio drama production
@@ -10005,7 +10005,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: form.audio.audio_technical_mastering
   version: 1
   title: Audio technical mastering
@@ -10145,7 +10145,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: form.audio.audiobook_narration
   version: 1
   title: Audiobook narration
@@ -10313,7 +10313,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: form.audio.character_voice_performance
   version: 1
   title: Character voice performance
@@ -10453,7 +10453,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: form.audio.poetry_reading
   version: 1
   title: Poetry reading
@@ -10593,7 +10593,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: form.audio.prosody_and_emotional_expression
   version: 1
   title: Prosody and emotional expression
@@ -10733,7 +10733,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: form.audio.speaker_and_character_consistency
   version: 1
   title: Speaker and character consistency
@@ -10873,7 +10873,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: form.audio.speech_naturalness_and_intelligibility
   version: 1
   title: Speech naturalness and intelligibility
@@ -11013,7 +11013,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: form.audio.speech_text_fidelity
   version: 1
   title: Speech text fidelity
@@ -11139,7 +11139,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: form.drama.audio_drama
   version: 1
   title: Audio drama
@@ -11295,7 +11295,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: form.drama.game_narrative_quest_writing
   version: 1
   title: Game narrative / quest writing
@@ -11451,7 +11451,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: form.drama.interactive_or_branching_fiction
   version: 1
   title: Interactive or branching fiction
@@ -11608,7 +11608,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: form.drama.monologue
   version: 1
   title: Monologue
@@ -11750,7 +11750,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: form.drama.screenplay_teleplay
   version: 1
   title: Screenplay / teleplay
@@ -11906,7 +11906,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: form.drama.stage_play
   version: 1
   title: Stage play
@@ -12062,7 +12062,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: form.hybrid.adaptation
   version: 1
   title: Adaptation
@@ -12206,7 +12206,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: form.hybrid.creative_nonfiction
   version: 1
   title: Creative nonfiction
@@ -12349,7 +12349,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: form.hybrid.epistolary_chat_log_document_fiction
   version: 1
   title: Epistolary / chat / log / document fiction
@@ -12492,7 +12492,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: form.hybrid.memoir_autobiographical_narrative
   version: 1
   title: Memoir / autobiographical narrative
@@ -12635,7 +12635,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: form.hybrid.personal_or_literary_essay
   version: 1
   title: Personal or literary essay
@@ -12778,7 +12778,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: form.hybrid.translation_or_transcreation
   version: 1
   title: Translation or transcreation
@@ -12921,7 +12921,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: form.multimodal.accessibility_metadata
   version: 1
   title: Accessibility metadata
@@ -13063,7 +13063,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: form.multimodal.cross_modal_canon_integrity
   version: 1
   title: Cross-modal canon integrity
@@ -13191,7 +13191,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: form.multimodal.illustration_placement_and_pacing
   version: 1
   title: Illustration placement and pacing
@@ -13319,7 +13319,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: form.multimodal.multimodal_scene_package
   version: 1
   title: Multimodal scene package
@@ -13475,7 +13475,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: form.multimodal.text_audio_alignment
   version: 1
   title: Text-audio alignment
@@ -13604,7 +13604,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: form.multimodal.text_image_alignment
   version: 1
   title: Text-image alignment
@@ -13732,7 +13732,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: form.poetry.ballad
   version: 1
   title: Ballad
@@ -13883,7 +13883,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: form.poetry.blank_verse
   version: 1
   title: Blank verse
@@ -14026,7 +14026,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: form.poetry.dramatic_monologue_poem
   version: 1
   title: Dramatic monologue poem
@@ -14163,7 +14163,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: form.poetry.elegy
   version: 1
   title: Elegy
@@ -14301,7 +14301,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: form.poetry.free_verse
   version: 1
   title: Free verse
@@ -14460,7 +14460,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: form.poetry.general_poetry
   version: 1
   title: General poetry
@@ -14866,7 +14866,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: form.poetry.generic_fixed_form_verse
   version: 1
   title: Generic fixed-form verse
@@ -15029,7 +15029,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: form.poetry.ghazal
   version: 1
   title: Ghazal
@@ -15190,7 +15190,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: form.poetry.haiku_in_english
   version: 1
   title: Haiku in English
@@ -15662,7 +15662,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: form.poetry.limerick
   version: 1
   title: Limerick
@@ -15821,7 +15821,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: form.poetry.lyric_song_lyric
   version: 1
   title: Lyric / song lyric
@@ -15980,7 +15980,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: form.poetry.narrative_or_long_poem
   version: 1
   title: Narrative or long poem
@@ -16139,7 +16139,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: form.poetry.ode
   version: 1
   title: Ode
@@ -16276,7 +16276,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: form.poetry.pantoum
   version: 1
   title: Pantoum
@@ -16420,7 +16420,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: form.poetry.poetry_sequence_or_collection
   version: 1
   title: Poetry sequence or collection
@@ -16579,7 +16579,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: form.poetry.prose_poem
   version: 1
   title: Prose poem
@@ -16725,7 +16725,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: form.poetry.rondeau
   version: 1
   title: Rondeau
@@ -16870,7 +16870,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: form.poetry.sestina
   version: 1
   title: Sestina
@@ -17021,7 +17021,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: form.poetry.sonnet
   version: 1
   title: Sonnet
@@ -17482,7 +17482,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: form.poetry.spoken_word_performance_poetry
   version: 1
   title: Spoken-word / performance poetry
@@ -17641,7 +17641,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: form.poetry.tanka_in_english
   version: 1
   title: Tanka in English
@@ -17792,7 +17792,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: form.poetry.villanelle
   version: 1
   title: Villanelle
@@ -17943,7 +17943,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: form.prose.fanfiction_source_canon_continuation
   version: 1
   title: Fanfiction / source-canon continuation
@@ -18099,7 +18099,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: form.prose.flash_fiction_drabble
   version: 1
   title: Flash fiction / drabble
@@ -18274,7 +18274,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: form.prose.general_prose_fiction
   version: 1
   title: General prose fiction
@@ -18415,7 +18415,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: form.prose.novel
   version: 1
   title: Novel
@@ -18588,7 +18588,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: form.prose.novella
   version: 1
   title: Novella
@@ -18733,7 +18733,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: form.prose.serial_or_episodic_fiction
   version: 1
   title: Serial or episodic fiction
@@ -18891,7 +18891,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: form.prose.short_story
   version: 1
   title: Short story
@@ -19048,7 +19048,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: form.prose.vignette_slice_of_life
   version: 1
   title: Vignette / slice-of-life
@@ -19190,7 +19190,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: form.visual.book_cover
   version: 1
   title: Book cover
@@ -19343,7 +19343,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: form.visual.character_design_sheet
   version: 1
   title: Character design sheet
@@ -19496,7 +19496,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: form.visual.character_portrait
   version: 1
   title: Character portrait
@@ -19649,7 +19649,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: form.visual.environment_or_location_illustration
   version: 1
   title: Environment or location illustration
@@ -19803,7 +19803,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: form.visual.map
   version: 1
   title: Map
@@ -19956,7 +19956,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: form.visual.scene_illustration
   version: 1
   title: Scene illustration
@@ -20110,7 +20110,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: form.visual.sequential_art_or_comic_page
   version: 1
   title: Sequential art or comic page
@@ -20263,7 +20263,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: form.visual.storyboard
   version: 1
   title: Storyboard
@@ -20416,7 +20416,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: form.visual.visual_craft_and_artifact_control
   version: 1
   title: Visual craft and artifact control
@@ -20569,7 +20569,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: form.visual.visual_narrative_continuity
   version: 1
   title: Visual narrative continuity
@@ -20708,7 +20708,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: form.visual.visual_prompt_and_canon_fidelity
   version: 1
   title: Visual prompt and canon fidelity
@@ -20847,7 +20847,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: meta.dynamic_task_question_decomposition
   version: 1
   title: Dynamic task-question decomposition
@@ -21027,7 +21027,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: meta.human_review_escalation
   version: 1
   title: Human review escalation
@@ -21191,7 +21191,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: meta.judge_bias_and_calibration_control
   version: 1
   title: Judge bias and calibration control
@@ -21370,7 +21370,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: meta.user_rubric_normalization
   version: 1
   title: User-rubric normalization and validation
@@ -21576,7 +21576,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: model.release.code_capability_retention
   version: 1
   title: Code capability retention
@@ -21716,7 +21716,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: model.release.commonsense_and_causal_reasoning_retention
   version: 1
   title: Commonsense and causal-reasoning retention
@@ -21857,7 +21857,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: model.release.creative_sampler_regression
   version: 1
   title: Creative-sampler regression
@@ -22013,7 +22013,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: model.release.creative_writing_capability_retention
   version: 1
   title: Creative-writing capability retention
@@ -22155,7 +22155,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: model.release.dspark_mtp_equivalence_and_benefit
   version: 1
   title: DSpark/MTP equivalence and benefit
@@ -22312,7 +22312,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: model.release.instruction_following_retention
   version: 1
   title: Instruction-following retention
@@ -22454,7 +22454,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: model.release.judge_reliability
   version: 1
   title: Judge reliability
@@ -22625,7 +22625,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: model.release.knowledge_retention
   version: 1
   title: Knowledge retention
@@ -22765,7 +22765,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: model.release.long_context_retention
   version: 1
   title: Long-context retention
@@ -22907,7 +22907,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: model.release.math_capability_retention
   version: 1
   title: Math capability retention
@@ -23047,7 +23047,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: model.release.multimodal_retention
   version: 1
   title: Multimodal retention
@@ -23191,7 +23191,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: model.release.provider_runtime_fidelity
   version: 1
   title: Provider/runtime fidelity
@@ -23361,7 +23361,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: model.release.quantization_retention
   version: 1
   title: Quantization retention
@@ -23517,7 +23517,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: model.release.reap_candidate_non_inferiority
   version: 1
   title: REAP candidate non-inferiority
@@ -23673,7 +23673,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: model.release.release_readiness
   version: 1
   title: Release readiness
@@ -23843,7 +23843,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: model.release.revision_and_editorial_capability_retention
   version: 1
   title: Revision and editorial capability retention
@@ -23971,7 +23971,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: model.release.tail_expert_preservation
   version: 1
   title: Tail-expert preservation
@@ -24141,7 +24141,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: model.release.true_abliteration_non_refusal_behavior
   version: 1
   title: True-abliteration/non-refusal behavior
@@ -24297,7 +24297,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: modifier.genre.action_adventure
   version: 1
   title: Action / adventure
@@ -24453,7 +24453,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: modifier.genre.children_s_middle_grade_young_adult
   version: 1
   title: Children’s / middle-grade / young adult
@@ -24610,7 +24610,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: modifier.genre.comedy
   version: 1
   title: Comedy
@@ -24767,7 +24767,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: modifier.genre.crime_noir
   version: 1
   title: Crime / noir
@@ -24910,7 +24910,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: modifier.genre.erotic_sexually_explicit_fiction
   version: 1
   title: Erotic / sexually explicit fiction
@@ -25085,7 +25085,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: modifier.genre.fantasy
   version: 1
   title: Fantasy
@@ -25229,7 +25229,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: modifier.genre.historical_fiction
   version: 1
   title: Historical fiction
@@ -25387,7 +25387,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: modifier.genre.horror
   version: 1
   title: Horror
@@ -25558,7 +25558,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: modifier.genre.hybrid_or_genre_blend
   version: 1
   title: Hybrid or genre-blend
@@ -25700,7 +25700,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: modifier.genre.literary_contemporary
   version: 1
   title: Literary / contemporary
@@ -25829,7 +25829,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: modifier.genre.mystery_detective
   version: 1
   title: Mystery / detective
@@ -25985,7 +25985,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: modifier.genre.romance
   version: 1
   title: Romance
@@ -26144,7 +26144,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: modifier.genre.satire
   version: 1
   title: Satire
@@ -26288,7 +26288,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: modifier.genre.science_fiction
   version: 1
   title: Science fiction
@@ -26444,7 +26444,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: modifier.genre.slice_of_life_quiet_fiction
   version: 1
   title: Slice-of-life / quiet fiction
@@ -26600,7 +26600,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: modifier.genre.surreal_experimental
   version: 1
   title: Surreal / experimental
@@ -26744,7 +26744,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: modifier.genre.target_audience_overlay
   version: 1
   title: Target-audience overlay
@@ -26900,7 +26900,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: modifier.genre.thriller_suspense
   version: 1
   title: Thriller / suspense
@@ -27057,7 +27057,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: modifier.preference.user_taste
   version: 1
   title: User taste and project preference
@@ -27210,7 +27210,153 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
+  module_id: modifier.style.authored_content_treatment_fidelity
+  version: 1
+  title: Authored content-treatment fidelity
+  kind: modifier
+  description: Measures fidelity to explicitly selected, observable content-treatment targets without treating greater
+    explicitness as intrinsically better.
+  origin: user_requirement
+  owner_domains:
+  - style.content_treatment_fidelity
+  artifact_types:
+  - creative_text
+  valid_scopes:
+  - any
+  activation: Opt in only when the effective project, structural-unit, Action, or Run MaturityProfile, or an explicit
+    user instruction, selects one or more observable content-treatment axes. Do not activate from topic, genre,
+    audience, rating, or sexual, violent, mature, or other subject matter alone.
+  requires: []
+  incompatible_with: []
+  default_evidence_scope:
+    current_artifact: true
+    neighboring_units: 0
+    project_sources: effective MaturityProfile projection and explicit current instruction when supplied
+  tree:
+  - id: modifier.style.authored_content_treatment_fidelity.profile_fidelity
+    type: group
+    title: Selected content-treatment profile fidelity
+    score_mode: weighted_mean
+    weight: 1.0
+    children:
+    - id: modifier.style.authored_content_treatment_fidelity.directness_level
+      type: question
+      criterion_key: modifier.style.authored_content_treatment_fidelity.directness_level
+      text: Does the artifact match the selected directness level, avoiding treatment that is either more evasive
+        or more explicit than the effective target?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: This module is explicitly active through the effective project, structural-unit, Action, or
+        Run MaturityProfile or an explicit user instruction, and that selection declares a directness-level target.
+        Topic, genre, audience, rating, and subject matter alone do not activate this criterion.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: modifier.style.authored_content_treatment_fidelity.detail_density
+      type: question
+      criterion_key: modifier.style.authored_content_treatment_fidelity.detail_density
+      text: Does the artifact match the selected detail density, neither summarizing away material chosen for detail
+        nor adding granular depiction beyond the effective target?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: This module is explicitly active through the effective project, structural-unit, Action, or
+        Run MaturityProfile or an explicit user instruction, and that selection declares a detail-density target.
+        Topic, genre, audience, rating, and subject matter alone do not activate this criterion.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: modifier.style.authored_content_treatment_fidelity.lexical_specificity
+      type: question
+      criterion_key: modifier.style.authored_content_treatment_fidelity.lexical_specificity
+      text: Does the artifact match the selected lexical specificity, avoiding both vagueness below the effective
+        target and anatomical, technical, or other specificity beyond it?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: This module is explicitly active through the effective project, structural-unit, Action, or
+        Run MaturityProfile or an explicit user instruction, and that selection declares a lexical-specificity target.
+        Topic, genre, audience, rating, and subject matter alone do not activate this criterion.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: modifier.style.authored_content_treatment_fidelity.euphemism_alignment
+      type: question
+      criterion_key: modifier.style.authored_content_treatment_fidelity.euphemism_alignment
+      text: Where preferred or disfavored euphemism patterns are declared, does the artifact follow those patterns
+        without substituting undeclared coyness or bluntness?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: This module is explicitly active through the effective project, structural-unit, Action, or
+        Run MaturityProfile or an explicit user instruction, and that selection declares a preferred or disfavored
+        euphemism-pattern target. Topic, genre, audience, rating, and subject matter alone do not activate this
+        criterion. Return NOT_APPLICABLE when no preferred or disfavored euphemism patterns are declared.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: modifier.style.authored_content_treatment_fidelity.treatment_register
+      type: question
+      criterion_key: modifier.style.authored_content_treatment_fidelity.treatment_register
+      text: Does the artifact sustain the selected treatment register without drifting into a softer, harsher, clinical,
+        lyrical, comic, horrific, erotic, brutal, or other neighboring register?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: This module is explicitly active through the effective project, structural-unit, Action, or
+        Run MaturityProfile or an explicit user instruction, and that selection declares a treatment-register target.
+        Topic, genre, audience, rating, and subject matter alone do not activate this criterion.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    - id: modifier.style.authored_content_treatment_fidelity.depiction_scope
+      type: question
+      criterion_key: modifier.style.authored_content_treatment_fidelity.depiction_scope
+      text: Does the artifact match the selected depiction scope, neither eliding material chosen for direct depiction
+        nor expanding material chosen for summary or omission?
+      pass_answer: 'YES'
+      weight: 1.0
+      question_type: scored
+      severity: material
+      applies_when: This module is explicitly active through the effective project, structural-unit, Action, or
+        Run MaturityProfile or an explicit user instruction, and that selection declares a depiction-scope target.
+        Topic, genre, audience, rating, and subject matter alone do not activate this criterion.
+      evidence_policy:
+        required: true
+        minimum_references: 1
+        reference_style: artifact span, unit ID, timestamp, or source ID
+      tags: []
+    tags: []
+    description: Each selected axis is judged against its effective target; unselected axes are not applicable.
+  modifier_actions: []
+  research_basis: []
+  notes:
+  - 'This module measures profile fidelity: greater directness, detail, lexical specificity, or explicitness is
+    not intrinsically higher quality, and both under-target and over-target treatment can receive NO.'
+  - This is a style-fidelity rubric, not a moderation, permission, refusal, safety, consent, audience, or moral
+    gate.
+  - Apply only selected axes; an undeclared axis receives NOT_APPLICABLE rather than an inferred target.
+- $schema: ../schema/hbq_rubric.schema.json
+  standard:
+    id: HBQ-RS
+    version: 1.2.0
   module_id: op.critique.clich_and_ai_pattern_audit
   version: 1
   title: Cliché and AI-pattern audit
@@ -27366,7 +27512,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: op.critique.consistency_audit
   version: 1
   title: Consistency audit
@@ -27524,7 +27670,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: op.critique.full_manuscript_critique
   version: 1
   title: Full-manuscript critique
@@ -27696,7 +27842,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: op.critique.open_ended_critique
   version: 1
   title: Open-ended critique
@@ -27852,7 +27998,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: op.critique.reader_orientation_audit
   version: 1
   title: Reader-orientation audit
@@ -27995,7 +28141,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: op.critique.research_and_factuality_audit
   version: 1
   title: Research and factuality audit
@@ -28165,7 +28311,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: op.critique.rubric_directed_critique
   version: 1
   title: Rubric-directed critique
@@ -28307,7 +28453,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: op.critique.single_unit_critique
   version: 1
   title: Single-unit critique
@@ -28448,7 +28594,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: op.critique.structural_audit
   version: 1
   title: Structural audit
@@ -28604,7 +28750,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: op.critique.style_drift_audit
   version: 1
   title: Style-drift audit
@@ -28760,7 +28906,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: op.draft.alternative_take
   version: 1
   title: Alternative take
@@ -28889,7 +29035,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: op.draft.bridge_passage
   version: 1
   title: Bridge passage
@@ -29031,7 +29177,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: op.draft.compression
   version: 1
   title: Compression
@@ -29173,7 +29319,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: op.draft.continuation
   version: 1
   title: Continuation
@@ -29330,7 +29476,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: op.draft.draft_from_coarse_or_medium_outline
   version: 1
   title: Draft from coarse or medium outline
@@ -29486,7 +29632,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: op.draft.draft_from_detailed_outline
   version: 1
   title: Draft from detailed outline
@@ -29642,7 +29788,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: op.draft.expansion
   version: 1
   title: Expansion
@@ -29784,7 +29930,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: op.draft.missing_scene_reconstruction
   version: 1
   title: Missing-scene reconstruction
@@ -29927,7 +30073,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: op.draft.pov_tense_register_or_form_conversion
   version: 1
   title: POV, tense, register, or form conversion
@@ -30056,7 +30202,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: op.draft.reference_style_or_project_voice_drafting
   version: 1
   title: Reference-style or project-voice drafting
@@ -30200,7 +30346,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: op.ideation.brainstorm_idea_set_quality
   version: 1
   title: Brainstorm / idea-set quality
@@ -30356,7 +30502,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: op.ideation.character_conception
   version: 1
   title: Character conception
@@ -30512,7 +30658,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: op.ideation.idea_refinement
   version: 1
   title: Idea refinement
@@ -30654,7 +30800,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: op.ideation.naming
   version: 1
   title: Naming
@@ -30811,7 +30957,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: op.ideation.premise_stress_test
   version: 1
   title: Premise stress test
@@ -30967,7 +31113,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: op.ideation.relationship_faction_conception
   version: 1
   title: Relationship/faction conception
@@ -31123,7 +31269,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: op.ideation.setting_world_conception
   version: 1
   title: Setting/world conception
@@ -31279,7 +31425,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: op.ideation.title_generation
   version: 1
   title: Title generation
@@ -31435,7 +31581,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: op.ingest.artifact_classification
   version: 1
   title: Artifact classification
@@ -31564,7 +31710,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: op.ingest.context_pack_construction
   version: 1
   title: Context-pack construction
@@ -31734,7 +31880,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: op.ingest.context_provenance
   version: 1
   title: Context provenance
@@ -31862,7 +32008,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: op.ingest.project_reconstruction
   version: 1
   title: Project reconstruction
@@ -32018,7 +32164,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: op.ingest.project_summary
   version: 1
   title: Project summary
@@ -32160,7 +32306,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: op.ingest.sheet_extraction
   version: 1
   title: Sheet extraction
@@ -32302,7 +32448,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: op.ingest.source_ingestion_fidelity
   version: 1
   title: Source ingestion fidelity
@@ -32458,7 +32604,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: op.ingest.uncertainty_and_contradiction_extraction
   version: 1
   title: Uncertainty and contradiction extraction
@@ -32600,7 +32746,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: op.outline.coarse_outline
   version: 1
   title: Coarse outline
@@ -32756,7 +32902,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: op.outline.coarse_outline_repair
   version: 1
   title: Coarse-outline repair
@@ -32913,7 +33059,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: op.outline.fine_detail_beat_outline
   version: 1
   title: Fine-detail / beat outline
@@ -33069,7 +33215,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: op.outline.medium_detail_outline
   version: 1
   title: Medium-detail outline
@@ -33225,7 +33371,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: op.outline.outline_consistency
   version: 1
   title: Outline consistency
@@ -33380,7 +33526,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: op.outline.outline_to_manuscript_alignment
   version: 1
   title: Outline-to-manuscript alignment
@@ -33536,7 +33682,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: op.outline.scene_or_chapter_planning
   version: 1
   title: Scene or chapter planning
@@ -33692,7 +33838,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: op.research.historical_technical_plausibility_review
   version: 1
   title: Historical/technical plausibility review
@@ -33862,7 +34008,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: op.research.research_question_formulation
   version: 1
   title: Research-question formulation
@@ -34004,7 +34150,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: op.research.research_synthesis
   version: 1
   title: Research synthesis
@@ -34146,7 +34292,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: op.research.research_to_fiction_application
   version: 1
   title: Research-to-fiction application
@@ -34288,7 +34434,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: op.research.research_update
   version: 1
   title: Research update
@@ -34444,7 +34590,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: op.research.source_selection
   version: 1
   title: Source selection
@@ -34586,7 +34732,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: op.revision.character_revision
   version: 1
   title: Character revision
@@ -34756,7 +34902,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: op.revision.continuity_repair
   version: 1
   title: Continuity repair
@@ -34912,7 +35058,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: op.revision.copy_edit
   version: 1
   title: Copy edit
@@ -35054,7 +35200,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: op.revision.dialogue_revision
   version: 1
   title: Dialogue revision
@@ -35224,7 +35370,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: op.revision.line_edit
   version: 1
   title: Line edit
@@ -35380,7 +35526,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: op.revision.proofread
   version: 1
   title: Proofread
@@ -35508,7 +35654,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: op.revision.restrained_final_pass
   version: 1
   title: Restrained final pass
@@ -35681,7 +35827,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: op.revision.revision_note_quality
   version: 1
   title: Revision-note quality
@@ -35837,7 +35983,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: op.revision.revision_phase_completion
   version: 1
   title: Revision-phase completion
@@ -36007,7 +36153,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: op.revision.revision_verification
   version: 1
   title: Revision verification
@@ -36149,7 +36295,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: op.revision.structural_revision
   version: 1
   title: Structural revision
@@ -36319,7 +36465,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: op.revision.targeted_rewrite
   version: 1
   title: Targeted rewrite
@@ -36461,7 +36607,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: op.revision.whole_manuscript_revision_pass
   version: 1
   title: Whole-manuscript revision pass
@@ -36631,7 +36777,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: op.select.candidate_set_coverage
   version: 1
   title: Candidate-set coverage
@@ -36773,7 +36919,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: op.select.candidate_usefulness
   version: 1
   title: Candidate usefulness
@@ -36929,7 +37075,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: op.select.first_pass_screening_grade
   version: 1
   title: First-pass screening grade
@@ -37072,7 +37218,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: op.select.full_adjudication_grade
   version: 1
   title: Full adjudication grade
@@ -37228,7 +37374,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: op.select.judge_confidence_and_evidence_quality
   version: 1
   title: Judge confidence and evidence quality
@@ -37371,7 +37517,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: op.select.pairwise_comparison
   version: 1
   title: Pairwise comparison
@@ -37527,7 +37673,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: op.select.rubric_application_quality
   version: 1
   title: Rubric-application quality
@@ -37697,7 +37843,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: op.select.threshold_autostop_decision
   version: 1
   title: Threshold/autostop decision
@@ -37857,7 +38003,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: op.select.tie_break_selection
   version: 1
   title: Tie-break selection
@@ -37985,7 +38131,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: penalty.purple_prose
   version: 1
   title: Purple prose penalty
@@ -38129,7 +38275,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: penalty.repetition
   version: 1
   title: Repetition penalty
@@ -38293,7 +38439,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: penalty.unflagged_incomplete
   version: 1
   title: Unflagged incomplete artifact penalty
@@ -38376,7 +38522,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: sampler.batch_diversity
   version: 1
   title: Batch diversity
@@ -38518,7 +38664,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: sampler.closure_and_commitment_preservation
   version: 1
   title: Closure and commitment preservation
@@ -38661,7 +38807,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: sampler.freshness_gain
   version: 1
   title: Freshness gain
@@ -38804,7 +38950,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: sampler.model_specific_sampler_profile
   version: 1
   title: Model-specific sampler profile
@@ -38947,7 +39093,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: sampler.optionality_without_drift
   version: 1
   title: Optionality without drift
@@ -39062,7 +39208,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: sampler.productive_divergence
   version: 1
   title: Productive divergence
@@ -39177,7 +39323,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: sampler.sampler_artifact_audit
   version: 1
   title: Sampler artifact audit
@@ -39334,7 +39480,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: sampler.sampler_benefit_versus_cost
   version: 1
   title: Sampler benefit-versus-cost
@@ -39477,7 +39623,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: sampler.single_sample_creative_quality
   version: 1
   title: Single-sample creative quality
@@ -39606,7 +39752,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: sampler.structure_aware_sampling_fit
   version: 1
   title: Structure-aware sampling fit
@@ -39749,7 +39895,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: scope.act
   version: 1
   title: Act or part scope overlay
@@ -39886,7 +40032,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: scope.beat
   version: 1
   title: Beat scope overlay
@@ -40010,7 +40156,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: scope.chapter
   version: 1
   title: Chapter scope overlay
@@ -40161,7 +40307,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: scope.long_context
   version: 1
   title: Long-context integrity overlay
@@ -40326,7 +40472,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: scope.manuscript
   version: 1
   title: Full-manuscript scope overlay
@@ -40489,7 +40635,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: scope.micro
   version: 1
   title: Micro-level scope overlay
@@ -40617,7 +40763,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: scope.passage
   version: 1
   title: Passage or extract scope overlay
@@ -40740,7 +40886,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: scope.poetry_collection
   version: 1
   title: Poetry sequence or collection scope overlay
@@ -40877,7 +41023,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: scope.poetry_line
   version: 1
   title: Poetry line scope overlay
@@ -41001,7 +41147,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: scope.poetry_poem
   version: 1
   title: Single-poem scope overlay
@@ -41123,7 +41269,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: scope.poetry_stanza
   version: 1
   title: Poetry stanza scope overlay
@@ -41245,7 +41391,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: scope.scene
   version: 1
   title: Scene scope overlay
@@ -41382,7 +41528,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: scope.sequence
   version: 1
   title: Multi-chapter sequence or arc scope overlay
@@ -41532,7 +41678,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: scope.series
   version: 1
   title: Series or project-corpus scope overlay
@@ -41683,7 +41829,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: workflow.context_allocation_quality
   version: 1
   title: Context-allocation quality
@@ -41832,7 +41978,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: workflow.model_a_high_context_role_fitness
   version: 1
   title: High-context critic/editor role fitness
@@ -41981,7 +42127,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: workflow.model_b_fast_generation_role_fitness
   version: 1
   title: Fast generator/screener role fitness
@@ -42130,7 +42276,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: workflow.procedure_completeness
   version: 1
   title: Procedure completeness
@@ -42266,7 +42412,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: workflow.revision_chain_integrity
   version: 1
   title: Revision-chain integrity
@@ -42401,7 +42547,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.0.0
+    version: 1.2.0
   module_id: workflow.role_routing_decision
   version: 1
   title: Role-routing decision

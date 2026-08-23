@@ -1,7 +1,7 @@
 $schema: ../schema/hbq_rubric.schema.json
 standard:
   id: HBQ-RS
-  version: 1.0.0
+  version: 1.2.0
 module_id: op.draft.draft_from_coarse_or_medium_outline
 version: 1
 title: Draft from coarse or medium outline

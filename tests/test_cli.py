@@ -437,8 +437,8 @@ def test_pack_roundtrip(tmp_path: Path) -> None:
     shutil.copytree(src / "registry", dest / "registry")
     shutil.copytree(src / "bundles", dest / "bundles")
     summary = pack_book(dest)
-    assert summary["modules"] == 277
-    assert summary["questions"] == 2139
+    assert summary["modules"] == 278
+    assert summary["questions"] == 2145
     assert summary["bundles"] == 85
     rebuilt = json.loads((dest / "registry" / "all_modules.json").read_text(encoding="utf-8"))
     assert {item["module_id"] for item in rebuilt} == {

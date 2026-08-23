@@ -5463,6 +5463,30 @@
     "module_id": "modifier.preference.user_taste",
     "question_id": "modifier.preference.user_taste.current"
   },
+  "modifier.style.authored_content_treatment_fidelity.directness_level": {
+    "module_id": "modifier.style.authored_content_treatment_fidelity",
+    "question_id": "modifier.style.authored_content_treatment_fidelity.directness_level"
+  },
+  "modifier.style.authored_content_treatment_fidelity.detail_density": {
+    "module_id": "modifier.style.authored_content_treatment_fidelity",
+    "question_id": "modifier.style.authored_content_treatment_fidelity.detail_density"
+  },
+  "modifier.style.authored_content_treatment_fidelity.lexical_specificity": {
+    "module_id": "modifier.style.authored_content_treatment_fidelity",
+    "question_id": "modifier.style.authored_content_treatment_fidelity.lexical_specificity"
+  },
+  "modifier.style.authored_content_treatment_fidelity.euphemism_alignment": {
+    "module_id": "modifier.style.authored_content_treatment_fidelity",
+    "question_id": "modifier.style.authored_content_treatment_fidelity.euphemism_alignment"
+  },
+  "modifier.style.authored_content_treatment_fidelity.treatment_register": {
+    "module_id": "modifier.style.authored_content_treatment_fidelity",
+    "question_id": "modifier.style.authored_content_treatment_fidelity.treatment_register"
+  },
+  "modifier.style.authored_content_treatment_fidelity.depiction_scope": {
+    "module_id": "modifier.style.authored_content_treatment_fidelity",
+    "question_id": "modifier.style.authored_content_treatment_fidelity.depiction_scope"
+  },
   "op.critique.clich_and_ai_pattern_audit.phrases": {
     "module_id": "op.critique.clich_and_ai_pattern_audit",
     "question_id": "op.critique.clich_and_ai_pattern_audit.phrases"
