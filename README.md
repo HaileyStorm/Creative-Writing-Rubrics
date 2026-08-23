@@ -136,6 +136,7 @@ Stable IDs (`module_id`, `question_id`, `bundle_id`, `criterion_key`) are the pu
 - [*Gray Blood*, chapters 1–6](evaluation-results/gray-blood-ch1-6/) — complete score and verdict reports with five authorized excerpts, clearly labeled author-original or GPT-5.6 Pro rewrite; the remaining manuscript stays private
 - [Run a headless judge](docs/judging.md)
 - [Embed in another app](docs/apps.md)
+- [Palimpsest integration handoff](docs/PALIMPSEST_HANDOFF.md) — future pinned-submodule boundary, migration gates, and compatibility obligations
 - [Benchmarking](docs/benchmarking.md)
 - [Model training](docs/training.md)
 - [Synthetic data](docs/synthetic-data.md)
