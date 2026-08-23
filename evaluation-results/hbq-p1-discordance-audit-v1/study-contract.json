@@ -1,0 +1,52 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-p1-discordance-audit-v1",
+  "mode": "provider_free_freeze_only",
+  "source_study_id": "hbq-polarity-change-manual-treatment-holdout-v1-execution-v1",
+  "source_geometry": {
+    "fixtures": 20,
+    "target_fixtures": 16,
+    "arms": ["CURRENT", "TREATMENT"],
+    "repeats": 3,
+    "slots": 120
+  },
+  "selection": {
+    "rule": "every target fixture with any wrong raw slot in either arm",
+    "maximum_unique_fixtures": 1,
+    "receipts_per_fixture": 6
+  },
+  "review_plan": {
+    "reviews_per_fixture": 2,
+    "maximum_provider_calls": 2,
+    "model": "gpt-5.6-sol",
+    "reasoning": "high",
+    "batch_size": 1,
+    "physical_attempts_per_review": 1,
+    "retries": 0,
+    "zero_incremental_charge_only": true,
+    "paid_fallback_forbidden": true,
+    "attempt_lifecycle_policy": "terminal_sidecar_v1",
+    "provider_execution_enabled": false,
+    "dspy_enabled": false,
+    "mechanism_classifications": [
+      "FIXTURE_OR_LEDGER_AMBIGUITY",
+      "SAME_INPUT_VARIANCE",
+      "EVIDENCE_OR_VALIDATOR_DEFECT",
+      "APPENDIX_HARM",
+      "SHARED_PROMPT_GAP"
+    ]
+  },
+  "arming": {
+    "provider_free": true,
+    "explicit_confirmation_required": true,
+    "arming_receipt_required_before_execution": true,
+    "execution_state_written_after_exact_two_calls": true
+  },
+  "privacy": {
+    "public_projection": "aggregate_only",
+    "state_review_hides": ["label", "verdicts", "arm", "appendix", "session"],
+    "source_private_root_recorded": false
+  },
+  "appendix_disposition": "FAILED_APPENDIX_RETIRED_NOT_REUSABLE",
+  "drift_status": "INCOMPLETE"
+}
