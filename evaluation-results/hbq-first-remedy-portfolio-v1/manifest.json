@@ -1,0 +1,190 @@
+{
+  "format": "hbq-first-remedy-portfolio-v1",
+  "status": "frozen_public_coverage_manifest_no_execution_authorized",
+  "cwr_parent": "910c0c48d11de15be6f20626140ac8fd2373d2b7",
+  "purpose": "Public aggregate coverage map for the owner-reviewed first-remedy portfolio. It freezes 77 selected finding IDs, not private source records, prose, or a repair decision.",
+  "execution": {
+    "initial_calls_exact": 1140,
+    "provider_calls_authorized_by_this_manifest": false,
+    "one_leaf_per_request": true,
+    "batch_size_exact": 1,
+    "conditional_successors": "separate_frozen_affected_only_packages"
+  },
+  "coverage": {
+    "findings_exact": 77,
+    "ordered_finding_ids_sha256": "6f0a92b49bdb1a34d6216f42da26087247ce0962782a809b9a414fae5ababda3",
+    "unique_leaves_exact": 80,
+    "leaf_memberships_exact": 81,
+    "only_repeated_leaf": "penalty.purple_prose.fatigue",
+    "only_repeated_leaf_memberships_exact": 2
+  },
+  "public_provenance": {
+    "membership_source": "six owner-reviewed source parts and private classification",
+    "public_triage_limit": "sol-triage.jsonl exposes 136 needs_empirical_test records by collapsing 77 first-remedy experiments with 59 watches",
+    "publication_rule": "This manifest publishes package IDs and counts only. It contains no private source path, private classification prose, private artifact, or model transcript.",
+    "source_part_commitments_sha256": [
+      "91754ebb6b6540c737077c2a7838a7f11c52ced2b537b034d8abfe29522d574b",
+      "b8da4a35c2a9f7e12b80264c3999cda4796cbff09fe5985850c8ffa4a135e95e",
+      "ef0d5a6f2f16cb39bb0dd28be2010833e89fefa7de4fbdd0dae83bf4012ef4bc",
+      "1c3cad47e1253592ae4aeae996848d36b2b3edfe195ee083594e8c4b01686a76",
+      "e617cc61b4310d8fa6a19e60bde023d92af8ae2dc213331dc4b72791057d987d",
+      "0f0d2abbf9fd04b741de402e64f88875302c816a88e7578544e6ea9b6d4ecde5"
+    ]
+  },
+  "bindings": {
+    "source_audit": {
+      "path": "evaluation-results/hbq-full-leaf-structural-audit-v1/leaf-audit.jsonl",
+      "sha256": "dada4b53635ac4991b1fa59426c5100753026a5493b46022037b1d715fcff818"
+    },
+    "findings": {
+      "path": "evaluation-results/hbq-full-leaf-structural-audit-v1/findings.jsonl",
+      "sha256": "06c08ef035a09288fa6710db51786ec1a73b71116ac9b23e4c2a09ece8fa14a1"
+    },
+    "triage": {
+      "path": "evaluation-results/hbq-full-leaf-structural-audit-v1/sol-triage.jsonl",
+      "sha256": "f5427aead55b3a17fbe24917d56dba7a50efd8c4a6ce55602c6280b3ddee67e9"
+    },
+    "triage_summary": {
+      "path": "evaluation-results/hbq-full-leaf-structural-audit-v1/sol-triage-summary.json",
+      "sha256": "c482a2d94d51d95bee62a2d2176c623f0b9064123a97d3ae2028c52178f80d19"
+    },
+    "r0_settled_figurative_result": {
+      "path": "evaluation-results/hbq-figurative-scope-treatment-v1-execution-v1/public-result.json",
+      "sha256": "1527cbf9299d9ca83c328101cd15e146e5f8e841c495d1b192a33f51e759534e",
+      "decision": "NO_GO",
+      "fatigue": {
+        "baseline": [
+          12,
+          12
+        ],
+        "scope_rendering_only": [
+          12,
+          12
+        ]
+      },
+      "relevant_calls_exact": 24,
+      "interpretation": "development-level NO_CHANGE/watch only; it authorizes no overall treatment or rubric promotion"
+    }
+  },
+  "packages": [
+    {
+      "package_id": "R0",
+      "initial_calls_exact": 0,
+      "finding_count_exact": 2,
+      "finding_ids": [
+        "c4d62097ce12016c7f3def32d2b8102c19344c316844f38c3b0b1256e2f602c4",
+        "f87df46f698107ebebffe8a5dbd420efc332694897aa34c7f2a8efa6ce18ac62"
+      ]
+    },
+    {
+      "package_id": "L1",
+      "initial_calls_exact": 72,
+      "finding_count_exact": 1,
+      "finding_ids": [
+        "e570a82272e16eceda10aa5d59ad35f17e85734bd3f524c71027410fcf0565b5"
+      ]
+    },
+    {
+      "package_id": "L2",
+      "initial_calls_exact": 216,
+      "finding_count_exact": 3,
+      "finding_ids": [
+        "338b510127809018cc8f14b2674e5960ac6bb70d8692e7af300d74a3eab0ed80",
+        "984e94e56c811360f817c98f76022d74e2c399454dec8874078bc70e59198bc4",
+        "ff3c0acd77e9eae45b077e6ffe458c8c7b34e00fac6606f1e581d5a37755cb9a"
+      ]
+    },
+    {
+      "package_id": "P1",
+      "initial_calls_exact": 132,
+      "finding_count_exact": 11,
+      "finding_ids": [
+        "cd890d802fe78388cbbe684615894473dffda2b5b1eab8b3ae6ca6acfa806e26",
+        "8e14f58a8faf4f80734ef6b10fa18bbdfce3c8e58cdf1823f54314c70638db65",
+        "c7ee0bdfcaf98db40d37f38f4de67d66dd709f56db748df0a83ffba39f979cf2",
+        "8a6326c8c665cccf14c2f931a4acde9ebc1117211e6cec1454829dc4dd507afe",
+        "82d1e80a0970c07c6c4b8a6340aed3744a5182fddf8793863e93ca315875c14d",
+        "11d98b6de654dd40e64af4e784061fb6ef59d57e9bd0f866407efa9ae52964db",
+        "e6e5ad3862be84811980db705f4dd6e5ac29533f3d049c78db47df4d51e82b28",
+        "dd6f1489415df0938adf2d8388d07bfe95363f45d9500850d086651493ef9b6d",
+        "bb38fcb28b25e66341d4e56065fbb6f5476bf07c4afb5990002fe20bde0472ae",
+        "3f93b906a04f9c76134f1f91dbf1c895023afa548035dfe1afea8cbb21017d34",
+        "d0e5d4aa61643ec9b73e240f9fa93ce47711fca5473becb2f4f8788695fab354"
+      ]
+    },
+    {
+      "package_id": "S1",
+      "initial_calls_exact": 420,
+      "finding_count_exact": 35,
+      "finding_ids": [
+        "39c70d322a2eca9785526831afaf5a3c2edf6bd5283678416a2b814e0006a6f9",
+        "799fb9f3f2b4b298c9b185fb46119fa96396943c8c8f14c9be9831d4e739aa57",
+        "0bd6d60cc6d3fc8cc68812761f59acfcab4c2de7b1ae6e5c711d6cbb42edce37",
+        "92e9e272f5a9519797bc18114d88403d84f500bf20745060210d8fb6131eda47",
+        "b6916f20a925a6a9229375fef8d6f8b75513f8f8c76e4cf68a9fb5d24f389aa0",
+        "b1024bb71a89c0e8f18065a7fb65b866fee2b42dffc2b491c50d5ddb32c7d561",
+        "76311e4d51fa0826bfba4d894ed19fa705add7c579b9d298ea71b8b7a5fd1fb5",
+        "a4d6f3df4f77234976f01f764a620ee0ca54c5f3d66d52be99c25857608a5436",
+        "ccfca33a327f0c508bfd278ebbab724f497c630c0e4d5975eb0fd835801bf40b",
+        "5990ed423b9a217d42b495563a3bb225fbb3f33dd2e13dcf2340e7fc488977b4",
+        "c955d3392acc21f8a90f16667696ce020378b95717e1a3feebce06d1d2e912ae",
+        "34e308057e6d6d09bfc7d84c19ae92bd981861f22655014fe6daeff0b576d1f4",
+        "00c63848fca1ca52f1bdf45aa19dc02bee30c5439fb1e10d2f40614c8af4f016",
+        "041b11e760cd8eaaab63fbf46caac16d5febd9b89eaa547a83f046e17101eb37",
+        "73c8e88c26dd997c787032fdc8eb1a3546d44015bac0e2d96a6621362be048b6",
+        "d7820fc2e01faadd041a134444c7afb0de4ad99eab7ce16494c24c02f6a8ea85",
+        "2bd0ce4a0b88d6dac403e9e374960e0613e0a64f45d34023b76d3f40194eba39",
+        "680ffe0c47bd5d60997fac847b9076e1487291464de11c2ae4c7393b2b45b683",
+        "c8a22f2033741838fa8ded2183066b4d89605e1bc03d497960defb6ae4712872",
+        "1451baa97a0f99b8839ad249938ec92ec744b6c045c445b5a4825ea664b7f17a",
+        "0ae3903490a793195e5c55316615a5e606b0b44796a4030f92899e25cba4f096",
+        "79ec248a68d9556d78dbad7bad7b4e99db4e38dc95bb29b93c698980490dbe20",
+        "adeaee9cc0c305024ef7a8efe20902c9070c7b53074a4c82004cd6e2da2f8e6c",
+        "43635f4f34f485d9adc3196c8542f0bef217b87d205d0d0aecbfc7e787a28efb",
+        "81f16193ea79e679add5fa419918eddf162289604ee4f22a20214da07b267830",
+        "b501163acbbb6feed04bfb0186438812e4da9a1fa5bbc7d23b6eb1fbd20733ec",
+        "c0bb5d2dcf75ece4ec7d1c6fae5762a9bee74d06f0bb1bab32a56a79149b3fd2",
+        "ded3da09a99bb8e45adfcd7e5a95146d4c34b5ee64e3dfe15c698e32e7694105",
+        "0be9ac2bd581cb66567c05b068daa08e9a4a2268e1001c0203498fea97708aa6",
+        "c55a499d69208be0be3026edda07758056881b67940829153c5b0fb6c1a67111",
+        "0af2caac9e7f6a0e287326380d586e26b81dbf28e9a09b13101725b86ff4842b",
+        "6fe7df45cbd245539415b0d2ce716b38099180126e257f5f365b66b15fb466fe",
+        "9fcc09973ad19482fdf40bd580202768d0441b5cf45ec15c19022b7cb3cfa8e4",
+        "035e2b30e1fa40d5622a46f42780dce1e64db57bceced96d5b963980b6a29e14",
+        "e007f243df1beb4f6716f1caa7a6bd66ff7411c67b27b80847417a934005cb84"
+      ]
+    },
+    {
+      "package_id": "S2",
+      "initial_calls_exact": 300,
+      "finding_count_exact": 25,
+      "finding_ids": [
+        "68d285cbf064d7d2dfedf708163087baf5573c51f2dd6e8e38cc1a5a470b7911",
+        "76560379c0a55babd00b1bb66ad3822633d79d4a30fbe11253a1db61c2496eb3",
+        "0354e235f1a9d2cd76c8867ff027e94c392c345a097a61bf09143e186b2f2e6f",
+        "d83f7e424529d71e08e3b81e93d3463666f10595ef71d0f084e944c83ebfd382",
+        "f4ec9a80079793d9bdeb4d4bdfd610244ed8a7e53d9b321fd7799463701d74cd",
+        "2c17409ad97e5d6cc7296f9f268ab4fb5c109e5e5dc85042afebee39b28a29ba",
+        "1f490b050dbb5b8cb010f028e6b04db22205efb459bb02e5739be761b0f6ccd3",
+        "d065240ef5ba6132957c84402b58b34d13860d86dd6c724616584db99f7452cb",
+        "a4df027d1648482ceaa1f775b18266359c253b347f4456056d82b416e396d7f8",
+        "0dc0da8c8023cb6a654b49a0c4121caa5d2c5f73de4b3ae50bb46b6b3dba4a0d",
+        "c62aa2a6a269a9673b9a84cda94ee38a17de17b7b9cab5d1cc1eac02290abff3",
+        "f7e0269de7220a65cff4e459b122596b25df1c6e224b8eeb460c18db2ce0ff32",
+        "483fb330bcb5c3662f2baa0f5a20a9f2d2b40676858ca16794e02feb0b580a7b",
+        "d352ad9aadef019a5dbab5be1a65d7b1abba6154c2dd7d7639e426f1663cff9f",
+        "fce8ccc48f83fd1f0bd3e78cff1e277e6bfd2565c52e4e0e6c69466451b88383",
+        "ce51d498713645a2d6fd2d3615da7342c977ad69fda6d0ba718b8da21500363d",
+        "815666a33000670ae350d9e2a7471b27a820e9e91ea18f190c5573a5305202a5",
+        "4edff104ebc7741f3a669857ad6f166e8eb450f42284b34fb81d668a3c4e4512",
+        "61afb31f90fd869277cdb70c53de86f4b8f26e9be9099bfab9edc5d6f239cc63",
+        "7dd3c8152b06c383b5e7d016d12458660bba9e122f8c09097e4a50317e4dc07f",
+        "195334516c8b5e975702ba2085b6ec75b8e95b6b90de9de0fea07d7ad5f7fdf6",
+        "9a5127f13f8cdec05f4486333b643206223059e97d1757bc286aa66a68cb19aa",
+        "a9cbd3978025efc86b5008e2cefe5e0b51208553ee8848aa1fc5337bcb07491f",
+        "eb17cc18285de2bf8614389623255d9b5df9d5e0f85fac16fde6a79a2c8023d6",
+        "4adcf3fa2e3a275b855afe1c7f67ea0ed0461db8cda8cd5f86452a7b469f03bb"
+      ]
+    }
+  ]
+}
