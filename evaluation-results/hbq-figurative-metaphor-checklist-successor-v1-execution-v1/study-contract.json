@@ -1,0 +1,64 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-figurative-metaphor-checklist-successor-v1-execution-v1",
+  "status": "frozen_phase_a_executor_unexecuted",
+  "predecessor": {
+    "commit": "a02418f",
+    "tree": "9ca4cc8fc859a41467b575e5cfb8b96593df57c7",
+    "files": {
+      "README.md": "f2471ada406e4fc1c40d020fbb9334578224b9ff",
+      "expected-verdict-ledger.json": "0b2ab72897039f309fb1f6ed56a32791ffaf3e50",
+      "public-synthetic-corpus.json": "b0bf722785b9624a3fedd5b97905a4b303e43231",
+      "real-holdout-commitment.json": "c5e432ef80bf4ff45471fb8205db081fa83f57cc",
+      "run.py": "a69eb0bc0657d5341618b078baa2980a1941422a",
+      "study-contract.json": "86845a5c5392d7c38070c4d6a0e92c82846f2361",
+      "study.py": "f0d92426008673d0e4b3f774af45bcf2c9d4bd51"
+    }
+  },
+  "phase_a": {
+    "fixtures": 8,
+    "leaves": [
+      "penalty.purple_prose.metaphor",
+      "core.freshness_and_non_genericness.no_default_metaphors",
+      "penalty.purple_prose.proportion"
+    ],
+    "repeats": 3,
+    "slots": 72,
+    "prompt": "current_production_prompt_only"
+  },
+  "execution": {
+    "route": "codex",
+    "model": "gpt-5.6-sol",
+    "reasoning": "high",
+    "one_leaf_per_call": true,
+    "batch_size": 1,
+    "batch_attempts": 1,
+    "physical_attempts_per_slot": 1,
+    "retry_or_resume": "forbidden",
+    "attempt_lifecycle_policy": "terminal_sidecar_v1",
+    "run_manifest_format_version": 5,
+    "maximum_provider_sends": 72,
+    "zero_incremental_charge_only": true,
+    "paid_fallback": "forbidden"
+  },
+  "runtime_bindings": {
+    "freeze": "exact_runtime_and_successor_file_sha256s_before_dry_run_and_settlement",
+    "prompt": "exact_checkpoint_equals_rendered_prompt_after_crlf_to_lf_only"
+  },
+  "privacy": {
+    "runtime_private_root": "explicit_external_disjoint_portable",
+    "provider_input": "public_synthetic_fixture_text_current_production_prompt_one_leaf_and_declared_task_context_only",
+    "excluded_from_provider": ["expected labels", "semantic construction", "reviewer rationale", "case labels", "Phase B checklist", "real holdout"],
+    "result": "aggregate_only",
+    "real_holdout": "closed"
+  },
+  "phase_a_stops": {
+    "controls": "24_of_24_each",
+    "current_target_sufficient": "24_of_24_CURRENT_TARGET_SUFFICIENT",
+    "mixed_target_cell": "CURRENT_TARGET_UNSTABLE_NO_GO",
+    "phase_b_eligible": "at_least_2_all_wrong_stable_target_cells_with_distinct_wording_across_at_least_2_stockness_load_strata",
+    "otherwise": "STABLE_MISS_EVIDENCE_INSUFFICIENT_NO_GO",
+    "phase_b": "disabled_no_holdout_opened"
+  },
+  "promotion": "none"
+}
