@@ -1,0 +1,14 @@
+{
+  "format_version": 1,
+  "study": "hbq-ai-writer-preface-blind-flip-audit-v1",
+  "algorithm": "sha256",
+  "private_source_commitments": {
+    "audit_manifest": "7cfcc4cb610cd2d86fc720a785d2d4ef97a127143125251088314d489ec2dec8",
+    "aggregate_summary": "d39d3392d35b9da4b3c60a1c0f36fc2b80b8e21b5d1760e69cfa3e9a71796aad",
+    "blinded_review_manifest": "1a0d792c19f774b23cb5d8b6ee2263646bac40786d65d61eca98759dae1cea32",
+    "audit_method": "69ffaf1c192befd95f1d955f5bda5a093ccc10a8ff20c760f28b864672670677",
+    "candidate_inventory": "43d01b76bcf59997c1b5f069f4b82cb826a628e994b7b670d1c7254c39da67aa",
+    "excluded_evidence_log": "280256089fcd6914b682a425521003ae0dc7d462d4a93e138ecde9b5953bedfc"
+  },
+  "disclosure": "These commitments bind private audit artifacts without publishing their contents, names, identifiers, or locations."
+}

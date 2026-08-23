@@ -133,10 +133,12 @@ Stable IDs (`module_id`, `question_id`, `bundle_id`, `criterion_key`) are the pu
 - [What HBQ caught in the story](evaluation-results/the-part-that-arrives-first-repeatability/hbq-findings.md) — four concrete craft judgments, including one difficult limitation
 - [Initial batching study](evaluation-results/the-part-that-arrives-first-repeatability/) — the same story under two HBQ batch shapes and two synthesized comparators
 - [Paired-polarity pilot analysis](evaluation-results/hbq-hanna-polarity-paired-analysis-v1/) — one-story evidence that positive and flipped wording can disagree; averaging both did not improve the HANNA comparison
+- [AI-writer preface pilot](evaluation-results/hbq-ai-writer-preface-v1-analysis-v1/) and [blinded flip audit](evaluation-results/hbq-ai-writer-preface-blind-flip-audit-v1/) — the frame finds more real issues in a small slice, but materiality remains disputed
 - [*Gray Blood*, chapters 1–6](evaluation-results/gray-blood-ch1-6/) — complete score and verdict reports with five authorized excerpts, clearly labeled author-original or GPT-5.6 Pro rewrite; the remaining manuscript stays private
 - [Run a headless judge](docs/judging.md)
 - [Embed in another app](docs/apps.md)
 - [Palimpsest integration handoff](docs/PALIMPSEST_HANDOFF.md) — future pinned-submodule boundary, migration gates, and compatibility obligations
+- [Leaf decomposition policy](docs/LEAF_DECOMPOSITION_POLICY.md) — how disputed binary verdicts become bounded rubric maintenance
 - [Benchmarking](docs/benchmarking.md)
 - [Model training](docs/training.md)
 - [Synthetic data](docs/synthetic-data.md)

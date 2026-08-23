@@ -1,0 +1,34 @@
+{
+  "format_version": 1,
+  "study": "hbq-ai-writer-preface-blind-flip-audit-v1",
+  "comparison": {
+    "replicated_full_prefix_no_no_vs_none_yes_yes": 19,
+    "quote_valid_blinded_reviews": 3,
+    "excluded_for_missing_exact_evidence": 16
+  },
+  "reviewer_labels": {
+    "reviewer_a": {
+      "material": 1,
+      "minor": 1,
+      "borderline": 1,
+      "invalid": 0
+    },
+    "reviewer_b": {
+      "material": 0,
+      "minor": 2,
+      "borderline": 1,
+      "invalid": 0
+    }
+  },
+  "joint_reading": {
+    "textually_supported": 3,
+    "materiality_disputed": 3,
+    "inference": "Sensitivity improved in this slice; scope or materiality specificity may fall."
+  },
+  "limitations": {
+    "answers_question_per_call_or_batching": false,
+    "paid_evaluation": false,
+    "new_or_live_human_judging": false,
+    "public_raw_evidence": false
+  }
+}
