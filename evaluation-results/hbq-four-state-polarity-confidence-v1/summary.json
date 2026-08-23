@@ -1,0 +1,78 @@
+{
+  "canonical_hbq_unchanged": true,
+  "confidence": {
+    "additional_response_draws": 486,
+    "draws": 1000,
+    "initial_response_draws": 486,
+    "low_initial_confidence_mean_proxy_accuracy_on_decided": 0.961547039485382,
+    "low_minus_uniform_proxy_accuracy": -0.017422625975646366,
+    "result": "negative_low_confidence_reallocation_did_not_beat_uniform",
+    "seed": 562021,
+    "status": "observed_repeat_bootstrap_only",
+    "total_response_draws_per_simulation": 972,
+    "uniform_mean_proxy_accuracy_on_decided": 0.9789696654610284
+  },
+  "format_version": 1,
+  "limits": [
+    "This is an offline descriptive diagnostic and remains a NO-GO for production polarity or rubric change.",
+    "The published polarity aggregate does not contain a four-state cross-tab, so this successor publishes a reducer policy rather than invented archived cell counts.",
+    "Confidence remains noncanonical; the archived equal-budget low-confidence allocation did not beat uniform allocation on its repeat-consensus proxy.",
+    "No output changes HBQ-RS scoring, coverage, leaves, ownership, weights, prompts, or runtime behavior."
+  ],
+  "polarity": {
+    "any_matched_polarity_disagreement_leaf_count": 7,
+    "canonical_verdict_count": 1236,
+    "focal_leaf_count": 27,
+    "four_state_policy": {
+      "CANNOT_ASSESS": {
+        "CANNOT_ASSESS": "cannot_assess_retained",
+        "NO": "determinate_cannot_assess_conflict",
+        "NOT_APPLICABLE": "not_applicable_mismatch_invalid_excluded",
+        "YES": "determinate_cannot_assess_conflict"
+      },
+      "NO": {
+        "CANNOT_ASSESS": "determinate_cannot_assess_conflict",
+        "NO": "yes_no_contradiction",
+        "NOT_APPLICABLE": "not_applicable_mismatch_invalid_excluded",
+        "YES": "determinate_agreement"
+      },
+      "NOT_APPLICABLE": {
+        "CANNOT_ASSESS": "not_applicable_mismatch_invalid_excluded",
+        "NO": "not_applicable_mismatch_invalid_excluded",
+        "NOT_APPLICABLE": "not_applicable_retained",
+        "YES": "not_applicable_mismatch_invalid_excluded"
+      },
+      "YES": {
+        "CANNOT_ASSESS": "determinate_cannot_assess_conflict",
+        "NO": "determinate_agreement",
+        "NOT_APPLICABLE": "not_applicable_mismatch_invalid_excluded",
+        "YES": "yes_no_contradiction"
+      }
+    },
+    "matched_pair_count": 81,
+    "matched_pair_disagreement_count": 8,
+    "published_four_state_matrix": "not_available_in_published_aggregate"
+  },
+  "privacy": "Aggregate-only public source summaries; no prose, prompts, artifact identifiers, question identifiers, raw verdicts, sessions, or provider response text.",
+  "production_change": "forbidden",
+  "source_inputs": {
+    "confidence_manifest": {
+      "path": "evaluation-results/hbq-confidence-diagnostics-v1/results-repeatability-partial-v3/manifest.json",
+      "sha256": "25138663f7f6aab2a573f89b2ec6aaf218bd29357515a7be854d613fd67a27b1"
+    },
+    "confidence_summary": {
+      "path": "evaluation-results/hbq-confidence-diagnostics-v1/results-repeatability-partial-v3/summary.json",
+      "sha256": "da9790de784f6931b8e8a7ce96de2f6b3a769e8375b26b457525d8fd9212659f"
+    },
+    "polarity_manifest": {
+      "path": "evaluation-results/hbq-hanna-polarity-paired-analysis-v1/results/manifest.json",
+      "sha256": "9a8d9f41c2e657f2748af44883767dbbfdcd4e3539e63c191a1de3048e3e3b43"
+    },
+    "polarity_summary": {
+      "path": "evaluation-results/hbq-hanna-polarity-paired-analysis-v1/results/summary.json",
+      "sha256": "c2187761bada7841b7c059ff33ba57b065ecf93395ece1cc6b1c2ef8d58209e5"
+    }
+  },
+  "status": "offline_aggregate_only_diagnostic_no_go",
+  "study_id": "hbq-four-state-polarity-confidence-v1"
+}

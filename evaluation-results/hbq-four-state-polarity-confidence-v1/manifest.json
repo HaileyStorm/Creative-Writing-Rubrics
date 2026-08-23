@@ -1,0 +1,10 @@
+{
+  "files": {
+    "summary.json": {
+      "bytes": 3683,
+      "sha256": "11d3e5f5772d1fb3238779241b1474b1d3de86524db19c2d44411326d2ec64ef"
+    }
+  },
+  "format_version": 1,
+  "study_id": "hbq-four-state-polarity-confidence-v1"
+}
