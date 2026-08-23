@@ -1,0 +1,26 @@
+"""Provider-free command surface for the L2 lexical-overlap freeze."""
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+
+from study import render_all_provider_inputs, verify_package
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser()
+    mode = parser.add_mutually_exclusive_group(required=True)
+    mode.add_argument("--dry-run", action="store_true")
+    mode.add_argument("--render-plan", action="store_true")
+    args = parser.parse_args()
+    report = verify_package()
+    if args.dry_run:
+        print(json.dumps({"mode": "dry_run", "verification": report}, sort_keys=True))
+    else:
+        inputs = render_all_provider_inputs()
+        print(json.dumps({"mode": "render_plan", "verification": report, "rendered_slots": sorted(inputs), "prompt_sha256s": {slot_id: hashlib.sha256(item["prompt"].encode("utf-8")).hexdigest() for slot_id, item in inputs.items()}, "image_input_slots": {slot_id: item["image_inputs"] for slot_id, item in inputs.items() if item["image_inputs"]}}, sort_keys=True))
+
+
+if __name__ == "__main__":
+    main()

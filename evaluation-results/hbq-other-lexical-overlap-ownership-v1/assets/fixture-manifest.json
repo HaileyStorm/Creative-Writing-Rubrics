@@ -1,0 +1,61 @@
+{
+  "fixtures": [
+    {
+      "bytes": 9332,
+      "fixture_id": "fixture-a",
+      "height": 48,
+      "mime_type": "image/png",
+      "path": "assets/fixture-a.png",
+      "sha256": "e5d8c1e30271fd9142a1d49ce36cfb1157b4f3ef972cd9b1ef7d94a323883e83",
+      "width": 64
+    },
+    {
+      "bytes": 9332,
+      "fixture_id": "fixture-b",
+      "height": 48,
+      "mime_type": "image/png",
+      "path": "assets/fixture-b.png",
+      "sha256": "4c125f52c16a5601bc3a94bd2521412a81b68be57d01ac42ea6b7b6f23dac7ce",
+      "width": 64
+    },
+    {
+      "bytes": 9332,
+      "fixture_id": "fixture-c",
+      "height": 48,
+      "mime_type": "image/png",
+      "path": "assets/fixture-c.png",
+      "sha256": "b4c30a4d8ebaa0f8a346c0f26528c549f9e884ecc2bbacaeb4b18af2ff04aec7",
+      "width": 64
+    },
+    {
+      "bytes": 9332,
+      "fixture_id": "fixture-d",
+      "height": 48,
+      "mime_type": "image/png",
+      "path": "assets/fixture-d.png",
+      "sha256": "017011af64092854357f3a982db476f844d575c0754551a5601db6dc9d9a601c",
+      "width": 64
+    },
+    {
+      "bytes": 9332,
+      "fixture_id": "fixture-e",
+      "height": 48,
+      "mime_type": "image/png",
+      "path": "assets/fixture-e.png",
+      "sha256": "6e2549d0b8f1cc01a45eb9307fad73b64282179b3db7c84272d00921a25c78ad",
+      "width": 64
+    },
+    {
+      "bytes": 9332,
+      "fixture_id": "fixture-f",
+      "height": 48,
+      "mime_type": "image/png",
+      "path": "assets/fixture-f.png",
+      "sha256": "1350125dae7ed276f36fb4f173574b959cf0e16b55a8acd8e70ad637659db114",
+      "width": 64
+    }
+  ],
+  "format_version": 1,
+  "generator": "assets/generate_visual_fixtures.py",
+  "generator_sha256": "1a818209743bddf324bccffcd6011a143600c688780596c44bab1f1591ab13c9"
+}

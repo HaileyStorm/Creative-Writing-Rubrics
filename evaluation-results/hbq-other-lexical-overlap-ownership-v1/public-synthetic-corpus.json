@@ -1,0 +1,52 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-other-lexical-overlap-ownership-v1",
+  "privacy": "public_synthetic_only",
+  "blocks": [
+    {
+      "block_id": "free_verse_form_scope",
+      "finding_id": "338b510127809018cc8f14b2674e5960ac6bb70d8692e7af300d74a3eab0ed80",
+      "bundle_id": "poetry.free_verse",
+      "artifact_type": "poetry",
+      "leaves": ["form.poetry.free_verse.necessity", "scope.poetry_poem.form"],
+      "conditions": [
+        {"condition_id": "both-yes", "artifact_name": "artifact-01.txt", "completion_status": "complete", "text": "The elevator forgets each floor.\nAt every stop, I name the missing neighbor.\nThe cables hum their borrowed names.\nBy dawn, the building remembers us in reverse.", "expected": ["YES", "YES"]},
+        {"condition_id": "form-only", "artifact_name": "artifact-02.txt", "completion_status": "complete", "text": "A hinge opens.\nA hinge closes.\nThe line breaks make the hinge pause,\nbut no movement changes beyond the repeated action.", "expected": ["YES", "NO"]},
+        {"condition_id": "scope-only", "artifact_name": "artifact-03.txt", "completion_status": "complete", "text": "We inherit a weather map.\nThe first stanza names rain, the next names debt,\nand the final stanza returns the map as a will.\nThe movement is complete, though the line breaks are arbitrary.", "expected": ["NO", "YES"]},
+        {"condition_id": "both-no", "artifact_name": "artifact-04.txt", "completion_status": "complete", "text": "The street is quiet.\nA lamp is bright.\nA car goes past.\nNothing changes or gathers.", "expected": ["NO", "NO"]},
+        {"condition_id": "coverage-ablation", "artifact_name": "artifact-05.txt", "completion_status": "unknown", "text": "Fragment retained without the rest of the poem or its declared scope.", "expected": ["CANNOT_ASSESS", "CANNOT_ASSESS"]},
+        {"condition_id": "inactive-control", "artifact_name": "artifact-06.txt", "completion_status": "complete", "text": "Catalog record: title only; no poem is supplied for evaluation.", "expected": ["NOT_APPLICABLE", "NOT_APPLICABLE"]}
+      ]
+    },
+    {
+      "block_id": "prose_poem_image_relation",
+      "finding_id": "984e94e56c811360f817c98f76022d74e2c399454dec8874078bc70e59198bc4",
+      "bundle_id": "poetry.prose_poem",
+      "artifact_type": "poetry",
+      "leaves": ["form.poetry.general_poetry.image_relation", "form.poetry.prose_poem.image_system"],
+      "conditions": [
+        {"condition_id": "both-yes", "artifact_name": "artifact-07.txt", "completion_status": "complete", "text": "The orchard keeps receipts in its bark. By noon the receipts become moths, and the moths settle on my father's empty coat until the coat begins to leaf.", "expected": ["YES", "YES"]},
+        {"condition_id": "prose-poem-routing", "artifact_name": "artifact-08.txt", "completion_status": "complete", "text": "The moon enters the spoon, then the spoon darkens the soup; the table's silver travels through the room and changes each witness's face. The passage is supplied as a lyric fragment, not as a prose poem.", "expected": ["YES", "NOT_APPLICABLE"]},
+        {"condition_id": "both-no", "artifact_name": "artifact-09.txt", "completion_status": "complete", "text": "A red umbrella stands by the door. A bird is on the wire. A cup is on the table. The images do not alter or develop one another.", "expected": ["NO", "NO"]},
+        {"condition_id": "coverage-ablation", "artifact_name": "artifact-10.txt", "completion_status": "unknown", "text": "The supplied note says images occur elsewhere, but no poetic passage is present.", "expected": ["CANNOT_ASSESS", "CANNOT_ASSESS"]},
+        {"condition_id": "inactive-control", "artifact_name": "artifact-11.txt", "completion_status": "complete", "text": "Submission metadata only; no poem or image evidence is supplied.", "expected": ["NOT_APPLICABLE", "NOT_APPLICABLE"]},
+        {"condition_id": "second-both-yes", "artifact_name": "artifact-12.txt", "completion_status": "complete", "text": "A cracked bell fills with rain. The rain becomes a small choir, and the choir's breath opens the bell into a blue doorway.", "expected": ["YES", "YES"]}
+      ]
+    },
+    {
+      "block_id": "visual_perspective",
+      "finding_id": "ff3c0acd77e9eae45b077e6ffe458c8c7b34e00fac6606f1e581d5a37755cb9a",
+      "bundle_id": "visual.environment",
+      "artifact_type": "visual_asset",
+      "leaves": ["form.visual.environment_or_location_illustration.perspective", "form.visual.visual_craft_and_artifact_control.perspective"],
+      "conditions": [
+        {"condition_id": "strong", "artifact_name": "asset-01.png", "completion_status": "complete", "image_fixture": "fixture-a", "expected": ["YES", "YES"]},
+        {"condition_id": "weak", "artifact_name": "asset-02.png", "completion_status": "complete", "image_fixture": "fixture-b", "expected": ["NO", "NO"]},
+        {"condition_id": "evidence-ablation", "artifact_name": "asset-03.png", "completion_status": "unknown", "image_fixture": "fixture-c", "expected": ["CANNOT_ASSESS", "CANNOT_ASSESS"]},
+        {"condition_id": "coverage-ablation", "artifact_name": "asset-04.png", "completion_status": "unknown", "image_fixture": "fixture-d", "expected": ["CANNOT_ASSESS", "CANNOT_ASSESS"]},
+        {"condition_id": "inactive-control", "artifact_name": "asset-05.png", "completion_status": "complete", "image_fixture": "fixture-e", "expected": ["NOT_APPLICABLE", "NOT_APPLICABLE"]},
+        {"condition_id": "second-strong", "artifact_name": "asset-06.png", "completion_status": "complete", "image_fixture": "fixture-f", "expected": ["YES", "YES"]}
+      ]
+    }
+  ]
+}

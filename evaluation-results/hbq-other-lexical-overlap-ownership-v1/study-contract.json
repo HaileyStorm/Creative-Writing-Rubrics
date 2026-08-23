@@ -1,0 +1,40 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-other-lexical-overlap-ownership-v1",
+  "status": "frozen_development_only_current_wording_screen",
+  "development_only": true,
+  "provider_execution": {"permitted": false, "new_provider_calls_exact": 0, "one_leaf_per_request": true},
+  "portfolio_binding": {"package": "L2", "manifest_path": "evaluation-results/hbq-first-remedy-portfolio-v1/manifest.json", "manifest_sha256": "eebe2ac7a7b592459e5b084d8f6806a56ccd7a8c077e6508b34e0a0818111d32", "finding_ids": ["338b510127809018cc8f14b2674e5960ac6bb70d8692e7af300d74a3eab0ed80", "984e94e56c811360f817c98f76022d74e2c399454dec8874078bc70e59198bc4", "ff3c0acd77e9eae45b077e6ffe458c8c7b34e00fac6606f1e581d5a37755cb9a"], "frozen_initial_slots_exact": 216, "additive_to_portfolio": false},
+  "geometry": {"blocks_exact": 3, "semantic_conditions_per_block_exact": 6, "matched_carriers_exact": 2, "leaves_per_block_exact": 2, "repeats_exact": 3, "slots_exact": 216},
+  "labels": ["YES", "NO", "NOT_APPLICABLE", "CANNOT_ASSESS"],
+  "screen": {"name": "current_wording", "prompt_policy": "unchanged_production_prompt", "prompt_paths": ["prompts/judge/JUDGE_PREFIX.md", "prompts/judge/BINARY_EVALUATION_PROMPT.md"], "schema_path": "schema/hbq_judge_response.schema.json", "renderer": "src/hbqrs/runner.py:_render_prompt", "expected_labels_provider_facing": false},
+  "image_delivery": {"visual_block_id": "visual_perspective", "fixture_manifest_path": "assets/fixture-manifest.json", "generator_path": "assets/generate_visual_fixtures.py", "input_contract": "attach_exact_png_bytes_as_image_input", "text_substitution_forbidden": true, "execution_successor_required": true},
+  "scoring": {"applicable_cells": "must_be_3_of_3_expected_with_grounded_typed_evidence", "not_applicable": "completed_unscored", "cannot_assess": "coverage_uncertainty", "missing_or_ambiguous_slot": "INCOMPLETE"},
+  "promotion": {"prompt": "none", "rubric": "none", "leaf": "none", "ownership": "none", "split": "none", "weight": "none"},
+  "bindings": {
+    "corpus": {"path": "public-synthetic-corpus.json", "sha256": "9c6a60b49b616546681dee4f6b019347335c231706ab4b39952558d10fb8089a"},
+    "assets": {"manifest_path": "assets/fixture-manifest.json", "manifest_sha256": "9c564392fa5a7d0661620adf9df4f00da8505bc8a9b1811535dd9efc4483d3e8", "generator_sha256": "1a818209743bddf324bccffcd6011a143600c688780596c44bab1f1591ab13c9"},
+    "runtime": {
+      "prompts/judge/JUDGE_PREFIX.md": "5e3a0990efca93e2cbc3894e635f9fd1b97b6e61ea2981940319cb54994ebb74",
+      "prompts/judge/BINARY_EVALUATION_PROMPT.md": "6c1cac901d820c1ab866e19f9191896e8c97a6aadf35bdae4eac640fd199a3a2",
+      "schema/hbq_judge_response.schema.json": "49c7d824ba5dd957e67968ba3ae6ceb8a7ed9434dfb0dfc654836a76613c7854",
+      "registry/modules/form.poetry.free_verse.yaml": "2c2a05a326b7c530673cb47634e0caafa6415481009985fe0e6c662d81815a8e",
+      "registry/modules/scope.poetry_poem.yaml": "deebb2da202e9a60d7a378850f24bd49b948f9f102c6222cd1114721de9348b6",
+      "registry/modules/form.poetry.general_poetry.yaml": "225875900aed15efe31df9cf6340424273038275218c272c04c511de5aa34638",
+      "registry/modules/form.poetry.prose_poem.yaml": "16acf6c523fbd3194885e7c003d042a19b0a3cb71d79cd61bc357f4e8d9ad9cf",
+      "registry/modules/form.visual.environment_or_location_illustration.yaml": "8a652d357fbde6c3df191fcab5bb437e62b5ad08c56d54262fbfbc47baaf9778",
+      "registry/modules/form.visual.visual_craft_and_artifact_control.yaml": "034594f40297f668737ff1ec136ff9c5d20472b87127b48683bd928646e61dba",
+      "registry/question_index.jsonl": "0de8eec70a5a4de74770570253af96f6483c07fcf00ebad198fe951cf2af1fb6",
+      "registry/criterion_ownership.json": "79d636c7c692926d15ff8ebd47c3592e6bb0e6640473c0948ae9dead4fdd6876",
+      "src/hbqrs/runner.py": "af97b27de7cf8aba63435489e83eb09307c45a0de3b6ce47ebdd847898b1a9f8"
+    },
+    "source_leaves": {
+      "form.poetry.free_verse.necessity": "e33db7108ce1d6216c2309f84779da8f6148342078f0b4d04ddffe07ea44a598",
+      "scope.poetry_poem.form": "6f9c09bb4fc8011c082018a72763e3b9822ac35c8f4202f6331b51e0efe59a45",
+      "form.poetry.general_poetry.image_relation": "ce1097c08574c19be9fa99637055e958722dec39903f7c3fa28d5b990fdf9608",
+      "form.poetry.prose_poem.image_system": "3cabc171771116936894af8b45ce16ccf46130ac1ed311e7c761ddac5c6efe73",
+      "form.visual.environment_or_location_illustration.perspective": "c92a0e9809b11e233468ac71b167ca7ceaea8fc9acdfd02614f73f39b15b33a4",
+      "form.visual.visual_craft_and_artifact_control.perspective": "09ce7158d2b231b32fa4a5d3b9acfae558fd966e6c886854e4d14cdbaf53eaa2"
+    }
+  }
+}
