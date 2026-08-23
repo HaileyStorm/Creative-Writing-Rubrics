@@ -1,0 +1,36 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-nonpoetry-scope-final-manual-v1-execution-v1",
+  "status": "frozen_execution_successor_unexecuted",
+  "predecessor": {
+    "commit": "09b403a6673645fa99efffebfbf24af7a986d190",
+    "tree": "4d39e445262c20fadb9a6b4374a21e49f4db465d",
+    "files": {
+      "README.md": "7e82e16972f478d2b6fbcba373f943cbe5a8d585",
+      "run.py": "b2e3b058f5e95b76a325bd00589f70b61ea21d78",
+      "study-contract.json": "a5c5d438f1492c57a8a2030fff2ad03bf0df1cb3",
+      "study.py": "0b32bd3147acc825612aeaaf4d7d76d70bac265f"
+    }
+  },
+  "private_controller": {
+    "contract_filename": "controller-contract.v1.json",
+    "contract_sha256": "b6f12ade4ee05e4507080d4fc9e6d93b5ff99b2295bfa8d599d613b4e05b75eb"
+  },
+  "execution": {
+    "route": "codex",
+    "model": "gpt-5.6-sol",
+    "reasoning": "high",
+    "batch_size": 1,
+    "batch_attempts": 3,
+    "attempt_lifecycle_policy": "terminal_sidecar_v1",
+    "maximum_provider_sends": 72,
+    "one_leaf_per_call": true,
+    "owner_attested_zero_incremental_charge_only": true,
+    "paid_api_or_fallback_route": "forbidden"
+  },
+  "geometry": {"fixtures": 4, "arms": ["baseline", "candidate"], "repeats": 3, "slots": 24},
+  "public_result_policy": "aggregate_only_after_execution",
+  "promotion": "none",
+  "success_action": "HOLDOUT_ELIGIBLE_ON_SUCCESS",
+  "failure_action": "NO_GO_DSPY_ELIGIBLE_ONLY"
+}
