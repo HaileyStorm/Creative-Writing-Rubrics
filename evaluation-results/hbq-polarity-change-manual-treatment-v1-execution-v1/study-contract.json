@@ -1,0 +1,36 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-polarity-change-manual-treatment-v1-execution-v1",
+  "status": "frozen_execution_successor_unexecuted",
+  "predecessor": {
+    "commit": "6366bb3",
+    "tree": "1043f5196960e3e1fae15ddb4b53b1c2c3a3ba7e",
+    "files": {
+      "README.md": "e74c58cf7595442d8fe7818288029d7863ff2088",
+      "fixture-carriers.json": "6e57b6e81012ce0e0eec22c49430a2c94e8714f1",
+      "public-synthetic-corpus.json": "a9feaa012f35d5a3f1d513e05cff60232bef45f0",
+      "run.py": "38f38d8fa2f68d44a4563b4bf74af242487d7bfc",
+      "sealed-holdout-contract.json": "2761fce81b7e74cb6f049079e8785f4cbada4ec7",
+      "study-contract.json": "a0b7cdb7e2b40b844fca4ea94585391cbbc3003d",
+      "study.py": "a2b061d2b38a43c02318e3f45441fb34490e93df"
+    }
+  },
+  "execution": {
+    "route": "codex",
+    "model": "gpt-5.6-sol",
+    "reasoning": "high",
+    "batch_size": 1,
+    "batch_attempts": 3,
+    "maximum_provider_sends": 171,
+    "one_leaf_per_call": true,
+    "attempt_lifecycle_policy": "terminal_sidecar_v1",
+    "collision_resistant_judge_ids": true,
+    "owner_attested_zero_incremental_charge_only": true,
+    "paid_api_or_fallback_route": "forbidden"
+  },
+  "geometry": {"leaves": 11, "fixtures": 19, "repeats": 3, "slots": 57},
+  "prompt_commitment": "canonical_utf8_lf_private_overlay_v1",
+  "public_result_policy": "aggregate_only_after_execution",
+  "holdout": "sealed_unopened_until_development_settlement",
+  "promotion": "none"
+}
