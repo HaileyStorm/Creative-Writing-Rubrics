@@ -139,6 +139,7 @@ Stable IDs (`module_id`, `question_id`, `bundle_id`, `criterion_key`) are the pu
 - [Embed in another app](docs/apps.md)
 - [Palimpsest integration handoff](docs/PALIMPSEST_HANDOFF.md) — future pinned-submodule boundary, migration gates, and compatibility obligations
 - [Leaf decomposition policy](docs/LEAF_DECOMPOSITION_POLICY.md) — how disputed binary verdicts become bounded rubric maintenance
+- [Validation and repair journey](docs/VALIDATION_AND_REPAIR_JOURNEY.md) — how controlled studies and negative results changed HBQ-RS, including the aggregate-only [QPC1 ceiling result](evaluation-results/hbq-qpc1-figurative-treatment-v1/)
 - [Benchmarking](docs/benchmarking.md)
 - [Model training](docs/training.md)
 - [Synthetic data](docs/synthetic-data.md)

@@ -1,0 +1,48 @@
+{
+  "format_version": 1,
+  "study_id": "qpc1-figurative-treatment-20260822",
+  "public_cwr_parent": {
+    "commit": "c4ba06453785bdb52bce374926b65d3cab542a9a"
+  },
+  "protocol_geometry": {
+    "artifacts": 3,
+    "logical_runs": 15,
+    "repetitions_per_artifact": 5,
+    "selected_leaves": 7,
+    "one_leaf_per_provider_request": true,
+    "expected_provider_sessions": 105
+  },
+  "public_leaf_ids": [
+    "penalty.purple_prose.clarity",
+    "penalty.purple_prose.proportion",
+    "penalty.purple_prose.specificity",
+    "penalty.purple_prose.tone",
+    "penalty.purple_prose.metaphor",
+    "penalty.purple_prose.attention",
+    "penalty.purple_prose.fatigue"
+  ],
+  "artifact_roles": [
+    "author_original",
+    "gpt_5_6_pro_rewrite",
+    "public_control_story"
+  ],
+  "aggregate_counts": {
+    "accepted_checkpoints": 105,
+    "accepted_verdicts": 105,
+    "accepted_yes": 105,
+    "accepted_no": 0,
+    "rejected_attempts": 0,
+    "provider_retry_or_validation_repair_events": 0,
+    "artifact_leaf_cells": 21,
+    "all_artifact_leaf_cells_unanimous_yes": 21
+  },
+  "limitations": [
+    "Selected leaves only; no composite score or manuscript decision.",
+    "A universal pass is a negative discrimination result and does not establish universal validity.",
+    "The sealed private receipts remain the verification authority."
+  ],
+  "sealed_private_receipt_commitments": {
+    "analysis_v2_sha256": "7d8936b07b9d94ea48eaf26e85168b4a4e89202a05d9cf7ea744b6af343363f4",
+    "receipt_set_sha256": "8f6fb14fb82dbfdd0cedd3fc5106d46b1d17a7fb57a060ca96ffafb6741e5bf9"
+  }
+}
