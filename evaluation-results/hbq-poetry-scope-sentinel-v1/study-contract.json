@@ -1,0 +1,60 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-poetry-scope-sentinel-v1",
+  "status": "frozen_development_only_poetry_scope_sentinel",
+  "development_only": true,
+  "provider_execution": {"permitted": false, "new_provider_calls_exact": 0, "one_leaf_per_request": true},
+  "portfolio_binding": {
+    "package": "S1",
+    "manifest_path": "evaluation-results/hbq-first-remedy-portfolio-v1/manifest.json",
+    "manifest_sha256": "eebe2ac7a7b592459e5b084d8f6806a56ccd7a8c077e6508b34e0a0818111d32",
+    "findings_path": "evaluation-results/hbq-full-leaf-structural-audit-v1/findings.jsonl",
+    "findings_sha256": "06c08ef035a09288fa6710db51786ec1a73b71116ac9b23e4c2a09ece8fa14a1",
+    "frozen_initial_slots_exact": 420,
+    "this_first_staged_subset_slots_exact": 60,
+    "additive_to_portfolio": false,
+    "leaf_findings": {
+      "form.poetry.general_poetry.ending": "b6916f20a925a6a9229375fef8d6f8b75513f8f8c76e4cf68a9fb5d24f389aa0",
+      "form.poetry.elegy.movement": "799fb9f3f2b4b298c9b185fb46119fa96396943c8c8f14c9be9831d4e739aa57",
+      "form.poetry.free_verse.repetition": "0bd6d60cc6d3fc8cc68812761f59acfcab4c2de7b1ae6e5c711d6cbb42edce37",
+      "form.poetry.haiku_in_english.sequence_scope": "00c63848fca1ca52f1bdf45aa19dc02bee30c5439fb1e10d2f40614c8af4f016",
+      "form.poetry.pantoum.recontext": "adeaee9cc0c305024ef7a8efe20902c9070c7b53074a4c82004cd6e2da2f8e6c"
+    }
+  },
+  "geometry": {"leaves_exact": 5, "states_exact": 4, "artifacts_exact": 20, "repeats_exact": 3, "slots_exact": 60},
+  "labels": ["YES", "NO", "NOT_APPLICABLE", "CANNOT_ASSESS"],
+  "state_invariant": {
+    "localized_issue": {"verdict": "YES", "rule": "localized issue is a revision note, not a material failure"},
+    "material_failure": {"verdict": "NO", "rule": "NO is a material failure at declared scope"},
+    "missing_required_evidence": {"verdict": "CANNOT_ASSESS", "rule": "missing required evidence is coverage uncertainty"},
+    "activation_mismatch": {"verdict": "NOT_APPLICABLE", "rule": "inactive criterion is completed but unscored"}
+  },
+  "carrier_axes": {"completion_status": ["complete", "excerpt"], "parent_status": ["complete", "unknown"], "evaluation_scope": ["stanza", "poem", "sequence", "non_poetry"], "independent_carrier_metadata": true},
+  "screen": {"name": "current_wording", "prompt_policy": "unchanged_production_prompt", "prompt_paths": ["prompts/judge/JUDGE_PREFIX.md", "prompts/judge/BINARY_EVALUATION_PROMPT.md"], "renderer": "src/hbqrs/runner.py:_render_prompt", "expected_labels_provider_facing": false},
+  "promotion": {"prompt": "none", "rubric": "none", "leaf": "none", "ownership": "none", "split": "none", "weight": "none", "influence": "none"},
+  "rejected_context": {"finding_id": "f69aee26f88757d6d364c34b4d921d764cf7944ed0e896f3e18a9189ffe7e8aa", "controlling": false, "reason": "positive YES orientation remains correct"},
+  "sealed_successor_gate": {"affected_leaf_only": true, "private_quartet_current_and_candidate_calls_exact": 24, "candidate_required": "12/12", "no_regression_required": true, "baseline_differential_required": true, "sol_smallest_repair_review_required": true, "unchanged": ["id", "owner", "polarity", "weight", "influence"], "synthetic_success_authorizes_only": "real_or_archived_holdout"},
+  "bindings": {
+    "corpus": {"path": "public-synthetic-corpus.json", "sha256": "2bb1d65a2e4317d735c458d15b7525704bf732009995c79fc05e454d2ef6fb08"},
+    "runtime": {
+      "prompts/judge/JUDGE_PREFIX.md": "5e3a0990efca93e2cbc3894e635f9fd1b97b6e61ea2981940319cb54994ebb74",
+      "prompts/judge/BINARY_EVALUATION_PROMPT.md": "6c1cac901d820c1ab866e19f9191896e8c97a6aadf35bdae4eac640fd199a3a2",
+      "schema/hbq_judge_response.schema.json": "49c7d824ba5dd957e67968ba3ae6ceb8a7ed9434dfb0dfc654836a76613c7854",
+      "registry/modules/form.poetry.general_poetry.yaml": "225875900aed15efe31df9cf6340424273038275218c272c04c511de5aa34638",
+      "registry/modules/form.poetry.elegy.yaml": "abaccb6e4e87de17b1f56ab76f9c3774af829a986e0daebda2d73e30ba48fd3f",
+      "registry/modules/form.poetry.free_verse.yaml": "2c2a05a326b7c530673cb47634e0caafa6415481009985fe0e6c662d81815a8e",
+      "registry/modules/form.poetry.haiku_in_english.yaml": "44bc4a0f2340a5800081816fa80a72de85dfb063583deaed43ab7e981771caf2",
+      "registry/modules/form.poetry.pantoum.yaml": "71286644a6c777fb2254146cf2c7d6a37b3a55bfb70573acee84aa74f8af3673",
+      "registry/question_index.jsonl": "0de8eec70a5a4de74770570253af96f6483c07fcf00ebad198fe951cf2af1fb6",
+      "registry/criterion_ownership.json": "79d636c7c692926d15ff8ebd47c3592e6bb0e6640473c0948ae9dead4fdd6876",
+      "src/hbqrs/runner.py": "af97b27de7cf8aba63435489e83eb09307c45a0de3b6ce47ebdd847898b1a9f8"
+    },
+    "source_leaves": {
+      "form.poetry.general_poetry.ending": "1400a00fffab25f6fa3f0cb6c7b77b2e41b5c4f60c5643bff96913a2313a550d",
+      "form.poetry.elegy.movement": "f1f5462f65294f85b119201c0f19907d7b6c076b51c7cc346867ad0100c06edd",
+      "form.poetry.free_verse.repetition": "cd611a4dc45a8e0a4908207911c077dbfaaf4cb48a6b0d9bc82be2e6c1e4e29f",
+      "form.poetry.haiku_in_english.sequence_scope": "fcc6ac582f86a5200dc11d133b5f13212a396c46f978869d8e762e8835dfab7a",
+      "form.poetry.pantoum.recontext": "e74895c62a780ca523403ea687bbb96534db64b62b1cf240f0edb1c2704eea9d"
+    }
+  }
+}
