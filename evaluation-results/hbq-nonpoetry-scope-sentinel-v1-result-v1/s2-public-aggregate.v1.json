@@ -1,0 +1,79 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-nonpoetry-scope-sentinel-v1-execution-v1",
+  "public_cwr_lineage": {
+    "frozen_screen_commit": "3a529c071997b26bfe4d15acd0b100be5300b2a1",
+    "execution_runtime_commit": "a7e23b3a5336be76af318cfb9dc700daaa07ec36"
+  },
+  "protocol_geometry": {
+    "synthetic_artifacts": 20,
+    "selected_leaves": 5,
+    "four_states": 4,
+    "repetitions_per_cell": 3,
+    "logical_slots": 60,
+    "one_leaf_per_provider_request": true,
+    "execution_route": "codex_gpt_5_6_sol_high"
+  },
+  "public_leaf_ids": [
+    "craft.narrative.character_arc.end_state",
+    "data.eval.evaluation_determinism.rerun",
+    "modifier.genre.hybrid_or_genre_blend.tone",
+    "op.critique.single_unit_critique.no_whole_claims",
+    "scope.passage.status"
+  ],
+  "decision": "DIAGNOSTIC_FAIL",
+  "promotion": "none",
+  "aggregate_counts": {
+    "planned_slots": 60,
+    "completed_slots": 60,
+    "first_attempt_accepted_slots": 60,
+    "scored_cells": 15,
+    "scored_cells_passing": 10,
+    "not_applicable_control_cells": 5,
+    "not_applicable_control_cells_matching": 5
+  },
+  "canonical_four_state_counts": {
+    "craft.narrative.character_arc.end_state": {
+      "YES": 3,
+      "NO": 3,
+      "NOT_APPLICABLE": 3,
+      "CANNOT_ASSESS": 3
+    },
+    "data.eval.evaluation_determinism.rerun": {
+      "YES": 3,
+      "NO": 3,
+      "NOT_APPLICABLE": 3,
+      "CANNOT_ASSESS": 3
+    },
+    "modifier.genre.hybrid_or_genre_blend.tone": {
+      "YES": 1,
+      "NO": 3,
+      "NOT_APPLICABLE": 5,
+      "CANNOT_ASSESS": 3
+    },
+    "op.critique.single_unit_critique.no_whole_claims": {
+      "YES": 6,
+      "NO": 3,
+      "NOT_APPLICABLE": 3,
+      "CANNOT_ASSESS": 0
+    },
+    "scope.passage.status": {
+      "YES": 6,
+      "NO": 0,
+      "NOT_APPLICABLE": 4,
+      "CANNOT_ASSESS": 2
+    }
+  },
+  "limitations": [
+    "Aggregate-only public projection: no fixture text, per-slot records, prompts, responses, private evidence, or session identifiers.",
+    "This staged synthetic diagnostic does not establish a general result or authorize a prompt, rubric, leaf, ownership, split, or weight change.",
+    "The result identifies one likely wording or polarity issue for scope.passage.status and four fixture-isolation issues; it does not establish their repair.",
+    "The sealed private settlement remains the verification authority."
+  ],
+  "opaque_private_receipt_commitments": {
+    "public_aggregate_sha256": "9856293187dec93fa2753dfb32f8e88e8ce0dcc0ece417aa57f8d5e814b5302a",
+    "settlement_sha256": "c4dc13e4b25d96dff8b2d185a6311a96f5fc6f1051812a17361e717d758bc573",
+    "execution_manifest_sha256": "f6c27d2cadfd4c7fbbe2f4e57d84c8a6c4b9d039196d342c1fc2f1e959615a1f",
+    "execution_contract_sha256": "557d6409f66356bb532fc83d34ca48eb12cda525e474883531a04c686528ef97"
+  }
+}
