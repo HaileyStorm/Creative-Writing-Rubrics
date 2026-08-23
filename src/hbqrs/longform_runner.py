@@ -39,6 +39,7 @@ from .longform import (
 from .paths import prompts_dir, schema_dir
 from .runner import (
     MAX_RESPONSE_BYTES,
+    LONGFORM_RUNTIME_CONTRACT_POLICY,
     NOUS_MODEL_POLICIES,
     NOUS_REASONING,
     NOUS_TRANSPORT_POLICY,
@@ -51,11 +52,14 @@ from .runner import (
     _endpoint_url,
     _is_loopback_url,
     _json_bytes,
+    _longform_runtime_contract,
+    _longform_scope_compatibility_proof,
     _next_codex_message_attempt,
     _parse_model_json,
     _openai_content,
     _read_text_record,
     _sha256_bytes,
+    _redacted_segmentation,
     _validate_provider_artifacts,
     _write_json,
     run_judge,
@@ -468,39 +472,6 @@ def _derive_bundle(bundle: Mapping[str, Any], selected_module_ids: Sequence[str]
     return result
 
 
-def _scope_contract(contract: Mapping[str, Any], scope_id: str) -> dict[str, Any]:
-    result = deepcopy(dict(contract))
-    result["weighted_goals"] = [
-        goal for goal in result["weighted_goals"] if scope_id in goal.get("applies_to", [])
-    ]
-    result["binding_requirements"] = [
-        requirement
-        for requirement in result["binding_requirements"]
-        if scope_id in requirement.get("applies_to", [])
-    ]
-    return result
-
-
-def _runtime_contract(contract: Mapping[str, Any]) -> dict[str, Any]:
-    """Adapt absence checks to the runner's unconditional YES/NO gate semantics.
-
-    The approved contract remains unchanged in route/report provenance.  The
-    scoped judge input uses a structural verification statement so the core
-    compiler cannot attach its conditional NOT_APPLICABLE wording.
-    """
-
-    result = deepcopy(dict(contract))
-    for requirement in result.get("binding_requirements", []):
-        verification = requirement.get("verification", {})
-        if verification.get("method") == "absence":
-            verification["method"] = "structural_constraint"
-            verification["expected"] = (
-                "Return YES when the prohibited condition is absent and NO when it is present: "
-                f"{verification['expected']}"
-            )
-    return result
-
-
 def _contract_judge_context(contract: Mapping[str, Any]) -> dict[str, Any]:
     """Expose frozen task-question semantics to the judge without source prose."""
 
@@ -769,8 +740,32 @@ def _run_binary_scope(
     strict_ai: bool,
     allow_unattested_reasoning: bool,
     upgrade_legacy_normalization: bool,
+    longform_route_plan_path: Path | None = None,
 ) -> dict[str, Any]:
     subresume = resume and (output_dir / "run.json").is_file()
+    scope_proof = None
+    if task_contract_path is not None:
+        if longform_route_plan_path is None:
+            raise HBQError("Long-form scoped judging requires a persisted route plan")
+        contract = load_data(task_contract_path)
+        if not isinstance(contract, Mapping):
+            raise HBQError("Long-form scoped task contract is malformed")
+        contract_bytes = task_contract_path.read_bytes()
+        contract_record = {
+            "sha256": _sha256_bytes(contract_bytes),
+            "contract_id": contract.get("contract_id"),
+        }
+        scope_proof = _longform_scope_compatibility_proof(
+            artifact_path=artifact_path,
+            artifact_id=artifact_id,
+            bundle_id=bundle_id,
+            task_contract=contract,
+            task_contract_record=contract_record,
+            route_plan_path=longform_route_plan_path,
+            registry_path=registry_path,
+            bundles_path=bundles_path,
+            context_paths=tuple(context_paths),
+        )
     summary = run_judge(
         artifact_path=artifact_path,
         artifact_id=artifact_id,
@@ -782,6 +777,7 @@ def _run_binary_scope(
         bundles=bundles_path,
         context_paths=context_paths,
         task_contract_path=task_contract_path,
+        longform_scope_compatibility_proof=scope_proof,
         weight_profile=weight_profile,
         batch_size=batch_size,
         batch_attempts=batch_attempts,
@@ -851,6 +847,7 @@ def run_longform_judge(
     resume: bool = False,
     dry_run: bool = False,
     plan_only: bool = False,
+    route_only: bool = False,
     timeout: float = 600.0,
     strict_ai: bool = False,
     allow_unattested_reasoning: bool = False,
@@ -869,6 +866,8 @@ def run_longform_judge(
         raise HBQError("provider must be 'openai', 'codex', 'grok', or 'nous'")
     if not model.strip():
         raise HBQError("model cannot be empty")
+    if not isinstance(route_only, bool):
+        raise HBQError("route_only must be a boolean")
     if route_sample_char_limit < 1:
         raise HBQError("route_sample_char_limit must be positive")
     if local_sample_limit is not None and not 1 <= local_sample_limit <= MAX_EXPLICIT_LOCAL_SAMPLE_LIMIT:
@@ -1242,10 +1241,23 @@ def run_longform_judge(
     source_copy = inputs_dir / "artifact.txt"
     _write_or_verify(source_copy, source_path.read_bytes())
     brief_copies: list[Path] = []
+    planned_context_artifacts: list[dict[str, Any]] = []
+    driving_copy: Path | None = None
     for index, (path, record) in enumerate(zip(brief_paths, briefs), start=1):
         copy_path = inputs_dir / f"brief-{index:02d}.txt"
         _write_or_verify(copy_path, Path(path).read_bytes())
         brief_copies.append(copy_path)
+        content = copy_path.read_bytes()
+        planned_context_artifacts.append(
+            {"path": f".private/inputs/{copy_path.name}", "bytes": len(content), "sha256": _sha256_bytes(content)}
+        )
+    if driving_prompt:
+        driving_copy = inputs_dir / "driving-prompt.txt"
+        _write_or_verify(driving_copy, driving_prompt.encode("utf-8"))
+        content = driving_copy.read_bytes()
+        planned_context_artifacts.append(
+            {"path": ".private/inputs/driving-prompt.txt", "bytes": len(content), "sha256": _sha256_bytes(content)}
+        )
     segmentation_record = deepcopy(segmentation)
     for unit in segmentation_record["units"]:
         unit.pop("text", None)
@@ -1287,20 +1299,21 @@ def run_longform_judge(
         route_raw = _freeze_sampling_ordinals(route_raw, segmentation, frozen_ordinals)
     elif local_sample_limit is None:
         route_raw = complete_local_evaluation_plan(route_raw, segmentation)
+    validated_local_sample_limit = (
+        None
+        if sampling_plan_override is not None
+        and sampling_plan_override.get("coverage_mode") == "complete"
+        else len(frozen_ordinals)
+        if frozen_ordinals
+        else local_sample_limit
+    )
     try:
         route = validate_route_selection(
             route_raw,
             segmentation=segmentation,
             modules=modules,
             bundles=available_bundles,
-            local_sample_limit=(
-                None
-                if sampling_plan_override is not None
-                and sampling_plan_override.get("coverage_mode") == "complete"
-                else len(frozen_ordinals)
-                if frozen_ordinals
-                else local_sample_limit
-            ),
+            local_sample_limit=validated_local_sample_limit,
             binding_contract_approved=False,
             expected_completion_status=completion_status,
         )
@@ -1321,6 +1334,15 @@ def run_longform_judge(
             driving_prompt=driving_prompt,
             project_context=project_context,
         )
+    route_contract_context = route["task_contract"].get("context")
+    if not isinstance(route_contract_context, Mapping) or (
+        route_contract_context.get("artifact_kind") != artifact_kind
+        or route_contract_context.get("declared_scope") != declared_scope
+    ):
+        raise HBQError(
+            "Task contract context does not exactly match the validated artifact profile; "
+            "no implicit artifact-kind or scope mapping is available"
+        )
 
     local_bundle_plan = resolve_local_bundle_plan(
         bundles=available_bundles,
@@ -1330,18 +1352,28 @@ def run_longform_judge(
         explicit_local_bundle_id=local_bundle_id,
     )
     plan = {
-        "format_version": 1,
+        "format_version": 2,
         "status": "PLANNED",
+        "execution_mode": "route_only" if route_only else "full_judging",
         "artifact_id": artifact_id,
-        "artifact_kind": artifact_kind,
-        "declared_scope": declared_scope,
-        "completion_status": completion_status,
-        "selected_bundle_id": route["selected_bundle_id"],
-        "selected_module_ids": deepcopy(route["selected_module_ids"]),
-        "selection_reasons": deepcopy(route["selection_reasons"]),
-        "task_contract": deepcopy(route["task_contract"]),
-        "sampling_plan": deepcopy(route["sampling_plan"]),
+        "route": deepcopy(route),
         "local_bundle_plan": deepcopy(local_bundle_plan),
+        "segmentation": _redacted_segmentation(segmentation),
+        "source_artifact": {
+            "path": ".private/inputs/artifact.txt",
+            "bytes": len(source_copy.read_bytes()),
+            "sha256": _sha256_bytes(source_copy.read_bytes()),
+        },
+        "context_artifacts": planned_context_artifacts,
+        "route_validation": {
+            "local_sample_limit": validated_local_sample_limit,
+            "binding_contract_approved": task_contract_override is not None,
+            "explicit_local_bundle_id": local_bundle_id,
+        },
+        "transform_policy": {
+            "format_version": 1,
+            "policy_id": LONGFORM_RUNTIME_CONTRACT_POLICY,
+        },
         "next_step": (
             "Inspect this plan. Resume the same command without --plan-only to accept it, "
             "or start a new output directory with explicit --bundle/--module overrides."
@@ -1414,16 +1446,20 @@ def run_longform_judge(
         unit_paths[unit["unit_id"]] = path
 
     contracts_dir = generated_inputs / "contracts"
-    global_contract = _scope_contract(route["task_contract"], "work")
-    global_contract_path: Path | None = None
-    if global_contract["weighted_goals"] or global_contract["binding_requirements"]:
-        global_contract_path = contracts_dir / "work.json"
-        _write_or_verify(global_contract_path, _json_bytes(_runtime_contract(global_contract)))
+    global_contract = _longform_runtime_contract(
+        route["task_contract"], scope_id="work", artifact_id=artifact_id,
+        execution_scope=declared_scope,
+    )
+    global_contract_path = contracts_dir / "work.json"
+    _write_or_verify(global_contract_path, _json_bytes(global_contract))
     global_contract_context: list[Path] = []
-    if global_contract_path is not None:
-        context_path = contracts_dir / "work.judge-context.json"
-        _write_or_verify(context_path, _json_bytes(_contract_judge_context(global_contract)))
-        global_contract_context.append(context_path)
+    global_context_contract = _longform_runtime_contract(
+        route["task_contract"], scope_id="work", artifact_id=artifact_id,
+        execution_scope=declared_scope, normalize_absence=False,
+    )
+    global_context_path = contracts_dir / "work.judge-context.json"
+    _write_or_verify(global_context_path, _json_bytes(_contract_judge_context(global_context_contract)))
+    global_contract_context.append(global_context_path)
     completion_contexts_dir = generated_inputs / "completion-contexts"
     global_completion_context = completion_contexts_dir / "work.json"
     _write_or_verify(
@@ -1433,7 +1469,7 @@ def run_longform_judge(
         ),
     )
     map_result_path = private / "passes" / "map" / "result.json"
-    contexts = [*brief_copies, map_result_path]
+    contexts = [*brief_copies, *([driving_copy] if driving_copy is not None else []), map_result_path]
     unit_by_id = {unit["unit_id"]: unit for unit in segmentation["units"]}
     local_unit_ids = list(route["sampling_plan"]["unit_ids"])
 
@@ -1449,6 +1485,7 @@ def run_longform_judge(
             bundles_path=runtime_bundles_path,
             context_paths=[*contexts, *global_contract_context, global_completion_context],
             task_contract_path=global_contract_path,
+            longform_route_plan_path=destination / "plan.json",
             weight_profile=weight_profile,
             provider=provider,
             model=model,
@@ -1471,12 +1508,12 @@ def run_longform_judge(
     def evaluate_local(unit_id: str) -> dict[str, Any]:
         unit = unit_by_id[unit_id]
         label = unit["heading"] or f"Unit {unit['ordinal']}"
-        local_contract = _scope_contract(route["task_contract"], unit_id)
-        local_contract["artifact_id"] = f"{artifact_id}-{unit_id}"
-        local_contract_path: Path | None = None
-        if local_contract["weighted_goals"] or local_contract["binding_requirements"]:
-            local_contract_path = contracts_dir / f"{unit_id}.json"
-            _write_or_verify(local_contract_path, _json_bytes(_runtime_contract(local_contract)))
+        local_contract = _longform_runtime_contract(
+            route["task_contract"], scope_id=unit_id,
+            artifact_id=f"{artifact_id}-{unit_id}", execution_scope=str(unit["kind"]),
+        )
+        local_contract_path = contracts_dir / f"{unit_id}.json"
+        _write_or_verify(local_contract_path, _json_bytes(local_contract))
         local_contexts = list(contexts)
         local_completion_context = completion_contexts_dir / f"{unit_id}.json"
         _write_or_verify(
@@ -1485,11 +1522,14 @@ def run_longform_judge(
                 _completion_judge_context(completion_status, scope_kind="local", scope_id=unit_id)
             ),
         )
+        local_context_contract = _longform_runtime_contract(
+            route["task_contract"], scope_id=unit_id,
+            artifact_id=f"{artifact_id}-{unit_id}", execution_scope=str(unit["kind"]), normalize_absence=False,
+        )
+        local_context_path = contracts_dir / f"{unit_id}.judge-context.json"
+        _write_or_verify(local_context_path, _json_bytes(_contract_judge_context(local_context_contract)))
+        local_contexts.append(local_context_path)
         local_contexts.append(local_completion_context)
-        if local_contract_path is not None:
-            context_path = contracts_dir / f"{unit_id}.judge-context.json"
-            _write_or_verify(context_path, _json_bytes(_contract_judge_context(local_contract)))
-            local_contexts.append(context_path)
         return _run_binary_scope(
             artifact_path=unit_paths[unit_id],
             artifact_id=f"{artifact_id}-{unit_id}",
@@ -1501,6 +1541,7 @@ def run_longform_judge(
             bundles_path=runtime_bundles_path,
             context_paths=local_contexts,
             task_contract_path=local_contract_path,
+            longform_route_plan_path=destination / "plan.json",
             weight_profile=local_weight_profile,
             provider=provider,
             model=model,

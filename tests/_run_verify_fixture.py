@@ -33,6 +33,7 @@ def build_fixture(
     artifact_text: str = "The lantern flickered at dawn.",
     context_text: str = "Write a tense short story about a lantern.",
     input_paths: tuple[Path, Path, Path] | None = None,
+    prompt_rendering_version: int = runner.PROMPT_RENDERING_VERSION,
 ) -> tuple[Path, dict[str, Any]]:
     """Materialize a complete run from source inputs; never edits an existing run."""
 
@@ -74,10 +75,26 @@ def build_fixture(
         task = json.loads(task_path.read_text(encoding="utf-8"))
         if not isinstance(task, dict) or task.get("artifact_id") != artifact_id:
             raise ValueError("Fixture task input must bind the artifact identity")
+    scope_override = task_path.with_name("scope-compatibility.json")
+    override = {
+        "format_version": 1,
+        "artifact_id": artifact_id,
+        "bundle_id": "prose.short_story",
+        "task_contract_sha256": hashlib.sha256(task_path.read_bytes()).hexdigest(),
+        "contract_id": task["contract_id"],
+        "artifact_kind": task["context"]["artifact_kind"],
+        "declared_scope": task["context"]["declared_scope"],
+        "compatibility_mode": "reviewed_override",
+        "decision_id": "fixture-reviewed-compatibility",
+        "reviewer": "fixture",
+        "reason": "Fixture binds an explicit reviewed compatibility decision.",
+    }
+    write_json(scope_override, override)
     binary_prompt = prompts_dir() / "judge" / "BINARY_EVALUATION_PROMPT.md"
     response_schema = schema_dir() / "hbq_judge_response.schema.json"
     frozen = {
         "artifact": binding(artifact), "contexts": [binding(context)], "task_contract": binding(task_path),
+        "scope_compatibility_override": binding(scope_override),
         "registry": binding(registry_path()), "bundles": binding(bundles_path()), "prompts": [binding(binary_prompt)],
         "response_schema": binding(response_schema), "score_v1_schema": binding(schema_dir() / "hbq_score_report.schema.json"),
         "score_v2_schema": binding(schema_dir() / "hbq_score_report.v2.schema.json"), "weight_profile": None,
@@ -95,23 +112,41 @@ def build_fixture(
     artifact_record, context_record = runner._read_text_record(artifact), runner._read_text_record(context)
     task_record = runner._manifest_inputs([runner._read_text_record(task_path)])[0]
     task_record["contract_id"] = task["contract_id"]
+    task_context = runner._task_contract_judge_context(task)
+    scope_compatibility = runner._scope_compatibility_override(
+        scope_override,
+        artifact_id=artifact_id,
+        bundle_id="prose.short_story",
+        task_contract=task,
+        task_contract_record=task_record,
+    )
     prompt_records = [runner._read_text_record(binary_prompt)]
     binary = "\n\n".join(str(item["text"]).strip() for item in prompt_records)
     configuration = {
         "artifact": runner._manifest_inputs([artifact_record])[0], "contexts": runner._manifest_inputs([context_record]),
-        "task_contract": task_record, "weight_profile": weight, "bundle_id": "prose.short_story",
+        "task_contract": task_record,
+        "weight_profile": weight, "bundle_id": "prose.short_story",
         "bundle_version": bundle["version"], "question_ids": [str(item["question"]["id"]) for item in questions],
         "provider": "codex", "model": "gpt-5.6-sol", "endpoint": None, "api_key_env": None, "temperature": None,
         "allow_model_mismatch": None, "reasoning": "high", "codex_bin": "codex", "batch_size": 32,
         "retry_policy": {"batch_attempts": 3}, "retry_semantics": "cumulative_batch_attempts_v1",
         "evidence_normalization_policy": runner.EVIDENCE_NORMALIZATION_POLICY,
         "validation_feedback_policy": runner.VALIDATION_FEEDBACK_POLICY, "artifact_id": artifact_id,
-        "judge_id": "codex:gpt-5.6-sol", "strict_ai": False, "prompts": runner._manifest_inputs(prompt_records),
+        "judge_id": "codex:gpt-5.6-sol", "strict_ai": False,
+        "prompts": runner._manifest_inputs(prompt_records),
         "response_schema": runner._manifest_inputs([runner._read_text_record(response_schema)])[0],
         "questions_sha256": hashlib.sha256(runner._json_bytes(runner._question_payload(questions))).hexdigest(),
         "compiled_bundle_sha256": hashlib.sha256(runner._json_bytes(compiled)).hexdigest(),
     }
-    write_json(run / "run.json", {"format_version": 3, "run_id": f"fixture-{artifact_id}",
+    if prompt_rendering_version == runner.PROMPT_RENDERING_VERSION:
+        configuration.update({
+            "task_contract_judge_context": runner._task_contract_judge_context_record(task_context),
+            "scope_compatibility": scope_compatibility,
+            "prompt_rendering_version": runner.PROMPT_RENDERING_VERSION,
+        })
+    elif prompt_rendering_version != runner.LEGACY_PROMPT_RENDERING_VERSION:
+        raise ValueError("Unsupported fixture prompt rendering version")
+    write_json(run / "run.json", {"format_version": 4 if prompt_rendering_version == runner.PROMPT_RENDERING_VERSION else 3, "run_id": f"fixture-{artifact_id}",
                                     "config_sha256": hashlib.sha256(runner._json_bytes(configuration)).hexdigest(),
                                     "configuration": configuration})
     completed: list[dict[str, Any]] = []
@@ -128,7 +163,9 @@ def build_fixture(
             judge_id="codex:gpt-5.6-sol", run_id=f"fixture-{artifact_id}", artifact_text=artifact_text,
             context_texts=[context_text], normalization_policy=runner.EVIDENCE_NORMALIZATION_POLICY, repair_audit=audit)
         prompt = runner._render_prompt(binary_prompt=binary, artifact={"name": artifact.name, "text": artifact_text},
-            contexts=[{"name": context.name, "text": context_text}], bundle_id="prose.short_story", artifact_id=artifact_id, questions=selected)
+            contexts=[{"name": context.name, "text": context_text}], bundle_id="prose.short_story", artifact_id=artifact_id, questions=selected,
+            task_contract_context=(task_context if prompt_rendering_version == runner.PROMPT_RENDERING_VERSION else None),
+            prompt_rendering_version=prompt_rendering_version)
         prompt_bytes = prompt.encode("utf-8")
         response = run / "responses" / f"batch-{batch:04d}.accepted-0001.message.txt"
         response.parent.mkdir(parents=True, exist_ok=True); response.write_text(raw, encoding="utf-8")

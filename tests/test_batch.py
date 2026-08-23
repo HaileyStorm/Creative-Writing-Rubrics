@@ -1,10 +1,12 @@
 from __future__ import annotations
 
+import hashlib
 import json
 from pathlib import Path
 
 import pytest
 
+import hbqrs.batch as batch_module
 from hbqrs.batch import _status_html, run_longform_batch, validate_batch_manifest
 from hbqrs.core import HBQError
 from hbqrs.paths import bundles_path, registry_path
@@ -50,11 +52,50 @@ def _install_fake(monkeypatch: pytest.MonkeyPatch, calls: list[dict[str, object]
                 or ["craft.narrative.characterization", "form.prose.novel"]
             )
             artifact_id = Path(kwargs["artifact_path"]).stem
-            plan = {
-                "artifact_id": artifact_id,
+            inputs = output / ".private" / "inputs"
+            inputs.mkdir(parents=True, exist_ok=True)
+            source = inputs / "artifact.txt"
+            source.write_bytes(Path(kwargs["artifact_path"]).read_bytes())
+            contexts = []
+            for index, path in enumerate(kwargs["brief_paths"], start=1):
+                copy = inputs / f"brief-{index:02d}.txt"
+                copy.write_bytes(Path(path).read_bytes())
+                contexts.append({
+                    "path": f".private/inputs/{copy.name}", "bytes": copy.stat().st_size,
+                    "sha256": hashlib.sha256(copy.read_bytes()).hexdigest(),
+                })
+            if kwargs["driving_prompt"]:
+                copy = inputs / "driving-prompt.txt"
+                copy.write_text(kwargs["driving_prompt"], encoding="utf-8")
+                contexts.append({
+                    "path": f".private/inputs/{copy.name}", "bytes": copy.stat().st_size,
+                    "sha256": hashlib.sha256(copy.read_bytes()).hexdigest(),
+                })
+            route = {
+                "artifact_profile": {
+                    "artifact_kind": "prose_fiction", "declared_scope": "manuscript",
+                    "completion_status": "work_in_progress", "unit_count": 1,
+                    "source_sha256": "a" * 64,
+                },
                 "selected_bundle_id": bundle_id,
                 "selected_module_ids": module_ids,
-                "task_contract": {"artifact_id": artifact_id},
+                "task_contract": {
+                    "contract_version": 1,
+                    "contract_id": f"route-{artifact_id}",
+                    "artifact_id": artifact_id,
+                    "context": {
+                        "artifact_kind": "prose_fiction",
+                        "declared_scope": "manuscript",
+                        "completion_status": "work_in_progress",
+                        "background": [],
+                        "constraints": [],
+                        "audience": [],
+                    },
+                    "preferences": [],
+                    "priorities": [],
+                    "weighted_goals": [],
+                    "binding_requirements": [],
+                },
                 "sampling_plan": {
                     "coverage_mode": "complete",
                     "unit_ids": ["unit-0001-aaaaaaaaaaaa"],
@@ -65,8 +106,25 @@ def _install_fake(monkeypatch: pytest.MonkeyPatch, calls: list[dict[str, object]
                     "rationale": "Complete test coverage.",
                 },
             }
+            plan = {
+                "artifact_id": artifact_id,
+                "route": route,
+                "source_artifact": {
+                    "path": ".private/inputs/artifact.txt", "bytes": source.stat().st_size,
+                    "sha256": hashlib.sha256(source.read_bytes()).hexdigest(),
+                },
+                "context_artifacts": contexts,
+                "local_bundle_plan": {
+                    "global_bundle_id": bundle_id,
+                    "local_bundle_id": bundle_id,
+                    "local_bundle_mode": "fixture",
+                },
+            }
             (output / "plan.json").write_text(json.dumps(plan), encoding="utf-8")
-            return {"status": "PLANNED", **plan}
+            return {
+                "status": "PLANNED", "selected_bundle_id": bundle_id,
+                "selected_module_ids": module_ids, **plan,
+            }
         return {"status": "COMPLETE"}
 
     monkeypatch.setattr("hbqrs.batch.run_longform_judge", fake_runner)
@@ -313,6 +371,13 @@ def test_batch_can_mix_longform_and_single_scope_without_duplicate_single_scorin
     single_calls: list[dict[str, object]] = []
     _install_fake(monkeypatch, longform_calls)
     monkeypatch.setattr(
+        "hbqrs.batch._longform_scope_compatibility_proof",
+        lambda **kwargs: {
+            "mode": "longform_prevalidated_route",
+            "artifact_id": kwargs["artifact_id"], "bundle_id": kwargs["bundle_id"],
+        },
+    )
+    monkeypatch.setattr(
         "hbqrs.batch.run_judge",
         lambda **kwargs: (
             pytest.fail("single-score output must be empty before run_judge")
@@ -322,6 +387,23 @@ def test_batch_can_mix_longform_and_single_scope_without_duplicate_single_scorin
     )
     manifest = _manifest(tmp_path, "individual")
     manifest["jobs"][1]["workflow"] = "single"
+    brief = tmp_path / "brief.txt"
+    driving = tmp_path / "driving.txt"
+    brief.write_text("Original brief.", encoding="utf-8")
+    driving.write_text("Original driving prompt.", encoding="utf-8")
+    manifest["jobs"][1]["brief_paths"] = [brief.name]
+    manifest["jobs"][1]["driving_prompt_file"] = driving.name
+    original_fake = batch_module.run_longform_judge
+
+    def mutating_route(**kwargs):
+        result = original_fake(**kwargs)
+        if kwargs["plan_only"] and Path(kwargs["artifact_path"]).name == "two.txt":
+            Path(kwargs["artifact_path"]).write_text("MUTATED ARTIFACT", encoding="utf-8")
+            brief.write_text("MUTATED BRIEF", encoding="utf-8")
+            driving.write_text("MUTATED DRIVING", encoding="utf-8")
+        return result
+
+    monkeypatch.setattr("hbqrs.batch.run_longform_judge", mutating_route)
     run_longform_batch(
         _write_manifest(tmp_path, manifest),
         registry=registry_path(), bundles=bundles_path(), allow_remote=True,
@@ -331,3 +413,45 @@ def test_batch_can_mix_longform_and_single_scope_without_duplicate_single_scorin
     assert longform_calls[1]["plan_only"] is True
     assert len(single_calls) == 1
     assert single_calls[0]["bundle_id"] == "prose.novel"
+    proof = single_calls[0]["longform_scope_compatibility_proof"]
+    assert proof["mode"] == "longform_prevalidated_route"
+    assert proof["artifact_id"] == "two"
+    assert proof["bundle_id"] == "prose.novel"
+    assert Path(single_calls[0]["artifact_path"]).read_text(encoding="utf-8") == "Chapter One\n\nA test scene.\n"
+    assert [path.read_text(encoding="utf-8") for path in single_calls[0]["context_paths"]] == [
+        "Original brief.", "Original driving prompt.",
+    ]
+
+
+def test_single_batch_rejects_a_task_contract_that_drifted_after_route_planning(
+    tmp_path: Path, monkeypatch
+) -> None:
+    calls: list[dict[str, object]] = []
+    _install_fake(monkeypatch, calls)
+    manifest = _manifest(tmp_path, "individual")
+    manifest["jobs"][1]["workflow"] = "single"
+    drifted = tmp_path / "drifted-contract.json"
+    drifted.write_text(json.dumps({"different": "contract"}), encoding="utf-8")
+    manifest["defaults"]["task_contract_path"] = drifted.name
+    with pytest.raises(HBQError, match="task contract drifted"):
+        run_longform_batch(
+            _write_manifest(tmp_path, manifest), registry=registry_path(), bundles=bundles_path(),
+            allow_remote=True,
+        )
+
+
+def test_single_batch_rejects_an_empty_task_contract_after_route_planning(
+    tmp_path: Path, monkeypatch
+) -> None:
+    calls: list[dict[str, object]] = []
+    _install_fake(monkeypatch, calls)
+    manifest = _manifest(tmp_path, "individual")
+    manifest["jobs"][1]["workflow"] = "single"
+    drifted = tmp_path / "drifted-contract.json"
+    drifted.write_text("{}", encoding="utf-8")
+    manifest["defaults"]["task_contract_path"] = drifted.name
+    with pytest.raises(HBQError, match="task contract drifted"):
+        run_longform_batch(
+            _write_manifest(tmp_path, manifest), registry=registry_path(), bundles=bundles_path(),
+            allow_remote=True,
+        )

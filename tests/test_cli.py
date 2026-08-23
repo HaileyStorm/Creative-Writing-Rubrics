@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import json
 from pathlib import Path
 
@@ -85,6 +86,44 @@ def test_render_judge(tmp_path: Path) -> None:
     assert "core.task_and_brief_fidelity" in text
 
 
+def test_render_judge_includes_the_same_untrusted_task_context_block(tmp_path: Path) -> None:
+    artifact = tmp_path / "artifact.txt"
+    artifact.write_text("A lantern waited in the rain.", encoding="utf-8")
+    contract = tmp_path / "contract.json"
+    payload = {
+        "contract_version": 1,
+        "contract_id": "render-contract",
+        "artifact_id": "artifact",
+        "context": {
+            "artifact_kind": "scene", "declared_scope": "single scene",
+            "completion_status": "complete", "background": ["A rainbound town."],
+            "constraints": [], "audience": [],
+        },
+        "preferences": [], "priorities": [], "weighted_goals": [], "binding_requirements": [],
+    }
+    contract.write_text(json.dumps(payload), encoding="utf-8")
+    override = tmp_path / "scope-compatibility.json"
+    override.write_text(
+        json.dumps({
+            "format_version": 1, "artifact_id": "artifact", "bundle_id": "prose.scene",
+            "task_contract_sha256": hashlib.sha256(contract.read_bytes()).hexdigest(),
+            "contract_id": "render-contract", "artifact_kind": "scene", "declared_scope": "single scene",
+            "compatibility_mode": "reviewed_override", "decision_id": "render-test",
+            "reviewer": "test", "reason": "Reviewed scope vocabulary decision.",
+        }),
+        encoding="utf-8",
+    )
+    destination = tmp_path / "judge.md"
+    assert main([
+        "render-judge", "--bundle", "prose.scene", "--artifact", str(artifact),
+        "--task-contract", str(contract), "--scope-compatibility-override", str(override),
+        "--output", str(destination),
+    ]) == 0
+    text = destination.read_text(encoding="utf-8")
+    assert "BEGIN UNTRUSTED FROZEN TASK-CONTRACT EVALUATION DATA" in text
+    assert "A rainbound town." in text
+
+
 def test_judge_command_dispatches_runner(monkeypatch, capsys, tmp_path: Path) -> None:
     artifact = tmp_path / "artifact.txt"
     artifact.write_text("test", encoding="utf-8")
@@ -118,6 +157,7 @@ def test_judge_command_dispatches_runner(monkeypatch, capsys, tmp_path: Path) ->
     assert captured["batch_attempts"] == 3
     assert captured["grok_bin"] == "grok"
     assert captured["allow_unattested_reasoning"] is False
+    assert captured["scope_compatibility_override_path"] is None
     assert captured["upgrade_legacy_normalization"] is False
     assert json.loads(capsys.readouterr().out)["status"] == "DRY_RUN"
 

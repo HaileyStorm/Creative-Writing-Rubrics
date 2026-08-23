@@ -18,6 +18,11 @@ from .html_report import render_html_report, render_html_scorecard
 from .longform_runner import _derive_bundle
 from .longform_runner_v2 import run_longform_judge
 from .paths import schema_dir
+from .runner import (
+    _longform_runtime_contract,
+    _longform_scope_compatibility_proof,
+    _sha256_bytes,
+)
 from .runner_v2 import run_judge
 
 
@@ -54,6 +59,34 @@ def _load_mapping(path: Path | None, label: str) -> dict[str, Any] | None:
     if not isinstance(value, dict):
         raise HBQError(f"{label} must be a JSON or YAML object: {path}")
     return value
+
+
+def _planned_inputs(plan: Mapping[str, Any], plan_path: Path) -> tuple[Path, list[Path]]:
+    """Return only the immutable input copies committed by the route plan."""
+
+    records = [plan.get("source_artifact"), *plan.get("context_artifacts", [])]
+    if not isinstance(plan.get("context_artifacts"), list):
+        raise HBQError("Single job route plan lacks persisted context inputs")
+    paths: list[Path] = []
+    root = plan_path.parent.resolve()
+    for record in records:
+        if not isinstance(record, Mapping) or set(record) != {"path", "bytes", "sha256"}:
+            raise HBQError("Single job route plan has a malformed persisted input")
+        relative = record.get("path")
+        if not isinstance(relative, str) or not relative.startswith(".private/inputs/"):
+            raise HBQError("Single job route plan input escapes its persisted input directory")
+        path = (root / relative).resolve()
+        try:
+            path.relative_to(root / ".private" / "inputs")
+            content = path.read_bytes()
+        except (ValueError, OSError) as exc:
+            raise HBQError("Single job route plan persisted input is unavailable") from exc
+        if record.get("bytes") != len(content) or record.get("sha256") != _sha256_bytes(content):
+            raise HBQError("Single job route plan persisted input drifted")
+        paths.append(path)
+    if not paths or paths[0].name != "artifact.txt":
+        raise HBQError("Single job route plan lacks its persisted artifact")
+    return paths[0], paths[1:]
 
 
 def validate_batch_manifest(value: Mapping[str, Any]) -> dict[str, Any]:
@@ -129,7 +162,7 @@ def _write_state(output_root: Path, state: dict[str, Any]) -> None:
 def _job_kwargs(
     *, job: Mapping[str, Any], defaults: Mapping[str, Any], base: Path, output_dir: Path,
     registry: str | Path, bundles: str | Path, allow_remote: bool, resume: bool,
-    plan_only: bool, bundle_id: str | None = None, module_ids: Sequence[str] = (),
+    plan_only: bool, route_only: bool = False, bundle_id: str | None = None, module_ids: Sequence[str] = (),
     task_contract_path: Path | None = None,
     sampling_plan_override: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
@@ -171,7 +204,7 @@ def _job_kwargs(
         "codex_bin": defaults.get("codex_bin", "codex"),
         "grok_bin": defaults.get("grok_bin", "grok"),
         "allow_unattested_reasoning": defaults.get("allow_unattested_reasoning", False),
-        "allow_remote": allow_remote, "resume": resume, "plan_only": plan_only,
+        "allow_remote": allow_remote, "resume": resume, "plan_only": plan_only, "route_only": route_only,
         "timeout": defaults.get("timeout", 600.0), "strict_ai": defaults.get("strict_ai", False),
     }
 
@@ -187,7 +220,8 @@ def _route_job(
         **_job_kwargs(
             job=job, defaults=defaults, base=base, output_dir=output_dir,
             registry=registry, bundles=bundles, allow_remote=allow_remote,
-            resume=resume, plan_only=True, bundle_id=bundle_id, module_ids=module_ids,
+            resume=resume, plan_only=True, route_only=str(job.get("workflow", "longform")) == "single",
+            bundle_id=bundle_id, module_ids=module_ids,
             task_contract_path=task_contract_path,
             sampling_plan_override=sampling_plan_override,
         )
@@ -198,7 +232,7 @@ def _assert_review_scope_preserved(
     original: Mapping[str, Any], approved: Mapping[str, Any], *, job_id: str
 ) -> None:
     for field in ("task_contract", "sampling_plan"):
-        if approved.get(field) != original.get(field):
+        if approved.get("route", {}).get(field) != original.get("route", {}).get(field):
             raise HBQError(
                 f"Approved stack changed the reviewed {field} for job {job_id}; "
                 "create and inspect a new plan instead"
@@ -208,37 +242,73 @@ def _assert_review_scope_preserved(
 def _run_single_job(
     *, job: Mapping[str, Any], defaults: Mapping[str, Any], base: Path, output_dir: Path,
     support_dir: Path,
-    route_plan: Mapping[str, Any], registry: str | Path, bundles: str | Path,
+    route_plan: Mapping[str, Any], route_plan_path: Path, registry: str | Path, bundles: str | Path,
     allow_remote: bool, resume: bool,
 ) -> dict[str, Any]:
     """Grade one exact artifact once using an LLM-routed, frozen derived bundle."""
 
-    selected_bundle_id = str(route_plan["selected_bundle_id"])
-    selected_module_ids = list(route_plan["selected_module_ids"])
+    persisted_route_plan = load_data(route_plan_path)
+    if not isinstance(persisted_route_plan, Mapping) or dict(persisted_route_plan) != dict(route_plan):
+        raise HBQError(f"Single job {job['job_id']} route plan drifted before judging")
+
+    route = route_plan["route"]
+    if not isinstance(route, Mapping):
+        raise HBQError(f"Single job {job['job_id']} route plan is malformed")
+    artifact_path, contexts = _planned_inputs(route_plan, route_plan_path)
+    selected_bundle_id = str(route["selected_bundle_id"])
+    selected_module_ids = list(route["selected_module_ids"])
     modules = load_modules(registry)
     selected_bundle = resolve_bundle(load_bundles(bundles), selected_bundle_id)
     derived_bundle = _derive_bundle(selected_bundle, selected_module_ids)
+    local_bundle_id = str(route_plan["local_bundle_plan"]["local_bundle_id"])
+    local_bundle = resolve_bundle(load_bundles(bundles), local_bundle_id)
     catalog_dir = support_dir / "catalog"
     catalog_dir.mkdir(parents=True, exist_ok=True)
     registry_path = catalog_dir / "registry.json"
     bundles_path = catalog_dir / "bundles.json"
     contract_path = support_dir / "task-contract.json"
-    contract = _load_mapping(
+    supplied_contract = _load_mapping(
         _resolve(base, defaults.get("task_contract_path")), "Task contract"
-    ) or route_plan["task_contract"]
+    )
+    base_contract = supplied_contract if supplied_contract is not None else route["task_contract"]
+    if base_contract != route.get("task_contract"):
+        raise HBQError(f"Single job {job['job_id']} task contract drifted from its route plan")
+    artifact_id = str(job.get("artifact_id") or Path(job["artifact"]).stem)
+    if route_plan.get("artifact_id") != artifact_id:
+        raise HBQError(f"Single job {job['job_id']} route plan binds another artifact")
+    contract = _longform_runtime_contract(
+        base_contract,
+        scope_id="work",
+        artifact_id=artifact_id,
+        execution_scope=str(route["artifact_profile"]["declared_scope"]),
+    )
     _write_or_verify_json(registry_path, {"modules": modules})
-    _write_or_verify_json(bundles_path, {"bundles": [derived_bundle]})
+    _write_or_verify_json(
+        bundles_path,
+        {"bundles": [derived_bundle, *([] if local_bundle_id == selected_bundle_id else [local_bundle])]},
+    )
     _write_or_verify_json(contract_path, contract)
-    contexts = [_resolve(base, path) for path in job.get("brief_paths", [])]
-    driving_path = _resolve(base, job.get("driving_prompt_file"))
-    if driving_path is not None:
-        contexts.append(driving_path)
+    scope_proof = _longform_scope_compatibility_proof(
+        artifact_path=artifact_path,
+        artifact_id=artifact_id,
+        bundle_id=selected_bundle_id,
+        task_contract=contract,
+        task_contract_record={
+            "sha256": _sha256_bytes(contract_path.read_bytes()),
+            "contract_id": contract.get("contract_id"),
+        },
+        route_plan_path=route_plan_path,
+        registry_path=registry_path,
+        bundles_path=bundles_path,
+        context_paths=tuple(contexts),
+    )
     return run_judge(
-        artifact_path=_resolve(base, job["artifact"]),
+        artifact_path=artifact_path,
         bundle_id=selected_bundle_id,
         provider=defaults["provider"], model=defaults["model"], output_dir=output_dir,
         registry=registry_path, bundles=bundles_path, context_paths=contexts,
         task_contract_path=contract_path,
+        longform_scope_compatibility_proof=scope_proof,
         weight_profile=_load_mapping(_resolve(base, defaults.get("weight_profile_path")), "Weight profile"),
         batch_size=defaults.get("batch_size", 12),
         batch_attempts=defaults.get("batch_attempts", 3),
@@ -251,7 +321,7 @@ def _run_single_job(
         grok_bin=defaults.get("grok_bin", "grok"),
         allow_unattested_reasoning=defaults.get("allow_unattested_reasoning", False),
         allow_remote=allow_remote, resume=resume,
-        timeout=defaults.get("timeout", 600.0), artifact_id=job.get("artifact_id"),
+        timeout=defaults.get("timeout", 600.0), artifact_id=artifact_id,
         strict_ai=defaults.get("strict_ai", False),
         upgrade_legacy_normalization=job.get(
             "upgrade_legacy_normalization",
@@ -279,13 +349,16 @@ def _load_valid_plan(
     expected_artifact_id = job.get("artifact_id") or Path(job["artifact"]).stem
     if plan.get("artifact_id") != expected_artifact_id:
         raise HBQError(f"Persisted plan artifact_id changed for job {job['job_id']}")
-    bundle_id = plan.get("selected_bundle_id")
-    module_ids = plan.get("selected_module_ids")
+    route = plan.get("route")
+    if not isinstance(route, dict):
+        raise HBQError(f"Persisted plan lacks a route for job {job['job_id']}")
+    bundle_id = route.get("selected_bundle_id")
+    module_ids = route.get("selected_module_ids")
     if not isinstance(bundle_id, str) or not isinstance(module_ids, list):
         raise HBQError(f"Persisted plan lacks a frozen stack for job {job['job_id']}")
     selected_bundle = resolve_bundle(load_bundles(bundles), bundle_id)
     _derive_bundle(selected_bundle, module_ids)
-    contract = plan.get("task_contract")
+    contract = route.get("task_contract")
     if not isinstance(contract, dict) or contract.get("artifact_id") != expected_artifact_id:
         raise HBQError(f"Persisted plan task contract changed for job {job['job_id']}")
     return plan
@@ -408,8 +481,8 @@ def run_longform_batch(
             )
             override = "approved_bundle_id" in job
             selected = (
-                str(job.get("approved_bundle_id", original["selected_bundle_id"])),
-                list(job.get("approved_module_ids", original["selected_module_ids"])),
+                str(job.get("approved_bundle_id", original["route"]["selected_bundle_id"])),
+                list(job.get("approved_module_ids", original["route"]["selected_module_ids"])),
             )
             plan_dir = original_dir
             plan = original
@@ -418,13 +491,13 @@ def run_longform_batch(
                 plan_dir = output_root / "approved-plans" / job_id
                 support_dir = output_root / ".private" / "approved-plans" / job_id
                 contract_path = support_dir / "task-contract.json"
-                _write_or_verify_json(contract_path, original["task_contract"])
+                _write_or_verify_json(contract_path, original["route"]["task_contract"])
                 _route_job(
                     job=job, defaults=defaults, base=base, output_dir=plan_dir,
                     registry=registry, bundles=bundles, allow_remote=allow_remote,
                     resume=plan_dir.exists(), bundle_id=selected[0], module_ids=selected[1],
                     task_contract_path=contract_path,
-                    sampling_plan_override=original["sampling_plan"],
+                    sampling_plan_override=original["route"]["sampling_plan"],
                 )
                 plan = _load_valid_plan(
                     plan_dir / "plan.json", job=job, registry=registry, bundles=bundles
@@ -435,7 +508,7 @@ def run_longform_batch(
                 "plan_dir": plan_dir, "plan": plan,
                 "route_selection": route_selection,
                 "task_contract_path": contract_path if override else None,
-                "sampling_plan_override": original["sampling_plan"] if override else None,
+                "sampling_plan_override": original["route"]["sampling_plan"] if override else None,
             }
 
     if policy == "shared":
@@ -467,19 +540,21 @@ def run_longform_batch(
             if workflow == "single":
                 if policy in {"review", "shared"}:
                     route_plan = prepared[job_id]["plan"]
+                    route_plan_path = prepared[job_id]["plan_dir"] / "plan.json"
                 else:
                     route_dir = output_root / "routes" / job_id
                     _route_job(
                         job=job, defaults=defaults, base=base, output_dir=route_dir,
                         registry=registry, bundles=bundles, allow_remote=allow_remote, resume=resume,
                     )
-                    route_plan = load_data(route_dir / "plan.json")
+                    route_plan_path = route_dir / "plan.json"
+                    route_plan = load_data(route_plan_path)
                 if not isinstance(route_plan, dict):
                     raise HBQError(f"Route plan is not an object for job {job_id}")
                 summary = _run_single_job(
                     job=job, defaults=defaults, base=base, output_dir=job_output,
                     support_dir=output_root / ".private" / "single" / job_id,
-                    route_plan=route_plan, registry=registry, bundles=bundles,
+                    route_plan=route_plan, route_plan_path=route_plan_path, registry=registry, bundles=bundles,
                     allow_remote=allow_remote, resume=resume,
                 )
             else:

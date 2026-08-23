@@ -494,6 +494,16 @@ def test_provider_scope_auto_local_bundle_and_explicit_hierarchy(tmp_path: Path,
     )
     assert global_run["configuration"]["bundle_id"] == "prose.synthetic"
     assert local_run["configuration"]["bundle_id"] == "prose.chapter"
+    for run in (global_run, local_run):
+        configuration = run["configuration"]
+        assert configuration["prompt_rendering_version"] == 2
+        assert configuration["task_contract_judge_context"]["untrusted_evaluation_data"] is True
+        assert configuration["scope_compatibility"]["mode"] == "longform_prevalidated_route"
+        assert len(configuration["scope_compatibility"]["route_plan"]["sha256"]) == 64
+    assert any(
+        "BEGIN UNTRUSTED FROZEN TASK-CONTRACT EVALUATION DATA" in prompt
+        for prompt in handler.binary_prompts
+    )
     markdown = (output / "report.md").read_text(encoding="utf-8")
     assert "Hierarchical score (explicit profile)" in markdown
     assert "Whole-work result" in markdown
@@ -637,6 +647,70 @@ def test_task_contract_override_is_validated_before_provider_contact(tmp_path: P
         dry_run=True,
     )
     assert summary["status"] == "DRY_RUN"
+
+
+def test_task_contract_profile_mismatch_stops_after_route_validation(tmp_path: Path, endpoint) -> None:
+    base_url, handler = endpoint
+    registry, bundles = _catalog(tmp_path)
+    artifact = tmp_path / "story.txt"
+    artifact.write_text(TEXT, encoding="utf-8")
+    contract = {
+        "contract_version": 1,
+        "contract_id": "contract.profile-mismatch",
+        "artifact_id": "story",
+        "context": {
+            "artifact_kind": "prose_fiction",
+            "declared_scope": "a conflicting scope",
+            "completion_status": "work_in_progress",
+            "background": [], "constraints": [], "audience": [],
+        },
+        "preferences": [], "priorities": [], "weighted_goals": [], "binding_requirements": [],
+    }
+    contract_path = tmp_path / "contract.json"
+    contract_path.write_text(json.dumps(contract), encoding="utf-8")
+    with pytest.raises(HBQError, match="does not exactly match the validated artifact profile"):
+        run_longform_judge(
+            artifact_path=artifact, brief_paths=[], output_dir=tmp_path / "mismatch",
+            provider="openai", model="fake-local", registry=registry, bundles=bundles,
+            artifact_kind="prose_fiction", declared_scope="work",
+            task_contract_path=contract_path, base_url=base_url,
+        )
+    assert handler.stages == ["route"]
+
+
+def test_context_only_task_contract_reaches_global_and_local_judges(tmp_path: Path, endpoint) -> None:
+    base_url, handler = endpoint
+    registry, bundles = _catalog(tmp_path)
+    artifact = tmp_path / "story.txt"
+    artifact.write_text(TEXT, encoding="utf-8")
+    contract_path = tmp_path / "context-only-contract.json"
+    contract_path.write_text(json.dumps({
+        "contract_version": 1,
+        "contract_id": "context-only",
+        "artifact_id": "story",
+        "context": {
+            "artifact_kind": "prose_fiction", "declared_scope": "work",
+            "completion_status": "work_in_progress", "background": ["A sealed harbor."],
+            "constraints": ["The context is evaluation data."], "audience": ["Adult readers."],
+        },
+        "preferences": [], "priorities": [], "weighted_goals": [], "binding_requirements": [],
+    }), encoding="utf-8")
+    output = tmp_path / "context-only"
+    assert run_longform_judge(
+        artifact_path=artifact, brief_paths=[], output_dir=output, provider="openai", model="fake-local",
+        registry=registry, bundles=bundles, artifact_kind="prose_fiction", declared_scope="work",
+        task_contract_path=contract_path, base_url=base_url,
+    )["status"] == "VALID"
+    global_contract = output / ".private" / "generated-inputs" / "contracts" / "work.json"
+    local_contracts = [
+        path for path in (output / ".private" / "generated-inputs" / "contracts").glob("unit-*.json")
+        if not path.name.endswith(".judge-context.json")
+    ]
+    assert global_contract.is_file() and len(local_contracts) == 2
+    assert json.loads(global_contract.read_text(encoding="utf-8"))["weighted_goals"] == []
+    assert json.loads(local_contracts[0].read_text(encoding="utf-8"))["context"]["declared_scope"] == "chapter"
+    assert any("A sealed harbor." in prompt for prompt in handler.binary_prompts)
+    assert any('"declared_scope": "chapter"' in prompt for prompt in handler.binary_prompts)
 
 
 def test_remote_workflow_discloses_and_requires_allow_gate(tmp_path: Path) -> None:
@@ -1129,8 +1203,8 @@ def test_plan_only_stops_after_route_and_writes_reviewable_plan(tmp_path: Path, 
     assert summary["status"] == "PLANNED"
     assert handler.stages == ["route"]
     plan = json.loads((output / "plan.json").read_text(encoding="utf-8"))
-    assert plan["selected_bundle_id"] == "prose.synthetic"
-    assert plan["selected_module_ids"] == ["craft.synthetic"]
+    assert plan["route"]["selected_bundle_id"] == "prose.synthetic"
+    assert plan["route"]["selected_module_ids"] == ["craft.synthetic"]
     assert "without --plan-only" in plan["next_step"]
     assert not (output / ".private" / "passes" / "map" / "result.json").exists()
 
@@ -1159,7 +1233,7 @@ def test_reviewed_stack_override_preserves_plan_and_resumes_exactly(
     )
     original = json.loads((original_dir / "plan.json").read_text(encoding="utf-8"))
     contract_path = tmp_path / "reviewed-contract.json"
-    contract_path.write_text(json.dumps(original["task_contract"]), encoding="utf-8")
+    contract_path.write_text(json.dumps(original["route"]["task_contract"]), encoding="utf-8")
     approved_dir = tmp_path / "approved-plan"
     arguments = {
         "artifact_path": artifact,
@@ -1171,15 +1245,15 @@ def test_reviewed_stack_override_preserves_plan_and_resumes_exactly(
         "bundles": bundles,
         "artifact_kind": "prose_fiction",
         "base_url": base_url,
-        "bundle_id": original["selected_bundle_id"],
-        "module_ids": original["selected_module_ids"],
+        "bundle_id": original["route"]["selected_bundle_id"],
+        "module_ids": original["route"]["selected_module_ids"],
         "task_contract_path": contract_path,
-        "sampling_plan_override": original["sampling_plan"],
+        "sampling_plan_override": original["route"]["sampling_plan"],
     }
     run_longform_judge(**arguments, plan_only=True)
     approved = json.loads((approved_dir / "plan.json").read_text(encoding="utf-8"))
-    assert approved["task_contract"] == original["task_contract"]
-    assert approved["sampling_plan"] == original["sampling_plan"]
+    assert approved["route"]["task_contract"] == original["route"]["task_contract"]
+    assert approved["route"]["sampling_plan"] == original["route"]["sampling_plan"]
 
     summary = run_longform_judge(**arguments, resume=True)
     assert summary["status"] == "VALID"
@@ -1279,3 +1353,195 @@ def test_absence_requirement_supplies_verification_and_verdict_guidance(tmp_path
     runtime_verification = runtime_contract["binding_requirements"][0]["verification"]
     assert runtime_verification["method"] == "structural_constraint"
     assert runtime_verification["expected"].startswith("Return YES when the prohibited condition is absent")
+
+
+def test_scope_proof_reconstructs_the_plan_and_rejects_forged_scoped_contracts(
+    tmp_path: Path, endpoint
+) -> None:
+    base_url, _handler = endpoint
+    registry, bundles = _catalog(tmp_path)
+    artifact = tmp_path / "story.txt"
+    artifact.write_text(TEXT, encoding="utf-8")
+    contract = {
+        "contract_version": 1,
+        "contract_id": "contract.scope-proof",
+        "artifact_id": "story",
+        "context": {
+            "artifact_kind": "prose_fiction", "declared_scope": "work",
+            "completion_status": "work_in_progress", "background": ["Background."],
+            "constraints": ["No dragons."], "audience": ["Adult readers."],
+        },
+        "preferences": [{"id": "preference.x", "statement": "Prefer X.", "source": {
+            "kind": "user_preference", "reference": "brief:1", "exact_excerpt": "Prefer X.",
+        }}],
+        "priorities": [{"id": "priority.y", "statement": "Prioritize Y.", "source": {
+            "kind": "driving_prompt", "reference": "prompt:1", "exact_excerpt": "Prioritize Y.",
+        }}],
+        "weighted_goals": [{
+            "goal_id": "goal.z", "atomic_question": "Does the work sustain Z?", "weight": 1,
+            "source": {"kind": "driving_prompt", "reference": "prompt:1", "exact_excerpt": "Sustain Z."},
+            "applies_to": ["work"], "rationale": "Fixture scope proof.",
+        }],
+        "binding_requirements": [{
+            "requirement_id": "requirement.no_dragons", "atomic_question": "Is the work free of dragons?",
+            "objective": True, "non_negotiable": True,
+            "source": {"kind": "explicit_user_requirement", "reference": "prompt:1", "exact_excerpt": "No dragons."},
+            "applies_to": ["work"], "verification": {"method": "absence", "expected": "dragons"},
+        }],
+    }
+    contract_path = tmp_path / "contract.json"
+    contract_path.write_text(json.dumps(contract), encoding="utf-8")
+    output = tmp_path / "run"
+    run_longform_judge(
+        artifact_path=artifact, brief_paths=[], output_dir=output, provider="openai", model="fake-local",
+        registry=registry, bundles=bundles, artifact_kind="prose_fiction", bundle_id="prose.synthetic",
+        task_contract_path=contract_path,
+        driving_prompt="Background. Prefer X. Prioritize Y. Sustain Z. No dragons.", base_url=base_url,
+    )
+    plan_path = output / "plan.json"
+    original_plan = plan_path.read_bytes()
+    global_contract_path = output / ".private" / "generated-inputs" / "contracts" / "work.json"
+    runtime_contract = json.loads(global_contract_path.read_text(encoding="utf-8"))
+    record = {"sha256": binary_runner._sha256_bytes(global_contract_path.read_bytes()), "contract_id": runtime_contract["contract_id"]}
+    global_artifact = output / ".private" / "generated-inputs" / "whole-work-units.txt"
+    planned_contexts = (output / ".private" / "inputs" / "driving-prompt.txt",)
+    generated_contexts = (
+        output / ".private" / "passes" / "map" / "result.json",
+        output / ".private" / "generated-inputs" / "contracts" / "work.judge-context.json",
+        output / ".private" / "generated-inputs" / "completion-contexts" / "work.json",
+    )
+    work_contexts = (*planned_contexts, *generated_contexts)
+    proof = binary_runner._longform_scope_compatibility_proof(
+        artifact_path=global_artifact,
+        artifact_id="story", bundle_id="prose.synthetic", task_contract=runtime_contract,
+        task_contract_record=record, route_plan_path=plan_path, registry_path=registry, bundles_path=bundles,
+        context_paths=work_contexts,
+    )
+    assert proof["selected_dynamic_question_ids"] == [
+        "task.contract.contract.scope-proof.goal.z",
+        "task.contract.contract.scope-proof.requirement.no_dragons",
+    ]
+    with pytest.raises(HBQError, match="exact generated binary contexts"):
+        binary_runner._longform_scope_compatibility_proof(
+            artifact_path=global_artifact, artifact_id="story", bundle_id="prose.synthetic",
+            task_contract=runtime_contract, task_contract_record=record, route_plan_path=plan_path,
+            registry_path=registry, bundles_path=bundles, context_paths=planned_contexts,
+        )
+    plan = json.loads(original_plan)
+    mutations = [
+        ("context", lambda value: value["context"]["background"].__setitem__(0, "Forged background.")),
+        ("preference", lambda value: value["preferences"][0].__setitem__("statement", "Forged preference.")),
+        ("priority", lambda value: value["priorities"][0].__setitem__("statement", "Forged priority.")),
+        ("goal", lambda value: value["weighted_goals"][0].__setitem__("atomic_question", "Is this forged?")),
+        ("requirement", lambda value: value["binding_requirements"][0].__setitem__("atomic_question", "Is this forged?")),
+    ]
+    for label, mutate in mutations:
+        forged = json.loads(json.dumps(plan))
+        mutate(forged["route"]["task_contract"])
+        plan_path.write_bytes(binary_runner._json_bytes(forged))
+        with pytest.raises(HBQError, match="runtime task contract|route selection"):
+            binary_runner._longform_scope_compatibility_proof(
+                artifact_path=global_artifact,
+                artifact_id="story", bundle_id="prose.synthetic", task_contract=runtime_contract,
+                task_contract_record=record, route_plan_path=plan_path, registry_path=registry, bundles_path=bundles,
+                context_paths=work_contexts,
+            )
+    forged_scope = json.loads(json.dumps(plan))
+    forged_scope["route"]["artifact_profile"]["declared_scope"] = "chapter"
+    forged_scope["route"]["task_contract"]["context"]["declared_scope"] = "chapter"
+    plan_path.write_bytes(binary_runner._json_bytes(forged_scope))
+    with pytest.raises(HBQError, match="scope|Bundle"):
+        binary_runner._longform_scope_compatibility_proof(
+            artifact_path=global_artifact,
+            artifact_id="story", bundle_id="prose.synthetic", task_contract=runtime_contract,
+            task_contract_record=record, route_plan_path=plan_path, registry_path=registry, bundles_path=bundles,
+            context_paths=work_contexts,
+        )
+    plan_path.write_text('{"format_version":2}\n', encoding="utf-8")
+    with pytest.raises(HBQError, match="exact v2 schema"):
+        binary_runner._longform_scope_compatibility_proof(
+            artifact_path=global_artifact,
+            artifact_id="story", bundle_id="prose.synthetic", task_contract=runtime_contract,
+            task_contract_record=record, route_plan_path=plan_path, registry_path=registry, bundles_path=bundles,
+            context_paths=work_contexts,
+        )
+    plan_path.write_bytes(original_plan)
+    selected_unit = plan["route"]["sampling_plan"]["unit_ids"][0]
+    local_contract_path = output / ".private" / "generated-inputs" / "contracts" / f"{selected_unit}.json"
+    local_contract = json.loads(local_contract_path.read_text(encoding="utf-8"))
+    local_record = {"sha256": binary_runner._sha256_bytes(local_contract_path.read_bytes()), "contract_id": local_contract["contract_id"]}
+    route_only_plan = json.loads(original_plan)
+    route_only_plan["execution_mode"] = "route_only"
+    plan_path.write_bytes(binary_runner._json_bytes(route_only_plan))
+    with pytest.raises(HBQError, match="route-only proof cannot bind a local artifact"):
+        binary_runner._longform_scope_compatibility_proof(
+            artifact_path=global_artifact, artifact_id=f"story-{selected_unit}", bundle_id="prose.synthetic",
+            task_contract=local_contract, task_contract_record=local_record, route_plan_path=plan_path,
+            registry_path=registry, bundles_path=bundles, context_paths=planned_contexts,
+        )
+    plan_path.write_bytes(original_plan)
+    with pytest.raises(HBQError, match="exact selected plan unit"):
+        binary_runner._longform_scope_compatibility_proof(
+            artifact_path=global_artifact,
+            artifact_id="story-unit-9999-deadbeefdead", bundle_id="prose.synthetic", task_contract=local_contract,
+            task_contract_record=local_record, route_plan_path=plan_path, registry_path=registry, bundles_path=bundles,
+            context_paths=work_contexts,
+        )
+    forged_proof = dict(proof)
+    forged_proof["scope_id"] = "forged"
+    with pytest.raises(HBQError, match="does not bind"):
+        binary_runner._scope_compatibility(
+            task_contract=runtime_contract, task_contract_record=record, artifact_id="story",
+            bundle_id="prose.synthetic", scope_compatibility_override_path=None,
+            longform_scope_compatibility_proof=forged_proof, registry_path=registry, bundles_path=bundles,
+            artifact_path=global_artifact, context_paths=work_contexts,
+        )
+    extra_context = output / ".private" / "generated-inputs" / "extra.md"
+    extra_context.write_text("forged extra", encoding="utf-8")
+    with pytest.raises(HBQError, match="exact generated binary contexts"):
+        binary_runner._longform_scope_compatibility_proof(
+            artifact_path=global_artifact,
+            artifact_id="story", bundle_id="prose.synthetic", task_contract=runtime_contract,
+            task_contract_record=record, route_plan_path=plan_path, registry_path=registry, bundles_path=bundles,
+            context_paths=(
+                *work_contexts,
+                extra_context,
+            ),
+        )
+    map_context = output / ".private" / "passes" / "map" / "result.json"
+    scope_context = output / ".private" / "generated-inputs" / "contracts" / "work.judge-context.json"
+    completion_context = output / ".private" / "generated-inputs" / "completion-contexts" / "work.json"
+    for forged_contexts in (
+        (scope_context, scope_context, completion_context),
+        (scope_context, map_context, completion_context),
+        (map_context, scope_context),
+    ):
+        with pytest.raises(HBQError, match="exact generated binary contexts"):
+            binary_runner._longform_scope_compatibility_proof(
+                artifact_path=global_artifact,
+                artifact_id="story", bundle_id="prose.synthetic", task_contract=runtime_contract,
+                task_contract_record=record, route_plan_path=plan_path, registry_path=registry, bundles_path=bundles,
+                context_paths=(*planned_contexts, *forged_contexts),
+            )
+    forged_global = output / ".private" / "generated-inputs" / "forged-global.txt"
+    forged_global.write_bytes(global_artifact.read_bytes())
+    with pytest.raises(HBQError, match="exact scoped artifact"):
+        binary_runner._longform_scope_compatibility_proof(
+            artifact_path=forged_global, artifact_id="story", bundle_id="prose.synthetic",
+            task_contract=runtime_contract, task_contract_record=record, route_plan_path=plan_path,
+            registry_path=registry, bundles_path=bundles, context_paths=work_contexts,
+        )
+    local_artifact = output / ".private" / "generated-inputs" / "units" / f"{selected_unit}.txt"
+    local_contexts = (
+        *planned_contexts, map_context,
+        output / ".private" / "generated-inputs" / "contracts" / f"{selected_unit}.judge-context.json",
+        output / ".private" / "generated-inputs" / "completion-contexts" / f"{selected_unit}.json",
+    )
+    forged_local = output / ".private" / "generated-inputs" / "units" / "forged-local.txt"
+    forged_local.write_bytes(local_artifact.read_bytes())
+    with pytest.raises(HBQError, match="exact scoped artifact"):
+        binary_runner._longform_scope_compatibility_proof(
+            artifact_path=forged_local, artifact_id=f"story-{selected_unit}", bundle_id="prose.synthetic",
+            task_contract=local_contract, task_contract_record=local_record, route_plan_path=plan_path,
+            registry_path=registry, bundles_path=bundles, context_paths=local_contexts,
+        )

@@ -11,7 +11,7 @@ from typing import Any, Sequence
 
 from jsonschema import Draft202012Validator
 
-from . import __version__
+from . import __version__, runner
 from .core import (
     HBQError,
     compile_bundle,
@@ -385,43 +385,60 @@ def _read_prompt(name: str) -> str:
 
 def _cmd_render_judge(args: argparse.Namespace) -> int:
     modules, bundles = _load_registry(args)
+    task_contract = _load_task_contract(args.task_contract)
     compiled = compile_bundle(
         modules,
         resolve_bundle(bundles, args.bundle_id),
-        task_contract=_load_task_contract(args.task_contract),
+        task_contract=task_contract,
     )
-    questions = compiled_questions(compiled)
+    role_order = {"hard_gate": 0, "domain": 1, "penalty": 2, "supplemental": 3}
+    questions = sorted(
+        compiled_questions(compiled), key=lambda item: role_order.get(str(item.get("role")), 99)
+    )
     if args.question_id:
         questions = [item for item in questions if item["question"].get("id") == args.question_id]
         if not questions:
             raise HBQError(f"Question {args.question_id!r} is not in bundle {args.bundle_id!r}")
-    artifact = Path(args.artifact).read_text(encoding="utf-8") if args.artifact else ""
-    packet = {
-        "bundle_id": args.bundle_id,
-        "questions": [
-            {
-                "role": item.get("role"),
-                "module_id": item.get("module_id"),
-                "domain_id": item.get("domain_id"),
-                "question": item["question"],
-            }
-            for item in questions
-        ],
-    }
-    sections = [
-        _read_prompt("JUDGE_PREFIX.md"),
-        "",
-        _read_prompt("BINARY_EVALUATION_PROMPT.md"),
-        "",
-        "## Compiled questions",
-        "",
-        "```json",
-        json.dumps(packet, ensure_ascii=False, indent=2),
-        "```",
-    ]
-    if artifact:
-        sections.extend(["", "## Artifact", "", artifact.rstrip(), ""])
-    text = "\n".join(sections).rstrip() + "\n"
+    artifact_path = Path(args.artifact) if args.artifact else None
+    artifact_id = args.artifact_id or (artifact_path.stem if artifact_path else "render-only")
+    if task_contract is not None:
+        if task_contract.get("artifact_id") != artifact_id:
+            raise HBQError("Task contract artifact_id does not match rendered artifact_id")
+        contract_path = Path(args.task_contract)
+        contract_record = runner._manifest_inputs([runner._read_text_record(contract_path)])[0]
+        contract_record["contract_id"] = task_contract.get("contract_id")
+        runner._scope_compatibility(
+            task_contract=task_contract,
+            task_contract_record=contract_record,
+            artifact_id=artifact_id,
+            bundle_id=args.bundle_id,
+            scope_compatibility_override_path=args.scope_compatibility_override,
+            longform_scope_compatibility_proof=None,
+        )
+    elif args.scope_compatibility_override:
+        raise HBQError("Scope compatibility override requires --task-contract")
+    artifact = (
+        {"name": artifact_path.name, "text": artifact_path.read_text(encoding="utf-8")}
+        if artifact_path is not None
+        else {"name": "render-only", "text": ""}
+    )
+    contexts = [runner._read_text_record(Path(path)) for path in args.context]
+    prompt_parts = [_read_prompt("BINARY_EVALUATION_PROMPT.md")]
+    if args.strict_ai:
+        prompt_parts.insert(0, _read_prompt("JUDGE_PREFIX.md"))
+    text = runner._render_prompt(
+        binary_prompt="\n\n".join(prompt_parts),
+        artifact=artifact,
+        contexts=contexts,
+        bundle_id=args.bundle_id,
+        artifact_id=artifact_id,
+        questions=questions,
+        task_contract_context=(
+            runner._task_contract_judge_context(task_contract) if task_contract is not None else None
+        ),
+        provider=args.provider,
+        model=args.model,
+    )
     if args.output:
         Path(args.output).write_text(text, encoding="utf-8")
     else:
@@ -448,6 +465,7 @@ def _cmd_judge(args: argparse.Namespace) -> int:
         bundles=args.bundles,
         context_paths=args.context,
         task_contract_path=args.task_contract,
+        scope_compatibility_override_path=args.scope_compatibility_override,
         weight_profile=_load_weight_profile(args.weight_profile),
         question_ids=args.question_id,
         batch_size=args.batch_size,
@@ -609,12 +627,21 @@ def build_parser() -> argparse.ArgumentParser:
 
     render = subparsers.add_parser(
         "render-judge",
-        help="concatenate the judge prefix, binary-eval prompt, compiled questions, and optional artifact",
+        help="render the exact current judge prompt, with optional artifact, contexts, and task contract",
     )
     render.add_argument("--bundle", dest="bundle_id", required=True)
     render.add_argument("--artifact", help="path to the draft or other artifact text")
+    render.add_argument("--artifact-id", help="artifact ID; defaults to the artifact filename stem")
+    render.add_argument("--context", action="append", default=[], help="additional UTF-8 context file; repeatable")
+    render.add_argument("--strict-ai", action="store_true", help="include the AI-artifact judge prefix")
+    render.add_argument("--provider", choices=["openai", "codex", "grok", "nous"])
+    render.add_argument("--model", help="provider model; needed for provider-specific prompt rendering")
     render.add_argument("--question-id", help="render a single leaf instead of the full bundle")
     render.add_argument("--task-contract", help="frozen task-contract JSON/YAML")
+    render.add_argument(
+        "--scope-compatibility-override",
+        help="reviewed v1 JSON compatibility decision bound to this task contract and bundle",
+    )
     render.add_argument("-o", "--output")
     render.set_defaults(func=_cmd_render_judge)
 
@@ -731,6 +758,10 @@ def build_parser() -> argparse.ArgumentParser:
     judge.add_argument("--output-dir", required=True, help="new run directory, or an existing run with --resume")
     judge.add_argument("--context", action="append", default=[], help="additional UTF-8 brief/canon file; repeatable")
     judge.add_argument("--task-contract", help="frozen task contract with weighted goals and binding requirements")
+    judge.add_argument(
+        "--scope-compatibility-override",
+        help="reviewed v1 JSON compatibility decision bound to this task contract and bundle",
+    )
     judge.add_argument("--weight-profile", help="strict scoring-weight profile JSON/YAML")
     judge.add_argument("--question-id", action="append", default=[], help="limit to a selected leaf; repeatable")
     judge.add_argument("--batch-size", type=int, default=12)

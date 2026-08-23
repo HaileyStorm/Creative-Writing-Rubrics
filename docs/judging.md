@@ -56,6 +56,10 @@ Evidence is typed: an `exact_quote` must be a nonblank contiguous artifact or co
 
 Use `--task-contract contract.json` when a brief affects scoring or eligibility. It must match `schema/hbq_task_contract.schema.json`; `weighted_goals` affect the task-domain score, while only atomic, objective, explicitly non-negotiable `binding_requirements` become gates. Context, preferences, aspirations, and inferred intent never do. The contract also works with `cwr compile`, `cwr render-judge`, and `cwr score`. `--temperature` is OpenAI-compatible only; `--reasoning` is for Codex, Grok, and Nous, with unsupported combinations failing.
 
+Fresh v4 `judge` and `render-judge` runs that use a task contract also require a reviewed-v1 `--scope-compatibility-override` bound to the exact artifact, contract, and bundle. `cwr longform` instead derives the same evidence from its validated persisted v2 route plan and exact source, context, segmentation, scope, and bundle decisions. Neither path may silently infer compatibility or ignore a mismatch.
+
+Historical v1-v3 runs retain byte-exact legacy replay only. If an older direct-run study needs fresh execution under the v4 prompt, create a versioned successor with a new compatibility decision or validated long-form proof and new runtime, prompt, and manifest commitments. Do not rewrite or relabel the predecessor's scripts or evidence.
+
 Use the lowest reasoning level that handles the evidence reliably: Sol Medium for structured binary batches, Sol High for routing, long-range mapping, ambiguity, and synthesis, and Luna Max for broad passes followed by stronger deterministic or Sol review. A fake local endpoint proves transport and resume, not literary judgment quality.
 
 ## Batches, subsets, and resume
@@ -90,7 +94,7 @@ Keep private run directories outside a public source checkout. The chosen output
 - `score.json`: the deterministic HBQ-RS report for a complete bundle; or
 - `diagnostic.json`: verdict counts and selection metadata for a selected-question run.
 
-The directory can contain quoted source excerpts. Treat it with the same privacy as the artifact. Nothing is uploaded by the runner except the declared artifact, declared context files, question batch, and judge instructions.
+The directory can contain quoted source excerpts. Treat it with the same privacy as the artifact. Nothing is uploaded by the runner except the declared artifact, declared context files, question batch, and judge instructions. When a task contract is active, the model-facing evaluation data also includes its artifact kind, declared scope, completion status, background, constraints, audience, preferences, priorities, applicable weighted goals, and binding requirements; those fields are part of the outbound disclosure and prompt commitment.
 
 Complete score and verdict reports can be published independently of their source text. Before publishing a private evaluation, remove embedded quotes, local paths, and private run metadata while retaining verdicts, notes, references, coverage, confidence, and every score breakdown.
 

@@ -90,6 +90,8 @@ def _configuration(
     weight_audit: Mapping[str, Any],
     questions: Sequence[Mapping[str, Any]],
     compiled: Mapping[str, Any],
+    prompt_rendering_version: int,
+    scope_compatibility: Mapping[str, Any] | None,
 ) -> dict[str, Any]:
     task_record = _manifest_record(task_contract) if task_contract is not None else None
     if task_record is not None:
@@ -102,7 +104,12 @@ def _configuration(
     if [path.name for path in prompts] != expected_prompt_names:
         raise core.HBQError("Frozen prompt bindings do not match the strict execution contract")
     binary_prompt = "\n\n".join(str(item["text"]).strip() for item in prompt_records)
-    return {
+    task_context = (
+        runner._task_contract_judge_context(task)
+        if task is not None and prompt_rendering_version == runner.PROMPT_RENDERING_VERSION
+        else None
+    )
+    configuration = {
         "artifact": _manifest_record(artifact),
         "contexts": [_manifest_record(path) for path in contexts],
         "task_contract": task_record,
@@ -132,6 +139,69 @@ def _configuration(
         "compiled_bundle_sha256": hashlib.sha256(runner._json_bytes(compiled)).hexdigest(),
         "_binary_prompt": binary_prompt,
     }
+    if prompt_rendering_version == runner.PROMPT_RENDERING_VERSION:
+        configuration.update(
+            {
+                "task_contract_judge_context": runner._task_contract_judge_context_record(task_context),
+                "scope_compatibility": (
+                    dict(scope_compatibility) if scope_compatibility is not None else None
+                ),
+                "prompt_rendering_version": prompt_rendering_version,
+            }
+        )
+    return configuration
+
+
+def _scope_compatibility(
+    frozen: Mapping[str, Any],
+    *,
+    task: Mapping[str, Any] | None,
+    task_contract_path: Path | None,
+    artifact_id: str,
+    bundle_id: str,
+    registry_path: Path,
+    bundles_path: Path,
+    artifact_path: Path,
+    context_paths: Sequence[Path],
+) -> dict[str, Any] | None:
+    if task is None:
+        if frozen.get("scope_compatibility_override") is not None:
+            raise core.HBQError("Frozen scope compatibility override requires a task contract")
+        return None
+    if task_contract_path is None:
+        raise core.HBQError("Frozen task contract path is missing")
+    longform_proof = frozen.get("longform_scope_compatibility_proof")
+    if longform_proof is not None:
+        if frozen.get("scope_compatibility_override") is not None:
+            raise core.HBQError("Frozen scope compatibility evidence is ambiguous")
+        if not isinstance(longform_proof, Mapping):
+            raise core.HBQError("Frozen long-form scope compatibility proof is malformed")
+        contract_record = _manifest_record(task_contract_path)
+        contract_record["contract_id"] = task.get("contract_id")
+        return runner._scope_compatibility(
+            task_contract=task,
+            task_contract_record=contract_record,
+            artifact_id=artifact_id,
+            bundle_id=bundle_id,
+            scope_compatibility_override_path=None,
+            longform_scope_compatibility_proof=longform_proof,
+            artifact_path=artifact_path,
+            registry_path=registry_path,
+            bundles_path=bundles_path,
+            context_paths=context_paths,
+        )
+    override_path = _bound_file(
+        frozen.get("scope_compatibility_override"), label="scope compatibility override"
+    )
+    contract_record = _manifest_record(task_contract_path)
+    contract_record["contract_id"] = task.get("contract_id")
+    return runner._scope_compatibility_override(
+        override_path,
+        artifact_id=artifact_id,
+        bundle_id=bundle_id,
+        task_contract=task,
+        task_contract_record=contract_record,
+    )
 
 
 def _require_v4_artifacts(run_dir: Path) -> None:
@@ -202,8 +272,9 @@ def verify_binary_run(run_dir: str | Path, frozen: Mapping[str, Any]) -> dict[st
 
     directory = Path(run_dir).resolve()
     manifest = _json(directory / "run.json")
-    if manifest.get("format_version") != 3:
-        raise core.HBQError("Fresh verifier requires a v3 run manifest")
+    manifest_format_version = manifest.get("format_version")
+    if manifest_format_version not in {3, 4}:
+        raise core.HBQError("Fresh verifier requires a v3 or v4 run manifest")
     execution = _execution(frozen)
     artifact = _bound_file(frozen.get("artifact"), label="artifact")
     registry = _bound_file(frozen.get("registry"), label="registry")
@@ -227,10 +298,46 @@ def verify_binary_run(run_dir: str | Path, frozen: Mapping[str, Any]) -> dict[st
     task = core.load_data(task_contract_path) if task_contract_path is not None else None
     if task is not None and not isinstance(task, Mapping):
         raise core.HBQError("Frozen task contract must be an object")
+    if task is not None:
+        errors = sorted(
+            Draft202012Validator(core.load_data(runner.schema_dir() / "hbq_task_contract.schema.json")).iter_errors(task),
+            key=lambda error: list(error.path),
+        )
+        if errors:
+            raise core.HBQError(f"Frozen task contract violates its strict schema: {errors[0].message}")
     compiled = core.compile_bundle(materialized_modules, materialized_bundle, task_contract=task)
     role_order = {"hard_gate": 0, "domain": 1, "penalty": 2, "supplemental": 3}
     questions = sorted(core.compiled_questions(compiled), key=lambda item: role_order.get(str(item.get("role")), 99))
-    expected_configuration = _configuration(execution=execution, artifact=artifact, contexts=context_paths, task_contract=task_contract_path, prompts=prompt_paths, response_schema=response_schema, modules=materialized_modules, bundle=materialized_bundle, weight_audit=weight_audit, questions=questions, compiled=compiled)
+    prompt_rendering_version = (
+        runner.PROMPT_RENDERING_VERSION
+        if manifest_format_version == 4
+        else runner.LEGACY_PROMPT_RENDERING_VERSION
+    )
+    scope_compatibility = (
+        _scope_compatibility(
+            frozen,
+            task=task,
+            task_contract_path=task_contract_path,
+            artifact_id=execution["artifact_id"],
+            bundle_id=execution["bundle_id"],
+            registry_path=registry,
+            bundles_path=bundles,
+            artifact_path=artifact,
+            context_paths=context_paths,
+        )
+        if manifest_format_version == 4
+        else None
+    )
+    if scope_compatibility is not None and scope_compatibility.get("mode") == "longform_prevalidated_route":
+        contract_questions = compiled.get("task_contract")
+        actual_dynamic_ids = (
+            [*contract_questions.get("weighted_goal_ids", []), *contract_questions.get("binding_requirement_ids", [])]
+            if isinstance(contract_questions, Mapping)
+            else []
+        )
+        if actual_dynamic_ids != scope_compatibility.get("selected_dynamic_question_ids"):
+            raise core.HBQError("Long-form scope proof does not bind the exact selected dynamic task questions")
+    expected_configuration = _configuration(execution=execution, artifact=artifact, contexts=context_paths, task_contract=task_contract_path, prompts=prompt_paths, response_schema=response_schema, modules=materialized_modules, bundle=materialized_bundle, weight_audit=weight_audit, questions=questions, compiled=compiled, prompt_rendering_version=prompt_rendering_version, scope_compatibility=scope_compatibility)
     binary_prompt = expected_configuration.pop("_binary_prompt")
     configuration = manifest.get("configuration")
     if not isinstance(configuration, Mapping) or manifest.get("config_sha256") != hashlib.sha256(runner._json_bytes(configuration)).hexdigest():
@@ -257,7 +364,7 @@ def verify_binary_run(run_dir: str | Path, frozen: Mapping[str, Any]) -> dict[st
             prompt = gzip.decompress(prompt_path.read_bytes()).decode("utf-8")
         except (OSError, UnicodeDecodeError) as exc:
             raise core.HBQError(f"Cannot read exact frozen batch prompt: {prompt_path.name}") from exc
-        expected_prompt = runner._render_prompt(binary_prompt=binary_prompt, artifact={"name": artifact.name, "text": artifact.read_text(encoding="utf-8")}, contexts=[{"name": path.name, "text": path.read_text(encoding="utf-8")} for path in context_paths], bundle_id=execution["bundle_id"], artifact_id=execution["artifact_id"], questions=batch_questions)
+        expected_prompt = runner._render_prompt(binary_prompt=binary_prompt, artifact={"name": artifact.name, "text": artifact.read_text(encoding="utf-8")}, contexts=[{"name": path.name, "text": path.read_text(encoding="utf-8")} for path in context_paths], bundle_id=execution["bundle_id"], artifact_id=execution["artifact_id"], questions=batch_questions, task_contract_context=(runner._task_contract_judge_context(task) if task is not None and prompt_rendering_version == runner.PROMPT_RENDERING_VERSION else None), prompt_rendering_version=prompt_rendering_version)
         if record.get("batch") != batch or record.get("question_ids") != expected_ids or prompt != expected_prompt:
             raise core.HBQError("Checkpoint does not bind the exact frozen batch slice and prompt bytes")
         prompt_commitments.append(_relative_commitment(directory, prompt_path))
