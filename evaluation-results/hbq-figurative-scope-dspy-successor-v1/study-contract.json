@@ -1,0 +1,10 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-figurative-scope-dspy-successor-v1",
+  "development_only": true,
+  "status": "frozen_provider_free_pending_independent_execution_authorization",
+  "limits": {"proposer_calls_max":4,"train_calls_max":80,"selection_calls_max":32,"confirmation_calls_exact":168,"one_provider_attempt_per_logical_call":true},
+  "bindings": {"public_confirmation_corpus":"public-confirmation-corpus.json","public_confirmation_corpus_sha256":"c1de37964c516e49129b7ef57187e1908eb26111b98d3990dbbe9591b3960ee1","reviewed_transcription_sha256":"dedbd5af93df46df8b27b44b69de10654cd1ff214acd56a02d5610ba0a94631f","private_confirmation_oracle_commitment_sha256":"03d84a55c1d82563996142756fa7631c4bb8c6da288c564647ef29a4dfb435aa","private_predecessor_oracle_commitment_sha256":"14165199d37dfe31576e1ebff4df9bb692f0431791215337b7878e7e3e89cf50","private_predecessor_partitions_commitment_sha256":"26f1fd440f7b3af5c95743e20cd9408026e6e03f7252f094e95083cd880e713f","private_selection_baseline_commitment_sha256":"e51d6c6eb30e89f307b02bc5c32dcf9bfdee0aa54d08ddcbc1ba8fefb780a84e"},
+  "forbidden": ["rubric_leaf_or_ownership_change","weight_or_bundle_change","schema_or_task_contract_change","runtime_dspy_dependency","paid_or_api_provider_route","fallback_provider_route","confirmation_access_before_prompt_hash_freeze"],
+  "promotion_rule": "A candidate can promote only static scope/materiality instruction text after independent review and all frozen gates. This package does not itself promote a candidate."
+}
