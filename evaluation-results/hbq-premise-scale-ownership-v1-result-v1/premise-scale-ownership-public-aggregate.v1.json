@@ -1,0 +1,46 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-premise-scale-ownership-v1-settlement-repair-v1",
+  "evidence_scope": "aggregate_only_completed_premise_scale_ownership_screen",
+  "public_cwr_lineage": {
+    "frozen_screen_commit": "95a86b8353b4d27c85914d4258e4da33d080f9d7",
+    "execution_runtime_commit": "3258e6f44bb728ce17ebcd85b4964d472aaf87c2",
+    "settlement_repair_commit": "80f57bddb659f9f42831f096a23108642ec0be9c"
+  },
+  "protocol_geometry": {
+    "synthetic_artifacts": 12,
+    "selected_leaves": 2,
+    "repetitions_per_cell": 3,
+    "logical_slots": 72,
+    "one_leaf_per_provider_request": true,
+    "execution_route": "codex_gpt_5_6_sol_high"
+  },
+  "decision": "DIAGNOSTIC_FAIL",
+  "promotion": "none",
+  "promotion_scope": "none",
+  "aggregate_counts": {
+    "planned_slots": 72,
+    "completed_slots": 72,
+    "first_attempt_accepted_slots": 72,
+    "scored_cells": 20,
+    "scored_cells_passing": 9,
+    "overall_raw_matches": 37,
+    "overall_raw_match_total": 72
+  },
+  "limitations": [
+    "Aggregate-only public projection: no fixture text, fixture aliases, expected labels, per-cell or per-slot outcomes, prompts, responses, private evidence, paths, or provider/session/request/run identifiers.",
+    "DIAGNOSTIC_FAIL does not establish a general result or causal diagnosis.",
+    "This result authorizes no prompt, rubric, leaf, ownership, split, or weight change. Promotion is none.",
+    "The sealed private settlement remains the receipt-level verification authority; this package binds retained source commitments through opaque SHA-256 commitments without copying private material."
+  ],
+  "opaque_private_receipt_commitments": {
+    "settlement_repair_settlement_sha256": "397c5691ea31fd6518760211f8c685c0165ee8277d33baf40b1b95df8e7153ff",
+    "settlement_repair_public_aggregate_sha256": "1cc855d75221ab1e1770b5d211dae49e64b8508428f5d49ecb63c4a39b83ca57",
+    "settlement_repair_contract_sha256": "c5d615a04b4353eee1a38851889fda374c02cc065a043989a42e214ff85f9c6c",
+    "settlement_repair_runtime_sha256": "894767d419065d9dbde309de67ac8b088abbe18384302512e5e2047892fe72b2",
+    "execution_contract_sha256": "235ef070ed0689d44843bd39a093324046448e3ce58910e67522a61680f909dc",
+    "execution_runtime_sha256": "960ee843f9fbde0b32756872409665fbc65a930f3699c51f07c24782ee084b43",
+    "execution_tree_sha1": "2c4dc6fee8332eaf52e04288e107c0f0c7fe317c",
+    "settlement_repair_tree_sha1": "7438cba2c96441ec46814c029f35e482adcef0a3"
+  }
+}
