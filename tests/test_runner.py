@@ -1288,14 +1288,24 @@ def test_codex_backend_uses_schema_and_read_only_ephemeral_exec(tmp_path: Path, 
             "unified_exec",
             "code_mode_host",
             "hooks",
+            "auth_elicitation",
             "memories",
             "plugins",
             "multi_agent",
             "apps",
             "browser_use",
+            "browser_use_external",
             "computer_use",
+            "tool_call_mcp_elicitation",
         ):
             assert feature in argv
+        assert "mcp_servers={}" in argv
+        assert "unbounded_connection_retries=false" in argv
+        assert 'approval_policy="never"' in argv
+        environment = kwargs["env"]
+        assert isinstance(environment, dict)
+        assert environment["NO_COLOR"] == "1"
+        assert all("API_KEY" not in key.upper() for key in environment)
         assert argv[argv.index("--sandbox") + 1] == "read-only"
         assert argv[argv.index("--model") + 1] == "gpt-5.6-sol"
         assert 'model_reasoning_effort="high"' in argv
@@ -1344,6 +1354,31 @@ def test_codex_backend_uses_schema_and_read_only_ephemeral_exec(tmp_path: Path, 
     assert not {"oneOf", "anyOf", "not"}.intersection(evidence_schema)
     response = json.loads((tmp_path / "run" / "responses" / "batch-0001.json").read_text(encoding="utf-8"))
     assert "stderr_tail" not in response["provider"]
+
+
+def test_codex_environment_retains_only_auth_paths_and_safe_process_keys(monkeypatch) -> None:
+    for name in runner_module._CODEX_ENVIRONMENT_KEYS:
+        monkeypatch.delenv(name, raising=False)
+    retained = {
+        "SYSTEMROOT": r"C:\Windows",
+        "USERPROFILE": r"C:\Users\fixture",
+        "APPDATA": r"C:\Users\fixture\AppData\Roaming",
+        "CODEX_HOME": r"C:\Users\fixture\.codex",
+    }
+    forbidden = {
+        "OPENAI_API_KEY": "secret",
+        "OPENAI_ACCESS_TOKEN": "secret",
+        "NOUS_API_KEY": "secret",
+        "XAI_AUTH_TOKEN": "secret",
+        "HTTP_PROXY": "http://proxy.invalid",
+        "HTTPS_PROXY": "http://proxy.invalid",
+        "ALL_PROXY": "http://proxy.invalid",
+        "NO_PROXY": "localhost",
+    }
+    for name, value in {**retained, **forbidden}.items():
+        monkeypatch.setenv(name, value)
+
+    assert runner_module._codex_environment() == {**retained, "NO_COLOR": "1"}
 
 
 def test_codex_retry_binds_validation_feedback_and_uses_fresh_message(tmp_path: Path, monkeypatch) -> None:

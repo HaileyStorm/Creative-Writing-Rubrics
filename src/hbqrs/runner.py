@@ -343,6 +343,18 @@ def _command_argv(executable: str, arguments: Sequence[str]) -> list[str]:
     return [resolved, *arguments]
 
 
+_CODEX_ENVIRONMENT_KEYS = (
+    "SYSTEMROOT", "WINDIR", "COMSPEC", "PATH", "PATHEXT", "TEMP", "TMP",
+    "USERPROFILE", "APPDATA", "LOCALAPPDATA", "CODEX_HOME",
+)
+
+
+def _codex_environment() -> dict[str, str]:
+    environment = {name: os.environ[name] for name in _CODEX_ENVIRONMENT_KEYS if os.environ.get(name)}
+    environment["NO_COLOR"] = "1"
+    return environment
+
+
 def _codex_reported_settings(stderr: str) -> dict[str, str]:
     reported: dict[str, str] = {}
     labels = {
@@ -394,6 +406,8 @@ def _call_codex(
         "--disable",
         "hooks",
         "--disable",
+        "auth_elicitation",
+        "--disable",
         "memories",
         "--disable",
         "plugins",
@@ -403,6 +417,8 @@ def _call_codex(
         "apps",
         "--disable",
         "browser_use",
+        "--disable",
+        "browser_use_external",
         "--disable",
         "computer_use",
         "--disable",
@@ -415,8 +431,16 @@ def _call_codex(
         "skill_search",
         "--disable",
         "tool_suggest",
+        "--disable",
+        "tool_call_mcp_elicitation",
         "-c",
         'web_search="disabled"',
+        "-c",
+        "mcp_servers={}",
+        "-c",
+        "unbounded_connection_retries=false",
+        "-c",
+        'approval_policy="never"',
         "--skip-git-repo-check",
         "--sandbox",
         "read-only",
@@ -443,6 +467,7 @@ def _call_codex(
             capture_output=True,
             timeout=timeout,
             check=False,
+            env=_codex_environment(),
         )
     except (OSError, subprocess.TimeoutExpired) as exc:
         raise _ProviderAttemptFailure(
