@@ -1,0 +1,31 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-polarity-change-current-wording-v1-execution-v1",
+  "status": "frozen_execution_successor_unexecuted",
+  "predecessor": {
+    "commit": "5665e2f",
+    "tree": "04cc32ee5579031f262140c534b91acb89d0c650",
+    "files": {
+      "README.md": "a8cf8f0cadb62470bc43164794bef82b44371922",
+      "public-synthetic-corpus.json": "5286d8adecfa744348ce973ebf4968776f868883",
+      "run.py": "536eaac804ba30323c71cf68c22e8c44aba9b7d1",
+      "study-contract.json": "0ce6d1d54746ad5b1e01c8dfe126d4a711b1a648",
+      "study.py": "9814c0a61e5b72ed8a5abd5d20503dad1c7ea7b5"
+    }
+  },
+  "execution": {
+    "route": "codex",
+    "model": "gpt-5.6-sol",
+    "reasoning": "high",
+    "batch_size": 1,
+    "batch_attempts": 3,
+    "maximum_provider_sends": 396,
+    "one_leaf_per_call": true,
+    "owner_attested_zero_incremental_charge_only": true,
+    "paid_api_or_fallback_route": "forbidden"
+  },
+  "geometry": {"leaves": 11, "fixtures": 44, "repeats": 3, "slots": 132},
+  "prompt_commitment": "canonical_utf8_lf_v1",
+  "public_result_policy": "aggregate_only_after_execution",
+  "promotion": "none"
+}
