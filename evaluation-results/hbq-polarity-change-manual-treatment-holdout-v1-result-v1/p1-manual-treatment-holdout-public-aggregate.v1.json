@@ -1,0 +1,78 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-polarity-change-manual-treatment-holdout-v1-execution-v1",
+  "evidence_scope": "sealed_same_fixture_ab_holdout",
+  "public_cwr_lineage": {
+    "execution_runtime_commit": "6366bb3"
+  },
+  "protocol_geometry": {
+    "synthetic_artifacts": 20,
+    "target_artifacts": 16,
+    "control_artifacts": 4,
+    "arms": 2,
+    "repetitions_per_cell": 3,
+    "logical_slots": 120,
+    "one_leaf_per_provider_request": true,
+    "execution_route": "codex_gpt_5_6_sol_high"
+  },
+  "decision": "NO_EFFECT",
+  "promotion": "none",
+  "promotion_scope": "none",
+  "aggregate_counts": {
+    "planned_slots": 120,
+    "completed_slots": 120,
+    "first_attempt_accepted_slots": 120,
+    "retries": 0
+  },
+  "gate_results": {
+    "current_controls": {
+      "passed": 12,
+      "total": 12
+    },
+    "treatment_controls": {
+      "passed": 12,
+      "total": 12
+    },
+    "combined_controls": {
+      "passed": 24,
+      "total": 24
+    },
+    "current_target_cells": {
+      "passed": 15,
+      "total": 16
+    },
+    "treatment_target_cells": {
+      "passed": 15,
+      "total": 16
+    },
+    "current_raw_target_matches": {
+      "matched": 47,
+      "total": 48
+    },
+    "treatment_raw_target_matches": {
+      "matched": 46,
+      "total": 48
+    },
+    "target_improvements": 0,
+    "stable_defect_in_both_families": false
+  },
+  "limitations": [
+    "Aggregate-only public projection: no fixture text, fixture aliases, expected labels, per-cell or per-slot outcomes, prompts, model outputs, private evidence, paths, or provider/session/request metadata.",
+    "NO_EFFECT means no treatment benefit is demonstrated under this frozen aggregate gate; it does not establish identical per-fixture outcomes or equal general performance.",
+    "The exact candidate appendix was exhausted: no qualifying cell benefit was shown, so the figurative gate remains closed.",
+    "This holdout result authorizes no prompt, rubric, leaf, ownership, split, or weight change. Promotion is none.",
+    "The sealed private settlement remains the receipt-level verification authority; this package binds retained source commitments through opaque SHA-256 commitments without copying private material."
+  ],
+  "opaque_private_receipt_commitments": {
+    "source_aggregate_sha256": "1b5cbfb4897bb258bf774e4ac6a4fce0d984c62b497274ede4caa29580392dca",
+    "settlement_sha256": "36b4f2b49950924c7a16f464ef201782dc60345620b999ae2c2b3e4d2be38858",
+    "study_manifest_sha256": "c91d33fbc5e9d0c28756bf33dd82843ede6b2ec79b76cb90c905d2561e276916",
+    "runtime_schedule_sha256": "c69632f5d91e658e61091759243ae4cf130ad1f0353087ee24ee0df3acb48c91",
+    "study_contract_sha256": "86691961131402886826568cfda40fad17d9943771612441ceb6882a87ddff2c",
+    "candidate_appendix_sha256": "00ce0c5f1063c1fb36cc663bd2c522ce5eda254ee8f9079ec21774277e0d3722",
+    "private_corpus_sha256": "2baff4dcd7c96054cd6208bd61b243a4435f15de323c42db152702dc2299ff1b",
+    "sealed_expected_ledger_sha256": "231448f3bbcfcd88f12ed4cf8510c16ddd48d907cc203d3a99d6ba62893536e9",
+    "runtime_bundle_sha256": "6379be533d969477c6650a71c385573b4d3694e188ac46e3e8a356fffaa6168e",
+    "remote_disclosure_sha256": "6019095bdfa7fa18da59367eab02af16475bb5b96a853d3ee4f6c9273d77394d"
+  }
+}
