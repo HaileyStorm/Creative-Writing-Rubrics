@@ -1297,10 +1297,10 @@ def test_codex_backend_uses_schema_and_read_only_ephemeral_exec(tmp_path: Path, 
             "browser_use_external",
             "computer_use",
             "tool_call_mcp_elicitation",
+            "unbounded_connection_retries",
         ):
             assert feature in argv
         assert "mcp_servers={}" in argv
-        assert "unbounded_connection_retries=false" in argv
         assert 'approval_policy="never"' in argv
         environment = kwargs["env"]
         assert isinstance(environment, dict)
