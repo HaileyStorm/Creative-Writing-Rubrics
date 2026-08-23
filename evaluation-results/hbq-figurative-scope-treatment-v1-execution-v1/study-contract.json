@@ -1,7 +1,8 @@
 {
   "format_version": 1,
   "study_id": "hbq-figurative-scope-treatment-v1-execution-v1",
-  "status": "frozen_execution_successor_pending_run",
+  "status": "settled_no_go_no_promotion",
+  "public_result_sha256": "1527cbf9299d9ca83c328101cd15e146e5f8e841c495d1b192a33f51e759534e",
   "predecessor": {
     "study_id": "hbq-figurative-scope-treatment-v1",
     "commit": "17b2881d6c695a432ed5a36b0a3cb75eae72a5b5",

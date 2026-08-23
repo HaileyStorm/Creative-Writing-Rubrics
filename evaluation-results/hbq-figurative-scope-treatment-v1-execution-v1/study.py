@@ -25,6 +25,10 @@ PREDECESSOR_TREE = "486827c2f97587d7f802e7bb1ec6b8c2dd3a38f7"
 PROMPT_REPAIR_PARENT = "fb77e8a61bff6b130147acd7a7c43ce20e88dd14"
 CORPUS_NAME = "public-synthetic-prompt-scope-corpus.json"
 CORPUS_SHA256 = "a2bea2ed937738e9d70d272f193852ad94c22b0d2611699ae221dcf21a33bb5d"
+PUBLIC_RESULT_NAME = "public-result.json"
+PUBLIC_AGGREGATE_SHA256 = "417cdd726711062ec3d1ad29924d605453fe17366e9602c927d8e9cf377304b8"
+PUBLIC_RESULT_SHA256 = "1527cbf9299d9ca83c328101cd15e146e5f8e841c495d1b192a33f51e759534e"
+PUBLIC_CONCLUSION = "The manual scope-rendering-only treatment did not pass the frozen figurative gates. It is not promoted; no rubric wording, leaf ownership, split, or weight changes follow. DSPy remains development-only and is eligible only if a later simple manual repair is inadequate. QPC24 and the Gray Blood rebaseline remain held pending a stable treatment."
 ARMS = ("baseline", "scope_rendering_only")
 REPETITIONS = 3
 EXPECTED_CELLS = 28
@@ -87,6 +91,36 @@ def contract() -> dict[str, Any]:
     return load_json(ROOT / "study-contract.json")
 
 
+def validate_public_result() -> dict[str, Any]:
+    value = load_json(ROOT / PUBLIC_RESULT_NAME)
+    if sha256_file(ROOT / PUBLIC_RESULT_NAME) != PUBLIC_RESULT_SHA256 or contract().get("public_result_sha256") != PUBLIC_RESULT_SHA256:
+        raise ValueError("Public result hash drifted")
+    _validate_public_result_value(value)
+    return {"decision": value["decision"], "accepted_calls": value["execution"]["accepted_calls"], "source_aggregate_sha256": value["source_aggregate_sha256"]}
+
+
+def _validate_public_result_value(value: Mapping[str, Any]) -> None:
+    execution = value.get("execution")
+    arms = value.get("arms")
+    if not isinstance(execution, Mapping) or not isinstance(arms, Mapping):
+        raise ValueError("Public result shape drifted")
+    if set(value) != {"format_version", "study_id", "source_aggregate_sha256", "execution", "arms", "decision", "conclusion"}:
+        raise ValueError("Public result privacy surface drifted")
+    if value.get("format_version") != 1 or value.get("study_id") != STUDY_ID or value.get("source_aggregate_sha256") != PUBLIC_AGGREGATE_SHA256 or value.get("decision") != "NO_GO" or value.get("conclusion") != PUBLIC_CONCLUSION:
+        raise ValueError("Public result identity drifted")
+    if execution != {"accepted_calls": 168, "rejected_calls": 0, "model": "gpt-5.6-sol", "reasoning": "high", "route": "codex", "zero_incremental_charge": "owner_attested_subscription_route_not_independent_billing_proof"}:
+        raise ValueError("Public result execution arithmetic drifted")
+    expected = {
+        "baseline": {"slots": 84, "stockness": [33, 36], "proportion_material_load": [28, 36], "fatigue": [12, 12], "isolated_yes_revision_note": [0, 3], "recurring_no": [3, 3], "excerpt_cannot_assess": [3, 3], "schema_evidence_provenance": [84, 84]},
+        "scope_rendering_only": {"slots": 84, "stockness": [34, 36], "proportion_material_load": [27, 36], "fatigue": [12, 12], "isolated_yes_revision_note": [1, 3], "recurring_no": [3, 3], "excerpt_cannot_assess": [3, 3], "schema_evidence_provenance": [84, 84], "zero_control_regression": [9, 12]},
+    }
+    if dict(arms) != expected or sum(arm["slots"] for arm in arms.values()) != execution["accepted_calls"]:
+        raise ValueError("Public result gate arithmetic drifted")
+    rendered = canonical_json(value).decode("utf-8").casefold()
+    if any(token in rendered for token in ("path", "slot_id", "request_id", "session", "run_id", "private_record", "raw_evidence", "prose")):
+        raise ValueError("Public result privacy surface drifted")
+
+
 def _git(*args: str) -> str:
     completed = subprocess.run(
         ["git", *args], cwd=REPO_ROOT, text=True, encoding="utf-8", capture_output=True, check=False
@@ -125,7 +159,7 @@ def _write_summary(path: Path, value: bytes) -> None:
 
 def validate_package() -> dict[str, Any]:
     value = contract()
-    if value.get("study_id") != STUDY_ID or value.get("format_version") != 1:
+    if value.get("study_id") != STUDY_ID or value.get("format_version") != 1 or value.get("status") != "settled_no_go_no_promotion":
         raise ValueError("Study contract identity drifted")
     predecessor = value.get("predecessor")
     runtime = value.get("runtime")
@@ -149,7 +183,8 @@ def validate_package() -> dict[str, Any]:
     if _git("rev-parse", f"{PREDECESSOR_COMMIT}:{PREDECESSOR_ROOT.relative_to(REPO_ROOT).as_posix()}") != PREDECESSOR_TREE:
         raise ValueError("Published predecessor tree binding drifted")
     _git("merge-base", "--is-ancestor", PROMPT_REPAIR_PARENT, "HEAD")
-    return {"study_id": STUDY_ID, "planned_requests": EXPECTED_REQUESTS, "predecessor": PREDECESSOR_COMMIT, "prompt_repair_parent": PROMPT_REPAIR_PARENT}
+    public = validate_public_result()
+    return {"study_id": STUDY_ID, "planned_requests": EXPECTED_REQUESTS, "predecessor": PREDECESSOR_COMMIT, "prompt_repair_parent": PROMPT_REPAIR_PARENT, "public_result": public}
 
 
 def _corpus() -> list[dict[str, Any]]:

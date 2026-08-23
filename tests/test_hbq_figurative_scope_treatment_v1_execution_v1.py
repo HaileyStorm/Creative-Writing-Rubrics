@@ -4,6 +4,7 @@ import importlib.util
 import gzip
 import json
 import sys
+from copy import deepcopy
 from types import SimpleNamespace
 from pathlib import Path
 
@@ -69,6 +70,26 @@ def test_frozen_execution_schedule_uses_the_published_corpus_without_copying_it(
     assert all(slot["artifact_file"].startswith("asset-") for slot in schedule)
     assert all(slot["logical_sample_id"].startswith("sample:") for slot in schedule)
     assert not (ROOT / "public-synthetic-prompt-scope-corpus.json").exists()
+    assert report["public_result"] == {"decision": "NO_GO", "accepted_calls": 168, "source_aggregate_sha256": "417cdd726711062ec3d1ad29924d605453fe17366e9602c927d8e9cf377304b8"}
+    assert s.sha256_file(ROOT / "public-result.json") == s.PUBLIC_RESULT_SHA256 == "1527cbf9299d9ca83c328101cd15e146e5f8e841c495d1b192a33f51e759534e"
+    assert s.contract()["status"] == "settled_no_go_no_promotion"
+
+
+def test_public_result_semantic_and_privacy_mutations_fail_without_hash_shortcuts() -> None:
+    s = study()
+    value = s.load_json(ROOT / "public-result.json")
+    s._validate_public_result_value(value)
+    for mutate in (
+        lambda item: item["execution"].update({"accepted_calls": 167}),
+        lambda item: item["arms"]["scope_rendering_only"].update({"stockness": [35, 36]}),
+        lambda item: item.update({"conclusion": "Promote a rubric change."}),
+        lambda item: item.update({"private_path": "C:/private/run"}),
+        lambda item: item.update({"raw_evidence": "private prose"}),
+    ):
+        changed = deepcopy(value)
+        mutate(changed)
+        with pytest.raises(ValueError):
+            s._validate_public_result_value(changed)
 
 
 def test_prepare_keeps_provider_inputs_opaque_and_binds_only_treatment_to_v4_context(tmp_path: Path) -> None:

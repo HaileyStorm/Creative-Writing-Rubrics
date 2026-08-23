@@ -17,3 +17,11 @@ That root must be outside this repository. It contains copied synthetic inputs, 
 The settlement requires unique accepted Codex provider sessions. CWR's rejected-retry sanitizer does not retain rejected Codex session IDs, so this successor records rejected attempt counts but makes no all-attempt session-uniqueness claim.
 
 For the unchanged v1 analyzer, the private adapter projects only already-grounded `exact_quote` evidence. It keeps mixed summary evidence in the private successor record and never synthesizes quotes; a summary-only result fails closed.
+
+## Aggregate result
+
+The 168 planned calls were accepted with zero rejected calls. The aggregate-only result is [`public-result.json`](public-result.json), projected from private aggregate `417cdd726711062ec3d1ad29924d605453fe17366e9602c927d8e9cf377304b8` without paths, prose, slots, requests, sessions, or raw evidence.
+
+The result is `NO_GO`. `scope_rendering_only` reached stockness 34/36, proportion/material load 27/36, fatigue 12/12, isolated revision-note materiality 1/3, recurring material failure 3/3, excerpt CANNOT_ASSESS 3/3, and schema/evidence/provenance 84/84. It did not pass the frozen treatment gates; controls were 9/12 in each arm, so there was no control regression. No rubric wording, leaf ownership, split, or weight is promoted. DSPy remains development-only should a later simple manual repair prove inadequate; QPC24 and the Gray Blood rebaseline remain held until the treatment is stable.
+
+The zero-incremental-charge route is owner-attested as a subscription route, not independently verified billing evidence.

@@ -1,0 +1,38 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-figurative-scope-treatment-v1-execution-v1",
+  "source_aggregate_sha256": "417cdd726711062ec3d1ad29924d605453fe17366e9602c927d8e9cf377304b8",
+  "execution": {
+    "accepted_calls": 168,
+    "rejected_calls": 0,
+    "model": "gpt-5.6-sol",
+    "reasoning": "high",
+    "route": "codex",
+    "zero_incremental_charge": "owner_attested_subscription_route_not_independent_billing_proof"
+  },
+  "arms": {
+    "baseline": {
+      "slots": 84,
+      "stockness": [33, 36],
+      "proportion_material_load": [28, 36],
+      "fatigue": [12, 12],
+      "isolated_yes_revision_note": [0, 3],
+      "recurring_no": [3, 3],
+      "excerpt_cannot_assess": [3, 3],
+      "schema_evidence_provenance": [84, 84]
+    },
+    "scope_rendering_only": {
+      "slots": 84,
+      "stockness": [34, 36],
+      "proportion_material_load": [27, 36],
+      "fatigue": [12, 12],
+      "isolated_yes_revision_note": [1, 3],
+      "recurring_no": [3, 3],
+      "excerpt_cannot_assess": [3, 3],
+      "schema_evidence_provenance": [84, 84],
+      "zero_control_regression": [9, 12]
+    }
+  },
+  "decision": "NO_GO",
+  "conclusion": "The manual scope-rendering-only treatment did not pass the frozen figurative gates. It is not promoted; no rubric wording, leaf ownership, split, or weight changes follow. DSPy remains development-only and is eligible only if a later simple manual repair is inadequate. QPC24 and the Gray Blood rebaseline remain held pending a stable treatment."
+}
