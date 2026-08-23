@@ -32,9 +32,9 @@ VERIFIER_NAME = "verify_private_freeze.py"
 CONTROLLER_SHA256 = "7a75a6dd30e028bcfa398b7104bed34d32ea71efb491310eb87d3a50700dd5b9"
 LEDGER_SHA256 = "9a3455fee1466d4cdc7461ab33c6b4014a4ad112b0e9f8293d3cf63615f52fbc"
 VERIFIER_SHA256 = "6f70bbd01101d27b432b87421563a063bdee658f73700fabf4591b09e66a5c23"
-# Private execution-v2 is retained as the deterministic pre-contact failure
-# record. This new child root is the only eligible execution preparation.
-PRIVATE_EXECUTION_DIRECTORY = "execution-v3-allow-remote-final-bindings-terminal-sidecar-v1"
+# Private execution-v2/v3 are immutable terminal provenance. This fresh child
+# root is the only eligible execution preparation.
+PRIVATE_EXECUTION_DIRECTORY = "execution-v4-bounded-connection-retries-terminal-sidecar-v1"
 LEAF_ID = "form.poetry.free_verse.repetition"
 ARMS = ("current", "candidate")
 REPEATS = (1, 2, 3)

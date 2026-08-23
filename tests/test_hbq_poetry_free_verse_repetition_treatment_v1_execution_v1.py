@@ -152,6 +152,26 @@ def test_live_command_has_allow_remote_only_for_the_live_judge(private_controlle
     assert live[live.index("--allow-remote") - 1] == "terminal_sidecar_v1"
 
 
+def test_inherited_codex_argv_disables_unbounded_connection_retries(private_controller, monkeypatch, tmp_path: Path):
+    s, _root = private_controller
+    seen = []
+
+    def rejected(argv, **_kwargs):
+        seen.append(argv)
+        return SimpleNamespace(returncode=1, stdout="", stderr="ERROR: configuration rejection")
+
+    monkeypatch.setattr(s.runner.subprocess, "run", rejected)
+    with pytest.raises(s.runner._ProviderAttemptFailure, match="configuration rejection"):
+        s.runner._call_codex(
+            executable="codex", model="gpt-5.6-sol", reasoning="high", prompt="synthetic",
+            output_dir=tmp_path, response_schema=book_root() / "schema" / "hbq_judge_response.schema.json",
+            batch_number=1, timeout=1.0,
+        )
+    argv = seen[0]
+    index = argv.index("unbounded_connection_retries")
+    assert argv[index - 1] == "--disable"
+
+
 def test_missing_remote_flag_stops_before_provider_callback_or_run(private_controller, monkeypatch):
     s, root = private_controller
     s.dry_run(runner_call=fake_cwr)

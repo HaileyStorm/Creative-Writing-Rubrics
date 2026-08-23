@@ -20,5 +20,10 @@ rubric, leaf, owner, split, or weight.
 The private execution-v2 preparation is retained as failed-precontact lineage:
 at CWR `5ddca14`, its first singleton stopped at the runner's required remote
 disclosure gate before a run directory or provider callback existed. It is not
-a consumed model sample and is never resumed. The eligible v3 child root adds
-the required live-dispatch flag while preserving the same one-shot policy.
+a consumed model sample and is never resumed. The v3 child root then reached a
+terminal pre-contact Codex configuration rejection: its accepted raw content
+is zero bytes and its provider-reported settings are empty. The conservative
+outer receipt remains labeled `ambiguous_provider_contact` because it does not
+rewrite evidence after the fact. V4 is a fresh child root bound to the current
+runner and disables unbounded connection retries while preserving the one-shot
+policy.
