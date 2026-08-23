@@ -1,33 +1,28 @@
 from __future__ import annotations
 
 import hashlib
-import importlib.util
 import json
-import sys
 from copy import deepcopy
 from pathlib import Path
 
 import pytest
 
+from _scoped_module_loader import load_module
+
 
 ROOT = Path(__file__).resolve().parents[1]
 PACKAGE = ROOT / "evaluation-results" / "hbq-confidence-diagnostics-v1"
-sys.path.insert(0, str(PACKAGE))
-spec = importlib.util.spec_from_file_location("confidence_diagnostics_v1", PACKAGE / "study.py")
-assert spec and spec.loader
-study = importlib.util.module_from_spec(spec)
-sys.modules[spec.name] = study
-spec.loader.exec_module(study)
-prepare_spec = importlib.util.spec_from_file_location("prepare_fresh88_input", PACKAGE / "prepare_fresh88_input.py")
-assert prepare_spec and prepare_spec.loader
-prepare = importlib.util.module_from_spec(prepare_spec)
-sys.modules[prepare_spec.name] = prepare
-prepare_spec.loader.exec_module(prepare)
-compose_spec = importlib.util.spec_from_file_location("compose_partial_repeat_input", PACKAGE / "compose_partial_repeat_input.py")
-assert compose_spec and compose_spec.loader
-compose = importlib.util.module_from_spec(compose_spec)
-sys.modules[compose_spec.name] = compose
-compose_spec.loader.exec_module(compose)
+study = load_module(PACKAGE / "study.py", name="confidence_diagnostics_v1")
+prepare = load_module(
+    PACKAGE / "prepare_fresh88_input.py",
+    name="confidence_diagnostics_prepare_fresh88_input_v1",
+    aliases={"study": study},
+)
+compose = load_module(
+    PACKAGE / "compose_partial_repeat_input.py",
+    name="confidence_diagnostics_compose_partial_repeat_input_v1",
+    aliases={"study": study, "prepare_fresh88_input": prepare},
+)
 
 
 def _seal(directory: Path, payload: dict) -> None:

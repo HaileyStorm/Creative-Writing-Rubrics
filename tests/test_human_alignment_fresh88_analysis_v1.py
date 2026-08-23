@@ -1,22 +1,22 @@
 from __future__ import annotations
 
-import importlib.util
 import json
 import hashlib
-import sys
 from pathlib import Path
 
 import pytest
 
+from _scoped_module_loader import load_module
+
 
 ROOT = Path(__file__).resolve().parents[1]
 PACKAGE = ROOT / "evaluation-results" / "hbq-human-alignment-v3-fresh88-analysis-v1"
-sys.path.insert(0, str(PACKAGE))
-spec = importlib.util.spec_from_file_location("fresh88_analysis_v1", PACKAGE / "analyze.py")
-assert spec and spec.loader
-analysis = importlib.util.module_from_spec(spec)
-sys.modules[spec.name] = analysis
-spec.loader.exec_module(analysis)
+study = load_module(PACKAGE / "study.py", name="fresh88_analysis_study_v1")
+analysis = load_module(
+    PACKAGE / "analyze.py",
+    name="fresh88_analysis_v1",
+    aliases={"study": study},
+)
 
 
 def _plan() -> dict:
