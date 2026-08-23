@@ -71,7 +71,15 @@ def test_dry_run_never_imports_dspy_or_calls_remote_and_preflight_fails_closed(m
     with pytest.raises(PermissionError, match="Forbidden"):
         module.preflight_remote(allow_remote=True, owner_zero_incremental_charge=True, private_root=tmp_path)
     monkeypatch.delenv("OPENAI_API_KEY")
-    monkeypatch.setattr(module.subprocess, "run", lambda *args, **kwargs: SimpleNamespace(returncode=0, stdout="Logged in using ChatGPT\n"))
+    monkeypatch.setattr(
+        module.subprocess,
+        "run",
+        lambda *args, **kwargs: SimpleNamespace(
+            returncode=0,
+            stdout="",
+            stderr="Logged in using ChatGPT\n",
+        ),
+    )
     module.preflight_remote(allow_remote=True, owner_zero_incremental_charge=True, private_root=tmp_path)
     assert json.loads((tmp_path / "subscription-attestation.json").read_text(encoding="utf-8"))["route"] == "codex_cli_chatgpt_subscription"
 

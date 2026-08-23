@@ -19,7 +19,8 @@ def preflight_remote(*, allow_remote: bool, owner_zero_incremental_charge: bool,
     if forbidden:
         raise PermissionError(f"Forbidden paid/API route configuration present: {', '.join(forbidden)}")
     status = subprocess.run(["codex", "login", "status"], text=True, encoding="utf-8", capture_output=True, check=False)
-    if status.returncode != 0 or "Logged in using ChatGPT" not in status.stdout:
+    reported_status = "\n".join((status.stdout, status.stderr))
+    if status.returncode != 0 or "Logged in using ChatGPT" not in reported_status:
         raise PermissionError("Codex CLI must be logged in using ChatGPT subscription authentication")
     (private_root / "subscription-attestation.json").write_text(json.dumps({"route": "codex_cli_chatgpt_subscription", "status": "Logged in using ChatGPT"}, sort_keys=True), encoding="utf-8")
 
