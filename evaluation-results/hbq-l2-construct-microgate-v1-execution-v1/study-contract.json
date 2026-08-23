@@ -1,0 +1,56 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-l2-construct-microgate-v1-execution-v1",
+  "status": "frozen_execution_successor_unexecuted",
+  "predecessor": {
+    "commit": "a711c856e33516d4cc1f29fac889a802143623a8",
+    "tree": "77fe3c82a8ea94a83bf01cb870b0e01a9d750071",
+    "files": {
+      "README.md": "0e9eb52414200c33f338a8b0ef76c08244e820d6",
+      "assets/generate_geometry_fixture.py": "1b6b7a35e4c9553880a81baeb441e658267cd8ea",
+      "public-synthetic-corpus.json": "4d40ce2013a728fb05f62e406e53f8dbd2063aec",
+      "run.py": "2aa7a4f9a5541c6b7b8368f446a572a4f822657f",
+      "study-contract.json": "a276231aaa8b8cf1c510fad6cf9ec52336abd528",
+      "study.py": "283b78ef85e5290eb8bb3a3010b15095e6af8c3d"
+    }
+  },
+  "execution": {
+    "route": "codex",
+    "model": "gpt-5.6-sol",
+    "reasoning": "high",
+    "batch_size": 1,
+    "one_leaf_per_call": true,
+    "maximum_provider_sends": 24,
+    "attempt_lifecycle_policy": "terminal_sidecar_v1",
+    "terminal_sidecar_format_version": 5,
+    "one_physical_attempt_per_slot": true,
+    "semantic_retry_or_resume": "forbidden",
+    "owner_attested_zero_incremental_charge_only": true,
+    "paid_api_or_fallback_route": "forbidden",
+    "authentication": "chatgpt_subscription_only_no_api_credential_environment",
+    "connection_retries": "disabled",
+    "timeout_seconds": 120
+  },
+  "geometry": {"cases": 4, "leaves": 4, "cells": 8, "repeats": 3, "slots": 24, "visual_png_slots": 6},
+  "image_delivery": {
+    "input_contract": "codex_exec_image_flag_exact_png_bytes",
+    "stairwell_bytes": 129853,
+    "stairwell_sha256": "104631a4d662f2435e000cca86921a68dbb303ed58cd24759a717c7ae171ceb7",
+    "absent_image_case": "c04_no_attachment",
+    "text_substitution_forbidden": true
+  },
+  "privacy": {
+    "expected_ledger_read_by_executor": false,
+    "expected_ledger_read_by_dry_run": false,
+    "expected_ledger_read_by_settlement": false,
+    "settlement_requires_external_boolean_scorer": true,
+    "result_policy": "write_once_aggregate_only"
+  },
+  "preexecution_disclosure": "exact_prompt_and_attachment_receipts_required",
+  "gating": {
+    "all_cells_three_of_three": "FIXTURE_DRIVEN_CLOSE_NO_CHANGE",
+    "any_cell_one_or_two_of_three": "VARIANCE_NO_GO",
+    "any_clean_cell_zero_of_three_without_variance": "LEAF_SPECIFIC_TREATMENT_DESIGN_ELIGIBLE"
+  },
+  "promotion": "none"
+}
