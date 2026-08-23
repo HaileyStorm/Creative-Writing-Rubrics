@@ -11,6 +11,7 @@ import ipaddress
 import json
 import os
 from pathlib import Path
+import re
 import shutil
 import subprocess
 import sys
@@ -63,6 +64,14 @@ NOUS_TRANSPORT_POLICY = {
 }
 EVIDENCE_NORMALIZATION_POLICY = "invalid_exact_quote_to_summary_v1"
 VALIDATION_FEEDBACK_POLICY = "validation_feedback_retry_v1"
+ATTEMPT_LIFECYCLE_POLICY = "terminal_sidecar_v1"
+ATTEMPT_OUTCOMES = frozenset({
+    "accepted",
+    "provider_retryable_failure",
+    "provider_nonretryable_failure",
+    "model_refusal",
+    "schema_or_quote_failure",
+})
 PROMPT_RENDERING_VERSION = 2
 LEGACY_PROMPT_RENDERING_VERSION = 1
 TASK_CONTRACT_JUDGE_CONTEXT_VERSION = 1
@@ -107,11 +116,13 @@ class _ProviderAttemptFailure(HBQError):
         retryable: bool,
         content: str | None = None,
         provider_record: Mapping[str, Any] | None = None,
+        attempt_outcome: str | None = None,
     ) -> None:
         super().__init__(message)
         self.retryable = retryable
         self.content = content
         self.provider_record = dict(provider_record) if provider_record is not None else None
+        self.attempt_outcome = attempt_outcome
 
 
 class _NoRedirect(HTTPRedirectHandler):
@@ -219,6 +230,16 @@ def _openai_content(response: Mapping[str, Any]) -> str:
     raise HBQError("OpenAI-compatible response content is not text")
 
 
+def _openai_structured_refusal(response: Mapping[str, Any]) -> bool:
+    """Recognize only the provider's explicit refusal field, never prose guesses."""
+
+    try:
+        refusal = response["choices"][0]["message"].get("refusal")
+    except (KeyError, IndexError, TypeError, AttributeError):
+        return False
+    return isinstance(refusal, str) and bool(refusal.strip())
+
+
 def _call_openai(
     *,
     endpoint: str,
@@ -229,6 +250,7 @@ def _call_openai(
     temperature: float | None,
     allow_model_mismatch: bool,
     timeout: float,
+    attempt_lifecycle_policy: str | None = None,
 ) -> tuple[str, dict[str, Any]]:
     payload: dict[str, Any] = {
         "model": model,
@@ -296,6 +318,13 @@ def _call_openai(
             retryable=False,
             content=raw_response,
             provider_record=dict(response),
+        )
+    if attempt_lifecycle_policy == ATTEMPT_LIFECYCLE_POLICY and _openai_structured_refusal(response):
+        raise _ProviderAttemptFailure(
+            "OpenAI-compatible endpoint returned a structured refusal",
+            retryable=False,
+            provider_record=dict(response),
+            attempt_outcome="model_refusal",
         )
     try:
         content = _openai_content(response)
@@ -2095,6 +2124,447 @@ def _recover_normalized_rejection(
     return None
 
 
+def _attempt_lifecycle_path(output_dir: Path, batch_number: int, attempt_number: int, kind: str) -> Path:
+    if kind not in {"start", "settled"}:
+        raise HBQError("Attempt lifecycle artifact kind is invalid")
+    return (
+        output_dir / "responses" / "attempt-lifecycle" / f"batch-{batch_number:04d}"
+        / f"attempt-{attempt_number:04d}.{kind}.json"
+    )
+
+
+def _attempt_start_record(
+    *,
+    config_sha256: str,
+    batch_number: int,
+    attempt_number: int,
+    base_prompt_sha256: str,
+    effective_prompt_sha256: str,
+    batch_attempts: int,
+) -> dict[str, Any]:
+    return {
+        "format_version": 1,
+        "policy": ATTEMPT_LIFECYCLE_POLICY,
+        "state": "started",
+        "config_sha256": config_sha256,
+        "batch": batch_number,
+        "attempt": attempt_number,
+        "retry_policy": {"batch_attempts": batch_attempts},
+        "base_prompt_sha256": base_prompt_sha256,
+        "effective_prompt_sha256": effective_prompt_sha256,
+    }
+
+
+def _write_attempt_start(**kwargs: Any) -> Path:
+    path = _attempt_lifecycle_path(kwargs["output_dir"], kwargs["batch_number"], kwargs["attempt_number"], "start")
+    if path.exists():
+        raise HBQError(f"Attempt lifecycle start already exists: {path.name}")
+    record = _attempt_start_record(
+        config_sha256=kwargs["config_sha256"],
+        batch_number=kwargs["batch_number"],
+        attempt_number=kwargs["attempt_number"],
+        base_prompt_sha256=kwargs["base_prompt_sha256"],
+        effective_prompt_sha256=kwargs["effective_prompt_sha256"],
+        batch_attempts=kwargs["batch_attempts"],
+    )
+    _write_json(path, record)
+    return path
+
+
+def _load_lifecycle_record(path: Path, *, label: str) -> Mapping[str, Any]:
+    try:
+        record = json.loads(path.read_bytes())
+    except (OSError, json.JSONDecodeError) as exc:
+        raise HBQError(f"Attempt lifecycle {label} is unreadable: {path}") from exc
+    if not isinstance(record, Mapping):
+        raise HBQError(f"Attempt lifecycle {label} is malformed: {path}")
+    return record
+
+
+def _settle_attempt(
+    *,
+    output_dir: Path,
+    batch_number: int,
+    attempt_number: int,
+    outcome: str,
+    evidence_kind: str,
+    evidence_path: Path | None,
+    manual_count_as: str | None = None,
+) -> Path:
+    if outcome not in ATTEMPT_OUTCOMES or evidence_kind not in {"accepted_checkpoint", "rejected_attempt", "manual_reconcile"}:
+        raise HBQError("Attempt lifecycle settlement is invalid")
+    start_path = _attempt_lifecycle_path(output_dir, batch_number, attempt_number, "start")
+    start = _load_lifecycle_record(start_path, label="start")
+    settled_path = _attempt_lifecycle_path(output_dir, batch_number, attempt_number, "settled")
+    if settled_path.exists():
+        raise HBQError(f"Attempt lifecycle settlement already exists: {settled_path.name}")
+    evidence: dict[str, Any] = {"kind": evidence_kind}
+    if evidence_path is not None:
+        try:
+            relative = evidence_path.resolve().relative_to(output_dir.resolve()).as_posix()
+        except ValueError as exc:
+            raise HBQError("Attempt lifecycle evidence escapes the run") from exc
+        evidence.update({"path": relative, "sha256": _sha256_bytes(evidence_path.read_bytes())})
+    if evidence_kind == "manual_reconcile":
+        if manual_count_as not in {"retryable", "nonretryable"}:
+            raise HBQError("Manual attempt reconciliation requires an explicit count-as value")
+        evidence["count_as"] = manual_count_as
+    record: dict[str, Any] = {
+        "format_version": 1,
+        "policy": ATTEMPT_LIFECYCLE_POLICY,
+        "state": "settled",
+        "start_sha256": _sha256_bytes(start_path.read_bytes()),
+        "batch": batch_number,
+        "attempt": attempt_number,
+        "outcome": outcome,
+        "evidence": evidence,
+    }
+    _write_json(settled_path, record)
+    return settled_path
+
+
+def _attempt_outcome_for_provider_failure(failure: _ProviderAttemptFailure | None) -> str:
+    if failure is not None and failure.attempt_outcome is not None:
+        return failure.attempt_outcome
+    return "provider_retryable_failure" if failure is None or failure.retryable else "provider_nonretryable_failure"
+
+
+def _nonretryable_attempt(record: Mapping[str, Any]) -> bool:
+    return record.get("attempt_outcome") in {"provider_nonretryable_failure", "model_refusal"}
+
+
+def _validate_or_reconstruct_attempt_lifecycle(
+    output_dir: Path,
+    *,
+    config_sha256: str,
+    batch_attempts: int,
+    reconstruct: bool,
+    strict_v5: bool = False,
+    require_durable: bool = False,
+    allowed_unresolved: set[tuple[int, int]] | None = None,
+) -> None:
+    """Bind terminal sidecars to existing durable rejection/checkpoint evidence.
+
+    A start without one of those durable outcomes is intentionally ambiguous and
+    must stop resume rather than risk a duplicate provider send.
+    """
+
+    root = output_dir / "responses" / "attempt-lifecycle"
+    if root.is_dir():
+        for path in root.rglob("*"):
+            if path.is_file() and not re.fullmatch(
+                r"batch-\d{4}/attempt-\d{4}\.(start|settled)\.json",
+                path.relative_to(root).as_posix(),
+            ):
+                raise HBQError(f"Attempt lifecycle has an unrecognized artifact: {path}")
+    starts = sorted(root.glob("batch-*/attempt-*.start.json")) if root.is_dir() else []
+    settlements = sorted(root.glob("batch-*/attempt-*.settled.json")) if root.is_dir() else []
+    known: set[tuple[int, int]] = set()
+    settled_keys: set[tuple[int, int]] = set()
+    expected: set[tuple[int, int]] = set()
+    rejections_by_batch: dict[int, set[int]] = {}
+    checkpoints_by_batch: dict[int, int] = {}
+    for path in starts:
+        match = re.fullmatch(r"batch-(\d{4})/attempt-(\d{4})\.start\.json", path.relative_to(root).as_posix())
+        if match is None:
+            raise HBQError(f"Attempt lifecycle start has an invalid path: {path}")
+        batch, attempt = int(match.group(1)), int(match.group(2))
+        expected_start = _attempt_start_record(
+            config_sha256=config_sha256,
+            batch_number=batch,
+            attempt_number=attempt,
+            base_prompt_sha256="",
+            effective_prompt_sha256="",
+            batch_attempts=batch_attempts,
+        )
+        start = _load_lifecycle_record(path, label="start")
+        if (
+            set(start) != set(expected_start)
+            or start.get("format_version") != 1
+            or start.get("policy") != ATTEMPT_LIFECYCLE_POLICY
+            or start.get("state") != "started"
+            or start.get("config_sha256") != config_sha256
+            or start.get("batch") != batch
+            or start.get("attempt") != attempt
+            or start.get("retry_policy") != {"batch_attempts": batch_attempts}
+            or not isinstance(start.get("config_sha256"), str)
+            or not re.fullmatch(r"[0-9a-f]{64}", start["config_sha256"])
+            or not all(
+                isinstance(start.get(key), str) and re.fullmatch(r"[0-9a-f]{64}", start[key])
+                for key in ("base_prompt_sha256", "effective_prompt_sha256")
+            )
+            or batch < 1
+            or attempt < 1
+            or attempt > batch_attempts
+        ):
+            raise HBQError(f"Attempt lifecycle start is malformed: {path}")
+        known.add((batch, attempt))
+    for path in settlements:
+        match = re.fullmatch(r"batch-(\d{4})/attempt-(\d{4})\.settled\.json", path.relative_to(root).as_posix())
+        if match is None:
+            raise HBQError(f"Attempt lifecycle settlement has an invalid path: {path}")
+        batch, attempt = int(match.group(1)), int(match.group(2))
+        if (batch, attempt) not in known:
+            raise HBQError(f"Attempt lifecycle settlement is orphaned: {path}")
+        settled_keys.add((batch, attempt))
+        record = _load_lifecycle_record(path, label="settlement")
+        start_path = _attempt_lifecycle_path(output_dir, batch, attempt, "start")
+        evidence = record.get("evidence")
+        if (
+            set(record) != {"format_version", "policy", "state", "start_sha256", "batch", "attempt", "outcome", "evidence"}
+            or record.get("format_version") != 1
+            or record.get("policy") != ATTEMPT_LIFECYCLE_POLICY
+            or record.get("state") != "settled"
+            or record.get("start_sha256") != _sha256_bytes(start_path.read_bytes())
+            or record.get("batch") != batch
+            or record.get("attempt") != attempt
+            or record.get("outcome") not in ATTEMPT_OUTCOMES
+            or not isinstance(evidence, Mapping)
+        ):
+            raise HBQError(f"Attempt lifecycle settlement is malformed: {path}")
+        kind = evidence.get("kind")
+        if kind == "manual_reconcile":
+            if set(evidence) != {"kind", "count_as"} or evidence.get("count_as") not in {"retryable", "nonretryable"}:
+                raise HBQError(f"Attempt lifecycle manual settlement is malformed: {path}")
+        elif kind in {"accepted_checkpoint", "rejected_attempt"}:
+            if set(evidence) != {"kind", "path", "sha256"} or not isinstance(evidence.get("path"), str) or not isinstance(evidence.get("sha256"), str):
+                raise HBQError(f"Attempt lifecycle evidence binding is malformed: {path}")
+            evidence_path = output_dir / evidence["path"]
+            if not evidence_path.is_file() or _sha256_bytes(evidence_path.read_bytes()) != evidence["sha256"]:
+                raise HBQError(f"Attempt lifecycle evidence binding drifted: {path}")
+        else:
+            raise HBQError(f"Attempt lifecycle settlement kind is invalid: {path}")
+
+    for batch_path in sorted((output_dir / "responses" / "rejected").glob("batch-*")) if (output_dir / "responses" / "rejected").is_dir() else []:
+        if not batch_path.is_dir() or not batch_path.name.removeprefix("batch-").isdigit():
+            raise HBQError("Attempt lifecycle found an invalid rejected batch path")
+        batch = int(batch_path.name.removeprefix("batch-"))
+        for rejected_path, record in _rejected_records(output_dir, batch):
+            if strict_v5 and record.get("format_version") != 5:
+                raise HBQError(f"Terminal lifecycle rejects mixed rejected formats: {rejected_path}")
+            if record.get("format_version") != 5:
+                continue
+            attempt = record.get("attempt")
+            if not isinstance(attempt, int) or isinstance(attempt, bool):
+                raise HBQError("Attempt lifecycle rejection has an invalid attempt number")
+            if attempt < 1 or attempt > batch_attempts or (batch, attempt) in expected:
+                raise HBQError(f"Attempt lifecycle rejection attempt is invalid: {rejected_path}")
+            expected.add((batch, attempt))
+            rejections_by_batch.setdefault(batch, set()).add(attempt)
+            if (batch, attempt) not in known:
+                raise HBQError(f"Attempt lifecycle rejection lacks a start sidecar: {rejected_path}")
+            start = _load_lifecycle_record(
+                _attempt_lifecycle_path(output_dir, batch, attempt, "start"), label="start"
+            )
+            if (
+                start.get("base_prompt_sha256") != record.get("base_prompt_sha256")
+                or start.get("effective_prompt_sha256") != record.get("effective_prompt_sha256")
+            ):
+                raise HBQError(f"Attempt lifecycle rejection start does not bind its prompt: {rejected_path}")
+            settled = _attempt_lifecycle_path(output_dir, batch, attempt, "settled")
+            manual = record.get("stage") == "manual_reconcile"
+            if manual and (
+                record.get("attempt_outcome") not in {"provider_retryable_failure", "provider_nonretryable_failure"}
+                or record.get("provider") is not None
+            ):
+                raise HBQError(f"Attempt lifecycle manual reconciliation is malformed: {rejected_path}")
+            if not settled.exists() and reconstruct:
+                _settle_attempt(
+                    output_dir=output_dir,
+                    batch_number=batch,
+                    attempt_number=attempt,
+                    outcome=str(record.get("attempt_outcome")),
+                    evidence_kind="manual_reconcile" if manual else "rejected_attempt",
+                    evidence_path=None if manual else rejected_path,
+                    manual_count_as=(
+                        "retryable" if record.get("attempt_outcome") == "provider_retryable_failure" else "nonretryable"
+                    ) if manual else None,
+                )
+            elif settled.exists():
+                settlement = _load_lifecycle_record(settled, label="settlement")
+                evidence = settlement.get("evidence")
+                if manual:
+                    expected_count = "retryable" if record.get("attempt_outcome") == "provider_retryable_failure" else "nonretryable"
+                    valid = (
+                        settlement.get("outcome") == record.get("attempt_outcome")
+                        and isinstance(evidence, Mapping)
+                        and evidence == {"kind": "manual_reconcile", "count_as": expected_count}
+                    )
+                else:
+                    valid = (
+                        settlement.get("outcome") == record.get("attempt_outcome")
+                        and isinstance(evidence, Mapping)
+                        and evidence == {
+                            "kind": "rejected_attempt",
+                            "path": rejected_path.relative_to(output_dir).as_posix(),
+                            "sha256": _sha256_bytes(rejected_path.read_bytes()),
+                        }
+                    )
+                if not valid:
+                    raise HBQError(f"Attempt lifecycle rejection settlement is not bound: {rejected_path}")
+    for checkpoint_path in sorted((output_dir / "responses").glob("batch-[0-9][0-9][0-9][0-9].json")):
+        record = _load_lifecycle_record(checkpoint_path, label="checkpoint")
+        if strict_v5 and record.get("format_version") != 5:
+            raise HBQError(f"Terminal lifecycle rejects mixed checkpoint formats: {checkpoint_path}")
+        if record.get("format_version") != 5:
+            continue
+        batch, attempt = record.get("batch"), record.get("accepted_attempt")
+        if not isinstance(batch, int) or not isinstance(attempt, int) or (batch, attempt) not in known:
+            raise HBQError(f"Attempt lifecycle checkpoint lacks a start sidecar: {checkpoint_path}")
+        if batch < 1 or attempt < 1 or attempt > batch_attempts or (batch, attempt) in expected:
+            raise HBQError(f"Attempt lifecycle checkpoint attempt is invalid: {checkpoint_path}")
+        expected.add((batch, attempt))
+        checkpoints_by_batch[batch] = attempt
+        start = _load_lifecycle_record(
+            _attempt_lifecycle_path(output_dir, batch, attempt, "start"), label="start"
+        )
+        if (
+            start.get("base_prompt_sha256") != record.get("base_prompt_sha256")
+            or start.get("effective_prompt_sha256") != record.get("effective_prompt_sha256")
+        ):
+            raise HBQError(f"Attempt lifecycle checkpoint start does not bind its prompt: {checkpoint_path}")
+        settled = _attempt_lifecycle_path(output_dir, batch, attempt, "settled")
+        if not settled.exists() and reconstruct:
+            _settle_attempt(
+                output_dir=output_dir,
+                batch_number=batch,
+                attempt_number=attempt,
+                outcome="accepted",
+                evidence_kind="accepted_checkpoint",
+                evidence_path=checkpoint_path,
+            )
+        elif settled.exists():
+            settlement = _load_lifecycle_record(settled, label="settlement")
+            if settlement.get("outcome") != "accepted" or settlement.get("evidence") != {
+                "kind": "accepted_checkpoint",
+                "path": checkpoint_path.relative_to(output_dir).as_posix(),
+                "sha256": _sha256_bytes(checkpoint_path.read_bytes()),
+            }:
+                raise HBQError(f"Attempt lifecycle checkpoint settlement is not bound: {checkpoint_path}")
+    if reconstruct:
+        return _validate_or_reconstruct_attempt_lifecycle(
+            output_dir, config_sha256=config_sha256, batch_attempts=batch_attempts,
+            reconstruct=False, strict_v5=strict_v5,
+            require_durable=require_durable,
+            allowed_unresolved=allowed_unresolved,
+        )
+    if strict_v5:
+        completed_batches = sorted(checkpoints_by_batch)
+        if completed_batches != list(range(1, len(completed_batches) + 1)):
+            raise HBQError("Terminal lifecycle checkpoints are not contiguous")
+        max_allowed_batch = len(completed_batches) + (0 if require_durable else 1)
+        for batch, _ in known | expected:
+            if batch > max_allowed_batch:
+                raise HBQError(f"Terminal lifecycle batch {batch} is outside the checkpoint plan")
+        for batch, accepted_attempt in checkpoints_by_batch.items():
+            if rejections_by_batch.get(batch, set()) != set(range(1, accepted_attempt)):
+                raise HBQError(f"Terminal lifecycle attempts do not lead to checkpoint {batch}")
+        for batch, attempts in rejections_by_batch.items():
+            if batch not in checkpoints_by_batch and attempts != set(range(1, len(attempts) + 1)):
+                raise HBQError(f"Terminal lifecycle incomplete attempts are not contiguous for batch {batch}")
+        if require_durable and any(batch not in checkpoints_by_batch for batch, _ in expected):
+            raise HBQError("Completed terminal lifecycle has attempts outside checkpoint batches")
+        if require_durable and not expected:
+            raise HBQError("Terminal lifecycle requires durable attempts and sidecars")
+        permitted_unresolved = allowed_unresolved or set()
+        if known and not expected and not permitted_unresolved:
+            raise HBQError("Attempt lifecycle start is ambiguous and requires cwr reconcile-attempt")
+        if known - expected != permitted_unresolved or settled_keys != expected:
+            raise HBQError("Terminal lifecycle ledger is not exactly 1:1 with durable attempt evidence")
+        for batch in {batch for batch, _ in expected}:
+            attempts = sorted(attempt for record_batch, attempt in expected if record_batch == batch)
+            if attempts != list(range(1, len(attempts) + 1)):
+                raise HBQError(f"Terminal lifecycle attempts are not contiguous for batch {batch}")
+    for batch, attempt in known:
+        if (
+            (batch, attempt) not in (allowed_unresolved or set())
+            and not _attempt_lifecycle_path(output_dir, batch, attempt, "settled").exists()
+        ):
+            raise HBQError(
+                f"Attempt lifecycle start is ambiguous and requires cwr reconcile-attempt: batch {batch}, attempt {attempt}"
+            )
+
+
+def reconcile_attempt(
+    output_dir: str | Path,
+    *,
+    batch_number: int,
+    attempt_number: int,
+    count_as: str,
+) -> dict[str, Any]:
+    """Terminally account for an unresolved started attempt without a provider call."""
+
+    if not isinstance(batch_number, int) or isinstance(batch_number, bool) or batch_number < 1:
+        raise HBQError("Reconcile batch must be a positive integer")
+    if not isinstance(attempt_number, int) or isinstance(attempt_number, bool) or attempt_number < 1:
+        raise HBQError("Reconcile attempt must be a positive integer")
+    if count_as not in {"retryable", "nonretryable"}:
+        raise HBQError("Reconcile count-as must be retryable or nonretryable")
+    destination = Path(output_dir).resolve()
+    manifest = load_data(destination / "run.json")
+    if not isinstance(manifest, Mapping) or manifest.get("format_version") != 5:
+        raise HBQError("Manual reconciliation requires a fresh terminal-sidecar run")
+    configuration = manifest.get("configuration")
+    if not isinstance(configuration, Mapping) or configuration.get("attempt_lifecycle_policy") != ATTEMPT_LIFECYCLE_POLICY:
+        raise HBQError("Manual reconciliation requires terminal_sidecar_v1")
+    config_sha256 = manifest.get("config_sha256")
+    retry_policy = configuration.get("retry_policy")
+    if (
+        not isinstance(config_sha256, str)
+        or config_sha256 != _sha256_bytes(_json_bytes(configuration))
+        or not isinstance(retry_policy, Mapping)
+        or not isinstance(retry_policy.get("batch_attempts"), int)
+    ):
+        raise HBQError("Manual reconciliation run configuration is malformed")
+    start_path = _attempt_lifecycle_path(destination, batch_number, attempt_number, "start")
+    settled_path = _attempt_lifecycle_path(destination, batch_number, attempt_number, "settled")
+    if not start_path.exists() or settled_path.exists():
+        raise HBQError("Manual reconciliation requires one unresolved attempt start")
+    _validate_or_reconstruct_attempt_lifecycle(
+        destination,
+        config_sha256=config_sha256,
+        batch_attempts=retry_policy["batch_attempts"],
+        reconstruct=False,
+        strict_v5=True,
+        allowed_unresolved={(batch_number, attempt_number)},
+    )
+    start = _load_lifecycle_record(start_path, label="start")
+    records = _rejected_records(destination, batch_number)
+    if len(records) + 1 != attempt_number:
+        raise HBQError("Manual reconciliation cannot skip or rewrite a rejected attempt")
+    outcome = "provider_retryable_failure" if count_as == "retryable" else "provider_nonretryable_failure"
+    rejection = _write_rejected_attempt(
+        output_dir=destination,
+        batch_number=batch_number,
+        base_prompt_sha256=str(start["base_prompt_sha256"]),
+        effective_prompt_sha256=str(start["effective_prompt_sha256"]),
+        validation_feedback_policy=None,
+        feedback=None,
+        content=None,
+        provider_record=None,
+        error=HBQError("Manually reconciled unresolved provider attempt; no response was recovered"),
+        stage="manual_reconcile",
+        batch_attempts=retry_policy["batch_attempts"],
+        attempt_outcome=outcome,
+    )
+    _settle_attempt(
+        output_dir=destination,
+        batch_number=batch_number,
+        attempt_number=attempt_number,
+        outcome=outcome,
+        evidence_kind="manual_reconcile",
+        evidence_path=None,
+        manual_count_as=count_as,
+    )
+    return {
+        "status": "RECONCILED",
+        "batch": batch_number,
+        "attempt": attempt_number,
+        "count_as": count_as,
+        "rejected_attempt": rejection.relative_to(destination).as_posix(),
+    }
+
+
 def _write_rejected_attempt(
     *,
     output_dir: Path,
@@ -2108,6 +2578,7 @@ def _write_rejected_attempt(
     error: Exception,
     stage: str,
     batch_attempts: int,
+    attempt_outcome: str | None = None,
 ) -> Path:
     attempt_dir = output_dir / "responses" / "rejected" / f"batch-{batch_number:04d}"
     attempt_dir.mkdir(parents=True, exist_ok=True)
@@ -2133,8 +2604,11 @@ def _write_rejected_attempt(
         raise HBQError("Cannot append after noncontiguous rejected attempt sequences")
     raw_text = content or ""
     raw = raw_text.encode("utf-8")
+    format_version = 5 if attempt_outcome is not None else 4
+    if attempt_outcome is not None and attempt_outcome not in ATTEMPT_OUTCOMES - {"accepted"}:
+        raise HBQError("Rejected attempt outcome is invalid")
     record = {
-        "format_version": 4,
+        "format_version": format_version,
         "batch": batch_number,
         "attempt": attempt_number,
         "sequence": len(sequences) + 1,
@@ -2155,6 +2629,8 @@ def _write_rejected_attempt(
         "provider": _sanitized_provider_record(provider_record),
         "error": {"class": type(error).__name__, "message": str(error)[:4000]},
     }
+    if attempt_outcome is not None:
+        record["attempt_outcome"] = attempt_outcome
     _write_json(record_path, record)
     return record_path
 
@@ -2190,7 +2666,7 @@ def _rejected_chain_binding(
                 and raw_content.get("sha256") == _sha256_bytes(raw)
                 and raw_content.get("path") == raw_path.relative_to(output_dir).as_posix()
             ) if isinstance(raw_content, Mapping) else False
-        elif isinstance(record, Mapping) and record.get("format_version") in {3, 4}:
+        elif isinstance(record, Mapping) and record.get("format_version") in {3, 4, 5}:
             raw_text = raw_content.get("text") if isinstance(raw_content, Mapping) else None
             raw = raw_text.encode("utf-8") if isinstance(raw_text, str) else None
             valid_raw = (
@@ -2202,10 +2678,14 @@ def _rejected_chain_binding(
         else:
             valid_raw = False
         valid_policy_record = True
-        if isinstance(record, Mapping) and record.get("format_version") == 4:
+        if isinstance(record, Mapping) and record.get("format_version") in {4, 5}:
             feedback = record.get("validation_feedback")
             feedback_policy = record.get("validation_feedback_policy")
-            if normalization_policy is None:
+            manual_reconcile = record.get("format_version") == 5 and record.get("stage") == "manual_reconcile"
+            if manual_reconcile:
+                expected_effective = None
+                valid_feedback = feedback_policy is None and feedback is None
+            elif normalization_policy is None:
                 expected_effective = base_prompt
                 valid_feedback = feedback_policy is None and feedback is None
             elif index == 1 and feedback is None:
@@ -2223,7 +2703,11 @@ def _rejected_chain_binding(
                 valid_feedback = False
             valid_policy_record = (
                 record.get("base_prompt_sha256") == base_prompt_sha256
-                and record.get("effective_prompt_sha256") == _sha256_bytes(expected_effective.encode("utf-8"))
+                and (
+                    record.get("effective_prompt_sha256") == record.get("prompt_sha256")
+                    if expected_effective is None
+                    else record.get("effective_prompt_sha256") == _sha256_bytes(expected_effective.encode("utf-8"))
+                )
                 and record.get("prompt_sha256") == record.get("effective_prompt_sha256")
                 and valid_feedback
             )
@@ -2231,7 +2715,7 @@ def _rejected_chain_binding(
             valid_policy_record = False
         if (
             not isinstance(record, Mapping)
-            or record.get("format_version") not in {2, 3, 4}
+            or record.get("format_version") not in {2, 3, 4, 5}
             or record.get("batch") != batch_number
             or record.get("attempt") != index
             or (record.get("prompt_sha256") != base_prompt_sha256 if record.get("format_version") in {2, 3} else False)
@@ -2240,6 +2724,10 @@ def _rejected_chain_binding(
             or not isinstance(raw_content, Mapping)
             or not valid_raw
             or not valid_policy_record
+            or (
+                record.get("format_version") == 5
+                and record.get("attempt_outcome") not in ATTEMPT_OUTCOMES - {"accepted"}
+            )
         ):
             raise HBQError(f"Rejected attempt {path} is not a valid bound record")
         previous = _sha256_bytes(path.read_bytes())
@@ -2381,7 +2869,7 @@ def _load_checkpoints(
             record = json.loads(raw)
         except json.JSONDecodeError as exc:
             raise HBQError(f"Invalid response checkpoint {path.name}: {exc}") from exc
-        if not isinstance(record, dict) or record.get("format_version") not in {1, 2, 3, 4} or record.get("batch") != expected_batch:
+        if not isinstance(record, dict) or record.get("format_version") not in {1, 2, 3, 4, 5} or record.get("batch") != expected_batch:
             raise HBQError(f"Response checkpoints are not a contiguous ordered sequence at {path.name}")
         checkpoint_format_version = record["format_version"]
         if record.get("previous_checkpoint_sha256") != previous_sha256:
@@ -2412,7 +2900,7 @@ def _load_checkpoints(
                 isinstance(entry, dict) for entry in evidence
             ):
                 raise HBQError(f"Response checkpoint {path.name} contains invalid normalized evidence")
-            if checkpoint_format_version in {2, 3, 4}:
+            if checkpoint_format_version in {2, 3, 4, 5}:
                 _validate_typed_checkpoint_evidence(evidence, question_id=question_id)
             _validate_exact_quotes(
                 evidence,
@@ -2420,7 +2908,7 @@ def _load_checkpoints(
                 context_texts=context_texts,
                 question_id=question_id,
             )
-        if checkpoint_format_version in {3, 4}:
+        if checkpoint_format_version in {3, 4, 5}:
             if record.get("retry_policy") != {"batch_attempts": batch_attempts}:
                 raise HBQError(f"Response checkpoint {path.name} retry policy does not match this run")
             accepted_attempt = record.get("accepted_attempt")
@@ -2463,14 +2951,14 @@ def _load_checkpoints(
                 batch_number=expected_batch,
                 base_prompt=base_prompt,
                 batch_attempts=batch_attempts,
-                normalization_policy=normalization_policy if checkpoint_format_version == 4 else None,
+                normalization_policy=normalization_policy if checkpoint_format_version in {4, 5} else None,
                 allow_legacy_rejection_records=allow_legacy_rejection_records,
             )
             if record.get("rejected_chain") != rejected_chain:
                 raise HBQError(f"Response checkpoint {path.name} rejected retry chain is not bound")
             if accepted_attempt > 1 and rejected_chain["count"] < 1:
                 raise HBQError(f"Response checkpoint {path.name} accepted after retries without rejected evidence")
-            if checkpoint_format_version == 4:
+            if checkpoint_format_version in {4, 5}:
                 if record.get("normalization_policy") != normalization_policy:
                     raise HBQError(f"Response checkpoint {path.name} normalization policy does not match this run")
                 expected_feedback_policy = (
@@ -2594,6 +3082,7 @@ def run_judge(
     allow_unattested_reasoning: bool = False,
     upgrade_legacy_normalization: bool = False,
     max_physical_http_attempts_per_logical_request: int | None = None,
+    attempt_lifecycle_policy: str | None = None,
 ) -> dict[str, Any]:
     """Judge one artifact against one bundle, checkpointing every batch."""
 
@@ -2626,6 +3115,8 @@ def run_judge(
     )
     if not isinstance(upgrade_legacy_normalization, bool):
         raise HBQError("upgrade_legacy_normalization must be a boolean")
+    if attempt_lifecycle_policy not in {None, ATTEMPT_LIFECYCLE_POLICY}:
+        raise HBQError(f"attempt_lifecycle_policy must be {ATTEMPT_LIFECYCLE_POLICY!r} when set")
 
     artifact = _read_text_record(Path(artifact_path))
     contexts = [_read_text_record(Path(path)) for path in context_paths]
@@ -2814,6 +3305,8 @@ def run_judge(
     if provider == "nous":
         configuration["nous_transport_policy"] = nous_transport_policy
         configuration["nous_model_policy"] = {"requested_model": model, **NOUS_MODEL_POLICIES[model]}
+    if attempt_lifecycle_policy is not None:
+        configuration["attempt_lifecycle_policy"] = attempt_lifecycle_policy
     config_sha256 = _sha256_bytes(_json_bytes(configuration))
     legacy_prompt_configuration = {
         key: value for key, value in configuration.items()
@@ -2843,7 +3336,7 @@ def run_judge(
         if prior is None:
             raise HBQError("Cannot resume: run manifest is missing")
         manifest_format_version = prior.get("format_version")
-        if manifest_format_version not in {1, 2, 3, 4}:
+        if manifest_format_version not in {1, 2, 3, 4, 5}:
             raise HBQError("Cannot resume: unsupported run manifest format")
         if manifest_format_version == 1:
             if batch_attempts != 3:
@@ -2852,14 +3345,14 @@ def run_judge(
         elif manifest_format_version == 3:
             expected_config_sha256 = _sha256_bytes(_json_bytes(legacy_prompt_configuration))
             active_prompt_rendering_version = LEGACY_PROMPT_RENDERING_VERSION
-        elif manifest_format_version == 4:
+        elif manifest_format_version in {4, 5}:
             expected_config_sha256 = config_sha256
         else:
             expected_config_sha256 = _sha256_bytes(_json_bytes(legacy_pre_grounding_configuration))
         if prior.get("config_sha256") != expected_config_sha256:
             prior_configuration = prior.get("configuration")
             prior_retry_policy = prior_configuration.get("retry_policy") if isinstance(prior_configuration, Mapping) else None
-            if manifest_format_version in {2, 3, 4} and prior_retry_policy != configuration["retry_policy"]:
+            if manifest_format_version in {2, 3, 4, 5} and prior_retry_policy != configuration["retry_policy"]:
                 raise HBQError("Cannot resume: batch_attempts retry policy changed")
             raise HBQError("Cannot resume: artifact, prompts, bundle, questions, or provider settings changed")
         active_config_sha256 = expected_config_sha256
@@ -2901,7 +3394,7 @@ def run_judge(
             raise HBQError(f"Output directory is not empty: {destination}")
         destination.mkdir(parents=True, exist_ok=True)
         manifest = {
-            "format_version": 4,
+            "format_version": 5 if attempt_lifecycle_policy is not None else 4,
             "run_id": run_id,
             "created_at": now.isoformat(),
             "config_sha256": config_sha256,
@@ -2920,6 +3413,14 @@ def run_judge(
         normalization_policy=active_normalization_policy,
         allow_legacy_rejection_records=legacy_rejection_compat,
     )
+    if attempt_lifecycle_policy == ATTEMPT_LIFECYCLE_POLICY:
+        _validate_or_reconstruct_attempt_lifecycle(
+            destination,
+            config_sha256=active_config_sha256,
+            batch_attempts=batch_attempts,
+            reconstruct=True,
+            strict_v5=True,
+        )
     if completed != checkpointed[: len(completed)] or len(completed) > len(checkpointed):
         raise HBQError("verdicts.jsonl does not match the ordered response checkpoints")
     if len(completed) < len(checkpointed):
@@ -2988,6 +3489,12 @@ def run_judge(
         expected = [str(item["question"]["id"]) for item in batch]
         base_prompt_sha256 = _sha256_bytes(prompt_bytes)
         records = _rejected_records(destination, batch_number)
+        if attempt_lifecycle_policy == ATTEMPT_LIFECYCLE_POLICY:
+            nonretryable = next((record for _, record in records if _nonretryable_attempt(record)), None)
+            if nonretryable is not None:
+                raise HBQError(
+                    f"Batch {batch_number} has a terminal nonretryable attempt; inspect or reconcile its sidecar before a new run"
+                )
         rejected_chain = _rejected_chain_binding(
             destination,
             batch_number=batch_number,
@@ -3013,7 +3520,9 @@ def run_judge(
             run_id=run_id,
             artifact_text=str(artifact["text"]),
             context_texts=[str(item["text"]) for item in contexts],
-            normalization_policy=active_normalization_policy,
+            normalization_policy=(
+                None if attempt_lifecycle_policy == ATTEMPT_LIFECYCLE_POLICY else active_normalization_policy
+            ),
         )
         if recovered is not None:
             normalized, content, recovered_provider, source_path, accepted_attempt, repair_audit = recovered
@@ -3048,6 +3557,16 @@ def run_judge(
                 effective_prompt, feedback = prompt, None
             effective_prompt_sha256 = _sha256_bytes(effective_prompt.encode("utf-8"))
             attempt_index = len(records) + 1
+            if attempt_lifecycle_policy == ATTEMPT_LIFECYCLE_POLICY:
+                _write_attempt_start(
+                    output_dir=destination,
+                    config_sha256=active_config_sha256,
+                    batch_number=batch_number,
+                    attempt_number=attempt_index,
+                    base_prompt_sha256=base_prompt_sha256,
+                    effective_prompt_sha256=effective_prompt_sha256,
+                    batch_attempts=batch_attempts,
+                )
             try:
                 if provider == "openai":
                     content, provider_record = _call_openai(
@@ -3059,6 +3578,7 @@ def run_judge(
                         temperature=temperature,
                         allow_model_mismatch=allow_model_mismatch,
                         timeout=timeout,
+                        attempt_lifecycle_policy=attempt_lifecycle_policy,
                     )
                 elif provider == "codex":
                     codex_message_attempt = _next_codex_message_attempt(destination, batch_number)
@@ -3120,8 +3640,22 @@ def run_judge(
                     error=exc,
                     stage="provider",
                     batch_attempts=batch_attempts,
+                    attempt_outcome=(
+                        _attempt_outcome_for_provider_failure(failure)
+                        if attempt_lifecycle_policy == ATTEMPT_LIFECYCLE_POLICY
+                        else None
+                    ),
                 )
                 records = _rejected_records(destination, batch_number)
+                if attempt_lifecycle_policy == ATTEMPT_LIFECYCLE_POLICY:
+                    _settle_attempt(
+                        output_dir=destination,
+                        batch_number=batch_number,
+                        attempt_number=attempt_index,
+                        outcome=_attempt_outcome_for_provider_failure(failure),
+                        evidence_kind="rejected_attempt",
+                        evidence_path=records[-1][0],
+                    )
                 if failure is not None and not failure.retryable:
                     raise HBQError(
                         f"Batch {batch_number} provider failure is not retryable: {failure}"
@@ -3162,8 +3696,18 @@ def run_judge(
                     error=exc,
                     stage="model_output",
                     batch_attempts=batch_attempts,
+                    attempt_outcome=("schema_or_quote_failure" if attempt_lifecycle_policy == ATTEMPT_LIFECYCLE_POLICY else None),
                 )
                 records = _rejected_records(destination, batch_number)
+                if attempt_lifecycle_policy == ATTEMPT_LIFECYCLE_POLICY:
+                    _settle_attempt(
+                        output_dir=destination,
+                        batch_number=batch_number,
+                        attempt_number=attempt_index,
+                        outcome="schema_or_quote_failure",
+                        evidence_kind="rejected_attempt",
+                        evidence_path=records[-1][0],
+                    )
         if normalized is None:
             detail = str(last_error) if last_error is not None else "no provider or model-output error was recorded"
             raise HBQError(f"Batch {batch_number} exhausted {batch_attempts} cumulative attempts: {detail}")
@@ -3182,7 +3726,7 @@ def run_judge(
             allow_legacy_rejection_records=legacy_rejection_compat,
         )
         response_record = {
-            "format_version": 4,
+            "format_version": 5 if attempt_lifecycle_policy == ATTEMPT_LIFECYCLE_POLICY else 4,
             "batch": batch_number,
             "retry_policy": {"batch_attempts": batch_attempts},
             "accepted_attempt": accepted_attempt,
@@ -3213,6 +3757,15 @@ def run_judge(
             raise HBQError(f"Refusing to overwrite response checkpoint {response_path.name}")
         response_bytes = _json_bytes(response_record)
         _atomic_write(response_path, response_bytes)
+        if attempt_lifecycle_policy == ATTEMPT_LIFECYCLE_POLICY:
+            _settle_attempt(
+                output_dir=destination,
+                batch_number=batch_number,
+                attempt_number=accepted_attempt,
+                outcome="accepted",
+                evidence_kind="accepted_checkpoint",
+                evidence_path=response_path,
+            )
         previous_checkpoint_sha256 = _sha256_bytes(response_bytes)
         completed = next_completed
         _write_verdicts(verdicts_path, completed)

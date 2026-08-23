@@ -41,6 +41,7 @@ class _FakeOpenAIHandler(BaseHTTPRequestHandler):
     response_model: str | None = None
     fail_on_call: int | None = None
     evidence_by_call: dict[int, dict[str, object]] = {}
+    structured_refusal: str | None = None
     evidence_item: dict[str, object] = {
         "kind": "exact_quote",
         "reference": "line:1",
@@ -71,11 +72,14 @@ class _FakeOpenAIHandler(BaseHTTPRequestHandler):
             }
             for item in _questions_from_prompt(prompt)
         ]
+        message = {"role": "assistant", "content": json.dumps({"verdicts": verdicts})}
+        if type(self).structured_refusal is not None:
+            message["refusal"] = type(self).structured_refusal
         body = json.dumps(
             {
                 "id": "fake-response",
                 "model": type(self).response_model or request["model"],
-                "choices": [{"message": {"role": "assistant", "content": json.dumps({"verdicts": verdicts})}}],
+                "choices": [{"message": message}],
             }
         ).encode("utf-8")
         self.send_response(200)
@@ -105,6 +109,7 @@ def fake_openai_endpoint():
     _FakeOpenAIHandler.response_model = None
     _FakeOpenAIHandler.fail_on_call = None
     _FakeOpenAIHandler.evidence_by_call = {}
+    _FakeOpenAIHandler.structured_refusal = None
     _FakeOpenAIHandler.evidence_item = {
         "kind": "exact_quote",
         "reference": "line:1",
@@ -2291,3 +2296,179 @@ def test_provider_artifact_validation_rejects_missing_or_corrupt_files(tmp_path:
     artifact.unlink()
     with pytest.raises(HBQError, match="not bound"):
         _validate_provider_artifacts(tmp_path, record)
+
+
+def test_terminal_sidecars_start_before_send_and_settle_accepted(tmp_path: Path, fake_openai_endpoint) -> None:
+    base_url, _ = fake_openai_endpoint
+    _run(
+        tmp_path,
+        base_url=base_url,
+        attempt_lifecycle_policy=runner_module.ATTEMPT_LIFECYCLE_POLICY,
+    )
+    root = tmp_path / "run" / "responses" / "attempt-lifecycle" / "batch-0001"
+    start = json.loads((root / "attempt-0001.start.json").read_text(encoding="utf-8"))
+    settled = json.loads((root / "attempt-0001.settled.json").read_text(encoding="utf-8"))
+    assert start["state"] == "started"
+    assert settled["outcome"] == "accepted"
+    assert "A short test scene." not in json.dumps({"start": start, "settled": settled})
+
+
+def test_terminal_start_only_holds_resume_without_resend(tmp_path: Path, monkeypatch) -> None:
+    def interrupted(**_: object) -> tuple[str, dict[str, object]]:
+        raise KeyboardInterrupt()
+
+    monkeypatch.setattr(runner_module, "_call_openai", interrupted)
+    with pytest.raises(KeyboardInterrupt):
+        _run(tmp_path, attempt_lifecycle_policy=runner_module.ATTEMPT_LIFECYCLE_POLICY)
+
+    def must_not_send(**_: object) -> tuple[str, dict[str, object]]:
+        raise AssertionError("resume must not send an unresolved terminal attempt")
+
+    monkeypatch.setattr(runner_module, "_call_openai", must_not_send)
+    with pytest.raises(HBQError, match="ambiguous"):
+        _run(
+            tmp_path,
+            resume=True,
+            attempt_lifecycle_policy=runner_module.ATTEMPT_LIFECYCLE_POLICY,
+        )
+
+
+def test_terminal_resume_reconstructs_a_missing_settlement_without_send(tmp_path: Path, fake_openai_endpoint) -> None:
+    base_url, handler = fake_openai_endpoint
+    _run(
+        tmp_path,
+        base_url=base_url,
+        attempt_lifecycle_policy=runner_module.ATTEMPT_LIFECYCLE_POLICY,
+    )
+    settlement = tmp_path / "run" / "responses" / "attempt-lifecycle" / "batch-0001" / "attempt-0001.settled.json"
+    settlement.unlink()
+    _run(
+        tmp_path,
+        base_url=base_url,
+        resume=True,
+        attempt_lifecycle_policy=runner_module.ATTEMPT_LIFECYCLE_POLICY,
+    )
+    assert handler.calls == 1
+    assert json.loads(settlement.read_text(encoding="utf-8"))["outcome"] == "accepted"
+
+
+def test_terminal_nonretryable_provider_failure_holds_resume(tmp_path: Path, monkeypatch) -> None:
+    def nonretryable(**_: object) -> tuple[str, dict[str, object]]:
+        raise runner_module._ProviderAttemptFailure("permanent", retryable=False)
+
+    monkeypatch.setattr(runner_module, "_call_openai", nonretryable)
+    with pytest.raises(HBQError, match="not retryable"):
+        _run(tmp_path, attempt_lifecycle_policy=runner_module.ATTEMPT_LIFECYCLE_POLICY)
+    record = json.loads((tmp_path / "run" / "responses" / "rejected" / "batch-0001" / "attempt-0001.json").read_text(encoding="utf-8"))
+    assert record["attempt_outcome"] == "provider_nonretryable_failure"
+    with pytest.raises(HBQError, match="terminal nonretryable"):
+        _run(
+            tmp_path,
+            resume=True,
+            attempt_lifecycle_policy=runner_module.ATTEMPT_LIFECYCLE_POLICY,
+        )
+
+
+def test_terminal_reconcile_counts_without_a_provider_call(tmp_path: Path, monkeypatch) -> None:
+    def interrupted(**_: object) -> tuple[str, dict[str, object]]:
+        raise KeyboardInterrupt()
+
+    monkeypatch.setattr(runner_module, "_call_openai", interrupted)
+    with pytest.raises(KeyboardInterrupt):
+        _run(tmp_path, attempt_lifecycle_policy=runner_module.ATTEMPT_LIFECYCLE_POLICY)
+    reconciled = runner_module.reconcile_attempt(
+        tmp_path / "run", batch_number=1, attempt_number=1, count_as="retryable"
+    )
+    assert reconciled["status"] == "RECONCILED"
+    rejection = json.loads(Path(tmp_path / "run" / reconciled["rejected_attempt"]).read_text(encoding="utf-8"))
+    assert rejection["stage"] == "manual_reconcile"
+    assert rejection["attempt_outcome"] == "provider_retryable_failure"
+
+
+def test_terminal_reconcile_tampered_start_writes_nothing(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.setattr(runner_module, "_call_openai", lambda **_: (_ for _ in ()).throw(KeyboardInterrupt()))
+    with pytest.raises(KeyboardInterrupt):
+        _run(tmp_path, attempt_lifecycle_policy=runner_module.ATTEMPT_LIFECYCLE_POLICY)
+    start_path = tmp_path / "run" / "responses" / "attempt-lifecycle" / "batch-0001" / "attempt-0001.start.json"
+    start = json.loads(start_path.read_text(encoding="utf-8"))
+    start["policy"] = "forged"
+    start_path.write_text(json.dumps(start), encoding="utf-8")
+    before = sorted(path.relative_to(tmp_path / "run").as_posix() for path in (tmp_path / "run").rglob("*"))
+    with pytest.raises(HBQError, match="start is malformed"):
+        runner_module.reconcile_attempt(tmp_path / "run", batch_number=1, attempt_number=1, count_as="retryable")
+    after = sorted(path.relative_to(tmp_path / "run").as_posix() for path in (tmp_path / "run").rglob("*"))
+    assert after == before
+
+
+def test_terminal_retryable_reconcile_then_next_attempt_accepts(tmp_path: Path, fake_openai_endpoint, monkeypatch) -> None:
+    base_url, handler = fake_openai_endpoint
+    original = runner_module._call_openai
+
+    def interrupted(**_: object) -> tuple[str, dict[str, object]]:
+        raise KeyboardInterrupt()
+
+    monkeypatch.setattr(runner_module, "_call_openai", interrupted)
+    with pytest.raises(KeyboardInterrupt):
+        _run(
+            tmp_path, base_url=base_url,
+            attempt_lifecycle_policy=runner_module.ATTEMPT_LIFECYCLE_POLICY,
+        )
+    runner_module.reconcile_attempt(tmp_path / "run", batch_number=1, attempt_number=1, count_as="retryable")
+    manual_settlement = tmp_path / "run" / "responses" / "attempt-lifecycle" / "batch-0001" / "attempt-0001.settled.json"
+    manual_settlement.unlink()  # Simulate a crash after durable manual accounting but before settlement.
+    monkeypatch.setattr(runner_module, "_call_openai", original)
+    summary = _run(
+        tmp_path, base_url=base_url, resume=True,
+        attempt_lifecycle_policy=runner_module.ATTEMPT_LIFECYCLE_POLICY,
+    )
+    checkpoint = json.loads((tmp_path / "run" / "responses" / "batch-0001.json").read_text(encoding="utf-8"))
+    assert handler.calls == 1 and summary["verdicts"] == 1
+    assert checkpoint["accepted_attempt"] == 2
+    assert json.loads(manual_settlement.read_text(encoding="utf-8"))["evidence"] == {
+        "kind": "manual_reconcile", "count_as": "retryable"
+    }
+
+
+def test_terminal_free_text_refusal_is_schema_failure_not_structured_refusal(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.setattr(runner_module, "_call_openai", lambda **_: ("I refuse this request.", {}))
+    with pytest.raises(HBQError, match="exhausted"):
+        _run(
+            tmp_path,
+            batch_attempts=1,
+            attempt_lifecycle_policy=runner_module.ATTEMPT_LIFECYCLE_POLICY,
+    )
+    record = json.loads((tmp_path / "run" / "responses" / "rejected" / "batch-0001" / "attempt-0001.json").read_text(encoding="utf-8"))
+    assert record["attempt_outcome"] == "schema_or_quote_failure"
+
+
+def test_terminal_refusal_classification_requires_structured_provider_field() -> None:
+    assert runner_module._openai_structured_refusal(
+        {"choices": [{"message": {"content": "", "refusal": "policy refusal"}}]}
+    )
+    assert not runner_module._openai_structured_refusal(
+        {"choices": [{"message": {"content": "I refuse this request."}}]}
+    )
+    refusal = runner_module._ProviderAttemptFailure(
+        "structured refusal", retryable=False, attempt_outcome="model_refusal"
+    )
+    assert runner_module._attempt_outcome_for_provider_failure(refusal) == "model_refusal"
+    assert runner_module._attempt_outcome_for_provider_failure(
+        runner_module._ProviderAttemptFailure("retry", retryable=True)
+    ) == "provider_retryable_failure"
+
+
+def test_structured_refusal_is_terminal_only_for_opted_in_v5_runs(tmp_path: Path, fake_openai_endpoint) -> None:
+    base_url, handler = fake_openai_endpoint
+    handler.structured_refusal = "fixture refusal"
+    legacy_dir, terminal_dir = tmp_path / "legacy", tmp_path / "terminal"
+    legacy_dir.mkdir()
+    terminal_dir.mkdir()
+    legacy = _run(legacy_dir, base_url=base_url)
+    assert legacy["verdicts"] == 1
+    with pytest.raises(HBQError, match="not retryable"):
+        _run(
+            terminal_dir, base_url=base_url,
+            attempt_lifecycle_policy=runner_module.ATTEMPT_LIFECYCLE_POLICY,
+        )
+    record = json.loads((terminal_dir / "run" / "responses" / "rejected" / "batch-0001" / "attempt-0001.json").read_text(encoding="utf-8"))
+    assert record["attempt_outcome"] == "model_refusal"

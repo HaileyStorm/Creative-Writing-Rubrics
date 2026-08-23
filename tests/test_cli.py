@@ -162,6 +162,26 @@ def test_judge_command_dispatches_runner(monkeypatch, capsys, tmp_path: Path) ->
     assert json.loads(capsys.readouterr().out)["status"] == "DRY_RUN"
 
 
+def test_reconcile_attempt_dispatches_without_provider_call(monkeypatch, capsys, tmp_path: Path) -> None:
+    captured: dict[str, object] = {}
+
+    def fake_reconcile(output_dir: str, **kwargs: object) -> dict[str, object]:
+        captured["output_dir"] = output_dir
+        captured.update(kwargs)
+        return {"status": "RECONCILED"}
+
+    monkeypatch.setattr(cli.runner, "reconcile_attempt", fake_reconcile)
+    assert main([
+        "reconcile-attempt", "--output-dir", str(tmp_path / "run"),
+        "--batch", "1", "--attempt", "2", "--count-as", "retryable",
+    ]) == 0
+    assert captured == {
+        "output_dir": str(tmp_path / "run"), "batch_number": 1,
+        "attempt_number": 2, "count_as": "retryable",
+    }
+    assert json.loads(capsys.readouterr().out)["status"] == "RECONCILED"
+
+
 def test_longform_command_dispatches_workflow(monkeypatch, capsys, tmp_path: Path) -> None:
     artifact = tmp_path / "manuscript.txt"
     brief = tmp_path / "brief.txt"

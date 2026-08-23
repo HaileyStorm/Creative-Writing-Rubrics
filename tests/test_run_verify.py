@@ -90,6 +90,170 @@ def test_verifies_a_genuine_complete_v4_run_and_returns_raw_commitments(tmp_path
     assert result["commitments"]["rejected_attempts"] == []
 
 
+def test_verifies_a_complete_terminal_sidecar_v5_run_and_rejects_sidecar_tamper(tmp_path: Path) -> None:
+    run, frozen = _fixture(tmp_path)
+    frozen["execution"]["attempt_lifecycle_policy"] = runner.ATTEMPT_LIFECYCLE_POLICY
+    manifest = json.loads((run / "run.json").read_text(encoding="utf-8"))
+    manifest["format_version"] = 5
+    manifest["configuration"]["attempt_lifecycle_policy"] = runner.ATTEMPT_LIFECYCLE_POLICY
+    manifest["config_sha256"] = hashlib.sha256(runner._json_bytes(manifest["configuration"])).hexdigest()
+    _write(run / "run.json", manifest)
+    previous = None
+    checkpoint_paths = sorted((run / "responses").glob("batch-*.json"))
+    for path in checkpoint_paths:
+        record = json.loads(path.read_text(encoding="utf-8"))
+        record["format_version"] = 5
+        record["previous_checkpoint_sha256"] = previous
+        _write(path, record)
+        previous = hashlib.sha256(path.read_bytes()).hexdigest()
+    for path in checkpoint_paths:
+        record = json.loads(path.read_text(encoding="utf-8"))
+        runner._write_attempt_start(
+            output_dir=run,
+            config_sha256=manifest["config_sha256"],
+            batch_number=record["batch"],
+            attempt_number=record["accepted_attempt"],
+            base_prompt_sha256=record["base_prompt_sha256"],
+            effective_prompt_sha256=record["effective_prompt_sha256"],
+            batch_attempts=3,
+        )
+        runner._settle_attempt(
+            output_dir=run,
+            batch_number=record["batch"],
+            attempt_number=record["accepted_attempt"],
+            outcome="accepted",
+            evidence_kind="accepted_checkpoint",
+            evidence_path=path,
+        )
+    verified = verify_binary_run(run, frozen)
+    assert verified["checkpoint_count"] == 6
+    assert verified["attempt_lifecycle_count"] == 6
+    assert [item["path"] for item in verified["commitments"]["attempt_lifecycle"]] == sorted(
+        item["path"] for item in verified["commitments"]["attempt_lifecycle"]
+    )
+    unknown = run / "responses" / "attempt-lifecycle" / "batch-0001" / "attempt-0001.extra.json"
+    unknown.write_text("{}", encoding="utf-8")
+    with pytest.raises(core.HBQError, match="unrecognized artifact"):
+        verify_binary_run(run, frozen)
+    unknown.unlink()
+    runner._write_attempt_start(
+        output_dir=run, config_sha256=manifest["config_sha256"], batch_number=999,
+        attempt_number=1, base_prompt_sha256="0" * 64, effective_prompt_sha256="0" * 64, batch_attempts=3,
+    )
+    extra_rejection = runner._write_rejected_attempt(
+        output_dir=run, batch_number=999, base_prompt_sha256="0" * 64,
+        effective_prompt_sha256="0" * 64, validation_feedback_policy=None, feedback=None,
+        content=None, provider_record=None, error=core.HBQError("fixture"), stage="provider",
+        batch_attempts=3, attempt_outcome="provider_retryable_failure",
+    )
+    runner._settle_attempt(
+        output_dir=run, batch_number=999, attempt_number=1,
+        outcome="provider_retryable_failure", evidence_kind="rejected_attempt", evidence_path=extra_rejection,
+    )
+    with pytest.raises(core.HBQError, match="outside the checkpoint plan"):
+        verify_binary_run(run, frozen)
+    extra_rejection.unlink()
+    extra_rejection.parent.rmdir()
+    extra_rejection.parent.parent.rmdir()
+    for path in (run / "responses" / "attempt-lifecycle" / "batch-0999").glob("*"):
+        path.unlink()
+    (run / "responses" / "attempt-lifecycle" / "batch-0999").rmdir()
+    sidecar = run / "responses" / "attempt-lifecycle" / "batch-0001" / "attempt-0001.settled.json"
+    value = json.loads(sidecar.read_text(encoding="utf-8"))
+    value["outcome"] = "schema_or_quote_failure"
+    _write(sidecar, value)
+    with pytest.raises(core.HBQError, match="checkpoint settlement is not bound"):
+        verify_binary_run(run, frozen)
+
+
+@pytest.mark.parametrize("mixed_checkpoint", [False, True])
+def test_terminal_v5_verifier_rejects_sidecar_free_or_mixed_checkpoints(tmp_path: Path, mixed_checkpoint: bool) -> None:
+    run, frozen = _fixture(tmp_path)
+    frozen["execution"]["attempt_lifecycle_policy"] = runner.ATTEMPT_LIFECYCLE_POLICY
+    manifest = json.loads((run / "run.json").read_text(encoding="utf-8"))
+    manifest["format_version"] = 5
+    manifest["configuration"]["attempt_lifecycle_policy"] = runner.ATTEMPT_LIFECYCLE_POLICY
+    manifest["config_sha256"] = hashlib.sha256(runner._json_bytes(manifest["configuration"])).hexdigest()
+    _write(run / "run.json", manifest)
+    previous = None
+    for index, path in enumerate(sorted((run / "responses").glob("batch-*.json")), start=1):
+        record = json.loads(path.read_text(encoding="utf-8"))
+        record["format_version"] = 4 if mixed_checkpoint and index == 1 else 5
+        record["previous_checkpoint_sha256"] = previous
+        _write(path, record)
+        previous = hashlib.sha256(path.read_bytes()).hexdigest()
+    with pytest.raises(core.HBQError, match="mixed checkpoint formats|lacks a start sidecar"):
+        verify_binary_run(run, frozen)
+
+
+def test_terminal_v5_verifier_accepts_manual_reconcile_without_provider_session(tmp_path: Path) -> None:
+    run, frozen = _fixture(tmp_path)
+    frozen["execution"]["attempt_lifecycle_policy"] = runner.ATTEMPT_LIFECYCLE_POLICY
+    manifest = json.loads((run / "run.json").read_text(encoding="utf-8"))
+    manifest["format_version"] = 5
+    manifest["configuration"]["attempt_lifecycle_policy"] = runner.ATTEMPT_LIFECYCLE_POLICY
+    manifest["config_sha256"] = hashlib.sha256(runner._json_bytes(manifest["configuration"])).hexdigest()
+    _write(run / "run.json", manifest)
+    checkpoints = sorted((run / "responses").glob("batch-*.json"))
+    first = checkpoints[0]
+    first_record = json.loads(first.read_text(encoding="utf-8"))
+    prompt = gzip.decompress(first.with_suffix(".prompt.txt.gz").read_bytes()).decode("utf-8")
+    prompt_sha = hashlib.sha256(prompt.encode("utf-8")).hexdigest()
+    rejection_path = run / "responses" / "rejected" / "batch-0001" / "attempt-0001.json"
+    rejection = {
+        "format_version": 5, "batch": 1, "attempt": 1, "sequence": 1,
+        "previous_rejected_sha256": None, "stage": "manual_reconcile",
+        "retry_policy": {"batch_attempts": 3}, "prompt_sha256": prompt_sha,
+        "base_prompt_sha256": prompt_sha, "effective_prompt_sha256": prompt_sha,
+        "validation_feedback_policy": None, "validation_feedback": None,
+        "raw_content": {"encoding": "utf-8", "text": "", "bytes": 0, "sha256": hashlib.sha256(b"").hexdigest()},
+        "provider": None,
+        "error": {"class": "HBQError", "message": "Manually reconciled unresolved provider attempt; no response was recovered"},
+        "attempt_outcome": "provider_retryable_failure",
+    }
+    _write(rejection_path, rejection)
+    effective, feedback = runner._feedback_for_rejection(
+        base_prompt=prompt, base_prompt_sha256=prompt_sha, previous_rejection=(rejection_path, rejection)
+    )
+    previous = None
+    for index, path in enumerate(checkpoints, start=1):
+        record = json.loads(path.read_text(encoding="utf-8"))
+        record["format_version"] = 5
+        record["previous_checkpoint_sha256"] = previous
+        if index == 1:
+            record["accepted_attempt"] = 2
+            record["rejected_chain"] = {"count": 1, "head_sha256": hashlib.sha256(rejection_path.read_bytes()).hexdigest()}
+            record["validation_feedback"] = feedback
+            record["effective_prompt_sha256"] = hashlib.sha256(effective.encode("utf-8")).hexdigest()
+        _write(path, record)
+        previous = hashlib.sha256(path.read_bytes()).hexdigest()
+    for path in checkpoints:
+        record = json.loads(path.read_text(encoding="utf-8"))
+        attempt = record["accepted_attempt"]
+        runner._write_attempt_start(
+            output_dir=run, config_sha256=manifest["config_sha256"], batch_number=record["batch"],
+            attempt_number=attempt, base_prompt_sha256=record["base_prompt_sha256"],
+            effective_prompt_sha256=record["effective_prompt_sha256"], batch_attempts=3,
+        )
+        if record["batch"] == 1:
+            runner._write_attempt_start(
+                output_dir=run, config_sha256=manifest["config_sha256"], batch_number=1,
+                attempt_number=1, base_prompt_sha256=prompt_sha, effective_prompt_sha256=prompt_sha, batch_attempts=3,
+            )
+            runner._settle_attempt(
+                output_dir=run, batch_number=1, attempt_number=1,
+                outcome="provider_retryable_failure", evidence_kind="manual_reconcile",
+                evidence_path=None, manual_count_as="retryable",
+            )
+        runner._settle_attempt(
+            output_dir=run, batch_number=record["batch"], attempt_number=attempt,
+            outcome="accepted", evidence_kind="accepted_checkpoint", evidence_path=path,
+        )
+    result = verify_binary_run(run, frozen)
+    assert result["rejected_attempt_count"] == 1
+    assert result["attempt_lifecycle_count"] == 7
+
+
 def test_replays_a_genuine_v2_longform_scope_proof(tmp_path: Path) -> None:
     inputs = tmp_path / "inputs"
     inputs.mkdir()

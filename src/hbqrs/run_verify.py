@@ -58,7 +58,8 @@ def _manifest_record(path: Path) -> dict[str, Any]:
 def _execution(frozen: Mapping[str, Any]) -> dict[str, Any]:
     value = frozen.get("execution")
     required = {"artifact_id", "bundle_id", "batch_size", "batch_attempts", "strict_ai", "provider", "model", "reasoning", "codex_bin"}
-    if not isinstance(value, Mapping) or set(value) != required:
+    permitted = {frozenset(required), frozenset({*required, "attempt_lifecycle_policy"})}
+    if not isinstance(value, Mapping) or frozenset(value) not in permitted:
         raise core.HBQError("Frozen execution contract is malformed")
     if not isinstance(value["artifact_id"], str) or not value["artifact_id"] or not isinstance(value["bundle_id"], str) or not value["bundle_id"]:
         raise core.HBQError("Frozen execution identity is malformed")
@@ -68,6 +69,8 @@ def _execution(frozen: Mapping[str, Any]) -> dict[str, Any]:
         raise core.HBQError("Frozen retry policy is malformed")
     if not isinstance(value["strict_ai"], bool) or value["provider"] != "codex" or not all(isinstance(value[key], str) and value[key] for key in ("model", "reasoning", "codex_bin")):
         raise core.HBQError("Frozen provider execution contract is malformed")
+    if "attempt_lifecycle_policy" in value and value["attempt_lifecycle_policy"] != runner.ATTEMPT_LIFECYCLE_POLICY:
+        raise core.HBQError("Frozen attempt lifecycle policy is malformed")
     return dict(value)
 
 
@@ -139,6 +142,8 @@ def _configuration(
         "compiled_bundle_sha256": hashlib.sha256(runner._json_bytes(compiled)).hexdigest(),
         "_binary_prompt": binary_prompt,
     }
+    if "attempt_lifecycle_policy" in execution:
+        configuration["attempt_lifecycle_policy"] = execution["attempt_lifecycle_policy"]
     if prompt_rendering_version == runner.PROMPT_RENDERING_VERSION:
         configuration.update(
             {
@@ -204,13 +209,13 @@ def _scope_compatibility(
     )
 
 
-def _require_v4_artifacts(run_dir: Path) -> None:
+def _require_current_artifacts(run_dir: Path) -> None:
     checkpoints = sorted((run_dir / "responses").glob("batch-[0-9][0-9][0-9][0-9].json"))
     if not checkpoints:
-        raise core.HBQError("Run has no accepted v4 checkpoints")
+        raise core.HBQError("Run has no accepted current-format checkpoints")
     for path in [*checkpoints, *(run_dir / "responses" / "rejected").glob("batch-*/attempt-*.json")]:
-        if _json(path).get("format_version") != 4:
-            raise core.HBQError(f"Fresh verifier rejects non-v4 checkpoint: {path.name}")
+        if _json(path).get("format_version") not in {4, 5}:
+            raise core.HBQError(f"Fresh verifier rejects non-current checkpoint: {path.name}")
 
 
 def _relative_commitment(run_dir: Path, path: Path) -> dict[str, Any]:
@@ -252,6 +257,8 @@ def _provider_sessions(run_dir: Path, *, expected: Mapping[str, str], checkpoint
         provider_artifacts.extend({"batch": batch, "kind": "accepted", **item} for item in _provider_commitments(run_dir, record))
         for path, rejected_record in runner._rejected_records(run_dir, batch):
             rejected.append(_relative_commitment(run_dir, path))
+            if rejected_record.get("format_version") == 5 and rejected_record.get("stage") == "manual_reconcile":
+                continue
             provider_artifacts.extend({"batch": batch, "kind": "rejected", **item} for item in _provider_commitments(run_dir, rejected_record))
             rejected_provider = rejected_record.get("provider")
             rejected_reported = rejected_provider.get("reported") if isinstance(rejected_provider, Mapping) else None
@@ -273,8 +280,8 @@ def verify_binary_run(run_dir: str | Path, frozen: Mapping[str, Any]) -> dict[st
     directory = Path(run_dir).resolve()
     manifest = _json(directory / "run.json")
     manifest_format_version = manifest.get("format_version")
-    if manifest_format_version not in {3, 4}:
-        raise core.HBQError("Fresh verifier requires a v3 or v4 run manifest")
+    if manifest_format_version not in {3, 4, 5}:
+        raise core.HBQError("Fresh verifier requires a v3, v4, or v5 run manifest")
     execution = _execution(frozen)
     artifact = _bound_file(frozen.get("artifact"), label="artifact")
     registry = _bound_file(frozen.get("registry"), label="registry")
@@ -310,7 +317,7 @@ def verify_binary_run(run_dir: str | Path, frozen: Mapping[str, Any]) -> dict[st
     questions = sorted(core.compiled_questions(compiled), key=lambda item: role_order.get(str(item.get("role")), 99))
     prompt_rendering_version = (
         runner.PROMPT_RENDERING_VERSION
-        if manifest_format_version == 4
+        if manifest_format_version in {4, 5}
         else runner.LEGACY_PROMPT_RENDERING_VERSION
     )
     scope_compatibility = (
@@ -325,7 +332,7 @@ def verify_binary_run(run_dir: str | Path, frozen: Mapping[str, Any]) -> dict[st
             artifact_path=artifact,
             context_paths=context_paths,
         )
-        if manifest_format_version == 4
+        if manifest_format_version in {4, 5}
         else None
     )
     if scope_compatibility is not None and scope_compatibility.get("mode") == "longform_prevalidated_route":
@@ -348,7 +355,19 @@ def verify_binary_run(run_dir: str | Path, frozen: Mapping[str, Any]) -> dict[st
         raise core.HBQError("Run does not contain the complete nondiagnostic question set")
     if (directory / "diagnostic.json").exists():
         raise core.HBQError("Completed full run must not contain a diagnostic subset report")
-    _require_v4_artifacts(directory)
+    _require_current_artifacts(directory)
+    lifecycle_policy = execution.get("attempt_lifecycle_policy")
+    if (manifest_format_version == 5) != (lifecycle_policy == runner.ATTEMPT_LIFECYCLE_POLICY):
+        raise core.HBQError("Frozen execution and run lifecycle versions diverge")
+    if lifecycle_policy == runner.ATTEMPT_LIFECYCLE_POLICY:
+        runner._validate_or_reconstruct_attempt_lifecycle(
+            directory,
+            config_sha256=str(manifest["config_sha256"]),
+            batch_attempts=execution["batch_attempts"],
+            reconstruct=False,
+            strict_v5=True,
+            require_durable=True,
+        )
     checkpoint_paths = sorted((directory / "responses").glob("batch-[0-9][0-9][0-9][0-9].json"))
     expected_count = (len(questions) + execution["batch_size"] - 1) // execution["batch_size"]
     if len(checkpoint_paths) != expected_count:
@@ -394,7 +413,14 @@ def verify_binary_run(run_dir: str | Path, frozen: Mapping[str, Any]) -> dict[st
         if not isinstance(response, Mapping) or not isinstance(response.get("path"), str):
             raise core.HBQError("Accepted response artifact commitment is malformed")
         accepted_artifacts.append(_relative_commitment(directory, directory / response["path"]))
-    commitments = {"verdicts": _relative_commitment(directory, directory / "verdicts.jsonl"), "prompts": prompt_commitments, "accepted_response_artifacts": accepted_artifacts, "rejected_attempts": rejected, "provider_artifacts": provider_artifacts}
+    lifecycle_artifacts = []
+    if lifecycle_policy == runner.ATTEMPT_LIFECYCLE_POLICY:
+        lifecycle_root = directory / "responses" / "attempt-lifecycle"
+        lifecycle_artifacts = [
+            _relative_commitment(directory, path)
+            for path in sorted(lifecycle_root.glob("batch-*/attempt-*.json"))
+        ]
+    commitments = {"verdicts": _relative_commitment(directory, directory / "verdicts.jsonl"), "prompts": prompt_commitments, "accepted_response_artifacts": accepted_artifacts, "rejected_attempts": rejected, "provider_artifacts": provider_artifacts, "attempt_lifecycle": lifecycle_artifacts}
     return {
         "run_sha256": _sha256(directory / "run.json"),
         "score_sha256": _sha256(score_path),
@@ -402,6 +428,7 @@ def verify_binary_run(run_dir: str | Path, frozen: Mapping[str, Any]) -> dict[st
         "verdict_count": len(persisted),
         "checkpoint_count": checkpoint_count,
         "rejected_attempt_count": len(rejected),
+        "attempt_lifecycle_count": len(lifecycle_artifacts) // 2,
         "sessions": sessions,
         "session_list_commitment_sha256": hashlib.sha256(_canonical(sessions)).hexdigest(),
         "checkpoint_chain_head_sha256": chain_head,

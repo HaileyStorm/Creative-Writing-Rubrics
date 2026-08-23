@@ -486,6 +486,18 @@ def _cmd_judge(args: argparse.Namespace) -> int:
         strict_ai=args.strict_ai,
         allow_unattested_reasoning=args.allow_unattested_reasoning,
         upgrade_legacy_normalization=args.upgrade_legacy_normalization,
+        attempt_lifecycle_policy=args.attempt_lifecycle_policy,
+    )
+    print(json.dumps(summary, ensure_ascii=False, indent=2))
+    return 0
+
+
+def _cmd_reconcile_attempt(args: argparse.Namespace) -> int:
+    summary = runner.reconcile_attempt(
+        args.output_dir,
+        batch_number=args.batch,
+        attempt_number=args.attempt,
+        count_as=args.count_as,
     )
     print(json.dumps(summary, ensure_ascii=False, indent=2))
     return 0
@@ -790,12 +802,27 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="on --resume only, upgrade legacy rejected evidence normalization with an immutable audit sidecar",
     )
+    judge.add_argument(
+        "--attempt-lifecycle-policy",
+        choices=[runner.ATTEMPT_LIFECYCLE_POLICY],
+        help="fresh opt-in terminal attempt sidecars; an unresolved start never auto-resends",
+    )
     judge.add_argument("--dry-run", action="store_true")
     judge.add_argument("--timeout", type=float, default=600.0)
     judge.add_argument("--artifact-id")
     judge.add_argument("--judge-id")
     judge.add_argument("--strict-ai", action="store_true", help="apply the stricter AI-output judge prefix")
     judge.set_defaults(func=_cmd_judge)
+
+    reconcile = subparsers.add_parser(
+        "reconcile-attempt",
+        help="terminally account for one unresolved terminal-sidecar attempt without a provider call",
+    )
+    reconcile.add_argument("--output-dir", required=True)
+    reconcile.add_argument("--batch", type=int, required=True)
+    reconcile.add_argument("--attempt", type=int, required=True)
+    reconcile.add_argument("--count-as", choices=["retryable", "nonretryable"], required=True)
+    reconcile.set_defaults(func=_cmd_reconcile_attempt)
 
     longform = subparsers.add_parser(
         "longform",

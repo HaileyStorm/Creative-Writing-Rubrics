@@ -56,9 +56,9 @@ Evidence is typed: an `exact_quote` must be a nonblank contiguous artifact or co
 
 Use `--task-contract contract.json` when a brief affects scoring or eligibility. It must match `schema/hbq_task_contract.schema.json`; `weighted_goals` affect the task-domain score, while only atomic, objective, explicitly non-negotiable `binding_requirements` become gates. Context, preferences, aspirations, and inferred intent never do. The contract also works with `cwr compile`, `cwr render-judge`, and `cwr score`. `--temperature` is OpenAI-compatible only; `--reasoning` is for Codex, Grok, and Nous, with unsupported combinations failing.
 
-Fresh v4 `judge` and `render-judge` runs that use a task contract also require a reviewed-v1 `--scope-compatibility-override` bound to the exact artifact, contract, and bundle. `cwr longform` instead derives the same evidence from its validated persisted v2 route plan and exact source, context, segmentation, scope, and bundle decisions. Neither path may silently infer compatibility or ignore a mismatch.
+Fresh v4 and v5 `judge` runs that use a task contract also require a reviewed-v1 `--scope-compatibility-override` bound to the exact artifact, contract, and bundle. `cwr longform` instead derives the same evidence from its validated persisted v2 route plan and exact source, context, segmentation, scope, and bundle decisions. Neither path may silently infer compatibility or ignore a mismatch.
 
-Historical v1-v3 runs retain byte-exact legacy replay only. If an older direct-run study needs fresh execution under the v4 prompt, create a versioned successor with a new compatibility decision or validated long-form proof and new runtime, prompt, and manifest commitments. Do not rewrite or relabel the predecessor's scripts or evidence.
+Historical v1-v4 runs retain byte-exact legacy replay only. If an older direct-run study needs fresh execution under the current prompt or v5 terminal accounting, create a versioned successor with a new compatibility decision or validated long-form proof and new runtime, prompt, and manifest commitments. Do not rewrite or relabel the predecessor's scripts or evidence.
 
 Use the lowest reasoning level that handles the evidence reliably: Sol Medium for structured binary batches, Sol High for routing, long-range mapping, ambiguity, and synthesis, and Luna Max for broad passes followed by stronger deterministic or Sol review. A fake local endpoint proves transport and resume, not literary judgment quality.
 
@@ -67,6 +67,21 @@ Use the lowest reasoning level that handles the evidence reliably: Sol Medium fo
 The default batch contains 12 independent leaves. Increase `--batch-size` to reduce repeated context on a capable model, or lower it when an endpoint has a small context/output limit. To smoke-test or investigate a subset, repeat `--question-id`:
 
 Each binary batch gets at most three provider attempts by default. `--batch-attempts N` changes that positive bound. Failed transport, JSON, schema, or evidence-grounding attempts are retained under `responses/rejected/`; they are auditable but never accepted into the checkpoint chain or score.
+
+For a fresh, high-consequence run, opt into terminal attempt accounting:
+
+```bash
+cwr judge draft.txt --bundle prose.scene --provider codex --model gpt-5.6-sol \
+  --allow-remote --attempt-lifecycle-policy terminal_sidecar_v1 --output-dir ../cwr-runs/terminal
+```
+
+The runner writes an immutable `start` sidecar immediately before every provider send and a `settled` sidecar after one terminal outcome: accepted, retryable provider failure, nonretryable provider failure, structured provider refusal, or schema/quote failure. Sidecars contain hashes and typed state, never response prose. A start without a durable rejection or checkpoint is intentionally ambiguous: resume stops rather than sending again. If an operator establishes that it should consume the attempt without recovering a response, reconcile it explicitly and locally (this makes no provider call):
+
+```bash
+cwr reconcile-attempt --output-dir ../cwr-runs/terminal --batch 1 --attempt 1 --count-as retryable
+```
+
+Use `--count-as nonretryable` only when the provider attempt must permanently stop that batch. Reconciliation records that no response was recovered; it never pretends an unsent request succeeded or fabricates a model result. This policy is a new v5 run format only. Historical v1-v4 runs and their replay bytes remain unchanged.
 
 ```bash
 cwr judge draft.txt \

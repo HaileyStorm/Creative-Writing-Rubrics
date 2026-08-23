@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import copy
+import json
 import math
 
 import pytest
@@ -95,3 +96,53 @@ def test_private_and_public_projections_keep_batch_attempts_out_of_n_and_public_
     assert row["rejected_retry_count"] == 0
     assert row["repair_attempt_count"] == 1
     assert {"rubric_revision", "study_id", "artifact_id", "condition", "repair_id", "artifact_path"}.isdisjoint(row)
+
+
+def test_repairs_remain_private_events_not_extra_repetitions_or_votes() -> None:
+    record = _records()[0]
+    record["verified_run"] = {"accepted_provider_call_count": 1, "rejected_retry_count": 2, "batch_attempt_count": 3}
+    record["normalization_events"] = [{"kind": "quote"}, {"kind": "newline"}, {"kind": "citation"}]
+    record["repair_attempts"] = [
+        {
+            "repair_id": "repair-alpha",
+            "condition": _condition(prompt_sha256="d" * 64),
+            "rubric_revision": "1.2.1",
+            "private_path": "C:/private/repair-alpha.json",
+            "private_text": "nonpublic-repair-alpha",
+        },
+        {
+            "repair_id": "repair-beta",
+            "condition": _condition(prompt_sha256="e" * 64),
+            "rubric_revision": "1.2.2",
+            "private_path": "C:/private/repair-beta.json",
+            "private_text": "nonpublic-repair-beta",
+        },
+    ]
+
+    private = private_projection([record], repetitions=1)
+    sample = private["logical_samples"][0]
+    repairs = sample["repair_attempts"]
+    assert sample["repetition"] == 1
+    assert sample["accepted_provider_call_count"] == 1
+    assert sample["rejected_retry_count"] == 2
+    assert sample["normalization_event_count"] == 3
+    assert len({repair["repair_id"] for repair in repairs}) == 2
+    assert len({repair["repair_condition_sha256"] for repair in repairs}) == 2
+    assert len({repair["repair_rubric_revision"] for repair in repairs}) == 2
+    assert len({repair["repair_logical_sample_id"] for repair in repairs}) == 2
+    assert {repair["repair_logical_sample_id"] for repair in repairs}.isdisjoint({sample["logical_sample_id"]})
+
+    public = public_projection([record], repetitions=1)
+    row = public["conditions"][0]
+    assert public["logical_repetition_count"] == 1
+    assert row["logical_repetition_count"] == 1
+    assert row["accepted_provider_call_count"] == 1
+    assert row["rejected_retry_count"] == 2
+    assert row["normalization_event_count"] == 3
+    assert row["repair_attempt_count"] == 2
+    rendered = json.dumps(public, sort_keys=True)
+    assert "C:/private" not in rendered
+    assert "nonpublic-repair" not in rendered
+    assert "repair_id" not in rendered
+    assert "repair_condition_sha256" not in rendered
+    assert "repair_rubric_revision" not in rendered
