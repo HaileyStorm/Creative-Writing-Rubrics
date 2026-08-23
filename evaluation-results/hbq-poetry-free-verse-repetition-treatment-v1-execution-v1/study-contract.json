@@ -1,0 +1,49 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-poetry-free-verse-repetition-treatment-v1-execution-v1",
+  "status": "frozen_execution_successor_unexecuted",
+  "predecessor": {
+    "commit": "76023dff13558f024fefb38cbd59ab45ae8682ec",
+    "tree": "9afcd4eada8c61034f784e128c6030740eccf951",
+    "files": {
+      "README.md": "43a1f108ed7b180385bdcec87629c4af590ce3a3",
+      "run.py": "fd09cc3a85b6cd50f5c34425cab4ba79a5d8ec42",
+      "study-contract.json": "365400285799e3d6e4e918eed6cb56f4d5fe86f6",
+      "study.py": "478f00e00ec5619002de81c268d06ecb8b2baf2b"
+    }
+  },
+  "private_controller": {
+    "controller_filename": "private-controller.json",
+    "controller_sha256": "7a75a6dd30e028bcfa398b7104bed34d32ea71efb491310eb87d3a50700dd5b9",
+    "ledger_filename": "private-ledger.json",
+    "ledger_sha256": "9a3455fee1466d4cdc7461ab33c6b4014a4ad112b0e9f8293d3cf63615f52fbc",
+    "verifier_filename": "verify_private_freeze.py",
+    "verifier_sha256": "6f70bbd01101d27b432b87421563a063bdee658f73700fabf4591b09e66a5c23"
+  },
+  "execution": {
+    "route": "codex",
+    "model": "gpt-5.6-sol",
+    "reasoning": "high",
+    "one_leaf_per_call": true,
+    "batch_size": 1,
+    "batch_attempts": 1,
+    "attempt_lifecycle_policy": "terminal_sidecar_v1",
+    "maximum_provider_sends": 24,
+    "semantic_retries": "forbidden",
+    "resume": "forbidden",
+    "owner_attested_zero_incremental_charge_only": true,
+    "paid_api_or_fallback_route": "forbidden"
+  },
+  "geometry": {
+    "fixtures": 4,
+    "arms": ["current", "candidate"],
+    "repeats": 3,
+    "slots": 24,
+    "same_fixture_ab": true
+  },
+  "prompt_delta": "candidate_leaf_text_only",
+  "public_result_policy": "aggregate_only_after_execution",
+  "success_action": "HOLDOUT_ELIGIBLE_ON_SUCCESS",
+  "failure_action": "NO_GO",
+  "promotion": "none"
+}
