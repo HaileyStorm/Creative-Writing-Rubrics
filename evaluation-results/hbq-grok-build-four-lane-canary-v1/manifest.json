@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "study": "hbq-grok-build-four-lane-canary-v1",
+  "status": "completed_provisional_design_input",
+  "purpose": "host-wide four-lane Grok Build broker capacity canary with four public-synthetic advisory requests",
+  "privacy": {
+    "input_classification": "public_synthetic",
+    "raw_prompts_published": false,
+    "raw_conversation_published": false,
+    "source_queue_paths_published": false,
+    "owner_attestation_published": false,
+    "session_identifiers_published": false
+  },
+  "transport": {
+    "broker_health": "healthy",
+    "route": "grok-build-grok-4.6",
+    "route_hash": "c55a19990c755d28595cc6e8ff3f0f0f9173ae58ae12c70cad4eee9bbd172ad6",
+    "route_identity_hash": "85b32be90fe4240d1f719b1a187b706c25836f21421eaa8a1c6d9b3ea0704ca9",
+    "host_max_concurrency": 4,
+    "attempts_per_item": 1,
+    "requested_model": "grok-4.6",
+    "reported_model": "grok-4.6-build",
+    "requested_reasoning_effort": "high",
+    "reasoning_attestation": "not_reported_by_grok_build_cli",
+    "execution_policy": "isolated_one_turn_read_only",
+    "cost_interpretation": "included_weekly_allowance_usage_telemetry_on_a_zero_charge_saved_session_route_not_incremental_paid_evaluation"
+  },
+  "timing": {
+    "shared_started_at": "2026-08-23T00:14:33+00:00",
+    "finished_at_range": [
+      "2026-08-23T00:15:27+00:00",
+      "2026-08-23T00:16:19+00:00"
+    ],
+    "completed_and_delivered": 4
+  },
+  "broker_evidence_snapshot": {
+    "file": "broker-evidence-snapshot.json",
+    "sha256": "6cc451d37b18e7f1fb33671117447eb042dc91c49406d8045dc100e5a57f1fb3"
+  },
+  "results": [
+    {
+      "label": "preface-ablation-2x2",
+      "file": "inbox/preface-ablation-2x2.json",
+      "sha256": "7ad7b8b21ce44e586cc9c0975096374d6bf15abd4723596de922d7fb30ba1c07",
+      "item_id": "51b9dff523684f82878ca80d7887d1bf",
+      "finished_at": "2026-08-23T00:16:00+00:00",
+      "provisional_use": "held-out preface-component ablation design"
+    },
+    {
+      "label": "sparse-human-reference-portfolio",
+      "file": "inbox/sparse-human-reference-portfolio.json",
+      "sha256": "6037b58bc52d90998f84d6278ccf6e61408661717b1972782054b4545fa15cef",
+      "item_id": "5caa44cacbbe43c38d2ad1472f858dad",
+      "finished_at": "2026-08-23T00:15:27+00:00",
+      "provisional_use": "small human-reference evidence portfolio design"
+    },
+    {
+      "label": "batch-breakpoint-hunt",
+      "file": "inbox/batch-breakpoint-hunt.json",
+      "sha256": "7cdec54eb0f59bd0de014962558138380108dc34b16013697c93ac579d80ef6a",
+      "item_id": "845a58e19ac54eaf94e247522f4fcdbd",
+      "finished_at": "2026-08-23T00:16:19+00:00",
+      "provisional_use": "progressive batch-size breakpoint design"
+    },
+    {
+      "label": "mature-fiction-measurement-contrast",
+      "file": "inbox/mature-fiction-measurement-contrast.json",
+      "sha256": "33f4da144de23e8ca0caba860446a77075da06afa2fd96555e4adea2991efd4f",
+      "item_id": "cf97db7f7ae04086867517edbb44a0f9",
+      "finished_at": "2026-08-23T00:15:30+00:00",
+      "provisional_use": "refusal-versus-measurement contrast design"
+    }
+  ]
+}

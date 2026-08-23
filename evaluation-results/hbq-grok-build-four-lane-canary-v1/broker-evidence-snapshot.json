@@ -1,0 +1,99 @@
+{
+  "schema_version": 1,
+  "evidence_class": "credential_safe_queue_route_gate_projection_v1",
+  "scope": "A hash-bound projection of the completed canary queue, its route snapshot, and its matching host gate. It excludes prompts, source paths, credentials, owner attestation, raw route commands, and session identifiers.",
+  "queue": {
+    "completed_count": 4,
+    "delivered_count": 4,
+    "reconcile_required_count": 0
+  },
+  "route_and_gate": {
+    "route": "grok-build-grok-4.6",
+    "route_hash": "c55a19990c755d28595cc6e8ff3f0f0f9173ae58ae12c70cad4eee9bbd172ad6",
+    "route_identity_hash": "85b32be90fe4240d1f719b1a187b706c25836f21421eaa8a1c6d9b3ea0704ca9",
+    "contract": {
+      "schema_version": 1,
+      "adapter": "grok_exec",
+      "provider": "xai_grok_build",
+      "account_class": "subscription",
+      "model": "grok-4.6",
+      "reported_model": "grok-4.6-build",
+      "max_concurrency": 4
+    },
+    "contract_hash": "5d95c10ec668f03d6ef714bedcb079f734ff82eb2320e09b9f310e8e938714a0",
+    "host_gate_state": "healthy",
+    "zero_charge_only": true,
+    "cost_evidence_hash": "c80f376e9c693cd982ef8e1647d4176ee8d3c1f5472419800a31316e9bb193d1",
+    "auth_receipt_hash": "572dc231962fe3e553a6bc9ad031da4b232f9fe27ea6b7ce82d7ded1003a3798"
+  },
+  "items": [
+    {
+      "item_id": "51b9dff523684f82878ca80d7887d1bf",
+      "status": "completed",
+      "delivery_status": "delivered",
+      "attempt_count": 1,
+      "attempt": {
+        "outcome": "completed",
+        "started_at": "2026-08-23T00:14:33+00:00",
+        "finished_at": "2026-08-23T00:16:00+00:00"
+      },
+      "usage_telemetry": {
+        "status": "reported",
+        "total_cost_usd": 0.008874,
+        "total_cost_usd_ticks": 88740000,
+        "model_cost_usd": 0.008874
+      }
+    },
+    {
+      "item_id": "5caa44cacbbe43c38d2ad1472f858dad",
+      "status": "completed",
+      "delivery_status": "delivered",
+      "attempt_count": 1,
+      "attempt": {
+        "outcome": "completed",
+        "started_at": "2026-08-23T00:14:33+00:00",
+        "finished_at": "2026-08-23T00:15:27+00:00"
+      },
+      "usage_telemetry": {
+        "status": "reported",
+        "total_cost_usd": 0.00695028,
+        "total_cost_usd_ticks": 69502800,
+        "model_cost_usd": 0.00695028
+      }
+    },
+    {
+      "item_id": "845a58e19ac54eaf94e247522f4fcdbd",
+      "status": "completed",
+      "delivery_status": "delivered",
+      "attempt_count": 1,
+      "attempt": {
+        "outcome": "completed",
+        "started_at": "2026-08-23T00:14:33+00:00",
+        "finished_at": "2026-08-23T00:16:19+00:00"
+      },
+      "usage_telemetry": {
+        "status": "reported",
+        "total_cost_usd": 0.01071816,
+        "total_cost_usd_ticks": 107181600,
+        "model_cost_usd": 0.01071816
+      }
+    },
+    {
+      "item_id": "cf97db7f7ae04086867517edbb44a0f9",
+      "status": "completed",
+      "delivery_status": "delivered",
+      "attempt_count": 1,
+      "attempt": {
+        "outcome": "completed",
+        "started_at": "2026-08-23T00:14:33+00:00",
+        "finished_at": "2026-08-23T00:15:30+00:00"
+      },
+      "usage_telemetry": {
+        "status": "reported",
+        "total_cost_usd": 0.00700536,
+        "total_cost_usd_ticks": 70053600,
+        "model_cost_usd": 0.00700536
+      }
+    }
+  ]
+}
