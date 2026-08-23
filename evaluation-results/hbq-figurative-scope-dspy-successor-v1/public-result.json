@@ -1,0 +1,33 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-figurative-scope-dspy-successor-v1",
+  "execution_commit": "d3f65b765f1588b9c536834484a141ea6d1a7918",
+  "source_private_aggregate_sha256": "4982e2b78572276cff717dfb130dc8742fe4f790a2b6b05dac9eb5779094094c",
+  "source_private_result_sha256": "e640103ec7e8b9bb3e2802f1af7f07eb0adf3799185513ec783e833d18fec5df",
+  "execution": {
+    "proposer_calls": 4,
+    "train_calls": 80,
+    "selection_calls": 0,
+    "confirmation_calls": 0,
+    "accepted_calls": 84,
+    "rejected_calls": 0,
+    "route": "codex",
+    "model": "gpt-5.6-sol",
+    "reasoning": "high",
+    "zero_incremental_charge": "owner_attested_subscription_route_not_independent_billing_proof"
+  },
+  "train": {
+    "unique_candidates": 4,
+    "candidate_scores": [[18, 20], [17, 20], [17, 20], [18, 20]],
+    "leaf_totals": {
+      "stockness": [32, 32],
+      "proportion": [30, 40],
+      "fatigue": [8, 8]
+    },
+    "full_pass_candidates": [0, 4],
+    "required_full_pass_candidates": 2
+  },
+  "confirmation_accessed": false,
+  "decision": "NO_GO",
+  "conclusion": "No candidate reached the frozen train full-pass threshold, so selection and confirmation remain closed. This development-only result promotes no prompt, rubric wording, leaf, ownership, split, or weight change."
+}

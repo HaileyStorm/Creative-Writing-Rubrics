@@ -22,3 +22,24 @@ by this package's dry-run mode.
 `no_default_metaphors` remains the stockness owner.  Purple-prose proportion
 and fatigue remain density owners.  A failed or incomplete call is
 `INCOMPLETE`; this package never retries or silently changes provider routes.
+
+## Aggregate result
+
+The development result is settled `NO_GO`. Four unique static instruction
+candidates were proposed; all 84 completed calls were accepted, with zero
+rejections. Their train scores were 18/20, 17/20, 17/20, and 18/20. The
+aggregate leaf totals were stockness 32/32, proportion 30/40, and fatigue 8/8.
+No candidate met the train full-pass requirement (0/4 versus 2 required), so
+selection and confirmation were not accessed.
+
+[`public-result.json`](public-result.json) is the aggregate-only publication.
+It is bound to the settled private aggregate and private result through SHA-256
+commitments, without publishing candidate text or hashes, local paths, raw
+prompts/responses, evidence/quotes, case labels, request/session identifiers,
+or oracle/partition material. The `codex` route used `gpt-5.6-sol` at `high`;
+its zero-incremental-charge status is owner-attested subscription-route
+information, not independent billing proof.
+
+Nothing is promoted: there is no prompt, rubric wording, leaf, ownership,
+split, or weight change. Selection and confirmation remain closed, and the
+result stays development-only.

@@ -52,6 +52,64 @@ def test_public_contract_has_only_an_opaque_private_oracle_commitment():
     assert "C:\\Users\\" not in public_text
 
 
+def test_settled_public_result_is_aggregate_only_and_hash_pinned():
+    s = study()
+    value = read(ROOT / "public-result.json")
+    report = s.validate_public_result()
+    assert s.sha256_file(ROOT / "public-result.json") == s.PUBLIC_RESULT_SHA256 == "65199fbe4e8ec25ccba324ca9c310ad1235b2e81e4183611cfb591a010f37013"
+    assert read(ROOT / "study-contract.json")["public_result_sha256"] == s.PUBLIC_RESULT_SHA256
+    assert report == {
+        "decision": "NO_GO",
+        "accepted_calls": 84,
+        "source_private_aggregate_sha256": "4982e2b78572276cff717dfb130dc8742fe4f790a2b6b05dac9eb5779094094c",
+    }
+    assert value["execution"] == {
+        "proposer_calls": 4,
+        "train_calls": 80,
+        "selection_calls": 0,
+        "confirmation_calls": 0,
+        "accepted_calls": 84,
+        "rejected_calls": 0,
+        "route": "codex",
+        "model": "gpt-5.6-sol",
+        "reasoning": "high",
+        "zero_incremental_charge": "owner_attested_subscription_route_not_independent_billing_proof",
+    }
+    assert value["train"]["candidate_scores"] == [[18, 20], [17, 20], [17, 20], [18, 20]]
+    assert value["train"]["leaf_totals"] == {"stockness": [32, 32], "proportion": [30, 40], "fatigue": [8, 8]}
+    assert value["train"]["full_pass_candidates"] == [0, 4]
+    assert value["confirmation_accessed"] is False
+
+
+def test_public_result_semantic_and_privacy_mutations_fail_without_hash_shortcuts():
+    s = study()
+    value = read(ROOT / "public-result.json")
+    s._validate_public_result_value(value)
+    for mutate in (
+        lambda item: item["execution"].update({"accepted_calls": 83}),
+        lambda item: item["train"]["leaf_totals"].update({"proportion": [31, 40]}),
+        lambda item: item["train"].update({"full_pass_candidates": [2, 4]}),
+        lambda item: item.update({"confirmation_accessed": True}),
+        lambda item: item.update({"candidate_hash": "not-public"}),
+        lambda item: item.update({"private_path": "C:/private"}),
+        lambda item: item.update({"raw_prompt": "not-public"}),
+        lambda item: item.update({"case_label": "not-public"}),
+        lambda item: item.update({"conclusion": "Promote a rubric change."}),
+    ):
+        changed = deepcopy(value)
+        mutate(changed)
+        with pytest.raises(ValueError):
+            s._validate_public_result_value(changed)
+
+
+def test_public_result_rejects_value_level_private_leakage_before_identity_checks():
+    s = study()
+    changed = read(ROOT / "public-result.json")
+    changed["conclusion"] += " C:\\Users\\Haile\\private session_id raw-response exact quote private"
+    with pytest.raises(ValueError, match="private evidence text"):
+        s._validate_public_result_value(changed)
+
+
 def test_dry_run_never_imports_dspy_or_calls_remote_and_preflight_fails_closed(monkeypatch, tmp_path):
     completed = subprocess.run([sys.executable, str(ROOT / "run.py"), "--dry-run"], text=True, capture_output=True, check=True)
     output = json.loads(completed.stdout)
@@ -90,6 +148,12 @@ def test_candidate_boundary_and_contract_limits_are_immutable():
     with pytest.raises(ValueError):
         s.validate_instruction("example " * 181)
     contract = read(ROOT / "study-contract.json")
+    assert contract["status"] == "settled_no_go_no_promotion"
+    assert contract["result_lineage"] == {
+        "execution_commit": "d3f65b765f1588b9c536834484a141ea6d1a7918",
+        "private_aggregate_sha256": "4982e2b78572276cff717dfb130dc8742fe4f790a2b6b05dac9eb5779094094c",
+        "private_result_sha256": "e640103ec7e8b9bb3e2802f1af7f07eb0adf3799185513ec783e833d18fec5df",
+    }
     changed = deepcopy(contract)
     changed["limits"]["proposer_calls_max"] = 5
     with pytest.raises(ValueError, match="limit"):

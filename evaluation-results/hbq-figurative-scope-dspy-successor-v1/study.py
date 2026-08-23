@@ -20,6 +20,12 @@ FORBIDDEN_REMOTE_ENV = (
 MAX_SCOPE_WORDS = 180
 MAX_SCOPE_CHARS = 1200
 TRANSCRIPTION_SHA256 = "dedbd5af93df46df8b27b44b69de10654cd1ff214acd56a02d5610ba0a94631f"
+EXECUTION_COMMIT = "d3f65b765f1588b9c536834484a141ea6d1a7918"
+PRIVATE_AGGREGATE_SHA256 = "4982e2b78572276cff717dfb130dc8742fe4f790a2b6b05dac9eb5779094094c"
+PRIVATE_RESULT_SHA256 = "e640103ec7e8b9bb3e2802f1af7f07eb0adf3799185513ec783e833d18fec5df"
+PUBLIC_RESULT_NAME = "public-result.json"
+PUBLIC_RESULT_SHA256 = "65199fbe4e8ec25ccba324ca9c310ad1235b2e81e4183611cfb591a010f37013"
+PUBLIC_CONCLUSION = "No candidate reached the frozen train full-pass threshold, so selection and confirmation remain closed. This development-only result promotes no prompt, rubric wording, leaf, ownership, split, or weight change."
 
 
 def canonical_json(value: Any) -> bytes:
@@ -86,10 +92,92 @@ def validate_corpus(corpus: Mapping[str, Any]) -> None:
         raise ValueError("Opaque artifact identity collision")
 
 
+def _validate_public_result_value(value: Mapping[str, Any]) -> None:
+    expected_execution = {
+        "proposer_calls": 4,
+        "train_calls": 80,
+        "selection_calls": 0,
+        "confirmation_calls": 0,
+        "accepted_calls": 84,
+        "rejected_calls": 0,
+        "route": "codex",
+        "model": "gpt-5.6-sol",
+        "reasoning": "high",
+        "zero_incremental_charge": "owner_attested_subscription_route_not_independent_billing_proof",
+    }
+    expected_train = {
+        "unique_candidates": 4,
+        "candidate_scores": [[18, 20], [17, 20], [17, 20], [18, 20]],
+        "leaf_totals": {"stockness": [32, 32], "proportion": [30, 40], "fatigue": [8, 8]},
+        "full_pass_candidates": [0, 4],
+        "required_full_pass_candidates": 2,
+    }
+    expected_keys = {
+        "format_version", "study_id", "execution_commit", "source_private_aggregate_sha256",
+        "source_private_result_sha256", "execution", "train", "confirmation_accessed", "decision", "conclusion",
+    }
+    if set(value) != expected_keys:
+        raise ValueError("Public result privacy surface drifted")
+    _validate_public_result_privacy(value)
+    if (
+        value.get("format_version") != 1
+        or value.get("study_id") != STUDY_ID
+        or value.get("execution_commit") != EXECUTION_COMMIT
+        or value.get("source_private_aggregate_sha256") != PRIVATE_AGGREGATE_SHA256
+        or value.get("source_private_result_sha256") != PRIVATE_RESULT_SHA256
+        or value.get("execution") != expected_execution
+        or value.get("train") != expected_train
+        or value.get("confirmation_accessed") is not False
+        or value.get("decision") != "NO_GO"
+    ):
+        raise ValueError("Public result identity or aggregate arithmetic drifted")
+    if value.get("conclusion") != PUBLIC_CONCLUSION:
+        raise ValueError("Public result conclusion drifted")
+
+
+def _validate_public_result_privacy(value: Mapping[str, Any]) -> None:
+    forbidden_key_fragments = (
+        "path", "candidate_hash", "candidate_text", "raw_prompt", "raw_response", "evidence",
+        "quote", "request", "session", "oracle", "partition", "case_label", "controller",
+    )
+
+    forbidden_value_fragments = (
+        "c:\\", "c:/", "/users/", "session", "raw response", "raw-response", "raw_response",
+        "exact quote", "exact-quote", "exact_quote", "private",
+    )
+
+    def walk(item: Any) -> None:
+        if isinstance(item, Mapping):
+            for key, nested in item.items():
+                if not isinstance(key, str) or any(token in key.casefold() for token in forbidden_key_fragments):
+                    raise ValueError("Public result contains private evidence metadata")
+                walk(nested)
+        elif isinstance(item, list):
+            for nested in item:
+                walk(nested)
+        elif isinstance(item, str) and any(token in item.casefold() for token in forbidden_value_fragments):
+            raise ValueError("Public result contains private evidence text")
+
+    walk(value)
+
+
+def validate_public_result() -> dict[str, Any]:
+    value = load_json(PUBLIC_RESULT_NAME)
+    contract = load_json("study-contract.json")
+    if sha256_file(ROOT / PUBLIC_RESULT_NAME) != PUBLIC_RESULT_SHA256 or contract.get("public_result_sha256") != PUBLIC_RESULT_SHA256:
+        raise ValueError("Public result hash drifted")
+    _validate_public_result_value(value)
+    return {
+        "decision": value["decision"],
+        "accepted_calls": value["execution"]["accepted_calls"],
+        "source_private_aggregate_sha256": value["source_private_aggregate_sha256"],
+    }
+
+
 def verify_package() -> dict[str, Any]:
     contract = load_json("study-contract.json")
     corpus = load_json("public-confirmation-corpus.json")
-    if contract.get("study_id") != STUDY_ID or contract.get("development_only") is not True:
+    if contract.get("study_id") != STUDY_ID or contract.get("development_only") is not True or contract.get("status") != "settled_no_go_no_promotion":
         raise ValueError("Contract identity drifted")
     if contract["limits"] != {"proposer_calls_max": 4, "train_calls_max": 80, "selection_calls_max": 32, "confirmation_calls_exact": 168, "one_provider_attempt_per_logical_call": True}:
         raise ValueError("Execution limit drifted")
@@ -101,4 +189,11 @@ def verify_package() -> dict[str, Any]:
     validate_corpus(corpus)
     if contract["bindings"].get("reviewed_transcription_sha256") != TRANSCRIPTION_SHA256 or design_transcription_hash(corpus) != TRANSCRIPTION_SHA256:
         raise ValueError("Reviewed confirmation transcription drifted")
-    return {"study_id": STUDY_ID, "provider_calls": 0, "confirmation_artifacts": 18, "confirmation_oracle_commitment": contract["bindings"]["private_confirmation_oracle_commitment_sha256"], "confirmation_calls_authorized": 0}
+    if contract.get("result_lineage") != {
+        "execution_commit": EXECUTION_COMMIT,
+        "private_aggregate_sha256": PRIVATE_AGGREGATE_SHA256,
+        "private_result_sha256": PRIVATE_RESULT_SHA256,
+    }:
+        raise ValueError("Private result lineage drifted")
+    public_result = validate_public_result()
+    return {"study_id": STUDY_ID, "provider_calls": 0, "confirmation_artifacts": 18, "confirmation_oracle_commitment": contract["bindings"]["private_confirmation_oracle_commitment_sha256"], "confirmation_calls_authorized": 0, "public_result": public_result}
