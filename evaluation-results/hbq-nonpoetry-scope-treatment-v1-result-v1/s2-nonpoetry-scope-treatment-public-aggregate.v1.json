@@ -1,0 +1,55 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-nonpoetry-scope-treatment-v1-execution-v1",
+  "public_cwr_lineage": {
+    "frozen_execution_commit": "a7e23b3",
+    "frozen_treatment_commit": "6366bb3901e900ff73ddf5f5981d617954ea4a28"
+  },
+  "evidence_scope": "development_only",
+  "protocol_geometry": {
+    "new_singleton_provider_requests": 27,
+    "immutable_reused_accepted_calls": 6,
+    "total_accepted_calls_evaluated": 33,
+    "repetitions_per_cell": 3,
+    "baseline_passage_cells": 4,
+    "candidate_passage_cells": 4,
+    "corrected_nonpassage_control_cells": 3,
+    "one_leaf_per_provider_request": true,
+    "execution_route": "codex_gpt_5_6_sol_high"
+  },
+  "aggregate_counts": {
+    "new_accepted_first_attempt": 27,
+    "new_retries": 0,
+    "immutable_reused_accepted_calls": 6,
+    "total_accepted_calls_evaluated": 33
+  },
+  "treatment_gate": {
+    "baseline_passage_cells_passing": {"passed": 2, "total": 4},
+    "candidate_passage_cells_passing": {"passed": 3, "total": 4},
+    "corrected_nonpassage_controls_passing": {"passed": 0, "total": 3},
+    "only_improved_baseline_failure": "missing_required_evidence",
+    "no_regression_of_baseline_passes": true,
+    "material_failure": {
+      "baseline": {"correct": 0, "denominator": 3},
+      "candidate": {"correct": 0, "denominator": 3}
+    }
+  },
+  "decision": "DIAGNOSTIC_FAIL",
+  "promotion": "none",
+  "limitations": [
+    "Aggregate-only public projection: no fixtures, expected labels, individual outcomes, prompts, model outputs, private evidence, paths, or provider-session metadata.",
+    "The candidate wording improved only the missing-required-evidence cell from 2/3 to 3/3; it did not correct material failure, which remained 0/3 in both arms.",
+    "The candidate arm did not satisfy its four-passage-cell gate, and all corrected nonpassage controls failed; this result does not establish a treatment effect.",
+    "This development-only diagnostic failure authorizes no prompt, rubric, leaf, ownership, split, or weight change.",
+    "The sealed private settlement remains the authority for receipt-level verification."
+  ],
+  "opaque_private_receipt_commitments": {
+    "source_aggregate_sha256": "f0baee7af87c8c84e43f9891d8b7308553aeed0f0a8254e19f61f2b5df845e90",
+    "settlement_sha256": "6b048295ce0c931b139b405264a6dcef4cb2cdceddac60ccc3e981a3a26bf6b8",
+    "execution_manifest_sha256": "fddd5ba5abc87822a489a15297a8a0b32af09ce525c3f4a5a1993cafe3a7a09a",
+    "runtime_schedule_sha256": "a8eba3c0ae6c33826b9a4c6fb8d94e121539a3b99300187f4fd93405777b1f4b",
+    "study_contract_sha256": "315df2babfbf99f585f7c830b336cecb896f6472f892ef4f3926d6b3fd92f2b2",
+    "study_source_sha256": "ad37ee94f4b169b32091a21e80322c03ef81e73f149f8a4f2a301359de01392a",
+    "runner_source_sha256": "2292b5628a9a6ad24fe508da6a9c66a34fcce2a062800018c01c6b64a8e19e4e"
+  }
+}
