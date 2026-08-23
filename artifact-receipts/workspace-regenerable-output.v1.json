@@ -1,0 +1,109 @@
+{
+  "schema": "cwr-artifact-regeneration-receipt/v1",
+  "receipt_id": "workspace-regenerable-output-20260823-v1",
+  "family": "workspace-regenerable-output",
+  "logical_root_id": "cwr-historical-artifacts-20260820-v1",
+  "custody_manifest": {
+    "schema": "cwr-artifact-custody-manifest/v1",
+    "sha256": "bbd2ddf6dc8d251c369019a6c259e6d1502497073537547263e7ce703abe9319",
+    "former_834_membership": "UNPROVEN for every entry"
+  },
+  "source": {
+    "git_commit_sha1": "e363d645b443b865fcab137af5882460961959e0",
+    "package_version": "1.2.0",
+    "materialization": {
+      "rule": "mixed_eol_line_map_v1",
+      "description": "Every newline-terminated Git blob line is CRLF except the listed LF line numbers.",
+      "lf_line_numbers": {
+        "pyproject.toml": [7, 52, 53, 54],
+        "manifest.json": [2, 3, 4, 5, 7, 8, 9]
+      }
+    },
+    "files": {
+      "pyproject.toml": {
+        "git_blob_sha1": "7d0700688b61e8a4199bb91f53ea87bc6c119d57",
+        "git_blob_sha256": "9ee9c1a7d0804c96f657d86b6fe22f7c40ca9d9478e3f427e451d903ef6a6de4",
+        "materialized_sha256": "95da3282ed1f4d0d27005ef11303b8a3bea731e7533df6c60a5ee8497c20b9ae"
+      },
+      "manifest.json": {
+        "git_blob_sha1": "3bf08ca0ad9c0b6c6a944a79fa6b15ae6f33d517",
+        "git_blob_sha256": "9ab7cc471c678e52fdf257fd9a5e7e93ee0cfcab74a8c7689b34c2a0711fa175",
+        "materialized_sha256": "6227c37d61b143020223c1b8e8965624c1553b71954c70e81d52ebc1a1b824f4"
+      }
+    }
+  },
+  "historical_members": [
+    "exact-final-a4bf165804b8444ca417b38f865191b1",
+    "final-523109f6cf164d2b82fd218a99fe2669",
+    "focused-v3",
+    "longform-v5",
+    "targeted-release-20260820",
+    "cli-final",
+    "temp-verify"
+  ],
+  "replacements": [
+    {
+      "historical_member": "exact-final-a4bf165804b8444ca417b38f865191b1",
+      "command": ".venv\\Scripts\\python.exe -m hbqrs validate",
+      "exit_code": 0,
+      "result": "PASS",
+      "stdout_sha256": "bd47712bfe2cd2cd5735d5a2ed13bcf03abddb0f421e76c7241ba69f86b09ed0",
+      "output_tree_sha256": "d97b3967b6a470dd61f6dda548ced18b9e1563fea7594ca43851afc827ad9c12"
+    },
+    {
+      "historical_member": "final-523109f6cf164d2b82fd218a99fe2669",
+      "command": ".venv\\Scripts\\python.exe -m hbqrs compile prose.scene -o <temporary-output>\\scene.json",
+      "exit_code": 0,
+      "result": "PASS",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "output_tree_sha256": "88b983b7ef2d78461f64533b4331fc1ce531ec8a7b350fc7eeb4c3dad7aa36dd"
+    },
+    {
+      "historical_member": "focused-v3",
+      "command": ".venv\\Scripts\\python.exe -m hbqrs score prose.scene examples\\verdicts_example.jsonl",
+      "exit_code": 0,
+      "result": "PASS",
+      "stdout_sha256": "1c3d7a040fb305d79a9e5d5e9d14ef0dead6fb86e82d41b7fa7229bddebd459a",
+      "output_tree_sha256": "7fbee9ff140a45affdb1e9e93cc003e2c241cc64812e55e84a95c203d12206e8"
+    },
+    {
+      "historical_member": "longform-v5",
+      "command": ".venv\\Scripts\\python.exe -m hbqrs render-judge --bundle prose.scene --artifact examples\\sample_scene.md",
+      "exit_code": 0,
+      "result": "PASS",
+      "stdout_sha256": "ae6b63d381db055cb194c80d444aad21e5d336489c25f4fad9c86b74ea698adc",
+      "output_tree_sha256": "7aa4d1360910713e62a31f7a5001d340c3df0cb57aecf075968ee687c523736f"
+    },
+    {
+      "historical_member": "targeted-release-20260820",
+      "command": ".venv\\Scripts\\python.exe -m hbqrs list bundles",
+      "exit_code": 0,
+      "result": "PASS",
+      "stdout_sha256": "531e102afff97b2e274bd3ad20c614da2e098328518c3f32adabe4e6f5a066c1",
+      "output_tree_sha256": "bfbba841e6f533476ba741e491769bcf8696af392d64d2a7fafa0e612b86d364"
+    },
+    {
+      "historical_member": "cli-final",
+      "command": ".venv\\Scripts\\python.exe -m hbqrs --help",
+      "exit_code": 0,
+      "result": "PASS",
+      "stdout_sha256": "706755021f50735507e989b088ebbfbc8baa6652b7525c1394386b6b78c1baf7",
+      "output_tree_sha256": "e1db6d0f5f1867d2644d1921a2d1f7a78da65cb6943bc91e5d99cd430d21004f"
+    },
+    {
+      "historical_member": "temp-verify",
+      "command": ".venv\\Scripts\\python.exe -m hbqrs show prose.scene",
+      "exit_code": 0,
+      "result": "PASS",
+      "stdout_sha256": "a1afa4634525680949cf8a87889c57c4bd19d26225f7df5c7329c15d802fba53",
+      "output_tree_sha256": "dca4e33b855a228e961826833154799cb769469df48d85f83c30d810c9ae91da"
+    }
+  ],
+  "temporary_outputs_retained": true,
+  "temporary_cleanup_status": "BLOCKED_BY_EXECUTOR_DELETION_POLICY",
+  "cleanup": {
+    "status": "NOT_EXECUTED",
+    "historical_paths_deleted": [],
+    "required_physical_command": "Consume the exact manifest-derived member list for this family only."
+  }
+}

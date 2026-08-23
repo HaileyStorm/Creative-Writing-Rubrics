@@ -1,0 +1,65 @@
+{
+  "schema": "cwr-artifact-replacement-receipt/v1",
+  "receipt_id": "distribution-regenerable-output-e363d645-20260823-v1",
+  "logical_root_id": "cwr-historical-artifacts-20260820-v1",
+  "family": "distribution-regenerable-output",
+  "status": "BLOCKED",
+  "custody_manifest": {
+    "schema": "cwr-artifact-custody-manifest/v1",
+    "sha256": "bbd2ddf6dc8d251c369019a6c259e6d1502497073537547263e7ce703abe9319"
+  },
+  "source": {
+    "git_commit": "e363d645b443b865fcab137af5882460961959e0",
+    "version": "1.2.0",
+    "materialization": "git archive --format=tar <source-commit> | tar.exe -xf - -C <isolated-source>",
+    "input_blobs": {
+      "pyproject.toml": "7d0700688b61e8a4199bb91f53ea87bc6c119d57",
+      "src/hbqrs/cli.py": "b4bece11db82a81d517d52f8ad21ef7ef824be0f",
+      "registry/all_modules.json": "d94af34c80cf32b4d5a380167e66e2af39f29ad7",
+      "bundles/all_bundles.json": "3d4f8c0d2dcc7020111dbdaf0e40a9fe483bc2a4",
+      "examples/verdicts_example.jsonl": "b645d8eabb39bcc4f6ac69ab5aac7e512f0b597f"
+    }
+  },
+  "manifest_members": [
+    {"relative_path": "dist", "entry_type": "directory"},
+    {"relative_path": "dist-fixed", "entry_type": "directory"},
+    {"relative_path": "dist-final", "entry_type": "directory"},
+    {"relative_path": "public-final", "entry_type": "directory"},
+    {"relative_path": "public-score-final", "entry_type": "directory"},
+    {"relative_path": "public-surface-final-20260820", "entry_type": "directory"},
+    {"relative_path": "public-448c461-installed-dry-run", "entry_type": "directory"}
+  ],
+  "historical_1_1_0_evidence": {
+    "verified_from_custody": true,
+    "artifacts": [
+      {"relative_path": "dist-final/creative_writing_rubrics-1.1.0-py3-none-any.whl", "sha256": "0bc3c4fe5f7022849678ab50208b7610174cbaa09c7b8bdf345989e06a571d6d"},
+      {"relative_path": "dist-final/creative_writing_rubrics-1.1.0.tar.gz", "sha256": "d78f6ff02c65f519351f9281aded44f304adf2ab3461fc92cbf6d0c7d034cd64"}
+    ],
+    "comparison": "NOT_PERFORMED: the pinned source is version 1.2.0, so equality or mismatch with 1.1.0 would not establish regeneration."
+  },
+  "build_attempts": [
+    {
+      "command": "uv build --offline --out-dir <isolated-temp>/dist-uv-offline",
+      "working_directory": "<isolated-source>",
+      "result": "BLOCKED_TIMEOUT",
+      "timeout_seconds": 30,
+      "observed_output": "Building source distribution...",
+      "output_artifacts": []
+    },
+    {
+      "command": "<project-python> -m hatchling build -d <isolated-temp>/dist-hatchling-fallback",
+      "working_directory": "<isolated-source>",
+      "result": "BLOCKED_TIMEOUT",
+      "timeout_seconds": 25,
+      "observed_output": "[sdist]",
+      "output_artifacts": []
+    }
+  ],
+  "replacement_artifact_hashes": [],
+  "cleanup": {
+    "eligible": false,
+    "reason": "No wheel or sdist was emitted, so no current artifact hashes or install verification exist.",
+    "members": []
+  },
+  "next_gate": "Complete a clean, offline build from this exact source SHA; record wheel and sdist SHA-256 values plus an isolated install check before reconsidering this family."
+}

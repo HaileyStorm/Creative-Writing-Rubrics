@@ -1,0 +1,77 @@
+{
+  "schema": "cwr-artifact-regeneration-receipt/v1",
+  "logical_root_id": "cwr-historical-artifacts-20260820-v1",
+  "custody_manifest_sha256": "bbd2ddf6dc8d251c369019a6c259e6d1502497073537547263e7ce703abe9319",
+  "source_revision": "e363d645b443b865fcab137af5882460961959e0",
+  "source_materialization": {
+    "commit": "e363d645b443b865fcab137af5882460961959e0",
+    "tree": "82344e75272f7223beda8f5f008b4e9b9de11769",
+    "clean_worktree_execution_claimed": false
+  },
+  "family": "pytest-regenerable-output",
+  "historical_identity": "not_claimed",
+  "direct_members": [
+    "pytest",
+    "pytest-124310bf94f14f9fa3f5f9dbf54cdd49",
+    "pytest-63668eaa342e4563bdf61a8c541408cb",
+    "pytest-aliases",
+    "pytest-checkpoint-tool",
+    "pytest-checkpoint-v2",
+    "pytest-full-after-fixes",
+    "pytest-full-baseline-final",
+    "pytest-packaging-final",
+    "pytest-public-eval-final",
+    "pytest-review-fixes",
+    "pytest-review-fixes-v2",
+    "pytest-review-fixes-v3",
+    "pytest-runner-final-post-version",
+    "pytest-runner-first",
+    "pytest-runner-full-final",
+    "pytest-runner-release-final",
+    "pytest-runner-second",
+    "pytest-runner-third",
+    "pytest-runner-v4",
+    "pytest-schema",
+    "pytest-targeted-2"
+  ],
+  "verification": {
+    "status": "BLOCKED",
+    "commands": [
+      {
+        "command": ".\\.venv\\Scripts\\python.exe -m pytest -q --junitxml $env:CWR_ARTIFACT_CUSTODY_ROOT\\replacement-receipts\\pytest-regenerable-output.junit.xml",
+        "status": "interrupted_after_no_result_file",
+        "tests": null,
+        "passed": null,
+        "failures": null,
+        "errors": null
+      }
+    ],
+    "failures": null,
+    "errors": null,
+    "tests": null,
+    "passed": null,
+    "replacement_output_sha256": null,
+    "private_replacement_receipt_sha256": null,
+    "private_attempt_sha256": "1aa219027632c8a773baae4e745d1943b5336d0dc9c2944835a2f3cdb6752c7a",
+    "blocker": "The required full pytest replacement gate did not produce a result file before its receipt-owned process was stopped after repeated no-progress polls."
+  },
+  "portable_verifier": {
+    "command": ".\\.venv\\Scripts\\python.exe -m pytest -q tests/test_artifact_receipts_pytest_large_v1.py",
+    "tests": 5,
+    "passed": 3,
+    "failures": 0,
+    "errors": 0,
+    "skipped_private_integrations": 2
+  },
+  "private_custody_integration": {
+    "environment_variable": "CWR_ARTIFACT_CUSTODY_MANIFEST",
+    "tests": 2,
+    "passed": 2,
+    "failures": 0,
+    "errors": 0,
+    "private_output_sha256": "927981c89eaf43826c8e98d18e4b37567c8ee5b42223e82dd5306dca6e46cfa8"
+  },
+  "cleanup_status": "BLOCKED",
+  "safe_cleanup_members": [],
+  "physical_cleanup_executed": false
+}

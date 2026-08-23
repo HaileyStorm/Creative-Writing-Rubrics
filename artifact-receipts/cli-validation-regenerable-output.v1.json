@@ -1,0 +1,58 @@
+{
+  "schema": "cwr-artifact-replacement-receipt/v1",
+  "receipt_id": "cli-validation-regenerable-output-e363d645-20260823-v1",
+  "logical_root_id": "cwr-historical-artifacts-20260820-v1",
+  "family": "cli-validation-regenerable-output",
+  "status": "GO",
+  "custody_manifest": {
+    "schema": "cwr-artifact-custody-manifest/v1",
+    "sha256": "bbd2ddf6dc8d251c369019a6c259e6d1502497073537547263e7ce703abe9319"
+  },
+  "source": {
+    "git_commit": "e363d645b443b865fcab137af5882460961959e0",
+    "version": "1.2.0",
+    "materialization": "git archive --format=tar <source-commit> | tar.exe -xf - -C <isolated-source>",
+    "entry_point": "hbqrs.cli:main from the isolated archive; cwr and hbq are declared aliases for that entry point.",
+    "input_blobs": {
+      "pyproject.toml": "7d0700688b61e8a4199bb91f53ea87bc6c119d57",
+      "src/hbqrs/cli.py": "b4bece11db82a81d517d52f8ad21ef7ef824be0f",
+      "registry/all_modules.json": "d94af34c80cf32b4d5a380167e66e2af39f29ad7",
+      "bundles/all_bundles.json": "3d4f8c0d2dcc7020111dbdaf0e40a9fe483bc2a4",
+      "examples/verdicts_example.jsonl": "b645d8eabb39bcc4f6ac69ab5aac7e512f0b597f"
+    }
+  },
+  "manifest_members": [
+    {"relative_path": "bundles.txt", "size_bytes": 18489, "sha256": "12b034d24568b0136dbcf5dc16191f385c80735f095d242391877e836cd6bc53"},
+    {"relative_path": "modules.txt", "size_bytes": 72485, "sha256": "be6b5f22db68ef2f1e79b7eadde180162623c0604de8e65bc7b6cad0f9c9119e"},
+    {"relative_path": "cwr-help.txt", "size_bytes": 1147, "sha256": "8581fd1287e3288162c58bfbabb8744177f6e7e383d37e0913076ebf8e0be772"},
+    {"relative_path": "hbq-help.txt", "size_bytes": 1147, "sha256": "8581fd1287e3288162c58bfbabb8744177f6e7e383d37e0913076ebf8e0be772"},
+    {"relative_path": "module-help.txt", "size_bytes": 1147, "sha256": "8581fd1287e3288162c58bfbabb8744177f6e7e383d37e0913076ebf8e0be772"},
+    {"relative_path": "python-api.txt", "size_bytes": 0, "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"},
+    {"relative_path": "validate.txt", "size_bytes": 114, "sha256": "73ab17f9a4bb0b788b31bc2d8d8e88bd14b042e31e3bb3621e0d96189e68a1d2"},
+    {"relative_path": "wheel-bundles.json", "size_bytes": 18499, "sha256": "a9e7e209b61a7be79a7cf6b430671702952ec9d03409c3a0584c862277140012"},
+    {"relative_path": "wheel-fixed-validate.json", "size_bytes": 114, "sha256": "73ab17f9a4bb0b788b31bc2d8d8e88bd14b042e31e3bb3621e0d96189e68a1d2"},
+    {"relative_path": "wheel-validate.json", "size_bytes": 185, "sha256": "adc19c1fa397733ae718247fef47eda090c550c5119ad5a7e6ed70dcbd0e182c"}
+  ],
+  "replacement_results": [
+    {"member": "bundles.txt", "declared_command": "cwr list bundles", "exit_code": 0, "sha256": "531e102afff97b2e274bd3ad20c614da2e098328518c3f32adabe4e6f5a066c1"},
+    {"member": "modules.txt", "declared_command": "cwr list modules", "exit_code": 0, "sha256": "807e871949bdc107d8d17b58ea8f8c4946fa1072a061acc8c00814d5b2d49ca8"},
+    {"member": "cwr-help.txt", "declared_command": "cwr --help", "exit_code": 0, "sha256": "706755021f50735507e989b088ebbfbc8baa6652b7525c1394386b6b78c1baf7"},
+    {"member": "hbq-help.txt", "declared_command": "hbq --help", "exit_code": 0, "sha256": "706755021f50735507e989b088ebbfbc8baa6652b7525c1394386b6b78c1baf7"},
+    {"member": "module-help.txt", "declared_command": "cwr show --help", "exit_code": 0, "sha256": "6ae373496779bcde3db8e8eba6b5f75a7eb83dd52861ce42708870f41b52d73b"},
+    {"member": "python-api.txt", "declared_command": "documented compile_bundle/load_modules/score_bundle Python example", "exit_code": 0, "sha256": "11b3063a820c012a1c222622c020bd5f80ef76b8c11bf27653f8c8aab0888561"},
+    {"member": "validate.txt", "declared_command": "cwr validate", "exit_code": 0, "sha256": "bd47712bfe2cd2cd5735d5a2ed13bcf03abddb0f421e76c7241ba69f86b09ed0"},
+    {"member": "wheel-bundles.json", "declared_command": "cwr list bundles", "exit_code": 0, "sha256": "531e102afff97b2e274bd3ad20c614da2e098328518c3f32adabe4e6f5a066c1", "note": "Pinned-source replacement; not represented as a rebuilt wheel result."},
+    {"member": "wheel-fixed-validate.json", "declared_command": "cwr validate", "exit_code": 0, "sha256": "bd47712bfe2cd2cd5735d5a2ed13bcf03abddb0f421e76c7241ba69f86b09ed0", "note": "Pinned-source replacement; not represented as a rebuilt wheel result."},
+    {"member": "wheel-validate.json", "declared_command": "hbq validate", "exit_code": 0, "sha256": "bd47712bfe2cd2cd5735d5a2ed13bcf03abddb0f421e76c7241ba69f86b09ed0", "note": "Pinned-source replacement; not represented as a rebuilt wheel result."}
+  ],
+  "validation": {
+    "command": "<project-python> -I -c <isolated-archive hbqrs.cli:main invocation>",
+    "result": {"exit_code": 0, "module_count": 278, "bundle_count": 85, "question_count": 2145}
+  },
+  "cleanup": {
+    "eligible": true,
+    "execution_authorized": false,
+    "members": ["bundles.txt", "modules.txt", "cwr-help.txt", "hbq-help.txt", "module-help.txt", "python-api.txt", "validate.txt", "wheel-bundles.json", "wheel-fixed-validate.json", "wheel-validate.json"],
+    "constraint": "A physical cleanup must consume this exact manifest-derived list only; no glob or recursive parent deletion is authorized."
+  }
+}

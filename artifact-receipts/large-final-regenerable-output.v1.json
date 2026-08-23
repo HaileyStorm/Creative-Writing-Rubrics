@@ -1,0 +1,59 @@
+{
+  "schema": "cwr-artifact-regeneration-receipt/v1",
+  "logical_root_id": "cwr-historical-artifacts-20260820-v1",
+  "custody_manifest_sha256": "bbd2ddf6dc8d251c369019a6c259e6d1502497073537547263e7ce703abe9319",
+  "source_revision": "e363d645b443b865fcab137af5882460961959e0",
+  "source_materialization": {
+    "commit": "e363d645b443b865fcab137af5882460961959e0",
+    "tree": "82344e75272f7223beda8f5f008b4e9b9de11769",
+    "clean_worktree_execution_claimed": false
+  },
+  "family": "large-final-regenerable-output",
+  "historical_identity": "not_claimed",
+  "direct_members": [
+    "full-af033eca873e49f0b62cbfd547a91868",
+    "full-exact-final",
+    "full-final",
+    "full-final-20260820"
+  ],
+  "verification": {
+    "status": "BLOCKED",
+    "commands": [
+      {
+        "command": ".\\.venv\\Scripts\\python.exe -m pytest -q --junitxml $env:CWR_ARTIFACT_CUSTODY_ROOT\\replacement-receipts\\large-final-regenerable-output.junit.xml",
+        "status": "not_started",
+        "tests": null,
+        "passed": null,
+        "failures": null,
+        "errors": null
+      }
+    ],
+    "failures": null,
+    "errors": null,
+    "tests": null,
+    "passed": null,
+    "replacement_output_sha256": null,
+    "private_replacement_receipt_sha256": null,
+    "private_attempt_sha256": "c14105449b61822157d6ef667626ef258c83cb18afd8e7bddd6f7b962cd8c739",
+    "blocker": "This family requires an independent completed full/final replacement gate; no result from the ordinary pytest family may settle it."
+  },
+  "portable_verifier": {
+    "command": ".\\.venv\\Scripts\\python.exe -m pytest -q tests/test_artifact_receipts_pytest_large_v1.py",
+    "tests": 5,
+    "passed": 3,
+    "failures": 0,
+    "errors": 0,
+    "skipped_private_integrations": 2
+  },
+  "private_custody_integration": {
+    "environment_variable": "CWR_ARTIFACT_CUSTODY_MANIFEST",
+    "tests": 2,
+    "passed": 2,
+    "failures": 0,
+    "errors": 0,
+    "private_output_sha256": "927981c89eaf43826c8e98d18e4b37567c8ee5b42223e82dd5306dca6e46cfa8"
+  },
+  "cleanup_status": "BLOCKED",
+  "safe_cleanup_members": [],
+  "physical_cleanup_executed": false
+}

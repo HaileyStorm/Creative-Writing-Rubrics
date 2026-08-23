@@ -1,0 +1,91 @@
+{
+  "schema": "cwr-artifact-regeneration-receipt/v1",
+  "receipt_id": "isolated-install-regenerable-output-20260823-v1",
+  "family": "isolated-install-regenerable-output",
+  "logical_root_id": "cwr-historical-artifacts-20260820-v1",
+  "custody_manifest": {
+    "schema": "cwr-artifact-custody-manifest/v1",
+    "sha256": "bbd2ddf6dc8d251c369019a6c259e6d1502497073537547263e7ce703abe9319",
+    "former_834_membership": "UNPROVEN for every entry"
+  },
+  "source": {
+    "git_commit_sha1": "e363d645b443b865fcab137af5882460961959e0",
+    "package_version": "1.2.0",
+    "materialization": {
+      "rule": "mixed_eol_line_map_v1",
+      "description": "Every newline-terminated Git blob line is CRLF except the listed LF line numbers.",
+      "lf_line_numbers": {
+        "pyproject.toml": [7, 52, 53, 54],
+        "manifest.json": [2, 3, 4, 5, 7, 8, 9]
+      }
+    },
+    "files": {
+      "pyproject.toml": {
+        "git_blob_sha1": "7d0700688b61e8a4199bb91f53ea87bc6c119d57",
+        "git_blob_sha256": "9ee9c1a7d0804c96f657d86b6fe22f7c40ca9d9478e3f427e451d903ef6a6de4",
+        "materialized_sha256": "95da3282ed1f4d0d27005ef11303b8a3bea731e7533df6c60a5ee8497c20b9ae"
+      },
+      "manifest.json": {
+        "git_blob_sha1": "3bf08ca0ad9c0b6c6a944a79fa6b15ae6f33d517",
+        "git_blob_sha256": "9ab7cc471c678e52fdf257fd9a5e7e93ee0cfcab74a8c7689b34c2a0711fa175",
+        "materialized_sha256": "6227c37d61b143020223c1b8e8965624c1553b71954c70e81d52ebc1a1b824f4"
+      }
+    }
+  },
+  "historical_members": [
+    "isolated-install-final"
+  ],
+  "replacement_steps": [
+    {
+      "command": ".venv\\Scripts\\python.exe -m pip wheel --no-build-isolation --no-deps --wheel-dir <temporary-wheelhouse> .",
+      "exit_code": 0,
+      "result": "PASS",
+      "stdout_sha256": "e2b7975e89a62f8ed27a2cfad193096a4aae9efd87b54075a2a55012fcc9f5af",
+      "output_tree_sha256": "c9903179011ac99d24e144754de764cf49c1f4fb50c21693db926a2577608545"
+    },
+    {
+      "command": "<temporary-python> -m pip install --no-deps --no-index --force-reinstall <temporary-wheelhouse>\\creative_writing_rubrics-1.2.0-py3-none-any.whl",
+      "exit_code": 0,
+      "result": "PASS",
+      "stdout_sha256": "b037b09f3224b65b1a258f001d1130170c284dad1a3d22d895b99676f66a0337",
+      "output_tree_sha256": "02469730516eed9e6ce7f8a3d7488c741db7ae1d6eb0e589e5d19fb8068af2f6"
+    },
+    {
+      "command": "<temporary-python> -m hbqrs validate",
+      "exit_code": 0,
+      "result": "PASS",
+      "stdout_sha256": "bd47712bfe2cd2cd5735d5a2ed13bcf03abddb0f421e76c7241ba69f86b09ed0",
+      "output_tree_sha256": "02469730516eed9e6ce7f8a3d7488c741db7ae1d6eb0e589e5d19fb8068af2f6"
+    }
+  ],
+  "replacement_artifacts": {
+    "wheel_filename": "creative_writing_rubrics-1.2.0-py3-none-any.whl",
+    "wheel_sha256": "afd57d35aa167aca65f55bac0296edce0869c81611a3c37265096c4ff31555bb",
+    "smoke_output_sha256": "bd47712bfe2cd2cd5735d5a2ed13bcf03abddb0f421e76c7241ba69f86b09ed0"
+  },
+  "offline_dependency_provisioning": {
+    "preinstall_hbqrs_import": "None",
+    "mode": "Local copies of the declared dependency closure into the fresh temporary environment; no network access.",
+    "components": [
+      "attrs-26.1.0",
+      "jsonschema-4.26.0",
+      "jsonschema-specifications-2025.9.1",
+      "PyYAML-6.0.3",
+      "referencing-0.37.0",
+      "rpds-py-2026.6.3",
+      "typing-extensions-4.16.0"
+    ],
+    "initial_dependency_free_smoke": {
+      "exit_code": 1,
+      "result": "EXPECTED_ENVIRONMENT_DEFICIENCY",
+      "reason": "jsonschema was absent from the new environment before its declared dependency closure was provisioned."
+    }
+  },
+  "temporary_install_retained": true,
+  "temporary_cleanup_status": "BLOCKED_BY_EXECUTOR_DELETION_POLICY",
+  "cleanup": {
+    "status": "NOT_EXECUTED",
+    "historical_paths_deleted": [],
+    "required_physical_command": "Consume the exact manifest-derived member list for this family only."
+  }
+}

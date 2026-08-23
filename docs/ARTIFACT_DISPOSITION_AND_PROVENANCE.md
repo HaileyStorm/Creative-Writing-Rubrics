@@ -123,6 +123,13 @@ decision.  Do not copy the contents into this public repository.  The HANNA
 annotation copies cannot enter a removal batch until their rights and expected
 retention period are documented.
 
+Batch B is now settled as `RETAIN_PRIVATE` for all 48 direct roots: six Codex,
+13 HANNA, 25 longform, and four provenance roots. The private settlement
+manifest commits to their custody records at
+`5db3a11f6c7c8d193d58aed975adcf830f6028cc97738ee5149776064a71c1c0`.
+Delete authorization remains zero, and each family has a named rights,
+provenance, or supersession recheck condition.
+
 ### Batch C — blocked content decision
 
 For the twelve scene/prompt/output files and `hanna-coling-review.pdf`, a
@@ -134,6 +141,15 @@ designated provenance owner must choose one of:
 
 No automatic regeneration or cleanup is appropriate because the inputs may be
 creative source, third-party text, or model-facing prompts.
+
+Batch C is now settled as `RETAIN_PRIVATE` for all 13 files. The private
+manifest commits to 13/13 custody hashes at
+`a7b152b0418db5f43a9e2f8660e6be74a2f9290d6ccd14216ee399a587f9d71a`;
+the private receipt is committed at
+`bd06221e9797ed8a914f0dbe5b6655c341109db75a548e82445716af99229342`.
+No raw content was published, relocated, or deleted. Public release,
+redaction, relocation, or deletion remains closed pending the source/prose or
+third-party rights authority described above.
 
 ### Batch D — physical cleanup
 
