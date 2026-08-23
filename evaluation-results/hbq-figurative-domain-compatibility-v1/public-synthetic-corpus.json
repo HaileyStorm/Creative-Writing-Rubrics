@@ -1,0 +1,15 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-figurative-domain-compatibility-v1",
+  "privacy": "public_synthetic_only",
+  "fixtures": [
+    {"case_id":"dev-cooperate-default-routine","domain_relation":"cooperate","stockness":"default","material_load":"routine","figure_count":2,"text":"At closing, Iona copied the receipts. Her heart was glass; the pencil left splinters in the margin."},
+    {"case_id":"dev-cooperate-default-charged","domain_relation":"cooperate","stockness":"default","material_load":"charged","figure_count":2,"text":"During the evacuation, Iona copied the receipts while alarms sounded. Her heart was glass; the pencil left splinters in the margin."},
+    {"case_id":"dev-cooperate-specific-routine","domain_relation":"cooperate","stockness":"specific","material_load":"routine","figure_count":2,"text":"Iona sorted the ferry stubs. The route map opened like an accordion; each pier folded into the next pleat."},
+    {"case_id":"dev-cooperate-specific-charged","domain_relation":"cooperate","stockness":"specific","material_load":"charged","figure_count":2,"text":"With the last ferry missing, Iona sorted the stubs under the searchlight. The route map opened like an accordion; each pier folded into the next pleat."},
+    {"case_id":"dev-compete-default-routine","domain_relation":"compete","stockness":"default","material_load":"routine","figure_count":2,"text":"Iona filed the late receipts. Her heart was glass; the pencil became a battlefield across the margin."},
+    {"case_id":"dev-compete-default-charged","domain_relation":"compete","stockness":"default","material_load":"charged","figure_count":2,"text":"As the platform cleared after the blast, Iona filed the receipts. Her heart was glass; the pencil became a battlefield across the margin."},
+    {"case_id":"dev-compete-specific-routine","domain_relation":"compete","stockness":"specific","material_load":"routine","figure_count":2,"text":"Before lunch, Iona revised the harbor list. The route map was a brass lung; each pier opened like a wound."},
+    {"case_id":"dev-compete-specific-charged","domain_relation":"compete","stockness":"specific","material_load":"charged","figure_count":2,"text":"After the rescue boat returned empty, Iona revised the harbor list. The route map was a brass lung; each pier opened like a wound."}
+  ]
+}

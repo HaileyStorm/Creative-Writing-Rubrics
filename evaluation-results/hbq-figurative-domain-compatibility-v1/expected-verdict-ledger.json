@@ -1,0 +1,15 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-figurative-domain-compatibility-v1",
+  "visibility": "local_ledger_only_not_provider_input",
+  "expected_verdicts": {
+    "dev-cooperate-default-routine": {"penalty.purple_prose.metaphor":"YES","core.freshness_and_non_genericness.no_default_metaphors":"NO","penalty.purple_prose.proportion":"YES"},
+    "dev-cooperate-default-charged": {"penalty.purple_prose.metaphor":"YES","core.freshness_and_non_genericness.no_default_metaphors":"NO","penalty.purple_prose.proportion":"NO"},
+    "dev-cooperate-specific-routine": {"penalty.purple_prose.metaphor":"YES","core.freshness_and_non_genericness.no_default_metaphors":"YES","penalty.purple_prose.proportion":"YES"},
+    "dev-cooperate-specific-charged": {"penalty.purple_prose.metaphor":"YES","core.freshness_and_non_genericness.no_default_metaphors":"YES","penalty.purple_prose.proportion":"NO"},
+    "dev-compete-default-routine": {"penalty.purple_prose.metaphor":"NO","core.freshness_and_non_genericness.no_default_metaphors":"NO","penalty.purple_prose.proportion":"YES"},
+    "dev-compete-default-charged": {"penalty.purple_prose.metaphor":"NO","core.freshness_and_non_genericness.no_default_metaphors":"NO","penalty.purple_prose.proportion":"NO"},
+    "dev-compete-specific-routine": {"penalty.purple_prose.metaphor":"NO","core.freshness_and_non_genericness.no_default_metaphors":"YES","penalty.purple_prose.proportion":"YES"},
+    "dev-compete-specific-charged": {"penalty.purple_prose.metaphor":"NO","core.freshness_and_non_genericness.no_default_metaphors":"YES","penalty.purple_prose.proportion":"NO"}
+  }
+}
