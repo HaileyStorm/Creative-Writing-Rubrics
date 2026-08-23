@@ -1,0 +1,51 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-polarity-change-manual-treatment-v1",
+  "status": "frozen_development_only_manual_treatment",
+  "development_only": true,
+  "provider_execution": {"permitted": false, "new_provider_calls_exact": 0, "one_leaf_per_request": true},
+  "geometry": {"leaves_exact": 11, "treated_leaves_exact": 4, "unchanged_not_applicable_controls_exact": 11, "corrected_yes_no_pairs_exact": 4, "fixtures_exact": 19, "repeats_exact": 3, "slots_exact": 57},
+  "screen": {"name": "manual_treatment", "prompt_policy": "append_exact_applicability_and_evidence_sufficiency_rules", "treatment_arm": "only", "expected_label_visibility": "ledger_only", "semantic_fixture_evidence_may_determine_truth_state": true, "ledger_expected_label_drives_or_renders_prompt": false, "sealed_holdout_required_before_execution": true},
+  "scoring": {"development_success": "all_19_cells_3_of_3_grounded_typed_evidence_matches", "not_applicable_controls": "completed_diagnostic_only", "missing_or_ambiguous_slot": "INCOMPLETE", "development_pass_decision": "MANUAL_TREATMENT_PASS", "prompt_promotion": "holdout_and_independent_review_required"},
+  "promotion": {"prompt": "none", "rubric": "none", "leaf": "none", "ownership": "none", "split": "none", "weight": "none"},
+  "bindings": {
+    "corpus": {"path": "public-synthetic-corpus.json", "sha256": "18dc8beb74e491d981f3f1a93efb0fce2e3080b2c85a72214523b19bf2d96c2b"},
+    "fixture_carriers": {"path": "fixture-carriers.json", "sha256": "97ce7d7c8201a5f290b0afa25633a97cd1150e56a87ef8ea3dbea86acdbbc282"},
+    "sealed_holdout_contract": {"path": "sealed-holdout-contract.json", "sha256": "47062fa89834150eed6e5a19e64f926706b271f43de2c0dd803ffff3fee3deb8"},
+    "treatment_appendix_sha256": "00ce0c5f1063c1fb36cc663bd2c522ce5eda254ee8f9079ec21774277e0d3722",
+    "runtime": {
+      "prompts/judge/BINARY_EVALUATION_PROMPT.md": "6c1cac901d820c1ab866e19f9191896e8c97a6aadf35bdae4eac640fd199a3a2",
+      "prompts/judge/JUDGE_PREFIX.md": "5e3a0990efca93e2cbc3894e635f9fd1b97b6e61ea2981940319cb54994ebb74",
+      "registry/criterion_ownership.json": "79d636c7c692926d15ff8ebd47c3592e6bb0e6640473c0948ae9dead4fdd6876",
+      "registry/modules/form.audio.audio_drama_production.yaml": "39dc2453341678624e5e1b92d6d6688725fb87e4597c8d13da84c9d232cdda12",
+      "registry/modules/form.multimodal.text_audio_alignment.yaml": "7c3a313e68375d519e547f8312499c7b89bec1b221cc6745b341c9b016a22973",
+      "registry/modules/form.poetry.general_poetry.yaml": "225875900aed15efe31df9cf6340424273038275218c272c04c511de5aa34638",
+      "registry/modules/form.poetry.haiku_in_english.yaml": "44bc4a0f2340a5800081816fa80a72de85dfb063583deaed43ab7e981771caf2",
+      "registry/modules/form.poetry.lyric_song_lyric.yaml": "713bee29f5649fe8f544e26ce615795f1995b16b066d26f6d6183c11a27fc308",
+      "registry/modules/form.poetry.spoken_word_performance_poetry.yaml": "969a30c3dd90ddb7cddbe248d23ead644e8febd57b7727516e2ed104af758d65",
+      "registry/modules/form.visual.visual_prompt_and_canon_fidelity.yaml": "f9d8b2a240ffb12383e9deb78a5d9612a4ebbe3a0914cd9514486a72c7061f67",
+      "registry/modules/op.critique.rubric_directed_critique.yaml": "23134b5d17235d69901088d6b9ebaba0d7c0c5c94c2a2bcc58ad4126c611f152",
+      "registry/modules/op.ingest.source_ingestion_fidelity.yaml": "ddceeaf0a13dc21b6072b8f3d9f17f64c15435c2a84c2bb31d2c3055c3945da9",
+      "registry/modules/sampler.freshness_gain.yaml": "b0f2dc7d350a94f42a153dd2bdf19fb7a1be64318e07607f709b137a910d9bc7",
+      "registry/question_index.jsonl": "0de8eec70a5a4de74770570253af96f6483c07fcf00ebad198fe951cf2af1fb6",
+      "schema/hbq_judge_response.schema.json": "49c7d824ba5dd957e67968ba3ae6ceb8a7ed9434dfb0dfc654836a76613c7854",
+      "src/hbqrs/runner.py": "af97b27de7cf8aba63435489e83eb09307c45a0de3b6ce47ebdd847898b1a9f8"
+    },
+    "source_leaves": {
+      "form.audio.audio_drama_production.no_as_you_know": "0818ec8c10ac73885479af24732d9961b34329975209a7cceaaa0372c176c7f3",
+      "form.multimodal.text_audio_alignment.no_narrow": "f10060831a7cde8b2e8e4b3280db2dec04d5ed1fba24b099d213422c10e930ea",
+      "form.poetry.general_poetry.oral_test": "3b84c24cac2eca14b6bfe7ed95283db9dfd8606029b4a398480ab92ad5c850f4",
+      "form.poetry.haiku_in_english.kigo_legible": "f21aca925c71873749254d78eaad3e088a17cf71246f213c0ae0941eb7c1e1f1",
+      "form.poetry.lyric_song_lyric.no_filler": "97aab452e11bd4fa4458b3990cf44b715194f6fc4c3af6d004360830c656f7c0",
+      "form.poetry.spoken_word_performance_poetry.page_independence": "939724f05d39711bedd6935b19960bb1bf82987d8a68bacccc88716dc650c8c1",
+      "form.visual.visual_prompt_and_canon_fidelity.subjects": "2a4badfbf5ef2f2b3d086416707efb24d368204856c419b7e25294f165ec3338",
+      "op.critique.rubric_directed_critique.criteria": "720b339f24d105f71a5b22dddc6a191c11f451cc13b9a6a8db9d63a13d3bf8ee",
+      "op.ingest.source_ingestion_fidelity.no_invention": "234b887a35598b24dcc446a28ae8693e938a514a778d325c2a24b522f404d4b4",
+      "op.ingest.source_ingestion_fidelity.no_omission": "c7360c059d7ae0fabac4ce71a42f371a4d4a38101f9c9d6dbdcf997f11c4ec16",
+      "sampler.freshness_gain.no_ornate_proxy": "d5e5291d3dd3482370eeb6eaf0e79c34b9d23b6eca670daecf4c60ad4cfcd92f"
+    },
+    "portfolio_manifest": {"path": "evaluation-results/hbq-first-remedy-portfolio-v1/manifest.json", "sha256": "eebe2ac7a7b592459e5b084d8f6806a56ccd7a8c077e6508b34e0a0818111d32"},
+    "findings_ledger": {"path": "evaluation-results/hbq-full-leaf-structural-audit-v1/findings.jsonl", "sha256": "06c08ef035a09288fa6710db51786ec1a73b71116ac9b23e4c2a09ece8fa14a1"},
+    "criterion_ownership": {"path": "registry/criterion_ownership.json", "sha256": "79d636c7c692926d15ff8ebd47c3592e6bb0e6640473c0948ae9dead4fdd6876"}
+  }
+}

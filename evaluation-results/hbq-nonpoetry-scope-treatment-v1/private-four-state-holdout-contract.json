@@ -1,0 +1,10 @@
+{
+  "format_version": 1,
+  "holdout_id": "hbq-nonpoetry-scope-treatment-v1-private-four-state-holdout",
+  "status": "sealed_before_execution",
+  "visibility": "private_external_only",
+  "states": ["localized_issue", "material_failure", "missing_required_evidence", "activation_mismatch"],
+  "repeats": 3,
+  "content_policy": "No holdout prose, private path, model output, or receipt is stored in this public package.",
+  "release_gate": "A separate execution successor may reveal the external holdout only after this development treatment is settled and an independent review approves the candidate wording."
+}

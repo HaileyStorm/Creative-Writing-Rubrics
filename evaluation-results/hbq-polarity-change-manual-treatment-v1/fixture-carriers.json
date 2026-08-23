@@ -1,0 +1,26 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-polarity-change-manual-treatment-v1",
+  "carrier_fields": ["declared_scope", "completion_status", "relevant_evidence"],
+  "carriers": {
+    "audio-exposition-na": {"declared_scope": "out_of_scope", "completion_status": "complete", "relevant_evidence": "supplied"},
+    "multimodal-ambiguity-na": {"declared_scope": "out_of_scope", "completion_status": "complete", "relevant_evidence": "supplied"},
+    "poem-oral-yes": {"declared_scope": "current_artifact", "completion_status": "complete", "relevant_evidence": "supplied"},
+    "poem-oral-no": {"declared_scope": "current_artifact", "completion_status": "complete", "relevant_evidence": "supplied"},
+    "poem-oral-na": {"declared_scope": "out_of_scope", "completion_status": "complete", "relevant_evidence": "supplied"},
+    "haiku-season-na": {"declared_scope": "out_of_scope", "completion_status": "complete", "relevant_evidence": "supplied"},
+    "lyric-filler-na": {"declared_scope": "out_of_scope", "completion_status": "complete", "relevant_evidence": "supplied"},
+    "spoken-page-na": {"declared_scope": "out_of_scope", "completion_status": "complete", "relevant_evidence": "supplied"},
+    "visual-subjects-yes": {"declared_scope": "current_artifact", "completion_status": "complete", "relevant_evidence": "supplied"},
+    "visual-subjects-no": {"declared_scope": "current_artifact", "completion_status": "complete", "relevant_evidence": "supplied"},
+    "visual-subjects-na": {"declared_scope": "out_of_scope", "completion_status": "complete", "relevant_evidence": "supplied"},
+    "critique-criteria-yes": {"declared_scope": "current_artifact", "completion_status": "complete", "relevant_evidence": "supplied"},
+    "critique-criteria-no": {"declared_scope": "current_artifact", "completion_status": "complete", "relevant_evidence": "supplied"},
+    "critique-criteria-na": {"declared_scope": "out_of_scope", "completion_status": "complete", "relevant_evidence": "supplied"},
+    "ingest-invention-yes": {"declared_scope": "current_artifact", "completion_status": "complete", "relevant_evidence": "supplied"},
+    "ingest-invention-no": {"declared_scope": "current_artifact", "completion_status": "complete", "relevant_evidence": "supplied"},
+    "ingest-invention-na": {"declared_scope": "out_of_scope", "completion_status": "complete", "relevant_evidence": "supplied"},
+    "ingest-omission-na": {"declared_scope": "out_of_scope", "completion_status": "complete", "relevant_evidence": "supplied"},
+    "freshness-ornament-na": {"declared_scope": "out_of_scope", "completion_status": "complete", "relevant_evidence": "supplied"}
+  }
+}

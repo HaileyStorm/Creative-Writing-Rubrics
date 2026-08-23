@@ -1,0 +1,26 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-polarity-change-manual-treatment-v1",
+  "privacy": "public_synthetic_only",
+  "fixtures": [
+    {"case_id":"audio-exposition-na","leaf_id":"form.audio.audio_drama_production.no_as_you_know","state":"NOT_APPLICABLE","artifact_kind":"text_note","text":"A prose-only casting list contains no audio drama script or performance."},
+    {"case_id":"multimodal-ambiguity-na","leaf_id":"form.multimodal.text_audio_alignment.no_narrow","state":"NOT_APPLICABLE","artifact_kind":"text_note","text":"A silent black-and-white inventory has no audio or performance interpretation."},
+    {"case_id":"poem-oral-yes","leaf_id":"form.poetry.general_poetry.oral_test","state":"YES","artifact_kind":"poetry","text":"DECLARED PERFORMANCE AIM: a calm, easily articulated lullaby cadence.\nPOEM: Rain rounds the rail; / the river replies / in low bronze."},
+    {"case_id":"poem-oral-no","leaf_id":"form.poetry.general_poetry.oral_test","state":"NO","artifact_kind":"poetry","text":"DECLARED PERFORMANCE AIM: a calm, easily articulated lullaby cadence.\nPOEM: The sixth sickly thistle's strengths / twists through three stripped streets."},
+    {"case_id":"poem-oral-na","leaf_id":"form.poetry.general_poetry.oral_test","state":"NOT_APPLICABLE","artifact_kind":"project_note","text":"A production budget contains no poem to read aloud."},
+    {"case_id":"haiku-season-na","leaf_id":"form.poetry.haiku_in_english.kigo_legible","state":"NOT_APPLICABLE","artifact_kind":"project_note","text":"A novel synopsis is not offered as an English haiku."},
+    {"case_id":"lyric-filler-na","leaf_id":"form.poetry.lyric_song_lyric.no_filler","state":"NOT_APPLICABLE","artifact_kind":"project_note","text":"A silent gallery label is not a lyric song."},
+    {"case_id":"spoken-page-na","leaf_id":"form.poetry.spoken_word_performance_poetry.page_independence","state":"NOT_APPLICABLE","artifact_kind":"project_note","text":"A private memo is not spoken-word or performance poetry."},
+    {"case_id":"visual-subjects-yes","leaf_id":"form.visual.visual_prompt_and_canon_fidelity.subjects","state":"YES","artifact_kind":"visual_asset","text":"SUBJECT SPECIFICATION: Required subjects: a red fox and a brass compass. Forbidden subject: a crown.\nDEPICTED IMAGE RECORD: A red fox stands beside a brass compass. No crown is depicted."},
+    {"case_id":"visual-subjects-no","leaf_id":"form.visual.visual_prompt_and_canon_fidelity.subjects","state":"NO","artifact_kind":"visual_asset","text":"SUBJECT SPECIFICATION: Required subjects: a red fox and a brass compass. Forbidden subject: a crown.\nDEPICTED IMAGE RECORD: A red fox wears a crown. No brass compass is depicted."},
+    {"case_id":"visual-subjects-na","leaf_id":"form.visual.visual_prompt_and_canon_fidelity.subjects","state":"NOT_APPLICABLE","artifact_kind":"project_note","text":"A text-only revision log has no visual depiction request."},
+    {"case_id":"critique-criteria-yes","leaf_id":"op.critique.rubric_directed_critique.criteria","state":"YES","artifact_kind":"procedure","text":"ACTIVE CRITERIA: clarity; evidence.\nCRITIQUE OUTPUT: Clarity—Each transition states its cause. Evidence—The conclusion is supported by the quoted ledger entry. No other criterion is applied."},
+    {"case_id":"critique-criteria-no","leaf_id":"op.critique.rubric_directed_critique.criteria","state":"NO","artifact_kind":"procedure","text":"ACTIVE CRITERIA: clarity; evidence.\nCRITIQUE OUTPUT: Clarity—Each transition states its cause. Marketability—The premise will not sell. The active evidence criterion is not addressed."},
+    {"case_id":"critique-criteria-na","leaf_id":"op.critique.rubric_directed_critique.criteria","state":"NOT_APPLICABLE","artifact_kind":"project_note","text":"No critique task or active rubric criteria are in scope."},
+    {"case_id":"ingest-invention-yes","leaf_id":"op.ingest.source_ingestion_fidelity.no_invention","state":"YES","artifact_kind":"procedure","text":"SOURCE RECORD: Nell waits at dawn.\nINGESTED OUTPUT: Nell waits at dawn."},
+    {"case_id":"ingest-invention-no","leaf_id":"op.ingest.source_ingestion_fidelity.no_invention","state":"NO","artifact_kind":"procedure","text":"SOURCE RECORD: Nell waits at dawn.\nINGESTED OUTPUT: Nell waits at dawn. She carries a stolen map."},
+    {"case_id":"ingest-invention-na","leaf_id":"op.ingest.source_ingestion_fidelity.no_invention","state":"NOT_APPLICABLE","artifact_kind":"project_note","text":"No source-ingestion operation is requested or performed."},
+    {"case_id":"ingest-omission-na","leaf_id":"op.ingest.source_ingestion_fidelity.no_omission","state":"NOT_APPLICABLE","artifact_kind":"project_note","text":"No source-ingestion operation is requested or performed."},
+    {"case_id":"freshness-ornament-na","leaf_id":"sampler.freshness_gain.no_ornate_proxy","state":"NOT_APPLICABLE","artifact_kind":"project_note","text":"No candidate-generation or freshness comparison is requested."}
+  ]
+}

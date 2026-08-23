@@ -1,0 +1,19 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-nonpoetry-scope-treatment-v1",
+  "status": "frozen_provider_free_manual_wording_and_evidence_scope_treatment",
+  "development_only": true,
+  "provider_execution": {"permitted": false, "new_provider_calls_exact": 27, "reused_accepted_calls_exact": 6, "one_leaf_per_request": true},
+  "candidate": {
+    "leaf_id": "scope.passage.status",
+    "source_leaf_sha256": "1d86d7275f944d2bc626bad711686f7366d4eb8d207e32a1db76282ca4d91b48",
+    "candidate_leaf_sha256": "acda489524deaee416ff67582f7bb26dad7b824ddd6eca69a6efd1cb71c653a0",
+    "preserved_fields": {"id": "scope.passage.status", "module_id": "scope.passage", "criterion_key": "scope.passage.status", "pass_answer": "YES", "weight": 2.0, "question_type": "diagnostic", "severity": "material"}
+  },
+  "geometry": {"planned_slots_exact": 33, "new_slots_exact": 27, "reused_slots_exact": 6, "status_comparison_new_slots_exact": 18, "corrected_nonpassage_diagnostic_slots_exact": 9, "repeats": 3},
+  "reuse": {"permitted_states": ["material_failure", "activation_mismatch"], "forbidden_states": ["localized_issue", "missing_required_evidence"], "predecessor_study_id": "hbq-nonpoetry-scope-sentinel-v1-execution-v1", "binding_rule": "Reuse only the six accepted predecessor calls whose public fixture and current-wording prompt inputs are byte-identical."},
+  "corrections": ["npsst-tone-local", "npsst-tone-unknown", "npsst-critique-unknown", "npsst-passage-local", "npsst-passage-unknown"],
+  "promotion": {"prompt": "none", "rubric": "none", "leaf": "none", "ownership": "none", "split": "none", "weight": "none"},
+  "bindings": {"predecessor_corpus_sha256": "553f7df6b08d71852c634cb0e501a0464f0c0fb76c745682a6b1bc5e1eebbd64", "source_question_index_sha256": "0de8eec70a5a4de74770570253af96f6483c07fcf00ebad198fe951cf2af1fb6", "holdout_contract_sha256": "47a2f3ff123eacb15f660d8039fe9d0af7e1888e6bd8b7890a1f02f50813b5a6"},
+  "holdout_contract": "private-four-state-holdout-contract.json"
+}

@@ -1,0 +1,20 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-polarity-change-manual-treatment-v1",
+  "status": "sealed_private_holdout_contract_frozen_preexecution",
+  "fixture_material": "sealed_private_not_in_public_package",
+  "required_coverage": {
+    "matched_not_applicable_cannot_assess_pairs": true,
+    "symmetric_yes_no_comparison_carriers": ["visual", "critique", "ingest"],
+    "unaffected_polarity_controls": true
+  },
+  "reveal_gate": "after_development_settlement_only",
+  "promotion_gate": [
+    "holdout_3_of_3_per_cell",
+    "zero_regression",
+    "deterministic_validation",
+    "independent_sol_high_go",
+    "zero_paid_gpt_5_6_execution"
+  ],
+  "promotion": "none"
+}
