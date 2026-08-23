@@ -23,6 +23,14 @@ def _module():
     return module
 
 
+def _ingest_module():
+    spec = importlib.util.spec_from_file_location("full_leaf_structural_audit_ingest_v1", ROOT / "ingest.py")
+    assert spec and spec.loader
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
 def _json(name: str):
     return json.loads((ROOT / name).read_text(encoding="utf-8"))
 
@@ -41,9 +49,12 @@ def test_regeneration_is_exact_and_manifest_binds_every_nonmanifest_package_file
         "finding.schema.json",
         "findings.jsonl",
         "generate.py",
+        "ingest.py",
         "leaf-audit.jsonl",
         "leaf-audit.schema.json",
         "sol-review.schema.json",
+        "sol-triage.jsonl",
+        "sol-triage-summary.json",
         "summary.json",
     }
     for name, record in manifest["files"].items():
@@ -119,6 +130,61 @@ def test_generated_rows_and_findings_conform_to_their_public_schemas():
     assert not list(sol_validator.iter_errors(unbound_proposal))
     with pytest.raises(ValueError, match="declared immutable"):
         module.validate_review_record(unbound_proposal, contract)
+
+
+def test_bound_sol_triage_is_complete_ordered_schema_valid_and_does_not_authorize_a_repair():
+    module = _module()
+    ingest = _ingest_module()
+    contract = _json("audit-contract.json")
+    findings = _jsonl("findings.jsonl")
+    triage = _jsonl("sol-triage.jsonl")
+    summary = _json("sol-triage-summary.json")
+    validator = Draft202012Validator(_json("sol-review.schema.json"))
+    assert len(triage) == len(findings) == 808
+    assert [record["finding_id"] for record in triage] == [record["finding_id"] for record in findings]
+    assert all(not list(validator.iter_errors(record)) for record in triage)
+    assert all(record["reviewer"] == "GPT-5.6 Sol semantic triage" for record in triage)
+    assert all(record["audit_input_hashes"] == contract["frozen_input_hashes"] for record in triage)
+    assert all(record["evidence_hashes"] == [] for record in triage)
+    assert all(record["decision"] != "propose_change" for record in triage)
+    for record in triage:
+        module.validate_review_record(record, contract)
+    assert summary["status_counts"] == {"false_positive": 396, "first_remedy_experiment": 77, "intentional_specialization": 276, "watch": 59}
+    assert summary["decision_counts"] == {"needs_empirical_test": 136, "no_change": 276, "propose_change": 0, "reject_candidate": 396}
+    assert summary["input_commit"] == "59249fccadb256e00e9f70a064c65903f1f26e6e"
+    assert summary["review_identity"] == contract["bound_semantic_triage"]["public_binding"]["review_identity"]
+    assert summary["decision_binding"] == contract["bound_semantic_triage"]["decision_binding"]
+    assert summary["bindings"]["audit_input_hashes"] == contract["frozen_input_hashes"]
+    assert [item["record_count"] for item in summary["source_part_commitments"]] == [135, 135, 135, 135, 135, 133]
+    assert all(len(item["sha256"]) == 64 for item in summary["source_part_commitments"])
+    ingest.validate_published()
+
+
+def test_no_source_triage_check_rejects_any_semantic_or_summary_binding_mutation():
+    ingest = _ingest_module()
+    contract = _json("audit-contract.json")
+    triage = _jsonl("sol-triage.jsonl")
+    summary = _json("sol-triage-summary.json")
+    triage_bytes = (ROOT / "sol-triage.jsonl").read_bytes()
+    summary_bytes = (ROOT / "sol-triage-summary.json").read_bytes()
+    for field, replacement in (("rationale", "A changed rationale."), ("decision", "no_change"), ("evidence_scope", "findings-1-134")):
+        changed = deepcopy(triage)
+        changed[0][field] = replacement
+        payload = b"".join(ingest.canonical_json(record) for record in changed)
+        with pytest.raises(ValueError, match="record SHA-256 mismatch"):
+            ingest.validate_published_bytes(payload, summary_bytes, contract)
+    changed_summary = deepcopy(summary)
+    changed_summary["review_identity"]["model"] = "unbound"
+    with pytest.raises(ValueError, match="summary SHA-256 mismatch"):
+        ingest.validate_published_bytes(triage_bytes, ingest.canonical_json(changed_summary), contract)
+    changed_summary = deepcopy(summary)
+    changed_summary["bindings"]["audit_input_hashes"]["registry/all_modules.json"] = "0" * 64
+    with pytest.raises(ValueError, match="summary SHA-256 mismatch"):
+        ingest.validate_published_bytes(triage_bytes, ingest.canonical_json(changed_summary), contract)
+    changed_summary = deepcopy(summary)
+    changed_summary["source_part_commitments"][0]["sha256"] = "0" * 64
+    with pytest.raises(ValueError, match="summary SHA-256 mismatch"):
+        ingest.validate_published_bytes(triage_bytes, ingest.canonical_json(changed_summary), contract)
 
 
 def test_frozen_hashes_are_lf_canonical_but_reject_content_drift_and_source_inventory_absence_is_explicit(tmp_path: Path):

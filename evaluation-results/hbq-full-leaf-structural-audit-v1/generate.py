@@ -19,7 +19,8 @@ ROOT = PACKAGE.parents[1]
 AUDIT_ID = "hbq-full-leaf-structural-audit-v1"
 ROW_FORMAT = "hbq-full-leaf-structural-audit-row-v1"
 FINDING_FORMAT = "hbq-full-leaf-structural-audit-finding-v1"
-OUTPUTS = ("leaf-audit.jsonl", "findings.jsonl", "summary.json", "manifest.json")
+OUTPUTS = ("leaf-audit.jsonl", "findings.jsonl", "summary.json", "sol-triage.jsonl", "sol-triage-summary.json", "manifest.json")
+PACKAGE_FILES = ("README.md", "audit-contract.json", "leaf-audit.schema.json", "finding.schema.json", "sol-review.schema.json", "generate.py", "ingest.py")
 ABSOLUTE_PRIVATE_PATH = re.compile(r"(?i)(?:[a-z]:[\\/](?:users|home)[\\/]|/(?:users|home)/)")
 SENTINELS = {
     "core.freshness_and_non_genericness.no_default_metaphors": {
@@ -401,6 +402,17 @@ def validate_review_record(review: Mapping[str, Any], contract: Mapping[str, Any
         raise ValueError("A proposed change requires immutable evidence")
 
 
+def validate_published_triage() -> None:
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location("full_leaf_structural_audit_ingest_v1", PACKAGE / "ingest.py")
+    if not spec or not spec.loader:
+        raise RuntimeError("Cannot load Sol-triage validator")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    module.validate_published()
+
+
 def build(contract: Mapping[str, Any]) -> tuple[dict[str, bytes], dict[str, Any]]:
     inputs = input_records(contract)
     rows = construct_rows(contract)
@@ -431,7 +443,7 @@ def build(contract: Mapping[str, Any]) -> tuple[dict[str, bytes], dict[str, Any]
     }
     outputs = {"leaf-audit.jsonl": jsonl_bytes(rows), "findings.jsonl": jsonl_bytes(findings), "summary.json": canonical_json(summary)}
     manifest_files = {name: {"bytes": len(value), "sha256": sha256_bytes(value)} for name, value in sorted(outputs.items())}
-    for name in ("audit-contract.json", "leaf-audit.schema.json", "finding.schema.json", "sol-review.schema.json", "generate.py", "README.md"):
+    for name in (*PACKAGE_FILES, "sol-triage.jsonl", "sol-triage-summary.json"):
         path = PACKAGE / name
         manifest_files[name] = {"bytes": path.stat().st_size, "sha256": file_digest(path)}
     manifest = {"format": "hbq-full-leaf-structural-audit-manifest-v1", "audit": AUDIT_ID, "inputs": inputs, "files": dict(sorted(manifest_files.items()))}
@@ -441,10 +453,11 @@ def build(contract: Mapping[str, Any]) -> tuple[dict[str, bytes], dict[str, Any]
 
 def run(check: bool) -> None:
     contract = read_json(PACKAGE / "audit-contract.json")
+    validate_published_triage()
     outputs, _ = build(contract)
     for name, value in outputs.items():
         write_bytes(PACKAGE / name, value, check=check)
-    public_safe((PACKAGE / name for name in ("README.md", *OUTPUTS)), contract["privacy"])
+    public_safe((PACKAGE / name for name in ("README.md", "ingest.py", *OUTPUTS)), contract["privacy"])
 
 
 if __name__ == "__main__":
