@@ -1,0 +1,39 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-figurative-scope-treatment-v1-execution-v1",
+  "status": "frozen_execution_successor_pending_run",
+  "predecessor": {
+    "study_id": "hbq-figurative-scope-treatment-v1",
+    "commit": "17b2881d6c695a432ed5a36b0a3cb75eae72a5b5",
+    "tree": "486827c2f97587d7f802e7bb1ec6b8c2dd3a38f7",
+    "synthetic_corpus_sha256": "a2bea2ed937738e9d70d272f193852ad94c22b0d2611699ae221dcf21a33bb5d"
+  },
+  "runtime": {
+    "prompt_repair_parent": "fb77e8a61bff6b130147acd7a7c43ce20e88dd14",
+    "prompt_rendering_version": 2,
+    "provider": "codex",
+    "model": "gpt-5.6-sol",
+    "reasoning": "high",
+    "batch_size": 1,
+    "batch_attempts": 3,
+    "one_leaf_per_call": true,
+    "execute_requires_zero_incremental_charge_acknowledgement": true
+  },
+  "schedule": {
+    "cells": 28,
+    "arms": ["baseline", "scope_rendering_only"],
+    "repetitions": 3,
+    "planned_requests": 168
+  },
+  "privacy": {
+    "private_root_required_outside_repository": true,
+    "public_output": "aggregate_only",
+    "provider_inputs": "opaque artifact IDs and files; no case, arm, oracle, or controller labels"
+  },
+  "decision_rule": {
+    "go_treatment": "The treatment passes every named gate, has zero control regression, and improves at least one scope-sensitive gate.",
+    "no_effect": "No treatment benefit is demonstrated.",
+    "no_go": "A treatment gate or control gate fails.",
+    "incomplete": "Fewer than 168 slots settle or a required binding fails."
+  }
+}
