@@ -32,10 +32,9 @@ VERIFIER_NAME = "verify_private_freeze.py"
 CONTROLLER_SHA256 = "7a75a6dd30e028bcfa398b7104bed34d32ea71efb491310eb87d3a50700dd5b9"
 LEDGER_SHA256 = "9a3455fee1466d4cdc7461ab33c6b4014a4ad112b0e9f8293d3cf63615f52fbc"
 VERIFIER_SHA256 = "6f70bbd01101d27b432b87421563a063bdee658f73700fabf4591b09e66a5c23"
-# The prior provider-free preparation has immutable provenance but predates the
-# final verifier/input/dispatch bindings; this fresh child root is the only
-# eligible execution preparation for this successor.
-PRIVATE_EXECUTION_DIRECTORY = "execution-v2-final-bindings-terminal-sidecar-v1"
+# Private execution-v2 is retained as the deterministic pre-contact failure
+# record. This new child root is the only eligible execution preparation.
+PRIVATE_EXECUTION_DIRECTORY = "execution-v3-allow-remote-final-bindings-terminal-sidecar-v1"
 LEAF_ID = "form.poetry.free_verse.repetition"
 ARMS = ("current", "candidate")
 REPEATS = (1, 2, 3)
@@ -362,6 +361,7 @@ def validate_package() -> dict[str, Any]:
     value = contract()
     expected_execution = {"route": "codex", "model": "gpt-5.6-sol", "reasoning": "high", "one_leaf_per_call": True,
         "batch_size": 1, "batch_attempts": 1, "attempt_lifecycle_policy": ATTEMPT_LIFECYCLE_POLICY,
+        "allow_remote_at_live_dispatch": True,
         "maximum_provider_sends": SLOTS, "semantic_retries": "forbidden", "resume": "forbidden",
         "owner_attested_zero_incremental_charge_only": True, "paid_api_or_fallback_route": "forbidden"}
     if value.get("study_id") != STUDY_ID or value.get("format_version") != 1 or value.get("status") != "frozen_execution_successor_unexecuted":
@@ -411,7 +411,7 @@ def _command(slot: Mapping[str, Any], *, render: bool) -> list[str]:
     if render:
         command.extend(["--artifact", str(artifact)])
     else:
-        command.extend([str(artifact), "--output-dir", str(root / "runs" / str(slot["opaque_slot_id"])), "--reasoning", "high", "--batch-size", "1", "--batch-attempts", "1", "--attempt-lifecycle-policy", ATTEMPT_LIFECYCLE_POLICY])
+        command.extend([str(artifact), "--output-dir", str(root / "runs" / str(slot["opaque_slot_id"])), "--reasoning", "high", "--batch-size", "1", "--batch-attempts", "1", "--attempt-lifecycle-policy", ATTEMPT_LIFECYCLE_POLICY, "--allow-remote"])
     command.extend(["--bundle", BUNDLE_ID, "--provider", "codex", "--model", "gpt-5.6-sol", "--strict-ai", "--artifact-id", str(slot["fixture_id"]), "--question-id", LEAF_ID, "--task-contract", str(_task_path(root, slot)), "--scope-compatibility-override", str(_override_path(root, slot))])
     for context in _context_paths(root, slot):
         command.extend(["--context", str(context)])
@@ -510,6 +510,37 @@ def _dispatch_settlement(root: Path, slot: Mapping[str, Any], start: Path) -> No
     }))
 
 
+def _result_bytes(result: Any, field: str) -> bytes:
+    value = getattr(result, field, b"")
+    if isinstance(value, bytes):
+        return value
+    if isinstance(value, str):
+        return value.encode("utf-8")
+    if value is None:
+        return b""
+    raise ValueError(f"Runner {field} is not text or bytes")
+
+
+def _dispatch_failure(root: Path, slot: Mapping[str, Any], start: Path, result: Any) -> dict[str, Any]:
+    output = root / "runs" / str(slot["opaque_slot_id"])
+    stdout, stderr = _result_bytes(result, "stdout"), _result_bytes(result, "stderr")
+    definitely_not_contacted = not output.exists() and b"pass --allow-remote" in stderr
+    record = {
+        "format_version": 1, "study_id": STUDY_ID, "opaque_slot_id": slot["opaque_slot_id"],
+        "state": "runner_command_returned_nonzero", "start_sha256": sha256_file(start),
+        "returncode": result.returncode,
+        "stdout": {"bytes": len(stdout), "sha256": sha256_bytes(stdout)},
+        "stderr": {"bytes": len(stderr), "sha256": sha256_bytes(stderr)},
+        "run_directory_present": output.exists(),
+        "contact_classification": (
+            "definitely_not_contacted_precontact_remote_disclosure_gate"
+            if definitely_not_contacted else "ambiguous_provider_contact"
+        ),
+    }
+    _write_or_verify(root / "dispatches" / f"{slot['opaque_slot_id']}.failure.v1.json", canonical_json(record))
+    return record
+
+
 def execute(*, acknowledged_zero_incremental_charge: bool = False,
             runner_call: Callable[..., Any] = subprocess.run) -> dict[str, Any]:
     if not acknowledged_zero_incremental_charge:
@@ -537,7 +568,8 @@ def execute(*, acknowledged_zero_incremental_charge: bool = False,
         start = _dispatch_start(root, slot)
         result = runner_call(_command(slot, render=False), cwd=REPOSITORY, capture_output=True, text=True, check=False)
         if result.returncode:
-            raise ValueError("Singleton execution failed; do not retry or resume this frozen screen")
+            failure = _dispatch_failure(root, slot, start, result)
+            raise ValueError(f"Singleton execution stopped ({failure['contact_classification']}); do not retry or resume this frozen screen")
         _dispatch_settlement(root, slot, start)
     return {"study_id": STUDY_ID, "provider_calls": SLOTS, "semantic_retries": 0, "resume": "forbidden"}
 

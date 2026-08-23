@@ -28,6 +28,7 @@
     "batch_size": 1,
     "batch_attempts": 1,
     "attempt_lifecycle_policy": "terminal_sidecar_v1",
+    "allow_remote_at_live_dispatch": true,
     "maximum_provider_sends": 24,
     "semantic_retries": "forbidden",
     "resume": "forbidden",

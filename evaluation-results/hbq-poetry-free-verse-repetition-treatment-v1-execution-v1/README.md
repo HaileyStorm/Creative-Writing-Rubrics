@@ -16,3 +16,9 @@ Settlement consumes terminal sidecar v1 evidence, keeps the original private
 settlement write-once, and creates an aggregate-only public result. A passing
 gate authorizes only a later disjoint holdout; it never promotes a prompt,
 rubric, leaf, owner, split, or weight.
+
+The private execution-v2 preparation is retained as failed-precontact lineage:
+at CWR `5ddca14`, its first singleton stopped at the runner's required remote
+disclosure gate before a run directory or provider callback existed. It is not
+a consumed model sample and is never resumed. The eligible v3 child root adds
+the required live-dispatch flag while preserving the same one-shot policy.

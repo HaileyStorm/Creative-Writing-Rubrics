@@ -52,7 +52,7 @@ def private_controller(tmp_path: Path, monkeypatch):
     root.mkdir()
     fixtures = [
         {"fixture_id": f"fixture-{index}", "role": "target" if index == 1 else "control", "expected_verdict": verdict,
-         "declared_scope": "excerpt", "completion_status": "fragment", "contexts": [f"context-{index}"], "text": f"fixture text {index}"}
+         "declared_scope": "excerpt", "completion_status": "excerpt", "contexts": [f"context-{index}"], "text": f"fixture text {index}"}
         for index, verdict in enumerate(("NO", "YES", "CANNOT_ASSESS", "NOT_APPLICABLE"), start=1)
     ]
     controller = {
@@ -144,6 +144,33 @@ def test_dry_run_is_provider_free_and_pairwise_prompt_delta_is_only_candidate_wo
     assert "current" not in s._artifact_path(root, current).name and "candidate" not in s._task_path(root, candidate).name
 
 
+def test_live_command_has_allow_remote_only_for_the_live_judge(private_controller):
+    s, _root = private_controller
+    slot = s.build_schedule()[0]
+    rendered, live = s._command(slot, render=True), s._command(slot, render=False)
+    assert "--allow-remote" not in rendered
+    assert live[live.index("--allow-remote") - 1] == "terminal_sidecar_v1"
+
+
+def test_missing_remote_flag_stops_before_provider_callback_or_run(private_controller, monkeypatch):
+    s, root = private_controller
+    s.dry_run(runner_call=fake_cwr)
+    slot = s.build_schedule()[0]
+    callbacks = []
+    monkeypatch.setattr(s.runner, "_call_codex", lambda *_args, **_kwargs: callbacks.append(True))
+    with pytest.raises(s.runner.HBQError, match="pass --allow-remote"):
+        s.runner.run_judge(
+            artifact_path=s._artifact_path(root, slot), bundle_id=s.BUNDLE_ID, provider="codex", model="gpt-5.6-sol",
+            output_dir=root / "runs" / str(slot["opaque_slot_id"]), registry=s._registry_path(root, slot["arm"]),
+            bundles=root / "catalog" / "bundles.json", context_paths=s._context_paths(root, slot),
+            task_contract_path=s._task_path(root, slot), scope_compatibility_override_path=s._override_path(root, slot),
+            question_ids=[s.LEAF_ID], batch_size=1, batch_attempts=1, reasoning="high", strict_ai=True,
+            artifact_id=slot["fixture_id"], attempt_lifecycle_policy=s.ATTEMPT_LIFECYCLE_POLICY,
+        )
+    assert callbacks == []
+    assert not (root / "runs" / str(slot["opaque_slot_id"])).exists()
+
+
 def test_execute_is_singleton_no_resume_and_requires_frozen_disclosure(private_controller):
     s, root = private_controller
     with pytest.raises(ValueError, match="requires"):
@@ -193,6 +220,26 @@ def test_execute_rejects_immediate_prerender_drift_before_dispatch(private_contr
         s.execute(acknowledged_zero_incremental_charge=True, runner_call=changed_render)
     assert len(seen) == 1 and "render-judge" in seen[0]
     assert not (root / "dispatches").exists()
+
+
+def test_precontact_nonzero_writes_hashed_definitely_not_contacted_failure_receipt(private_controller):
+    s, root = private_controller
+    s.dry_run(runner_call=fake_cwr)
+
+    def precontact_failure(command, **kwargs):
+        if "render-judge" in command:
+            return fake_cwr(command, **kwargs)
+        return SimpleNamespace(returncode=2, stdout="non-secret diagnostic", stderr="review the disclosure and pass --allow-remote")
+
+    with pytest.raises(ValueError, match="definitely_not_contacted_precontact_remote_disclosure_gate"):
+        s.execute(acknowledged_zero_incremental_charge=True, runner_call=precontact_failure)
+    failure = next((root / "dispatches").glob("*.failure.v1.json"))
+    receipt = json.loads(failure.read_text(encoding="utf-8"))
+    assert receipt["contact_classification"] == "definitely_not_contacted_precontact_remote_disclosure_gate"
+    assert receipt["run_directory_present"] is False
+    assert receipt["stdout"]["sha256"] == hashlib.sha256(b"non-secret diagnostic").hexdigest()
+    assert receipt["stderr"]["sha256"] == hashlib.sha256(b"review the disclosure and pass --allow-remote").hexdigest()
+    assert not (root / "runs").exists()
 
 
 def test_private_verifier_rejects_noncanonical_terminal_record_shape(private_controller):
