@@ -1,0 +1,51 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-l2-construct-microgate-v1",
+  "privacy": "public_synthetic_only",
+  "cases": [
+    {
+      "case_id": "c01",
+      "artifact_name": "artifact-01.txt",
+      "artifact_type": "poetry",
+      "bundle_id": "poetry.free_verse",
+      "declared_scope": "poem",
+      "completion_status": "complete",
+      "text": "The rain stops at the stairwell\nbefore it learns the next floor.\nI carry its pause upstairs;\nthe last line opens the door.",
+      "image_input_required": false,
+      "image_fixture": null
+    },
+    {
+      "case_id": "c02",
+      "artifact_name": "artifact-02.txt",
+      "artifact_type": "poetry",
+      "bundle_id": "poetry.free_verse",
+      "declared_scope": "poem",
+      "completion_status": "complete",
+      "text": "The rain stops at the stairwell before it learns the next floor. I carry its pause upstairs, and the last sentence opens the door.",
+      "image_input_required": false,
+      "image_fixture": null
+    },
+    {
+      "case_id": "c03",
+      "artifact_name": "asset-03.png",
+      "artifact_type": "visual_asset",
+      "bundle_id": "visual.environment",
+      "declared_scope": "asset",
+      "completion_status": "complete",
+      "text": "",
+      "image_input_required": true,
+      "image_fixture": "impossible_stairwell_v1"
+    },
+    {
+      "case_id": "c04",
+      "artifact_name": "asset-04.png",
+      "artifact_type": "visual_asset",
+      "bundle_id": "visual.environment",
+      "declared_scope": "asset",
+      "completion_status": "complete",
+      "text": "",
+      "image_input_required": true,
+      "image_fixture": null
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "format_version": 2,
+  "study_id": "hbq-l2-construct-microgate-v1",
+  "fixture_binding": {"c03": "impossible_stairwell_v1"},
+  "cells": {
+    "c01": ["YES", "YES"],
+    "c02": ["NO", "NO"],
+    "c03": ["NO", "NO"],
+    "c04": ["CANNOT_ASSESS", "CANNOT_ASSESS"]
+  }
+}

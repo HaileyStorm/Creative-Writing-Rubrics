@@ -1,0 +1,38 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-l2-construct-microgate-v1",
+  "status": "frozen_provider_free_construct_microgate",
+  "development_only": true,
+  "provider_execution": {"permitted": false, "new_provider_calls_exact": 0, "paid_route": "forbidden", "one_leaf_per_request": true},
+  "geometry": {"cases_exact": 4, "leaves_per_case_exact": 2, "repeats_exact": 3, "slots_exact": 24, "cells_exact": 8},
+  "labels": ["YES", "NO", "CANNOT_ASSESS"],
+  "screen": {"prompt_policy": "unchanged_production_prompt", "prompt_paths": ["prompts/judge/JUDGE_PREFIX.md", "prompts/judge/BINARY_EVALUATION_PROMPT.md"], "schema_path": "schema/hbq_judge_response.schema.json", "renderer": "src/hbqrs/runner.py:_render_prompt", "expected_labels_provider_facing": false, "image_text_substitution_forbidden": true},
+  "activation": {"mode": "compiled_production_bundle_singleton_v1", "poetry": {"bundle_id": "poetry.free_verse", "artifact_type": "poetry", "scope": "poem"}, "visual": {"bundle_id": "visual.environment", "artifact_type": "visual_asset", "scope": "asset"}},
+  "attachment_delivery": {"present_stairwell_case": "attach_exact_stairwell_png_bytes_as_image_input", "absent_image_case": "image_input_required_true_with_no_attachment_and_completion_status_complete", "text_substitution": "forbidden"},
+  "lifecycle": {"policy": "terminal_sidecar_v1", "remote_execution_surface": "absent", "retry_or_resume": "not_authorized_by_freeze"},
+  "review_requirement": {"required_before_execution_successor": true, "reviewer": {"provider": "openai", "model": "gpt-5.6-sol", "reasoning": "high", "independence": "independent"}, "status": "pending"},
+  "gating": {"fixture_driven_close": "24_of_24_slots_and_8_of_8_cells_at_3_of_3", "one_of_three": "variance_no_go", "two_of_three": "variance_no_go", "systematic_miss": "any_cell_at_0_of_3_may_authorize_leaf_specific_treatment_design_only"},
+  "promotion": {"prompt": "none", "rubric": "none", "leaf": "none", "ownership": "none", "split": "none", "merge": "none", "weight": "none"},
+  "history": {"earlier_l2_package": "evaluation-results/hbq-other-lexical-overlap-ownership-v1", "disposition": "retained_history_not_replaced"},
+  "bindings": {
+    "corpus": {"path": "public-synthetic-corpus.json", "sha256": "bafbfa4b5860b43ba4d28aa1268380c36339167e2503d94498ce26bfe8e85681"},
+    "expected_ledger": {"path": "expected-ledger.json", "sha256": "b7db8890ea1184ca86cd693fbc9161e0658d83e9bdc3064d5aaf7f965e621065"},
+    "stairwell_generator": {"path": "assets/generate_geometry_fixture.py", "sha256": "2a9bfcd505be18928a2c0dd795cfcb40133df8ce65586883b58b7d523b1576f2", "png_sha256": "104631a4d662f2435e000cca86921a68dbb303ed58cd24759a717c7ae171ceb7", "pixel_geometry_invariants": {"closed_loop": {"all_flights_marked_up": true, "edge_pixels_present": [true, true, true, true], "landings": [0, 1, 2, 3], "marker_pixels_present": [true, true, true, true], "returns_to_zero": true, "successors": [1, 2, 3, 0]}, "dimensions": [240, 180], "occlusion": {"behind_tread_pixel": [222, 238, 244], "center": [120, 96], "foreground_masks_behind": true, "foreground_pixel": [109, 61, 38]}}},
+    "source_leaves": {
+      "form.poetry.free_verse.line_breaks": "3f116cec873adbd329445f2312201355086dabcd8742b0d000402a0022058d0c",
+      "form.poetry.free_verse.necessity": "a8c36e24125ba32db2694051252a5c17e9fc05abe48cd185f014b7b2a704e0eb",
+      "form.visual.environment_or_location_illustration.perspective": "54d9fe2f3c2ca408579182aac4fb24f14a47c326081ec2787f381b957989e52b",
+      "form.visual.visual_craft_and_artifact_control.perspective": "e460ad109be2a1d2cb5a13fcb58ca5ad3cc55b87a158fcc6a7757763bade44bf"
+    },
+    "runtime": {
+      "prompts/judge/JUDGE_PREFIX.md": "5e3a0990efca93e2cbc3894e635f9fd1b97b6e61ea2981940319cb54994ebb74",
+      "prompts/judge/BINARY_EVALUATION_PROMPT.md": "6c1cac901d820c1ab866e19f9191896e8c97a6aadf35bdae4eac640fd199a3a2",
+      "schema/hbq_judge_response.schema.json": "49c7d824ba5dd957e67968ba3ae6ceb8a7ed9434dfb0dfc654836a76613c7854",
+      "registry/question_index.jsonl": "0de8eec70a5a4de74770570253af96f6483c07fcf00ebad198fe951cf2af1fb6",
+      "registry/criterion_ownership.json": "79d636c7c692926d15ff8ebd47c3592e6bb0e6640473c0948ae9dead4fdd6876",
+      "src/hbqrs/runner.py": "af97b27de7cf8aba63435489e83eb09307c45a0de3b6ce47ebdd847898b1a9f8",
+      "registry/all_modules.json": "4da342cc24881c70be11e5e2cd92a7beccbeb024e5808a5c779935f29989a4ed",
+      "bundles/all_bundles.jsonl": "18fe55b796b2809f9b8fe3b8cfbc9ef672d990141c79839cf291b6ace7308f5f"
+    }
+  }
+}
