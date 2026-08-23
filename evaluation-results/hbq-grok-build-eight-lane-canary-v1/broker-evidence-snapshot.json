@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "evidence_class": "credential_safe_queue_route_gate_projection_v1",
+  "scope": "A hash-bound projection of the completed canary queue, route snapshot, and matching host gate. It excludes prompts, source paths, credentials, owner attestation, raw route commands, and session identifiers.",
+  "queue": {"completed_count": 8, "delivered_count": 8, "reconcile_required_count": 0},
+  "route_and_gate": {
+    "route": "grok-build-grok-4.6",
+    "route_hash": "f5a32ee5b3c347594b39a0a8ed75ab3391e04232be2168b9b54de50396b6567c",
+    "route_identity_hash": "0c3a9d4613817ac52d8cf1b7ced8a03062e7684d1f70953d71862c7f98f3ead5",
+    "contract": {"schema_version": 1, "adapter": "grok_exec", "provider": "xai_grok_build", "account_class": "subscription", "model": "grok-4.6", "reported_model": "grok-4.6-build", "max_concurrency": 8},
+    "contract_hash": "669cb56d39190dbaa64f405725112ae3eed8af9a88c1369159c20c3a2dfe2a85",
+    "host_gate_state": "healthy",
+    "zero_charge_only": true,
+    "cost_evidence_hash": "60211b362f364809ad6f8f4aee1a657f442ddf76aecb7bd97d0926a0ec66de7c",
+    "auth_receipt_hash": "ce888523c1e79abf3077d692c52211e9b16379f968d93da763a675c75173b80d"
+  },
+  "items": [
+    {"item_id": "2ca5c4fe157c4a718c14c6c7879cbab6", "status": "completed", "delivery_status": "delivered", "attempt_count": 1, "attempt": {"outcome": "completed", "started_at": "2026-08-23T01:38:40+00:00", "finished_at": "2026-08-23T01:39:41+00:00"}, "usage_telemetry": {"status": "reported", "total_cost_usd": 0.00746232, "total_cost_usd_ticks": 74623200, "model_cost_usd": 0.00746232}},
+    {"item_id": "3b0951a85ffd4ea1aa789905862f2724", "status": "completed", "delivery_status": "delivered", "attempt_count": 1, "attempt": {"outcome": "completed", "started_at": "2026-08-23T01:38:40+00:00", "finished_at": "2026-08-23T01:39:53+00:00"}, "usage_telemetry": {"status": "reported", "total_cost_usd": 0.00789276, "total_cost_usd_ticks": 78927600, "model_cost_usd": 0.00789276}},
+    {"item_id": "4e3b553e3a734d27a01c0b4b543993fe", "status": "completed", "delivery_status": "delivered", "attempt_count": 1, "attempt": {"outcome": "completed", "started_at": "2026-08-23T01:38:40+00:00", "finished_at": "2026-08-23T01:39:23+00:00"}, "usage_telemetry": {"status": "reported", "total_cost_usd": 0.0061846, "total_cost_usd_ticks": 61846000, "model_cost_usd": 0.0061846}},
+    {"item_id": "9c7e0f0bcb6a40918e350a34c0e3711c", "status": "completed", "delivery_status": "delivered", "attempt_count": 1, "attempt": {"outcome": "completed", "started_at": "2026-08-23T01:38:40+00:00", "finished_at": "2026-08-23T01:39:33+00:00"}, "usage_telemetry": {"status": "reported", "total_cost_usd": 0.00692648, "total_cost_usd_ticks": 69264800, "model_cost_usd": 0.00692648}},
+    {"item_id": "a8b4bba262bb4890a4c165c28a2d2d4e", "status": "completed", "delivery_status": "delivered", "attempt_count": 1, "attempt": {"outcome": "completed", "started_at": "2026-08-23T01:38:40+00:00", "finished_at": "2026-08-23T01:40:31+00:00"}, "usage_telemetry": {"status": "reported", "total_cost_usd": 0.00976072, "total_cost_usd_ticks": 97607200, "model_cost_usd": 0.00976072}},
+    {"item_id": "c78e02f9e69f4f6eab1f5283dde9ecb9", "status": "completed", "delivery_status": "delivered", "attempt_count": 1, "attempt": {"outcome": "completed", "started_at": "2026-08-23T01:38:40+00:00", "finished_at": "2026-08-23T01:40:05+00:00"}, "usage_telemetry": {"status": "reported", "total_cost_usd": 0.008789, "total_cost_usd_ticks": 87890000, "model_cost_usd": 0.008789}},
+    {"item_id": "d677d71eaf7a4cc18b7b11b1d9a9f870", "status": "completed", "delivery_status": "delivered", "attempt_count": 1, "attempt": {"outcome": "completed", "started_at": "2026-08-23T01:38:40+00:00", "finished_at": "2026-08-23T01:39:52+00:00"}, "usage_telemetry": {"status": "reported", "total_cost_usd": 0.00793458, "total_cost_usd_ticks": 79345800, "model_cost_usd": 0.00793458}},
+    {"item_id": "ecb0c6b32f1d4ff2b3a9db4d36936483", "status": "completed", "delivery_status": "delivered", "attempt_count": 1, "attempt": {"outcome": "completed", "started_at": "2026-08-23T01:38:40+00:00", "finished_at": "2026-08-23T01:39:57+00:00"}, "usage_telemetry": {"status": "reported", "total_cost_usd": 0.007786, "total_cost_usd_ticks": 77860000, "model_cost_usd": 0.007786}}
+  ]
+}

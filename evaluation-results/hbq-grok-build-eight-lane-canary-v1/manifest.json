@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "study": "hbq-grok-build-eight-lane-canary-v1",
+  "status": "completed_provisional_design_input",
+  "purpose": "host-wide eight-lane Grok Build broker capacity canary with eight public-synthetic advisory requests",
+  "privacy": {
+    "input_classification": "public_synthetic",
+    "raw_prompts_published": false,
+    "raw_conversation_published": false,
+    "source_queue_paths_published": false,
+    "owner_attestation_published": false,
+    "session_identifiers_published": false
+  },
+  "transport": {
+    "broker_health": "healthy",
+    "route": "grok-build-grok-4.6",
+    "route_hash": "f5a32ee5b3c347594b39a0a8ed75ab3391e04232be2168b9b54de50396b6567c",
+    "route_identity_hash": "0c3a9d4613817ac52d8cf1b7ced8a03062e7684d1f70953d71862c7f98f3ead5",
+    "host_max_concurrency": 8,
+    "attempts_per_item": 1,
+    "requested_model": "grok-4.6",
+    "reported_model": "grok-4.6-build",
+    "requested_reasoning_effort": "high",
+    "reasoning_attestation": "not_reported_by_grok_build_cli",
+    "execution_policy": "isolated_one_turn_read_only",
+    "cost_interpretation": "included_weekly_allowance_usage_telemetry_on_a_zero_charge_saved_session_route_not_incremental_paid_evaluation"
+  },
+  "timing": {
+    "broker_attempt_started_at": "2026-08-23T01:38:40+00:00",
+    "result_envelope_launch_window": ["2026-08-23T01:38:40+00:00", "2026-08-23T01:38:41+00:00"],
+    "finished_at_range": ["2026-08-23T01:39:23+00:00", "2026-08-23T01:40:31+00:00"],
+    "completed_and_delivered": 8
+  },
+  "broker_evidence_snapshot": {
+    "file": "broker-evidence-snapshot.json",
+    "sha256": "a6339f0768719a51d6aa09fa0f60d6b0096671d57515e8241b50f28dedf0eb6b"
+  },
+  "results": [
+    {"label": "aggregation-contract", "file": "inbox/aggregation-contract.json", "sha256": "e581f8e39b942d7feb2c95a92a15c512f60d58722de129e68c31ba17f875b0ea", "item_id": "2ca5c4fe157c4a718c14c6c7879cbab6", "finished_at": "2026-08-23T01:39:41+00:00", "provisional_use": "repeat-count and deterministic aggregation design"},
+    {"label": "confidence-calibration", "file": "inbox/confidence-calibration.json", "sha256": "5cb9714d13183eca599e9994016c9b79700c26daa5294e4575276d5ee9c2372f", "item_id": "3b0951a85ffd4ea1aa789905862f2724", "finished_at": "2026-08-23T01:39:53+00:00", "provisional_use": "confidence calibration and selective resampling design"},
+    {"label": "hanna-repair-ladder", "file": "inbox/hanna-repair-ladder.json", "sha256": "254ef2559a88f1e16653b50f2f836a9bd50d28236958ce3295a4c24c75361288", "item_id": "4e3b553e3a734d27a01c0b4b543993fe", "finished_at": "2026-08-23T01:39:23+00:00", "provisional_use": "overlap-focused HANNA repair ordering"},
+    {"label": "integration-contract", "file": "inbox/integration-contract.json", "sha256": "f405508f2dc9076e6a2261d4b37e2b1a0cd6970bc0c9b6caf18f9822590c9b2a", "item_id": "9c7e0f0bcb6a40918e350a34c0e3711c", "finished_at": "2026-08-23T01:39:33+00:00", "provisional_use": "HBQ-RS integration sequencing"},
+    {"label": "paired-polarity-decision", "file": "inbox/paired-polarity-decision.json", "sha256": "b2a5b2eb2e2d2e270b826d4a50a6eb4890a6a8c1ab7ce84fd44461e781c4df93", "item_id": "a8b4bba262bb4890a4c165c28a2d2d4e", "finished_at": "2026-08-23T01:40:31+00:00", "provisional_use": "paired-polarity follow-up design"},
+    {"label": "ai-writer-preface-ablation", "file": "inbox/ai-writer-preface-ablation.json", "sha256": "a4f048c7b5116ab08c67c5905e5bfb4bcb68932fe3ac49a4bd394c72319c8c19", "item_id": "c78e02f9e69f4f6eab1f5283dde9ecb9", "finished_at": "2026-08-23T01:40:05+00:00", "provisional_use": "bounded preface-ablation design"},
+    {"label": "repair-protocol", "file": "inbox/repair-protocol.json", "sha256": "732a35883280b2307862ca8ffc866d8e29c96fa7d61ec86626579b97b0314387", "item_id": "d677d71eaf7a4cc18b7b11b1d9a9f870", "finished_at": "2026-08-23T01:39:52+00:00", "provisional_use": "per-leaf repair and retry protocol"},
+    {"label": "expert-edit-pilot", "file": "inbox/expert-edit-pilot.json", "sha256": "738c9f0caafa986a5a17d34ac62452418efb657b0eda808b26c4c2817c0a5a01", "item_id": "ecb0c6b32f1d4ff2b3a9db4d36936483", "finished_at": "2026-08-23T01:39:57+00:00", "provisional_use": "expert-edit preference pilot design"}
+  ]
+}
