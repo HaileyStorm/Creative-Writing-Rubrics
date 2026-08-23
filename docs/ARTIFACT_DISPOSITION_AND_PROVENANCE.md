@@ -34,9 +34,9 @@ packages remain owned by their active studies.
 | **SUPERSEDED_REGENERABLE** | Historical output/cache/install material. Keep until the stated replacement receipt exists, then remove only in its named cleanup batch. |
 | **BLOCKED** | Do not publish, relocate, or delete until a provenance/privacy owner records the missing authority or source relationship. |
 
-This uncommitted document is not promoted.  It becomes a public record only
-after review, commit, and push; no historical raw artifact is thereby declared
-public, current, or reproducible.
+This reviewed document is the public disposition record. Its publication does
+not declare any historical raw artifact public, current, or reproducible; each
+artifact remains governed by its recorded disposition and cleanup gate.
 
 ## Bound survivors
 
