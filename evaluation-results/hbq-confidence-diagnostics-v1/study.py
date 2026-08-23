@@ -29,6 +29,7 @@ FRESH_FINGERPRINT_REQUIRED = FINGERPRINT_REQUIRED | {"accepted_artifacts_sha256"
 CONDITION_FIELDS = {"phase", "arm_id", "bundle_id", "batch_size", "polarity", "task_contract_sha256", "weight_profile_sha256"}
 FRESH_CONDITION_FIELDS = CONDITION_FIELDS | {"accepted_artifacts_sha256"}
 REASONING_ATTESTATIONS = {"provider_attested", "not_reported_by_grok_build_cli"}
+REPEAT_EVIDENCE_KINDS = {"repeatability_confidence_evidence", "repeatability_confidence_evidence_partial_v1"}
 
 
 def canonical(value: Any) -> bytes:
@@ -96,6 +97,14 @@ def _fingerprint_key(value: Mapping[str, str]) -> str:
     return hashlib.sha256(canonical(value)).hexdigest()
 
 
+def _partial_shared_condition_key(model: Mapping[str, Any]) -> str:
+    fingerprint, condition = model["model_fingerprint"], model["condition"]
+    return hashlib.sha256(canonical({
+        "model_fingerprint": {key: value for key, value in fingerprint.items() if key != "selection_sha256"},
+        "condition": {key: value for key, value in condition.items() if key != "task_contract_sha256"},
+    })).hexdigest()
+
+
 def _authority(value: Any) -> dict[str, dict[str, Any]]:
     if not isinstance(value, Mapping) or not value:
         raise ValueError("Evidence authority must be a nonempty manifest-binding map")
@@ -124,17 +133,36 @@ def _condition(value: Any, *, allowed_fields: set[str] = CONDITION_FIELDS) -> di
     return dict(sorted(parsed.items()))
 
 
-def _sealed_input(directory: Path, expected_kind: str) -> tuple[dict[str, Any], dict[str, Any]]:
+def _sealed_input(directory: Path, expected_kind: str | set[str]) -> tuple[dict[str, Any], dict[str, Any]]:
     directory = directory.resolve()
     input_path, manifest_path = directory / "confidence-input.json", directory / "manifest.json"
     if not directory.is_dir() or not input_path.is_file() or not manifest_path.is_file():
         raise ValueError("Sealed confidence evidence requires confidence-input.json and manifest.json")
     manifest, payload = _read_object(manifest_path), _read_object(input_path)
-    if set(manifest) != {"format_version", "kind", "files"} or manifest.get("format_version") != 1 or manifest.get("kind") != expected_kind or manifest.get("files") != {"confidence-input.json": binding(input_path)}:
+    expected_kinds = {expected_kind} if isinstance(expected_kind, str) else expected_kind
+    if not expected_kinds or not all(isinstance(kind, str) for kind in expected_kinds):
+        raise ValueError("Sealed confidence evidence requires a nonempty kind allowlist")
+    if set(manifest) != {"format_version", "kind", "files"} or manifest.get("format_version") != 1 or manifest.get("kind") not in expected_kinds or manifest.get("files") != {"confidence-input.json": binding(input_path)}:
         raise ValueError("Sealed confidence evidence manifest does not bind exactly its input bytes")
-    if set(payload) != {"format_version", "kind", "models"} or payload.get("format_version") != 1 or payload.get("kind") != expected_kind:
+    expected_fields = {"format_version", "kind", "models"}
+    partial_counts: dict[str, int] | None = None
+    if payload.get("kind") == "repeatability_confidence_evidence_partial_v1":
+        expected_fields.add("partial_exclusions")
+        expected_fields.add("partial_shared_condition_sha256")
+        exclusions = payload.get("partial_exclusions")
+        shared_condition = payload.get("partial_shared_condition_sha256")
+        if not isinstance(shared_condition, str) or len(shared_condition) != 64 or any(character not in "0123456789abcdef" for character in shared_condition):
+            raise ValueError("Partial repeat evidence shared condition is malformed")
+        if not isinstance(exclusions, list) or any(not isinstance(row, Mapping) or set(row) != {"item_id", "reason"} or not isinstance(row["item_id"], str) or not row["item_id"] or row["reason"] not in {"missing_repetition", "duplicate_repetition", "condition_or_score_drift", "different_shared_condition"} for row in exclusions):
+            raise ValueError("Partial repeat evidence exclusions are malformed")
+        partial_counts = dict(sorted(Counter(str(row["reason"]) for row in exclusions).items()))
+    if set(payload) != expected_fields or payload.get("format_version") != 1 or payload.get("kind") not in expected_kinds or payload.get("kind") != manifest.get("kind"):
         raise ValueError("Sealed confidence evidence kind drifted")
-    return payload, {"input": binding(input_path), "manifest": binding(manifest_path), "kind": expected_kind}
+    receipt = {"input": binding(input_path), "manifest": binding(manifest_path), "kind": payload["kind"]}
+    if partial_counts is not None:
+        receipt["partial_exclusion_counts"] = partial_counts
+        receipt["partial_shared_condition_sha256"] = payload["partial_shared_condition_sha256"]
+    return payload, receipt
 
 
 def _rank(values: Sequence[float]) -> list[float]:
@@ -298,6 +326,19 @@ def _repeat_model(model: Mapping[str, Any]) -> dict[str, Any]:
     return {"model_fingerprint": model["model_fingerprint"], "condition": model["condition"], "authority": model["authority"], "record_count": len(records), "total_response_count": sum(len(record["responses"]) for record in records), "leave_one_out_eligible_response_count": len(predictions), "leave_one_out_tied_excluded_response_count": leave_one_out_tied, "repetitions": len(records[0]["responses"]), "repeat_consensus_proxy_not_human_truth": True, "stable_vs_flip": {"stable_leaf_count": sum(row["stable"] for row in per_leaf), "flipped_leaf_count": sum(not row["stable"] for row in per_leaf), "stable_mean_raw_confidence": statistics.fmean(stable_confidences) if stable_confidences else None, "flipped_mean_raw_confidence": statistics.fmean(flip_confidences) if flip_confidences else None, "mean_pairwise_repeat_agreement": statistics.fmean(row["pairwise_agreement"] for row in per_leaf), "mean_modal_proportion": statistics.fmean(row["modal_proportion"] for row in per_leaf)}, "leave_one_out_repeat_consensus_proxy_calibration": {"brier": statistics.fmean((confidence - outcome) ** 2 for confidence, outcome in predictions) if predictions else None, "ece": ece, "reliability_bins": reliability, "tie_rule": "Exclude a response when the other repetitions have no unique modal verdict."}, "role_stratified_noncanonical_diagnostics": {role: role_summary(values) for role, values in sorted(by_role.items())}, "equal_budget_resampling": _repeat_resampling(records)}
 
 
+def _partial_repeat_aggregate(models: Sequence[Mapping[str, Any]], shared_condition_sha256: str) -> dict[str, Any]:
+    if len(models) < 3:
+        raise ValueError("Partial aggregate requires at least three complete stories")
+    pooled = [record for model in models for record in model["records"]]
+    derived = _repeat_model({"model_fingerprint": models[0]["model_fingerprint"], "condition": models[0]["condition"], "authority": models[0]["authority"], "records": pooled})
+    return {
+        "story_count": len(models),
+        "aggregation": "Pooled leaves from complete stories sharing the exact model/prompt/schema/runtime condition; task and artifact bindings remain story-specific.",
+        "shared_condition_sha256": shared_condition_sha256,
+        **{key: value for key, value in derived.items() if key not in {"model_fingerprint", "condition", "authority"}},
+    }
+
+
 def _fresh_records(payload: Mapping[str, Any]) -> list[dict[str, Any]]:
     models = payload.get("models")
     if not isinstance(models, list) or not models:
@@ -403,17 +444,29 @@ def analyze(repeat_dir: Path | None, fresh88_dir: Path | None, output: Path) -> 
     roots = [root for root in (repeat_dir, fresh88_dir) if root is not None]
     _disjoint(output, roots)
     evidence: dict[str, Any] = {}
-    repeat_result, fresh_result = None, None
+    repeat_result, fresh_result, partial_repeat_aggregate = None, None, None
     if repeat_dir is not None:
-        payload, receipt = _sealed_input(repeat_dir, "repeatability_confidence_evidence")
+        payload, receipt = _sealed_input(repeat_dir, REPEAT_EVIDENCE_KINDS)
         models = _repeat_records(payload)
+        if payload["kind"] == "repeatability_confidence_evidence_partial_v1":
+            if any(len({record["item_id"] for record in model["records"]}) != 1 for model in models.values()):
+                raise ValueError("Partial repeat evidence requires exactly one complete story per model group")
+            covered = {record["item_id"] for model in models.values() for record in model["records"]}
+            excluded = [row["item_id"] for row in payload["partial_exclusions"]]
+            if len(covered) < 3 or len(excluded) != len(set(excluded)) or covered & set(excluded) or len(covered) + len(excluded) != 11:
+                raise ValueError("Partial repeat evidence does not account exactly for the frozen 11-story schedule")
+            shared_conditions = {_partial_shared_condition_key(model) for model in models.values()}
+            if shared_conditions != {payload["partial_shared_condition_sha256"]}:
+                raise ValueError("Partial repeat evidence does not share its declared full model/prompt/schema/runtime condition")
         repeat_result = {key: _repeat_model(model) for key, model in sorted(models.items())}
+        if payload["kind"] == "repeatability_confidence_evidence_partial_v1":
+            partial_repeat_aggregate = _partial_repeat_aggregate([model for _, model in sorted(models.items())], payload["partial_shared_condition_sha256"])
         evidence["repeatability"] = receipt
     if fresh88_dir is not None:
         payload, receipt = _sealed_input(fresh88_dir, "fresh88_confidence_evidence")
         fresh_result = {_fingerprint_key(model["model_fingerprint"]): _fresh_model(model) for model in _fresh_records(payload)}
         evidence["fresh88"] = receipt
-    summary = {"format_version": 1, "study_id": CONTRACT["study_id"], "analysis_only": True, "canonical_hbq_unchanged": True, "confidence_status": "diagnostic_only", "evidence": evidence, "repeatability": repeat_result, "fresh88": fresh_result, "limits": CONTRACT["limits"], "privacy": "Aggregate-only output: no item IDs, prose, prompts, raw verdicts, sessions, request IDs, or provider response text."}
+    summary = {"format_version": 1, "study_id": CONTRACT["study_id"], "analysis_only": True, "canonical_hbq_unchanged": True, "confidence_status": "diagnostic_only", "evidence": evidence, "repeatability": repeat_result, "partial_repeatability_aggregate": partial_repeat_aggregate, "fresh88": fresh_result, "limits": CONTRACT["limits"], "privacy": "Aggregate-only output: no item IDs, prose, prompts, raw verdicts, sessions, request IDs, or provider response text."}
     body = canonical(summary) + b"\n"
     manifest = {"format_version": 1, "study_id": CONTRACT["study_id"], "files": {"summary.json": {"bytes": len(body), "sha256": hashlib.sha256(body).hexdigest()}}}
     rendered = {"summary.json": body, "manifest.json": canonical(manifest) + b"\n"}
@@ -434,7 +487,7 @@ def verify_output(output: Path) -> dict[str, Any]:
     expected = {"format_version": 1, "study_id": CONTRACT["study_id"], "files": {"summary.json": binding(summary_path)}}
     if manifest != expected:
         raise ValueError("Confidence output manifest does not bind exactly its aggregate summary")
-    required = {"format_version", "study_id", "analysis_only", "canonical_hbq_unchanged", "confidence_status", "evidence", "repeatability", "fresh88", "limits", "privacy"}
+    required = {"format_version", "study_id", "analysis_only", "canonical_hbq_unchanged", "confidence_status", "evidence", "repeatability", "partial_repeatability_aggregate", "fresh88", "limits", "privacy"}
     if set(summary) != required or summary["format_version"] != 1 or summary["study_id"] != CONTRACT["study_id"] or summary["analysis_only"] is not True or summary["canonical_hbq_unchanged"] is not True or summary["confidence_status"] != "diagnostic_only":
         raise ValueError("Confidence output identity or noncanonical boundary drifted")
     def reject_raw(value: Any, path: tuple[str, ...] = ()) -> None:
@@ -450,6 +503,15 @@ def verify_output(output: Path) -> dict[str, Any]:
             for child in value:
                 reject_raw(child, path)
     reject_raw(summary)
+    repeat_receipt = summary["evidence"].get("repeatability")
+    aggregate = summary["partial_repeatability_aggregate"]
+    if isinstance(repeat_receipt, Mapping) and repeat_receipt.get("kind") == "repeatability_confidence_evidence_partial_v1":
+        if not isinstance(aggregate, Mapping) or aggregate.get("story_count") != len(summary["repeatability"] or {}) or aggregate.get("shared_condition_sha256") != repeat_receipt.get("partial_shared_condition_sha256"):
+            raise ValueError("Partial repeat aggregate is missing its shared-condition binding")
+        if aggregate.get("record_count") != sum(model["record_count"] for model in (summary["repeatability"] or {}).values()) or aggregate.get("total_response_count") != sum(model["total_response_count"] for model in (summary["repeatability"] or {}).values()):
+            raise ValueError("Partial repeat aggregate arithmetic drifted")
+    elif aggregate is not None:
+        raise ValueError("Non-partial evidence must not emit a partial repeat aggregate")
     if summary["fresh88"] is not None:
         for model in summary["fresh88"].values():
             if model["primary_generated80"]["item_count"] != 80 or model["secondary_all88"]["item_count"] != 88 or model["confidence_vs_hanna_rank_association"]["brier_ece_reliability_bins"] != "not_emitted_without_binary_human_leaf_truth":

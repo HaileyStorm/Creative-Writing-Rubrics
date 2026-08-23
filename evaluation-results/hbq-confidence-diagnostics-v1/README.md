@@ -20,7 +20,20 @@ python evaluation-results/hbq-confidence-diagnostics-v1/prepare_repeat_input.py 
 
 The Fresh88/Grok adapter binds the Fresh88 primary summary/items/manifest, exact 80-generated/88-total selection, private run configuration fingerprints, and the completed Grok verifier manifest before emitting a prose-free input. The repeat adapter accepts only the authoritative complete 11-story, five-repeat frozen HBQ work root.
 
+An explicitly exploratory partial input may be composed only when at least three stories each retain five condition-identical repeats **and share one full model, prompt, schema, and runtime condition**. The composition utility scans the frozen 11-story schedule in order, chooses the largest qualifying condition group with frozen-order tie-breaking, binds the original/successor lineage, rejects recovery or continuation slots with prompt-condition drift, and emits only the complete anonymous groups plus aggregate exclusion reasons. It is not a substitute for the 11-story study and cannot promote a confidence policy.
+
+```powershell
+python evaluation-results/hbq-confidence-diagnostics-v1/compose_partial_repeat_input.py `
+  --original-work-dir <original-frozen-root> `
+  --successor-work-dir <successor-root> `
+  --recovery-work-dir <recovery-root> `
+  --recovery-settlement <settlement-json> `
+  --output-dir <new-empty-sealed-input>
+```
+
 `repeatability_confidence_evidence` measures stable versus flipping leaves plus Brier/ECE and reliability bins against a **leave-one-repeat-out** unique modal verdict. Tied leave-out consensus labels are excluded before those metrics. The leave-out verdict is only an empirical same-input proxy, never human truth. It reports role-stratified YES-rate and effective-confidence-mass diagnostics rather than invented confidence-weighted HBQ scores or coverage. Where every leaf has at least two responses, it also reports a fixed-total-budget bootstrap of observed repeats: uniform one-extra-sample-per-leaf versus low-initial-confidence allocation. Tied simulated decisions abstain. This is a within-observed-responses simulation, not evidence that new calls would behave identically.
+
+`repeatability_confidence_evidence_partial_v1` uses the same analyzer semantics but identifies an exploratory, condition-identical partial slice in its sealed evidence receipt. It must remain separate from full-study claims.
 
 `fresh88_confidence_evidence` reports separate per-fingerprint 80-generated primary and all-88 secondary aggregates. For every HANNA dimension it uses the frozen mapped HBQ score and mapped effective confidence mass, then reports rank-based confidence/HANNA agreement and error associations. They are descriptive associations; HANNA is not converted into binary leaf truth, so the analyzer deliberately does **not** emit Brier, ECE, or reliability claims for those records.
 

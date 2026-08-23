@@ -4,6 +4,7 @@ import hashlib
 import importlib.util
 import json
 import sys
+from copy import deepcopy
 from pathlib import Path
 
 import pytest
@@ -22,6 +23,11 @@ assert prepare_spec and prepare_spec.loader
 prepare = importlib.util.module_from_spec(prepare_spec)
 sys.modules[prepare_spec.name] = prepare
 prepare_spec.loader.exec_module(prepare)
+compose_spec = importlib.util.spec_from_file_location("compose_partial_repeat_input", PACKAGE / "compose_partial_repeat_input.py")
+assert compose_spec and compose_spec.loader
+compose = importlib.util.module_from_spec(compose_spec)
+sys.modules[compose_spec.name] = compose
+compose_spec.loader.exec_module(compose)
 
 
 def _seal(directory: Path, payload: dict) -> None:
@@ -89,6 +95,76 @@ def test_repeat_diagnostics_keep_proxy_and_canonical_boundaries(tmp_path: Path) 
     assert model["role_stratified_noncanonical_diagnostics"]["domain"]["effective_confidence_mass_is_not_coverage"] is True
     assert "opaque-1" not in (tmp_path / "output" / "summary.json").read_text(encoding="utf-8")
     assert "accepted_artifacts_sha256" not in model["model_fingerprint"]
+
+
+def test_partial_repeat_kind_uses_the_same_noncanonical_analyzer_boundary(tmp_path: Path) -> None:
+    payload = _repeat_payload()
+    payload["kind"] = "repeatability_confidence_evidence_partial_v1"
+    prototype = payload["models"][0]
+    payload["models"] = []
+    for index in range(3):
+        model = deepcopy(prototype)
+        model["model_fingerprint"]["selection_sha256"] = f"{index}" * 64
+        for record in model["records"]:
+            record["item_id"] = f"opaque-{index}"
+        payload["models"].append(model)
+    payload["partial_exclusions"] = [{"item_id": f"excluded-{index}", "reason": "missing_repetition"} for index in range(8)]
+    payload["partial_shared_condition_sha256"] = study._partial_shared_condition_key(payload["models"][0])
+    repeat = tmp_path / "repeat"; _seal(repeat, payload)
+    summary = study.analyze(repeat, None, tmp_path / "output")
+    assert summary["evidence"]["repeatability"]["kind"] == "repeatability_confidence_evidence_partial_v1"
+    assert summary["evidence"]["repeatability"]["partial_exclusion_counts"] == {"missing_repetition": 8}
+    assert summary["canonical_hbq_unchanged"] is True
+    assert summary["confidence_status"] == "diagnostic_only"
+    assert summary["partial_repeatability_aggregate"]["story_count"] == 3
+    assert summary["partial_repeatability_aggregate"]["record_count"] == sum(model["record_count"] for model in summary["repeatability"].values())
+
+
+def test_composer_signature_detects_prompt_condition_drift() -> None:
+    base = {
+        "provider": "codex", "model": "gpt-5.6-sol", "reasoning": "high", "bundle_id": "prose.short_story",
+        "bundle_version": 1, "batch_size": 32, "compiled_bundle_sha256": "a" * 64,
+        "questions_sha256": "b" * 64, "response_schema": {"sha256": "c" * 64},
+        "task_contract": {"sha256": "d" * 64}, "artifact": {"sha256": "e" * 64},
+        "weight_profile": {"identity": True},
+        "prompts": [{"name": "JUDGE_PREFIX.md", "sha256": "f" * 64}, {"name": "prompt.md", "sha256": "1" * 64}],
+    }
+    changed = {**base, "prompts": [{"name": "JUDGE_PREFIX.md", "sha256": "f" * 64}, {"name": "prompt.md", "sha256": "2" * 64}]}
+    model, condition = compose._signature(base, runtime_sha256="9" * 64)
+    drifted_model, drifted_condition = compose._signature(changed, runtime_sha256="9" * 64)
+    assert condition == drifted_condition
+    assert model["prompt_sha256"] != drifted_model["prompt_sha256"]
+
+
+def test_partial_composer_replays_the_frozen_11_story_chain_when_available(tmp_path: Path) -> None:
+    roots = {
+        "original": Path(r"C:\Users\Haile\Documents\cwr-multisample-repeatability-v1-20260821-44518ab"),
+        "successor": Path(r"C:\Users\Haile\Documents\cwr-multisample-repeatability-v1-successor-20260821-9422eff"),
+        "recovery": Path(r"C:\Users\Haile\Documents\cwr-multisample-capacity-reset-v4-live-1c587bc-20260822"),
+        "settlement": Path(r"C:\Users\Haile\Documents\cwr-multisample-v5-owner-validated-settlement-20260822\offline-recovered-completion.json"),
+    }
+    if not all(path.exists() for path in roots.values()):
+        pytest.skip("frozen local partial-repeatability fixture is not present")
+    sealed = tmp_path / "sealed"
+    payload = compose.compose(roots["original"], roots["successor"], roots["recovery"], roots["settlement"], sealed)
+    assert [[record["item_id"] for record in model["records"][:1]] for model in payload["models"]] == [["hanna-178"], ["hanna-225"], ["hanna-1035"]]
+    assert payload["partial_exclusions"] == [
+        {"item_id": "hanna-382", "reason": "condition_or_score_drift"},
+        {"item_id": "hanna-445", "reason": "different_shared_condition"},
+        {"item_id": "hanna-52", "reason": "condition_or_score_drift"},
+        {"item_id": "hanna-523", "reason": "missing_repetition"},
+        {"item_id": "hanna-594", "reason": "missing_repetition"},
+        {"item_id": "hanna-731", "reason": "missing_repetition"},
+        {"item_id": "hanna-817", "reason": "missing_repetition"},
+        {"item_id": "hanna-907", "reason": "missing_repetition"},
+    ]
+    summary = study.analyze(sealed, None, tmp_path / "output")
+    aggregate = summary["partial_repeatability_aggregate"]
+    assert aggregate["story_count"] == 3
+    assert aggregate["record_count"] == 486
+    assert aggregate["total_response_count"] == 2430
+    assert aggregate["record_count"] == sum(model["record_count"] for model in summary["repeatability"].values())
+    assert aggregate["total_response_count"] == sum(model["total_response_count"] for model in summary["repeatability"].values())
 
 
 def test_repeat_rejects_fresh_only_placeholder_and_authority_shape(tmp_path: Path) -> None:
