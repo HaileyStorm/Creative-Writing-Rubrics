@@ -1,0 +1,15 @@
+{
+  "format_version": 2,
+  "study_id": "hbq-figurative-metaphor-checklist-successor-v1",
+  "visibility": "local_ledger_only_not_provider_input",
+  "expected_verdicts": {
+    "successor-v2-01": {"penalty.purple_prose.metaphor":"YES","core.freshness_and_non_genericness.no_default_metaphors":"NO","penalty.purple_prose.proportion":"YES"},
+    "successor-v2-02": {"penalty.purple_prose.metaphor":"YES","core.freshness_and_non_genericness.no_default_metaphors":"YES","penalty.purple_prose.proportion":"YES"},
+    "successor-v2-03": {"penalty.purple_prose.metaphor":"YES","core.freshness_and_non_genericness.no_default_metaphors":"NO","penalty.purple_prose.proportion":"NO"},
+    "successor-v2-04": {"penalty.purple_prose.metaphor":"YES","core.freshness_and_non_genericness.no_default_metaphors":"YES","penalty.purple_prose.proportion":"NO"},
+    "successor-v2-05": {"penalty.purple_prose.metaphor":"NO","core.freshness_and_non_genericness.no_default_metaphors":"NO","penalty.purple_prose.proportion":"YES"},
+    "successor-v2-06": {"penalty.purple_prose.metaphor":"NO","core.freshness_and_non_genericness.no_default_metaphors":"YES","penalty.purple_prose.proportion":"YES"},
+    "successor-v2-07": {"penalty.purple_prose.metaphor":"NO","core.freshness_and_non_genericness.no_default_metaphors":"NO","penalty.purple_prose.proportion":"NO"},
+    "successor-v2-08": {"penalty.purple_prose.metaphor":"NO","core.freshness_and_non_genericness.no_default_metaphors":"YES","penalty.purple_prose.proportion":"NO"}
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-figurative-metaphor-checklist-successor-v1",
+  "visibility": "public_commitment_only_no_excerpt_text",
+  "carrier_status": "not_authored_or_sourced",
+  "excerpt_slots": [
+    "real-holdout-01",
+    "real-holdout-02",
+    "real-holdout-03",
+    "real-holdout-04",
+    "real-holdout-05",
+    "real-holdout-06",
+    "real-holdout-07",
+    "real-holdout-08"
+  ],
+  "disjointness": {
+    "development_corpus": "no shared text, phrase, actor, setting, or figurative construction",
+    "between_holdout_slots": "no shared source passage or overlapping excerpt",
+    "selection": "one use only; selection cannot use this package's model outcomes"
+  },
+  "prohibitions": [
+    "Gray Blood",
+    "public excerpt text",
+    "holdout tuning",
+    "provider submission before Phase B pass and separate private carrier freeze"
+  ],
+  "execution_gate": "Phase_B_pass_and_separate_private_carrier_freeze_with_eight_disjoint_excerpt_hashes_before_any_provider_call"
+}
