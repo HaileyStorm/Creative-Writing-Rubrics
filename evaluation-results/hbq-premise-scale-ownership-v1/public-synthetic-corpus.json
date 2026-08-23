@@ -1,0 +1,210 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-premise-scale-ownership-v1",
+  "privacy": "public_synthetic_only",
+  "pairing": "six matched context-carrier perturbations; each pair holds isolated and composite carriers with the same premise, scope, activation, targets, and oracle verdicts",
+  "artifacts": [
+    {
+      "case_id": "broad-engine-isolated",
+      "pair_id": "broad-engine",
+      "carrier": "isolated",
+      "artifact_type": "planning_artifact",
+      "declared_scope": "artifact_and_operation",
+      "operation_active": true,
+      "artifact_target": {"length": "90000 words", "form": "novel"},
+      "operation_target": {"length": "90000 words", "form": "novel"},
+      "available_evidence_sections": ["premise", "artifact_brief", "operation_brief"],
+      "sections": {
+        "premise": "Every winter, a city must choose one resident to forget; this year the archivist discovers the forgotten are building a second city beneath the river.",
+        "artifact_brief": "Develop this premise as a 90000-word novel with multiple civic factions and a family divided by the lottery.",
+        "operation_brief": "Run a premise stress test for a 90000-word novel."
+      },
+      "expected_verdicts": {"artifact.support.premise_story_seed.extensibility": "YES", "op.ideation.premise_stress_test.scale": "YES"}
+    },
+    {
+      "case_id": "broad-engine-composite",
+      "pair_id": "broad-engine",
+      "carrier": "composite",
+      "artifact_type": "planning_artifact",
+      "declared_scope": "artifact_and_operation",
+      "operation_active": true,
+      "artifact_target": {"length": "90000 words", "form": "novel"},
+      "operation_target": {"length": "90000 words", "form": "novel"},
+      "available_evidence_sections": ["project_note", "premise", "artifact_brief", "operation_brief"],
+      "sections": {
+        "project_note": "Development packet: civic speculative fiction.",
+        "premise": "Every winter, a city must choose one resident to forget; this year the archivist discovers the forgotten are building a second city beneath the river.",
+        "artifact_brief": "Develop this premise as a 90000-word novel with multiple civic factions and a family divided by the lottery.",
+        "operation_brief": "Run a premise stress test for a 90000-word novel."
+      },
+      "expected_verdicts": {"artifact.support.premise_story_seed.extensibility": "YES", "op.ideation.premise_stress_test.scale": "YES"}
+    },
+    {
+      "case_id": "image-only-isolated",
+      "pair_id": "image-only",
+      "carrier": "isolated",
+      "artifact_type": "planning_artifact",
+      "declared_scope": "artifact_and_operation",
+      "operation_active": true,
+      "artifact_target": {"length": "90000 words", "form": "novel"},
+      "operation_target": {"length": "90000 words", "form": "novel"},
+      "available_evidence_sections": ["premise", "artifact_brief", "operation_brief"],
+      "sections": {
+        "premise": "A blue fox crosses a bridge at dawn.",
+        "artifact_brief": "Develop this premise as a 90000-word novel.",
+        "operation_brief": "Run a premise stress test for a 90000-word novel."
+      },
+      "expected_verdicts": {"artifact.support.premise_story_seed.extensibility": "NO", "op.ideation.premise_stress_test.scale": "NO"}
+    },
+    {
+      "case_id": "image-only-composite",
+      "pair_id": "image-only",
+      "carrier": "composite",
+      "artifact_type": "planning_artifact",
+      "declared_scope": "artifact_and_operation",
+      "operation_active": true,
+      "artifact_target": {"length": "90000 words", "form": "novel"},
+      "operation_target": {"length": "90000 words", "form": "novel"},
+      "available_evidence_sections": ["project_note", "premise", "artifact_brief", "operation_brief"],
+      "sections": {
+        "project_note": "Development packet: quiet fable.",
+        "premise": "A blue fox crosses a bridge at dawn.",
+        "artifact_brief": "Develop this premise as a 90000-word novel.",
+        "operation_brief": "Run a premise stress test for a 90000-word novel."
+      },
+      "expected_verdicts": {"artifact.support.premise_story_seed.extensibility": "NO", "op.ideation.premise_stress_test.scale": "NO"}
+    },
+    {
+      "case_id": "inactive-operation-isolated",
+      "pair_id": "inactive-operation",
+      "carrier": "isolated",
+      "artifact_type": "planning_artifact",
+      "declared_scope": "artifact_only",
+      "operation_active": false,
+      "artifact_target": {"length": "80000 words", "form": "novel"},
+      "operation_target": null,
+      "available_evidence_sections": ["premise", "artifact_brief"],
+      "sections": {
+        "premise": "After a failed rescue, a harbor pilot must smuggle rival survivors through a blockade while the storm alters the coastline each night.",
+        "artifact_brief": "Develop this premise as an 80000-word novel with evolving navigation choices and rival obligations."
+      },
+      "expected_verdicts": {"artifact.support.premise_story_seed.extensibility": "YES", "op.ideation.premise_stress_test.scale": "NOT_APPLICABLE"}
+    },
+    {
+      "case_id": "inactive-operation-composite",
+      "pair_id": "inactive-operation",
+      "carrier": "composite",
+      "artifact_type": "planning_artifact",
+      "declared_scope": "artifact_only",
+      "operation_active": false,
+      "artifact_target": {"length": "80000 words", "form": "novel"},
+      "operation_target": null,
+      "available_evidence_sections": ["project_note", "premise", "artifact_brief"],
+      "sections": {
+        "project_note": "Development packet: maritime survival story.",
+        "premise": "After a failed rescue, a harbor pilot must smuggle rival survivors through a blockade while the storm alters the coastline each night.",
+        "artifact_brief": "Develop this premise as an 80000-word novel with evolving navigation choices and rival obligations."
+      },
+      "expected_verdicts": {"artifact.support.premise_story_seed.extensibility": "YES", "op.ideation.premise_stress_test.scale": "NOT_APPLICABLE"}
+    },
+    {
+      "case_id": "operation-only-isolated",
+      "pair_id": "operation-only",
+      "carrier": "isolated",
+      "artifact_type": "reference_artifact",
+      "declared_scope": "operation_only",
+      "operation_active": true,
+      "artifact_target": null,
+      "operation_target": {"length": "six episodes", "form": "audio drama"},
+      "available_evidence_sections": ["premise", "operation_brief"],
+      "sections": {
+        "premise": "A call-center mediator learns that every customer complaint predicts a disaster the callers are trying to prevent.",
+        "operation_brief": "Stress-test this premise for a six-episode audio drama, including reversals and the mediator's changing loyalties."
+      },
+      "expected_verdicts": {"artifact.support.premise_story_seed.extensibility": "NOT_APPLICABLE", "op.ideation.premise_stress_test.scale": "YES"}
+    },
+    {
+      "case_id": "operation-only-composite",
+      "pair_id": "operation-only",
+      "carrier": "composite",
+      "artifact_type": "reference_artifact",
+      "declared_scope": "operation_only",
+      "operation_active": true,
+      "artifact_target": null,
+      "operation_target": {"length": "six episodes", "form": "audio drama"},
+      "available_evidence_sections": ["project_note", "premise", "operation_brief"],
+      "sections": {
+        "project_note": "Research reference retained only for an active stress test.",
+        "premise": "A call-center mediator learns that every customer complaint predicts a disaster the callers are trying to prevent.",
+        "operation_brief": "Stress-test this premise for a six-episode audio drama, including reversals and the mediator's changing loyalties."
+      },
+      "expected_verdicts": {"artifact.support.premise_story_seed.extensibility": "NOT_APPLICABLE", "op.ideation.premise_stress_test.scale": "YES"}
+    },
+    {
+      "case_id": "withheld-target-isolated",
+      "pair_id": "withheld-target",
+      "carrier": "isolated",
+      "artifact_type": "planning_artifact",
+      "declared_scope": "artifact_and_operation",
+      "operation_active": true,
+      "artifact_target": null,
+      "operation_target": null,
+      "available_evidence_sections": ["premise"],
+      "sections": {
+        "premise": "A forensic botanist maps invasive vines that reproduce the last memories of the people they consume."
+      },
+      "expected_verdicts": {"artifact.support.premise_story_seed.extensibility": "CANNOT_ASSESS", "op.ideation.premise_stress_test.scale": "CANNOT_ASSESS"}
+    },
+    {
+      "case_id": "withheld-target-composite",
+      "pair_id": "withheld-target",
+      "carrier": "composite",
+      "artifact_type": "planning_artifact",
+      "declared_scope": "artifact_and_operation",
+      "operation_active": true,
+      "artifact_target": null,
+      "operation_target": null,
+      "available_evidence_sections": ["project_note", "premise"],
+      "sections": {
+        "project_note": "The target brief is intentionally withheld for this coverage control.",
+        "premise": "A forensic botanist maps invasive vines that reproduce the last memories of the people they consume."
+      },
+      "expected_verdicts": {"artifact.support.premise_story_seed.extensibility": "CANNOT_ASSESS", "op.ideation.premise_stress_test.scale": "CANNOT_ASSESS"}
+    },
+    {
+      "case_id": "mismatched-form-isolated",
+      "pair_id": "mismatched-form",
+      "carrier": "isolated",
+      "artifact_type": "planning_artifact",
+      "declared_scope": "artifact_and_operation",
+      "operation_active": true,
+      "artifact_target": {"length": "one act", "form": "stage play"},
+      "operation_target": {"length": "20 episodes", "form": "serial audio drama"},
+      "available_evidence_sections": ["premise", "artifact_brief", "operation_brief"],
+      "sections": {
+        "premise": "At a televised city-council hearing, a clerk discovers every witness is reading from a transcript written by a future version of the mayor.",
+        "artifact_brief": "Develop this as a one-act stage play whose hearing structure keeps producing fresh testimony.",
+        "operation_brief": "Stress-test this same premise for a 20-episode serial audio drama; the hearing has no supplied engine beyond the single procedural reversal."
+      },
+      "expected_verdicts": {"artifact.support.premise_story_seed.extensibility": "YES", "op.ideation.premise_stress_test.scale": "NO"}
+    },
+    {
+      "case_id": "mismatched-form-composite",
+      "pair_id": "mismatched-form",
+      "carrier": "composite",
+      "artifact_type": "planning_artifact",
+      "declared_scope": "artifact_and_operation",
+      "operation_active": true,
+      "artifact_target": {"length": "one act", "form": "stage play"},
+      "operation_target": {"length": "20 episodes", "form": "serial audio drama"},
+      "available_evidence_sections": ["project_note", "premise", "artifact_brief", "operation_brief"],
+      "sections": {
+        "project_note": "Development packet: procedural chamber drama.",
+        "premise": "At a televised city-council hearing, a clerk discovers every witness is reading from a transcript written by a future version of the mayor.",
+        "artifact_brief": "Develop this as a one-act stage play whose hearing structure keeps producing fresh testimony.",
+        "operation_brief": "Stress-test this same premise for a 20-episode serial audio drama; the hearing has no supplied engine beyond the single procedural reversal."
+      },
+      "expected_verdicts": {"artifact.support.premise_story_seed.extensibility": "YES", "op.ideation.premise_stress_test.scale": "NO"}
+    }
+  ]
+}

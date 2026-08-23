@@ -1,0 +1,33 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-premise-scale-ownership-v1",
+  "status": "frozen_development_only_current_wording_screen",
+  "development_only": true,
+  "provider_execution": {"permitted": false, "new_provider_calls_exact": 0, "one_leaf_per_request": true},
+  "geometry": {"artifacts_exact": 12, "semantic_pairs_exact": 6, "leaves_exact": 2, "repeats_exact": 3, "slots_exact": 72, "carriers": ["isolated", "composite"]},
+  "labels": ["YES", "NO", "NOT_APPLICABLE", "CANNOT_ASSESS"],
+  "screen": {"name": "current_wording", "prompt_policy": "unchanged_production_prompt", "prompt_paths": ["prompts/judge/JUDGE_PREFIX.md", "prompts/judge/BINARY_EVALUATION_PROMPT.md"], "evidence_separation_required": false, "cross_leaf_section_span_overlap": "record_as_outcome"},
+  "scoring": {"applicable_and_control_cells": "must_be_3_of_3_expected_with_grounded_typed_evidence", "not_applicable": "completed_unscored", "cannot_assess": "coverage_uncertainty", "missing_or_ambiguous_slot": "INCOMPLETE"},
+  "clarification_successor": {"maximum_exact": 1, "requires_all_72_slots_settled": true, "requires_independent_pair_types_minimum": 2, "requires_same_scope_or_control_error_repeats_minimum": 2, "requires_independent_sol_attribution": "one_missing_rendering_rule", "forbidden_if": "same_verdict_and_same_premise_evidence_indicates_rubric_or_route_duplication"},
+  "promotion": {"prompt": "none", "rubric": "none", "leaf": "none", "ownership": "none", "split": "none", "weight": "none"},
+  "real_text_holdout_commitment": {"file": "external-real-text-holdout-commitment.json", "file_sha256": "43a6523013758cf0f8753b583370a588743e7e0db203d8783707fa5e52d3a5d2", "package_id": "cwr-premise-scale-real-holdout-20260823", "status": "sealed_from_evaluation", "payload_canonical_sha256": "c3e4ca0ed76bfd872304656bea57861c7e4b72c0c7056213935b7b652c1e1665", "payload_file_sha256": "d58ac420d51e2e4ddf092fa8641cf1189ce9129c12e02480d30cd653fdb62bfd", "freeze_manifest_sha256": "c9b6c249ebbe39ce02fd075d1c7e4b4504efc40b969ab066bbb41fe553c1fe56", "current_wording_diagnostic_access": "forbidden", "role": "external_positive_realism_control_not_sole_discriminating_holdout", "later_execution_gate": "no_treatment_optimizer_or_confirmation_before_separately_frozen_execution_successor_and_explicit_holdout_opening_gate"},
+  "bindings": {
+    "corpus": {"path": "public-synthetic-corpus.json", "sha256": "535024f5ea180378027f0f1715fbc214ea3cd3f611d26a1cdabba3a92a6b1ebb"},
+    "runtime": {
+      "prompts/judge/JUDGE_PREFIX.md": "5e3a0990efca93e2cbc3894e635f9fd1b97b6e61ea2981940319cb54994ebb74",
+      "prompts/judge/BINARY_EVALUATION_PROMPT.md": "6c1cac901d820c1ab866e19f9191896e8c97a6aadf35bdae4eac640fd199a3a2",
+      "schema/hbq_judge_response.schema.json": "49c7d824ba5dd957e67968ba3ae6ceb8a7ed9434dfb0dfc654836a76613c7854",
+      "registry/modules/artifact.support.premise_story_seed.yaml": "26bbffa5ab304599a624fb19f8d35c6ef99de9d4bbc7babfb002ade56b66a8ac",
+      "registry/modules/op.ideation.premise_stress_test.yaml": "55d58b592a36a6b457e71f20a57dad5e75a903eafa88ad9b7525586ecb6cfc97",
+      "registry/question_index.jsonl": "0de8eec70a5a4de74770570253af96f6483c07fcf00ebad198fe951cf2af1fb6",
+      "registry/criterion_ownership.json": "79d636c7c692926d15ff8ebd47c3592e6bb0e6640473c0948ae9dead4fdd6876",
+      "registry/all_modules.json": "4da342cc24881c70be11e5e2cd92a7beccbeb024e5808a5c779935f29989a4ed",
+      "bundles/all_bundles.json": "ca20defa2e3350f949dc9da5e69bb9061d5a0c2d6ddcd71bb9399262dad10f86",
+      "src/hbqrs/runner.py": "af97b27de7cf8aba63435489e83eb09307c45a0de3b6ce47ebdd847898b1a9f8"
+    },
+    "source_leaves": {
+      "artifact.support.premise_story_seed.extensibility": "878722b91a91874faab620667e87e0660f65c5d63b6449968cea09d72d66dca4",
+      "op.ideation.premise_stress_test.scale": "774500f326e7b692db44482fb8bab0b5f7606add5a5b82f82ea0ed0d9ea7e6f8"
+    }
+  }
+}
