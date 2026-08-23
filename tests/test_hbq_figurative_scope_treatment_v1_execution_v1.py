@@ -29,7 +29,7 @@ def _verified(s, root: Path, slot: dict[str, object]) -> dict[str, object]:
         "slot_id": slot["slot_id"], "logical_sample_id": slot["logical_sample_id"],
         "arm": slot["arm"], "gate": s._gate_name(slot), "correct": True,
         "verdict": slot["oracle"]["expected_verdict"], "run_id": f"run-{slot['slot_id']}",
-        "checkpoint_chain_head_sha256": "a" * 64, "session_id_sha256": (f"{int(slot['slot_id'].split('-')[1]):064x}"),
+        "checkpoint_chain_head_sha256": (f"{int(slot['slot_id'].split('-')[1]) + 1000:064x}"), "session_id_sha256": (f"{int(slot['slot_id'].split('-')[1]):064x}"),
         "evidence": [{"reference": "artifact", "exact_quote": slot["artifact_text"][:40]}],
         "note": "revision note" if slot["oracle"]["source_case_id"] == "isolated-local-defect" else "grounded note",
         "accepted_provider_call_count": 1, "rejected_retry_count": 0, "batch_attempt_count": 1,
@@ -51,9 +51,7 @@ def _prepared_runtime(s, root: Path) -> list[dict[str, object]]:
 
 def _fake_cwr(command, **_kwargs):
     if "render-judge" in command:
-        target = Path(command[command.index("-o") + 1])
-        target.parent.mkdir(parents=True, exist_ok=True)
-        target.write_text("rendered:" + command[command.index("--artifact-id") + 1] + (":treatment" if "--task-contract" in command else ":baseline"), encoding="utf-8")
+        return SimpleNamespace(returncode=0, stdout="rendered:" + command[command.index("--artifact-id") + 1] + (":treatment" if "--task-contract" in command else ":baseline"), stderr="")
     else:
         run = Path(command[command.index("--output-dir") + 1])
         run.mkdir(parents=True, exist_ok=True)
@@ -155,6 +153,13 @@ def test_duplicate_provider_sessions_invalidate_a_public_aggregate_and_execution
     s = study()
     _prepared_runtime(s, tmp_path)
 
+    def repeated_run_id(root: Path, slot: dict[str, object]) -> dict[str, object]:
+        row = _verified(s, root, slot)
+        row["run_id"] = "same-cwr-second"
+        return row
+
+    assert s.settle(tmp_path, verifier=repeated_run_id)["decision"] == "NO_EFFECT"
+
     def duplicate_session(root: Path, slot: dict[str, object]) -> dict[str, object]:
         row = _verified(s, root, slot)
         row["session_id_sha256"] = "b" * 64
@@ -166,18 +171,31 @@ def test_duplicate_provider_sessions_invalidate_a_public_aggregate_and_execution
     with pytest.raises(ValueError, match="acknowledgement"):
         s.execute(tmp_path)
 
+    heads = tmp_path.parent / "duplicate-heads"
+    _prepared_runtime(s, heads)
+
+    def duplicate_head(root: Path, slot: dict[str, object]) -> dict[str, object]:
+        row = _verified(s, root, slot)
+        row["checkpoint_chain_head_sha256"] = "c" * 64
+        return row
+
+    assert s.settle(heads, verifier=duplicate_head)["decision"] == "INCOMPLETE"
+
 
 def test_checkpoint_prompt_and_harness_bindings_fail_closed_on_tampering(tmp_path: Path) -> None:
     s = study()
     run = tmp_path / "run"
     prompt = tmp_path / "rendered.txt"
-    prompt.write_text("exact frozen prompt", encoding="utf-8")
+    prompt.write_bytes(b"exact\r\nfrozen\rprompt\n")
     (run / "responses").mkdir(parents=True)
-    (run / "responses" / "batch-0001.prompt.txt.gz").write_bytes(gzip.compress(prompt.read_bytes(), mtime=0))
-    s._verify_checkpoint_prompt(run, prompt)
-    prompt.write_text("changed after checkpoint", encoding="utf-8")
-    with pytest.raises(ValueError, match="does not equal"):
-        s._verify_checkpoint_prompt(run, prompt)
+    (run / "responses" / "batch-0001.prompt.txt.gz").write_bytes(gzip.compress(b"exact\nfrozen\nprompt\n", mtime=0))
+    commitments = s._verify_checkpoint_prompt(run, prompt)
+    assert commitments["checkpoint_prompt_sha256"] != commitments["rendered_prompt_sha256"]
+    assert commitments["canonical_prompt_sha256"]
+    for changed in (b"exact\nfrozen\nprompt \n", b"exact\nfrozen\nprompt", b"exact\nfrozen\nprompt\nextra block\n", b"exact\nfrozen\nchanged label\n"):
+        prompt.write_bytes(changed)
+        with pytest.raises(ValueError, match="does not equal"):
+            s._verify_checkpoint_prompt(run, prompt)
 
     root = tmp_path / "external"
     _prepared_runtime(s, root)
@@ -186,3 +204,30 @@ def test_checkpoint_prompt_and_harness_bindings_fail_closed_on_tampering(tmp_pat
     (root / "study-manifest.json").write_text(json.dumps(manifest), encoding="utf-8")
     with pytest.raises(ValueError, match="runtime"):
         s._validate_runtime_bindings(root)
+    manifest["runtime_bindings"] = s.LEGACY_SETTLEMENT_BINDINGS
+    (root / "study-manifest.json").write_text(json.dumps(manifest), encoding="utf-8")
+    assert s._settlement_binding_mode(root) == "legacy_newline_compatibility_only"
+    with pytest.raises(ValueError, match="runtime"):
+        s._validate_runtime_bindings(root)
+
+    legacy = tmp_path / "legacy"
+    _prepared_runtime(s, legacy)
+    legacy_manifest = json.loads((legacy / "study-manifest.json").read_text(encoding="utf-8"))
+    legacy_manifest["runtime_bindings"] = s.LEGACY_SETTLEMENT_BINDINGS
+    (legacy / "study-manifest.json").write_text(json.dumps(legacy_manifest), encoding="utf-8")
+    assert s.settle(legacy, verifier=lambda run_root, slot: _verified(s, run_root, slot))["runtime_binding_mode"] == "legacy_newline_compatibility_only"
+    legacy_manifest["runtime_bindings"] = json.loads(json.dumps(s.LEGACY_SETTLEMENT_BINDINGS))
+    legacy_manifest["runtime_bindings"]["successor_files"]["study.py"] = "1" * 64
+    (legacy / "study-manifest.json").write_text(json.dumps(legacy_manifest), encoding="utf-8")
+    with pytest.raises(ValueError, match="runtime"):
+        s._settlement_binding_mode(legacy)
+
+
+def test_v1_evidence_projection_keeps_only_real_exact_quotes() -> None:
+    s = study()
+    assert s._v1_exact_quote_subset([
+        {"reference": "artifact", "exact_quote": "real span"},
+        {"reference": "context", "summary": "real contextual support"},
+    ]) == [{"reference": "artifact", "quote": "real span"}]
+    with pytest.raises(ValueError, match="exact-quote"):
+        s._v1_exact_quote_subset([{ "reference": "context", "summary": "summary only" }])

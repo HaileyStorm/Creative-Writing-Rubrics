@@ -15,3 +15,5 @@ That root must be outside this repository. It contains copied synthetic inputs, 
 `python study.py verify` checks the predecessor, prompt-repair, schedule, and privacy bindings. `python study.py settle --private-root ...` validates completed CWR manifests/checkpoints, model/reasoning/run identity, and grounded evidence, then writes a private settlement and an aggregate-only public summary in that external root. There is no holdout, DSPy path, fallback provider, or statistical promotion claim here.
 
 The settlement requires unique accepted Codex provider sessions. CWR's rejected-retry sanitizer does not retain rejected Codex session IDs, so this successor records rejected attempt counts but makes no all-attempt session-uniqueness claim.
+
+For the unchanged v1 analyzer, the private adapter projects only already-grounded `exact_quote` evidence. It keeps mixed summary evidence in the private successor record and never synthesizes quotes; a summary-only result fails closed.

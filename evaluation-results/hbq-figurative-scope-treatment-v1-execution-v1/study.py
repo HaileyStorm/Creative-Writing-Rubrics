@@ -40,6 +40,23 @@ RUNTIME_FILES = (
     "schema/hbq_judge_response.schema.json", "registry/all_modules.json", "bundles/all_bundles.json",
 )
 SUCCESSOR_RUNTIME_FILES = ("study.py", "run.py", "study-contract.json")
+LEGACY_SETTLEMENT_BINDINGS = {
+    "prompt_repair_parent": PROMPT_REPAIR_PARENT,
+    "runtime_head": "89a00d6f6ad8faff53b73c5c6663accb87c8ca92",
+    "cwr_files": {
+        "bundles/all_bundles.json": "ca20defa2e3350f949dc9da5e69bb9061d5a0c2d6ddcd71bb9399262dad10f86",
+        "prompts/judge/BINARY_EVALUATION_PROMPT.md": "6c1cac901d820c1ab866e19f9191896e8c97a6aadf35bdae4eac640fd199a3a2",
+        "registry/all_modules.json": "4da342cc24881c70be11e5e2cd92a7beccbeb024e5808a5c779935f29989a4ed",
+        "schema/hbq_judge_response.schema.json": "49c7d824ba5dd957e67968ba3ae6ceb8a7ed9434dfb0dfc654836a76613c7854",
+        "src/hbqrs/cli.py": "1948ff57820e0fd4cf3f9ed214056cec22a86fb1946e3a7e1e7738a29de7898f",
+        "src/hbqrs/runner.py": "e0189f621da8616ec52d831d24098b4f4c8aeb988f3075028726ccca5342cf35",
+    },
+    "successor_files": {
+        "run.py": "ef3cda68cc26fbf2a5a284fc1077ff44a2481133574eb3ae39f86e92a732e4e2",
+        "study-contract.json": "da739a33ae539a73e6909bfb982bac61165e8372b0fdf0a9e863656090a147d2",
+        "study.py": "6aae3fdb377773b9b79cac097fb894a64d035dc7b9f3be210df724cc9556816d",
+    },
+}
 
 
 def canonical_json(value: Any) -> bytes:
@@ -52,6 +69,11 @@ def sha256_bytes(value: bytes) -> str:
 
 def sha256_file(path: Path) -> str:
     return sha256_bytes(path.read_bytes())
+
+
+def canonical_prompt_bytes(value: bytes) -> bytes:
+    """Canonicalize only universal-newline transport differences; preserve every other byte."""
+    return value.replace(b"\r\n", b"\n").replace(b"\r", b"\n")
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -247,6 +269,17 @@ def _validate_runtime_bindings(root: Path) -> None:
         raise ValueError("CWR runtime, prompt, schema, or catalog binding drifted; rerun --dry-run")
 
 
+def _settlement_binding_mode(root: Path) -> str:
+    """Accept one named historical harness only for settlement, never for execution."""
+    manifest = load_json(root / "study-manifest.json")
+    bindings = manifest.get("runtime_bindings")
+    if bindings == _runtime_bindings():
+        return "current"
+    if bindings == LEGACY_SETTLEMENT_BINDINGS:
+        return "legacy_newline_compatibility_only"
+    raise ValueError("CWR runtime, prompt, schema, or catalog binding drifted; rerun --dry-run")
+
+
 def _v1_study() -> Any:
     spec = importlib.util.spec_from_file_location("fst_execution_predecessor", PREDECESSOR_ROOT / "study.py")
     module = importlib.util.module_from_spec(spec)
@@ -356,10 +389,11 @@ def dry_run(private_root: str | Path, *, runner_call: Callable[..., Any] = subpr
             raise RuntimeError(f"CWR dry-run stopped at {slot['slot_id']}")
         prompt_path = root / "rendered-prompts" / f"{slot['slot_id']}.txt"
         prompt_path.parent.mkdir(parents=True, exist_ok=True)
-        rendered = [*_render_command(slot, root), "-o", str(prompt_path)]
+        rendered = _render_command(slot, root)
         completed = runner_call(rendered, text=True, encoding="utf-8", capture_output=True, check=False)
         if getattr(completed, "returncode", 1) != 0:
             raise RuntimeError(f"CWR prompt rendering stopped at {slot['slot_id']}")
+        prompt_path.write_bytes(str(getattr(completed, "stdout", "")).encode("utf-8"))
     resolved = _runtime_schedule(root, schedule)
     preview = {
         "mode": "dry_run", "provider_calls": 0, "planned_requests": len(schedule),
@@ -421,13 +455,20 @@ def _gate_name(slot: Mapping[str, Any]) -> str | None:
     raise ValueError("Unexpected frozen leaf")
 
 
-def _verify_checkpoint_prompt(run_dir: Path, prompt_path: Path) -> None:
+def _verify_checkpoint_prompt(run_dir: Path, prompt_path: Path) -> dict[str, str]:
     checkpoint_prompt = run_dir / "responses" / "batch-0001.prompt.txt.gz"
     try:
-        if gzip.decompress(checkpoint_prompt.read_bytes()) != prompt_path.read_bytes():
+        checkpoint_bytes = gzip.decompress(checkpoint_prompt.read_bytes())
+        rendered_bytes = prompt_path.read_bytes()
+        if canonical_prompt_bytes(checkpoint_bytes) != canonical_prompt_bytes(rendered_bytes):
             raise ValueError("CWR checkpoint prompt does not equal the frozen rendered prompt")
     except OSError as exc:
         raise ValueError("CWR checkpoint prompt is unavailable or malformed") from exc
+    return {
+        "checkpoint_prompt_sha256": sha256_bytes(checkpoint_bytes),
+        "rendered_prompt_sha256": sha256_bytes(rendered_bytes),
+        "canonical_prompt_sha256": sha256_bytes(canonical_prompt_bytes(checkpoint_bytes)),
+    }
 
 
 def _verify_slot(root: Path, slot: Mapping[str, Any]) -> dict[str, Any]:
@@ -475,7 +516,7 @@ def _verify_slot(root: Path, slot: Mapping[str, Any]) -> dict[str, Any]:
     prompt_path = root / "rendered-prompts" / f"{slot['slot_id']}.txt"
     if not prompt_path.is_file() or sha256_file(prompt_path) != slot["condition"]["prompt_sha256"]:
         raise ValueError("Actual rendered prompt binding drifted")
-    _verify_checkpoint_prompt(run_dir, prompt_path)
+    prompt_commitments = _verify_checkpoint_prompt(run_dir, prompt_path)
     verdicts, checkpoints, chain_head = runner._load_checkpoints(
         run_dir, artifact_text=slot["artifact_text"], context_texts=[], batch_attempts=3,
         normalization_policy=runner.EVIDENCE_NORMALIZATION_POLICY,
@@ -500,6 +541,7 @@ def _verify_slot(root: Path, slot: Mapping[str, Any]) -> dict[str, Any]:
         "arm": slot["arm"], "gate": _gate_name(slot), "correct": verdicts[0].get("verdict") == slot["oracle"]["expected_verdict"],
         "verdict": verdicts[0].get("verdict"), "run_id": verdicts[0]["run_id"],
         "checkpoint_chain_head_sha256": chain_head, "session_id_sha256": sha256_bytes(session_id.encode("utf-8")),
+        **prompt_commitments,
         "evidence": verdicts[0].get("evidence"), "note": verdicts[0].get("note"),
         "accepted_provider_call_count": 1,
         "rejected_retry_count": len(runner._rejected_records(run_dir, 1)),
@@ -566,20 +608,31 @@ def _v1_response_rows(schedule: list[dict[str, Any]], records: list[dict[str, An
         evidence = record.get("evidence")
         if not isinstance(evidence, list) or not evidence:
             raise ValueError("CWR evidence is missing")
-        v1_evidence = []
-        for item in evidence:
-            if not isinstance(item, Mapping) or not isinstance(item.get("reference"), str) or not item["reference"].strip() or not isinstance(item.get("exact_quote"), str) or not item["exact_quote"].strip():
-                raise ValueError("Published v1 analyzer requires grounded exact-quote evidence")
-            v1_evidence.append({"reference": item["reference"], "quote": item["exact_quote"]})
+        v1_evidence = _v1_exact_quote_subset(evidence)
         revision_note = record.get("note") if expected["case_id"] == "isolated-local-defect" else None
         if expected["case_id"] == "isolated-local-defect" and (not isinstance(revision_note, str) or not revision_note.strip()):
             raise ValueError("Isolated local defect requires a nonblank revision note")
         rows.append({
             **{key: expected[key] for key in ("request_id", "study_id", "partition", "arm", "case_id", "leaf_id", "repeat", "artifact_sha256", "controller_scope_materiality", "controller_scope_verdict")},
             "revision_note": revision_note, "verdict": record["verdict"], "evidence": v1_evidence,
-            "provider_provenance": {"route": "codex", "model": "gpt-5.6-sol", "reasoning": "high", "run_id": record["run_id"]},
+            "provider_provenance": {"route": "codex", "model": "gpt-5.6-sol", "reasoning": "high", "run_id": f"accepted-session-{record['session_id_sha256']}"},
         })
     return sorted(rows, key=lambda item: item["request_id"])
+
+
+def _v1_exact_quote_subset(evidence: Any) -> list[dict[str, str]]:
+    """The v1 adapter is lossy only for summary evidence; raw successor evidence stays private."""
+    if not isinstance(evidence, list) or not evidence:
+        raise ValueError("CWR evidence is missing")
+    result = [
+        {"reference": item["reference"], "quote": item["exact_quote"]}
+        for item in evidence
+        if isinstance(item, Mapping) and isinstance(item.get("reference"), str) and item["reference"].strip()
+        and isinstance(item.get("exact_quote"), str) and item["exact_quote"].strip()
+    ]
+    if not result:
+        raise ValueError("Published v1 analyzer requires at least one grounded exact-quote evidence item")
+    return result
 
 
 def _published_v1_analysis(root: Path, rows: list[dict[str, Any]]) -> dict[str, Any]:
@@ -633,7 +686,7 @@ def _decision_from_v1_gates(gates: Mapping[str, Any], published_v1: Mapping[str,
 def settle(private_root: str | Path, *, verifier: Callable[[Path, Mapping[str, Any]], dict[str, Any]] = _verify_slot) -> dict[str, Any]:
     root = _external_root(private_root)
     try:
-        _validate_runtime_bindings(root)
+        binding_mode = _settlement_binding_mode(root)
     except (OSError, ValueError) as exc:
         return settle_incomplete(root, "runtime", str(exc), 0)
     schedule_path = root / "runtime-schedule.json"
@@ -670,10 +723,10 @@ def settle(private_root: str | Path, *, verifier: Callable[[Path, Mapping[str, A
         _write_summary(root / "settlement.json", canonical_json(result))
         _write_summary(root / "public-aggregate.json", canonical_json({"study_id": STUDY_ID, "decision": "INCOMPLETE", "publicable": False, "completed_slots": len(records), "planned_slots": EXPECTED_REQUESTS}))
         return result
-    if len({record["run_id"] for record in records}) != EXPECTED_REQUESTS:
-        return settle_incomplete(root, "identity", "CWR run identities are not unique across the schedule", len(records))
     if len({record["session_id_sha256"] for record in records}) != EXPECTED_REQUESTS:
         return settle_incomplete(root, "identity", "CWR provider sessions are not unique across the schedule", len(records))
+    if len({record["checkpoint_chain_head_sha256"] for record in records}) != EXPECTED_REQUESTS:
+        return settle_incomplete(root, "identity", "CWR checkpoint chains are not unique across the schedule", len(records))
     gates, _unused_decision = _summarize(records)
     identity_rows = []
     by_slot = {slot["slot_id"]: slot for slot in schedule}
@@ -692,8 +745,8 @@ def settle(private_root: str | Path, *, verifier: Callable[[Path, Mapping[str, A
         decision = _decision_from_v1_gates(gates, published_v1)
     except (OSError, ValueError, runner.HBQError) as exc:
         return settle_incomplete(root, "v1", str(exc), len(records))
-    settlement = {"study_id": STUDY_ID, "decision": decision, "completed_slots": len(records), "planned_slots": EXPECTED_REQUESTS, "gates": gates, "published_v1_analysis": published_v1, "arm_split": arm_split, "private_identity": private_projection(identity_rows, repetitions=REPETITIONS), "records": records}
-    public = {"study_id": STUDY_ID, "decision": decision, "completed_slots": len(records), "planned_slots": EXPECTED_REQUESTS, "gates": gates, "arm_split": arm_split, "published_v1_all_frozen_gates_pass": published_v1.get("all_frozen_gates_pass"), "aggregate_identity": public_projection(identity_rows, repetitions=REPETITIONS)}
+    settlement = {"study_id": STUDY_ID, "decision": decision, "runtime_binding_mode": binding_mode, "v1_evidence_projection": "exact_quote_subset_only; raw mixed evidence remains in private records", "completed_slots": len(records), "planned_slots": EXPECTED_REQUESTS, "gates": gates, "published_v1_analysis": published_v1, "arm_split": arm_split, "private_identity": private_projection(identity_rows, repetitions=REPETITIONS), "records": records}
+    public = {"study_id": STUDY_ID, "decision": decision, "runtime_binding_mode": binding_mode, "completed_slots": len(records), "planned_slots": EXPECTED_REQUESTS, "gates": gates, "arm_split": arm_split, "published_v1_all_frozen_gates_pass": published_v1.get("all_frozen_gates_pass"), "aggregate_identity": public_projection(identity_rows, repetitions=REPETITIONS)}
     _write_summary(root / "settlement.json", canonical_json(settlement))
     _write_summary(root / "public-aggregate.json", canonical_json(public))
     return settlement
