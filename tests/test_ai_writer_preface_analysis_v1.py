@@ -29,6 +29,7 @@ def test_sealed_analysis_is_aggregate_only_and_deterministic(tmp_path: Path):
     analysis.analyze(PUBLIC, PRIVATE, CONT_PUBLIC, CONT_PRIVATE, first)
     analysis.analyze(PUBLIC, PRIVATE, CONT_PUBLIC, CONT_PRIVATE, second)
     assert (first / "summary.json").read_bytes() == (second / "summary.json").read_bytes()
+    assert (first / "summary.json").read_bytes() == (PACKAGE / "results-pre-repair-chain" / "summary.json").read_bytes()
     text = (first / "summary.json").read_text(encoding="utf-8")
     assert '"item_id"' not in text and '"question_id"' not in text and '"session_id"' not in text
     assert "30201c7ed6d0010c" not in text and "C:\\Users" not in text
@@ -80,3 +81,39 @@ def test_bound_private_task_contract_hash_is_required():
     expected["sha256"] = "0" * 64
     with pytest.raises(ValueError, match="task contract binding drifted"):
         analysis._bound_file(PRIVATE / "inputs" / entry["item_id"] / "task-contract.json", expected, "Pilot task contract")
+
+
+def test_historical_registry_resolves_the_bound_277_module_aggregate():
+    modules, authority = analysis._aggregate_bytes()
+    historical = authority["historical_functional_reconstruction"]
+    assert len(modules) == 277
+    assert historical["aggregate"]["sha256"] == "578207ef59f127a0bd52e7f38a25b9629ca2cfcdd73f49c944d9eee0bcbde928"
+    assert historical["identity"] == "functional_reconstruction_not_original_full_tree"
+
+
+def test_historical_registry_snapshot_refuses_missing_or_wrong_content(tmp_path: Path):
+    with pytest.raises(ValueError, match="snapshot is unavailable"):
+        analysis._aggregate_bytes(tmp_path / "missing.json")
+    wrong = tmp_path / "wrong.json"
+    wrong.write_bytes(b"[]")
+    with pytest.raises(ValueError, match="aggregate binding drifted"):
+        analysis._aggregate_bytes(wrong)
+
+
+def test_analysis_does_not_compare_the_historical_registry_tree_to_live_files(monkeypatch: pytest.MonkeyPatch, tmp_path: Path):
+    original = analysis._bound_tree
+
+    def bound_tree(path: Path, expected: object, label: str):
+        if label == "HBQ registry":
+            pytest.fail("analysis must resolve the hash-bound aggregate instead of the live registry tree")
+        return original(path, expected, label)
+
+    monkeypatch.setattr(analysis, "_bound_tree", bound_tree)
+    analysis.analyze(PUBLIC, PRIVATE, CONT_PUBLIC, CONT_PRIVATE, tmp_path / "out")
+
+
+def test_current_additive_registry_preserves_all_completed_historical_scores():
+    assert analysis.verify_current_additive_rescoring(PUBLIC, PRIVATE, CONT_PUBLIC, CONT_PRIVATE) == {
+        "sealed_cells_with_question_id_payload_prompt_parity": 24,
+        "rescored_completed_cells_with_metric_parity": 22,
+    }

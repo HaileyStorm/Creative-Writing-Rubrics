@@ -1,0 +1,43 @@
+{
+  "format_version": 1,
+  "purpose": "Resolve the preface pilot's reproducible 277-module scoring aggregate without claiming recovery of its unresolved original full registry tree.",
+  "original_executor_registry_tree": {
+    "files": 297,
+    "sha256": "6df1bbced1985f473feeea5173705e74abff76c679c4a462b6aa24b179be9f0d",
+    "status": "unresolved_historical_full_tree"
+  },
+  "historical_functional_reconstruction": {
+    "commit": "16472bb4a1ef1f86cac43fd7bde7e55d5a5804c6",
+    "git_blob": "d991ebc7f28f00d7cd301a0bdce208d7d6b04974",
+    "aggregate": {
+      "path": "registry/all_modules.json",
+      "bytes": 2137882,
+      "sha256": "578207ef59f127a0bd52e7f38a25b9629ca2cfcdd73f49c944d9eee0bcbde928"
+    },
+    "module_count": 277,
+    "identity": "functional_reconstruction_not_original_full_tree"
+  },
+  "current_additive_registry": {
+    "aggregate": {
+      "path": "registry/all_modules.json",
+      "bytes": 2198920,
+      "sha256": "1d0e218157c55d1ffbd69944d56487110572c5413a75390e762a2f86e9d67b0d"
+    },
+    "module_count": 278,
+    "addition": {
+      "module_id": "modifier.style.authored_content_treatment_fidelity",
+      "canonical_json_sha256": "0c42c31524715c02767d6994ecd486c50c6640672c6689e212f4dd2a53193ce1"
+    },
+    "identity": "current_additive_registry_not_historical_identity"
+  },
+  "unchanged_bundles": {
+    "files": 88,
+    "sha256": "bc4d8dfe21ed0b5b29da0283e1fd4c563365ef98418923de2d6a3880c4be7572"
+  },
+  "parity_requirements": {
+    "unchanged_historical_module_objects": 277,
+    "unchanged_scoring_bundle": "bundles/prose.short_story.yaml",
+    "sealed_cells_with_question_id_payload_prompt_parity": 24,
+    "rescored_completed_cells_with_metric_parity": 22
+  }
+}

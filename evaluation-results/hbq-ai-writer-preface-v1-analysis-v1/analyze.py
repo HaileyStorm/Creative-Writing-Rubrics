@@ -9,6 +9,7 @@ import importlib.util
 import json
 import math
 import statistics
+import subprocess
 import sys
 from collections import Counter, defaultdict
 from collections.abc import Mapping, Sequence
@@ -18,11 +19,12 @@ from typing import Any
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 sys.path.insert(0, str(ROOT / "src"))
-from hbqrs.core import load_data, load_modules, score_bundle  # noqa: E402
+from hbqrs.core import compile_bundle, compiled_questions, load_data, score_bundle  # noqa: E402
 
 ARMS = ("none", "current_full", "strictness_only")
 STATES = {"YES", "NO", "NOT_APPLICABLE", "CANNOT_ASSESS"}
 SHA = set("0123456789abcdef")
+COMPATIBILITY_AUTHORITY = HERE / "historical-registry-compatibility.json"
 
 
 def canonical(value: Any) -> bytes:
@@ -150,6 +152,72 @@ def contract() -> dict[str, Any]:
 CONTRACT = contract()
 
 
+def _aggregate_bytes(snapshot: Path | None = None) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    """Load the pinned scoring aggregate, never the unresolved historical tree."""
+    authority = read_object(COMPATIBILITY_AUTHORITY)
+    historical = authority.get("historical_functional_reconstruction")
+    if not isinstance(historical, Mapping) or historical.get("identity") != "functional_reconstruction_not_original_full_tree":
+        raise ValueError("Historical registry compatibility authority is malformed")
+    aggregate = historical.get("aggregate")
+    if not isinstance(aggregate, Mapping) or set(aggregate) != {"path", "bytes", "sha256"}:
+        raise ValueError("Historical registry aggregate authority is malformed")
+    if snapshot is not None:
+        try:
+            raw = snapshot.read_bytes()
+        except OSError as exc:
+            raise ValueError("Historical registry snapshot is unavailable") from exc
+    else:
+        commit, blob, relative = historical.get("commit"), historical.get("git_blob"), aggregate.get("path")
+        if not all(isinstance(value, str) and value for value in (commit, blob, relative)):
+            raise ValueError("Historical registry git authority is malformed")
+        try:
+            resolved = subprocess.run(["git", "-C", str(ROOT), "rev-parse", f"{commit}:{relative}"], text=True, encoding="utf-8", capture_output=True, check=True).stdout.strip()
+            if resolved != blob:
+                raise ValueError("Historical registry commit/blob binding drifted")
+            raw = subprocess.run(["git", "-C", str(ROOT), "cat-file", "blob", blob], capture_output=True, check=True).stdout
+        except (OSError, subprocess.CalledProcessError) as exc:
+            raise ValueError("Historical registry git snapshot is unavailable") from exc
+    if {"bytes": len(raw), "sha256": sha_bytes(raw)} != {key: aggregate[key] for key in ("bytes", "sha256")}:
+        raise ValueError("Historical registry aggregate binding drifted")
+    try:
+        modules = json.loads(raw)
+    except json.JSONDecodeError as exc:
+        raise ValueError("Historical registry aggregate is invalid JSON") from exc
+    if not isinstance(modules, list) or len(modules) != historical.get("module_count") or not all(isinstance(module, dict) for module in modules):
+        raise ValueError("Historical registry aggregate is not the declared 277-module reconstruction")
+    return modules, authority
+
+
+def _current_additive_modules(historical_modules: Sequence[Mapping[str, Any]], authority: Mapping[str, Any], path: Path | None = None) -> list[dict[str, Any]]:
+    """Verify the separately named current additive registry without calling it historical."""
+    current = authority.get("current_additive_registry")
+    if not isinstance(current, Mapping) or current.get("identity") != "current_additive_registry_not_historical_identity":
+        raise ValueError("Current additive registry authority is malformed")
+    aggregate, addition = current.get("aggregate"), current.get("addition")
+    if not isinstance(aggregate, Mapping) or set(aggregate) != {"path", "bytes", "sha256"} or not isinstance(addition, Mapping):
+        raise ValueError("Current additive registry aggregate authority is malformed")
+    source = path or ROOT / str(aggregate["path"])
+    raw = source.read_bytes()
+    if {"bytes": len(raw), "sha256": sha_bytes(raw)} != {key: aggregate[key] for key in ("bytes", "sha256")}:
+        raise ValueError("Current additive registry aggregate binding drifted")
+    try:
+        modules = json.loads(raw)
+    except json.JSONDecodeError as exc:
+        raise ValueError("Current additive registry aggregate is invalid JSON") from exc
+    if not isinstance(modules, list) or len(modules) != current.get("module_count") or not all(isinstance(module, dict) for module in modules):
+        raise ValueError("Current additive registry module count drifted")
+    historical_by_id = {module.get("module_id"): module for module in historical_modules}
+    current_by_id = {module.get("module_id"): module for module in modules}
+    if len(historical_by_id) != len(historical_modules) or len(current_by_id) != len(modules):
+        raise ValueError("Registry module IDs are not unique")
+    addition_id = addition.get("module_id")
+    if set(current_by_id) - set(historical_by_id) != {addition_id} or set(historical_by_id) - set(current_by_id) or any(current_by_id[module_id] != module for module_id, module in historical_by_id.items()):
+        raise ValueError("Current registry is not the declared exact one-module addition")
+    if sha_bytes(canonical(current_by_id.get(addition_id))) != addition.get("canonical_json_sha256"):
+        raise ValueError("Current registry addition binding drifted")
+    return modules
+
+
 def _exact_binding(path: Path, expected: Mapping[str, Any], label: str) -> dict[str, Any]:
     found = binding(path)
     if found != dict(expected):
@@ -239,7 +307,13 @@ def _parent_bindings(original_public: Path, original_private: Path, continuation
     _bound_file(original_private / "hanna-authority.csv", sources.get("hanna_source", {}), "HANNA source")
     _bound_file(original_private / "hanna-parent-dataset.csv", sources.get("parent_hanna_dataset", {}), "HANNA parent CSV")
     _bound_file(original_private / "provenance-authority.json", sources.get("provenance_source", {}), "HANNA provenance source")
-    _bound_tree(ROOT / "registry", binding_value.get("runtime", {}).get("registry", {}), "HBQ registry")
+    compatibility = read_object(COMPATIBILITY_AUTHORITY)
+    original_tree = compatibility.get("original_executor_registry_tree")
+    if not isinstance(original_tree, Mapping) or binding_value.get("runtime", {}).get("registry") != {key: original_tree.get(key) for key in ("files", "sha256")}:
+        raise ValueError("Original executor registry binding is not the declared unresolved historical tree")
+    unchanged_bundles = compatibility.get("unchanged_bundles")
+    if not isinstance(unchanged_bundles, Mapping) or binding_value.get("runtime", {}).get("bundles") != dict(unchanged_bundles):
+        raise ValueError("Original executor bundle binding is not the declared unchanged bundle set")
     _bound_tree(ROOT / "bundles", binding_value.get("runtime", {}).get("bundles", {}), "HBQ bundles")
     _bound_file(original_private / "pilot-inputs.json", binding_value.get("private_manifest", {}), "Pilot input manifest")
     input_bindings = binding_value.get("inputs")
@@ -343,6 +417,21 @@ def _score(verdicts: list[dict[str, Any]], item_id: str, task: Mapping[str, Any]
     return {"final_score": finite(final.get("observed"), "final score"), "base_score": finite(base.get("observed") if isinstance(base, Mapping) else base, "base score"), "coverage": finite(report.get("coverage"), "coverage"), "confidence": finite(report.get("confidence"), "confidence"), "yes_rate_assessed": sum(value["verdict"] == "YES" for value in verdicts if value["verdict"] in {"YES", "NO"}) / max(1, sum(value["verdict"] in {"YES", "NO"} for value in verdicts))}
 
 
+def _historical_prompt(parent: Any, item: Mapping[str, Any], cell: Mapping[str, Any], modules: Sequence[Mapping[str, Any]], bundle: Mapping[str, Any]) -> list[str]:
+    task = read_object(Path(str(item["task_contract"]["path"])))
+    compiled = compile_bundle(modules, dict(bundle), task_contract=task)
+    role_order = {"hard_gate": 0, "domain": 1, "penalty": 2, "supplemental": 3}
+    questions = sorted(compiled_questions(compiled), key=lambda value: role_order.get(str(value.get("role")), 99))
+    ids = [str(question["question"]["id"]) for question in questions]
+    runner = parent._runner()
+    artifact = runner._read_text_record(Path(str(item["artifact"]["path"])))
+    contexts = [runner._read_text_record(Path(str(value["path"]))) for value in item["contexts"]]
+    prompt = runner._render_prompt(binary_prompt=parent._binary_prompt_for_arm(str(cell["arm"])), artifact=artifact, contexts=contexts, bundle_id="prose.short_story", artifact_id=str(item["item_id"]), questions=questions, provider=parent.PROVIDER, model=parent.MODEL)
+    if sha_bytes(prompt.encode("utf-8")) != cell.get("prompt_sha256") or len(prompt.encode("utf-8")) != cell.get("prompt_bytes") or sha_bytes(canonical(ids)) != cell.get("question_ids_sha256") or sha_bytes(canonical(runner._question_payload(questions))) != cell.get("compiled_question_payload_sha256"):
+        raise ValueError("Sealed question IDs, payload, or prompt binding drifted before score math")
+    return ids
+
+
 def _load_records(original_public: Path, original_private: Path, continuation_public: Path, continuation_private: Path) -> tuple[list[dict[str, Any]], dict[str, Any], dict[str, Any], Any]:
     schedule, evidence, settlement, private_manifest = _parent_bindings(original_public, original_private, continuation_public, continuation_private)
     metadata, hanna = _metadata(original_private, private_manifest)
@@ -350,8 +439,10 @@ def _load_records(original_public: Path, original_private: Path, continuation_pu
     continuation = rows(continuation_public / "continuation-journal.jsonl")
     events = {int(row["sequence"]): row for row in originals + continuation if row.get("event") == "completed" and isinstance(row.get("sequence"), int)}
     failure_sequences = set(evidence["terminal_failure_sequences"])
-    modules, bundle = load_modules(ROOT / "registry" / "all_modules.json"), load_data(ROOT / "bundles" / "prose.short_story.yaml")
+    modules, _ = _aggregate_bytes()
+    bundle = load_data(ROOT / "bundles" / "prose.short_story.yaml")
     parent = _load_parent_executor()
+    expected_ids = {int(cell["sequence"]): _historical_prompt(parent, parent._item(original_private, str(cell["item_id"])), cell, modules, bundle) for cell in schedule}
     records: list[dict[str, Any]] = []
     for cell in schedule:
         sequence = int(cell["sequence"])
@@ -362,9 +453,7 @@ def _load_records(original_public: Path, original_private: Path, continuation_pu
         if event is None or not terminal_path.is_file():
             raise ValueError("A required completed preface cell is missing")
         item = str(cell["item_id"])
-        expected_item = parent._item(original_private, item)
-        _, expected_ids, _ = parent._rendered_prompt(expected_item, str(cell["arm"]))
-        verdicts, terminal = _validated_completed(cell, terminal_path, event, expected_ids)
+        verdicts, terminal = _validated_completed(cell, terminal_path, event, expected_ids[sequence])
         task = read_object(original_private / "inputs" / item / "task-contract.json")
         records.append({"sequence": sequence, "arm": str(cell["arm"]), "session": int(cell["fresh_session"]), "item": item, "metadata": metadata[item], "hanna": hanna[item], "verdicts": verdicts, "metrics": _score(verdicts, item, task, modules, bundle), "terminal_sha256": sha_bytes(terminal_path.read_bytes()), "verdicts_sha256": str(terminal["verdicts_sha256"])})
     if len(records) != 22 or Counter(record["arm"] for record in records) != {"none": 8, "current_full": 8, "strictness_only": 6}:
@@ -403,11 +492,25 @@ def _repair_substitution(original_public: Path, original_private: Path, continua
     if not isinstance(expected, list) or len(expected) != 1 or any(replacement.get(key) != expected[0].get(key) for key in ("question_id", "verdict", "confidence", "evidence")):
         raise ValueError("Quote repair normalization does not match sealed repair verdict")
     metadata, hanna = _metadata(original_private, private_manifest)
-    modules, bundle = load_modules(ROOT / "registry" / "all_modules.json"), load_data(ROOT / "bundles" / "prose.short_story.yaml")
+    modules, _ = _aggregate_bytes()
+    bundle = load_data(ROOT / "bundles" / "prose.short_story.yaml")
     item_id = str(cell17["item_id"])
     task = read_object(original_private / "inputs" / item_id / "task-contract.json")
     record = {"sequence": 17, "arm": str(cell17["arm"]), "session": int(cell17["fresh_session"]), "item": item_id, "metadata": metadata[item_id], "hanna": hanna[item_id], "verdicts": normalized, "metrics": _score(normalized, item_id, task, modules, bundle), "terminal_sha256": sha_bytes(raw_path.read_bytes()), "verdicts_sha256": sha_bytes(canonical(normalized))}
     return {"record": record, "repaired_leaf_count": 1, "repair_attempt_id": str(repair["repair_attempt_id"]), "whole_cell_substitution_status": "valid"}
+
+
+def verify_current_additive_rescoring(original_public: Path, original_private: Path, continuation_public: Path, continuation_private: Path, current_registry: Path | None = None) -> dict[str, int]:
+    """Check the named 1.2 addition against historical scoring without relabeling it."""
+    records, _, _, _ = _load_records(original_public, original_private, continuation_public, continuation_private)
+    historical_modules, authority = _aggregate_bytes()
+    current_modules = _current_additive_modules(historical_modules, authority, current_registry)
+    bundle = load_data(ROOT / "bundles" / "prose.short_story.yaml")
+    for record in records:
+        task = read_object(original_private / "inputs" / str(record["item"]) / "task-contract.json")
+        if _score(record["verdicts"], str(record["item"]), task, current_modules, bundle) != record["metrics"]:
+            raise ValueError("Current additive registry does not preserve historical 22-cell score metrics")
+    return {"sealed_cells_with_question_id_payload_prompt_parity": 24, "rescored_completed_cells_with_metric_parity": len(records)}
 
 
 def _summarize(records: Sequence[Mapping[str, Any]], *, continuation_terminal_failures: Sequence[int], allow_partial_unit: bool = False) -> dict[str, Any]:
