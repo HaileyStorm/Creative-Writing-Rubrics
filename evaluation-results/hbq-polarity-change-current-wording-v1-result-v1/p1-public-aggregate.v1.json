@@ -1,0 +1,74 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-polarity-change-current-wording-v1-execution-v1",
+  "public_cwr_lineage": {
+    "frozen_screen_commit": "5665e2f4a91b754685ae9137bd94bfb7601f5cc6",
+    "execution_runtime_commit": "e3fdd51c54a588dfc86d3ba702baad6d6d65e17a"
+  },
+  "protocol_geometry": {
+    "synthetic_artifacts": 44,
+    "selected_leaves": 11,
+    "four_states": 4,
+    "repetitions_per_cell": 3,
+    "logical_slots": 132,
+    "one_leaf_per_provider_request": true,
+    "execution_route": "codex_gpt_5_6_sol_high"
+  },
+  "public_leaf_ids": [
+    "form.audio.audio_drama_production.no_as_you_know",
+    "form.multimodal.text_audio_alignment.no_narrow",
+    "form.poetry.general_poetry.oral_test",
+    "form.poetry.haiku_in_english.kigo_legible",
+    "form.poetry.lyric_song_lyric.no_filler",
+    "form.poetry.spoken_word_performance_poetry.page_independence",
+    "form.visual.visual_prompt_and_canon_fidelity.subjects",
+    "op.critique.rubric_directed_critique.criteria",
+    "op.ingest.source_ingestion_fidelity.no_invention",
+    "op.ingest.source_ingestion_fidelity.no_omission",
+    "sampler.freshness_gain.no_ornate_proxy"
+  ],
+  "decision": "DIAGNOSTIC_FAIL",
+  "promotion": "none",
+  "aggregate_counts": {
+    "planned_slots": 132,
+    "completed_slots": 132,
+    "first_attempt_accepted_slots": 132,
+    "scored_cells": 33,
+    "scored_cells_passing": 29,
+    "not_applicable_control_cells": 11,
+    "not_applicable_control_cells_matching": 6
+  },
+  "accuracy": {
+    "CANNOT_ASSESS": {"correct": 33, "denominator": 33},
+    "NO": {"correct": 31, "denominator": 33},
+    "NOT_APPLICABLE": {"correct": 22, "denominator": 33},
+    "YES": {"correct": 24, "denominator": 33}
+  },
+  "canonical_four_state_counts": {
+    "form.audio.audio_drama_production.no_as_you_know": {"CANNOT_ASSESS": 6, "NO": 3, "NOT_APPLICABLE": 0, "YES": 3},
+    "form.multimodal.text_audio_alignment.no_narrow": {"CANNOT_ASSESS": 3, "NO": 3, "NOT_APPLICABLE": 3, "YES": 3},
+    "form.poetry.general_poetry.oral_test": {"CANNOT_ASSESS": 3, "NO": 1, "NOT_APPLICABLE": 0, "YES": 8},
+    "form.poetry.haiku_in_english.kigo_legible": {"CANNOT_ASSESS": 3, "NO": 5, "NOT_APPLICABLE": 1, "YES": 3},
+    "form.poetry.lyric_song_lyric.no_filler": {"CANNOT_ASSESS": 3, "NO": 3, "NOT_APPLICABLE": 1, "YES": 5},
+    "form.poetry.spoken_word_performance_poetry.page_independence": {"CANNOT_ASSESS": 3, "NO": 4, "NOT_APPLICABLE": 2, "YES": 3},
+    "form.visual.visual_prompt_and_canon_fidelity.subjects": {"CANNOT_ASSESS": 6, "NO": 3, "NOT_APPLICABLE": 3, "YES": 0},
+    "op.critique.rubric_directed_critique.criteria": {"CANNOT_ASSESS": 4, "NO": 5, "NOT_APPLICABLE": 3, "YES": 0},
+    "op.ingest.source_ingestion_fidelity.no_invention": {"CANNOT_ASSESS": 5, "NO": 4, "NOT_APPLICABLE": 3, "YES": 0},
+    "op.ingest.source_ingestion_fidelity.no_omission": {"CANNOT_ASSESS": 3, "NO": 3, "NOT_APPLICABLE": 3, "YES": 3},
+    "sampler.freshness_gain.no_ornate_proxy": {"CANNOT_ASSESS": 3, "NO": 3, "NOT_APPLICABLE": 3, "YES": 3}
+  },
+  "limitations": [
+    "Aggregate-only public projection: no fixture text, per-slot records, prompts, model outputs, private evidence, or session identifiers.",
+    "This staged synthetic diagnostic does not establish a general result or authorize a prompt, rubric, leaf, ownership, split, or weight change.",
+    "Causal diagnosis remains unresolved: the study does not isolate missing NOT_APPLICABLE-versus-CANNOT_ASSESS guidance from a missing symmetric-evidence rule.",
+    "Oral-fixture ambiguity and three positive carrier-evidence confounds remain unresolved.",
+    "One duplicated run label from second-resolution runner generation is non-invalidating; no identifier or private record is published.",
+    "The sealed private settlement remains the verification authority."
+  ],
+  "opaque_private_receipt_commitments": {
+    "source_aggregate_sha256": "8802a49ae6f29c1af3c9e603716b4f0cc8cee547b79f11e0a8ec2f58493f34ea",
+    "settlement_sha256": "46798e257640c511c51d9e0d8fc5e7d7e39fa08f68d2c6fea49a530f180f6981",
+    "execution_manifest_sha256": "43adc2ea41420adfcb4fc747a4fad5a0fe8b2e0a85b7fa496fcbd6ef6a672ce7",
+    "execution_contract_sha256": "a70cd541917113a778975a811087081940d7b6c382295908770f637168b65f6a"
+  }
+}
