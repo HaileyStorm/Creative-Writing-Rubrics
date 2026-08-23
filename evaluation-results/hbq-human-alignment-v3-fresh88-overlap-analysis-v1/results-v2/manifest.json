@@ -1,0 +1,30 @@
+{
+  "analysis_contract_sha256": "3239469294e1afaafe92b3ac5707d8916eb0c0cb8e0970cfe10583b46256aaf7",
+  "files": {
+    "leaf-diagnostics.jsonl": {
+      "bytes": 18856,
+      "sha256": "ee3e854263a75cc00770f495dfe9ec7169db32a9924e7192508f7f27115f60a2"
+    },
+    "summary.json": {
+      "bytes": 27037,
+      "sha256": "0ecd98b789f7900e4143729ab6ec184ebda876cc13df772ab5524f00dcf89b88"
+    }
+  },
+  "format_version": 1,
+  "implementation": {
+    "analyze.py": {
+      "bytes": 20093,
+      "sha256": "73047505a4e95167c12862959ef990bb968bfab85d9be16cefcfe31235424353"
+    },
+    "study-contract.json": {
+      "bytes": 935,
+      "sha256": "3239469294e1afaafe92b3ac5707d8916eb0c0cb8e0970cfe10583b46256aaf7"
+    },
+    "study.py": {
+      "bytes": 3240,
+      "sha256": "0b626b893a8885498fa9754d497c14d39a453da91d25abcffc696611845199d1"
+    }
+  },
+  "study_id": "hbq-human-alignment-v3-fresh88-overlap-analysis-v1",
+  "summary_evidence_binding_sha256": "c64b7633cbffe1114aa0091042b87a30d26681498e459f72ac1f2a61db46a0a2"
+}

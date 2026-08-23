@@ -1,0 +1,14 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-human-alignment-v3-fresh88-overlap-analysis-v1",
+  "kind": "offline_frozen_descriptive_overlap_analysis",
+  "analysis_only": true,
+  "source_study": "hbq-human-alignment-v3-fresh88-analysis-v1",
+  "outputs": ["summary.json", "leaf-diagnostics.jsonl", "manifest.json"],
+  "views": ["six_dimension_macro", "unique_27_leaf_overlap", "occurrence_weighted_28_mapping", "hierarchical_dimension_to_macro", "native_hbq_domains_and_final"],
+  "interpretation_limits": [
+    "Uses only the sealed Fresh88 verdicts and already-published HANNA ratings; it makes no model or human call.",
+    "All views are descriptive, noncanonical projections from unchanged verdicts; none changes HBQ scoring, coverage, weighting, polarity, or module applicability.",
+    "The inspected Fresh88 development set can guide held-out repair hypotheses but cannot establish a promoted mapping or production change."
+  ]
+}

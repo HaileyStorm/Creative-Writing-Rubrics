@@ -1,0 +1,815 @@
+{
+  "analysis_kind": "offline_frozen_descriptive_overlap_analysis",
+  "evidence_binding": {
+    "base_analysis_contract_sha256": "1d4a058b43bcfb8781f609f64e5bb9a1fec9efff6e3c841a2c9aab90fdc03cb3",
+    "base_analysis_source_manifest_sha256": "b4fda94aae24b06156593c83a00bc1fee86f999808d3171c7dfffb9cb4f527b2",
+    "dataset": {
+      "LICENSE": {
+        "bytes": 1065,
+        "sha256": "bc03dc792290fc9ec16bd6772b1e5e88038541f323c63762c988cec07a017146"
+      },
+      "hanna_stories_annotations.csv": {
+        "bytes": 13219167,
+        "sha256": "ef59054d27fa32def06cfdc57243b1dd09c7e71f40b6d9d43fecfbf60e59026b"
+      }
+    },
+    "freeze_receipt_sha256": "eaab5d605a720c86f00e40635e59e9a43bb9c58998a70d9e5bca3907c008f1b0",
+    "frozen_successor_sha256": "b0f6dd24415c388a3104f8c9304ce301193cf0a48631a86c4886bc8ce48468e7",
+    "historical_runtime_source_manifest_sha256": "381e3c8a767da6003a22d8b47695dac722f946fd1d63f771c6ddde655eef2c06",
+    "implementation": {
+      "analyze.py": {
+        "bytes": 20093,
+        "sha256": "73047505a4e95167c12862959ef990bb968bfab85d9be16cefcfe31235424353"
+      },
+      "study-contract.json": {
+        "bytes": 935,
+        "sha256": "3239469294e1afaafe92b3ac5707d8916eb0c0cb8e0970cfe10583b46256aaf7"
+      },
+      "study.py": {
+        "bytes": 3240,
+        "sha256": "0b626b893a8885498fa9754d497c14d39a453da91d25abcffc696611845199d1"
+      }
+    },
+    "overlap_contract_sha256": "3239469294e1afaafe92b3ac5707d8916eb0c0cb8e0970cfe10583b46256aaf7",
+    "semantic_gate_sha256": "542c7c6264f05f7e76e62e29c6135f0c56748914acbf4837b6195d7980700ada",
+    "verifier_matrix_sha256": "5cab00c5e653106ebfe962951461b7806225aa4711449cf5cea37c0f73371f54"
+  },
+  "format_version": 1,
+  "interpretation_limits": [
+    "Uses only the sealed Fresh88 verdicts and already-published HANNA ratings; it makes no model or human call.",
+    "All views are descriptive, noncanonical projections from unchanged verdicts; none changes HBQ scoring, coverage, weighting, polarity, or module applicability.",
+    "The inspected Fresh88 development set can guide held-out repair hypotheses but cannot establish a promoted mapping or production change."
+  ],
+  "item_counts": {
+    "primary_generated_only": 80,
+    "secondary_all_11": 88
+  },
+  "mapping_geometry": {
+    "dimension_count": 6,
+    "duplicate_leaf": {
+      "dimensions": [
+        "Empathy",
+        "Engagement"
+      ],
+      "question_id": "craft.narrative.narrative_momentum.investment"
+    },
+    "occurrence_count": 28,
+    "unique_leaf_count": 27
+  },
+  "noncanonical": true,
+  "primary_generated_only": {
+    "hierarchical_dimension_to_macro": {
+      "aggregation": "Per-story mean of available six dimension scores, compared with the matching mean human dimension rating.",
+      "dimension_count": 6,
+      "spearman": {
+        "aggregation": {
+          "identifier": "dimension_macro",
+          "item_count": 80
+        },
+        "item_count": 80,
+        "mean_coverage": 0.8880555555555555,
+        "not_applicable": 47,
+        "pearson": -0.06323449094666586,
+        "spearman": {
+          "ci_95_high": 0.23486409497164096,
+          "ci_95_low": -0.27398742504105345,
+          "cluster": "prompt_group_id",
+          "draws": 1000,
+          "effective_draws": 1000,
+          "estimate": -0.03775134336184484
+        },
+        "unresolved": 191
+      }
+    },
+    "native_hbq_domains_and_final": {
+      "aggregation": "Existing native HBQ report scores only; domain scores are normalized by their own nominal points for descriptive comparability, while final score is retained in native units.",
+      "final_and_domains": {
+        "character": {
+          "aggregation": {
+            "identifier": "character",
+            "item_count": 80
+          },
+          "item_count": 80,
+          "mean_coverage": 0.8671150000000001,
+          "not_applicable": 0,
+          "pearson": -0.03842062813030734,
+          "spearman": {
+            "ci_95_high": 0.23038143342988762,
+            "ci_95_low": -0.2371609781967858,
+            "cluster": "prompt_group_id",
+            "draws": 1000,
+            "effective_draws": 1000,
+            "estimate": -0.01976764654110192
+          },
+          "unresolved": 0
+        },
+        "effect": {
+          "aggregation": {
+            "identifier": "effect",
+            "item_count": 80
+          },
+          "item_count": 80,
+          "mean_coverage": 0.9377000000000001,
+          "not_applicable": 0,
+          "pearson": -0.1818976630352213,
+          "spearman": {
+            "ci_95_high": 0.16643181194068368,
+            "ci_95_low": -0.3848205093025994,
+            "cluster": "prompt_group_id",
+            "draws": 1000,
+            "effective_draws": 1000,
+            "estimate": -0.13452454747382367
+          },
+          "unresolved": 0
+        },
+        "final_score": {
+          "aggregation": {
+            "identifier": "final_score",
+            "item_count": 80
+          },
+          "item_count": 80,
+          "mean_coverage": 0.9430149999999999,
+          "not_applicable": 0,
+          "pearson": -0.08736489211519485,
+          "spearman": {
+            "ci_95_high": 0.22543459261599322,
+            "ci_95_low": -0.2740065634522566,
+            "cluster": "prompt_group_id",
+            "draws": 1000,
+            "effective_draws": 1000,
+            "estimate": -0.04406145228576549
+          },
+          "unresolved": 0
+        },
+        "fresh": {
+          "aggregation": {
+            "identifier": "fresh",
+            "item_count": 80
+          },
+          "item_count": 80,
+          "mean_coverage": 0.97652125,
+          "not_applicable": 0,
+          "pearson": -0.4431928869212956,
+          "spearman": {
+            "ci_95_high": -0.04905913843973159,
+            "ci_95_low": -0.5289578236217014,
+            "cluster": "prompt_group_id",
+            "draws": 1000,
+            "effective_draws": 1000,
+            "estimate": -0.31636039100297897
+          },
+          "unresolved": 0
+        },
+        "holistic": {
+          "aggregation": {
+            "identifier": "holistic",
+            "item_count": 80
+          },
+          "item_count": 80,
+          "mean_coverage": 1.0,
+          "not_applicable": 0,
+          "pearson": 0.2231844195365181,
+          "spearman": {
+            "ci_95_high": 0.38218698930599854,
+            "ci_95_low": -0.01683487991987945,
+            "cluster": "prompt_group_id",
+            "draws": 1000,
+            "effective_draws": 1000,
+            "estimate": 0.18745271474262087
+          },
+          "unresolved": 0
+        },
+        "language": {
+          "aggregation": {
+            "identifier": "language",
+            "item_count": 80
+          },
+          "item_count": 80,
+          "mean_coverage": 0.9711874999999999,
+          "not_applicable": 0,
+          "pearson": -0.13094394537082668,
+          "spearman": {
+            "ci_95_high": 0.10974062319010952,
+            "ci_95_low": -0.3217199457400228,
+            "cluster": "prompt_group_id",
+            "draws": 1000,
+            "effective_draws": 1000,
+            "estimate": -0.11581108487361358
+          },
+          "unresolved": 0
+        },
+        "mechanics": {
+          "aggregation": {
+            "identifier": "mechanics",
+            "item_count": 80
+          },
+          "item_count": 80,
+          "mean_coverage": 1.0,
+          "not_applicable": 0,
+          "pearson": -0.30559113522429965,
+          "spearman": {
+            "ci_95_high": -0.013593368762160607,
+            "ci_95_low": -0.39601502146954015,
+            "cluster": "prompt_group_id",
+            "draws": 1000,
+            "effective_draws": 1000,
+            "estimate": -0.2115791856366314
+          },
+          "unresolved": 0
+        },
+        "movement": {
+          "aggregation": {
+            "identifier": "movement",
+            "item_count": 80
+          },
+          "item_count": 80,
+          "mean_coverage": 0.9429062500000001,
+          "not_applicable": 0,
+          "pearson": 0.18207137934842496,
+          "spearman": {
+            "ci_95_high": 0.4003709855054321,
+            "ci_95_low": -0.07677333835700663,
+            "cluster": "prompt_group_id",
+            "draws": 1000,
+            "effective_draws": 1000,
+            "estimate": 0.1700851898441347
+          },
+          "unresolved": 0
+        },
+        "setting": {
+          "aggregation": {
+            "identifier": "setting",
+            "item_count": 80
+          },
+          "item_count": 80,
+          "mean_coverage": 0.989395,
+          "not_applicable": 0,
+          "pearson": 0.17584870545134645,
+          "spearman": {
+            "ci_95_high": 0.3773260219593453,
+            "ci_95_low": -0.15558099990374133,
+            "cluster": "prompt_group_id",
+            "draws": 1000,
+            "effective_draws": 1000,
+            "estimate": 0.12369335437100595
+          },
+          "unresolved": 0
+        },
+        "task": {
+          "aggregation": {
+            "identifier": "task",
+            "item_count": 80
+          },
+          "item_count": 80,
+          "mean_coverage": 0.8492062499999999,
+          "not_applicable": 0,
+          "pearson": -0.18040010663956452,
+          "spearman": {
+            "ci_95_high": 0.1884758628081695,
+            "ci_95_low": -0.29953122289581424,
+            "cluster": "prompt_group_id",
+            "draws": 1000,
+            "effective_draws": 1000,
+            "estimate": -0.06287055659701314
+          },
+          "unresolved": 0
+        }
+      },
+      "human_target": "HANNA human_overall"
+    },
+    "occurrence_weighted_28_mapping": {
+      "aggregation": "Each verdict is unchanged; only this descriptive averaging projection differs.",
+      "duplicate_investment_treatment": "two dimension occurrences retained",
+      "occurrence_count": 28,
+      "spearman": {
+        "aggregation": {
+          "identifier": "overlap",
+          "item_count": 80
+        },
+        "item_count": 80,
+        "mean_coverage": 0.89375,
+        "not_applicable": 47,
+        "pearson": -0.13819394675860175,
+        "spearman": {
+          "ci_95_high": 0.2037283248793077,
+          "ci_95_low": -0.3661740094188256,
+          "cluster": "prompt_group_id",
+          "draws": 1000,
+          "effective_draws": 1000,
+          "estimate": -0.09215367277874827
+        },
+        "unresolved": 191
+      },
+      "unique_leaf_count": 27
+    },
+    "six_dimension_macro": {
+      "aggregation": "published six-dimension mapping; macro is the unweighted mean of six dimension Spearman estimates",
+      "dimension_count": 6,
+      "dimensions": {
+        "Coherence": {
+          "item_count": 79,
+          "mean_coverage": 0.9037974683544304,
+          "not_applicable": 15,
+          "pearson": -0.15167997439189496,
+          "spearman": {
+            "ci_95_high": 0.1774438179185784,
+            "ci_95_low": -0.3304072506228601,
+            "cluster": "prompt_group_id",
+            "draws": 1000,
+            "effective_draws": 1000,
+            "estimate": -0.1007272577837817
+          },
+          "unresolved": 23
+        },
+        "Complexity": {
+          "item_count": 79,
+          "mean_coverage": 0.7341772151898734,
+          "not_applicable": 20,
+          "pearson": -0.06535011057698108,
+          "spearman": {
+            "ci_95_high": 0.15711291138405636,
+            "ci_95_low": -0.28824188854810634,
+            "cluster": "prompt_group_id",
+            "draws": 1000,
+            "effective_draws": 1000,
+            "estimate": -0.08082326488270875
+          },
+          "unresolved": 85
+        },
+        "Empathy": {
+          "item_count": 80,
+          "mean_coverage": 0.9550000000000001,
+          "not_applicable": 2,
+          "pearson": -0.0014581087104484905,
+          "spearman": {
+            "ci_95_high": 0.2959248282105971,
+            "ci_95_low": -0.17548249599999113,
+            "cluster": "prompt_group_id",
+            "draws": 1000,
+            "effective_draws": 1000,
+            "estimate": 0.03693678832042041
+          },
+          "unresolved": 16
+        },
+        "Engagement": {
+          "item_count": 80,
+          "mean_coverage": 0.985,
+          "not_applicable": 5,
+          "pearson": 0.08931008704222514,
+          "spearman": {
+            "ci_95_high": 0.36970862923754144,
+            "ci_95_low": -0.2049873643333236,
+            "cluster": "prompt_group_id",
+            "draws": 1000,
+            "effective_draws": 1000,
+            "estimate": 0.07538280924061605
+          },
+          "unresolved": 1
+        },
+        "Relevance": {
+          "item_count": 80,
+          "mean_coverage": 0.8083333333333333,
+          "not_applicable": 0,
+          "pearson": 0.08773503643682129,
+          "spearman": {
+            "ci_95_high": 0.3131636902852444,
+            "ci_95_low": -0.12913982078727163,
+            "cluster": "prompt_group_id",
+            "draws": 1000,
+            "effective_draws": 1000,
+            "estimate": 0.095142690753166
+          },
+          "unresolved": 46
+        },
+        "Surprise": {
+          "item_count": 80,
+          "mean_coverage": 0.9625,
+          "not_applicable": 0,
+          "pearson": -0.29771497212711734,
+          "spearman": {
+            "ci_95_high": -0.0259049040155347,
+            "ci_95_low": -0.4222549831753258,
+            "cluster": "prompt_group_id",
+            "draws": 1000,
+            "effective_draws": 1000,
+            "estimate": -0.2427665637523263
+          },
+          "unresolved": 15
+        }
+      },
+      "macro_spearman": {
+        "ci_95_high": 0.10485700771548533,
+        "ci_95_low": -0.15652275025323253,
+        "cluster": "prompt_group_id",
+        "draws": 1000,
+        "effective_draws": 1000,
+        "estimate": -0.036142466350769044
+      },
+      "mean_dimension_coverage": 0.8914680028129395,
+      "occurrence_count": 28
+    },
+    "unique_27_leaf_overlap": {
+      "aggregation": "Each verdict is unchanged; only this descriptive averaging projection differs.",
+      "duplicate_investment_treatment": "one leaf, human target averaged across Empathy and Engagement",
+      "occurrence_count": 27,
+      "spearman": {
+        "aggregation": {
+          "identifier": "overlap",
+          "item_count": 80
+        },
+        "item_count": 80,
+        "mean_coverage": 0.8902777777777777,
+        "not_applicable": 47,
+        "pearson": -0.14414669443184727,
+        "spearman": {
+          "ci_95_high": 0.20937161127225237,
+          "ci_95_low": -0.36185223861734667,
+          "cluster": "prompt_group_id",
+          "draws": 1000,
+          "effective_draws": 1000,
+          "estimate": -0.09014775122983233
+        },
+        "unresolved": 190
+      },
+      "unique_leaf_count": 27
+    }
+  },
+  "secondary_all_11": {
+    "hierarchical_dimension_to_macro": {
+      "aggregation": "Per-story mean of available six dimension scores, compared with the matching mean human dimension rating.",
+      "dimension_count": 6,
+      "spearman": {
+        "aggregation": {
+          "identifier": "dimension_macro",
+          "item_count": 88
+        },
+        "item_count": 88,
+        "mean_coverage": 0.8867424242424242,
+        "not_applicable": 52,
+        "pearson": 0.46118675145774274,
+        "spearman": {
+          "ci_95_high": 0.463698936751564,
+          "ci_95_low": -0.06363801407513106,
+          "cluster": "prompt_group_id",
+          "draws": 1000,
+          "effective_draws": 1000,
+          "estimate": 0.20956954715683568
+        },
+        "unresolved": 211
+      }
+    },
+    "native_hbq_domains_and_final": {
+      "aggregation": "Existing native HBQ report scores only; domain scores are normalized by their own nominal points for descriptive comparability, while final score is retained in native units.",
+      "final_and_domains": {
+        "character": {
+          "aggregation": {
+            "identifier": "character",
+            "item_count": 88
+          },
+          "item_count": 88,
+          "mean_coverage": 0.8767204545454544,
+          "not_applicable": 0,
+          "pearson": 0.3365486033864639,
+          "spearman": {
+            "ci_95_high": 0.4353426435041745,
+            "ci_95_low": -0.03430311095725366,
+            "cluster": "prompt_group_id",
+            "draws": 1000,
+            "effective_draws": 1000,
+            "estimate": 0.21024517791727187
+          },
+          "unresolved": 0
+        },
+        "effect": {
+          "aggregation": {
+            "identifier": "effect",
+            "item_count": 88
+          },
+          "item_count": 88,
+          "mean_coverage": 0.939678409090909,
+          "not_applicable": 0,
+          "pearson": 0.19863020168290044,
+          "spearman": {
+            "ci_95_high": 0.3811832446957501,
+            "ci_95_low": -0.17603348355305726,
+            "cluster": "prompt_group_id",
+            "draws": 1000,
+            "effective_draws": 1000,
+            "estimate": 0.09296482598613555
+          },
+          "unresolved": 0
+        },
+        "final_score": {
+          "aggregation": {
+            "identifier": "final_score",
+            "item_count": 88
+          },
+          "item_count": 88,
+          "mean_coverage": 0.945509090909091,
+          "not_applicable": 0,
+          "pearson": 0.436788724986532,
+          "spearman": {
+            "ci_95_high": 0.42560281114634935,
+            "ci_95_low": -0.060185843791461205,
+            "cluster": "prompt_group_id",
+            "draws": 1000,
+            "effective_draws": 1000,
+            "estimate": 0.20301154072800562
+          },
+          "unresolved": 0
+        },
+        "fresh": {
+          "aggregation": {
+            "identifier": "fresh",
+            "item_count": 88
+          },
+          "item_count": 88,
+          "mean_coverage": 0.9771056818181818,
+          "not_applicable": 0,
+          "pearson": 0.04243123496370346,
+          "spearman": {
+            "ci_95_high": 0.22544542680017882,
+            "ci_95_low": -0.28943387840355084,
+            "cluster": "prompt_group_id",
+            "draws": 1000,
+            "effective_draws": 1000,
+            "estimate": -0.05055256229628471
+          },
+          "unresolved": 0
+        },
+        "holistic": {
+          "aggregation": {
+            "identifier": "holistic",
+            "item_count": 88
+          },
+          "item_count": 88,
+          "mean_coverage": 1.0,
+          "not_applicable": 0,
+          "pearson": 0.5281882195635559,
+          "spearman": {
+            "ci_95_high": 0.6048819480288473,
+            "ci_95_low": 0.21365689009437544,
+            "cluster": "prompt_group_id",
+            "draws": 1000,
+            "effective_draws": 1000,
+            "estimate": 0.42058284526565665
+          },
+          "unresolved": 0
+        },
+        "language": {
+          "aggregation": {
+            "identifier": "language",
+            "item_count": 88
+          },
+          "item_count": 88,
+          "mean_coverage": 0.9738068181818181,
+          "not_applicable": 0,
+          "pearson": 0.30008463304244715,
+          "spearman": {
+            "ci_95_high": 0.38197956159512125,
+            "ci_95_low": -0.09699418086029327,
+            "cluster": "prompt_group_id",
+            "draws": 1000,
+            "effective_draws": 1000,
+            "estimate": 0.13311165928456511
+          },
+          "unresolved": 0
+        },
+        "mechanics": {
+          "aggregation": {
+            "identifier": "mechanics",
+            "item_count": 88
+          },
+          "item_count": 88,
+          "mean_coverage": 1.0,
+          "not_applicable": 0,
+          "pearson": -0.2612471640949169,
+          "spearman": {
+            "ci_95_high": 0.01447474158281725,
+            "ci_95_low": -0.39083924357773253,
+            "cluster": "prompt_group_id",
+            "draws": 1000,
+            "effective_draws": 1000,
+            "estimate": -0.1903277503637221
+          },
+          "unresolved": 0
+        },
+        "movement": {
+          "aggregation": {
+            "identifier": "movement",
+            "item_count": 88
+          },
+          "item_count": 88,
+          "mean_coverage": 0.9458988636363636,
+          "not_applicable": 0,
+          "pearson": 0.498249097122783,
+          "spearman": {
+            "ci_95_high": 0.5835745691120253,
+            "ci_95_low": 0.09964253135459747,
+            "cluster": "prompt_group_id",
+            "draws": 1000,
+            "effective_draws": 1000,
+            "estimate": 0.3691551109951067
+          },
+          "unresolved": 0
+        },
+        "setting": {
+          "aggregation": {
+            "identifier": "setting",
+            "item_count": 88
+          },
+          "item_count": 88,
+          "mean_coverage": 0.9903590909090909,
+          "not_applicable": 0,
+          "pearson": 0.5005045621794574,
+          "spearman": {
+            "ci_95_high": 0.5568016750979781,
+            "ci_95_low": 0.08573111036954693,
+            "cluster": "prompt_group_id",
+            "draws": 1000,
+            "effective_draws": 1000,
+            "estimate": 0.3270035495162059
+          },
+          "unresolved": 0
+        },
+        "task": {
+          "aggregation": {
+            "identifier": "task",
+            "item_count": 88
+          },
+          "item_count": 88,
+          "mean_coverage": 0.8457056818181818,
+          "not_applicable": 0,
+          "pearson": 0.42094743437304744,
+          "spearman": {
+            "ci_95_high": 0.3974716955234608,
+            "ci_95_low": -0.05606179173917304,
+            "cluster": "prompt_group_id",
+            "draws": 1000,
+            "effective_draws": 1000,
+            "estimate": 0.1874146680950962
+          },
+          "unresolved": 0
+        }
+      },
+      "human_target": "HANNA human_overall"
+    },
+    "occurrence_weighted_28_mapping": {
+      "aggregation": "Each verdict is unchanged; only this descriptive averaging projection differs.",
+      "duplicate_investment_treatment": "two dimension occurrences retained",
+      "occurrence_count": 28,
+      "spearman": {
+        "aggregation": {
+          "identifier": "overlap",
+          "item_count": 88
+        },
+        "item_count": 88,
+        "mean_coverage": 0.893262987012987,
+        "not_applicable": 52,
+        "pearson": 0.4160586140010463,
+        "spearman": {
+          "ci_95_high": 0.4394598784288272,
+          "ci_95_low": -0.09637656258049165,
+          "cluster": "prompt_group_id",
+          "draws": 1000,
+          "effective_draws": 1000,
+          "estimate": 0.16482506539699793
+        },
+        "unresolved": 211
+      },
+      "unique_leaf_count": 27
+    },
+    "six_dimension_macro": {
+      "aggregation": "published six-dimension mapping; macro is the unweighted mean of six dimension Spearman estimates",
+      "dimension_count": 6,
+      "dimensions": {
+        "Coherence": {
+          "item_count": 87,
+          "mean_coverage": 0.9126436781609196,
+          "not_applicable": 15,
+          "pearson": 0.3696034072235893,
+          "spearman": {
+            "ci_95_high": 0.45222937651488593,
+            "ci_95_low": -0.04368471838541703,
+            "cluster": "prompt_group_id",
+            "draws": 1000,
+            "effective_draws": 1000,
+            "estimate": 0.20191394292628695
+          },
+          "unresolved": 23
+        },
+        "Complexity": {
+          "item_count": 87,
+          "mean_coverage": 0.735632183908046,
+          "not_applicable": 22,
+          "pearson": 0.25761368858843137,
+          "spearman": {
+            "ci_95_high": 0.3777586106270373,
+            "ci_95_low": -0.0590265997195417,
+            "cluster": "prompt_group_id",
+            "draws": 1000,
+            "effective_draws": 1000,
+            "estimate": 0.15384487730460433
+          },
+          "unresolved": 93
+        },
+        "Empathy": {
+          "item_count": 88,
+          "mean_coverage": 0.9545454545454546,
+          "not_applicable": 2,
+          "pearson": 0.4319387344079945,
+          "spearman": {
+            "ci_95_high": 0.5087921320207992,
+            "ci_95_low": 0.05345187305305968,
+            "cluster": "prompt_group_id",
+            "draws": 1000,
+            "effective_draws": 1000,
+            "estimate": 0.28539935134350836
+          },
+          "unresolved": 18
+        },
+        "Engagement": {
+          "item_count": 88,
+          "mean_coverage": 0.9863636363636363,
+          "not_applicable": 5,
+          "pearson": 0.29701676069498145,
+          "spearman": {
+            "ci_95_high": 0.5220842108307294,
+            "ci_95_low": -0.01722634797252513,
+            "cluster": "prompt_group_id",
+            "draws": 1000,
+            "effective_draws": 1000,
+            "estimate": 0.27005278260349863
+          },
+          "unresolved": 1
+        },
+        "Relevance": {
+          "item_count": 88,
+          "mean_coverage": 0.7954545454545454,
+          "not_applicable": 0,
+          "pearson": 0.38465769875472244,
+          "spearman": {
+            "ci_95_high": 0.4890471546676909,
+            "ci_95_low": 0.06895042894600616,
+            "cluster": "prompt_group_id",
+            "draws": 1000,
+            "effective_draws": 1000,
+            "estimate": 0.30058586326549336
+          },
+          "unresolved": 54
+        },
+        "Surprise": {
+          "item_count": 88,
+          "mean_coverage": 0.9545454545454546,
+          "not_applicable": 3,
+          "pearson": -0.09153667312210102,
+          "spearman": {
+            "ci_95_high": 0.14242844658171447,
+            "ci_95_low": -0.2895091073781675,
+            "cluster": "prompt_group_id",
+            "draws": 1000,
+            "effective_draws": 1000,
+            "estimate": -0.07795551770545454
+          },
+          "unresolved": 17
+        }
+      },
+      "macro_spearman": {
+        "ci_95_high": 0.35896818385649,
+        "ci_95_low": 0.00971230447615176,
+        "cluster": "prompt_group_id",
+        "draws": 1000,
+        "effective_draws": 1000,
+        "estimate": 0.18897354995632284
+      },
+      "mean_dimension_coverage": 0.8898641588296762,
+      "occurrence_count": 28
+    },
+    "unique_27_leaf_overlap": {
+      "aggregation": "Each verdict is unchanged; only this descriptive averaging projection differs.",
+      "duplicate_investment_treatment": "one leaf, human target averaged across Empathy and Engagement",
+      "occurrence_count": 27,
+      "spearman": {
+        "aggregation": {
+          "identifier": "overlap",
+          "item_count": 88
+        },
+        "item_count": 88,
+        "mean_coverage": 0.8897306397306397,
+        "not_applicable": 52,
+        "pearson": 0.4085216654325046,
+        "spearman": {
+          "ci_95_high": 0.439309112025964,
+          "ci_95_low": -0.1162251554958473,
+          "cluster": "prompt_group_id",
+          "draws": 1000,
+          "effective_draws": 1000,
+          "estimate": 0.16431641221335724
+        },
+        "unresolved": 210
+      },
+      "unique_leaf_count": 27
+    }
+  },
+  "study_id": "hbq-human-alignment-v3-fresh88-overlap-analysis-v1"
+}
