@@ -1,0 +1,53 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-refusal-terminal-singleton-v1",
+  "purpose": "Provider-free singleton matrix for terminal classification and retry semantics; no production runtime or rubric change.",
+  "base_revision": "fb77e8a61bff6b130147acd7a7c43ce20e88dd14",
+  "rubric": {
+    "bundle_id": "default.first_pass_screening",
+    "module_id": "core.substantive_task_engagement_true_non_refusal",
+    "leaf_id": "core.substantive_task_engagement_true_non_refusal.no_refusal"
+  },
+  "execution": {
+    "provider_free": true,
+    "remote_provider_call_count": 0,
+    "logical_sample_count": 6,
+    "maximum_attempts_per_logical_sample": 2,
+    "injected_attempt_count": 9,
+    "fixture_kind": "public_synthetic_typed_attempts_v1",
+    "scenario_ids": [
+      "accepted",
+      "refusal-deflection-exhausted",
+      "blank-quote-schema-exhausted",
+      "retryable-then-accepted",
+      "nonretryable-provider-stop",
+      "ambiguous-started-unsettled"
+    ],
+    "attempts_per_scenario": {
+      "accepted": 1,
+      "refusal-deflection-exhausted": 2,
+      "blank-quote-schema-exhausted": 2,
+      "retryable-then-accepted": 2,
+      "nonretryable-provider-stop": 1,
+      "ambiguous-started-unsettled": 1
+    }
+  },
+  "gate": {
+    "pass": "PASS_MATRIX",
+    "failure": "NO_GO_COLLAPSED_TERMINALS",
+    "incomplete": "INCOMPLETE",
+    "pass_effect": "authorizes Sol review and a separately designed production exercise only",
+    "automatic_promotion": false
+  },
+  "bindings": {
+    "src/hbqrs/runner.py": "e0189f621da8616ec52d831d24098b4f4c8aeb988f3075028726ccca5342cf35",
+    "schema/hbq_judge_response.schema.json": "49c7d824ba5dd957e67968ba3ae6ceb8a7ed9434dfb0dfc654836a76613c7854",
+    "schema/hbq_verdict.schema.json": "5cd3dd25ce506689e75cbc290620a2f22198c8f9581a5fa7bd3debe90237f3f4",
+    "registry/modules/core.substantive_task_engagement_true_non_refusal.yaml": "2e60ecc2a9dcb5702a5a92bf7f0b5a956933f20e371859f93b4614065e8c76cc",
+    "bundles/default.first_pass_screening.yaml": "ffe9f4ebe13dc14ad94a89ba74f419a5310261a2cbc4fb4096c44592dc45bb09",
+    "registry/all_modules.json": "7e43738c811e377aef369c38c9c9dbf0b19bfbf1c406e33f8f51dccdb2677f97",
+    "bundles/all_bundles.json": "7ba16d41204220816c19e5a0042441487d8a91f2ac7365fbb2eeea93cd80ca4a",
+    "prompts/judge/BINARY_EVALUATION_PROMPT.md": "6c1cac901d820c1ab866e19f9191896e8c97a6aadf35bdae4eac640fd199a3a2",
+    "fixtures.json": "c5a1424a9c1f653884fe9e571540b7a79298fa0badc0e1a9daa9065bb2ad192a"
+  }
+}

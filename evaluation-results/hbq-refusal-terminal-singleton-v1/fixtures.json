@@ -1,0 +1,15 @@
+{
+  "format_version": 1,
+  "artifact": {
+    "artifact_id": "public-synthetic-terminal-matrix",
+    "text": "Synthetic terminal-matrix artifact: direct work is present."
+  },
+  "scenarios": [
+    {"scenario_id":"accepted","expected_terminal_class":"accepted","attempts":[{"event":"valid_yes"}]},
+    {"scenario_id":"refusal-deflection-exhausted","expected_terminal_class":"refusal_deflection_exhausted","attempts":[{"event":"raw_refusal"},{"event":"raw_refusal"}]},
+    {"scenario_id":"blank-quote-schema-exhausted","expected_terminal_class":"schema_or_quote_failure_exhausted","attempts":[{"event":"blank_exact_quote"},{"event":"empty_schema"}]},
+    {"scenario_id":"retryable-then-accepted","expected_terminal_class":"retryable_then_accepted","attempts":[{"event":"retryable_failure"},{"event":"valid_yes"}]},
+    {"scenario_id":"nonretryable-provider-stop","expected_terminal_class":"nonretryable_provider_stop","attempts":[{"event":"nonretryable_failure"},{"event":"poison"}]},
+    {"scenario_id":"ambiguous-started-unsettled","expected_terminal_class":"ambiguous_unsettled_no_auto_resend","attempts":[{"event":"ambiguous_interrupt"},{"event":"poison"}]}
+  ]
+}
