@@ -17,7 +17,7 @@
   },
   "review_plan": {
     "reviews_per_fixture": 2,
-    "maximum_provider_calls": 2,
+    "maximum_model_contact_processes": 2,
     "model": "gpt-5.6-sol",
     "reasoning": "high",
     "batch_size": 1,
@@ -40,7 +40,21 @@
     "provider_free": true,
     "explicit_confirmation_required": true,
     "arming_receipt_required_before_execution": true,
-    "execution_state_written_after_exact_two_calls": true
+    "execution_state_written_after_exact_two_model_contact_processes": true,
+    "adapter_contract_hash_required_before_execution": true
+  },
+  "adapter_execution": {
+    "result_envelope": "p1-discordance-codex-adapter-v2-result",
+    "adapter_statuses": ["ACCEPTED", "AMBIGUOUS_NO_RETRY", "PRECONTACT_FAILED_NO_MODEL_CONTACT"],
+    "one_model_contact_process_per_callback": true,
+    "requested_model_contact_processes": 2,
+    "precontact_failure_is_recoverable": true,
+    "stable_adapter_evidence_root_required": true,
+    "contiguous_attempt_names_required": true,
+    "request_binds_exact_review_id_and_arming_receipt": true,
+    "started_process_counting": "callback_local_envelope_and_cumulative_study_result",
+    "provider_http_attempts_observed": null,
+    "model_and_reasoning_identity_evidence": "requested_only"
   },
   "privacy": {
     "public_projection": "aggregate_only",
