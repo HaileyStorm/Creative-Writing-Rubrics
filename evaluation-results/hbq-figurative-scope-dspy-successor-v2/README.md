@@ -1,42 +1,29 @@
 # Figurative scope DSPy successor v2
 
-This frozen, development-only successor repairs three ambiguous TRAIN controls;
-it does not change the prompt candidates, HBQ-RS rubric, leaves, ownership,
-splits, weights, bundles, schemas, or runtime. The candidate instruction text,
+This frozen, development-only successor repaired three ambiguous TRAIN controls
+without changing the prompt candidates, HBQ-RS rubric, leaves, ownership,
+splits, weights, bundles, schemas, or runtime. Candidate instruction text,
 synthetic text, controller labels, selection material, prompts, responses,
-evidence, receipts, and all held content remain outside this public package.
+evidence, receipts, and held content remain private.
 
-There are no proposer calls. Two hash-bound candidates from v1 reuse exactly
-14 accepted, exact, evidence-valid unaffected TRAIN rows each. Each candidate
-then receives three repetitions of the three corrected artifacts against both
-leaves: 36 new singleton TRAIN calls total. Selection stays closed unless both
-candidates pass all 14 reused and all 18 fresh rows. If that composite gate
-passes, both candidates receive two repetitions over eight untouched selection
-cells: exactly 32 selection calls. Confirmation is never opened by v2.
+The original freeze planned reuse of 28 accepted unaffected TRAIN rows and 36
+new singleton TRAIN calls, with selection only after both candidates passed the
+composite TRAIN gate. The actual run settled incomplete before that design could
+be scored: two logical TRAIN calls occurred, one yielded a grounded
+expected-YES/observed-NO miss, and one ended terminally as
+`schema_or_quote_failure`. The terminal call was a schema-valid mixed
+`exact_quote`+summary response rejected by the v2 validator. There were no
+retries. Selection was neither accessed nor read; confirmation was not
+accessed.
 
-Failure at either scored gate is `NO_GO`. If both candidates pass selection,
-the shorter frozen candidate wins the predeclared tie and the result is
-`READY_FOR_SEPARATE_CONFIRMATION_FREEZE_REVIEW`; that status is not permission
-to inspect or run confirmation. The initial checked-in status is
-`PENDING_EXECUTION`.
+The aggregate-only result is [public-result.json](public-result.json), pinned
+by SHA-256 `f2128d0f9868d3608a739a6e10bbbb733f22f1117c479b87caf3115059603753`.
+Its private source lineage is bound by the contract, including execution commit
+`7febc77483f674a929d1778b7285a3a02c4d3a5a`; it does not expose private run
+content. The settled decision is `NO_PROMOTION`: this result promotes no
+prompt, rubric wording, leaf, ownership, split, or weight change.
 
-The provider-free verifier and dry run do not import DSPy or call a provider.
-Remote development execution requires an explicitly supplied private root,
-hash-matching private engine and freeze inputs, `--allow-remote`, and
-`--owner-zero-incremental-charge`. Only the Codex ChatGPT-subscription route is
-allowed; paid/API-compatible and fallback routes fail closed.
-Every new call uses the durable `terminal_sidecar_v1` start-and-settlement
-lifecycle. Malformed response topology or ungrounded evidence is a terminal
-incomplete outcome, not a retry or a scored miss.
-
-## Private freeze bindings
-
-The public contract binds the frozen private implementation with two
-64-character lowercase SHA-256 values:
-
-- `bindings.private_engine_sha256`
-- `bindings.private_freeze_inputs_sha256`
-
-Both fields are finalized. Dry-run verification confirms the bindings without
-loading the private engine or authorizing selection, confirmation, or any
-provider call.
+`python run.py --dry-run` is provider-free and verifies the contract, result
+hash, lineage, counts, and privacy surface. `--execute` is permanently refused
+because this v2 study is settled; a successor must use a separately frozen
+package rather than mutate or resume this evidence.

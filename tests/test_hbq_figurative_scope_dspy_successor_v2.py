@@ -5,7 +5,6 @@ import hashlib
 import importlib.util
 import json
 from pathlib import Path
-from types import SimpleNamespace
 import subprocess
 import sys
 
@@ -34,109 +33,117 @@ def study():
     return load_module("dspy_successor_v2_study", ROOT / "study.py")
 
 
-def read_contract() -> dict:
-    return json.loads((ROOT / "study-contract.json").read_text(encoding="utf-8"))
+def read_json(name: str) -> dict:
+    return json.loads((ROOT / name).read_text(encoding="utf-8"))
 
 
-def test_frozen_contract_binds_parent_candidates_artifacts_and_geometry():
+def test_settled_contract_and_aggregate_only_result_are_pinned():
     s = study()
-    report = s.verify_package()
-    contract = read_contract()
-    assert report == {
-        "study_id": "hbq-figurative-scope-dspy-successor-v2",
-        "status": "PENDING_EXECUTION",
-        "provider_calls": 0,
-        "private_bindings_finalized": True,
-        "fresh_train_calls": 36,
-        "selection_calls_authorized": 0,
-        "confirmation_calls_authorized": 0,
+    contract = read_json("study-contract.json")
+    result = read_json("public-result.json")
+    assert contract["status"] == "SETTLED_INCOMPLETE_NO_PROMOTION"
+    assert contract["result_lineage"] == {
+        "execution_commit": "7febc77483f674a929d1778b7285a3a02c4d3a5a",
+        "private_aggregate_sha256": "49052db5d5684be418d1b5c563615b206a31a97459189cf3b5436ccdaa363126",
+        "private_result_sha256": "67bb8bbecf7abbbaf84fac5c94a583e1e87f7b4a692ee8c27291aa73ef258b61",
     }
-    assert contract["parent_v1"] == {
-        "private_aggregate_sha256": "4982e2b78572276cff717dfb130dc8742fe4f790a2b6b05dac9eb5779094094c",
-        "private_result_sha256": "e640103ec7e8b9bb3e2802f1af7f07eb0adf3799185513ec783e833d18fec5df",
-    }
-    assert contract["candidate_commitments"] == [
-        {"sha256": "10e0e26ea20a33768e98abae76a343990401f673e6f0f891bfc04bfa66e39f6c", "utf8_bytes": 464},
-        {"sha256": "fcd3ef7b95724f43f222061f9f2cdfcb4733348149fa517559dfcea05d1e5ab6", "utf8_bytes": 453},
-    ]
-    assert contract["corrected_train_artifact_sha256"] == [
-        "dc6db347d6ce8a59e642d1f439b2db92547ac9577c4a2862fc4afc404e7c0a9a",
-        "2b8a22e976feec16d1fe83617907d69ee73c7f8da4f73984b2618311a525bde5",
-        "1a5b90e731b4bb37146b45e8badd22bf8a7a88848def8930d879970c4a501804",
-    ]
-    assert contract["limits"] == {
-        "proposer_calls_exact": 0,
-        "reused_train_rows_exact": 28,
-        "fresh_train_calls_exact": 36,
-        "selection_calls_if_train_passes_exact": 32,
-        "confirmation_calls_exact": 0,
-        "one_provider_attempt_per_logical_call": True,
-    }
-
-
-def test_contract_bindings_are_final_and_malformed_hashes_fail(monkeypatch):
-    s = study()
-    contract = read_contract()
-    assert contract["bindings"] == {
-        "private_engine_sha256": "db7b63dc9a1f587b28b37cc6a6215c6a466978f346c7e93e5255730dc43360e5",
-        "private_freeze_inputs_sha256": "5b405a3a6546da953888224d479f0bff491bf8971a11b72a3ae2854ab6c502af",
-    }
-    changed = deepcopy(contract)
-    changed["bindings"]["private_engine_sha256"] = "not-a-hash"
-    monkeypatch.setattr(s, "load_contract", lambda: changed)
-    with pytest.raises(ValueError, match="private_engine_sha256"):
-        s.verify_package()
-
-
-def outcome(*, train_passes: int, selection_passes: int = 0) -> dict:
-    accessed = train_passes == 2
-    return {
-        "study_id": "hbq-figurative-scope-dspy-successor-v2",
-        "status": "READY_FOR_SEPARATE_CONFIRMATION_FREEZE_REVIEW" if accessed and selection_passes == 2 else "NO_GO",
-        "calls": {"proposer": 0, "fresh_train": 36, "selection": 32 if accessed else 0, "confirmation": 0},
-        "train": {"reused_rows": 28, "fresh_rows": 36, "composite_pass_candidates": train_passes},
-        "selection": {"accessed": accessed, "calls": 32 if accessed else 0, "full_pass_candidates": selection_passes if accessed else 0},
+    assert hashlib.sha256((ROOT / "public-result.json").read_bytes()).hexdigest() == contract["public_result_sha256"]
+    assert result["status"] == "INCOMPLETE"
+    assert result["decision"] == "NO_PROMOTION"
+    assert result["execution"] == {
+        "logical_train_calls": 2,
+        "accepted_grounded_scored_misses": 1,
+        "terminal_schema_or_quote_failures": 1,
+        "retries": 0,
+        "selection_accessed": False,
+        "selection_read": False,
         "confirmation_accessed": False,
     }
+    assert result["scored_miss"] == {"expected": "YES", "observed": "NO"}
+    assert result["terminal_failure"] == {
+        "reason": "schema_or_quote_failure",
+        "cause": "v2_validator_rejected_schema_valid_mixed_exact_quote_and_summary_response",
+    }
+    assert s.verify_package()["provider_calls"] == 0
 
 
 @pytest.mark.parametrize(
-    ("train_passes", "selection_passes", "status"),
-    [(0, 0, "NO_GO"), (1, 0, "NO_GO"), (2, 0, "NO_GO"), (2, 1, "NO_GO"), (2, 2, "READY_FOR_SEPARATE_CONFIRMATION_FREEZE_REVIEW")],
+    "mutation",
+    [
+        lambda value: value["candidate_commitments"][0].update({"sha256": "0" * 64}),
+        lambda value: value["gates"].update({"both_candidates_must_pass_composite_train": False}),
+        lambda value: value.update({"allowed_terminal_statuses": []}),
+        lambda value: value.update({"forbidden": []}),
+    ],
 )
-def test_terminal_outcomes_enforce_conditional_selection(train_passes, selection_passes, status):
+def test_retained_freeze_contract_mutations_fail_closed(monkeypatch, mutation):
     s = study()
-    value = outcome(train_passes=train_passes, selection_passes=selection_passes)
-    assert value["status"] == status
-    assert s.validate_public_outcome(value) == value
+    changed = deepcopy(read_json("study-contract.json"))
+    mutation(changed)
+    monkeypatch.setattr(s, "load_json", lambda name: changed if name == "study-contract.json" else read_json(name))
+    with pytest.raises(ValueError, match="freeze contract"):
+        s.verify_package()
 
 
-def test_outcome_rejects_early_selection_confirmation_and_call_drift():
+@pytest.mark.parametrize(
+    "mutation",
+    [
+        lambda value: value["execution"].__setitem__("retries", 1),
+        lambda value: value["execution"].__setitem__("selection_read", True),
+        lambda value: value.__setitem__("decision", "NO_GO"),
+        lambda value: value["scored_miss"].__setitem__("observed", "YES"),
+        lambda value: value["terminal_failure"].__setitem__("reason", "retry"),
+    ],
+)
+def test_public_result_mutations_fail_closed(monkeypatch, mutation):
     s = study()
-    base = outcome(train_passes=1)
-    mutations = []
-    early = deepcopy(base)
-    early["selection"] = {"accessed": True, "calls": 32, "full_pass_candidates": 2}
-    early["calls"]["selection"] = 32
-    mutations.append(early)
-    confirmation = deepcopy(base)
-    confirmation["confirmation_accessed"] = True
-    mutations.append(confirmation)
-    proposer = deepcopy(base)
-    proposer["calls"]["proposer"] = 1
-    mutations.append(proposer)
-    short_train = deepcopy(base)
-    short_train["calls"]["fresh_train"] = 35
-    mutations.append(short_train)
-    false_ready = deepcopy(base)
-    false_ready["status"] = "READY_FOR_SEPARATE_CONFIRMATION_FREEZE_REVIEW"
-    mutations.append(false_ready)
-    for changed in mutations:
-        with pytest.raises(ValueError):
-            s.validate_public_outcome(changed)
+    changed = deepcopy(read_json("public-result.json"))
+    mutation(changed)
+    monkeypatch.setattr(s, "load_json", lambda name: changed if name == "public-result.json" else read_json(name))
+    with pytest.raises(ValueError):
+        s.validate_public_result()
 
 
-def test_public_package_contains_no_private_material_or_runtime_dependency():
+@pytest.mark.parametrize(
+    "key,value",
+    [
+        ("raw_response", "hidden"),
+        ("session_id", "hidden"),
+        ("artifact_path", "hidden"),
+        ("candidate_text", "hidden"),
+    ],
+)
+def test_private_material_additions_fail_closed(monkeypatch, key, value):
+    s = study()
+    changed = deepcopy(read_json("public-result.json"))
+    changed[key] = value
+    monkeypatch.setattr(s, "load_json", lambda name: changed if name == "public-result.json" else read_json(name))
+    with pytest.raises(ValueError):
+        s.validate_public_result()
+
+
+def test_dry_run_is_provider_free_and_execute_is_refused():
+    dry_run = subprocess.run(
+        [sys.executable, str(ROOT / "run.py"), "--dry-run"],
+        text=True,
+        capture_output=True,
+        check=True,
+    )
+    value = json.loads(dry_run.stdout)
+    assert value["mode"] == "dry_run"
+    assert value["verification"]["provider_calls"] == 0
+    assert value["verification"]["execution_refused"] is True
+    execute = subprocess.run(
+        [sys.executable, str(ROOT / "run.py"), "--execute"],
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert execute.returncode != 0
+    assert "settled INCOMPLETE" in execute.stderr
+
+
+def test_public_package_has_no_private_content_or_runtime_dependency():
     forbidden_content = (
         "default-one-charged", "default-three-charged", "specific-three-routine",
         "Grief was thunder", "Nets breathed on pegs", "Mara's world shattered",
@@ -148,70 +155,3 @@ def test_public_package_contains_no_private_material_or_runtime_dependency():
         assert all(fragment not in text for fragment in forbidden_content)
         assert "import dspy" not in text and "from dspy" not in text
         assert "C:\\Users\\" not in text and "C:/Users/" not in text
-    contract = read_contract()
-    assert set(contract["bindings"]) == {"private_engine_sha256", "private_freeze_inputs_sha256"}
-    assert contract["limits"]["confirmation_calls_exact"] == 0
-
-
-def test_dry_run_does_not_load_private_engine_or_call_remote():
-    completed = subprocess.run(
-        [sys.executable, str(ROOT / "run.py"), "--dry-run"],
-        text=True,
-        capture_output=True,
-        check=True,
-    )
-    value = json.loads(completed.stdout)
-    assert value["mode"] == "dry_run"
-    assert value["verification"]["provider_calls"] == 0
-    assert value["verification"]["private_bindings_finalized"] is True
-
-
-def test_remote_preflight_requires_both_flags_and_forbids_api_routes(monkeypatch, tmp_path):
-    module = load_module("dspy_successor_v2_run_preflight", ROOT / "run.py")
-    with pytest.raises(PermissionError):
-        module.preflight_remote(allow_remote=False, owner_zero_incremental_charge=False, private_root=tmp_path)
-    monkeypatch.setenv("OPENAI_API_KEY", "present")
-    with pytest.raises(PermissionError, match="Forbidden"):
-        module.preflight_remote(allow_remote=True, owner_zero_incremental_charge=True, private_root=tmp_path)
-    monkeypatch.delenv("OPENAI_API_KEY")
-    monkeypatch.setattr(
-        module.subprocess,
-        "run",
-        lambda *args, **kwargs: SimpleNamespace(returncode=0, stdout="", stderr="Logged in using ChatGPT\n"),
-    )
-    module.preflight_remote(allow_remote=True, owner_zero_incremental_charge=True, private_root=tmp_path)
-    attestation = json.loads((tmp_path / "subscription-attestation.json").read_text(encoding="utf-8"))
-    assert attestation["route"] == "codex_cli_chatgpt_subscription"
-
-
-def test_private_engine_is_loaded_only_when_both_private_hashes_match(monkeypatch, tmp_path):
-    module = load_module("dspy_successor_v2_run_loader", ROOT / "run.py")
-    engine = tmp_path / "private_engine.py"
-    freeze = tmp_path / "freeze-inputs.json"
-    engine.write_text("def execute(*, public_root, private_root):\n    return {}\n", encoding="utf-8")
-    freeze.write_text("{}\n", encoding="utf-8")
-    contract = read_contract()
-    contract["bindings"] = {
-        "private_engine_sha256": hashlib.sha256(engine.read_bytes()).hexdigest(),
-        "private_freeze_inputs_sha256": hashlib.sha256(freeze.read_bytes()).hexdigest(),
-    }
-    monkeypatch.setattr(module, "load_contract", lambda: contract)
-    monkeypatch.setattr(module, "verify_package", lambda: {"private_bindings_finalized": True})
-    loaded = module.load_bound_private_engine(tmp_path)
-    assert callable(loaded.execute)
-    freeze.write_text('{"drift":true}\n', encoding="utf-8")
-    with pytest.raises(PermissionError, match="binding drifted"):
-        module.load_bound_private_engine(tmp_path)
-
-
-def test_placeholder_contract_refuses_private_engine_loading(monkeypatch, tmp_path):
-    module = load_module("dspy_successor_v2_run_pending", ROOT / "run.py")
-    contract = read_contract()
-    contract["bindings"] = {
-        "private_engine_sha256": "PENDING_PRIVATE_ENGINE_SHA256",
-        "private_freeze_inputs_sha256": "PENDING_PRIVATE_FREEZE_INPUTS_SHA256",
-    }
-    monkeypatch.setattr(module, "load_contract", lambda: contract)
-    monkeypatch.setattr(module, "verify_package", lambda: {"private_bindings_finalized": False})
-    with pytest.raises(PermissionError, match="placeholders"):
-        module.load_bound_private_engine(tmp_path)

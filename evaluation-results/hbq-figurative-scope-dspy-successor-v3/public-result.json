@@ -1,0 +1,29 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-figurative-scope-dspy-successor-v3",
+  "status": "NO_GO",
+  "new_calls": 0,
+  "train": {
+    "both_candidates_must_pass": true,
+    "c1_required_cell_repetitions": 3,
+    "c1_maximum_possible_correct_repetitions": 2,
+    "decisive_prior_accepted_misses": 1
+  },
+  "selection": {
+    "accessed": false,
+    "read": false
+  },
+  "confirmation_accessed": false,
+  "decision": "NO_PROMOTION",
+  "private_lineage": {
+    "v2": {
+      "private_aggregate_sha256": "49052db5d5684be418d1b5c563615b206a31a97459189cf3b5436ccdaa363126",
+      "private_result_sha256": "67bb8bbecf7abbbaf84fac5c94a583e1e87f7b4a692ee8c27291aa73ef258b61"
+    },
+    "v3": {
+      "private_aggregate_sha256": "bfb361e7bcd0dd0544181b9c366c5dee8c920e6175ae8b6779d79bb9ea4f077c",
+      "private_result_sha256": "b67552012234580d5f89003d5d7640d138e380faee6daca3e62820602bbbc077"
+    }
+  },
+  "privacy": "aggregate_only_no_private_content"
+}

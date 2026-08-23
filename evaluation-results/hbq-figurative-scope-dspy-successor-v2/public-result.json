@@ -1,0 +1,27 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-figurative-scope-dspy-successor-v2",
+  "status": "INCOMPLETE",
+  "execution_commit": "7febc77483f674a929d1778b7285a3a02c4d3a5a",
+  "source_private_aggregate_sha256": "49052db5d5684be418d1b5c563615b206a31a97459189cf3b5436ccdaa363126",
+  "source_private_result_sha256": "67bb8bbecf7abbbaf84fac5c94a583e1e87f7b4a692ee8c27291aa73ef258b61",
+  "execution": {
+    "logical_train_calls": 2,
+    "accepted_grounded_scored_misses": 1,
+    "terminal_schema_or_quote_failures": 1,
+    "retries": 0,
+    "selection_accessed": false,
+    "selection_read": false,
+    "confirmation_accessed": false
+  },
+  "scored_miss": {
+    "expected": "YES",
+    "observed": "NO"
+  },
+  "terminal_failure": {
+    "reason": "schema_or_quote_failure",
+    "cause": "v2_validator_rejected_schema_valid_mixed_exact_quote_and_summary_response"
+  },
+  "decision": "NO_PROMOTION",
+  "conclusion": "One grounded TRAIN result was a scored expected-YES/observed-NO miss. The second logical TRAIN call ended terminally when the v2 validator rejected a schema-valid mixed exact_quote+summary response. There were no retries; selection and confirmation stayed closed; this development-only result promotes no prompt, rubric wording, leaf, ownership, split, or weight change."
+}

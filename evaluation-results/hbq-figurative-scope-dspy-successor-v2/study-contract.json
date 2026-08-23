@@ -2,7 +2,7 @@
   "format_version": 1,
   "study_id": "hbq-figurative-scope-dspy-successor-v2",
   "development_only": true,
-  "status": "PENDING_EXECUTION",
+  "status": "SETTLED_INCOMPLETE_NO_PROMOTION",
   "parent_v1": {
     "private_aggregate_sha256": "4982e2b78572276cff717dfb130dc8742fe4f790a2b6b05dac9eb5779094094c",
     "private_result_sha256": "e640103ec7e8b9bb3e2802f1af7f07eb0adf3799185513ec783e833d18fec5df"
@@ -37,7 +37,13 @@
     "both_candidates_must_pass_selection": true,
     "passing_tie_breaker": "shorter_frozen_candidate_utf8_bytes"
   },
-  "allowed_terminal_statuses": ["NO_GO", "READY_FOR_SEPARATE_CONFIRMATION_FREEZE_REVIEW"],
+  "result_lineage": {
+    "execution_commit": "7febc77483f674a929d1778b7285a3a02c4d3a5a",
+    "private_aggregate_sha256": "49052db5d5684be418d1b5c563615b206a31a97459189cf3b5436ccdaa363126",
+    "private_result_sha256": "67bb8bbecf7abbbaf84fac5c94a583e1e87f7b4a692ee8c27291aa73ef258b61"
+  },
+  "public_result_sha256": "f2128d0f9868d3608a739a6e10bbbb733f22f1117c479b87caf3115059603753",
+  "allowed_terminal_statuses": ["INCOMPLETE", "NO_GO", "READY_FOR_SEPARATE_CONFIRMATION_FREEZE_REVIEW"],
   "forbidden": [
     "candidate_or_synthetic_text_publication",
     "controller_or_case_label_publication",

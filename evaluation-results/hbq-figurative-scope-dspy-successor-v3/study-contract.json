@@ -1,0 +1,61 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-figurative-scope-dspy-successor-v3",
+  "development_only": true,
+  "status": "SETTLED_NO_GO",
+  "parent_v2": {
+    "public_freeze_commit": "7febc77483f674a929d1778b7285a3a02c4d3a5a",
+    "private_aggregate_sha256": "49052db5d5684be418d1b5c563615b206a31a97459189cf3b5436ccdaa363126",
+    "private_result_sha256": "67bb8bbecf7abbbaf84fac5c94a583e1e87f7b4a692ee8c27291aa73ef258b61"
+  },
+  "bindings": {
+    "private_engine_sha256": "e9f23b62a7be422957a615d0661f9c19ffbf8348062779e3578eb6eac1da6b64",
+    "private_freeze_inputs_sha256": "e47ccd885e587de87c27a0e29c9f92a52531e70fa0652fbd2ce17a6f8fc61433"
+  },
+  "imported_train_miss": {
+    "full_reconstruction_complete": true,
+    "accepted_and_fully_reconstructed": true,
+    "candidate_commitment_sha256": "10e0e26ea20a33768e98abae76a343990401f673e6f0f891bfc04bfa66e39f6c",
+    "expected_verdict": "YES",
+    "observed_verdict": "NO",
+    "typed_evidence_valid": true,
+    "historical_result_unchanged": true
+  },
+  "gates": {
+    "candidates_required_exact": 2,
+    "affected_cells_per_candidate_exact": 6,
+    "repetitions_per_affected_cell_exact": 3,
+    "all_affected_cells_must_pass": true,
+    "imported_miss_is_decisive": true
+  },
+  "calls": {
+    "new_provider_calls_exact": 0,
+    "selection_calls_exact": 0,
+    "confirmation_calls_exact": 0
+  },
+  "typed_evidence_regression": {
+    "exact_only_valid": true,
+    "summary_only_valid": true,
+    "mixed_valid": true,
+    "exact_quotes_must_ground": true,
+    "malformed_invalid": true,
+    "does_not_relabel_historical_v2_result": true
+  },
+  "promotion": {
+    "prompt": "none",
+    "rubric": "none",
+    "leaf": "none",
+    "ownership": "none",
+    "split": "none",
+    "weight": "none"
+  },
+  "forbidden": [
+    "candidate_or_synthetic_text_publication",
+    "case_label_publication",
+    "private_path_publication",
+    "raw_prompt_response_evidence_or_session_publication",
+    "selection_or_confirmation_access",
+    "provider_execution",
+    "promotion"
+  ]
+}
