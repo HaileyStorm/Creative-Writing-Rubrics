@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema", "title": "Bound review record for a structural-audit candidate", "type": "object",
+  "required": ["audit", "finding_id", "reviewer", "decision", "audit_input_hashes", "evidence_hashes", "evidence_scope", "rationale"],
+  "properties": {
+    "audit": {"const": "hbq-full-leaf-structural-audit-v1"}, "finding_id": {"type": "string", "pattern": "^[0-9a-f]{64}$"}, "reviewer": {"type": "string", "pattern": ".*\\S.*"}, "decision": {"enum": ["no_change", "needs_empirical_test", "propose_change", "reject_candidate"]},
+    "audit_input_hashes": {"type": "object", "required": ["registry/all_modules.json", "bundles/all_bundles.json", "registry/source_inventory_map.json", "registry/modules.aggregate"], "properties": {"registry/all_modules.json": {"const": "7e43738c811e377aef369c38c9c9dbf0b19bfbf1c406e33f8f51dccdb2677f97"}, "bundles/all_bundles.json": {"const": "7ba16d41204220816c19e5a0042441487d8a91f2ac7365fbb2eeea93cd80ca4a"}, "registry/source_inventory_map.json": {"const": "3ca06ea8d6d3f7497b39b6903840227e32b72b99095cca9a7aedfbdfe29535d2"}, "registry/modules.aggregate": {"const": "8221ce03c8b1ec889c71fb28c29c902f11d8fc30c6892590cc2e2d2635bc0f36"}}, "additionalProperties": false},
+    "evidence_hashes": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^[0-9a-f]{64}$"}}, "evidence_scope": {"type": "string", "pattern": ".*\\S.*"}, "rationale": {"type": "string", "pattern": ".*\\S.*"}
+  },
+  "allOf": [{"if": {"properties": {"decision": {"const": "propose_change"}}}, "then": {"properties": {"evidence_hashes": {"minItems": 1}}}}], "additionalProperties": false
+}

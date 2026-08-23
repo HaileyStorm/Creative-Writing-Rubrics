@@ -1,0 +1,75 @@
+{
+  "format_version": 1,
+  "audit_id": "hbq-full-leaf-structural-audit-v1",
+  "status": "deterministic_static_candidate_audit_no_empirical_remedy_selection",
+  "parent_revision": "8970e0903cbec50cf62dbbc9e22b1cb7988c988b",
+  "parent_binding": {
+    "verification": "git_parent_blob_utf8_lf_canonical_content",
+    "git_blobs": {
+      "registry/all_modules.json": "d94af34c80cf32b4d5a380167e66e2af39f29ad7",
+      "bundles/all_bundles.json": "3d4f8c0d2dcc7020111dbdaf0e40a9fe483bc2a4",
+      "registry/source_inventory_map.json": "76042ff276dec8e01f8b08af164d2e067731da0f",
+      "registry/modules": "3e3c37be0f08c1f02e748d48e865f17c52413b5c"
+    }
+  },
+  "input_canonicalization": "utf8_lf_replace_crlf",
+  "frozen_before_candidate_inspection": true,
+  "inputs": {
+    "registry": "registry/all_modules.json",
+    "bundles": "bundles/all_bundles.json",
+    "source_inventory": "registry/source_inventory_map.json",
+    "module_source_tree": "registry/modules"
+  },
+  "frozen_input_hashes": {
+    "registry/all_modules.json": "7e43738c811e377aef369c38c9c9dbf0b19bfbf1c406e33f8f51dccdb2677f97",
+    "bundles/all_bundles.json": "7ba16d41204220816c19e5a0042441487d8a91f2ac7365fbb2eeea93cd80ca4a",
+    "registry/source_inventory_map.json": "3ca06ea8d6d3f7497b39b6903840227e32b72b99095cca9a7aedfbdfe29535d2",
+    "registry/modules.aggregate": "8221ce03c8b1ec889c71fb28c29c902f11d8fc30c6892590cc2e2d2635bc0f36"
+  },
+  "expected_inventory": {
+    "module_count": 278,
+    "leaf_count": 2145,
+    "bundle_count": 85,
+    "source_inventory_module_count": 203,
+    "source_inventory_leaf_count": 1594
+  },
+  "lexical_pair_rules": {
+    "normalization": "NFKC_lower_punctuation_fold",
+    "boilerplate_tokens": ["a", "an", "and", "are", "artifact", "at", "be", "by", "does", "for", "from", "in", "is", "it", "its", "of", "or", "relevant", "requested", "scope", "the", "their", "this", "to", "when", "with", "work"],
+    "token_jaccard_minimum": 0.55,
+    "shared_content_tokens_minimum": 4,
+    "shorter_containment_minimum": 0.80,
+    "optional_fourgram_dice_minimum": null,
+    "scan_policy": "complete_all_unordered_pairs_no_top_k"
+  },
+  "threshold_sensitivity": {
+    "delta": 0.05,
+    "report_counts_for": ["token_jaccard_minimum", "shorter_containment_minimum"]
+  },
+  "static_candidate_rules": {
+    "scope_binding_review": "Nonlocal scope language with current-artifact and zero-neighbor default evidence is a neutral scope-binding review candidate. It does not prove local-only evidence or a rubric defect.",
+    "polarity_change": "A YES-oriented leaf with a negative surface construction is eligible for later polarity review; it is not a wording-change instruction.",
+    "lexical_overlap": "Lexical similarity is a candidate-only signal and has no automatic first remedy."
+  },
+  "remedy_selection": {
+    "allowed_selection_values": ["none", "eligible_static_signal", "bound_empirical_signal"],
+    "automatic_selection": false,
+    "empirical_evidence_required_for_selected_remedy": true
+  },
+  "immutable_evidence_records": [],
+  "privacy": {
+    "public_safe_only": true,
+    "forbid_private_paths": true,
+    "forbid_private_prose": true,
+    "forbid_provider_outputs": true,
+    "forbidden_substrings": ["gray blood", "palimpsest", "nous_api_key", "authorization: bearer"],
+    "forbidden_regexes": ["(?i)\\bsk-[a-z0-9]{16,}"],
+    "forbidden_field_names": ["api_key", "access_token", "secret", "provider_output", "provider_receipt"]
+  },
+  "interpretation_limits": [
+    "This is a structural inventory and lexical-candidate audit, not semantic equivalence proof.",
+    "Candidate findings do not authorize leaf splitting, wording edits, reweighting, or ownership changes.",
+    "Source-inventory absence is recorded explicitly and is not an error.",
+    "All current leaves being positive YES/material/evidence-minimum-one describes the frozen registry state; it is not a defect finding."
+  ]
+}
