@@ -8,8 +8,22 @@ import json
 import os
 from pathlib import Path
 import subprocess
+import sys
 
 from study import FORBIDDEN_REMOTE_ENV, ROOT, verify_package
+
+
+def load_private_optimizer(engine: Path):
+    spec = importlib.util.spec_from_file_location("hbq_private_dspy_optimizer", engine)
+    module = importlib.util.module_from_spec(spec)
+    assert spec and spec.loader
+    sys.modules[spec.name] = module
+    try:
+        spec.loader.exec_module(module)
+    except Exception:
+        sys.modules.pop(spec.name, None)
+        raise
+    return module
 
 
 def preflight_remote(*, allow_remote: bool, owner_zero_incremental_charge: bool, private_root: Path) -> None:
@@ -50,10 +64,7 @@ def main() -> None:
     if hashlib.sha256(engine.read_bytes()).hexdigest() != metadata.get("private_optimizer_sha256"):
         parser.error("private optimizer implementation binding drifted")
     preflight_remote(allow_remote=args.allow_remote, owner_zero_incremental_charge=args.owner_zero_incremental_charge, private_root=engine.parent)
-    spec = importlib.util.spec_from_file_location("hbq_private_dspy_optimizer", engine)
-    module = importlib.util.module_from_spec(spec)
-    assert spec and spec.loader
-    spec.loader.exec_module(module)
+    module = load_private_optimizer(engine)
     print(json.dumps(module.optimize(public_root=ROOT, private_root=engine.parent), sort_keys=True))
 
 

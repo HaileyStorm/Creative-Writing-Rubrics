@@ -96,3 +96,25 @@ def test_candidate_boundary_and_contract_limits_are_immutable():
         # validate through a temporary in-memory equivalent to prevent changing frozen files.
         if changed["limits"] != {"proposer_calls_max": 4, "train_calls_max": 80, "selection_calls_max": 32, "confirmation_calls_exact": 168, "one_provider_attempt_per_logical_call": True}:
             raise ValueError("Execution limit drifted")
+
+
+def test_private_optimizer_loader_registers_dataclass_module(tmp_path):
+    engine = tmp_path / "private_optimizer.py"
+    engine.write_text(
+        "from dataclasses import dataclass\n"
+        "@dataclass\n"
+        "class Probe:\n"
+        "    value: int = 7\n",
+        encoding="utf-8",
+    )
+    spec = importlib.util.spec_from_file_location("dspy_successor_run_loader", ROOT / "run.py")
+    module = importlib.util.module_from_spec(spec)
+    assert spec and spec.loader
+    sys.modules[spec.name] = module
+    sys.path.insert(0, str(ROOT))
+    try:
+        spec.loader.exec_module(module)
+        loaded = module.load_private_optimizer(engine)
+    finally:
+        sys.path.remove(str(ROOT))
+    assert loaded.Probe().value == 7
