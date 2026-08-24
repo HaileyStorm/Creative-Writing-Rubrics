@@ -13,7 +13,7 @@ from hbqrs.paths import book_root
 
 
 ROOT = book_root() / "evaluation-results" / "hbq-p1-discordance-audit-v1"
-PRIVATE_ADAPTER_ROOT = Path(r"C:\Users\Haile\Documents\cwr-p1-discordance-adapter-v5-20260824")
+PRIVATE_ADAPTER_ROOT = Path(r"C:\Users\Haile\Documents\cwr-p1-discordance-adapter-v6-20260824")
 
 
 def study():
