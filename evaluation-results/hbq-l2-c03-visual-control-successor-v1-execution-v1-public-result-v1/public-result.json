@@ -1,0 +1,29 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-l2-c03-visual-control-successor-v1-execution-v1",
+  "source_bindings": {
+    "execution_claim_sha256": "fb5d22a789989a053a536ec65daca0b0733bbbc94be78e09666c84275b3eb596",
+    "settlement_prepared_sha256": "74f097816d8211a6efeb4cc70b59f8ce6608f9678af8b293fbd47a87250b7504",
+    "settlement_sha256": "a56dfe5616de31805d56c17f058aee24ae9ea4c1d54422a0e5c3b8cd7480aa8b",
+    "public_aggregate_sha256": "1ca133682182be0f0fe1ab056e55b53a72141a1af006ea0c4eaf4abc3253fd6b",
+    "publication_marker_sha256": "639f2d3e4f5ba92d2200a5348cdc78dba88eec48ef7a5be484388aedab3e0dd8"
+  },
+  "execution": {
+    "planned_calls": 12,
+    "completed_calls": 12,
+    "valid_calls": 12,
+    "normalization_events": 0
+  },
+  "aggregate_cells": {
+    "total": 4,
+    "correct_repeat_histogram": {
+      "0": 0,
+      "1": 1,
+      "2": 2,
+      "3": 1
+    }
+  },
+  "decision": "NO_GO",
+  "promotion": "none",
+  "interpretation": "The exact multimodal diagnostic is insufficiently repeatable; it supports no line-break or rubric conclusion."
+}
