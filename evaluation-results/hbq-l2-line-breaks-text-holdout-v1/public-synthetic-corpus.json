@@ -1,0 +1,11 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-l2-line-breaks-text-holdout-v1",
+  "privacy": "public_synthetic_only",
+  "cases": [
+    {"case_id": "t01", "artifact_name": "artifact-11.txt", "artifact_type": "poetry", "bundle_id": "poetry.free_verse", "declared_scope": "poem", "completion_status": "complete", "text": "Before dawn\nthe tram rail\ngives back\nthe green of its signal.", "image_input_required": false, "image_fixture": null},
+    {"case_id": "t02", "artifact_name": "artifact-12.txt", "artifact_type": "poetry", "bundle_id": "poetry.free_verse", "declared_scope": "poem", "completion_status": "complete", "text": "Clerks archived the\nminutes beneath the\ncabinet after the\nnoon delivery.", "image_input_required": false, "image_fixture": null},
+    {"case_id": "t03", "artifact_name": "artifact-13.txt", "artifact_type": "poetry", "bundle_id": "poetry.free_verse", "declared_scope": "poem", "completion_status": "complete", "text": "The mineral exhibit dimmed behind its glass at closing.", "image_input_required": false, "image_fixture": null},
+    {"case_id": "t04", "artifact_name": "artifact-14.txt", "artifact_type": "poetry", "bundle_id": "poetry.free_verse", "declared_scope": "poem", "completion_status": "complete", "text": "A narrow moon hangs white above the lane;\nthe last bus leaves, and leaves the rain again.", "image_input_required": false, "image_fixture": null}
+  ]
+}

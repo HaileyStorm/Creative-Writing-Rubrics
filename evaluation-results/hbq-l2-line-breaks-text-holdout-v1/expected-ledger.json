@@ -1,0 +1,10 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-l2-line-breaks-text-holdout-v1",
+  "cells": {
+    "t01": ["YES", "YES"],
+    "t02": ["NO", "NO"],
+    "t03": ["NOT_APPLICABLE", "NO"],
+    "t04": ["YES", "NO"]
+  }
+}
