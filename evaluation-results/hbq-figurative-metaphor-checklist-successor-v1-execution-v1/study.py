@@ -4,6 +4,8 @@ from __future__ import annotations
 import gzip
 import hashlib
 import json
+import os
+import shutil
 import subprocess
 import sys
 from collections import defaultdict
@@ -43,6 +45,9 @@ RUNTIME_PATHS = (
     "src/hbqrs/runner.py", "src/hbqrs/cli.py",
 )
 SUCCESSOR_FILES = ("README.md", "study.py", "run.py", "study-contract.json")
+AUTH_TIMEOUT_SECONDS = 20
+MINIMAL_ENVIRONMENT_KEYS = ("APPDATA", "ComSpec", "HOMEDRIVE", "HOMEPATH", "LOCALAPPDATA", "PATH", "SystemRoot", "TEMP", "TMP", "USERPROFILE", "WINDIR")
+BILLING_CREDENTIAL_ENVIRONMENT_NAMES = ("CODEX_API_KEY", "OPENAI_API_KEY", "OPENAI_API_BASE", "OPENAI_BASE_URL", "OPENAI_ORG_ID", "OPENAI_PROJECT")
 
 
 def canonical_json(value: Any) -> bytes:
@@ -133,13 +138,92 @@ def _write_summary(path: Path, value: Mapping[str, Any]) -> None:
     _write_or_verify(path, canonical_json(value))
 
 
+def _execution_claim_payload(root: Path) -> dict[str, Any]:
+    return {
+        "format_version": 1, "study_id": STUDY_ID, "kind": "atomic_precontact_execution_claim",
+        "state": "claimed_no_retry_or_resume", "provider_capable_dispatches": SLOTS,
+        "frozen_inputs": {
+            "study_manifest_sha256": sha256_file(root / "study-manifest.v1.json"),
+            "runtime_schedule_sha256": sha256_file(root / "runtime-schedule.v1.json"),
+            "preexecution_disclosure_sha256": sha256_file(root / "receipts" / "preexecution-disclosure.v1.json"),
+            "subscription_authentication_sha256": sha256_file(root / "receipts" / "subscription-authentication.v1.json"),
+        },
+    }
+
+
+def _claim_execution(root: Path) -> dict[str, Any]:
+    """Atomically latch a root before any provider-capable subprocess can start."""
+    claim = root / "execution-claim.v1.json"
+    payload = _execution_claim_payload(root)
+    try:
+        descriptor = os.open(str(claim), os.O_WRONLY | os.O_CREAT | os.O_EXCL)
+    except FileExistsError as exc:
+        raise ValueError("Execution root has an existing durable claim; no retry or resume is permitted") from exc
+    try:
+        value = canonical_json(payload)
+        written = os.write(descriptor, value)
+        if written != len(value):
+            raise OSError("short atomic execution-claim write")
+        os.fsync(descriptor)
+    finally:
+        os.close(descriptor)
+    if _load_json(claim) != payload:
+        raise ValueError("Atomic execution claim did not persist exactly")
+    return payload
+
+
+def _minimal_environment() -> dict[str, str]:
+    credentials = [name for name in BILLING_CREDENTIAL_ENVIRONMENT_NAMES if os.environ.get(name)]
+    if credentials:
+        raise ValueError("OpenAI/Codex billing credential environment is forbidden for subscription-only execution")
+    environment = {name: os.environ[name] for name in MINIMAL_ENVIRONMENT_KEYS if os.environ.get(name)}
+    environment["NO_COLOR"] = "1"
+    return environment
+
+
+def _auth_command(command: list[str], *, runner_call: Callable[..., Any], environment: Mapping[str, str]) -> tuple[str, str]:
+    done = runner_call(command, text=True, encoding="utf-8", capture_output=True, check=False, env=dict(environment), timeout=AUTH_TIMEOUT_SECONDS)
+    stdout, stderr = str(getattr(done, "stdout", "")), str(getattr(done, "stderr", ""))
+    if getattr(done, "returncode", 1):
+        raise ValueError("Codex CLI subscription authentication command failed")
+    return stdout, stderr
+
+
+def subscription_authentication(*, runner_call: Callable[..., Any] = subprocess.run, environment: Mapping[str, str] | None = None) -> dict[str, Any]:
+    dispatch_environment = dict(_minimal_environment() if environment is None else environment)
+    resolved = shutil.which("codex.exe")
+    if not resolved:
+        raise ValueError("Codex executable cannot be resolved")
+    binary = Path(resolved).resolve()
+    if binary.suffix.casefold() != ".exe" or not binary.is_file():
+        raise ValueError("Codex executable is not a regular codex.exe file")
+    version_stdout, version_stderr = _auth_command([str(binary), "--version"], runner_call=runner_call, environment=dispatch_environment)
+    login_stdout, login_stderr = _auth_command([str(binary), "login", "status"], runner_call=runner_call, environment=dispatch_environment)
+    login_text = (login_stdout + "\n" + login_stderr).casefold()
+    if "chatgpt" not in login_text or "api key" in login_text:
+        raise ValueError("Codex login is not an attested ChatGPT subscription session")
+    version = version_stdout.strip() or version_stderr.strip()
+    if not version:
+        raise ValueError("Codex version output is unavailable")
+    return {
+        "format_version": 1, "study_id": STUDY_ID, "kind": "chatgpt_subscription_dispatch_authentication",
+        "destination": "Codex CLI -> authenticated OpenAI service", "authentication": "chatgpt_subscription",
+        "codex_executable_path": str(binary), "codex_executable_sha256": sha256_file(binary), "codex_version": version,
+        "version_stdout_sha256": sha256_bytes(version_stdout.encode("utf-8")), "version_stderr_sha256": sha256_bytes(version_stderr.encode("utf-8")),
+        "login_status": "logged_in_chatgpt_subscription", "login_status_stdout_sha256": sha256_bytes(login_stdout.encode("utf-8")), "login_status_stderr_sha256": sha256_bytes(login_stderr.encode("utf-8")),
+        "minimal_environment_keys": sorted(dispatch_environment), "environment_value_sha256": sha256_bytes(canonical_json(dispatch_environment)),
+        "api_credential_environment": "absent",
+    }
+
+
 def validate_package() -> dict[str, Any]:
     expected_execution = {
         "route": "codex", "model": "gpt-5.6-sol", "reasoning": "high", "one_leaf_per_call": True,
         "batch_size": 1, "batch_attempts": 1, "physical_attempts_per_slot": 1,
-        "retry_or_resume": "forbidden", "attempt_lifecycle_policy": ATTEMPT_LIFECYCLE_POLICY,
+        "retry_or_resume": "forbidden", "execution_claim": "root_atomic_create_binds_frozen_manifest_schedule_disclosure_auth_no_retry_or_resume", "attempt_lifecycle_policy": ATTEMPT_LIFECYCLE_POLICY,
         "run_manifest_format_version": 5, "maximum_provider_sends": 72,
         "zero_incremental_charge_only": True, "paid_fallback": "forbidden",
+        "authentication": "chatgpt_subscription_via_exact_codex_exe_no_api_billing_environment",
     }
     expected_privacy = {
         "runtime_private_root": "explicit_external_disjoint_portable",
@@ -254,8 +338,8 @@ def _runtime_bindings() -> dict[str, Any]:
     return {"cwr_head": _git("rev-parse", "HEAD"), "cwr_files": {path: sha256_file(REPOSITORY / path) for path in RUNTIME_PATHS}, "successor_files": {path: sha256_file(ROOT / path) for path in SUCCESSOR_FILES}}
 
 
-def _manifest(schedule: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
-    return {"format_version": 1, "study_id": STUDY_ID, "contract_sha256": sha256_file(ROOT / "study-contract.json"), "runtime_bindings": _runtime_bindings(), "planned_slots": SLOTS, "slots": [_public_slot(slot) for slot in schedule]}
+def _manifest(schedule: Sequence[Mapping[str, Any],], authentication: Mapping[str, Any]) -> dict[str, Any]:
+    return {"format_version": 1, "study_id": STUDY_ID, "contract_sha256": sha256_file(ROOT / "study-contract.json"), "runtime_bindings": _runtime_bindings(), "dispatch_authentication": dict(authentication), "planned_slots": SLOTS, "slots": [_public_slot(slot) for slot in schedule]}
 
 
 def prepare(private_root: str | Path) -> dict[str, Any]:
@@ -269,18 +353,18 @@ def prepare(private_root: str | Path) -> dict[str, Any]:
         _write_or_verify(artifact, str(slot["artifact_text"]).encode("utf-8"))
         _write_or_verify(task_path, canonical_json(task))
         _write_or_verify(override_path, canonical_json(_scope_override(slot, task)))
-    _write_or_verify(root / "study-manifest.v1.json", canonical_json(_manifest(schedule)))
     _write_or_verify(root / "private-schedule.v1.json", canonical_json({"format_version": 1, "slots": schedule}))
     return {"private_root": str(root), "planned_slots": SLOTS, "provider_calls": 0}
 
 
-def command_for(slot: Mapping[str, Any], private_root: str | Path, *, output_root: str = "runs", allow_remote: bool = False) -> list[str]:
+def command_for(slot: Mapping[str, Any], private_root: str | Path, *, output_root: str = "runs", allow_remote: bool = False, codex_binary: str | None = None) -> list[str]:
     root = _root(private_root)
     artifact, task, override = _paths(root, slot)
     command = [
         sys.executable, "-m", "hbqrs", "--registry", str(root / "catalog" / "registry.json"),
         "--bundles", str(root / "catalog" / "bundles.json"), "judge", str(artifact),
         "--bundle", BUNDLE_ID, "--provider", "codex", "--model", "gpt-5.6-sol", "--reasoning", "high", "--strict-ai",
+        *( ["--codex-bin", codex_binary] if codex_binary is not None else [] ),
         "--batch-size", "1", "--batch-attempts", "1", "--attempt-lifecycle-policy", ATTEMPT_LIFECYCLE_POLICY,
         "--artifact-id", str(slot["artifact_id"]), "--question-id", str(slot["leaf_id"]),
         "--task-contract", str(task), "--scope-compatibility-override", str(override),
@@ -336,63 +420,78 @@ def _input_record(path: Path) -> dict[str, Any]:
     return {"path": str(path.resolve()), "name": path.name, "bytes": len(data), "sha256": sha256_bytes(data)}
 
 
-def _disclosure(schedule: Sequence[Mapping[str, Any]], root: Path) -> dict[str, Any]:
+def _disclosure(schedule: Sequence[Mapping[str, Any]], root: Path, authentication: Mapping[str, Any]) -> dict[str, Any]:
     slots = []
     for slot in schedule:
         artifact, task, override = _paths(root, slot)
         slots.append({"slot_id": slot["slot_id"], "artifact": _input_record(artifact), "task_contract_sha256": sha256_file(task), "scope_compatibility_sha256": sha256_file(override), "rendered_prompt_sha256": slot["rendered_prompt_sha256"]})
-    return {"format_version": 1, "study_id": STUDY_ID, "kind": "preexecution_disclosure", "provider_calls": 0, "remote_destination": "Codex gpt-5.6-sol", "provider": "codex", "model": "gpt-5.6-sol", "reasoning": "high", "one_leaf_per_call": True, "physical_attempts_per_slot": 1, "retry_or_resume": "forbidden", "attempt_lifecycle_policy": ATTEMPT_LIFECYCLE_POLICY, "zero_incremental_charge_only": True, "paid_fallback": "forbidden", "slots": slots}
+    return {"format_version": 1, "study_id": STUDY_ID, "kind": "preexecution_disclosure", "provider_calls": 0, "remote_destination": "Codex CLI -> authenticated OpenAI service", "provider": "codex", "model": "gpt-5.6-sol", "reasoning": "high", "dispatch_authentication": dict(authentication), "one_leaf_per_call": True, "physical_attempts_per_slot": 1, "retry_or_resume": "forbidden", "attempt_lifecycle_policy": ATTEMPT_LIFECYCLE_POLICY, "zero_incremental_charge_only": True, "paid_fallback": "forbidden", "slots": slots}
 
 
-def dry_run(private_root: str | Path, *, runner_call: Callable[..., Any] = subprocess.run) -> dict[str, Any]:
+def dry_run(private_root: str | Path, *, runner_call: Callable[..., Any] = subprocess.run, auth_call: Callable[..., Any] = subprocess.run) -> dict[str, Any]:
+    dispatch_environment = _minimal_environment()
+    authentication = subscription_authentication(runner_call=auth_call, environment=dispatch_environment)
     prepared, root, schedule = prepare(private_root), _root(private_root), build_schedule()
+    frozen_manifest = _manifest(schedule, authentication)
+    _write_or_verify(root / "study-manifest.v1.json", canonical_json(frozen_manifest))
     for slot in schedule:
-        done = runner_call([*command_for(slot, private_root, output_root="dry-runs"), "--dry-run"], text=True, encoding="utf-8", capture_output=True, check=False)
+        done = runner_call([*command_for(slot, private_root, output_root="dry-runs", codex_binary=str(authentication["codex_executable_path"])), "--dry-run"], text=True, encoding="utf-8", capture_output=True, check=False, env=dispatch_environment)
         if getattr(done, "returncode", 1):
             raise RuntimeError(f"CWR dry run stopped at {slot['slot_id']}: {getattr(done, 'stderr', '')}")
         prompt_path = root / "rendered-prompts" / f"{slot['slot_id']}.txt"
         prompt_path.parent.mkdir(parents=True, exist_ok=True)
-        rendered = runner_call(_render_command(slot, root, prompt_path), text=False, capture_output=True, check=False)
+        rendered = runner_call(_render_command(slot, root, prompt_path), text=False, capture_output=True, check=False, env=dispatch_environment)
         if getattr(rendered, "returncode", 1):
             raise RuntimeError(f"CWR render stopped at {slot['slot_id']}: {getattr(rendered, 'stderr', '')}")
         canonical_prompt = canonical_prompt_bytes(prompt_path.read_bytes())
         temporary = prompt_path.with_name(prompt_path.name + ".tmp")
         temporary.write_bytes(canonical_prompt)
         temporary.replace(prompt_path)
+    if _manifest(schedule, authentication) != frozen_manifest:
+        raise ValueError("Runtime or successor bindings drifted during dry-run; use a fresh root")
     runtime = _runtime_schedule(root, schedule)
     aggregate = sha256_bytes(canonical_json({slot["slot_id"]: slot["rendered_prompt_sha256"] for slot in runtime}))
     _write_or_verify(root / "runtime-schedule.v1.json", canonical_json({"format_version": 1, "study_id": STUDY_ID, "provider_calls": 0, "slots": runtime, "rendered_prompt_aggregate_sha256": aggregate}))
-    _write_or_verify(root / "receipts" / "preexecution-disclosure.v1.json", canonical_json(_disclosure(runtime, root)))
-    _write_or_verify(root / "receipts" / "provider-free-dry-run.v1.json", canonical_json({"format_version": 1, "study_id": STUDY_ID, "provider_calls": 0, "planned_slots": SLOTS, "phase_b_enabled": False, "real_holdout_opened": False, "rendered_prompt_aggregate_sha256": aggregate}))
+    _write_or_verify(root / "receipts" / "subscription-authentication.v1.json", canonical_json(authentication))
+    _write_or_verify(root / "receipts" / "preexecution-disclosure.v1.json", canonical_json(_disclosure(runtime, root, authentication)))
+    _write_or_verify(root / "receipts" / "provider-free-dry-run.v1.json", canonical_json({"format_version": 1, "study_id": STUDY_ID, "provider_calls": 0, "planned_slots": SLOTS, "phase_b_enabled": False, "real_holdout_opened": False, "dispatch_authentication_sha256": sha256_bytes(canonical_json(authentication)), "rendered_prompt_aggregate_sha256": aggregate}))
     return {**prepared, "provider_calls": 0, "rendered_prompt_aggregate_sha256": aggregate, "rendered_prompts": SLOTS}
 
 
 def _validated_runtime_schedule(private_root: str | Path) -> list[dict[str, Any]]:
     root = _root(private_root)
     validate_package()
-    if _load_json(root / "study-manifest.v1.json") != _manifest(build_schedule()):
+    authentication = _load_json(root / "receipts" / "subscription-authentication.v1.json")
+    if _load_json(root / "study-manifest.v1.json") != _manifest(build_schedule(), authentication):
         raise ValueError("Prepared runtime/successor binding drifted; use a fresh dry run")
     expected = _runtime_schedule(root, build_schedule())
     aggregate = sha256_bytes(canonical_json({slot["slot_id"]: slot["rendered_prompt_sha256"] for slot in expected}))
     stored = _load_json(root / "runtime-schedule.v1.json")
     if stored != {"format_version": 1, "study_id": STUDY_ID, "provider_calls": 0, "slots": expected, "rendered_prompt_aggregate_sha256": aggregate}:
         raise ValueError("Prepared current-production prompt schedule drifted; use a fresh dry run")
-    if _load_json(root / "receipts" / "preexecution-disclosure.v1.json") != _disclosure(expected, root):
+    if _load_json(root / "receipts" / "preexecution-disclosure.v1.json") != _disclosure(expected, root, authentication):
         raise ValueError("Exact preexecution disclosure drifted")
     return expected
 
 
-def _zero_charge_receipt() -> dict[str, Any]:
-    return {"format_version": 1, "study_id": STUDY_ID, "kind": "owner_zero_incremental_charge_acknowledgement", "route": "codex", "paid_fallback": "forbidden", "acknowledged": True, "maximum_provider_sends": SLOTS}
+def _zero_charge_receipt(authentication: Mapping[str, Any]) -> dict[str, Any]:
+    return {"format_version": 1, "study_id": STUDY_ID, "kind": "owner_zero_incremental_charge_acknowledgement", "route": "codex", "destination": "Codex CLI -> authenticated OpenAI service", "dispatch_authentication": dict(authentication), "paid_fallback": "forbidden", "acknowledged": True, "maximum_provider_sends": SLOTS}
 
 
-def execute(private_root: str | Path, *, allow_remote: bool = False, acknowledged_zero_incremental_charge: bool = False, runner_call: Callable[..., Any] = subprocess.run) -> dict[str, Any]:
+def execute(private_root: str | Path, *, allow_remote: bool = False, acknowledged_zero_incremental_charge: bool = False, runner_call: Callable[..., Any] = subprocess.run, auth_call: Callable[..., Any] = subprocess.run) -> dict[str, Any]:
     if not allow_remote or not acknowledged_zero_incremental_charge:
         raise ValueError("Execution requires --allow-remote and zero-incremental-charge acknowledgement")
-    root, schedule = _root(private_root), _validated_runtime_schedule(private_root)
+    root = _root(private_root)
     terminal_paths = ("phase-a-settlement.v1.json", "public-aggregate.v1.json", "terminal-sidecar.v5.json")
     if any((root / name).exists() for name in terminal_paths):
         raise ValueError("Phase A execution is forbidden after any terminal settlement artifact")
+    _claim_execution(root)
+    schedule = _validated_runtime_schedule(private_root)
+    dispatch_environment = _minimal_environment()
+    frozen_authentication = _load_json(root / "receipts" / "subscription-authentication.v1.json")
+    current_authentication = subscription_authentication(runner_call=auth_call, environment=dispatch_environment)
+    if frozen_authentication != current_authentication:
+        raise ValueError("Codex CLI subscription authentication evidence drifted; run a fresh dry-run before dispatch")
     runs_root = root / "runs"
     if runs_root.exists() and any(runs_root.iterdir()):
         raise ValueError("One-attempt Phase A execution rejects pre-existing run directories; no retry or resume exists")
@@ -400,9 +499,9 @@ def execute(private_root: str | Path, *, allow_remote: bool = False, acknowledge
         run = root / "runs" / str(slot["slot_id"])
         if run.exists():
             raise ValueError("One-attempt Phase A execution rejects pre-existing run directories; no retry or resume exists")
-    _write_or_verify(root / "receipts" / "zero-charge-acknowledgement.v1.json", canonical_json(_zero_charge_receipt()))
+    _write_or_verify(root / "receipts" / "zero-charge-acknowledgement.v1.json", canonical_json(_zero_charge_receipt(current_authentication)))
     for slot in schedule:
-        done = runner_call(command_for(slot, private_root, allow_remote=True), text=True, encoding="utf-8", capture_output=True, check=False)
+        done = runner_call(command_for(slot, private_root, allow_remote=True, codex_binary=str(current_authentication["codex_executable_path"])), text=True, encoding="utf-8", capture_output=True, check=False, env=dispatch_environment)
         if getattr(done, "returncode", 1):
             raise RuntimeError(f"Execution stopped at {slot['slot_id']}; do not retry or resume this successor")
     return {"mode": "execute", "executed_slots": SLOTS, "route": "codex", "model": "gpt-5.6-sol", "reasoning": "high", "billing": "owner_attested_zero_incremental_charge"}
@@ -474,7 +573,14 @@ def settle(private_root: str | Path) -> dict[str, Any]:
     root = _root(private_root)
     try:
         schedule = _validated_runtime_schedule(private_root)
-        if _load_json(root / "receipts" / "zero-charge-acknowledgement.v1.json") != _zero_charge_receipt():
+        try:
+            claim = _load_json(root / "execution-claim.v1.json")
+        except OSError as exc:
+            raise ValueError("Atomic precontact execution claim is unavailable or drifted") from exc
+        if claim != _execution_claim_payload(root):
+            raise ValueError("Atomic precontact execution claim is unavailable or drifted")
+        authentication = _load_json(root / "receipts" / "subscription-authentication.v1.json")
+        if _load_json(root / "receipts" / "zero-charge-acknowledgement.v1.json") != _zero_charge_receipt(authentication):
             raise ValueError("Zero-charge acknowledgement is unavailable or drifted")
     except (OSError, ValueError) as exc:
         return _incomplete(root, 0, [{"slot_id": "runtime", "reason": str(exc)}])

@@ -12,11 +12,16 @@ expected verdict, gate role, rationale, title, author, ebook number, locator, or
 license metadata. Baseline and candidate prompts differ only in the frozen P4
 question wording.
 
+Live execution first creates a permanent, filesystem-atomic root claim. A
+concurrent or second invocation fails before any provider-capable callback.
 Any unresolved live start or nonzero process exit terminalizes this private
-root and forbids retry. A versioned successor is required. Settlement opens the
-sealed ledger only after all 48 accepted terminal receipts are verified. It
-publishes aggregate counts and one of `PROMOTION_REVIEW_ELIGIBLE`, `NO_EFFECT`,
-or `NO_GO`; it never promotes the leaf.
+root and forbids retry. The claim survives crashes and settlement; a versioned
+successor is required. Settlement first
+requires the exact retained claim, then opens the sealed ledger only after all
+48 accepted terminal receipts are verified. The private and public settlements
+carry the claim hash. Public output contains aggregate counts and one of
+`PROMOTION_REVIEW_ELIGIBLE`, `NO_EFFECT`, or `NO_GO`; it never promotes the
+leaf.
 
 Provider-free review:
 

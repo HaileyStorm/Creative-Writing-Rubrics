@@ -29,7 +29,9 @@
     "paid_api_or_fallback_route": "forbidden",
     "authentication": "chatgpt_subscription_only_no_api_credential_environment",
     "connection_retries": "disabled",
-    "timeout_seconds": 120
+    "timeout_seconds": 120,
+    "exclusive_execution_claim": "required_before_attempt_scan_and_provider_contact",
+    "settlement_publication": "claim_bound_prepared_transaction_then_commit_marker"
   },
   "geometry": {"cases": 4, "leaves": 4, "cells": 8, "repeats": 3, "slots": 24, "visual_png_slots": 6},
   "image_delivery": {

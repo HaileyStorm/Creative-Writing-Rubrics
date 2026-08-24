@@ -48,6 +48,17 @@ def _fake_auth(command, **kwargs):
     return type("Result", (), {"returncode": 0, "stdout": "Logged in using ChatGPT", "stderr": ""})()
 
 
+def _accepted_runner(contacts):
+    def accepted(command, **kwargs):
+        contacts.append((command, kwargs))
+        output = Path(command[command.index("--output-last-message") + 1])
+        output.parent.mkdir(parents=True, exist_ok=True)
+        question_id = next(line for line in kwargs["input"].splitlines() if '"question_id":' in line).split('"')[3]
+        output.write_text(json.dumps({"verdicts": [{"question_id": question_id, "verdict": "YES", "confidence": 0.8, "evidence": [{"kind": "summary", "reference": "supplied synthetic artifact", "exact_quote": None, "summary": "Grounded assessment of the supplied artifact."}], "note": "Synthetic test response."}]}), encoding="utf-8")
+        return type("Result", (), {"returncode": 0, "stdout": "completed", "stderr": "provider: openai\nmodel: gpt-5.6-sol\nreasoning effort: high\n"})()
+    return accepted
+
+
 @pytest.fixture
 def private_root() -> Path:
     """The executor must reject test roots nested inside the public checkout."""
@@ -133,20 +144,18 @@ def test_aggregate_only_write_once_settlement_and_gate_precedence(private_root: 
     s.dry_run(private_root, auth_call=_fake_auth)
     schedule = s.build_schedule()
     scores = {slot["slot_id"]: True for slot in schedule}
-    result = s.settle(private_root, verifier=lambda _root, slot: _record(slot), scorer=lambda slot, _record: scores[slot["slot_id"]])
+    result, public = s._aggregate_test_only(schedule=schedule, records=[_record(slot) for slot in schedule], scorer=lambda slot, _record: scores[slot["slot_id"]])
     assert result["decision"] == "FIXTURE_DRIVEN_CLOSE_NO_CHANGE"
-    public = json.loads((private_root / "public-aggregate.v1.json").read_text(encoding="utf-8"))
-    assert set(public) == {"study_id", "decision", "completed_slots", "planned_slots", "aggregate_cells", "visual_attachment_slots", "promotion"}
+    assert set(public) == {"study_id", "decision", "completed_slots", "planned_slots", "aggregate_cells", "visual_attachment_slots", "publication_requires", "promotion"}
     assert public["aggregate_cells"] == {"zero_of_three": 0, "one_of_three": 0, "two_of_three": 0, "three_of_three": 8, "total": 8}
-    with pytest.raises(ValueError, match="frozen aggregate-only"):
-        s.settle(private_root, verifier=lambda _root, slot: _record(slot), scorer=lambda _slot, _record: True)
+    with pytest.raises(ValueError, match="immutable execution claim"):
+        s.settle(private_root, scorer=lambda _slot, _record: True)
+    assert not (private_root / "public-aggregate.v1.json").exists()
 
-    variance_root = private_root / "variance"
-    s.dry_run(variance_root, auth_call=_fake_auth)
     first_cell = [(slot["slot_id"], slot["case_id"], slot["leaf_id"]) for slot in schedule][:3]
     variance_scores = {slot["slot_id"]: True for slot in schedule}
     variance_scores[first_cell[0][0]] = False
-    assert s.settle(variance_root, verifier=lambda _root, slot: _record(slot), scorer=lambda slot, _record: variance_scores[slot["slot_id"]])["decision"] == "VARIANCE_NO_GO"
+    assert s._aggregate_test_only(schedule=schedule, records=[_record(slot) for slot in schedule], scorer=lambda slot, _record: variance_scores[slot["slot_id"]])[0]["decision"] == "VARIANCE_NO_GO"
 
 
 def test_clean_zero_of_three_is_only_leaf_specific_treatment_design_eligibility(private_root: Path):
@@ -156,7 +165,7 @@ def test_clean_zero_of_three_is_only_leaf_specific_treatment_design_eligibility(
     cell = {(slot["case_id"], slot["leaf_id"]) for slot in schedule}
     target = next(iter(cell))
     scores = {slot["slot_id"]: (slot["case_id"], slot["leaf_id"]) != target for slot in schedule}
-    result = s.settle(private_root, verifier=lambda _root, slot: _record(slot), scorer=lambda slot, _record: scores[slot["slot_id"]])
+    result, _public = s._aggregate_test_only(schedule=schedule, records=[_record(slot) for slot in schedule], scorer=lambda slot, _record: scores[slot["slot_id"]])
     assert result["decision"] == "LEAF_SPECIFIC_TREATMENT_DESIGN_ELIGIBLE"
     assert result["promotion"] == "none"
 
@@ -227,8 +236,80 @@ def test_partial_nonzero_contact_terminalizes_every_remaining_slot_without_retry
     terminal = [json.loads(s._sidecar_path(private_root, slot).read_text(encoding="utf-8")) for slot in schedule]
     assert terminal[0]["state"] == "ambiguous_contact"
     assert all(value["state"] == "blocked_before_dispatch" for value in terminal[1:])
-    with pytest.raises(ValueError, match="one physical attempt"):
+    with pytest.raises(ValueError, match="claim already exists|one physical attempt"):
         s.execute(private_root, allow_remote=True, acknowledged_zero_incremental_charge=True, runner_call=partial, auth_call=_fake_auth)
+
+
+def test_preexisting_intent_or_attempt_directory_fail_stops_before_dispatch(private_root: Path):
+    s = study()
+    s.dry_run(private_root, auth_call=_fake_auth)
+    slot = s.build_schedule()[0]
+    intent = s._attempt_dir(private_root, slot) / "intent.json"
+    intent.parent.mkdir(parents=True, exist_ok=True)
+    intent.write_text("{}", encoding="utf-8")
+    callbacks = []
+
+    def must_not_dispatch(*_args, **_kwargs):
+        callbacks.append(True)
+        raise AssertionError("runner callback must not run")
+
+    with pytest.raises(ValueError, match="prior intent"):
+        s.execute(private_root, allow_remote=True, acknowledged_zero_incremental_charge=True, runner_call=must_not_dispatch, auth_call=_fake_auth)
+    assert callbacks == []
+
+
+def test_atomic_execution_claim_contention_blocks_second_callback(private_root: Path):
+    s = study()
+    s.dry_run(private_root, auth_call=_fake_auth)
+    schedule = s.build_schedule()
+    s._claim_execution(private_root, schedule)
+    callbacks = []
+
+    def must_not_dispatch(*_args, **_kwargs):
+        callbacks.append(True)
+        raise AssertionError("contended execution must not dispatch")
+
+    with pytest.raises(ValueError, match="Execution claim already exists"):
+        s.execute(private_root, allow_remote=True, acknowledged_zero_incremental_charge=True, runner_call=must_not_dispatch, auth_call=_fake_auth)
+    assert callbacks == []
+
+
+def test_publication_transaction_recovers_after_partial_write_without_official_marker(private_root: Path):
+    s = study()
+    schedule = s.build_schedule()
+    settlement, public = s._aggregate_test_only(schedule=schedule, records=[_record(slot) for slot in schedule], scorer=lambda _slot, _record: True)
+    claim = s._claim_execution(private_root, schedule)
+    claim_sha256 = s.sha256_bytes(s.canonical_json(claim))
+    settlement["execution_claim_sha256"] = claim_sha256
+    public["execution_claim_sha256"] = claim_sha256
+
+    def interrupted(path: Path, value: bytes):
+        if path.name == "public-aggregate.v1.json":
+            raise RuntimeError("simulated crash before public aggregate write")
+        s._write_or_verify(path, value)
+
+    with pytest.raises(RuntimeError, match="simulated crash"):
+        s._write_settlement(private_root, settlement, public, writer=interrupted)
+    assert (private_root / "settlement-transaction.prepared.v1.json").is_file()
+    assert (private_root / "settlement.v1.json").is_file()
+    assert not (private_root / "settlement-publication.v1.json").exists()
+    s._write_settlement(private_root, settlement, public)
+    marker = json.loads((private_root / "settlement-publication.v1.json").read_text(encoding="utf-8"))
+    assert marker["kind"] == "aggregate_publication_commit"
+
+
+def test_receipt_lifecycle_mutation_blocks_production_settlement(private_root: Path):
+    s = study()
+    s.dry_run(private_root, auth_call=_fake_auth)
+    s.execute(private_root, allow_remote=True, acknowledged_zero_incremental_charge=True, runner_call=_accepted_runner([]), auth_call=_fake_auth)
+    slot = s.build_schedule()[0]
+    receipt_path = s._attempt_dir(private_root, slot) / "receipt.json"
+    receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    receipt["dispatch_number"] = 2
+    receipt_path.write_text(json.dumps(receipt), encoding="utf-8")
+    with pytest.raises(ValueError, match="lifecycle"):
+        s.settle(private_root, scorer=lambda _slot, _record: True)
+    assert not (private_root / "settlement-publication.v1.json").exists()
 
 
 def test_successful_mocked_24_contact_path_uses_attested_binary_and_terminal_sidecars(private_root: Path):
@@ -236,15 +317,7 @@ def test_successful_mocked_24_contact_path_uses_attested_binary_and_terminal_sid
     s.dry_run(private_root, auth_call=_fake_auth)
     contacts = []
 
-    def accepted(command, **kwargs):
-        contacts.append((command, kwargs))
-        output = Path(command[command.index("--output-last-message") + 1])
-        output.parent.mkdir(parents=True, exist_ok=True)
-        question_id = next(line for line in kwargs["input"].splitlines() if '"question_id":' in line).split('"')[3]
-        output.write_text(json.dumps({"verdicts": [{"question_id": question_id, "verdict": "YES", "confidence": 0.8, "evidence": [{"kind": "summary", "reference": "supplied synthetic artifact", "exact_quote": None, "summary": "Grounded assessment of the supplied artifact."}], "note": "Synthetic test response."}]}), encoding="utf-8")
-        return type("Result", (), {"returncode": 0, "stdout": "completed", "stderr": "provider: openai\nmodel: gpt-5.6-sol\nreasoning effort: high\n"})()
-
-    result = s.execute(private_root, allow_remote=True, acknowledged_zero_incremental_charge=True, runner_call=accepted, auth_call=_fake_auth)
+    result = s.execute(private_root, allow_remote=True, acknowledged_zero_incremental_charge=True, runner_call=_accepted_runner(contacts), auth_call=_fake_auth)
     assert result["completed_slots"] == 24 and len(contacts) == 24
     authentication = json.loads((private_root / "receipts" / "subscription-authentication.v1.json").read_text(encoding="utf-8"))
     assert all(call[0][0] == authentication["binary_path"] for call in contacts)
@@ -260,3 +333,16 @@ def test_successful_mocked_24_contact_path_uses_attested_binary_and_terminal_sid
     receipts = [json.loads((s._attempt_dir(private_root, slot) / "receipt.json").read_text(encoding="utf-8")) for slot in schedule]
     assert all(value["reported"] == {"provider": "openai", "model": "gpt-5.6-sol", "reasoning_effort": "high"} for value in receipts)
     assert all(value["environment_value_sha256"] == authentication["environment_value_sha256"] for value in receipts)
+
+
+def test_response_mutation_after_accepted_terminal_sidecar_fails_production_settlement(private_root: Path):
+    s = study()
+    s.dry_run(private_root, auth_call=_fake_auth)
+    contacts = []
+    s.execute(private_root, allow_remote=True, acknowledged_zero_incremental_charge=True, runner_call=_accepted_runner(contacts), auth_call=_fake_auth)
+    slot = s.build_schedule()[0]
+    response = s._response_path(private_root, slot)
+    response.write_text(response.read_text(encoding="utf-8") + " ", encoding="utf-8")
+    with pytest.raises(ValueError, match="response hash"):
+        s.settle(private_root, scorer=lambda _slot, _record: True)
+    assert not (private_root / "settlement-publication.v1.json").exists()

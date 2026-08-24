@@ -9,7 +9,13 @@ the executor, dry run, manifests, prompts, and settlement code.
 `run.py --dry-run --private-root <external-root>` creates an immutable
 preexecution disclosure. Remote execution remains separately gated by an
 owner's zero-incremental-charge acknowledgement; it permits exactly one
-physical call per singleton and no retry or resume. Final classification must
-be provided by an external boolean scorer, then is written exactly once as an
-aggregate-only settlement. It cannot promote, split, merge, or reweight the
-rubric.
+physical call per singleton and no retry or resume. Before scanning any prior
+attempt state or starting a provider-capable process, execution creates an
+exclusive immutable claim; a stale claim or attempt is retained and fails
+closed rather than being retried.
+
+Final classification must be provided by an external boolean scorer. The
+private settlement and aggregate-only public result are hash-bound to the
+execution claim and written through a prepared publication transaction whose
+commit marker is the sole completed-publication authority. It cannot promote,
+split, merge, or reweight the rubric.

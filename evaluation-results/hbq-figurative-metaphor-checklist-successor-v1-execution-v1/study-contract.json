@@ -35,11 +35,13 @@
     "batch_attempts": 1,
     "physical_attempts_per_slot": 1,
     "retry_or_resume": "forbidden",
+    "execution_claim": "root_atomic_create_binds_frozen_manifest_schedule_disclosure_auth_no_retry_or_resume",
     "attempt_lifecycle_policy": "terminal_sidecar_v1",
     "run_manifest_format_version": 5,
     "maximum_provider_sends": 72,
     "zero_incremental_charge_only": true,
-    "paid_fallback": "forbidden"
+    "paid_fallback": "forbidden",
+    "authentication": "chatgpt_subscription_via_exact_codex_exe_no_api_billing_environment"
   },
   "runtime_bindings": {
     "freeze": "exact_runtime_and_successor_file_sha256s_before_dry_run_and_settlement",

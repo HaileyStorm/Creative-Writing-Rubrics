@@ -28,7 +28,7 @@ PREDECESSOR_FILES = {
     "study.py": "2aa25f39d74a90fad7dc3b2f7cdb458eb81a8cce",
 }
 PRIVATE_CONTROLLER_ROOT: Path | None = None
-PRIVATE_EXECUTION_DIRECTORY = "execution-v3-source-bound-accepted-receipt-review"
+PRIVATE_EXECUTION_DIRECTORY = "execution-v6-atomic-claim-review"
 PRIVATE_CONTRACT_NAME = "controller-contract.v1.json"
 PRIVATE_CONTROLLER_SHA256 = "d09ac27f48282bfd4fb13322a7d5987f3029fb68d8de8d209bd083ff1f704474"
 PRIVATE_FILES = {
@@ -113,6 +113,20 @@ def _write_summary(path: Path, value: Mapping[str, Any]) -> None:
     temporary = path.with_name(path.name + ".tmp")
     temporary.write_bytes(canonical_json(value))
     temporary.replace(path)
+
+
+def _execution_claim_payload() -> dict[str, Any]:
+    return {"format_version": 1, "study_id": STUDY_ID, "kind": "atomic_one_shot_execution_claim", "retry": "forbidden", "retention": "preserve_on_crash_terminal_and_settlement"}
+
+
+def _claim_execution(root: Path) -> Path:
+    claim = root / "execution-claim.v1"
+    try:
+        claim.mkdir(parents=False, exist_ok=False)
+    except FileExistsError as exc:
+        raise ValueError("Execution root is already claimed; retry and concurrent invocation are forbidden") from exc
+    _write_or_verify(claim / "claim.json", canonical_json(_execution_claim_payload()))
+    return claim
 
 
 def contract() -> dict[str, Any]:
@@ -233,7 +247,7 @@ def _questions() -> dict[str, dict[str, Any]]:
 
 def validate_package() -> dict[str, Any]:
     value = contract()
-    execution = {"route": "codex", "model": "gpt-5.6-sol", "reasoning": "high", "batch_size": 1, "batch_attempts": 3, "attempt_lifecycle_policy": ATTEMPT_LIFECYCLE_POLICY, "maximum_provider_sends": MAX_SENDS, "one_leaf_per_call": True, "owner_attested_zero_incremental_charge_only": True, "paid_api_or_fallback_route": "forbidden"}
+    execution = {"route": "codex", "model": "gpt-5.6-sol", "reasoning": "high", "batch_size": 1, "batch_attempts": 1, "attempt_lifecycle_policy": ATTEMPT_LIFECYCLE_POLICY, "maximum_provider_sends": MAX_SENDS, "one_leaf_per_call": True, "owner_attested_zero_incremental_charge_only": True, "paid_api_or_fallback_route": "forbidden", "settlement_requires_exact_execution_claim": True}
     if value.get("study_id") != STUDY_ID or value.get("format_version") != 1 or value.get("status") != "frozen_execution_successor_unexecuted":
         raise ValueError("Execution contract identity drifted")
     private_controller = {"contract_filename": PRIVATE_CONTRACT_NAME, "contract_sha256": PRIVATE_CONTROLLER_SHA256}
@@ -302,7 +316,7 @@ def build_schedule() -> list[dict[str, Any]]:
             for repeat in REPEATS:
                 artifact_text = "\n\n".join(value for value in (fixture.get("source_excerpt"), fixture["evaluation_record"]) if value)
                 artifact_sha256 = sha256_bytes(artifact_text.encode("utf-8"))
-                condition = {"provider": "codex", "model": "gpt-5.6-sol", "reasoning": "high", "strict_ai": True, "batch_size": 1, "batch_attempts": 3, "leaf_id": LEAF_ID, "arm": arm, "question_sha256": sha256_bytes(canonical_json(questions[arm])), "prompt_sha256": "0" * 64, "rubric_sha256": rubric_sha256}
+                condition = {"provider": "codex", "model": "gpt-5.6-sol", "reasoning": "high", "strict_ai": True, "batch_size": 1, "batch_attempts": 1, "leaf_id": LEAF_ID, "arm": arm, "question_sha256": sha256_bytes(canonical_json(questions[arm])), "prompt_sha256": "0" * 64, "rubric_sha256": rubric_sha256}
                 fixture_id = str(fixture["fixture_id"])
                 slot = {"slot_id": f"s2dhexec-v1-{fixture_id}-{arm}-r{repeat}", "fixture_id": fixture_id, "fixture_commitment_sha256": sha256_bytes(canonical_json(fixture)), "arm": arm, "repeat": repeat, "leaf_id": LEAF_ID, "artifact_text": artifact_text, "contexts": fixture["contexts"], "artifact_kind": fixture["artifact_kind"], "declared_scope": fixture["declared_scope"], "condition": condition}
                 slot["logical_sample_id"] = logical_sample_id(study_id=STUDY_ID, artifact_id=fixture_id, artifact_sha256=artifact_sha256, condition=condition, repetition=repeat, rubric_revision="1.2.0")
@@ -369,7 +383,7 @@ def _command(slot: Mapping[str, Any], *, render: bool = False, resume: bool = Fa
     if render:
         command.extend(["--artifact", str(artifact)])
     else:
-        command.extend([str(artifact), "--output-dir", str(root / "runs" / str(slot["slot_id"])), "--reasoning", "high", "--batch-size", "1", "--batch-attempts", "3", "--attempt-lifecycle-policy", ATTEMPT_LIFECYCLE_POLICY])
+        command.extend([str(artifact), "--output-dir", str(root / "runs" / str(slot["slot_id"])), "--reasoning", "high", "--batch-size", "1", "--batch-attempts", "1", "--attempt-lifecycle-policy", ATTEMPT_LIFECYCLE_POLICY])
     command.extend(["--bundle", BUNDLE_ID, "--provider", "codex", "--model", "gpt-5.6-sol", "--strict-ai", "--artifact-id", str(slot["fixture_id"]), "--question-id", LEAF_ID, "--task-contract", str(task), "--scope-compatibility-override", str(override)])
     for context in _context_paths(root, slot):
         command.extend(["--context", str(context)])
@@ -398,8 +412,20 @@ def _runtime_schedule(root: Path, schedule: Sequence[Mapping[str, Any]]) -> list
         slot = dict(source)
         prompt_sha256 = sha256_file(prompt)
         slot["rendered_prompt_sha256"] = prompt_sha256
+        dry_manifest = _load_json(root / "runs" / str(source["slot_id"]) / "run.json")
+        dry_config = dry_manifest.get("configuration")
+        if dry_manifest.get("format_version") != 5 or not isinstance(dry_config, Mapping):
+            raise ValueError("Provider-free dry manifest is not format 5")
+        compiled = dry_config.get("compiled_bundle_sha256")
+        questions = dry_config.get("questions_sha256")
+        if not isinstance(compiled, str) or len(compiled) != 64 or not isinstance(questions, str) or len(questions) != 64:
+            raise ValueError("Provider-free dry manifest lacks compiled bundle/question identity")
+        slot["compiled_bundle_sha256"] = compiled
+        slot["questions_sha256"] = questions
         condition = dict(slot["condition"])
         condition["prompt_sha256"] = prompt_sha256
+        condition["compiled_bundle_sha256"] = compiled
+        condition["questions_sha256"] = questions
         slot["condition"] = condition
         slot["logical_sample_id"] = logical_sample_id(study_id=STUDY_ID, artifact_id=slot["fixture_id"], artifact_sha256=sha256_bytes(str(slot["artifact_text"]).encode("utf-8")), condition=condition, repetition=slot["repeat"], rubric_revision="1.2.0")
         resolved.append(slot)
@@ -480,12 +506,13 @@ def execute(*, resume: bool = False, allow_remote: bool = False, acknowledged_ze
     disclosure = _execution_root() / "receipts" / "preexecution-disclosure.v1.json"
     if not disclosure.is_file() or _load_json(disclosure) != _disclosure_receipt(schedule):
         raise ValueError("Exact frozen preexecution disclosure is unavailable or drifted")
-    _write_zero_charge_acknowledgement()
     root = _execution_root()
+    _claim_execution(root)
     state_path = root / "execution-state.v1.json"
     terminal_path = root / "execution-terminal.v1.json"
     if resume or state_path.exists() or terminal_path.exists():
         raise ValueError("This holdout is one-shot; any prior live start requires a versioned successor")
+    _write_zero_charge_acknowledgement()
     completed: list[str] = []
     seen_sessions: set[str] = set()
     seen_chains: set[str] = set()
@@ -539,22 +566,21 @@ def _verify_slot(root: Path, slot: Mapping[str, Any]) -> dict[str, Any]:
     run = root / "runs" / str(slot["slot_id"])
     manifest = _load_json(run / "run.json")
     config = manifest.get("configuration")
-    expected = {"provider": "codex", "model": "gpt-5.6-sol", "reasoning": "high", "strict_ai": True, "batch_size": 1, "retry_policy": {"batch_attempts": 3}, "retry_semantics": "cumulative_batch_attempts_v1", "attempt_lifecycle_policy": ATTEMPT_LIFECYCLE_POLICY, "artifact_id": slot["fixture_id"], "bundle_id": BUNDLE_ID, "question_ids": [LEAF_ID]}
+    expected = {"provider": "codex", "model": "gpt-5.6-sol", "reasoning": "high", "strict_ai": True, "batch_size": 1, "retry_policy": {"batch_attempts": 1}, "retry_semantics": "cumulative_batch_attempts_v1", "attempt_lifecycle_policy": ATTEMPT_LIFECYCLE_POLICY, "artifact_id": slot["fixture_id"], "bundle_id": BUNDLE_ID, "question_ids": [LEAF_ID], "compiled_bundle_sha256": slot["compiled_bundle_sha256"], "questions_sha256": slot["questions_sha256"]}
     if manifest.get("format_version") != 5 or not isinstance(config, Mapping) or any(config.get(key) != value for key, value in expected.items()):
         raise ValueError("Production singleton run binding drifted")
     if manifest.get("config_sha256") != runner._sha256_bytes(runner._json_bytes(config)):
         raise ValueError("Run manifest configuration hash drifted")
-    runner._validate_or_reconstruct_attempt_lifecycle(run, config_sha256=str(manifest["config_sha256"]), batch_attempts=3, reconstruct=False, strict_v5=True, require_durable=True)
+    runner._validate_or_reconstruct_attempt_lifecycle(run, config_sha256=str(manifest["config_sha256"]), batch_attempts=1, reconstruct=False, strict_v5=True, require_durable=True)
     artifact, task, override = _slot_paths(root, slot)
     contexts = _context_paths(root, slot)
     prompt = root / "rendered-prompts" / f"{slot['slot_id']}.txt"
-    registry = root / "catalog" / f"{slot['arm']}-registry.json"
-    if config.get("registry") != _input_record(registry) or config.get("artifact") != _input_record(artifact) or config.get("contexts") != [_input_record(path) for path in contexts] or sha256_file(prompt) != slot["rendered_prompt_sha256"]:
-        raise ValueError("Registry, artifact, context, or prompt binding drifted")
+    if config.get("artifact") != _input_record(artifact) or config.get("contexts") != [_input_record(path) for path in contexts] or sha256_file(prompt) != slot["rendered_prompt_sha256"]:
+        raise ValueError("Artifact, context, or prompt binding drifted")
     if config.get("task_contract", {}).get("sha256") != sha256_file(task) or config.get("scope_compatibility", {}).get("sha256") != sha256_file(override):
         raise ValueError("Task contract or scope override binding drifted")
     commitment = _verify_checkpoint_prompt(run, prompt)
-    verdicts, checkpoints, chain = runner._load_checkpoints(run, artifact_text=str(slot["artifact_text"]), context_texts=[path.read_text(encoding="utf-8") for path in contexts], batch_attempts=3, normalization_policy=runner.EVIDENCE_NORMALIZATION_POLICY)
+    verdicts, checkpoints, chain = runner._load_checkpoints(run, artifact_text=str(slot["artifact_text"]), context_texts=[path.read_text(encoding="utf-8") for path in contexts], batch_attempts=1, normalization_policy=runner.EVIDENCE_NORMALIZATION_POLICY)
     if checkpoints != 1 or len(verdicts) != 1 or verdicts[0].get("question_id") != LEAF_ID:
         raise ValueError("Checkpoint does not contain exactly the frozen leaf")
     reported = _load_json(run / "responses" / "batch-0001.json").get("provider", {}).get("reported", {})
@@ -564,8 +590,8 @@ def _verify_slot(root: Path, slot: Mapping[str, Any]) -> dict[str, Any]:
     if not isinstance(session, str) or not session.strip() or verdicts[0].get("run_id") != manifest.get("run_id"):
         raise ValueError("Accepted checkpoint run identity does not match its manifest")
     retries = len(runner._rejected_records(run, 1))
-    if retries + 1 > 3:
-        raise ValueError("Slot exceeded maximum cumulative attempts")
+    if retries != 0:
+        raise ValueError("One-shot slot contains a rejected retry")
     return {"slot_id": slot["slot_id"], "arm": slot["arm"], "fixture_id": slot["fixture_id"], "logical_sample_id": slot["logical_sample_id"], "verdict": verdicts[0].get("verdict"), "run_id": verdicts[0].get("run_id"), "session_id_sha256": sha256_bytes(session.encode("utf-8")), "checkpoint_chain_head_sha256": chain, "accepted_provider_call_count": 1, "rejected_retry_count": retries, "batch_attempt_count": retries + 1, **commitment}
 
 
@@ -590,6 +616,12 @@ def settle(*, verifier: Callable[[Path, Mapping[str, Any]], dict[str, Any]] = _v
     try:
         validate_package()
         schedule = _validated_runtime_schedule()
+        try:
+            claim = _load_json(root / "execution-claim.v1" / "claim.json")
+        except OSError as exc:
+            raise ValueError("Exact atomic execution claim is unavailable or drifted") from exc
+        if claim != _execution_claim_payload():
+            raise ValueError("Exact atomic execution claim is unavailable or drifted")
         disclosure = root / "receipts" / "preexecution-disclosure.v1.json"
         acknowledgement = root / "receipts" / "zero-charge-acknowledgement.v1.json"
         if _load_json(disclosure) != _disclosure_receipt(schedule) or _load_json(acknowledgement) != _zero_charge_receipt():
@@ -636,8 +668,9 @@ def settle(*, verifier: Callable[[Path, Mapping[str, Any]], dict[str, Any]] = _v
     retries = sum(int(row["rejected_retry_count"]) for row in records)
     attestation = {"candidate_all_eight_cells_3_of_3": candidate_all, "baseline_controls_all_correct": baseline_controls, "candidate_controls_all_correct": candidate_controls, "improved_material_failure_cell": improved_states["material_failure"], "improved_missing_evidence_cell": improved_states["missing_required_evidence"], "route_and_receipts_valid": True, "post_response_retries": retries}
     decision = _predecessor_module().classify_gate(attestation)
-    private = {"study_id": STUDY_ID, "decision": decision, "completed_slots": SLOTS, "planned_slots": SLOTS, "candidate_all_eight_cells_3_of_3": candidate_all, "baseline_controls_all_correct": baseline_controls, "candidate_controls_all_correct": candidate_controls, "improved_target_states": improved_states, "post_response_retries": retries, "promotion": "none", "records": records}
-    public = {"study_id": STUDY_ID, "decision": decision, "completed_slots": SLOTS, "planned_slots": SLOTS, "aggregate_cells": {"baseline_passed": sum(all(cells[(fixture_id, "baseline")]) for fixture_id in fixture_ids), "candidate_passed": sum(all(cells[(fixture_id, "candidate")]) for fixture_id in fixture_ids), "total_per_arm": 8}, "control_cells_correct": {"baseline": sum(all(cells[(fixture_id, "baseline")]) for fixture_id in control_ids), "candidate": sum(all(cells[(fixture_id, "candidate")]) for fixture_id in control_ids), "total_per_arm": 4}, "target_states_improved": sum(improved_states.values()), "promotion": "none"}
+    claim_sha256 = sha256_bytes(canonical_json(claim))
+    private = {"study_id": STUDY_ID, "decision": decision, "completed_slots": SLOTS, "planned_slots": SLOTS, "execution_claim_sha256": claim_sha256, "candidate_all_eight_cells_3_of_3": candidate_all, "baseline_controls_all_correct": baseline_controls, "candidate_controls_all_correct": candidate_controls, "improved_target_states": improved_states, "post_response_retries": retries, "promotion": "none", "records": records}
+    public = {"study_id": STUDY_ID, "decision": decision, "completed_slots": SLOTS, "planned_slots": SLOTS, "execution_claim_sha256": claim_sha256, "aggregate_cells": {"baseline_passed": sum(all(cells[(fixture_id, "baseline")]) for fixture_id in fixture_ids), "candidate_passed": sum(all(cells[(fixture_id, "candidate")]) for fixture_id in fixture_ids), "total_per_arm": 8}, "control_cells_correct": {"baseline": sum(all(cells[(fixture_id, "baseline")]) for fixture_id in control_ids), "candidate": sum(all(cells[(fixture_id, "candidate")]) for fixture_id in control_ids), "total_per_arm": 4}, "target_states_improved": sum(improved_states.values()), "promotion": "none"}
     _write_or_verify(root / "settlement.v1.json", canonical_json(private))
     _write_or_verify(root / "public-aggregate.v1.json", canonical_json(public))
     _write_terminal_sidecar(root, private, public)

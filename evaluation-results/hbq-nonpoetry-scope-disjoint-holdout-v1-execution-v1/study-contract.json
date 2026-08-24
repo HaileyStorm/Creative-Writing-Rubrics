@@ -21,12 +21,13 @@
     "model": "gpt-5.6-sol",
     "reasoning": "high",
     "batch_size": 1,
-    "batch_attempts": 3,
+    "batch_attempts": 1,
     "attempt_lifecycle_policy": "terminal_sidecar_v1",
     "maximum_provider_sends": 48,
     "one_leaf_per_call": true,
     "owner_attested_zero_incremental_charge_only": true,
-    "paid_api_or_fallback_route": "forbidden"
+    "paid_api_or_fallback_route": "forbidden",
+    "settlement_requires_exact_execution_claim": true
   },
   "geometry": {"fixtures": 8, "sources": 6, "activation_controls": 2, "arms": ["baseline", "candidate"], "repeats": 3, "slots": 48},
   "public_result_policy": "aggregate_only_after_execution",

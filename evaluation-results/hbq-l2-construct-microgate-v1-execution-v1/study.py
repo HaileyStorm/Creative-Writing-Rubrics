@@ -185,6 +185,8 @@ def validate_package() -> dict[str, Any]:
         "one_physical_attempt_per_slot": True, "semantic_retry_or_resume": "forbidden",
         "owner_attested_zero_incremental_charge_only": True, "paid_api_or_fallback_route": "forbidden",
         "authentication": "chatgpt_subscription_only_no_api_credential_environment", "connection_retries": "disabled", "timeout_seconds": CONTACT_TIMEOUT_SECONDS,
+        "exclusive_execution_claim": "required_before_attempt_scan_and_provider_contact",
+        "settlement_publication": "claim_bound_prepared_transaction_then_commit_marker",
     }
     if value.get("study_id") != STUDY_ID or value.get("format_version") != 1 or value.get("status") != "frozen_execution_successor_unexecuted":
         raise ValueError("Execution contract identity drifted")
@@ -498,6 +500,45 @@ def _terminalize_unstarted(root: Path, schedule: list[dict[str, Any]], start: in
             _write_terminal(root, slot, "blocked_before_dispatch", reason=reason)
 
 
+def _preexisting_attempt_paths(root: Path, schedule: list[dict[str, Any]]) -> list[Path]:
+    paths: list[Path] = []
+    for slot in schedule:
+        attempt = _attempt_dir(root, slot)
+        if attempt.exists():
+            paths.append(attempt)
+    return paths
+
+
+def _execution_claim_path(root: Path) -> Path:
+    return root / "execution-claim.v1.json"
+
+
+def _claim_execution(root: Path, schedule: list[dict[str, Any]]) -> dict[str, Any]:
+    """Create one immutable claim before any attempt-state scan or contact."""
+    claim = {"format_version": 1, "study_id": STUDY_ID, "kind": "exclusive_execution_claim", "slot_count": len(schedule), "slot_ids_sha256": sha256_bytes(canonical_json([slot["slot_id"] for slot in schedule])), "retention_policy": "immutable_no_cleanup; claim, terminal sidecars, and settlement publication are retained as execution provenance; claim presence permanently blocks retry or resume"}
+    path = _execution_claim_path(root)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        with path.open("x", encoding="utf-8", newline="") as handle:
+            handle.write(canonical_json(claim).decode("utf-8"))
+            handle.flush()
+            os.fsync(handle.fileno())
+    except FileExistsError as exc:
+        raise ValueError("Execution claim already exists; fail closed without retry or resume") from exc
+    return claim
+
+
+def _verified_execution_claim(root: Path, schedule: list[dict[str, Any]]) -> dict[str, Any]:
+    try:
+        claim = _load_json(_execution_claim_path(root))
+    except OSError as exc:
+        raise ValueError("Settlement requires the immutable execution claim") from exc
+    expected = {"format_version": 1, "study_id": STUDY_ID, "kind": "exclusive_execution_claim", "slot_count": len(schedule), "slot_ids_sha256": sha256_bytes(canonical_json([slot["slot_id"] for slot in schedule])), "retention_policy": "immutable_no_cleanup; claim, terminal sidecars, and settlement publication are retained as execution provenance; claim presence permanently blocks retry or resume"}
+    if claim != expected:
+        raise ValueError("Execution claim binding drifted")
+    return claim
+
+
 def execute(private_root: str | Path, *, allow_remote: bool = False, acknowledged_zero_incremental_charge: bool = False, runner_call: Callable[..., Any] = subprocess.run, auth_call: Callable[..., Any] = subprocess.run) -> dict[str, Any]:
     if not allow_remote or not acknowledged_zero_incremental_charge:
         raise ValueError("Execution requires explicit allow-remote and zero-incremental-charge acknowledgement")
@@ -507,9 +548,10 @@ def execute(private_root: str | Path, *, allow_remote: bool = False, acknowledge
     authentication = subscription_authentication(runner_call=auth_call, environment=dispatch_environment)
     if _load_json(root / "receipts" / "subscription-authentication.v1.json") != authentication:
         raise ValueError("ChatGPT subscription authentication evidence drifted; run a fresh dry-run before dispatch")
-    existing = [path for slot in schedule for path in (_response_path(root, slot), _sidecar_path(root, slot)) if path.exists()]
+    _claim_execution(root, schedule)
+    existing = _preexisting_attempt_paths(root, schedule) + [path for slot in schedule for path in (_sidecar_path(root, slot),) if path.exists()]
     if existing:
-        raise ValueError("Execution is one physical attempt only; reconcile terminal artifacts without retry or resume")
+        raise ValueError("Execution is one physical attempt only; any prior intent, receipt, attempt directory, response, or terminal artifact requires reconciliation without retry or resume")
     _write_or_verify(root / "receipts" / "zero-charge-acknowledgement.v1.json", canonical_json({"format_version": 1, "study_id": STUDY_ID, "kind": "owner_zero_incremental_charge_acknowledgement", "route": "codex", "paid_api_or_fallback_route": "forbidden", "acknowledged": True, "maximum_provider_sends": MAX_SENDS}))
     completed = 0
     for index, slot in enumerate(schedule):
@@ -521,7 +563,7 @@ def execute(private_root: str | Path, *, allow_remote: bool = False, acknowledge
             intent = {"format_version": SIDE_CAR_FORMAT, "format": "terminal_sidecar_v1", "study_id": STUDY_ID, "slot_id": slot["slot_id"], "run_id": slot["run_id"], "attempt": 1, "maximum_physical_attempts": 1, "maximum_contact_attempts": 1, "dispatch_number": 1, "connection_retries": "disabled", "timeout_seconds": CONTACT_TIMEOUT_SECONDS, "environment_value_sha256": authentication["environment_value_sha256"], "prompt_sha256": slot["prompt_sha256"], "attachment": _attachment_record(_input_path(root, slot)) if slot["image_input"] else None, "command": command, "state": "contact_started"}
             _write_or_verify(attempt_dir / "intent.json", canonical_json(intent))
             done = runner_call(command, input=str(slot["prompt"]), text=True, encoding="utf-8", capture_output=True, check=False, env=dispatch_environment, timeout=CONTACT_TIMEOUT_SECONDS)
-            receipt = {"format_version": SIDE_CAR_FORMAT, "format": "terminal_sidecar_v1", "study_id": STUDY_ID, "slot_id": slot["slot_id"], "run_id": slot["run_id"], "attempt": 1, "maximum_contact_attempts": 1, "dispatch_number": 1, "connection_retries": "disabled", "timeout_seconds": CONTACT_TIMEOUT_SECONDS, "environment_value_sha256": authentication["environment_value_sha256"], "returncode": getattr(done, "returncode", None), "reported": _reported_settings(getattr(done, "stderr", "")), "command_sha256": sha256_bytes(canonical_json(command)), "attachment": intent["attachment"]}
+            receipt = {"format_version": SIDE_CAR_FORMAT, "format": "terminal_sidecar_v1", "study_id": STUDY_ID, "slot_id": slot["slot_id"], "run_id": slot["run_id"], "attempt": 1, "maximum_physical_attempts": 1, "maximum_contact_attempts": 1, "dispatch_number": 1, "connection_retries": "disabled", "timeout_seconds": CONTACT_TIMEOUT_SECONDS, "environment_value_sha256": authentication["environment_value_sha256"], "returncode": getattr(done, "returncode", None), "reported": _reported_settings(getattr(done, "stderr", "")), "command_sha256": sha256_bytes(canonical_json(command)), "attachment": intent["attachment"]}
             _write_or_verify(attempt_dir / "receipt.json", canonical_json(receipt))
             if receipt["returncode"] != 0 or not response.is_file():
                 raise RuntimeError("contact did not produce a complete response")
@@ -564,8 +606,12 @@ def _verify_response(root: Path, slot: Mapping[str, Any]) -> dict[str, Any]:
     receipt = _load_json(_attempt_dir(root, slot) / "receipt.json")
     authentication = _load_json(root / "receipts" / "subscription-authentication.v1.json")
     response = _response_path(root, slot)
-    if intent.get("state") != "contact_started" or intent.get("attempt") != 1 or intent.get("maximum_physical_attempts") != 1 or receipt.get("returncode") != 0 or not response.is_file():
+    identity = {"format_version": SIDE_CAR_FORMAT, "format": "terminal_sidecar_v1", "study_id": STUDY_ID, "slot_id": slot["slot_id"], "run_id": slot["run_id"], "attempt": 1, "maximum_physical_attempts": 1}
+    if any(intent.get(key) != value for key, value in identity.items()) or any(receipt.get(key) != value for key, value in identity.items()) or intent.get("state") != "contact_started" or receipt.get("returncode") != 0 or not response.is_file():
         raise ValueError("Attempt intent, receipt, or output is incomplete")
+    lifecycle = {"maximum_contact_attempts": 1, "dispatch_number": 1, "connection_retries": "disabled", "timeout_seconds": CONTACT_TIMEOUT_SECONDS}
+    if any(intent.get(key) != value for key, value in lifecycle.items()) or any(receipt.get(key) != value for key, value in lifecycle.items()) or receipt.get("reported") != {"provider": "openai", "model": "gpt-5.6-sol", "reasoning_effort": "high"}:
+        raise ValueError("Attempt lifecycle or provider/model/reasoning receipt drifted")
     if intent.get("command") != command_for(slot, root) or receipt.get("command_sha256") != sha256_bytes(canonical_json(command_for(slot, root))) or intent.get("environment_value_sha256") != authentication.get("environment_value_sha256") or receipt.get("environment_value_sha256") != authentication.get("environment_value_sha256"):
         raise ValueError("Codex command binding drifted")
     prompt = root / "rendered-prompts" / f"{slot['slot_id']}.txt"
@@ -583,43 +629,38 @@ def _verify_response(root: Path, slot: Mapping[str, Any]) -> dict[str, Any]:
 
 
 def _default_verifier(root: Path, slot: Mapping[str, Any]) -> dict[str, Any]:
-    sidecar = _load_json(_sidecar_path(root, slot))
-    if sidecar.get("format_version") != SIDE_CAR_FORMAT or sidecar.get("format") != "terminal_sidecar_v1" or sidecar.get("state") != "accepted" or sidecar.get("maximum_physical_attempts") != 1:
+    try:
+        sidecar = _load_json(_sidecar_path(root, slot))
+    except OSError as exc:
+        raise ValueError("Terminal sidecar is missing or nonterminal") from exc
+    if sidecar.get("format_version") != SIDE_CAR_FORMAT or sidecar.get("format") != "terminal_sidecar_v1" or sidecar.get("study_id") != STUDY_ID or sidecar.get("slot_id") != slot["slot_id"] or sidecar.get("run_id") != slot["run_id"] or sidecar.get("attempt") != 1 or sidecar.get("state") != "accepted" or sidecar.get("maximum_physical_attempts") != 1:
         raise ValueError("Terminal sidecar is missing or nonterminal")
-    return _verify_response(root, slot)
+    record = _verify_response(root, slot)
+    if sidecar.get("response_sha256") != record["response_sha256"]:
+        raise ValueError("Accepted terminal sidecar response hash no longer binds the response bytes")
+    return record
 
 
-def _write_settlement(root: Path, settlement: dict[str, Any], public: dict[str, Any]) -> None:
-    _write_or_verify(root / "settlement.v1.json", canonical_json(settlement))
-    _write_or_verify(root / "public-aggregate.v1.json", canonical_json(public))
-
-
-def settle(private_root: str | Path, *, verifier: Callable[[Path, Mapping[str, Any]], dict[str, Any]] | None = None, scorer: Callable[[Mapping[str, Any], Mapping[str, Any]], bool] | None = None) -> dict[str, Any]:
-    """Classify terminal responses using a supplied private boolean-only scorer.
-
-    `scorer` owns any expected-label access outside this package and must return
-    exactly a bool. The resulting receipts reveal only aggregate cell counts.
-    """
-    if scorer is None:
-        raise ValueError("Settlement requires an external expected-ledger boolean scorer")
-    root = _external_root(private_root)
-    if (root / "settlement.v1.json").exists() or (root / "public-aggregate.v1.json").exists():
-        raise ValueError("Refusing to mutate frozen aggregate-only settlement")
-    schedule = _validated_schedule(root)
-    verify = _default_verifier if verifier is None else verifier
+def _aggregate_test_only(*, schedule: list[dict[str, Any]], records: list[Mapping[str, Any]], scorer: Callable[[Mapping[str, Any], Mapping[str, Any]], bool]) -> tuple[dict[str, Any], dict[str, Any]]:
+    """Pure aggregation helper for tests; it never reads or writes execution state."""
+    if len(records) != SLOTS:
+        raise ValueError("Test aggregation requires every singleton record")
+    by_slot = {str(record.get("slot_id")): record for record in records}
+    if len(by_slot) != SLOTS:
+        raise ValueError("Test aggregation has duplicate singleton identities")
     matches: dict[tuple[str, str], list[bool]] = defaultdict(list)
     verdict_counts: Counter[str] = Counter()
     for slot in schedule:
-        record = verify(root, slot)
-        if record.get("slot_id") != slot["slot_id"] or record.get("logical_sample_id") != slot["logical_sample_id"] or record.get("run_id") != slot["run_id"] or record.get("verdict") not in VERDICTS:
-            raise ValueError("Verifier returned malformed singleton identity")
+        record = by_slot.get(str(slot["slot_id"]))
+        if record is None or record.get("logical_sample_id") != slot["logical_sample_id"] or record.get("run_id") != slot["run_id"] or record.get("verdict") not in VERDICTS:
+            raise ValueError("Aggregation record has malformed singleton identity")
         correct = scorer(slot, record)
         if type(correct) is not bool:
             raise ValueError("External scorer must return a boolean only")
         matches[(str(slot["case_id"]), str(slot["leaf_id"]))].append(correct)
         verdict_counts[str(record["verdict"])] += 1
     if len(matches) != 8 or any(len(values) != 3 for values in matches.values()):
-        raise ValueError("Settlement requires all eight complete cells")
+        raise ValueError("Aggregation requires all eight complete cells")
     totals = Counter(sum(values) for values in matches.values())
     if totals[1] or totals[2]:
         decision = "VARIANCE_NO_GO"
@@ -630,7 +671,37 @@ def settle(private_root: str | Path, *, verifier: Callable[[Path, Mapping[str, A
     else:
         raise ValueError("Cell classification is incomplete")
     aggregate_cells = {"zero_of_three": totals[0], "one_of_three": totals[1], "two_of_three": totals[2], "three_of_three": totals[3], "total": 8}
-    settlement = {"format_version": 1, "study_id": STUDY_ID, "decision": decision, "completed_slots": SLOTS, "planned_slots": SLOTS, "aggregate_cells": aggregate_cells, "verdict_counts": {state: verdict_counts[state] for state in sorted(VERDICTS)}, "visual_attachment_slots": 6, "expected_ledger_opened_by_executor": False, "promotion": "none"}
-    public = {"study_id": STUDY_ID, "decision": decision, "completed_slots": SLOTS, "planned_slots": SLOTS, "aggregate_cells": aggregate_cells, "visual_attachment_slots": 6, "promotion": "none"}
+    settlement = {"format_version": 1, "study_id": STUDY_ID, "decision": decision, "completed_slots": SLOTS, "planned_slots": SLOTS, "aggregate_cells": aggregate_cells, "verdict_counts": {state: verdict_counts[state] for state in sorted(VERDICTS)}, "visual_attachment_slots": 6, "expected_ledger_opened_by_executor": False, "publication_requires": "settlement-publication.v1.json", "promotion": "none"}
+    public = {"study_id": STUDY_ID, "decision": decision, "completed_slots": SLOTS, "planned_slots": SLOTS, "aggregate_cells": aggregate_cells, "visual_attachment_slots": 6, "publication_requires": "settlement-publication.v1.json", "promotion": "none"}
+    return settlement, public
+
+
+def _write_settlement(root: Path, settlement: dict[str, Any], public: dict[str, Any], *, writer: Callable[[Path, bytes], None] = _write_or_verify) -> None:
+    claim = _verified_execution_claim(root, build_schedule())
+    claim_sha256 = sha256_bytes(canonical_json(claim))
+    if settlement.get("execution_claim_sha256") != claim_sha256 or public.get("execution_claim_sha256") != claim_sha256:
+        raise ValueError("Settlement transaction is not bound to the immutable execution claim")
+    transaction = {"format_version": 1, "study_id": STUDY_ID, "kind": "aggregate_publication_transaction", "settlement_sha256": sha256_bytes(canonical_json(settlement)), "public_sha256": sha256_bytes(canonical_json(public))}
+    prepared = root / "settlement-transaction.prepared.v1.json"
+    writer(prepared, canonical_json(transaction))
+    writer(root / "settlement.v1.json", canonical_json(settlement))
+    writer(root / "public-aggregate.v1.json", canonical_json(public))
+    publication = {"format_version": 1, "study_id": STUDY_ID, "kind": "aggregate_publication_commit", "transaction_sha256": sha256_bytes(canonical_json(transaction)), "settlement_sha256": transaction["settlement_sha256"], "public_sha256": transaction["public_sha256"]}
+    writer(root / "settlement-publication.v1.json", canonical_json(publication))
+
+
+def settle(private_root: str | Path, *, scorer: Callable[[Mapping[str, Any], Mapping[str, Any]], bool] | None = None) -> dict[str, Any]:
+    """Publish aggregate results only after every real singleton is terminally accepted."""
+    if scorer is None:
+        raise ValueError("Settlement requires an external expected-ledger boolean scorer")
+    root = _external_root(private_root)
+    if (root / "settlement-publication.v1.json").exists():
+        raise ValueError("Refusing to mutate frozen aggregate-only settlement")
+    schedule = _validated_schedule(root)
+    claim = _verified_execution_claim(root, schedule)
+    records = [_default_verifier(root, slot) for slot in schedule]
+    settlement, public = _aggregate_test_only(schedule=schedule, records=records, scorer=scorer)
+    settlement["execution_claim_sha256"] = sha256_bytes(canonical_json(claim))
+    public["execution_claim_sha256"] = sha256_bytes(canonical_json(claim))
     _write_settlement(root, settlement, public)
     return settlement

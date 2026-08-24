@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import hashlib
+import gzip
 import importlib.util
 import json
 import subprocess
@@ -74,7 +75,9 @@ def fake_cwr(command, **_kwargs):
     if "--dry-run" in command:
         output = Path(command[command.index("--output-dir") + 1])
         output.mkdir(parents=True, exist_ok=True)
-        (output / "run.json").write_text("{}", encoding="utf-8")
+        registry = Path(command[command.index("--registry") + 1]).read_bytes()
+        config = {"compiled_bundle_sha256": hashlib.sha256(registry).hexdigest(), "questions_sha256": hashlib.sha256(registry + b"questions").hexdigest()}
+        (output / "run.json").write_text(json.dumps({"format_version": 5, "configuration": config}), encoding="utf-8")
     return SimpleNamespace(returncode=0, stdout="", stderr="")
 
 
@@ -96,7 +99,7 @@ def test_exact_48_singleton_geometry_and_command_surface(private_controller):
         assert command[command.index("--model") + 1] == "gpt-5.6-sol"
         assert command[command.index("--reasoning") + 1] == "high"
         assert command[command.index("--batch-size") + 1] == "1"
-        assert command[command.index("--batch-attempts") + 1] == "3"
+        assert command[command.index("--batch-attempts") + 1] == "1"
         assert command[command.index("--attempt-lifecycle-policy") + 1] == "terminal_sidecar_v1"
         assert command.count("--question-id") == 1 and "--allow-remote" not in command
     runner_source = (book_root() / "src" / "hbqrs" / "runner.py").read_text(encoding="utf-8")
@@ -135,6 +138,28 @@ def test_pairwise_prompts_differ_only_in_p4_wording(private_controller):
             assert baseline.read_text(encoding="utf-8").replace(questions["baseline"]["text"], questions["candidate"]["text"]) == candidate.read_text(encoding="utf-8")
 
 
+def test_format5_receipt_binds_compiled_identity_without_registry_field(private_controller, monkeypatch):
+    s, root = private_controller
+    s.dry_run(runner_call=fake_cwr)
+    slot = s._validated_runtime_schedule()[0]
+    artifact, task, override = s._slot_paths(root, slot)
+    contexts = s._context_paths(root, slot)
+    config = {"provider": "codex", "model": "gpt-5.6-sol", "reasoning": "high", "strict_ai": True, "batch_size": 1, "retry_policy": {"batch_attempts": 1}, "retry_semantics": "cumulative_batch_attempts_v1", "attempt_lifecycle_policy": s.ATTEMPT_LIFECYCLE_POLICY, "artifact_id": slot["fixture_id"], "bundle_id": s.BUNDLE_ID, "question_ids": [s.LEAF_ID], "compiled_bundle_sha256": slot["compiled_bundle_sha256"], "questions_sha256": slot["questions_sha256"], "artifact": s._input_record(artifact), "contexts": [s._input_record(path) for path in contexts], "task_contract": {"sha256": s.sha256_file(task)}, "scope_compatibility": {"sha256": s.sha256_file(override)}}
+    assert "registry" not in config
+    run_id = "20260823T000000Z-" + s.runner._sha256_bytes(s.runner._json_bytes(config))[:10]
+    run = root / "runs" / slot["slot_id"]
+    (run / "responses").mkdir(parents=True, exist_ok=True)
+    (run / "run.json").write_text(json.dumps({"format_version": 5, "run_id": run_id, "configuration": config, "config_sha256": s.runner._sha256_bytes(s.runner._json_bytes(config))}), encoding="utf-8")
+    prompt = (root / "rendered-prompts" / f"{slot['slot_id']}.txt").read_bytes()
+    (run / "responses" / "batch-0001.prompt.txt.gz").write_bytes(gzip.compress(prompt))
+    (run / "responses" / "batch-0001.json").write_text(json.dumps({"provider": {"reported": {"provider": "openai", "model": "gpt-5.6-sol", "reasoning_effort": "high", "session_id": "session-format5"}}}), encoding="utf-8")
+    monkeypatch.setattr(s.runner, "_validate_or_reconstruct_attempt_lifecycle", lambda *args, **kwargs: None)
+    monkeypatch.setattr(s.runner, "_load_checkpoints", lambda *args, **kwargs: ([{"question_id": s.LEAF_ID, "verdict": "YES", "run_id": run_id}], 1, "a" * 64))
+    monkeypatch.setattr(s.runner, "_rejected_records", lambda *args, **kwargs: [])
+    record_value = s._verify_slot(root, slot)
+    assert record_value["accepted_provider_call_count"] == 1 and record_value["rejected_retry_count"] == 0
+
+
 def test_nonzero_terminalizes_and_stops_later_slots(private_controller):
     s, root = private_controller
     s.dry_run(runner_call=fake_cwr)
@@ -147,8 +172,13 @@ def test_nonzero_terminalizes_and_stops_later_slots(private_controller):
     assert len(calls) == 1
     terminal = json.loads((root / "execution-terminal.v1.json").read_text(encoding="utf-8"))
     assert terminal["phase"] == "terminal_nonzero" and terminal["later_slots_started"] is False
-    with pytest.raises(ValueError, match="one-shot"):
-        s.execute(allow_remote=True, acknowledged_zero_incremental_charge=True, runner_call=fake_cwr)
+    second_calls = []
+    def forbidden_second(command, **kwargs): second_calls.append(command); return fake_cwr(command, **kwargs)
+    with pytest.raises(ValueError, match="already claimed"):
+        s.execute(allow_remote=True, acknowledged_zero_incremental_charge=True, runner_call=forbidden_second)
+    assert second_calls == []
+    claim = json.loads((root / "execution-claim.v1" / "claim.json").read_text(encoding="utf-8"))
+    assert claim["retention"] == "preserve_on_crash_terminal_and_settlement"
 
 
 def test_invalid_or_duplicate_accepted_receipt_stops_later_slots(private_controller):
@@ -192,6 +222,16 @@ def test_settlement_uses_sealed_labels_and_emits_aggregate_only(private_controll
     public = json.loads((root / "public-aggregate.v1.json").read_text(encoding="utf-8"))
     assert public["decision"] == "PROMOTION_REVIEW_ELIGIBLE" and public["promotion"] == "none"
     assert "records" not in public and "fixture" not in json.dumps(public).casefold()
+    assert public["execution_claim_sha256"] == s.sha256_bytes(s.canonical_json(s._execution_claim_payload()))
+
+
+def test_settlement_requires_the_exact_atomic_execution_claim(private_controller):
+    s, root = private_controller
+    s.dry_run(runner_call=fake_cwr)
+    result = s.settle(verifier=lambda _root, slot: record(slot, "YES"))
+    assert result["decision"] == "INCOMPLETE"
+    assert "execution claim" in result["failures"][0]["reason"]
+    assert not (root / "execution-claim.v1").exists()
 
 
 @pytest.mark.parametrize("scenario,expected_decision", [("no_effect", "NO_EFFECT"), ("candidate_mismatch", "NO_GO")])
