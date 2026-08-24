@@ -177,6 +177,7 @@ def _minimal_environment() -> dict[str, str]:
     if credentials:
         raise ValueError("OpenAI/Codex billing credential environment is forbidden for subscription-only execution")
     environment = {name: os.environ[name] for name in MINIMAL_ENVIRONMENT_KEYS if os.environ.get(name)}
+    environment["PYTHONPATH"] = str((REPOSITORY / "src").resolve())
     environment["NO_COLOR"] = "1"
     return environment
 

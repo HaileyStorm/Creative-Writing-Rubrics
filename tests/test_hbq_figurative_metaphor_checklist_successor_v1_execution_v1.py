@@ -217,12 +217,19 @@ def test_atomic_execution_claim_blocks_contention_before_the_second_callback(ext
     assert claim["frozen_inputs"]["study_manifest_sha256"] == s.sha256_file(external_private / s.PRIVATE_EXECUTION_DIRECTORY / "study-manifest.v1.json")
 
 
-def test_real_format5_dry_manifest_and_output_prompt_shape(external_private):
+def test_real_format5_dry_manifest_and_output_prompt_shape(external_private, monkeypatch):
     s = study()
     s.prepare(external_private)
     root = external_private / s.PRIVATE_EXECUTION_DIRECTORY
     slot = s.build_schedule()[0]
-    dry = subprocess.run([*s.command_for(slot, external_private, output_root="dry-runs"), "--dry-run"], text=True, capture_output=True, check=False)
+    monkeypatch.setenv("PYTHONPATH", "arbitrary-parent-pythonpath")
+    environment = s._minimal_environment()
+    assert environment["PYTHONPATH"] == str((s.REPOSITORY / "src").resolve())
+    assert not any(name in environment for name in s.BILLING_CREDENTIAL_ENVIRONMENT_NAMES)
+    imported = subprocess.run([sys.executable, "-c", "import hbqrs; print(hbqrs.__file__)"], text=True, capture_output=True, check=False, env=environment)
+    assert imported.returncode == 0, imported.stderr
+    assert Path(imported.stdout.strip()).resolve().is_relative_to((s.REPOSITORY / "src").resolve())
+    dry = subprocess.run([*s.command_for(slot, external_private, output_root="dry-runs"), "--dry-run"], text=True, capture_output=True, check=False, env=environment)
     assert dry.returncode == 0, dry.stderr
     manifest = json.loads((root / "dry-runs" / slot["slot_id"] / "run.json").read_text(encoding="utf-8"))
     config = manifest["configuration"]
@@ -231,7 +238,7 @@ def test_real_format5_dry_manifest_and_output_prompt_shape(external_private):
     assert "registry" not in config
     prompt = root / "single-real-render.txt"
     prompt.parent.mkdir(parents=True, exist_ok=True)
-    rendered = subprocess.run(s._render_command(slot, root, prompt), text=True, capture_output=True, check=False)
+    rendered = subprocess.run(s._render_command(slot, root, prompt), text=True, capture_output=True, check=False, env=environment)
     assert rendered.returncode == 0, rendered.stderr
     raw = prompt.read_bytes()
     canonical = s.canonical_prompt_bytes(raw)

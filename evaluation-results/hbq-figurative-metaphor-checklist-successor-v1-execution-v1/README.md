@@ -29,7 +29,8 @@ The disclosed destination is exactly `Codex CLI -> authenticated OpenAI
 service`, authenticated through the current ChatGPT subscription rather than
 an API billing key.  Dry-run freezes the resolved `codex.exe` path, bytes hash,
 version output, `codex login status` hashes/status, and a minimal child
-environment with OpenAI/Codex billing credentials absent.  Execute reruns this
+environment with OpenAI/Codex billing credentials absent and `PYTHONPATH`
+explicitly bound to this checkout's resolved `src` directory. Execute reruns this
 check immediately before dispatch and fails before contact on any drift.
 
 Settlement requires the exact durable execution claim, then reads actual CWR
