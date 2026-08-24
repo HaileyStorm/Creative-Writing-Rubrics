@@ -1,0 +1,6 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-l2-c03-visual-control-successor-v1",
+  "fixture_binding": {"s01": "structural_plane_incompatible_v1", "s02": "structural_plane_coherent_v1"},
+  "cells": {"s01": ["NO", "NO"], "s02": ["YES", "YES"]}
+}

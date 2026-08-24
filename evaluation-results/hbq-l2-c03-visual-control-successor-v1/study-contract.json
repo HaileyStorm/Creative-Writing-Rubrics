@@ -1,0 +1,16 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-l2-c03-visual-control-successor-v1",
+  "status": "frozen_provider_free_visual_control_successor",
+  "development_only": true,
+  "provider_execution": {"permitted": false, "new_provider_calls_exact": 0, "paid_route": "forbidden", "one_leaf_per_request": true},
+  "geometry": {"cases_exact": 2, "leaves_per_case_exact": 2, "repeats_exact": 3, "slots_exact": 12, "cells_exact": 4},
+  "labels": ["YES", "NO"],
+  "screen": {"renderer": "src/hbqrs/runner.py:_render_prompt", "expected_labels_provider_facing": false, "image_text_substitution_forbidden": true, "presentation_labels_forbidden": true},
+  "lifecycle": {"remote_execution_surface": "absent", "retry_or_resume": "not_authorized_by_freeze"},
+  "review_requirement": {"required_before_execution_successor": true, "reviewer": {"provider": "openai", "model": "gpt-5.6-sol", "reasoning": "high", "independence": "independent"}, "status": "satisfied", "reviewed": true, "conclusion": "GO_for_diagnosis_only_execution_successor_design"},
+  "gating": {"fixture_diagnosis_only": "12_of_12_slots_and_4_of_4_cells_at_3_of_3", "any_miss": "no_go", "promotion_without_independent_treatment": "none"},
+  "promotion": {"prompt": "none", "rubric": "none", "leaf": "none", "ownership": "none", "split": "none", "merge": "none", "weight": "none"},
+  "history": {"earlier_visual_control": "evaluation-results/hbq-l2-construct-microgate-v1", "earlier_disposition": "immutable_no_go_history_not_reused"},
+  "bindings": {"corpus": {"path": "public-synthetic-corpus.json", "sha256": "82205a2576325ea92b65981678e882031c98052c4749e0004d207a46e1bea470"}, "expected_ledger": {"path": "expected-ledger.json", "sha256": "998f6a62c925499ec450c7b2bdaaec14853e01992f01f89f56ef9963770bec8e"}, "fixture_generator": {"path": "assets/generate_structural_planes.py", "sha256": "a1352cde27fa37771a71150a3116efb9192d71e2612816ad0ab254a6b2122d61", "png_sha256": {"structural_plane_incompatible_v1": "d62f03a278a686a8710a96cdbceba0941611b7314878100580038d304efe24ff", "structural_plane_coherent_v1": "51c1ae52cc7d377594ca7c48f585f6f90dcf5057f697ab468eb4f7b898ce3f50"}, "pixel_invariants": {"dimensions": [320, 220], "text_or_directional_marks": "absent_by_generator_surface", "shared_structural_plane_corners": [[44, 196], [276, 196], [206, 100], [114, 100]], "coherent": {"derived_support_intersection": [160, 36], "declared_vanishing_point": [160, 36], "longitudinal_rays": 6, "transverse_rows": 5}, "incompatible": {"derived_left_support_intersection": [128, 52], "derived_right_support_intersection": [188, 52], "longitudinal_rays": 6, "transverse_rows": 5, "vanishing_points_distinct": true}, "fixtures_distinct": true}}}
+}

@@ -1,0 +1,9 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-l2-c03-visual-control-successor-v1",
+  "privacy": "public_synthetic_only",
+  "cases": [
+    {"case_id": "s01", "artifact_name": "asset-01.png", "artifact_type": "visual_asset", "bundle_id": "visual.environment", "declared_scope": "asset", "completion_status": "complete", "text": "", "image_input_required": true, "image_fixture": "structural_plane_incompatible_v1"},
+    {"case_id": "s02", "artifact_name": "asset-02.png", "artifact_type": "visual_asset", "bundle_id": "visual.environment", "declared_scope": "asset", "completion_status": "complete", "text": "", "image_input_required": true, "image_fixture": "structural_plane_coherent_v1"}
+  ]
+}
