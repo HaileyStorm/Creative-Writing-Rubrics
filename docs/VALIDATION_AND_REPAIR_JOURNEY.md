@@ -150,6 +150,8 @@ The first P1 polarity development treatment was a noncausal perfect development-
 
 That closure also changes the next figurative-family status. The prompt-only cross-figure source-domain compatibility treatment for the existing `purple_prose.metaphor` question remains gated; it was not opened by an aggregate tie. The completed L2 screen likewise remains evidence about the existing ownership map, not a license to merge or split criteria. The private fixture mappings, expected labels, prompt records, and receipts remain sealed; public aggregates preserve only the audited decision and commitments.
 
+The later [L2 construct microgate](../evaluation-results/hbq-l2-construct-microgate-v2-execution-v2-public-result-v1/) was a different, much smaller question than the older 216-slot lexical-ownership study. It asked whether line-break construct signal could survive a production-compatible evidence normalization step. All 36 singleton calls completed, with one normalization event; all four target cells matched their expected states in all three repeats—a promising development signal, not an all-`YES` result. But only six of eight controls reached 3/3, and both failed controls were `c03` visual controls at 0/3. The immutable decision is therefore `NO_GO`, with no promotion. That is useful progress rather than a dead end: the target wording now has a positive expected-state agreement signal, while the control failure says the next design must repair the construct harness before treating that signal as a rubric change.
+
 ## What the journey now supports
 
 The project has become more demanding about what a result is allowed to mean.
