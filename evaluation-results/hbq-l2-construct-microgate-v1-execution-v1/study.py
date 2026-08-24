@@ -26,7 +26,27 @@ from hbqrs.study_identity import logical_sample_id
 ROOT = Path(__file__).resolve().parent
 REPOSITORY = ROOT.parents[1]
 PREDECESSOR_ROOT = ROOT.parent / "hbq-l2-construct-microgate-v1"
-STUDY_ID = "hbq-l2-construct-microgate-v1-execution-v1"
+STUDY_ID = "hbq-l2-construct-microgate-v1-execution-v2"
+PREVIOUS_STUDY_ID = "hbq-l2-construct-microgate-v1-execution-v1"
+ANCESTOR_FINAL_COMMIT = "2fb18cbcc5bb4f1d32f31bc80d7c9e120a9dca59"
+EXECUTION_SUCCESSOR = {
+    "version": 2,
+    "ancestor_final_commit": ANCESTOR_FINAL_COMMIT,
+    "ancestor_study_id": PREVIOUS_STUDY_ID,
+    "ancestor_claim_sha256": "cb7e2cdb1f0fc3e652adc3057e0ef0f9a808a5c042b1aa35ed2d47d1043c24f5",
+    "slot_1": {
+        "receipt_sha256": "6f48e5c47823e4ff8e0a761b6da3839393bbdb81fa8a9c9f8b2c18db172ef43d",
+        "terminal_sidecar_sha256": "b6600bac45c9c248abbaf910f0b09a610fe11011c1ae4c3291b510cfc35b96b1",
+        "returncode": 0,
+        "response_present": False,
+        "terminal_state": "ambiguous_contact",
+    },
+    "later_slots": {"blocked_before_dispatch": 23},
+    "rubric_result": "none",
+    "retry_or_resume": "forbidden",
+    "lineage_is_not_a_vote": True,
+    "fresh_private_root_required": True,
+}
 PREDECESSOR_COMMIT = "a711c856e33516d4cc1f29fac889a802143623a8"
 PREDECESSOR_TREE = "77fe3c82a8ea94a83bf01cb870b0e01a9d750071"
 PREDECESSOR_FILES = {
@@ -53,6 +73,7 @@ FROZEN_DOMAIN_IDS = {
 SLOTS, MAX_SENDS, SIDE_CAR_FORMAT = 24, 24, 5
 CONTACT_TIMEOUT_SECONDS = 120
 AUTH_TIMEOUT_SECONDS = 20
+LOCAL_OUTPUT_LIMIT_BYTES = 16 * 1024
 MINIMAL_ENVIRONMENT_KEYS = ("APPDATA", "ComSpec", "HOMEDRIVE", "HOMEPATH", "LOCALAPPDATA", "PATH", "SystemRoot", "TEMP", "TMP", "USERPROFILE", "WINDIR")
 BILLING_CREDENTIAL_ENVIRONMENT_NAMES = ("CODEX_API_KEY", "OPENAI_API_KEY", "OPENAI_API_BASE", "OPENAI_BASE_URL", "OPENAI_ORG_ID", "OPENAI_PROJECT")
 SUCCESSOR_FILES = ("study.py", "run.py", "study-contract.json")
@@ -187,13 +208,17 @@ def validate_package() -> dict[str, Any]:
         "authentication": "chatgpt_subscription_only_no_api_credential_environment", "connection_retries": "disabled", "timeout_seconds": CONTACT_TIMEOUT_SECONDS,
         "exclusive_execution_claim": "required_before_attempt_scan_and_provider_contact",
         "settlement_publication": "claim_bound_prepared_transaction_then_commit_marker",
+        "response_parent_created_before_dispatch": True,
+        "private_local_output_diagnostics": "bounded_stdout_stderr_bytes_hashes_counts",
     }
-    if value.get("study_id") != STUDY_ID or value.get("format_version") != 1 or value.get("status") != "frozen_execution_successor_unexecuted":
+    if value.get("study_id") != STUDY_ID or value.get("format_version") != 1 or value.get("status") != "frozen_execution_successor_v2_unexecuted":
         raise ValueError("Execution contract identity drifted")
     if value.get("predecessor") != {"commit": PREDECESSOR_COMMIT, "tree": PREDECESSOR_TREE, "files": PREDECESSOR_FILES}:
         raise ValueError("Predecessor binding drifted")
     if value.get("execution") != execution or value.get("geometry") != {"cases": 4, "leaves": 4, "cells": 8, "repeats": 3, "slots": SLOTS, "visual_png_slots": 6}:
         raise ValueError("Execution geometry or policy drifted")
+    if value.get("execution_successor") != EXECUTION_SUCCESSOR:
+        raise ValueError("Execution-successor lineage drifted")
     if value.get("image_delivery") != {"input_contract": "codex_exec_image_flag_exact_png_bytes", "stairwell_bytes": 129853, "stairwell_sha256": "104631a4d662f2435e000cca86921a68dbb303ed58cd24759a717c7ae171ceb7", "absent_image_case": "c04_no_attachment", "text_substitution_forbidden": True}:
         raise ValueError("Image delivery contract drifted")
     privacy = {"expected_ledger_read_by_executor": False, "expected_ledger_read_by_dry_run": False, "expected_ledger_read_by_settlement": False, "settlement_requires_external_boolean_scorer": True, "result_policy": "write_once_aggregate_only"}
@@ -308,7 +333,7 @@ def _schedule_template() -> tuple[bytes, ...]:
             )
             prompt_bytes = canonical_prompt_bytes(prompt.encode("utf-8"))
             for repeat in range(1, 4):
-                slot_id = f"l2microexec-v1-{len(rows) + 1:03d}"
+                slot_id = f"l2microexec-v2-{len(rows) + 1:03d}"
                 image_input: dict[str, Any] | None = None
                 if artifact["image_fixture"] == "impossible_stairwell_v1":
                     png = predecessor.stairwell_png_bytes()
@@ -489,7 +514,42 @@ def _reported_settings(stderr: Any) -> dict[str, str]:
     return reported
 
 
+def _persist_bounded_local_output(root: Path, attempt_dir: Path, stream: str, value: Any) -> dict[str, Any]:
+    data = b"" if value is None else (value if isinstance(value, bytes) else str(value).encode("utf-8", errors="replace"))
+    retained = data[:LOCAL_OUTPUT_LIMIT_BYTES]
+    path = attempt_dir / "local-output" / f"{stream}.txt"
+    _write_or_verify(path, retained)
+    return {
+        "path": str(path.relative_to(root)),
+        "total_bytes": len(data),
+        "sha256": sha256_bytes(data),
+        "retained_bytes": len(retained),
+        "retained_sha256": sha256_bytes(retained),
+        "truncated": len(retained) != len(data),
+    }
+
+
+def _response_output_diagnostic(root: Path, response: Path) -> dict[str, Any]:
+    exists = response.is_file()
+    return {
+        "requested_path": str(response.relative_to(root)),
+        "exists": exists,
+        "bytes": response.stat().st_size if exists else 0,
+        "sha256": sha256_file(response) if exists else None,
+    }
+
+
+def _write_contact_receipt(root: Path, slot: Mapping[str, Any], response: Path, intent: Mapping[str, Any], authentication: Mapping[str, Any], command: list[str], *, returncode: Any, stdout: Any, stderr: Any) -> dict[str, Any]:
+    attempt_dir = _attempt_dir(root, slot)
+    receipt = {"format_version": SIDE_CAR_FORMAT, "format": "terminal_sidecar_v1", "study_id": STUDY_ID, "slot_id": slot["slot_id"], "run_id": slot["run_id"], "attempt": 1, "maximum_physical_attempts": 1, "maximum_contact_attempts": 1, "dispatch_number": 1, "connection_retries": "disabled", "timeout_seconds": CONTACT_TIMEOUT_SECONDS, "environment_value_sha256": authentication["environment_value_sha256"], "returncode": returncode, "reported": _reported_settings(stderr), "command_sha256": sha256_bytes(canonical_json(command)), "attachment": intent["attachment"], "local_output": {"stdout": _persist_bounded_local_output(root, attempt_dir, "stdout", stdout), "stderr": _persist_bounded_local_output(root, attempt_dir, "stderr", stderr)}, "response_output": _response_output_diagnostic(root, response)}
+    _write_or_verify(attempt_dir / "receipt.json", canonical_json(receipt))
+    return receipt
+
+
 def _write_terminal(root: Path, slot: Mapping[str, Any], state: str, **values: Any) -> None:
+    receipt_path = _attempt_dir(root, slot) / "receipt.json"
+    if receipt_path.is_file():
+        values.setdefault("receipt_sha256", sha256_file(receipt_path))
     value = {"format_version": SIDE_CAR_FORMAT, "format": "terminal_sidecar_v1", "study_id": STUDY_ID, "slot_id": slot["slot_id"], "run_id": slot["run_id"], "attempt": 1, "maximum_physical_attempts": 1, "state": state, **values}
     _write_or_verify(_sidecar_path(root, slot), canonical_json(value))
 
@@ -560,17 +620,20 @@ def execute(private_root: str | Path, *, allow_remote: bool = False, acknowledge
         try:
             attempt_dir.mkdir(parents=True, exist_ok=True)
             command = command_for(slot, root, codex_binary=authentication["binary_path"])
+            response.parent.mkdir(parents=True, exist_ok=True)
             intent = {"format_version": SIDE_CAR_FORMAT, "format": "terminal_sidecar_v1", "study_id": STUDY_ID, "slot_id": slot["slot_id"], "run_id": slot["run_id"], "attempt": 1, "maximum_physical_attempts": 1, "maximum_contact_attempts": 1, "dispatch_number": 1, "connection_retries": "disabled", "timeout_seconds": CONTACT_TIMEOUT_SECONDS, "environment_value_sha256": authentication["environment_value_sha256"], "prompt_sha256": slot["prompt_sha256"], "attachment": _attachment_record(_input_path(root, slot)) if slot["image_input"] else None, "command": command, "state": "contact_started"}
             _write_or_verify(attempt_dir / "intent.json", canonical_json(intent))
             done = runner_call(command, input=str(slot["prompt"]), text=True, encoding="utf-8", capture_output=True, check=False, env=dispatch_environment, timeout=CONTACT_TIMEOUT_SECONDS)
-            receipt = {"format_version": SIDE_CAR_FORMAT, "format": "terminal_sidecar_v1", "study_id": STUDY_ID, "slot_id": slot["slot_id"], "run_id": slot["run_id"], "attempt": 1, "maximum_physical_attempts": 1, "maximum_contact_attempts": 1, "dispatch_number": 1, "connection_retries": "disabled", "timeout_seconds": CONTACT_TIMEOUT_SECONDS, "environment_value_sha256": authentication["environment_value_sha256"], "returncode": getattr(done, "returncode", None), "reported": _reported_settings(getattr(done, "stderr", "")), "command_sha256": sha256_bytes(canonical_json(command)), "attachment": intent["attachment"]}
-            _write_or_verify(attempt_dir / "receipt.json", canonical_json(receipt))
-            if receipt["returncode"] != 0 or not response.is_file():
-                raise RuntimeError("contact did not produce a complete response")
+            receipt = _write_contact_receipt(root, slot, response, intent, authentication, command, returncode=getattr(done, "returncode", None), stdout=getattr(done, "stdout", None), stderr=getattr(done, "stderr", None))
+            if receipt["returncode"] != 0:
+                raise RuntimeError("contact returned a nonzero status")
+            if not response.is_file():
+                raise RuntimeError("contact returned zero without requested response output")
             if receipt["reported"] != {"provider": "openai", "model": "gpt-5.6-sol", "reasoning_effort": "high"}:
                 raise ValueError("provider/model/reasoning report drifted")
             _verify_response(root, slot)
         except subprocess.TimeoutExpired as exc:
+            _write_contact_receipt(root, slot, response, intent, authentication, command, returncode=None, stdout=getattr(exc, "output", None), stderr=getattr(exc, "stderr", None))
             _write_terminal(root, slot, "ambiguous_contact", reason="bounded timeout expired", exception=type(exc).__name__)
             _terminalize_unstarted(root, schedule, index + 1, "prior slot timed out after its only permitted dispatch")
             raise RuntimeError(f"Execution requires reconciliation at {slot['slot_id']}; no resend is authorized") from exc
@@ -601,6 +664,30 @@ def _validate_response(slot: Mapping[str, Any], payload: Any) -> dict[str, Any]:
     return {"verdict": verdict, "normalization_audit": []}
 
 
+def _verify_private_diagnostics(root: Path, slot: Mapping[str, Any], receipt: Mapping[str, Any]) -> None:
+    response = _response_path(root, slot)
+    if receipt.get("response_output") != _response_output_diagnostic(root, response):
+        raise ValueError("Response output diagnostic drifted")
+    diagnostics = receipt.get("local_output")
+    if not isinstance(diagnostics, Mapping) or set(diagnostics) != {"stdout", "stderr"}:
+        raise ValueError("Local output diagnostics are incomplete")
+    attempt_dir = _attempt_dir(root, slot)
+    for stream in ("stdout", "stderr"):
+        diagnostic = diagnostics[stream]
+        path = attempt_dir / "local-output" / f"{stream}.txt"
+        if not isinstance(diagnostic, Mapping) or diagnostic.get("path") != str(path.relative_to(root)):
+            raise ValueError("Local output diagnostic path drifted")
+        retained = path.read_bytes() if path.is_file() else None
+        if retained is None or type(diagnostic.get("total_bytes")) is not int or type(diagnostic.get("retained_bytes")) is not int or type(diagnostic.get("truncated")) is not bool:
+            raise ValueError("Local output diagnostic is malformed")
+        if diagnostic["total_bytes"] < diagnostic["retained_bytes"] or diagnostic["retained_bytes"] != len(retained) or diagnostic.get("retained_sha256") != sha256_bytes(retained) or diagnostic["truncated"] != (diagnostic["total_bytes"] > diagnostic["retained_bytes"]):
+            raise ValueError("Local output diagnostic binding drifted")
+        if diagnostic["retained_bytes"] > LOCAL_OUTPUT_LIMIT_BYTES or not isinstance(diagnostic.get("sha256"), str) or len(diagnostic["sha256"]) != 64:
+            raise ValueError("Local output diagnostic retention drifted")
+        if not diagnostic["truncated"] and diagnostic["sha256"] != diagnostic["retained_sha256"]:
+            raise ValueError("Untruncated local output hash drifted")
+
+
 def _verify_response(root: Path, slot: Mapping[str, Any]) -> dict[str, Any]:
     intent = _load_json(_attempt_dir(root, slot) / "intent.json")
     receipt = _load_json(_attempt_dir(root, slot) / "receipt.json")
@@ -620,6 +707,7 @@ def _verify_response(root: Path, slot: Mapping[str, Any]) -> dict[str, Any]:
     attachment = _attachment_record(_input_path(root, slot)) if slot["image_input"] else None
     if intent.get("attachment") != attachment or receipt.get("attachment") != attachment:
         raise ValueError("Exact PNG attachment binding drifted")
+    _verify_private_diagnostics(root, slot, receipt)
     try:
         payload = json.loads(response.read_text(encoding="utf-8"))
     except (UnicodeDecodeError, json.JSONDecodeError) as exc:
@@ -635,6 +723,9 @@ def _default_verifier(root: Path, slot: Mapping[str, Any]) -> dict[str, Any]:
         raise ValueError("Terminal sidecar is missing or nonterminal") from exc
     if sidecar.get("format_version") != SIDE_CAR_FORMAT or sidecar.get("format") != "terminal_sidecar_v1" or sidecar.get("study_id") != STUDY_ID or sidecar.get("slot_id") != slot["slot_id"] or sidecar.get("run_id") != slot["run_id"] or sidecar.get("attempt") != 1 or sidecar.get("state") != "accepted" or sidecar.get("maximum_physical_attempts") != 1:
         raise ValueError("Terminal sidecar is missing or nonterminal")
+    receipt_path = _attempt_dir(root, slot) / "receipt.json"
+    if sidecar.get("receipt_sha256") != sha256_file(receipt_path):
+        raise ValueError("Accepted terminal sidecar receipt hash no longer binds the receipt bytes")
     record = _verify_response(root, slot)
     if sidecar.get("response_sha256") != record["response_sha256"]:
         raise ValueError("Accepted terminal sidecar response hash no longer binds the response bytes")

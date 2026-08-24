@@ -52,7 +52,7 @@ def _accepted_runner(contacts):
     def accepted(command, **kwargs):
         contacts.append((command, kwargs))
         output = Path(command[command.index("--output-last-message") + 1])
-        output.parent.mkdir(parents=True, exist_ok=True)
+        assert output.parent.is_dir()
         question_id = next(line for line in kwargs["input"].splitlines() if '"question_id":' in line).split('"')[3]
         output.write_text(json.dumps({"verdicts": [{"question_id": question_id, "verdict": "YES", "confidence": 0.8, "evidence": [{"kind": "summary", "reference": "supplied synthetic artifact", "exact_quote": None, "summary": "Grounded assessment of the supplied artifact."}], "note": "Synthetic test response."}]}), encoding="utf-8")
         return type("Result", (), {"returncode": 0, "stdout": "completed", "stderr": "provider: openai\nmodel: gpt-5.6-sol\nreasoning effort: high\n"})()
@@ -89,6 +89,26 @@ def test_exact_freeze_geometry_and_expected_ledger_exclusion():
     assert all(slot["condition"]["attempt_lifecycle_policy"] == "terminal_sidecar_v1" for slot in schedule)
 
 
+def test_v2_uses_a_fresh_namespace_and_retains_the_no_output_ancestor_as_non_vote(private_root: Path):
+    s = study()
+    assert s.STUDY_ID.endswith("execution-v2")
+    assert all(slot["slot_id"].startswith("l2microexec-v2-") for slot in s.build_schedule())
+    lineage = s.contract()["execution_successor"]
+    assert lineage["ancestor_final_commit"].startswith("2fb18cb")
+    assert lineage["slot_1"] == {
+        "receipt_sha256": "6f48e5c47823e4ff8e0a761b6da3839393bbdb81fa8a9c9f8b2c18db172ef43d",
+        "terminal_sidecar_sha256": "b6600bac45c9c248abbaf910f0b09a610fe11011c1ae4c3291b510cfc35b96b1",
+        "returncode": 0,
+        "response_present": False,
+        "terminal_state": "ambiguous_contact",
+    }
+    assert lineage["rubric_result"] == "none" and lineage["lineage_is_not_a_vote"] is True
+    s.dry_run(private_root, auth_call=_fake_auth)
+    (private_root / "execution-claim.v1.json").write_text(json.dumps({"study_id": s.PREVIOUS_STUDY_ID}), encoding="utf-8")
+    with pytest.raises(ValueError, match="Execution claim already exists"):
+        s.execute(private_root, allow_remote=True, acknowledged_zero_incremental_charge=True, runner_call=_accepted_runner([]), auth_call=_fake_auth)
+
+
 def test_all_24_frozen_prompts_match_production_compiled_bytes_and_aggregate():
     s = study()
     predecessor = s._predecessor()
@@ -108,7 +128,7 @@ def test_all_24_frozen_prompts_match_production_compiled_bytes_and_aggregate():
         )
         assert slot["prompt"].encode("utf-8") == expected.encode("utf-8")
     hashes = {slot["slot_id"]: s.sha256_bytes(slot["prompt"].encode("utf-8")) for slot in schedule}
-    assert s.sha256_bytes(s.canonical_json(hashes)) == "92c146ef3d047b4edd5448fca787cc430f024a114bdb0a1d68f224088bffce7f"
+    assert s.sha256_bytes(s.canonical_json(hashes)) == "f1f50c7e7c6c608260868e2e4ca532656cb0087959a7c33bfb895a21a084aac9"
 
 
 def test_dry_run_freezes_exact_png_attachment_no_image_control_and_disclosure(private_root: Path):
@@ -218,6 +238,10 @@ def test_c03_logical_artifact_hash_binds_png_bytes_and_one_contact_timeout_termi
     assert terminal[0]["state"] == "ambiguous_contact"
     assert all(value["format_version"] == 5 and value["maximum_physical_attempts"] == 1 for value in terminal)
     assert all(value["state"] == "blocked_before_dispatch" for value in terminal[1:])
+    receipt = json.loads((s._attempt_dir(private_root, schedule[0]) / "receipt.json").read_text(encoding="utf-8"))
+    assert receipt["returncode"] is None
+    assert all(value["total_bytes"] == value["retained_bytes"] == 0 for value in receipt["local_output"].values())
+    assert all((private_root / value["path"]).read_bytes() == b"" for value in receipt["local_output"].values())
 
 
 def test_partial_nonzero_contact_terminalizes_every_remaining_slot_without_retry(private_root: Path):
@@ -236,8 +260,56 @@ def test_partial_nonzero_contact_terminalizes_every_remaining_slot_without_retry
     terminal = [json.loads(s._sidecar_path(private_root, slot).read_text(encoding="utf-8")) for slot in schedule]
     assert terminal[0]["state"] == "ambiguous_contact"
     assert all(value["state"] == "blocked_before_dispatch" for value in terminal[1:])
+    receipt = json.loads((s._attempt_dir(private_root, schedule[0]) / "receipt.json").read_text(encoding="utf-8"))
+    assert receipt["returncode"] == 1
+    assert (private_root / receipt["local_output"]["stdout"]["path"]).read_bytes() == b"partial"
+    assert (private_root / receipt["local_output"]["stderr"]["path"]).read_bytes() == b"transport interrupted"
     with pytest.raises(ValueError, match="claim already exists|one physical attempt"):
         s.execute(private_root, allow_remote=True, acknowledged_zero_incremental_charge=True, runner_call=partial, auth_call=_fake_auth)
+
+
+def test_zero_return_missing_output_keeps_private_diagnostics_and_blocks_23_later_slots(private_root: Path):
+    s = study()
+    s.dry_run(private_root, auth_call=_fake_auth)
+    contacts = []
+
+    def zero_without_output(command, **kwargs):
+        contacts.append((command, kwargs))
+        output = Path(command[command.index("--output-last-message") + 1])
+        assert output.parent.is_dir()
+        return type("Result", (), {"returncode": 0, "stdout": "completed without output", "stderr": "provider: openai\nmodel: gpt-5.6-sol\nreasoning effort: high\n"})()
+
+    with pytest.raises(RuntimeError, match="no resend"):
+        s.execute(private_root, allow_remote=True, acknowledged_zero_incremental_charge=True, runner_call=zero_without_output, auth_call=_fake_auth)
+    assert len(contacts) == 1
+    schedule = s.build_schedule()
+    first = schedule[0]
+    receipt = json.loads((s._attempt_dir(private_root, first) / "receipt.json").read_text(encoding="utf-8"))
+    assert receipt["returncode"] == 0 and receipt["response_output"]["exists"] is False
+    assert receipt["response_output"]["bytes"] == 0 and receipt["response_output"]["sha256"] is None
+    assert receipt["local_output"]["stdout"]["total_bytes"] == len(b"completed without output")
+    assert receipt["local_output"]["stderr"]["total_bytes"] > 0
+    assert (private_root / receipt["local_output"]["stdout"]["path"]).read_bytes() == b"completed without output"
+    terminal = [json.loads(s._sidecar_path(private_root, slot).read_text(encoding="utf-8")) for slot in schedule]
+    assert terminal[0]["state"] == "ambiguous_contact"
+    assert "returned zero without requested response output" in terminal[0]["reason"]
+    assert terminal[0]["receipt_sha256"] == s.sha256_file(s._attempt_dir(private_root, first) / "receipt.json")
+    assert all("receipt_sha256" not in value for value in terminal[1:])
+    assert sum(value["state"] == "blocked_before_dispatch" for value in terminal[1:]) == 23
+
+
+def test_bounded_local_output_retains_only_the_cap_with_consistent_metadata(private_root: Path):
+    s = study()
+    attempt_dir = private_root / "runs" / "bounded" / "attempts" / "attempt-01"
+    original = b"x" * (s.LOCAL_OUTPUT_LIMIT_BYTES + 17)
+    diagnostic = s._persist_bounded_local_output(private_root, attempt_dir, "stdout", original)
+    assert diagnostic["total_bytes"] == len(original)
+    assert diagnostic["retained_bytes"] == s.LOCAL_OUTPUT_LIMIT_BYTES
+    assert diagnostic["truncated"] is True
+    assert diagnostic["sha256"] == s.sha256_bytes(original)
+    retained = (private_root / diagnostic["path"]).read_bytes()
+    assert len(retained) == s.LOCAL_OUTPUT_LIMIT_BYTES
+    assert diagnostic["retained_sha256"] == s.sha256_bytes(retained)
 
 
 def test_preexisting_intent_or_attempt_directory_fail_stops_before_dispatch(private_root: Path):
@@ -298,7 +370,7 @@ def test_publication_transaction_recovers_after_partial_write_without_official_m
     assert marker["kind"] == "aggregate_publication_commit"
 
 
-def test_receipt_lifecycle_mutation_blocks_production_settlement(private_root: Path):
+def test_receipt_mutation_blocks_production_settlement_by_terminal_receipt_binding(private_root: Path):
     s = study()
     s.dry_run(private_root, auth_call=_fake_auth)
     s.execute(private_root, allow_remote=True, acknowledged_zero_incremental_charge=True, runner_call=_accepted_runner([]), auth_call=_fake_auth)
@@ -307,7 +379,19 @@ def test_receipt_lifecycle_mutation_blocks_production_settlement(private_root: P
     receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
     receipt["dispatch_number"] = 2
     receipt_path.write_text(json.dumps(receipt), encoding="utf-8")
-    with pytest.raises(ValueError, match="lifecycle"):
+    with pytest.raises(ValueError, match="receipt hash"):
+        s.settle(private_root, scorer=lambda _slot, _record: True)
+    assert not (private_root / "settlement-publication.v1.json").exists()
+
+
+def test_private_diagnostic_mutation_blocks_production_settlement(private_root: Path):
+    s = study()
+    s.dry_run(private_root, auth_call=_fake_auth)
+    s.execute(private_root, allow_remote=True, acknowledged_zero_incremental_charge=True, runner_call=_accepted_runner([]), auth_call=_fake_auth)
+    slot = s.build_schedule()[0]
+    stdout = s._attempt_dir(private_root, slot) / "local-output" / "stdout.txt"
+    stdout.write_bytes(stdout.read_bytes() + b"x")
+    with pytest.raises(ValueError, match="Local output diagnostic"):
         s.settle(private_root, scorer=lambda _slot, _record: True)
     assert not (private_root / "settlement-publication.v1.json").exists()
 
@@ -331,6 +415,7 @@ def test_successful_mocked_24_contact_path_uses_attested_binary_and_terminal_sid
     terminal = [json.loads(s._sidecar_path(private_root, slot).read_text(encoding="utf-8")) for slot in schedule]
     assert len(terminal) == 24 and all(value["state"] == "accepted" for value in terminal)
     receipts = [json.loads((s._attempt_dir(private_root, slot) / "receipt.json").read_text(encoding="utf-8")) for slot in schedule]
+    assert all(value["receipt_sha256"] == s.sha256_file(s._attempt_dir(private_root, slot) / "receipt.json") for value, slot in zip(terminal, schedule))
     assert all(value["reported"] == {"provider": "openai", "model": "gpt-5.6-sol", "reasoning_effort": "high"} for value in receipts)
     assert all(value["environment_value_sha256"] == authentication["environment_value_sha256"] for value in receipts)
 
@@ -343,6 +428,6 @@ def test_response_mutation_after_accepted_terminal_sidecar_fails_production_sett
     slot = s.build_schedule()[0]
     response = s._response_path(private_root, slot)
     response.write_text(response.read_text(encoding="utf-8") + " ", encoding="utf-8")
-    with pytest.raises(ValueError, match="response hash"):
+    with pytest.raises(ValueError, match="Response output diagnostic|response hash"):
         s.settle(private_root, scorer=lambda _slot, _record: True)
     assert not (private_root / "settlement-publication.v1.json").exists()

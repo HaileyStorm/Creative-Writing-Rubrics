@@ -1,7 +1,7 @@
 {
   "format_version": 1,
-  "study_id": "hbq-l2-construct-microgate-v1-execution-v1",
-  "status": "frozen_execution_successor_unexecuted",
+  "study_id": "hbq-l2-construct-microgate-v1-execution-v2",
+  "status": "frozen_execution_successor_v2_unexecuted",
   "predecessor": {
     "commit": "a711c856e33516d4cc1f29fac889a802143623a8",
     "tree": "77fe3c82a8ea94a83bf01cb870b0e01a9d750071",
@@ -31,7 +31,27 @@
     "connection_retries": "disabled",
     "timeout_seconds": 120,
     "exclusive_execution_claim": "required_before_attempt_scan_and_provider_contact",
-    "settlement_publication": "claim_bound_prepared_transaction_then_commit_marker"
+    "settlement_publication": "claim_bound_prepared_transaction_then_commit_marker",
+    "response_parent_created_before_dispatch": true,
+    "private_local_output_diagnostics": "bounded_stdout_stderr_bytes_hashes_counts"
+  },
+  "execution_successor": {
+    "version": 2,
+    "ancestor_final_commit": "2fb18cbcc5bb4f1d32f31bc80d7c9e120a9dca59",
+    "ancestor_study_id": "hbq-l2-construct-microgate-v1-execution-v1",
+    "ancestor_claim_sha256": "cb7e2cdb1f0fc3e652adc3057e0ef0f9a808a5c042b1aa35ed2d47d1043c24f5",
+    "slot_1": {
+      "receipt_sha256": "6f48e5c47823e4ff8e0a761b6da3839393bbdb81fa8a9c9f8b2c18db172ef43d",
+      "terminal_sidecar_sha256": "b6600bac45c9c248abbaf910f0b09a610fe11011c1ae4c3291b510cfc35b96b1",
+      "returncode": 0,
+      "response_present": false,
+      "terminal_state": "ambiguous_contact"
+    },
+    "later_slots": {"blocked_before_dispatch": 23},
+    "rubric_result": "none",
+    "retry_or_resume": "forbidden",
+    "lineage_is_not_a_vote": true,
+    "fresh_private_root_required": true
   },
   "geometry": {"cases": 4, "leaves": 4, "cells": 8, "repeats": 3, "slots": 24, "visual_png_slots": 6},
   "image_delivery": {
