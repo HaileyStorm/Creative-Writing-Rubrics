@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import subprocess
 import sys
 from copy import deepcopy
@@ -16,6 +17,8 @@ from hbqrs.study_identity import logical_sample_id
 ROOT = Path(__file__).resolve().parent
 REPOSITORY = ROOT.parents[1]
 STUDY_ID = "hbq-poetry-free-verse-repetition-treatment-v1-execution-v1"
+EXECUTION_SUCCESSOR_VERSION = 5
+SUCCESSOR_PARENT_HEAD = "637c92befda031529041f61152e9460607349516"
 PREDECESSOR_ID = "hbq-poetry-free-verse-repetition-treatment-v1"
 PREDECESSOR_COMMIT = "76023dff13558f024fefb38cbd59ab45ae8682ec"
 PREDECESSOR_TREE = "9afcd4eada8c61034f784e128c6030740eccf951"
@@ -32,9 +35,12 @@ VERIFIER_NAME = "verify_private_freeze.py"
 CONTROLLER_SHA256 = "7a75a6dd30e028bcfa398b7104bed34d32ea71efb491310eb87d3a50700dd5b9"
 LEDGER_SHA256 = "9a3455fee1466d4cdc7461ab33c6b4014a4ad112b0e9f8293d3cf63615f52fbc"
 VERIFIER_SHA256 = "6f70bbd01101d27b432b87421563a063bdee658f73700fabf4591b09e66a5c23"
-# Private execution-v2/v3 are immutable terminal provenance. This fresh child
-# root is the only eligible execution preparation.
-PRIVATE_EXECUTION_DIRECTORY = "execution-v4-bounded-connection-retries-terminal-sidecar-v1"
+# Earlier private execution roots are immutable terminal provenance. This v5
+# root is deliberately fresh after v4's zero-byte retryable provider failure.
+PRIVATE_EXECUTION_DIRECTORY = "execution-v5-quota-reset-successor-terminal-sidecar-v1"
+V4_PRIVATE_EXECUTION_DIRECTORY = "execution-v4-bounded-connection-retries-terminal-sidecar-v1"
+V4_RUNTIME_HEAD = "8b18f2847cf0b1e95a5603ffbf6d8f30a31981c5"
+EXECUTION_CLAIM_NAME = "execution-claim.v1.json"
 LEAF_ID = "form.poetry.free_verse.repetition"
 ARMS = ("current", "candidate")
 REPEATS = (1, 2, 3)
@@ -352,7 +358,8 @@ def _generated_input_bindings(root: Path, schedule: Sequence[Mapping[str, Any]])
 
 def _manifest(schedule: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
     slots = [{key: slot[key] for key in ("opaque_slot_id", "repeat", "condition", "logical_sample_id")} for slot in schedule]
-    return {"format_version": 1, "study_id": STUDY_ID, "contract_sha256": sha256_file(ROOT / "study-contract.json"),
+    return {"format_version": 1, "study_id": STUDY_ID, "execution_successor_version": EXECUTION_SUCCESSOR_VERSION,
+            "contract_sha256": sha256_file(ROOT / "study-contract.json"),
             "runtime_bindings": _runtime_bindings(), "generated_input_bindings": _generated_input_bindings(_execution_root(), schedule),
             "planned_slots": SLOTS, "slots": slots}
 
@@ -364,10 +371,22 @@ def validate_package() -> dict[str, Any]:
         "allow_remote_at_live_dispatch": True,
         "maximum_provider_sends": SLOTS, "semantic_retries": "forbidden", "resume": "forbidden",
         "owner_attested_zero_incremental_charge_only": True, "paid_api_or_fallback_route": "forbidden"}
-    if value.get("study_id") != STUDY_ID or value.get("format_version") != 1 or value.get("status") != "frozen_execution_successor_unexecuted":
+    expected_quota_reset = {
+        "version": EXECUTION_SUCCESSOR_VERSION, "successor_parent_head": SUCCESSOR_PARENT_HEAD,
+        "private_execution_directory": PRIVATE_EXECUTION_DIRECTORY,
+        "ancestor_private_execution_directory": V4_PRIVATE_EXECUTION_DIRECTORY,
+        "ancestor_runtime_head": V4_RUNTIME_HEAD,
+        "ancestor_terminal": {"classification": "provider_retryable_failure", "response_bytes": 0,
+                              "rubric_sample_or_result": "none", "retry": False, "lineage_not_a_vote": True},
+        "fresh_namespace_required": True,
+        "runtime_callback_policy": "current_frozen_runtime_required_before_render_and_dispatch",
+    }
+    if value.get("study_id") != STUDY_ID or value.get("format_version") != 1 or value.get("status") != "frozen_quota_reset_successor_unexecuted":
         raise ValueError("Execution contract identity drifted")
     if value.get("predecessor") != {"commit": PREDECESSOR_COMMIT, "tree": PREDECESSOR_TREE, "files": PREDECESSOR_FILES} or value.get("execution") != expected_execution:
         raise ValueError("Execution predecessor or route drifted")
+    if value.get("quota_reset_successor") != expected_quota_reset:
+        raise ValueError("Quota-reset successor lineage drifted")
     if value.get("geometry") != {"fixtures": 4, "arms": list(ARMS), "repeats": 3, "slots": SLOTS, "same_fixture_ab": True} or value.get("prompt_delta") != "candidate_leaf_text_only":
         raise ValueError("Execution geometry or prompt-delta boundary drifted")
     if value.get("public_result_policy") != "aggregate_only_after_execution" or value.get("promotion") != "none" or value.get("success_action") != "HOLDOUT_ELIGIBLE_ON_SUCCESS" or value.get("failure_action") != "NO_GO":
@@ -386,6 +405,8 @@ def validate_package() -> dict[str, Any]:
 def prepare() -> dict[str, Any]:
     validate_package()
     root, schedule = _execution_root(), build_schedule()
+    if _claim_path(root).exists():
+        raise ValueError("Preparation cannot rewrite a claimed root")
     _write_or_verify(root / "catalog" / "bundles.json", canonical_json(_bundle()))
     _write_or_verify(_registry_path(root, "current"), canonical_json(_registry("current")))
     _write_or_verify(_registry_path(root, "candidate"), canonical_json(_registry("candidate")))
@@ -452,7 +473,8 @@ def _verify_prompt_pairs(root: Path, schedule: Sequence[Mapping[str, Any]], prom
 
 
 def _disclosure(schedule: Sequence[Mapping[str, Any]], prompts: Mapping[str, bytes]) -> dict[str, Any]:
-    return {"format_version": 1, "study_id": STUDY_ID, "route": {"provider": "codex", "model": "gpt-5.6-sol", "reasoning": "high"},
+    return {"format_version": 1, "study_id": STUDY_ID, "execution_successor_version": EXECUTION_SUCCESSOR_VERSION,
+            "route": {"provider": "codex", "model": "gpt-5.6-sol", "reasoning": "high"},
             "planned_provider_sends": SLOTS, "one_leaf_per_call": True, "batch_attempts": 1,
             "attempt_lifecycle_policy": ATTEMPT_LIFECYCLE_POLICY, "semantic_retries": "forbidden", "resume": "forbidden",
             "paid_api_or_fallback_route": "forbidden", "slots": [{"opaque_slot_id": slot["opaque_slot_id"], "rendered_prompt_sha256": sha256_bytes(prompts[str(slot["opaque_slot_id"])])} for slot in schedule]}
@@ -483,6 +505,77 @@ def _runtime_schedule() -> list[dict[str, Any]]:
     if not isinstance(schedule, list) or manifest != _manifest(schedule):
         raise ValueError("Frozen private runtime manifest drifted")
     return schedule
+
+
+def _assert_frozen_runtime(schedule: Sequence[Mapping[str, Any]]) -> None:
+    """Reject a checkout or callback drift before a provider-capable command."""
+    root = _execution_root()
+    if _load_json(root / "study-manifest.json") != _manifest(schedule):
+        raise ValueError("Frozen private runtime manifest drifted before dispatch")
+
+
+def _execution_claim(root: Path, schedule: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    manifest = root / "study-manifest.json"
+    disclosure = root / "receipts" / "preexecution-disclosure.v1.json"
+    if not manifest.is_file() or not disclosure.is_file():
+        raise ValueError("Execution claim requires a frozen manifest and disclosure")
+    return {
+        "format_version": 1,
+        "study_id": STUDY_ID,
+        "execution_successor_version": EXECUTION_SUCCESSOR_VERSION,
+        "state": "claimed_before_execution",
+        "planned_slots": SLOTS,
+        "opaque_slot_ids_sha256": sha256_bytes(canonical_json([slot["opaque_slot_id"] for slot in schedule])),
+        "manifest_sha256": sha256_file(manifest),
+        "disclosure_sha256": sha256_file(disclosure),
+    }
+
+
+def _claim_path(root: Path) -> Path:
+    return root / EXECUTION_CLAIM_NAME
+
+
+def _assert_fresh_slot_paths(root: Path, schedule: Sequence[Mapping[str, Any]]) -> None:
+    stale: list[str] = []
+    for slot in schedule:
+        slot_id = str(slot["opaque_slot_id"])
+        paths = (
+            root / "runs" / slot_id,
+            root / "dispatches" / f"{slot_id}.start.v1.json",
+            root / "dispatches" / f"{slot_id}.settled.v1.json",
+            root / "dispatches" / f"{slot_id}.failure.v1.json",
+        )
+        stale.extend(str(path.relative_to(root)) for path in paths if path.exists())
+    if stale:
+        raise ValueError(f"Execution requires a fresh private root; existing slot state: {', '.join(stale)}")
+
+
+def _claim_execution(root: Path, schedule: Sequence[Mapping[str, Any]]) -> Path:
+    expected = canonical_json(_execution_claim(root, schedule))
+    path = _claim_path(root)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        descriptor = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL)
+    except FileExistsError as error:
+        raise ValueError("Execution claim already exists; retry or resume is forbidden") from error
+    try:
+        offset = 0
+        while offset < len(expected):
+            written = os.write(descriptor, expected[offset:])
+            if written <= 0:
+                raise OSError("Unable to write the complete execution claim")
+            offset += written
+    finally:
+        os.close(descriptor)
+    return path
+
+
+def _require_execution_claim(root: Path, schedule: Sequence[Mapping[str, Any]]) -> Path:
+    path = _claim_path(root)
+    expected = canonical_json(_execution_claim(root, schedule))
+    if not path.is_file() or path.read_bytes() != expected:
+        raise ValueError("Execution claim is unavailable or drifted")
+    return path
 
 
 def _zero_charge_receipt() -> dict[str, Any]:
@@ -555,16 +648,20 @@ def execute(*, acknowledged_zero_incremental_charge: bool = False,
         raise ValueError("Preexecution disclosure drifted")
     if (root / "settlement.v1.json").exists() or (root / "terminal-sidecar.v1.json").exists():
         raise ValueError("Execution cannot follow a terminal settlement")
+    _assert_fresh_slot_paths(root, schedule)
+    _claim_execution(root, schedule)
     _write_zero_charge_acknowledgement()
     for slot in schedule:
         output = root / "runs" / str(slot["opaque_slot_id"])
         dispatch = root / "dispatches" / f"{slot['opaque_slot_id']}.start.v1.json"
         if output.exists() or dispatch.exists():
             raise ValueError("Resume or a second physical attempt is forbidden")
+        _assert_frozen_runtime(schedule)
         rendered = _run_render(slot, runner_call)
         frozen_prompt = root / "rendered-prompts" / f"{slot['opaque_slot_id']}.txt"
         if not frozen_prompt.is_file() or frozen_prompt.read_bytes() != rendered:
             raise ValueError("Rendered provider prompt drifted after the provider-free freeze")
+        _assert_frozen_runtime(schedule)
         start = _dispatch_start(root, slot)
         result = runner_call(_command(slot, render=False), cwd=REPOSITORY, capture_output=True, text=True, check=False)
         if result.returncode:
@@ -638,6 +735,7 @@ def settle(*, verifier: Callable[[Path, Mapping[str, Any]], dict[str, Any]] = _v
     prompts = {str(slot["opaque_slot_id"]): (root / "rendered-prompts" / f"{slot['opaque_slot_id']}.txt").read_bytes() for slot in schedule}
     if _load_json(root / "receipts" / "preexecution-disclosure.v1.json") != _disclosure(schedule, prompts):
         raise ValueError("Preexecution disclosure is unavailable or drifted")
+    claim = _require_execution_claim(root, schedule)
     if (root / "settlement.v1.json").exists() or (root / "public-aggregate.v1.json").exists():
         raise ValueError("Original settlement is write-once")
     records = [verifier(root, slot) for slot in schedule]
@@ -645,7 +743,8 @@ def settle(*, verifier: Callable[[Path, Mapping[str, Any]], dict[str, Any]] = _v
     decision = "HOLDOUT_ELIGIBLE_ON_SUCCESS" if gate["decision"] == "HOLDOUT_ELIGIBLE_ON_SUCCESS" else "NO_GO"
     settlement = {"study_id": STUDY_ID, "decision": decision, "completed_slots": SLOTS, "planned_slots": SLOTS,
                   "candidate_target_matches": gate["candidate_target_matches"], "candidate_control_matches": gate["candidate_control_matches"],
-                  "current_target_matches": gate["current_target_matches"], "promotion": "none", "records": records}
+                  "current_target_matches": gate["current_target_matches"], "promotion": "none", "records": records,
+                  "execution_claim_sha256": sha256_file(claim)}
     public = {"study_id": STUDY_ID, "decision": decision, "completed_slots": SLOTS, "planned_slots": SLOTS,
               "aggregate": {"candidate_target_matches": gate["candidate_target_matches"], "candidate_control_matches": gate["candidate_control_matches"], "current_target_matches": gate["current_target_matches"]}, "promotion": "none"}
     _write_terminal(root, settlement, public)

@@ -1,6 +1,6 @@
 # Free-verse repetition treatment execution successor
 
-This unexecuted, development-only successor binds the r3 private controller
+This unexecuted, development-only v5 quota-reset successor binds the r3 private controller
 for the four-fixture, same-fixture A/B screen frozen at CWR commit
 `76023dff13558f024fefb38cbd59ab45ae8682ec`. It schedules exactly 24
 singleton calls: current and candidate wording across four fixtures and three
@@ -24,6 +24,12 @@ a consumed model sample and is never resumed. The v3 child root then reached a
 terminal pre-contact Codex configuration rejection: its accepted raw content
 is zero bytes and its provider-reported settings are empty. The conservative
 outer receipt remains labeled `ambiguous_provider_contact` because it does not
-rewrite evidence after the fact. V4 is a fresh child root bound to the current
-runner and disables unbounded connection retries while preserving the one-shot
-policy.
+rewrite evidence after the fact. V4 is a terminal provider-retryable failure:
+its response content is zero bytes, it produced no rubric sample or result,
+and it is not retried or resumed. It is lineage, not a vote. V5 uses a new
+private execution directory, atomically claims that root before acknowledgement,
+rendering, or dispatch, binds the current checkout/runtime in its dry-run
+manifest, and rechecks that binding immediately before each render and each
+provider-capable command. It preserves the same 24 singleton calls and does
+not turn the quota reset into evidence or a promotion. Once claimed, that root
+cannot be prepared or dry-run again, even if it has no run directory yet.

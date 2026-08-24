@@ -1,7 +1,7 @@
 {
   "format_version": 1,
   "study_id": "hbq-poetry-free-verse-repetition-treatment-v1-execution-v1",
-  "status": "frozen_execution_successor_unexecuted",
+  "status": "frozen_quota_reset_successor_unexecuted",
   "predecessor": {
     "commit": "76023dff13558f024fefb38cbd59ab45ae8682ec",
     "tree": "9afcd4eada8c61034f784e128c6030740eccf951",
@@ -19,6 +19,22 @@
     "ledger_sha256": "9a3455fee1466d4cdc7461ab33c6b4014a4ad112b0e9f8293d3cf63615f52fbc",
     "verifier_filename": "verify_private_freeze.py",
     "verifier_sha256": "6f70bbd01101d27b432b87421563a063bdee658f73700fabf4591b09e66a5c23"
+  },
+  "quota_reset_successor": {
+    "version": 5,
+    "successor_parent_head": "637c92befda031529041f61152e9460607349516",
+    "private_execution_directory": "execution-v5-quota-reset-successor-terminal-sidecar-v1",
+    "ancestor_private_execution_directory": "execution-v4-bounded-connection-retries-terminal-sidecar-v1",
+    "ancestor_runtime_head": "8b18f2847cf0b1e95a5603ffbf6d8f30a31981c5",
+    "ancestor_terminal": {
+      "classification": "provider_retryable_failure",
+      "response_bytes": 0,
+      "rubric_sample_or_result": "none",
+      "retry": false,
+      "lineage_not_a_vote": true
+    },
+    "fresh_namespace_required": true,
+    "runtime_callback_policy": "current_frozen_runtime_required_before_render_and_dispatch"
   },
   "execution": {
     "route": "codex",

@@ -108,6 +108,25 @@ def test_exact_predecessor_private_r3_binding_and_24_slot_geometry(private_contr
     assert {(slot["arm"], slot["repeat"]) for slot in schedule} == {(arm, repeat) for arm in ("current", "candidate") for repeat in (1, 2, 3)}
 
 
+def test_v5_quota_reset_is_fresh_zero_byte_lineage_not_a_rubric_vote(private_controller):
+    s, root = private_controller
+    value = s.contract()["quota_reset_successor"]
+    assert s.PRIVATE_EXECUTION_DIRECTORY.endswith("v5-quota-reset-successor-terminal-sidecar-v1")
+    assert root.name == s.PRIVATE_EXECUTION_DIRECTORY
+    assert value == {
+        "version": 5, "successor_parent_head": "637c92befda031529041f61152e9460607349516",
+        "private_execution_directory": s.PRIVATE_EXECUTION_DIRECTORY,
+        "ancestor_private_execution_directory": s.V4_PRIVATE_EXECUTION_DIRECTORY,
+        "ancestor_runtime_head": s.V4_RUNTIME_HEAD,
+        "ancestor_terminal": {"classification": "provider_retryable_failure", "response_bytes": 0,
+                              "rubric_sample_or_result": "none", "retry": False, "lineage_not_a_vote": True},
+        "fresh_namespace_required": True,
+        "runtime_callback_policy": "current_frozen_runtime_required_before_render_and_dispatch",
+    }
+    assert value["ancestor_private_execution_directory"] != value["private_execution_directory"]
+    assert s.validate_package()["provider_calls"] == 0
+
+
 def test_private_verifier_hash_binding_and_exact_five_key_terminal_record(private_controller):
     s, root = private_controller
     records = [record(slot) for slot in s.build_schedule()]
@@ -242,6 +261,67 @@ def test_execute_rejects_immediate_prerender_drift_before_dispatch(private_contr
     assert not (root / "dispatches").exists()
 
 
+def test_execute_rechecks_frozen_runtime_after_render_before_provider_callback(private_controller, monkeypatch):
+    s, root = private_controller
+    s.dry_run(runner_call=fake_cwr)
+    original_bindings = s._runtime_bindings
+    drift = {"active": False}
+
+    def runtime_bindings():
+        bindings = original_bindings()
+        return {**bindings, "runtime_head": "0" * 64} if drift["active"] else bindings
+
+    monkeypatch.setattr(s, "_runtime_bindings", runtime_bindings)
+    calls = []
+
+    def changes_runtime_after_render(command, **kwargs):
+        calls.append(command)
+        if "render-judge" in command:
+            drift["active"] = True
+            return fake_cwr(command, **kwargs)
+        raise AssertionError("runtime drift must stop before a provider callback")
+
+    with pytest.raises(ValueError, match="runtime manifest drifted before dispatch"):
+        s.execute(acknowledged_zero_incremental_charge=True, runner_call=changes_runtime_after_render)
+    assert len(calls) == 1 and "render-judge" in calls[0]
+    assert not (root / "dispatches").exists()
+
+
+def test_existing_atomic_claim_stops_contention_before_any_callback(private_controller):
+    s, root = private_controller
+    s.dry_run(runner_call=fake_cwr)
+    s._claim_execution(root, s._runtime_schedule())
+    callbacks = []
+    with pytest.raises(ValueError, match="Execution claim already exists"):
+        s.execute(acknowledged_zero_incremental_charge=True, runner_call=lambda *args, **kwargs: callbacks.append(args))
+    assert callbacks == []
+
+
+def test_claimed_root_rejects_prepare_and_dry_run_without_rewriting_manifest(private_controller):
+    s, root = private_controller
+    s.dry_run(runner_call=fake_cwr)
+    manifest = (root / "study-manifest.json").read_bytes()
+    s._claim_execution(root, s._runtime_schedule())
+    with pytest.raises(ValueError, match="claimed root"):
+        s.prepare()
+    with pytest.raises(ValueError, match="claimed root"):
+        s.dry_run(runner_call=lambda *_args, **_kwargs: pytest.fail("claimed dry run must not render"))
+    assert (root / "study-manifest.json").read_bytes() == manifest
+
+
+def test_later_slot_state_stops_before_claim_or_any_callback(private_controller):
+    s, root = private_controller
+    s.dry_run(runner_call=fake_cwr)
+    later = s.build_schedule()[-1]
+    (root / "dispatches").mkdir(parents=True)
+    (root / "dispatches" / f"{later['opaque_slot_id']}.failure.v1.json").write_text("{}", encoding="utf-8")
+    callbacks = []
+    with pytest.raises(ValueError, match="fresh private root"):
+        s.execute(acknowledged_zero_incremental_charge=True, runner_call=lambda *args, **kwargs: callbacks.append(args))
+    assert callbacks == []
+    assert not (root / s.EXECUTION_CLAIM_NAME).exists()
+
+
 def test_precontact_nonzero_writes_hashed_definitely_not_contacted_failure_receipt(private_controller):
     s, root = private_controller
     s.dry_run(runner_call=fake_cwr)
@@ -273,6 +353,7 @@ def test_private_verifier_rejects_noncanonical_terminal_record_shape(private_con
 def test_settlement_is_write_once_and_public_result_is_aggregate_only(private_controller):
     s, root = private_controller
     s.dry_run(runner_call=fake_cwr)
+    s._claim_execution(root, s._runtime_schedule())
     s._write_zero_charge_acknowledgement()
     result = s.settle(verifier=lambda _root, slot: record(slot))
     assert result["decision"] == "HOLDOUT_ELIGIBLE_ON_SUCCESS"
@@ -281,7 +362,20 @@ def test_settlement_is_write_once_and_public_result_is_aggregate_only(private_co
                       "aggregate": {"candidate_target_matches": 3, "candidate_control_matches": 9, "current_target_matches": 2}, "promotion": "none"}
     sidecar = json.loads((root / "terminal-sidecar.v1.json").read_text(encoding="utf-8"))
     assert sidecar["format"] == "terminal_sidecar_v1" and sidecar["promotion"] == "none"
+    assert result["execution_claim_sha256"] == hashlib.sha256((root / s.EXECUTION_CLAIM_NAME).read_bytes()).hexdigest()
     with pytest.raises(ValueError, match="write-once"):
+        s.settle(verifier=lambda _root, slot: record(slot))
+
+
+def test_settlement_rejects_missing_or_drifted_execution_claim(private_controller):
+    s, root = private_controller
+    s.dry_run(runner_call=fake_cwr)
+    s._write_zero_charge_acknowledgement()
+    with pytest.raises(ValueError, match="Execution claim is unavailable or drifted"):
+        s.settle(verifier=lambda _root, slot: record(slot))
+    claim = s._claim_execution(root, s._runtime_schedule())
+    claim.write_bytes(b"{}")
+    with pytest.raises(ValueError, match="Execution claim is unavailable or drifted"):
         s.settle(verifier=lambda _root, slot: record(slot))
 
 
