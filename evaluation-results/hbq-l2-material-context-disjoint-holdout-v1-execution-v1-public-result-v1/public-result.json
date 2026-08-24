@@ -1,0 +1,35 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-l2-material-context-disjoint-holdout-v1-execution-v1",
+  "source_bindings": {
+    "execution_claim_sha256": "9ae9b624be52bbe1192751913f830787e8bf4d3d7021aa7f5e553db2330e9674",
+    "prepared_settlement_sha256": "7899421d10b54dd44578ffb4effef08796ac3910ef6273fd6429555dc94d747d",
+    "settlement_sha256": "f7c6ef58e9a352db54ab72d9f97b07fcc122b37f8dffbf4ef4f46e517a31ae4b",
+    "public_aggregate_sha256": "0a05faca8d27ea8bd3b3224183874a0d861ba8e667716ebd5e304da90913e489",
+    "publication_marker_sha256": "03e4d5c4e2d4c0ac294d08fb4f9d093f51ab9ba7249fe81e0e42e63bd17a550b"
+  },
+  "execution": {
+    "planned_calls": 15,
+    "completed_calls": 15,
+    "first_attempt_accepted_calls": 15,
+    "text_input_slots": 15,
+    "image_slots": 0,
+    "normalization_events": 0
+  },
+  "aggregate_cells": {
+    "total": 5,
+    "zero_of_three": 0,
+    "one_of_three": 0,
+    "two_of_three": 0,
+    "three_of_three": 5
+  },
+  "aggregate_verdicts": {
+    "YES": 6,
+    "NO": 6,
+    "NOT_APPLICABLE": 3,
+    "CANNOT_ASSESS": 0
+  },
+  "decision": "PROMOTION_REVIEW_ELIGIBLE",
+  "promotion": "none",
+  "dspy": "not_implemented"
+}
