@@ -191,6 +191,11 @@ def test_contract_drift_fails_closed():
         s.validate_public_package()
 
 
+def test_private_root_validator_is_callable():
+    s = study()
+    assert callable(s.validate_private_root)
+
+
 def test_dry_run_is_provider_free_and_only_supported_command():
     completed = subprocess.run(
         [sys.executable, str(ROOT / "run.py"), "--dry-run"],

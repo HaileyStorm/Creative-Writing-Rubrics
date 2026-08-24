@@ -13,7 +13,7 @@ from hbqrs.paths import book_root
 
 
 ROOT = book_root() / "evaluation-results" / "hbq-p1-discordance-audit-v1"
-PRIVATE_ADAPTER_ROOT = Path(r"C:\Users\Haile\Documents\cwr-p1-discordance-adapter-v2-20260823")
+PRIVATE_ADAPTER_ROOT = Path(r"C:\Users\Haile\Documents\cwr-p1-discordance-adapter-v5-20260824")
 
 
 def study():
@@ -26,6 +26,8 @@ def study():
 
 
 def private_adapter_modules():
+    sys.modules.pop("adapter", None)
+    sys.modules.pop("freeze_contract", None)
     if str(PRIVATE_ADAPTER_ROOT) not in sys.path:
         sys.path.insert(0, str(PRIVATE_ADAPTER_ROOT))
     import adapter

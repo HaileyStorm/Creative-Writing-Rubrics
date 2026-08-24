@@ -86,6 +86,15 @@ def record(slot, verdict):
     return {"slot_id": slot["slot_id"], "arm": slot["arm"], "fixture_id": slot["fixture_id"], "logical_sample_id": slot["logical_sample_id"], "verdict": verdict, "run_id": f"run-{ordinal}", "session_id_sha256": f"{ordinal:064x}", "checkpoint_chain_head_sha256": f"{ordinal + 1:064x}", "accepted_provider_call_count": 1, "rejected_retry_count": 0, "batch_attempt_count": 1}
 
 
+def test_executor_uses_its_package_validator_not_predecessor_private_root_api(private_controller):
+    s, _ = private_controller
+    report = s.validate_package()
+    assert report["study_id"] == s.STUDY_ID
+    assert report["slots"] == s.SLOTS
+    assert report["provider_calls"] == 0
+    assert not hasattr(s, "validate_private_root")
+
+
 def test_exact_48_singleton_geometry_and_command_surface(private_controller):
     s, _ = private_controller
     schedule = s.build_schedule()
