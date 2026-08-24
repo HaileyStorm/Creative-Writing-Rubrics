@@ -1,0 +1,12 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-l2-material-context-disjoint-holdout-v1",
+  "privacy": "public_synthetic_only",
+  "cases": [
+    {"case_id": "h01", "artifact_name": "artifact-51.txt", "artifact_type": "poetry", "bundle_id": "poetry.free_verse", "declared_scope": "poem", "completion_status": "complete", "text": "The witness examined\nby the quiet magistrate trembled.", "mechanism": "semantic_reduced_relative_garden_path_sole_break_contributes", "image_input_required": false, "image_fixture": null},
+    {"case_id": "h02", "artifact_name": "artifact-52.txt", "artifact_type": "poetry", "bundle_id": "poetry.free_verse", "declared_scope": "poem", "completion_status": "complete", "text": "Before curfew\none window remained lit\nabove the harbor.", "mechanism": "pacing_and_emphasis_without_rhyme_or_refrain", "image_input_required": false, "image_fixture": null},
+    {"case_id": "h03", "artifact_name": "artifact-53.txt", "artifact_type": "poetry", "bundle_id": "poetry.free_verse", "declared_scope": "poem", "completion_status": "complete", "text": "Riveters documented each transverse fastening\nalong the spillway and forwarded the numbered\nentries to the docket clerk.", "mechanism": "clause_insensitive_neutral_prose_wrap", "image_input_required": false, "image_fixture": null},
+    {"case_id": "h04", "artifact_name": "artifact-54.txt", "artifact_type": "poetry", "bundle_id": "poetry.free_verse", "declared_scope": "poem", "completion_status": "complete", "text": "The anemometer reads eight.\nThe anemometer reads eight.\nThe anemometer reads eight.", "mechanism": "regular_repeated_complete_proposition_without_contextual_function", "image_input_required": false, "image_fixture": null},
+    {"case_id": "h05", "artifact_name": "artifact-55.txt", "artifact_type": "poetry", "bundle_id": "poetry.free_verse", "declared_scope": "poem", "completion_status": "complete", "text": "Lichen whitens the slate beneath a cold constellation.", "mechanism": "single_line_not_applicable", "image_input_required": false, "image_fixture": null}
+  ]
+}

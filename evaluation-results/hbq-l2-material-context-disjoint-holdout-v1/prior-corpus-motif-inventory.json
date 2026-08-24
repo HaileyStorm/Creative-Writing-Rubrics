@@ -1,0 +1,14 @@
+{
+  "format_version": 1,
+  "inventory_commit": "45e7d309cb03ad7c9cbe45194653cc7e2a9132a5",
+  "purpose": "fresh-holdout lexical and declared-motif exclusion",
+  "sources": [
+    {"path": "evaluation-results/hbq-l2-construct-microgate-v1/public-synthetic-corpus.json", "git_blob": "4d40ce2013a728fb05f62e406e53f8dbd2063aec", "declared_motifs": ["rain", "stairwell", "floor", "door"]},
+    {"path": "evaluation-results/hbq-l2-construct-microgate-v2/public-synthetic-corpus.json", "git_blob": "ed266a1b73c052694fad64e4e5812048c4c86a97", "declared_motifs": ["stair", "blue folder", "office", "copier", "floor", "door"]},
+    {"path": "evaluation-results/hbq-l2-line-breaks-text-holdout-v1/public-synthetic-corpus.json", "git_blob": "3aca91931f5c7dc02e6f3fd2d4a0d88f7a927910", "declared_motifs": ["tram", "rail", "green signal", "clerks", "mineral exhibit", "moon", "bus", "rain"]},
+    {"path": "evaluation-results/hbq-l2-line-breaks-contextual-justification-treatment-v1/public-synthetic-corpus.json", "git_blob": "a5d7c471647659782052b1b902986ba95d32226c", "declared_motifs": ["tram", "rail", "gallery", "bell", "quay", "crates", "service door"]},
+    {"path": "evaluation-results/hbq-l2-line-breaks-contextual-justification-treatment-v2/public-synthetic-corpus.json", "git_blob": "c3e4b879aa70e11399a728c64dcca326ec23e0d5", "declared_motifs": ["tram", "rail", "gallery", "bell", "quay", "crates", "storage"]},
+    {"path": "tests/test_hbq_l2_line_breaks_contextual_justification_treatment_v2.py", "git_blob": "81d3f1f8b7e8b6e368db43bc840bf1df77dd9fb4", "declared_motifs": ["tram", "gallery", "bell", "quay", "crates"]}
+  ],
+  "discarded_unexecuted_draft_motifs": ["depot", "courier", "elevator", "rain", "threshold", "maintenance", "inspection"]
+}
