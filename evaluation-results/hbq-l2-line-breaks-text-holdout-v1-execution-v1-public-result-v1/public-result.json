@@ -1,0 +1,31 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-l2-line-breaks-text-holdout-v1-execution-v1",
+  "source_bindings": {
+    "execution_claim_sha256": "01002de156801cb753005c2a18d84edd6a6e09ca5790598f91ec46740178d1f8",
+    "prepared_settlement_sha256": "39f94e0e5b8a70d827787e203bb2199665ab7738ed4ee0c0781509fed3e69d79",
+    "settlement_sha256": "b15af6fbf4832b30557d691c91491ba56df03a4754138752e78fa249f1ba9f1b",
+    "public_aggregate_sha256": "4b63143d52cea7a158cad96ebf55555423c068407ebb63030761d44c2dd89f51",
+    "publication_marker_sha256": "f68ca9d04bb4ffa223b4e76174e7b069528a3d0473959cf7e1883cb48a56ae17"
+  },
+  "execution": {
+    "planned_calls": 24,
+    "completed_calls": 24,
+    "text_input_slots": 24,
+    "image_slots": 0,
+    "normalization_events": 0
+  },
+  "aggregate_cells": {
+    "total": 8,
+    "zero_of_three": 1,
+    "one_of_three": 0,
+    "two_of_three": 1,
+    "three_of_three": 6
+  },
+  "target_control_cells": {
+    "candidate": {"three_of_three": 3, "below_three_of_three": 1},
+    "control": {"three_of_three": 3, "below_three_of_three": 1}
+  },
+  "decision": "NO_GO",
+  "promotion": "none"
+}
