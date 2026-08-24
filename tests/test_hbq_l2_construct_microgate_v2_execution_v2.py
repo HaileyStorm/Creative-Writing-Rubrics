@@ -3,13 +3,14 @@ import importlib.util, json, os, shutil, subprocess, sys, tempfile
 from pathlib import Path
 import pytest
 from hbqrs.paths import book_root
+from tests import _hbq_l2_historical_runtime as historical_runtime
 ROOT = book_root() / "evaluation-results" / "hbq-l2-construct-microgate-v2-execution-v2"
 def study():
     spec = importlib.util.spec_from_file_location("l2_v2_exec", ROOT / "study.py")
     module = importlib.util.module_from_spec(spec)
     assert spec and spec.loader
     sys.modules[spec.name] = module; spec.loader.exec_module(module)
-    return module
+    return historical_runtime.install(module)
 @pytest.fixture
 def private_root():
     root = Path(tempfile.mkdtemp(prefix="cwr-l2-v2-exec-")); yield root; shutil.rmtree(root, ignore_errors=True)

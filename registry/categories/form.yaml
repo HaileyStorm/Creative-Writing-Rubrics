@@ -4453,7 +4453,7 @@
     id: HBQ-RS
     version: 1.2.0
   module_id: form.poetry.free_verse
-  version: 1
+  version: 2
   title: Free verse
   kind: artifact_form
   description: Requires line breaks, stanza breaks, visual arrangement, rhythm, and repetitions to feel chosen rather
@@ -4485,7 +4485,9 @@
     - id: form.poetry.free_verse.line_breaks
       type: question
       criterion_key: form.poetry.free_verse.line_breaks
-      text: Does each consequential line break affect rhythm, syntax, emphasis, image, ambiguity, or pace?
+      text: Does each supplied line break materially strengthen its immediate poetic context through rhythm, syntax,
+        emphasis, image, ambiguity, or pace, beyond merely creating a detectable pause, syntactic interruption,
+        or repeated pattern?
       pass_answer: 'YES'
       weight: 2.0
       question_type: scored

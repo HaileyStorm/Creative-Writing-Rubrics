@@ -4,6 +4,7 @@
 
 - Unified the current public identity at HBQ-RS 1.2.0. The 1.0.0, 277-module, 2,139-leaf inventory remains historical provenance.
 - Upstreamed the six-leaf, opt-in `modifier.style.authored_content_treatment_fidelity` module with stable IDs; the current registry is 278 modules, 2,145 leaves, and 85 bundles.
+- Promoted the validated material-context wording for `form.poetry.free_verse.line_breaks`; its stable ID, criterion ownership, weight, severity, evidence policy, and module influence are unchanged.
 
 ## 1.1.0 — 2026-08-20
 

@@ -1653,7 +1653,7 @@ Requires line breaks, stanza breaks, visual arrangement, rhythm, and repetitions
 
 ##### Free verse checks
 
-- `form.poetry.free_verse.line_breaks` — **Does each consequential line break affect rhythm, syntax, emphasis, image, ambiguity, or pace?**  
+- `form.poetry.free_verse.line_breaks` — **Does each supplied line break materially strengthen its immediate poetic context through rhythm, syntax, emphasis, image, ambiguity, or pace, beyond merely creating a detectable pause, syntactic interruption, or repeated pattern?**<br>
   _weight 2; scored; material; YES = pass._
 - `form.poetry.free_verse.stanzas` — **Do stanza divisions create meaningful units, turns, pauses, or relations?**  
   _weight 1.5; scored; material; YES = pass._

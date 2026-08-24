@@ -7,6 +7,7 @@ import sys
 import pytest
 
 from hbqrs.paths import book_root
+from tests import _hbq_l2_historical_runtime as historical_runtime
 
 
 ROOT = book_root() / "evaluation-results" / "hbq-l2-line-breaks-contextual-justification-treatment-v1-execution-v1"
@@ -18,7 +19,7 @@ def study():
     assert spec and spec.loader
     sys.modules[spec.name] = module
     spec.loader.exec_module(module)
-    return module
+    return historical_runtime.install(module)
 
 
 def test_frozen_executor_binds_treatment_bytes_runtime_leaf_and_pair_hashes():
