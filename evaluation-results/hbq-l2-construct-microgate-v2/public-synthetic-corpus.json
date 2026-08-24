@@ -1,0 +1,13 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-l2-construct-microgate-v2",
+  "privacy": "public_synthetic_only",
+  "cases": [
+    {"case_id": "p01", "artifact_name": "poem-01.txt", "artifact_type": "poetry", "bundle_id": "poetry.free_verse", "declared_scope": "poem", "completion_status": "complete", "text": "I step\noff the last stair\nand keep\nfalling\nlong after\nthe floor.", "image_input_required": false, "image_fixture": null},
+    {"case_id": "p02", "artifact_name": "artifact-02.txt", "artifact_type": "poetry", "bundle_id": "poetry.free_verse", "declared_scope": "poem", "completion_status": "complete", "text": "On Tuesday I carried the\nblue folder from the front\ndesk to the back office and\nplaced it beside the copier\nbefore lunch.", "image_input_required": false, "image_fixture": null},
+    {"case_id": "p03", "artifact_name": "artifact-03.txt", "artifact_type": "poetry", "bundle_id": "poetry.free_verse", "declared_scope": "poem", "completion_status": "complete", "text": "On Tuesday I carried the blue folder from the front desk to the back office and placed it beside the copier before lunch.", "image_input_required": false, "image_fixture": null},
+    {"case_id": "p04", "artifact_name": "poem-04.txt", "artifact_type": "poetry", "bundle_id": "poetry.free_verse", "declared_scope": "poem", "completion_status": "complete", "text": "I crossed the floor\nand closed the door.", "image_input_required": false, "image_fixture": null},
+    {"case_id": "c03", "artifact_name": "asset-03.png", "artifact_type": "visual_asset", "bundle_id": "visual.environment", "declared_scope": "asset", "completion_status": "complete", "text": "", "image_input_required": true, "image_fixture": "impossible_stairwell_v1"},
+    {"case_id": "c04", "artifact_name": "asset-04.png", "artifact_type": "visual_asset", "bundle_id": "visual.environment", "declared_scope": "asset", "completion_status": "complete", "text": "", "image_input_required": true, "image_fixture": null}
+  ]
+}
