@@ -1,0 +1,48 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-figurative-metaphor-checklist-successor-v1-execution-v1",
+  "source_bindings": {
+    "execution_claim_sha256": "e9aa0e3845372772e9175a0e868d7f3f2b338c6b7db221ba30aef97921c55d02",
+    "runtime_schedule_sha256": "caf594b7ee3d812a3d8828b1101137459f2555e7ac0557f00b5559660888f4c3",
+    "settlement_sha256": "3d7dc71d1e16d4181a4aeb235f95bc877bbe9dab600f1b52bd21890a6ddd59a2",
+    "public_aggregate_sha256": "bcc535d4deae721f27a49f7a67d27d2f98cb0e9bb4365a5b114ed64b75b32312",
+    "terminal_sidecar_sha256": "632ac337aacc3a589fb58093b0b6e6ad200859083567284e6bf2970491eed637"
+  },
+  "execution": {
+    "planned_calls": 72,
+    "completed_calls": 72,
+    "first_attempt_accepted_calls": 72
+  },
+  "aggregate": {
+    "target": {
+      "correct": 12,
+      "total": 24,
+      "distinct_wording": 3,
+      "distinct_stockness_load_strata": 3,
+      "mixed_cells": 2,
+      "stable_all_wrong_cells": 3
+    },
+    "controls": {
+      "no_default_metaphors": {
+        "correct": 12,
+        "total": 24,
+        "passed": false
+      },
+      "purple_prose_proportion": {
+        "correct": 14,
+        "total": 24,
+        "passed": false
+      }
+    }
+  },
+  "decision": "FIXTURE_OR_OWNERSHIP_INVALID_NO_GO",
+  "interpretation": "The shared synthetic fixtures do not isolate the target and control concerns, so no target-wording conclusion follows.",
+  "phase_b_enabled": false,
+  "real_holdout_opened": false,
+  "promotion": "none",
+  "ownership": {
+    "stockness": "core.freshness_and_non_genericness.no_default_metaphors",
+    "figurative_density": "penalty.purple_prose.proportion"
+  },
+  "dspy": "not_used_development_only_fallback"
+}

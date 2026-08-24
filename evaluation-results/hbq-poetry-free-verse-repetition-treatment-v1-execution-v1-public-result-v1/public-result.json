@@ -1,0 +1,40 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-poetry-free-verse-repetition-treatment-v1-execution-v1",
+  "source_bindings": {
+    "execution_claim_sha256": "47ca7835d9dd1ab459c83497b13f75fcbe54ceceea5d81917a1511d6817f566e",
+    "settlement_sha256": "3172dda9be846f21ff4a0308b2ef0303f10123cbc6b64a51b3246ecf563661cc",
+    "source_public_aggregate_sha256": "0f0de5d2a38d110e01e80664692edf4da0415131805e6e721b3e5aaa8e7bbf8a",
+    "terminal_slot_records_sha256": "fcdc6f3e278b431e5e99daec2ff3cf8f50a05684ac236f31192d3816830e3f00"
+  },
+  "execution": {
+    "planned_calls": 24,
+    "completed_calls": 24,
+    "first_attempt_accepted_calls": 24,
+    "semantic_retries": 0
+  },
+  "aggregate_matches": {
+    "candidate_target": {
+      "matched": 3,
+      "total": 3
+    },
+    "candidate_controls": {
+      "matched": 6,
+      "total": 9,
+      "misses": 3,
+      "miss_pattern": "one disputed NOT_APPLICABLE-versus-NO control repeated three times"
+    },
+    "current_target": {
+      "matched": 2,
+      "total": 3
+    }
+  },
+  "decision": "NO_GO",
+  "promotion": "none",
+  "interpretation": {
+    "candidate_wording_substantively_falsified": false,
+    "frozen_control_panel_supports_promotion": false,
+    "next_step": "fresh isolated control treatment for the disputed recurrence boundary"
+  },
+  "dspy": "not_used"
+}
