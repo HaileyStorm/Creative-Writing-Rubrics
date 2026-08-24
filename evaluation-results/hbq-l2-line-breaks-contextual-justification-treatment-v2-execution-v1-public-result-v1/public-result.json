@@ -1,0 +1,35 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-l2-line-breaks-contextual-justification-treatment-v2-execution-v1",
+  "source_bindings": {
+    "execution_claim_sha256": "55266c39a5988d840dc449fff9a4edefd7d260cd0b8fdb283889cfac5975bd99",
+    "prepared_settlement_sha256": "a4a41d6a501fe4ad39ce99b2db63c37fe004725199ca10b77b041511c5b1652f",
+    "settlement_sha256": "ff075d8fc501bec217ce642d20f916591cab933a41db4b28f65aae702ea94d94",
+    "public_aggregate_sha256": "f29113f39e113b4e38e0aab5ad6e26b3737adcca5a698c33e366e2517ac51b85",
+    "publication_marker_sha256": "38dffedd275c7783761b0d4fab03610f76d5bd097f03ef3db041494059f04681"
+  },
+  "execution": {
+    "planned_calls": 18,
+    "completed_calls": 18,
+    "first_attempt_accepted_calls": 18,
+    "text_input_slots": 18,
+    "image_slots": 0,
+    "normalization_events": 0
+  },
+  "aggregate_cells": {
+    "total": 6,
+    "zero_of_three": 0,
+    "one_of_three": 0,
+    "two_of_three": 0,
+    "three_of_three": 6
+  },
+  "aggregate_verdicts": {
+    "YES": 9,
+    "NO": 6,
+    "NOT_APPLICABLE": 3,
+    "CANNOT_ASSESS": 0
+  },
+  "decision": "HOLDOUT_ELIGIBLE_ON_SUCCESS",
+  "promotion": "none",
+  "dspy": "not_implemented"
+}
