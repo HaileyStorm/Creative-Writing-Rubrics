@@ -1,0 +1,13 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-l2-line-breaks-contextual-justification-treatment-v1",
+  "privacy": "public_synthetic_only",
+  "cases": [
+    {"case_id": "t01", "artifact_name": "artifact-21.txt", "artifact_type": "poetry", "bundle_id": "poetry.free_verse", "declared_scope": "poem", "completion_status": "complete", "text": "Before dawn\nthe tram rail\ngives back\nthe green of its signal.", "image_input_required": false, "image_fixture": null},
+    {"case_id": "t02", "artifact_name": "artifact-22.txt", "artifact_type": "poetry", "bundle_id": "poetry.free_verse", "declared_scope": "poem", "completion_status": "complete", "text": "Clerks archived the\nminutes beneath the\ncabinet after the\nnoon delivery.", "image_input_required": false, "image_fixture": null},
+    {"case_id": "t03", "artifact_name": "artifact-23.txt", "artifact_type": "poetry", "bundle_id": "poetry.free_verse", "declared_scope": "poem", "completion_status": "complete", "text": "The mineral exhibit dimmed behind its glass at closing.", "image_input_required": false, "image_fixture": null},
+    {"case_id": "t04", "artifact_name": "artifact-24.txt", "artifact_type": "poetry", "bundle_id": "poetry.free_verse", "declared_scope": "poem", "completion_status": "complete", "text": "A narrow moon hangs white above the lane;\nthe last bus leaves, and leaves the rain again.", "image_input_required": false, "image_fixture": null},
+    {"case_id": "t05", "artifact_name": "artifact-25.txt", "artifact_type": "poetry", "bundle_id": "poetry.free_verse", "declared_scope": "poem", "completion_status": "complete", "text": "At the quay\nthe bell answers:\nonce\nfor departure,\nonce\nfor return,\nonce\nfor the dark.", "image_input_required": false, "image_fixture": null},
+    {"case_id": "t06", "artifact_name": "artifact-26.txt", "artifact_type": "poetry", "bundle_id": "poetry.free_verse", "declared_scope": "poem", "completion_status": "complete", "text": "At closing, staff recorded gallery temperatures\nbefore wheeling two sealed crates through the service\ndoor.", "image_input_required": false, "image_fixture": null}
+  ]
+}
