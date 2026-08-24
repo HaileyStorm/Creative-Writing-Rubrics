@@ -1,0 +1,28 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-l2-line-breaks-contextual-justification-treatment-v1-execution-v1",
+  "source_bindings": {
+    "execution_claim_sha256": "27945b2e706c9fa890830a79cbb32ba3dcefeff596f2d2cd1522b86ea1edeb74",
+    "prepared_settlement_sha256": "11c5edae26527e06106c13b4a1ac502a627ea183d55e311d9eea6d91dc847b0a",
+    "settlement_sha256": "98120328d8656b568228384e460057e3e0b732b45a81171136028966a17acb43",
+    "public_aggregate_sha256": "9c7d02af9c878b53623969903730cb706350d8581fec367f3ac97a9b2c1b56f1",
+    "publication_marker_sha256": "76a9cc96f5f031713a295c0e6ca2628b73c427c6a709de9e163948b02f7fce09"
+  },
+  "execution": {
+    "planned_calls": 18,
+    "completed_calls": 18,
+    "first_attempt_accepted_calls": 18,
+    "text_input_slots": 18,
+    "image_slots": 0,
+    "normalization_events": 0
+  },
+  "aggregate_cells": {
+    "total": 6,
+    "zero_of_three": 0,
+    "one_of_three": 1,
+    "two_of_three": 1,
+    "three_of_three": 4
+  },
+  "decision": "NO_GO_DSPY_ELIGIBLE_ONLY",
+  "promotion": "none"
+}
