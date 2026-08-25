@@ -1,0 +1,42 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-figurative-dspy-boundary-search-successor-v1",
+  "source_bindings": {
+    "execution_claim_sha256": "98938ee86b54c3fef637c751d7b06e7eedd90822ccbec8c8a984621c7907fcc5",
+    "sealed_result_sha256": "ad8c89f508c5aae183f99968b8d973e77b04ae667bf93f1dcba8c37f918c3075",
+    "aggregate_publication_go_review_sha256": "f88345e09d63438fe9bd4d3ecf2d25f195aa0cd687b7b5d57a422f66f3fef118",
+    "dry_run_sha256": "f1385a8041d09643c70ce01b7c58090a4af6049e7d12fe402020a7e58fba5976"
+  },
+  "execution": {
+    "planned_contacts": 72,
+    "accepted_first_attempt_contacts": 72,
+    "unique_sessions": 72,
+    "source_exact_evidence_contacts": 72,
+    "retries": 0,
+    "rejections": 0,
+    "normalization_events": 0
+  },
+  "train": {
+    "D": {"matched": 9, "total": 12},
+    "C": {"matched": 8, "total": 12},
+    "A": {"matched": 7, "total": 12},
+    "B": {"matched": 7, "total": 12},
+    "selected": ["D", "C"]
+  },
+  "dev": {
+    "D": {"matched": 8, "total": 12},
+    "C": {"matched": 8, "total": 12},
+    "positive_expectations": {"matched": 8, "total": 8},
+    "negative_expectations": {"matched": 0, "total": 4},
+    "repeat_stable_cells": {"matched": 6, "total": 6},
+    "verdict_pattern": "all_yes"
+  },
+  "decisions": [
+    "GO_AGGREGATE_ONLY_PUBLICATION",
+    "NO_GO_STATIC_CANDIDATE_ADVANCEMENT",
+    "NO_GO_FRESH_18_CALL_CONTROL_FIRST_CONFIRMATION",
+    "PROMOTION_NONE"
+  ],
+  "next_treatment": "artifact_grounded_hinge_beyond_conjunction_and_opposing_implications",
+  "dspy": "development_only_not_runtime"
+}

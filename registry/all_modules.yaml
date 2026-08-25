@@ -14303,7 +14303,7 @@
     id: HBQ-RS
     version: 1.2.0
   module_id: form.poetry.free_verse
-  version: 2
+  version: 3
   title: Free verse
   kind: artifact_form
   description: Requires line breaks, stanza breaks, visual arrangement, rhythm, and repetitions to feel chosen rather
@@ -14407,7 +14407,11 @@
     - id: form.poetry.free_verse.repetition
       type: question
       criterion_key: form.poetry.free_verse.repetition
-      text: When words, phrases, or structures recur, does recurrence alter pressure or meaning?
+      text: Answer NOT_APPLICABLE when no recurrence is supplied or indicated, and CANNOT_ASSESS when recurrence
+        is indicated but too few instances are supplied to judge its effect. Presence of recurrence alone does not
+        satisfy this criterion. Answer YES only when sufficient supplied instances show that recurring words, phrases,
+        or structures change pressure or meaning; when sufficient supplied instances recur without doing so, answer
+        NO. When words, phrases, or structures recur, does recurrence alter pressure or meaning?
       pass_answer: 'YES'
       weight: 1.5
       question_type: scored
@@ -38135,7 +38139,7 @@
     id: HBQ-RS
     version: 1.2.0
   module_id: penalty.purple_prose
-  version: 1
+  version: 2
   title: Purple prose penalty
   kind: penalty
   description: Bounded deduction for ornamental excess that obscures, mismatches, or fatigues.
@@ -38220,7 +38224,16 @@
     - id: penalty.purple_prose.metaphor
       type: question
       criterion_key: penalty.purple_prose.metaphor
-      text: Do metaphors and images cooperate rather than stack, mix, or compete?
+      text: Inspect linked material metaphors or images in the declared scope. Return YES when their implications
+        are compatible and jointly clarify the supplied passage. If linked images carry opposing implications, return
+        YES only when the artifact supplies an additional concrete semantic hinge that relates, reconciles, or distinguishes
+        those implications, such as a demonstrated causal, temporal, role, perspective, or double-meaning relation.
+        Punctuation, an explicit connective, or a bare assertion that images coexist is not itself that hinge. Sharing
+        a subject, pairing opposite labels, or restating them with opposite verbs is not an additional hinge; the
+        artifact must supply a relation beyond the coexistence itself. Return NO when opposing implications merely
+        occur together without an additional artifact-grounded hinge. Do not judge familiarity/defaultness or figurative
+        density; cite the linked spans and the compatibility or hinge, or the absence of one. Do metaphors and images
+        cooperate rather than stack, mix, or compete?
       pass_answer: 'YES'
       weight: 1.5
       question_type: scored
@@ -40767,7 +40780,7 @@
     id: HBQ-RS
     version: 1.2.0
   module_id: scope.passage
-  version: 1
+  version: 2
   title: Passage or extract scope overlay
   kind: scope_overlay
   description: For several paragraphs or an excerpt detached from a larger unit; separates visible defects, possible
@@ -40866,7 +40879,8 @@
     - id: scope.passage.status
       type: question
       criterion_key: scope.passage.status
-      text: If the passage is explicitly an excerpt or fragment, is it exempt from whole-work completeness requirements?
+      text: For a passage explicitly declared to be an excerpt or fragment, does the supplied evaluation avoid penalizing
+        it for not being a complete work?
       pass_answer: 'YES'
       weight: 2.0
       question_type: diagnostic

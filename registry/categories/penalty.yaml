@@ -3,7 +3,7 @@
     id: HBQ-RS
     version: 1.2.0
   module_id: penalty.purple_prose
-  version: 1
+  version: 2
   title: Purple prose penalty
   kind: penalty
   description: Bounded deduction for ornamental excess that obscures, mismatches, or fatigues.
@@ -88,7 +88,16 @@
     - id: penalty.purple_prose.metaphor
       type: question
       criterion_key: penalty.purple_prose.metaphor
-      text: Do metaphors and images cooperate rather than stack, mix, or compete?
+      text: Inspect linked material metaphors or images in the declared scope. Return YES when their implications
+        are compatible and jointly clarify the supplied passage. If linked images carry opposing implications, return
+        YES only when the artifact supplies an additional concrete semantic hinge that relates, reconciles, or distinguishes
+        those implications, such as a demonstrated causal, temporal, role, perspective, or double-meaning relation.
+        Punctuation, an explicit connective, or a bare assertion that images coexist is not itself that hinge. Sharing
+        a subject, pairing opposite labels, or restating them with opposite verbs is not an additional hinge; the
+        artifact must supply a relation beyond the coexistence itself. Return NO when opposing implications merely
+        occur together without an additional artifact-grounded hinge. Do not judge familiarity/defaultness or figurative
+        density; cite the linked spans and the compatibility or hinge, or the absence of one. Do metaphors and images
+        cooperate rather than stack, mix, or compete?
       pass_answer: 'YES'
       weight: 1.5
       question_type: scored

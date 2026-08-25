@@ -1,15 +1,16 @@
 from __future__ import annotations
-import importlib.util, json, sys
+import json
 from copy import deepcopy
 import pytest
 from hbqrs.paths import book_root
+from tests._scoped_module_loader import load_module as load_scoped_module
 
 ROOT=book_root()/"evaluation-results"/"hbq-figurative-scope-treatment-v1"
 def study():
-    spec=importlib.util.spec_from_file_location("fst",ROOT/"study.py"); module=importlib.util.module_from_spec(spec); assert spec and spec.loader; sys.modules[spec.name]=module; spec.loader.exec_module(module); return module
+    return load_scoped_module(ROOT/"study.py", name="fst")
 def read(name): return json.loads((ROOT/name).read_text(encoding="utf-8"))
 def analyzer():
-    sys.path.insert(0,str(ROOT)); spec=importlib.util.spec_from_file_location("fst_analyze",ROOT/"analyze.py"); module=importlib.util.module_from_spec(spec); assert spec and spec.loader; sys.modules[spec.name]=module; spec.loader.exec_module(module); return module
+    return load_scoped_module(ROOT/"analyze.py", name="fst_analyze", aliases={"study": study()})
 def responses(s):
     plan=s.build_plan(read("public-synthetic-prompt-scope-corpus.json"),read("study-contract.json")); out=[]
     for index,item in enumerate(plan): out.append({"request_id":item["request_id"],"study_id":item["study_id"],"partition":item["partition"],"arm":item["arm"],"case_id":item["case_id"],"leaf_id":item["leaf_id"],"repeat":item["repeat"],"artifact_sha256":item["artifact_sha256"],"controller_scope_materiality":item["controller_scope_materiality"],"controller_scope_verdict":item["controller_scope_verdict"],"revision_note":"local revision" if item["case_id"]=="isolated-local-defect" else None,"verdict":item["expected_verdict"],"evidence":[{"reference":"synthetic","quote":item["units"][0]}],"provider_provenance":{"route":"codex","model":"gpt-5.6-sol","reasoning":"high","run_id":f"session-{index}"}})

@@ -1,0 +1,82 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-poetry-free-verse-repetition-clean-na-successor-v1-execution-v1",
+  "status": "frozen_unexecuted_candidate_only_clean_na_successor",
+  "source_checkout": {
+    "commit": "6ae9ee0db17dda61bb9adc00a60bcd8072969d5d",
+    "tree": "16f49b15706852ce64f5688f952b4f968707dc04"
+  },
+  "template_executor": {
+    "commit": "6ae9ee0db17dda61bb9adc00a60bcd8072969d5d",
+    "path": "evaluation-results/hbq-poetry-free-verse-repetition-treatment-v1-execution-v1/study.py",
+    "blob": "36056696fc6ed7c926cd0a319d371da41ae32867"
+  },
+  "predecessor_result": {
+    "commit": "6ae9ee0db17dda61bb9adc00a60bcd8072969d5d",
+    "tree": "b0c41c99632ef63a1df55546703ceb3fb1d116f9",
+    "path": "evaluation-results/hbq-poetry-free-verse-repetition-treatment-v1-execution-v1-public-result-v1",
+    "files": {
+      "README.md": "7b9c889586a0994fba61aa438c422c29cff65cdd",
+      "public-result.json": "326968f0e93ca0edc5d21e1846d772b0cb4557d1"
+    },
+    "disposition": "immutable_formal_no_go_with_disputed_na_oracle"
+  },
+  "candidate": {
+    "leaf_id": "form.poetry.free_verse.repetition",
+    "text": "Presence of recurrence alone does not satisfy this criterion. Answer YES only when the supplied instances show that recurrence changes pressure or meaning; when recurrence is present but does not do so, answer NO.",
+    "source_leaf_sha256": "34f195cb415bdca5725be3bcc524ab826aac09c43245f4bcddb6961f13dce24a",
+    "candidate_leaf_sha256": "762e514431bd72cf91236f46100b3c8808b961450d914ad6bbcdd20f216ec539",
+    "prompt_delta": "none_from_predecessor_candidate"
+  },
+  "private_commitments": {
+    "controller_sha256": "9a4d493af953f59a5669aff5c8a87ab3725154a3ec07747a899494551a298d76",
+    "ledger_sha256": "a1782776708b50e8052e9ea750389530da32a0808d1f2420db00704d925595ec",
+    "verifier_sha256": "aec06bf86f6be541e1357f72487637d5cfc31b5d00f8b1ec0691e5ae242b7b56",
+    "fixture_text_sha256": "ac769c306651f8f0f9b4157f84dd09afd4f536217655c1f4028ca546773019ec"
+  },
+  "geometry": {
+    "fixtures": 1,
+    "arms": ["candidate"],
+    "repeats": 3,
+    "slots": 3,
+    "one_leaf_per_call": true
+  },
+  "execution": {
+    "route": "codex",
+    "model": "gpt-5.6-sol",
+    "reasoning": "high",
+    "sequence": "strict",
+    "batch_size": 1,
+    "batch_attempts": 1,
+    "maximum_provider_sends": 3,
+    "one_physical_attempt_per_slot": true,
+    "semantic_retry_or_resume": "forbidden",
+    "paid_api_or_fallback_route": "forbidden"
+  },
+  "privacy": {
+    "fixture_text": "private_controller_only",
+    "expected_label": "public_contract_not_applicable",
+    "repeat_mapping": "private_controller_only",
+    "public_schedule": "opaque_slot_ids_only",
+    "publication": "aggregate_only"
+  },
+  "gating": {
+    "clean_na_three_of_three": "HOLDOUT_ELIGIBLE_ON_SUCCESS",
+    "any_complete_valid_miss": "NO_GO",
+    "invalid_or_incomplete": "no_result",
+    "success_authorizes_only": "fresh_disjoint_holdout"
+  },
+  "runtime_sha256": {
+    "src/hbqrs/runner.py": "81c1dea4bb4146707f48f86c2d6b7eeab2c1bf1f37bbfea81fea61173c2d6fe2",
+    "src/hbqrs/study_identity.py": "0e263a43e13f97a2c5abfa2f320c0fb78c362b9e4741cc8b12f1471e12d7eb10",
+    "prompts/judge/JUDGE_PREFIX.md": "5e3a0990efca93e2cbc3894e635f9fd1b97b6e61ea2981940319cb54994ebb74",
+    "prompts/judge/BINARY_EVALUATION_PROMPT.md": "6c1cac901d820c1ab866e19f9191896e8c97a6aadf35bdae4eac640fd199a3a2",
+    "schema/hbq_judge_response.schema.json": "49c7d824ba5dd957e67968ba3ae6ceb8a7ed9434dfb0dfc654836a76613c7854",
+    "registry/all_modules.json": "b8c453f7eb86889f2e76b593eb44a6660f9f7cd695dbd6ac3d13b23d3635102b",
+    "bundles/all_bundles.jsonl": "18fe55b796b2809f9b8fe3b8cfbc9ef672d990141c79839cf291b6ace7308f5f",
+    "registry/criterion_ownership.json": "79d636c7c692926d15ff8ebd47c3592e6bb0e6640473c0948ae9dead4fdd6876",
+    "registry/question_index.jsonl": "d89706f0d32b4b8f5393a81d2d2382d58890452a55e0549c5bac77dd2497892a"
+  },
+  "promotion": "none",
+  "dspy": "not_implemented"
+}

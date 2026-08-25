@@ -1,0 +1,81 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-poetry-free-verse-repetition-four-state-applicability-treatment-v1-execution-v1",
+  "status": "frozen_unexecuted_candidate_only_four_state_manual_repair",
+  "source_checkout": {
+    "commit": "6ae9ee0db17dda61bb9adc00a60bcd8072969d5d",
+    "tree": "16f49b15706852ce64f5688f952b4f968707dc04",
+    "exact_head_required_before_claim": true
+  },
+  "lifecycle_adapter": {
+    "path": "evaluation-results/hbq-poetry-free-verse-repetition-clean-na-successor-v1-execution-v1/study.py",
+    "sha256": "b06aab5c7f55196118c43c3b9e8ed8a8a3d63c5c1627d86aae268af31b35cd54"
+  },
+  "template_executor": {
+    "commit": "6ae9ee0db17dda61bb9adc00a60bcd8072969d5d",
+    "path": "evaluation-results/hbq-poetry-free-verse-repetition-treatment-v1-execution-v1/study.py",
+    "blob": "36056696fc6ed7c926cd0a319d371da41ae32867"
+  },
+  "predecessor_result": {
+    "commit": "6ae9ee0db17dda61bb9adc00a60bcd8072969d5d",
+    "tree": "b0c41c99632ef63a1df55546703ceb3fb1d116f9",
+    "path": "evaluation-results/hbq-poetry-free-verse-repetition-treatment-v1-execution-v1-public-result-v1",
+    "files": {
+      "README.md": "7b9c889586a0994fba61aa438c422c29cff65cdd",
+      "public-result.json": "326968f0e93ca0edc5d21e1846d772b0cb4557d1"
+    },
+    "disposition": "immutable_formal_no_go_manual_applicability_successor"
+  },
+  "candidate": {
+    "leaf_id": "form.poetry.free_verse.repetition",
+    "text": "Answer NOT_APPLICABLE when no recurrence is supplied or indicated, and CANNOT_ASSESS when recurrence is indicated but too few instances are supplied to judge its effect. Presence of recurrence alone does not satisfy this criterion. Answer YES only when sufficient supplied instances show that recurring words, phrases, or structures change pressure or meaning; when sufficient supplied instances recur without doing so, answer NO.",
+    "source_leaf_sha256": "34f195cb415bdca5725be3bcc524ab826aac09c43245f4bcddb6961f13dce24a",
+    "candidate_leaf_sha256": "b8b874772e62965042bc75c8171a933bc3d85e3d785da911019d52cbfd268219",
+    "prompt_delta": "repetition_leaf_text_only"
+  },
+  "private_commitments": {
+    "controller_sha256": "5bf97d0c69e24b4cba457b89041a91a86b9f28ad06864eebd352cc633c90eb0f",
+    "ledger_sha256": "5822c683e7f56e6d84d99f34003061512ba5e785d38fcfc77da7761d8f7b7e0a",
+    "verifier_sha256": "70236fc9cd5415d9fb2e71390c009ae47de2a187a7a529e77deca5ee1ef1d9ae",
+    "fixture_text_sha256": {
+      "absence": "5c1811f83571359374c22b096f4398ace0a52a1a596a829869cbe206f69293b6",
+      "accidental_inert_duplicate": "44a108e95424d315de9a3436b783ecf6f62f7781c2265b0bff1b11028edfe6aa",
+      "functional_recurrence": "1fbac6de7c697341ad7cfd42b3c43d7098afec7858d188f707bdca0d99ee1000",
+      "incomplete_indicated_recurrence": "34c026dff516cf7a4ad792db5335730b331bd5c1e954ffd5797289f230d424f2"
+    }
+  },
+  "geometry": {
+    "cells": 4,
+    "states": ["NOT_APPLICABLE", "NO", "YES", "CANNOT_ASSESS"],
+    "arms": ["candidate"],
+    "repeats": 3,
+    "slots": 12,
+    "one_leaf_per_call": true
+  },
+  "execution": {
+    "route": "codex",
+    "model": "gpt-5.6-sol",
+    "reasoning": "high",
+    "sequence": "strict",
+    "batch_size": 1,
+    "batch_attempts": 1,
+    "maximum_provider_sends": 12,
+    "one_physical_attempt_per_slot": true,
+    "semantic_retry_or_resume": "forbidden",
+    "paid_api_or_fallback_route": "forbidden"
+  },
+  "evidence_gate": {
+    "grounding": "nonempty_exact_quotes_verbatim_in_supplied_artifact_or_context_only",
+    "summary_evidence": "forbidden",
+    "normalization_events_required": 0
+  },
+  "gating": {
+    "each_cell_three_of_three": "HOLDOUT_ELIGIBLE_ON_SUCCESS",
+    "all_slots_required": "12/12",
+    "any_complete_valid_miss": "NO_GO_DSPY_ELIGIBLE_ONLY",
+    "invalid_or_incomplete": "no_result",
+    "success_authorizes_only": "fresh_disjoint_holdout"
+  },
+  "promotion": "none",
+  "dspy": "not_implemented_runtime"
+}

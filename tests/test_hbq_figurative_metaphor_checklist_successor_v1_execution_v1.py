@@ -14,6 +14,7 @@ from types import SimpleNamespace
 import pytest
 
 from hbqrs.paths import book_root
+from tests import _hbq_figurative_historical_runtime as historical_runtime
 
 
 ROOT = book_root() / "evaluation-results" / "hbq-figurative-metaphor-checklist-successor-v1-execution-v1"
@@ -25,7 +26,7 @@ def study():
     assert spec and spec.loader
     sys.modules[spec.name] = module
     spec.loader.exec_module(module)
-    return module
+    return historical_runtime.install(module, source_commit="6ae9ee0db17dda61bb9adc00a60bcd8072969d5d")
 
 
 @pytest.fixture

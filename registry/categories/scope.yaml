@@ -871,7 +871,7 @@
     id: HBQ-RS
     version: 1.2.0
   module_id: scope.passage
-  version: 1
+  version: 2
   title: Passage or extract scope overlay
   kind: scope_overlay
   description: For several paragraphs or an excerpt detached from a larger unit; separates visible defects, possible
@@ -970,7 +970,8 @@
     - id: scope.passage.status
       type: question
       criterion_key: scope.passage.status
-      text: If the passage is explicitly an excerpt or fragment, is it exempt from whole-work completeness requirements?
+      text: For a passage explicitly declared to be an excerpt or fragment, does the supplied evaluation avoid penalizing
+        it for not being a complete work?
       pass_answer: 'YES'
       weight: 2.0
       question_type: diagnostic

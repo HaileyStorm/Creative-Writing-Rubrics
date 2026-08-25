@@ -1,0 +1,10 @@
+{
+  "format_version": 1,
+  "provider_safe": true,
+  "cases": [
+    {"case_id":"f1","text":"The bell was funeral and reveille: its toll buried the old shift and summoned the night crew."},
+    {"case_id":"g2","text":"Her answer was a lock and a key: it closed the question he asked, then opened the question she had not dared say."},
+    {"case_id":"h3","text":"The promise was a bridge to home and a fence keeping her from that same home."},
+    {"case_id":"j4","text":"The archive was a mausoleum where the voice was buried and a nursery where that same voice was born."}
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-poetry-free-verse-repetition-clean-na-successor-v1-execution-v1",
+  "source_bindings": {
+    "execution_claim_sha256": "c72f94de5461e1bac2d59d716c15846ecbfd3438194ea15ee7118f80bdeec226",
+    "settlement_sha256": "6eb6bbb9ecd676076596376210499933f23cabe20555a179afc8d80a706984f4",
+    "source_public_aggregate_sha256": "109ef97b15213edf9f57d80374da4a3d43a27c8ec5b0e40bcd6b8e08b3c57d42"
+  },
+  "execution": {
+    "planned_slots": 3,
+    "completed_slots": 3,
+    "accepted_provider_calls": 3,
+    "batch_attempts_per_slot": 1,
+    "post_response_retries": 0
+  },
+  "aggregate": {
+    "expected_verdict": "NOT_APPLICABLE",
+    "matched": 0,
+    "total": 3,
+    "valid_no_verdicts": 3
+  },
+  "decision": "NO_GO",
+  "promotion": "none",
+  "interpretation": "isolated_clean_control_miss_not_broader_wording_falsification",
+  "next_step": "no_automatic_follow_on"
+}

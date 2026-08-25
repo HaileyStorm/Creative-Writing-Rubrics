@@ -1,0 +1,24 @@
+{
+  "format_version": 1,
+  "provider_safe": true,
+  "cases": [
+    {"case_id":"tr-k4","split":"train","boundary_type":"dimension","text":"The town was a compass, its needle fixed on the school; by dusk it became a lantern for the late walkers."},
+    {"case_id":"tr-q7","split":"train","boundary_type":"dimension","text":"The town was a compass: its needle led every lost walker to the school; that same needle tore the school from the map."},
+    {"case_id":"tr-r2","split":"train","boundary_type":"role","text":"Her apology was a bridge over the quarrel and a bandage over the same cut."},
+    {"case_id":"tr-v9","split":"train","boundary_type":"role","text":"Her apology was a bridge inviting him across and a gate that barred him from the same conversation."},
+    {"case_id":"tr-b5","split":"train","boundary_type":"contrast","text":"The archive was a mausoleum, but its open drawers made it a nursery for unfinished voices."},
+    {"case_id":"tr-n1","split":"train","boundary_type":"contrast","text":"The archive was a mausoleum where the voices were buried and a nursery where those same voices had never been born."},
+    {"case_id":"tr-f8","split":"train","boundary_type":"sequence","text":"At dawn the river was a blade; by noon, after the thaw, it was a ribbon carrying petals."},
+    {"case_id":"tr-h3","split":"train","boundary_type":"sequence","text":"At dawn the river was a blade slicing the banks and a ribbon stitching those same banks shut."},
+    {"case_id":"tr-m6","split":"train","boundary_type":"double_meaning","text":"His silence was a key: it locked the room against them and opened the pause where she could speak."},
+    {"case_id":"tr-p0","split":"train","boundary_type":"double_meaning","text":"His silence was a key: it locked the only door, and it opened that same locked door."},
+    {"case_id":"tr-c4","split":"train","boundary_type":"relation","text":"The contract was a net for the deal and a map for the two signers, catching terms while showing their route."},
+    {"case_id":"tr-x2","split":"train","boundary_type":"relation","text":"The contract was a net trapping its two signers and a map proving those same signers were free."},
+    {"case_id":"dv-l3","split":"dev","boundary_type":"dimension","text":"The hallway was a spine holding the house upright and a throat carrying voices from room to room."},
+    {"case_id":"dv-t6","split":"dev","boundary_type":"role","text":"The promise was a rope pulling her home and a fence preventing her return to that same home."},
+    {"case_id":"dv-a9","split":"dev","boundary_type":"contrast","text":"The field was a scar, yet the new grass made it a green flag of survival."},
+    {"case_id":"dv-e1","split":"dev","boundary_type":"sequence","text":"Before rain the road was a drum; after the flood it was a mirror holding the clouds."},
+    {"case_id":"dv-g7","split":"dev","boundary_type":"double_meaning","text":"The verdict was a door: it shut the old case and opened the appeal that followed."},
+    {"case_id":"dv-w5","split":"dev","boundary_type":"relation","text":"The committee was a wheel moving the plan forward and a cage holding that same plan motionless."}
+  ]
+}

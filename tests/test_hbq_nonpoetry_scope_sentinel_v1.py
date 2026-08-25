@@ -10,6 +10,7 @@ import sys
 import pytest
 
 from hbqrs.paths import book_root
+from tests import _hbq_s2_historical_runtime as historical_runtime
 
 
 ROOT = book_root() / "evaluation-results" / "hbq-nonpoetry-scope-sentinel-v1"
@@ -21,7 +22,10 @@ def load_study():
     assert spec and spec.loader
     sys.modules[spec.name] = module
     spec.loader.exec_module(module)
-    return module
+    try:
+        return historical_runtime.install(module, source_commit="c4ba06453785bdb52bce374926b65d3cab542a9a")
+    except historical_runtime.HistoricalRuntimeUnbound as exc:
+        pytest.skip(f"historical runtime unbound: {exc}")
 
 
 def test_frozen_s2_subset_has_exact_four_state_geometry_and_no_provider_mode():
@@ -141,9 +145,44 @@ def test_contract_and_corpus_drift_fail_closed(monkeypatch):
         s.verify_corpus(s.load_corpus())
 
 
+def test_historical_runtime_snapshot_rejects_a_mutated_declared_registry_file():
+    s = load_study()
+    path = s._historical_runtime_root / "registry" / "question_index.jsonl"
+    original = path.read_bytes()
+    try:
+        path.write_bytes(original + b"\n")
+        with pytest.raises(ValueError, match="mutated"):
+            s.sha256_file(path)
+    finally:
+        path.write_bytes(original)
+
+
+def test_historical_runtime_rejects_an_unavailable_declared_digest_without_relabeling_bytes(tmp_path: Path):
+    path = tmp_path / "runtime.txt"
+    original = b"historical bytes\n"
+    path.write_bytes(original)
+    with pytest.raises(ValueError, match="binding is unavailable"):
+        historical_runtime._normalize_declared_bytes(path, "0" * 64)
+    assert path.read_bytes() == original
+
+
+def test_historical_runtime_restores_declared_mixed_eol_bytes_only_when_the_exact_hash_matches(tmp_path: Path):
+    path = tmp_path / "runtime.txt"
+    frozen = b"one\r\ntwo\nthree\r\n"
+    path.write_bytes(b"one\ntwo\nthree\n")
+    historical_runtime._normalize_declared_bytes(
+        path,
+        historical_runtime.hashlib.sha256(frozen).hexdigest(),
+        candidate_payloads=(frozen,),
+    )
+    assert path.read_bytes() == frozen
+
+
 def test_provider_free_command_surface_and_public_privacy_boundary():
-    dry = subprocess.run([sys.executable, str(ROOT / "run.py"), "--dry-run"], text=True, capture_output=True, check=True)
-    rendered = subprocess.run([sys.executable, str(ROOT / "run.py"), "--render-plan"], text=True, capture_output=True, check=True)
+    s = load_study()
+    dry = historical_runtime.run_cli(s, ROOT / "run.py", "--dry-run")
+    rendered = historical_runtime.run_cli(s, ROOT / "run.py", "--render-plan")
+    assert dry.returncode == rendered.returncode == 0
     assert json.loads(dry.stdout)["verification"]["provider_calls"] == 0
     assert len(json.loads(rendered.stdout)["rendered_slots"]) == 60
     forbidden = ("C:\\Users\\", "C:/Users/", "Gray Blood", "api_key", "session_id")

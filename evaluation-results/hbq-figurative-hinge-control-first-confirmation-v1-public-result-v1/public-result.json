@@ -1,0 +1,42 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-figurative-hinge-control-first-confirmation-v1",
+  "source_bindings": {
+    "execution_claim_sha256": "1dd2a08e8e5144a7dbf4c40b24cb98b7518097c60a832e39ab6f85ca21c6c31f",
+    "execution_result_sha256": "8222cd9b34c224173add47305bcb736b7dbe7b51919cfc0a107e2c933005a184",
+    "preexecution_go_review_sha256": "f9cd31371de2f86dc04d54d3902c465ca41399c9747353c5ab00d24ce4fc8465",
+    "dry_manifest_sha256": "b8bb6945fca7973b5a4b30e82b9b8ee5637f3f584970c8debf251a220ff3a868",
+    "sealed_expected_outcomes_commitment_sha256": "d8f722f7397215d7d5b4ba5bc43ab8f95fc4c92320d124d85d7359f7057f6cc4"
+  },
+  "execution": {
+    "planned_contacts": 18,
+    "accepted_first_attempt_contacts": 18,
+    "unique_sessions": 18,
+    "source_quote_rule_valid_contacts": 18,
+    "retries": 0,
+    "rejections": 0,
+    "normalization_events": 0
+  },
+  "public_synthetic_geometry": {
+    "case_ids": ["a1", "a2", "b3", "b4", "b5", "b6"],
+    "repetitions_per_case": 3,
+    "expected_state": {
+      "matched": 18,
+      "total": 18,
+      "by_case": {
+        "a1": {"matched": 3, "total": 3},
+        "a2": {"matched": 3, "total": 3},
+        "b3": {"matched": 3, "total": 3},
+        "b4": {"matched": 3, "total": 3},
+        "b5": {"matched": 3, "total": 3},
+        "b6": {"matched": 3, "total": 3}
+      }
+    }
+  },
+  "route_posture": "zero_charge_route_configured_and_acknowledged",
+  "decisions": [
+    "FORMAL_PASS",
+    "PROMOTION_REVIEW_ELIGIBLE_ONLY",
+    "PROMOTION_NONE"
+  ]
+}

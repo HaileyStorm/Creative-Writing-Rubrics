@@ -10,6 +10,12 @@ import sys
 
 import pytest
 
+from _hbq_s1_historical_runtime import (
+    LegacyHistoricalRuntimeUnbound,
+    _declared_bindings,
+    _unique_commit_for_bindings,
+    install_historical_runtime,
+)
 from hbqrs.paths import book_root
 
 
@@ -22,7 +28,21 @@ def study():
     assert spec and spec.loader
     sys.modules[spec.name] = module
     spec.loader.exec_module(module)
-    return module
+    try:
+        return install_historical_runtime(module)
+    except LegacyHistoricalRuntimeUnbound as error:
+        pytest.skip(str(error))
+
+
+def test_legacy_package_without_source_commit_fails_closed_instead_of_guessing_a_runtime():
+    spec = importlib.util.spec_from_file_location("s1_free_verse_repetition_treatment_unbound", ROOT / "study.py")
+    module = importlib.util.module_from_spec(spec)
+    assert spec and spec.loader
+    spec.loader.exec_module(module)
+    assert not hasattr(module, "SOURCE_COMMIT")
+    assert _unique_commit_for_bindings(module.REPOSITORY, _declared_bindings(module)) is None
+    with pytest.raises(LegacyHistoricalRuntimeUnbound, match="legacy historical runtime is unbound"):
+        install_historical_runtime(module)
 
 
 def test_freeze_is_provider_free_with_exact_private_four_fixture_ab_geometry():

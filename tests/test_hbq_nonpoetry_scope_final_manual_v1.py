@@ -8,6 +8,7 @@ from copy import deepcopy
 
 import pytest
 from hbqrs.paths import book_root
+from tests import _hbq_s2_historical_runtime as historical_runtime
 
 
 ROOT = book_root() / "evaluation-results" / "hbq-nonpoetry-scope-final-manual-v1"
@@ -19,7 +20,10 @@ def study():
     assert spec and spec.loader
     sys.modules[spec.name] = module
     spec.loader.exec_module(module)
-    return module
+    try:
+        return historical_runtime.install(module, source_commit="c4ba06453785bdb52bce374926b65d3cab542a9a")
+    except historical_runtime.HistoricalRuntimeUnbound as exc:
+        pytest.skip(f"historical runtime unbound: {exc}")
 
 
 def attestation(s, *, candidate_passes=True):
@@ -90,7 +94,8 @@ def test_contract_or_private_attestation_drift_fails_closed():
 
 
 def test_dry_run_is_the_only_command_surface_and_makes_zero_calls():
-    completed = subprocess.run([sys.executable, str(ROOT / "run.py"), "--dry-run"], capture_output=True, text=True, check=True)
+    completed = historical_runtime.run_cli(study(), ROOT / "run.py", "--dry-run")
+    assert completed.returncode == 0
     report = json.loads(completed.stdout)
     assert report["provider_calls"] == 0
     assert len(report["opaque_slot_ids"]) == 24

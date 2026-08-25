@@ -1,0 +1,70 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-figurative-dspy-boundary-search-successor-v1",
+  "status": "frozen_provider_free_preexecution",
+  "development_only": true,
+  "source_anchor": {
+    "commit": "6ae9ee0db17dda61bb9adc00a60bcd8072969d5d",
+    "manual_predecessor": "hbq-figurative-isolated-anchor-pilot-v1-execution-v1",
+    "historical_dspy_lineage": [
+      "hbq-figurative-scope-dspy-successor-v1",
+      "hbq-figurative-scope-dspy-successor-v2",
+      "hbq-figurative-scope-dspy-successor-v3"
+    ]
+  },
+  "target": {
+    "leaf_id": "penalty.purple_prose.metaphor",
+    "stable_id_unchanged": true,
+    "owner_unchanged": true,
+    "weight_unchanged": true,
+    "stockness_owner": "core.freshness_and_non_genericness.no_default_metaphors",
+    "density_owner": "penalty.purple_prose.proportion"
+  },
+  "candidate_search": {
+    "engine": "development_only_static_dspy_boundary_ranking",
+    "candidate_appendices_exact": 4,
+    "unrestricted_generation": "forbidden",
+    "selection_inputs": ["exact_label_performance", "boundary_type_stability", "ownership_preservation", "independent_sol_review"],
+    "selection_rule": "reject_any_candidate_without_static_ownership_preservation; rank_descending_exact_correct_then_descending_minimum_correct_per_boundary_type_then_ascending_candidate_id; independent Sol review is required before any provider execution",
+    "runtime_dspy_dependency": "forbidden"
+  },
+  "geometry": {
+    "train_cases": 12,
+    "train_boundary_types": 6,
+    "train_calls": 48,
+    "dev_cases": 6,
+    "dev_repeats": 2,
+    "dev_candidates": 2,
+    "dev_calls": 24,
+    "dry_materialized_dev_slots": 48,
+    "dry_materialized_provider_visible_slots": 96,
+    "maximum_provider_sends": 72,
+    "one_call_per_candidate_case": true,
+    "provider_order": "all_train_before_any_dev"
+  },
+  "execution": {
+    "model": "gpt-5.6-sol",
+    "reasoning": "high",
+    "batch_size": 1,
+    "batch_attempts": 1,
+    "retries": "forbidden",
+    "normalization": "forbidden",
+    "sole_provider_capable_mode": "run.py --execute with dual acknowledgement and frozen independent-Sol GO record",
+    "zero_incremental_charge_only": true,
+    "paid_fallback": "forbidden"
+  },
+  "evidence": {
+    "quote_rule": "at_least_one_source_exact_quote",
+    "summary_only": "reject",
+    "source_scope": "supplied_artifact_only",
+    "expected_ledger": "private_and_never_provider_facing",
+    "prompt_ledger_separation": "required"
+  },
+  "holds": {
+    "pilot_fixtures_calls_notes_outputs": "forbidden",
+    "eventual_holdout": "sealed_and_forbidden",
+    "qpc24": "held",
+    "gray_blood": "held",
+    "promotion": "none"
+  }
+}

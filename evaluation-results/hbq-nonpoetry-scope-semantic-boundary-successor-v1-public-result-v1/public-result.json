@@ -1,0 +1,36 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-nonpoetry-scope-semantic-boundary-successor-v1",
+  "source_bindings": {
+    "execution_claim_sha256": "e80a6f5d14a8fbb2471d96c7a70afb194820cecaea3927f3d0fa7e8dff91a025",
+    "terminal_sidecar_sha256": "2f9fc34080725cd3f44e7de74e15d314bb5f9cabe0d3fcac61ab5c0546a0386d",
+    "settlement_sha256": "d979d194d9f5b67e2c18e0827625f797abee5c38fe6b6e2409eb50a5fd36b0a1"
+  },
+  "execution": {
+    "planned_slots": 6,
+    "completed_slots": 6,
+    "accepted_provider_calls": 6,
+    "batch_attempts_per_slot": 1,
+    "post_response_retries": 0
+  },
+  "aggregate_cells": {
+    "visible_whole_work_penalty": {
+      "expected": "NO",
+      "matched": 2,
+      "total": 2
+    },
+    "supplied_evaluation_without_completeness_penalty": {
+      "expected": "YES",
+      "matched": 2,
+      "total": 2
+    },
+    "no_evaluation_record": {
+      "expected": "CANNOT_ASSESS",
+      "matched": 2,
+      "total": 2
+    }
+  },
+  "decision": "FRESH_DISJOINT_CONFIRMATION_REVIEW_ELIGIBLE",
+  "promotion": "none",
+  "next_step": "independent_review_then_fresh_disjoint_confirmation_only"
+}

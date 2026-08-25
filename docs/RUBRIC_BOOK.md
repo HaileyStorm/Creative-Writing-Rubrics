@@ -1663,7 +1663,7 @@ Requires line breaks, stanza breaks, visual arrangement, rhythm, and repetitions
   _weight 1; scored; material; YES = pass._
 - `form.poetry.free_verse.syntax` — **Does syntax interact productively with lineation and enjambment?**  
   _weight 1.5; scored; material; YES = pass._
-- `form.poetry.free_verse.repetition` — **When words, phrases, or structures recur, does recurrence alter pressure or meaning?**  
+- `form.poetry.free_verse.repetition` — **Answer NOT_APPLICABLE when no recurrence is supplied or indicated, and CANNOT_ASSESS when recurrence is indicated but too few instances are supplied to judge its effect. Presence of recurrence alone does not satisfy this criterion. Answer YES only when sufficient supplied instances show that recurring words, phrases, or structures change pressure or meaning; when sufficient supplied instances recur without doing so, answer NO. When words, phrases, or structures recur, does recurrence alter pressure or meaning?**
   _weight 1.5; scored; material; YES = pass._
 - `form.poetry.free_verse.no_prose_wrap` — **Does the poem avoid reading like ordinary prose arbitrarily wrapped into short lines?**  
   _weight 2; scored; material; YES = pass._
@@ -5467,7 +5467,7 @@ Penalty group; default internal cap: **5.0** points.
   _weight 1.5; scored; material; YES = pass._
 - `penalty.purple_prose.tone` — **Does stylistic lushness fit the speaker, project, scene intensity, genre, and form?**  
   _weight 1.5; scored; material; YES = pass._
-- `penalty.purple_prose.metaphor` — **Do metaphors and images cooperate rather than stack, mix, or compete?**  
+- `penalty.purple_prose.metaphor` — **Inspect linked material metaphors or images in the declared scope. Return YES when their implications are compatible and jointly clarify the supplied passage. If linked images carry opposing implications, return YES only when the artifact supplies an additional concrete semantic hinge that relates, reconciles, or distinguishes those implications, such as a demonstrated causal, temporal, role, perspective, or double-meaning relation. Punctuation, an explicit connective, or a bare assertion that images coexist is not itself that hinge. Sharing a subject, pairing opposite labels, or restating them with opposite verbs is not an additional hinge; the artifact must supply a relation beyond the coexistence itself. Return NO when opposing implications merely occur together without an additional artifact-grounded hinge. Do not judge familiarity/defaultness or figurative density; cite the linked spans and the compatibility or hinge, or the absence of one. Do metaphors and images cooperate rather than stack, mix, or compete?**
   _weight 1.5; scored; material; YES = pass._
 - `penalty.purple_prose.attention` — **Does the language direct attention toward the artifact's subject rather than mainly toward its own fanciness?**  
   _weight 2; scored; material; YES = pass._
@@ -7945,7 +7945,7 @@ For several paragraphs or an excerpt detached from a larger unit; separates visi
   _weight 1.5; scored; material; YES = pass._
 - `scope.passage.undecidable` — **Are questions that cannot be decided without more context marked CANNOT_ASSESS?**  
   _weight 2; scored; material; YES = pass._
-- `scope.passage.status` — **If the passage is explicitly an excerpt or fragment, is it exempt from whole-work completeness requirements?**  
+- `scope.passage.status` — **For a passage explicitly declared to be an excerpt or fragment, does the supplied evaluation avoid penalizing it for not being a complete work?**
   _weight 2; diagnostic; material; YES = pass._
 
 ### `scope.poetry_collection` — Poetry sequence or collection scope overlay

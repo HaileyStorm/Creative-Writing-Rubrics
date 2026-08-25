@@ -12,6 +12,7 @@ from types import SimpleNamespace
 import pytest
 
 from hbqrs.paths import book_root
+from tests import _hbq_s2_historical_runtime as historical_runtime
 
 
 ROOT = book_root() / "evaluation-results" / "hbq-nonpoetry-scope-disjoint-holdout-v1-execution-v1"
@@ -23,7 +24,10 @@ def study():
     assert spec and spec.loader
     sys.modules[spec.name] = module
     spec.loader.exec_module(module)
-    return module
+    try:
+        return historical_runtime.install(module, source_commit="9b8cbd33b310d19607bbb06077bb26bd38c5c553")
+    except historical_runtime.HistoricalRuntimeUnbound as exc:
+        pytest.skip(f"historical runtime unbound: {exc}")
 
 
 def _write_json(path: Path, value) -> str:
@@ -35,9 +39,10 @@ def _write_json(path: Path, value) -> str:
 @pytest.fixture
 def private_controller(tmp_path: Path, monkeypatch):
     s = study()
-    root = tmp_path / "private-controller"
-    root.mkdir()
-    source = next(json.loads(line) for line in (book_root() / "registry" / "question_index.jsonl").read_text(encoding="utf-8").splitlines() if json.loads(line)["id"] == s.LEAF_ID)
+    root = tmp_path / "state" / "private-controller"
+    root.mkdir(parents=True)
+    assert s.REPOSITORY != book_root()
+    source = next(json.loads(line) for line in (s.REPOSITORY / "registry" / "question_index.jsonl").read_text(encoding="utf-8").splitlines() if json.loads(line)["id"] == s.LEAF_ID)
     states = ("localized_issue", "localized_issue", "material_failure", "material_failure", "missing_required_evidence", "missing_required_evidence", "activation_mismatch", "activation_mismatch")
     verdicts = {"localized_issue": "YES", "material_failure": "NO", "missing_required_evidence": "CANNOT_ASSESS", "activation_mismatch": "NOT_APPLICABLE"}
     fixtures = [{"fixture_id": f"s2dh-f{i:02d}", "artifact_kind": "memo" if i < 7 else "inventory", "declared_scope": "excerpt" if i < 7 else "metadata", "structure_id": f"structure-{i}", "subject_key": f"subject-{i}", "source_id": f"pg-{i}" if i < 7 else None, "source_excerpt": f"public excerpt {i}" if i < 7 else None, "evaluation_record": f"evaluation record {i}", "contexts": [f"context {i}"]} for i in range(1, 9)]
@@ -130,9 +135,19 @@ def test_prepare_dry_and_live_do_not_open_sealed_ledger(private_controller, monk
     assert result["inspected_slots"] == 48 and len(calls) == 48
     assert all("--allow-remote" in command and "--resume" in command for command in calls)
     disclosure = json.loads((root / "receipts" / "preexecution-disclosure.v1.json").read_text(encoding="utf-8"))
-    forbidden = ("expected", "state", "gate_role", "rationale", "title", "author", "ebook", "locator", "copyright")
-    serialized = json.dumps(disclosure).casefold()
-    assert not any(token in serialized for token in forbidden)
+    forbidden_keys = {"expected", "state", "gate_role", "rationale", "title", "author", "ebook", "locator", "copyright"}
+
+    def all_keys(value):
+        if isinstance(value, dict):
+            yield from value
+            for child in value.values():
+                yield from all_keys(child)
+        elif isinstance(value, list):
+            for child in value:
+                yield from all_keys(child)
+
+    assert any("state" in row["artifact"]["path"].casefold() for row in disclosure["slots"])
+    assert not forbidden_keys.intersection(all_keys(disclosure))
 
 
 def test_pairwise_prompts_differ_only_in_p4_wording(private_controller):

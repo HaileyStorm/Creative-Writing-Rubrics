@@ -1,0 +1,51 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-poetry-free-verse-repetition-incidental-determiner-holdout-v2-execution-v2",
+  "source_bindings": {
+    "execution_claim_sha256": "6fa97bc0cde28b57552f3ef62dbe20a37e1b77574daf21f63a17377f8efcee9b",
+    "independent_driver_review_sha256": "858300ff7156e2d0438ae737c6b8082a7a11d0dc7e0c0ad6ca7b63817093d26f",
+    "settlement_sha256": "798d102551e37312f36ebe947b1c27ea0d0edb2ea8b839dcb6ca2973dd9bee45",
+    "v1_terminal_sha256": "b711e9557d7e4a763d0600626a7089de332e2760af12f513ab68db37af5eeecc",
+    "v3_terminal_sha256": "d3bc263ddd7f9c1df624b6b627803b96f2e19412944d5e4d1c0af63397f67ea9"
+  },
+  "route": {
+    "provider": "openai",
+    "model": "gpt-5.6-sol",
+    "reasoning": "high"
+  },
+  "public_synthetic_geometry": {
+    "independent_carriers": 1,
+    "repetitions_per_carrier": 3,
+    "planned_contacts": 3,
+    "continuity": "same_carrier_context_and_candidate_as_v1"
+  },
+  "attempt_accounting": {
+    "accepted_first_attempt_contacts": 3,
+    "retries": 0,
+    "rejections": 0,
+    "normalization_events": 0,
+    "grounded_source_evidence": 3
+  },
+  "raw_state_agreement": {
+    "expected": "NO",
+    "observed": {
+      "NO": 3
+    },
+    "matched": 3,
+    "total": 3
+  },
+  "settlement_decision": "HOLDOUT_ELIGIBLE_ON_SUCCESS",
+  "promotion": "none_pending_final_review",
+  "combined_practical_matrix": {
+    "clear_carriers": 4,
+    "matched": 12,
+    "total": 12,
+    "state_counts": {
+      "CANNOT_ASSESS": 3,
+      "NOT_APPLICABLE": 3,
+      "NO": 3,
+      "YES": 3
+    },
+    "ambiguous_coordinate_carrier": "non_voting_lineage"
+  }
+}

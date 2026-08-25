@@ -3,7 +3,7 @@ standard:
   id: HBQ-RS
   version: 1.2.0
 module_id: form.poetry.free_verse
-version: 2
+version: 3
 title: Free verse
 kind: artifact_form
 description: Requires line breaks, stanza breaks, visual arrangement, rhythm, and repetitions to feel chosen rather
@@ -107,7 +107,11 @@ tree:
   - id: form.poetry.free_verse.repetition
     type: question
     criterion_key: form.poetry.free_verse.repetition
-    text: When words, phrases, or structures recur, does recurrence alter pressure or meaning?
+    text: Answer NOT_APPLICABLE when no recurrence is supplied or indicated, and CANNOT_ASSESS when recurrence
+      is indicated but too few instances are supplied to judge its effect. Presence of recurrence alone does not
+      satisfy this criterion. Answer YES only when sufficient supplied instances show that recurring words, phrases,
+      or structures change pressure or meaning; when sufficient supplied instances recur without doing so, answer NO.
+      When words, phrases, or structures recur, does recurrence alter pressure or meaning?
     pass_answer: 'YES'
     weight: 1.5
     question_type: scored

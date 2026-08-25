@@ -1,0 +1,26 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-poetry-free-verse-repetition-four-state-disjoint-holdout-v1",
+  "cases": [
+    {
+      "case_id": "s1h-amber",
+      "carrier_ids": ["amberline", "stillwater"],
+      "text": "Amberline settles over stillwater."
+    },
+    {
+      "case_id": "s1h-birch",
+      "carrier_ids": ["birchglass", "tollbell"],
+      "text": "The tollbell rang at birchglass.\nThe tollbell rang at birchglass.\nThe tollbell rang at birchglass."
+    },
+    {
+      "case_id": "s1h-cinder",
+      "carrier_ids": ["cinderwake", "northgate"],
+      "text": "We waited at cinderwake.\nWe waited at cinderwake.\nWe waited at cinderwake until northgate opened."
+    },
+    {
+      "case_id": "s1h-drift",
+      "carrier_ids": ["driftmark", "saltlantern"],
+      "text": "A note says the driftmark refrain returned earlier, but supplies only this one instance: saltlantern."
+    }
+  ]
+}

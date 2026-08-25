@@ -1,0 +1,34 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-figurative-hinge-treatment-successor-v5",
+  "source_bindings": {
+    "execution_claim_sha256": "3757ca2a4e30a37e932586816ed533ba336db0ed5abd2c39549e6d14c58ade8d",
+    "execution_result_sha256": "090f4ee025db2833b73a9c2bbd7702b5b0a0f39dba9c50a2a674218fd36350b5",
+    "preexecution_go_review_sha256": "ccccade1dfd1987cd2b6367df24c5b875e1a4251637a9d6d89239aac38237f19"
+  },
+  "public_synthetic_geometry": {
+    "case_ids": ["f1", "g2", "h3", "j4"],
+    "cases": 4,
+    "repetitions_per_case": 2,
+    "planned_contacts": 8,
+    "accepted_first_attempt_contacts": 8,
+    "retries": 0,
+    "rejections": 0
+  },
+  "exact_expected_state": {
+    "matched": 7,
+    "total": 8,
+    "by_case": {
+      "f1": {"matched": 2, "total": 2},
+      "g2": {"matched": 2, "total": 2},
+      "h3": {"matched": 2, "total": 2},
+      "j4": {"matched": 1, "total": 2}
+    }
+  },
+  "repeat_stability": {"stable_cases": 3, "total_cases": 4},
+  "decisions": [
+    "MANUAL_HINGE_TREATMENT_POSITIVE_SIGNAL_BUT_UNSTABLE_NO_GO",
+    "PROMOTION_NONE",
+    "FRESH_18_CALL_CONFIRMATION_CLOSED"
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "format_version": 1,
+  "target_leaf": "penalty.purple_prose.metaphor",
+  "candidates": [
+    {
+      "candidate_id": "appendix-a",
+      "kind": "current_manual",
+      "text": "Inspect each material metaphor or image in the declared scope and compare the implications attached to the same subject or linked subjects. Return YES when those implications can coexist and jointly clarify the passage. Return NO only when the passage presents incompatible figurative implications without a supported shift, contrast, or deliberate double meaning, so the images materially compete or destabilize the declared scope. Do not judge familiarity/defaultness or sheer figurative load relative to content; cite the cooperating or conflicting spans."
+    },
+    {
+      "candidate_id": "appendix-b",
+      "kind": "compatible_dimensions",
+      "text": "Inspect material metaphors or images attached to the same or linked subjects. Return YES when their supported implications describe compatible dimensions, such as condition, action, relation, feeling, or time, and together clarify the supplied passage. Return NO only when the supplied wording makes the implications compete for the same semantic role and gives no textual basis for a shift, contrast, or deliberate double meaning. Do not judge familiarity/defaultness or figurative quantity; cite the exact spans and the supported hinge."
+    },
+    {
+      "candidate_id": "appendix-c",
+      "kind": "supported_hinge",
+      "text": "Compare each material image with the implications it assigns in the supplied scope. Return YES when the artifact itself supports a hinge that lets the images work together: a marked transition, contrast, temporal development, or deliberate double meaning. Return NO only when linked images impose incompatible implications and the artifact supplies no such hinge. Do not treat familiarity/defaultness or density as metaphor competition; cite the exact words that supply, or fail to supply, the hinge."
+    },
+    {
+      "candidate_id": "appendix-d",
+      "kind": "unsupported_competition",
+      "text": "For linked material metaphors or images, identify the concrete implication each asks the reader to carry. Return YES when those implications can jointly stand in the declared scope, including when a stated contrast, sequence, or double meaning supports both. Return NO only when they demand mutually incompatible implications of the same subject or relation and the artifact does not resolve the competition. Exclude familiarity/defaultness and overall figurative load; cite the exact competing or reconciling language."
+    }
+  ]
+}

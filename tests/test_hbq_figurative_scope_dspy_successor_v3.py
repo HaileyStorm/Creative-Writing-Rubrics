@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from copy import deepcopy
 import hashlib
-import importlib.util
 import json
 from pathlib import Path
 import subprocess
@@ -11,26 +10,18 @@ import sys
 import pytest
 
 from hbqrs.paths import book_root
+from tests._scoped_module_loader import load_module as load_scoped_module
 
 
 ROOT = book_root() / "evaluation-results" / "hbq-figurative-scope-dspy-successor-v3"
 
 
-def load_module(name: str, path: Path):
-    spec = importlib.util.spec_from_file_location(name, path)
-    module = importlib.util.module_from_spec(spec)
-    assert spec and spec.loader
-    sys.modules[spec.name] = module
-    sys.path.insert(0, str(ROOT))
-    try:
-        spec.loader.exec_module(module)
-    finally:
-        sys.path.remove(str(ROOT))
-    return module
+def load_study_module(name: str, path: Path):
+    return load_scoped_module(path, name=name)
 
 
 def study():
-    return load_module("dspy_successor_v3_study", ROOT / "study.py")
+    return load_study_module("dspy_successor_v3_study", ROOT / "study.py")
 
 
 def read_contract() -> dict:
@@ -109,7 +100,7 @@ def test_dry_run_is_provider_free_and_reports_final_hashes():
     assert value["mode"] == "dry_run"
     assert value["verification"]["provider_calls"] == 0
     assert value["verification"]["private_bindings_finalized"] is True
-    module = load_module("dspy_successor_v3_run_pending", ROOT / "run.py")
+    module = load_scoped_module(ROOT / "run.py", name="dspy_successor_v3_run_pending", aliases={"study": study()})
     with pytest.raises(FileNotFoundError, match="inputs are unavailable"):
         module.load_bound_private_engine(Path("missing-private-root"))
 
@@ -138,7 +129,7 @@ def test_public_result_mutation_fails_closed(monkeypatch):
 
 
 def test_settlement_loads_only_hash_bound_private_engine(monkeypatch, tmp_path):
-    module = load_module("dspy_successor_v3_run_loader", ROOT / "run.py")
+    module = load_scoped_module(ROOT / "run.py", name="dspy_successor_v3_run_loader", aliases={"study": study()})
     engine = tmp_path / "private_engine.py"
     freeze = tmp_path / "freeze-inputs.json"
     engine.write_text(

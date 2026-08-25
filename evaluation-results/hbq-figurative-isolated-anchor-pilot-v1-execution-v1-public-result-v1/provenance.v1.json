@@ -1,0 +1,40 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-figurative-isolated-anchor-pilot-v1-execution-v1-public-result-v1",
+  "source": {
+    "study_id": "hbq-figurative-isolated-anchor-pilot-v1-execution-v1",
+    "execution_parent_commit": "6ae9ee0db17dda61bb9adc00a60bcd8072969d5d",
+    "package_files_sha256": {
+      "README.md": "a968b551d32ab1a08cc34884144e4bdfc059ed4cd10f73005295097c95b68a65",
+      "expected-verdict-ledger.json": "faefff622387a58d5dadaa4ad5957342db3085050a981cc272e2f60319efd3b2",
+      "public-synthetic-corpus.json": "6fca17ade7e35902560fea569d6ddd8dc1a37230833d0a89e26e3320dfe3077e",
+      "run.py": "2d22c923e7e801aae4a5c179ca74000e289580222d57f9e74c9f4e5812f5bcc9",
+      "study-contract.json": "fb384290c03f348471548c6b8c636bfb8bb696c8f29c7ef7f37c48e0bfae0e8a",
+      "study.py": "55b154087a8a05fb5910a361ed5755399c43a355e544e10d9e062b51023570e5",
+      "verify_settled.py": "e29445d79361b37b163773babfdabeef2be0b056b6eb4a791cdb2a8f1c652992"
+    }
+  },
+  "settled_evidence_sha256": {
+    "execution_claim.v1.json": "02141f3c8a9ba5ddd6135110f0e0dfa9c0f4d92791870d16cf6fbf0514d99442",
+    "anchor-pilot-settlement.v1.json": "0e2802d0b2cc95cd4cb52d824478091a577fb3ad43fb6cb140d29f10ac683460",
+    "public-aggregate.v1.json": "08ee680929cb8256339c1f5af7e43820581b8b53d3367c6d94414a512f020099",
+    "terminal-sidecar.v5.json": "f4177a1090765551c3385b1b8649c939263f905df60a89c15e0f7f17e481ce77",
+    "control-gate.v1.json": "7df361821743005bf2a27aa71c4ba7dd8ce951c4c1f0639275dd466858777e24"
+  },
+  "verification": {
+    "method": "provider_free_full_settled_state_revalidation",
+    "accepted_slots_revalidated": 18,
+    "control_gate_revalidated": true,
+    "settlement_recomputed": true,
+    "settle_idempotence_used": false
+  },
+  "publication": {
+    "scope": "aggregate_only",
+    "private_paths": false,
+    "prose": false,
+    "prompts": false,
+    "responses": false,
+    "session_identifiers": false,
+    "per_call_records": false
+  }
+}

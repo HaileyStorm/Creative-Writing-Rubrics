@@ -1,0 +1,34 @@
+{
+  "format_version": 4,
+  "study_id": "hbq-poetry-free-verse-repetition-four-state-applicability-treatment-v1-execution-v4",
+  "status": "frozen_unexecuted_exact_quote_protocol_successor",
+  "source_checkout": {"commit": "6ae9ee0db17dda61bb9adc00a60bcd8072969d5d", "tree": "16f49b15706852ce64f5688f952b4f968707dc04", "exact_head_required_before_claim": true},
+  "v2_historical_preexecution_snapshot": {
+    "package_path": "evaluation-results/hbq-poetry-free-verse-repetition-four-state-applicability-treatment-v1-execution-v2",
+    "snapshot_completed_at_utc": "2026-08-24T18:25:43.6706198Z",
+    "study_manifest_sha256": "8d12ecfeb06fbd2424790f0a847074ceb15f4efdfbec00d1b99db6998a66367a",
+    "dry_run_receipt_sha256": "ad6b93cad86b3cbc0818411165b098d63a232b7fdb97081da91465852abc8ee5",
+    "prompt_privacy_receipt_sha256": "e31fec72dd10554a5413c1a8d8e0077c8ead9d8aced07ea2001ceab578b0088a",
+    "provider_calls_at_snapshot": 0, "execution_claim_at_snapshot": "none",
+    "disposition": "historical_preexecution_snapshot_not_current_execution_outcome"
+  },
+  "v2_current_outcome_binding": {
+    "public_result_path": "evaluation-results/hbq-poetry-free-verse-repetition-four-state-applicability-treatment-v1-execution-v2-public-result-v1/public-result.json",
+    "public_result_sha256": "93c8eb06fdbd8e55b69efcdfd7c803ff4137710bb5104b310380cb91400de7fc",
+    "execution_claim_sha256": "af6032f1a84398f23216ae7b16c78c8fe5c60a95dedc61d677b3a0ad9a552141",
+    "contacts": {"planned": 12, "accepted": 12, "unique": 12, "first_attempt": 12, "retries": 0, "rejections": 0, "normalization_events": 0},
+    "semantic_oracle_agreement": {"matched": 12, "total": 12},
+    "strict_evidence_gate": {"matched": 10, "total": 12, "summary_items": 2},
+    "formal_result": "NO_RESULT",
+    "postexecution_artifacts": {"settlement": "not_written", "aggregate": "not_written", "terminal_result": "not_written"},
+    "promotion": "none", "holdout": "not_authorized", "dspy": "not_authorized"
+  },
+  "candidate": {"leaf_id": "form.poetry.free_verse.repetition", "text": "Answer NOT_APPLICABLE when no recurrence is supplied or indicated, and CANNOT_ASSESS when recurrence is indicated but too few instances are supplied to judge its effect. Presence of recurrence alone does not satisfy this criterion. Answer YES only when sufficient supplied instances show that recurring words, phrases, or structures change pressure or meaning; when sufficient supplied instances recur without doing so, answer NO.", "source_leaf_sha256": "34f195cb415bdca5725be3bcc524ab826aac09c43245f4bcddb6961f13dce24a", "candidate_leaf_sha256": "b8b874772e62965042bc75c8171a933bc3d85e3d785da911019d52cbfd268219", "prompt_delta": "repetition_leaf_text_only"},
+  "private_commitments": {"controller_sha256": "d77a9e7ba69c699e8be590490ee93c24fa9a6dadf22d9dab448190836888f858", "ledger_sha256": "47fb0e95c29e5b17e80531b218dd61460d7b298aab7316ff9fbeb2ea8a924762", "verifier_sha256": "9834fa06a83639467867411ac6e36ec1026961a91f98238e08714e30705f18cf", "fixture_text_sha256": ["1fa7859c544799a182a81f374693274dd94e48eb3b264c99f5559467b4e0185c", "262c3dbfd3c584462e5b4078e324cf8a3516be5ee9d4ecefb2ce20616d715fa7", "5277854c7cfa6d324c4fd977b43926d5c74fd79a35094c5212a4e0ffc5c4e675", "949a5ade63baff0a18ad4d9365f79375575671a464cd6f3cf89eb950f2760d83"]},
+  "evidence_protocol": {"composition": "replace_generic_binary_evidence_instructions", "binary_prompt_source": "exact-quote-binary-prompt.md", "binary_prompt_sha256": "70db54001cdf585717f6151a5eb277c1eae698102f7fd3ed7429fc7ff8071094", "response_schema_source": "exact-quote-response.schema.json", "response_schema_sha256": "25b7563672c08d76f9a978108fc334def213a81211c00520c9cad25fa5a4451e", "kind": "exact_quote_only", "exact_quote": "nonempty_verbatim_supplied_substring", "summary": "required_null_unavailable", "normalization_events_required": 0, "protocol_receipt": "required_before_claim"},
+  "identifier_boundary": {"semantic_fixture_keys": "private_controller_and_ledger_only", "expected_labels_and_roles": "private_controller_and_verifier_only", "provider_artifact_ids": "opaque_private_ledger_tokens_only", "provider_slot_ids": "opaque_private_ledger_tokens_not_rendered", "prompt_privacy_receipt": "required_before_claim"},
+  "geometry": {"cells": 4, "states": ["NOT_APPLICABLE", "NO", "YES", "CANNOT_ASSESS"], "arms": ["candidate"], "repeats": 3, "slots": 12, "one_leaf_per_call": true, "fresh_private_prose": true},
+  "execution": {"route": "codex", "model": "gpt-5.6-sol", "reasoning": "high", "sequence": "strict", "batch_size": 1, "batch_attempts": 1, "maximum_provider_sends": 12, "one_physical_attempt_per_slot": true, "semantic_retry_or_resume": "forbidden", "paid_api_or_fallback_route": "forbidden"},
+  "gating": {"each_cell_three_of_three": "HOLDOUT_ELIGIBLE_ON_SUCCESS", "all_slots_required": "12/12", "any_complete_valid_miss": "NO_GO_DSPY_ELIGIBLE_ONLY", "invalid_or_incomplete": "no_result", "success_authorizes_only": "fresh_disjoint_holdout"},
+  "promotion": "none", "dspy": "not_implemented_runtime"
+}

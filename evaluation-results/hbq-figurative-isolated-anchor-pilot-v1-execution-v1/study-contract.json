@@ -1,0 +1,108 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-figurative-isolated-anchor-pilot-v1-execution-v1",
+  "status": "frozen_control_first_provider_free_preexecution",
+  "source_anchor": {
+    "commit": "6ae9ee0db17dda61bb9adc00a60bcd8072969d5d",
+    "tree": "16f49b15706852ce64f5688f952b4f968707dc04",
+    "base_executor": "evaluation-results/hbq-figurative-metaphor-checklist-successor-v1-execution-v1/study.py",
+    "base_executor_blob": "35dd5c38b5ea8873576f29c9a4ef5300c0b316cb",
+    "base_executor_sha256": "8f7fdfb539a37e557b3ad27bacbf240bdeeb9f468c57013c1c3178335468461b"
+  },
+  "geometry": {
+    "public_synthetic_fixtures": 6,
+    "repeats": 3,
+    "stage_1_control_slots": 12,
+    "stage_2_target_slots": 6,
+    "maximum_provider_sends": 18,
+    "stage_order": "all_controls_before_any_target"
+  },
+  "leaves": {
+    "target": "penalty.purple_prose.metaphor",
+    "stockness_owner": "core.freshness_and_non_genericness.no_default_metaphors",
+    "density_owner": "penalty.purple_prose.proportion"
+  },
+  "target_treatment": {
+    "status": "experimental_leaf_scoped_manual_appendix_only",
+    "exact_text": "Inspect each material metaphor or image in the declared scope and compare the implications attached to the same subject or linked subjects. Return YES when those implications can coexist and jointly clarify the passage. Return NO only when the passage presents incompatible figurative implications without a supported shift, contrast, or deliberate double meaning, so the images materially compete or destabilize the declared scope. Do not judge familiarity/defaultness or sheer figurative load relative to content; cite the cooperating or conflicting spans.",
+    "applies_only_to": "penalty.purple_prose.metaphor",
+    "excluded_ownership": [
+      "familiarity/defaultness",
+      "sheer figurative load relative to content"
+    ],
+    "rubric_runtime_change": "none"
+  },
+  "gates": {
+    "stage_1": "12_of_12_valid_quote_grounded_correct_or_stop_before_target",
+    "stage_1_failure": "CONTROL_FIXTURE_OR_PROMPT_NO_GO",
+    "stage_2_pass": "6_of_6_valid_quote_grounded_correct_with_both_cells_3_of_3",
+    "stage_2_mixed": "MANUAL_TARGET_UNSTABLE_NO_GO_DSPY_ELIGIBLE",
+    "stage_2_stable_miss": "MANUAL_TARGET_STABLE_MISS_NO_GO_DSPY_ELIGIBLE",
+    "dspy_trigger": "controls_12_of_12_and_all_target_outputs_valid_but_target_below_6_of_6",
+    "dspy_nontriggers": [
+      "transport failure",
+      "malformed output",
+      "invalid quotation",
+      "control miss"
+    ]
+  },
+  "execution": {
+    "route": "codex",
+    "model": "gpt-5.6-sol",
+    "reasoning": "high",
+    "one_leaf_per_call": true,
+    "batch_size": 1,
+    "batch_attempts": 1,
+    "physical_attempts_per_slot": 1,
+    "retry_or_resume": "forbidden",
+    "attempt_lifecycle_policy": "terminal_sidecar_v1",
+    "run_manifest_format_version": 5,
+    "zero_incremental_charge_only": true,
+    "paid_fallback": "forbidden",
+    "authentication": "chatgpt_subscription_via_exact_codex_exe_no_api_billing_environment",
+    "sole_provider_capable_mode": "run.py --execute with dual acknowledgement"
+  },
+  "evidence_gate": {
+    "accepted_slot": "at_least_one_source_exact_quote",
+    "summary_only": "reject",
+    "normalization_audit": "must_be_empty",
+    "invalid_quote_demotion": "reject",
+    "source_scope": "supplied_artifact_only",
+    "model_facing_instruction": "For this pilot, include at least one exact_quote copied verbatim from the supplied artifact; summary-only evidence is invalid."
+  },
+  "privacy": {
+    "provider_input": "public synthetic passage, selected production leaf, declared task context, and target appendix only for target slots",
+    "excluded_from_provider": [
+      "expected labels",
+      "case IDs",
+      "fixture roles",
+      "design rationales",
+      "private prose",
+      "DSPy corpus",
+      "Gray Blood"
+    ],
+    "result": "aggregate_only"
+  },
+  "claims": {
+    "baseline_comparison": "none",
+    "promotion": "none",
+    "rubric_wording": "unchanged",
+    "stable_ids": "unchanged",
+    "ownership": "unchanged",
+    "weights": "unchanged",
+    "splits": "unchanged",
+    "qpc24": "held",
+    "gray_blood": "held"
+  },
+  "dspy": {
+    "runtime": "forbidden",
+    "development_only": true,
+    "training_data": "new public synthetic examples disjoint from these six fixtures",
+    "private_prose": "forbidden",
+    "final_requirement": "new disjoint control-first holdout after Sol review"
+  },
+  "retention": {
+    "contaminated_factorial_phase_a": "retain_as_historical_negative_provenance_not_future_fixture_pattern",
+    "immutable_execution_records": "retain"
+  }
+}

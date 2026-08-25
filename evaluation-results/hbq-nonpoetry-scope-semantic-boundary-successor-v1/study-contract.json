@@ -1,0 +1,96 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-nonpoetry-scope-semantic-boundary-successor-v1",
+  "status": "frozen_provider_free_semantic_boundary_successor",
+  "development_only": true,
+  "source_cwr_head": "6ae9ee0db17dda61bb9adc00a60bcd8072969d5d",
+  "candidate": {
+    "leaf_id": "scope.passage.status",
+    "text": "For a passage explicitly declared to be an excerpt or fragment, does the supplied evaluation avoid penalizing it for not being a complete work?",
+    "source_leaf_sha256": "8504221a718aecc4b32241fa7768c6ec69ced52609181b9c22b81d2330bf817a",
+    "candidate_leaf_sha256": "79f35029a2068d28c8887e56480dd6179708c6d0e679ccbe2519d96350e6012a",
+    "owner": {
+      "module_id": "scope.passage",
+      "question_id": "scope.passage.status"
+    },
+    "preserved_fields": {
+      "id": "scope.passage.status",
+      "module_id": "scope.passage",
+      "criterion_key": "scope.passage.status",
+      "pass_answer": "YES",
+      "weight": 2.0,
+      "question_type": "diagnostic",
+      "severity": "material",
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "evidence_policy": {
+        "required": true,
+        "minimum_references": 1,
+        "reference_style": "artifact span, unit ID, timestamp, or source ID"
+      }
+    }
+  },
+  "semantic_decision": {
+    "owner": "observable_anti_penalty_behavior_in_the_supplied_evaluation",
+    "visible_whole_work_penalty": "NO",
+    "supplied_evaluation_without_completeness_penalty": "YES",
+    "no_evaluation_record": "CANNOT_ASSESS"
+  },
+  "geometry": {
+    "fixtures_exact": 3,
+    "repeats_exact": 2,
+    "slots_exact": 6,
+    "candidate_only": true,
+    "one_leaf_per_request": true
+  },
+  "execution": {
+    "permitted_now": false,
+    "provider_calls_made_now_exact": 0,
+    "future_route": "codex",
+    "future_model": "gpt-5.6-sol",
+    "future_reasoning": "high",
+    "batch_size": 1,
+    "batch_attempts": 1,
+    "attempt_lifecycle_policy": "terminal_sidecar_v1",
+    "maximum_provider_sends": 6,
+    "post_response_semantic_retries_permitted": false,
+    "paid_or_fallback_route": "forbidden"
+  },
+  "private_controller": {
+    "contract_filename": "controller-contract.v2.json",
+    "contract_sha256": "afdbe646de835e03ade54c59bf0a1c1de65a6afb21a1c09682738c9a724bd2a2",
+    "file_bindings": {
+      "fixtures.v2.json": "2916447fdd475bdd2991aef18f1a42256e410729856aedad4a70d89057676b95",
+      "expected-ledger.v2.json": "e61aef1567f324dd01e019a2d9e2901347f1bcd3955d7492a243baecf41913f2"
+    },
+    "fixture_commitments_sha256": [
+      "e7637d2bb30e23a4e586c7643d5d000d5cbd23283cbc1f2ef6f02a8a942e5d91",
+      "9aab160981ab982d31521673c8f392cb297b9082c9d0444374172a695538811b",
+      "54ec35abfd259706775930ec69115f8b42bdc7cf7978397959ba47f52cc04e4e"
+    ]
+  },
+  "gate": {
+    "requires": "all_three_cells_2_of_2_first_attempt_exact",
+    "success_action": "FRESH_DISJOINT_CONFIRMATION_REVIEW_ELIGIBLE",
+    "failure_action": "NO_GO",
+    "automatic_promotion": false
+  },
+  "promotion": {
+    "prompt": "none",
+    "rubric": "none",
+    "leaf": "none",
+    "owner": "none",
+    "split": "none",
+    "weight": "none",
+    "applicability": "none",
+    "evidence_policy": "none"
+  },
+  "runtime_bindings": {
+    "registry/question_index.jsonl": "d89706f0d32b4b8f5393a81d2d2382d58890452a55e0549c5bac77dd2497892a",
+    "registry/criterion_ownership.json": "79d636c7c692926d15ff8ebd47c3592e6bb0e6640473c0948ae9dead4fdd6876",
+    "registry/all_modules.json": "b8c453f7eb86889f2e76b593eb44a6660f9f7cd695dbd6ac3d13b23d3635102b",
+    "prompts/judge/JUDGE_PREFIX.md": "5e3a0990efca93e2cbc3894e635f9fd1b97b6e61ea2981940319cb54994ebb74",
+    "prompts/judge/BINARY_EVALUATION_PROMPT.md": "6c1cac901d820c1ab866e19f9191896e8c97a6aadf35bdae4eac640fd199a3a2",
+    "schema/hbq_judge_response.schema.json": "49c7d824ba5dd957e67968ba3ae6ceb8a7ed9434dfb0dfc654836a76613c7854",
+    "src/hbqrs/runner.py": "81c1dea4bb4146707f48f86c2d6b7eeab2c1bf1f37bbfea81fea61173c2d6fe2"
+  }
+}

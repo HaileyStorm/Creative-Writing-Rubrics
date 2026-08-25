@@ -1,0 +1,49 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-figurative-isolated-anchor-pilot-v1-execution-v1",
+  "privacy": "public_synthetic_only",
+  "fixtures": [
+    {
+      "case_id": "stockness-clear-yes",
+      "stage": "control",
+      "leaf_id": "core.freshness_and_non_genericness.no_default_metaphors",
+      "text": "Mara listened for the boiler. Its first knock was a teaspoon against a chipped cup, a small bright sound that told her heat had reached the kitchen. She took off her gloves.",
+      "design_rationale": "One specific auditory comparison adds concrete perception; no density or metaphor-cooperation judgment is requested."
+    },
+    {
+      "case_id": "stockness-clear-no",
+      "stage": "control",
+      "leaf_id": "core.freshness_and_non_genericness.no_default_metaphors",
+      "text": "Mara waited by the window. Outside, the rain wept sadly. She checked the clock.",
+      "design_rationale": "A familiar rain-weeping personification adds no specific perception."
+    },
+    {
+      "case_id": "proportion-clear-yes",
+      "stage": "control",
+      "leaf_id": "penalty.purple_prose.proportion",
+      "text": "After the rescue crew radioed that her sister was alive, Mara held the receiver with both hands. The message was a bolt sliding free; inside her chest, the same long-shut door opened enough for breath. She asked them to repeat her sister's name.",
+      "design_rationale": "One coherent extended image is proportionate to consequential emotional material."
+    },
+    {
+      "case_id": "proportion-clear-no",
+      "stage": "control",
+      "leaf_id": "penalty.purple_prose.proportion",
+      "text": "Mara filled a glass before leaving for work. The faucet released a silver comet; the stream traced an orbit; bubbles rose as moons; the glass became a transparent planet; condensation spread a nebula; her hand served as a telescope; the first sip opened a cold galaxy behind her teeth. She set the glass beside her keys.",
+      "design_rationale": "Seven non-default images share one astronomical domain but grossly exceed the routine material, isolating proportion from stockness and competition."
+    },
+    {
+      "case_id": "metaphor-clear-yes",
+      "stage": "target",
+      "leaf_id": "penalty.purple_prose.metaphor",
+      "text": "Mara summarized the agreement. It was a zipper drawing the two torn maps together; each concession was one matched tooth, and the signatures pulled the seam closed. She read the final clause aloud.",
+      "design_rationale": "Low-density, non-default parts of one joining mechanism cooperate across linked subjects."
+    },
+    {
+      "case_id": "metaphor-clear-no",
+      "stage": "target",
+      "leaf_id": "penalty.purple_prose.metaphor",
+      "text": "Mara summarized the agreement. The agreement was a zipper drawing the two torn maps together. The agreement was also a welded wall keeping those same maps permanently apart. She copied both sentences into the minutes.",
+      "design_rationale": "Low-density, non-default images give the same settled subject simultaneously incompatible joining and separating implications."
+    }
+  ]
+}

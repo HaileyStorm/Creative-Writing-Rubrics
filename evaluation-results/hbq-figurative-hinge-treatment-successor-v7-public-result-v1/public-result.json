@@ -1,0 +1,35 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-figurative-hinge-treatment-successor-v7",
+  "source_bindings": {
+    "execution_claim_sha256": "cecaba9458bb87e92e643563374eb047937a4524e02fb77dffe916eee2db9d48",
+    "execution_result_sha256": "17f875ba22be96b95331da537a41c9dd1cc7948c4d0b76a3360670042b2f8bec",
+    "preexecution_go_review_sha256": "b0f72d2510cdb428311b5d8aafebcd4582236a468fad36652b4cbec9cdb7905b",
+    "dry_manifest_sha256": "d6a62d5140873774fc76632890fde49cfc12fb40a6010e26b370785e43f2f153"
+  },
+  "public_synthetic_geometry": {
+    "case_ids": ["n1", "o2", "p3"],
+    "cases": 3,
+    "repetitions_per_case": 2,
+    "planned_contacts": 6,
+    "receipt_proven_first_attempt_contacts": 6,
+    "exact_expected_state": {"matched": 6, "total": 6},
+    "by_case": {
+      "n1": {"matched": 2, "total": 2},
+      "o2": {"matched": 2, "total": 2},
+      "p3": {"matched": 2, "total": 2}
+    },
+    "retries": 0,
+    "rejections": 0
+  },
+  "stdout_reporting_defect": {
+    "hardcoded_reported_contacts": 8,
+    "receipt_proven_contacts": 6,
+    "effect": "reporting_only_no_rerun"
+  },
+  "decisions": [
+    "HINGE_TREATMENT_V7_SMALL_DIAGNOSTIC_PASS",
+    "FRESH_18_CALL_CONTROL_FIRST_CONFIRMATION_ONLY",
+    "PROMOTION_NONE"
+  ]
+}

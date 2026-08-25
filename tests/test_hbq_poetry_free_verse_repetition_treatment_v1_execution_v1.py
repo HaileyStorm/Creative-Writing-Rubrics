@@ -10,6 +10,7 @@ from types import SimpleNamespace
 
 import pytest
 
+from _hbq_s1_historical_runtime import LegacyHistoricalRuntimeUnbound, _declared_bindings, install_historical_runtime
 from hbqrs.paths import book_root
 
 
@@ -22,11 +23,23 @@ def study():
     assert spec and spec.loader
     sys.modules[spec.name] = module
     spec.loader.exec_module(module)
-    return module
+    try:
+        return install_historical_runtime(module)
+    except LegacyHistoricalRuntimeUnbound as error:
+        pytest.skip(str(error))
 
 
 def canonical(value: object) -> bytes:
     return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
+
+
+def test_legacy_execution_without_runtime_hashes_fails_closed_before_private_setup():
+    spec = importlib.util.spec_from_file_location("s1_free_verse_execution_unbound", ROOT / "study.py")
+    module = importlib.util.module_from_spec(spec)
+    assert spec and spec.loader
+    spec.loader.exec_module(module)
+    with pytest.raises(LegacyHistoricalRuntimeUnbound, match="no declared runtime hashes"):
+        _declared_bindings(module)
 
 
 def find_leaf(node: object, leaf_id: str) -> dict[str, object] | None:

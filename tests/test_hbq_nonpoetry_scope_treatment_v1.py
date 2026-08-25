@@ -8,6 +8,7 @@ from copy import deepcopy
 
 import pytest
 from hbqrs.paths import book_root
+from tests import _hbq_s2_historical_runtime as historical_runtime
 
 ROOT = book_root() / "evaluation-results" / "hbq-nonpoetry-scope-treatment-v1"
 
@@ -18,7 +19,10 @@ def study():
     assert spec and spec.loader
     sys.modules[spec.name] = module
     spec.loader.exec_module(module)
-    return module
+    try:
+        return historical_runtime.install(module, source_commit="c4ba06453785bdb52bce374926b65d3cab542a9a")
+    except historical_runtime.HistoricalRuntimeUnbound as exc:
+        pytest.skip(f"historical runtime unbound: {exc}")
 
 
 def test_plan_has_exact_minimum_geometry_and_immutable_reuse_only():
@@ -73,11 +77,15 @@ def test_contract_mutations_fail_closed():
 
 
 def test_provider_free_dry_run_and_render_plan():
-    completed = subprocess.run([sys.executable, str(ROOT / "run.py"), "--dry-run"], capture_output=True, text=True, check=True)
+    s = study()
+    completed = historical_runtime.run_cli(s, ROOT / "run.py", "--dry-run")
+    assert completed.returncode == 0
     report = json.loads(completed.stdout)
     assert report["provider_calls"] == 0 and report["verification"]["new_provider_calls_planned"] == 27
-    rendered = subprocess.run([sys.executable, str(ROOT / "run.py"), "--render-plan"], capture_output=True, text=True, check=True)
+    rendered = historical_runtime.run_cli(s, ROOT / "run.py", "--render-plan")
+    assert rendered.returncode == 0
     output = json.loads(rendered.stdout)
     assert output["provider_calls"] == 0 and len(output["rendered_slots"]) == 33
-    verifier = subprocess.run([sys.executable, str(ROOT / "verify_output.py")], capture_output=True, text=True, check=True)
+    verifier = historical_runtime.run_cli(s, ROOT / "verify_output.py")
+    assert verifier.returncode == 0
     assert json.loads(verifier.stdout)["sealed_private_holdout"] is True

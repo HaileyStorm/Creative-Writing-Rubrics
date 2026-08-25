@@ -9,6 +9,7 @@ from pathlib import Path
 import pytest
 
 from hbqrs.paths import book_root
+from tests import _hbq_s2_historical_runtime as historical_runtime
 
 
 ROOT = book_root() / "evaluation-results" / "hbq-nonpoetry-scope-treatment-v1-execution-v1"
@@ -20,7 +21,10 @@ def study():
     assert spec and spec.loader
     sys.modules[spec.name] = module
     spec.loader.exec_module(module)
-    return module
+    try:
+        return historical_runtime.install(module, source_commit="6366bb3901e900ff73ddf5f5981d617954ea4a28")
+    except historical_runtime.HistoricalRuntimeUnbound as exc:
+        pytest.skip(f"historical runtime unbound: {exc}")
 
 
 def _record(slot: dict[str, object], *, correct: bool = True) -> dict[str, object]:
@@ -42,6 +46,7 @@ def private_root(tmp_path: Path) -> Path:
 
 def test_package_full_binds_both_predecessors_and_exact_geometry():
     s = study()
+    assert s.REPOSITORY != book_root()
     assert s.validate_package() == {"study_id": s.STUDY_ID, "new_provider_calls": 27, "reused_accepted_calls": 6, "sealed_private_holdout": True}
     schedule = s.build_schedule()
     assert len(schedule) == len({row["slot_id"] for row in schedule}) == 27

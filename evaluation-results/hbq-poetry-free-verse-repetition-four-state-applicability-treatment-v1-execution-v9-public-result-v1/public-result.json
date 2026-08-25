@@ -1,0 +1,39 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-poetry-free-verse-repetition-four-state-applicability-treatment-v1-execution-v9",
+  "source_bindings": {
+    "execution_claim_sha256": "166d881ace0a095c7f1b142308697b7e9ae7bfa677e2a4301d6774adb1e7b8a2",
+    "study_manifest_sha256": "d778e839822a9ee633f7d097f9e14e7ff0a680e44dee95d0a5c37f08c3db013a",
+    "zero_charge_acknowledgement_sha256": "37ac50d2ae5c3a2314b425109ac3fcb354b0b77ff76e1cd654a7ba64aaed53b4",
+    "provider_free_dry_run_sha256": "e9f025248c858bac132369d92675785ec0c709f09f1f2f4862ccf60f704e9604",
+    "evidence_protocol_scan_sha256": "6e34133f7a57c21afde0a0661035ed79610304f49c543fb408bf3165b7a71fa9",
+    "execution_package_study_sha256": "a471e80aaca58d06b70515390ea82953897870070a419ae543c4a95fe45be048"
+  },
+  "attempt_accounting": {
+    "execution_claims": 1,
+    "zero_charge_acknowledgements": 1,
+    "dispatches": 0,
+    "runs": 0,
+    "physical_provider_attempts": 0,
+    "provider_contacted": false,
+    "raw_outputs": 0,
+    "accepted_checkpoints": 0,
+    "accepted_verdicts": 0,
+    "settlements": 0,
+    "terminal_results": 0,
+    "untouched_slots": 12
+  },
+  "failure": {
+    "kind": "precontact_render_drift",
+    "description": "Frozen surrogate prompts did not byte-match the actual inherited execution renderer.",
+    "evidence_status": "reconstructed_from_frozen_materials_and_inherited_renderer"
+  },
+  "formal_result": "NO_RESULT",
+  "disposition": "NO_RESULT_PRECONTACT_RENDER_DRIFT",
+  "inference": "none_completion_unproven",
+  "wording_or_fixture_failure": "not_established",
+  "dspy": "not_authorized",
+  "holdout": "not_authorized",
+  "promotion": "none",
+  "retry_or_resume": "not_authorized"
+}

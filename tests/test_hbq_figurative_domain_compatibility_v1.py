@@ -1,35 +1,30 @@
 from __future__ import annotations
 
 from copy import deepcopy
-import importlib.util
 import json
 from pathlib import Path
-import subprocess
 import sys
+from types import ModuleType
 
 import pytest
 
 from hbqrs.paths import book_root
+from tests import _hbq_figurative_historical_runtime as historical_runtime
+from tests._scoped_module_loader import load_module as load_scoped_module
 
 
 ROOT = book_root() / "evaluation-results" / "hbq-figurative-domain-compatibility-v1"
 
 
-def load_module(name: str, path: Path):
-    spec = importlib.util.spec_from_file_location(name, path)
-    module = importlib.util.module_from_spec(spec)
-    assert spec and spec.loader
-    sys.modules[spec.name] = module
-    sys.path.insert(0, str(ROOT))
-    try:
-        spec.loader.exec_module(module)
-    finally:
-        sys.path.remove(str(ROOT))
-    return module
+def load_study(name: str, path: Path):
+    return load_scoped_module(path, name=name)
 
 
 def study():
-    return load_module("figurative_domain_compatibility_v1", ROOT / "study.py")
+    return historical_runtime.install(
+        load_study("figurative_domain_compatibility_v1", ROOT / "study.py"),
+        source_commit="c4ba06453785bdb52bce374926b65d3cab542a9a",
+    )
 
 
 def test_frozen_public_geometry_is_exact_and_provider_free():
@@ -64,6 +59,23 @@ def test_grid_oracles_are_orthogonal_and_mutation_fails_closed(monkeypatch):
         s.verify_corpus(corpus)
 
 
+def test_pinned_historical_target_runtime_rejects_mutation():
+    s = study()
+    historical_runtime.assert_target_mutation_is_detected(s)
+    payload = (s._historical_runtime_root / "registry/modules/penalty.purple_prose.yaml").read_bytes()
+    endings = []
+    cursor = 0
+    while cursor < len(payload):
+        next_lf = payload.find(b"\n", cursor)
+        if next_lf < 0:
+            break
+        endings.append(b"\r\n" if next_lf and payload[next_lf - 1:next_lf] == b"\r" else b"\n")
+        cursor = next_lf + 1
+    assert len(payload) == 5141
+    assert len(endings) == 144 and endings[3] == b"\n"
+    assert all(ending == b"\r\n" for index, ending in enumerate(endings) if index != 3)
+
+
 def test_expected_labels_never_render_and_leaf_aid_stays_target_only():
     s = study()
     slots = s.plan_slots()
@@ -82,8 +94,22 @@ def test_expected_labels_never_render_and_leaf_aid_stays_target_only():
 
 
 def test_dry_run_and_render_are_provider_free():
-    dry = subprocess.run([sys.executable, str(ROOT / "run.py"), "--dry-run"], text=True, capture_output=True, check=True)
-    rendered = subprocess.run([sys.executable, str(ROOT / "run.py"), "--render"], text=True, capture_output=True, check=True)
-    dry_value, rendered_value = json.loads(dry.stdout), json.loads(rendered.stdout)
+    s = study()
+    original_study = sys.modules.get("study")
+    had_original_study = "study" in sys.modules
+    prior_study = ModuleType("study")
+    sys.modules["study"] = prior_study
+    try:
+        dry_code, dry_stdout, dry_stderr = historical_runtime.run_cli(s, ROOT / "run.py", "--dry-run")
+        assert sys.modules["study"] is prior_study
+        rendered_code, rendered_stdout, rendered_stderr = historical_runtime.run_cli(s, ROOT / "run.py", "--render")
+        assert sys.modules["study"] is prior_study
+    finally:
+        if had_original_study:
+            sys.modules["study"] = original_study
+        else:
+            sys.modules.pop("study", None)
+    assert dry_code == rendered_code == 0, (dry_stderr, rendered_stderr)
+    dry_value, rendered_value = json.loads(dry_stdout), json.loads(rendered_stdout)
     assert dry_value["provider_calls"] == 0 and dry_value["verification"]["slots"] == 144
     assert rendered_value["provider_calls"] == 0 and rendered_value["prompt_count"] == 144

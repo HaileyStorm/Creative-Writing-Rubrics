@@ -9,6 +9,7 @@ from itertools import product
 
 import pytest
 from hbqrs.paths import book_root
+from tests import _hbq_s2_historical_runtime as historical_runtime
 
 
 ROOT = book_root() / "evaluation-results" / "hbq-nonpoetry-scope-disjoint-holdout-v1"
@@ -20,7 +21,10 @@ def study():
     assert spec and spec.loader
     sys.modules[spec.name] = module
     spec.loader.exec_module(module)
-    return module
+    try:
+        return historical_runtime.install(module, source_commit="c4ba06453785bdb52bce374926b65d3cab542a9a")
+    except historical_runtime.HistoricalRuntimeUnbound as exc:
+        pytest.skip(f"historical runtime unbound: {exc}")
 
 
 def test_contract_freezes_zero_call_48_slot_disjoint_holdout():
@@ -197,16 +201,12 @@ def test_private_root_validator_is_callable():
 
 
 def test_dry_run_is_provider_free_and_only_supported_command():
-    completed = subprocess.run(
-        [sys.executable, str(ROOT / "run.py"), "--dry-run"],
-        capture_output=True,
-        text=True,
-        check=True,
-    )
+    completed = historical_runtime.run_cli(study(), ROOT / "run.py", "--dry-run")
+    assert completed.returncode == 0
     report = json.loads(completed.stdout)
     assert report["provider_calls"] == 0
     assert len(report["opaque_slot_ids"]) == 48
-    rejected = subprocess.run([sys.executable, str(ROOT / "run.py")], capture_output=True, text=True)
+    rejected = historical_runtime.run_cli(study(), ROOT / "run.py")
     assert rejected.returncode != 0
     source = (ROOT / "run.py").read_text(encoding="utf-8").casefold()
     assert "requests" not in source and "subprocess" not in source and "dspy" not in source

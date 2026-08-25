@@ -1,31 +1,22 @@
 from __future__ import annotations
 
-import importlib.util
 import json
-import subprocess
-import sys
 from copy import deepcopy
 from pathlib import Path
 
 import pytest
 
 from hbqrs.paths import book_root
+from tests import _hbq_figurative_historical_runtime as historical_runtime
+from tests._scoped_module_loader import load_module as load_scoped_module
 
 
 ROOT = book_root() / "evaluation-results" / "hbq-figurative-metaphor-checklist-successor-v1"
 
 
 def study():
-    spec = importlib.util.spec_from_file_location("figurative_metaphor_checklist_successor_v1", ROOT / "study.py")
-    module = importlib.util.module_from_spec(spec)
-    assert spec and spec.loader
-    sys.modules[spec.name] = module
-    sys.path.insert(0, str(ROOT))
-    try:
-        spec.loader.exec_module(module)
-    finally:
-        sys.path.remove(str(ROOT))
-    return module
+    module = load_scoped_module(ROOT / "study.py", name="figurative_metaphor_checklist_successor_v1")
+    return historical_runtime.install(module, source_commit="c4ba06453785bdb52bce374926b65d3cab542a9a")
 
 
 def records(slots, *, wrong_cases=(), wrong_control=None):
@@ -139,9 +130,11 @@ def test_phase_b_requires_all_target_slots_and_repairs_across_two_strata():
 
 
 def test_dry_run_and_render_are_provider_free_and_holdout_is_commitment_only():
-    dry = subprocess.run([sys.executable, str(ROOT / "run.py"), "--dry-run"], text=True, capture_output=True, check=True)
-    rendered = subprocess.run([sys.executable, str(ROOT / "run.py"), "--render"], text=True, capture_output=True, check=True)
-    dry_value, rendered_value = json.loads(dry.stdout), json.loads(rendered.stdout)
+    s = study()
+    dry_code, dry_stdout, dry_stderr = historical_runtime.run_cli(s, ROOT / "run.py", "--dry-run")
+    rendered_code, rendered_stdout, rendered_stderr = historical_runtime.run_cli(s, ROOT / "run.py", "--render")
+    assert dry_code == rendered_code == 0, (dry_stderr, rendered_stderr)
+    dry_value, rendered_value = json.loads(dry_stdout), json.loads(rendered_stdout)
     assert dry_value["provider_calls"] == 0 and dry_value["verification"]["phase_a_slots"] == 72
     assert rendered_value["provider_calls"] == 0 and rendered_value["prompt_count"] == 96
     holdout = json.loads((ROOT / "real-holdout-commitment.json").read_text(encoding="utf-8"))

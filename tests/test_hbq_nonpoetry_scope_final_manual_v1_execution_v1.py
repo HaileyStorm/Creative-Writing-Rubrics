@@ -12,6 +12,7 @@ from types import SimpleNamespace
 import pytest
 
 from hbqrs.paths import book_root
+from tests import _hbq_s2_historical_runtime as historical_runtime
 
 
 ROOT = book_root() / "evaluation-results" / "hbq-nonpoetry-scope-final-manual-v1-execution-v1"
@@ -21,7 +22,10 @@ def study():
     assert spec and spec.loader
     sys.modules[spec.name] = module
     spec.loader.exec_module(module)
-    return module
+    try:
+        return historical_runtime.install(module, source_commit="09b403a6673645fa99efffebfbf24af7a986d190")
+    except historical_runtime.HistoricalRuntimeUnbound as exc:
+        pytest.skip(f"historical runtime unbound: {exc}")
 
 
 @pytest.fixture
@@ -29,7 +33,8 @@ def private_controller(tmp_path: Path, monkeypatch):
     s = study()
     root = tmp_path / "private-controller"
     root.mkdir()
-    source = next(json.loads(line) for line in (book_root() / "registry" / "question_index.jsonl").read_text(encoding="utf-8").splitlines() if json.loads(line)["id"] == "scope.passage.status")
+    assert s.REPOSITORY != book_root()
+    source = next(json.loads(line) for line in (s.REPOSITORY / "registry" / "question_index.jsonl").read_text(encoding="utf-8").splitlines() if json.loads(line)["id"] == "scope.passage.status")
     baseline = {key: source[key] for key in ("id", "module_id", "criterion_key", "text", "pass_answer", "weight", "question_type", "severity", "applies_when", "evidence_policy")}
     candidate = deepcopy(baseline)
     candidate["text"] = "Does the supplied evaluation avoid an irrelevant completeness penalty for this explicitly declared passage?"
@@ -90,9 +95,9 @@ def test_exact_pushed_predecessor_private_controller_and_24_slot_geometry(privat
 def test_private_root_is_explicit_external_and_public_sources_contain_no_personal_path(private_controller):
     s, _root = private_controller
     with pytest.raises(ValueError, match="outside"):
-        s.set_private_root(book_root())
+        s.set_private_root(s.REPOSITORY)
     with pytest.raises(ValueError, match="disjoint"):
-        s.set_private_root(book_root().parent)
+        s.set_private_root(s.REPOSITORY.parent)
     assert "C:\\Users\\Haile" not in (ROOT / "study.py").read_text(encoding="utf-8")
     assert "C:\\Users\\Haile" not in (ROOT / "study-contract.json").read_text(encoding="utf-8")
 

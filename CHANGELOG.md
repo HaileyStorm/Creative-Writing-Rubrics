@@ -2,10 +2,19 @@
 
 ## 1.2.0 — 2026-08-22
 
+- Promoted the validated S1 recurrence/applicability, S2 excerpt-scope, and figurative semantic-hinge wording. Their module versions are now `3`, `2`, and `2`; HBQ-RS remains 1.2.0 with unchanged IDs, ownership, polarity, weights, bundle influence, and 278-module / 2,145-leaf / 85-bundle counts.
+- Published the aggregate-only figurative control-first confirmation: 18/18 first-attempt contacts and 3/3 on each of six public synthetic cases, a formal pass eligible only for independent promotion review; no wording promotion.
+- Published the aggregate-only v7 figurative hinge treatment result: a 6/6 diagnostic pass that opens only a fresh 18-contact control-first confirmation; no wording promotion.
+- Published the aggregate-only v5 figurative hinge treatment result: a 7/8 positive-but-unstable signal with no wording promotion or follow-on confirmation.
 - Unified the current public identity at HBQ-RS 1.2.0. The 1.0.0, 277-module, 2,139-leaf inventory remains historical provenance.
 - Upstreamed the six-leaf, opt-in `modifier.style.authored_content_treatment_fidelity` module with stable IDs; the current registry is 278 modules, 2,145 leaves, and 85 bundles.
 - Promoted the validated material-context wording for `form.poetry.free_verse.line_breaks`; its stable ID, criterion ownership, weight, severity, evidence policy, and module influence are unchanged.
-- Published aggregate-only P1 discordance, S1 repetition, figurative Phase A, and S2 disjoint-holdout results, and updated the validation-and-repair journey with their bounded conclusions.
+- Published aggregate-only P1 discordance; S1 repetition, clean-N/A successor, four-state v2 no-result, and v6 transport/schema no-result; figurative Phase A, isolated-anchor pilot, and static DSPy boundary search; and S2 disjoint-holdout, semantic-boundary successor, and fresh v2 confirmation results; updated the validation-and-repair journey with their bounded conclusions.
+- Published the aggregate-only S1 v9 pre-provider prompt-parity `NO_RESULT`: no dispatch or provider contact occurred, all twelve planned slots remain untouched, and no wording inference or follow-on is authorized.
+- Published the aggregate-only S1 v10 four-state screen: all 12 first-attempt calls reached their expected state with grounded exact quotes, opening only one fresh disjoint holdout; no promotion or DSPy follow-on.
+- Published the aggregate-only terminal S1 v2 holdout execution-v1 `NO_RESULT_PROMPT_BYTE_BINDING_FAILURE`: one accepted response was non-voting after a raw newline mismatch, eleven slots remained untouched, and no retry, promotion, or DSPy inference is authorized.
+- Published the aggregate-only terminal S1 v3 four-carrier repeatability result: all twelve first attempts were accepted, but the expected-`NO` carrier split to one `NO` and two `YES` outcomes. Three of four carriers were stable, so the terminal disposition is `INVALID_POSTCONTACT_NO_RETRY`; no settlement, promotion, DSPy follow-on, retry, or resume is authorized.
+- Published the aggregate-only S1 incidental-recurrence execution-v2 result: all three fresh first attempts returned grounded `NO` without retries, rejection, or normalization. Settlement opens only the next holdout gate; promotion remains pending final review.
 
 ## 1.1.0 — 2026-08-20
 

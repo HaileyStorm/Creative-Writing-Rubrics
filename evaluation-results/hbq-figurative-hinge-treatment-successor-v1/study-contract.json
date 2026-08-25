@@ -1,0 +1,13 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-figurative-hinge-treatment-successor-v1",
+  "status": "frozen_provider_free_preexecution",
+  "development_only": true,
+  "source_anchor": {"commit": "6ae9ee0db17dda61bb9adc00a60bcd8072969d5d", "consumed_predecessor": "hbq-figurative-dspy-boundary-search-successor-v1-r9-negative"},
+  "target": {"leaf_id": "penalty.purple_prose.metaphor", "stable_id_unchanged": true, "owner_unchanged": true, "weight_unchanged": true, "stockness_owner": "core.freshness_and_non_genericness.no_default_metaphors", "density_owner": "penalty.purple_prose.proportion"},
+  "treatment": {"exact_text": "Inspect linked material metaphors or images in the declared scope. Return YES only when the supplied artifact provides a concrete semantic hinge that makes their implications cohere: for example, a stated causal, temporal, role, or perspective relation, or a deliberately realized double meaning whose distinct readings are demonstrated in the artifact. An explicit connective, punctuation, or bare assertion that the images coexist is not itself a hinge. Return NO when opposing implications merely occur together without an additional artifact-grounded mechanism that reconciles, relates, or distinguishes them. Do not judge familiarity/defaultness or figurative density; cite the linked spans and the hinge, or the absence of one.", "runtime_dspy_dependency": "forbidden", "rubric_runtime_change": "none"},
+  "geometry": {"public_synthetic_cases": 4, "positive_controls": 2, "negative_controls": 2, "repeats": 2, "provider_calls": 8, "train_or_dev": "none", "one_leaf_per_call": true},
+  "execution": {"model": "gpt-5.6-sol", "reasoning": "high", "batch_size": 1, "batch_attempts": 1, "retry_or_resume": "forbidden", "normalization": "forbidden", "zero_incremental_charge_only": true, "paid_fallback": "forbidden"},
+  "evidence": {"quote_rule": "at_least_one_source_exact_quote", "summary_only": "reject", "source_scope": "supplied_artifact_only", "expected_labels": "private_and_never_provider_facing"},
+  "claims": {"baseline_comparison": "none", "promotion": "none", "split": "none", "qpc24": "held", "gray_blood": "held"}
+}

@@ -1,0 +1,13 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-figurative-isolated-anchor-pilot-v1-execution-v1",
+  "provider_disclosure": "forbidden",
+  "expected_verdicts": {
+    "stockness-clear-yes": "YES",
+    "stockness-clear-no": "NO",
+    "proportion-clear-yes": "YES",
+    "proportion-clear-no": "NO",
+    "metaphor-clear-yes": "YES",
+    "metaphor-clear-no": "NO"
+  }
+}

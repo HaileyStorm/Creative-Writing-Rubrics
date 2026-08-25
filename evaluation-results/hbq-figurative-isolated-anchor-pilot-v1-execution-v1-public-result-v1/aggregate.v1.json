@@ -1,0 +1,63 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-figurative-isolated-anchor-pilot-v1-execution-v1-public-result-v1",
+  "source_study_id": "hbq-figurative-isolated-anchor-pilot-v1-execution-v1",
+  "decision": "MANUAL_TARGET_UNSTABLE_NO_GO_DSPY_ELIGIBLE",
+  "execution": {
+    "condition": "gpt-5.6-sol/high",
+    "planned_slots": 18,
+    "completed_slots": 18,
+    "physical_attempts_per_slot": 1,
+    "semantic_retry_or_resume": "none"
+  },
+  "controls": {
+    "core.freshness_and_non_genericness.no_default_metaphors": {
+      "role": "stockness_owner",
+      "correct": 6,
+      "total": 6,
+      "passed": true
+    },
+    "penalty.purple_prose.proportion": {
+      "role": "density_owner",
+      "correct": 6,
+      "total": 6,
+      "passed": true
+    }
+  },
+  "target": {
+    "leaf_id": "penalty.purple_prose.metaphor",
+    "treatment": "experimental_manual_checklist_not_promoted",
+    "correct": 5,
+    "total": 6,
+    "cells": {
+      "cooperative_anchor": {
+        "correct": 3,
+        "total": 3
+      },
+      "incompatible_imagery_anchor": {
+        "correct": 2,
+        "total": 3
+      }
+    },
+    "mixed_cells": 1,
+    "stable_miss_cells": 0
+  },
+  "interpretation": {
+    "supported": "one valid target cell was internally unstable",
+    "not_supported": "stable substantive wording failure",
+    "baseline_comparison": "none",
+    "dspy": "development_only_eligible",
+    "promotion": "none"
+  },
+  "unchanged": [
+    "rubric wording",
+    "stable IDs",
+    "criterion ownership",
+    "weights",
+    "splits",
+    "QPC24 gate",
+    "Gray Blood state",
+    "HBQ-RS runtime"
+  ],
+  "privacy": "aggregate_only_no_prose_prompts_responses_sessions_paths_or_per_call_records"
+}

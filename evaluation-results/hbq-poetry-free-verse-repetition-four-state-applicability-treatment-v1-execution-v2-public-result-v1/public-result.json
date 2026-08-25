@@ -1,0 +1,45 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-poetry-free-verse-repetition-four-state-applicability-treatment-v1-execution-v2",
+  "source_bindings": {
+    "execution_claim_sha256": "af6032f1a84398f23216ae7b16c78c8fe5c60a95dedc61d677b3a0ad9a552141",
+    "study_manifest_sha256": "8d12ecfeb06fbd2424790f0a847074ceb15f4efdfbec00d1b99db6998a66367a",
+    "preexecution_disclosure_sha256": "9b5345c101cf3d7ab69ea470a34598ee9c8c52838eb573d67820e86635499fee",
+    "prompt_privacy_receipt_sha256": "e31fec72dd10554a5413c1a8d8e0077c8ead9d8aced07ea2001ceab578b0088a",
+    "zero_charge_acknowledgement_sha256": "db2d4afb64767a334307cfb8d52301b00741e684305b241dadef57ecb02e1fce"
+  },
+  "execution": {
+    "planned_contacts": 12,
+    "accepted_contacts": 12,
+    "unique_contacts": 12,
+    "first_attempt_contacts": 12,
+    "retries": 0,
+    "rejections": 0,
+    "normalization_events": 0
+  },
+  "semantic_oracle_agreement": {
+    "matched": 12,
+    "total": 12,
+    "cells": {
+      "NOT_APPLICABLE": {"matched": 3, "total": 3},
+      "NO": {"matched": 3, "total": 3},
+      "YES": {"matched": 3, "total": 3},
+      "CANNOT_ASSESS": {"matched": 3, "total": 3}
+    }
+  },
+  "strict_evidence_gate": {
+    "matched": 10,
+    "total": 12,
+    "summary_items": 2,
+    "reason": "generic_prompt_allowed_summary_but_frozen_study_required_verbatim_evidence"
+  },
+  "formal_result": "NO_RESULT",
+  "postexecution_artifacts": {
+    "settlement": "not_written",
+    "aggregate": "not_written",
+    "terminal_result": "not_written"
+  },
+  "promotion": "none",
+  "holdout": "not_authorized",
+  "dspy": "not_authorized"
+}

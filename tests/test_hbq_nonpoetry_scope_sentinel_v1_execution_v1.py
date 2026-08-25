@@ -9,6 +9,7 @@ from types import SimpleNamespace
 
 import pytest
 from hbqrs.paths import book_root
+from tests import _hbq_s2_historical_runtime as historical_runtime
 
 ROOT = book_root() / "evaluation-results" / "hbq-nonpoetry-scope-sentinel-v1-execution-v1"
 
@@ -19,7 +20,10 @@ def study():
     assert spec and spec.loader
     sys.modules[spec.name] = module
     spec.loader.exec_module(module)
-    return module
+    try:
+        return historical_runtime.install(module, source_commit="3a529c071997b26bfe4d15acd0b100be5300b2a1")
+    except historical_runtime.HistoricalRuntimeUnbound as exc:
+        pytest.skip(f"historical runtime unbound: {exc}")
 
 
 def fake_cwr(command, **_kwargs):
@@ -38,6 +42,7 @@ def record(slot):
 
 def test_exact_predecessor_geometry_and_private_minimal_bundle():
     s = study()
+    assert s.REPOSITORY != book_root()
     assert s.validate_package()["slots"] == 60
     slots = s.build_schedule()
     assert len(slots) == len({row["slot_id"] for row in slots}) == 60
