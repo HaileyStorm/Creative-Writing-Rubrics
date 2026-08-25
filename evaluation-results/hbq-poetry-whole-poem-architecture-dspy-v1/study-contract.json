@@ -1,0 +1,16 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-poetry-whole-poem-architecture-dspy-v1",
+  "status": "FROZEN_PROVIDER_FREE",
+  "development_only": true,
+  "dspy": {"version": "3.3.0", "scope": "private_development_venv_only", "runtime_dependency": "forbidden"},
+  "corpus": {"path": "public-synthetic-corpus.json", "sha256": "dd3ce07db56d4a682d6526e4f4ce8a785a105fd9b49d22eec88f09ce1f99e760", "train_cases_exact": 12, "dev_cases_exact": 8, "future_holdout": false},
+  "optimizer": {"kind": "MIPROv2", "program": "Predict", "instruction_only": true, "demos_exact": 0, "bootstrap": "overridden_to_none", "data_aware_proposer": false, "fewshot_aware_proposer": false, "auto": null, "seed": 20260825, "num_candidates": 4, "num_trials": 4, "threads": 1, "retries": 0, "physical_compile_send_cap": 64},
+  "metric": {"name": "exact_four_state_plus_grounding", "states": ["YES", "NO", "NOT_APPLICABLE", "CANNOT_ASSESS"], "grounding": "nonempty_exact_substring", "aggregation": "all_cases_exact", "expected_labels_provider_visible": false},
+  "static_export": {"path": "static-export.txt", "sha256": "3fe3696119dd0c9934abcf5e2ff8523cdcc20cfe0ab3751b03082826f928140c", "max_words": 180, "demos": 0, "labels": "excluded", "fixture_phrases": "excluded", "runtime_directions": "excluded"},
+  "terminal_settlement": {"compiled_static_export_path": "compiled-static-export.txt", "completed_requires_export_before_terminal": true, "bind_relative_path_hash_word_count": true, "resume_or_overwrite": "forbidden"},
+  "transfer_gate": {"production_calls_exact": 16, "dev_cases_exact": 8, "passes_per_case_exact": 2, "allowed_only_after_separate_review": true, "provider": "codex_chatgpt_subscription", "model": "gpt-5.6-sol", "reasoning": "high", "canonical_runner_call": "src/hbqrs/runner.py::_call_codex", "paid_api_or_fallback": "forbidden"},
+  "promotion": {"on_transfer_pass": "candidate_for_manual_review_only", "prompt": "none", "rubric": "none", "leaf": "none", "ownership": "none", "weight": "none", "release": "none"},
+  "private_bindings": {"engine_sha256": "bea5b8a65b69a7a0121d9fd4734f97b0d8fd73d177d3350516b150cc7671293a", "freeze_inputs_sha256": "fd53e162359d262d01b6f5a1ef862c85d1c8c317b91a5ac7d484d19b5f11df74", "environment_evidence_sha256": "290f28a109db8da9f09f5abd200784c90e75af575d96f426e5ef59908bd29f11"},
+  "forbidden": ["provider_execution_before_review", "paid_api_or_fallback", "runtime_dspy_dependency", "demos", "future_holdout", "automatic_promotion", "provider_visible_expected_labels"]
+}

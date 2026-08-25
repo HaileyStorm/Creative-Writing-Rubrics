@@ -3,7 +3,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "artifact.support.asset_manifest",
     "version": 1,
@@ -172,7 +172,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "artifact.support.character_sheet",
     "version": 1,
@@ -378,7 +378,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "artifact.support.glossary_and_pronunciation_lexicon",
     "version": 1,
@@ -547,7 +547,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "artifact.support.illustration_brief",
     "version": 1,
@@ -716,7 +716,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "artifact.support.logline",
     "version": 1,
@@ -888,7 +888,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "artifact.support.narration_direction_sheet",
     "version": 1,
@@ -1057,7 +1057,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "artifact.support.outline",
     "version": 1,
@@ -1229,7 +1229,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "artifact.support.pitch_query_blurb",
     "version": 1,
@@ -1401,7 +1401,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "artifact.support.place_setting_sheet",
     "version": 1,
@@ -1590,7 +1590,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "artifact.support.premise_story_seed",
     "version": 1,
@@ -1762,7 +1762,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "artifact.support.project_decision_log",
     "version": 1,
@@ -1931,7 +1931,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "artifact.support.project_style_guide",
     "version": 1,
@@ -2100,7 +2100,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "artifact.support.relationship_faction_item_sheet",
     "version": 1,
@@ -2289,7 +2289,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "artifact.support.research_brief_or_dossier",
     "version": 1,
@@ -2478,7 +2478,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "artifact.support.revision_plan",
     "version": 1,
@@ -2667,7 +2667,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "artifact.support.scene_card_or_beat_sheet",
     "version": 1,
@@ -2836,7 +2836,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "artifact.support.synopsis",
     "version": 1,
@@ -3008,7 +3008,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "artifact.support.timeline_and_canon_ledger",
     "version": 1,
@@ -3197,7 +3197,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "artifact.support.world_bible",
     "version": 1,
@@ -3386,7 +3386,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "core.audience_and_purpose_fit",
     "version": 1,
@@ -3578,7 +3578,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "core.change_authorization",
     "version": 1,
@@ -3770,7 +3770,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "core.coherence_and_comprehensibility",
     "version": 1,
@@ -3945,7 +3945,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "core.economy_and_relevance",
     "version": 1,
@@ -4120,7 +4120,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "core.emotional_and_intellectual_effect",
     "version": 1,
@@ -4278,7 +4278,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "core.freshness_and_non_genericness",
     "version": 1,
@@ -4470,7 +4470,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "core.holistic_artistic_success",
     "version": 1,
@@ -4599,7 +4599,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "core.internal_logic_and_plausibility",
     "version": 1,
@@ -4774,7 +4774,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "core.language_craft",
     "version": 1,
@@ -4983,7 +4983,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "core.length_and_scope_fit",
     "version": 2,
@@ -5167,7 +5167,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "core.mechanics_and_presentation",
     "version": 1,
@@ -5342,7 +5342,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "core.project_and_source_fidelity",
     "version": 1,
@@ -5551,7 +5551,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "core.specificity_and_embodiment",
     "version": 1,
@@ -5726,7 +5726,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "core.substantive_task_engagement_true_non_refusal",
     "version": 1,
@@ -5901,7 +5901,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "core.task_and_brief_fidelity",
     "version": 2,
@@ -6161,7 +6161,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "core.voice_and_stylistic_identity",
     "version": 1,
@@ -6319,7 +6319,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "craft.narrative.character_arc",
     "version": 1,
@@ -6521,7 +6521,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "craft.narrative.characterization",
     "version": 1,
@@ -6740,7 +6740,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "craft.narrative.continuity_and_canon_integrity",
     "version": 1,
@@ -6959,7 +6959,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "craft.narrative.dialogue",
     "version": 1,
@@ -7161,7 +7161,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "craft.narrative.ending_and_closure",
     "version": 1,
@@ -7363,7 +7363,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "craft.narrative.exposition_and_information_management",
     "version": 1,
@@ -7548,7 +7548,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "craft.narrative.foreshadowing_setup_and_payoff",
     "version": 1,
@@ -7750,7 +7750,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "craft.narrative.narrative_momentum",
     "version": 1,
@@ -7952,7 +7952,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "craft.narrative.opening",
     "version": 1,
@@ -8154,7 +8154,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "craft.narrative.pacing_and_narrative_time",
     "version": 1,
@@ -8356,7 +8356,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "craft.narrative.plot_and_causality",
     "version": 1,
@@ -8558,7 +8558,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "craft.narrative.point_of_view_and_focalization",
     "version": 1,
@@ -8743,7 +8743,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "craft.narrative.scene_construction",
     "version": 1,
@@ -8962,7 +8962,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "craft.narrative.setting_and_atmosphere",
     "version": 1,
@@ -9147,7 +9147,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "craft.narrative.temporal_and_spatial_continuity",
     "version": 1,
@@ -9332,7 +9332,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "craft.narrative.tension_conflict_and_stakes",
     "version": 1,
@@ -9534,7 +9534,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "craft.narrative.theme_and_subtext",
     "version": 1,
@@ -9719,7 +9719,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "craft.narrative.transitions_and_connective_tissue",
     "version": 1,
@@ -9904,7 +9904,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "craft.narrative.worldbuilding",
     "version": 1,
@@ -10123,7 +10123,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "data.eval.answer_required_purity",
     "version": 1,
@@ -10297,7 +10297,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "data.eval.automatic_grader_validity",
     "version": 1,
@@ -10471,7 +10471,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "data.eval.benchmark_fitness",
     "version": 1,
@@ -10645,7 +10645,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "data.eval.category_balance",
     "version": 1,
@@ -10802,7 +10802,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "data.eval.context_length_balance",
     "version": 1,
@@ -10959,7 +10959,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "data.eval.dataset_provenance_and_reproducibility",
     "version": 1,
@@ -11133,7 +11133,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "data.eval.evaluation_determinism",
     "version": 1,
@@ -11307,7 +11307,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "data.eval.split_isolation",
     "version": 1,
@@ -11464,7 +11464,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "data.eval.task_tail_coverage",
     "version": 1,
@@ -11689,7 +11689,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "data.eval.transformation_fidelity",
     "version": 1,
@@ -11897,7 +11897,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "form.audio.audio_drama_production",
     "version": 1,
@@ -12088,7 +12088,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "form.audio.audio_technical_mastering",
     "version": 1,
@@ -12262,7 +12262,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "form.audio.audiobook_narration",
     "version": 1,
@@ -12470,7 +12470,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "form.audio.character_voice_performance",
     "version": 1,
@@ -12644,7 +12644,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "form.audio.poetry_reading",
     "version": 1,
@@ -12818,7 +12818,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "form.audio.prosody_and_emotional_expression",
     "version": 1,
@@ -12992,7 +12992,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "form.audio.speaker_and_character_consistency",
     "version": 1,
@@ -13166,7 +13166,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "form.audio.speech_naturalness_and_intelligibility",
     "version": 1,
@@ -13340,7 +13340,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "form.audio.speech_text_fidelity",
     "version": 1,
@@ -13497,7 +13497,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "form.drama.audio_drama",
     "version": 1,
@@ -13687,7 +13687,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "form.drama.game_narrative_quest_writing",
     "version": 1,
@@ -13877,7 +13877,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "form.drama.interactive_or_branching_fiction",
     "version": 1,
@@ -14067,7 +14067,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "form.drama.monologue",
     "version": 1,
@@ -14240,7 +14240,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "form.drama.screenplay_teleplay",
     "version": 1,
@@ -14430,7 +14430,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "form.drama.stage_play",
     "version": 1,
@@ -14620,7 +14620,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "form.hybrid.adaptation",
     "version": 1,
@@ -14794,7 +14794,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "form.hybrid.creative_nonfiction",
     "version": 1,
@@ -14968,7 +14968,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "form.hybrid.epistolary_chat_log_document_fiction",
     "version": 1,
@@ -15142,7 +15142,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "form.hybrid.memoir_autobiographical_narrative",
     "version": 1,
@@ -15316,7 +15316,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "form.hybrid.personal_or_literary_essay",
     "version": 1,
@@ -15490,7 +15490,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "form.hybrid.translation_or_transcreation",
     "version": 1,
@@ -15664,7 +15664,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "form.multimodal.accessibility_metadata",
     "version": 1,
@@ -15840,7 +15840,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "form.multimodal.cross_modal_canon_integrity",
     "version": 1,
@@ -15999,7 +15999,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "form.multimodal.illustration_placement_and_pacing",
     "version": 1,
@@ -16158,7 +16158,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "form.multimodal.multimodal_scene_package",
     "version": 1,
@@ -16351,7 +16351,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "form.multimodal.text_audio_alignment",
     "version": 1,
@@ -16510,7 +16510,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "form.multimodal.text_image_alignment",
     "version": 1,
@@ -16669,7 +16669,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "form.poetry.ballad",
     "version": 1,
@@ -16856,7 +16856,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "form.poetry.blank_verse",
     "version": 1,
@@ -17035,7 +17035,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "form.poetry.dramatic_monologue_poem",
     "version": 1,
@@ -17205,7 +17205,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "form.poetry.elegy",
     "version": 1,
@@ -17375,7 +17375,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "form.poetry.free_verse",
     "version": 3,
@@ -17568,7 +17568,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "form.poetry.general_poetry",
     "version": 1,
@@ -18063,7 +18063,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "form.poetry.generic_fixed_form_verse",
     "version": 1,
@@ -18260,7 +18260,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "form.poetry.ghazal",
     "version": 1,
@@ -18461,7 +18461,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "form.poetry.haiku_in_english",
     "version": 1,
@@ -19024,7 +19024,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "form.poetry.limerick",
     "version": 1,
@@ -19221,7 +19221,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "form.poetry.lyric_song_lyric",
     "version": 1,
@@ -19414,7 +19414,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "form.poetry.narrative_or_long_poem",
     "version": 1,
@@ -19607,7 +19607,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "form.poetry.ode",
     "version": 1,
@@ -19777,7 +19777,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "form.poetry.pantoum",
     "version": 1,
@@ -19957,7 +19957,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "form.poetry.poetry_sequence_or_collection",
     "version": 1,
@@ -20150,7 +20150,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "form.poetry.prose_poem",
     "version": 1,
@@ -20326,7 +20326,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "form.poetry.rondeau",
     "version": 1,
@@ -20508,7 +20508,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "form.poetry.sestina",
     "version": 1,
@@ -20696,7 +20696,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "form.poetry.sonnet",
     "version": 1,
@@ -21254,7 +21254,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "form.poetry.spoken_word_performance_poetry",
     "version": 1,
@@ -21447,7 +21447,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "form.poetry.tanka_in_english",
     "version": 1,
@@ -21633,7 +21633,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "form.poetry.villanelle",
     "version": 1,
@@ -21821,7 +21821,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "form.prose.fanfiction_source_canon_continuation",
     "version": 1,
@@ -22011,7 +22011,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "form.prose.flash_fiction_drabble",
     "version": 1,
@@ -22228,7 +22228,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "form.prose.general_prose_fiction",
     "version": 1,
@@ -22401,7 +22401,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "form.prose.novel",
     "version": 1,
@@ -22609,7 +22609,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "form.prose.novella",
     "version": 1,
@@ -22783,7 +22783,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "form.prose.serial_or_episodic_fiction",
     "version": 1,
@@ -22973,7 +22973,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "form.prose.short_story",
     "version": 1,
@@ -23164,7 +23164,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "form.prose.vignette_slice_of_life",
     "version": 1,
@@ -23337,7 +23337,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "form.visual.book_cover",
     "version": 1,
@@ -23527,7 +23527,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "form.visual.character_design_sheet",
     "version": 1,
@@ -23717,7 +23717,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "form.visual.character_portrait",
     "version": 1,
@@ -23907,7 +23907,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "form.visual.environment_or_location_illustration",
     "version": 1,
@@ -24097,7 +24097,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "form.visual.map",
     "version": 1,
@@ -24287,7 +24287,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "form.visual.scene_illustration",
     "version": 1,
@@ -24477,7 +24477,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "form.visual.sequential_art_or_comic_page",
     "version": 1,
@@ -24667,7 +24667,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "form.visual.storyboard",
     "version": 1,
@@ -24857,7 +24857,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "form.visual.visual_craft_and_artifact_control",
     "version": 1,
@@ -25047,7 +25047,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "form.visual.visual_narrative_continuity",
     "version": 1,
@@ -25220,7 +25220,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "form.visual.visual_prompt_and_canon_fidelity",
     "version": 1,
@@ -25393,7 +25393,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "meta.dynamic_task_question_decomposition",
     "version": 1,
@@ -25613,7 +25613,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "meta.human_review_escalation",
     "version": 1,
@@ -25816,7 +25816,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "meta.judge_bias_and_calibration_control",
     "version": 1,
@@ -26036,7 +26036,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "meta.user_rubric_normalization",
     "version": 1,
@@ -26289,7 +26289,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "model.release.code_capability_retention",
     "version": 1,
@@ -26462,7 +26462,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "model.release.commonsense_and_causal_reasoning_retention",
     "version": 1,
@@ -26635,7 +26635,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "model.release.creative_sampler_regression",
     "version": 1,
@@ -26825,7 +26825,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "model.release.creative_writing_capability_retention",
     "version": 1,
@@ -26998,7 +26998,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "model.release.dspark_mtp_equivalence_and_benefit",
     "version": 1,
@@ -27188,7 +27188,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "model.release.instruction_following_retention",
     "version": 1,
@@ -27361,7 +27361,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "model.release.judge_reliability",
     "version": 1,
@@ -27568,7 +27568,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "model.release.knowledge_retention",
     "version": 1,
@@ -27741,7 +27741,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "model.release.long_context_retention",
     "version": 1,
@@ -27914,7 +27914,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "model.release.math_capability_retention",
     "version": 1,
@@ -28087,7 +28087,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "model.release.multimodal_retention",
     "version": 1,
@@ -28260,7 +28260,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "model.release.provider_runtime_fidelity",
     "version": 1,
@@ -28467,7 +28467,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "model.release.quantization_retention",
     "version": 1,
@@ -28657,7 +28657,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "model.release.reap_candidate_non_inferiority",
     "version": 1,
@@ -28847,7 +28847,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "model.release.release_readiness",
     "version": 1,
@@ -29054,7 +29054,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "model.release.revision_and_editorial_capability_retention",
     "version": 1,
@@ -29210,7 +29210,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "model.release.tail_expert_preservation",
     "version": 1,
@@ -29417,7 +29417,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "model.release.true_abliteration_non_refusal_behavior",
     "version": 1,
@@ -29607,7 +29607,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "modifier.genre.action_adventure",
     "version": 1,
@@ -29797,7 +29797,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "modifier.genre.children_s_middle_grade_young_adult",
     "version": 1,
@@ -29987,7 +29987,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "modifier.genre.comedy",
     "version": 1,
@@ -30177,7 +30177,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "modifier.genre.crime_noir",
     "version": 1,
@@ -30350,7 +30350,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "modifier.genre.erotic_sexually_explicit_fiction",
     "version": 1,
@@ -30557,7 +30557,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "modifier.genre.fantasy",
     "version": 1,
@@ -30730,7 +30730,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "modifier.genre.historical_fiction",
     "version": 1,
@@ -30920,7 +30920,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "modifier.genre.horror",
     "version": 1,
@@ -31127,7 +31127,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "modifier.genre.hybrid_or_genre_blend",
     "version": 1,
@@ -31300,7 +31300,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "modifier.genre.literary_contemporary",
     "version": 1,
@@ -31456,7 +31456,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "modifier.genre.mystery_detective",
     "version": 1,
@@ -31646,7 +31646,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "modifier.genre.romance",
     "version": 1,
@@ -31836,7 +31836,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "modifier.genre.satire",
     "version": 1,
@@ -32009,7 +32009,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "modifier.genre.science_fiction",
     "version": 1,
@@ -32199,7 +32199,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "modifier.genre.slice_of_life_quiet_fiction",
     "version": 1,
@@ -32389,7 +32389,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "modifier.genre.surreal_experimental",
     "version": 1,
@@ -32562,7 +32562,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "modifier.genre.target_audience_overlay",
     "version": 1,
@@ -32752,7 +32752,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "modifier.genre.thriller_suspense",
     "version": 1,
@@ -32942,7 +32942,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "modifier.preference.user_taste",
     "version": 1,
@@ -33131,7 +33131,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "modifier.style.authored_content_treatment_fidelity",
     "version": 1,
@@ -33283,7 +33283,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "op.critique.clich_and_ai_pattern_audit",
     "version": 1,
@@ -33473,7 +33473,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "op.critique.consistency_audit",
     "version": 1,
@@ -33663,7 +33663,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "op.critique.full_manuscript_critique",
     "version": 1,
@@ -33870,7 +33870,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "op.critique.open_ended_critique",
     "version": 1,
@@ -34060,7 +34060,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "op.critique.reader_orientation_audit",
     "version": 1,
@@ -34233,7 +34233,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "op.critique.research_and_factuality_audit",
     "version": 1,
@@ -34440,7 +34440,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "op.critique.rubric_directed_critique",
     "version": 1,
@@ -34613,7 +34613,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "op.critique.single_unit_critique",
     "version": 1,
@@ -34786,7 +34786,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "op.critique.structural_audit",
     "version": 1,
@@ -34976,7 +34976,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "op.critique.style_drift_audit",
     "version": 1,
@@ -35166,7 +35166,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "op.draft.alternative_take",
     "version": 1,
@@ -35322,7 +35322,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "op.draft.bridge_passage",
     "version": 1,
@@ -35495,7 +35495,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "op.draft.compression",
     "version": 1,
@@ -35668,7 +35668,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "op.draft.continuation",
     "version": 1,
@@ -35858,7 +35858,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "op.draft.draft_from_coarse_or_medium_outline",
     "version": 1,
@@ -36048,7 +36048,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "op.draft.draft_from_detailed_outline",
     "version": 1,
@@ -36238,7 +36238,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "op.draft.expansion",
     "version": 1,
@@ -36411,7 +36411,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "op.draft.missing_scene_reconstruction",
     "version": 1,
@@ -36584,7 +36584,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "op.draft.pov_tense_register_or_form_conversion",
     "version": 1,
@@ -36740,7 +36740,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "op.draft.reference_style_or_project_voice_drafting",
     "version": 1,
@@ -36913,7 +36913,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "op.ideation.brainstorm_idea_set_quality",
     "version": 1,
@@ -37103,7 +37103,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "op.ideation.character_conception",
     "version": 1,
@@ -37293,7 +37293,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "op.ideation.idea_refinement",
     "version": 1,
@@ -37466,7 +37466,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "op.ideation.naming",
     "version": 1,
@@ -37656,7 +37656,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "op.ideation.premise_stress_test",
     "version": 1,
@@ -37846,7 +37846,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "op.ideation.relationship_faction_conception",
     "version": 1,
@@ -38036,7 +38036,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "op.ideation.setting_world_conception",
     "version": 1,
@@ -38226,7 +38226,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "op.ideation.title_generation",
     "version": 1,
@@ -38416,7 +38416,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "op.ingest.artifact_classification",
     "version": 1,
@@ -38572,7 +38572,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "op.ingest.context_pack_construction",
     "version": 1,
@@ -38779,7 +38779,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "op.ingest.context_provenance",
     "version": 1,
@@ -38935,7 +38935,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "op.ingest.project_reconstruction",
     "version": 1,
@@ -39125,7 +39125,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "op.ingest.project_summary",
     "version": 1,
@@ -39298,7 +39298,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "op.ingest.sheet_extraction",
     "version": 1,
@@ -39471,7 +39471,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "op.ingest.source_ingestion_fidelity",
     "version": 1,
@@ -39661,7 +39661,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "op.ingest.uncertainty_and_contradiction_extraction",
     "version": 1,
@@ -39834,7 +39834,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "op.outline.coarse_outline",
     "version": 1,
@@ -40024,7 +40024,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "op.outline.coarse_outline_repair",
     "version": 1,
@@ -40214,7 +40214,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "op.outline.fine_detail_beat_outline",
     "version": 1,
@@ -40404,7 +40404,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "op.outline.medium_detail_outline",
     "version": 1,
@@ -40594,7 +40594,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "op.outline.outline_consistency",
     "version": 1,
@@ -40784,7 +40784,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "op.outline.outline_to_manuscript_alignment",
     "version": 1,
@@ -40974,7 +40974,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "op.outline.scene_or_chapter_planning",
     "version": 1,
@@ -41164,7 +41164,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "op.research.historical_technical_plausibility_review",
     "version": 1,
@@ -41371,7 +41371,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "op.research.research_question_formulation",
     "version": 1,
@@ -41544,7 +41544,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "op.research.research_synthesis",
     "version": 1,
@@ -41717,7 +41717,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "op.research.research_to_fiction_application",
     "version": 1,
@@ -41890,7 +41890,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "op.research.research_update",
     "version": 1,
@@ -42080,7 +42080,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "op.research.source_selection",
     "version": 1,
@@ -42253,7 +42253,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "op.revision.character_revision",
     "version": 1,
@@ -42460,7 +42460,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "op.revision.continuity_repair",
     "version": 1,
@@ -42650,7 +42650,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "op.revision.copy_edit",
     "version": 1,
@@ -42823,7 +42823,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "op.revision.dialogue_revision",
     "version": 1,
@@ -43030,7 +43030,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "op.revision.line_edit",
     "version": 1,
@@ -43220,7 +43220,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "op.revision.proofread",
     "version": 1,
@@ -43376,7 +43376,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "op.revision.restrained_final_pass",
     "version": 1,
@@ -43583,7 +43583,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "op.revision.revision_note_quality",
     "version": 1,
@@ -43773,7 +43773,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "op.revision.revision_phase_completion",
     "version": 1,
@@ -43980,7 +43980,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "op.revision.revision_verification",
     "version": 1,
@@ -44153,7 +44153,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "op.revision.structural_revision",
     "version": 1,
@@ -44360,7 +44360,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "op.revision.targeted_rewrite",
     "version": 1,
@@ -44533,7 +44533,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "op.revision.whole_manuscript_revision_pass",
     "version": 1,
@@ -44740,7 +44740,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "op.select.candidate_set_coverage",
     "version": 1,
@@ -44913,7 +44913,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "op.select.candidate_usefulness",
     "version": 1,
@@ -45103,7 +45103,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "op.select.first_pass_screening_grade",
     "version": 1,
@@ -45276,7 +45276,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "op.select.full_adjudication_grade",
     "version": 1,
@@ -45466,7 +45466,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "op.select.judge_confidence_and_evidence_quality",
     "version": 1,
@@ -45639,7 +45639,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "op.select.pairwise_comparison",
     "version": 1,
@@ -45829,7 +45829,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "op.select.rubric_application_quality",
     "version": 1,
@@ -46036,7 +46036,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "op.select.threshold_autostop_decision",
     "version": 1,
@@ -46226,7 +46226,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "op.select.tie_break_selection",
     "version": 1,
@@ -46382,7 +46382,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "penalty.purple_prose",
     "version": 2,
@@ -46559,7 +46559,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "penalty.repetition",
     "version": 1,
@@ -46755,7 +46755,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "penalty.unflagged_incomplete",
     "version": 1,
@@ -46855,7 +46855,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "sampler.batch_diversity",
     "version": 1,
@@ -47029,7 +47029,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "sampler.closure_and_commitment_preservation",
     "version": 1,
@@ -47203,7 +47203,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "sampler.freshness_gain",
     "version": 1,
@@ -47377,7 +47377,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "sampler.model_specific_sampler_profile",
     "version": 1,
@@ -47551,7 +47551,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "sampler.optionality_without_drift",
     "version": 1,
@@ -47691,7 +47691,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "sampler.productive_divergence",
     "version": 1,
@@ -47831,7 +47831,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "sampler.sampler_artifact_audit",
     "version": 1,
@@ -48022,7 +48022,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "sampler.sampler_benefit_versus_cost",
     "version": 1,
@@ -48196,7 +48196,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "sampler.single_sample_creative_quality",
     "version": 1,
@@ -48353,7 +48353,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "sampler.structure_aware_sampling_fit",
     "version": 1,
@@ -48527,7 +48527,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "scope.act",
     "version": 1,
@@ -48699,7 +48699,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "scope.beat",
     "version": 1,
@@ -48857,7 +48857,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "scope.chapter",
     "version": 1,
@@ -49046,7 +49046,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "scope.long_context",
     "version": 1,
@@ -49252,7 +49252,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "scope.manuscript",
     "version": 1,
@@ -49455,7 +49455,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "scope.micro",
     "version": 1,
@@ -49618,7 +49618,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "scope.passage",
     "version": 2,
@@ -49773,7 +49773,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "scope.poetry_collection",
     "version": 1,
@@ -49945,7 +49945,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "scope.poetry_line",
     "version": 1,
@@ -50103,7 +50103,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "scope.poetry_poem",
     "version": 1,
@@ -50258,7 +50258,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "scope.poetry_stanza",
     "version": 1,
@@ -50413,7 +50413,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "scope.scene",
     "version": 1,
@@ -50585,7 +50585,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "scope.sequence",
     "version": 1,
@@ -50774,7 +50774,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "scope.series",
     "version": 1,
@@ -50963,7 +50963,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "workflow.context_allocation_quality",
     "version": 1,
@@ -51148,7 +51148,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "workflow.model_a_high_context_role_fitness",
     "version": 1,
@@ -51333,7 +51333,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "workflow.model_b_fast_generation_role_fitness",
     "version": 1,
@@ -51518,7 +51518,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "workflow.procedure_completeness",
     "version": 1,
@@ -51686,7 +51686,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "workflow.revision_chain_integrity",
     "version": 1,
@@ -51854,7 +51854,7 @@
     "$schema": "../schema/hbq_rubric.schema.json",
     "standard": {
       "id": "HBQ-RS",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "module_id": "workflow.role_routing_decision",
     "version": 1,

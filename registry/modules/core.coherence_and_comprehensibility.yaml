@@ -1,7 +1,7 @@
 $schema: ../schema/hbq_rubric.schema.json
 standard:
   id: HBQ-RS
-  version: 1.2.0
+  version: 1.2.1
 module_id: core.coherence_and_comprehensibility
 version: 1
 title: Coherence and comprehensibility

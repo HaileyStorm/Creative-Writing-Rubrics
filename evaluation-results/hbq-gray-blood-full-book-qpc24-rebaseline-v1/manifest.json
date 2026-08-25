@@ -1,0 +1,15 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-gray-blood-full-book-qpc24-rebaseline-v1",
+  "status": "FROZEN_PROVIDER_FREE_PENDING_INDEPENDENT_REVIEW",
+  "cwr_commit": "4ce1204d8dd97feff2c7bd88237e265fac742adb",
+  "artifact_ids": ["gbq24a7-mss-01", "gbq24r6-mss-02"],
+  "scope": {"artifact_kind": "prose_fiction", "declared_scope": "manuscript", "completion_status": "work_in_progress"},
+  "full_fidelity_policy": {"global_leaves": 221, "chapter_leaves": 228, "batch_size": 24, "leaf_sampling": "forbidden", "not_applicable": "returned_verdict_not_prefilter"},
+  "first_pass": {"positions": 3406, "binary_calls": 150, "structured_calls": 6, "logical_calls": 156, "hard_max_sends": 468},
+  "controller": {"provider": "codex", "model": "gpt-5.6-sol", "structured_reasoning": "high", "judge_reasoning": "high", "structured_retry_ceiling_per_pass": 3, "sleep_safe_resume": "explicit_reconcile_then_runner_durable_resume", "execution_requires_independent_review": true},
+  "comparison": {"paired_chapters": [1, 2, 3, 4, 5, 6], "author_chapter_7": "unpaired", "manuscript_scope": "separate_due_to_unequal_spans"},
+  "privacy": {"source_text_published": false, "source_paths_published": false, "brief_published": false, "provider_calls_made": 0},
+  "historical_predecessor": {"retained": true, "superseded_planning_ceiling": 10224},
+  "private_package": {"package_id": "hbq-qpc24-full-book-freeze-v2-4ce1204-20260825", "freeze_manifest_sha256": "8a346b1dad8153a2bb6f0347c4268aedbe9d573fa0a0280eb3fafacc47e6fe06"}
+}

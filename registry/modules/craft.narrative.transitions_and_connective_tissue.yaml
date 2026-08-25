@@ -1,7 +1,7 @@
 $schema: ../schema/hbq_rubric.schema.json
 standard:
   id: HBQ-RS
-  version: 1.2.0
+  version: 1.2.1
 module_id: craft.narrative.transitions_and_connective_tissue
 version: 1
 title: Transitions and connective tissue

@@ -1,0 +1,33 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-free-verse-necessity-scope-ablation-v1",
+  "status": "frozen_provider_free_paired_scope_evidence_ablation",
+  "development_only": true,
+  "provider_execution": {"permitted": false, "new_provider_calls_exact": 0, "paid_route": "forbidden", "one_leaf_per_request": true},
+  "portfolio_binding": {"finding_id": "338b510127809018cc8f14b2674e5960ac6bb70d8692e7af300d74a3eab0ed80", "manifest_path": "evaluation-results/hbq-first-remedy-portfolio-v1/manifest.json", "manifest_sha256": "eebe2ac7a7b592459e5b084d8f6806a56ccd7a8c077e6508b34e0a0818111d32", "package_id": "L2", "frozen_initial_slots_exact": 216, "additive_to_portfolio": false},
+  "geometry": {"conditions_exact": 6, "leaves_per_condition_exact": 2, "repeats_exact": 3, "slots_exact": 36, "complete_poem_applicable_distinctions_minimum": 1},
+  "labels": ["YES", "NO", "NOT_APPLICABLE", "CANNOT_ASSESS"],
+  "screen": {"name": "current_wording", "prompt_policy": "unchanged_production_prompt", "prompt_paths": ["prompts/judge/JUDGE_PREFIX.md", "prompts/judge/BINARY_EVALUATION_PROMPT.md"], "schema_path": "schema/hbq_judge_response.schema.json", "renderer": "src/hbqrs/runner.py:_render_prompt", "expected_labels_provider_facing": false},
+  "scope_rule": {"study_mode": "direct_paired_leaf_overlay", "ordinary_bundle_activation_claimed": false, "compiled_pair_claimed": false, "projection": "question_index_direct_projection_with_explicit_module_domain_role_and_applies_when", "scope_overlay_control": "stanza_and_line_are_expected_not_applicable_for_scope.poetry_poem.form", "coverage_control": "declared_poem_with_missing_text_is_expected_cannot_assess_for_both_leaves"},
+  "scoring": {"applicable_cells": "must_be_3_of_3_expected_with_grounded_typed_evidence", "not_applicable": "completed_unscored", "cannot_assess": "coverage_uncertainty", "missing_or_ambiguous_slot": "INCOMPLETE"},
+  "promotion": {"prompt": "none", "rubric": "none", "leaf": "none", "ownership": "none", "split": "none", "merge": "none", "weight": "none"},
+  "bindings": {
+    "pinned_commit": "4ce1204d8dd97feff2c7bd88237e265fac742adb",
+    "corpus": {"path": "public-synthetic-corpus.json", "sha256": "46a33ac2a2ab5da56d6ea680483679425dac651cb7a5cff6cdc8278a5a399325"},
+    "source_fixture": {"path": "evaluation-results/hbq-other-lexical-overlap-ownership-v1/public-synthetic-corpus.json", "sha256": "9c6a60b49b616546681dee4f6b019347335c231706ab4b39952558d10fb8089a", "git_object_sha256": "9c6a60b49b616546681dee4f6b019347335c231706ab4b39952558d10fb8089a", "finding_id": "338b510127809018cc8f14b2674e5960ac6bb70d8692e7af300d74a3eab0ed80"},
+    "runtime": {
+      "prompts/judge/JUDGE_PREFIX.md": "ba48be75c55502d762f1029745b6a4b3b4d12674317f20906443467a00f8f3a5",
+      "prompts/judge/BINARY_EVALUATION_PROMPT.md": "6c1cac901d820c1ab866e19f9191896e8c97a6aadf35bdae4eac640fd199a3a2",
+      "schema/hbq_judge_response.schema.json": "49c7d824ba5dd957e67968ba3ae6ceb8a7ed9434dfb0dfc654836a76613c7854",
+      "registry/modules/form.poetry.free_verse.yaml": "bdbe90d9ee289b9c8ae1104b7aee941ab910e15159af247f4c02526870f334a8",
+      "registry/modules/scope.poetry_poem.yaml": "b2f64b04ecd23bda6b51323ef3381a5abb0d1453474c1a27e9852700a3430e24",
+      "registry/question_index.jsonl": "d959ecb51b90c4040e52ee64c335bb70ffd548297baeb058c055a1e7182c211d",
+      "registry/criterion_ownership.json": "94d8b6663ccd62e66d708827f3fb204b1e4b4f91e08e9beea970c78ff02f8bfe",
+      "src/hbqrs/runner.py": "81c1dea4bb4146707f48f86c2d6b7eeab2c1bf1f37bbfea81fea61173c2d6fe2"
+    },
+    "source_leaves": {
+      "form.poetry.free_verse.necessity": "b09b305504d9f5806dbc5818a984b7d1adb75a8e6e3637d3124f10ecec97db55",
+      "scope.poetry_poem.form": "f741d3daa35ed44986e246b241fd4426363011018eb7510884b17973e788f2d8"
+    }
+  }
+}

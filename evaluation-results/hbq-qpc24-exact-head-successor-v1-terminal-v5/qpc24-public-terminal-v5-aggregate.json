@@ -1,0 +1,20 @@
+{
+  "accepted_provider_calls": 12,
+  "accepted_verdict_positions": 269,
+  "cause": "LOCAL_CONTROLLER_TIMEOUT_AFTER_COMPLETE_STRUCTURED_OUTPUT",
+  "classification": "TERMINAL_LOCAL_POST_OUTPUT_LAPTOP_SLEEP_TIMEOUT",
+  "contacted_provider_calls": 13,
+  "format_version": 1,
+  "nonvoting_structured_provider_calls": 1,
+  "nonvoting_structured_verdict_positions": 24,
+  "opaque_private_receipt_tree_commitment_sha256": "5ba248ca8df7d8d8e8431758cf978273d36354d9aa08d024e961f6b544609617",
+  "planned_provider_calls": 150,
+  "planned_verdict_positions": 3315,
+  "structured_response_count": 13,
+  "structured_verdict_positions": 293,
+  "study_id": "hbq-qpc24-exact-head-successor-v1",
+  "untouched_provider_calls": 137,
+  "untouched_verdict_positions": 3022,
+  "voting_provider_calls": 12,
+  "voting_verdict_positions": 269
+}

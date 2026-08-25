@@ -1,0 +1,86 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-qpc24-exact-head-successor-v1",
+  "status": "frozen_provider_free_preexecution",
+  "source_head": "4ce1204d8dd97feff2c7bd88237e265fac742adb",
+  "purpose": "Freeze QPC24 as a current-head, true-whole-work, 24-questions-per-provider-call confirmation descendant of QPC1.",
+  "execution": {
+    "provider_free_now": true,
+    "remote_provider_call_count_now": 0,
+    "logical_work_evaluations_exact": 15,
+    "questions_per_provider_call": 24,
+    "final_remainder_questions": 5,
+    "provider_calls_per_logical_work": 10,
+    "planned_provider_calls_exact": 150,
+    "batch_attempts": 1,
+    "retry": "forbidden",
+    "resume": "forbidden",
+    "normalization": "forbidden",
+    "post_holdout_iteration": "forbidden",
+    "future_execution": "requires_separate_exact_binding_review"
+  },
+  "geometry": {
+    "artifact_roles": [
+      "author_original",
+      "gpt_5_6_pro_rewrite",
+      "public_control_story"
+    ],
+    "repetitions_per_role": 5,
+    "complete_eligible_question_count": 221,
+    "fixed_full_batches_per_logical_work": 9,
+    "remainder_batches_per_logical_work": 1,
+    "verdict_positions_exact": 3315
+  },
+  "disjointness": {
+    "public_package_contains_private_prose": false,
+    "qpc1_sources": "intentionally_continuity_bound",
+    "prior_qpc1_sessions_outputs_and_results": "forbidden_as_qpc24_evidence",
+    "one_shot_confirmatory_pack": true
+  },
+  "whole_work_scope": {
+    "artifact_kind": "prose.novel",
+    "whole_work_declared_scope": "WHOLE_WORK: complete supplied work; evaluate the complete artifact rather than an isolated passage.",
+    "completion_status": "complete"
+  },
+  "public_projection": {
+    "aggregate_only": true,
+    "forbidden": [
+      "private prose",
+      "rendered prompts",
+      "expected labels",
+      "model outputs",
+      "local paths",
+      "session identifiers",
+      "request identifiers",
+      "per-call records"
+    ]
+  },
+  "non_claims": {
+    "rubric_change": "none",
+    "promotion": "none",
+    "gray_blood_rebaseline": "held_pending_separate_controller",
+    "human_judging": "none",
+    "paid_evaluation": "none"
+  },
+  "eligible_question_set": {
+    "bundle_id": "prose.novel",
+    "question_sequence_sha256": "22c7c011189072b746eef4cd6aaf0b4da8cb21fd4786e9920593a4e9828602ce",
+    "required_figurative_and_owner_leaves": [
+      "penalty.purple_prose.metaphor",
+      "core.freshness_and_non_genericness.no_default_metaphors",
+      "penalty.purple_prose.proportion",
+      "penalty.purple_prose.fatigue"
+    ]
+  },
+  "runtime_bindings": {
+    "registry/all_modules.json": "12149c9ee556113b1c2865fa8a09a9cb6d60b554a8685219300e48dc1bf52de6",
+    "bundles/all_bundles.json": "ca20defa2e3350f949dc9da5e69bb9061d5a0c2d6ddcd71bb9399262dad10f86",
+    "bundles/prose.novel.yaml": "96e2b27d4324a368eb3c6cc76bf51ec1b82f02c3a92e8dd6a6e68efad00b9f38",
+    "registry/question_index.jsonl": "683f32cffbe4d5f57de288a7c6fab8b79ffa02a6b99635349d2945ed0af1fde0",
+    "registry/criterion_ownership.json": "79d636c7c692926d15ff8ebd47c3592e6bb0e6640473c0948ae9dead4fdd6876",
+    "prompts/judge/JUDGE_PREFIX.md": "5e3a0990efca93e2cbc3894e635f9fd1b97b6e61ea2981940319cb54994ebb74",
+    "prompts/judge/BINARY_EVALUATION_PROMPT.md": "6c1cac901d820c1ab866e19f9191896e8c97a6aadf35bdae4eac640fd199a3a2",
+    "schema/hbq_judge_response.schema.json": "49c7d824ba5dd957e67968ba3ae6ceb8a7ed9434dfb0dfc654836a76613c7854",
+    "src/hbqrs/runner.py": "81c1dea4bb4146707f48f86c2d6b7eeab2c1bf1f37bbfea81fea61173c2d6fe2"
+  }
+}

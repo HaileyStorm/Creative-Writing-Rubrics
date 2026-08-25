@@ -1,0 +1,15 @@
+{
+  "format_version": 1,
+  "seals": {
+    "f0e1fd939774f3c569458f7fd4ce9c6f9b4d942fbc1654badb7b72d09007c87d": {
+      "raw_bytes": 1072,
+      "canonical_lf_bytes": 1020,
+      "canonical_lf_sha256": "e9bf341a501ced78db81dae6ef1cd84b43eb9a740966034a5652d5b9a0dfdc4c"
+    },
+    "70b4cd16bd536f2f6ddb8e066f801090a037a39605652b14d6c7f6ff312446cb": {
+      "raw_bytes": 45951,
+      "canonical_lf_bytes": 45093,
+      "canonical_lf_sha256": "0518be16a4528b893de6af61300ecea58dc56d6b7944b5ae5fd3a3214a3794ef"
+    }
+  }
+}

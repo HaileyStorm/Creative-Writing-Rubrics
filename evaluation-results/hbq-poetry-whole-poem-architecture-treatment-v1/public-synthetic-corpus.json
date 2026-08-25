@@ -1,0 +1,14 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-poetry-whole-poem-architecture-treatment-v1",
+  "privacy": "public_synthetic_only",
+  "cases": [
+    {"case_id": "ordered_architecture", "artifact_name": "scope-fixture-01.txt", "artifact_type": "poetry", "declared_scope": "poem", "completion_status": "complete", "fixture_origin": "new_public_synthetic", "source_fixture_id": "scope-treatment-v1-01", "text": "North wall:\na blue cup in its square of light.\n\nCenter table:\na white bowl holding the room still.\n\nSouth wall:\na blue cup in its square of light.", "candidate_expected": "YES"},
+    {"case_id": "interchangeable_architecture", "artifact_name": "scope-fixture-02.txt", "artifact_type": "poetry", "declared_scope": "poem", "completion_status": "complete", "fixture_origin": "new_public_synthetic", "source_fixture_id": "scope-treatment-v1-02", "text": "A red cup waits by the gate.\n\nA yellow glove waits by the gate.\n\nA small stone waits by the gate.\n\nThe gate is closed.", "candidate_expected": "NO"},
+    {"case_id": "single_unit_poem", "artifact_name": "scope-fixture-03.txt", "artifact_type": "poetry", "declared_scope": "poem", "completion_status": "complete", "fixture_origin": "new_public_synthetic", "source_fixture_id": "scope-treatment-v1-03", "text": "Rain finds the empty cup\nand gives it back its sky.", "candidate_expected": "NOT_APPLICABLE"},
+    {"case_id": "stanza_excerpt", "artifact_name": "scope-fixture-04.txt", "artifact_type": "poetry", "declared_scope": "stanza", "completion_status": "excerpt", "fixture_origin": "new_public_synthetic", "source_fixture_id": "scope-treatment-v1-04", "text": "At noon the ice loosens;\nthe cup fills with its own bright water.", "candidate_expected": "NOT_APPLICABLE"},
+    {"case_id": "line_excerpt", "artifact_name": "scope-fixture-05.txt", "artifact_type": "poetry", "declared_scope": "line", "completion_status": "excerpt", "fixture_origin": "new_public_synthetic", "source_fixture_id": "scope-treatment-v1-05", "text": "leaving the step bare.", "candidate_expected": "NOT_APPLICABLE"},
+    {"case_id": "missing_poem_coverage", "artifact_name": "scope-fixture-06.txt", "artifact_type": "poetry", "declared_scope": "poem", "completion_status": "unknown", "fixture_origin": "new_public_synthetic", "source_fixture_id": "scope-treatment-v1-06", "text": "Center table:\na white bowl holding the room still.", "candidate_expected": "CANNOT_ASSESS"},
+    {"case_id": "owner_positive_architecture_negative", "artifact_name": "scope-fixture-07.txt", "artifact_type": "poetry", "declared_scope": "poem", "completion_status": "complete", "fixture_origin": "new_public_synthetic", "source_fixture_id": "scope-treatment-v1-07", "text": "The bell rings before the door.\nBut no one comes.\n\nA sleeve hangs from the fence.\n\nThe floor keeps one dry leaf.", "candidate_expected": "NO"}
+  ]
+}

@@ -163,7 +163,7 @@ without their separate Batch-B/C authority.
 ## Current non-goals and follow-up
 
 - This record does not claim that historical test outputs validate the current
-  HBQ-RS 1.2.0 package.
+  HBQ-RS 1.2.1 package.
 - It does not reopen or modify active validation packages.
 - It does not replace the current project narrative or the public results
   packages.

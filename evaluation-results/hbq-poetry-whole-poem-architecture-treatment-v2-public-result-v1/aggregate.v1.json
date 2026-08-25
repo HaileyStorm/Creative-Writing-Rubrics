@@ -1,0 +1,23 @@
+{
+  "candidate_outcome": {"correct": 16, "total": 21},
+  "decision": "NO_GO_CANDIDATE",
+  "format_version": 1,
+  "opaque_execution_commitments": {
+    "execution_contract_sha256": "512e45c41c4edb04ad1726c10a2e3a80d100c84112f9cb2562bdcda03decc5f3",
+    "execution_manifest_sha256": "f36b34a041cb26c385dfeb74e39f9ec365659638dbf6c47dffd5cbf774f4bbe1",
+    "sealed_settlement_sha256": "75351b53d49ebed043d0d0bf1aabddf17cc07687594df4d945a7074a9199e16a"
+  },
+  "per_case_outcomes": {
+    "complete_single_part": {"candidate": {"NOT_APPLICABLE": 3}, "candidate_expected_matches": 3, "current": {"YES": 3}},
+    "declared_excerpt": {"candidate": {"NOT_APPLICABLE": 3}, "candidate_expected_matches": 3, "current": {"YES": 3}},
+    "declared_whole_poem_incomplete": {"candidate": {"CANNOT_ASSESS": 3}, "candidate_expected_matches": 3, "current": {"CANNOT_ASSESS": 3}},
+    "ending_only_coda": {"candidate": {"NO": 2, "YES": 1}, "candidate_expected_matches": 2, "current": {"YES": 3}},
+    "inter_part_positive": {"candidate": {"YES": 3}, "candidate_expected_matches": 3, "current": {"YES": 3}},
+    "permutation_neutral": {"candidate": {"NO": 2, "NOT_APPLICABLE": 1}, "candidate_expected_matches": 2, "current": {"YES": 3}},
+    "semantic_progression_without_inter_part_relation": {"candidate": {"YES": 3}, "candidate_expected_matches": 0, "current": {"YES": 3}}
+  },
+  "promotion": "none",
+  "protocol_geometry": {"candidate_calls": 21, "current_calls": 21, "planned_calls": 42, "valid_terminals": 42},
+  "stable_3_of_3_arm_gap_case_ids": ["complete_single_part", "declared_excerpt"],
+  "study_id": "hbq-poetry-whole-poem-architecture-treatment-v2-execution-v1"
+}

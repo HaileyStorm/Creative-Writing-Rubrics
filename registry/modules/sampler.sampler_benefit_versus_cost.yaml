@@ -1,7 +1,7 @@
 $schema: ../schema/hbq_rubric.schema.json
 standard:
   id: HBQ-RS
-  version: 1.2.0
+  version: 1.2.1
 module_id: sampler.sampler_benefit_versus_cost
 version: 1
 title: Sampler benefit-versus-cost

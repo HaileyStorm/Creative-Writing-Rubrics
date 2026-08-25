@@ -1,0 +1,80 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-free-verse-necessity-scope-ablation-v1",
+  "privacy": "public_synthetic_only",
+  "leaves": ["form.poetry.free_verse.necessity", "scope.poetry_poem.form"],
+  "cases": [
+    {
+      "case_id": "complete-necessary",
+      "fixture_origin": "new_public_synthetic",
+      "source_fixture_id": "new-v1-complete-necessary",
+      "lineage_expected": null,
+      "artifact_name": "fixture-01.txt",
+      "artifact_type": "poetry",
+      "declared_scope": "poem",
+      "completion_status": "complete",
+      "text": "The station keeps my name\nin the\nblue light—\nnot a place, but the last\ncolor the train can take.\n\nWhen doors close,\nthe color leaves first.",
+      "expected": ["YES", "YES"]
+    },
+    {
+      "case_id": "complete-arbitrary",
+      "fixture_origin": "predecessor_exact",
+      "source_fixture_id": "artifact-03.txt",
+      "lineage_expected": ["NO", "YES"],
+      "artifact_name": "fixture-02.txt",
+      "artifact_type": "poetry",
+      "declared_scope": "poem",
+      "completion_status": "complete",
+      "text": "We inherit a weather map.\nThe first stanza names rain, the next names debt,\nand the final stanza returns the map as a will.\nThe movement is complete, though the line breaks are arbitrary.",
+      "expected": ["NO", "YES"]
+    },
+    {
+      "case_id": "stanza-excerpt",
+      "fixture_origin": "same_package_extract",
+      "source_fixture_id": "new-v1-complete-necessary#lines-1-5",
+      "lineage_expected": null,
+      "artifact_name": "fixture-03.txt",
+      "artifact_type": "poetry",
+      "declared_scope": "stanza",
+      "completion_status": "excerpt",
+      "text": "The station keeps my name\nin the\nblue light—\nnot a place, but the last\ncolor the train can take.",
+      "expected": ["YES", "NOT_APPLICABLE"]
+    },
+    {
+      "case_id": "line-excerpt",
+      "fixture_origin": "predecessor_extract",
+      "source_fixture_id": "artifact-01.txt#line-3",
+      "lineage_expected": null,
+      "artifact_name": "fixture-04.txt",
+      "artifact_type": "poetry",
+      "declared_scope": "line",
+      "completion_status": "excerpt",
+      "text": "The cables hum their borrowed names.",
+      "expected": ["CANNOT_ASSESS", "NOT_APPLICABLE"]
+    },
+    {
+      "case_id": "missing-poem-coverage",
+      "fixture_origin": "predecessor_exact",
+      "source_fixture_id": "artifact-05.txt",
+      "lineage_expected": ["CANNOT_ASSESS", "CANNOT_ASSESS"],
+      "artifact_name": "fixture-05.txt",
+      "artifact_type": "poetry",
+      "declared_scope": "poem",
+      "completion_status": "unknown",
+      "text": "Fragment retained without the rest of the poem or its declared scope.",
+      "expected": ["CANNOT_ASSESS", "CANNOT_ASSESS"]
+    },
+    {
+      "case_id": "inactive-metadata-control",
+      "fixture_origin": "predecessor_exact",
+      "source_fixture_id": "artifact-06.txt",
+      "lineage_expected": ["NOT_APPLICABLE", "NOT_APPLICABLE"],
+      "artifact_name": "fixture-06.txt",
+      "artifact_type": "metadata",
+      "declared_scope": "metadata",
+      "completion_status": "complete",
+      "text": "Catalog record: title only; no poem is supplied for evaluation.",
+      "expected": ["NOT_APPLICABLE", "NOT_APPLICABLE"]
+    }
+  ]
+}

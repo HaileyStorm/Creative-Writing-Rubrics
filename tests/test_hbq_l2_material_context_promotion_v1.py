@@ -30,8 +30,9 @@ def test_material_context_promotion_preserves_leaf_contract_and_packed_parity():
     )
     ownership = json.loads((root / "registry" / "criterion_ownership.json").read_text(encoding="utf-8"))
 
-    assert source["standard"] == {"id": "HBQ-RS", "version": "1.2.0"}
-    assert source["version"] == 2
+    assert source["standard"] == {"id": "HBQ-RS", "version": "1.2.1"}
+    # S1 subsequently advanced this shared module while preserving the L2 leaf.
+    assert source["version"] == 3
     assert aggregate == source
     assert leaf == {
         "id": LEAF_ID,

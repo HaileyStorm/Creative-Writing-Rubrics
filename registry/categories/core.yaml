@@ -1,7 +1,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: core.audience_and_purpose_fit
   version: 1
   title: Audience and purpose fit
@@ -163,7 +163,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: core.change_authorization
   version: 1
   title: Change authorization
@@ -323,7 +323,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: core.coherence_and_comprehensibility
   version: 1
   title: Coherence and comprehensibility
@@ -471,7 +471,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: core.economy_and_relevance
   version: 1
   title: Economy and relevance
@@ -618,7 +618,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: core.emotional_and_intellectual_effect
   version: 1
   title: Emotional and intellectual effect
@@ -749,7 +749,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: core.freshness_and_non_genericness
   version: 1
   title: Freshness and non-genericness
@@ -911,7 +911,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: core.holistic_artistic_success
   version: 1
   title: Holistic artistic success
@@ -1022,7 +1022,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: core.internal_logic_and_plausibility
   version: 1
   title: Internal logic and plausibility
@@ -1166,7 +1166,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: core.language_craft
   version: 1
   title: Language craft
@@ -1340,7 +1340,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: core.length_and_scope_fit
   version: 2
   title: Length and scope fit
@@ -1489,7 +1489,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: core.mechanics_and_presentation
   version: 1
   title: Mechanics and presentation
@@ -1633,7 +1633,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: core.project_and_source_fidelity
   version: 1
   title: Project and source fidelity
@@ -1808,7 +1808,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: core.specificity_and_embodiment
   version: 1
   title: Specificity and embodiment
@@ -1952,7 +1952,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: core.substantive_task_engagement_true_non_refusal
   version: 1
   title: Substantive task engagement / true non-refusal
@@ -2098,7 +2098,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: core.task_and_brief_fidelity
   version: 2
   title: Task and brief fidelity
@@ -2316,7 +2316,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: core.voice_and_stylistic_identity
   version: 1
   title: Voice and stylistic identity

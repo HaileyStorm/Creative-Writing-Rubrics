@@ -1,7 +1,7 @@
 $schema: ../schema/hbq_bundle.schema.json
 standard:
   id: HBQ-RS
-  version: 1.2.0
+  version: 1.2.1
 bundle_id: default.ideation
 version: 1
 title: Ideation

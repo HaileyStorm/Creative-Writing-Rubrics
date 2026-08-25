@@ -1,7 +1,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: workflow.context_allocation_quality
   version: 1
   title: Context-allocation quality
@@ -150,7 +150,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: workflow.model_a_high_context_role_fitness
   version: 1
   title: High-context critic/editor role fitness
@@ -299,7 +299,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: workflow.model_b_fast_generation_role_fitness
   version: 1
   title: Fast generator/screener role fitness
@@ -448,7 +448,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: workflow.procedure_completeness
   version: 1
   title: Procedure completeness
@@ -584,7 +584,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: workflow.revision_chain_integrity
   version: 1
   title: Revision-chain integrity
@@ -719,7 +719,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: workflow.role_routing_decision
   version: 1
   title: Role-routing decision

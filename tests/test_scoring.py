@@ -91,7 +91,7 @@ def test_inventory_counts(modules, bundles, manifest) -> None:
     assert manifest["question_count"] == 2145
     assert manifest["bundle_count"] == 85
     assert manifest["package"] == "creative-writing-rubrics"
-    assert manifest["standard"] == {"id": "HBQ-RS", "version": "1.2.0"}
+    assert manifest["standard"] == {"id": "HBQ-RS", "version": "1.2.1"}
 
 
 def test_aggregate_parity_and_criterion_ownership(modules, bundles) -> None:
@@ -487,16 +487,18 @@ def test_weighted_median_uses_lower_value_at_an_exact_half_tie() -> None:
     assert _weighted_median([(0.2, 1.0), (0.8, 1.0)]) == pytest.approx(0.2)
 
 
-def test_v1_frozen_assets_remain_byte_exact_and_v2_keeps_the_canonical_projection(
+def test_v1_frozen_assets_have_lf_successor_seals_and_v2_keeps_the_canonical_projection(
     modules, bundle_by_id
 ) -> None:
     from hbqrs.core import score_bundle as score_bundle_v1
 
-    assert hashlib.sha256((ROOT / "schema" / "hbq_score_report.schema.json").read_bytes()).hexdigest() == (
-        "f0e1fd939774f3c569458f7fd4ce9c6f9b4d942fbc1654badb7b72d09007c87d"
+    schema_bytes = (ROOT / "schema" / "hbq_score_report.schema.json").read_bytes()
+    assert hashlib.sha256(schema_bytes.replace(b"\r\n", b"\n")).hexdigest() == (
+        "e9bf341a501ced78db81dae6ef1cd84b43eb9a740966034a5652d5b9a0dfdc4c"
     )
-    assert hashlib.sha256((ROOT / "src" / "hbqrs" / "core.py").read_bytes()).hexdigest() == (
-        "70b4cd16bd536f2f6ddb8e066f801090a037a39605652b14d6c7f6ff312446cb"
+    core_bytes = (ROOT / "src" / "hbqrs" / "core.py").read_bytes()
+    assert hashlib.sha256(core_bytes.replace(b"\r\n", b"\n")).hexdigest() == (
+        "0518be16a4528b893de6af61300ecea58dc56d6b7944b5ae5fd3a3214a3794ef"
     )
     _, verdicts = _full_verdicts(modules, bundle_by_id["prose.scene"])
     parent = score_bundle_v1(modules, bundle_by_id["prose.scene"], verdicts)

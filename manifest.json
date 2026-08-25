@@ -2,9 +2,9 @@
   "package": "creative-writing-rubrics",
   "standard": {
     "id": "HBQ-RS",
-    "version": "1.2.0"
+    "version": "1.2.1"
   },
-  "generated": "2026-08-22",
+  "generated": "2026-08-25",
   "module_count": 278,
   "question_count": 2145,
   "bundle_count": 85,

@@ -1,19 +1,39 @@
 from __future__ import annotations
 
-import importlib.util
 import json
+import importlib.util
+import hashlib
 import re
 from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
 
-from tests import _historical_runtime_compat as historical_runtime
-from hbqrs.paths import book_root, bundles_path, registry_path
-from hbqrs import runner as binary_runner
+from _established_repeatability_historical_runtime import (
+    HistoricalRuntimeUnavailable,
+    HistoricalStudyRuntime,
+)
+from hbqrs.paths import book_root
 
 
 ROOT = book_root() / "evaluation-results" / "the-part-that-arrives-first-repeatability" / "established-v3"
+REPOSITORY = book_root().resolve()
+_HISTORICAL = HistoricalStudyRuntime(
+    root=ROOT,
+    repository=REPOSITORY,
+    runtime_commit="6a2a2bf1452576d01a56e83bbca98763f5697e7c",
+    control_commit="6a2a2bf1452576d01a56e83bbca98763f5697e7c",
+    package_name="established_v3_historical_hbqrs",
+    label="v3",
+    seals_path=Path(__file__).with_name("fixtures") / "established_repeatability_historical_successor_seals.json",
+)
+
+
+def _historical_runtime():
+    try:
+        return _HISTORICAL.runtime()
+    except HistoricalRuntimeUnavailable as exc:
+        pytest.skip(str(exc))
 
 
 def _raw_module(name: str):
@@ -25,13 +45,7 @@ def _raw_module(name: str):
 
 
 def _module(name: str):
-    module = _raw_module(name)
-    if name == "run_study":
-        historical_runtime.allow_asset_manifest_runner_drift(module)
-    elif name == "analyze_study":
-        runner = _module("run_study")
-        module._runner = lambda: runner
-    return module
+    return _HISTORICAL.module(name)
 
 
 def _json(path: Path) -> dict:
@@ -45,6 +59,7 @@ def _write(path: Path, value: object) -> None:
 
 def _make_run(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, *, repaired_quote: bool = False, rejected_first: bool = False) -> tuple[object, Path]:
     analysis = _module("analyze_study")
+    historical = _historical_runtime()
     calls = 0
 
     def fake_codex(*, prompt: str, **kwargs):
@@ -59,15 +74,15 @@ def _make_run(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, *, repaired_quote
         content = json.dumps({"verdicts": [{"question_id": item, "verdict": "NO", "confidence": 0.9, "evidence": [evidence], "note": "fixture"} for item in ids]})
         return content, {"reported": {"provider": "openai", "model": "gpt-5.6-sol", "reasoning_effort": "high", "session_id": f"accepted-{calls}"}}
 
-    monkeypatch.setattr(binary_runner, "_call_codex", fake_codex)
-    source = ROOT.parent / "source.md"
+    monkeypatch.setattr(historical.runner, "_call_codex", fake_codex)
+    source = historical.root / ROOT.relative_to(REPOSITORY).parent / "source.md"
     output = tmp_path / "work" / "hbq_short_story_batch32" / "run-01"
-    binary_runner.run_judge(artifact_path=source, bundle_id="prose.short_story", provider="codex", model="gpt-5.6-sol", output_dir=output, registry=registry_path(), bundles=bundles_path(), batch_size=32, batch_attempts=3, reasoning="high", allow_remote=True, artifact_id="the-part-that-arrives-first", strict_ai=True)
+    historical.runner.run_judge(artifact_path=source, bundle_id="prose.short_story", provider="codex", model="gpt-5.6-sol", output_dir=output, registry=historical.paths.registry_path(), bundles=historical.paths.bundles_path(), batch_size=32, batch_attempts=3, reasoning="high", allow_remote=True, artifact_id="the-part-that-arrives-first", strict_ai=True)
     return analysis, output
 
 
 def test_preflight_hashes_schedule_and_exact_predecessor() -> None:
-    with pytest.raises(ValueError, match="Frozen asset changed: runner"):
+    with pytest.raises(ValueError, match="Frozen asset changed: registry"):
         _raw_module("run_study").preflight()
     runner = _module("run_study")
     contract, source = runner.preflight()
@@ -201,3 +216,33 @@ def test_v3_code_has_explicit_native_schema_artifact_and_replay_gates() -> None:
     assert "_load_checkpoints" in text and "EVIDENCE_NORMALIZATION_POLICY" in text
     assert "_validate_provider_artifacts" in text and "score_bundle" in text
     assert "Draft202012Validator" in text and "unique accepted provider sessions" in text
+
+
+def test_historical_runtime_ignores_hostile_hbqrs_root_and_uses_snapshot_source(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    monkeypatch.setenv("HBQRS_ROOT", str(tmp_path / "hostile-root"))
+    historical = _historical_runtime()
+    source = historical.root / ROOT.relative_to(REPOSITORY).parent / "source.md"
+    assert historical.paths.book_root() == historical.root
+    assert source.is_file() and source.read_bytes() != b""
+
+
+def test_v2_helper_is_fully_bound_to_the_historical_runtime() -> None:
+    analysis = _module("analyze_study")
+    historical = _historical_runtime()
+    helper = analysis._v2_helper()
+    assert helper._verdicts_bytes is historical.runner._verdicts_bytes
+    assert helper.schema_dir().is_relative_to(historical.root)
+
+
+def test_canonical_successor_seals_retain_raw_lineage_without_claiming_raw_reconstruction() -> None:
+    historical = _historical_runtime()
+    assets = historical.manifest["assets"]
+    for name in ("score_report_schema", "scoring_core"):
+        record = assets[name]
+        seal = historical.seals[record["sha256"]]
+        payload = (historical.root / (ROOT / record["path"]).resolve().relative_to(REPOSITORY)).read_bytes()
+        assert seal["raw_bytes"] == record["bytes"]
+        assert hashlib.sha256(payload).hexdigest() == seal["canonical_lf_sha256"]
+        assert hashlib.sha256(payload).hexdigest() != record["sha256"]

@@ -51,7 +51,7 @@ INTENTIONAL_HOST_INTEGRATION_REFERENCES = {
 def test_lazy_public_exports_preserve_attribute_and_from_import_semantics() -> None:
     import hbqrs
 
-    assert hbqrs.__version__ == "1.2.0"
+    assert hbqrs.__version__ == "1.2.1"
     assert hbqrs.__all__ == ["__version__", *hbqrs._EXPORTS]
     for name in hbqrs.__all__:
         assert getattr(hbqrs, name) is not None
@@ -66,8 +66,8 @@ def test_citation_uses_the_current_hbq_rs_release_identity() -> None:
 
     citation = yaml.safe_load((book_root() / "CITATION.cff").read_text(encoding="utf-8"))
     assert citation["version"] == hbqrs.__version__
-    assert citation["date-released"] == "2026-08-22"
-    assert "HBQ-RS 1.2.0" in citation["abstract"]
+    assert citation["date-released"] == "2026-08-25"
+    assert "HBQ-RS 1.2.1" in citation["abstract"]
 
 
 def test_multisample_study_fresh_import_has_minimal_hbqrs_closure() -> None:

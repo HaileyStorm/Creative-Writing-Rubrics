@@ -1,0 +1,53 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-poetry-whole-poem-architecture-dspy-v1-public-result-v1",
+  "classification": "HARNESS_INVALID_OPTIMIZATION_NO_TRANSFER_NO_PROMOTION",
+  "source_commitments": {
+    "settlement_sha256": "71472f4adab07c679752a6c54d9fe7886d25da7b5c7bf7020d93f607e7897af7",
+    "static_export_sha256": "6c1ae8681ffc44f5be677f442ab0c3a35a712a604b3a69939d1e5467a38fe373"
+  },
+  "execution": {
+    "adapter_allocations": 44,
+    "provider_dispatches_started": 44,
+    "confirmed_provider_contacts": 44,
+    "proposal_responses": 4,
+    "task_responses": 40,
+    "retries": 0
+  },
+  "static_export": {
+    "words": 10,
+    "identical_to_baseline": true
+  },
+  "mechanical_metrics": {
+    "default": {"matched": 0, "total": 8},
+    "trial_1": {"matched": 0, "total": 8},
+    "trial_2": {"matched": 0, "total": 8},
+    "trial_3": {"matched": 0, "total": 8},
+    "trial_4": {"matched": 0, "total": 8}
+  },
+  "mechanical_evidence": {
+    "allowed_literal_verdicts": {"matched": 0, "total": 40},
+    "whole_evidence_exact_substrings": {"matched": 0, "total": 40}
+  },
+  "manual_semantic_rescore": {
+    "default": {"matched": 7, "total": 8},
+    "trial_1": {"matched": 5, "total": 8},
+    "trial_2": {"matched": 6, "total": 8},
+    "trial_3": {"matched": 5, "total": 8},
+    "trial_4": {"matched": 4, "total": 8},
+    "possible_generous_trial_4": {"matched": 5, "total": 8},
+    "complete_single_part_na_boundary": {"missed": 5, "total": 5}
+  },
+  "decisions": {
+    "transfer": "none",
+    "wording_change": "none",
+    "runtime_dspy": "none",
+    "promotion": "none"
+  },
+  "publication": {
+    "scope": "aggregate_only",
+    "contains_prose_or_prompts": false,
+    "contains_raw_responses": false,
+    "contains_private_paths_or_identifiers": false
+  }
+}

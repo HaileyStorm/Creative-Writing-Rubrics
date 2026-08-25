@@ -68,7 +68,7 @@ def _module(name: str) -> dict[str, Any]:
 
 
 def _assert_preserved_contract(module: dict[str, Any], leaf: dict[str, Any], *, module_id: str, leaf_id: str, version: int, text: str, weight: float, question_type: str) -> None:
-    assert module["standard"] == {"id": "HBQ-RS", "version": "1.2.0"}
+    assert module["standard"] == {"id": "HBQ-RS", "version": "1.2.1"}
     assert module["module_id"] == module_id and module["version"] == version
     assert leaf["id"] == leaf_id and leaf["criterion_key"] == leaf_id and leaf["text"] == text
     assert leaf["pass_answer"] == "YES" and leaf["weight"] == weight

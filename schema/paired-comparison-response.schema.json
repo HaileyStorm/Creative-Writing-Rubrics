@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/HaileyStorm/Creative-Writing-Rubrics/schema/paired-comparison-response.schema.json",
+  "title": "HBQ-RS paired comparison model response",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["winner"],
+  "properties": {
+    "winner": { "enum": ["FIRST", "SECOND", "TIE"] }
+  }
+}

@@ -1,7 +1,7 @@
 $schema: ../schema/hbq_rubric.schema.json
 standard:
   id: HBQ-RS
-  version: 1.2.0
+  version: 1.2.1
 module_id: meta.dynamic_task_question_decomposition
 version: 1
 title: Dynamic task-question decomposition

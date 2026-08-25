@@ -4,9 +4,9 @@ This is a future-integration handoff, not an instruction to migrate either repos
 
 ## Authority and boundary
 
-Palimpsest's project specification remains authoritative for product behavior, persistence, local-first disclosure, and the built-in `Rubric Book/` package. Creative-Writing-Rubrics (CWR) remains authoritative for its own published HBQ-RS 1.2.0 source, schemas, tooling, and documentation. Keep the application boundary described in [Using HBQ-RS inside another application](apps.md): CWR supplies rubric data and deterministic scoring; Palimpsest owns projects, canon, manuscript/publication state, desktop RPC, and promotion decisions.
+Palimpsest's project specification remains authoritative for product behavior, persistence, local-first disclosure, and the built-in `Rubric Book/` package. Creative-Writing-Rubrics (CWR) remains authoritative for its own published HBQ-RS 1.2.1 source, schemas, tooling, and documentation. Keep the application boundary described in [Using HBQ-RS inside another application](apps.md): CWR supplies rubric data and deterministic scoring; Palimpsest owns projects, canon, manuscript/publication state, desktop RPC, and promotion decisions.
 
-The proposed mount is a Git submodule at `Palimpsest/Rubric Book`. It must be an exact gitlink to an owner-approved CWR commit. Never track a branch, tag, `main`, or any other floating update. The CWR SHA observed while this handoff was written was `57c62fabcfc18f92bb92beb7697003f7a6ebdce7`; it is a discovery snapshot only, not a future pin.
+The proposed mount is a Git submodule at `Palimpsest/Rubric Book`. It must be an exact gitlink to an owner-approved CWR commit. Never track a branch, tag, `main`, or any other floating update. This document does not preselect that commit; record the exact clean pushed release SHA in the Palimpsest migration decision when the integration gate is run.
 
 ## Why it is not drop-in
 

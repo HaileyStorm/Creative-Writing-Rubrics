@@ -1,19 +1,43 @@
 from __future__ import annotations
 
-import importlib.util
 import json
+import importlib.util
 import re
+import subprocess
 from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
 
-from tests import _historical_runtime_compat as historical_runtime
-from hbqrs.paths import book_root, bundles_path, registry_path
-from hbqrs import longform_runner, runner as binary_runner
+from _established_repeatability_historical_runtime import (
+    HistoricalRuntimeUnavailable,
+    HistoricalStudyRuntime,
+)
+from hbqrs.paths import book_root
 
 
 ROOT = book_root() / "evaluation-results" / "the-part-that-arrives-first-repeatability" / "established-v4"
+REPOSITORY = book_root().resolve()
+_HISTORICAL = HistoricalStudyRuntime(
+    root=ROOT,
+    repository=REPOSITORY,
+    runtime_commit="d9038f10ead6f6200507572a28e2a7405e737315",
+    control_commit="8596f30a44eb8f521e7981423f68271de8e6d6a1",
+    package_name="established_v4_historical_hbqrs",
+    label="v4",
+    seals_path=Path(__file__).with_name("fixtures") / "established_repeatability_historical_successor_seals.json",
+)
+
+
+def _historical_runtime():
+    try:
+        return _HISTORICAL.runtime()
+    except HistoricalRuntimeUnavailable as exc:
+        pytest.skip(str(exc))
+
+
+def _historical_structured_runner():
+    return _historical_runtime().structured
 
 
 def _raw_module(name: str):
@@ -24,14 +48,12 @@ def _raw_module(name: str):
     return module
 
 
+def _tracked_path_is_clean(relative: Path) -> bool:
+    return _HISTORICAL.tracked_path_is_clean(relative)
+
+
 def _module(name: str):
-    module = _raw_module(name)
-    if name == "run_study":
-        historical_runtime.allow_asset_manifest_runner_drift(module)
-    elif name == "analyze_study":
-        runner = _module("run_study")
-        module._runner = lambda: runner
-    return module
+    return _HISTORICAL.module(name)
 
 
 def _json(path: Path) -> dict:
@@ -45,6 +67,7 @@ def _write(path: Path, value: object) -> None:
 
 def _make_run(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, *, repaired_quote: bool = False, rejected_first: bool = False) -> tuple[object, Path]:
     analysis = _module("analyze_study")
+    historical = _historical_runtime()
     calls = 0
 
     def fake_codex(*, prompt: str, **kwargs):
@@ -59,15 +82,15 @@ def _make_run(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, *, repaired_quote
         content = json.dumps({"verdicts": [{"question_id": item, "verdict": "NO", "confidence": 0.9, "evidence": [evidence], "note": "fixture"} for item in ids]})
         return content, {"reported": {"provider": "openai", "model": "gpt-5.6-sol", "reasoning_effort": "high", "session_id": f"accepted-{calls}"}}
 
-    monkeypatch.setattr(binary_runner, "_call_codex", fake_codex)
-    source = ROOT.parent / "source.md"
+    monkeypatch.setattr(historical.runner, "_call_codex", fake_codex)
+    source = historical.root / ROOT.relative_to(REPOSITORY).parent / "source.md"
     output = tmp_path / "work" / "hbq_short_story_batch32" / "run-01"
-    binary_runner.run_judge(artifact_path=source, bundle_id="prose.short_story", provider="codex", model="gpt-5.6-sol", output_dir=output, registry=registry_path(), bundles=bundles_path(), batch_size=32, batch_attempts=3, reasoning="high", allow_remote=True, artifact_id="the-part-that-arrives-first", strict_ai=True)
+    historical.runner.run_judge(artifact_path=source, bundle_id="prose.short_story", provider="codex", model="gpt-5.6-sol", output_dir=output, registry=historical.paths.registry_path(), bundles=historical.paths.bundles_path(), batch_size=32, batch_attempts=3, reasoning="high", allow_remote=True, artifact_id="the-part-that-arrives-first", strict_ai=True)
     return analysis, output
 
 
 def test_preflight_hashes_schedule_and_exact_predecessor() -> None:
-    with pytest.raises(ValueError, match="Frozen asset changed: runner"):
+    with pytest.raises(ValueError, match="Frozen asset changed: registry"):
         _raw_module("run_study").preflight()
     runner = _module("run_study")
     contract, source = runner.preflight()
@@ -81,6 +104,29 @@ def test_preflight_hashes_schedule_and_exact_predecessor() -> None:
     assert contract["hbq_runtime"]["checkpoint_format_version"] == 4
     assert len(runner._schedule_events(contract)) == 20
     assert runner._asset_manifest(contract)["assets"]["study_runner"]["sha256"]
+
+
+def test_clean_historical_controls_reject_staged_mutation(monkeypatch: pytest.MonkeyPatch) -> None:
+    commands: list[list[str]] = []
+
+    def staged(command: list[str], **kwargs: object) -> subprocess.CompletedProcess[object]:
+        commands.append(command)
+        return subprocess.CompletedProcess(command, 1 if "--cached" in command else 0)
+
+    monkeypatch.setattr(subprocess, "run", staged)
+    assert not _tracked_path_is_clean(Path("registry/all_modules.json"))
+    assert len(commands) == 2 and "--cached" in commands[-1]
+
+
+def test_v4_controls_are_pinned_to_the_declared_commit_not_the_live_worktree() -> None:
+    historical = _historical_runtime()
+    expected = subprocess.run(
+        ["git", "-C", str(REPOSITORY), "show", f"{_HISTORICAL.control_commit}:evaluation-results/the-part-that-arrives-first-repeatability/established-v4/study-contract.json"],
+        capture_output=True,
+        check=True,
+    ).stdout
+    actual = (historical.root / ROOT.relative_to(REPOSITORY) / "study-contract.json").read_bytes()
+    assert actual == expected
 
 
 def test_preflight_rejects_a_declared_policy_that_differs_from_runtime(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -286,7 +332,7 @@ def test_semantic_rejection_is_not_journaled_and_corrected_resume_succeeds(tmp_p
         }
         return json.dumps(result), {"reported": {"provider": "openai", "model": "gpt-5.6-sol", "reasoning_effort": "high", "session_id": f"native-{calls}"}}
 
-    monkeypatch.setattr(longform_runner, "_call_codex", fake_codex)
+    monkeypatch.setattr(_historical_structured_runner(), "_call_codex", fake_codex)
     work = tmp_path / "work"
     with pytest.raises(ValueError, match="duplicated"):
         runner.execute(work, timeout=1.0)
@@ -316,7 +362,7 @@ def test_cached_third_attempt_is_validated_without_a_fourth_provider_call(tmp_pa
         result = {"method": "naplan_narrative_2022_research_implementation", "criteria": [{"criterion_id": item, "score": 0, "exact_quote": "Mica always arrived first.", "observation": "fixture"} for item in current], "total_score": 0, "overall_note": "fixture"}
         return json.dumps(result), {"reported": {"provider": "openai", "model": "gpt-5.6-sol", "reasoning_effort": "high", "session_id": f"third-{calls}"}}
 
-    monkeypatch.setattr(longform_runner, "_call_codex", fake_codex)
+    monkeypatch.setattr(_historical_structured_runner(), "_call_codex", fake_codex)
     output = tmp_path / "work"
     for _ in range(2):
         with pytest.raises(ValueError, match="duplicated"):
@@ -357,7 +403,7 @@ def test_semantic_rejection_transaction_is_idempotent_after_unlink_crash(tmp_pat
     def crash_before_unlink(output: Path, *, reason: str) -> None:
         _write(output / "attempts" / "rejected-0001.json", {"format_version": 1, "reason": reason, "response": _json(output / "response.json"), "result": _json(output / "result.json")})
 
-    monkeypatch.setattr(longform_runner, "_call_codex", fake_codex)
+    monkeypatch.setattr(_historical_structured_runner(), "_call_codex", fake_codex)
     monkeypatch.setattr(runner, "_reject_structured_checkpoint", crash_before_unlink)
     output = tmp_path / "work"
     with pytest.raises(ValueError, match="duplicated"):
@@ -390,7 +436,7 @@ def test_native_retry_provenance_rejects_coherent_binding_tamper(tmp_path: Path,
         _write(response_dir / f"batch-0001.attempt-{kwargs['attempt_number']:04d}.message.json", {"fixture": calls})
         return json.dumps(result), {"reported": {"provider": "openai", "model": "gpt-5.6-sol", "reasoning_effort": "high", "session_id": f"audit-{calls}"}}
 
-    monkeypatch.setattr(longform_runner, "_call_codex", fake_codex)
+    monkeypatch.setattr(_historical_structured_runner(), "_call_codex", fake_codex)
     work = tmp_path / "work"
     with pytest.raises(ValueError, match="duplicated"):
         runner._run_native(arm, 1, source, work, 1.0)

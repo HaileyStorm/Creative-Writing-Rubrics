@@ -1,0 +1,16 @@
+{
+  "accepted_provider_calls": 36,
+  "aggregate_cell_labels": ["complete_necessary", "complete_arbitrary", "stanza_excerpt", "line_excerpt", "missing_poem_coverage", "inactive_metadata_control"],
+  "cell_level_expected_matches": 8,
+  "cell_repeat_stable": 11,
+  "classification": "VALID_EXECUTION_NEGATIVE_DISCRIMINATION_NO_PROMOTION",
+  "format_version": 1,
+  "necessity_arm": {"call_level_expected_matches": 18, "calls": 18, "cells": 6, "cells_repeat_stable": 6},
+  "opaque_private_receipt_and_settlement_commitment_sha256": "01e4ef01af8819142ee26f50c05d184d183eeb60cfad792959bcf4f4e5140147",
+  "paired_arms": {"calls_with_same_verdict": 16, "cells_with_same_distribution": 5, "cells": 6, "scope_metadata_cell": "varied"},
+  "planned_provider_calls": 36,
+  "promotion": "none",
+  "scope_singleton_oracle": "invalid_for_module_gate",
+  "study_id": "hbq-free-verse-necessity-scope-ablation-v1-execution-v1",
+  "terminal_provider_failures": 0
+}

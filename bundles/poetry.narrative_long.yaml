@@ -1,7 +1,7 @@
 $schema: ../schema/hbq_bundle.schema.json
 standard:
   id: HBQ-RS
-  version: 1.2.0
+  version: 1.2.1
 bundle_id: poetry.narrative_long
 version: 1
 title: Narrative or long poem

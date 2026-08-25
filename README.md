@@ -1,6 +1,6 @@
 # Creative-Writing-Rubrics
 
-**HBQ-RS 1.2.0** — Creative-Writing-Rubrics supplies composable binary-question rubrics for creative writing, draft judging, open critique, model and dataset evaluation, benchmarking, and synthetic data.
+**HBQ-RS 1.2.1** — Creative-Writing-Rubrics supplies composable binary-question rubrics for creative writing, draft judging, open critique, model and dataset evaluation, benchmarking, and synthetic data.
 
 The package ships **278 modules**, **2,145 atomic leaves**, **85 bundle presets**, and deterministic scoring. A judge answers one yes/no leaf at a time; aggregation is code, not another model call.
 
@@ -140,6 +140,8 @@ Stable IDs (`module_id`, `question_id`, `bundle_id`, `criterion_key`) are the pu
 - [Palimpsest integration handoff](docs/PALIMPSEST_HANDOFF.md) — future pinned-submodule boundary, migration gates, and compatibility obligations
 - [Leaf decomposition policy](docs/LEAF_DECOMPOSITION_POLICY.md) — how disputed binary verdicts become bounded rubric maintenance
 - [Validation and repair journey](docs/VALIDATION_AND_REPAIR_JOURNEY.md) — how controlled studies and negative results changed HBQ-RS, including the aggregate-only [QPC1 ceiling result](evaluation-results/hbq-qpc1-figurative-treatment-v1/)
+- [QPC24 full-rubric confirmation](evaluation-results/hbq-qpc24-two-pass-product-confirmation-v5-public-result-v1/) — six complete 221-leaf passes show strong control separation and only a limited author-original versus GPT-5.6 Pro rewrite signal
+- [Exact-repeatability result](evaluation-results/cwr-exact-duplicate-repeatability-v1-public-result-v1/) — exploratory replicated arithmetic plus the limits of the imported evidence
 - [Benchmarking](docs/benchmarking.md)
 - [Model training](docs/training.md)
 - [Synthetic data](docs/synthetic-data.md)

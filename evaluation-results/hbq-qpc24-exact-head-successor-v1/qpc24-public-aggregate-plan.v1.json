@@ -1,0 +1,38 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-qpc24-exact-head-successor-v1",
+  "source_head": "4ce1204d8dd97feff2c7bd88237e265fac742adb",
+  "status": "FROZEN_PROVIDER_FREE_PREEXECUTION",
+  "artifact_roles": [
+    "author_original",
+    "gpt_5_6_pro_rewrite",
+    "public_control_story"
+  ],
+  "protocol_geometry": {
+    "complete_eligible_questions": 221,
+    "questions_per_provider_call": 24,
+    "full_batches_per_logical_work": 9,
+    "remainder_questions": 5,
+    "remainder_batches_per_logical_work": 1,
+    "repetitions_per_role": 5,
+    "logical_work_evaluations": 15,
+    "planned_provider_calls": 150,
+    "verdict_positions": 3315
+  },
+  "provider_calls_made": 0,
+  "future_execution": "separate_exact_binding_review_required",
+  "immutability": {
+    "retry": "forbidden",
+    "resume": "forbidden",
+    "post_holdout_iteration": "forbidden"
+  },
+  "commitments": {
+    "study_contract_sha256": "2adc5e2269f547dca600dc0726d9a73d8589004ac180c2bf6fe5718feffda12c"
+  },
+  "privacy": "Aggregate-only projection: no private prose, rendered prompts, expected labels, model outputs, local paths, sessions, requests, or per-call records.",
+  "non_claims": [
+    "No rubric or prompt promotion.",
+    "No provider execution, paid evaluation, or human judging.",
+    "No Gray Blood rebaseline is opened by this package."
+  ]
+}

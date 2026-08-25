@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.2.1 — 2026-08-25
+
+- Published the four independently reviewed wording repairs for recurrence/applicability, excerpt scope, figurative semantic hinges, and material-context line breaks without changing stable IDs, criterion ownership, weights, polarity, or total module influence.
+- Added experimental exact-repeat and paired-comparison contracts with fresh-session replicate receipts, median/MAD/sample-SD/range summaries, AB/BA ordering, and explicit derived-reuse lineage; the imported repeatability result remains exploratory and does not promote a runtime default.
+- Published the exact-head QPC24 aggregate: six complete 221-leaf passes (60 calls, 1,326 positions) show strong stable separation from the public control, limited author-original versus GPT-5.6 Pro rewrite separation, and no basis for a wording or weighting promotion.
+- Published provider-free architecture, scope-ablation, full-book planning, and development-only DSPy results. Negative and harness-invalid results remain explicit; DSPy is not a runtime dependency.
+- Added the long-form validation-and-repair journey and preserved predecessor, partial, and failed study packages as historical lineage.
+
 ## 1.2.0 — 2026-08-22
 
 - Promoted the validated S1 recurrence/applicability, S2 excerpt-scope, and figurative semantic-hinge wording. Their module versions are now `3`, `2`, and `2`; HBQ-RS remains 1.2.0 with unchanged IDs, ownership, polarity, weights, bundle influence, and 278-module / 2,145-leaf / 85-bundle counts.

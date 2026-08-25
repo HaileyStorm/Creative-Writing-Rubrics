@@ -1,7 +1,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: form.audio.audio_drama_production
   version: 1
   title: Audio drama production
@@ -155,7 +155,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: form.audio.audio_technical_mastering
   version: 1
   title: Audio technical mastering
@@ -295,7 +295,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: form.audio.audiobook_narration
   version: 1
   title: Audiobook narration
@@ -463,7 +463,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: form.audio.character_voice_performance
   version: 1
   title: Character voice performance
@@ -603,7 +603,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: form.audio.poetry_reading
   version: 1
   title: Poetry reading
@@ -743,7 +743,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: form.audio.prosody_and_emotional_expression
   version: 1
   title: Prosody and emotional expression
@@ -883,7 +883,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: form.audio.speaker_and_character_consistency
   version: 1
   title: Speaker and character consistency
@@ -1023,7 +1023,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: form.audio.speech_naturalness_and_intelligibility
   version: 1
   title: Speech naturalness and intelligibility
@@ -1163,7 +1163,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: form.audio.speech_text_fidelity
   version: 1
   title: Speech text fidelity
@@ -1289,7 +1289,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: form.drama.audio_drama
   version: 1
   title: Audio drama
@@ -1445,7 +1445,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: form.drama.game_narrative_quest_writing
   version: 1
   title: Game narrative / quest writing
@@ -1601,7 +1601,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: form.drama.interactive_or_branching_fiction
   version: 1
   title: Interactive or branching fiction
@@ -1758,7 +1758,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: form.drama.monologue
   version: 1
   title: Monologue
@@ -1900,7 +1900,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: form.drama.screenplay_teleplay
   version: 1
   title: Screenplay / teleplay
@@ -2056,7 +2056,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: form.drama.stage_play
   version: 1
   title: Stage play
@@ -2212,7 +2212,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: form.hybrid.adaptation
   version: 1
   title: Adaptation
@@ -2356,7 +2356,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: form.hybrid.creative_nonfiction
   version: 1
   title: Creative nonfiction
@@ -2499,7 +2499,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: form.hybrid.epistolary_chat_log_document_fiction
   version: 1
   title: Epistolary / chat / log / document fiction
@@ -2642,7 +2642,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: form.hybrid.memoir_autobiographical_narrative
   version: 1
   title: Memoir / autobiographical narrative
@@ -2785,7 +2785,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: form.hybrid.personal_or_literary_essay
   version: 1
   title: Personal or literary essay
@@ -2928,7 +2928,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: form.hybrid.translation_or_transcreation
   version: 1
   title: Translation or transcreation
@@ -3071,7 +3071,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: form.multimodal.accessibility_metadata
   version: 1
   title: Accessibility metadata
@@ -3213,7 +3213,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: form.multimodal.cross_modal_canon_integrity
   version: 1
   title: Cross-modal canon integrity
@@ -3341,7 +3341,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: form.multimodal.illustration_placement_and_pacing
   version: 1
   title: Illustration placement and pacing
@@ -3469,7 +3469,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: form.multimodal.multimodal_scene_package
   version: 1
   title: Multimodal scene package
@@ -3625,7 +3625,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: form.multimodal.text_audio_alignment
   version: 1
   title: Text-audio alignment
@@ -3754,7 +3754,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: form.multimodal.text_image_alignment
   version: 1
   title: Text-image alignment
@@ -3882,7 +3882,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: form.poetry.ballad
   version: 1
   title: Ballad
@@ -4033,7 +4033,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: form.poetry.blank_verse
   version: 1
   title: Blank verse
@@ -4176,7 +4176,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: form.poetry.dramatic_monologue_poem
   version: 1
   title: Dramatic monologue poem
@@ -4313,7 +4313,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: form.poetry.elegy
   version: 1
   title: Elegy
@@ -4451,7 +4451,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: form.poetry.free_verse
   version: 3
   title: Free verse
@@ -4616,7 +4616,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: form.poetry.general_poetry
   version: 1
   title: General poetry
@@ -5022,7 +5022,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: form.poetry.generic_fixed_form_verse
   version: 1
   title: Generic fixed-form verse
@@ -5185,7 +5185,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: form.poetry.ghazal
   version: 1
   title: Ghazal
@@ -5346,7 +5346,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: form.poetry.haiku_in_english
   version: 1
   title: Haiku in English
@@ -5818,7 +5818,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: form.poetry.limerick
   version: 1
   title: Limerick
@@ -5977,7 +5977,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: form.poetry.lyric_song_lyric
   version: 1
   title: Lyric / song lyric
@@ -6136,7 +6136,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: form.poetry.narrative_or_long_poem
   version: 1
   title: Narrative or long poem
@@ -6295,7 +6295,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: form.poetry.ode
   version: 1
   title: Ode
@@ -6432,7 +6432,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: form.poetry.pantoum
   version: 1
   title: Pantoum
@@ -6576,7 +6576,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: form.poetry.poetry_sequence_or_collection
   version: 1
   title: Poetry sequence or collection
@@ -6735,7 +6735,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: form.poetry.prose_poem
   version: 1
   title: Prose poem
@@ -6881,7 +6881,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: form.poetry.rondeau
   version: 1
   title: Rondeau
@@ -7026,7 +7026,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: form.poetry.sestina
   version: 1
   title: Sestina
@@ -7177,7 +7177,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: form.poetry.sonnet
   version: 1
   title: Sonnet
@@ -7638,7 +7638,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: form.poetry.spoken_word_performance_poetry
   version: 1
   title: Spoken-word / performance poetry
@@ -7797,7 +7797,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: form.poetry.tanka_in_english
   version: 1
   title: Tanka in English
@@ -7948,7 +7948,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: form.poetry.villanelle
   version: 1
   title: Villanelle
@@ -8099,7 +8099,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: form.prose.fanfiction_source_canon_continuation
   version: 1
   title: Fanfiction / source-canon continuation
@@ -8255,7 +8255,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: form.prose.flash_fiction_drabble
   version: 1
   title: Flash fiction / drabble
@@ -8430,7 +8430,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: form.prose.general_prose_fiction
   version: 1
   title: General prose fiction
@@ -8571,7 +8571,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: form.prose.novel
   version: 1
   title: Novel
@@ -8744,7 +8744,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: form.prose.novella
   version: 1
   title: Novella
@@ -8889,7 +8889,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: form.prose.serial_or_episodic_fiction
   version: 1
   title: Serial or episodic fiction
@@ -9047,7 +9047,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: form.prose.short_story
   version: 1
   title: Short story
@@ -9204,7 +9204,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: form.prose.vignette_slice_of_life
   version: 1
   title: Vignette / slice-of-life
@@ -9346,7 +9346,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: form.visual.book_cover
   version: 1
   title: Book cover
@@ -9499,7 +9499,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: form.visual.character_design_sheet
   version: 1
   title: Character design sheet
@@ -9652,7 +9652,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: form.visual.character_portrait
   version: 1
   title: Character portrait
@@ -9805,7 +9805,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: form.visual.environment_or_location_illustration
   version: 1
   title: Environment or location illustration
@@ -9959,7 +9959,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: form.visual.map
   version: 1
   title: Map
@@ -10112,7 +10112,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: form.visual.scene_illustration
   version: 1
   title: Scene illustration
@@ -10266,7 +10266,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: form.visual.sequential_art_or_comic_page
   version: 1
   title: Sequential art or comic page
@@ -10419,7 +10419,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: form.visual.storyboard
   version: 1
   title: Storyboard
@@ -10572,7 +10572,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: form.visual.visual_craft_and_artifact_control
   version: 1
   title: Visual craft and artifact control
@@ -10725,7 +10725,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: form.visual.visual_narrative_continuity
   version: 1
   title: Visual narrative continuity
@@ -10864,7 +10864,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: form.visual.visual_prompt_and_canon_fidelity
   version: 1
   title: Visual prompt and canon fidelity

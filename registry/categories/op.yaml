@@ -1,7 +1,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: op.critique.clich_and_ai_pattern_audit
   version: 1
   title: Cliché and AI-pattern audit
@@ -157,7 +157,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: op.critique.consistency_audit
   version: 1
   title: Consistency audit
@@ -315,7 +315,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: op.critique.full_manuscript_critique
   version: 1
   title: Full-manuscript critique
@@ -487,7 +487,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: op.critique.open_ended_critique
   version: 1
   title: Open-ended critique
@@ -643,7 +643,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: op.critique.reader_orientation_audit
   version: 1
   title: Reader-orientation audit
@@ -786,7 +786,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: op.critique.research_and_factuality_audit
   version: 1
   title: Research and factuality audit
@@ -956,7 +956,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: op.critique.rubric_directed_critique
   version: 1
   title: Rubric-directed critique
@@ -1098,7 +1098,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: op.critique.single_unit_critique
   version: 1
   title: Single-unit critique
@@ -1239,7 +1239,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: op.critique.structural_audit
   version: 1
   title: Structural audit
@@ -1395,7 +1395,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: op.critique.style_drift_audit
   version: 1
   title: Style-drift audit
@@ -1551,7 +1551,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: op.draft.alternative_take
   version: 1
   title: Alternative take
@@ -1680,7 +1680,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: op.draft.bridge_passage
   version: 1
   title: Bridge passage
@@ -1822,7 +1822,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: op.draft.compression
   version: 1
   title: Compression
@@ -1964,7 +1964,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: op.draft.continuation
   version: 1
   title: Continuation
@@ -2121,7 +2121,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: op.draft.draft_from_coarse_or_medium_outline
   version: 1
   title: Draft from coarse or medium outline
@@ -2277,7 +2277,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: op.draft.draft_from_detailed_outline
   version: 1
   title: Draft from detailed outline
@@ -2433,7 +2433,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: op.draft.expansion
   version: 1
   title: Expansion
@@ -2575,7 +2575,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: op.draft.missing_scene_reconstruction
   version: 1
   title: Missing-scene reconstruction
@@ -2718,7 +2718,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: op.draft.pov_tense_register_or_form_conversion
   version: 1
   title: POV, tense, register, or form conversion
@@ -2847,7 +2847,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: op.draft.reference_style_or_project_voice_drafting
   version: 1
   title: Reference-style or project-voice drafting
@@ -2991,7 +2991,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: op.ideation.brainstorm_idea_set_quality
   version: 1
   title: Brainstorm / idea-set quality
@@ -3147,7 +3147,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: op.ideation.character_conception
   version: 1
   title: Character conception
@@ -3303,7 +3303,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: op.ideation.idea_refinement
   version: 1
   title: Idea refinement
@@ -3445,7 +3445,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: op.ideation.naming
   version: 1
   title: Naming
@@ -3602,7 +3602,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: op.ideation.premise_stress_test
   version: 1
   title: Premise stress test
@@ -3758,7 +3758,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: op.ideation.relationship_faction_conception
   version: 1
   title: Relationship/faction conception
@@ -3914,7 +3914,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: op.ideation.setting_world_conception
   version: 1
   title: Setting/world conception
@@ -4070,7 +4070,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: op.ideation.title_generation
   version: 1
   title: Title generation
@@ -4226,7 +4226,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: op.ingest.artifact_classification
   version: 1
   title: Artifact classification
@@ -4355,7 +4355,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: op.ingest.context_pack_construction
   version: 1
   title: Context-pack construction
@@ -4525,7 +4525,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: op.ingest.context_provenance
   version: 1
   title: Context provenance
@@ -4653,7 +4653,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: op.ingest.project_reconstruction
   version: 1
   title: Project reconstruction
@@ -4809,7 +4809,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: op.ingest.project_summary
   version: 1
   title: Project summary
@@ -4951,7 +4951,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: op.ingest.sheet_extraction
   version: 1
   title: Sheet extraction
@@ -5093,7 +5093,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: op.ingest.source_ingestion_fidelity
   version: 1
   title: Source ingestion fidelity
@@ -5249,7 +5249,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: op.ingest.uncertainty_and_contradiction_extraction
   version: 1
   title: Uncertainty and contradiction extraction
@@ -5391,7 +5391,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: op.outline.coarse_outline
   version: 1
   title: Coarse outline
@@ -5547,7 +5547,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: op.outline.coarse_outline_repair
   version: 1
   title: Coarse-outline repair
@@ -5704,7 +5704,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: op.outline.fine_detail_beat_outline
   version: 1
   title: Fine-detail / beat outline
@@ -5860,7 +5860,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: op.outline.medium_detail_outline
   version: 1
   title: Medium-detail outline
@@ -6016,7 +6016,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: op.outline.outline_consistency
   version: 1
   title: Outline consistency
@@ -6171,7 +6171,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: op.outline.outline_to_manuscript_alignment
   version: 1
   title: Outline-to-manuscript alignment
@@ -6327,7 +6327,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: op.outline.scene_or_chapter_planning
   version: 1
   title: Scene or chapter planning
@@ -6483,7 +6483,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: op.research.historical_technical_plausibility_review
   version: 1
   title: Historical/technical plausibility review
@@ -6653,7 +6653,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: op.research.research_question_formulation
   version: 1
   title: Research-question formulation
@@ -6795,7 +6795,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: op.research.research_synthesis
   version: 1
   title: Research synthesis
@@ -6937,7 +6937,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: op.research.research_to_fiction_application
   version: 1
   title: Research-to-fiction application
@@ -7079,7 +7079,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: op.research.research_update
   version: 1
   title: Research update
@@ -7235,7 +7235,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: op.research.source_selection
   version: 1
   title: Source selection
@@ -7377,7 +7377,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: op.revision.character_revision
   version: 1
   title: Character revision
@@ -7547,7 +7547,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: op.revision.continuity_repair
   version: 1
   title: Continuity repair
@@ -7703,7 +7703,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: op.revision.copy_edit
   version: 1
   title: Copy edit
@@ -7845,7 +7845,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: op.revision.dialogue_revision
   version: 1
   title: Dialogue revision
@@ -8015,7 +8015,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: op.revision.line_edit
   version: 1
   title: Line edit
@@ -8171,7 +8171,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: op.revision.proofread
   version: 1
   title: Proofread
@@ -8299,7 +8299,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: op.revision.restrained_final_pass
   version: 1
   title: Restrained final pass
@@ -8472,7 +8472,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: op.revision.revision_note_quality
   version: 1
   title: Revision-note quality
@@ -8628,7 +8628,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: op.revision.revision_phase_completion
   version: 1
   title: Revision-phase completion
@@ -8798,7 +8798,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: op.revision.revision_verification
   version: 1
   title: Revision verification
@@ -8940,7 +8940,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: op.revision.structural_revision
   version: 1
   title: Structural revision
@@ -9110,7 +9110,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: op.revision.targeted_rewrite
   version: 1
   title: Targeted rewrite
@@ -9252,7 +9252,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: op.revision.whole_manuscript_revision_pass
   version: 1
   title: Whole-manuscript revision pass
@@ -9422,7 +9422,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: op.select.candidate_set_coverage
   version: 1
   title: Candidate-set coverage
@@ -9564,7 +9564,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: op.select.candidate_usefulness
   version: 1
   title: Candidate usefulness
@@ -9720,7 +9720,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: op.select.first_pass_screening_grade
   version: 1
   title: First-pass screening grade
@@ -9863,7 +9863,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: op.select.full_adjudication_grade
   version: 1
   title: Full adjudication grade
@@ -10019,7 +10019,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: op.select.judge_confidence_and_evidence_quality
   version: 1
   title: Judge confidence and evidence quality
@@ -10162,7 +10162,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: op.select.pairwise_comparison
   version: 1
   title: Pairwise comparison
@@ -10318,7 +10318,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: op.select.rubric_application_quality
   version: 1
   title: Rubric-application quality
@@ -10488,7 +10488,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: op.select.threshold_autostop_decision
   version: 1
   title: Threshold/autostop decision
@@ -10648,7 +10648,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: op.select.tie_break_selection
   version: 1
   title: Tie-break selection

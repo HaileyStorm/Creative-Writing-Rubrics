@@ -1,0 +1,13 @@
+{
+  "accepted_provider_calls": 0,
+  "cause": "FROZEN_EVIDENCE_POLICY_MISMATCH",
+  "classification": "NO_RESULT_POSTCONTACT_EVIDENCE_VALIDATION_FAILURE",
+  "contacted_provider_calls": 1,
+  "format_version": 1,
+  "opaque_private_receipt_commitment_sha256": "a94ec7a7960d5e9e9e9adebfc64e3230ee49a964a72dc7a05091f1c0d3dc4f23",
+  "planned_provider_calls": 150,
+  "study_id": "hbq-qpc24-exact-head-successor-v1",
+  "structured_response_count": 1,
+  "untouched_provider_calls": 149,
+  "voting_provider_calls": 0
+}

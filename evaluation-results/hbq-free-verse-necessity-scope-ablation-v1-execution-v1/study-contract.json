@@ -1,0 +1,46 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-free-verse-necessity-scope-ablation-v1-execution-v1",
+  "status": "frozen_zero_call_execution_successor_unexecuted",
+  "predecessor": {
+    "path": "evaluation-results/hbq-free-verse-necessity-scope-ablation-v1",
+    "reviewed_parent_commit": "4ce1204d8dd97feff2c7bd88237e265fac742adb",
+    "files": {
+      "README.md": "f8feba860442bccb2fe3956e89b217464c821a4bc862d6ff4eed22ba3dfae3ba",
+      "study-contract.json": "dddbe6460778d3cfecd4396a1d53e018fc79d5c2863ab23314e7d80bb39c0b11",
+      "public-synthetic-corpus.json": "46a33ac2a2ab5da56d6ea680483679425dac651cb7a5cff6cdc8278a5a399325",
+      "study.py": "aef45a6d067a6b448dd03a91174db0009df0bbd61e6eef7cb95cfc45eb50b8ff",
+      "run.py": "5476e36fa6bbe69333e886b38f4fad19b8babe6d9d7ec93dd6886b55fd8a6eca"
+    }
+  },
+  "execution": {
+    "provider": "codex",
+    "model": "gpt-5.6-sol",
+    "reasoning": "high",
+    "selector": "exact",
+    "zero_paid_only": true,
+    "paid_fallback": "forbidden",
+    "one_leaf_per_request": true,
+    "one_physical_attempt_per_slot": true,
+    "claim_before_contact": true,
+    "retry_or_resume_after_claim": "forbidden",
+    "provider_calls_authorized_by_this_freeze": false
+  },
+  "geometry": {"conditions_exact": 6, "leaves_per_condition_exact": 2, "repeats_exact": 3, "slots_exact": 36},
+  "prompt_commitment": {"canonical_encoding": "utf8_lf", "rendered_prompt_aggregate_sha256": "27bf3b9ccb7700abf8b13fcb7d0d4ffb131e4324cbde209c44f1827da61ebd67"},
+  "validation": {
+    "schema_path": "schema/hbq_judge_response.schema.json",
+    "schema_git_show_sha256": "49c7d824ba5dd957e67968ba3ae6ceb8a7ed9434dfb0dfc654836a76613c7854",
+    "exact_single_verdict": true,
+    "question_id_must_match_singleton_leaf": true,
+    "evidence": "at_least_one_nonempty_exact_quote_must_be_a_substring_of_the_supplied_artifact"
+  },
+  "terminal_settlement": {
+    "terminal_record": "immutable_after_one_claim",
+    "settlement": "immutable_after_all_36_schema_and_evidence_valid_terminals",
+    "publication": "aggregate_only",
+    "expected_ledger_opened_by_executor": false,
+    "decision": "external_review_required"
+  },
+  "promotion": {"prompt": "none", "rubric": "none", "leaf": "none", "ownership": "none", "split": "none", "merge": "none", "weight": "none"}
+}

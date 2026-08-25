@@ -1,4 +1,4 @@
-# Creative Rubric Book — HBQ-RS 1.2.0
+# Creative Rubric Book — HBQ-RS 1.2.1
 
 ## Purpose
 

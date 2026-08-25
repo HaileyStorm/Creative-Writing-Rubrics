@@ -1,7 +1,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: craft.narrative.character_arc
   version: 1
   title: Character arc
@@ -173,7 +173,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: craft.narrative.characterization
   version: 1
   title: Characterization
@@ -356,7 +356,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: craft.narrative.continuity_and_canon_integrity
   version: 1
   title: Continuity and canon integrity
@@ -539,7 +539,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: craft.narrative.dialogue
   version: 1
   title: Dialogue
@@ -709,7 +709,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: craft.narrative.ending_and_closure
   version: 1
   title: Ending and closure
@@ -879,7 +879,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: craft.narrative.exposition_and_information_management
   version: 1
   title: Exposition and information management
@@ -1034,7 +1034,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: craft.narrative.foreshadowing_setup_and_payoff
   version: 1
   title: Foreshadowing, setup, and payoff
@@ -1204,7 +1204,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: craft.narrative.narrative_momentum
   version: 1
   title: Narrative momentum
@@ -1372,7 +1372,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: craft.narrative.opening
   version: 1
   title: Opening
@@ -1542,7 +1542,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: craft.narrative.pacing_and_narrative_time
   version: 1
   title: Pacing and narrative time
@@ -1711,7 +1711,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: craft.narrative.plot_and_causality
   version: 1
   title: Plot and causality
@@ -1880,7 +1880,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: craft.narrative.point_of_view_and_focalization
   version: 1
   title: Point of view and focalization
@@ -2034,7 +2034,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: craft.narrative.scene_construction
   version: 1
   title: Scene construction
@@ -2219,7 +2219,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: craft.narrative.setting_and_atmosphere
   version: 1
   title: Setting and atmosphere
@@ -2373,7 +2373,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: craft.narrative.temporal_and_spatial_continuity
   version: 1
   title: Temporal and spatial continuity
@@ -2527,7 +2527,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: craft.narrative.tension_conflict_and_stakes
   version: 1
   title: Tension, conflict, and stakes
@@ -2696,7 +2696,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: craft.narrative.theme_and_subtext
   version: 1
   title: Theme and subtext
@@ -2850,7 +2850,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: craft.narrative.transitions_and_connective_tissue
   version: 1
   title: Transitions and connective tissue
@@ -3005,7 +3005,7 @@
 - $schema: ../schema/hbq_rubric.schema.json
   standard:
     id: HBQ-RS
-    version: 1.2.0
+    version: 1.2.1
   module_id: craft.narrative.worldbuilding
   version: 1
   title: Worldbuilding
