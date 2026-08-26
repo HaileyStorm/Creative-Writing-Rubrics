@@ -16,6 +16,7 @@ import shutil
 import subprocess
 import tarfile
 import tempfile
+from functools import wraps
 from pathlib import Path
 from types import ModuleType
 from typing import Any, Mapping
@@ -29,6 +30,11 @@ _SNAPSHOTS: dict[
     tuple[str, str, tuple[tuple[str, str], ...], tuple[tuple[str, str], ...]],
     tuple[tempfile.TemporaryDirectory[str], Path],
 ] = {}
+
+# These are the only lazy lineage edges that historical S1 packages are
+# allowed to expose.  Keep this list explicit: a historical runtime should not
+# recursively inspect arbitrary module attributes or follow unrelated imports.
+_LAZY_LINEAGE_RESOLVERS = ("_v1", "_v2", "_v3", "_adapter")
 
 
 def install_historical_runtime(module: ModuleType, *, source_commit: str | None = None) -> ModuleType:
@@ -59,6 +65,7 @@ def install_historical_runtime(module: ModuleType, *, source_commit: str | None 
 
     lease, root = snapshot
     _relocate_module(module, root, repository, bindings, commit)
+    _pin_lazy_lineage(module, commit)
     _preserve_original_private_boundary(module, repository)
     _pin_subprocess_runtime(module, root)
     module._historical_runtime_tempdir = lease
@@ -256,6 +263,69 @@ def _relocate_module(module: ModuleType, root: Path, repository: Path, bindings:
         module._require_exact_head = lambda: None
     if hasattr(module, "head"):
         module.head = lambda: None
+
+
+def _pin_lazy_lineage(module: ModuleType, commit: str) -> None:
+    """Pin only the bounded lazy lineage edges used by the S1 successors."""
+
+    for name in _LAZY_LINEAGE_RESOLVERS:
+        resolver = getattr(module, name, None)
+        if not callable(resolver) or getattr(resolver, "_s1_historical_lineage_wrapper", False):
+            continue
+
+        @wraps(resolver)
+        def load_nested(resolver=resolver, resolver_name=name):
+            nested = resolver()
+            if not isinstance(nested, ModuleType):
+                raise LegacyHistoricalRuntimeUnbound(
+                    f"historical lineage resolver {resolver_name} did not return a module"
+                )
+            declared = _declared_commit(nested)
+            if declared is not None and declared != commit:
+                raise LegacyHistoricalRuntimeUnbound(
+                    f"historical nested {resolver_name} commit mismatch: {declared} != {commit}"
+                )
+            _pin_module_head(nested, commit)
+            _pin_lazy_lineage(nested, commit)
+            return nested
+
+        load_nested._s1_historical_lineage_wrapper = True
+        # Preserve cache-management hooks expected by the archived studies.
+        for hook in ("cache_clear", "cache_info", "cache_parameters"):
+            value = getattr(resolver, hook, None)
+            if value is not None:
+                setattr(load_nested, hook, value)
+        module.__dict__[name] = load_nested
+
+
+def _pin_module_head(module: ModuleType, commit: str) -> None:
+    """Pin a returned lineage module's HEAD lookup while delegating other Git calls."""
+
+    declared = _declared_commit(module)
+    if declared is not None and declared != commit:
+        raise LegacyHistoricalRuntimeUnbound(
+            f"historical nested module commit mismatch: {declared} != {commit}"
+        )
+    pinned_commit = getattr(module, "_s1_historical_head_commit", None)
+    if pinned_commit is not None:
+        if pinned_commit != commit:
+            raise LegacyHistoricalRuntimeUnbound(
+                f"historical nested module commit mismatch: {pinned_commit} != {commit}"
+            )
+        return
+    original_git = getattr(module, "_git", None)
+    if not callable(original_git) or getattr(original_git, "_s1_historical_head_wrapper", False):
+        return
+
+    @wraps(original_git)
+    def pinned_git(*args: str) -> str:
+        if args == ("rev-parse", "HEAD"):
+            return commit
+        return original_git(*args)
+
+    pinned_git._s1_historical_head_wrapper = True
+    module._git = pinned_git
+    module._s1_historical_head_commit = commit
 
 
 def _preserve_original_private_boundary(module: ModuleType, repository: Path) -> None:
