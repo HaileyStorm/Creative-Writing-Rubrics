@@ -18,13 +18,17 @@ from tests import _hbq_l2_historical_runtime as historical_runtime
 ROOT = book_root() / "evaluation-results" / "hbq-l2-c03-visual-control-successor-v1-execution-v1"
 
 
-def study():
+def raw_study():
     spec = importlib.util.spec_from_file_location("l2_c03_execution_v1", ROOT / "study.py")
     module = importlib.util.module_from_spec(spec)
     assert spec and spec.loader
     sys.modules[spec.name] = module
     spec.loader.exec_module(module)
-    return historical_runtime.install(module)
+    return module
+
+
+def study():
+    return historical_runtime.install(raw_study())
 
 
 @pytest.fixture
@@ -81,6 +85,27 @@ def test_pinned_geometry_and_prompt_blindness():
     for slot in slots:
         per_fixture[slot["image_input"]["name"]] += 1
     assert per_fixture == {"asset-01.png": 6, "asset-02.png": 6}
+
+
+def test_current_checkout_drift_remains_fail_closed():
+    with pytest.raises(ValueError, match=r"Current runtime differs from pinned source bytes: src/hbqrs/runner\.py"):
+        raw_study().validate_package()
+
+
+def test_historical_replay_executes_exact_private_runner():
+    value = study()
+    runner = value._historical_runtime_modules["src/hbqrs/runner.py"]
+    pinned = value._historical_runtime_paths["src/hbqrs/runner.py"].read_bytes()
+    source = value._git_bytes("show", f"{value.SOURCE_COMMIT}:src/hbqrs/runner.py")
+    assert pinned == source
+    assert runner.__historical_source_sha256__ == value.sha256_bytes(source) == "81c1dea4bb4146707f48f86c2d6b7eeab2c1bf1f37bbfea81fea61173c2d6fe2"
+    assert runner.__historical_dependency_blobs__ == {
+        relative: value._git("rev-parse", f"{value.SOURCE_COMMIT}:{relative}")
+        for relative in ("src/hbqrs/core.py", "src/hbqrs/paths.py", "src/hbqrs/weights.py")
+    }
+    assert value._source().production_runner is runner
+    assert value._lifecycle()._import_production_runner() is runner
+    assert sys.modules["hbqrs.runner"] is not runner
 
 
 def test_schedule_never_opens_either_expected_ledger(monkeypatch):

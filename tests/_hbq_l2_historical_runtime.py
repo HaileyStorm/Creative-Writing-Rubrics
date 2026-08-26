@@ -1,7 +1,7 @@
 """Test-only pinned-runtime bridge for settled L2 executor suites.
 
 The public executor packages remain immutable.  When the live registry advances,
-these tests materialize the executor-declared non-code runtime inputs from its
+these tests materialize the executor-declared data and runner inputs from its
 pinned source commit and make only the in-memory test module read that snapshot.
 """
 
@@ -30,7 +30,7 @@ def install(executor: ModuleType) -> ModuleType:
         root = Path(lease.name)
         pinned: dict[str, Path] = {}
         for relative in runtime:
-            if relative.startswith("src/"):
+            if relative.startswith("src/") and relative != "src/hbqrs/runner.py":
                 continue
             target = root / relative
             target.parent.mkdir(parents=True, exist_ok=True)
@@ -49,6 +49,7 @@ def install(executor: ModuleType) -> ModuleType:
         snapshot = lease, pinned
         _SNAPSHOTS[key] = snapshot
     lease, pinned = snapshot
+    historical_modules = _load_historical_modules(executor, pinned)
 
     original_git = executor._git
     original_sha256_file = executor.sha256_file
@@ -75,13 +76,19 @@ def install(executor: ModuleType) -> ModuleType:
     executor._git = git
     executor.sha256_file = sha256_file
     executor._historical_runtime_tempdir = lease
+    executor._historical_runtime_root = Path(lease.name)
     executor._historical_runtime_paths = pinned
+    executor._historical_runtime_modules = historical_modules
+
+    runner = historical_modules.get("src/hbqrs/runner.py")
+    if runner is not None:
+        _bind_production_runner(executor, runner)
 
     def configure(frozen: ModuleType) -> ModuleType:
-        _configure_frozen_module(frozen, executor, redirected, pinned)
+        _configure_frozen_module(frozen, executor, redirected, pinned, historical_modules)
         return frozen
 
-    for name in ("_source", "_predecessor", "_frozen_predecessor"):
+    for name in ("_source", "_predecessor", "_frozen_predecessor", "_lifecycle"):
         factory = getattr(executor, name, None)
         if factory is None:
             continue
@@ -99,6 +106,46 @@ def install(executor: ModuleType) -> ModuleType:
     return executor
 
 
+def _load_historical_modules(executor: ModuleType, pinned: dict[str, Path]) -> dict[str, ModuleType]:
+    """Execute declared Python runtime bytes under private test-only identities."""
+
+    modules: dict[str, ModuleType] = {}
+    runner_path = pinned.get("src/hbqrs/runner.py")
+    if runner_path is not None:
+        dependencies = {}
+        for relative in ("src/hbqrs/core.py", "src/hbqrs/paths.py", "src/hbqrs/weights.py"):
+            expected = executor._git("rev-parse", f"{executor.SOURCE_COMMIT}:{relative}")
+            if executor._git("hash-object", relative) != expected:
+                raise ValueError(f"Historical runner dependency differs from pinned source bytes: {relative}")
+            dependencies[relative] = expected
+        payload = runner_path.read_bytes()
+        identity = hashlib.sha256(payload).hexdigest()
+        runner = ModuleType(f"hbqrs._historical_runner_{identity[:16]}")
+        runner.__file__ = str(runner_path)
+        runner.__package__ = "hbqrs"
+        exec(compile(payload, str(runner_path), "exec"), runner.__dict__)
+        runner.__historical_source_sha256__ = identity
+        runner.__historical_dependency_blobs__ = dependencies
+        modules["src/hbqrs/runner.py"] = runner
+    return modules
+
+
+def _bind_production_runner(module: ModuleType, runner: ModuleType) -> None:
+    """Inject a private pinned runner without replacing ``hbqrs.runner`` globally."""
+
+    if hasattr(module, "production_runner"):
+        module.production_runner = runner
+    if hasattr(module, "_import_production_runner"):
+        module._import_production_runner = lambda: runner
+    if hasattr(module, "_production_runner"):
+        def production_runner() -> ModuleType:
+            verifier = getattr(module, "_verify_current_runtime_bytes", None)
+            if verifier is not None:
+                verifier()
+            return runner
+        module._production_runner = production_runner
+
+
 def _runtime_paths(executor: ModuleType) -> tuple[str, ...]:
     if hasattr(executor, "RUNTIME_BLOBS"):
         return tuple(executor.RUNTIME_BLOBS)
@@ -110,10 +157,14 @@ def _configure_frozen_module(
     executor: ModuleType,
     redirected: Callable[[Path | str], Path],
     pinned: dict[str, Path],
+    historical_modules: dict[str, ModuleType],
 ) -> None:
     """Bind frozen source/predecessor helpers to the snapshot without moving it."""
 
     frozen._git = executor._git
+    runner = historical_modules.get("src/hbqrs/runner.py")
+    if runner is not None:
+        _bind_production_runner(frozen, runner)
     frozen_runtime = getattr(frozen, "RUNTIME", {})
     if isinstance(frozen_runtime, dict):
         for relative, details in frozen_runtime.items():
