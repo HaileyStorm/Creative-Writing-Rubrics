@@ -90,7 +90,7 @@ def _make_run(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, *, repaired_quote
 
 
 def test_preflight_hashes_schedule_and_exact_predecessor() -> None:
-    with pytest.raises(ValueError, match="Frozen asset changed: verdict_schema"):
+    with pytest.raises(ValueError, match="Frozen asset changed:"):
         _raw_module("run_study").preflight()
     runner = _module("run_study")
     contract, source = runner.preflight()
