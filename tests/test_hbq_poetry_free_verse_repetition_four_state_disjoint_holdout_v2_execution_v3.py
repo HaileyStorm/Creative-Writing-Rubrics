@@ -9,11 +9,23 @@ import sys
 from pathlib import Path
 
 import pytest
+from _hbq_s1_historical_runtime import (
+    LegacyHistoricalRuntimeUnbound,
+    install_historical_runtime,
+)
 
 from hbqrs.paths import book_root
 
-
 ROOT = book_root() / "evaluation-results" / "hbq-poetry-free-verse-repetition-four-state-disjoint-holdout-v2-execution-v3"
+
+
+def load_current_study():
+    spec = importlib.util.spec_from_file_location("s1_v2_execution_v3_current_test", ROOT / "study.py")
+    module = importlib.util.module_from_spec(spec)
+    assert spec and spec.loader
+    sys.modules[spec.name] = module
+    spec.loader.exec_module(module)
+    return module
 
 
 def study():
@@ -22,7 +34,15 @@ def study():
     assert spec and spec.loader
     sys.modules[spec.name] = module
     spec.loader.exec_module(module)
-    return module
+    try:
+        return install_historical_runtime(module)
+    except LegacyHistoricalRuntimeUnbound as error:
+        pytest.skip(str(error))
+
+
+def test_current_checkout_fails_closed_before_historical_install():
+    with pytest.raises(ValueError, match="Exact CWR source binding drifted"):
+        load_current_study().validate_package()
 
 
 def test_contract_truthfully_binds_execution_v2_no_go_lineage_and_freshness():

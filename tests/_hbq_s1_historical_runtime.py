@@ -16,10 +16,11 @@ import shutil
 import subprocess
 import tarfile
 import tempfile
+from collections.abc import Mapping
 from functools import wraps
 from pathlib import Path
 from types import ModuleType
-from typing import Any, Mapping
+from typing import Any
 
 
 class LegacyHistoricalRuntimeUnbound(RuntimeError):
@@ -34,7 +35,7 @@ _SNAPSHOTS: dict[
 # These are the only lazy lineage edges that historical S1 packages are
 # allowed to expose.  Keep this list explicit: a historical runtime should not
 # recursively inspect arbitrary module attributes or follow unrelated imports.
-_LAZY_LINEAGE_RESOLVERS = ("_v1", "_v2", "_v3", "_adapter")
+_LAZY_LINEAGE_RESOLVERS = ("_v1", "_v2", "_v3", "_adapter", "_v2_execution", "_base_v2")
 
 
 def install_historical_runtime(module: ModuleType, *, source_commit: str | None = None) -> ModuleType:
@@ -64,8 +65,10 @@ def install_historical_runtime(module: ModuleType, *, source_commit: str | None 
         _SNAPSHOTS[key] = snapshot
 
     lease, root = snapshot
+    _validate_declared_lineage(module, repository, commit)
     _relocate_module(module, root, repository, bindings, commit)
-    _pin_lazy_lineage(module, commit)
+    _pin_module_head(module, commit, repository)
+    _pin_lazy_lineage(module, commit, repository)
     _preserve_original_private_boundary(module, repository)
     _pin_subprocess_runtime(module, root)
     module._historical_runtime_tempdir = lease
@@ -92,7 +95,7 @@ def _declared_bindings(module: ModuleType) -> dict[str, str]:
         value = getattr(module, name, None)
         if isinstance(value, Mapping):
             return _validate_bindings(value)
-    for name in ("_adapter", "_v1", "_v2", "_v3"):
+    for name in _LAZY_LINEAGE_RESOLVERS:
         resolver = getattr(module, name, None)
         if not callable(resolver):
             continue
@@ -153,6 +156,34 @@ def _git_newline_candidates(repository: Path, commit: str, relative: str) -> tup
     return _newline_candidates(shown.stdout) if not shown.returncode else ()
 
 
+def _git_text(repository: Path, *args: str) -> str:
+    completed = subprocess.run(
+        ["git", *args], cwd=repository, text=True, encoding="utf-8", capture_output=True, check=False
+    )
+    if completed.returncode:
+        raise LegacyHistoricalRuntimeUnbound(completed.stderr.strip() or "historical Git lookup failed")
+    return completed.stdout.strip()
+
+
+def _validate_declared_lineage(module: ModuleType, repository: Path, commit: str) -> None:
+    for name in ("SOURCE_COMMIT", "SOURCE_HEAD"):
+        declared = getattr(module, name, None)
+        if declared is None:
+            continue
+        if not isinstance(declared, str) or declared != commit:
+            raise LegacyHistoricalRuntimeUnbound(
+                f"historical declared {name} does not match pinned commit"
+            )
+    declared_tree = getattr(module, "SOURCE_TREE", None)
+    if declared_tree is None:
+        return
+    if not isinstance(declared_tree, str) or len(declared_tree) != 40:
+        raise LegacyHistoricalRuntimeUnbound("historical declared SOURCE_TREE is malformed")
+    actual_tree = _git_text(repository, "rev-parse", f"{commit}^{{tree}}")
+    if actual_tree != declared_tree:
+        raise LegacyHistoricalRuntimeUnbound("historical declared SOURCE_TREE does not match pinned commit")
+
+
 def _archive_commit(repository: Path, commit: str, destination: Path) -> None:
     completed = subprocess.run(["git", "archive", "--format=tar", commit], cwd=repository, capture_output=True, check=False)
     if completed.returncode:
@@ -178,6 +209,21 @@ def _required_overlay_identity(repository: Path, package_name: str) -> tuple[tup
         names.add("hbq-poetry-free-verse-repetition-four-state-disjoint-holdout-v1")
     if "four-state-disjoint" in package_name:
         names.add("hbq-poetry-free-verse-repetition-four-state-applicability-treatment-v1-execution-v10")
+    if package_name.endswith("-v2-execution-v2"):
+        names.update(
+            {
+                "hbq-poetry-free-verse-repetition-four-state-disjoint-holdout-v2",
+                "hbq-poetry-free-verse-repetition-four-state-disjoint-holdout-v1",
+            }
+        )
+    if package_name.endswith("-v2-execution-v3"):
+        names.update(
+            {
+                "hbq-poetry-free-verse-repetition-four-state-disjoint-holdout-v2-execution-v2",
+                "hbq-poetry-free-verse-repetition-four-state-disjoint-holdout-v2",
+                "hbq-poetry-free-verse-repetition-four-state-disjoint-holdout-v1",
+            }
+        )
     identity: list[tuple[str, str]] = []
     for name in sorted(names):
         package = repository / "evaluation-results" / name
@@ -259,13 +305,9 @@ def _relocate_module(module: ModuleType, root: Path, repository: Path, bindings:
                 return commit
             return original_git(*args)
         module._git = pinned_git
-    if hasattr(module, "_require_exact_head"):
-        module._require_exact_head = lambda: None
-    if hasattr(module, "head"):
-        module.head = lambda: None
 
 
-def _pin_lazy_lineage(module: ModuleType, commit: str) -> None:
+def _pin_lazy_lineage(module: ModuleType, commit: str, repository: Path) -> None:
     """Pin only the bounded lazy lineage edges used by the S1 successors."""
 
     for name in _LAZY_LINEAGE_RESOLVERS:
@@ -285,8 +327,8 @@ def _pin_lazy_lineage(module: ModuleType, commit: str) -> None:
                 raise LegacyHistoricalRuntimeUnbound(
                     f"historical nested {resolver_name} commit mismatch: {declared} != {commit}"
                 )
-            _pin_module_head(nested, commit)
-            _pin_lazy_lineage(nested, commit)
+            _pin_module_head(nested, commit, repository)
+            _pin_lazy_lineage(nested, commit, repository)
             return nested
 
         load_nested._s1_historical_lineage_wrapper = True
@@ -298,34 +340,55 @@ def _pin_lazy_lineage(module: ModuleType, commit: str) -> None:
         module.__dict__[name] = load_nested
 
 
-def _pin_module_head(module: ModuleType, commit: str) -> None:
-    """Pin a returned lineage module's HEAD lookup while delegating other Git calls."""
+def _pin_module_head(module: ModuleType, commit: str, repository: Path) -> None:
+    """Pin only recognized historical head lookups while delegating other Git calls."""
 
-    declared = _declared_commit(module)
-    if declared is not None and declared != commit:
-        raise LegacyHistoricalRuntimeUnbound(
-            f"historical nested module commit mismatch: {declared} != {commit}"
-        )
+    _validate_declared_lineage(module, repository, commit)
     pinned_commit = getattr(module, "_s1_historical_head_commit", None)
-    if pinned_commit is not None:
-        if pinned_commit != commit:
-            raise LegacyHistoricalRuntimeUnbound(
-                f"historical nested module commit mismatch: {pinned_commit} != {commit}"
-            )
-        return
+    if pinned_commit is not None and pinned_commit != commit:
+        raise LegacyHistoricalRuntimeUnbound(
+            f"historical nested module commit mismatch: {pinned_commit} != {commit}"
+        )
     original_git = getattr(module, "_git", None)
-    if not callable(original_git) or getattr(original_git, "_s1_historical_head_wrapper", False):
-        return
+    if pinned_commit is None and callable(original_git) and not getattr(original_git, "_s1_historical_head_wrapper", False):
+        @wraps(original_git)
+        def pinned_git(*args: str) -> str:
+            if args == ("rev-parse", "HEAD"):
+                return commit
+            return original_git(*args)
 
-    @wraps(original_git)
-    def pinned_git(*args: str) -> str:
-        if args == ("rev-parse", "HEAD"):
-            return commit
-        return original_git(*args)
+        pinned_git._s1_historical_head_wrapper = True
+        module._git = pinned_git
+        module._s1_historical_head_commit = commit
 
-    pinned_git._s1_historical_head_wrapper = True
-    module._git = pinned_git
-    module._s1_historical_head_commit = commit
+    for name in ("current_head", "_head"):
+        resolver = getattr(module, name, None)
+        if not callable(resolver) or getattr(resolver, "_s1_historical_head_lookup_wrapper", False):
+            continue
+        try:
+            observed = resolver()
+        except Exception as error:
+            raise LegacyHistoricalRuntimeUnbound(f"historical {name} lookup is unavailable") from error
+        if name == "current_head":
+            if not isinstance(observed, str):
+                raise LegacyHistoricalRuntimeUnbound("historical current_head shape is unsupported")
+            result: Any = commit
+        elif isinstance(observed, str):
+            result = commit
+        elif isinstance(observed, tuple) and len(observed) == 2 and all(isinstance(value, str) for value in observed):
+            declared_tree = getattr(module, "SOURCE_TREE", None)
+            if not isinstance(declared_tree, str):
+                raise LegacyHistoricalRuntimeUnbound("historical _head tuple lacks declared SOURCE_TREE")
+            result = (commit, declared_tree)
+        else:
+            raise LegacyHistoricalRuntimeUnbound("historical _head shape is unsupported")
+
+        @wraps(resolver)
+        def pinned_lookup(*_args: Any, _result: Any = result, **_kwargs: Any) -> Any:
+            return _result
+
+        pinned_lookup._s1_historical_head_lookup_wrapper = True
+        module.__dict__[name] = pinned_lookup
 
 
 def _preserve_original_private_boundary(module: ModuleType, repository: Path) -> None:

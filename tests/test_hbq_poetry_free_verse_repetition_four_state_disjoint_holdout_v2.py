@@ -8,12 +8,23 @@ import tempfile
 from pathlib import Path
 
 import pytest
+from _hbq_s1_historical_runtime import (
+    LegacyHistoricalRuntimeUnbound,
+    install_historical_runtime,
+)
 
-from _hbq_s1_historical_runtime import LegacyHistoricalRuntimeUnbound, install_historical_runtime
 from hbqrs.paths import book_root
 
-
 ROOT = book_root() / "evaluation-results" / "hbq-poetry-free-verse-repetition-four-state-disjoint-holdout-v2"
+
+
+def load_current_study():
+    spec = importlib.util.spec_from_file_location("s1_four_state_disjoint_holdout_v2_current_test", ROOT / "study.py")
+    module = importlib.util.module_from_spec(spec)
+    assert spec and spec.loader
+    sys.modules[spec.name] = module
+    spec.loader.exec_module(module)
+    return module
 
 
 def study():
@@ -26,6 +37,11 @@ def study():
         return install_historical_runtime(module)
     except LegacyHistoricalRuntimeUnbound as error:
         pytest.skip(str(error))
+
+
+def test_current_checkout_fails_closed_before_historical_install():
+    with pytest.raises(ValueError, match="CWR live HEAD differs from the frozen v2 source head"):
+        load_current_study().validate_package()
 
 
 def test_v2_contract_is_bound_to_immutable_v1_and_review_only_gate():
