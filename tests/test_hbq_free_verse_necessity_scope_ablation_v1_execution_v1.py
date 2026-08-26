@@ -4,24 +4,36 @@ from copy import deepcopy
 import importlib.util
 import json
 from pathlib import Path
-import subprocess
 import sys
 
 import pytest
 
 from hbqrs.paths import book_root
+from tests import _hbq_figurative_historical_runtime as historical_runtime
 
 
 ROOT = book_root() / "evaluation-results" / "hbq-free-verse-necessity-scope-ablation-v1-execution-v1"
 
 
-def load_study():
-    spec = importlib.util.spec_from_file_location("necessity_scope_ablation_executor", ROOT / "study.py")
+def load_current_study():
+    spec = importlib.util.spec_from_file_location("necessity_scope_ablation_executor_current", ROOT / "study.py")
     module = importlib.util.module_from_spec(spec)
     assert spec and spec.loader
     sys.modules[spec.name] = module
     spec.loader.exec_module(module)
     return module
+
+
+def load_study():
+    module = load_current_study()
+    predecessor = module.predecessor()
+    historical_runtime.install(predecessor, source_commit=module.PREDECESSOR_PARENT)
+    return module
+
+
+def test_current_checkout_fails_closed_after_predecessor_runtime_advance():
+    with pytest.raises(ValueError, match="Pinned bound paths drifted"):
+        load_current_study().validate_package()
 
 
 def valid_payload(slot):
@@ -89,8 +101,10 @@ def test_claim_then_terminal_is_one_shot_and_schema_evidence_checked(tmp_path):
 
 
 def test_provider_free_cli_has_no_remote_execution_surface():
-    verified = subprocess.run([sys.executable, str(ROOT / "run.py"), "--verify"], text=True, capture_output=True, check=True)
-    assert json.loads(verified.stdout)["provider_calls"] == 0
+    study = load_study()
+    code, stdout, stderr = historical_runtime.run_cli(study, ROOT / "run.py", "--verify")
+    assert (code, stderr) == (0, "")
+    assert json.loads(stdout)["provider_calls"] == 0
     for path in ROOT.rglob("*"):
         if path.suffix not in {".py", ".json", ".md"}:
             continue

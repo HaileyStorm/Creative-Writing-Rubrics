@@ -5,24 +5,34 @@ import hashlib
 import importlib.util
 import json
 from pathlib import Path
-import subprocess
 import sys
 
 import pytest
 
 from hbqrs.paths import book_root
+from tests import _hbq_figurative_historical_runtime as historical_runtime
 
 
 ROOT = book_root() / "evaluation-results" / "hbq-free-verse-necessity-scope-ablation-v1"
 
 
-def load_study():
-    spec = importlib.util.spec_from_file_location("free_verse_necessity_scope_ablation", ROOT / "study.py")
+def load_current_study():
+    spec = importlib.util.spec_from_file_location("free_verse_necessity_scope_ablation_current", ROOT / "study.py")
     module = importlib.util.module_from_spec(spec)
     assert spec and spec.loader
     sys.modules[spec.name] = module
     spec.loader.exec_module(module)
     return module
+
+
+def load_study():
+    module = load_current_study()
+    return historical_runtime.install(module, source_commit=module.PINNED_COMMIT)
+
+
+def test_current_checkout_fails_closed_after_bound_runtime_advance():
+    with pytest.raises(ValueError, match="Pinned bound paths drifted"):
+        load_current_study().verify_package()
 
 
 def test_freeze_binds_exact_parent_and_zero_call_singleton_geometry():
@@ -109,10 +119,13 @@ def test_bound_runtime_and_predecessor_bytes_match_exact_pinned_git_parent():
 
 
 def test_provider_free_commands_have_no_execution_surface():
-    verified = subprocess.run([sys.executable, str(ROOT / "run.py"), "--verify"], text=True, capture_output=True, check=True)
-    plan = subprocess.run([sys.executable, str(ROOT / "run.py"), "--render-plan"], text=True, capture_output=True, check=True)
-    assert json.loads(verified.stdout)["verification"]["provider_calls"] == 0
-    assert len(json.loads(plan.stdout)["rendered_slots"]) == 36
+    study = load_study()
+    verified_code, verified_stdout, verified_stderr = historical_runtime.run_cli(study, ROOT / "run.py", "--verify")
+    plan_code, plan_stdout, plan_stderr = historical_runtime.run_cli(study, ROOT / "run.py", "--render-plan")
+    assert (verified_code, verified_stderr) == (0, "")
+    assert (plan_code, plan_stderr) == (0, "")
+    assert json.loads(verified_stdout)["verification"]["provider_calls"] == 0
+    assert len(json.loads(plan_stdout)["rendered_slots"]) == 36
     for path in ROOT.rglob("*"):
         if path.suffix not in {".py", ".json", ".md"}:
             continue
