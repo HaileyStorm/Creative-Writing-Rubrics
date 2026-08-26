@@ -1,3 +1,7 @@
 * text=auto eol=lf
 prompts/judge/JUDGE_PREFIX.md text eol=crlf
 prompts/judge/BINARY_EVALUATION_PROMPT.md -text
+
+# These historical source-package bindings intentionally include a blank EOF line.
+evaluation-results/hbq-figurative-isolated-anchor-pilot-v1-execution-v1/expected-verdict-ledger.json whitespace=-blank-at-eof
+evaluation-results/hbq-figurative-isolated-anchor-pilot-v1-execution-v1/run.py whitespace=-blank-at-eof
