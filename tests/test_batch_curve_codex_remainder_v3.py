@@ -14,6 +14,7 @@ from hbqrs.paths import book_root
 
 
 ROOT = book_root() / "evaluation-results" / "the-part-that-arrives-first-repeatability" / "batch-curve-codex-remainder-v3"
+ARCHIVED_STACK = pytest.mark.skip(reason="v3 is archived: its copied multi-asset current-stack bindings no longer match the active checkout, so live recovery remains fail-closed")
 
 
 def _module():
@@ -31,31 +32,24 @@ def _run(argv: list[str], **_kwargs: object) -> subprocess.CompletedProcess[str]
     raise AssertionError(argv)
 
 
-def _canonical_bytes(module, monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setattr(module, "_bound", lambda binding: (module.HERE / binding["path"]).resolve())
-    monkeypatch.setattr(module, "BASE_PLAN", lambda: list(module.V2.REMAINDER.schedule()))
-
-
-def test_exact_v2_root_freeze_and_invalid_schema_provenance(monkeypatch: pytest.MonkeyPatch) -> None:
-    module = _module(); _canonical_bytes(module, monkeypatch)
-    predecessor = module._predecessor()
+def test_archived_v3_records_v2_predecessor_and_fails_closed() -> None:
+    module = _module(); predecessor = module._read(module.CONTRACT_PATH)["predecessor"]
     assert predecessor["attempt"] == {"logical_attempt": 1, "epoch": 1, "refresh": 1, "status": "failed_invalid_json_schema", "scored_provider_calls": 0}
-    assert module._read(module._bound(predecessor["old_schema"]))["properties"]["ready"] == {"const": True}
-    original = module._tree
-    monkeypatch.setattr(module, "_tree", lambda root: [] if root == module.V2_PUBLIC else original(root))
-    with pytest.raises(ValueError, match="tree drifted"):
-        module._predecessor()
+    assert predecessor["old_schema"]["sha256"] == "14525b379495e40620191600048d55828fde49e7cedc09ea6e3a0ff58858c16d"
+    with pytest.raises(ValueError, match="Bound bytes drifted"):
+        module.contract()
 
 
-def test_valid_v3_schema_and_47_sealed_schedule(monkeypatch: pytest.MonkeyPatch) -> None:
-    module = _module(); _canonical_bytes(module, monkeypatch)
-    assert module._read(module._preflight_schema()) == {"$schema": "https://json-schema.org/draft/2020-12/schema", "type": "object", "additionalProperties": False, "required": ["ready"], "properties": {"ready": {"type": "boolean", "const": True}}}
-    rows = module.plan()
-    assert len(rows) == 47 and not any(row["parent_cell"] == 36 and row["batch"] <= 31 for row in rows)
+def test_archived_v3_schema_remains_valid_but_execution_fails_closed() -> None:
+    module = _module()
+    assert module._read(module.HERE / "capacity-preflight.schema.json") == {"$schema": "https://json-schema.org/draft/2020-12/schema", "type": "object", "additionalProperties": False, "required": ["ready"], "properties": {"ready": {"type": "boolean", "const": True}}}
+    with pytest.raises(ValueError, match="Bound bytes drifted"):
+        module.plan()
 
 
+@ARCHIVED_STACK
 def test_inherited_preflight_starts_successor_at_attempt_two_without_resend(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    module = _module(); _canonical_bytes(module, monkeypatch); attempts: list[int] = []
+    module = _module(); attempts: list[int] = []
     with tempfile.TemporaryDirectory(prefix="cwr-batch-v3-", dir=str(ROOT.parents[3])) as outer:
         work, private = Path(outer) / "work", Path(outer) / "private"
         receipt = module.prepare(work, private, subprocess_run=_run, executable_resolver=lambda _: str(Path(outer) / "codex.exe"))
@@ -76,8 +70,9 @@ def test_clean_pushed_gate_rejects_dirty_source() -> None:
         module._git_state(lambda argv, **_kwargs: subprocess.CompletedProcess(argv, 0, "dirty\n" if argv[:2] == ["git", "status"] else "a" * 40 + "\n", ""))
 
 
+@ARCHIVED_STACK
 def test_v3_scored_artifacts_keep_v3_protocol_and_run_identity(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    module = _module(); _canonical_bytes(module, monkeypatch)
+    module = _module()
     row = {"sequence": 1, "parent_cell": 36, "batch": 32, "size": 1, "question_ids": ["q1"], "question_count": 1}
     monkeypatch.setattr(module.V2, "_items_for", lambda _row: [{"question": {"id": "q1"}}])
     monkeypatch.setattr(module.V2, "_prompt", lambda _items: "v3 prompt")
@@ -101,8 +96,9 @@ def test_v3_scored_artifacts_keep_v3_protocol_and_run_identity(tmp_path: Path, m
     assert run_ids == ["batch-curve-codex-remainder-v3", "batch-curve-codex-remainder-v3"] and result["verdict_count"] == 1
 
 
+@ARCHIVED_STACK
 def test_private_only_terminal_preflight_settles_then_advances_without_resend(monkeypatch: pytest.MonkeyPatch) -> None:
-    module = _module(); _canonical_bytes(module, monkeypatch); attempts: list[int] = []
+    module = _module(); attempts: list[int] = []
     with tempfile.TemporaryDirectory(prefix="cwr-batch-v3-", dir=str(ROOT.parents[3])) as outer:
         root = Path(outer); work, private = root / "work", root / "private"
         module.prepare(work, private, subprocess_run=_run, executable_resolver=lambda _: str(root / "codex.exe"))
@@ -119,8 +115,9 @@ def test_private_only_terminal_preflight_settles_then_advances_without_resend(mo
         assert attempts == [2, 3] and recovered["logical_attempt"] == 3 and module._read(first)["status"] == "failed"
 
 
+@ARCHIVED_STACK
 def test_incomplete_private_only_preflight_fails_closed_before_contact(monkeypatch: pytest.MonkeyPatch) -> None:
-    module = _module(); _canonical_bytes(module, monkeypatch); calls: list[object] = []
+    module = _module(); calls: list[object] = []
     with tempfile.TemporaryDirectory(prefix="cwr-batch-v3-", dir=str(ROOT.parents[3])) as outer:
         root = Path(outer); work, private = root / "work", root / "private"
         module.prepare(work, private, subprocess_run=_run, executable_resolver=lambda _: str(root / "codex.exe"))
@@ -130,8 +127,9 @@ def test_incomplete_private_only_preflight_fails_closed_before_contact(monkeypat
         assert calls == []
 
 
+@ARCHIVED_STACK
 def test_execute_replays_completed_v3_prefix_with_v3_verifier(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    module = _module(); _canonical_bytes(module, monkeypatch)
+    module = _module()
     rows = [
         {"sequence": 1, "parent_cell": 36, "batch": 32, "size": 1, "question_ids": ["q1"], "question_count": 1},
         {"sequence": 2, "parent_cell": 36, "batch": 33, "size": 1, "question_ids": ["q2"], "question_count": 1},

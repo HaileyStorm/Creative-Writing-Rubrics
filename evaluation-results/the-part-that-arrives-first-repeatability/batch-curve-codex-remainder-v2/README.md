@@ -1,9 +1,9 @@
 # Batch-curve Codex remainder v2
 
-This executable successor consumes exactly the 47 unfinished scored batch
-partitions sealed by remainder v1. It never resumes the stopped parent in
-place, never repeats cell 36 batches 1–31, and gives each scored unit one
-physical Codex attempt. A durable but incomplete attempt is uncertain and
+This archived recovery design records exactly the 47 unfinished scored batch
+partitions sealed by remainder v1. It never resumed the stopped parent in
+place, never repeated cell 36 batches 1–31, and specified at most one physical
+Codex attempt for each scored unit. A durable but incomplete attempt is uncertain and
 halts instead of being resent.
 
 `prepare` is offline and refuses any dirty, untracked, uncommitted, or
@@ -20,9 +20,9 @@ as a separate terminal provider-call record. These calls are reported apart
 from the fixed 47 scored calls.
 
 The v2 bindings inherited at `8778cd9` described CRLF/mixed working-tree
-bytes, not the canonical clean LF checkout. They are pre-live provenance only
-and are non-executable from a clean checkout; this successor binds exact clean
-checkout bytes instead.
+bytes, not the canonical clean LF checkout. They are archived pre-live
+provenance only and deliberately fail closed from a clean checkout. This
+package has no currently executable recovery path.
 
 This produces recovery evidence, not a batch-size recommendation. Analysis
 remains non-live and a recommendation stays disabled.
