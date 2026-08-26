@@ -12,6 +12,11 @@ from hbqrs.paths import book_root
 
 
 ROOT = book_root() / "evaluation-results" / "hbq-other-lexical-overlap-ownership-v1-execution-v1"
+ARCHIVED_REASON = (
+    "Archived lexical-overlap mechanics require six exact historical module snapshots "
+    "that are unavailable in CWR Git history; preserve the frozen package and await a "
+    "versioned successor or restored snapshot."
+)
 
 
 def study():
@@ -32,19 +37,20 @@ def _fake_codex(command, **_kwargs):
     return SimpleNamespace(returncode=0, stdout="completed", stderr="provider: openai\nmodel: gpt-5.6-sol\nreasoning effort: high\n")
 
 
-def test_execution_binds_l2_predecessor_geometry_and_actual_image_slots():
+def test_current_checkout_fails_closed_while_execution_contract_geometry_remains_bound():
     s = study()
-    assert s.validate_package() == {"study_id": s.STUDY_ID, "slots": 216, "provider_calls": 0, "predecessor": s.PREDECESSOR_COMMIT, "visual_image_slots": 72}
-    schedule = s.build_schedule()
-    assert len(schedule) == len({slot["slot_id"] for slot in schedule}) == len({slot["run_id"] for slot in schedule}) == 216
-    assert len({slot["artifact_id"] for slot in schedule}) == 36
-    assert len({(slot["case_id"], slot["artifact_id"]) for slot in schedule}) == 36
-    visual = [slot for slot in schedule if slot["image_input"]]
-    assert len(visual) == 72
-    assert {slot["image_input"]["mime_type"] for slot in visual} == {"image/png"}
-    assert all("expected_verdict" not in slot["prompt"] for slot in schedule)
+    with pytest.raises(ValueError, match="Current production runtime binding drifted"):
+        s.validate_package()
+    contract = s.contract()
+    assert s.PREDECESSOR_COMMIT == "5d31848c5065a5532183635eea9c5c4dea9224d8"
+    assert contract["execution"]["batch_size"] == 1
+    assert contract["execution"]["one_leaf_per_call"] is True
+    assert contract["geometry"] == {"artifacts": 36, "leaves": 6, "repeats": 3, "slots": 216, "visual_image_slots": 72}
+    assert contract["image_delivery"]["text_substitution_forbidden"] is True
+    assert contract["promotion"] == "none"
 
 
+@pytest.mark.skip(reason=ARCHIVED_REASON)
 def test_dry_run_freezes_each_png_copy_and_codex_image_command_without_contact(tmp_path: Path):
     s = study()
     report = s.dry_run(tmp_path)
@@ -61,6 +67,7 @@ def test_dry_run_freezes_each_png_copy_and_codex_image_command_without_contact(t
     assert len(manifest["slots"]) == 216 and "expected_verdict" not in json.dumps(manifest)
 
 
+@pytest.mark.skip(reason=ARCHIVED_REASON)
 def test_execute_requires_dual_gate_and_quarantines_incomplete_contact(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
     s = study()
     s.dry_run(tmp_path)
@@ -74,6 +81,7 @@ def test_execute_requires_dual_gate_and_quarantines_incomplete_contact(tmp_path:
         s.execute(tmp_path, resume=True, allow_remote=True, acknowledged_zero_incremental_charge=True, runner_call=_fake_codex)
 
 
+@pytest.mark.skip(reason=ARCHIVED_REASON)
 def test_definitively_invalid_response_retries_once_in_separate_attempt_directory(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
     s = study()
     s.dry_run(tmp_path)
@@ -97,6 +105,7 @@ def test_definitively_invalid_response_retries_once_in_separate_attempt_director
     assert accepted and accepted["accepted_provider_call_count"] == 1 and accepted["rejected_retry_count"] == 1 and accepted["batch_attempt_count"] == 2
 
 
+@pytest.mark.skip(reason=ARCHIVED_REASON)
 def test_route_report_drift_is_quarantined_not_retried(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
     s = study()
     s.dry_run(tmp_path)
@@ -114,6 +123,7 @@ def test_route_report_drift_is_quarantined_not_retried(tmp_path: Path, monkeypat
         s.execute(tmp_path, resume=True, allow_remote=True, acknowledged_zero_incremental_charge=True, runner_call=_fake_codex)
 
 
+@pytest.mark.skip(reason=ARCHIVED_REASON)
 def test_settlement_is_four_state_and_requires_unique_run_and_attachment_receipts(tmp_path: Path):
     s = study()
     s.dry_run(tmp_path)

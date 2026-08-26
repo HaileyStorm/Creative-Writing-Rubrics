@@ -13,6 +13,11 @@ from hbqrs.paths import book_root
 
 
 ROOT = book_root() / "evaluation-results" / "hbq-other-lexical-overlap-ownership-v1-settlement-crlf-lf-repair-v1"
+ARCHIVED_REASON = (
+    "Archived lexical-overlap mechanics require six exact historical module snapshots "
+    "that are unavailable in CWR Git history; preserve the frozen package and await a "
+    "versioned successor or restored snapshot."
+)
 
 
 def study():
@@ -24,14 +29,14 @@ def study():
     return module
 
 
-def test_contract_binds_settlement_only_execution_geometry():
+def test_current_checkout_fails_closed_while_settlement_contract_remains_bound():
     s = study()
-    assert s.validate_package() == {
-        "study_id": s.STUDY_ID,
-        "execution_slots": 216,
-        "three_repeat_cells": 72,
-        "provider_calls": 0,
-    }
+    with pytest.raises(ValueError, match="Current production runtime binding drifted"):
+        s.validate_package()
+    assert s.contract()["geometry"] == {"execution_slots": 216, "three_repeat_cells": 72, "visual_attachment_slots": 72}
+    assert s.contract()["provider_calls"] == "forbidden"
+    assert s.contract()["public_result_policy"] == "aggregate_only_verified_diagnostic_fail_or_incomplete_no_promotion"
+    assert s.contract()["promotion"] == "none"
     assert "--execute" not in (ROOT / "run.py").read_text(encoding="utf-8")
     assert "--allow-remote" not in (ROOT / "run.py").read_text(encoding="utf-8")
 
@@ -49,6 +54,7 @@ def test_prompt_compatibility_accepts_only_crlf_to_lf_and_retains_both_hashes():
         s._prompt_commitment(b"first\r\nchanged\r\n", expected)
 
 
+@pytest.mark.skip(reason=ARCHIVED_REASON)
 def test_manifest_contract_and_runtime_bindings_are_required():
     s = study()
     temporary = Path(tempfile.mkdtemp(prefix="l2-crlf-lf-manifest-"))

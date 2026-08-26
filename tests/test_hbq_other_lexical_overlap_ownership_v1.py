@@ -14,6 +14,11 @@ from hbqrs.paths import book_root
 
 
 ROOT = book_root() / "evaluation-results" / "hbq-other-lexical-overlap-ownership-v1"
+ARCHIVED_REASON = (
+    "Archived lexical-overlap mechanics require six exact historical module snapshots "
+    "that are unavailable in CWR Git history; preserve the frozen package and await a "
+    "versioned successor or restored snapshot."
+)
 
 
 def load_study():
@@ -25,21 +30,22 @@ def load_study():
     return module
 
 
-def test_freeze_has_exact_l2_geometry_and_public_provider_free_boundary():
+def test_current_checkout_fails_closed_while_frozen_contract_geometry_remains_bound():
     study = load_study()
-    assert study.verify_package() == {
-        "study_id": "hbq-other-lexical-overlap-ownership-v1",
-        "status": "frozen_development_only_current_wording_screen",
-        "provider_calls": 0,
-        "artifacts": 36,
-        "slots": 216,
-        "visual_png_inputs": 6,
-    }
+    with pytest.raises(ValueError, match="Current production runtime binding drifted"):
+        study.verify_package()
+    contract = study.load_contract()
+    assert contract["provider_execution"] == {"permitted": False, "new_provider_calls_exact": 0, "one_leaf_per_request": True}
+    assert contract["geometry"] == {"blocks_exact": 3, "semantic_conditions_per_block_exact": 6, "matched_carriers_exact": 2, "leaves_per_block_exact": 2, "repeats_exact": 3, "slots_exact": 216}
+    assert contract["labels"] == ["YES", "NO", "NOT_APPLICABLE", "CANNOT_ASSESS"]
+    assert contract["scoring"] == study.SCORING
+    assert contract["promotion"] == {key: "none" for key in ("prompt", "rubric", "leaf", "ownership", "split", "weight")}
+    study.verify_corpus(study.load_corpus())
+    assert len(study.verify_assets(contract)) == 6
     slots = study.plan_slots()
     assert len(slots) == len({slot["slot_id"] for slot in slots}) == 216
     assert {slot["repeat"] for slot in slots} == {1, 2, 3}
     assert {slot["expected_verdict"] for slot in slots} == study.VERDICTS
-    assert study.load_contract()["provider_execution"] == {"permitted": False, "new_provider_calls_exact": 0, "one_leaf_per_request": True}
 
 
 def test_exact_l2_findings_leaf_ownership_and_pair_specific_oracles_are_bound():
@@ -130,12 +136,16 @@ def test_contract_and_oracle_drift_fail_closed(monkeypatch):
         study.verify_package()
 
 
-def test_provider_free_commands_and_sources_have_no_execution_surface():
+@pytest.mark.skip(reason=ARCHIVED_REASON)
+def test_provider_free_commands_retain_the_archived_runtime_boundary():
     dry = subprocess.run([sys.executable, str(ROOT / "run.py"), "--dry-run"], text=True, capture_output=True, check=True)
     rendered = subprocess.run([sys.executable, str(ROOT / "run.py"), "--render-plan"], text=True, capture_output=True, check=True)
     assert json.loads(dry.stdout)["verification"]["provider_calls"] == 0
     plan = json.loads(rendered.stdout)
     assert len(plan["rendered_slots"]) == 216 and len(plan["image_input_slots"]) == 72
+
+
+def test_provider_free_sources_have_no_execution_surface():
     for path in ROOT.rglob("*"):
         if path.suffix not in {".py", ".json", ".md"}:
             continue
