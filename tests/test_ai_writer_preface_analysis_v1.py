@@ -110,7 +110,7 @@ def test_historical_scoring_bundle_resolves_from_the_pinned_git_snapshot():
     assert historical["bundle"]["sha256"] == "7ea60d4fbc1b9992dce6496a0c2771fa817a80a9384a0532ac85034b279e9319"
 
 
-def test_current_book_permits_only_the_declared_standard_version_change_and_one_addition():
+def test_identity_only_book_evolution_permits_only_one_declared_addition():
     historical = [{"module_id": "example.historical", "standard": {"id": "HBQ-RS", "version": "1.0.0"}, "title": "Historical"}]
     addition = {"module_id": "example.addition", "standard": {"id": "HBQ-RS", "version": "1.2.0"}, "title": "Addition"}
     authority = {
@@ -137,8 +137,47 @@ def test_current_bundle_permits_only_the_declared_standard_version_change():
         analysis._identity_only_bundle_evolution(historical, current, authority)
 
 
-def test_current_book_preserves_all_completed_historical_scores():
-    assert analysis.verify_current_book_rescoring(PUBLIC, PRIVATE, CONT_PUBLIC, CONT_PRIVATE) == {
-        "sealed_cells_with_question_id_payload_prompt_parity": 24,
-        "rescored_completed_cells_with_metric_parity": 22,
+def test_current_book_allows_only_exact_declared_repair_descendants():
+    historical = [
+        {"module_id": "example.unchanged", "standard": {"id": "HBQ-RS", "version": "1.0.0"}, "title": "Unchanged"},
+        {"module_id": "example.repaired", "standard": {"id": "HBQ-RS", "version": "1.0.0"}, "title": "Before"},
+    ]
+    current = deepcopy(historical)
+    current[0]["standard"]["version"] = "1.2.1"
+    current[1]["standard"]["version"] = "1.2.1"
+    current[1]["title"] = "After"
+    addition = {"module_id": "example.addition", "standard": {"id": "HBQ-RS", "version": "1.2.1"}, "title": "Addition"}
+    current.append(addition)
+    authority = {
+        "standard_identity": {"id": "HBQ-RS", "historical_version": "1.0.0", "current_version": "1.2.1"},
+        "addition": {"module_id": "example.addition", "canonical_json_sha256": analysis.sha_bytes(analysis.canonical(addition))},
+        "bounded_descendants": [{
+            "module_id": "example.repaired",
+            "historical_canonical_json_sha256": analysis.sha_bytes(analysis.canonical(historical[1])),
+            "canonical_json_sha256": analysis.sha_bytes(analysis.canonical(current[1])),
+            "historical_version": "1.0.0",
+            "current_version": "1.2.1",
+            "repair_lineage": "declared-test-repair",
+        }],
     }
+    analysis._bounded_current_book_evolution(historical, current, authority)
+    changed = deepcopy(current)
+    changed[0]["title"] = "Unexpected"
+    with pytest.raises(ValueError, match="undeclared"):
+        analysis._bounded_current_book_evolution(historical, changed, authority)
+
+
+def test_current_book_is_a_bounded_successor_not_a_pilot_rescore():
+    historical, authority = analysis._aggregate_bytes()
+    current = analysis._current_book_modules(historical, authority)
+    assert len(historical) == 277
+    assert len(current) == 278
+    assert authority["current_book"]["standard_identity"]["current_version"] == "1.2.1"
+    assert len(authority["current_book"]["bounded_descendants"]) == 3
+    assert analysis._current_bundle(authority, analysis._historical_bundle())["standard"] == {"id": "HBQ-RS", "version": "1.2.1"}
+
+
+def test_archived_current_book_rescore_fails_closed_instead_of_substituting_a_book():
+    archived = analysis.read_object(PACKAGE / "historical-registry-compatibility.json")["archived_scoring_replay"]
+    assert archived["status"] == "unavailable_exact_1_2_0_snapshot_no_current_score_replay"
+    assert "verify_current_book_rescoring" not in vars(analysis)

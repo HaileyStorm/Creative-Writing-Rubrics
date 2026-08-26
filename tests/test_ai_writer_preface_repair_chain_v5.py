@@ -7,6 +7,7 @@ import sys
 from pathlib import Path
 
 import pytest
+from tests import _preface_continuation_historical_runtime as historical_runtime
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -19,7 +20,7 @@ def _executor():
     spec = importlib.util.spec_from_file_location("preface_recovery_v5", PACKAGE / "executor.py")
     assert spec and spec.loader
     module = importlib.util.module_from_spec(spec); sys.modules[spec.name] = module; spec.loader.exec_module(module)
-    return module
+    return historical_runtime.install(module)
 
 
 def test_contract_freezes_exact_v4_lineage_and_one_call_cap():

@@ -7,6 +7,7 @@ import sys
 from pathlib import Path
 
 import pytest
+from tests import _preface_continuation_historical_runtime as historical_runtime
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -21,7 +22,7 @@ def _executor():
     module = importlib.util.module_from_spec(spec)
     sys.modules[spec.name] = module
     spec.loader.exec_module(module)
-    return module
+    return historical_runtime.install(module)
 
 
 def test_package_compiles_and_contract_locks_one_recovery_attempt():

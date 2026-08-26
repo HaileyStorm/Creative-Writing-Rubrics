@@ -25,6 +25,15 @@ python evaluation-results/hbq-ai-writer-preface-v1-analysis-v1/analyze.py `
 The output contains only `summary.json` and a byte-binding `manifest.json`.
 It is descriptive pilot evidence, not an automatic prompt decision.
 
+## Version boundary
+
+The pilot analysis scores its sealed verdicts with the 277-module functional
+reconstruction bound in its original evidence. Its former 1.2.0 current-book
+rescore binding is retained as archived metadata because that exact aggregate
+is unavailable in this checkout; it is not silently substituted or replayed.
+The compatibility authority separately binds HBQ-RS 1.2.1 and its three
+declared repair descendants, but that audit does not reinterpret pilot scores.
+
 ## A prefix-exclusive HANNA case
 
 HANNA identified one specific, prefix-sensitive criticism worth retaining. With

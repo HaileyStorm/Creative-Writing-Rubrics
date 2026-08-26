@@ -248,10 +248,53 @@ def _identity_only_bundle_evolution(historical_bundle: Mapping[str, Any], curren
         raise ValueError("Current scoring bundle changed beyond standard.version")
 
 
+def _bounded_current_book_evolution(historical_modules: Sequence[Mapping[str, Any]], current_modules: Sequence[Mapping[str, Any]], current: Mapping[str, Any]) -> None:
+    """Allow the current book's declared repairs without relabeling historical scoring."""
+    identity, addition, descendants = current.get("standard_identity"), current.get("addition"), current.get("bounded_descendants")
+    if not isinstance(identity, Mapping) or set(identity) != {"id", "historical_version", "current_version"}:
+        raise ValueError("Current book standard identity authority is malformed")
+    if not all(isinstance(identity.get(field), str) and identity[field] for field in ("id", "historical_version", "current_version")) or identity["id"] != "HBQ-RS" or identity["historical_version"] == identity["current_version"]:
+        raise ValueError("Current book standard identity authority is malformed")
+    if not isinstance(addition, Mapping) or set(addition) != {"module_id", "canonical_json_sha256"} or not isinstance(descendants, list) or not descendants:
+        raise ValueError("Current book descendant authority is malformed")
+    required = {"module_id", "historical_canonical_json_sha256", "canonical_json_sha256", "historical_version", "current_version", "repair_lineage"}
+    if any(not isinstance(value, Mapping) or set(value) != required for value in descendants):
+        raise ValueError("Current book descendant authority is malformed")
+    historical_by_id = {module.get("module_id"): module for module in historical_modules}
+    current_by_id = {module.get("module_id"): module for module in current_modules}
+    if len(historical_by_id) != len(historical_modules) or len(current_by_id) != len(current_modules):
+        raise ValueError("Registry module IDs are not unique")
+    addition_id = addition["module_id"]
+    if not isinstance(addition_id, str) or set(current_by_id) - set(historical_by_id) != {addition_id} or set(historical_by_id) - set(current_by_id):
+        raise ValueError("Current book is not the declared exact one-module addition")
+    descendants_by_id = {value["module_id"]: value for value in descendants}
+    if len(descendants_by_id) != len(descendants) or set(descendants_by_id) - set(historical_by_id):
+        raise ValueError("Current book descendant IDs are malformed")
+    for module_id, historical_module in historical_by_id.items():
+        current_module = current_by_id[module_id]
+        descendant = descendants_by_id.get(module_id)
+        if descendant is None:
+            if _version_without_drift(historical_module, identity["historical_version"], f"Historical module {module_id}") != _version_without_drift(current_module, identity["current_version"], f"Current module {module_id}"):
+                raise ValueError("Current book changed an undeclared historical module")
+            continue
+        if descendant["historical_version"] != identity["historical_version"] or descendant["current_version"] != identity["current_version"] or not isinstance(descendant["repair_lineage"], str) or not descendant["repair_lineage"]:
+            raise ValueError("Current book descendant authority is malformed")
+        _version_without_drift(historical_module, identity["historical_version"], f"Historical descendant {module_id}")
+        _version_without_drift(current_module, identity["current_version"], f"Current descendant {module_id}")
+        if sha_bytes(canonical(historical_module)) != descendant["historical_canonical_json_sha256"] or sha_bytes(canonical(current_module)) != descendant["canonical_json_sha256"]:
+            raise ValueError("Current book descendant binding drifted")
+        if _version_without_drift(historical_module, identity["historical_version"], f"Historical descendant {module_id}") == _version_without_drift(current_module, identity["current_version"], f"Current descendant {module_id}"):
+            raise ValueError("Current book declared descendant has no content change")
+    addition_module = current_by_id[addition_id]
+    _version_without_drift(addition_module, identity["current_version"], f"Current addition {addition_id}")
+    if sha_bytes(canonical(addition_module)) != addition["canonical_json_sha256"]:
+        raise ValueError("Current book addition binding drifted")
+
+
 def _current_book_modules(historical_modules: Sequence[Mapping[str, Any]], authority: Mapping[str, Any], path: Path | None = None) -> list[dict[str, Any]]:
-    """Verify the current whole-book identity evolution without relabeling history."""
+    """Verify the current 1.2.1 descendant only; it never rescales pilot records."""
     current = authority.get("current_book")
-    if not isinstance(current, Mapping) or current.get("identity") != "current_book_not_historical_identity":
+    if not isinstance(current, Mapping) or current.get("identity") != "current_book_bounded_descendant_not_pilot_score_replay":
         raise ValueError("Current book authority is malformed")
     aggregate = current.get("aggregate")
     if not isinstance(aggregate, Mapping) or set(aggregate) != {"path", "bytes", "sha256"}:
@@ -259,20 +302,20 @@ def _current_book_modules(historical_modules: Sequence[Mapping[str, Any]], autho
     source = path or ROOT / str(aggregate["path"])
     raw = source.read_bytes()
     if {"bytes": len(raw), "sha256": sha_bytes(raw)} != {key: aggregate[key] for key in ("bytes", "sha256")}:
-        raise ValueError("Current additive registry aggregate binding drifted")
+        raise ValueError("Current registry aggregate binding drifted")
     try:
         modules = json.loads(raw)
     except json.JSONDecodeError as exc:
-        raise ValueError("Current additive registry aggregate is invalid JSON") from exc
+        raise ValueError("Current registry aggregate is invalid JSON") from exc
     if not isinstance(modules, list) or len(modules) != current.get("module_count") or not all(isinstance(module, dict) for module in modules):
-        raise ValueError("Current additive registry module count drifted")
-    _identity_only_book_evolution(historical_modules, modules, current)
+        raise ValueError("Current registry module count drifted")
+    _bounded_current_book_evolution(historical_modules, modules, current)
     return modules
 
 
 def _current_bundle(authority: Mapping[str, Any], historical_bundle: Mapping[str, Any], path: Path | None = None) -> dict[str, Any]:
     current = authority.get("current_book")
-    if not isinstance(current, Mapping) or current.get("identity") != "current_book_not_historical_identity":
+    if not isinstance(current, Mapping) or current.get("identity") != "current_book_bounded_descendant_not_pilot_score_replay":
         raise ValueError("Current book authority is malformed")
     binding_value = current.get("bundle")
     if not isinstance(binding_value, Mapping) or set(binding_value) != {"path", "bytes", "sha256"}:
@@ -570,26 +613,6 @@ def _repair_substitution(original_public: Path, original_private: Path, continua
     task = read_object(original_private / "inputs" / item_id / "task-contract.json")
     record = {"sequence": 17, "arm": str(cell17["arm"]), "session": int(cell17["fresh_session"]), "item": item_id, "metadata": metadata[item_id], "hanna": hanna[item_id], "verdicts": normalized, "metrics": _score(normalized, item_id, task, modules, bundle), "terminal_sha256": sha_bytes(raw_path.read_bytes()), "verdicts_sha256": sha_bytes(canonical(normalized))}
     return {"record": record, "repaired_leaf_count": 1, "repair_attempt_id": str(repair["repair_attempt_id"]), "whole_cell_substitution_status": "valid"}
-
-
-def verify_current_book_rescoring(
-    original_public: Path,
-    original_private: Path,
-    continuation_public: Path,
-    continuation_private: Path,
-    current_registry: Path | None = None,
-    current_bundle: Path | None = None,
-) -> dict[str, int]:
-    """Check the named whole-book evolution against historical scoring without relabeling it."""
-    records, _, _, _ = _load_records(original_public, original_private, continuation_public, continuation_private)
-    historical_modules, authority = _aggregate_bytes()
-    current_modules = _current_book_modules(historical_modules, authority, current_registry)
-    bundle = _current_bundle(authority, _historical_bundle(), current_bundle)
-    for record in records:
-        task = read_object(original_private / "inputs" / str(record["item"]) / "task-contract.json")
-        if _score(record["verdicts"], str(record["item"]), task, current_modules, bundle) != record["metrics"]:
-            raise ValueError("Current additive registry does not preserve historical 22-cell score metrics")
-    return {"sealed_cells_with_question_id_payload_prompt_parity": 24, "rescored_completed_cells_with_metric_parity": len(records)}
 
 
 def _summarize(records: Sequence[Mapping[str, Any]], *, continuation_terminal_failures: Sequence[int], allow_partial_unit: bool = False) -> dict[str, Any]:

@@ -3,7 +3,6 @@ from __future__ import annotations
 import hashlib
 import importlib.util
 import json
-import subprocess
 import sys
 import tempfile
 from pathlib import Path
@@ -52,6 +51,19 @@ def private_root():
 def _write_json(path: Path, value) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(value, sort_keys=True, indent=2) + "\n", encoding="utf-8")
+
+
+def _assert_public_projection_omits_private_roots(value, *private_roots: Path) -> None:
+    """Check the Stage 1 projection, not unrelated retained repository history."""
+    private_values = tuple(str(root.resolve()) for root in private_roots)
+    if isinstance(value, dict):
+        for nested in value.values():
+            _assert_public_projection_omits_private_roots(nested, *private_roots)
+    elif isinstance(value, list):
+        for nested in value:
+            _assert_public_projection_omits_private_roots(nested, *private_roots)
+    elif isinstance(value, str):
+        assert all(private_value not in value for private_value in private_values)
 
 
 def _predecessor(executor, work: Path, private: Path, plan) -> None:
@@ -191,25 +203,25 @@ def test_predecessor_error_commitments_and_path_privacy_are_strict(tmp_path, mon
     path_hashes = [executor.PREDECESSOR_WORK_PATH_SHA256, executor.PREDECESSOR_PRIVATE_PATH_SHA256]
     assert all(isinstance(value, str) and len(value) == 64 and value == value.lower() and all(character in "0123456789abcdef" for character in value) for value in path_hashes)
     _prepare_successor(executor, work, private)
+    predecessor = executor._predecessor_binding(executor._fixture_predecessor_work, executor._fixture_predecessor_private_root)
+    assert set(predecessor["artifacts"]) == {"execution_contract", "disclosure", "freeze", "attempt_start", "failed_terminal"}
+    _assert_public_projection_omits_private_roots(predecessor, executor._fixture_predecessor_work, executor._fixture_predecessor_private_root, private)
     for path in work.rglob("*"):
         if path.is_file():
-            public = path.read_text(encoding="utf-8")
-            assert str(executor._fixture_predecessor_work) not in public
-            assert str(executor._fixture_predecessor_private_root) not in public
+            _assert_public_projection_omits_private_roots(
+                json.loads(path.read_text(encoding="utf-8")),
+                executor._fixture_predecessor_work,
+                executor._fixture_predecessor_private_root,
+                private,
+            )
+    contract = json.loads((work / executor.EXECUTION_NAME).read_text(encoding="utf-8"))
+    assert contract["executor"]["path"] == str((executor.HERE / "run_stage1.py").resolve())
     terminal_path = executor._fixture_predecessor_private_root / executor.ATTEMPTS / "0001" / "terminal.json"
     terminal = json.loads(terminal_path.read_text(encoding="utf-8"))
     terminal["error_sha256"] = "0" * 64
     terminal_path.write_text(json.dumps(terminal), encoding="utf-8")
     with pytest.raises(RuntimeError, match="freeze cross-binding"):
         _dry(executor, work, private)
-    repository = ROOT.parents[1]
-    tracked = subprocess.run(["git", "-C", str(repository), "ls-files"], text=True, encoding="utf-8", capture_output=True, check=True).stdout.splitlines()
-    absolute_markers = [chr(67) + ":" + "\\" + "Users" + "\\", chr(67) + ":" + "/" + "Users" + "/"]
-    for relative in tracked:
-        path = repository / relative
-        if path.suffix in {".py", ".json"}:
-            text = path.read_text(encoding="utf-8")
-            assert all(marker not in text for marker in absolute_markers)
 
 
 def test_stage1_makes_exactly_sixty_one_attempt_calls_with_reviewed_polarity_and_response_derived_rows(tmp_path, monkeypatch, private_root):

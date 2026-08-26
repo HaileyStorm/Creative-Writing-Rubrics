@@ -1,6 +1,6 @@
 {
-  "format_version": 1,
-  "purpose": "Resolve the preface pilot's reproducible 277-module scoring aggregate without claiming recovery of its unresolved original full registry tree.",
+  "format_version": 2,
+  "purpose": "Resolve the preface pilot's reproducible 277-module scoring aggregate without claiming recovery of its unresolved original full registry tree. The former 1.2.0 current-book rescore is archived fail-closed because its exact aggregate is unavailable here. The current 1.2.1 book is verified as a separately bounded descendant and is never used to reinterpret sealed pilot scores.",
   "original_executor_registry_tree": {
     "files": 297,
     "sha256": "6df1bbced1985f473feeea5173705e74abff76c679c4a462b6aa24b179be9f0d",
@@ -23,28 +23,72 @@
     },
     "identity": "functional_reconstruction_not_original_full_tree"
   },
-  "current_book": {
+  "archived_scoring_replay": {
+    "status": "unavailable_exact_1_2_0_snapshot_no_current_score_replay",
+    "reason": "The prior current-book rescore binding does not resolve to an exact snapshot in this checkout. Preserve its old hashes as historical metadata, fail closed, and do not reinterpret sealed pilot scores with a substitute book.",
     "aggregate": {
       "path": "registry/all_modules.json",
       "bytes": 2198920,
       "sha256": "4da342cc24881c70be11e5e2cd92a7beccbeb024e5808a5c779935f29989a4ed"
     },
     "module_count": 278,
-    "standard_identity": {
-      "id": "HBQ-RS",
-      "historical_version": "1.0.0",
-      "current_version": "1.2.0"
-    },
-    "addition": {
-      "module_id": "modifier.style.authored_content_treatment_fidelity",
-      "canonical_json_sha256": "1f68265480d42d2b9e9f2f2833681b46ec1b49d1f12aad7accae5f7b05bb51e4"
-    },
     "bundle": {
       "path": "bundles/prose.short_story.yaml",
       "bytes": 4903,
       "sha256": "6cdf8232726aacaff764a0200f243ff0ef2b4054130cf314d435f4d382990c66"
+    }
+  },
+  "current_book": {
+    "commit": "3e840f3d100c81ce863b1e5bb5d2e72a8fabcfbc",
+    "aggregate_git_blob": "993a7c7099c3d5e41eae3e87a86b6d972c3f2c5a",
+    "aggregate": {
+      "path": "registry/all_modules.json",
+      "bytes": 2200481,
+      "sha256": "43a33ee015310097f79c8a04bb7c3a8782813e758d523b1db08ae2b14d51f66f"
     },
-    "identity": "current_book_not_historical_identity"
+    "module_count": 278,
+    "standard_identity": {
+      "id": "HBQ-RS",
+      "historical_version": "1.0.0",
+      "current_version": "1.2.1"
+    },
+    "addition": {
+      "module_id": "modifier.style.authored_content_treatment_fidelity",
+      "canonical_json_sha256": "d96ad81a31cc450e54ce01c618c09bef41b0370f7b092676d258655b2290b997"
+    },
+    "bounded_descendants": [
+      {
+        "module_id": "form.poetry.free_verse",
+        "historical_canonical_json_sha256": "fb826c905379776f4ec7e751a2921ecc7edc6b676bd2aded90574771e3214920",
+        "canonical_json_sha256": "a4b7207e39f89849ed0efc38dd9bf512be681839e38b7b82ee119ec2b4a3770c",
+        "historical_version": "1.0.0",
+        "current_version": "1.2.1",
+        "repair_lineage": "hbq-free-verse-necessity-scope-ablation-v1"
+      },
+      {
+        "module_id": "penalty.purple_prose",
+        "historical_canonical_json_sha256": "e0eaacf2668b162a0bab0978cc76f24734d515e0b14434b6895ffde3abf04a77",
+        "canonical_json_sha256": "acc6902f4525bf34529e7d09fef8c65c75a5ee153de53e6d17b1c81b35c41487",
+        "historical_version": "1.0.0",
+        "current_version": "1.2.1",
+        "repair_lineage": "hbq-qpc24-two-pass-product-confirmation-v5"
+      },
+      {
+        "module_id": "scope.passage",
+        "historical_canonical_json_sha256": "deb8321bce83e59cc1f6cfa0fe496344e5c45d9483d752b64c66523389eb222e",
+        "canonical_json_sha256": "069d9b7971cf3280b3719d4fd2ed586e7c2880a8b251686046bd578eb0843a8d",
+        "historical_version": "1.0.0",
+        "current_version": "1.2.1",
+        "repair_lineage": "hbq-material-context-holdout-v1"
+      }
+    ],
+    "bundle_git_blob": "ea0dca86ac1bb42b39c3fa19f3d62848c044c531",
+    "bundle": {
+      "path": "bundles/prose.short_story.yaml",
+      "bytes": 4903,
+      "sha256": "444040ef7c3c769146f597ecd3bfa28ddf5b4b1aaadde3ac93da4dccd02e67d8"
+    },
+    "identity": "current_book_bounded_descendant_not_pilot_score_replay"
   },
   "original_executor_bundle_tree": {
     "files": 88,
@@ -52,6 +96,7 @@
   },
   "parity_requirements": {
     "identity_only_historical_module_evolution": 277,
+    "bounded_current_book_descendant_modules": 3,
     "unchanged_scoring_bundle": "bundles/prose.short_story.yaml",
     "sealed_cells_with_question_id_payload_prompt_parity": 24,
     "rescored_completed_cells_with_metric_parity": 22

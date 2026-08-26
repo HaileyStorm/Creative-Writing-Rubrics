@@ -288,7 +288,8 @@ def test_run_invokes_exact_sol_contract_resumes_and_gates_after_provider_success
         if ordinal <= 2:
             build_fixture(tmp_path / f"genuine-{ordinal}", artifact_id=kwargs["artifact_id"],
                           provider_session_prefix=f"provider-{ordinal}", run_dir=Path(kwargs["output_dir"]),
-                          input_paths=(Path(kwargs["artifact_path"]), Path(kwargs["context_paths"][0]), Path(kwargs["task_contract_path"])))
+                          input_paths=(Path(kwargs["artifact_path"]), Path(kwargs["context_paths"][0]), Path(kwargs["task_contract_path"])),
+                          prompt_rendering_version=runner.LEGACY_PROMPT_RENDERING_VERSION)
         else:
             Path(kwargs["output_dir"]).mkdir(parents=True, exist_ok=True)
 

@@ -7,13 +7,204 @@ import subprocess
 import sys
 import hashlib
 import gzip
+import importlib
+import io
+import tarfile
+import tempfile
+from contextlib import contextmanager
 from pathlib import Path
+from types import ModuleType, SimpleNamespace
 
 import pytest
 
 from hbqrs.paths import book_root
 
 ROOT = book_root() / "evaluation-results" / "hbq-multisample-repeatability-v1"
+REPOSITORY = book_root().resolve()
+
+# Git's canonical-LF archive is the retained successor representation for two
+# Windows-byte-bound import files.  The frozen study mapping remains untouched.
+IMPORT_RUNTIME_SUCCESSOR_SEALS = {
+    "70b4cd16bd536f2f6ddb8e066f801090a037a39605652b14d6c7f6ff312446cb": {
+        "raw_bytes": 45951,
+        "canonical_lf_bytes": 45093,
+        "canonical_lf_sha256": "0518be16a4528b893de6af61300ecea58dc56d6b7944b5ae5fd3a3214a3794ef",
+    },
+    "dedadb6d9f8e3cf700c16012b29e1a590a2b1175c8ead0cf17c44aa6417b8266": {
+        "raw_bytes": 1419,
+        "canonical_lf_bytes": 1367,
+        "canonical_lf_sha256": "69bc5a8260ec5d5f95b80868469610d4dc1b8bcb3d58ce5f7e4c40f77b6e3fb7",
+    },
+}
+
+
+def _install_import_runtime_successor_seals(study: ModuleType) -> None:
+    def pinned_paths() -> list[Path]:
+        paths = [study.ROOT / relative for relative in study.STUDY_IMPORT_RUNTIME_SHA256]
+        for path, expected in zip(paths, study.STUDY_IMPORT_RUNTIME_SHA256.values()):
+            if not path.is_file():
+                raise ValueError("Pinned study-import runtime closure drifted")
+            payload = path.read_bytes()
+            if hashlib.sha256(payload).hexdigest() == expected:
+                continue
+            seal = IMPORT_RUNTIME_SUCCESSOR_SEALS.get(expected)
+            canonical_lf = payload.replace(b"\r\n", b"\n")
+            if not isinstance(seal, dict) or seal.get("canonical_lf_bytes") != len(canonical_lf) or seal.get("canonical_lf_sha256") != hashlib.sha256(canonical_lf).hexdigest():
+                raise ValueError("Pinned study-import runtime closure drifted")
+        return paths
+
+    study._pinned_study_import_runtime_paths = pinned_paths
+
+
+class HistoricalMultiSampleRuntime:
+    """Materialize the frozen study control with its separately pinned HBQ runtime."""
+
+    CONTROL_COMMIT = "df084e488168e3cd3103cccd7e747b63676b4b7e"
+    RUNTIME_COMMIT = "a09be09869e2a0843f3c448fd0f25c10f963ff85"
+    PACKAGE_NAME = "multisample_v1_historical_hbqrs"
+
+    def __init__(self) -> None:
+        self._runtime: SimpleNamespace | None = None
+        self._modules: dict[str, ModuleType] = {}
+
+    @staticmethod
+    def _git(*args: str) -> subprocess.CompletedProcess[bytes]:
+        return subprocess.run(["git", "-C", str(REPOSITORY), *args], capture_output=True, check=False)
+
+    @classmethod
+    def _safe_extract(cls, archive: bytes, destination: Path) -> None:
+        with tarfile.open(fileobj=io.BytesIO(archive), mode="r:") as contents:
+            root = destination.resolve()
+            for member in contents.getmembers():
+                target = (destination / member.name).resolve()
+                if member.issym() or member.islnk() or not target.is_relative_to(root) or not (member.isdir() or member.isfile()):
+                    raise ValueError("Historical multisample archive is unsafe")
+            contents.extractall(destination, filter="data")
+
+    def _archive(self, destination: Path, commit: str, *paths: str) -> None:
+        result = self._git("archive", "--format=tar", commit, *paths)
+        if result.returncode:
+            raise ValueError("Pinned multisample control/runtime commit is unavailable")
+        self._safe_extract(result.stdout, destination)
+
+    def _restore_raw_runtime_bytes(self, destination: Path) -> None:
+        listed = self._git("ls-tree", "-r", "--name-only", self.RUNTIME_COMMIT, "--", "src/hbqrs")
+        if listed.returncode:
+            raise ValueError("Pinned multisample runtime listing is unavailable")
+        for value in listed.stdout.decode("utf-8").splitlines():
+            relative = Path(value)
+            target = (destination / relative).resolve()
+            if not target.is_relative_to(destination.resolve()):
+                raise ValueError("Pinned multisample runtime path is unsafe")
+            payload = self._git("show", f"{self.RUNTIME_COMMIT}:{relative.as_posix()}")
+            if payload.returncode:
+                raise ValueError("Pinned multisample runtime asset is unavailable")
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes(payload.stdout)
+
+    def runtime(self) -> SimpleNamespace:
+        if self._runtime is not None:
+            return self._runtime
+        for commit in (self.CONTROL_COMMIT, self.RUNTIME_COMMIT):
+            if self._git("cat-file", "-e", f"{commit}^{{commit}}").returncode:
+                raise ValueError("Pinned multisample control/runtime commit is unavailable")
+        lease = tempfile.TemporaryDirectory(prefix="cwr-multisample-v1-historical-runtime-")
+        snapshot = Path(lease.name) / "repository"
+        try:
+            self._archive(
+                snapshot,
+                self.CONTROL_COMMIT,
+                "evaluation-results/hbq-multisample-repeatability-v1",
+                "evaluation-results/hbq-human-alignment-v3",
+                "evaluation-results/hbq-human-alignment-v2",
+                "evaluation-results/the-part-that-arrives-first-repeatability",
+                "registry",
+                "bundles",
+                "prompts",
+                "schema",
+            )
+            self._archive(snapshot, self.RUNTIME_COMMIT, "src/hbqrs")
+            self._restore_raw_runtime_bytes(snapshot)
+            package_root = snapshot / "src" / "hbqrs"
+            spec = importlib.util.spec_from_file_location(
+                self.PACKAGE_NAME,
+                package_root / "__init__.py",
+                submodule_search_locations=[str(package_root)],
+            )
+            assert spec and spec.loader
+            package = importlib.util.module_from_spec(spec)
+            sys.modules[self.PACKAGE_NAME] = package
+            spec.loader.exec_module(package)
+            paths = importlib.import_module(f"{self.PACKAGE_NAME}.paths")
+            paths.book_root = lambda: snapshot
+            self._runtime = SimpleNamespace(
+                lease=lease,
+                root=snapshot,
+                package=package,
+                core=importlib.import_module(f"{self.PACKAGE_NAME}.core"),
+                paths=paths,
+                runner=importlib.import_module(f"{self.PACKAGE_NAME}.runner"),
+                structured=importlib.import_module(f"{self.PACKAGE_NAME}.longform_runner"),
+            )
+            return self._runtime
+        except Exception:
+            lease.cleanup()
+            raise
+
+    @contextmanager
+    def aliases(self):
+        historical = self.runtime()
+        aliases = {
+            "hbqrs": historical.package,
+            "hbqrs.core": historical.core,
+            "hbqrs.paths": historical.paths,
+            "hbqrs.runner": historical.runner,
+            "hbqrs.longform_runner": historical.structured,
+        }
+        if "study" in self._modules:
+            aliases["study"] = self._modules["study"]
+        prior = {name: sys.modules.get(name) for name in aliases}
+        sys.modules.update(aliases)
+        try:
+            yield
+        finally:
+            for name, value in prior.items():
+                if value is None:
+                    sys.modules.pop(name, None)
+                else:
+                    sys.modules[name] = value
+
+    def module(self, name: str) -> ModuleType:
+        if name in self._modules:
+            return self._modules[name]
+        root = self.runtime().root / ROOT.relative_to(REPOSITORY)
+        spec = importlib.util.spec_from_file_location(f"multisample_v1_historical_{name}", root / f"{name}.py")
+        assert spec and spec.loader
+        module = importlib.util.module_from_spec(spec)
+        if name == "study":
+            self._modules[name] = module
+        try:
+            with self.aliases():
+                spec.loader.exec_module(module)
+                if name == "study":
+                    _install_import_runtime_successor_seals(module)
+        except Exception:
+            self._modules.pop(name, None)
+            raise
+        self._modules[name] = module
+        return module
+
+    def hanna(self) -> ModuleType:
+        study = self.module("study")
+        with self.aliases():
+            return study.hanna()
+
+
+_HISTORICAL = HistoricalMultiSampleRuntime()
+
+
+def _historical_runtime() -> SimpleNamespace:
+    return _HISTORICAL.runtime()
 
 
 def _module(name: str):
@@ -28,11 +219,10 @@ def _module(name: str):
 
 
 def _complete_hbq_run(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, *, retry_first: bool = False):
-    from hbqrs import runner as hbq_runner
-
-    study = _module("study")
-    analysis = _module("analyze_study")
-    hanna = study.hanna()
+    historical = _historical_runtime()
+    study = _HISTORICAL.module("study")
+    analysis = _HISTORICAL.module("analyze_study")
+    hanna = _HISTORICAL.hanna()
     source_text, prompt_text = "A short test scene.", "Write a tense short scene."
     item = hanna.HannaItem("fixture-story", "1", "fixture-model", prompt_text, source_text, {key: (3, 3, 3) for key in hanna.RATING_DIMENSIONS})
     task = hanna.make_task_contract(item)
@@ -54,9 +244,9 @@ def _complete_hbq_run(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, *, retry_
         content = json.dumps({"verdicts": [{"question_id": question_id, "verdict": "YES", "confidence": 0.8, "evidence": [{"kind": "exact_quote", "reference": "line:1", "exact_quote": "A short test scene.", "summary": None}], "note": "Grounded fixture verdict."} for question_id in ids]})
         return content, {"reported": {"provider": "openai", "model": analysis.contract()["provider"]["model"], "reasoning_effort": analysis.contract()["provider"]["reasoning"], "session_id": f"fixture-session-{calls}"}}
 
-    monkeypatch.setattr(hbq_runner, "_call_codex", fake_codex)
+    monkeypatch.setattr(historical.runner, "_call_codex", fake_codex)
     output = tmp_path / "work" / "runs" / item.item_id / arm["arm_id"] / "run-01"
-    hbq_runner.run_judge(artifact_path=folder / "source.md", context_paths=[folder / "prompt.md"], task_contract_path=folder / "task-contract.json", artifact_id=item.item_id, bundle_id=arm["bundle_id"], provider="codex", model=analysis.contract()["provider"]["model"], reasoning=analysis.contract()["provider"]["reasoning"], output_dir=output, registry=study.registry_path(), bundles=study.bundles_path(), batch_size=arm["batch_size"], batch_attempts=arm["batch_attempts"], allow_remote=True, strict_ai=True)
+    historical.runner.run_judge(artifact_path=folder / "source.md", context_paths=[folder / "prompt.md"], task_contract_path=folder / "task-contract.json", artifact_id=item.item_id, bundle_id=arm["bundle_id"], provider="codex", model=analysis.contract()["provider"]["model"], reasoning=analysis.contract()["provider"]["reasoning"], output_dir=output, registry=study.registry_path(), bundles=study.bundles_path(), batch_size=arm["batch_size"], batch_attempts=arm["batch_attempts"], allow_remote=True, strict_ai=True)
     sample = {"item_id": item.item_id, "question_count": len(question_ids), "question_id_sequence_sha256": hashlib.sha256(study.canonical(question_ids)).hexdigest(), "inputs": {name: study.fingerprint(folder / name) for name in ("source.md", "prompt.md", "task-contract.json", "human-ratings.json")}}
     return analysis, sample, arm, tmp_path / "work", output, calls
 
@@ -75,7 +265,10 @@ def test_contract_freezes_six_arms_and_exact_hanna_repeatability_shape() -> None
 
 
 def test_runtime_provenance_pins_the_exhaustive_lazy_study_import_closure(monkeypatch: pytest.MonkeyPatch) -> None:
-    study = _module("study")
+    monkeypatch.delitem(sys.modules, "study", raising=False)
+    historical = _historical_runtime()
+    study = _HISTORICAL.module("study")
+    assert "study" not in sys.modules
     expected = {"src/hbqrs/__init__.py", "src/hbqrs/core.py", "src/hbqrs/paths.py"}
     assert set(study.STUDY_IMPORT_RUNTIME_SHA256) == expected
     assert {path.relative_to(study.ROOT).as_posix() for path in study._pinned_study_import_runtime_paths()} == expected
@@ -90,7 +283,7 @@ spec.loader.exec_module(module)
 root = Path(sys.argv[2]).resolve()
 print(json.dumps({name: Path(value.__file__).resolve().relative_to(root).as_posix() for name, value in sorted(sys.modules.items()) if name == 'hbqrs' or name.startswith('hbqrs.') and getattr(value, '__file__', None)}, sort_keys=True))
 """
-    environment = {**os.environ, "PYTHONPATH": str(study.ROOT / "src") + os.pathsep + os.environ.get("PYTHONPATH", "")}
+    environment = {**os.environ, "PYTHONPATH": str(historical.root / "src") + os.pathsep + os.environ.get("PYTHONPATH", "")}
     completed = subprocess.run([sys.executable, "-c", audit, str(study.HERE / "study.py"), str(study.ROOT)], cwd=study.ROOT, env=environment, check=True, capture_output=True, text=True)
     assert json.loads(completed.stdout) == {"hbqrs": "src/hbqrs/__init__.py", "hbqrs.core": "src/hbqrs/core.py", "hbqrs.paths": "src/hbqrs/paths.py"}
     monkeypatch.setitem(study.STUDY_IMPORT_RUNTIME_SHA256, "src/hbqrs/core.py", "0" * 64)
