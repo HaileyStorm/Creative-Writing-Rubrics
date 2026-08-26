@@ -75,9 +75,10 @@ def _declared_bindings(module: ModuleType) -> dict[str, str]:
         contract = json.loads(contract_path.read_text(encoding="utf-8"))
         bindings = contract.get("bindings")
         if isinstance(bindings, Mapping):
-            runtime = bindings.get("runtime")
-            if isinstance(runtime, Mapping):
-                return _validate_bindings(runtime)
+            for key in ("runtime", "active_runtime"):
+                runtime = bindings.get(key)
+                if isinstance(runtime, Mapping):
+                    return _validate_bindings(runtime)
             if all(isinstance(value, str) for value in bindings.values()):
                 return _validate_bindings(bindings)
     for name in ("RUNTIME_BINDINGS", "RUNTIME_SHA256"):

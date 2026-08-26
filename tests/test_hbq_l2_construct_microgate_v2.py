@@ -4,24 +4,40 @@ from copy import deepcopy
 import importlib.util
 import json
 from pathlib import Path
-import subprocess
 import sys
 
 import pytest
 
 from hbqrs.paths import book_root
+from tests import _hbq_figurative_historical_runtime as cli_runtime
+from tests import _hbq_l2_historical_runtime as l2_runtime
+from tests import _hbq_s1_historical_runtime as tree_runtime
 
 
 ROOT = book_root() / "evaluation-results" / "hbq-l2-construct-microgate-v2"
+SOURCE_COMMIT = "484134b67b32c6c9ec54ef4b0f6c7451f0e24fe0"
 
 
-def study():
+def raw_study():
     spec = importlib.util.spec_from_file_location("l2_construct_microgate_v2", ROOT / "study.py")
     module = importlib.util.module_from_spec(spec)
     assert spec and spec.loader
     sys.modules[spec.name] = module
     spec.loader.exec_module(module)
     return module
+
+
+def study():
+    original_path = list(sys.path)
+    try:
+        module = raw_study()
+        repository = Path(module.REPOSITORY).resolve()
+        tree_runtime.install_historical_runtime(module, source_commit=SOURCE_COMMIT)
+        module.production_runner = l2_runtime.load_runner(repository, SOURCE_COMMIT)
+        module.predecessor()
+        return module
+    finally:
+        sys.path[:] = original_path
 
 
 def test_public_synthetic_freeze_has_six_cases_four_states_and_36_provider_free_slots():
@@ -39,6 +55,11 @@ def test_public_synthetic_freeze_has_six_cases_four_states_and_36_provider_free_
     assert len(slots) == len({slot["slot_id"] for slot in slots}) == 36
     assert {slot["repeat"] for slot in slots} == {1, 2, 3}
     assert {slot["expected_verdict"] for slot in slots} == {"YES", "NO", "NOT_APPLICABLE", "CANNOT_ASSESS"}
+
+
+def test_current_checkout_drift_remains_fail_closed():
+    with pytest.raises(ValueError, match="Active runtime provenance drifted"):
+        raw_study().verify_package()
 
 
 def test_exact_sol_poetry_cases_and_carried_visual_controls_are_frozen():
@@ -130,10 +151,14 @@ def test_active_runtime_and_predecessor_drift_fail_closed_before_direct_prompt_r
 
 
 def test_command_surface_is_provider_free():
-    dry = subprocess.run([sys.executable, str(ROOT / "run.py"), "--dry-run"], text=True, capture_output=True, check=True)
-    plan = subprocess.run([sys.executable, str(ROOT / "run.py"), "--render-plan"], text=True, capture_output=True, check=True)
-    assert json.loads(dry.stdout)["verification"]["provider_calls"] == 0
-    assert len(json.loads(plan.stdout)["rendered_slots"]) == 36
+    original_path = tuple(sys.path)
+    value = study()
+    dry = cli_runtime.run_cli(value, ROOT / "run.py", "--dry-run")
+    plan = cli_runtime.run_cli(value, ROOT / "run.py", "--render-plan")
+    assert dry[0] == plan[0] == 0
+    assert json.loads(dry[1])["verification"]["provider_calls"] == 0
+    assert len(json.loads(plan[1])["rendered_slots"]) == 36
+    assert tuple(sys.path) == original_path
     for path in ROOT.rglob("*"):
         if path.suffix not in {".py", ".json", ".md"}:
             continue
