@@ -2,6 +2,7 @@ from __future__ import annotations
 import importlib.util,json,re,sys
 from pathlib import Path
 from types import SimpleNamespace
+import pytest
 from hbqrs.paths import book_root
 BOOK=book_root();ROOT=BOOK/"evaluation-results"/"hbq-figurative-hinge-control-first-confirmation-v1"
 def study():
@@ -19,8 +20,11 @@ def test_exact_v7_text_and_dynamic_terminal_count(tmp_path):
  m=study();v7=json.loads((BOOK/'evaluation-results'/'hbq-figurative-hinge-treatment-successor-v7'/'study-contract.json').read_text(encoding='utf-8'));assert m.contract()['treatment']['exact_text']==v7['treatment']['exact_text']
  result=m._terminal(tmp_path, 'CONTROL_FIXTURE_OR_PROMPT_NO_GO', [{'slot_id':'x'}], False);assert result['completed_slots']==1 and result['planned_slots']==18 and not result['target_dispatched']
 
-def test_dry_run_is_provider_free_and_freezes_a_complete_fresh_root(tmp_path):
+def test_current_checkout_fails_closed_then_provider_free_mechanics_smoke(tmp_path,monkeypatch):
  m=study(); calls=[]
+ with pytest.raises(ValueError,match="exact source HEAD required"):
+  m.head()
+ monkeypatch.setattr(m,"head",lambda:None)
  (tmp_path/m.LEDGER).write_text(json.dumps({'format_version':1,'study_id':m.STUDY_ID,'labels':{'a1':'YES','a2':'NO','b3':'YES','b4':'YES','b5':'NO','b6':'NO'}},sort_keys=True,separators=(',',':'))+'\n',encoding='utf-8')
  def render(command,**_kwargs):
   calls.append(command);assert '--allow-remote' not in command
