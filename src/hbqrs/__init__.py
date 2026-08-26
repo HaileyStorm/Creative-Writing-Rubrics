@@ -6,7 +6,7 @@ from importlib import import_module
 from typing import Any
 
 
-__version__ = "1.2.2"
+__version__ = "1.2.3"
 
 _EXPORTS = {
     "HBQError": (".core", "HBQError"),

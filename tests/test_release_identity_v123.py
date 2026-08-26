@@ -26,12 +26,12 @@ def test_runtime_package_release_is_distinct_from_the_unchanged_rubric_standard(
     manifest = json.loads((root / "manifest.json").read_text(encoding="utf-8"))
     citation = yaml.safe_load((root / "CITATION.cff").read_text(encoding="utf-8"))
 
-    assert __version__ == "1.2.2"
-    assert 'version = "1.2.2"' in (root / "pyproject.toml").read_text(encoding="utf-8")
+    assert __version__ == "1.2.3"
+    assert 'version = "1.2.3"' in (root / "pyproject.toml").read_text(encoding="utf-8")
     assert citation["cff-version"] == "1.2.0"
     assert citation["version"] == __version__
-    assert citation["date-released"] == "2026-08-25"
-    assert "Creative-Writing-Rubrics 1.2.2" in citation["abstract"]
+    assert citation["date-released"] == "2026-08-26"
+    assert "Creative-Writing-Rubrics 1.2.3" in citation["abstract"]
     assert "HBQ-RS 1.2.1" in citation["abstract"]
 
     assert manifest["standard"] == expected_standard

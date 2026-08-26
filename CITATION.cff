@@ -6,10 +6,10 @@ authors:
   - family-names: Collet
     given-names: Hailey
 license: Apache-2.0
-version: 1.2.2
-date-released: "2026-08-25"
+version: 1.2.3
+date-released: "2026-08-26"
 abstract: >
-  Creative-Writing-Rubrics 1.2.2, distributing the unchanged HBQ-RS 1.2.1
+  Creative-Writing-Rubrics 1.2.3, distributing the unchanged HBQ-RS 1.2.1
   rubric standard — a composable
   hierarchical binary-question rubric stack for creative writing, multimedia
   narrative, draft judging, benchmarking, and synthetic-data generation, with

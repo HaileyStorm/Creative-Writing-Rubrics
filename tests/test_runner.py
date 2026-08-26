@@ -1499,6 +1499,48 @@ def test_codex_backend_rejects_effective_model_mismatch(tmp_path: Path, monkeypa
         )
 
 
+def test_codex_input_too_large_is_nonretryable(tmp_path: Path, monkeypatch) -> None:
+    stderr = 'ERROR: {"input_error_code":"input_too_large","message":"request exceeds input limit"}\n'
+
+    def fake_run(argv: list[str], **_: object) -> subprocess.CompletedProcess[str]:
+        return subprocess.CompletedProcess(
+            argv,
+            1,
+            stdout="",
+            stderr=stderr,
+        )
+
+    monkeypatch.setattr("hbqrs.runner.subprocess.run", fake_run)
+    schema = tmp_path / "schema.json"
+    schema.write_text("{}", encoding="utf-8")
+    with pytest.raises(runner_module._ProviderAttemptFailure) as exc_info:
+        _call_codex(
+            executable="python",
+            model="gpt-5.6-sol",
+            reasoning="high",
+            prompt="test",
+            output_dir=tmp_path,
+            response_schema=schema,
+            batch_number=1,
+            timeout=10,
+        )
+    assert exc_info.value.retryable is False
+
+    stderr = 'ERROR: {"input_error_code":"input_too_largeish","message":"different failure"}\n'
+    with pytest.raises(runner_module._ProviderAttemptFailure) as near_miss:
+        _call_codex(
+            executable="python",
+            model="gpt-5.6-sol",
+            reasoning="high",
+            prompt="test",
+            output_dir=tmp_path,
+            response_schema=schema,
+            batch_number=1,
+            timeout=10,
+        )
+    assert near_miss.value.retryable is True
+
+
 def test_grok_backend_uses_isolated_single_turn_schema_cli(tmp_path: Path, monkeypatch) -> None:
     schema = tmp_path / "schema.json"
     schema.write_text('{"type":"object"}', encoding="utf-8")

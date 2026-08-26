@@ -483,7 +483,23 @@ def _call_codex(
             detail = "\n".join(lines[-12:])[:4000] or "no structured provider error was reported"
         content = message_path.read_text(encoding="utf-8") if message_path.is_file() else completed.stdout or None
         lower_detail = detail.lower()
-        permanent = any(token in lower_detail for token in ("authentication", "unauthorized", "invalid model", "unknown model", "configuration"))
+        input_too_large = bool(
+            re.search(
+                r'"input_error_code"\s*:\s*"input_too_large"',
+                detail,
+                flags=re.IGNORECASE,
+            )
+        )
+        permanent = any(
+            token in lower_detail
+            for token in (
+                "authentication",
+                "unauthorized",
+                "invalid model",
+                "unknown model",
+                "configuration",
+            )
+        ) or input_too_large
         raise _ProviderAttemptFailure(
             f"Codex CLI exited {completed.returncode}: {detail}",
             retryable=not permanent,

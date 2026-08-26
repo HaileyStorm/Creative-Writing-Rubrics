@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.3 — 2026-08-26
+
+- Compacted synthesis-only structured input JSON for large full-book long-form runs while preserving route and map prompt bytes, strict local schema/reference validation, and per-pass prompt/config bindings. Codex `input_too_large` failures now settle as non-retryable. HBQ-RS rubric content, standard identity, stable IDs, ownership, weights, polarity, bundles, and generated registry remain at 1.2.1.
+
 ## 1.2.2 — 2026-08-25
 
 - Added opt-in long-form terminal lifecycle sidecars and exact selected-bundle geometry disclosure for full-fidelity validation runs, and verified exact-once strict-AI placement across nested judge runs. HBQ-RS rubric content, standard identity, stable IDs, ownership, weights, polarity, bundles, and generated registry remain at 1.2.1; this release does not publish a full-book result.
