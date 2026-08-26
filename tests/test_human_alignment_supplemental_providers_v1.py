@@ -11,25 +11,19 @@ from pathlib import Path
 import pytest
 
 from hbqrs.paths import book_root
+from _scoped_module_loader import load_module
 
 ROOT = book_root() / "evaluation-results" / "hbq-human-alignment-supplemental-providers-v1"
 
 
-def load(name: str, filename: str):
-    spec = importlib.util.spec_from_file_location(name, ROOT / filename)
-    assert spec and spec.loader
-    module = importlib.util.module_from_spec(spec)
-    sys.modules[name] = module
-    spec.loader.exec_module(module)
-    return module
-
-
-study = load("supplemental_hanna_study", "study.py")
-sys.modules["study"] = study
-runner = load("supplemental_hanna_runner", "run_study.py")
-analysis = load("supplemental_hanna_analysis", "analyze_study.py")
-sys.modules["analyze_study"] = analysis
-gate = load("supplemental_hanna_gate", "promotion_gate.py")
+study = load_module(ROOT / "study.py", name="supplemental_hanna_study")
+runner = load_module(ROOT / "run_study.py", name="supplemental_hanna_runner", aliases={"study": study})
+analysis = load_module(ROOT / "analyze_study.py", name="supplemental_hanna_analysis", aliases={"study": study})
+gate = load_module(
+    ROOT / "promotion_gate.py",
+    name="supplemental_hanna_gate",
+    aliases={"study": study, "analyze_study": analysis},
+)
 
 
 def frozen() -> dict:
@@ -206,7 +200,7 @@ def test_runner_binds_its_sibling_analyzer_after_v3_load_order(monkeypatch):
     v3_analysis = importlib.util.module_from_spec(v3_analysis_spec); v3_analysis_spec.loader.exec_module(v3_analysis)
     monkeypatch.setitem(sys.modules, "study", types.ModuleType("poisoned_study"))
     monkeypatch.setitem(sys.modules, "analyze_study", v3_analysis)
-    mixed = load("supplemental_hanna_runner_mixed", "run_study.py")
+    mixed = load_module(ROOT / "run_study.py", name="supplemental_hanna_runner_mixed")
     assert Path(mixed._ANALYSIS.__file__).resolve() == (ROOT / "analyze_study.py").resolve()
 
 

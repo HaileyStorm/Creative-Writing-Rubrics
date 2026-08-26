@@ -4,11 +4,33 @@ from __future__ import annotations
 import importlib.util
 import sys
 from collections.abc import Mapping
+from contextlib import contextmanager
 from pathlib import Path
 from types import ModuleType
+from typing import Iterator
 
 
 _MISSING = object()
+
+
+@contextmanager
+def isolated_import_state(*aliases: str) -> Iterator[None]:
+    """Remove generic aliases for an operation, then restore imports exactly."""
+    if len(set(aliases)) != len(aliases):
+        raise ValueError("Import-state aliases must be unique")
+    previous_modules = {alias: sys.modules.get(alias, _MISSING) for alias in aliases}
+    previous_path = list(sys.path)
+    for alias in aliases:
+        sys.modules.pop(alias, None)
+    try:
+        yield
+    finally:
+        sys.path[:] = previous_path
+        for alias, prior in previous_modules.items():
+            if prior is _MISSING:
+                sys.modules.pop(alias, None)
+            else:
+                sys.modules[alias] = prior
 
 
 def load_module(path: Path, *, name: str, aliases: Mapping[str, ModuleType] | None = None) -> ModuleType:

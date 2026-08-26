@@ -11,6 +11,7 @@ from types import SimpleNamespace
 import pytest
 
 from hbqrs.paths import book_root
+from _scoped_module_loader import load_module
 
 
 ROOT = book_root() / "evaluation-results" / "hbq-figurative-scope-dspy-successor-v1"
@@ -114,15 +115,7 @@ def test_dry_run_never_imports_dspy_or_calls_remote_and_preflight_fails_closed(m
     completed = subprocess.run([sys.executable, str(ROOT / "run.py"), "--dry-run"], text=True, capture_output=True, check=True)
     output = json.loads(completed.stdout)
     assert output["mode"] == "dry_run" and output["verification"]["provider_calls"] == 0
-    spec = importlib.util.spec_from_file_location("dspy_successor_run", ROOT / "run.py")
-    module = importlib.util.module_from_spec(spec)
-    assert spec and spec.loader
-    sys.modules[spec.name] = module
-    sys.path.insert(0, str(ROOT))
-    try:
-        spec.loader.exec_module(module)
-    finally:
-        sys.path.remove(str(ROOT))
+    module = load_module(ROOT / "run.py", name="dspy_successor_run", aliases={"study": study()})
     with pytest.raises(PermissionError):
         module.preflight_remote(allow_remote=False, owner_zero_incremental_charge=False, private_root=tmp_path)
     monkeypatch.setenv("OPENAI_API_KEY", "present")
@@ -171,14 +164,6 @@ def test_private_optimizer_loader_registers_dataclass_module(tmp_path):
         "    value: int = 7\n",
         encoding="utf-8",
     )
-    spec = importlib.util.spec_from_file_location("dspy_successor_run_loader", ROOT / "run.py")
-    module = importlib.util.module_from_spec(spec)
-    assert spec and spec.loader
-    sys.modules[spec.name] = module
-    sys.path.insert(0, str(ROOT))
-    try:
-        spec.loader.exec_module(module)
-        loaded = module.load_private_optimizer(engine)
-    finally:
-        sys.path.remove(str(ROOT))
+    module = load_module(ROOT / "run.py", name="dspy_successor_run_loader", aliases={"study": study()})
+    loaded = module.load_private_optimizer(engine)
     assert loaded.Probe().value == 7

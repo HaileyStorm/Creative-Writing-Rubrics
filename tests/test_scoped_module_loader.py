@@ -6,7 +6,7 @@ from types import ModuleType
 
 import pytest
 
-from _scoped_module_loader import load_module
+from _scoped_module_loader import isolated_import_state, load_module
 
 
 def _script(tmp_path: Path, source: str) -> Path:
@@ -63,3 +63,38 @@ def test_rejects_module_name_alias_collision(tmp_path: Path) -> None:
         assert sys.modules[name] is original
     finally:
         sys.modules.pop(name, None)
+
+
+def test_isolated_import_state_restores_alias_and_ordered_path(tmp_path: Path) -> None:
+    alias = "scoped_state_existing_alias"
+    original = ModuleType(alias)
+    original_path = list(sys.path)
+    sys.modules[alias] = original
+    try:
+        with isolated_import_state(alias):
+            assert alias not in sys.modules
+            sys.modules[alias] = ModuleType(alias)
+            sys.path.insert(0, str(tmp_path))
+        assert sys.modules[alias] is original
+        assert sys.path == original_path
+    finally:
+        sys.modules.pop(alias, None)
+        sys.path[:] = original_path
+
+
+def test_isolated_import_state_restores_after_exception(tmp_path: Path) -> None:
+    alias = "scoped_state_exception_alias"
+    original = ModuleType(alias)
+    original_path = list(sys.path)
+    sys.modules[alias] = original
+    try:
+        with pytest.raises(RuntimeError, match="expected isolated failure"):
+            with isolated_import_state(alias):
+                sys.modules[alias] = ModuleType(alias)
+                sys.path.append(str(tmp_path))
+                raise RuntimeError("expected isolated failure")
+        assert sys.modules[alias] is original
+        assert sys.path == original_path
+    finally:
+        sys.modules.pop(alias, None)
+        sys.path[:] = original_path
