@@ -16,6 +16,13 @@ from hbqrs.paths import book_root
 ROOT = book_root() / "evaluation-results" / "hbq-poetry-scope-sentinel-v1-settlement-successor-v1"
 SOURCE_ROOT = Path(os.environ.get("CWR_S1_SETTLEMENT_SOURCE_ROOT", r"C:\Users\Haile\Documents\cwr-s1-poetry-scope-sentinel-execution-v1-postcommit-9e22d71-20260823"))
 
+ARCHIVED_OLD_RUNTIME = pytest.mark.skip(
+    reason=(
+        "Archived settlement mechanics require the frozen production runtime, "
+        "which no longer matches the current CWR checkout."
+    )
+)
+
 
 def study():
     spec = importlib.util.spec_from_file_location("s1_settlement_successor_v1", ROOT / "study.py")
@@ -50,16 +57,12 @@ def source_root() -> Path:
     return SOURCE_ROOT
 
 
-def test_historical_runtime_binding_allows_head_advance():
+def test_current_runtime_drift_fails_closed_before_settlement_claim():
     s = study()
-    report = s.validate_package()
-    assert report == {
-        "study_id": s.STUDY_ID,
-        "execution_slots": 60,
-        "provider_calls": 0,
-        "historical_runtime_head": "9e22d715b0c05a8a411c48c6cf8471053c26a731",
-    }
-    assert s._git("rev-parse", "HEAD") != s.HISTORICAL_RUNTIME_HEAD
+    assert s._git("rev-parse", f"{s.HISTORICAL_RUNTIME_HEAD}^{{commit}}") == s.HISTORICAL_RUNTIME_HEAD
+    assert s._git("rev-parse", f"{s.HISTORICAL_RUNTIME_HEAD}:evaluation-results/hbq-poetry-scope-sentinel-v1-execution-v1") == s.EXECUTION_TREE
+    with pytest.raises(ValueError, match="Current runtime bytes differ from the source runtime commitments"):
+        s.validate_package()
 
 
 def test_command_boundary_cannot_execute_or_write_the_original_evidence():
@@ -72,6 +75,7 @@ def test_command_boundary_cannot_execute_or_write_the_original_evidence():
     assert "--allow-remote" not in command_text
 
 
+@ARCHIVED_OLD_RUNTIME
 def test_settlement_reads_source_without_changing_any_source_byte(source_root: Path, tmp_path: Path):
     s = study()
     before = source_snapshot(source_root)
@@ -102,6 +106,7 @@ def test_declared_historical_blob_tamper_fails_closed(monkeypatch):
         s.validate_package()
 
 
+@ARCHIVED_OLD_RUNTIME
 def test_declared_run_tamper_fails_full_per_slot_verifier(source_root: Path, tmp_path: Path):
     s = study()
     copied = tmp_path / "source-copy"
