@@ -54,6 +54,8 @@ The `cwr score` command emits v2 by default. Use `--report-version 1` only to in
 
 For worked public examples, see the [established-rubric repeatability study](../evaluation-results/the-part-that-arrives-first-repeatability/established-v4/), its [authorized source story](../evaluation-results/the-part-that-arrives-first-repeatability/source.md), and the sanitized [Gray Blood long-form comparison](../evaluation-results/gray-blood-ch1-6/).
 
+The [QPC24 V9 full-book rebaseline aggregate](../evaluation-results/hbq-gray-blood-full-book-qpc24-rebaseline-v9-public-result-v1/) is work in progress: it reports all selected units without sampling, keeps bounds non-statistical, and makes no rubric promotion.
+
 ## Bias controls
 
 Hide author and model identity. Shuffle candidate order. Do not reward length or rhetorical confidence unless a leaf asks for it. Keep user-taste overlays out of the craft total.

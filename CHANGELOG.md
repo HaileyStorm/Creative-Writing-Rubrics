@@ -2,6 +2,7 @@
 
 ## 1.2.3 — 2026-08-26
 
+- Published the work-in-progress QPC24 V9 full-book aggregate: both complete artifacts are `VALID`, all selected units were evaluated without sampling, and the aggregate makes no rubric, weight, or criterion-ownership change.
 - Compacted synthesis-only structured input JSON for large full-book long-form runs while preserving route and map prompt bytes, strict local schema/reference validation, and per-pass prompt/config bindings. Codex `input_too_large` failures now settle as non-retryable. HBQ-RS rubric content, standard identity, stable IDs, ownership, weights, polarity, bundles, and generated registry remain at 1.2.1.
 
 ## 1.2.2 — 2026-08-25

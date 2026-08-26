@@ -9,6 +9,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 import pytest
+from tests import _preface_continuation_historical_runtime as historical_runtime
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -26,7 +27,7 @@ def _executor():
     spec = importlib.util.spec_from_file_location("preface_continuation_v1", PACKAGE / "executor.py")
     assert spec and spec.loader
     module = importlib.util.module_from_spec(spec); sys.modules[spec.name] = module; spec.loader.exec_module(module)
-    return module
+    return historical_runtime.install(module)
 
 
 def _sha(value: bytes | str) -> str:

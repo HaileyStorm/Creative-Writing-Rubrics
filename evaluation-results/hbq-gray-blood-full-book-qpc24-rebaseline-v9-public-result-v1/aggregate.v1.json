@@ -1,0 +1,78 @@
+{
+  "artifacts": [
+    {
+      "binary_calls": {
+        "accepted": 80,
+        "planned": 80,
+        "settled": 80
+      },
+      "coverage": 0.9883,
+      "error_calls": 0,
+      "label": "author_original",
+      "local_unit_count": 7,
+      "positions": 1817,
+      "rejected_calls": 0,
+      "score": 63.0202,
+      "score_bounds": {
+        "lower": 62.0577,
+        "upper": 63.2243
+      },
+      "status": "VALID",
+      "unit_count": 8
+    },
+    {
+      "binary_calls": {
+        "accepted": 70,
+        "planned": 70,
+        "settled": 70
+      },
+      "coverage": 0.9905,
+      "error_calls": 0,
+      "label": "gpt_5_6_pro_rewrite",
+      "local_unit_count": 6,
+      "positions": 1589,
+      "rejected_calls": 0,
+      "score": 73.2369,
+      "score_bounds": {
+        "lower": 72.3575,
+        "upper": 73.3054
+      },
+      "status": "VALID",
+      "unit_count": 7
+    }
+  ],
+  "comparison": {
+    "bounds_relation": "NON_STATISTICAL_NONOVERLAP",
+    "score_difference_rewrite_minus_author": 10.2167
+  },
+  "decision": {
+    "criterion_ownership_changes": 0,
+    "promotion": "NONE",
+    "rubric_changes": 0,
+    "weight_changes": 0
+  },
+  "execution": {
+    "combined_binary_calls": 150,
+    "combined_positions": 3406,
+    "full_fidelity": true,
+    "prior_structured_calls": 6,
+    "provider_calls": 0,
+    "sampling": "NONE"
+  },
+  "format_version": 1,
+  "opaque_execution_commitments": {
+    "author_v7_inventory_sha256": "b73831ad6b8a6f8ac6d1f866464c49184637e0106c1e60b66f7562df20bf61a3",
+    "author_v8_result_sha256": "0be746487e641abbb96fbcbad816162d9d56a559b9428cd5b5ac3c2d4f3695a7",
+    "freeze_manifest_sha256": "e6fd66e1d3c1623135b582b3106cc372f26c48bd7116adeef8af3e5906c46048",
+    "freeze_plan_sha256": "0761561b7a3fb02909d90b927830b2f3255edcdcfc666a9a39824d225a486241",
+    "rewrite_v7_inventory_sha256": "b173ee56384dbeafbc5de05241b2d71c3883442fabab916a0cc2a76a19c74637",
+    "rewrite_v8_result_sha256": "48c698541d9d61f736340ed2f5b6e7cf6382cff29dd4271fba61ee06bd10211d"
+  },
+  "runtime": {
+    "cwr_commit": "56b01758e896e35a7936753c08829cd5fcf040bf",
+    "cwr_runtime_version": "1.2.3",
+    "hbq_rs_standard_version": "1.2.1"
+  },
+  "scope": "WORK_IN_PROGRESS_FULL_FIDELITY_REBASELINE",
+  "study_id": "hbq-gray-blood-full-book-qpc24-rebaseline-v9-public-result-v1"
+}

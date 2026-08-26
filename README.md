@@ -141,6 +141,7 @@ Stable IDs (`module_id`, `question_id`, `bundle_id`, `criterion_key`) are the pu
 - [Leaf decomposition policy](docs/LEAF_DECOMPOSITION_POLICY.md) — how disputed binary verdicts become bounded rubric maintenance
 - [Validation and repair journey](docs/VALIDATION_AND_REPAIR_JOURNEY.md) — how controlled studies and negative results changed HBQ-RS, including the aggregate-only [QPC1 ceiling result](evaluation-results/hbq-qpc1-figurative-treatment-v1/)
 - [QPC24 full-rubric confirmation](evaluation-results/hbq-qpc24-two-pass-product-confirmation-v5-public-result-v1/) — six complete 221-leaf passes show strong control separation and only a limited author-original versus GPT-5.6 Pro rewrite signal
+- [QPC24 V9 full-book rebaseline](evaluation-results/hbq-gray-blood-full-book-qpc24-rebaseline-v9-public-result-v1/) — work-in-progress, full-fidelity aggregate with no sampling and no rubric promotion
 - [Exact-repeatability result](evaluation-results/cwr-exact-duplicate-repeatability-v1-public-result-v1/) — exploratory replicated arithmetic plus the limits of the imported evidence
 - [Benchmarking](docs/benchmarking.md)
 - [Model training](docs/training.md)

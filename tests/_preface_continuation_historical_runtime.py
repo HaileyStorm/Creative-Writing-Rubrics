@@ -1,8 +1,9 @@
-"""Test-only archived runner binding for the sealed preface continuation chain.
+"""Test-only archived runner binding for sealed preface lineage replay.
 
 The continuation's public binding committed the parent runner at ``e807c5d``.
 It is not a current-runtime acceptance claim: this bridge supplies that exact
-historical byte stream only while replaying the immutable v3-v5 lineage tests.
+historical byte stream only while replaying immutable continuation, analysis,
+and v3-v5 lineage tests.
 """
 
 from __future__ import annotations
@@ -51,7 +52,36 @@ def install(executor: ModuleType) -> ModuleType:
     return executor
 
 
+def install_pilot(executor: ModuleType) -> ModuleType:
+    """Redirect only the sealed pilot executor's runner fingerprint in memory."""
+
+    if getattr(executor, "_preface_historical_runner_installed", False):
+        return executor
+    repository = getattr(executor, "REPOSITORY", None)
+    fingerprint = getattr(executor, "_fingerprint", None)
+    if not isinstance(repository, Path) or not callable(fingerprint):
+        raise ValueError("Preface pilot executor cannot receive the historical runner bridge")
+    current_runner = (repository / RUNNER_RELATIVE).resolve()
+    current = current_runner.read_bytes()
+    if hashlib.sha256(current).hexdigest() == RUNNER_SHA256 and len(current) == RUNNER_BYTES:
+        raise ValueError("Historical runner bridge is obsolete; remove it instead of shadowing current runtime")
+    snapshot = _snapshot(repository)
+
+    def bound_fingerprint(path: Path, *args: Any, **kwargs: Any) -> dict[str, Any]:
+        if path.resolve() == current_runner:
+            _assert_snapshot(snapshot)
+            return fingerprint(snapshot, *args, **kwargs)
+        return fingerprint(path, *args, **kwargs)
+
+    executor._fingerprint = bound_fingerprint
+    executor._preface_historical_runner_installed = True
+    executor._preface_historical_runner_snapshot = snapshot
+    return executor
+
+
 def _continuation(executor: ModuleType) -> ModuleType:
+    if callable(getattr(executor, "_parent", None)) and callable(getattr(executor, "_fingerprint", None)):
+        return executor
     direct = getattr(executor, "_continuation", None)
     if callable(direct):
         return direct()

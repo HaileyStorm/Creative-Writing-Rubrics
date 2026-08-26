@@ -1,189 +1,311 @@
 # Validation and repair: how HBQ-RS learned to distrust its first answers
 
-HBQ-RS did not begin as a promise that a large rubric could deliver an objective literary score. It began with a more modest and more demanding proposition: a creative-work evaluation system should make its questions, scope, evidence, uncertainty, and provenance inspectable. The work since has repeatedly tested that proposition against results that are easy to overread—stable scores, confident answers, sharp criticisms, and apparent improvement—and has repeatedly changed the product when those results failed a closer look.
-
-This is the story of that change. It is not a changelog and it is not a claim of completed psychometric validation. It is a record of reconstruction, publication, controlled comparison, failed assumptions, and the decisions that followed.
-
-## A public rubric had to be reconstructed before it could be trusted
-
-The first task was not simply to publish a collection of creative-writing criteria. It was to turn a large, evolving rubric inventory into a package whose current form could be inspected without erasing its past. HBQ-RS therefore treats a rubric as a versioned system: modules compile into bundles; every binary question has a stable identifier and one criterion owner; and the selected stack, scope, evidence policy, and score all belong to a run's identity.
-
-That design matters because a creative-work result is otherwise deceptively easy to rewrite after the fact. If a criterion changes, an older verdict should not silently acquire a new meaning. If a score is regenerated, its parent, input scope, question set, and aggregation rules should remain recoverable. If an answer is repaired for malformed structure or evidence, the repair should not become an extra vote. The architecture was built around that discipline before it was described as a product feature.
-
-The public package distinguishes editable authored sources from generated registries, manifests, and rendered documentation. It also separates current functionality from historical provenance. HBQ-RS 1.0.0 remains a historical public inventory of 277 modules and 2,139 leaves. The current release is HBQ-RS 1.2.1, with 278 modules, 2,145 leaves, and 85 bundles. Version 1.2.0 added the authored-content-treatment-fidelity module; 1.2.1 integrates the four bounded wording repairs and the repeatability/result surfaces described below. Together they create a migration boundary that downstream adapters must treat as an explicit compatibility problem rather than a copy-and-replace operation.
-
-The resulting system is intentionally not a machine that invents its taste standard after seeing a draft. A stable registry supplies durable craft, scope, form, operation, and provenance questions. A dynamic task module may add bounded questions from the declared task and supplied context, but it is generated before candidates are visible. The design leaves room for a small, controlled holistic component because reader response matters, while refusing to let a single holistic impression hide all of the analytic work.
-
-## Publication was a control, not an announcement
-
-Public release created a second obligation: evidence had to become legible without turning private writing, prompts, model sessions, or raw responses into collateral damage.
-
-The public studies therefore use a recurring pattern. A study contract freezes the question, method, stopping rule, and output rules before execution. Private work roots may hold protected text and raw receipts; public packages contain only authorized prose, aggregate results, deterministic analyses, hashes, commitments, and verification tools. Exact quotations are validated against the evaluated artifact. When a would-be quotation is actually a paraphrase, joined excerpt, or encoding variant, it is labeled as a summary rather than quietly treated as a quote. Rejected calls, repairs, and unresolved outcomes remain visible in the study's accounting rather than disappearing from the narrative.
-
-That structure sometimes makes the public story less tidy, but more honest. A reader can reproduce the arithmetic or verify the package without receiving private material. An attractive result cannot become permission to disclose an author's work. The same discipline governs the [QPC1 aggregate package](../evaluation-results/hbq-qpc1-figurative-treatment-v1/): public aggregate evidence can be useful only as a reviewed descendant of the retained private record.
-
-## Stability was not the same as discrimination
-
-The first repeatability work used the owner-authorized complete story [*The Part That Arrives First*](../evaluation-results/the-part-that-arrives-first-repeatability/source.md). It compared HBQ-RS with implementations derived from established narrative-writing rubrics, using repeated fresh sessions and frozen conditions.
-
-The result was useful precisely because it was not a victory lap. NAPLAN and Oregon were perfectly stable at their score ceilings, while Cambridge was less uniform; HBQ itself had high repeat agreement. That does not mean HBQ had “won,” nor that variance is automatically desirable. Zero movement in a compressed top-end scale cannot tell us whether a method distinguishes excellent work from merely strong work.
-
-Batching exposed a second hidden variable. The same questions changed verdict or applicability when packed in 24-question groups rather than one large batch. One large batch was more repeatable on this case, not generally superior. Batch shape became a frozen part of the method rather than invisible implementation detail.
-
-A later imported exact-duplicate study made the practical gap clearer. Its reported scores favored the creative configuration over an off configuration—median 92.2414 versus 80.2437, with eight of nine descriptive cross-pairs higher—but the public package deliberately calls that an exploratory directional advantage, not a promotion result. The source report did not supply locally verifiable fresh-replicate receipts for every claim. The durable product improvement was therefore the repeatability contract itself: content identity is separated from run configuration; fresh sessions remain distinct replicates; summaries retain median, median absolute deviation, sample standard deviation, range, and per-run commitments; derived reuse is marked as reuse rather than another observation; and paired comparisons bind AB/BA order. That capability remains an experimental library surface, not a new runner default.
-
-Grounding produced a similar correction. Supporting passages that did not exactly match the source were relabeled as summaries; comparator protocols requiring contiguous quotes did retry. Evidence hygiene was part of the result, not decoration around it.
-
-## HANNA showed why repeatability was not objective quality
-
-A stable judge can still be stable in the wrong direction. The next question was therefore not only "Can HBQ-RS repeat itself?" but "What kind of external validity can it claim?"
-
-HANNA offered one limited human-reference axis, not a universal definition of creative quality. A narrow mapping may reveal a wording, selection, or calibration problem; it cannot erase the rubric's unmatched diagnostic coverage. The broader program must test accuracy, coverage, hard-failure recall, revision usefulness, preference direction, refusal behavior, and eventually reader outcomes rather than collapsing “objective quality” into one correlation.
-
-The [paired-polarity analysis](../evaluation-results/hbq-hanna-polarity-paired-analysis-v1/) made the limit concrete: positive and cleanly flipped formulations sometimes disagreed, and averaging them performed worse than positive-only wording under both normalizations. Paired polarity was therefore not a free balancing correction.
-
-That negative result changed the product posture. Paired polarity is not a default corrective and is not a device for selecting the harsher or friendlier answer. If it is ever used, both formulations must be preserved, decoded into canonical meaning, kept separate in provenance, and compared with equal-call-budget controls. The current default remains the positive formulation; paired mode remains a held-out hypothesis for semantically reversible leaves where neither form has demonstrated superiority.
-
-[Confidence diagnostics](../evaluation-results/hbq-confidence-diagnostics-v1/) produced the same lesson. Confidence can describe repeat behavior and uncertainty; it is not truth, coverage, a score weight, or an automatic promotion gate. In an exploratory three-story slice, reallocating budget toward lower-confidence answers was worse on the repeat-consensus proxy than uniform resampling.
-
-## Strictness exposed a sensitivity-materiality tradeoff
-
-The AI-writer preface studies asked whether a strict fictional framing changes what the judge sees. The answer was not simple.
-
-A full AI-writer prefix produced stable failures where the no-prefix condition passed. Only three comparisons had exact evidence suitable for blinded review; all three criticisms were textually supported, but materiality was disputed and the rest were excluded for incomplete evidence.
-
-The strongest safe conclusion is narrow. The prefix may improve sensitivity to real issues in a small audited slice while reducing specificity about whether a local issue should become a scope-level binary failure. It does not establish AI authorship. It does not prove every prefix-only failure correct. It does not show that a stricter frame should automatically become canonical.
-
-Quote repair reinforced the same boundary. A quote-only repair can correct grounding while preserving a verdict, but it is neither a new replicate nor a second vote. A full re-grade is a different operation, with different prompts and provenance. The preface analysis intentionally keeps its historical missing cell visible and labels a repaired sensitivity result separately rather than manufacturing a complete score.
-
-The response became a [full-book policy](LEAF_DECOMPOSITION_POLICY.md), not a reactive wording patch. A valid localized issue is a revision note; it becomes scope-level `NO` only when proposition, activation, evidence, and materiality all match the declared scope. Disputes receive typed first remedies. Splitting needs recurring independent evidence, separate child ownership, replacement rather than duplication, preserved total influence, and a non-problem holdout.
-
-## External models supplied suggestions, not authority
-
-The work also tested whether owner-attested no-incremental-charge subscription or allowance routes could broaden design review without becoming hidden production judges.
-
-Grok Build supplied useful provisional design input. Broker comparisons helped articulate a stable repeat slot—`(leaf, repeat_index)`—and the rule that repair replaces or completes that logical sample instead of adding a vote. It also supported a staged experiment design: isolate aggregation first, vary one factor at a time, compare a singleton with a meaningful carrier before filling out a batch curve, and preserve a frozen holdout for any candidate change.
-
-The Grok evidence was deliberately bounded. It requested `grok-4.6` but reported `grok-4.6-build` without attesting accepted reasoning, and early advice overreached about batch shape and retry evidence. The [public comparison](../evaluation-results/hbq-grok-build-broker-comparison-v1/) records the correction. Grok remains advisory, never causal proof or a replacement for GPT-5.6 core arms.
-
-Ox Alpha supplied a different lesson: recovery must be defined before failure. Its supplemental runs use small, sealed work units, with a retry allowed only after a narrowly verified transport failure with no inbound result, checkpoint, or ambiguity. A 524 with uncertain terminal state is not a reason to resend a prompt and hope. A charge signal or HTTP 402 produces a global stop. Ox outages did not invalidate completed evidence, but neither were they permitted to block core work or create outcome-dependent replacements.
-
-Failures and recoveries therefore became part of the method. A provider can be useful without being continuously available. A completed transport can still carry only provisional evidence. A route can widen the set of hypotheses without receiving authority to choose a rubric design.
-
-## *Gray Blood* made scope, provenance, and authorship concrete
-
-The [*Gray Blood* case study](../evaluation-results/gray-blood-ch1-6/) is where these controls became practical. The GPT-5.6 Pro rewrite leads the current whole-work result, while the author-original leads in several domains and later chapters. That mixed shape is a diagnostic under one disclosed rubric and scope, not a verdict that one draft is simply “better.”
-
-Only five authorized excerpts are public; no other manuscript prose, prompts, response text, paths, or execution identifiers are. Authorship is explicit: four are GPT-5.6 Pro rewrites and the Chapter 5 comparison distinguishes author-original text. The excerpts were not separately scored and do not explain the headline difference.
-
-This boundary is part of the design, not a temporary embarrassment. Full chapters may support private development and evaluation where authorized, with destination and run provenance. Their privacy does not disappear because a result is interesting. Likewise, the existing batched comparison is historical evidence. The current full-book successor is a provider-free plan, not a result: it covers all eligible leaves at manuscript and chapter scope—3,406 verdict positions in 156 first-pass calls, with no leaf sampling. Staging can reduce repetitions or change scheduling, but not quietly turn full fidelity into sparse coverage. It will be regenerated against the next clean pushed rubric head before execution. A case study must not pressure the system into declaring an unstable method finished.
-
-## HBQ-RS 1.2.0 added a treatment target, not a permission system
-
-The 1.2.0 release made a related conceptual repair. Creative work can have an intended treatment level: implication, directness, explicitness, graphic detail, register, euphemism, and related choices. A useful evaluator should be able to judge fidelity to a declared target in both directions. Work can be too evasive for the target or too explicit for it.
-
-The new authored-content-treatment-fidelity module supplies that ability as an opt-in, stable-ID rubric module. It does not create a creative-content permission taxonomy, a moderation regime, or an assumption that greater explicitness is artistically better. The target belongs to an explicit profile axis or user instruction; mature subject matter alone never activates the module or supplies the desired treatment. This is a change in what the rubric can inspect, not an expansion of what it authorizes.
-
-For a downstream adapter, the release is upstream source rather than a drop-in overwrite. Existing project verdicts must remain replayable under their recorded identities. A newer book cannot silently relabel old criteria, substitute a newer manifest, or rewrite historical score provenance. The [integration handoff](PALIMPSEST_HANDOFF.md) therefore treats version, registry hash, compiled bundle hash, selected stable IDs, adapter version, and compatibility-map version as durable run evidence.
-
-## QPC1 clarified the need for repair
-
-QPC1 was an early, useful negative result—not the endpoint of the program or its newest result. It asked whether one-leaf execution alone could recover a desired figurative-language distinction in the *Gray Blood* comparison after a strict fictional-provenance frame and a cumulative-evidence overlay were introduced. It did not.
-
-All 105 QPC1 judgments were accepted and schema-valid; every one of its 21 artifact-by-leaf cells received five `YES` verdicts. This was not a technical failure but a ceiling: the protocol did not discriminate among the three artifacts.
-
-Independent replay reconciled the checkpoints, inputs, sessions, and `analysis.v2.json` byte-for-byte. But QPC1 selected seven `penalty.purple_prose` leaves, not `no_default_metaphors`; earlier stock-metaphor failures had not “vanished,” because QPC1 tested different propositions.
-
-The replay exposed a confirmed routing defect: a declared complete scope existed in contract provenance but not in the judge prompt, so two six-chapter works were presented through a short-story contract. The overlay may also have helped create the ceiling, but QPC1 did not ablate these causes.
-
-This is exactly the kind of negative evidence the system was built to retain. The right response was not to weaken the author's judgment, manufacture variance, or add a density criterion because the result felt unhelpful. The ownership map remained intact: `no_default_metaphors` owns stockness; purple prose owns excessive density, proportion, and fatigue. QPC24 stayed held. The first small candidate was a prompt-and-scope treatment that rendered the declared evaluation unit, required a full-scope counterexample search for avoidance or cumulative-pattern leaves, permitted `CANNOT_ASSESS` when coverage was inadequate, and kept a localized issue as a revision note unless it was material at the declared scope. DSPy and an optimizer remained available only as a development-time fallback: any proposed text still had to be reviewed, frozen, and confirmed, and DSPy could not become a runtime dependency or judging path.
-
-The [aggregate-only public package](../evaluation-results/hbq-qpc1-figurative-treatment-v1/) publishes this result without manuscript prose, prompts, evidence quotations, private aliases, paths, or provider/session identifiers. It discloses the protocol geometry, aggregate verdicts, limitations, and commitments to the retained private verification receipt. It does not publish a composite score or claim artifact equivalence, rubric validity, human alignment, or correct ground-truth labels.
-
-The later whole-poem architecture screens tested whether a smaller scope instruction could recover the missing boundary without changing ownership. The first treatment matched 13 of 21 cells; the narrower successor matched 16 of 21. Both remained `NO_GO_CANDIDATE`. Several residual misses were tied to disputed carrier or oracle assumptions rather than a clean wording defect, so the branch did not justify a rewrite, split, or reweight. That was forward progress: it separated a plausible prompt idea from an evidential basis for changing the book.
-
-## The repair had to make operations boring before it could make judgments better
-
-QPC1 left two different jobs. One was conceptual: make the declared scope and the evidence rule visible in the judge prompt. The other was operational: make a completed logical attempt impossible to accidentally count twice. The second job sounds less literary, but it turned out to be a prerequisite for trusting any future figurative experiment.
-
-The `terminal_sidecar_v1` repair writes immutable start and settlement records bound to a logical slot, frozen request, receipt, checkpoint, and verdict. On restart it distinguishes never-started, settled, and ambiguous attempts; ambiguity cannot become a duplicate send.
-
-Missing or mixed records, unexpected batches, unknown artifacts, altered reconciliation, and unresolved starts now stop or require reconciliation rather than creating an extra sample. Structured refusals are also terminal. Earlier formats remain readable historical evidence; new runs opt into the sidecar protocol.
-
-A fresh singleton smoke test then completed one GPT-5.6 Sol/high logical attempt with exactly one start record, one settlement, one checkpoint, and one verdict. It is intentionally modest evidence. It demonstrates that the new mechanics can record a clean ordinary run; it does not prove that every provider, carrier, or interruption pattern is now solved. But it removed an operational ambiguity from the next experiments. In a system where results may influence revision advice, “probably did not resend” is not a satisfactory property.
-
-The first substantive repair was deliberately manual and narrow: the [manual figurative treatment](../evaluation-results/hbq-figurative-scope-treatment-v1-execution-v1/) rendered the missing task-contract scope, asked for full-scope counterexamples before escalating an avoidance or cumulative-pattern concern, and stated that inadequate coverage should yield `CANNOT_ASSESS`. It was a prompt treatment, not a rewrite of the figurative leaves.
-
-The resulting 168-call singleton comparison was clear enough to stop promotion, but not clear enough to explain itself away. Every call accepted. On the stockness arm, the treatment moved from 33 of 36 expected labels to 34 of 36; on the proportion arm, it moved from 28 of 36 to 27 of 36. Fatigue controls were 12 of 12 in both conditions. The isolated-revision-note case changed from zero of three to one of three expected calls, while recurring-pattern, `CANNOT_ASSESS`, and ordinary control cases did not supply the hoped-for broad recovery. The treatment had not reliably restored the intended distinction, and the shift was not a basis for selecting a more flattering outcome. The result was a `NO_GO`.
-
-That mattered because it overturned a convenient explanation for QPC1. It was plausible that the missing scope declaration was the whole problem. The manual repair showed that it was a real defect worth fixing, but not a magic key. A better prompt can still leave ambiguous artifacts, inconsistent decision boundaries, or a rubric proposition whose treatment requires more evidence than one prompt edit can supply. The project did not respond by adding a density leaf, changing ownership, splitting a criterion, or adjusting weights. `no_default_metaphors` still owns stockness; purple prose still owns density, proportion, and fatigue.
-
-At the same time, the future human-reference axis was protected instead of rushed into service. A private LAMP50 package froze fifty archived, authorized human-signal bases and 150 related edits, with its source material and scoring record kept out of the public repository. It is a holdout-like development resource, not a newly recruited judging panel and not a claim that historical reference is universal literary truth. Its purpose is to make later calibration claims confront a broader signal than the prompt designer's intuitions. It remains sealed while the figurative prompt is unstable.
-
-## DSPy was useful because it failed within a fence
-
-The manual `NO_GO` opened a bounded development-only use of DSPy and an optimizer. This was not an attempt to make an optimizer the evaluator. DSPy was permitted to propose four candidate versions of the figurative prompt against a private training partition; all candidate text, scorer behavior, provider route, repeat rules, and promotion conditions were frozen before execution. It could neither inspect selection or confirmation material nor make a runtime decision in HBQ-RS. A candidate had to earn advancement through the same reviewed evidence path as a hand-written prompt.
-
-Two ordinary launcher faults stopped before any model call: Windows authentication status arrived on standard error, and the optimizer loading path omitted its normal module registration. Both were repaired and recorded as zero-call setup failures, not as weak candidates. That mundane distinction matters: a failed launch is not negative evaluation evidence.
-
-The [DSPy v1 run](../evaluation-results/hbq-figurative-scope-dspy-successor-v1/) made 84 accepted GPT-5.6 Sol/high calls with clean receipts and no selection or confirmation access. None of its four candidates reached the frozen training gate. The remaining misses clustered in the purple-prose proportion decision, which narrowed the problem without demonstrating that all figurative handling was broken.
-
-The detailed review made the next move smaller, not larger. Two examples had ambiguous compressed context, and one lay on a wording boundary where the candidate behavior varied. The proposed v2 repair revised only those private training artifacts, held the selection and confirmation partitions closed, preserved historical unaffected training cells only when their frozen bindings exactly matched, and required both surviving candidates to qualify before any selection work could begin. If both ever qualified, a predeclared shorter-prompt tie-breaker would decide between them; no result could be rescued by choosing a candidate after looking at the outcomes.
-
-The [v2 successor](../evaluation-results/hbq-figurative-scope-dspy-successor-v2/) then exposed an overstrict mixed-evidence validator: a schema-valid response containing both a grounded quote and a typed summary was terminally rejected, so the run remained immutable `INCOMPLETE` rather than being rerun or rewritten. The [v3 successor](../evaluation-results/hbq-figurative-scope-dspy-successor-v3/) added the production-compatible regression and checked the one accepted miss already available under the frozen qualification rule. That miss made advancement impossible, so v3 returned a zero-call `NO_GO`; selection and confirmation stayed closed.
-
-A later whole-poem DSPy compile failed in a more informative way. It completed 44 confirmed contacts, yet every mechanical evaluation scored zero because the harness simultaneously required literal four-state labels that the model-facing prompt forbade and exact-substring evidence that the signature never requested. The exported instruction was identical to the baseline, so nothing had been optimized. A provider-free semantic review found the default at 7/8 and the four trials at 5/8, 6/8, 5/8, and 4/8, with the complete-single-part `NOT_APPLICABLE` boundary missed throughout. The formal result is `HARNESS_INVALID_OPTIMIZATION_NO_TRANSFER_NO_PROMOTION`: useful diagnosis, no transferred wording, and no runtime DSPy dependency.
-
-The cost boundary is worth saying plainly. GPT-5.6 remains the required core evaluator for these studies. Owner-attested subscription access can permit a zero-incremental-charge development run, but it is still a finite resource and cannot turn a speculative prompt search into free evidence. Grok comparisons can offer provisional, zero-charge design criticism where the route is available, but their reported model and reasoning conditions are not accepted as production evaluation proof. No paid evaluation was substituted in, and no fresh human judging was solicited to rescue a disappointing result. The productive response was to make the negative result more legible, not to buy a different answer.
-
-At that checkpoint, the figurative package was held at a useful boundary. There was a repaired prompt-routing mechanism, a stronger attempt lifecycle, a manual treatment that did not promote, a sealed LAMP50 resource, and an optimizer experiment that was allowed to fail without leaking its holdouts. Later manual confirmation supplied the evidence for a small wording integration, while the optimizer lineage remained negative. The lesson was not that automation had failed the project; it was that automation had revealed where its own measurement was broken before that measurement could shape the rubric.
-
-## The next ownership screen failed differently
-
-The [full-leaf audit](../evaluation-results/hbq-full-leaf-structural-audit-v1/) did not turn every suspicious surface pattern into a repair. Semantic review rejected 396 of 808 candidates as false positives, classified 276 as intentional specialization, left 59 on watch, and routed only 77 to bounded [first-remedy experiments](../evaluation-results/hbq-first-remedy-portfolio-v1/). The 1,140-singleton-call ceiling is not a quota to consume: each package can stop its branch, and no schedule can authorize a wording change.
-
-The [premise-scale ownership screen](../evaluation-results/hbq-premise-scale-ownership-v1-result-v1/) tested two similarly worded leaves with twelve public synthetic artifacts, matched four-state controls, and an opposite-target jointly active case. It was a diagnostic failure, not a ceiling effect: the expected states did not repeat reliably enough to clear its clarification gate. The result kept wording, ownership, splitting, and weighting unchanged.
-
-The settlement briefly looked like an infrastructure failure. Every accepted checkpoint prompt differed from its frozen rendered prompt. Independent byte review showed that all 72 differences were exactly the same Windows transport conversion: the rendered files used LF, while the production checkpoints used CRLF. Raw checkpoint hashes still matched their stored prompt commitments, all 72 provider sessions and checkpoint chains were distinct, every call had been accepted on its first attempt, and the complete evidence verifier passed once the representation difference was handled in one direction only. A settlement-only successor therefore preserved the original `INCOMPLETE` record, reused every call, rejected lone carriage returns and every content change, and wrote a separately named result. The episode was practical rather than exotic: byte equality is valuable, but a validator should not confuse a known line-ending transport with changed instructions. Future executors must freeze and verify that behavior before a call is allowed.
-
-That failure changed how the already-frozen portfolio was staged. [P1](../evaluation-results/hbq-polarity-change-current-wording-v1-result-v1/) covered eleven polarity leaves; [S1](../evaluation-results/hbq-poetry-scope-sentinel-v1-settlement-successor-v1/) covered five poetry-scope leaves; [S2](../evaluation-results/hbq-nonpoetry-scope-final-manual-v1-settlement-successor-v1/) covered non-poetry scope; and [L2](../evaluation-results/hbq-other-lexical-overlap-ownership-v1-settlement-crlf-lf-repair-v1/) covered three remaining lexical-ownership pairs, including real image inputs. Their early results were deliberately inconvenient: P1, S1, and the first S2 sentinel were diagnostic failures; L2 verified 216 completed slots after a narrowly bounded CRLF-to-LF settlement repair but remained a diagnostic failure. Those are signals to diagnose, not licenses to retry toward a preferred answer.
-
-So the repairs stayed small and manual. The polarity review clarified the boundary between `CANNOT_ASSESS` and applicability and exposed thin or ambiguous fixtures. The scope review corrected four fixture assumptions. Its first passage-status treatment improved one missing-evidence cell but missed its gate and remained `DIAGNOSTIC_FAIL`.
-
-The subsequent S2 development treatment supplied a real positive scope signal without pretending to be a promotion. In its settled four-fixture comparison, baseline passed 9/12 target states and candidate passed 12/12; material-failure states moved from 0/3 to 3/3. That earned a separately frozen disjoint holdout. The [48-call holdout](../evaluation-results/hbq-nonpoetry-scope-disjoint-holdout-v1-execution-v1-public-result-v1/) preserved all four control cells in both arms and moved explicit material-failure cases from 0/2 under the baseline to 2/2 under the candidate. But the candidate returned `YES` on both silent or unavailable-disposition cells whose frozen oracle expected `CANNOT_ASSESS`, leaving it at six of eight cells and a formal `NO_GO`. The result did not erase the improvement; it located the remaining dispute. The treatment asks whether the supplied evaluation avoids a penalty, while the oracle asks whether exemption status is explicitly knowable. A [six-call semantic-boundary successor](../evaluation-results/hbq-nonpoetry-scope-semantic-boundary-successor-v1-public-result-v1/) then separated those concepts cleanly: all three cases reached 2/2, including the no-evaluation-record `CANNOT_ASSESS` case. That result opened independent review and one fresh confirmation only. The [fresh v2 confirmation](../evaluation-results/hbq-nonpoetry-scope-disjoint-confirmation-v2-public-result-v1/) also reached 6/6 on new carriers, and independent wording review returned `GO` for the exact candidate. At that point it was evidence awaiting integration; the current registry now contains the approved S2 wording while its historical result packages correctly retain `promotion: none`.
-
-The first P1 polarity development treatment was a noncausal perfect development-screen pass: all 57 singleton calls were accepted, and all 19 artifact-by-leaf cells matched in all three repetitions. It looked encouraging, but it did not establish an accuracy-repair win. The immediately following same-fixture [current-versus-treatment holdout](../evaluation-results/hbq-polarity-change-manual-treatment-holdout-v1-result-v1/) did not recover a treatment benefit: controls passed 12/12 in each arm, both arms passed 15/16 target cells, and raw target matches were 47/48 current versus 46/48 treatment. The predeclared `NO_EFFECT` result means no qualifying benefit met the frozen gate, not equivalence. A later [bounded discordance audit](../evaluation-results/hbq-p1-discordance-audit-v7-public-result-v1/) accepted both planned study-review contacts and classified the remaining disagreement as same-input variance rather than appendix harm, validator error, fixture-ledger error, or a shared prompt gap. The appendix remains retired, no change is promoted, and DSPy is not warranted for that branch.
-
-S1 also became narrower rather than simply failing again. Its [24-call repetition treatment](../evaluation-results/hbq-poetry-free-verse-repetition-treatment-v1-execution-v1-public-result-v1/) moved the candidate target from the current wording's 2/3 to 3/3 and preserved six clear controls, but all three repeats of one expected-`NOT_APPLICABLE` control returned `NO`. The fixture used parallel declarative syntax that can reasonably count as structural recurrence, and the candidate consistently applied its rule for recurrence that does not change pressure or meaning. The frozen decision is still `NO_GO`, but the wording was not substantively falsified. The smallest successor was therefore one clean absence-of-recurrence control, not another broad rewrite or an optimizer run. That [three-call successor](../evaluation-results/hbq-poetry-free-verse-repetition-clean-na-successor-v1-execution-v1-public-result-v1/) also returned three valid `NO` outcomes rather than the expected `NOT_APPLICABLE`, so it is a clean-control `NO_GO` with no automatic follow-on. It narrows the open question again; it does not prove a broader wording failure. A later [four-state v2 screen](../evaluation-results/hbq-poetry-free-verse-repetition-four-state-applicability-treatment-v1-execution-v2-public-result-v1/) supplied a different positive signal: all twelve calls agreed with the four-state oracle, 3/3 per state. But two responses used summaries where the frozen study required exact quotations. Its strict evidence result was 10/12, so the formal outcome is `NO_RESULT`, with no promotion, holdout, or DSPy follow-on. Good semantic discrimination cannot waive a declared evidence rule. A subsequent [v6 attempt](../evaluation-results/hbq-poetry-free-verse-repetition-four-state-applicability-treatment-v1-execution-v6-public-result-v1/) is a different kind of no-result: one acknowledged provider contact reached an HTTP 400 schema error before any usable content, checkpoint, verdict, or settlement existed. Eleven slots remained untouched. That is transport evidence only—not a wording, fixture, or model-inference result—and it authorizes no retry-by-interpretation, holdout, DSPy, or promotion. The later [v9 aggregate result](../evaluation-results/hbq-poetry-free-verse-repetition-four-state-applicability-treatment-v1-execution-v9-public-result-v1/) stopped even earlier: a frozen surrogate prompt did not byte-match the inherited execution renderer, so no dispatch or provider contact occurred and all twelve planned slots remain untouched. The parity diagnosis was reconstructed from the frozen material and inherited renderer because no separate failure receipt exists. That pre-provider parity failure is a formal `NO_RESULT`, not a semantic outcome. It authorizes no retry or resume of that claimed root, and no DSPy, holdout, promotion, or rubric change. The fresh [v10 screen](../evaluation-results/hbq-poetry-free-verse-repetition-four-state-applicability-treatment-v1-execution-v10-public-result-v1/) repaired the renderer freeze instead of changing the candidate: all twelve singleton first attempts were accepted, each of the four expected response states reached 3/3, no response needed normalization, and every accepted record carried grounded exact-quote evidence. That is a real positive development result, but a bounded one. It opens one fresh disjoint holdout only; there is still no promotion, DSPy work, split, reweight, or runtime change. The first execution of that fresh [v2 holdout](../evaluation-results/hbq-poetry-free-verse-repetition-four-state-disjoint-holdout-v2-execution-v1-public-result-v1/) then stopped after one accepted first attempt: the runner prompt and frozen prompt differed in raw newline bytes despite matching after CRLF-to-LF canonicalization. The response is therefore non-voting, the remaining eleven slots are untouched, and the formal outcome is `NO_RESULT_PROMPT_BYTE_BINDING_FAILURE`, with `TRANSPORT_NEWLINE_MISMATCH` as the cause. It is transport evidence only, with no retry, resume, promotion, or DSPy inference.
-
-The corrected four-carrier [v3 successor](../evaluation-results/hbq-poetry-free-verse-repetition-four-state-disjoint-holdout-v2-execution-v3-public-result-v1/) did complete its twelve planned first attempts. Three state families held three of three, but the intended `NO` carrier returned one `NO` and two `YES` outcomes. That is not a usable negative verdict on the wording; it is a repeatability stop: three of four repeated logical samples were stable, and the terminal disposition is `INVALID_POSTCONTACT_NO_RETRY`. There is no settlement, promotion, DSPy follow-on, retry, or resume for that root. The narrow [incidental-recurrence v2 successor](../evaluation-results/hbq-poetry-free-verse-repetition-incidental-determiner-holdout-v2-execution-v2-public-result-v1/) then returned grounded `NO` on all three fresh first attempts, without retry, rejection, or normalization. It restores a clear `NO` carrier alongside the three stable v3 families, making the practical four-state matrix 12/12 across its clear cases; the earlier coordinate carrier remains non-voting lineage. Its settlement opened the next holdout gate. The historical packages retain `promotion: none`; independent review subsequently approved the current S1 wording integration.
-
-The figurative successor reached an equally useful stop. Its [72-call Phase A result](../evaluation-results/hbq-figurative-metaphor-checklist-successor-v1-execution-v1-public-result-v1/) was overwhelmingly `NO`, and the target, stockness control, and proportion control all missed their gates. Independent review showed why the shared factorial design could not isolate those constructs. The supposed stockness-YES carriers contained other default-seeming images; the supposed low-density carriers placed several figures into very little material; and some target fixtures added competing imagery while assuming compatibility remained unchanged. The result is `FIXTURE_OR_OWNERSHIP_INVALID_NO_GO`, not evidence that the target wording is irreparable. Phase B stayed disabled, the real holdout remained unopened, `no_default_metaphors` retained stockness, and purple-prose proportion retained density. The obsolete shared fixture pattern remains preserved as negative lineage while the next pilot isolates one clear YES and one clear NO for each owner. That [isolated-anchor pilot](../evaluation-results/hbq-figurative-isolated-anchor-pilot-v1-execution-v1-public-result-v1/) then passed both owners' controls 12/12 and reached 5/6 on the experimental metaphor checklist: its cooperative anchor was 3/3, while its incompatible-imagery anchor was 2/3. The formal result is `MANUAL_TARGET_UNSTABLE_NO_GO_DSPY_ELIGIBLE`: useful evidence of one unstable target cell, not a stable substantive wording failure. A later [static DSPy boundary search](../evaluation-results/hbq-figurative-dspy-boundary-search-successor-v1-public-result-v1/) made the limit clearer. It completed all 72 calls cleanly, selected the two best static candidates after TRAIN, then gave each 8/12 on DEV: all eight positive expectations matched and all four negative expectations missed, with every DEV verdict `YES`. The result is publishable aggregate negative evidence, not candidate advancement or confirmation. The next treatment needed an artifact-grounded hinge beyond merely conjoining opposing implications. DSPy remained development-only and no figurative wording was promoted at that stage.
-
-The next manual hinge treatment had a more encouraging but still bounded shape. Its [eight-contact aggregate result](../evaluation-results/hbq-figurative-hinge-treatment-successor-v5-public-result-v1/) matched seven frozen expected states: the three clear cases held at two of two, while one negative control split across its two repetitions. That is a genuine positive signal for the artifact-grounded hinge direction, rather than another all-`YES` ceiling. But it is not stable enough to become a wording change. The formal result is `MANUAL_HINGE_TREATMENT_POSITIVE_SIGNAL_BUT_UNSTABLE_NO_GO`: no promotion, split, reweight, or fresh 18-call confirmation. The retained problem is now much smaller and concrete—why the one matched-form negative control varied—not a license to declare the figurative package solved.
-
-The v7 repair then made the diagnostic screen smaller and cleaner. Its [six-contact aggregate result](../evaluation-results/hbq-figurative-hinge-treatment-successor-v7-public-result-v1/) reached six of six exact expected states, two of two for each of its three public synthetic controls. This is a genuine positive result: `HINGE_TREATMENT_V7_SMALL_DIAGNOSTIC_PASS`. A stdout summary had a hardcoded eight-contact count, but its bound receipts prove six contacts; the discrepancy is reporting-only and did not justify a rerun. The pass opened one fresh 18-contact control-first confirmation and nothing broader.
-
-That fresh [18-contact control-first confirmation](../evaluation-results/hbq-figurative-hinge-control-first-confirmation-v1-public-result-v1/) then supplied the next positive signal. Every contact was accepted on its first attempt with valid source-quote evidence; all six public synthetic case identifiers reached their expected state three times of three. There were no retries, rejections, or normalization events. The formal result is `FORMAL_PASS`, which made the unchanged treatment eligible for independent promotion review. That review approved the current figurative wording integration without splitting a leaf or moving an owner or weight; its historical result packages still retain `promotion: none`. The broader full-book rebaseline remains held until the pushed registry head is stable. The public projection reports only aggregate counts and commitments; the zero-charge route is described as configured and acknowledged rather than as a billing audit.
-
-The later [L2 construct microgate](../evaluation-results/hbq-l2-construct-microgate-v2-execution-v2-public-result-v1/) was a different, much smaller question than the older 216-slot lexical-ownership study. It asked whether line-break construct signal could survive a production-compatible evidence normalization step. All 36 singleton calls completed, with one normalization event; all four target cells matched their expected states in all three repeats—a promising development signal, not an all-`YES` result. But only six of eight controls reached 3/3, and both failed controls were `c03` visual controls at 0/3. The immutable decision is therefore `NO_GO`, with no promotion. That is useful progress rather than a dead end: the target wording now has a positive expected-state agreement signal, while the control failure says the next design must repair the construct harness before treating that signal as a rubric change.
-
-The next L2 sequence removed images first. An intervening 24-call text-only holdout left a stable arbitrary-wrap false positive and one necessity-control variance, so it remained `NO_GO`. The subsequent contextual treatment made the line-break question more specific: a line break had to make a controlled, legible, and contextually justified contribution, rather than merely create a pause or a pattern. The resulting [text-only treatment](../evaluation-results/hbq-l2-line-breaks-contextual-justification-treatment-v1-execution-v1-public-result-v1/) completed all 18 first-attempt singleton calls with no images and no normalization events. It was neither a washout nor a pass. Fixture `t02` improved from 0/3 to 2/3 correct, showing that the added context language can suppress part of the earlier false-positive behavior; one post-hoc rhythm `YES` remained. Fixture `t06` reached 1/3 because threshold imagery made its hard-`NO` oracle materially disputed. Four of six cells were 3/3, so the frozen outcome is `NO_GO_DSPY_ELIGIBLE_ONLY`, not promotion. The response is deliberately modest: preserve the evidence, clean that disputed fixture, and try a narrower manual v2 before asking DSPy to propose anything.
-
-That v2 was deliberately a material-context cleanup, not a wholesale rewrite. It retained the narrow question, repaired the disputed development material, and kept the screen text-only and one leaf at a time. The [v2 result](../evaluation-results/hbq-l2-line-breaks-contextual-justification-treatment-v2-execution-v1-public-result-v1/) fully discriminated its six development cases: all 18 first-attempt calls completed, every cell was 3/3, and the aggregate included `YES`, `NO`, and `NOT_APPLICABLE` outcomes rather than a reflexive all-`YES`. The result was `HOLDOUT_ELIGIBLE_ON_SUCCESS`, an earned positive repair signal. At that stage it was not yet a rubric change: the next move was a fresh disjoint holdout, followed by independent review if that holdout confirmed the effect; DSPy remained unused.
-
-The [fresh disjoint holdout](../evaluation-results/hbq-l2-material-context-disjoint-holdout-v1-execution-v1-public-result-v1/) did confirm it. Its five new cases produced all 15 first-attempt singleton completions, with every cell at 3/3 and a mixed aggregate of six `YES`, six `NO`, and three `NOT_APPLICABLE`; there were no images or normalization events. Independent review approved the smallest supported change, and the registry now contains it: the line-break question asks whether each supplied break materially strengthens its immediate poetic context beyond merely creating a detectable pause, interruption, or repeated pattern. The module version moved from 1 to 2, while the stable leaf ID, key, owner, type, weight, severity, evidence policy, module influence, registry counts, and HBQ-RS 1.2.0 package version remained unchanged. DSPy was neither implemented nor used. This is the journey's clearest positive result: a false-positive problem survived diagnosis, a narrower manual treatment, a cleaned development screen, a fresh disjoint holdout, and independent review before one bounded wording change entered the public rubric.
-
-## What the journey now supports
-
-The project has become more demanding about what a result is allowed to mean.
-
-### Current integration status
-
-Four small, independently reviewed wording repairs are now installed in the current HBQ-RS source: S1 clarifies recurrence and applicability; S2 avoids penalizing an explicitly declared excerpt or fragment for incompleteness; the figurative leaf requires an artifact-grounded hinge when linked images carry opposing implications; and the free-verse line-break leaf requires a material contribution to its immediate poetic context rather than a detectable pause or pattern alone. Their historical study packages remain truthful snapshots with `promotion: none`, because those results preceded the separate integration decisions. No leaf split, ownership reassignment, reweighting, or runtime dependency accompanied the changes.
-
-QPC24 then reopened as a full-rubric product check rather than another one-leaf experiment. Its recovery lineage preserves failed and partial roots instead of pretending they were completed evaluations. V5 validated the inherited chains, excluded the entire incomplete control-r2 pass, and completed ten untouched control-r3 batches without retry. The resulting six complete evaluations cover all 221 eligible prose-novel leaves: 60 logical calls and 1,326 verdict positions. Within-artifact agreement was 207/221 for the author-original, 200/221 for the GPT-5.6 Pro rewrite, and 214/221 for the public control. The two *Gray Blood* variants differed stably from the control on 48 and 43 leaves, while author-original and rewrite differed stably on only four. That overturns QPC1's universal-pass picture: the current engine has strong broad discrimination, but only a limited author-versus-rewrite signal and no basis for a decisive ranking. It is still not the full-book result. After the next clean pushed head, the private *Gray Blood* freeze must be regenerated and the full-fidelity rebaseline run before this validation-and-repair cycle can be called complete.
-
-Stability is not validity. Confidence is not truth. A sharper criticism is not necessarily a material scope-level failure. A repaired quote is not another vote. A route that is available without incremental payment is not automatically trustworthy enough to decide product behavior. A public score is not permission to release private prose. A candidate leaf split is not an improvement until it survives its remedy ladder, confirmation, and holdout.
-
-Those are not merely caveats. They are product decisions: immutable evidence, typed repairs, explicit scope, strict quote handling, controllable batch shape, visible confidence, bounded external-model roles, privacy-safe public packages, stable criterion ownership, and deliberate migration. The aim is not to make creative judgment mechanical. It is to make its machinery visible enough that a writer, evaluator, or downstream product can disagree with a result without having to guess how the result came to be.
+HBQ-RS was never meant to turn creative judgment into a machine that announces
+an unquestionable winner. Its more useful promise is narrower: make the
+questions, scope, evidence, uncertainty, and repairs visible enough that a
+writer or downstream product can inspect and challenge them. This document is
+the public story of putting that promise under pressure.
+
+It is not a changelog or a claim of completed psychometric validation. It is a
+work-in-progress account of reconstruction, publication, comparison, negative
+results, and a handful of repairs that earned their way into the book. It
+intentionally omits private manuscript prose, prompts, response text, private
+identifiers, execution locations, and individual findings.
+
+## Reconstructing a public book without rewriting its past
+
+The first problem was publication. A large private rubric inventory cannot
+become a useful public dependency merely by copying files into a repository.
+Its current form must be inspectable, but prior verdicts also must not acquire
+new meanings because a criterion, bundle, or renderer changed later.
+
+The public package therefore distinguishes authored inputs from generated
+registries and documentation, and distinguishes current functionality from
+historical source provenance. The historical public inventory remains a
+277-module, 2,139-leaf, 85-bundle reference. The current standard is **HBQ-RS
+1.2.1**, with **278 modules, 2,145 leaves, and 85 bundles**. Current CWR
+runtime releases 1.2.2 and 1.2.3 repaired delivery and execution machinery;
+**CWR 1.2.3 distributes the unchanged HBQ-RS 1.2.1 standard**, rather than a
+new rubric version.
+
+That distinction is practical. A saved result binds its selected stable IDs,
+question text and hash, scope, evidence policy, aggregation, and runtime
+identity. A newer package cannot silently relabel an older verdict. A repaired
+response is not an extra vote. A historical reconstruction is not represented
+as the unavailable original bytes. These are ordinary product controls, but
+they proved necessary before the larger validation work could be interpreted.
+
+Public release created a second obligation. Interesting evaluation evidence is
+not permission to release a writer's prose or a model's raw response. Public
+packages therefore expose aggregate outcomes, reviewed methods, and local
+verification where possible, while protected material and exact execution
+receipts remain private. Quotation rules are similarly literal: a supported
+summary may be useful, but it must not be passed off as a quote. Those rules
+sometimes make a result less theatrical. They also make the public record more
+useful.
+
+## Repeatability was a beginning, not an answer
+
+Early repeatability work showed why a stable number is not automatically a good
+number. On a complete authorized story, some established comparison rubrics
+were nearly fixed at a ceiling. HBQ-RS also showed high repeat agreement. None
+of that alone established discrimination, accuracy, or revision usefulness. A
+system can repeat a broad judgment and still be unable to separate strong work
+from merely competent work, or repeat a bias with impressive confidence.
+
+Batching made that lesson operational. Verdicts and applicability could change
+when the same questions were grouped differently. Batch shape therefore became
+part of a study contract: the logical sample, batch geometry, session boundary,
+repair rule, and stopping rule must be declared rather than improvised after a
+result appears. The resulting repeatability surface records fresh repeats as
+fresh repeats, derived reuse as reuse, and repair as repair. It does not turn a
+retry into another observation just because a table is easier to read that way.
+
+This changed the product more than a single score comparison could have.
+Repeatability now means a frozen method with visible conditions, not merely an
+attractive summary statistic. It also leaves room for practical constraints:
+full-fidelity evaluation remains possible and is the default when its declared
+scope calls for it, while cheaper diagnostics can be explicitly scoped rather
+than masquerading as a full result.
+
+## HANNA, polarity, confidence, and strictness narrowed the claims
+
+HANNA provided a useful human-reference signal, but it exposed the danger of
+calling any one correlation “objective quality.” A narrow human-alignment slice
+can indicate that a question, selection rule, or calibration needs attention.
+It cannot decide literary quality, replace coverage and hard-failure checks, or
+erase the diagnostic purpose of a larger book. The broader target remains a
+portfolio: accuracy where a reference exists, coverage, revision usefulness,
+preference direction, avoidance of hard failure, and eventually reader-facing
+outcomes.
+
+Polarity work reinforced that restraint. Positive and cleanly reversed wording
+did not behave as interchangeable mirror images. Averaging them did not create
+a free fairness correction. The current positive formulation therefore remains
+the ordinary path; a paired-polarity design is a separately controlled
+hypothesis, not a way to select whichever answer feels harsher or kinder.
+
+Confidence diagnostics produced a parallel correction. Confidence can report
+repeat behavior and uncertainty. It is not truth, a score multiplier, or a
+promotion mechanism. An exploratory attempt to concentrate repeat budget on
+low-confidence cases did not outperform uniform resampling on the relevant
+repeat-consensus proxy. The product response was to preserve confidence as
+visible context, not to grant it authority it had not earned.
+
+The AI-writer preface studies added a harder distinction: sensitivity is not
+materiality. A stricter frame surfaced stable failures where a looser frame
+passed. In the small blinded, quote-valid slice, the criticisms were supported,
+yet whether a localized issue was material at the declared scope remained
+disputed. Quote repair cleaned grounding without creating a new replicate;
+regrading remained a distinct operation. The conclusion was deliberately
+narrow: stricter framing may reveal more, while also making scope-level binary
+claims less specific. It cannot establish authorship or justify a universal
+strictness switch.
+
+That experience became the full-book scope policy. A localized valid issue is
+a revision note. It becomes a scope-level `NO` only when the proposition,
+activation, evidence, and materiality all fit the declared scope. Retry,
+carrier, polarity, prefix/frame, confidence, and local-versus-scope disputes
+have their own first remedies. Splitting a leaf requires recurring,
+independent-subclause evidence and preserves total module influence. This is
+less glamorous than a new score, but it prevents a full-book evaluation from
+turning every sharp observation into an inflated failure.
+
+## External models widened the workshop, not the authority chain
+
+External routes were useful when treated as bounded design help. Grok Build
+produced provisional suggestions about repeat slots, carrier experiments,
+holdout separation, and the difference between an aggregation defect and a
+rubric defect. It also failed in instructive ways: it did not attest its
+effective reasoning configuration, and some early advice tried to generalize
+batch behavior beyond the evidence. Grok work is consequently advisory and
+provisional. It never replaces required GPT-5.6 core review or promotes a
+rubric change on its own.
+
+Ox Alpha supplied a related operational lesson. It was occasionally useful,
+but intermittent availability and ambiguous transport outcomes meant that
+recovery rules had to be settled in advance. A clearly failed outbound attempt
+with no accepted result is different from an uncertain terminal state. A route
+outage neither erases completed evidence nor authorizes a convenient resend.
+Ox evidence remains supplemental and provisional; its failures are recorded as
+transport or coverage facts, not quietly transformed into rubric judgments.
+
+The point was not to build a laboratory bureaucracy. It was to prevent provider
+behavior from deciding product behavior by accident. A no-incremental-charge
+route can broaden comparison and design review without becoming a hidden
+production judge. GPT-5.6 remains the required core arm for consequential
+study review, while deterministic checks retain the final word on identities,
+coverage, and settlement.
+
+## *Gray Blood* made the boundary real
+
+The authorized *Gray Blood* comparisons gave those principles a demanding
+private case. Full chapters can be used for development and evaluation under
+the applicable authorization, but only selected authorized excerpts may be
+public. The public account therefore names authorship plainly—**author-original**
+and an **explicit GPT-5.6 Pro rewrite**—without publishing the manuscript,
+prompts, individual observations, or raw model material.
+
+The case made two bad shortcuts impossible. First, a visible aggregate result
+does not explain itself through publicly released prose. Second, an earlier
+one-leaf result does not settle a full-work question. The book must support the
+scope it claims: a whole-work result needs the applicable whole-work and local
+coverage, not a convenient sparse proxy.
+
+That is why the full-book policy treats sampling honestly. A diagnostic sample
+can be valuable, but it must say it is a sample. A declared full-fidelity run
+does not shed leaves because an early slice is expensive or inconvenient. The
+later full-book rebaseline described below used no leaf sampling.
+
+## Content treatment and QPC1: a useful universal pass
+
+HBQ-RS 1.2.0 added authored-content-treatment fidelity, later distributed as
+part of HBQ-RS 1.2.1. The module asks whether an artifact meets an explicitly
+selected treatment target—directness, detail density, lexical specificity,
+euphemism, register, or depiction scope—in either direction. More explicit is
+not automatically better, and mature subject matter does not activate the
+module. It is a style-fidelity tool, not a permission taxonomy, moderation
+layer, refusal objective, or moral gate.
+
+QPC1 was the crucial negative result for the figurative branch. It ran all 15
+planned logical comparisons, accepted all 105 judgments, and found every one
+of its 21 artifact-by-leaf cells to be five-for-five `YES`. That was clean
+execution and poor discrimination. It did not recover the intended distinction,
+and it did not prove universal rubric validity or artifact equivalence.
+
+The universal pass corrected an earlier instinct to add or reweight criteria
+until variance appeared. The stockness owner remained where it belonged; density
+remained with purple prose. The next work focused on the smallest prompt and
+evidence-scope treatment: render the declared evaluation unit, require an
+appropriate counterexample search for cumulative or avoidance claims, allow
+insufficient coverage to remain insufficient, and keep a local issue local
+unless it is material at scope. QPC1 did not authorize a split, owner change,
+or weight change. It taught the team to treat a uniformly positive result as a
+diagnostic failure rather than a flattering answer.
+
+## Repair became a portfolio, not a reflex
+
+The structural audit produced a 77-row disposition matrix. Its value is not a
+claim that every row has been empirically settled. Most rows remain deferred,
+watched, or explicitly no-promotion outcomes. The matrix is a way to say what
+was looked at and what did not yet earn a change, instead of turning every
+static concern into a rewrite.
+
+Two bounded wording-only repairs in that matrix did earn promotion through
+their own staged development, disjoint-holdout, and independent-review paths.
+That subset is not the whole installed repair set. The current book carries
+four independently reviewed bounded repairs: recurrence and applicability,
+declared excerpt scope, figurative hinges, and material-context line breaks.
+All four preserve stable leaf IDs, owners, weights, and module influence; none
+smuggles in a split, ownership transfer, or reweighting. The remaining matrix
+does not become a backlog of presumed defects merely because it exists.
+
+Operational repairs mattered too. Runtime 1.2.2 strengthened terminal
+settlement and full-fidelity execution handling; runtime 1.2.3 completed
+follow-up delivery and validation repairs while continuing to distribute the
+same HBQ-RS 1.2.1 content. These are not new rubric claims. They make it less
+likely that a legitimate study result is confused with an executor artifact,
+and they make a declared zero-call correction possible when a validator defect
+is found before dispatch.
+
+DSPy remains available as a development-only drafting and optimizer tool when a
+simple manual repair cannot answer the question. It is not a runtime dependency,
+not a judge, and not a shortcut around a frozen holdout. Any candidate it helps
+propose still needs ordinary review, a frozen test, and supported confirmation.
+
+## Negative evidence changed the operating model
+
+The most productive progress did not always look like a new wording change.
+Several figurative and scope treatments reached a useful `NO_GO`: they showed
+that a proposed explanation could not yet survive clean controls, a disjoint
+holdout, or a repeatable expected-state test. That result is better than a
+plausible story attached to a one-off failure. It leaves the affected leaf in
+place, preserves the observation as lineage, and asks a smaller next question.
+
+This is where the public/private split has real product value. Public results
+can state the contract, aggregate geometry, decision class, and limitations,
+while the protected evidence remains available to authorized reviewers. A
+reader can see that a result was negative, unresolved, transport-limited, or
+repaired without being asked to trust a selective narrative. The point is not
+to make every study reproduce a private manuscript. It is to make each public
+claim no larger than its visible support.
+
+The same approach kept seemingly minor faults from becoming invisible. A bad
+quote can be corrected without inflating the observation count. A partial
+carrier can be classified as a carrier or scope question instead of becoming a
+verdict against a leaf. An executor mismatch can be corrected without adding a
+new model call. A contract can be tightened after a negative result without
+pretending the earlier result used the tighter version. These are distinctions
+that make future comparisons less fragile.
+
+They also keep the repair program finite. A failed candidate does not generate
+an automatic rewrite; a successful diagnostic does not automatically generate
+a promotion; and a deferred audit row is not a debt to be paid with complexity.
+The next action is chosen by the smallest unresolved claim. Sometimes that is a
+manual prompt repair, sometimes a synthetic control, sometimes a fresh
+holdout, and sometimes simply a record that the evidence does not support a
+change. This has proved more useful than trying to make the rubric look
+finished before its evidence is finished.
+
+## The full-book V7 and V8 studies
+
+The current *Gray Blood* full-book rebaseline is the strongest demonstration so
+far of the distinction between execution success and product conclusion. In
+the **full-book V7 study**, every planned binary call was completed: **150 of
+150**, at the declared full fidelity, with no leaf sampling. This label refers
+to the full-book study lineage, not to similarly numbered Ox or S1 work.
+
+The V7 result was intentionally not a rubric-promotion test. Its job was to
+exercise the stabilized prompt, scope, evidence, and settlement system across
+the complete declared book coverage. The correct use of a successful full-book
+run is to inspect whether the system has a meaningful and trustworthy result
+surface, not to rewrite leaves merely because two artifacts diverge.
+
+The companion **full-book V8 synthesis study** produced valid compact
+syntheses from that complete binary evidence. It too is study-qualified here:
+“V8” names this full-book synthesis lineage, not an Ox or S1 successor. V8
+remains archived as `INTERRUPTED_INCOMPLETE`. A later executor validator
+compared a raw identity against an alias representation and rejected an
+otherwise valid result. That was a validator bug, not a reason to reinterpret
+the binary evidence or to relabel V8 as a settled fresh evaluation.
+
+The correction was a **zero-call V9** step. It validated unchanged V8 outputs
+and rebuilt the reports after repairing the raw-versus-alias validation path,
+without dispatching a new evaluation. Zero calls matters: it keeps a software
+correction from being narrated as another replicate or a fresh comparison, and
+it does not change V8's archived status. This small distinction is exactly why
+settlement and runtime identity received so much attention earlier in the
+journey.
+
+With the corrected report surface, the author-original scored **63.0202** at
+**.9883 coverage**, with non-statistical bounds of **62.0577–63.2243**. The
+explicit GPT-5.6 Pro rewrite scored **73.2369** at **.9905 coverage**, with
+bounds of **72.3575–73.3054**. The reported difference is **+10.2167** for the
+rewrite, and those stated non-statistical bounds do not overlap. That is a
+material result under this declared rubric, scope, and frozen evaluation
+design. It is not a general literary ranking, a human preference result, a
+claim about all writing, or a license to expose private manuscript evidence.
+
+## What changed, and what remains open
+
+The journey has overturned several tempting assumptions. Stable scoring was not
+enough. More sensitivity was not automatically better scope judgment.
+Confidence was not truth. A universal pass was not validation. External-model
+availability was not authority. A completed provider call was not necessarily a
+settled study result. And a large author-versus-rewrite difference was not, by
+itself, proof that the rubric should change.
+
+The resulting product is more practical, not more ceremonial. It has explicit
+scope rules, a public/private boundary, repeatable batch contracts, typed
+remedies, stable ownership, a narrow optimizer role, and a clear distinction
+between current runtime repairs and HBQ-RS content. It can run a full-fidelity
+book evaluation when that is the right job, while retaining smaller diagnostic
+experiments for narrower questions.
+
+Work remains. The current results do not complete human-alignment validation,
+reader-outcome research, or every deferred audit row. They do not promote a
+rubric change from the full-book comparison. They do not turn the full-book
+result into a default quality hierarchy. What they do provide is a more useful
+starting point for the next decision: a public rubric system that remembers
+which assumptions failed, preserves the negative evidence, and changes only
+when a smaller claim has genuinely earned it.

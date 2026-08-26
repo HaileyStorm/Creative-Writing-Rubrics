@@ -8,6 +8,7 @@ from copy import deepcopy
 from pathlib import Path
 
 import pytest
+from tests import _preface_continuation_historical_runtime as historical_runtime
 
 ROOT = Path(__file__).resolve().parents[1]
 PACKAGE = ROOT / "evaluation-results" / "hbq-ai-writer-preface-v1-analysis-v1"
@@ -20,6 +21,14 @@ spec = importlib.util.spec_from_file_location("preface_analysis", PACKAGE / "ana
 assert spec and spec.loader
 analysis = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(analysis)
+_load_parent_executor = analysis._load_parent_executor
+
+
+def _historical_parent_executor():
+    return historical_runtime.install_pilot(_load_parent_executor())
+
+
+analysis._load_parent_executor = _historical_parent_executor
 
 
 pytestmark = pytest.mark.skipif(not all(path.is_dir() for path in (PRIVATE, PUBLIC, CONT_PRIVATE, CONT_PUBLIC)), reason="sealed local pilot roots are unavailable")
@@ -174,7 +183,10 @@ def test_current_book_is_a_bounded_successor_not_a_pilot_rescore():
     assert len(current) == 278
     assert authority["current_book"]["standard_identity"]["current_version"] == "1.2.1"
     assert len(authority["current_book"]["bounded_descendants"]) == 3
-    assert analysis._current_bundle(authority, analysis._historical_bundle())["standard"] == {"id": "HBQ-RS", "version": "1.2.1"}
+    assert analysis._current_bundle(authority, analysis._historical_bundle())["standard"] == {
+        "id": "HBQ-RS",
+        "version": "1.2.1",
+    }
 
 
 def test_archived_current_book_rescore_fails_closed_instead_of_substituting_a_book():
