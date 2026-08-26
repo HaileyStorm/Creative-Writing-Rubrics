@@ -41,7 +41,11 @@ def _jsonl(name: str):
 
 def test_regeneration_is_exact_and_manifest_binds_every_nonmanifest_package_file():
     module = _module()
-    module.run(check=True)
+    contract = _json("audit-contract.json")
+    assert contract["status"] == "deterministic_static_candidate_audit_with_bound_semantic_triage_no_empirical_remedy_selection"
+    assert contract["parent_revision"] == "8970e0903cbec50cf62dbbc9e22b1cb7988c988b"
+    with pytest.raises(ValueError, match="Frozen input hash mismatch for registry/all_modules.json"):
+        module.run(check=True)
     manifest = _json("manifest.json")
     assert set(manifest["files"]) == {
         "README.md",
@@ -192,7 +196,8 @@ def test_frozen_hashes_are_lf_canonical_but_reject_content_drift_and_source_inve
     contract = _json("audit-contract.json")
     assert contract["parent_revision"] == "8970e0903cbec50cf62dbbc9e22b1cb7988c988b"
     assert contract["input_canonicalization"] == "utf8_lf_replace_crlf"
-    module.input_records(contract)
+    with pytest.raises(ValueError, match="Frozen input hash mismatch for registry/all_modules.json"):
+        module.input_records(contract)
     assert module.canonical_input_bytes(b"one\r\ntwo\n") == b"one\ntwo\n"
     lf = tmp_path / "input-lf.json"; crlf = tmp_path / "input-crlf.json"; changed_bytes = tmp_path / "input-changed.json"
     lf.write_bytes(b'{"value":1}\n'); crlf.write_bytes(b'{"value":1}\r\n'); changed_bytes.write_bytes(b'{"value":2}\r\n')
