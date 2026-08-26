@@ -90,6 +90,50 @@ def test_verifies_a_genuine_complete_v4_run_and_returns_raw_commitments(tmp_path
     assert result["commitments"]["rejected_attempts"] == []
 
 
+@pytest.mark.parametrize(
+    "prompt_rendering_version",
+    (runner.PROMPT_RENDERING_VERSION, runner.LEGACY_PROMPT_RENDERING_VERSION),
+)
+def test_verifies_a_complete_run_without_a_task_contract(
+    tmp_path: Path, prompt_rendering_version: int
+) -> None:
+    run, frozen = _fixture(
+        tmp_path,
+        prompt_rendering_version=prompt_rendering_version,
+        task_contract_enabled=False,
+    )
+    result = verify_binary_run(run, frozen)
+    configuration = json.loads((run / "run.json").read_text(encoding="utf-8"))["configuration"]
+    assert result["verdict_count"] > 0
+    assert configuration["task_contract"] is None
+    if prompt_rendering_version == runner.PROMPT_RENDERING_VERSION:
+        assert configuration["task_contract_judge_context"] is None
+        assert configuration["scope_compatibility"] is None
+
+
+@pytest.mark.parametrize(
+    "field",
+    ["scope_compatibility_override", "longform_scope_compatibility_proof"],
+)
+@pytest.mark.parametrize(
+    "prompt_rendering_version",
+    (runner.PROMPT_RENDERING_VERSION, runner.LEGACY_PROMPT_RENDERING_VERSION),
+)
+def test_taskless_run_rejects_scope_compatibility_evidence(
+    tmp_path: Path,
+    field: str,
+    prompt_rendering_version: int,
+) -> None:
+    run, frozen = _fixture(
+        tmp_path,
+        prompt_rendering_version=prompt_rendering_version,
+        task_contract_enabled=False,
+    )
+    frozen[field] = {"format_version": 999, "forged": True}
+    with pytest.raises(core.HBQError, match="requires a task contract"):
+        verify_binary_run(run, frozen)
+
+
 def test_verifies_a_complete_terminal_sidecar_v5_run_and_rejects_sidecar_tamper(tmp_path: Path) -> None:
     run, frozen = _fixture(tmp_path)
     frozen["execution"]["attempt_lifecycle_policy"] = runner.ATTEMPT_LIFECYCLE_POLICY

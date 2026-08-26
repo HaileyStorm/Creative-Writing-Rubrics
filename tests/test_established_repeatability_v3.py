@@ -82,7 +82,7 @@ def _make_run(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, *, repaired_quote
 
 
 def test_preflight_hashes_schedule_and_exact_predecessor() -> None:
-    with pytest.raises(ValueError, match="Frozen asset changed: registry"):
+    with pytest.raises(ValueError, match="Frozen asset changed: verdict_schema"):
         _raw_module("run_study").preflight()
     runner = _module("run_study")
     contract, source = runner.preflight()
@@ -239,7 +239,7 @@ def test_v2_helper_is_fully_bound_to_the_historical_runtime() -> None:
 def test_canonical_successor_seals_retain_raw_lineage_without_claiming_raw_reconstruction() -> None:
     historical = _historical_runtime()
     assets = historical.manifest["assets"]
-    for name in ("score_report_schema", "scoring_core"):
+    for name in ("score_report_schema", "scoring_core", "verdict_schema"):
         record = assets[name]
         seal = historical.seals[record["sha256"]]
         payload = (historical.root / (ROOT / record["path"]).resolve().relative_to(REPOSITORY)).read_bytes()

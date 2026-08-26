@@ -397,12 +397,15 @@ def ngram_hits(public_root: Path, private_root: Path, sizes: tuple[int, ...] = (
 
 def files_for_audit(root: Path) -> list[Path]:
     return sorted(
-        path
-        for path in root.rglob("*")
-        if path.is_file()
-        and path.name not in {"manifest.json", "privacy-audit.json"}
-        and "__pycache__" not in path.parts
-        and path.suffix != ".pyc"
+        (
+            path
+            for path in root.rglob("*")
+            if path.is_file()
+            and path.name not in {"manifest.json", "privacy-audit.json"}
+            and "__pycache__" not in path.parts
+            and path.suffix != ".pyc"
+        ),
+        key=lambda path: path.relative_to(root).as_posix(),
     )
 
 

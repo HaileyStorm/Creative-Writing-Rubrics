@@ -10,6 +10,11 @@
       "raw_bytes": 45951,
       "canonical_lf_bytes": 45093,
       "canonical_lf_sha256": "0518be16a4528b893de6af61300ecea58dc56d6b7944b5ae5fd3a3214a3794ef"
+    },
+    "2d176506edab164c71d42a73661bcd526e4331dbdce659dfae56168b708a4f19": {
+      "raw_bytes": 3540,
+      "canonical_lf_bytes": 3482,
+      "canonical_lf_sha256": "5cd3dd25ce506689e75cbc290620a2f22198c8f9581a5fa7bd3debe90237f3f4"
     }
   }
 }

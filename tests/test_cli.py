@@ -61,7 +61,21 @@ def test_score_example(capsys) -> None:
     assert main(["score", "prose.scene", "examples/verdicts_example.jsonl"]) == 0
     report = json.loads(capsys.readouterr().out)
     assert report["bundle_id"] == "prose.scene"
+    assert report["report_version"] == 2
+    assert report["weight_profile"]["identity"] is True
     assert "final_score" in report
+
+
+def test_score_can_reconstruct_the_unversioned_v1_parent_semantics(capsys) -> None:
+    assert main([
+        "score", "prose.scene", "examples/verdicts_example.jsonl",
+        "--report-version", "1",
+    ]) == 0
+    report = json.loads(capsys.readouterr().out)
+    assert report["bundle_id"] == "prose.scene"
+    assert "report_version" not in report
+    assert report["weight_profile"]["identity"] is True
+    assert "confidence_diagnostics" not in report
 
 
 def test_render_judge(tmp_path: Path) -> None:
