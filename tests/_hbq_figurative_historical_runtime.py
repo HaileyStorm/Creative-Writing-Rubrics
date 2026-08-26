@@ -222,7 +222,10 @@ def _restore_declared_bytes(path: Path, repository: Path, relative: str, expecte
     for payload in candidates:
         for candidate in _newline_candidates(
             payload,
-            single_lf_outliers=relative == "registry/modules/penalty.purple_prose.yaml",
+            single_lf_outliers=relative in {
+                "registry/modules/core.freshness_and_non_genericness.yaml",
+                "registry/modules/penalty.purple_prose.yaml",
+            },
         ):
             if hashlib.sha256(candidate).hexdigest() == expected:
                 path.write_bytes(candidate)
@@ -237,7 +240,7 @@ def _newline_candidates(payload: bytes, *, single_lf_outliers: bool = False) -> 
     if not single_lf_outliers:
         return tuple(dict.fromkeys(candidates))
     lines = lf.split(b"\n")
-    # The historical figurative source has one accidental LF among CRLF
+    # The historical figurative sources have one accidental LF among CRLF
     # separators.  Enumerate only that finite one-outlier family; hash matching
     # remains the authority, so no near match can be accepted.
     for outlier in range(len(lines) - 1):
