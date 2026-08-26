@@ -4,25 +4,31 @@ import importlib.util
 import json
 from functools import lru_cache
 from pathlib import Path
-import subprocess
 import sys
 
 import pytest
 
 from hbqrs.paths import book_root
+from tests import _hbq_figurative_historical_runtime as cli_runtime
+from tests import _hbq_l2_historical_runtime as historical_runtime
 
 
 ROOT = book_root() / "evaluation-results" / "hbq-l2-line-breaks-contextual-justification-treatment-v1"
 
 
-@lru_cache(maxsize=1)
-def study():
+def raw_study():
     spec = importlib.util.spec_from_file_location("l2_contextual_justification_treatment_v1", ROOT / "study.py")
     module = importlib.util.module_from_spec(spec)
     assert spec and spec.loader
     sys.modules[spec.name] = module
     spec.loader.exec_module(module)
     return module
+
+
+@lru_cache(maxsize=1)
+def study():
+    module = raw_study()
+    return historical_runtime.install_source(module, source_commit=module.EXECUTOR["commit"])
 
 
 def test_exact_sol_candidate_is_the_only_question_delta_across_twelve_renders():
@@ -36,6 +42,11 @@ def test_exact_sol_candidate_is_the_only_question_delta_across_twelve_renders():
         assert pair["candidate"].count(s.CANDIDATE_TEXT) == 1
         assert pair["canonical"].count(canonical) == 1
         assert pair["candidate"].replace(s.CANDIDATE_TEXT, canonical, 1) == pair["canonical"]
+
+
+def test_current_checkout_drift_remains_fail_closed():
+    with pytest.raises(ValueError, match="Pinned production runtime bytes drifted"):
+        raw_study().verify_package()
 
 
 def test_treatment_only_plan_is_six_line_break_cells_by_three_without_necessity():
@@ -88,10 +99,13 @@ def test_package_is_freeze_only_without_images_remote_execution_dspy_or_promotio
     assert s.verify_package() == {"study_id": s.STUDY_ID, "status": "frozen_provider_free_contextual_justification_treatment", "new_remote_calls": 0, "pair_renders": 12, "future_treatment_slots": 18}
     contract = s.load_contract()
     assert contract["scope"] == {"necessity": "excluded_from_pairs_and_future_treatment_but_bound_unchanged", "images": "forbidden", "remote_contact": "forbidden", "dspy": "forbidden", "promotion": "none"}
-    dry = subprocess.run([sys.executable, str(ROOT / "run.py"), "--dry-run"], text=True, capture_output=True, check=True)
-    plan = subprocess.run([sys.executable, str(ROOT / "run.py"), "--render-plan"], text=True, capture_output=True, check=True)
-    assert json.loads(dry.stdout)["verification"]["new_remote_calls"] == 0
-    assert len(json.loads(plan.stdout)["prompt_sha256s"]) == 6
+    original_path = tuple(sys.path)
+    dry = cli_runtime.run_cli(s, ROOT / "run.py", "--dry-run")
+    plan = cli_runtime.run_cli(s, ROOT / "run.py", "--render-plan")
+    assert dry[0] == plan[0] == 0
+    assert json.loads(dry[1])["verification"]["new_remote_calls"] == 0
+    assert len(json.loads(plan[1])["prompt_sha256s"]) == 6
+    assert tuple(sys.path) == original_path
     for path in ROOT.rglob("*"):
         if path.suffix not in {".py", ".json", ".md"}:
             continue

@@ -19,6 +19,38 @@ _SNAPSHOTS: dict[tuple[str, str, tuple[str, ...], tuple[tuple[str, str], ...]], 
 _EXPLICIT_RUNNERS: dict[tuple[str, str], ModuleType] = {}
 
 
+def install_source(module: ModuleType, *, source_commit: str) -> ModuleType:
+    """Adapt a public frozen study that declares a nested ``RUNTIME`` map."""
+
+    repository = Path(module.REPOSITORY).resolve()
+    runtime = getattr(module, "RUNTIME", None)
+    if not isinstance(runtime, dict):
+        runtime = getattr(module, "RUNTIME_BLOBS", None)
+    if not isinstance(runtime, dict) or not runtime:
+        raise ValueError("Historical source study does not declare a runtime map")
+    hashes = {
+        str(path): str(details["sha256"])
+        for path, details in runtime.items()
+        if isinstance(details, dict) and isinstance(details.get("sha256"), str)
+    }
+    git_blobs = all(isinstance(value, str) and len(value) == 40 for value in runtime.values())
+    if git_blobs:
+        hashes = {
+            str(path): hashlib.sha256(_git_bytes(repository, "show", f"{source_commit}:{path}")).hexdigest()
+            for path in runtime
+        }
+    if set(hashes) != set(runtime) and not git_blobs:
+        raise ValueError("Historical source runtime bindings are malformed")
+    module.SOURCE_COMMIT = source_commit
+    module.RUNTIME_PATHS = tuple(runtime)
+    module.PINNED_RUNTIME_HASHES = hashes
+    module._git = lambda *args: _git(repository, *args)
+    module._git_bytes = lambda *args: _git_bytes(repository, *args)
+    install(module)
+    _bind_data_runtime(module, module._historical_runtime_paths)
+    return module
+
+
 def load_runner(repository: Path | str, source_commit: str) -> ModuleType:
     """Load one exact historical runner without changing the global package."""
 
@@ -116,6 +148,10 @@ def install(executor: ModuleType) -> ModuleType:
             target = redirected(args[1])
             if target != Path(args[1]):
                 relative = next(path for path, candidate in pinned.items() if candidate == target)
+                expected_sha256 = expected_hashes.get(relative)
+                if expected_sha256:
+                    if hashlib.sha256(target.read_bytes()).hexdigest() != expected_sha256:
+                        raise ValueError(f"Pinned historical runtime bytes were mutated: {relative}")
                 return original_git("rev-parse", f"{source_commit}:{relative}")
         return original_git(*args)
 
@@ -189,6 +225,24 @@ def _bind_production_runner(module: ModuleType, runner: ModuleType) -> None:
         module._production_runner = production_runner
 
 
+def _bind_data_runtime(module: ModuleType, pinned: dict[str, Path]) -> None:
+    modules = getattr(module, "load_modules", None)
+    if modules is not None and "registry/all_modules.json" in pinned:
+        module.load_modules = lambda _path=None: modules(pinned["registry/all_modules.json"])
+    bundles = getattr(module, "load_bundles", None)
+    if bundles is not None and "bundles/all_bundles.jsonl" in pinned:
+        module.load_bundles = lambda _path=None: bundles(pinned["bundles/all_bundles.jsonl"])
+    if "prompts/judge/JUDGE_PREFIX.md" in pinned and "prompts/judge/BINARY_EVALUATION_PROMPT.md" in pinned and hasattr(module, "binary_prompt"):
+        module.binary_prompt = lambda: "\n\n".join(
+            pinned[f"prompts/judge/{name}"].read_text(encoding="utf-8").replace("\r\n", "\n").strip()
+            for name in ("JUDGE_PREFIX.md", "BINARY_EVALUATION_PROMPT.md")
+        )
+    for name in ("compiled_leaf_records", "_schedule_template"):
+        cached = getattr(module, name, None)
+        if hasattr(cached, "cache_clear"):
+            cached.cache_clear()
+
+
 def _runtime_paths(executor: ModuleType) -> tuple[str, ...]:
     if hasattr(executor, "RUNTIME_BLOBS"):
         return tuple(executor.RUNTIME_BLOBS)
@@ -223,18 +277,7 @@ def _configure_frozen_module(
     if original_sha256_file is not None:
         frozen.sha256_file = lambda path: original_sha256_file(redirected(path))
 
-    modules = getattr(frozen, "load_modules", None)
-    if modules is not None and "registry/all_modules.json" in pinned:
-        frozen.load_modules = lambda _path=None: modules(pinned["registry/all_modules.json"])
-    bundles = getattr(frozen, "load_bundles", None)
-    if bundles is not None and "bundles/all_bundles.jsonl" in pinned:
-        frozen.load_bundles = lambda _path=None: bundles(pinned["bundles/all_bundles.jsonl"])
+    _bind_data_runtime(frozen, pinned)
     load_json = getattr(frozen, "load_json", None)
     if load_json is not None:
         frozen.load_json = lambda path: load_json(redirected(path))
-
-    if "prompts/judge/JUDGE_PREFIX.md" in pinned and "prompts/judge/BINARY_EVALUATION_PROMPT.md" in pinned:
-        frozen.binary_prompt = lambda: "\n\n".join(
-            pinned[f"prompts/judge/{name}"].read_text(encoding="utf-8").replace("\r\n", "\n").strip()
-            for name in ("JUDGE_PREFIX.md", "BINARY_EVALUATION_PROMPT.md")
-        )
