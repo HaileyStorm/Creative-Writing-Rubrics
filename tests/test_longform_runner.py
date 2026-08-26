@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+import inspect
 import json
 from pathlib import Path
 import threading
@@ -8,6 +9,7 @@ import threading
 import pytest
 
 from hbqrs import HBQError
+from hbqrs.cli import build_parser
 import hbqrs.longform_runner as longform_runner
 import hbqrs.runner as binary_runner
 from hbqrs.longform_runner import run_longform_judge
@@ -19,6 +21,12 @@ TEXT = (
     "Chapter Two\n"
     "At dawn, she opened the letter beside the river.\n"
 )
+
+
+FULL_BOOK_RUNTIME_RETRY_AUTHORITY_V1 = {
+    "format_version": 1,
+    "binary_batch_attempts": 3,
+}
 
 
 def _input_json(prompt: str) -> dict:
@@ -320,6 +328,41 @@ def _catalog(tmp_path: Path) -> tuple[Path, Path]:
     return registry, bundles
 
 
+def _approved_contract_for_text(
+    artifact_id: str, *, applies_to: list[str] | None = None
+) -> dict[str, object]:
+    return {
+        "contract_version": 1,
+        "contract_id": "contract.preflight",
+        "artifact_id": artifact_id,
+        "context": {
+            "artifact_kind": "prose_fiction",
+            "declared_scope": "work",
+            "completion_status": "work_in_progress",
+            "background": [],
+            "constraints": [],
+            "audience": [],
+        },
+        "preferences": [],
+        "priorities": [],
+        "weighted_goals": [
+            {
+                "goal_id": "goal.tension",
+                "atomic_question": "Does the supplied scope sustain quiet tension?",
+                "weight": 1.0,
+                "source": {
+                    "kind": "driving_prompt",
+                    "reference": "driving-prompt:1",
+                    "exact_excerpt": "Prefer quiet tension.",
+                },
+                "applies_to": applies_to or ["work"],
+                "rationale": "Provider-free exact-geometry fixture.",
+            }
+        ],
+        "binding_requirements": [],
+    }
+
+
 def test_provider_workflow_runs_every_pass_persists_and_resumes(
     tmp_path: Path, endpoint, monkeypatch
 ) -> None:
@@ -368,6 +411,7 @@ def test_provider_workflow_runs_every_pass_persists_and_resumes(
     assert handler.stages[-1] == "synthesis"
     assert handler.stages.count("binary") == 3
     assert all("response_format" not in request for request in handler.requests)
+    assert all(not prompt.startswith("# Strict AI-output evaluation prefix") for prompt in handler.binary_prompts)
     binary_artifacts = [_artifact(prompt) for prompt in handler.binary_prompts]
     global_artifacts = [
         artifact for artifact in binary_artifacts if "Chapter One" in artifact and "Chapter Two" in artifact
@@ -396,6 +440,10 @@ def test_provider_workflow_runs_every_pass_persists_and_resumes(
     assert workflow["configuration"]["retry_policy"] == {"batch_attempts": 3}
     assert workflow["configuration"]["upgrade_legacy_normalization"] is False
     assert all(call["upgrade_legacy_normalization"] is False for call in binary_calls)
+    assert all(call["attempt_lifecycle_policy"] is None for call in binary_calls)
+    assert json.loads(
+        (output / ".private" / "evaluations" / "global" / "run.json").read_text(encoding="utf-8")
+    )["format_version"] == 4
     assert all("upgrade_legacy_normalization" not in call for call in structured_calls)
     with pytest.raises(HBQError, match="inputs, catalog, or provider settings changed"):
         run_longform_judge(**arguments, resume=True, upgrade_legacy_normalization=True)
@@ -1133,7 +1181,7 @@ def test_disclosure_enumerates_payload_hashes_and_call_ceiling(tmp_path: Path, c
     assert disclosure["completion_contract"]["completion_only_criterion_verdict"] == "NOT_APPLICABLE"
 
 
-def test_binary_scope_propagates_legacy_normalization_upgrade_only_to_runner(
+def test_binary_scope_propagates_lifecycle_and_legacy_normalization_to_runner(
     tmp_path: Path, monkeypatch
 ) -> None:
     output = tmp_path / "scope"
@@ -1175,9 +1223,411 @@ def test_binary_scope_propagates_legacy_normalization_upgrade_only_to_runner(
             strict_ai=False,
             allow_unattested_reasoning=False,
             upgrade_legacy_normalization=True,
+            attempt_lifecycle_policy=binary_runner.ATTEMPT_LIFECYCLE_POLICY,
         )
     assert captured["resume"] is True
     assert captured["upgrade_legacy_normalization"] is True
+    assert captured["attempt_lifecycle_policy"] == binary_runner.ATTEMPT_LIFECYCLE_POLICY
+
+
+def test_longform_cli_accepts_terminal_lifecycle_policy() -> None:
+    args = build_parser().parse_args(
+        [
+            "longform",
+            "story.txt",
+            "--provider",
+            "openai",
+            "--model",
+            "fake-local",
+            "--output-dir",
+            "run",
+            "--attempt-lifecycle-policy",
+            binary_runner.ATTEMPT_LIFECYCLE_POLICY,
+        ]
+    )
+    assert args.attempt_lifecycle_policy == binary_runner.ATTEMPT_LIFECYCLE_POLICY
+
+
+def test_explicit_longform_precontact_geometry_is_exact_and_keeps_catalog_bound(
+    tmp_path: Path,
+) -> None:
+    registry, bundles = _catalog(tmp_path)
+    artifact = tmp_path / "story.txt"
+    artifact.write_text(TEXT, encoding="utf-8")
+    contract_path = tmp_path / "contract.json"
+    contract_path.write_text(json.dumps(_approved_contract_for_text("story")), encoding="utf-8")
+
+    summary = run_longform_judge(
+        artifact_path=artifact,
+        brief_paths=[],
+        output_dir=tmp_path / "dry-run",
+        provider="openai",
+        model="remote-model",
+        registry=registry,
+        bundles=bundles,
+        artifact_kind="prose_fiction",
+        bundle_id="prose.synthetic",
+        task_contract_path=contract_path,
+        driving_prompt="Prefer quiet tension.",
+        batch_size=24,
+        batch_attempts=3,
+        base_url="https://example.com/v1",
+        dry_run=True,
+    )
+
+    assert summary["conservative_pre_route_catalog_wide_upper_bound"]["maximum_provider_calls"] == summary[
+        "maximum_provider_calls"
+    ]
+    geometry = summary["exact_selected_bundle_geometry"]
+    assert summary["exact_selected_bundle_geometry_unavailable_reason"] is None
+    assert geometry["basis"] == "exact_explicit_global_bundle_and_task_contract"
+    assert geometry["global"] == {
+        "scope_id": "work",
+        "bundle_id": "prose.synthetic",
+        "first_pass_question_positions": 2,
+        "maximum_question_positions": 6,
+        "dynamic_question_ids": ["task.contract.contract.preflight.goal.tension"],
+        "first_pass_batches": 1,
+        "maximum_provider_sends": 3,
+    }
+    assert len(geometry["local_scopes"]) == 2
+    assert all(scope["first_pass_question_positions"] == 1 for scope in geometry["local_scopes"])
+    assert all(scope["maximum_question_positions"] == 3 for scope in geometry["local_scopes"])
+    assert geometry["totals"] == {
+        "first_pass_question_positions": 4,
+        "maximum_question_positions": 12,
+        "first_pass_batches": 3,
+        "maximum_provider_sends": 9,
+    }
+
+
+def test_exact_geometry_is_unavailable_for_route_generated_or_sampled_scopes(tmp_path: Path) -> None:
+    registry, bundles = _catalog(tmp_path)
+    artifact = tmp_path / "story.txt"
+    artifact.write_text(TEXT, encoding="utf-8")
+    common = {
+        "artifact_path": artifact,
+        "brief_paths": [],
+        "provider": "openai",
+        "model": "remote-model",
+        "registry": registry,
+        "bundles": bundles,
+        "artifact_kind": "prose_fiction",
+        "bundle_id": "prose.synthetic",
+        "base_url": "https://example.com/v1",
+        "dry_run": True,
+    }
+    route_generated = run_longform_judge(output_dir=tmp_path / "route-generated", **common)
+    assert route_generated["exact_selected_bundle_geometry"] is None
+    assert route_generated["exact_selected_bundle_geometry_unavailable_reason"] == (
+        "precontact_task_contract_not_supplied"
+    )
+
+    contract_path = tmp_path / "contract.json"
+    contract_path.write_text(json.dumps(_approved_contract_for_text("story")), encoding="utf-8")
+    sampled = run_longform_judge(
+        output_dir=tmp_path / "sampled",
+        task_contract_path=contract_path,
+        driving_prompt="Prefer quiet tension.",
+        local_sample_limit=1,
+        **common,
+    )
+    assert sampled["exact_selected_bundle_geometry"] is None
+    assert sampled["exact_selected_bundle_geometry_unavailable_reason"] == (
+        "route_selected_local_units_not_precontact_deterministic"
+    )
+
+
+@pytest.mark.parametrize("selection_kind", ["frozen", "override"])
+def test_exact_geometry_honors_frozen_or_overridden_local_coverage(
+    tmp_path: Path, selection_kind: str
+) -> None:
+    registry, bundles = _catalog(tmp_path)
+    artifact = tmp_path / "story.txt"
+    artifact.write_text(TEXT, encoding="utf-8")
+    segmentation = longform_runner.segment_longform(
+        longform_runner._read_text_record(artifact)["text"], artifact_id="story"
+    )
+    selected_unit_id = segmentation["units"][0]["unit_id"]
+    contract_path = tmp_path / "contract.json"
+    contract_path.write_text(
+        json.dumps(_approved_contract_for_text("story", applies_to=["work", selected_unit_id])),
+        encoding="utf-8",
+    )
+    arguments = {
+        "artifact_path": artifact,
+        "brief_paths": [],
+        "output_dir": tmp_path / selection_kind,
+        "provider": "openai",
+        "model": "remote-model",
+        "registry": registry,
+        "bundles": bundles,
+        "artifact_kind": "prose_fiction",
+        "bundle_id": "prose.synthetic",
+        "task_contract_path": contract_path,
+        "driving_prompt": "Prefer quiet tension.",
+        "base_url": "https://example.com/v1",
+        "dry_run": True,
+    }
+    if selection_kind == "frozen":
+        arguments["frozen_sample_ordinals"] = [1]
+    else:
+        arguments["local_sample_limit"] = 1
+        arguments["sampling_plan_override"] = {
+            "coverage_mode": "sampled",
+            "unit_ids": [selected_unit_id],
+            "strata": [{"name": "fixed test unit", "unit_ids": [selected_unit_id]}],
+            "global_map_required": True,
+            "rationale": "Provider-free deterministic coverage fixture.",
+        }
+    summary = run_longform_judge(**arguments)
+    geometry = summary["exact_selected_bundle_geometry"]
+    assert summary["exact_selected_bundle_geometry_unavailable_reason"] is None
+    assert [scope["scope_id"] for scope in geometry["local_scopes"]] == [selected_unit_id]
+    assert geometry["global"]["dynamic_question_ids"] == [
+        "task.contract.contract.preflight.goal.tension"
+    ]
+    assert geometry["local_scopes"][0]["dynamic_question_ids"] == [
+        "task.contract.contract.preflight.goal.tension"
+    ]
+
+
+def test_full_book_freeze_geometry_matches_current_compiled_public_catalog() -> None:
+    root = Path(__file__).resolve().parents[1]
+    freeze = json.loads(
+        (
+            root
+            / "evaluation-results"
+            / "hbq-gray-blood-full-book-qpc24-rebaseline-v2"
+            / "manifest.json"
+        ).read_text(encoding="utf-8")
+    )
+    modules = longform_runner.load_modules(root / "registry" / "all_modules.json")
+    bundles = longform_runner.load_bundles(root / "bundles" / "all_bundles.json")
+    global_questions = longform_runner.compiled_questions(
+        longform_runner.compile_bundle(modules, longform_runner.resolve_bundle(bundles, "prose.novel"))
+    )
+    chapter_questions = longform_runner.compiled_questions(
+        longform_runner.compile_bundle(modules, longform_runner.resolve_bundle(bundles, "prose.chapter"))
+    )
+    policy = freeze["full_fidelity_policy"]
+    first_pass = freeze["first_pass"]
+    batch_size = policy["batch_size"]
+    assert len(global_questions) == policy["global_leaves"] == 221
+    assert len(chapter_questions) == policy["chapter_leaves"] == 228
+    assert policy["leaf_sampling"] == "forbidden"
+    assert policy["not_applicable"] == "returned_verdict_not_prefilter"
+
+    paired_chapters = freeze["comparison"]["paired_chapters"]
+    author_chapters = len(paired_chapters) + int(
+        freeze["comparison"]["author_chapter_7"] == "unpaired"
+    )
+    rewrite_chapters = len(paired_chapters)
+    binary_batch_attempts = FULL_BOOK_RUNTIME_RETRY_AUTHORITY_V1["binary_batch_attempts"]
+    structured_retry_ceiling = freeze["controller"]["structured_retry_ceiling_per_pass"]
+    global_batches = (len(global_questions) + batch_size - 1) // batch_size
+    chapter_batches = (len(chapter_questions) + batch_size - 1) // batch_size
+    positions = 2 * len(global_questions) + (author_chapters + rewrite_chapters) * len(chapter_questions)
+    binary_calls = 2 * global_batches + (author_chapters + rewrite_chapters) * chapter_batches
+    structured_calls = 3 * len(freeze["artifact_ids"])
+    assert positions == first_pass["positions"] == 3406
+    assert binary_calls == first_pass["binary_calls"] == 150
+    assert structured_calls == first_pass["structured_calls"] == 6
+    assert binary_calls + structured_calls == first_pass["logical_calls"] == 156
+    assert inspect.signature(binary_runner.run_judge).parameters["batch_attempts"].default == binary_batch_attempts
+    assert (
+        binary_calls * binary_batch_attempts + structured_calls * structured_retry_ceiling
+        == first_pass["hard_max_sends"]
+        == 468
+    )
+
+
+def test_terminal_lifecycle_strict_prefix_and_resume_are_provider_free(
+    tmp_path: Path, monkeypatch
+) -> None:
+    registry, bundles = _catalog(tmp_path)
+    artifact = tmp_path / "story.txt"
+    artifact.write_text(TEXT, encoding="utf-8")
+    contract_path = tmp_path / "contract.json"
+    contract_path.write_text(json.dumps(_approved_contract_for_text("story")), encoding="utf-8")
+    output = tmp_path / "run"
+    arguments = {
+        "artifact_path": artifact,
+        "brief_paths": [],
+        "output_dir": output,
+        "provider": "openai",
+        "model": "fake-local",
+        "registry": registry,
+        "bundles": bundles,
+        "artifact_kind": "prose_fiction",
+        "bundle_id": "prose.synthetic",
+        "task_contract_path": contract_path,
+        "driving_prompt": "Prefer quiet tension.",
+        "base_url": "http://127.0.0.1:1/v1",
+        "batch_size": 24,
+        "batch_attempts": 3,
+        "strict_ai": True,
+        "attempt_lifecycle_policy": binary_runner.ATTEMPT_LIFECYCLE_POLICY,
+    }
+
+    structured_prompts: list[str] = []
+    binary_prompts: list[str] = []
+
+    def fake_structured(**kwargs):
+        prompt = kwargs["user_prompt"]
+        name = prompt.split("HBQ-RS STRUCTURED PASS: ", 1)[1].split("\n", 1)[0]
+        structured_prompts.append(prompt)
+        data = _input_json(prompt)
+        if name == "route":
+            profile = data["artifact_profile"]
+            unit_ids = [unit["unit_id"] for unit in data["unit_inventory"]]
+            return json.dumps(
+                {
+                    "route_version": 1,
+                    "artifact_profile": {
+                        "artifact_kind": profile["artifact_kind"],
+                        "declared_scope": profile["declared_scope"],
+                        "completion_status": profile["completion_status"],
+                        "unit_count": profile["unit_count"],
+                        "source_sha256": profile["source_sha256"],
+                    },
+                    "selected_bundle_id": "prose.synthetic",
+                    "selected_module_ids": ["craft.synthetic"],
+                    "selection_reasons": [
+                        {"catalog_id": "prose.synthetic", "reason": "Synthetic frozen route."},
+                        {"catalog_id": "craft.synthetic", "reason": "Synthetic frozen module."},
+                    ],
+                    "sampling_plan": {
+                        "coverage_mode": "complete",
+                        "unit_ids": unit_ids,
+                        "strata": [{"name": "all units", "unit_ids": unit_ids}],
+                        "global_map_required": True,
+                        "rationale": "Every fixture unit is locally evaluated.",
+                    },
+                    "task_contract": {
+                        "contract_version": 1,
+                        "contract_id": "contract.synthetic",
+                        "artifact_id": profile["artifact_id"],
+                        "context": {
+                            "artifact_kind": profile["artifact_kind"],
+                            "declared_scope": profile["declared_scope"],
+                            "completion_status": profile["completion_status"],
+                            "background": [],
+                            "constraints": [],
+                            "audience": [],
+                        },
+                        "preferences": [],
+                        "priorities": [],
+                        "weighted_goals": [],
+                        "binding_requirements": [],
+                    },
+                }
+            ), {"id": "fake-structured-route", "model": kwargs["model"]}
+        if name == "map":
+            return json.dumps(
+                {
+                    "map_version": 1,
+                    "artifact_id": data["artifact_id"],
+                    "source_sha256": data["source_sha256"],
+                    "orientation": {"premise": "Synthetic fixture.", "evaluated_scope": "Two units.", "cast": []},
+                    "units": [
+                        {
+                            "unit_id": unit["unit_id"],
+                            "summary": "Synthetic unit.",
+                            "chronology": f"Position {unit['ordinal']}",
+                            "povs": [], "characters": [], "locations": [],
+                            "promises_opened": [], "promises_advanced": [], "promises_resolved": [],
+                            "motifs": [], "ending_state": "Synthetic state.", "load_bearing": True,
+                        }
+                        for unit in data["units"]
+                    ],
+                    "work_state": {
+                        "chronology": ["first", "second"], "central_arcs": [], "subplots": [],
+                        "promises": [], "motifs": [], "ending_state": "Synthetic conclusion.",
+                    },
+                    "state_ledgers": [], "distant_links": [], "limitations": [],
+                }
+            ), {"id": "fake-structured-map", "model": kwargs["model"]}
+        assert name == "synthesis"
+        return json.dumps(
+            {
+                "findings": [{
+                    "kind": "strength", "finding": "Synthetic clarity is present.",
+                    "why_it_matters": "The fake provider is exercising persistence only.",
+                    "evidence_refs": [result["scope_id"] for result in data["local_results"]],
+                    "criterion_ids": ["craft.synthetic.clear"],
+                }],
+                "warnings": [],
+            }
+        ), {"id": "fake-structured-synthesis", "model": kwargs["model"]}
+
+    def fake_binary(**kwargs):
+        prompt = kwargs["user_prompt"]
+        binary_prompts.append(prompt)
+        return json.dumps(
+            {
+                "verdicts": [
+                    {
+                        "question_id": question["question_id"], "verdict": "YES", "confidence": 0.9,
+                        "evidence": [{
+                            "kind": "summary", "reference": "unit:synthetic",
+                            "exact_quote": None, "summary": "Synthetic provider-free evidence.",
+                        }],
+                        "note": "Synthetic provider-free acceptance.",
+                    }
+                    for question in _questions(prompt)
+                ]
+            }
+        ), {"id": f"fake-binary-{len(binary_prompts)}", "model": kwargs["model"]}
+
+    monkeypatch.setattr(longform_runner, "_call_openai_structured", fake_structured)
+    monkeypatch.setattr(binary_runner, "_call_openai", fake_binary)
+
+    summary = run_longform_judge(**arguments)
+    assert summary["status"] == "VALID"
+    assert len(structured_prompts) == 3
+    assert len(binary_prompts) == 3
+    strict_prefix = (
+        Path(__file__).resolve().parents[1] / "prompts" / "judge" / "JUDGE_PREFIX.md"
+    ).read_text(encoding="utf-8").strip()
+    normalized_prefix = strict_prefix.replace("\r\n", "\n")
+    assert all(prompt.startswith("HBQ-RS STRUCTURED PASS:") for prompt in structured_prompts)
+    assert all(strict_prefix not in prompt for prompt in structured_prompts)
+    assert all(
+        prompt.replace("\r\n", "\n").count(normalized_prefix) == 1
+        for prompt in binary_prompts
+    )
+    workflow = json.loads((output / "workflow.json").read_text(encoding="utf-8"))
+    assert workflow["format_version"] == 3
+    assert workflow["configuration"]["attempt_lifecycle_policy"] == binary_runner.ATTEMPT_LIFECYCLE_POLICY
+    segmentation = json.loads((output / ".private" / "segmentation.json").read_text(encoding="utf-8"))
+    scope_dirs = [output / ".private" / "evaluations" / "global"] + [
+        output / ".private" / "evaluations" / unit["unit_id"] for unit in segmentation["units"]
+    ]
+    for scope_dir in scope_dirs:
+        manifest = json.loads((scope_dir / "run.json").read_text(encoding="utf-8"))
+        assert manifest["format_version"] == 5
+        assert manifest["configuration"]["attempt_lifecycle_policy"] == binary_runner.ATTEMPT_LIFECYCLE_POLICY
+        selected_ids = manifest["configuration"]["question_ids"]
+        verdict_ids = [
+            json.loads(line)["question_id"]
+            for line in (scope_dir / "verdicts.jsonl").read_text(encoding="utf-8").splitlines()
+        ]
+        assert verdict_ids == selected_ids
+        checkpoint = json.loads((scope_dir / "responses" / "batch-0001.json").read_text(encoding="utf-8"))
+        assert checkpoint["format_version"] == 5
+        lifecycle = scope_dir / "responses" / "attempt-lifecycle" / "batch-0001"
+        assert (lifecycle / "attempt-0001.start.json").is_file()
+        settled = json.loads((lifecycle / "attempt-0001.settled.json").read_text(encoding="utf-8"))
+        assert settled["outcome"] == "accepted"
+
+    calls = (len(structured_prompts), len(binary_prompts))
+    assert run_longform_judge(**arguments, resume=True) == summary
+    assert (len(structured_prompts), len(binary_prompts)) == calls
+    incompatible = dict(arguments)
+    incompatible.pop("attempt_lifecycle_policy")
+    with pytest.raises(HBQError, match="inputs, catalog, or provider settings changed"):
+        run_longform_judge(**incompatible, resume=True)
 
 
 def test_plan_only_stops_after_route_and_writes_reviewable_plan(tmp_path: Path, endpoint) -> None:

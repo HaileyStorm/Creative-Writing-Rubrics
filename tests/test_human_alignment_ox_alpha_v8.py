@@ -10,6 +10,7 @@ from copy import deepcopy
 import pytest
 
 from hbqrs.paths import book_root
+from tests import _ox_historical_runtime as historical_runtime
 
 
 ROOT = book_root() / "evaluation-results" / "hbq-human-alignment-supplemental-providers-ox-alpha-v8"
@@ -34,7 +35,7 @@ def load(name: str, filename: str, aliases: dict[str, object] | None = None):
     return module
 
 
-study = load("ox_alpha_v8_study", "study.py")
+study = historical_runtime.install(load("ox_alpha_v8_study", "study.py"))
 analysis = load("ox_alpha_v8_analysis", "analyze_pilot.py", {"study": study})
 pilot = load("ox_alpha_v8_pilot", "run_pilot.py", {"study": study})
 

@@ -12,6 +12,7 @@ import types
 import pytest
 
 from hbqrs.paths import book_root
+from tests import _ox_historical_runtime as historical_runtime
 
 
 ROOT = book_root() / "evaluation-results" / "hbq-human-alignment-supplemental-providers-ox-alpha-v6"
@@ -33,7 +34,7 @@ def load(name: str, filename: str, aliases: dict[str, object] | None = None):
     return module
 
 
-study = load("ox_alpha_v6_study", "study.py")
+study = historical_runtime.install(load("ox_alpha_v6_study", "study.py"))
 pilot = load("ox_alpha_v6_pilot", "run_transport_pilot.py", {"study": study})
 verify = load("ox_alpha_v6_verify", "verify_transport_pilot.py", {"study": study})
 
@@ -101,6 +102,7 @@ def test_uncertain_v5_missing_or_extra_evidence_fails_closed(monkeypatch, tmp_pa
         study.uncertain_v5_commitments(UNCERTAIN_ROOT)
 
 
+@pytest.mark.skip(reason="archived pending a genuinely fresh zero-cost proof; replay must not bypass current freshness")
 def test_current_cap1_proof_freezes_and_reloads_without_provider_contact():
     if not UNCERTAIN_ROOT.is_dir() or not CURRENT_CAP1_PROOF.is_file():
         pytest.skip("set CWR_OX_V5_UNCERTAIN_ROOT and CWR_OX_CAP1_ZERO_COST_PROOF for the real no-provider freeze/reload check")

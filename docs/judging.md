@@ -77,6 +77,8 @@ cwr judge draft.txt --bundle prose.scene --provider codex --model gpt-5.6-sol \
 
 The runner writes an immutable `start` sidecar immediately before every provider send and a `settled` sidecar after one terminal outcome: accepted, retryable provider failure, nonretryable provider failure, structured provider refusal, or schema/quote failure. Sidecars contain hashes and typed state, never response prose. A start without a durable rejection or checkpoint is intentionally ambiguous: resume stops rather than sending again. If an operator establishes that it should consume the attempt without recovering a response, reconcile it explicitly and locally (this makes no provider call):
 
+`cwr longform` accepts the same opt-in `--attempt-lifecycle-policy terminal_sidecar_v1`; it binds that policy into the workflow and forwards it to every whole-work and local binary run. Its pre-contact disclosure always retains a deliberately conservative catalog-wide ceiling. It reports exact compiled global/local positions, batches, and maximum sends only when the global bundle, task contract, and local unit set are all fixed before routing; otherwise that field is `null` with a typed unavailable reason rather than an estimate labeled exact.
+
 ```bash
 cwr reconcile-attempt --output-dir ../cwr-runs/terminal --batch 1 --attempt 1 --count-as retryable
 ```

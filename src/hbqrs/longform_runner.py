@@ -16,7 +16,15 @@ from urllib.request import Request, build_opener
 
 from jsonschema import Draft202012Validator
 
-from .core import HBQError, load_bundles, load_data, load_modules, resolve_bundle
+from .core import (
+    HBQError,
+    compile_bundle,
+    compiled_questions,
+    load_bundles,
+    load_data,
+    load_modules,
+    resolve_bundle,
+)
 from .longform import (
     _validate_source_excerpts,
     build_route_sample,
@@ -39,6 +47,7 @@ from .longform import (
 from .paths import prompts_dir, schema_dir
 from .runner import (
     MAX_RESPONSE_BYTES,
+    ATTEMPT_LIFECYCLE_POLICY,
     LONGFORM_RUNTIME_CONTRACT_POLICY,
     NOUS_MODEL_POLICIES,
     NOUS_REASONING,
@@ -670,6 +679,141 @@ def _question_count(modules: Sequence[Mapping[str, Any]]) -> int:
     return sum(count(module.get("tree", [])) for module in modules)
 
 
+def _binary_scope_geometry(
+    *,
+    modules: Sequence[Mapping[str, Any]],
+    bundle: Mapping[str, Any],
+    task_contract: Mapping[str, Any] | None,
+    scope_id: str,
+    batch_size: int,
+    batch_attempts: int,
+) -> dict[str, Any]:
+    """Describe one exact compiled binary scope before any provider contact."""
+
+    compiled = compile_bundle(modules, dict(bundle), task_contract=task_contract)
+    questions = compiled_questions(compiled)
+    dynamic_question_ids = [
+        str(item["question"]["id"])
+        for item in questions
+        if str(item["question"]["id"]).startswith("task.contract.")
+    ]
+    first_pass_question_positions = len(questions)
+    first_pass_batches = (first_pass_question_positions + batch_size - 1) // batch_size
+    return {
+        "scope_id": scope_id,
+        "bundle_id": bundle["bundle_id"],
+        "first_pass_question_positions": first_pass_question_positions,
+        "maximum_question_positions": first_pass_question_positions * batch_attempts,
+        "dynamic_question_ids": dynamic_question_ids,
+        "first_pass_batches": first_pass_batches,
+        "maximum_provider_sends": first_pass_batches * batch_attempts,
+    }
+
+
+def _exact_selected_bundle_geometry(
+    *,
+    modules: Sequence[Mapping[str, Any]],
+    bundles: Sequence[Mapping[str, Any]],
+    selected_bundle_id: str,
+    selected_module_ids: Sequence[str],
+    local_bundle_id: str | None,
+    artifact_kind: str,
+    declared_scope: str,
+    segmentation: Mapping[str, Any],
+    local_unit_ids: Sequence[str],
+    task_contract: Mapping[str, Any] | None,
+    batch_size: int,
+    batch_attempts: int,
+) -> dict[str, Any]:
+    """Compile the caller-fixed global/local scopes without consulting a model."""
+
+    selected_bundle = resolve_bundle(bundles, selected_bundle_id)
+    global_bundle = _derive_bundle(
+        selected_bundle,
+        selected_module_ids or tuple(selected_bundle.get("module_ids", [])),
+    )
+    local_bundle_plan = resolve_local_bundle_plan(
+        bundles=list(bundles),
+        global_bundle_id=selected_bundle_id,
+        artifact_kind=artifact_kind,
+        segmentation=segmentation,
+        explicit_local_bundle_id=local_bundle_id,
+    )
+    selected_local_bundle_id = local_bundle_plan["local_bundle_id"]
+    local_bundle = (
+        global_bundle
+        if selected_local_bundle_id == selected_bundle_id
+        else resolve_bundle(bundles, selected_local_bundle_id)
+    )
+    global_contract = (
+        _longform_runtime_contract(
+            task_contract,
+            scope_id="work",
+            artifact_id=str(segmentation["artifact_id"]),
+            execution_scope=declared_scope,
+        )
+        if task_contract is not None
+        else None
+    )
+    global_scope = _binary_scope_geometry(
+        modules=modules,
+        bundle=global_bundle,
+        task_contract=global_contract,
+        scope_id="work",
+        batch_size=batch_size,
+        batch_attempts=batch_attempts,
+    )
+    units = {str(unit["unit_id"]): unit for unit in segmentation["units"]}
+    if len(set(local_unit_ids)) != len(local_unit_ids):
+        raise HBQError("Exact precontact geometry has duplicate local units")
+    unknown_or_ineligible = [
+        unit_id
+        for unit_id in local_unit_ids
+        if unit_id not in units or not units[unit_id]["local_evaluation"]["eligible"]
+    ]
+    if unknown_or_ineligible:
+        raise HBQError("Exact precontact geometry has unknown or ineligible local units")
+    local_scopes = []
+    for unit_id in local_unit_ids:
+        unit = units[unit_id]
+        local_contract = (
+            _longform_runtime_contract(
+                task_contract,
+                scope_id=unit_id,
+                artifact_id=f"{segmentation['artifact_id']}-{unit_id}",
+                execution_scope=str(unit["kind"]),
+            )
+            if task_contract is not None
+            else None
+        )
+        local_scopes.append(
+            _binary_scope_geometry(
+                modules=modules,
+                bundle=local_bundle,
+                task_contract=local_contract,
+                scope_id=unit_id,
+                batch_size=batch_size,
+                batch_attempts=batch_attempts,
+            )
+        )
+    return {
+        "basis": "exact_explicit_global_bundle_and_task_contract",
+        "local_bundle_plan": local_bundle_plan,
+        "global": global_scope,
+        "local_scopes": local_scopes,
+        "totals": {
+            "first_pass_question_positions": global_scope["first_pass_question_positions"]
+            + sum(item["first_pass_question_positions"] for item in local_scopes),
+            "maximum_question_positions": global_scope["maximum_question_positions"]
+            + sum(item["maximum_question_positions"] for item in local_scopes),
+            "first_pass_batches": global_scope["first_pass_batches"]
+            + sum(item["first_pass_batches"] for item in local_scopes),
+            "maximum_provider_sends": global_scope["maximum_provider_sends"]
+            + sum(item["maximum_provider_sends"] for item in local_scopes),
+        },
+    }
+
+
 def _freeze_sampling_ordinals(
     route: Mapping[str, Any], segmentation: Mapping[str, Any], ordinals: Sequence[int]
 ) -> dict[str, Any]:
@@ -740,6 +884,7 @@ def _run_binary_scope(
     strict_ai: bool,
     allow_unattested_reasoning: bool,
     upgrade_legacy_normalization: bool,
+    attempt_lifecycle_policy: str | None,
     longform_route_plan_path: Path | None = None,
 ) -> dict[str, Any]:
     subresume = resume and (output_dir / "run.json").is_file()
@@ -794,6 +939,7 @@ def _run_binary_scope(
         strict_ai=strict_ai,
         allow_unattested_reasoning=allow_unattested_reasoning,
         upgrade_legacy_normalization=upgrade_legacy_normalization,
+        attempt_lifecycle_policy=attempt_lifecycle_policy,
     )
     if summary.get("score") is None or not (output_dir / "score.json").is_file():
         raise HBQError(f"Long-form {label} pass did not produce a complete score report")
@@ -852,6 +998,7 @@ def run_longform_judge(
     strict_ai: bool = False,
     allow_unattested_reasoning: bool = False,
     upgrade_legacy_normalization: bool = False,
+    attempt_lifecycle_policy: str | None = None,
 ) -> dict[str, Any]:
     """Run and persist route, map, global/local judging, synthesis, and rendering.
 
@@ -906,6 +1053,11 @@ def run_longform_judge(
         raise HBQError("upgrade_legacy_normalization must be a boolean")
     if upgrade_legacy_normalization and not resume:
         raise HBQError("upgrade_legacy_normalization requires resume")
+    if attempt_lifecycle_policy not in {None, ATTEMPT_LIFECYCLE_POLICY}:
+        raise HBQError(
+            "attempt_lifecycle_policy must be "
+            f"{ATTEMPT_LIFECYCLE_POLICY!r} when set"
+        )
 
     source_path = Path(artifact_path)
     source = _read_text_record(source_path)
@@ -1041,6 +1193,40 @@ def run_longform_judge(
     maximum_binary_batches = (1 + maximum_local_scopes) * ((maximum_questions + batch_size - 1) // batch_size)
     maximum_binary_provider_sends = maximum_binary_batches * batch_attempts
     maximum_provider_calls = 1 if plan_only else 3 + maximum_binary_provider_sends
+    exact_geometry_unavailable_reason: str | None = None
+    exact_local_unit_ids: tuple[str, ...] | None = None
+    if bundle_id is None:
+        exact_geometry_unavailable_reason = "global_bundle_not_explicit"
+    elif task_contract_override is None:
+        exact_geometry_unavailable_reason = "precontact_task_contract_not_supplied"
+    elif sampling_plan_override is not None:
+        exact_local_unit_ids = tuple(override_unit_ids)
+    elif frozen_ordinals:
+        exact_local_unit_ids = tuple(
+            segmentation["units"][ordinal - 1]["unit_id"] for ordinal in frozen_ordinals
+        )
+    elif local_sample_limit is None:
+        exact_local_unit_ids = tuple(eligible_unit_ids)
+    else:
+        exact_geometry_unavailable_reason = "route_selected_local_units_not_precontact_deterministic"
+    exact_selected_bundle_geometry = (
+        _exact_selected_bundle_geometry(
+            modules=modules,
+            bundles=available_bundles,
+            selected_bundle_id=bundle_id,
+            selected_module_ids=frozen_module_ids,
+            local_bundle_id=local_bundle_id,
+            artifact_kind=artifact_kind,
+            declared_scope=declared_scope,
+            segmentation=segmentation,
+            local_unit_ids=exact_local_unit_ids,
+            task_contract=task_contract_override,
+            batch_size=batch_size,
+            batch_attempts=batch_attempts,
+        )
+        if exact_local_unit_ids is not None
+        else None
+    )
     route_sample_disclosure = {key: value for key, value in route_sample_record.items() if key != "text"}
     completion_contract = make_completion_contract(completion_status)
     disclosure = {
@@ -1063,11 +1249,20 @@ def run_longform_judge(
             "local": deepcopy(local_weight_profile),
             "provider_calls": 0,
         },
+        "conservative_pre_route_catalog_wide_upper_bound": {
+            "maximum_provider_calls": maximum_provider_calls,
+            "maximum_binary_provider_sends": maximum_binary_provider_sends,
+            "maximum_questions_per_scope": maximum_questions,
+            "maximum_local_scopes": maximum_local_scopes,
+        },
         "maximum_provider_calls": maximum_provider_calls,
         "batch_attempts": batch_attempts,
         "upgrade_legacy_normalization": upgrade_legacy_normalization,
         "allow_unattested_reasoning": allow_unattested_reasoning if provider in {"grok", "nous"} else None,
         "maximum_binary_provider_sends": maximum_binary_provider_sends,
+        "exact_selected_bundle_geometry": exact_selected_bundle_geometry,
+        "exact_selected_bundle_geometry_unavailable_reason": exact_geometry_unavailable_reason,
+        "attempt_lifecycle_policy": attempt_lifecycle_policy,
         "maximum_physical_http_attempts": (
             maximum_provider_calls * NOUS_TRANSPORT_POLICY["max_physical_attempts_per_logical_request"]
             if provider == "nous" else None
@@ -1160,6 +1355,8 @@ def run_longform_judge(
         "codex_bin": codex_bin if provider == "codex" else None,
         "strict_ai": strict_ai,
     }
+    if attempt_lifecycle_policy is not None:
+        configuration["attempt_lifecycle_policy"] = attempt_lifecycle_policy
     if provider == "grok":
         configuration["grok_bin"] = grok_bin
     if provider in {"grok", "nous"}:
@@ -1170,6 +1367,7 @@ def run_longform_judge(
     config_sha256 = _sha256_bytes(_json_bytes(configuration))
     prior_v2_configuration = deepcopy(configuration)
     prior_v2_configuration["format_version"] = 2
+    prior_v2_configuration.pop("attempt_lifecycle_policy", None)
     prior_v2_configuration.pop("upgrade_legacy_normalization")
     prior_v2_config_sha256 = _sha256_bytes(_json_bytes(prior_v2_configuration))
     legacy_configuration = deepcopy(prior_v2_configuration)
@@ -1207,7 +1405,7 @@ def run_longform_judge(
         _write_json(
             workflow_path,
             {
-                "format_version": 3,
+                "format_version": configuration["format_version"],
                 "workflow_id": f"longform-{config_sha256[:16]}",
                 "config_sha256": config_sha256,
                 "configuration": configuration,
@@ -1503,6 +1701,7 @@ def run_longform_judge(
             timeout=timeout,
             strict_ai=strict_ai,
             upgrade_legacy_normalization=upgrade_legacy_normalization,
+            attempt_lifecycle_policy=attempt_lifecycle_policy,
         )
 
     def evaluate_local(unit_id: str) -> dict[str, Any]:
@@ -1559,6 +1758,7 @@ def run_longform_judge(
             timeout=timeout,
             strict_ai=strict_ai,
             upgrade_legacy_normalization=upgrade_legacy_normalization,
+            attempt_lifecycle_policy=attempt_lifecycle_policy,
         )
 
     if binary_workers == 1:

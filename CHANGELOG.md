@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.2 — 2026-08-25
+
+- Added opt-in long-form terminal lifecycle sidecars and exact selected-bundle geometry disclosure for full-fidelity validation runs, and verified exact-once strict-AI placement across nested judge runs. HBQ-RS rubric content, standard identity, stable IDs, ownership, weights, polarity, bundles, and generated registry remain at 1.2.1; this release does not publish a full-book result.
+
 ## 1.2.1 — 2026-08-25
 
 - Published the four independently reviewed wording repairs for recurrence/applicability, excerpt scope, figurative semantic hinges, and material-context line breaks without changing stable IDs, criterion ownership, weights, polarity, or total module influence.

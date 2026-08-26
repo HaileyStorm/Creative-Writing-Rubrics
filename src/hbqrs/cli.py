@@ -554,6 +554,7 @@ def _cmd_longform(args: argparse.Namespace) -> int:
         strict_ai=args.strict_ai,
         allow_unattested_reasoning=args.allow_unattested_reasoning,
         upgrade_legacy_normalization=args.upgrade_legacy_normalization,
+        attempt_lifecycle_policy=args.attempt_lifecycle_policy,
     )
     report_path = Path(args.output_dir) / "report.json"
     if args.html_report and report_path.is_file():
@@ -948,6 +949,11 @@ def build_parser() -> argparse.ArgumentParser:
         "--upgrade-legacy-normalization",
         action="store_true",
         help="on --resume only, upgrade legacy binary evidence normalization with immutable audit sidecars",
+    )
+    longform.add_argument(
+        "--attempt-lifecycle-policy",
+        choices=[runner.ATTEMPT_LIFECYCLE_POLICY],
+        help="fresh opt-in terminal attempt sidecars for every long-form binary scope",
     )
     longform.add_argument("--dry-run", action="store_true")
     longform.add_argument(

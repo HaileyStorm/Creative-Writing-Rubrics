@@ -51,7 +51,7 @@ INTENTIONAL_HOST_INTEGRATION_REFERENCES = {
 def test_lazy_public_exports_preserve_attribute_and_from_import_semantics() -> None:
     import hbqrs
 
-    assert hbqrs.__version__ == "1.2.1"
+    assert hbqrs.__version__ == "1.2.2"
     assert hbqrs.__all__ == ["__version__", *hbqrs._EXPORTS]
     for name in hbqrs.__all__:
         assert getattr(hbqrs, name) is not None
@@ -60,13 +60,14 @@ def test_lazy_public_exports_preserve_attribute_and_from_import_semantics() -> N
         assert namespace[name] is getattr(hbqrs, name)
 
 
-def test_citation_uses_the_current_hbq_rs_release_identity() -> None:
+def test_citation_distinguishes_package_release_from_rubric_standard_identity() -> None:
     import hbqrs
     import yaml
 
     citation = yaml.safe_load((book_root() / "CITATION.cff").read_text(encoding="utf-8"))
     assert citation["version"] == hbqrs.__version__
     assert citation["date-released"] == "2026-08-25"
+    assert "Creative-Writing-Rubrics 1.2.2" in citation["abstract"]
     assert "HBQ-RS 1.2.1" in citation["abstract"]
 
 
@@ -223,6 +224,7 @@ def test_built_distributions_include_the_intended_public_surface(tmp_path: Path)
     assert "hbqrs/book/schema/hbq_judge_response.schema.json" in names
     assert "hbqrs/book/schema/hbq_batch.schema.json" in names
     assert any(name.startswith("hbqrs/book/sources/") for name in names)
+    assert "Version: 1.2.2" in metadata
     assert "Requires-Dist: jsonschema>=4.0" in metadata
     assert not any("evaluation-results/" in name for name in names)
 
