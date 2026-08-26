@@ -191,6 +191,8 @@ watched, or explicitly no-promotion outcomes. The matrix is a way to say what
 was looked at and what did not yet earn a change, instead of turning every
 static concern into a rewrite.
 
+L2 verified 216 completed slots after a narrowly bounded CRLF-to-LF settlement repair but remained a diagnostic failure.
+
 Two bounded wording-only repairs in that matrix did earn promotion through
 their own staged development, disjoint-holdout, and independent-review paths.
 That subset is not the whole installed repair set. The current book carries
