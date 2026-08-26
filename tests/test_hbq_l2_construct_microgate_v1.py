@@ -4,7 +4,6 @@ from copy import deepcopy
 import importlib.util
 import json
 from pathlib import Path
-import subprocess
 import sys
 import struct
 import zlib
@@ -12,17 +11,29 @@ import zlib
 import pytest
 
 from hbqrs.paths import book_root
+from tests import _hbq_figurative_historical_runtime as cli_runtime
+from tests import _hbq_l2_historical_runtime as l2_runtime
+from tests import _hbq_s1_historical_runtime as tree_runtime
 
 
 ROOT = book_root() / "evaluation-results" / "hbq-l2-construct-microgate-v1"
+SOURCE_COMMIT = "a711c856e33516d4cc1f29fac889a802143623a8"
 
 
-def load_study():
+def raw_study():
     spec = importlib.util.spec_from_file_location("l2_construct_microgate_study", ROOT / "study.py")
     module = importlib.util.module_from_spec(spec)
     assert spec and spec.loader
     sys.modules[spec.name] = module
     spec.loader.exec_module(module)
+    return module
+
+
+def load_study():
+    module = raw_study()
+    repository = Path(module.REPOSITORY).resolve()
+    tree_runtime.install_historical_runtime(module, source_commit=SOURCE_COMMIT)
+    module.production_runner = l2_runtime.load_runner(repository, SOURCE_COMMIT)
     return module
 
 
@@ -53,6 +64,11 @@ def test_freeze_has_exact_microgate_geometry_and_provider_free_boundary():
     contract = study.load_contract()
     assert contract["provider_execution"] == {"permitted": False, "new_provider_calls_exact": 0, "paid_route": "forbidden", "one_leaf_per_request": True}
     assert contract["lifecycle"] == {"policy": "terminal_sidecar_v1", "remote_execution_surface": "absent", "retry_or_resume": "not_authorized_by_freeze"}
+
+
+def test_current_checkout_drift_remains_fail_closed():
+    with pytest.raises(ValueError, match="Frozen package binding drifted"):
+        raw_study().verify_package()
 
 
 def test_cases_bind_exact_existing_leaves_and_separate_expected_ledger():
@@ -141,10 +157,12 @@ def test_gates_are_exhaustive_for_one_two_and_zero_of_three():
 
 
 def test_provider_free_commands_have_no_execution_surface():
-    dry = subprocess.run([sys.executable, str(ROOT / "run.py"), "--dry-run"], text=True, capture_output=True, check=True)
-    rendered = subprocess.run([sys.executable, str(ROOT / "run.py"), "--render-plan"], text=True, capture_output=True, check=True)
-    assert json.loads(dry.stdout)["verification"]["provider_calls"] == 0
-    plan = json.loads(rendered.stdout)
+    study = load_study()
+    dry = cli_runtime.run_cli(study, ROOT / "run.py", "--dry-run")
+    rendered = cli_runtime.run_cli(study, ROOT / "run.py", "--render-plan")
+    assert dry[0] == rendered[0] == 0
+    assert json.loads(dry[1])["verification"]["provider_calls"] == 0
+    plan = json.loads(rendered[1])
     assert len(plan["rendered_slots"]) == 24 and len(plan["image_input_slots"]) == 6
     for path in ROOT.rglob("*"):
         if path.suffix not in {".py", ".json", ".md"}:

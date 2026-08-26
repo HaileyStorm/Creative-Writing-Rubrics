@@ -12,7 +12,7 @@ from pathlib import Path
 import pytest
 
 from hbqrs.paths import book_root
-from hbqrs import runner as production_runner
+from tests import _hbq_l2_historical_runtime as historical_runtime
 
 
 ROOT = book_root() / "evaluation-results" / "hbq-l2-construct-microgate-v1-execution-v1"
@@ -112,12 +112,16 @@ def test_v2_uses_a_fresh_namespace_and_retains_the_no_output_ancestor_as_non_vot
 def test_all_24_frozen_prompts_match_production_compiled_bytes_and_aggregate():
     s = study()
     predecessor = s._predecessor()
-    records = predecessor.compiled_leaf_records()
+    records = s._frozen_leaf_records()
+    current = predecessor.compiled_leaf_records()
+    runner = historical_runtime.load_runner(s.REPOSITORY, s.PREDECESSOR_COMMIT)
+    assert current["form.poetry.free_verse.line_breaks"] != records["form.poetry.free_verse.line_breaks"]
+    assert sys.modules["hbqrs.runner"] is not runner
     artifacts = s._artifact_by_case()
     schedule = s.build_schedule()
     for slot in schedule:
         artifact = artifacts[slot["case_id"]]
-        expected = production_runner._render_prompt(
+        expected = runner._render_prompt(
             binary_prompt=s._frozen_binary_prompt(),
             artifact={"name": artifact["artifact_name"], "text": artifact["text"]},
             contexts=[],

@@ -8,6 +8,7 @@ pinned source commit and make only the in-memory test module read that snapshot.
 from __future__ import annotations
 
 import hashlib
+import subprocess
 import tempfile
 from pathlib import Path
 from types import ModuleType
@@ -15,6 +16,54 @@ from typing import Any, Callable
 
 
 _SNAPSHOTS: dict[tuple[str, str, tuple[str, ...], tuple[tuple[str, str], ...]], tuple[tempfile.TemporaryDirectory[str], dict[str, Path]]] = {}
+_EXPLICIT_RUNNERS: dict[tuple[str, str], ModuleType] = {}
+
+
+def load_runner(repository: Path | str, source_commit: str) -> ModuleType:
+    """Load one exact historical runner without changing the global package."""
+
+    root = Path(repository).resolve()
+    key = (str(root), source_commit)
+    cached = _EXPLICIT_RUNNERS.get(key)
+    if cached is not None:
+        return cached
+
+    dependencies = {}
+    for relative in ("src/hbqrs/core.py", "src/hbqrs/paths.py", "src/hbqrs/weights.py"):
+        expected = _git(root, "rev-parse", f"{source_commit}:{relative}")
+        if _git(root, "hash-object", relative) != expected:
+            raise ValueError(f"Historical runner dependency differs from pinned source bytes: {relative}")
+        dependencies[relative] = expected
+    relative = "src/hbqrs/runner.py"
+    payload = _git_bytes(root, "show", f"{source_commit}:{relative}")
+    runner = _runner_module(payload, root / relative, dependencies)
+    _EXPLICIT_RUNNERS[key] = runner
+    return runner
+
+
+def _git(repository: Path, *args: str) -> str:
+    done = subprocess.run(["git", *args], cwd=repository, text=True, encoding="utf-8", capture_output=True, check=False)
+    if done.returncode:
+        raise ValueError(done.stderr.strip() or "Historical runner Git lookup failed")
+    return done.stdout.strip()
+
+
+def _git_bytes(repository: Path, *args: str) -> bytes:
+    done = subprocess.run(["git", *args], cwd=repository, capture_output=True, check=False)
+    if done.returncode:
+        raise ValueError(done.stderr.decode("utf-8", errors="replace").strip() or "Historical runner Git lookup failed")
+    return bytes(done.stdout)
+
+
+def _runner_module(payload: bytes, path: Path, dependencies: dict[str, str]) -> ModuleType:
+    identity = hashlib.sha256(payload).hexdigest()
+    runner = ModuleType(f"hbqrs._historical_runner_{identity[:16]}")
+    runner.__file__ = str(path)
+    runner.__package__ = "hbqrs"
+    exec(compile(payload, str(path), "exec"), runner.__dict__)
+    runner.__historical_source_sha256__ = identity
+    runner.__historical_dependency_blobs__ = dependencies
+    return runner
 
 
 def install(executor: ModuleType) -> ModuleType:
@@ -119,13 +168,7 @@ def _load_historical_modules(executor: ModuleType, pinned: dict[str, Path]) -> d
                 raise ValueError(f"Historical runner dependency differs from pinned source bytes: {relative}")
             dependencies[relative] = expected
         payload = runner_path.read_bytes()
-        identity = hashlib.sha256(payload).hexdigest()
-        runner = ModuleType(f"hbqrs._historical_runner_{identity[:16]}")
-        runner.__file__ = str(runner_path)
-        runner.__package__ = "hbqrs"
-        exec(compile(payload, str(runner_path), "exec"), runner.__dict__)
-        runner.__historical_source_sha256__ = identity
-        runner.__historical_dependency_blobs__ = dependencies
+        runner = _runner_module(payload, runner_path, dependencies)
         modules["src/hbqrs/runner.py"] = runner
     return modules
 
