@@ -8,6 +8,7 @@ pinned source commit and make only the in-memory test module read that snapshot.
 from __future__ import annotations
 
 import hashlib
+import re
 import subprocess
 import tempfile
 from pathlib import Path
@@ -44,11 +45,34 @@ def install_source(module: ModuleType, *, source_commit: str) -> ModuleType:
     module.SOURCE_COMMIT = source_commit
     module.RUNTIME_PATHS = tuple(runtime)
     module.PINNED_RUNTIME_HASHES = hashes
+    module._historical_include_all_src = True
+    _verify_live_python_compatibility(module, repository, source_commit, tuple(runtime))
     module._git = lambda *args: _git(repository, *args)
     module._git_bytes = lambda *args: _git_bytes(repository, *args)
     install(module)
     _bind_data_runtime(module, module._historical_runtime_paths)
     return module
+
+
+def _verify_live_python_compatibility(module: ModuleType, repository: Path, source_commit: str, runtime: tuple[str, ...]) -> None:
+    """Fail unless Python left live by the test adapter is byte-compatible."""
+
+    for relative in runtime:
+        if not relative.startswith("src/") or relative == "src/hbqrs/runner.py":
+            continue
+        historical = _git_bytes(repository, "show", f"{source_commit}:{relative}")
+        current = (repository / relative).read_bytes()
+        if current.replace(b"\r\n", b"\n") == historical.replace(b"\r\n", b"\n"):
+            continue
+        if relative == "src/hbqrs/__init__.py" and _without_package_version(current) == _without_package_version(historical):
+            module._historical_version_only_compatibility = relative
+            continue
+        raise ValueError(f"Historical Python dependency differs from pinned source bytes: {relative}")
+
+
+def _without_package_version(payload: bytes) -> bytes:
+    normalized = payload.replace(b"\r\n", b"\n")
+    return re.sub(rb'(?m)^__version__\s*=\s*["\'][^"\']+["\']\s*$', b'__version__ = "<version>"', normalized)
 
 
 def load_runner(repository: Path | str, source_commit: str) -> ModuleType:
@@ -111,7 +135,7 @@ def install(executor: ModuleType) -> ModuleType:
         root = Path(lease.name)
         pinned: dict[str, Path] = {}
         for relative in runtime:
-            if relative.startswith("src/") and relative != "src/hbqrs/runner.py":
+            if relative.startswith("src/") and relative != "src/hbqrs/runner.py" and not getattr(executor, "_historical_include_all_src", False):
                 continue
             target = root / relative
             target.parent.mkdir(parents=True, exist_ok=True)

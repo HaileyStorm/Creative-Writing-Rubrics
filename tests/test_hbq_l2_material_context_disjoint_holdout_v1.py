@@ -3,24 +3,30 @@ from __future__ import annotations
 from copy import deepcopy
 import importlib.util
 import json
-import subprocess
 import sys
 
 import pytest
 
 from hbqrs.paths import book_root
+from tests import _hbq_l2_historical_runtime as historical_runtime
+from tests import _hbq_s2_historical_runtime as cli_runtime
 
 
 ROOT = book_root() / "evaluation-results" / "hbq-l2-material-context-disjoint-holdout-v1"
 
 
-def study():
+def raw_study():
     spec = importlib.util.spec_from_file_location("hbq_l2_material_context_disjoint_holdout_v1_test", ROOT / "study.py")
     module = importlib.util.module_from_spec(spec)
     assert spec and spec.loader
     sys.modules[spec.name] = module
     spec.loader.exec_module(module)
     return module
+
+
+def study():
+    module = raw_study()
+    return historical_runtime.install_source(module, source_commit=module.TREATMENT_FREEZE)
 
 
 def test_exact_five_case_geometry_and_decision_rule_are_frozen():
@@ -30,6 +36,23 @@ def test_exact_five_case_geometry_and_decision_rule_are_frozen():
     assert len(s.plan_slots()) == len({slot["slot_id"] for slot in s.plan_slots()}) == 15
     assert {slot["repeat"] for slot in s.plan_slots()} == {1, 2, 3}
     assert s.load_contract()["decision_rule"] == {"all_cells_three_of_three": "PROMOTION_REVIEW_ELIGIBLE", "any_complete_valid_miss": "NO_GO", "invalid_or_incomplete": "no_result"}
+
+
+def test_current_checkout_drift_remains_fail_closed():
+    with pytest.raises(ValueError, match="Runtime binding drifted"):
+        raw_study().verify_package()
+
+
+def test_source_only_python_snapshot_mutation_fails_closed():
+    value = study()
+    path = value._historical_runtime_paths["src/hbqrs/__init__.py"]
+    original = path.read_bytes()
+    try:
+        path.write_bytes(original + b"mutation")
+        with pytest.raises(ValueError, match="historical runtime bytes were mutated"):
+            value.verify_package()
+    finally:
+        path.write_bytes(original)
 
 
 def test_fresh_case_mechanisms_are_exact_and_controls_have_no_dangling_article_split():
@@ -138,10 +161,14 @@ def test_exact_provider_and_scope_policy_objects_reject_drift(monkeypatch: pytes
 
 
 def test_command_surface_is_provider_free_and_dry_rendering_is_deterministic():
-    dry = subprocess.run([sys.executable, str(ROOT / "run.py"), "--dry-run"], text=True, capture_output=True, check=True)
-    plan = subprocess.run([sys.executable, str(ROOT / "run.py"), "--render-plan"], text=True, capture_output=True, check=True)
+    original_path = tuple(sys.path)
+    value = study()
+    dry = cli_runtime.run_cli(value, ROOT / "run.py", "--dry-run")
+    plan = cli_runtime.run_cli(value, ROOT / "run.py", "--render-plan")
+    assert dry.returncode == plan.returncode == 0
     assert json.loads(dry.stdout)["verification"]["provider_calls"] == 0
     assert len(json.loads(plan.stdout)["slots"]) == 15
+    assert tuple(sys.path) == original_path
     for path in ROOT.rglob("*"):
         if path.suffix in {".py", ".json", ".md"}:
             source = path.read_text(encoding="utf-8")

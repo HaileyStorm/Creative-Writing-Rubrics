@@ -18,13 +18,26 @@ from tests import _hbq_l2_historical_runtime as historical_runtime
 ROOT = book_root() / "evaluation-results" / "hbq-l2-material-context-disjoint-holdout-v1-execution-v1"
 
 
-def study():
+def raw_study():
     spec = importlib.util.spec_from_file_location("l2_material_disjoint_holdout_execution_v1", ROOT / "study.py")
     module = importlib.util.module_from_spec(spec)
     assert spec and spec.loader
     sys.modules[spec.name] = module
     spec.loader.exec_module(module)
-    return historical_runtime.install(module)
+    return module
+
+
+def study():
+    module = historical_runtime.install(raw_study())
+    source = module._source()
+    historical_runtime.install_source(source, source_commit=source.TREATMENT_FREEZE)
+    module._source = lambda: source
+    return module
+
+
+def test_current_checkout_drift_remains_fail_closed():
+    with pytest.raises(ValueError, match="Current runtime differs from pinned source bytes"):
+        raw_study().validate_package()
 
 
 @pytest.fixture
