@@ -27,6 +27,28 @@ def test_public_package_verifies() -> None:
     assert verifier.check(ROOT) == []
 
 
+def test_audit_tree_uses_platform_neutral_case_sensitive_path_order() -> None:
+    sanitizer = load_module("gray_public_sanitizer_order", ROOT / "sanitize_publication.py")
+    paths = sanitizer.files_for_audit(ROOT)
+    relative = [path.relative_to(ROOT).as_posix() for path in paths]
+    assert len(relative) == 18
+    assert relative == sorted(relative)
+    assert relative[0] == "README.md"
+    assert sanitizer.tree_hash(ROOT) == (
+        "8953b5f6a4e37003d63f60216cc565f29faea1ef9ee38becfc5792153dbeea75"
+    )
+
+    casefold_digest = hashlib.sha256()
+    for path in sorted(paths, key=lambda item: item.relative_to(ROOT).as_posix().casefold()):
+        casefold_digest.update(path.relative_to(ROOT).as_posix().encode("utf-8"))
+        casefold_digest.update(b"\0")
+        casefold_digest.update(path.read_bytes())
+        casefold_digest.update(b"\0")
+    assert casefold_digest.hexdigest() == (
+        "120acca09bf37f940b5fe60cec56689734f312c126094013d31fa1e52e424453"
+    )
+
+
 def test_public_verdict_projection_has_no_evidence_or_execution_metadata() -> None:
     expected = {"bundle", "confidence", "question_id", "scope", "verdict"}
     records = [

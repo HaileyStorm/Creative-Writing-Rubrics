@@ -46,6 +46,8 @@ Sampler settings belong to the task. A sampler that helps drafting may hurt grad
 
 Versioned score reports carry the optional `confidence_diagnostics` field. Unversioned `score.json` files remain v1 evidence; current runner surfaces leave those parents untouched and atomically write a hash-bound `score.v2.json` descendant. V2 reports secondary role diagnostics for `domain`, `hard_gate`, `penalty`, and `supplemental` leaves using effective leaf weights. They never change the canonical score, coverage, penalties, gates, bounds, or status. An empty or wholly unassessed role has `null` ratios and is rendered as **Not observed**.
 
+The `cwr score` command emits v2 by default. Use `--report-version 1` only to independently reconstruct the semantics of an immutable runner-owned `score.json` parent; the explicit v1 path restores the same materialized weight-profile audit and does not claim byte-identical serialization or reinterpret v2 evidence as v1.
+
 ## Intervals and coverage
 
 `CANNOT_ASSESS` widens the interval. If coverage is below the bundle threshold, the result is `PROVISIONAL` and must not drive unattended acceptance. Missing modalities (no audio for an audio leaf) are `CANNOT_ASSESS`, not `NO`.

@@ -34,6 +34,7 @@ def build_fixture(
     context_text: str = "Write a tense short story about a lantern.",
     input_paths: tuple[Path, Path, Path] | None = None,
     prompt_rendering_version: int = runner.PROMPT_RENDERING_VERSION,
+    task_contract_enabled: bool = True,
 ) -> tuple[Path, dict[str, Any]]:
     """Materialize a complete run from source inputs; never edits an existing run."""
 
@@ -75,6 +76,7 @@ def build_fixture(
         task = json.loads(task_path.read_text(encoding="utf-8"))
         if not isinstance(task, dict) or task.get("artifact_id") != artifact_id:
             raise ValueError("Fixture task input must bind the artifact identity")
+    task_for_scoring = task if task_contract_enabled else None
     scope_override = task_path.with_name("scope-compatibility.json")
     override = {
         "format_version": 1,
@@ -89,12 +91,14 @@ def build_fixture(
         "reviewer": "fixture",
         "reason": "Fixture binds an explicit reviewed compatibility decision.",
     }
-    write_json(scope_override, override)
+    if task_contract_enabled:
+        write_json(scope_override, override)
     binary_prompt = prompts_dir() / "judge" / "BINARY_EVALUATION_PROMPT.md"
     response_schema = schema_dir() / "hbq_judge_response.schema.json"
     frozen = {
-        "artifact": binding(artifact), "contexts": [binding(context)], "task_contract": binding(task_path),
-        "scope_compatibility_override": binding(scope_override),
+        "artifact": binding(artifact), "contexts": [binding(context)],
+        "task_contract": binding(task_path) if task_contract_enabled else None,
+        "scope_compatibility_override": binding(scope_override) if task_contract_enabled else None,
         "registry": binding(registry_path()), "bundles": binding(bundles_path()), "prompts": [binding(binary_prompt)],
         "response_schema": binding(response_schema), "score_v1_schema": binding(schema_dir() / "hbq_score_report.schema.json"),
         "score_v2_schema": binding(schema_dir() / "hbq_score_report.v2.schema.json"), "weight_profile": None,
@@ -106,20 +110,24 @@ def build_fixture(
     modules = core.load_modules(registry_path())
     bundle = core.resolve_bundle(core.load_bundles(bundles_path()), "prose.short_story")
     modules, bundle, weight = materialize_weight_profile(modules, bundle, None)
-    compiled = core.compile_bundle(modules, bundle, task_contract=task)
+    compiled = core.compile_bundle(modules, bundle, task_contract=task_for_scoring)
     order = {"hard_gate": 0, "domain": 1, "penalty": 2, "supplemental": 3}
     questions = sorted(core.compiled_questions(compiled), key=lambda item: order.get(str(item.get("role")), 99))
     artifact_record, context_record = runner._read_text_record(artifact), runner._read_text_record(context)
-    task_record = runner._manifest_inputs([runner._read_text_record(task_path)])[0]
-    task_record["contract_id"] = task["contract_id"]
-    task_context = runner._task_contract_judge_context(task)
-    scope_compatibility = runner._scope_compatibility_override(
-        scope_override,
-        artifact_id=artifact_id,
-        bundle_id="prose.short_story",
-        task_contract=task,
-        task_contract_record=task_record,
-    )
+    task_record = None
+    task_context = None
+    scope_compatibility = None
+    if task_contract_enabled:
+        task_record = runner._manifest_inputs([runner._read_text_record(task_path)])[0]
+        task_record["contract_id"] = task["contract_id"]
+        task_context = runner._task_contract_judge_context(task)
+        scope_compatibility = runner._scope_compatibility_override(
+            scope_override,
+            artifact_id=artifact_id,
+            bundle_id="prose.short_story",
+            task_contract=task,
+            task_contract_record=task_record,
+        )
     prompt_records = [runner._read_text_record(binary_prompt)]
     binary = "\n\n".join(str(item["text"]).strip() for item in prompt_records)
     configuration = {
@@ -187,9 +195,9 @@ def build_fixture(
         checkpoint.with_suffix(".prompt.txt.gz").write_bytes(gzip.compress(prompt_bytes, mtime=0))
         previous = hashlib.sha256(checkpoint.read_bytes()).hexdigest()
     (run / "verdicts.jsonl").write_bytes(runner._verdicts_bytes(completed))
-    parent = core.score_bundle(modules, bundle, completed, artifact_id=artifact_id, task_contract=task); parent["weight_profile"] = weight
+    parent = core.score_bundle(modules, bundle, completed, artifact_id=artifact_id, task_contract=task_for_scoring); parent["weight_profile"] = weight
     write_json(run / "score.json", parent)
-    descendant = scoring_v2.score_bundle(modules, bundle, completed, artifact_id=artifact_id, task_contract=task)
+    descendant = scoring_v2.score_bundle(modules, bundle, completed, artifact_id=artifact_id, task_contract=task_for_scoring)
     descendant["weight_profile"] = weight; descendant["parent_score_sha256"] = hashlib.sha256((run / "score.json").read_bytes()).hexdigest()
     write_json(run / "score.v2.json", descendant)
     return run, frozen

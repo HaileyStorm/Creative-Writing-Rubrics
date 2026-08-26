@@ -1,6 +1,6 @@
 {
   "audited_file_count": 18,
-  "audited_total_bytes": 601741,
+  "audited_total_bytes": 601846,
   "curated_excerpt_files": [
     "excerpts/ch01-new-relationship.md",
     "excerpts/ch03-new-magic-cost.md",
@@ -21,7 +21,7 @@
   },
   "format_version": 3,
   "ngram_normalization": "lowercase ASCII alphanumeric tokens; exact contiguous token sequences",
-  "tree_sha256": "7b5268f23865d635fe7aae0b7428c0be13f7c205ade653bf123daa361698aee4",
+  "tree_sha256": "8953b5f6a4e37003d63f60216cc565f29faea1ef9ee38becfc5792153dbeea75",
   "unpublished_source_prose_ngram_hits": {
     "original": {
       "12": 0,

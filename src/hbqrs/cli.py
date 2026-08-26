@@ -21,11 +21,12 @@ from .core import (
     load_modules,
     load_verdicts,
     resolve_bundle,
+    score_bundle as score_bundle_v1,
     validate_registry,
     walk_tree,
     write_data,
 )
-from .scoring_v2 import score_bundle
+from .scoring_v2 import score_bundle as score_bundle_v2
 from .pack import pack_book
 from .paths import book_root, bundles_path, prompts_dir, registry_path, schema_dir
 from .runner_v2 import run_judge
@@ -254,18 +255,20 @@ def _cmd_compile(args: argparse.Namespace) -> int:
 
 def _cmd_score(args: argparse.Namespace) -> int:
     modules, bundles = _load_registry(args)
-    modules, bundle, _ = materialize_weight_profile(
+    modules, bundle, weight_audit = materialize_weight_profile(
         modules,
         resolve_bundle(bundles, args.bundle_id),
         _load_weight_profile(args.weight_profile),
     )
-    report = score_bundle(
+    scorer = score_bundle_v1 if args.report_version == 1 else score_bundle_v2
+    report = scorer(
         modules,
         bundle,
         load_verdicts(args.verdicts),
         artifact_id=args.artifact_id,
         task_contract=_load_task_contract(args.task_contract),
     )
+    report["weight_profile"] = weight_audit
     write_data(args.output, report, fmt=args.format)
     return 0
 
@@ -616,6 +619,13 @@ def build_parser() -> argparse.ArgumentParser:
     score.add_argument("--artifact-id")
     score.add_argument("--task-contract", help="same frozen task contract used during judging")
     score.add_argument("--weight-profile", help="strict scoring-weight profile JSON/YAML")
+    score.add_argument(
+        "--report-version",
+        type=int,
+        choices=(1, 2),
+        default=2,
+        help="score report contract to emit (default: 2; use 1 to reconstruct score.json semantics)",
+    )
     score.add_argument("-o", "--output")
     score.add_argument("--format", choices=["json", "yaml"], default="json")
     score.set_defaults(func=_cmd_score)

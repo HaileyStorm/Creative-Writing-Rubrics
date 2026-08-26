@@ -96,6 +96,7 @@ def _configuration(
     prompt_rendering_version: int,
     scope_compatibility: Mapping[str, Any] | None,
 ) -> dict[str, Any]:
+    task: Mapping[str, Any] | None = None
     task_record = _manifest_record(task_contract) if task_contract is not None else None
     if task_record is not None:
         task = core.load_data(task_contract)
@@ -170,8 +171,11 @@ def _scope_compatibility(
     context_paths: Sequence[Path],
 ) -> dict[str, Any] | None:
     if task is None:
-        if frozen.get("scope_compatibility_override") is not None:
-            raise core.HBQError("Frozen scope compatibility override requires a task contract")
+        if (
+            frozen.get("scope_compatibility_override") is not None
+            or frozen.get("longform_scope_compatibility_proof") is not None
+        ):
+            raise core.HBQError("Frozen scope compatibility evidence requires a task contract")
         return None
     if task_contract_path is None:
         raise core.HBQError("Frozen task contract path is missing")
@@ -305,6 +309,11 @@ def verify_binary_run(run_dir: str | Path, frozen: Mapping[str, Any]) -> dict[st
     task = core.load_data(task_contract_path) if task_contract_path is not None else None
     if task is not None and not isinstance(task, Mapping):
         raise core.HBQError("Frozen task contract must be an object")
+    if task is None and (
+        frozen.get("scope_compatibility_override") is not None
+        or frozen.get("longform_scope_compatibility_proof") is not None
+    ):
+        raise core.HBQError("Frozen scope compatibility evidence requires a task contract")
     if task is not None:
         errors = sorted(
             Draft202012Validator(core.load_data(runner.schema_dir() / "hbq_task_contract.schema.json")).iter_errors(task),
