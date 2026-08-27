@@ -1,0 +1,87 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-multisample-repeatability-v1-remainder-capacity-reset-successor-v6",
+  "supersedes": {
+    "failed_live_root": "cwr-multisample-capacity-reset-v4-live-1c587bc-20260822",
+    "offline_admission_root": "cwr-multisample-v5-owner-validated-settlement-20260822",
+    "v4_package_commit": "1c587bc311e0f303e809d842ec1035e5e81eb60b",
+    "v5_package_commit": "9a911138c84928dc457c7279eae7fca174091c1e",
+    "reason": "admit the independently validated sequence-178 output and continue only the untouched 179-330 suffix"
+  },
+  "admitted_prefix": {
+    "sequence": 178,
+    "v4_tree_sha256": "b084bc32f1df05b279a3816f188d98e1e7f95da0e4453a46d5e2b7fa81af6009",
+    "v4_journal_sha256": "e1c3b88b94193906591a6566668688eb67b2592d19f8f7fe832dbc9941e0096a",
+    "v4_claim_sha256": "b649cb066a46e4be45a358f4b6f082c4ba588e6c05d99f2fe46a0720ac58a445",
+    "v4_run_sha256": "42b223e0ef9ae6d258c68b35ae1a08f1ecce1d073b64b7f19b77b95e3b584f70",
+    "v4_verdicts_sha256": "28d3cbbb616be02f4d2cab063f9ef56ca9be8d4689025cb1ef998274aeac091a",
+    "v4_session_sha256": "ebde6b1ccd743548bb2ce7c03b04971aabbc13c451c29e153f2132f369a704f5",
+    "v5_record_sha256": "b784bd4baa1cf209ae941de989fe19697de51d22fb8602499b747e13399216ff",
+    "v5_completion_sha256": "42b223e0ef9ae6d258c68b35ae1a08f1ecce1d073b64b7f19b77b95e3b584f70"
+  },
+  "schedule": {
+    "count": 152,
+    "first_sequence": 179,
+    "last_sequence": 330,
+    "source_full_schedule_sha256": "96b91f124d2a889f4fa47b70d67c16604927f33928ca4ad5d302713c84f8f086",
+    "sha256": "6f22cdcd4501e1de4c90ec9c756c2006a7dcef9e9ee8c446ce8b985f2bb3ec4b"
+  },
+  "evaluation_population": {
+    "generated_stories": 10,
+    "human_story": 1,
+    "primary": {
+      "stories": 10,
+      "cells": 300
+    },
+    "secondary": {
+      "stories": 1,
+      "cells": 30
+    },
+    "total_cells": 330
+  },
+  "accounting": {
+    "suffix_logical_cells": 152,
+    "suffix_minimum_physical_provider_contacts": 277,
+    "suffix_retry_ceiling": 831,
+    "accepted_count_basis": "validated output files in the contiguous journal prefix"
+  },
+  "lineage": {
+    "closed_successor_commit": "9422efffdca1e5e7f82d4bf77588a726af75b4cd",
+    "closed_successor_study_git_blob_oid_sha1": "d2cafd72b6c5e96582064e8aa877b42a9e04ebd2",
+    "closed_successor_runner_git_blob_oid_sha1": "98a276a64b17dd1d20cd3fe3cc4aa5176040144d",
+    "closed_successor_runner_retry_hook_git_blob_oid_sha1": "dbcacd3f0b02a8d1db7683dfade213fdd0f17243",
+    "remainder_study_commit": "843be2f6e1bc62cf09f04b44b3ce5bf17818114d",
+    "remainder_study_git_blob_oid_sha1": "e60dde59e0c8d3a52bea42bc09b69b79a3e0d047",
+    "capacity_reset_v3_commit": "90f5769b8119d9011ed6435742ad23c208eb69e4",
+    "capacity_reset_v4_commit": "1c587bc311e0f303e809d842ec1035e5e81eb60b",
+    "settler_v5_commit": "9a911138c84928dc457c7279eae7fca174091c1e"
+  },
+  "provider": {
+    "provider": "codex",
+    "model": "gpt-5.6-sol",
+    "reasoning": "high",
+    "paid_api": false,
+    "human_judgment": false
+  },
+  "capacity_gate": {
+    "probe_kind": "external_current_capacity_evidence_v2",
+    "max_age_seconds": 600,
+    "launch_time_revalidation_required": true,
+    "probe_authorizes_provider_contact": false,
+    "attestation": "local_host_observation_only",
+    "does_not_attest": [
+      "provider_acceptance",
+      "future_capacity"
+    ]
+  },
+  "execution": {
+    "max_workers": 1,
+    "worker_unit": "one logical sequence per isolated output root and epoch",
+    "journal_commit_order": "ascending sequence only",
+    "unresolved_attempt_policy": "stop without resend; preserve bounded unresolved-contact accounting and require explicit offline operator settlement",
+    "changed_retry_policy": "terminal rejected evidence pauses before any changed retry payload; exact immutable retry disclosure, non-placeholder acknowledgement, and fresh later capacity evidence are required before retry intent",
+    "paused_claim_recovery_policy": "never automatically remove an existing claim; any crash-left or concurrent claim requires explicit offline operator settlement before a distinct successor may proceed",
+    "outcome_selection": false,
+    "prepare_provider_calls": 0
+  }
+}
