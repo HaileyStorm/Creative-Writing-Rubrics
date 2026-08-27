@@ -16,7 +16,17 @@ followed by acceptance, nonretryable provider stop, and a started-but-unsettled
 attempt that is never automatically resent. Every slot records only public,
 path-free counts and hashes.
 
-Run `python study.py verify` for the deterministic matrix and
-`python study.py write --output result.json` to write a reproducible public
-result. `PASS_MATRIX` authorizes only Sol review and a separately designed
-production exercise; it never promotes a schema or runtime change.
+The injected nine-attempt matrix and `python study.py verify` command are
+historical/frozen-checkout-only: run them only with the exact `fb77e8a`
+checkout bindings. The current checkout intentionally fails closed because
+its runner and rubric inputs have advanced. `python study.py write
+--output result.json` likewise describes only that frozen historical exercise.
+
+This package does not define current refusal semantics. In the current runner,
+unstructured refusal text in ordinary response content is a schema/quote
+validation failure, while `model_refusal` is recognized only from the
+provider's structured `message.refusal` field (under the opted-in refusal lifecycle
+policy). Current-runner tests own that distinction.
+
+`PASS_MATRIX` authorizes only Sol review and a separately designed production
+exercise; it never promotes a schema or runtime change.
