@@ -1,96 +1,148 @@
 # Creative-Writing-Rubrics
 
-**HBQ-RS 1.2.1** — Creative-Writing-Rubrics supplies composable binary-question rubrics for creative writing, draft judging, open critique, model and dataset evaluation, benchmarking, and synthetic data.
+**CWR 1.2.3 ships HBQ-RS 1.2.1**: a local-first toolkit for asking small,
+inspectable binary questions about creative work, then aggregating the answers
+deterministically. It is useful for draft review, critique, model and dataset
+evaluation, benchmarking, and synthetic-data workflows. It does not turn a
+literary judgment into an unquestionable truth.
 
-The package ships **278 modules**, **2,145 atomic leaves**, **85 bundle presets**, and deterministic scoring. A judge answers one yes/no leaf at a time; aggregation is code, not another model call.
+The current HBQ-RS content contains **278 modules**, **2,145 atomic leaves**,
+and **85 bundle presets**. A judge answers one yes/no leaf at a time;
+aggregation is code, not another model call. Stable module, question, criterion,
+and bundle IDs are the public contract.
 
-## Install
+## What the public evidence says
+
+The strongest public evidence is deliberately bounded:
+
+- In the [established-rubric repeatability study](evaluation-results/the-part-that-arrives-first-repeatability/established-v4/), one complete authorized story was judged five times with GPT-5.6 Sol. HBQ-RS had 91.01% all-five leaf agreement, 97.08% mean modal-label agreement, and no total-score ceiling; the comparison rubrics were more ceiling-bound on this case. This demonstrates repeatability and available headroom for one story, not general validity or literary superiority.
+- The [Gray Blood full-book V9 aggregate](evaluation-results/hbq-gray-blood-full-book-qpc24-rebaseline-v9-public-result-v1/) is a settled full-fidelity aggregate for a work-in-progress manuscript, with no sampling: author-original `63.0202` (8 units / 1,817 positions) versus the explicitly labeled GPT-5.6 Pro rewrite `73.2369` (7 units / 1,589 positions), a difference of `+10.2167`. The non-statistical result is diagnostic for this rubric, scope, and frozen design, not a general ranking.
+- The primary [Fresh88 generated-only HANNA analysis](evaluation-results/hbq-human-alignment-v3-fresh88-overlap-analysis-v1/) is negative: across 80 generated stories, final-score Spearman was `-0.0441` and the six-dimension macro was `-0.0361`. Current evidence does not demonstrate human-reference alignment.
+
+![Five-run native-scale score distributions](evaluation-results/the-part-that-arrives-first-repeatability/established-v4/results/score-distributions.svg)
+
+*Five repetitions of one story, keeping each rubric on its native scale. The
+chart is a repeatability view, not a cross-rubric quality ranking; its numbers
+and SVG are bound by the study's result manifest and verifier.*
+
+These results show what the system can make inspectable today: repeatability,
+scope-aware reports, explicit uncertainty, and bounded comparisons. They do
+not complete human-alignment validation, establish reader outcomes, or create a
+default hierarchy of literary quality.
+
+## Install and try it
 
 ```bash
 pip install "git+https://github.com/HaileyStorm/Creative-Writing-Rubrics.git"
 ```
 
-From a clone:
+From a clone, install development dependencies with `pip install -e ".[dev]"`.
+Python 3.10+ is supported. The CLI is `cwr` (with `hbq` as an alias).
 
-```bash
-pip install -e ".[dev]"
-```
-
-Requires Python 3.10+. The CLI is `cwr` (alias `hbq`).
-
-## 30-second start
-
-Score the included example verdicts:
+Score the included example verdicts, inspect a bundle, or render a
+provider-agnostic packet:
 
 ```bash
 cwr score prose.scene examples/verdicts_example.jsonl
-```
-
-List presets, inspect one, compile a judge packet:
-
-```bash
 cwr list bundles
 cwr show prose.scene
-cwr compile prose.scene -o /tmp/scene-packet.json
-```
-
-Render a provider-agnostic judge prompt (bring your own model):
-
-```bash
 cwr render-judge --bundle prose.scene --artifact examples/sample_scene.md
 ```
 
-Or run and score a headless judge through a local OpenAI-compatible endpoint:
+For a real judge, bring a local OpenAI-compatible endpoint:
 
 ```bash
 cwr judge examples/sample_scene.md --bundle prose.scene --provider openai \
-  --base-url http://127.0.0.1:8000/v1 --model local-model --output-dir ../cwr-runs/sample
-```
-
-For a manuscript, `cwr longform` selects and validates a local stack, freezes declared goals, scores the whole work and local units, and can render an offline report. Binding requirements come only from an explicit `--task-contract` file:
-
-```bash
-cwr longform manuscript.txt --brief author-notes.txt \
-  --artifact-kind prose_fiction --wip --provider openai \
   --base-url http://127.0.0.1:8000/v1 --model local-model \
-  --local-sample-limit 4 --binary-workers 2 \
-  --html-report --output-dir ../cwr-runs/manuscript
+  --output-dir ../cwr-runs/sample
 ```
 
-`--wip` marks unfinished closure out of scope without relaxing craft, supplied-scope continuity, applicable requirements, or weighted goals. This example samples four local units; omit `--local-sample-limit` for complete local coverage. Chaptered prose uses a manuscript bundle globally and a chapter-scope bundle locally unless `--local-bundle` overrides it.
+See [Running a headless judge](docs/judging.md) for Codex, Grok Build, the
+Windows Nous bridge, privacy disclosure, contracts, retries, resume, and
+full-fidelity long-form runs. Sampling is always explicit; omit
+`--local-sample-limit` when complete local coverage is intended.
 
-Headless judging supports Codex CLI, the optional Grok Build CLI adapter, and the Windows Nous tool-free bridge. GPT-5.6 Sol remains the primary study arm; Grok and Nous are always supplemental. When their effective reasoning is not attested, they also require explicit provisional opt-in and remain provisional evidence.
+## How it works
 
-Use Sol Medium for binary batches and Sol High for routing, long-range mapping, ambiguity, and synthesis; Luna Max is for broad passes that receive stronger or deterministic review. [Running a headless judge](docs/judging.md) covers provider setup, privacy, resume, and contracts.
-
-Automatic routing is an LLM choice from the local catalog followed by deterministic ID, compatibility, scope, and strict-schema checks. Use `--plan-only` to inspect it. For controlled draft comparisons, freeze the stack with `--bundle prose.novel`, reuse a task contract, and repeat `--frozen-sample-ordinal N` for matched positions. `--openai-structured-outputs` is optional for compatible endpoints; generic local endpoints use prompt-and-validation.
-
-The canonical whole-work score and full chapter trajectory remain separate. For a compact headline, create an explicit profile and request the optional composite:
-
-```bash
-cwr init-score-profile manuscript.txt -o weights.json
-cwr longform manuscript.txt --brief author-notes.txt --wip \
-  --provider codex --model gpt-5.6-sol --allow-remote \
-  --hierarchical-score-profile weights.json --html-report \
-  --output-dir ../cwr-runs/manuscript
+```text
+artifact + brief → validated route → frozen task contract → stable map
+→ per-leaf verdicts → deterministic score → report
 ```
 
-The default profile is 70% whole-work and 30% equal-weight local mean. Profiles can instead use the weakest-unit reducer or, with at least three local results, discard one high and one low result before averaging. Chapter weights are not individually tunable; only shared unfinished-unit and prologue/epilogue modifiers are supported. Reports label custom weights and reducers. `cwr render-report report.json -o report.html` renders offline; `--scorecard` creates an embeddable card.
+Choose a bundle, optionally freeze an artifact-bound task contract, collect
+`YES`, `NO`, `NOT_APPLICABLE`, or `CANNOT_ASSESS` verdicts, and score them with
+the library. Objective, explicitly non-negotiable task requirements may become
+gates; author goals remain weighted questions. Open-ended review can attach
+findings, but it does not rewrite scores.
 
-The GUI is optional: setup, judging, batching, monitoring, scoring, and reports have CLI paths. `cwr configure -o setup.html` is a local, no-network helper for route, WIP, endpoint, coverage, weights, and a copyable command; it never runs a judge. There is no template editor or theme system.
+For long-form work, the global result and local chapter/section diagnostics are
+separate. The default is full local coverage; an explicit sample is a
+diagnostic subset and is labeled as such. Reports preserve observed scores,
+coverage, unresolved bounds, evidence scope, and control states rather than
+collapsing them into one unsupported quality claim.
+
+The optional GUI is an offline helper, not a server or telemetry system:
 
 <p>
   <img src="docs/images/workflow-setup.png" width="72%" alt="Local HBQ-RS workflow setup page">
 </p>
 
-The setup view is self-contained local HTML. Published study charts are derived from verified result files.
+Offline reports and scorecards keep the canonical whole-work result separate
+from any custom weighted composite:
 
-For multiple samples, `cwr batch batch.yaml --allow-remote` wraps the same runners and may mix long-form and exact single-artifact jobs. Its strict manifest chooses `individual` routing, a stack shared from one designated sample, or a planned-and-confirmed `review` route. It writes durable per-job outputs and a local status page. See [Running a headless judge](docs/judging.md).
+<p>
+  <img src="docs/images/report-overview.png" width="88%" alt="HBQ-RS offline long-form report overview">
+</p>
 
-Python:
+## What is in the box
+
+| Path | Contents |
+| --- | --- |
+| `registry/` | Modules, generated aggregates, question index, and criterion ownership |
+| `bundles/` | Bundle presets |
+| `schema/` | Module, bundle, judge-response, verdict, score-report, and review schemas |
+| `prompts/judge/` | Prefix, binary, decomposition, pairwise, long-form, multimodal, and import prompts |
+| `prompts/review/` | Open-ended critique families; findings do not rewrite scores |
+| `src/hbqrs/` | Library and CLI |
+| `docs/HBQ_RS_STANDARD.md` | Normative HBQ-RS rules |
+| `docs/RUBRIC_BOOK.md` | Human-readable rubric catalog |
+
+Technique-specific model-build modules are optional. Literary judging does not
+require them.
+
+## Results, guides, and integration
+
+Start with the [curated results hub](docs/RESULTS.md), which groups the public
+evidence by purpose and labels repeatability, full-book comparisons, negative
+or no-promotion results, exploratory work, and historical packages. It also
+links the detailed preface, HANNA, figurative, L2, structural-audit,
+exact-repeatability, and provider-supplement records rather than flattening
+every study into this front page.
+
+- [HBQ-RS standard](docs/HBQ_RS_STANDARD.md) and [rubric catalog](docs/RUBRIC_BOOK.md)
+- [Using HBQ-RS inside another application](docs/apps.md)
+- [Validation and repair journey](docs/VALIDATION_AND_REPAIR_JOURNEY.md)
+- [Leaf decomposition policy](docs/LEAF_DECOMPOSITION_POLICY.md)
+- [Benchmarking](docs/benchmarking.md), [model training](docs/training.md), and [synthetic data](docs/synthetic-data.md)
+- [Palimpsest integration handoff](docs/PALIMPSEST_HANDOFF.md), including its exact-pinned submodule and compatibility boundary
+
+## Boundaries that matter
+
+- Keep the selected bundle and evidence scope appropriate to the task; do not attach every module by default.
+- Treat `CANNOT_ASSESS` as unresolved evidence, not as `NO`.
+- Keep user taste and post-candidate preferences separate from craft requirements.
+- Do not reward length, verbosity, ornament, or bland compliance by default.
+- Request concise evidence, not private chain-of-thought.
+- Label author-original prose and model rewrites explicitly; public case studies expose only authorized excerpts and aggregates.
+
+Scores are structured evidence, not literary truth. Calibrate before
+consequential use.
+
+## Python API
 
 ```python
-from hbqrs import compile_bundle, load_bundles, load_modules, load_verdicts, resolve_bundle, score_bundle
+from hbqrs import compile_bundle, load_bundles, load_modules, load_verdicts
+from hbqrs import resolve_bundle, score_bundle
 
 modules = load_modules("registry/all_modules.json")
 bundle = resolve_bundle(load_bundles("bundles/all_bundles.json"), "prose.scene")
@@ -99,75 +151,15 @@ report = score_bundle(modules, bundle, load_verdicts("examples/verdicts_example.
 print(report["status"], report["final_score"])
 ```
 
-## How judging works
+## Verification, license, and support
 
-Choose a local bundle (or let long-form routing choose and validate one), freeze any artifact-bound task contract, collect `YES`, `NO`, `NOT_APPLICABLE`, or `CANNOT_ASSESS` verdicts using the binary prompt, then score deterministically. Author goals are weighted questions; only atomic, objective, explicitly non-negotiable contract requirements can become gates. AI-generated or AI-modified work also receives `JUDGE_PREFIX.md`.
+Release checks cover fresh-clone and isolated-wheel installation, CLI and
+Python APIs, strict schemas, local endpoint transport, public-result verifiers,
+and the provider-backed study paths described in the evidence packages. The
+public case studies preserve their own contracts, manifests, aggregate outputs,
+and privacy checks; private manuscript prose and raw model responses are not
+distributed.
 
-```text
-artifact + brief → validated route → frozen task contract → stable map → per-leaf verdicts → deterministic score → report
-```
-
-For long work, global questions see the complete source; chapters or sections receive independent local results by default. `--local-sample-limit` samples up to 64 units for constrained hardware, while `--binary-workers` evaluates disjoint scopes concurrently (maximum 8). Local results never alter the canonical manuscript score; a saved profile may add a visibly custom composite. Provider or strict-output failures retry up to three times per binary batch; rejected responses remain inspectable but never enter a checkpoint or score.
-
-## What is in the box
-
-| Path | Contents |
-| --- | --- |
-| `registry/` | Modules (YAML + JSON/JSONL aggregates), question index, criterion ownership |
-| `bundles/` | 100-point presets |
-| `schema/` | JSON Schemas for modules, bundles, strict judge responses, verdicts, score reports, open review |
-| `prompts/judge/` | Prefix, binary eval, task decomposition, pairwise, long-form, multimodal, import validation |
-| `prompts/review/` | Open-ended critique families (findings only; they do not rewrite scores) |
-| `docs/HBQ_RS_STANDARD.md` | Normative scoring rules |
-| `docs/RUBRIC_BOOK.md` | Human-readable catalog |
-| `src/hbqrs/` | Library + CLI |
-
-Technique-specific model-build modules (speculation/MTP checks, pruning, refusal-behavior overlays, and similar) live under `model/` and are optional; literary judging does not require them.
-
-Stable IDs (`module_id`, `question_id`, `bundle_id`, `criterion_key`) are the public contract. Display titles may change.
-
-## Evidence and guides
-
-- [Established-rubric repeatability study](evaluation-results/the-part-that-arrives-first-repeatability/established-v4/) — five GPT-5.6 Sol runs each of HBQ-RS and three research implementations derived from published rubrics
-- [Authorized complete story: *The Part That Arrives First*](evaluation-results/the-part-that-arrives-first-repeatability/source.md)
-- [What HBQ caught in the story](evaluation-results/the-part-that-arrives-first-repeatability/hbq-findings.md) — four concrete craft judgments, including one difficult limitation
-- [Initial batching study](evaluation-results/the-part-that-arrives-first-repeatability/) — the same story under two HBQ batch shapes and two synthesized comparators
-- [Paired-polarity pilot analysis](evaluation-results/hbq-hanna-polarity-paired-analysis-v1/) — one-story evidence that positive and flipped wording can disagree; averaging both did not improve the HANNA comparison
-- [AI-writer preface pilot](evaluation-results/hbq-ai-writer-preface-v1-analysis-v1/) and [blinded flip audit](evaluation-results/hbq-ai-writer-preface-blind-flip-audit-v1/) — the frame finds more real issues in a small slice, but materiality remains disputed
-- [*Gray Blood*, chapters 1–6](evaluation-results/gray-blood-ch1-6/) — complete score and verdict reports with five authorized excerpts, clearly labeled author-original or GPT-5.6 Pro rewrite; the remaining manuscript stays private
-- [Run a headless judge](docs/judging.md)
-- [Embed in another app](docs/apps.md)
-- [Palimpsest integration handoff](docs/PALIMPSEST_HANDOFF.md) — future pinned-submodule boundary, migration gates, and compatibility obligations
-- [Leaf decomposition policy](docs/LEAF_DECOMPOSITION_POLICY.md) — how disputed binary verdicts become bounded rubric maintenance
-- [Validation and repair journey](docs/VALIDATION_AND_REPAIR_JOURNEY.md) — how controlled studies and negative results changed HBQ-RS, including the aggregate-only [QPC1 ceiling result](evaluation-results/hbq-qpc1-figurative-treatment-v1/)
-- [QPC24 full-rubric confirmation](evaluation-results/hbq-qpc24-two-pass-product-confirmation-v5-public-result-v1/) — six complete 221-leaf passes show strong control separation and only a limited author-original versus GPT-5.6 Pro rewrite signal
-- [QPC24 V9 full-book rebaseline](evaluation-results/hbq-gray-blood-full-book-qpc24-rebaseline-v9-public-result-v1/) — work-in-progress, full-fidelity aggregate with no sampling and no rubric promotion
-- [Exact-repeatability result](evaluation-results/cwr-exact-duplicate-repeatability-v1-public-result-v1/) — exploratory replicated arithmetic plus the limits of the imported evidence
-- [Benchmarking](docs/benchmarking.md)
-- [Model training](docs/training.md)
-- [Synthetic data](docs/synthetic-data.md)
-- [HBQ-RS standard](docs/HBQ_RS_STANDARD.md)
-
-## Design cautions
-
-- Do not attach every module to every task.
-- Do not treat `CANNOT_ASSESS` as `NO`.
-- Do not mix user taste into craft scores.
-- Do not reward length, verbosity, ornament, or bland compliance by default.
-- Do not penalize an explicitly flagged excerpt for being incomplete.
-- Do not request private chain-of-thought; request concise evidence.
-- Do not let a judge invent new artistic preferences after seeing candidates.
-
-Scores are structured evidence, not literary truth. Calibrate before consequential use.
-
-## Support
-
-This project is free. Donations are entirely optional and never affect access or support; they sustain Hailey's open-source work. You can use [Buy Me a Coffee](https://buymeacoffee.com/threadspan), or see this repository's [donation details and safety notes](docs/DONATIONS.md). No route is preferred. Never share wallet keys or provider credentials; verify recipients independently because transfers may be irreversible.
-
-## License
-
-Apache License 2.0. See [LICENSE](LICENSE) and [NOTICE](NOTICE). Bibliography entries identify informing papers; those works keep their own licenses.
-
-## Verification
-
-The release is tested from a fresh clone and isolated wheel install, through CLI and Python APIs, against strict schemas and both a fake local OpenAI-compatible endpoint and GPT-5.6 via Codex CLI. The public six-chapter case study includes publishable score breakdowns and diagnostics; the private manuscript is not distributed. Repeatability studies publish their authorized story, frozen designs, detailed outputs, and deterministic analyses.
+This project is Apache-2.0 licensed; see [LICENSE](LICENSE) and [NOTICE](NOTICE).
+Optional donations and their safety notes are documented in
+[docs/DONATIONS.md](docs/DONATIONS.md).

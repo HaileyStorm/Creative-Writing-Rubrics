@@ -1,30 +1,74 @@
 # Palimpsest integration handoff
 
-This is a future-integration handoff, not an instruction to migrate either repository now.
+## Completed integration record
+
+The CWR submodule integration is recorded at Palimpsest commit
+`76db589ae0c6f0369d409023f6caa9f67498d78a`. Its exact mount is
+`Palimpsest/Rubric Book`, pinned to CWR commit
+`5e4723fb85e0378d9b55f3d4eec6c8dac968571a`.
+
+The prior integration gates were green at that checkpoint. The tested
+compatibility boundary preserved the HBQ-RS identity, stable IDs, control
+states, deterministic aggregation, and the CWR source/generated distinction.
+This record does not claim that every historical saved project, every future
+rubric revision, or every untested desktop/build path is automatically
+compatible; those remain explicit Palimpsest responsibilities.
 
 ## Authority and boundary
 
-Palimpsest's project specification remains authoritative for product behavior, persistence, local-first disclosure, and the built-in `Rubric Book/` package. Creative-Writing-Rubrics (CWR) remains authoritative for its own published HBQ-RS 1.2.1 source, schemas, tooling, and documentation. Keep the application boundary described in [Using HBQ-RS inside another application](apps.md): CWR supplies rubric data and deterministic scoring; Palimpsest owns projects, canon, manuscript/publication state, desktop RPC, and promotion decisions.
+Palimpsest's project specification remains authoritative for product behavior,
+persistence, local-first disclosure, the built-in package mount, projects,
+canon, manuscript/publication state, desktop RPC, and promotion decisions.
+Creative-Writing-Rubrics (CWR) remains authoritative for its published HBQ-RS
+1.2.1 source, schemas, tooling, and documentation. As described in [Using
+HBQ-RS inside another application](apps.md), CWR supplies rubric data and
+deterministic scoring; Palimpsest owns application state and decisions.
 
-The proposed mount is a Git submodule at `Palimpsest/Rubric Book`. It must be an exact gitlink to an owner-approved CWR commit. Never track a branch, tag, `main`, or any other floating update. This document does not preselect that commit; record the exact clean pushed release SHA in the Palimpsest migration decision when the integration gate is run.
+The submodule must remain an exact gitlink to the selected CWR commit. Never
+track a branch, tag, `main`, or another floating update in the integration.
 
-## Why it is not drop-in
+## Pinned source and compatibility boundary
 
-The pre-upstream CWR registry had 277 modules, 2,139 leaves, and 85 bundles. The current CWR registry has 278 modules, 2,145 leaves, and 85 bundles, including `modifier.style.authored_content_treatment_fidelity`; Palimpsest's requirement is now upstream. Treat this as a schema/API migration, not a copy or replacement. Do not remove, rename, or reinterpret Palimpsest stable IDs or historical verdicts merely to match CWR.
+The pre-upstream CWR registry had 277 modules, 2,139 leaves, and 85 bundles.
+The pinned CWR registry has 278 modules, 2,145 leaves, and 85 bundles,
+including `modifier.style.authored_content_treatment_fidelity`. Treat the
+change as a schema/API migration boundary, not as a file copy. Do not remove,
+rename, or reinterpret Palimpsest stable IDs or historical verdicts merely to
+match CWR.
 
-Expose the integration through `palimpsest.hbq`, not CWR internals. The adapter should load the pinned book, compile and score through a stable Palimpsest-facing API, and translate only through an explicit, tested compatibility map. It must preserve control states, deterministic aggregation, stable IDs, and source-traceable dynamic questions. An owner-approved migration contract decides how the selected CWR revision maps through the adapter; the adapter implements and enforces that decision.
+Expose the integration through `palimpsest.hbq`, not CWR internals. The adapter
+loads the pinned book, compiles and scores through a stable Palimpsest-facing
+API, and translates only through an explicit, tested compatibility map. It
+preserves control states, deterministic aggregation, stable IDs, and
+source-traceable dynamic questions.
 
 ## Source, build, and provenance rules
 
-Treat CWR authored inputs as source and its packed registries, manifests, and rendered documentation as generated outputs. Change generated aggregates only through their source and generator; retain source-vs-generated status and reconstruction provenance. The existing [HBQ-RS standard](HBQ_RS_STANDARD.md) and [Rubric Book](RUBRIC_BOOK.md) remain the catalog and scoring references rather than being duplicated here.
+Treat CWR authored inputs as source and its packed registries, manifests, and
+rendered documentation as generated outputs. Change generated aggregates only
+through their source and generator; retain source-vs-generated status and
+reconstruction provenance. The [HBQ-RS standard](HBQ_RS_STANDARD.md) and
+[Rubric Book](RUBRIC_BOOK.md) remain the catalog and scoring references rather
+than being duplicated here.
 
-The embedded book must ship and run locally with Palimpsest. It cannot create an undeclared network dependency, and any later remote judging destination still requires Palimpsest's local-first disclosure.
+The embedded book ships and runs locally with Palimpsest. It cannot create an
+undeclared network dependency, and any later remote judging destination still
+requires Palimpsest's local-first disclosure.
 
-Each evaluation/run and saved-project manifest needs immutable rubric identity: the submodule commit, registry/manifest hash, compiled bundle hash, selected stable IDs and versions, adapter version, and compatibility-map version. Existing projects must remain openable. Exact rubric replay must resolve the recorded revision or expose the specifically unavailable rubric operation and prerequisite with a recoverable migration path; it must never silently substitute a newer book or rewrite prior verdict provenance.
+Every evaluation/run and saved-project manifest should retain immutable rubric
+identity: the submodule commit, registry/manifest hash, compiled bundle hash,
+selected stable IDs and versions, adapter version, and compatibility-map
+version. The completed checkpoint confirms those identity obligations only for
+the paths exercised by its tests. Exact replay must resolve the recorded
+revision or expose the specifically unavailable operation and prerequisite;
+it must never silently substitute a newer book or rewrite prior verdict
+provenance.
 
-## Proposed update gate
+## Subsequent update gate
 
-For every deliberately selected CWR revision, make one reviewable commit that changes the gitlink and its compatibility evidence together. From the Palimpsest root, the minimum gate is:
+For every deliberately selected future CWR revision, make one reviewable
+Palimpsest commit that changes the gitlink and its compatibility evidence
+together. From the Palimpsest root, rerun at least:
 
 ```powershell
 git submodule update --init --recursive
@@ -35,19 +79,29 @@ uv run --locked --extra test --extra prompt-optimizer python -m pytest python/te
 git diff --submodule=log -- .gitmodules "Rubric Book"
 ```
 
-Run the CWR commands from a development environment in which the pinned `Rubric Book` submodule is installed, for example with `python -m pip install -e "Rubric Book[dev]"` during environment setup. Revalidate the exact commands when the adapter and build workflow are implemented.
+Run the CWR commands from a development environment in which the pinned book
+is installed, for example with `python -m pip install -e "Rubric Book[dev]"`
+during environment setup. Add focused `palimpsest.hbq` adapter and saved-project
+compatibility tests for each selected revision. Confirm module/leaf/bundle
+counts, stable-ID ownership, JSON/YAML/JSONL parity, manifest reconstruction,
+and the exact old-project path under test before accepting an update.
 
-Add focused `palimpsest.hbq` adapter and saved-project compatibility tests for the selected revision. Confirm the expected module/leaf/bundle counts, stable-ID ownership, JSON/YAML/JSONL parity, manifest reconstruction state, and an old-project open/replay path. Run the narrowest relevant checks before the full Palimpsest bootstrap validator. A green source-package test is not proof that saved projects or the desktop integration remain compatible.
+## Rollback and bounded obligations
 
-## Rollback and entry criteria
+Rollback is a normal Git revert of the Palimpsest integration commit, including
+`.gitmodules` and the gitlink, followed by:
 
-Rollback is a normal Git revert of the integration commit (including `.gitmodules` and the gitlink), followed by `git submodule update --init --recursive --checkout` and the same validation gates. Preserve recorded project manifests, prior adapter compatibility code, and the pinned CWR commits they name so existing projects remain inspectable; do not mutate their run history during rollback.
+```powershell
+git submodule update --init --recursive --checkout
+```
 
-Begin an implementation migration only after an owner has approved all of the following:
+Rerun the same validation gates after rollback. Preserve recorded project
+manifests, prior adapter compatibility code, and the pinned CWR commits they
+name so existing evidence remains inspectable; do not mutate run history during
+rollback.
 
-1. The exact CWR commit and licensing/distribution treatment.
-2. A deterministic inventory diff and explicit disposition for any remaining ID/count mismatch.
-3. The `palimpsest.hbq` adapter contract, generated-output workflow, and fixture-backed compatibility map.
-4. The saved-project manifest versioning, upgrade/replay behavior, release/build inclusion, and rollback acceptance tests.
-
-Deferred decisions include the exact pin, the long-term ownership of any compatibility map, and the project-manifest upgrade policy. Resolve them in the migration issue before adding the submodule.
+Palimpsest remains responsible for deciding and testing saved-project manifest
+versioning, upgrade/replay behavior, release/build inclusion, and rollback
+acceptance for any future change. The completed integration record establishes
+the tested current boundary; it is not a blanket claim for arbitrary historical
+or future saved-project compatibility.
