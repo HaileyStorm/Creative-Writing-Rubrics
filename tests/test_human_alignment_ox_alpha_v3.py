@@ -15,6 +15,18 @@ from hbqrs.paths import book_root
 
 ROOT = book_root() / "evaluation-results" / "hbq-human-alignment-supplemental-providers-ox-alpha-v3"
 
+HISTORICAL_RUNNER = {
+    "name": "runner.py",
+    "bytes": 124714,
+    "sha256": "0a22bf30781d6bbbde4c9b6a6e214891fe95aefddade6f955f5634f6accde4d2",
+}
+ARCHIVED_HISTORICAL_RUNNER = pytest.mark.skip(
+    reason=(
+        "Archived exact v3 runner byte equality requires the immutable e807c5d runtime; "
+        "current runtime mismatch remains fail-closed and active cap-1 checks stay live."
+    )
+)
+
 
 def load(name: str, filename: str, aliases: dict[str, object] | None = None):
     spec = importlib.util.spec_from_file_location(name, ROOT / filename)
@@ -52,12 +64,60 @@ def test_contract_is_serial_16_leaf_and_score_blind():
     assert study.CONTRACT["execution"] == {"status": "preregistered_cap1_unexecuted", "required_shared_runner_option": "max_physical_http_attempts_per_logical_request=1", "required_request_schema": "codex-nous-tool-free-judge-request-v2", "launch_gate": "Fresh zero-cost catalog and usage proof plus a reviewed shared cap-1 runtime are required before launch."}
 
 
-def test_runtime_bindings_pin_the_final_cap1_bytes():
-    assert study.runtime_bindings() == {
-        "runner": {"name": "runner.py", "bytes": 124714, "sha256": "0a22bf30781d6bbbde4c9b6a6e214891fe95aefddade6f955f5634f6accde4d2"},
-        "launcher": {"name": "launch-bridge.ps1", "bytes": 5687, "sha256": "c54da5c1dd13e225e8da44239e94ef692539669e7ba62899b66d64abbed2b076"},
-        "bridge": {"name": "nous_codex_bridge.py", "bytes": 220090, "sha256": "ff4eb873ef2625ba2074bfdf94b377288f43398f8f92b25eeb0a5a77dd4515a0"},
+def test_current_runtime_bindings_keep_active_cap1_assets():
+    observed = study.runtime_bindings()
+    assert observed["launcher"] == {
+        "name": "launch-bridge.ps1",
+        "bytes": 5687,
+        "sha256": "c54da5c1dd13e225e8da44239e94ef692539669e7ba62899b66d64abbed2b076",
     }
+    assert observed["bridge"] == {
+        "name": "nous_codex_bridge.py",
+        "bytes": 220090,
+        "sha256": "ff4eb873ef2625ba2074bfdf94b377288f43398f8f92b25eeb0a5a77dd4515a0",
+    }
+    assert observed["runner"]["name"] == "runner.py"
+    assert observed["runner"] != HISTORICAL_RUNNER
+
+
+@ARCHIVED_HISTORICAL_RUNNER
+def test_historical_runner_binding_is_retained_as_immutable_provenance():
+    assert study.runtime_bindings()["runner"] == HISTORICAL_RUNNER
+
+
+def test_raw_current_runner_mismatch_fails_closed(monkeypatch, tmp_path):
+    current_runtime = study.runtime_bindings()
+    cells = frozen()["cells"]
+    failed = {"work_dir": "failed-v2-root"}
+    proof = {"path": "zero-cost-proof", "marker": "fresh"}
+    checked_at = "2026-08-26T00:00:00+00:00"
+
+    monkeypatch.setattr(study, "_cells", lambda _: (object(), cells, []))
+    monkeypatch.setattr(study, "_fresh_zero_proof", lambda *_: proof)
+    monkeypatch.setattr(study, "failed_v2_commitments", lambda _: failed)
+    monkeypatch.setattr(study, "_external_roots", lambda *_: {"work": "current-work"})
+    monkeypatch.setattr(study, "fingerprint", lambda path: {"name": Path(path).name, "bytes": 1, "sha256": "a" * 64})
+    monkeypatch.setattr(study, "judge_assets", lambda: {"active": True})
+    monkeypatch.setattr(study, "runtime_bindings", lambda: current_runtime)
+
+    frozen_value = {
+        "format_version": 1,
+        "study_id": study.CONTRACT["study_id"],
+        "frozen_before_execution": True,
+        "contract": {"name": "study-contract.json", "bytes": 1, "sha256": "a" * 64},
+        "external_roots": {"work": "current-work"},
+        "failed_v2": failed,
+        "provider": study.CONTRACT["provider"],
+        "pilot": study.CONTRACT["transport_pilot"],
+        "runtime": {**current_runtime, "runner": HISTORICAL_RUNNER},
+        "judge_assets": {"active": True},
+        "zero_cost_proof": {**proof, "freshness_checked_at": checked_at},
+        "cells": cells,
+    }
+    (tmp_path / study.FROZEN_NAME).write_text(json.dumps(frozen_value), encoding="utf-8")
+
+    with pytest.raises(ValueError, match="Ox v3 frozen transport contract drifted"):
+        study.load_frozen(tmp_path)
 
 
 def test_failed_v2_requires_exact_historical_524_524_root():

@@ -3,9 +3,11 @@ from __future__ import annotations
 import json
 import hashlib
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 
+from _fresh88_historical_inputs import historical_input_projection, project_plan
 from _scoped_module_loader import load_module
 
 
@@ -26,6 +28,25 @@ def _plan() -> dict:
             {"item_id": "hanna-2", "origin": "fresh_full_successor", "ordinal": 2, "run_dir": "runs/hanna-2"},
         ]
     }
+
+
+def _projection_fixture(tmp_path: Path) -> tuple[dict, dict, Path, Path]:
+    snapshot = tmp_path / "historical-snapshot"
+    (snapshot / "registry").mkdir(parents=True)
+    (snapshot / "bundles").mkdir()
+    files = {
+        "registry": ("registry/all_modules.json", b"[\r\n  {\"module_id\": \"historical\"}\r\n]\r\n"),
+        "bundles": ("bundles/all_bundles.json", b"[\r\n  {\"bundle_id\": \"historical\"}\r\n]\r\n"),
+    }
+    plan = {"base_frozen": {}}
+    source_map = {}
+    for label, (relative, contents) in files.items():
+        path = snapshot / relative
+        path.write_bytes(contents)
+        binding = {"path": f"C:/current/{relative}", "bytes": len(contents), "sha256": hashlib.sha256(contents).hexdigest()}
+        plan["base_frozen"][label] = binding.copy()
+        source_map[relative] = {"source": "current_copy", "bytes": len(contents), "sha256": binding["sha256"], "entry": f"current-runtime/{relative}"}
+    return plan, {"runtime_source_map": source_map}, tmp_path / "runtime", snapshot
 
 
 def _verified() -> list[dict]:
@@ -51,6 +72,65 @@ def test_contract_freezes_analysis_only_public_output_shape() -> None:
     assert analysis.CONTRACT["analysis_only"] is True
     assert analysis.CONTRACT["outputs"] == ["summary.json", "items.jsonl", "manifest.json"]
     assert analysis.CONTRACT["predecessor"]["study_id"] == "hbq-human-alignment-v3-successor-v1"
+
+
+def test_historical_input_projection_rebinds_exact_crlf_copies_without_mutating_plan(tmp_path: Path) -> None:
+    plan, freeze_receipt, runtime, snapshot = _projection_fixture(tmp_path)
+    original = json.loads(json.dumps(plan))
+    projection_root = tmp_path / "projection"
+    projected = project_plan(plan, freeze_receipt, runtime, snapshot_root=snapshot, projection_root=projection_root)
+    assert plan == original
+    assert projected["base_frozen"] != plan["base_frozen"]
+    for label, relative in (("registry", "registry/all_modules.json"), ("bundles", "bundles/all_bundles.json")):
+        projection = Path(projected["base_frozen"][label]["path"])
+        assert projection.read_bytes() == (snapshot / relative).read_bytes()
+        assert projection.stat().st_size == plan["base_frozen"][label]["bytes"]
+        assert projection.read_bytes().count(b"\r\n") == projection.read_bytes().count(b"\n")
+    assert plan == original
+
+    for _, relative in (("registry", "registry/all_modules.json"), ("bundles", "bundles/all_bundles.json")):
+        source = snapshot / relative
+        source.write_bytes(source.read_bytes().replace(b"\r\n", b"\n"))
+    normalized = project_plan(plan, freeze_receipt, runtime, snapshot_root=snapshot, projection_root=projection_root)
+    for label, relative in (("registry", "registry/all_modules.json"), ("bundles", "bundles/all_bundles.json")):
+        expected = (snapshot / relative).read_bytes().replace(b"\n", b"\r\n")
+        assert Path(normalized["base_frozen"][label]["path"]).read_bytes() == expected
+
+    original_loader = object()
+    module = SimpleNamespace(_load_inputs=original_loader)
+    with pytest.raises(RuntimeError, match="restore"):
+        with historical_input_projection(module, runtime=runtime, snapshot_root=snapshot):
+            assert module._load_inputs is not original_loader
+            raise RuntimeError("restore")
+    assert module._load_inputs is original_loader
+
+
+@pytest.mark.parametrize("label,relative", [("registry", "registry/all_modules.json"), ("bundles", "bundles/all_bundles.json")])
+def test_historical_input_projection_rejects_registry_or_bundle_snapshot_tamper(tmp_path: Path, label: str, relative: str) -> None:
+    plan, freeze_receipt, runtime, snapshot = _projection_fixture(tmp_path)
+    path = snapshot / relative
+    original = path.read_bytes()
+    path.write_bytes(original + b"tampered\r\n")
+    with pytest.raises(ValueError, match=f"Fresh88 {label} historical CRLF snapshot"):
+        project_plan(plan, freeze_receipt, runtime, snapshot_root=snapshot, projection_root=tmp_path / "projection")
+    path.write_bytes(original.replace(b"\r\n", b"\n", 1))
+    with pytest.raises(ValueError, match=f"Fresh88 {label} historical input has mixed or bare-CR"):
+        project_plan(plan, freeze_receipt, runtime, snapshot_root=snapshot, projection_root=tmp_path / "projection")
+    path.write_bytes(original.replace(b"\r\n", b"\r"))
+    with pytest.raises(ValueError, match=f"Fresh88 {label} historical input has mixed or bare-CR"):
+        project_plan(plan, freeze_receipt, runtime, snapshot_root=snapshot, projection_root=tmp_path / "projection")
+
+
+@pytest.mark.parametrize("label,relative", [("registry", "registry/all_modules.json"), ("bundles", "bundles/all_bundles.json")])
+def test_historical_input_projection_rejects_registry_or_bundle_receipt_mismatch(tmp_path: Path, label: str, relative: str) -> None:
+    plan, freeze_receipt, runtime, snapshot = _projection_fixture(tmp_path)
+    freeze_receipt["runtime_source_map"][relative]["sha256"] = "0" * 64
+    with pytest.raises(ValueError, match=f"Fresh88 {label} plan and freeze-receipt bindings disagree"):
+        project_plan(plan, freeze_receipt, runtime, snapshot_root=snapshot, projection_root=tmp_path / "projection")
+    freeze_receipt["runtime_source_map"][relative]["sha256"] = plan["base_frozen"][label]["sha256"]
+    freeze_receipt["runtime_source_map"][relative]["entry"] = f"wrong-runtime/{relative}"
+    with pytest.raises(ValueError, match=f"Fresh88 {label} freeze receipt requires the exact current-runtime entry"):
+        project_plan(plan, freeze_receipt, runtime, snapshot_root=snapshot, projection_root=tmp_path / "projection")
 
 
 def test_matrix_and_gate_reconstruct_and_reject_session_reuse() -> None:
@@ -163,6 +243,7 @@ def test_analyze_integration_uses_frozen_dataset_names_and_utf8_subprocess(monke
 
     runtime, artifacts, work, authority, data, output = (tmp_path / name for name in ("runtime", "artifacts", "work", "authority", "data", "output"))
     (runtime / "src" / "hbqrs").mkdir(parents=True)
+    (runtime / "src" / "hbqrs" / "__init__.py").write_text("", encoding="utf-8")
     (runtime / "src" / "hbqrs" / "run_verify.py").write_text("import hashlib\ndef verify_binary_run(run, frozen):\n item=frozen['execution']['artifact_id']; return {'run_sha256': hashlib.sha256(item.encode()).hexdigest(), 'sessions': [{'session_id_sha256': hashlib.sha256(('session:'+item).encode()).hexdigest()}]}\n", encoding="utf-8")
     artifacts.joinpath("runs").mkdir(parents=True)
     work.mkdir(); authority.mkdir(); data.mkdir()

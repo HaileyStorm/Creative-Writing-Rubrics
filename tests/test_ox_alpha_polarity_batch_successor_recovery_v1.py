@@ -1,16 +1,17 @@
 from __future__ import annotations
 
+import hashlib
 import importlib.util
 import json
 import os
-from pathlib import Path
 import re
 import sys
+from pathlib import Path
 
 import pytest
+
 from hbqrs import runner
 from hbqrs.paths import book_root
-
 
 ROOT = book_root() / "evaluation-results" / "hbq-ox-alpha-polarity-batch-successor-v1"
 
@@ -65,11 +66,80 @@ def test_overlay_preserves_crlf_text_records_when_reconstructing_prompt(monkeypa
     assert b"\r\n" in expected
 
 
+def test_raw_current_runtime_fails_closed_before_historical_recovery_adapter():
+    work = Path(os.environ.get("HBQ_OX_ALPHA_SUCCESSOR_ROOT", str(Path.home() / "Documents" / "cwr-ox-alpha-polarity-batch-successor-v1-private-20260822")))
+    if not (work / "reconciliation-v1.json").is_file():
+        pytest.skip("sealed private successor evidence is unavailable")
+    with pytest.raises(ValueError, match=re.escape("Recovery source does not bind the sealed v1 runtime and inputs")):
+        recovery._source(work)
+
+
+def test_historical_recovery_adapter_seals_isolation_and_cached_snapshots():
+    from _ox_historical_runtime import (
+        BUNDLES_BYTES,
+        BUNDLES_RELATIVE,
+        BUNDLES_SHA256,
+        RUNNER_BYTES,
+        RUNNER_RELATIVE,
+        RUNNER_SHA256,
+        _repository_for_module,
+        _snapshot_file,
+        historical_recovery,
+    )
+
+    canonical_runner = runner
+    original_runner = recovery.hbq_runner
+    original_bundles_path = recovery.bundles_path
+    assert canonical_runner is runner
+    with historical_recovery(recovery):
+        mounted_runner = recovery.hbq_runner
+        mounted_runner_bytes = Path(mounted_runner.__file__).read_bytes()
+        assert mounted_runner is not canonical_runner
+        assert len(mounted_runner_bytes) == RUNNER_BYTES
+        assert hashlib.sha256(mounted_runner_bytes).hexdigest() == RUNNER_SHA256
+        mounted_bundles = recovery.bundles_path()
+        mounted_bundle_bytes = mounted_bundles.read_bytes()
+        assert len(mounted_bundle_bytes) == BUNDLES_BYTES
+        assert hashlib.sha256(mounted_bundle_bytes).hexdigest() == BUNDLES_SHA256
+        with pytest.raises(ValueError, match="already installed"), historical_recovery(recovery):
+            pass
+        assert recovery.hbq_runner is mounted_runner
+        assert recovery.bundles_path() == mounted_bundles
+        assert getattr(recovery, "_ox_historical_recovery_installed", False) is True
+    assert recovery.hbq_runner is original_runner
+    assert recovery.bundles_path is original_bundles_path
+    assert recovery.hbq_runner is canonical_runner
+    assert not hasattr(recovery, "_ox_historical_recovery_installed")
+
+    with pytest.raises(RuntimeError, match="leave the adapter installed"), historical_recovery(recovery):
+        raise RuntimeError("leave the adapter installed")
+    assert recovery.hbq_runner is original_runner
+    assert recovery.bundles_path is original_bundles_path
+    assert recovery.hbq_runner is canonical_runner
+    assert not hasattr(recovery, "_ox_historical_recovery_installed")
+
+    repository = _repository_for_module(recovery)
+    bundle_snapshot = _snapshot_file(repository, BUNDLES_RELATIVE, BUNDLES_SHA256, BUNDLES_BYTES)
+    original_bundle_bytes = bundle_snapshot.read_bytes()
+    try:
+        bundle_snapshot.write_bytes(original_bundle_bytes + b"tamper")
+        with pytest.raises(ValueError, match=f"Pinned Ox historical bytes were mutated: {BUNDLES_RELATIVE}"), historical_recovery(recovery):
+            pass
+    finally:
+        bundle_snapshot.write_bytes(original_bundle_bytes)
+    assert not hasattr(recovery, "_ox_historical_recovery_installed")
+    runner_snapshot = _snapshot_file(repository, RUNNER_RELATIVE, RUNNER_SHA256, RUNNER_BYTES)
+    assert runner_snapshot.is_file()
+
+
 def test_private_recovery_overlay_reclassifies_only_the_deterministic_quarantines():
     work = Path(os.environ.get("HBQ_OX_ALPHA_SUCCESSOR_ROOT", str(Path.home() / "Documents" / "cwr-ox-alpha-polarity-batch-successor-v1-private-20260822")))
     if not (work / "reconciliation-v1.json").is_file():
         pytest.skip("sealed private successor evidence is unavailable")
-    payload = recovery.reconcile(work)
+    from _ox_historical_runtime import historical_recovery
+
+    with historical_recovery(recovery):
+        payload = recovery.reconcile(work)
     assert payload["source_status_counts"] == {"accepted": 0, "eligible_524": 12, "quarantined": 18, "global_stop": 0}
     assert payload["effective_status_counts"] == {"accepted": 17, "eligible_524": 12, "quarantined": 1, "global_stop": 0}
     assert len(payload["reconciled_results"]) == 17

@@ -5,6 +5,7 @@ from pathlib import Path
 
 import pytest
 
+from _fresh88_historical_inputs import historical_input_projection
 from _scoped_module_loader import load_module
 
 
@@ -117,7 +118,7 @@ def test_native_score_extraction_normalizes_domains_without_changing_final_units
     assert values["hanna-1"]["character"] == {"value": 0.8, "coverage": 1.0}
 
 
-def test_generated_real_fresh88_output_replays_when_mounted(tmp_path: Path) -> None:
+def test_generated_real_fresh88_output_reconstructs_with_exact_historical_inputs(tmp_path: Path) -> None:
     data = Path("C:/Users/Haile/Documents/cwr-hanna-pinned-data-282f275")
     work = Path("C:/Users/Haile/Documents/cwr-hanna-fresh88-sol-v1-20260821-w4")
     authority = Path("C:/Users/Haile/Documents/cwr-hanna-successor-fresh88-freeze-v4")
@@ -125,8 +126,15 @@ def test_generated_real_fresh88_output_replays_when_mounted(tmp_path: Path) -> N
     runtime = Path("C:/Users/Haile/Documents/Creative-Writing-Rubrics-fresh88-parent-runtime-f3aed43")
     if not all(path.is_dir() for path in (data, work, authority, artifacts, runtime)):
         pytest.skip("requires explicitly mounted sealed Fresh88 inputs")
-    output = tmp_path / "replay"
-    analysis.analyze(data, work, authority, artifacts, runtime, output)
+    base = analysis._load_base()
+    original_base_loader = analysis._load_base
+    analysis._load_base = lambda: base
+    try:
+        with historical_input_projection(base, runtime=runtime):
+            output = tmp_path / "replay"
+            analysis.analyze(data, work, authority, artifacts, runtime, output)
+    finally:
+        analysis._load_base = original_base_loader
     summary = analysis.verify_output(output)
     primary = summary["primary_generated_only"]
     assert primary["unique_27_leaf_overlap"]["spearman"]["spearman"]["estimate"] == pytest.approx(-0.09014775122983233)
