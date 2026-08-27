@@ -1,0 +1,190 @@
+from __future__ import annotations
+
+import builtins
+import copy
+import inspect
+import os
+from pathlib import Path
+from types import SimpleNamespace
+
+import pytest
+
+from _scoped_module_loader import load_module
+
+
+ROOT = Path(__file__).resolve().parents[1]
+PACKAGE = ROOT / "evaluation-results" / "hbq-human-alignment-optimizer-v1"
+DOCUMENTS = Path.home() / "Documents"
+ROOTS = {
+    "frozen_successor_path": DOCUMENTS / "cwr-hanna-successor-fresh88-freeze-v4" / "frozen-successor-contract.json",
+    "hanna_csv_path": DOCUMENTS / "cwr-hanna-pinned-data-282f275" / "hanna_stories_annotations.csv",
+}
+study = load_module(PACKAGE / "study.py", name="hanna_optimizer_study_v1")
+analysis = load_module(PACKAGE / "analyze.py", name="hanna_optimizer_analyze_v1", aliases={"study": study})
+
+
+def _split() -> dict:
+    return study.derive_split_manifest(**ROOTS)
+
+
+def _profiles() -> dict:
+    return {
+        f"candidate-{index:016x}": {"prompt_sha256": f"{index + 1:x}" * 64, "profile_sha256": f"{index + 8:x}" * 64}
+        for index in range(6)
+    }
+
+
+def _calls(items: list[dict], candidates: set[str], arms: set[str]) -> list[dict]:
+    calls = []
+    for item in items:
+        for candidate in sorted(candidates):
+            for arm in sorted(arms):
+                for provider, model in (("openai", "gpt-5.6-sol"), ("xai", "grok-4.6")):
+                    calls.append({"call_id": f"call-{len(calls):016x}", "item_id": item["item_id"], "prompt_group_id": item["prompt_group_id"], "partition": item["partition"], "candidate_id": candidate, "arm": arm, "provider": provider, "model": model})
+    return calls
+
+
+def _development_manifest() -> dict:
+    profiles = _profiles()
+    items = [item for item in _split()["items"] if item["partition"] in {"train", "development"}]
+    return {"format_version": 1, "study_id": study.CONTRACT["study_id"], "phase": "development", "candidate_profiles": profiles, "calls": _calls(items, set(profiles), {"candidate"})}
+
+
+def _confirmation_plan() -> dict:
+    return {"format_version": 1, "study_id": study.CONTRACT["study_id"], "phase": "confirmation"}
+
+
+def test_source_bound_map_and_group_disjoint_geometry() -> None:
+    mapping = study.derive_eligible_map(**ROOTS)
+    study.validate_eligible_map(mapping, **ROOTS)
+    split = _split()
+    study.validate_split_manifest(split, **ROOTS)
+    assert len(mapping) == 80
+    assert len({row["prompt_group_id"] for row in mapping}) == 39
+    assert study.sha256(mapping) == study.CONTRACT["eligible_universe"]["item_group_map_sha256"]
+    assert {name: sum(row["partition"] == name for row in split["items"]) for name in ("train", "development", "confirmation")} == {"train": 48, "development": 13, "confirmation": 19}
+    groups = {name: {row["prompt_group_id"] for row in split["groups"] if row["partition"] == name} for name in ("train", "development", "confirmation")}
+    assert not (groups["train"] & groups["development"] or groups["train"] & groups["confirmation"] or groups["development"] & groups["confirmation"])
+
+
+def test_six_candidates_are_scheduled_on_train_and_development_before_selection() -> None:
+    manifest = _development_manifest()
+    study.validate_execution_manifest(manifest, **ROOTS)
+    assert len(manifest["calls"]) == 732
+    assert {call["candidate_id"] for call in manifest["calls"]} == set(manifest["candidate_profiles"])
+    assert {call["partition"] for call in manifest["calls"]} == {"train", "development"}
+    assert sum(call["partition"] == "development" for call in manifest["calls"]) == 156
+    manifest["calls"][0]["partition"] = "confirmation"
+    with pytest.raises(ValueError, match="schedule"):
+        study.validate_execution_manifest(manifest, **ROOTS)
+
+
+def test_selection_scaffold_is_an_explicit_unimplemented_blocker() -> None:
+    development = _development_manifest()
+    with pytest.raises(ValueError, match="unimplemented"):
+        study.derive_selection_artifact(development, [{"forged": "result"}], **ROOTS)
+    with pytest.raises(ValueError, match="unimplemented"):
+        study.validate_selection_artifact({"forged": "selection"}, development, **ROOTS)
+
+
+def test_confirmation_plans_are_unimplemented_even_if_repeated() -> None:
+    development = _development_manifest()
+    for plan in (_confirmation_plan(), _confirmation_plan()):
+        with pytest.raises(ValueError, match="unimplemented"):
+            study.validate_execution_manifest(plan, **ROOTS, development_manifest=development)
+
+
+def test_duplicate_candidate_commitments_fail_before_any_selection() -> None:
+    development = _development_manifest()
+    candidates = sorted(development["candidate_profiles"])
+    development["candidate_profiles"][candidates[1]] = copy.deepcopy(development["candidate_profiles"][candidates[0]])
+    with pytest.raises(ValueError, match="pairwise unique"):
+        study.validate_execution_manifest(development, **ROOTS)
+
+
+def test_disclosure_binds_only_prepared_artifacts_and_aggregate_is_hard_rejected() -> None:
+    development = _development_manifest()
+    disclosure = study.execution_disclosure(development, **ROOTS)
+    assert disclosure["mode"] == "prepared_schedule_only"
+    assert "operator acknowledgement" in disclosure["unimplemented_before_remote_execution"]
+    assert "story and prompt payload bytes" in disclosure["unimplemented_before_remote_execution"]
+    with pytest.raises(ValueError, match="non-authoritative"):
+        analysis.validate_aggregate({})
+
+
+def test_optional_optimizer_config_has_no_runtime_backend_dependency(monkeypatch) -> None:
+    original_import = builtins.__import__
+
+    def deny_optional_backends(name, *args, **kwargs):
+        if name.split(".", 1)[0] in {"dspy", "optuna"}:
+            raise AssertionError("optional optimizer backend imported at runtime")
+        return original_import(name, *args, **kwargs)
+
+    monkeypatch.setattr(builtins, "__import__", deny_optional_backends)
+    assert study.load_optimizer_config()["candidate_generator"]["runtime_dependency"] is False
+
+
+@pytest.mark.parametrize("kind", ["file", "ancestor", "output"])
+def test_synthetic_reparse_points_fail_before_read_or_write(tmp_path: Path, monkeypatch, kind: str) -> None:
+    source = tmp_path / "source.json"
+    source.write_text("{}", encoding="utf-8")
+    if kind == "ancestor":
+        target = tmp_path / "ancestor"
+        target.mkdir()
+        source = target / "source.json"
+        source.write_text("{}", encoding="utf-8")
+    elif kind == "output":
+        target = tmp_path / "output"
+        target.mkdir()
+    else:
+        target = source
+    target = Path(os.path.abspath(target))
+    actual_lstat = study.os.lstat
+
+    def synthetic_lstat(path, *args, **kwargs):
+        metadata = actual_lstat(path, *args, **kwargs)
+        if Path(os.path.abspath(path)) == target:
+            return SimpleNamespace(st_mode=metadata.st_mode, st_file_attributes=0x400)
+        return metadata
+
+    monkeypatch.setattr(study.os, "lstat", synthetic_lstat)
+    with pytest.raises(ValueError, match="symlink or reparse"):
+        if kind == "output":
+            study.atomic_output_directory(target, {"result.json": "{}\n"})
+        else:
+            study.read_json(source)
+
+
+def test_source_roots_are_explicit_and_rechecked_after_read(tmp_path: Path, monkeypatch) -> None:
+    source = tmp_path / "source.json"
+    source.write_text("{}", encoding="utf-8")
+    source = Path(os.path.abspath(source))
+    actual_lstat = study.os.lstat
+    seen = 0
+
+    def swapped_lstat(path, *args, **kwargs):
+        nonlocal seen
+        metadata = actual_lstat(path, *args, **kwargs)
+        if Path(os.path.abspath(path)) == source:
+            seen += 1
+            if seen > 1:
+                return SimpleNamespace(st_mode=metadata.st_mode, st_file_attributes=0x400)
+        return metadata
+
+    monkeypatch.setattr(study.os, "lstat", swapped_lstat)
+    with pytest.raises(ValueError, match="symlink or reparse"):
+        study.read_json(source)
+    assert "C:\\Users" not in inspect.getsource(study)
+
+
+def test_real_symlink_ancestor_is_rejected_or_skipped_without_windows_privilege(tmp_path: Path) -> None:
+    target = tmp_path / "target"
+    target.mkdir()
+    (target / "source.json").write_text("{}", encoding="utf-8")
+    link = tmp_path / "link"
+    try:
+        link.symlink_to(target, target_is_directory=True)
+    except OSError:
+        pytest.skip("Windows symlink privilege is unavailable")
+    with pytest.raises(ValueError, match="symlink or reparse"):
+        study.read_json(link / "source.json")

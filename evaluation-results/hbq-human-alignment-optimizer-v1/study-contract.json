@@ -1,0 +1,132 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-human-alignment-optimizer-v1",
+  "kind": "development_only_prompt_profile_optimizer",
+  "analysis_only": true,
+  "provider_execution": "not_implemented_by_this_package",
+  "parents": {
+    "fresh88_primary": {
+      "study_id": "hbq-human-alignment-v3-fresh88-analysis-v1",
+      "frozen_successor_sha256": "b0f6dd24415c388a3104f8c9304ce301193cf0a48631a86c4886bc8ce48468e7",
+      "freeze_receipt_sha256": "eaab5d605a720c86f00e40635e59e9a43bb9c58998a70d9e5bca3907c008f1b0",
+      "execution_contract_sha256": "6b3bfcd2407442c9997631cd38d7df7e01bd5017782feb62ad360840399b1726",
+      "execution_receipt_sha256": "bdb84a8243822ba95b40e08dd99220d4afd3d7899f2a90ab7f90ce630d35f7c2",
+      "runtime_source_manifest_sha256": "381e3c8a767da6003a22d8b47695dac722f946fd1d63f771c6ddde655eef2c06",
+      "mapping_sets_sha256": "33de035935dc1304cf782d596038354f65efb00b019babe0cf61aa9474d142c5"
+    }
+  },
+  "dataset": {
+    "repository": "https://github.com/dig-team/hanna-benchmark-asg",
+    "upstream_commit": "282f27536a5d05ad4ce14298abcd70c45668fed2",
+    "csv_name": "hanna_stories_annotations.csv",
+    "license_name": "LICENSE",
+    "csv_sha256": "ef59054d27fa32def06cfdc57243b1dd09c7e71f40b6d9d43fecfbf60e59026b",
+    "license_sha256": "bc03dc792290fc9ec16bd6772b1e5e88038541f323c63762c988cec07a017146",
+    "license": "MIT"
+  },
+  "eligible_universe": {
+    "source": {
+      "authority_sha256": "b0f6dd24415c388a3104f8c9304ce301193cf0a48631a86c4886bc8ce48468e7",
+      "authority_receipt_sha256": "eaab5d605a720c86f00e40635e59e9a43bb9c58998a70d9e5bca3907c008f1b0",
+      "frozen_successor_contract_sha256": "b0f6dd24415c388a3104f8c9304ce301193cf0a48631a86c4886bc8ce48468e7",
+      "hanna_csv_sha256": "ef59054d27fa32def06cfdc57243b1dd09c7e71f40b6d9d43fecfbf60e59026b",
+      "selector": "fresh_complement.item_ids where source_model != Human",
+      "group_derivation": "prompt-{sha256(utf8(Prompt))[:16]}"
+    },
+    "item_count": 80,
+    "item_ids": ["item-028fc3ac6963b50f","item-08ed8dce7232b951","item-09006dab15b970e6","item-0cb9c7afe8527434","item-1568277c2dde9944","item-195a322775185759","item-1a3bc33d8028654d","item-1ae97b3bb5af6bb7","item-1b27b9076eef2bc5","item-201728b16fa81265","item-2377fcf24510aac5","item-242fe0ddf52e6278","item-25d5a1163ca56b27","item-2ba42c130da729fa","item-32a94feae15fbb28","item-370626a271130bfd","item-3b93e5b56e35ad11","item-3c3a6682c37eabe1","item-3de32625c562cc3b","item-3e62deaa1f5d2b76","item-41b53e57306ce1d3","item-42adea7772233ef4","item-48cc7dea71885669","item-4c178965176b340d","item-4c6e19f9a5a9b1cf","item-4df0f500118d0b15","item-4e9c05e1864a4027","item-50e2d1496f11fbf6","item-56f518a1c8f69a67","item-57a87aa4472a65c4","item-593f2aa19ebb97f8","item-60c86beae9aee95a","item-614caf77017c7e55","item-6c524f9050da1eab","item-71b0d094850ba256","item-85b393b19a363e89","item-8776b34674d81280","item-8c65749a245496a2","item-91591273e3b3a745","item-930bd6405f268a9d","item-956e8eabe06f1209","item-9740642e1d932f85","item-974ce928e81704de","item-98ce6335ba676609","item-9913f5b979c7a416","item-995960ce57e4ffc0","item-9a254f1a6661a875","item-9c4a7c983e11b127","item-9f1805cca7ae4242","item-a3cd7d7dab42b53a","item-a75232f0b058e2f0","item-addcdf1d28d4da26","item-b5161cbf50b87beb","item-b7488fc39c2e895a","item-b8fa69c5b2008563","item-bb2ddc97774d9069","item-bb364c9fad2d0b04","item-bce2e851cfcd16c7","item-bdb269928aad994a","item-c1e68cea3b8d4f41","item-c20a857e911820da","item-c26cb3acc5aa682b","item-c94ea799e86033fa","item-caabd0eead5cfd61","item-d5fe1ae06099a06e","item-d7bb04ec520d65bf","item-d7ebee165c3f4f59","item-d9c17a943e532e0c","item-dcba2e2779f069ab","item-de29393def3df541","item-e4305be22e899816","item-ea2176760e0dff21","item-ee9e51e2035bdffa","item-f0124faa5a62734e","item-f2aa5b5286ee2cb5","item-f536767a205a4075","item-f6e3af87c879383c","item-f76fb5699cb3a572","item-f79ee6a1349019e7","item-fec1402e803b0e8f"],
+    "group_count": 39,
+    "item_ids_sha256": "0988930e0b2d63e09f87d3e012a2453e6023bc41c16f7c53835010619c2983bb",
+    "prompt_sha256s_sha256": "3cca667a48a5451457756628782b1e76c0f9400e3a96631d034712ffecac3164",
+    "group_ids": [
+      "prompt-03b5182826a1a361", "prompt-132112dd8eeb2d4d", "prompt-1bd56a5f8b073caa",
+      "prompt-224828d8a6b2b338", "prompt-2c4f2e59857191f6", "prompt-2f5d381ef8ed6651",
+      "prompt-3286f1e85780066d", "prompt-3ea05aae03d4b979", "prompt-3f844c5cdc6b51ae",
+      "prompt-489dbd34451e1ce7", "prompt-577e90eb9a834995", "prompt-624948bf9021d60a",
+      "prompt-6450c4baa52d6998", "prompt-6a99e79cf010b289", "prompt-6b7fff0c3794370c",
+      "prompt-6f4bd6b8f36ecdba", "prompt-7c393c4bcb3a7484", "prompt-7c9df668d681b1fc",
+      "prompt-8355ff141c67473d", "prompt-8997770ce6efe4d5", "prompt-8d3d397a4f6ba0ea",
+      "prompt-91868234f35c72d9", "prompt-933b864147df69bd", "prompt-99469c00b48a832c",
+      "prompt-9e29d5b528d4bd23", "prompt-ad31d13c97493f95", "prompt-c6cad0cde5728914",
+      "prompt-c74713d6d5ef2afb", "prompt-c85edd8245f2bf73", "prompt-cbf8ca8395c777f3",
+      "prompt-cd99981780aa5821", "prompt-dd2a0062e1557ba7", "prompt-de45c912392c4d17",
+      "prompt-e2786d4e3fd2bd47", "prompt-e74620e2360d16d6", "prompt-ea26ed67b3d13cb8",
+      "prompt-f36b641461570b32", "prompt-f88bef9d00608441", "prompt-f8da77867f880e17"
+    ],
+    "group_ids_sha256": "38d18199cd642d36835fb7ad0d5473e38b770168316a4324e19cdaf2cec9b351",
+    "item_group_map_sha256": "7d419e3fac49582b715ac6eda6b3ce6fe44594978989d569a566a75a8b30c769"
+  },
+  "split": {
+    "seed": 628801,
+    "algorithm": "sha256_seeded_rank_bounded_subset_v1",
+    "algorithm_sha256": "bedb2766e7dfac3766d0b10a271240fec57b01cfe042268ca79f0e3d45954296",
+    "partitions": {
+      "train": {"group_count": 24, "item_count": 48},
+      "development": {"group_count": 7, "item_count": 13},
+      "confirmation": {"group_count": 8, "item_count": 19}
+    }
+  },
+  "candidate_space": {
+    "fixed_mapping": "Fresh88 v3 mapping_sets_sha256",
+    "fixed_dimension_weights": {"Relevance": 1, "Coherence": 1, "Empathy": 1, "Surprise": 1, "Engagement": 1, "Complexity": 1},
+    "controls": {
+      "construct_framing": ["literary_quality", "human_reference_descriptive", "reader_effects_descriptive"],
+      "scope_materiality": ["declared_scope_material", "localized_revision_note"],
+      "missing_evidence_not_no": ["explicit", "implicit"],
+      "human_reference_variant": ["six_dimension_direct", "overall_with_dimension_checks", "dimension_first_overall_last"]
+    },
+    "candidate_count": {"minimum": 6, "maximum": 8},
+    "fixed_seed": 628811,
+    "demonstrations": 0,
+    "baseline_control_profile_sha256": "e3a83b5eeeafea14e3056fbd961a0c8935608bc2df2d0300f8dc1bf65291a957"
+  },
+  "selection_and_guard": {
+    "selector": "gpt-5.6-sol",
+    "selector_rule": "Sol selects a candidate solely by the fixed development endpoint, then ordered tie-breakers.",
+    "grok_role": "identical_input_screen_guard_only",
+    "forbidden": ["average_with_sol", "sole_scope_selector", "sole_craft_selector", "sole_penalty_selector"]
+  },
+  "endpoints": {
+    "development": {
+      "primary": "macro_spearman",
+      "direction": "maximize",
+      "tie_breakers": ["mean_absolute_error:ascending", "candidate_id:lexicographic"],
+      "report": "Sol endpoint is selector; Grok is separately reported only."
+    },
+    "confirmation": {
+      "primary": "macro_spearman",
+      "direction": "maximize",
+      "comparator": "future selected_candidate versus frozen_control on the eight untouched confirmation groups",
+      "report": "Report Sol and Grok separately; do not pool providers."
+    }
+  },
+  "budgets": {
+    "development": {
+      "candidate_count": 6,
+      "train_item_count": 48,
+      "development_item_count": 13,
+      "providers": ["gpt-5.6-sol", "grok-4.6"],
+      "candidate_train_calls": 576,
+      "candidate_development_calls": 156,
+      "maximum_provider_calls": 732
+    },
+    "confirmation": {
+      "candidate_and_control": 2,
+      "confirmation_item_count": 19,
+      "providers": ["gpt-5.6-sol", "grok-4.6"],
+      "provider_calls": 76,
+      "maximum_provider_calls": 76
+    }
+  },
+  "optimizer_interfaces": {
+    "dspy_miprov2": {"optional": true, "development_only": true, "runtime_dependency": false},
+    "optuna": {"optional": true, "development_only": true, "runtime_dependency": false}
+  },
+  "outputs": ["public-summary.json", "manifest.json"],
+  "interpretation_limits": [
+    "This package prepares and validates a development protocol; it makes no provider call and claims no alignment improvement.",
+    "HANNA is human-reference context, not literary ground truth.",
+    "A selected development candidate is not a production prompt or a confirmed result.",
+    "The public projection is aggregate-only and must not contain story or prompt prose, per-item rows, raw model responses, session identifiers, local paths, or provider credentials."
+  ]
+}

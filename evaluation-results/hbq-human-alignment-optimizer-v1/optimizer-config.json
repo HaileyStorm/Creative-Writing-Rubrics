@@ -1,0 +1,15 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-human-alignment-optimizer-v1",
+  "mode": "offline_development_only",
+  "candidate_generator": {
+    "optional_backends": ["dspy_miprov2", "optuna"],
+    "runtime_dependency": false,
+    "remote_execution": false,
+    "train_partition": "train",
+    "selection_partition": "development",
+    "confirmation_partition": "confirmation",
+    "freeze_selected_candidate_before_confirmation": true,
+    "metric_source": "manifest_derived_local_metrics_only"
+  }
+}
