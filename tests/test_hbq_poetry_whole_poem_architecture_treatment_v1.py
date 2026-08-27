@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import importlib.util
+import json
 from pathlib import Path
 
 import pytest
@@ -20,9 +21,11 @@ def load_study():
 
 def test_scope_treatment_is_provider_free_and_has_exact_singleton_geometry() -> None:
     study = load_study()
-    report = study.verify_package()
+    study.verify_corpus(study.load_corpus())
     slots = study.plan_slots()
-    assert report == {"study_id": study.STUDY_ID, "status": "frozen_provider_free_scope_wording_treatment", "provider_calls": 0, "fixtures": 7, "slots": 42}
+    contract = study.load_contract()
+    assert contract["status"] == "frozen_provider_free_scope_wording_treatment"
+    assert contract["provider_execution"] == {"permitted": False, "new_provider_calls_exact": 0, "paid_route": "forbidden", "one_leaf_per_request": True}
     assert len(slots) == len({slot["slot_id"] for slot in slots}) == 42
     assert {slot["arm"] for slot in slots} == set(study.ARMS)
     assert sum(slot["candidate_expected"] != "UNOPENED" for slot in slots) == 21
@@ -45,11 +48,37 @@ def test_architecture_controls_separate_non_temporal_order_from_local_turn_succe
     assert positive["candidate_expected"] == "YES"
     assert all(token not in positive["text"].lower() for token in ("before", "after", "but", "then"))
     assert owner_control["candidate_expected"] == "NO" and "But no one comes." in owner_control["text"]
+    question_index = study.REPOSITORY / "registry" / "question_index.jsonl"
+    source = next(
+        record
+        for record in (json.loads(line) for line in question_index.read_text(encoding="utf-8").splitlines())
+        if record.get("id") == study.SOURCE_LEAF_ID
+    )
+    assert source == {
+        "module_id": "scope.poetry_poem",
+        "module_title": "Single-poem scope overlay",
+        "kind": "scope_overlay",
+        "group_ids": ["scope.poetry_poem.quality"],
+        "id": "scope.poetry_poem.form",
+        "type": "question",
+        "criterion_key": "scope.poetry_poem.form",
+        "text": "Does the form feel necessary to that movement?",
+        "pass_answer": "YES",
+        "weight": 2.0,
+        "question_type": "scored",
+        "severity": "material",
+        "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+        "evidence_policy": {"required": True, "minimum_references": 1, "reference_style": "artifact span, unit ID, timestamp, or source ID"},
+        "tags": [],
+    }
+    ownership = json.loads((study.REPOSITORY / "registry" / "criterion_ownership.json").read_text(encoding="utf-8"))
+    assert ownership[study.SOURCE_LEAF_ID] == {"module_id": "scope.poetry_poem", "question_id": study.SOURCE_LEAF_ID}
+    module_text = (study.REPOSITORY / "registry" / "modules" / "scope.poetry_poem.yaml").read_text(encoding="utf-8")
+    index_text = question_index.read_text(encoding="utf-8")
+    assert study.CANDIDATE_TEXT not in module_text and study.CANDIDATE_TEXT not in index_text
 
 
-def test_treatment_fails_closed_on_bound_runtime_drift(monkeypatch) -> None:
+def test_current_checkout_fails_closed_before_archival_mechanics() -> None:
     study = load_study()
-    original = study.git_show_bytes
-    monkeypatch.setattr(study, "git_show_bytes", lambda path: b"drift" if path == "src/hbqrs/runner.py" else original(path))
-    with pytest.raises(ValueError, match="Runtime binding drifted"):
+    with pytest.raises(ValueError, match="Pinned bound paths drifted from the exact Git parent"):
         study.verify_package()

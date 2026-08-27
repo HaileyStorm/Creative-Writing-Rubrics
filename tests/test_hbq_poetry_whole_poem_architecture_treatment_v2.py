@@ -20,8 +20,11 @@ def load_study():
 
 def test_v2_freeze_is_provider_free_and_has_exact_singleton_geometry() -> None:
     study = load_study()
-    assert study.verify_package() == {"study_id": study.STUDY_ID, "status": "frozen_provider_free_scope_wording_treatment", "provider_calls": 0, "fixtures": 7, "slots": 42}
+    study.verify_corpus(study.load_corpus())
     slots = study.plan_slots()
+    contract = study.load_contract()
+    assert contract["status"] == "frozen_provider_free_scope_wording_treatment"
+    assert contract["provider_execution"] == {"permitted": False, "new_provider_calls_exact": 0, "paid_route": "forbidden", "one_leaf_per_request": True}
     assert len(slots) == len({slot["slot_id"] for slot in slots}) == 42
     assert {slot["arm"] for slot in slots} == set(study.ARMS)
     assert sum(slot["candidate_expected"] != "UNOPENED" for slot in slots) == 21
@@ -53,9 +56,7 @@ def test_v2_has_five_fresh_discriminators_and_two_truthfully_inherited_scope_con
     assert all(case["candidate_expected"] == "NOT_APPLICABLE" for case in inherited)
 
 
-def test_treatment_fails_closed_on_bound_runtime_drift(monkeypatch) -> None:
+def test_current_checkout_fails_closed_before_archival_mechanics() -> None:
     study = load_study()
-    original = study.git_show_bytes
-    monkeypatch.setattr(study, "git_show_bytes", lambda path: b"drift" if path == "src/hbqrs/runner.py" else original(path))
-    with pytest.raises(ValueError, match="Runtime binding drifted"):
+    with pytest.raises(ValueError, match="Pinned bound paths drifted from the exact Git parent"):
         study.verify_package()
