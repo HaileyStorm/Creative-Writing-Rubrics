@@ -1,0 +1,28 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-multisample-repeatability-v1-remainder-capacity-reset-successor-v7",
+  "kind": "engineering_reviewed_hanna_cohort_scope_compatibility_policy",
+  "decision": {
+    "decision_id": "v7-hanna-cohort-scope-compatibility-20260827",
+    "decision_date": "2026-08-27",
+    "reviewer": "Codex continuity owner task 01a04440-c441-7701-8bb7-7e4d5e4ac110",
+    "reviewer_role": "engineering agent, not human/user",
+    "evidence": ["immutable frozen task-contract bytes and SHA-256 commitments", "V6 sequence-181 task-history projection and scope-compatibility failure"],
+    "reason": "Each listed artifact is a complete short prose fiction response to its supplied HANNA prompt. This policy authorizes only the exact direct HBQ bundle binding shown for each entry.",
+    "limitations": ["This is an engineering-reviewed compatibility policy, not a human judgment or content-quality finding.", "It does not alter source prose, task contracts, scores, promotion state, or provider outcomes.", "Any artifact, task-contract, geometry, bundle, or runner change invalidates the relevant derived override."]
+  },
+  "shared_geometry": {"bundle_id": "prose.short_story", "contract_id": "hanna", "artifact_kind": "short prose fiction", "declared_scope": "complete short story", "compatibility_mode": "reviewed_override"},
+  "entries": [
+    {"artifact_id": "hanna-52", "task_contract_sha256": "7f5d322a123b26a372a6db14a1af51a08d5bf9a4bdfa6ce14bf23eeddb58c099"},
+    {"artifact_id": "hanna-178", "task_contract_sha256": "dd13850207c5e20d4027ca2671cca081ea8f563d1e649c823abc48dca809b62b"},
+    {"artifact_id": "hanna-225", "task_contract_sha256": "34ecae68544390e38cb15885607371e533e236898c02d4ce5af019411dfe510e"},
+    {"artifact_id": "hanna-382", "task_contract_sha256": "324c3f593ef71f170f80acc47f948f5df1549075edc4d9450d39d9b37b21e46f"},
+    {"artifact_id": "hanna-445", "task_contract_sha256": "11b6b41db7a8702308bdb89155c0160268ec2e8b4a3987c6acf93a79577eba3d"},
+    {"artifact_id": "hanna-523", "task_contract_sha256": "18c36667ddc91ce22cc2b3d958835450e7acdf20e193fbc96982c6161fac1fc7"},
+    {"artifact_id": "hanna-594", "task_contract_sha256": "e65d2f4d5d359accff848a87da0f8fca3f0ddc3e6b39be8267000dce9281ade0"},
+    {"artifact_id": "hanna-731", "task_contract_sha256": "a237caba71a4bdd27ba09d06a4707099537d5748beeb2966342e9d3792612f40"},
+    {"artifact_id": "hanna-817", "task_contract_sha256": "647acf770f23524dcb0b4a3ded0297fa1f96173f5118cd6a119a6de016c9e1d3"},
+    {"artifact_id": "hanna-907", "task_contract_sha256": "8ecc4a15e8712aba329bf00797a8826b0f8184f60e506a195bc2ce1ba96e918c"},
+    {"artifact_id": "hanna-1035", "task_contract_sha256": "a4fe372e44a9f552c6ec197ad52a9d2a12cde16c227ecf07acf0c61dc6cc0029"}
+  ]
+}
