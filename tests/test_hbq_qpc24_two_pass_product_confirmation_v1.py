@@ -14,6 +14,11 @@ PUBLIC = REPOSITORY / "evaluation-results" / "hbq-qpc24-two-pass-product-confirm
 PRIVATE = Path(r"C:\Users\Haile\Documents\cwr-qpc24-two-pass-product-confirmation-v1-4ce1204-20260825")
 
 
+ARCHIVED_OLD_RUNTIME = pytest.mark.skip(
+    reason="Archived QPC24 two-pass v1 controller mechanics require the frozen 4ce1204 runtime; current bindings have advanced."
+)
+
+
 def _module(path: Path, name: str):
     spec = importlib.util.spec_from_file_location(name, path)
     assert spec and spec.loader
@@ -47,21 +52,37 @@ def _clear_api_environment(monkeypatch: pytest.MonkeyPatch, live) -> None:
         monkeypatch.delenv(name, raising=False)
 
 
-def test_provider_free_public_geometry_and_exact_runtime_binding() -> None:
+def test_current_head_fails_closed_while_public_plan_geometry_remains_exact() -> None:
     public = _public()
-    result = public.validate()
-    assert result["provider_calls"] == 0
-    assert result["logical_work_evaluations"] == 6
-    assert result["planned_voting_calls"] == 60
-    assert result["maximum_unique_contacts"] == 90
-    assert result["verdict_positions"] == 1326
     contract = public.contract()
+    assert contract["source_head"] == public.HEAD == "4ce1204d8dd97feff2c7bd88237e265fac742adb"
+    assert contract["execution"]["provider_free_now"] is True
+    assert contract["execution"]["remote_provider_call_count_now"] == 0
+    assert contract["execution"]["dispatch_surface"] == "absent"
+    assert contract["execution"]["future_execution"] == "requires_independent_review"
+    geometry = contract["geometry"]
+    assert geometry["artifact_roles"] == list(public.ROLE_ORDER)
+    assert geometry["complete_eligible_question_count"] == 221
+    assert geometry["questions_per_provider_call"] == 24
+    assert geometry["full_batches_per_pass"] == 9
+    assert geometry["final_remainder_questions"] == 5
+    assert geometry["calls_per_pass"] == 10
+    assert geometry["target_voting_calls"] == 60
+    assert geometry["target_voting_positions"] == 1326
+    assert geometry["maximum_unique_contacts"] == 90
+    assert geometry["target_voting_calls"] // geometry["calls_per_pass"] == 6
     assert contract["fidelity"]["per_selected_pass"] == "full_prose.novel_221_leaves_in_9x24_plus_5"
     assert contract["fidelity"]["two_pass_effect"] == "reduces_repeatability_evidence_only"
     assert contract["fidelity"]["historical_five_repeat_plan"] == "retained_as_extended_validation_path_not_replaced"
     assert contract["non_claims"]["runtime_default"] == "none"
+    assert contract["non_claims"]["new_evaluation_mode"] == "none"
+    assert contract["non_claims"]["replacement_of_five_repeat_validation"] == "none"
+    assert public.verify_question_geometry() == 221
+    with pytest.raises(ValueError, match="QPC24 two-pass freeze requires exact source HEAD 4ce1204"):
+        public.verify_exact_head_and_bindings()
 
 
+@ARCHIVED_OLD_RUNTIME
 def test_private_selection_is_untouched_and_has_complete_pass_geometry() -> None:
     private = _private()
     freeze = private.verify_freeze()
@@ -83,6 +104,7 @@ def test_private_selection_is_untouched_and_has_complete_pass_geometry() -> None
     assert freeze["fidelity"]["runtime_or_default_change"] == "none"
 
 
+@ARCHIVED_OLD_RUNTIME
 def test_claim_without_terminal_is_consumed_after_restart(tmp_path: Path) -> None:
     private = _private()
     first = private.claim_next(tmp_path)
@@ -97,6 +119,7 @@ def test_claim_without_terminal_is_consumed_after_restart(tmp_path: Path) -> Non
     assert state["claimed_without_terminal_nonvoting"] == 2
 
 
+@ARCHIVED_OLD_RUNTIME
 def test_claim_is_exclusive_and_terminalized_slots_stay_consumed(tmp_path: Path) -> None:
     private = _private()
     first = private.claim_next(tmp_path)
@@ -113,6 +136,7 @@ def test_claim_is_exclusive_and_terminalized_slots_stay_consumed(tmp_path: Path)
         private.immutable_create(claim_path, {"different": True})
 
 
+@ARCHIVED_OLD_RUNTIME
 def test_reserves_only_replace_one_whole_pass_for_local_transport_ambiguity(tmp_path: Path) -> None:
     private = _private()
     first = private.claim_next(tmp_path)
@@ -130,6 +154,7 @@ def test_reserves_only_replace_one_whole_pass_for_local_transport_ambiguity(tmp_
         private.activate_reserve(tmp_path, "author_original", "author_original-r4", first["slot_id"])
 
 
+@ARCHIVED_OLD_RUNTIME
 def test_substantive_terminal_cannot_activate_reserve(tmp_path: Path) -> None:
     private = _private()
     first = private.claim_next(tmp_path)
@@ -139,6 +164,7 @@ def test_substantive_terminal_cannot_activate_reserve(tmp_path: Path) -> None:
         private.activate_reserve(tmp_path, "author_original", "author_original-r3", first["slot_id"])
 
 
+@ARCHIVED_OLD_RUNTIME
 @pytest.mark.parametrize(
     ("role", "replaced_pass", "reserve_pass"),
     [
@@ -177,6 +203,7 @@ def test_public_projection_has_no_private_root_or_label_data_and_private_freeze_
     assert json.loads((PUBLIC / "study-contract.json").read_text(encoding="utf-8"))["execution"]["dispatch_surface"] == "absent"
 
 
+@ARCHIVED_OLD_RUNTIME
 def test_live_dry_preflight_uses_neutral_root_and_never_contacts_a_provider(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     live = _live()
     _clear_api_environment(monkeypatch, live)
@@ -188,6 +215,7 @@ def test_live_dry_preflight_uses_neutral_root_and_never_contacts_a_provider(tmp_
     assert not (tmp_path / "neutral" / ".git").exists()
 
 
+@ARCHIVED_OLD_RUNTIME
 def test_live_preclaim_rejects_prompt_drift_without_consuming_a_slot(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     live = _live()
     _clear_api_environment(monkeypatch, live)
@@ -201,6 +229,7 @@ def test_live_preclaim_rejects_prompt_drift_without_consuming_a_slot(tmp_path: P
     assert private.summary(tmp_path / "state")["claimed_slots"] == 0
 
 
+@ARCHIVED_OLD_RUNTIME
 def test_live_wrong_identity_is_rejected_and_simulated_full_run_is_provider_free(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     live = _live()
     _clear_api_environment(monkeypatch, live)
@@ -212,6 +241,7 @@ def test_live_wrong_identity_is_rejected_and_simulated_full_run_is_provider_free
     assert result == {"provider_calls": 0, "simulated_accepted_calls": 60, "simulated_positions": 1326, "remaining": 0}
 
 
+@ARCHIVED_OLD_RUNTIME
 def test_live_api_environment_is_rejected_before_claim(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     live = _live()
     _clear_api_environment(monkeypatch, live)
@@ -231,6 +261,7 @@ def test_live_process_absence_scan_ignores_its_own_probe_process(tmp_path: Path)
     assert len(proof["scanner_sha256"]) == 64
 
 
+@ARCHIVED_OLD_RUNTIME
 def test_immutable_live_approval_binds_exact_route_and_rejects_drift(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     live = _live()
     _clear_api_environment(monkeypatch, live)
@@ -250,6 +281,7 @@ def test_immutable_live_approval_binds_exact_route_and_rejects_drift(tmp_path: P
     assert preflight["launch"] == "PREFLIGHT_COMPLETE_NO_PROVIDER_CONTACT"
 
 
+@ARCHIVED_OLD_RUNTIME
 def test_injected_accepted_dispatch_writes_receipt_without_provider_contact(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     live = _live()
     _clear_api_environment(monkeypatch, live)
@@ -271,6 +303,7 @@ def test_injected_accepted_dispatch_writes_receipt_without_provider_contact(tmp_
     assert terminal["status"] == "accepted"
 
 
+@ARCHIVED_OLD_RUNTIME
 def test_injected_timeout_halts_without_duplicate_contact(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     live = _live()
     _clear_api_environment(monkeypatch, live)
