@@ -46,13 +46,42 @@ def _controller(study, path: Path) -> Path:
     return path
 
 
-def test_provider_free_validation_reconstructs_full_qpc24_geometry(tmp_path: Path) -> None:
+def test_current_head_fails_closed_while_qpc24_contract_and_geometry_remain_exact(tmp_path: Path) -> None:
     study = _study()
-    result = study.validate(_controller(study, tmp_path / "controller.json"))
-    assert result["provider_calls"] == 0
-    assert result["logical_work_evaluations"] == 15
-    assert result["planned_provider_calls"] == 150
-    assert result["verdict_positions"] == 3315
+    contract = study.contract()
+    assert contract["source_head"] == study.HEAD == "4ce1204d8dd97feff2c7bd88237e265fac742adb"
+    assert contract["execution"]["provider_free_now"] is True
+    assert contract["execution"]["remote_provider_call_count_now"] == 0
+    assert contract["execution"]["logical_work_evaluations_exact"] == 15
+    assert contract["execution"]["planned_provider_calls_exact"] == 150
+    assert contract["geometry"] == {
+        "artifact_roles": ["author_original", "gpt_5_6_pro_rewrite", "public_control_story"],
+        "repetitions_per_role": 5,
+        "complete_eligible_question_count": 221,
+        "fixed_full_batches_per_logical_work": 9,
+        "remainder_batches_per_logical_work": 1,
+        "verdict_positions_exact": 3315,
+    }
+    assert contract["eligible_question_set"]["required_figurative_and_owner_leaves"] == list(study.REQUIRED_LEAVES)
+    assert contract["non_claims"] == {
+        "rubric_change": "none",
+        "promotion": "none",
+        "gray_blood_rebaseline": "held_pending_separate_controller",
+        "human_judging": "none",
+        "paid_evaluation": "none",
+    }
+    controller = study.controller(_controller(study, tmp_path / "controller.json"))
+    slots = study.schedule(controller)
+    assert len(study.question_rows()) == 221
+    assert len(slots) == 150
+    assert sum(len(slot["question_rows"]) for slot in slots) == 3315
+    for role in study.ROLE_ORDER:
+        for repetition in range(1, 6):
+            work = [slot for slot in slots if slot["role"] == role and slot["repetition"] == repetition]
+            assert [len(slot["question_rows"]) for slot in work] == [24] * 9 + [5]
+            assert set(study.REQUIRED_LEAVES).issubset({row["question"]["id"] for slot in work for row in slot["question_rows"]})
+    with pytest.raises(ValueError, match="QPC24 requires exact source HEAD 4ce1204"):
+        study.verify_exact_head_and_bindings()
 
 
 def test_every_logical_work_covers_all_eligible_questions_in_nine_full_batches_and_one_remainder(tmp_path: Path) -> None:
