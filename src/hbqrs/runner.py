@@ -15,7 +15,7 @@ import re
 import shutil
 import subprocess
 import sys
-from typing import Any, Mapping, Sequence
+from typing import Any, Callable, Mapping, Sequence
 import uuid
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlparse
@@ -123,6 +123,10 @@ class _ProviderAttemptFailure(HBQError):
         self.content = content
         self.provider_record = dict(provider_record) if provider_record is not None else None
         self.attempt_outcome = attempt_outcome
+
+
+class RetryDisclosurePause(HBQError):
+    """An intentional pre-dispatch stop after the exact retry payload is available."""
 
 
 class _NoRedirect(HTTPRedirectHandler):
@@ -3089,6 +3093,63 @@ def _load_checkpoints(
     return verdicts, len(paths), previous_sha256
 
 
+def _before_provider_attempt_context(
+    *,
+    destination: Path,
+    schema_path: Path,
+    run_id: str,
+    config_sha256: str,
+    provider: str,
+    model: str,
+    reasoning: str,
+    endpoint: str | None,
+    batch_number: int,
+    question_ids: Sequence[str],
+    attempt_number: int,
+    batch_attempts: int,
+    base_prompt_sha256: str,
+    effective_prompt: str,
+    feedback_policy: str | None,
+    feedback: Mapping[str, Any] | None,
+    rejected_chain: Mapping[str, Any],
+) -> dict[str, Any]:
+    try:
+        schema_bytes = schema_path.read_bytes()
+        schema_text = schema_bytes.decode("utf-8")
+    except (OSError, UnicodeError) as exc:
+        raise HBQError(f"Cannot bind response schema before provider attempt: {exc}") from exc
+    prompt_bytes = effective_prompt.encode("utf-8")
+    return {
+        "format_version": 1,
+        "run": {"run_id": run_id, "config_sha256": config_sha256},
+        "provider": {
+            "provider": provider,
+            "model": model,
+            "reasoning": reasoning,
+            "endpoint": endpoint,
+        },
+        "batch": {"number": batch_number, "question_ids": list(question_ids)},
+        "attempt": {"number": attempt_number, "batch_attempts": batch_attempts},
+        "prompt": {
+            "encoding": "utf-8",
+            "text": effective_prompt,
+            "bytes": len(prompt_bytes),
+            "sha256": _sha256_bytes(prompt_bytes),
+            "base_prompt_sha256": base_prompt_sha256,
+        },
+        "response_schema": {
+            "encoding": "utf-8",
+            "text": schema_text,
+            "bytes": len(schema_bytes),
+            "sha256": _sha256_bytes(schema_bytes),
+        },
+        "validation_feedback_policy": feedback_policy,
+        "validation_feedback": dict(feedback) if feedback is not None else None,
+        "rejected_chain": dict(rejected_chain),
+        "output_dir": str(destination),
+    }
+
+
 def run_judge(
     *,
     artifact_path: str | Path,
@@ -3124,6 +3185,7 @@ def run_judge(
     upgrade_legacy_normalization: bool = False,
     max_physical_http_attempts_per_logical_request: int | None = None,
     attempt_lifecycle_policy: str | None = None,
+    before_provider_attempt: Callable[[Mapping[str, Any]], None] | None = None,
 ) -> dict[str, Any]:
     """Judge one artifact against one bundle, checkpointing every batch."""
 
@@ -3158,6 +3220,8 @@ def run_judge(
         raise HBQError("upgrade_legacy_normalization must be a boolean")
     if attempt_lifecycle_policy not in {None, ATTEMPT_LIFECYCLE_POLICY}:
         raise HBQError(f"attempt_lifecycle_policy must be {ATTEMPT_LIFECYCLE_POLICY!r} when set")
+    if before_provider_attempt is not None and not callable(before_provider_attempt):
+        raise HBQError("before_provider_attempt must be callable when set")
 
     artifact = _read_text_record(Path(artifact_path))
     contexts = [_read_text_record(Path(path)) for path in context_paths]
@@ -3598,6 +3662,40 @@ def run_judge(
                 effective_prompt, feedback = prompt, None
             effective_prompt_sha256 = _sha256_bytes(effective_prompt.encode("utf-8"))
             attempt_index = len(records) + 1
+            if before_provider_attempt is not None:
+                attempt_rejected_chain = _rejected_chain_binding(
+                    destination,
+                    batch_number=batch_number,
+                    base_prompt=prompt,
+                    batch_attempts=batch_attempts,
+                    normalization_policy=active_normalization_policy,
+                    allow_legacy_rejection_records=legacy_rejection_compat,
+                )
+                before_provider_attempt(
+                    _before_provider_attempt_context(
+                        destination=destination,
+                        schema_path=schema_path,
+                        run_id=run_id,
+                        config_sha256=active_config_sha256,
+                        provider=provider,
+                        model=model,
+                        reasoning=reasoning,
+                        endpoint=str(endpoint) if endpoint is not None else None,
+                        batch_number=batch_number,
+                        question_ids=expected,
+                        attempt_number=attempt_index,
+                        batch_attempts=batch_attempts,
+                        base_prompt_sha256=base_prompt_sha256,
+                        effective_prompt=effective_prompt,
+                        feedback_policy=(
+                            VALIDATION_FEEDBACK_POLICY
+                            if active_normalization_policy == EVIDENCE_NORMALIZATION_POLICY
+                            else None
+                        ),
+                        feedback=feedback,
+                        rejected_chain=attempt_rejected_chain,
+                    )
+                )
             if attempt_lifecycle_policy == ATTEMPT_LIFECYCLE_POLICY:
                 _write_attempt_start(
                     output_dir=destination,

@@ -493,6 +493,85 @@ def test_retries_provider_failure_and_records_empty_raw_audit(tmp_path: Path, fa
         assert raw == b'{"error":"temporary test failure"}'
 
 
+def test_before_provider_attempt_is_optional(tmp_path: Path, fake_openai_endpoint) -> None:
+    base_url, handler = fake_openai_endpoint
+    assert _run(tmp_path, base_url=base_url)["verdicts"] == 1
+    assert handler.calls == 1
+
+
+def test_before_provider_attempt_binds_retry_payload_and_pauses_before_contact(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    calls = 0
+    observed: list[dict[str, object]] = []
+
+    def fake_call(**kwargs: object) -> tuple[str, dict[str, object]]:
+        nonlocal calls
+        calls += 1
+        questions = _questions_from_prompt(str(kwargs["user_prompt"]))
+        valid = {
+            "question_id": questions[0]["question_id"], "verdict": "YES", "confidence": 0.8,
+            "evidence": [{"kind": "exact_quote", "reference": "line:1", "exact_quote": "A short test scene.", "summary": None}],
+            "note": "The requested operation is assessable.",
+        }
+        payload = {"verdicts": [valid, {**valid, "question_id": "unexpected.question"}]} if calls == 1 else {"verdicts": [valid]}
+        return json.dumps(payload), {"id": f"fake-{calls}", "model": "fake-local"}
+
+    def pause_retry(context: object) -> None:
+        assert isinstance(context, dict)
+        observed.append(json.loads(json.dumps(context)))
+        if context["attempt"]["number"] == 2:
+            raise runner_module.RetryDisclosurePause("operator acknowledgement is required")
+
+    monkeypatch.setattr("hbqrs.runner._call_openai", fake_call)
+    with pytest.raises(runner_module.RetryDisclosurePause, match="acknowledgement"):
+        _run(
+            tmp_path,
+            batch_attempts=2,
+            attempt_lifecycle_policy=runner_module.ATTEMPT_LIFECYCLE_POLICY,
+            before_provider_attempt=pause_retry,
+        )
+    assert calls == 1
+    assert len(observed) == 2
+    base, retry = observed
+    assert base["attempt"] == {"number": 1, "batch_attempts": 2}
+    assert base["validation_feedback_policy"] == runner_module.VALIDATION_FEEDBACK_POLICY
+    assert base["validation_feedback"] is None
+    assert base["rejected_chain"] == {"count": 0, "head_sha256": None}
+    assert retry["attempt"] == {"number": 2, "batch_attempts": 2}
+    assert retry["rejected_chain"]["count"] == 1
+    assert retry["validation_feedback"]["previous_rejected_sha256"] == retry["rejected_chain"]["head_sha256"]
+    assert "## Validation feedback" not in base["prompt"]["text"]
+    assert "## Validation feedback" in retry["prompt"]["text"]
+    for context in observed:
+        prompt = context["prompt"]
+        schema = context["response_schema"]
+        assert prompt["bytes"] == len(prompt["text"].encode("utf-8"))
+        assert prompt["sha256"] == hashlib.sha256(prompt["text"].encode("utf-8")).hexdigest()
+        assert schema["bytes"] == len(schema["text"].encode("utf-8"))
+        assert schema["sha256"] == hashlib.sha256(schema["text"].encode("utf-8")).hexdigest()
+        assert context["run"]["config_sha256"]
+        assert context["provider"] == {
+            "provider": "openai",
+            "model": "fake-local",
+            "reasoning": "medium",
+            "endpoint": "http://127.0.0.1:8000/v1/chat/completions",
+        }
+    starts = list((tmp_path / "run" / "responses" / "attempt-lifecycle").glob("**/*.start.json"))
+    assert len(starts) == 1
+
+    resumed: list[dict[str, object]] = []
+    assert _run(
+        tmp_path,
+        batch_attempts=2,
+        attempt_lifecycle_policy=runner_module.ATTEMPT_LIFECYCLE_POLICY,
+        resume=True,
+        before_provider_attempt=lambda context: resumed.append(json.loads(json.dumps(context))),
+    )["verdicts"] == 1
+    assert calls == 2
+    assert resumed == [retry]
+
+
 def test_wrong_effective_model_fails_fast_and_retains_provider_envelope(
     tmp_path: Path, fake_openai_endpoint
 ) -> None:

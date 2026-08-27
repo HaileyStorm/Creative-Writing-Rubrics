@@ -140,6 +140,29 @@ def test_execute_revalidates_runtime_before_each_dispatch_and_stops_on_drift(tmp
     assert calls == []
 
 
+def test_successor_threads_before_provider_attempt_to_run_judge(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    runner = _module("run_successor")
+    predecessor, work = tmp_path / "predecessor", tmp_path / "successor"
+    folder = predecessor / "inputs" / "story"
+    folder.mkdir(parents=True)
+    (folder / "source.md").write_text("source", encoding="utf-8")
+    (folder / "prompt.md").write_text("prompt", encoding="utf-8")
+    event = {"sequence": 77, "item_id": "story", "arm_id": "comparison", "repetition": 1}
+    frozen = {
+        "contract": {
+            "provider": {"model": "gpt-5.6-sol", "reasoning": "high"},
+            "arms": [{"arm_id": "comparison", "kind": "comparison", "bundle_id": "prose.scene", "batch_size": 1, "batch_attempts": 2}],
+        }
+    }
+    captured: dict[str, object] = {}
+    hook = lambda context: None
+    monkeypatch.setattr(runner, "run_judge", lambda **kwargs: captured.update(kwargs))
+
+    target = runner._run_event(object(), event, frozen, predecessor, work, 30.0, before_provider_attempt=hook)
+    assert target == work / "runs" / "story" / "comparison" / "run-01" / "run.json"
+    assert captured["before_provider_attempt"] is hook
+
+
 def test_recovered_prefix_session_collision_stops_before_new_dispatch(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     runner = _module("run_successor")
     predecessor, work = tmp_path / "predecessor", tmp_path / "successor"

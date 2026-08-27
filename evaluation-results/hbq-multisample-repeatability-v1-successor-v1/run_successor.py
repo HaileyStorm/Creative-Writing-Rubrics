@@ -11,7 +11,7 @@ import re
 import subprocess
 import sys
 from pathlib import Path
-from typing import Any, Mapping
+from typing import Any, Callable, Mapping
 
 from study import HERE, PREDECESSOR, bind_predecessor, canonical, contract, plans, read_json, sha, write_immutable_json
 
@@ -415,18 +415,34 @@ def _run_native(runner: Any, event: Mapping[str, Any], frozen: Mapping[str, Any]
                 (output / "result.json").unlink()
 
 
-def _run_event(runner: Any, event: Mapping[str, Any], frozen: Mapping[str, Any], predecessor_root: Path, work: Path, timeout: float) -> Path:
+def _run_event(
+    runner: Any,
+    event: Mapping[str, Any],
+    frozen: Mapping[str, Any],
+    predecessor_root: Path,
+    work: Path,
+    timeout: float,
+    before_provider_attempt: Callable[[Mapping[str, Any]], None] | None = None,
+) -> Path:
     arm = next(item for item in frozen["contract"]["arms"] if item["arm_id"] == event["arm_id"])
     print(json.dumps(_outbound_disclosure(event, frozen, predecessor_root), sort_keys=True), flush=True)
     if arm["kind"] == "native":
         return _run_native(runner, event, frozen, predecessor_root, work, timeout)
     folder = predecessor_root / "inputs" / event["item_id"]
     output = _binding_path(work, event).parent
-    run_judge(artifact_path=folder / "source.md", context_paths=[folder / "prompt.md"], task_contract_path=folder / "task-contract.json", artifact_id=event["item_id"], bundle_id=arm["bundle_id"], provider="codex", model=frozen["contract"]["provider"]["model"], reasoning=frozen["contract"]["provider"]["reasoning"], output_dir=output, registry=registry_path(), bundles=bundles_path(), batch_size=arm["batch_size"], batch_attempts=arm["batch_attempts"], allow_remote=True, resume=(output / "run.json").is_file(), timeout=timeout, strict_ai=True)
+    run_judge(artifact_path=folder / "source.md", context_paths=[folder / "prompt.md"], task_contract_path=folder / "task-contract.json", artifact_id=event["item_id"], bundle_id=arm["bundle_id"], provider="codex", model=frozen["contract"]["provider"]["model"], reasoning=frozen["contract"]["provider"]["reasoning"], output_dir=output, registry=registry_path(), bundles=bundles_path(), batch_size=arm["batch_size"], batch_attempts=arm["batch_attempts"], allow_remote=True, resume=(output / "run.json").is_file(), timeout=timeout, strict_ai=True, before_provider_attempt=before_provider_attempt)
     return output / "run.json"
 
 
-def execute(predecessor_root: Path, work: Path, *, timeout: float = 3600.0, dry_run: bool = False, allow_remote: bool = False) -> dict[str, Any]:
+def execute(
+    predecessor_root: Path,
+    work: Path,
+    *,
+    timeout: float = 3600.0,
+    dry_run: bool = False,
+    allow_remote: bool = False,
+    before_provider_attempt: Callable[[Mapping[str, Any]], None] | None = None,
+) -> dict[str, Any]:
     predecessor_root, work = _operator_work_root(predecessor_root, work)
     prepared = prepare(predecessor_root, work)
     frozen = read_json(predecessor_root / "frozen-run-contract.json")
@@ -447,7 +463,19 @@ def execute(predecessor_root: Path, work: Path, *, timeout: float = 3600.0, dry_
     for event in remaining:
         _revalidate_runtime(work, frozen)
         _revalidate_predecessor_event(predecessor_root, frozen, event)
-        target = _run_event(runner, event, frozen, predecessor_root, work, timeout)
+        target = (
+            _run_event(runner, event, frozen, predecessor_root, work, timeout)
+            if before_provider_attempt is None
+            else _run_event(
+                runner,
+                event,
+                frozen,
+                predecessor_root,
+                work,
+                timeout,
+                before_provider_attempt=before_provider_attempt,
+            )
+        )
         _validate_global_sessions(predecessor_root, work, [*completed_events, event])
         _append(journal, {**event, "event": "completed", "run_binding_sha256": sha(target)})
         completed_events.append(event)
