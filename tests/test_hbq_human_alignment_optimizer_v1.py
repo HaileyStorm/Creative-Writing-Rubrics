@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import builtins
 import copy
+import importlib.util
 import inspect
 import os
 from pathlib import Path
@@ -21,6 +22,7 @@ ROOTS = {
 }
 study = load_module(PACKAGE / "study.py", name="hanna_optimizer_study_v1")
 analysis = load_module(PACKAGE / "analyze.py", name="hanna_optimizer_analyze_v1", aliases={"study": study})
+harness = load_module(PACKAGE / "offline_harness.py", name="hanna_optimizer_harness_v1", aliases={"study": study})
 
 
 def _split() -> dict:
@@ -188,3 +190,58 @@ def test_real_symlink_ancestor_is_rejected_or_skipped_without_windows_privilege(
         pytest.skip("Windows symlink privilege is unavailable")
     with pytest.raises(ValueError, match="symlink or reparse"):
         study.read_json(link / "source.json")
+
+
+def test_offline_harness_derives_six_balanced_canonical_candidates() -> None:
+    assert len(harness.legal_factor_tuples()) == 36
+    candidates = harness.enumerate_balanced_candidates()
+    harness.validate_candidates(candidates)
+    assert len(candidates) == 6
+    assert len({candidate["candidate_id"] for candidate in candidates}) == 6
+    for name, values in study.CONTRACT["candidate_space"]["controls"].items():
+        counts = {value: sum(candidate["factors"][name] == value for candidate in candidates) for value in values}
+        assert set(counts.values()) == {6 // len(values)}
+    assert all(b'"demonstrations":0' in candidate["profile_bytes"] for candidate in candidates)
+    assert all(candidate["instruction_bytes"] for candidate in candidates)
+
+
+def test_offline_harness_ids_bind_exact_instruction_and_profile_bytes() -> None:
+    candidate = harness.enumerate_balanced_candidates()[0]
+    assert candidate["instruction_sha256"] == study.hashlib.sha256(candidate["instruction_bytes"]).hexdigest()
+    assert candidate["profile_sha256"] == study.hashlib.sha256(candidate["profile_bytes"]).hexdigest()
+    altered = copy.deepcopy(candidate)
+    altered["instruction_bytes"] += b"drift"
+    with pytest.raises(ValueError, match="frozen balanced derivation"):
+        harness.validate_candidates([altered, *harness.enumerate_balanced_candidates()[1:]])
+    assert harness.candidate_bytes_for_model(candidate, "gpt-5.6-sol") == harness.candidate_bytes_for_model(candidate, "grok-4.6")
+
+
+def test_offline_harness_reuses_authoritative_split_and_has_no_caller_split_or_confirmation_surface() -> None:
+    assert harness.validate_authoritative_split(**ROOTS) == study.sha256(_split())
+    assert "split_manifest" not in inspect.signature(harness.validate_authoritative_split).parameters
+    source = inspect.getsource(harness)
+    assert "validate_score_manifest" not in source
+    assert "select_sol_candidate" not in source
+    assert "confirmation" not in inspect.signature(harness.validate_authoritative_split).parameters
+
+
+def test_optional_adapters_do_not_import_until_called(monkeypatch) -> None:
+    original_import = builtins.__import__
+
+    def deny_optional_backends(name, *args, **kwargs):
+        if name.split(".", 1)[0] in {"dspy", "optuna"}:
+            raise AssertionError("optional optimizer backend imported eagerly")
+        return original_import(name, *args, **kwargs)
+
+    monkeypatch.setattr(builtins, "__import__", deny_optional_backends)
+    assert harness.dspy_candidate_wording_adapter_contract()["selection_authority"] == "none"
+    with pytest.raises((RuntimeError, AssertionError)):
+        harness.optuna_explore_legal_tuples(n_trials=1)
+
+
+def test_optional_optuna_explores_only_legal_tuples_when_installed() -> None:
+    if importlib.util.find_spec("optuna") is None:
+        pytest.skip("Optuna is not installed")
+    trials = harness.optuna_explore_legal_tuples(n_trials=2)
+    assert len(trials) == 2
+    assert all(trial in harness.legal_factor_tuples() for trial in trials)

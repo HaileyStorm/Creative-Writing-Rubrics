@@ -8,6 +8,8 @@ Six candidate prompt/profile commitments are scheduled against both the 48-item 
 
 DSPy MIPROv2 and Optuna are optional offline development helpers. Neither is imported at runtime. Grok receives the same prospective schedule but remains separately reported; only the fixed Sol development endpoint selects.
 
+`offline_harness.py` is a provider-free candidate-generation harness. It reuses the source-bound split validation, deterministically derives six balanced candidates from the frozen 36-tuple control universe, and binds each candidate ID to its rendered instruction and profile bytes. It does not accept scores, results, confirmation material, or a selected candidate. Its optional Optuna adapter only explores legal factor tuples and is dynamically imported when explicitly called; the DSPy surface is a wording-adapter contract, not an optimizer or model-output substitute.
+
 The disclosure binds what this package actually prepares: opaque item/group schedule cells, provider/model destinations, and candidate hash commitments. Story/prompt bytes, profile bytes, sampler, provider request, response artifacts, and operator acknowledgement are unimplemented and must be disclosed and bound by a future executor immediately before any remote contact. Imported aggregates are always rejected until a local analyzer recomputes metrics from exact per-run evidence.
 
 ```powershell
