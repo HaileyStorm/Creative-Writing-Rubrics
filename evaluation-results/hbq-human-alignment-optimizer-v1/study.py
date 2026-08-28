@@ -360,68 +360,12 @@ def validate_split_manifest(value: Mapping[str, Any], *, frozen_successor_path: 
         raise ValueError("Optimizer split manifest is not the frozen derivation")
 
 
-def preflight_disclosure() -> dict[str, Any]:
-    return {"format_version": 1, "study_id": CONTRACT["study_id"], "mode": "preflight_only", "provider_execution": "not_implemented_by_this_package", "source_roots_required": ["frozen_successor_contract", "hanna_csv"], "remote_destinations": [{"provider": "openai", "model": "gpt-5.6-sol"}, {"provider": "xai", "model": "grok-4.6"}], "prepared_locally": ["opaque item-to-prompt-group map", "group-disjoint schedule", "candidate profile hash commitments"], "unimplemented_before_remote_execution": ["story and prompt payload bytes", "candidate and control profile bytes", "provider request, sampler, and response artifacts", "operator acknowledgement"], "budget_limits": CONTRACT["budgets"], "public_projection": "aggregate-only"}
-
-
-def _candidate_profiles(value: Any, *, count: int) -> Mapping[str, Mapping[str, str]]:
-    if not isinstance(value, Mapping) or len(value) != count:
-        raise ValueError("Optimizer candidate set is invalid")
-    for candidate, profile in value.items():
-        _exact(profile, {"prompt_sha256", "profile_sha256"}, "candidate profile")
-        if not _opaque_id(candidate, "candidate") or not all(_is_hash(profile[key]) for key in profile):
-            raise ValueError("Optimizer candidate profile is invalid")
-    if len({profile["prompt_sha256"] for profile in value.values()}) != count or len({profile["profile_sha256"] for profile in value.values()}) != count:
-        raise ValueError("Optimizer candidate prompt/profile commitments are not pairwise unique")
-    return value
-
-
-def _validate_calls(calls: Any, *, items: list[Mapping[str, Any]], candidates: set[str], phase: str) -> None:
-    if not isinstance(calls, list):
-        raise ValueError("Optimizer execution calls are invalid")
-    expected: set[tuple[str, str, str, str, str, str, str]] = set()
-    source_items = [row for row in items if row["partition"] in ({"train", "development"} if phase == "development" else {"confirmation"})]
-    arms = {"candidate"} if phase == "development" else {"candidate", "control"}
-    for item in source_items:
-        for candidate in candidates:
-            for arm in arms:
-                for provider, model in (("openai", "gpt-5.6-sol"), ("xai", "grok-4.6")):
-                    expected.add((item["item_id"], item["prompt_group_id"], item["partition"], candidate, arm, provider, model))
-    observed: set[tuple[str, str, str, str, str, str, str]] = set(); ids: set[str] = set()
-    for call in calls:
-        _exact(call, {"call_id", "item_id", "prompt_group_id", "partition", "candidate_id", "arm", "provider", "model"}, "execution call")
-        if not isinstance(call["call_id"], str) or not CALL_ID.fullmatch(call["call_id"]) or call["call_id"] in ids:
-            raise ValueError("Optimizer execution call ID is invalid")
-        ids.add(call["call_id"])
-        observed.add(tuple(call[key] for key in ("item_id", "prompt_group_id", "partition", "candidate_id", "arm", "provider", "model")))
-    if observed != expected or len(calls) != len(expected):
-        raise ValueError("Optimizer execution schedule is invalid")
-
-
 def derive_selection_artifact(*_args: Any, **_kwargs: Any) -> None:
     raise ValueError(UNIMPLEMENTED_BLOCKER)
 
 
 def validate_selection_artifact(*_args: Any, **_kwargs: Any) -> None:
     raise ValueError(UNIMPLEMENTED_BLOCKER)
-
-
-def validate_execution_manifest(value: Mapping[str, Any], *, frozen_successor_path: Path, hanna_csv_path: Path, development_manifest: Mapping[str, Any] | None = None) -> None:
-    if not isinstance(value, Mapping) or value.get("format_version") != 1 or value.get("study_id") != CONTRACT["study_id"] or value.get("phase") not in {"development", "confirmation"}:
-        raise ValueError("Optimizer execution manifest identity is invalid")
-    phase = value["phase"]
-    split = derive_split_manifest(frozen_successor_path=frozen_successor_path, hanna_csv_path=hanna_csv_path)
-    if phase == "development":
-        _exact(value, {"format_version", "study_id", "phase", "candidate_profiles", "calls"}, "development execution manifest")
-        profiles = _candidate_profiles(value["candidate_profiles"], count=6)
-        _validate_calls(value["calls"], items=split["items"], candidates=set(profiles), phase=phase)
-    else:
-        raise ValueError(UNIMPLEMENTED_BLOCKER)
-
-
-def execution_disclosure(manifest: Mapping[str, Any], *, frozen_successor_path: Path, hanna_csv_path: Path, development_manifest: Mapping[str, Any] | None = None) -> dict[str, Any]:
-    validate_execution_manifest(manifest, frozen_successor_path=frozen_successor_path, hanna_csv_path=hanna_csv_path, development_manifest=development_manifest)
-    return {"format_version": 1, "study_id": CONTRACT["study_id"], "mode": "prepared_schedule_only", "execution_manifest_sha256": sha256(manifest), "remote_destinations": [{"provider": "openai", "model": "gpt-5.6-sol"}, {"provider": "xai", "model": "grok-4.6"}], "prepared_locally": ["opaque item/group schedule", "provider/model dispatch cells", "candidate prompt/profile hash commitments"], "unimplemented_before_remote_execution": ["story and prompt payload bytes", "candidate/control profile bytes", "provider request, sampler, and response artifacts", "operator acknowledgement"], "budget_limits": CONTRACT["budgets"], "public_projection": "aggregate-only"}
 
 
 def contract_sha256() -> str:

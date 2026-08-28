@@ -16,10 +16,10 @@ def validate_aggregate(_value: Mapping[str, Any], **_ignored: Any) -> None:
     raise ValueError(NON_AUTHORITATIVE)
 
 
-def analyze(input_path: Path, output: Path, *, split_manifest_path: Path, disclosure_path: Path, execution_manifest_path: Path) -> None:
+def analyze(input_path: Path, output: Path, *, split_manifest_path: Path, disclosure_path: Path, execution_freeze_path: Path) -> None:
     output = checked_output_path(output)
-    require_disjoint_paths(output, input_path, split_manifest_path, disclosure_path, execution_manifest_path)
-    for path in (input_path, split_manifest_path, disclosure_path, execution_manifest_path):
+    require_disjoint_paths(output, input_path, split_manifest_path, disclosure_path, execution_freeze_path)
+    for path in (input_path, split_manifest_path, disclosure_path, execution_freeze_path):
         read_json(path)
     raise ValueError(NON_AUTHORITATIVE)
 
@@ -30,9 +30,9 @@ def main() -> int:
     parser.add_argument("--output-dir", required=True, type=Path)
     parser.add_argument("--split-manifest", required=True, type=Path)
     parser.add_argument("--disclosure", required=True, type=Path)
-    parser.add_argument("--execution-manifest", required=True, type=Path)
+    parser.add_argument("--execution-freeze", required=True, type=Path)
     args = parser.parse_args()
-    analyze(args.input, args.output_dir, split_manifest_path=args.split_manifest, disclosure_path=args.disclosure, execution_manifest_path=args.execution_manifest)
+    analyze(args.input, args.output_dir, split_manifest_path=args.split_manifest, disclosure_path=args.disclosure, execution_freeze_path=args.execution_freeze)
     return 0
 
 

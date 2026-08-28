@@ -6,6 +6,8 @@ import importlib.util
 import inspect
 import os
 from pathlib import Path
+import subprocess
+import sys
 from types import SimpleNamespace
 
 import pytest
@@ -23,37 +25,11 @@ ROOTS = {
 study = load_module(PACKAGE / "study.py", name="hanna_optimizer_study_v1")
 analysis = load_module(PACKAGE / "analyze.py", name="hanna_optimizer_analyze_v1", aliases={"study": study})
 harness = load_module(PACKAGE / "offline_harness.py", name="hanna_optimizer_harness_v1", aliases={"study": study})
+freeze = load_module(PACKAGE / "execution_freeze.py", name="hanna_optimizer_execution_freeze_v1", aliases={"study": study, "offline_harness": harness})
 
 
 def _split() -> dict:
     return study.derive_split_manifest(**ROOTS)
-
-
-def _profiles() -> dict:
-    return {
-        f"candidate-{index:016x}": {"prompt_sha256": f"{index + 1:x}" * 64, "profile_sha256": f"{index + 8:x}" * 64}
-        for index in range(6)
-    }
-
-
-def _calls(items: list[dict], candidates: set[str], arms: set[str]) -> list[dict]:
-    calls = []
-    for item in items:
-        for candidate in sorted(candidates):
-            for arm in sorted(arms):
-                for provider, model in (("openai", "gpt-5.6-sol"), ("xai", "grok-4.6")):
-                    calls.append({"call_id": f"call-{len(calls):016x}", "item_id": item["item_id"], "prompt_group_id": item["prompt_group_id"], "partition": item["partition"], "candidate_id": candidate, "arm": arm, "provider": provider, "model": model})
-    return calls
-
-
-def _development_manifest() -> dict:
-    profiles = _profiles()
-    items = [item for item in _split()["items"] if item["partition"] in {"train", "development"}]
-    return {"format_version": 1, "study_id": study.CONTRACT["study_id"], "phase": "development", "candidate_profiles": profiles, "calls": _calls(items, set(profiles), {"candidate"})}
-
-
-def _confirmation_plan() -> dict:
-    return {"format_version": 1, "study_id": study.CONTRACT["study_id"], "phase": "confirmation"}
 
 
 def test_source_bound_map_and_group_disjoint_geometry() -> None:
@@ -69,47 +45,14 @@ def test_source_bound_map_and_group_disjoint_geometry() -> None:
     assert not (groups["train"] & groups["development"] or groups["train"] & groups["confirmation"] or groups["development"] & groups["confirmation"])
 
 
-def test_six_candidates_are_scheduled_on_train_and_development_before_selection() -> None:
-    manifest = _development_manifest()
-    study.validate_execution_manifest(manifest, **ROOTS)
-    assert len(manifest["calls"]) == 732
-    assert {call["candidate_id"] for call in manifest["calls"]} == set(manifest["candidate_profiles"])
-    assert {call["partition"] for call in manifest["calls"]} == {"train", "development"}
-    assert sum(call["partition"] == "development" for call in manifest["calls"]) == 156
-    manifest["calls"][0]["partition"] = "confirmation"
-    with pytest.raises(ValueError, match="schedule"):
-        study.validate_execution_manifest(manifest, **ROOTS)
-
-
 def test_selection_scaffold_is_an_explicit_unimplemented_blocker() -> None:
-    development = _development_manifest()
     with pytest.raises(ValueError, match="unimplemented"):
-        study.derive_selection_artifact(development, [{"forged": "result"}], **ROOTS)
+        study.derive_selection_artifact({"forged": "freeze"}, [{"forged": "result"}], **ROOTS)
     with pytest.raises(ValueError, match="unimplemented"):
-        study.validate_selection_artifact({"forged": "selection"}, development, **ROOTS)
+        study.validate_selection_artifact({"forged": "selection"}, {"forged": "freeze"}, **ROOTS)
 
 
-def test_confirmation_plans_are_unimplemented_even_if_repeated() -> None:
-    development = _development_manifest()
-    for plan in (_confirmation_plan(), _confirmation_plan()):
-        with pytest.raises(ValueError, match="unimplemented"):
-            study.validate_execution_manifest(plan, **ROOTS, development_manifest=development)
-
-
-def test_duplicate_candidate_commitments_fail_before_any_selection() -> None:
-    development = _development_manifest()
-    candidates = sorted(development["candidate_profiles"])
-    development["candidate_profiles"][candidates[1]] = copy.deepcopy(development["candidate_profiles"][candidates[0]])
-    with pytest.raises(ValueError, match="pairwise unique"):
-        study.validate_execution_manifest(development, **ROOTS)
-
-
-def test_disclosure_binds_only_prepared_artifacts_and_aggregate_is_hard_rejected() -> None:
-    development = _development_manifest()
-    disclosure = study.execution_disclosure(development, **ROOTS)
-    assert disclosure["mode"] == "prepared_schedule_only"
-    assert "operator acknowledgement" in disclosure["unimplemented_before_remote_execution"]
-    assert "story and prompt payload bytes" in disclosure["unimplemented_before_remote_execution"]
+def test_imported_aggregate_is_hard_rejected() -> None:
     with pytest.raises(ValueError, match="non-authoritative"):
         analysis.validate_aggregate({})
 
@@ -245,3 +188,67 @@ def test_optional_optuna_explores_only_legal_tuples_when_installed() -> None:
     trials = harness.optuna_explore_legal_tuples(n_trials=2)
     assert len(trials) == 2
     assert all(trial in harness.legal_factor_tuples() for trial in trials)
+
+
+def test_execution_freeze_has_exact_732_cell_geometry_and_public_only_canaries() -> None:
+    manifest = freeze.derive_execution_freeze(**ROOTS)
+    freeze.validate_execution_freeze(manifest, **ROOTS)
+    assert len(manifest["schedule"]) == 732
+    assert len({row["cell_id"] for row in manifest["schedule"]}) == 732
+    assert {row["partition"] for row in manifest["schedule"]} == {"train", "development"}
+    assert len(manifest["canaries"]) == 2
+    assert {row["model"] for row in manifest["canaries"]} == {"gpt-5.6-sol", "grok-4.6"}
+    assert all(not row["metric_eligible"] and not row["selection_eligible"] for row in manifest["canaries"])
+    assert {row["canary_id"] for row in manifest["canaries"]}.isdisjoint({row["cell_id"] for row in manifest["schedule"]})
+    assert manifest["confirmation"] == {"status": "structurally_unreachable", "cells": 76}
+
+
+def test_execution_freeze_rebuilds_identical_sol_and_grok_payload_bytes() -> None:
+    manifest = freeze.derive_execution_freeze(**ROOTS)
+    grouped: dict[tuple[str, str], list[dict]] = {}
+    for row in manifest["schedule"]:
+        grouped.setdefault((row["item_id"], row["candidate_id"]), []).append(row)
+    pair = next(rows for rows in grouped.values() if {row["model"] for row in rows} == {"gpt-5.6-sol", "grok-4.6"})
+    payloads = [freeze.provider_ready_payload(freeze=manifest, cell_id=row["cell_id"], **ROOTS) for row in pair]
+    assert payloads[0] == payloads[1]
+    assert all(study.hashlib.sha256(payload).hexdigest() == row["task_payload_sha256"] for payload, row in zip(payloads, pair, strict=True))
+
+
+def test_execution_freeze_rejects_tamper_reparse_and_any_result_acceptance(monkeypatch) -> None:
+    manifest = freeze.derive_execution_freeze(**ROOTS)
+    altered = copy.deepcopy(manifest)
+    altered["schedule"][0]["task_payload_sha256"] = "0" * 64
+    with pytest.raises(ValueError, match="hash drifted|source-bound"):
+        freeze.validate_execution_freeze(altered, **ROOTS)
+    disclosure = freeze.execution_disclosure(manifest, **ROOTS)
+    assert disclosure["acknowledgement_preview"]["acknowledged"] is False
+    assert disclosure["acknowledgement_preview"]["external_owner_attestation_required"] is True
+    assert disclosure["future_native_receipt_contract"]["acceptance"] == "UNIMPLEMENTED_BLOCKER"
+    assert not hasattr(freeze, "validate_result_receipt")
+    assert all(route["paid_api"] is False and route["no_charge_proof_required_before_contact"] == "trusted_zero_charge_route_receipt" for route in manifest["routes"])
+    altered_candidate = copy.deepcopy(manifest)
+    altered_candidate["candidate_commitments"][0]["profile_sha256"] = "0" * 64
+    with pytest.raises(ValueError, match="candidate commitments"):
+        freeze.validate_execution_freeze(altered_candidate, **ROOTS)
+    target = Path(os.path.abspath(ROOTS["hanna_csv_path"]))
+    actual_lstat = study.os.lstat
+
+    def reparse_lstat(path, *args, **kwargs):
+        metadata = actual_lstat(path, *args, **kwargs)
+        if Path(os.path.abspath(path)) == target:
+            return SimpleNamespace(st_mode=metadata.st_mode, st_file_attributes=0x400)
+        return metadata
+
+    monkeypatch.setattr(study.os, "lstat", reparse_lstat)
+    with pytest.raises(ValueError, match="cannot be read|symlink or reparse"):
+        freeze.derive_execution_freeze(**ROOTS)
+
+
+def test_readme_prepare_and_validate_commands_execute(tmp_path: Path) -> None:
+    output = tmp_path / "prepared"
+    prepare = [sys.executable, str(PACKAGE / "prepare.py"), "--frozen-successor-contract", str(ROOTS["frozen_successor_path"]), "--hanna-csv", str(ROOTS["hanna_csv_path"]), "--output-dir", str(output)]
+    completed = subprocess.run(prepare, cwd=ROOT, text=True, capture_output=True, check=False)
+    assert completed.returncode == 0, completed.stderr
+    validate = [sys.executable, str(PACKAGE / "validate.py"), "--frozen-successor-contract", str(ROOTS["frozen_successor_path"]), "--hanna-csv", str(ROOTS["hanna_csv_path"]), "--split-manifest", str(output / "split-manifest.json"), "--execution-freeze", str(output / "execution-freeze.json"), "--disclosure", str(output / "preflight-disclosure.json")]
+    completed = subprocess.run(validate, cwd=ROOT, text=True, capture_output=True, check=False)
+    assert completed.returncode == 0, completed.stderr

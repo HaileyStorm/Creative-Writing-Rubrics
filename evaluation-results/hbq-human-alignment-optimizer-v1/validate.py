@@ -5,25 +5,24 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-from study import execution_disclosure, read_json, require_disjoint_paths, validate_execution_manifest, validate_split_manifest
+from execution_freeze import execution_disclosure, validate_execution_freeze
+from study import read_json, require_disjoint_paths, validate_split_manifest
 
 
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--split-manifest", required=True, type=Path)
     parser.add_argument("--disclosure", required=True, type=Path)
-    parser.add_argument("--execution-manifest", required=True, type=Path)
-    parser.add_argument("--development-manifest", type=Path)
+    parser.add_argument("--execution-freeze", required=True, type=Path)
     parser.add_argument("--frozen-successor-contract", required=True, type=Path)
     parser.add_argument("--hanna-csv", required=True, type=Path)
     args = parser.parse_args()
-    require_disjoint_paths(args.split_manifest, args.disclosure, args.execution_manifest, *([args.development_manifest] if args.development_manifest else []))
+    require_disjoint_paths(args.split_manifest, args.disclosure, args.execution_freeze)
     roots = {"frozen_successor_path": args.frozen_successor_contract, "hanna_csv_path": args.hanna_csv}
     validate_split_manifest(read_json(args.split_manifest), **roots)
-    manifest = read_json(args.execution_manifest)
-    development_manifest = read_json(args.development_manifest) if args.development_manifest else None
-    validate_execution_manifest(manifest, **roots, development_manifest=development_manifest)
-    if read_json(args.disclosure) != execution_disclosure(manifest, **roots, development_manifest=development_manifest):
+    manifest = read_json(args.execution_freeze)
+    validate_execution_freeze(manifest, **roots)
+    if read_json(args.disclosure) != execution_disclosure(manifest, **roots):
         raise ValueError("Optimizer disclosure does not bind the prepared schedule")
     return 0
 

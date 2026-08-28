@@ -10,12 +10,15 @@ DSPy MIPROv2 and Optuna are optional offline development helpers. Neither is imp
 
 `offline_harness.py` is a provider-free candidate-generation harness. It reuses the source-bound split validation, deterministically derives six balanced candidates from the frozen 36-tuple control universe, and binds each candidate ID to its rendered instruction and profile bytes. It does not accept scores, results, confirmation material, or a selected candidate. Its optional Optuna adapter only explores legal factor tuples and is dynamically imported when explicitly called; the DSPy surface is a wording-adapter contract, not an optimizer or model-output substitute.
 
-The disclosure binds what this package actually prepares: opaque item/group schedule cells, provider/model destinations, and candidate hash commitments. Story/prompt bytes, profile bytes, sampler, provider request, response artifacts, and operator acknowledgement are unimplemented and must be disclosed and bound by a future executor immediately before any remote contact. Imported aggregates are always rejected until a local analyzer recomputes metrics from exact per-run evidence.
+The execution-freeze derives 732 exact prospective cells from those roots, with six candidate commitments and paired Sol/Grok routes. It reconstructs one provider-ready payload only in memory, binding source and candidate bytes plus a six-dimension finite-score/evidence/coverage schema. Sol and Grok get exactly the same task, candidate, and schema bytes; route metadata is separate. Each route pins a transport identity, declares `paid_api:false`, and requires a trusted zero-charge route receipt before any contact. It also prepares two public-synthetic route canaries. They prove transport only and are structurally excluded from every HANNA metric or selection surface. The untouched 76-cell confirmation plan remains structurally unreachable.
+
+The disclosure binds what this package actually prepares: opaque item/group schedule cells, provider/model destinations, and candidate hash commitments. Its acknowledgement preview is explicitly unacknowledged: only an external owner attestation and future trusted executor could supply a real acknowledgement. The package accepts no provider receipt or result; it only publishes the exact future native-receipt contract. Imported aggregates are always rejected until a local analyzer recomputes metrics from exact per-run evidence.
 
 ```powershell
 $env:PYTHONPATH='src'
-python evaluation-results/hbq-human-alignment-optimizer-v1/prepare.py --frozen-successor-contract <frozen-contract.json> --hanna-csv <hanna.csv> --output-dir <new-preflight-dir>
-python evaluation-results/hbq-human-alignment-optimizer-v1/validate.py --frozen-successor-contract <frozen-contract.json> --hanna-csv <hanna.csv> --split-manifest <split.json> --execution-manifest <manifest.json> --disclosure <disclosure.json>
+# prepare always derives the execution freeze; it has no --execution-freeze flag.
+python evaluation-results/hbq-human-alignment-optimizer-v1/prepare.py --frozen-successor-contract <frozen-contract.json> --hanna-csv <hanna.csv> --output-dir <new-freeze-dir>
+python evaluation-results/hbq-human-alignment-optimizer-v1/validate.py --frozen-successor-contract <frozen-contract.json> --hanna-csv <hanna.csv> --split-manifest <split.json> --execution-freeze <freeze.json> --disclosure <disclosure.json>
 ```
 
 HANNA is human-reference context, not literary ground truth. A development selection is neither a production prompt nor a confirmed result.
