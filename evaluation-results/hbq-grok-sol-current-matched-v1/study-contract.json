@@ -1,0 +1,36 @@
+{
+  "format_version": 2,
+  "study_id": "hbq-grok-sol-current-matched-v1",
+  "status": "provider_free_scaffold",
+  "frozen_before_execution": true,
+  "purpose": "A current-HEAD, matched-input verdict-agreement calibration screen for Grok and GPT-5.6 Sol. It reports agreement and frozen-design-intent error patterns on a small public-synthetic protocol; it is not an interchangeability, quality, or alignment study.",
+  "privacy": "public_synthetic_only",
+  "conditions": [
+    {"condition_id": "sol", "provider": "codex", "model": "gpt-5.6-sol", "reasoning": "high", "role": "canonical", "canonical": true, "screen_only": false},
+    {"condition_id": "grok", "provider": "grok", "model": "grok-4.6", "reasoning": "high", "allow_unattested_reasoning": true, "role": "screen_only", "canonical": false, "screen_only": true}
+  ],
+  "candidate_condition": {"enabled_by_default": false, "rule": "Any added judge condition is reported separately and does not alter the Sol-versus-Grok screen."},
+  "repetitions": 3,
+  "batch_attempts": 1,
+  "case_file": "public-synthetic-cases.json",
+  "same_input_invariant": "For a case/repetition, every enabled condition receives byte-identical artifact, target leaf, prompt, schema, context, and frozen runtime inputs.",
+  "runtime_files": ["src/hbqrs/runner.py", "src/hbqrs/core.py", "src/hbqrs/paths.py", "src/hbqrs/weights.py", "prompts/judge/BINARY_EVALUATION_PROMPT.md", "schema/hbq_judge_response.schema.json", "schema/hbq_verdict.schema.json", "registry/all_modules.json", "bundles/all_bundles.json"],
+  "runtime_input_policy": "exact_content_hashes_independent_of_porcelain",
+  "evidence_policy": {"local_fixture_class": "DEVELOPMENT_SCREENING_FIXTURE", "promotion_class": "NON_PROMOTABLE", "trusted_external_launch_receipt_required": true},
+  "required_areas": ["task", "form", "core", "craft", "penalty"],
+  "design_intent_verdicts": {"affirmative_check": "YES", "visible_defect": "NO", "activation_absent": "NOT_APPLICABLE", "evidence_unavailable": "CANNOT_ASSESS"},
+  "dispatch_prerequisites": {
+    "execution_enabled": false,
+    "remote_disclosure": {"required": true, "provider_neutral": true, "must_name_destination_and_transmitted_artifacts": true},
+    "zero_charge": {"required": true, "must_prove_no_payment_method_paid_fallback_hold_or_billable_dispatch": true}
+  },
+  "metrics": ["four_state_confusion_by_area", "four_state_exact_agreement", "per_judge_design_intent_agreement", "case_disagreement_ledger", "binary_agreement_on_joint_yes_no", "exact_quote_grounding_among_quotes", "runner_latency_availability", "frozen_scope_and_joint_no_same_declared_leaf"],
+  "historical_context": "Earlier aggregate Grok/Sol evidence is intentionally not numerically restated here until its public artifact and exact binding are separately identified. It remains separate historical context, not a result of this current-HEAD protocol.",
+  "interpretation_limits": [
+    "Grok is a development screen only. Sol remains canonical for scope, craft, penalty, and release decisions.",
+    "This screen has no single-leaf score or rank metric; a one-leaf result is a verdict calibration, not a cross-rubric score.",
+    "This screen freezes one provider attempt per singleton; it has no retry or validation-feedback prompt path.",
+    "run_judge does not emit a structured latency field, scope classification, or materiality classification. The analysis reports those limitations rather than importing a free-form sidecar.",
+    "This scaffold makes no remote call. Execution is disabled until a later orchestrator records provider-neutral destination/artifact disclosure and no-charge dispatch proof, then creates and binds a frozen snapshot."
+  ]
+}
