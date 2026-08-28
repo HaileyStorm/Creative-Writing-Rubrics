@@ -294,6 +294,17 @@ def _prepared_manifest(*, freeze: Mapping[str, Any], cell: Mapping[str, Any], ro
     }
 
 
+def preview_cell_disclosure(*, freeze_path: Path, frozen_successor_path: Path, hanna_csv_path: Path, cell_id: str, endpoint: str | None = None, grok_bin: Path | None = None) -> dict[str, Any]:
+    """Build one exact local-first disclosure without touching any attempt root or provider."""
+    require_disjoint_paths(freeze_path, frozen_successor_path, hanna_csv_path, *( [grok_bin] if grok_bin is not None else []))
+    freeze = read_json(freeze_path)
+    validate_execution_freeze(freeze, frozen_successor_path=frozen_successor_path, hanna_csv_path=hanna_csv_path)
+    cell = _cell(freeze, cell_id)
+    route = _route(cell)
+    payload = provider_ready_payload(freeze=freeze, cell_id=cell_id, frozen_successor_path=frozen_successor_path, hanna_csv_path=hanna_csv_path)
+    return _disclosure(freeze=freeze, cell=cell, route=route, payload=payload, endpoint=endpoint, grok_bin=grok_bin)
+
+
 def _existing_prepared(path: Path, *, freeze: Mapping[str, Any], cell: Mapping[str, Any], route: Mapping[str, Any], acknowledgement: Mapping[str, Any], receipt: Mapping[str, Any], disclosure: Mapping[str, Any]) -> dict[str, Any]:
     root = checked_path(path, must_exist=True)
     if not root.is_dir():
