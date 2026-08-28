@@ -6,9 +6,17 @@ import argparse
 import hashlib
 import json
 import statistics
+import sys
 from collections.abc import Mapping
 from pathlib import Path
 from typing import Any
+
+_SOURCE_ROOT = Path(__file__).resolve().parents[2] / "src"
+if str(_SOURCE_ROOT) not in sys.path:
+    sys.path.insert(0, str(_SOURCE_ROOT))
+
+from hbqrs.core import compile_bundle, compiled_questions, load_bundles, load_modules, resolve_bundle
+from hbqrs.runner import _question_payload
 
 HERE = Path(__file__).resolve().parent
 REPOSITORY = HERE.parents[1]
@@ -150,6 +158,86 @@ def _asset_binding(value: Mapping[str, Any]) -> None:
     _binding(path, value)
 
 
+def _committed_asset(value: Mapping[str, Any]) -> dict[str, Any]:
+    """Return one validated tracked asset commitment without widening its path."""
+    _asset_binding(value)
+    return {"path": value["path"], "bytes": value["bytes"], "sha256": value["sha256"]}
+
+
+def _validate_feedback_schema(asset: Mapping[str, Any]) -> None:
+    schema = _read_json(HERE / asset["path"], label="CWR feedback schema")
+    findings = schema.get("properties", {}).get("findings") if isinstance(schema.get("properties"), Mapping) else None
+    item = findings.get("items") if isinstance(findings, Mapping) else None
+    fields = item.get("properties") if isinstance(item, Mapping) else None
+    if (
+        schema.get("type") != "object"
+        or schema.get("additionalProperties") is not False
+        or schema.get("required") != ["findings"]
+        or not isinstance(schema.get("properties"), Mapping)
+        or set(schema["properties"]) != {"findings"}
+        or not isinstance(findings, Mapping)
+        or findings.get("type") != "array"
+        or findings.get("maxItems") != 3
+        or not isinstance(item, Mapping)
+        or item.get("type") != "object"
+        or item.get("additionalProperties") is not False
+        or item.get("required") != ["location", "observation", "repair_target"]
+        or not isinstance(fields, Mapping)
+        or set(fields) != {"location", "observation", "repair_target"}
+        or any(not isinstance(fields[name], Mapping) or fields[name].get("type") != "string" or fields[name].get("minLength") != 1 for name in fields)
+        or _has_binary_verdict_field(schema)
+    ):
+        raise ValueError("Revision-gain feedback schema must define exact findings rather than binary verdicts")
+
+
+def _has_binary_verdict_field(value: Any) -> bool:
+    if isinstance(value, Mapping):
+        return any(
+            str(key).lower() in {"verdict", "binary", "pass_answer"} or _has_binary_verdict_field(child)
+            for key, child in value.items()
+        )
+    if isinstance(value, list):
+        return any(_has_binary_verdict_field(item) for item in value)
+    return False
+
+
+def _cwr_runtime_composition(value: Mapping[str, Any]) -> dict[str, Any]:
+    """Compile the pinned short-story bundle into the exact feedback question payload."""
+    runtime = value["cwr_runtime"]
+    files = runtime["files"]
+    for relative, expected in files.items():
+        _binding(REPOSITORY / str(relative), expected)
+    modules = load_modules(REPOSITORY / "registry" / "all_modules.json")
+    bundles = load_bundles(REPOSITORY / "bundles" / "all_bundles.json")
+    bundle = resolve_bundle(bundles, runtime["bundle_id"])
+    compiled = compile_bundle(modules, bundle)
+    questions = _question_payload(compiled_questions(compiled))
+    if len(questions) != 178:
+        raise ValueError("CWR feedback composition requires exactly 178 short-story questions")
+    bundle_bytes, compiled_bytes, question_bytes = canonical(bundle), canonical(compiled), canonical(questions)
+    return {
+        "runtime_files": [
+            {"path": relative, **dict(files[relative])}
+            for relative in sorted(files)
+        ],
+        "bundle": {
+            "bundle_id": runtime["bundle_id"],
+            "bytes": len(bundle_bytes),
+            "sha256": hashlib.sha256(bundle_bytes).hexdigest(),
+        },
+        "compiled_bundle": {
+            "bytes": len(compiled_bytes),
+            "sha256": hashlib.sha256(compiled_bytes).hexdigest(),
+        },
+        "ordered_question_payload": {
+            "count": len(questions),
+            "bytes": len(question_bytes),
+            "sha256": hashlib.sha256(question_bytes).hexdigest(),
+        },
+        "questions": questions,
+    }
+
+
 def _input_ids(value: Mapping[str, Any]) -> list[str]:
     inputs = value["source_population"].get("input_commitments")
     if not isinstance(inputs, Mapping):
@@ -178,14 +266,27 @@ def contract() -> dict[str, Any]:
         raise ValueError("Revision-gain parent contract binding drifted")
     if cycles.get("second_cycle_item_ids") != pilot[:2] or cycles.get("adaptive_extension") or cycles.get("best_of_n"):
         raise ValueError("Revision-gain cycle policy drifted")
-    if routes.get("deepseek-v4-flash-max") != {"destination": "nous", "model": "deepseek/deepseek-v4-flash-0731", "reasoning": "max", "paid_api": False}:
-        raise ValueError("Revision-gain DeepSeek route drifted")
+    if routes != {
+        "grok-4.6-high": {"destination": "xai_grok_build_subscription", "model": "grok-4.6", "reasoning": "high", "paid_api": False},
+        "gpt-5.6-sol-high": {"destination": "codex", "model": "gpt-5.6-sol", "reasoning": "high", "paid_api": False},
+        "deepseek-v4-flash-max": {"destination": "nous", "model": "deepseek/deepseek-v4-flash-0731", "reasoning": "max", "paid_api": False},
+        "gpt-5.6-luna-xhigh": {"destination": "codex", "model": "gpt-5.6-luna", "reasoning": "xhigh", "paid_api": False},
+    }:
+        raise ValueError("Revision-gain provider route identity or zero-spend policy drifted")
     route_values = generation.get("generator_routes")
     if not isinstance(route_values, list) or [route.get("generator_id") for route in route_values if isinstance(route, Mapping)] != ["grok-4.6", "gpt-5.6-sol", "deepseek-v4-flash", "gpt-5.6-luna"]:
         raise ValueError("Revision-gain generator routes drifted")
     if [item.get("arm_id") for item in generation.get("guidance_arms", []) if isinstance(item, Mapping)] != ["cwr_guided", "generic_no_feedback"]:
         raise ValueError("Revision-gain guidance arms drifted")
     _asset_binding(generation["instruction_asset"])
+    feedback_instrument = generation.get("feedback_instrument")
+    if not isinstance(feedback_instrument, Mapping) or set(feedback_instrument) != {"prompt", "schema"}:
+        raise ValueError("Revision-gain feedback instrument binding drifted")
+    for asset in feedback_instrument.values():
+        if not isinstance(asset, Mapping):
+            raise ValueError("Revision-gain feedback instrument asset drifted")
+        _asset_binding(asset)
+    _validate_feedback_schema(feedback_instrument["schema"])
     instructions = _read_json(HERE / generation["instruction_asset"]["path"], label="revision instruction asset")
     feedback_packet = instructions.get("cwr_feedback_packet")
     if set(instructions) != {"format_version", "cwr_feedback_packet", "neutral_base_revision_instruction", "arm_difference"} or instructions.get("format_version") != 1 or not isinstance(feedback_packet, Mapping) or feedback_packet.get("maximum_findings") != 3 or feedback_packet.get("maximum_words") != 360 or feedback_packet.get("required_fields_per_finding") != ["location", "observation", "repair_target"] or not isinstance(feedback_packet.get("instruction"), str) or not feedback_packet["instruction"] or not isinstance(instructions["neutral_base_revision_instruction"], str) or not instructions["neutral_base_revision_instruction"] or instructions["arm_difference"] != {
@@ -194,7 +295,7 @@ def contract() -> dict[str, Any]:
     }:
         raise ValueError("Revision-gain arms must share one neutral base instruction")
     runtime = value.get("cwr_runtime", {}).get("files") if isinstance(value.get("cwr_runtime"), Mapping) else None
-    if not isinstance(runtime, Mapping) or len(runtime) != 6:
+    if not isinstance(runtime, Mapping) or len(runtime) != 7:
         raise ValueError("Revision-gain CWR runtime binding drifted")
     for relative, expected in runtime.items():
         _binding(REPOSITORY / str(relative), expected)
@@ -222,7 +323,7 @@ def contract() -> dict[str, Any]:
     reporting = value.get("reporting")
     if not isinstance(reporting, Mapping) or reporting.get("raw_scale_pooling") is not False or reporting.get("equal_weight_unit") != "source_generator_cycle_within_each_judge_measure_scale" or reporting.get("summaries") != ["mean guided-minus-control by judge x measure x scale", "positive-zero-negative directional consistency by judge x measure x scale", "raw paired rows retained; this small development pilot does not estimate an uncertainty interval"] or reporting.get("cycle2_label") != "cumulative_from_cycle1_parent" or reporting.get("secondary_endpoint_delta") != "cycle2 child-minus-cycle1-parent by guidance arm x judge x measure x scale":
         raise ValueError("Revision-gain reporting contract drifted")
-    if value.get("execution_status") != {"cwr_feedback": "precomposition_only_no_composed_rubric_or_provider_payload", "promotion_requires": ["exact_cwr_composition_manifest", "exact_provider_payload_and_schema", "provider_native_transport_receipt"]}:
+    if value.get("execution_status") != {"cwr_feedback": "composition_ready_provider_free", "promotion_requires": ["exact_cwr_composition_manifest", "owner_bound_disclosure_acknowledgement", "provider_native_transport_receipt"]}:
         raise ValueError("Revision-gain execution status contract drifted")
     return value
 
@@ -439,9 +540,16 @@ def _validate_sampler(sampler: Any) -> None:
         raise ValueError("Provider sampler values drifted")
 
 
+def _require_trusted_native_provenance(_receipt: Mapping[str, Any]) -> None:
+    raise ValueError(
+        "Provider-native acceptance is non-promotable without a trusted executor, adapter/parser "
+        "commitment, and immutable provider-generated raw receipt/session artifacts"
+    )
+
+
 def _validate_receipt(work_root: Path, receipt: Any) -> dict[str, Any]:
     hashes = ("request_sha256", "payload_sha256", "response_sha256")
-    fields = {"provider_request_id", "route_intent_profile", "request", "payload", "response", *hashes}
+    fields = {"provider_request_id", "route_intent_profile", "request", "payload", "response", "native", *hashes}
     if not isinstance(receipt, Mapping) or set(receipt) != fields or not isinstance(receipt.get("provider_request_id"), str) or not receipt["provider_request_id"] or not all(_sha256_string(receipt.get(name)) for name in hashes):
         raise ValueError("Provider receipt or request/payload/response hash drifted")
     for field, digest in (("request", "request_sha256"), ("payload", "payload_sha256"), ("response", "response_sha256")):
@@ -451,6 +559,11 @@ def _validate_receipt(work_root: Path, receipt: Any) -> dict[str, Any]:
     _canonical_receipt_object(work_root, receipt["route_intent_profile"], field="route intent profile")
     _canonical_receipt_object(work_root, receipt["request"], field="request")
     _canonical_receipt_object(work_root, receipt["payload"], field="payload")
+    native = receipt["native"]
+    native_fields = {"accepted", "status", "model", "reasoning", "session_id", "provider_request_id", "transmitted_payload_sha256", "returned_response_sha256"}
+    if not isinstance(native, Mapping) or set(native) != native_fields or native.get("accepted") is not True or not isinstance(native.get("status"), int) or not 200 <= native["status"] < 300 or not all(isinstance(native.get(field), str) and native[field] for field in ("model", "reasoning", "session_id", "provider_request_id")) or native["provider_request_id"] != receipt["provider_request_id"] or native.get("transmitted_payload_sha256") != receipt["payload_sha256"] or native.get("returned_response_sha256") != receipt["response_sha256"]:
+        raise ValueError("Provider native receipt acceptance binding drifted")
+    _require_trusted_native_provenance(receipt)
     return dict(receipt)
 
 
@@ -471,6 +584,9 @@ def _validate_execution_identity(work_root: Path, identity: Any, expected: Mappi
         raise ValueError("Provider payload semantic binding drifted")
     if _canonical_receipt_object(work_root, receipt["route_intent_profile"], field="route intent profile") != route:
         raise ValueError("Provider route intent profile drifted")
+    native = receipt["native"]
+    if native["model"] != route["model"] or native["reasoning"] != route["reasoning"]:
+        raise ValueError("Provider native accepted model or reasoning drifted")
     return receipt, actual_payload[evidence_field]
 
 
@@ -501,9 +617,242 @@ def _validate_provider_ready_payload(payload: Any, *, input_commitment: Mapping[
         raise ValueError("Provider-ready payload binding drifted")
 
 
-def _validate_cwr_precomposition_input(payload: Any, *, input_commitment: Mapping[str, Any], prompt_commitment: Mapping[str, Any], expected_instruction: str, expected_runtime_sha256: str) -> None:
-    if not isinstance(payload, Mapping) or set(payload) != {"input_text", "input_sha256", "originating_prompt", "prompt_sha256", "cwr_feedback_instruction", "cwr_runtime_sha256"} or not isinstance(payload.get("input_text"), str) or payload.get("input_sha256") != input_commitment["sha256"] or hashlib.sha256(payload["input_text"].encode("utf-8")).hexdigest() != input_commitment["sha256"] or not isinstance(payload.get("originating_prompt"), str) or payload.get("prompt_sha256") != prompt_commitment["sha256"] or hashlib.sha256(payload["originating_prompt"].encode("utf-8")).hexdigest() != prompt_commitment["sha256"] or payload.get("cwr_feedback_instruction") != expected_instruction or payload.get("cwr_runtime_sha256") != expected_runtime_sha256:
-        raise ValueError("CWR precomposition input binding drifted")
+def _feedback_provider_payload(
+    *,
+    input_text: str,
+    originating_prompt: str,
+    composition: Mapping[str, Any],
+    prompt: str,
+    schema: str,
+) -> dict[str, Any]:
+    return {
+        "input_text": input_text,
+        "originating_prompt": originating_prompt,
+        "bundle_id": composition["bundle"]["bundle_id"],
+        "questions": composition["questions"],
+        "feedback_prompt": prompt,
+        "response_schema": schema,
+    }
+
+
+def _composition_input(
+    *,
+    value: Mapping[str, Any],
+    event: Mapping[str, Any],
+    input_path: Path,
+    parent_revision_lineage: list[Mapping[str, Any]] | None,
+) -> tuple[dict[str, Any], str]:
+    input_bytes = _read_bytes(input_path, label="CWR composition input")
+    input_text = input_bytes.decode("utf-8")
+    if event["cycle"] == 1:
+        expected = value["source_population"]["input_commitments"][event["source_item_id"]]["source.md"]
+        commitment = {
+            "kind": "source",
+            "item_id": event["source_item_id"],
+            "bytes": expected["bytes"],
+            "sha256": expected["sha256"],
+        }
+    else:
+        parent_id = event["parent_event_id"]
+        parent_record = next((record for record in parent_revision_lineage or [] if record["event_id"] == parent_id), None)
+        if not isinstance(parent_record, Mapping):
+            raise ValueError("Second-cycle CWR composition requires validated cycle-one parent lineage")
+        commitment = {"kind": "parent_descendant", "event_id": parent_id, **dict(parent_record["descendant"])}
+    if commitment.get("bytes") != len(input_bytes) or commitment.get("sha256") != hashlib.sha256(input_bytes).hexdigest():
+        raise ValueError("CWR composition input commitment drifted")
+    return commitment, input_text
+
+
+def _work_root_commitment(work_root: Path, path: Path, *, label: str) -> dict[str, Any]:
+    _reject_reparse_ancestors(path)
+    try:
+        relative = path.resolve().relative_to(work_root.resolve())
+    except ValueError as error:
+        raise ValueError(f"{label} must remain inside the authorized work root") from error
+    payload = _read_bytes(path, label=label)
+    return {"path": relative.as_posix(), "bytes": len(payload), "sha256": hashlib.sha256(payload).hexdigest()}
+
+
+def cwr_feedback_composition(
+    work_root: Path,
+    *,
+    event_id: str,
+    input_path: Path,
+    originating_prompt_path: Path,
+    sampler: Mapping[str, Any],
+    cycle1_revision_manifest_path: Path | None = None,
+) -> dict[str, Any]:
+    """Compose one exact, provider-free CWR feedback request in the approved work root."""
+    frozen, value = validate_frozen_inputs(work_root), contract()
+    validate_disclosure_acknowledgement(work_root, work_root / INITIAL_ACKNOWLEDGEMENT)
+    event = next((candidate for candidate in revision_schedule(value) if candidate["event_id"] == event_id), None)
+    if event is None or event["guidance_arm"] != "cwr_guided":
+        raise ValueError("CWR composition requires one predeclared guided revision event")
+    _validate_sampler(sampler)
+    parent_lineage: list[Mapping[str, Any]] | None = None
+    parent_lineage_commitment: dict[str, Any] | None = None
+    if event["cycle"] == 2:
+        if cycle1_revision_manifest_path is None:
+            raise ValueError("Second-cycle CWR composition requires a frozen cycle-one revision manifest")
+        parent_lineage = validate_revision_lineage(work_root, cycle1_revision_manifest_path, cycle=1)
+        parent_lineage_commitment = _work_root_commitment(work_root, cycle1_revision_manifest_path, label="cycle-one revision lineage")
+    input_binding, input_text = _composition_input(
+        value=value,
+        event=event,
+        input_path=input_path,
+        parent_revision_lineage=parent_lineage,
+    )
+    prompt_bytes = _read_bytes(originating_prompt_path, label="CWR composition originating prompt")
+    prompt_text = prompt_bytes.decode("utf-8")
+    prompt_expected = next(row["prompt"] for row in frozen["inputs"] if row["item_id"] == event["source_item_id"])
+    if prompt_expected["bytes"] != len(prompt_bytes) or prompt_expected["sha256"] != hashlib.sha256(prompt_bytes).hexdigest():
+        raise ValueError("CWR composition originating prompt binding drifted")
+    instrument = value["generation"]["feedback_instrument"]
+    prompt = _read_bytes(HERE / instrument["prompt"]["path"], label="CWR feedback prompt").decode("utf-8")
+    schema = _read_bytes(HERE / instrument["schema"]["path"], label="CWR feedback schema").decode("utf-8")
+    composition = _cwr_runtime_composition(value)
+    payload = _feedback_provider_payload(
+        input_text=input_text,
+        originating_prompt=prompt_text,
+        composition=composition,
+        prompt=prompt,
+        schema=schema,
+    )
+    base = {
+        "format_version": 1,
+        "study_id": value["study_id"],
+        "role": "cwr_feedback",
+        "event": dict(event),
+        "input": input_binding,
+        "cycle1_revision_lineage": parent_lineage_commitment,
+        "originating_prompt": {"item_id": event["source_item_id"], "bytes": len(prompt_bytes), "sha256": hashlib.sha256(prompt_bytes).hexdigest()},
+        **{key: composition[key] for key in ("runtime_files", "bundle", "compiled_bundle", "ordered_question_payload")},
+        "feedback_prompt": _committed_asset(instrument["prompt"]),
+        "response_schema": _committed_asset(instrument["schema"]),
+        "route": _route_identity(value, event["cwr_feedback_route_id"]),
+        "sampler": dict(sampler),
+        "provider_ready_payload": payload,
+        "provider_ready_payload_sha256": hashlib.sha256(canonical(payload)).hexdigest(),
+    }
+    return {**base, "composition_manifest_sha256": hashlib.sha256(canonical(base)).hexdigest()}
+
+
+def write_cwr_feedback_composition(
+    work_root: Path,
+    *,
+    event_id: str,
+    input_path: Path,
+    originating_prompt_path: Path,
+    sampler: Mapping[str, Any],
+    cycle1_revision_manifest_path: Path | None = None,
+) -> dict[str, Any]:
+    manifest = cwr_feedback_composition(
+        work_root,
+        event_id=event_id,
+        input_path=input_path,
+        originating_prompt_path=originating_prompt_path,
+        sampler=sampler,
+        cycle1_revision_manifest_path=cycle1_revision_manifest_path,
+    )
+    path = work_root / "cwr-feedback-compositions" / f"{event_id}.json"
+    if path.exists():
+        validated = validate_cwr_feedback_composition(work_root, path)
+        if _read_bytes(path, label="CWR composition manifest") != canonical(manifest):
+            raise ValueError("Existing immutable CWR composition manifest does not match this exact composition")
+        return validated
+    _write_immutable_bytes(path, canonical(manifest), label="CWR composition manifest")
+    return manifest
+
+
+def _validate_cwr_feedback_composition_acknowledgement(work_root: Path, manifest: Mapping[str, Any]) -> None:
+    event_id = manifest["event"]["event_id"]
+    path = work_root / "cwr-feedback-compositions" / f"{event_id}.acknowledgement.json"
+    acknowledgement = _read_json(path, label="CWR composition acknowledgement")
+    expected = {
+        "study_id": manifest["study_id"],
+        "phase": "cwr_feedback",
+        "event_id": event_id,
+        "composition_manifest_sha256": manifest["composition_manifest_sha256"],
+        "provider_ready_payload_sha256": manifest["provider_ready_payload_sha256"],
+        "acknowledged": True,
+    }
+    if set(acknowledgement) != set(expected) | {"acknowledged_at"} or {key: acknowledgement.get(key) for key in expected} != expected or not isinstance(acknowledgement.get("acknowledged_at"), str) or not acknowledgement["acknowledged_at"]:
+        raise ValueError("CWR composition acknowledgement binding drifted")
+
+
+def validate_cwr_feedback_composition(work_root: Path, manifest_path: Path) -> dict[str, Any]:
+    """Recompose the exact local payload and reject any drift before dispatch exists."""
+    manifest = _read_json(manifest_path, label="CWR composition manifest")
+    value = contract()
+    required = {
+        "format_version", "study_id", "role", "event", "input", "cycle1_revision_lineage", "originating_prompt",
+        "runtime_files", "bundle", "compiled_bundle", "ordered_question_payload",
+        "feedback_prompt", "response_schema", "route", "sampler", "provider_ready_payload",
+        "provider_ready_payload_sha256", "composition_manifest_sha256",
+    }
+    if set(manifest) != required or manifest.get("format_version") != 1 or manifest.get("study_id") != value["study_id"] or manifest.get("role") != "cwr_feedback":
+        raise ValueError("CWR composition manifest identity drifted")
+    base = {key: manifest[key] for key in manifest if key != "composition_manifest_sha256"}
+    if manifest["composition_manifest_sha256"] != hashlib.sha256(canonical(base)).hexdigest():
+        raise ValueError("CWR composition manifest hash drifted")
+    event = manifest["event"]
+    if not isinstance(event, Mapping) or manifest.get("event") not in revision_schedule(value) or event.get("guidance_arm") != "cwr_guided":
+        raise ValueError("CWR composition event binding drifted")
+    _validate_sampler(manifest["sampler"])
+    frozen = validate_frozen_inputs(work_root)
+    validate_disclosure_acknowledgement(work_root, work_root / INITIAL_ACKNOWLEDGEMENT)
+    prompt_commitment = next(row["prompt"] for row in frozen["inputs"] if row["item_id"] == event["source_item_id"])
+    payload = manifest["provider_ready_payload"]
+    if not isinstance(payload, Mapping) or not isinstance(payload.get("input_text"), str) or not isinstance(payload.get("originating_prompt"), str):
+        raise ValueError("CWR composition provider payload drifted")
+    input_bytes, prompt_bytes = payload["input_text"].encode("utf-8"), payload["originating_prompt"].encode("utf-8")
+    input_binding = manifest["input"]
+    if not isinstance(input_binding, Mapping) or input_binding.get("bytes") != len(input_bytes) or input_binding.get("sha256") != hashlib.sha256(input_bytes).hexdigest():
+        raise ValueError("CWR composition input binding drifted")
+    if event["cycle"] == 1:
+        expected = value["source_population"]["input_commitments"][event["source_item_id"]]["source.md"]
+        if dict(input_binding) != {"kind": "source", "item_id": event["source_item_id"], **expected}:
+            raise ValueError("CWR composition source binding drifted")
+        if manifest["cycle1_revision_lineage"] is not None:
+            raise ValueError("First-cycle CWR composition cannot bind a parent lineage")
+    else:
+        lineage_commitment = manifest["cycle1_revision_lineage"]
+        if not isinstance(lineage_commitment, Mapping) or set(lineage_commitment) != {"path", "bytes", "sha256"}:
+            raise ValueError("Second-cycle CWR composition requires a cycle-one lineage commitment")
+        lineage_path = work_root.joinpath(*Path(lineage_commitment["path"]).parts)
+        if _work_root_commitment(work_root, lineage_path, label="cycle-one revision lineage") != dict(lineage_commitment):
+            raise ValueError("Second-cycle CWR composition lineage commitment drifted")
+        parents = validate_revision_lineage(work_root, lineage_path, cycle=1)
+        parent = next((record for record in parents if record["event_id"] == event["parent_event_id"]), None)
+        if not isinstance(parent, Mapping) or dict(input_binding) != {"kind": "parent_descendant", "event_id": event["parent_event_id"], **dict(parent["descendant"])}:
+            raise ValueError("CWR composition parent binding drifted")
+    if manifest["originating_prompt"] != {"item_id": event["source_item_id"], "bytes": len(prompt_bytes), "sha256": hashlib.sha256(prompt_bytes).hexdigest()} or {key: manifest["originating_prompt"][key] for key in ("bytes", "sha256")} != {key: prompt_commitment[key] for key in ("bytes", "sha256")}:
+        raise ValueError("CWR composition originating prompt binding drifted")
+    composition = _cwr_runtime_composition(value)
+    if any(manifest[key] != composition[key] for key in ("runtime_files", "bundle", "compiled_bundle", "ordered_question_payload")):
+        raise ValueError("CWR composition runtime or question ordering drifted")
+    instrument = value["generation"]["feedback_instrument"]
+    if manifest["feedback_prompt"] != _committed_asset(instrument["prompt"]) or manifest["response_schema"] != _committed_asset(instrument["schema"]):
+        raise ValueError("CWR composition instrument binding drifted")
+    prompt = _read_bytes(HERE / instrument["prompt"]["path"], label="CWR feedback prompt").decode("utf-8")
+    schema = _read_bytes(HERE / instrument["schema"]["path"], label="CWR feedback schema").decode("utf-8")
+    expected_payload = _feedback_provider_payload(input_text=payload["input_text"], originating_prompt=payload["originating_prompt"], composition=composition, prompt=prompt, schema=schema)
+    if payload != expected_payload or manifest["provider_ready_payload_sha256"] != hashlib.sha256(canonical(payload)).hexdigest():
+        raise ValueError("CWR composition provider payload drifted")
+    if manifest["route"] != _route_identity(value, event["cwr_feedback_route_id"]):
+        raise ValueError("CWR composition route binding drifted")
+    return manifest
+
+
+def dispatch_cwr_feedback(work_root: Path, manifest_path: Path) -> None:
+    """Execution is intentionally absent until a provider-native transport adapter is accepted."""
+    manifest = validate_cwr_feedback_composition(work_root, manifest_path)
+    _validate_cwr_feedback_composition_acknowledgement(work_root, manifest)
+    raise ValueError(
+        "CWR feedback dispatch is unavailable: composition is provider-free and requires an "
+        "owner-bound acknowledgement plus provider-native accepted status, model, reasoning, "
+        "session, request, and response-hash evidence"
+    )
 
 
 def _validate_endpoint_provider_ready_payload(payload: Any, *, target_text: str, measure: Mapping[str, Any]) -> None:
@@ -528,17 +877,21 @@ def _revision_targets(value: Mapping[str, Any], records: list[Mapping[str, Any]]
     return targets
 
 
-def validate_revision_lineage(work_root: Path, manifest_path: Path) -> list[dict[str, Any]]:
+def validate_revision_lineage(work_root: Path, manifest_path: Path, *, cycle: int | None = None) -> list[dict[str, Any]]:
     """Validate the immutable local provenance required before endpoint dispatch."""
     frozen, value = validate_frozen_inputs(work_root), contract()
     validate_disclosure_acknowledgement(work_root, work_root / INITIAL_ACKNOWLEDGEMENT)
     records = _read_jsonl(manifest_path)
-    expected = {event["event_id"]: event for event in revision_schedule(value)}
+    if cycle not in (None, 1, 2):
+        raise ValueError("Revision lineage cycle scope is invalid")
+    expected = {
+        event["event_id"]: event
+        for event in revision_schedule(value)
+        if cycle is None or event["cycle"] == cycle
+    }
     if len(records) != len(expected) or {record.get("event_id") for record in records} != set(expected):
         raise ValueError("Revision lineage must contain each frozen revision cell exactly once")
     source_commitments = {row["item_id"]: row["source"] for row in frozen["inputs"]}
-    seen_outputs: set[str] = set()
-    seen_feedback: set[str] = set()
     seen_receipts = {key: set() for key in ("provider_request_id", "request_sha256", "payload_sha256", "response_sha256")}
     matched_samplers: dict[tuple[int, str, str], Mapping[str, Any]] = {}
     by_event: dict[str, Mapping[str, Any]] = {}
@@ -566,24 +919,25 @@ def validate_revision_lineage(work_root: Path, manifest_path: Path) -> list[dict
         if not isinstance(descendant, Mapping) or set(descendant) != {"path", "bytes", "sha256"}:
             raise ValueError("Revision lineage descendant commitment drifted")
         _artifact(work_root, descendant, field="descendant")
-        output_key = f"{descendant['bytes']}:{descendant['sha256']}"
-        if output_key in seen_outputs:
-            raise ValueError("Revision lineage descendants must be distinct immutable artifacts")
-        seen_outputs.add(output_key)
         instruction = record["instruction"]
         if instruction != {"asset_sha256": asset_sha, "neutral_base_instruction_sha256": base_sha}:
             raise ValueError("Revision lineage instruction binding drifted")
         feedback = record["feedback"]
         input_commitment = parent if event["cycle"] == 2 else source
         if event["guidance_arm"] == "cwr_guided":
-            if not isinstance(feedback, Mapping) or set(feedback) != {"artifact", "generator", "source_request_sha256"} or not _sha256_string(feedback.get("source_request_sha256")) or not isinstance(feedback.get("artifact"), Mapping) or set(feedback["artifact"]) != {"path", "bytes", "sha256"}:
+            if not isinstance(feedback, Mapping) or set(feedback) != {"artifact", "composition", "generator", "source_request_sha256"} or not _sha256_string(feedback.get("source_request_sha256")) or not isinstance(feedback.get("artifact"), Mapping) or set(feedback["artifact"]) != {"path", "bytes", "sha256"} or not isinstance(feedback.get("composition"), Mapping) or set(feedback["composition"]) != {"path", "bytes", "sha256"}:
                 raise ValueError("Guided revision lineage requires frozen CWR feedback")
+            composition_path = work_root.joinpath(*Path(feedback["composition"]["path"]).parts)
+            if _work_root_commitment(work_root, composition_path, label="CWR composition manifest") != dict(feedback["composition"]):
+                raise ValueError("Guided feedback composition commitment drifted")
+            composition_manifest = validate_cwr_feedback_composition(work_root, composition_path)
+            _validate_cwr_feedback_composition_acknowledgement(work_root, composition_manifest)
+            if composition_manifest["event"]["event_id"] != event["event_id"]:
+                raise ValueError("Guided feedback composition event drifted")
             feedback_bytes = _committed_bytes(work_root, feedback["artifact"], field="feedback")
             feedback_text = feedback_bytes.decode("utf-8")
-            feedback_key = feedback["artifact"]["sha256"]
-            if not feedback_text.strip() or feedback_key in seen_feedback:
-                raise ValueError("Guided feedback must be nonempty and unique")
-            seen_feedback.add(feedback_key)
+            if not feedback_text.strip():
+                raise ValueError("Guided feedback must be nonempty")
             _validate_feedback_packet(feedback_bytes, instructions)
             feedback_receipt, feedback_payload = _validate_execution_identity(
                 work_root,
@@ -592,14 +946,13 @@ def validate_revision_lineage(work_root: Path, manifest_path: Path) -> list[dict
                 role_key="role",
                 role_value="cwr_feedback",
                 event_id=event["event_id"],
-                payload={"input": input_commitment, "feedback_instruction_sha256": _sha256_value(instructions["cwr_feedback_packet"]), "cwr_runtime_sha256": _sha256_value(value["cwr_runtime"])},
-                evidence_field="precomposition_input",
+                payload={"composition": feedback["composition"], "composition_manifest_sha256": composition_manifest["composition_manifest_sha256"], "provider_ready_payload_sha256": composition_manifest["provider_ready_payload_sha256"]},
             )
-            prompt_commitment = next(row["prompt"] for row in frozen["inputs"] if row["item_id"] == event["source_item_id"])
-            _validate_cwr_precomposition_input(feedback_payload, input_commitment=input_commitment, prompt_commitment=prompt_commitment, expected_instruction=instructions["cwr_feedback_packet"]["instruction"], expected_runtime_sha256=_sha256_value(value["cwr_runtime"]))
+            if feedback_payload != composition_manifest["provider_ready_payload"]:
+                raise ValueError("Guided feedback provider payload must equal its composition manifest")
             if feedback["source_request_sha256"] != feedback_receipt["request_sha256"] or _committed_bytes(work_root, feedback_receipt["response"], field="response") != feedback_bytes:
                 raise ValueError("Guided feedback receipt binding drifted")
-            _register_receipt(feedback_receipt, seen_receipts, unique_response=True)
+            _register_receipt(feedback_receipt, seen_receipts, unique_response=False)
         elif feedback is not None:
             raise ValueError("Control revision lineage must not contain CWR feedback")
         generator = record["generator"]
@@ -617,7 +970,7 @@ def validate_revision_lineage(work_root: Path, manifest_path: Path) -> list[dict
         _validate_provider_ready_payload(revision_payload, input_commitment=input_commitment, prompt_commitment=prompt_commitment, prompt_text=revision_payload.get("originating_prompt", ""), instruction_text=instructions["neutral_base_revision_instruction"], feedback_text=feedback_text if feedback is not None else None)
         if _committed_bytes(work_root, generator_receipt["response"], field="response") != _read_bytes(work_root.joinpath(*Path(descendant["path"]).parts), label="revision descendant"):
             raise ValueError("Revision descendant receipt binding drifted")
-        _register_receipt(generator_receipt, seen_receipts, unique_response=True)
+        _register_receipt(generator_receipt, seen_receipts, unique_response=False)
         matched_key = (event["cycle"], event["source_item_id"], event["generator_id"])
         earlier_sampler = matched_samplers.setdefault(matched_key, generator["sampler"])
         if dict(earlier_sampler) != dict(generator["sampler"]):
@@ -703,9 +1056,9 @@ def validate_endpoint_lineage(work_root: Path, revision_manifest_path: Path, man
         raise ValueError("Endpoint lineage must contain all 216 frozen calls exactly once")
     seen_receipts = {key: set() for key in ("provider_request_id", "request_sha256", "payload_sha256", "response_sha256")}
     for revision in revisions:
-        _register_receipt(revision["generator"]["receipt"], seen_receipts, unique_response=True)
+        _register_receipt(revision["generator"]["receipt"], seen_receipts, unique_response=False)
         if revision["feedback"] is not None:
-            _register_receipt(revision["feedback"]["generator"]["receipt"], seen_receipts, unique_response=True)
+            _register_receipt(revision["feedback"]["generator"]["receipt"], seen_receipts, unique_response=False)
     for record in records:
         event = events[record["endpoint_event_id"]]
         required = {"record_type", "endpoint_event_id", "blind_target_id", "target", "instrument", "judge", "response"}
@@ -807,6 +1160,13 @@ def main() -> int:
     parser.add_argument("--write-endpoint-preview", action="store_true")
     parser.add_argument("--validate-endpoint-acknowledgement", action="store_true")
     parser.add_argument("--endpoint-acknowledgement", type=Path)
+    parser.add_argument("--compose-cwr-feedback", action="store_true")
+    parser.add_argument("--validate-cwr-composition", type=Path)
+    parser.add_argument("--event-id")
+    parser.add_argument("--input-path", type=Path)
+    parser.add_argument("--originating-prompt-path", type=Path)
+    parser.add_argument("--cycle1-revision-manifest", type=Path)
+    parser.add_argument("--sampler-json")
     args = parser.parse_args()
     if args.freeze_inputs:
         if args.source_root is None:
@@ -834,7 +1194,26 @@ def main() -> int:
         if args.revision_manifest is None:
             parser.error("--endpoint-manifest requires --revision-manifest")
         print(json.dumps(validate_endpoint_lineage(args.work_root.resolve(), args.revision_manifest.resolve(), args.endpoint_manifest.resolve()), sort_keys=True))
-    if not (args.freeze_inputs or args.validate or args.write_preview or args.validate_acknowledgement or args.revision_manifest or args.endpoint_manifest or args.write_endpoint_preview or args.validate_endpoint_acknowledgement):
+    if args.compose_cwr_feedback:
+        if not all((args.event_id, args.input_path, args.originating_prompt_path, args.sampler_json)):
+            parser.error("--compose-cwr-feedback requires --event-id, --input-path, --originating-prompt-path, and --sampler-json")
+        try:
+            sampler = json.loads(args.sampler_json)
+        except json.JSONDecodeError as error:
+            parser.error(f"--sampler-json is not JSON: {error.msg}")
+        manifest = write_cwr_feedback_composition(
+            args.work_root.resolve(),
+            event_id=args.event_id,
+            input_path=args.input_path.resolve(),
+            originating_prompt_path=args.originating_prompt_path.resolve(),
+            sampler=sampler,
+            cycle1_revision_manifest_path=args.cycle1_revision_manifest.resolve() if args.cycle1_revision_manifest else None,
+        )
+        print(json.dumps({"event_id": manifest["event"]["event_id"], "composition_manifest_sha256": manifest["composition_manifest_sha256"], "provider_calls_made": 0}, sort_keys=True))
+    if args.validate_cwr_composition:
+        manifest = validate_cwr_feedback_composition(args.work_root.resolve(), args.validate_cwr_composition.resolve())
+        print(json.dumps({"event_id": manifest["event"]["event_id"], "composition_manifest_sha256": manifest["composition_manifest_sha256"], "provider_calls_made": 0}, sort_keys=True))
+    if not (args.freeze_inputs or args.validate or args.write_preview or args.validate_acknowledgement or args.revision_manifest or args.endpoint_manifest or args.write_endpoint_preview or args.validate_endpoint_acknowledgement or args.compose_cwr_feedback or args.validate_cwr_composition):
         parser.error("choose a provider-free action")
     return 0
 

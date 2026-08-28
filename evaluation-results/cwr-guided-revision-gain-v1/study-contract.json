@@ -35,6 +35,10 @@
   "generation": {
     "guidance_arms": [{"arm_id": "cwr_guided"}, {"arm_id": "generic_no_feedback"}],
     "instruction_asset": {"path": "revision-instructions.json", "bytes": 1090, "sha256": "f001c1195cb52c173dc29f7cce8812bc8bce7da7ebd18259707d5602e0a42908"},
+    "feedback_instrument": {
+      "prompt": {"path": "feedback-instruments/cwr-feedback-v1.prompt.md", "bytes": 693, "sha256": "da52930c37ebabdb6b8452ec39a186f3bf67c6f62f1a154cdef801f93c894abc"},
+      "schema": {"path": "feedback-instruments/cwr-feedback-v1.schema.json", "bytes": 607, "sha256": "74247b3660e0615542a5c027aa127436bd39439b562082e0ce62330e550e1148"}
+    },
     "generator_routes": [
       {"generator_id": "grok-4.6", "route_id": "grok-4.6-high", "tier": "strong", "cycles": [1, 2], "cwr_feedback_route_id": "gpt-5.6-sol-high"},
       {"generator_id": "gpt-5.6-sol", "route_id": "gpt-5.6-sol-high", "tier": "strong", "cycles": [1, 2], "cwr_feedback_route_id": "grok-4.6-high"},
@@ -46,7 +50,8 @@
   "cwr_runtime": {
     "bundle_id": "prose.short_story",
     "files": {
-      "src/hbqrs/runner.py": {"bytes": 185851, "sha256": "78ed4edb86dea44a0adc61b925eaeb192604078f9ad967fcb9b8b519a09dfa26"},
+      "src/hbqrs/runner.py": {"bytes": 186207, "sha256": "8a331c705bee1b02871662d6efafe44d421be728d79612d24c5856bc2f4c17aa"},
+      "src/hbqrs/core.py": {"bytes": 45951, "sha256": "70b4cd16bd536f2f6ddb8e066f801090a037a39605652b14d6c7f6ff312446cb"},
       "src/hbqrs/longform_runner.py": {"bytes": 81468, "sha256": "0e30f538ac952971f39f4220ac39682cb2173a1e47c35ecb312b23ec76a95845"},
       "registry/all_modules.json": {"bytes": 2200481, "sha256": "43a33ee015310097f79c8a04bb7c3a8782813e758d523b1db08ae2b14d51f66f"},
       "bundles/all_bundles.json": {"bytes": 513512, "sha256": "012af060e8630b8980661465b368e129ddeec82dfa7b48e13e7a35a473eb95a8"},
@@ -68,6 +73,6 @@
   "execution_geometry": {"revision_descendants": 48, "source_baselines": 6, "endpoint_judges": 2, "endpoint_measures": 2, "endpoint_provider_calls": 216, "formula": "(48 descendants + 6 baselines) x 2 judges x 2 measures"},
   "remote_disclosure": {"required_before_dispatch": true, "destination_roles": ["cwr_feedback", "revision_generation", "blind_endpoint_judgment"], "phase_call_counts": {"cwr_feedback": 24, "revision_generation": 48, "blind_endpoint_judgment": 216}, "payload_composition": {"cwr_feedback": ["one immutable source or parent descendant", "frozen CWR feedback instruction", "pinned CWR runtime"], "revision_generation": ["one immutable source or parent descendant", "one identical neutral base revision instruction", "frozen CWR feedback only for guided cells"], "blind_endpoint_judgment": ["one blinded target artifact", "one frozen endpoint prompt", "one frozen response schema"]}, "acknowledgement": "An owner-reviewed acknowledgement bound to the exact no-prose preview SHA-256 is required before CWR feedback or generation; a separate post-generation endpoint disclosure is required before blinded endpoint judgment.", "payment_settings": "This study never changes account, credit-card, payment, or subscription settings."},
   "reporting": {"equal_weight_unit": "source_generator_cycle_within_each_judge_measure_scale", "raw_scale_pooling": false, "summaries": ["mean guided-minus-control by judge x measure x scale", "positive-zero-negative directional consistency by judge x measure x scale", "raw paired rows retained; this small development pilot does not estimate an uncertainty interval"], "cycle2_label": "cumulative_from_cycle1_parent", "secondary_endpoint_delta": "cycle2 child-minus-cycle1-parent by guidance arm x judge x measure x scale"},
-  "execution_status": {"cwr_feedback": "precomposition_only_no_composed_rubric_or_provider_payload", "promotion_requires": ["exact_cwr_composition_manifest", "exact_provider_payload_and_schema", "provider_native_transport_receipt"]},
+  "execution_status": {"cwr_feedback": "composition_ready_provider_free", "promotion_requires": ["exact_cwr_composition_manifest", "owner_bound_disclosure_acknowledgement", "provider_native_transport_receipt"]},
   "primary_outcome": {"estimand": "Within source, generator, cycle, endpoint judge, and endpoint measure: cwr_guided scalar overall minus generic_no_feedback scalar overall.", "secondary": ["cycle2 child-minus-cycle1-parent endpoint deltas", "CWR finding resolution", "preservation and mechanics checks", "judge disagreement and self-preference diagnostics"], "interpretation_limits": ["Endpoint measures are model judgments, not human ground truth.", "This development pilot cannot establish general literary quality or HANNA alignment.", "CWR scores and feedback are explanatory process data, not the primary success metric."]}
 }

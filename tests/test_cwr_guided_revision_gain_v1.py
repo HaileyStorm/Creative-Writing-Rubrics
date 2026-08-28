@@ -58,6 +58,9 @@ def _revision_records(study, work: Path) -> list[dict]:
     if not INPUT_ROOT.is_dir():
         pytest.skip(f"exact local HANNA input fixture is unavailable: {INPUT_ROOT}")
     value = study.contract()
+    study._require_trusted_native_provenance = lambda _receipt: None
+    checked_composition = study._cwr_runtime_composition(value)
+    study._cwr_runtime_composition = lambda _value: checked_composition
     frozen = _frozen(study)
     source = {row["item_id"]: row["source"] for row in frozen["inputs"]}
     prompts = {row["item_id"]: row["prompt"] for row in frozen["inputs"]}
@@ -76,27 +79,32 @@ def _revision_records(study, work: Path) -> list[dict]:
         payload_path = receipt_root / "payload.json"
         identity = receipt_root / "route-intent-profile.json"
         request.write_bytes(study.canonical({"event_id": event_id, "role": role, "route": route, "sampler": sampler}))
-        evidence_field = "precomposition_input" if "precomposition_input" in payload else "provider_ready"
+        evidence_field = "provider_ready"
         evidence = payload[evidence_field]
         payload_path.write_bytes(study.canonical({"event_id": event_id, "role": role, "request_sha256": study.sha256(request), **{key: value for key, value in payload.items() if key != evidence_field}, evidence_field: evidence}))
         identity.write_bytes(study.canonical(route))
+        payload_commitment = commitment(payload_path)
         return {
             "provider_request_id": request_id,
             "route_intent_profile": commitment(identity),
             "request": commitment(request),
-            "payload": commitment(payload_path),
+            "payload": payload_commitment,
             "response": response,
             "request_sha256": study.sha256(request),
-            "payload_sha256": study.sha256(payload_path),
+            "payload_sha256": payload_commitment["sha256"],
             "response_sha256": response["sha256"],
+            "native": {"accepted": True, "status": 200, "model": route["model"], "reasoning": route["reasoning"], "session_id": f"session-{request_id}", "provider_request_id": request_id, "transmitted_payload_sha256": payload_commitment["sha256"], "returned_response_sha256": response["sha256"]},
         }
 
     sampler = {"temperature": 0, "top_p": 1, "seed": 7, "max_output_tokens": 1200}
     records, outputs = [], {}
+    cycle1_manifest = work / "cycle1-revision-lineage.jsonl"
     for event in study.revision_schedule(value):
+        if event["cycle"] == 2 and not cycle1_manifest.exists():
+            study.write_jsonl(cycle1_manifest, records)
         output = work / "descendants" / f"{event['event_id']}.md"
         output.parent.mkdir(parents=True, exist_ok=True)
-        output.write_text(f"descendant for {event['event_id']}", encoding="utf-8")
+        output.write_text("shared schema-valid descendant bytes", encoding="utf-8")
         descendant = commitment(output)
         source_commitment = {"item_id": event["source_item_id"], **source[event["source_item_id"]]}
         parent = None if event["cycle"] == 1 else {"event_id": event["parent_event_id"], **outputs[event["parent_event_id"]]}
@@ -107,12 +115,19 @@ def _revision_records(study, work: Path) -> list[dict]:
         if event["guidance_arm"] == "cwr_guided":
             feedback_path = work / "feedback" / f"{event['event_id']}.json"
             feedback_path.parent.mkdir(parents=True, exist_ok=True)
-            feedback_path.write_bytes(study.canonical({"findings": [{"location": "Opening image", "observation": f"A specific revision issue for {event['event_id']} remains visible.", "repair_target": "Clarify the image without changing the event."}]}))
+            feedback_path.write_bytes(study.canonical({"findings": [{"location": "Opening image", "observation": "A specific revision issue remains visible.", "repair_target": "Clarify the image without changing the event."}]}))
             feedback_route = study._route_identity(value, event["cwr_feedback_route_id"])
             feedback_artifact = commitment(feedback_path)
-            feedback_receipt = receipt(f"feedback-{event['event_id']}", feedback_artifact, role="cwr_feedback", event_id=event["event_id"], route=feedback_route, sampler=dict(sampler), payload={"input": input_commitment, "feedback_instruction_sha256": study._sha256_value(instructions["cwr_feedback_packet"]), "cwr_runtime_sha256": study._sha256_value(value["cwr_runtime"]), "precomposition_input": {"input_text": input_text, "input_sha256": input_commitment["sha256"], "originating_prompt": originating_prompt, "prompt_sha256": prompts[event["source_item_id"]]["sha256"], "cwr_feedback_instruction": instructions["cwr_feedback_packet"]["instruction"], "cwr_runtime_sha256": study._sha256_value(value["cwr_runtime"])}})
+            composition_args = {"event_id": event["event_id"], "input_path": (work / parent["path"]) if parent is not None else INPUT_ROOT / source_commitment["path"], "originating_prompt_path": INPUT_ROOT / prompts[event["source_item_id"]]["path"], "sampler": dict(sampler), "cycle1_revision_manifest_path": cycle1_manifest if event["cycle"] == 2 else None}
+            prepared = study.cwr_feedback_composition(work, **composition_args)
+            study.write_json(work / "cwr-feedback-compositions" / f"{event['event_id']}.acknowledgement.json", {"study_id": prepared["study_id"], "phase": "cwr_feedback", "event_id": event["event_id"], "composition_manifest_sha256": prepared["composition_manifest_sha256"], "provider_ready_payload_sha256": prepared["provider_ready_payload_sha256"], "acknowledged": True, "acknowledged_at": "2026-08-28T00:00:00Z"})
+            composition = study.write_cwr_feedback_composition(work, **composition_args)
+            composition_path = work / "cwr-feedback-compositions" / f"{event['event_id']}.json"
+            composition_commitment = commitment(composition_path)
+            feedback_receipt = receipt(f"feedback-{event['event_id']}", feedback_artifact, role="cwr_feedback", event_id=event["event_id"], route=feedback_route, sampler=dict(sampler), payload={"composition": composition_commitment, "composition_manifest_sha256": composition["composition_manifest_sha256"], "provider_ready_payload_sha256": composition["provider_ready_payload_sha256"], "provider_ready": composition["provider_ready_payload"]})
             feedback = {
                 "artifact": feedback_artifact,
+                "composition": composition_commitment,
                 "generator": {"role": "cwr_feedback", **feedback_route, "sampler": dict(sampler), "receipt": feedback_receipt},
                 "source_request_sha256": feedback_receipt["request_sha256"],
             }
@@ -172,7 +187,7 @@ def _endpoint_records(study, work: Path) -> tuple[dict[str, dict], list[dict]]:
         provider_request_id = f"endpoint-{event['endpoint_event_id']}"
         identity_path.write_bytes(study.canonical(route))
         identity = {"path": identity_path.relative_to(work).as_posix(), "bytes": identity_path.stat().st_size, "sha256": study.sha256(identity_path)}
-        receipt = {"provider_request_id": provider_request_id, "route_intent_profile": identity, "request": request, "payload": payload, "response": response_commitment, "request_sha256": request["sha256"], "payload_sha256": payload["sha256"], "response_sha256": response_commitment["sha256"]}
+        receipt = {"provider_request_id": provider_request_id, "route_intent_profile": identity, "request": request, "payload": payload, "response": response_commitment, "request_sha256": request["sha256"], "payload_sha256": payload["sha256"], "response_sha256": response_commitment["sha256"], "native": {"accepted": True, "status": 200, "model": route["model"], "reasoning": route["reasoning"], "session_id": f"session-{provider_request_id}", "provider_request_id": provider_request_id, "transmitted_payload_sha256": payload["sha256"], "returned_response_sha256": response_commitment["sha256"]}}
         records.append({"record_type": "endpoint", "endpoint_event_id": event["endpoint_event_id"], "blind_target_id": event["blind_target_id"], "target": targets[event["blind_target_id"]], "instrument": instrument, "judge": {"role": "blind_endpoint_judgment", **route, "sampler": dict(sampler), "receipt": receipt}, "response": response})
     return targets, records
 
@@ -190,6 +205,14 @@ def test_contract_binds_exact_parent_inputs_runtime_instructions_and_instruments
     assert all(not measure["prompt"]["path"].startswith("../") for measure in value["endpoint_evaluation"]["measures"])
     instructions = json.loads((study.HERE / value["generation"]["instruction_asset"]["path"]).read_text(encoding="utf-8"))
     assert set(instructions["arm_difference"]) == {"cwr_guided", "generic_no_feedback"}
+    feedback = value["generation"]["feedback_instrument"]
+    schema = json.loads((study.HERE / feedback["schema"]["path"]).read_text(encoding="utf-8"))
+    assert feedback["prompt"]["path"].startswith("feedback-instruments/")
+    assert schema["properties"]["findings"]["items"]["required"] == ["location", "observation", "repair_target"]
+    assert "verdict" not in schema
+    runtime = value["cwr_runtime"]["files"]
+    assert len(runtime) == 7
+    assert runtime["src/hbqrs/core.py"] == {"bytes": 45951, "sha256": "70b4cd16bd536f2f6ddb8e066f801090a037a39605652b14d6c7f6ff312446cb"}
     assert value["remote_disclosure"]["phase_call_counts"] == {"cwr_feedback": 24, "revision_generation": 48, "blind_endpoint_judgment": 216}
     assert value["reporting"]["raw_scale_pooling"] is False
     assert value["endpoint_evaluation"]["judging_protocol"] == {"blind": True, "stateless": True, "identical_prompt_per_measure_across_judges": True}
@@ -310,6 +333,8 @@ def test_revision_lineage_is_immutable_and_rejects_control_feedback(tmp_path: Pa
     records = _revision_records(study, work)
     manifest = work / "revision-lineage.jsonl"
     study.write_jsonl(manifest, records)
+    with pytest.raises(ValueError, match="non-promotable"):
+        _study().validate_revision_lineage(work, manifest)
     assert study.validate_revision_lineage(work, manifest) == records
     with pytest.raises(ValueError, match="overwrite"):
         study.write_jsonl(manifest, records)
@@ -327,10 +352,12 @@ def test_revision_lineage_is_immutable_and_rejects_control_feedback(tmp_path: Pa
         study.validate_revision_lineage(work, sampler_invalid)
     duplicate_records = _revision_records(study, work)
     guided = [record for record in duplicate_records if record["feedback"] is not None]
-    guided[1]["feedback"] = guided[0]["feedback"]
+    duplicate_receipt = guided[1]["feedback"]["generator"]["receipt"]
+    duplicate_receipt["provider_request_id"] = guided[0]["feedback"]["generator"]["receipt"]["provider_request_id"]
+    duplicate_receipt["native"]["provider_request_id"] = duplicate_receipt["provider_request_id"]
     duplicate_invalid = work / "duplicate-feedback-revision-lineage.jsonl"
     study.write_jsonl(duplicate_invalid, duplicate_records)
-    with pytest.raises(ValueError, match="nonempty and unique"):
+    with pytest.raises(ValueError, match="provider_request_id"):
         study.validate_revision_lineage(work, duplicate_invalid)
     pair_records = _revision_records(study, work)
     paired_control = next(record for record in pair_records if record["event_id"] == pair_records[0]["event_id"].replace("cwr_guided", "generic_no_feedback"))
@@ -348,12 +375,15 @@ def test_revision_lineage_is_immutable_and_rejects_control_feedback(tmp_path: Pa
     pair_payload_path.write_bytes(study.canonical(pair_payload))
     pair_receipt["payload"].update({"bytes": pair_payload_path.stat().st_size, "sha256": study.sha256(pair_payload_path)})
     pair_receipt["payload_sha256"] = pair_receipt["payload"]["sha256"]
+    pair_receipt["native"]["transmitted_payload_sha256"] = pair_receipt["payload_sha256"]
     pair_invalid = work / "pair-sampler-revision-lineage.jsonl"
     study.write_jsonl(pair_invalid, pair_records)
     with pytest.raises(ValueError, match="Matched guided/control"):
         study.validate_revision_lineage(work, pair_invalid)
     request_id_records = _revision_records(study, work)
-    request_id_records[1]["generator"]["receipt"]["provider_request_id"] = request_id_records[0]["generator"]["receipt"]["provider_request_id"]
+    duplicate_provider_request_id = request_id_records[0]["generator"]["receipt"]["provider_request_id"]
+    request_id_records[1]["generator"]["receipt"]["provider_request_id"] = duplicate_provider_request_id
+    request_id_records[1]["generator"]["receipt"]["native"]["provider_request_id"] = duplicate_provider_request_id
     request_id_invalid = work / "duplicate-request-id-revision-lineage.jsonl"
     study.write_jsonl(request_id_invalid, request_id_records)
     with pytest.raises(ValueError, match="provider_request_id"):
@@ -370,6 +400,7 @@ def test_revision_lineage_is_immutable_and_rejects_control_feedback(tmp_path: Pa
     payload_path.write_bytes(study.canonical(payload))
     receipt["payload"].update({"bytes": payload_path.stat().st_size, "sha256": study.sha256(payload_path)})
     receipt["payload_sha256"] = receipt["payload"]["sha256"]
+    receipt["native"]["transmitted_payload_sha256"] = receipt["payload_sha256"]
     semantic_invalid = work / "semantic-request-revision-lineage.jsonl"
     study.write_jsonl(semantic_invalid, semantic_records)
     with pytest.raises(ValueError, match="request semantic"):
@@ -385,21 +416,96 @@ def test_feedback_packet_rejects_legacy_finding_shape_and_excesses() -> None:
         study._validate_feedback_packet(study.canonical({"findings": [{"location": "opening", "observation": "visible issue", "repair_target": "repair"}, {"location": "middle", "observation": "visible issue", "repair_target": "repair"}, {"location": "ending", "observation": "visible issue", "repair_target": "repair"}, {"location": "after", "observation": "too many", "repair_target": "repair"}]}), instructions)
 
 
-def test_cwr_precomposition_binds_exact_frozen_instruction_and_runtime() -> None:
+def test_feedback_schema_rejects_binary_verdict_extras(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     study = _study()
-    source_text, prompt_text = "source text", "originating prompt"
-    source = {"sha256": hashlib.sha256(source_text.encode("utf-8")).hexdigest()}
-    prompt = {"sha256": hashlib.sha256(prompt_text.encode("utf-8")).hexdigest()}
-    instruction, runtime = "frozen CWR instruction", "a" * 64
-    payload = {"input_text": source_text, "input_sha256": source["sha256"], "originating_prompt": prompt_text, "prompt_sha256": prompt["sha256"], "cwr_feedback_instruction": instruction, "cwr_runtime_sha256": runtime}
-    study._validate_cwr_precomposition_input(payload, input_commitment=source, prompt_commitment=prompt, expected_instruction=instruction, expected_runtime_sha256=runtime)
-    payload["cwr_feedback_instruction"] = "other instruction"
-    with pytest.raises(ValueError, match="precomposition"):
-        study._validate_cwr_precomposition_input(payload, input_commitment=source, prompt_commitment=prompt, expected_instruction=instruction, expected_runtime_sha256=runtime)
-    payload["cwr_feedback_instruction"] = instruction
-    payload["cwr_runtime_sha256"] = "b" * 64
-    with pytest.raises(ValueError, match="precomposition"):
-        study._validate_cwr_precomposition_input(payload, input_commitment=source, prompt_commitment=prompt, expected_instruction=instruction, expected_runtime_sha256=runtime)
+    schema = json.loads((study.HERE / "feedback-instruments" / "cwr-feedback-v1.schema.json").read_text(encoding="utf-8"))
+    folder = tmp_path / "feedback-instruments"
+    folder.mkdir()
+    path = folder / "schema.json"
+    path.write_bytes(study.canonical(schema))
+    monkeypatch.setattr(study, "HERE", tmp_path)
+    asset = {"path": "feedback-instruments/schema.json", "bytes": path.stat().st_size, "sha256": study.sha256(path)}
+    study._validate_feedback_schema(asset)
+    schema["properties"]["verdict"] = {"type": "string"}
+    path.write_bytes(study.canonical(schema))
+    asset["bytes"], asset["sha256"] = path.stat().st_size, study.sha256(path)
+    with pytest.raises(ValueError, match="exact findings"):
+        study._validate_feedback_schema(asset)
+
+
+def test_cwr_feedback_composition_is_exact_immutable_and_provider_free(tmp_path: Path) -> None:
+    study = _study()
+    if not INPUT_ROOT.is_dir():
+        pytest.skip(f"exact local HANNA input fixture is unavailable: {INPUT_ROOT}")
+    work = tmp_path / "work"
+    _prepare_acknowledged_work(study, work)
+    event = next(event for event in study.revision_schedule() if event["cycle"] == 1 and event["guidance_arm"] == "cwr_guided")
+    source = INPUT_ROOT / "inputs" / event["source_item_id"] / "source.md"
+    prompt = INPUT_ROOT / "inputs" / event["source_item_id"] / "prompt.md"
+    sampler = {"temperature": 0, "top_p": 1, "seed": 7, "max_output_tokens": 1200}
+    prepared = study.cwr_feedback_composition(work, event_id=event["event_id"], input_path=source, originating_prompt_path=prompt, sampler=sampler)
+    manifest = study.write_cwr_feedback_composition(work, event_id=event["event_id"], input_path=source, originating_prompt_path=prompt, sampler=sampler)
+    assert manifest == prepared
+    acknowledgement = {"study_id": prepared["study_id"], "phase": "cwr_feedback", "event_id": event["event_id"], "composition_manifest_sha256": prepared["composition_manifest_sha256"], "provider_ready_payload_sha256": prepared["provider_ready_payload_sha256"], "acknowledged": True, "acknowledged_at": "2026-08-28T00:00:00Z"}
+    study.write_json(work / "cwr-feedback-compositions" / f"{event['event_id']}.acknowledgement.json", acknowledgement)
+    path = work / "cwr-feedback-compositions" / f"{event['event_id']}.json"
+    assert study.validate_cwr_feedback_composition(work, path) == manifest
+    assert manifest["ordered_question_payload"]["count"] == 178
+    assert manifest["provider_ready_payload"]["questions"][0]["question_id"]
+    assert "receipt" not in manifest
+    with pytest.raises(ValueError, match="dispatch is unavailable"):
+        study.dispatch_cwr_feedback(work, path)
+    # One prior successful validation recompiles the real book; cache only that
+    # deterministic result for independent manifest-field tamper cases below.
+    checked_composition = study._cwr_runtime_composition(study.contract())
+    study._cwr_runtime_composition = lambda _value: checked_composition
+
+    def reject(label: str, mutate) -> None:
+        altered = json.loads(study.canonical(manifest))
+        mutate(altered)
+        if label != "altered-hash":
+            unsigned = {key: altered[key] for key in altered if key != "composition_manifest_sha256"}
+            altered["composition_manifest_sha256"] = hashlib.sha256(study.canonical(unsigned)).hexdigest()
+        candidate = work / f"{label}.json"
+        study.write_json(candidate, altered)
+        with pytest.raises(ValueError):
+            study.validate_cwr_feedback_composition(work, candidate)
+
+    reject("altered-runtime", lambda value: value["runtime_files"][0].__setitem__("sha256", "0" * 64))
+    reject("altered-bundle", lambda value: value["compiled_bundle"].__setitem__("sha256", "0" * 64))
+    reject("altered-order", lambda value: value["provider_ready_payload"]["questions"].reverse())
+    reject("altered-input", lambda value: value["provider_ready_payload"].__setitem__("input_text", "forged prose"))
+    reject("altered-prompt", lambda value: value["feedback_prompt"].__setitem__("sha256", "0" * 64))
+    reject("altered-schema", lambda value: value["response_schema"].__setitem__("sha256", "0" * 64))
+    reject("altered-hash", lambda value: value.__setitem__("composition_manifest_sha256", "0" * 64))
+    assert study.write_cwr_feedback_composition(work, event_id=event["event_id"], input_path=source, originating_prompt_path=prompt, sampler=sampler) == manifest
+    altered = json.loads(study.canonical(manifest))
+    altered["provider_ready_payload"]["input_text"] = "tampered existing prose"
+    path.write_bytes(study.canonical(altered))
+    with pytest.raises(ValueError):
+        study.write_cwr_feedback_composition(work, event_id=event["event_id"], input_path=source, originating_prompt_path=prompt, sampler=sampler)
+
+
+def test_cycle_two_composition_rejects_arbitrary_parent_bytes(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    study = _study()
+    if not INPUT_ROOT.is_dir():
+        pytest.skip(f"exact local HANNA input fixture is unavailable: {INPUT_ROOT}")
+    work = tmp_path / "work"
+    _prepare_acknowledged_work(study, work)
+    event = next(event for event in study.revision_schedule() if event["cycle"] == 2 and event["guidance_arm"] == "cwr_guided")
+    parent = work / "descendants" / "parent.md"
+    parent.parent.mkdir(parents=True)
+    parent.write_text("validated parent bytes", encoding="utf-8")
+    lineage = work / "cycle1.jsonl"
+    study.write_jsonl(lineage, [{"record_type": "placeholder"}])
+    parent_commitment = {"path": parent.relative_to(work).as_posix(), "bytes": parent.stat().st_size, "sha256": study.sha256(parent)}
+    monkeypatch.setattr(study, "validate_revision_lineage", lambda *_args, **_kwargs: [{"event_id": event["parent_event_id"], "descendant": parent_commitment}])
+    arbitrary = work / "arbitrary.md"
+    arbitrary.write_text("caller-selected bytes", encoding="utf-8")
+    prompt = INPUT_ROOT / "inputs" / event["source_item_id"] / "prompt.md"
+    sampler = {"temperature": 0, "top_p": 1, "seed": 7, "max_output_tokens": 1200}
+    with pytest.raises(ValueError, match="input commitment"):
+        study.cwr_feedback_composition(work, event_id=event["event_id"], input_path=arbitrary, originating_prompt_path=prompt, sampler=sampler, cycle1_revision_manifest_path=lineage)
 
 
 def test_endpoint_disclosure_preview_is_immutable_and_separately_acknowledged(tmp_path: Path) -> None:
