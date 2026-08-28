@@ -1,10 +1,11 @@
 # Creative-Writing-Rubrics
 
-**CWR 1.2.3 ships HBQ-RS 1.2.1**: a local-first toolkit for asking small,
-inspectable binary questions about creative work, then aggregating the answers
-deterministically. It is useful for draft review, critique, model and dataset
-evaluation, benchmarking, and synthetic-data workflows. It does not turn a
-literary judgment into an unquestionable truth.
+**CWR 1.2.3 ships HBQ-RS 1.2.1**: a local-first toolkit for turning a review
+brief into small, inspectable questions about creative work, then aggregating
+the answers deterministically. It supports draft review, critique, model and
+dataset evaluation, benchmarking, and synthetic-data workflows without hiding
+the rubric, coverage, or uncertainty behind one opaque score. It does not turn
+a literary judgment into an unquestionable truth.
 
 The current HBQ-RS content contains **278 modules**, **2,145 atomic leaves**,
 and **85 bundle presets**. A judge answers one yes/no leaf at a time;
@@ -29,6 +30,35 @@ These results show what the system can make inspectable today: repeatability,
 scope-aware reports, explicit uncertainty, and bounded comparisons. They do
 not complete human-alignment validation, establish reader outcomes, or create a
 default hierarchy of literary quality.
+
+## Active work, not results
+
+The live V8 multisample continuation is an **unpublished operational
+checkpoint**, validated through sequence 204. It is proceeding one settled,
+trace-bound sequence at a time; it is not a new public repeatability result
+until the complete run and its analysis pass their integrity gates.
+
+Four committed study packages make the next questions reproducible without
+pretending they have answers yet:
+
+- [HANNA optimizer v1](evaluation-results/hbq-human-alignment-optimizer-v1/)
+  is a frozen development scaffold for the correct 80-item, 39-prompt-group
+  Fresh88 geometry. Its 48/13/19-item split across 24/7/8 disjoint prompt
+  groups and prospective
+  Sol/Grok schedule are frozen; execution and confirmation are still pending.
+  DSPy and Optuna are optional, offline development helpers only, with no
+  runtime or sealed-confirmation role.
+- [Matched Grok/Sol calibration](evaluation-results/hbq-grok-sol-current-matched-v1/)
+  is a provider-free, public-synthetic pre-execution screen. It will measure
+  a narrow matched-verdict agreement question, not declare judge
+  interchangeability or literary quality.
+- [CWR-guided revision gain](evaluation-results/cwr-guided-revision-gain-v1/)
+  is a provider-free, pre-execution design for testing guided versus matched
+  generic revision with blinded, non-CWR endpoint measures. It makes no
+  revision-gain claim until independently measured outcomes exist.
+- [Flash-Next/Linux planning](evaluation-results/hbq-supplemental-providers-flash-next-v1/)
+  freezes portable study geometry only. The Linux adapter, route disclosure,
+  and execution remain future work.
 
 ## Install and try it
 
