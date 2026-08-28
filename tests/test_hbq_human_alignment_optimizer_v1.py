@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import builtins
 import copy
-import importlib.util
 import inspect
 import json
 import os
@@ -192,12 +191,57 @@ def test_optional_adapters_do_not_import_until_called(monkeypatch) -> None:
         harness.optuna_explore_legal_tuples(n_trials=1)
 
 
-def test_optional_optuna_explores_only_legal_tuples_when_installed() -> None:
-    if importlib.util.find_spec("optuna") is None:
-        pytest.skip("Optuna is not installed")
-    trials = harness.optuna_explore_legal_tuples(n_trials=2)
-    assert len(trials) == 2
-    assert all(trial in harness.legal_factor_tuples() for trial in trials)
+def test_dspy_adapter_freezes_authoritative_train_only_examples_without_optional_import(monkeypatch) -> None:
+    original_import = builtins.__import__
+
+    def deny_dspy(name, *args, **kwargs):
+        if name.split(".", 1)[0] == "dspy":
+            raise AssertionError("DSPy must remain an optional development-only dependency")
+        return original_import(name, *args, **kwargs)
+
+    monkeypatch.setattr(builtins, "__import__", deny_dspy)
+    candidates = harness.enumerate_balanced_candidates()
+    first = harness.dspy_train_only_examples(candidates=candidates, **ROOTS)
+    second = harness.dspy_train_only_examples(candidates=candidates, **ROOTS)
+    assert first == second
+    assert len(first) == 6 * 48
+    assert {row["partition"] for row in first} == {"train"}
+    assert {row["item_id"] for row in _split()["items"] if row["partition"] == "train"} == {row["item_id"] for row in first}
+    assert {row["candidate_id"] for row in first} == {row["candidate_id"] for row in candidates}
+    assert all(row["selection_authority"] == "none" and row["rating_count"] == 3 for row in first)
+    assert all(set(row["target"]) == set(harness.DIMENSIONS) and all(isinstance(value, float) and 1.0 <= value <= 5.0 for value in row["target"].values()) for row in first)
+    assert all({"candidate_instruction", "candidate_profile", "prompt", "story"} == set(row["input"]) for row in first)
+    assert all("Worker ID" not in row and "Assignment ID" not in row and "Worker ID" not in row["input"] and "Assignment ID" not in row["input"] for row in first)
+    assert all(row["input_sha256"] == study.hashlib.sha256(study.canonical(row["input"])).hexdigest() and row["target_sha256"] == study.hashlib.sha256(study.canonical(row["target"])).hexdigest() for row in first)
+    contract = harness.dspy_candidate_wording_adapter_contract()
+    assert contract["runtime_dependency"] is False
+    assert contract["dspy_signature"]["inputs"] == ["candidate_instruction", "candidate_profile", "prompt", "story"]
+    assert contract["metric"]["name"] == "six_dimension_mean_absolute_error"
+
+
+def test_dspy_adapter_passes_only_frozen_train_items_to_target_derivation(monkeypatch) -> None:
+    candidates = harness.enumerate_balanced_candidates()
+    observed: list[set[str]] = []
+    original = harness._pinned_human_targets
+
+    def capture_train_only(*, hanna_csv_path: Path, eligible: list[dict[str, str]]) -> dict[str, dict]:
+        observed.append({row["item_id"] for row in eligible})
+        return original(hanna_csv_path=hanna_csv_path, eligible=eligible)
+
+    monkeypatch.setattr(harness, "_pinned_human_targets", capture_train_only)
+    examples = harness.dspy_train_only_examples(candidates=candidates, **ROOTS)
+    train_ids = {row["item_id"] for row in _split()["items"] if row["partition"] == "train"}
+    held_out_ids = {row["item_id"] for row in _split()["items"] if row["partition"] != "train"}
+    assert observed == [train_ids]
+    assert not (observed[0] & held_out_ids)
+    assert {row["item_id"] for row in examples} == train_ids
+
+
+@pytest.mark.parametrize("n_trials", [False, 0])
+def test_optuna_rejects_invalid_trial_counts_before_optional_import(monkeypatch, n_trials: int) -> None:
+    monkeypatch.setattr(harness.importlib, "import_module", lambda _name: pytest.fail("Optuna import must not occur"))
+    with pytest.raises(ValueError, match="trial count"):
+        harness.optuna_explore_legal_tuples(n_trials=n_trials)
 
 
 def test_execution_freeze_has_exact_732_cell_geometry_and_public_only_canaries() -> None:

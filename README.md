@@ -47,10 +47,12 @@ pretending they have answers yet:
   groups and Sol/Grok schedule are frozen. An externally gated, one-cell,
   no-resend driver now exists; remote execution, empirical optimization, and
   confirmation are still pending.
-  Provider-free candidate generation, Optuna legal-factor exploration, and a
-  DSPy wording-adapter contract exist. No empirical DSPy/Optuna optimization
-  or remote HANNA execution has run; confirmation remains pending. Neither
-  dependency is used at runtime or on sealed confirmation data.
+  Provider-free candidate generation and Optuna legal-factor exploration
+  remain. A train-only DSPy data adapter now derives 288 local examples from
+  the pinned sources, binding exact candidate, prompt, story, and published
+  human-reference targets without aggregating or emitting held-out targets.
+  No empirical DSPy/Optuna optimization or remote HANNA execution has run; confirmation
+  remains pending. Neither dependency is used at runtime.
 - [Matched Grok/Sol calibration](evaluation-results/hbq-grok-sol-current-matched-v1/)
   is a provider-free, public-synthetic pre-execution screen. It will measure
   a narrow matched-verdict agreement question, not declare judge
