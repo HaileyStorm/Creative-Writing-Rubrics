@@ -14,7 +14,7 @@
   "batch_attempts": 1,
   "case_file": "public-synthetic-cases.json",
   "same_input_invariant": "For a case/repetition, every enabled condition receives byte-identical artifact, target leaf, prompt, schema, context, and frozen runtime inputs.",
-  "runtime_files": ["src/hbqrs/runner.py", "src/hbqrs/core.py", "src/hbqrs/paths.py", "src/hbqrs/weights.py", "prompts/judge/BINARY_EVALUATION_PROMPT.md", "schema/hbq_judge_response.schema.json", "schema/hbq_verdict.schema.json", "registry/all_modules.json", "bundles/all_bundles.json"],
+  "runtime_files": ["src/hbqrs/runner.py", "src/hbqrs/core.py", "src/hbqrs/paths.py", "src/hbqrs/weights.py", "prompts/judge/BINARY_EVALUATION_PROMPT.md", "schema/hbq_judge_response.schema.json", "schema/hbq_verdict.schema.json", "registry/all_modules.json", "bundles/all_bundles.json", "evaluation-results/hbq-grok-sol-current-matched-v1/orchestrator.py", "evaluation-results/hbq-grok-sol-current-matched-v1/trusted_launcher.py"],
   "runtime_input_policy": "exact_content_hashes_independent_of_porcelain",
   "evidence_policy": {"local_fixture_class": "DEVELOPMENT_SCREENING_FIXTURE", "promotion_class": "NON_PROMOTABLE", "trusted_external_launch_receipt_required": true},
   "required_areas": ["task", "form", "core", "craft", "penalty"],
@@ -31,6 +31,6 @@
     "This screen has no single-leaf score or rank metric; a one-leaf result is a verdict calibration, not a cross-rubric score.",
     "This screen freezes one provider attempt per singleton; it has no retry or validation-feedback prompt path.",
     "run_judge does not emit a structured latency field, scope classification, or materiality classification. The analysis reports those limitations rather than importing a free-form sidecar.",
-    "This scaffold makes no remote call. Execution is disabled until a later orchestrator records provider-neutral destination/artifact disclosure and no-charge dispatch proof, then creates and binds a frozen snapshot."
+    "This scaffold makes no remote call. Execution remains disabled until a trusted execution successor separately binds provider-neutral disclosure, external acknowledgement, zero-charge routes, launcher/backend identity, and a no-resend lifecycle."
   ]
 }

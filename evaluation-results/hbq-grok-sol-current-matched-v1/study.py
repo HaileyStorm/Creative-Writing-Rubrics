@@ -47,10 +47,12 @@ EXPECTED_RUNTIME_FILES = (
     "schema/hbq_verdict.schema.json",
     "registry/all_modules.json",
     "bundles/all_bundles.json",
+    "evaluation-results/hbq-grok-sol-current-matched-v1/orchestrator.py",
+    "evaluation-results/hbq-grok-sol-current-matched-v1/trusted_launcher.py",
 )
 GROK_SYSTEM_PROMPT_OVERRIDE = "Act as an isolated structured-output evaluator. Do not use memory, tools, web, plans, or subagents."
 EXPECTED_STUDY_ID = "hbq-grok-sol-current-matched-v1"
-EXPECTED_CONTRACT_SHA256 = "7e5871ed3fb8551024ddbfd6c9f1370ba831f1642287f2103b7d5c469068f0fc"
+EXPECTED_CONTRACT_SHA256 = "41491ecbccd3555d91fcff5e25bd0738b4ac9dba442a18eb1739f451c82ac5eb"
 EXPECTED_CASE_FILE_SHA256 = "40dc1b2d947ea403aac45d982bd5a6c0c1009ca68b03b670a3a43bdc6178ec80"
 EXPECTED_CONTRACT_KEYS = {
     "format_version", "study_id", "status", "frozen_before_execution", "purpose", "privacy", "conditions", "candidate_condition",
