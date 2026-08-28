@@ -1645,6 +1645,7 @@ def test_grok_backend_uses_isolated_single_turn_schema_cli(tmp_path: Path, monke
         assert argv[argv.index("--tools") + 1] == ""
         assert argv[argv.index("--permission-mode") + 1] == "dontAsk"
         assert argv[argv.index("--sandbox") + 1] == "read-only"
+        assert argv[argv.index("--system-prompt-override") + 1] == "HANNA shared system instruction"
         session_id = argv[argv.index("--session-id") + 1]
         session_ids.append(session_id)
         return subprocess.CompletedProcess(
@@ -1665,6 +1666,7 @@ def test_grok_backend_uses_isolated_single_turn_schema_cli(tmp_path: Path, monke
 
     monkeypatch.setattr("hbqrs.runner._grok_cli_version", fake_version)
     monkeypatch.setattr("hbqrs.runner.subprocess.run", fake_run)
+    precontact = []
     content, record = _call_grok(
         executable="grok-fixture",
         model="grok-4.6",
@@ -1675,6 +1677,8 @@ def test_grok_backend_uses_isolated_single_turn_schema_cli(tmp_path: Path, monke
         batch_number=1,
         timeout=10,
         allow_unattested_reasoning=True,
+        system_prompt_override="HANNA shared system instruction",
+        before_provider_attempt=lambda: precontact.append("called"),
     )
     assert json.loads(content) == {"verdicts": []}
     assert len(calls) == 1
@@ -1687,6 +1691,7 @@ def test_grok_backend_uses_isolated_single_turn_schema_cli(tmp_path: Path, monke
     assert session_ids[0] not in json.dumps(record)
     assert "fixture-request-id" not in json.dumps(record)
     assert record["reasoning_attested"] is False
+    assert precontact == ["called"]
 
 
 def test_grok_backend_rejects_unattested_output_envelope(tmp_path: Path, monkeypatch) -> None:

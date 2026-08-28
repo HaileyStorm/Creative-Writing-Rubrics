@@ -255,6 +255,7 @@ def _call_openai(
     allow_model_mismatch: bool,
     timeout: float,
     attempt_lifecycle_policy: str | None = None,
+    before_provider_attempt: Callable[[], None] | None = None,
 ) -> tuple[str, dict[str, Any]]:
     payload: dict[str, Any] = {
         "model": model,
@@ -272,6 +273,8 @@ def _call_openai(
         headers["Authorization"] = f"Bearer {api_key}"
     request = Request(endpoint, data=json.dumps(payload).encode("utf-8"), headers=headers, method="POST")
     try:
+        if before_provider_attempt is not None:
+            before_provider_attempt()
         with build_opener(_NoRedirect).open(request, timeout=timeout) as opened:
             body = opened.read(MAX_RESPONSE_BYTES + 1)
             if len(body) > MAX_RESPONSE_BYTES:
@@ -726,6 +729,8 @@ def _call_grok(
     timeout: float,
     attempt_number: int = 1,
     allow_unattested_reasoning: bool = False,
+    system_prompt_override: str = "Act as an isolated structured-output evaluator. Do not use memory, tools, web, plans, or subagents.",
+    before_provider_attempt: Callable[[], None] | None = None,
 ) -> tuple[str, dict[str, Any]]:
     """Run one isolated Grok Build CLI structured-output evaluation.
 
@@ -778,9 +783,11 @@ def _call_grok(
         "--cwd",
         str(output_dir),
         "--system-prompt-override",
-        "Act as an isolated structured-output evaluator. Do not use memory, tools, web, plans, or subagents.",
+        system_prompt_override,
     ]
     try:
+        if before_provider_attempt is not None:
+            before_provider_attempt()
         completed = subprocess.run(
             _command_argv(executable, arguments),
             text=True,

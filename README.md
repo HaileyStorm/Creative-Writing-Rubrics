@@ -44,8 +44,9 @@ pretending they have answers yet:
 - [HANNA optimizer v1](evaluation-results/hbq-human-alignment-optimizer-v1/)
   is a frozen development scaffold for the correct 80-item, 39-prompt-group
   Fresh88 geometry. Its 48/13/19-item split across 24/7/8 disjoint prompt
-  groups and prospective
-  Sol/Grok schedule are frozen; execution and confirmation are still pending.
+  groups and Sol/Grok schedule are frozen. An externally gated, one-cell,
+  no-resend driver now exists; remote execution, empirical optimization, and
+  confirmation are still pending.
   DSPy and Optuna are optional, offline development helpers only, with no
   runtime or sealed-confirmation role.
 - [Matched Grok/Sol calibration](evaluation-results/hbq-grok-sol-current-matched-v1/)

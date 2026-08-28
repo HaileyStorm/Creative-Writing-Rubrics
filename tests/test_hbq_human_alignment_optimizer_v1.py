@@ -4,6 +4,7 @@ import builtins
 import copy
 import importlib.util
 import inspect
+import json
 import os
 from pathlib import Path
 import subprocess
@@ -26,6 +27,15 @@ study = load_module(PACKAGE / "study.py", name="hanna_optimizer_study_v1")
 analysis = load_module(PACKAGE / "analyze.py", name="hanna_optimizer_analyze_v1", aliases={"study": study})
 harness = load_module(PACKAGE / "offline_harness.py", name="hanna_optimizer_harness_v1", aliases={"study": study})
 freeze = load_module(PACKAGE / "execution_freeze.py", name="hanna_optimizer_execution_freeze_v1", aliases={"study": study, "offline_harness": harness})
+executor = load_module(PACKAGE / "executor.py", name="hanna_optimizer_executor_v1", aliases={"study": study, "offline_harness": harness, "execution_freeze": freeze})
+OPENAI_ENDPOINT = "https://approved.example.invalid/v1/chat/completions"
+
+
+def _trusted_gate_verifier(event: dict) -> dict:
+    assert event["study_id"] == study.CONTRACT["study_id"]
+    assert event["gate_kind"] in {"acknowledgement", "zero_charge_route_receipt"}
+    assert event["gate_sha256"] == study.hashlib.sha256(event["gate_bytes"]).hexdigest()
+    return {"format_version": 1, "study_id": study.CONTRACT["study_id"], "gate_kind": event["gate_kind"], "gate_sha256": event["gate_sha256"], "gate_bytes": len(event["gate_bytes"]), "trusted_verifier_id": "test-deployment-verifier", "trusted_root_id": "test-trusted-gate-root", "verified": True}
 
 
 def _split() -> dict:
@@ -223,7 +233,7 @@ def test_execution_freeze_rejects_tamper_reparse_and_any_result_acceptance(monke
     disclosure = freeze.execution_disclosure(manifest, **ROOTS)
     assert disclosure["acknowledgement_preview"]["acknowledged"] is False
     assert disclosure["acknowledgement_preview"]["external_owner_attestation_required"] is True
-    assert disclosure["future_native_receipt_contract"]["acceptance"] == "UNIMPLEMENTED_BLOCKER"
+    assert disclosure["future_native_receipt_contract"]["acceptance"] == "requires_exact_raw_wire_and_session_recomputation"
     assert not hasattr(freeze, "validate_result_receipt")
     assert all(route["paid_api"] is False and route["no_charge_proof_required_before_contact"] == "trusted_zero_charge_route_receipt" for route in manifest["routes"])
     altered_candidate = copy.deepcopy(manifest)
@@ -252,3 +262,196 @@ def test_readme_prepare_and_validate_commands_execute(tmp_path: Path) -> None:
     validate = [sys.executable, str(PACKAGE / "validate.py"), "--frozen-successor-contract", str(ROOTS["frozen_successor_path"]), "--hanna-csv", str(ROOTS["hanna_csv_path"]), "--split-manifest", str(output / "split-manifest.json"), "--execution-freeze", str(output / "execution-freeze.json"), "--disclosure", str(output / "preflight-disclosure.json")]
     completed = subprocess.run(validate, cwd=ROOT, text=True, capture_output=True, check=False)
     assert completed.returncode == 0, completed.stderr
+
+
+def _external_execution_gates(tmp_path: Path, manifest: dict, cell: dict) -> tuple[Path, Path, dict]:
+    route = freeze.ROUTES[cell["model"]]
+    payload = freeze.provider_ready_payload(freeze=manifest, cell_id=cell["cell_id"], **ROOTS)
+    disclosure = executor._disclosure(freeze=manifest, cell=cell, route=route, payload=payload, endpoint=OPENAI_ENDPOINT, grok_bin=None)
+    acknowledgement = tmp_path / "external-acknowledgement.json"
+    acknowledgement.write_bytes(study.canonical({
+        "format_version": 1,
+        "study_id": study.CONTRACT["study_id"],
+        "kind": "local_first_remote_execution",
+        "cell_id": cell["cell_id"],
+        "disclosure_sha256": study.sha256(disclosure),
+        "acknowledged": True,
+        "attestor": "external-owner",
+    }))
+    receipt = tmp_path / "external-zero-charge-route-receipt.json"
+    receipt.write_bytes(study.canonical({
+        "format_version": 1,
+        "study_id": study.CONTRACT["study_id"],
+        "kind": "trusted_zero_charge_route_receipt",
+        "cell_id": cell["cell_id"],
+        "disclosure_sha256": study.sha256(disclosure),
+        "provider": route["provider"],
+        "model": route["model"],
+        "transport_identity": route["transport_identity"],
+        "reasoning_effort": route["reasoning_effort"],
+        "paid_api": False,
+        "no_financial_liability": True,
+        "issuer": "trusted-external-route-authority",
+    }))
+    return acknowledgement, receipt, disclosure
+
+
+def test_executor_prepares_one_frozen_cell_and_dispatches_once_only(tmp_path: Path, monkeypatch) -> None:
+    manifest = freeze.derive_execution_freeze(**ROOTS)
+    cell = manifest["schedule"][0]
+    acknowledgement, receipt, _ = _external_execution_gates(tmp_path, manifest, cell)
+    output = tmp_path / "prepared"
+    freeze_path = tmp_path / "freeze.json"
+    freeze_path.write_bytes(study.canonical(manifest))
+    prepared = executor.prepare_cell(freeze_path=freeze_path, frozen_successor_path=ROOTS["frozen_successor_path"], hanna_csv_path=ROOTS["hanna_csv_path"], cell_id=cell["cell_id"], output_root=output, acknowledgement_path=acknowledgement, zero_charge_route_receipt_path=receipt, trusted_gate_verifier=_trusted_gate_verifier, endpoint=OPENAI_ENDPOINT)
+    assert prepared["state"] == "prepared_not_dispatched"
+    assert (output / cell["cell_id"] / "acknowledgement.json").read_bytes() == acknowledgement.read_bytes()
+    with pytest.raises(ValueError, match="allow-remote"):
+        executor.dispatch_prepared_cell(freeze_path=freeze_path, frozen_successor_path=ROOTS["frozen_successor_path"], hanna_csv_path=ROOTS["hanna_csv_path"], output_root=output, cell_id=cell["cell_id"], allow_remote=False, trusted_gate_verifier=_trusted_gate_verifier, endpoint=OPENAI_ENDPOINT)
+
+    response = {"scores": {dimension: 3 for dimension in freeze.DIMENSIONS}, "evidence": {dimension: "bound local evidence" for dimension in freeze.DIMENSIONS}, "coverage": {dimension: True for dimension in freeze.DIMENSIONS}}
+    calls = 0
+
+    def fake_dispatch(**kwargs):
+        nonlocal calls
+        kwargs["before_provider_attempt"]()
+        calls += 1
+        return json.dumps(response), {"native_session": "provider-session-1", "model": cell["model"]}
+
+    monkeypatch.setattr(executor, "_dispatch_via_runner", fake_dispatch)
+    first = executor.dispatch_prepared_cell(freeze_path=freeze_path, frozen_successor_path=ROOTS["frozen_successor_path"], hanna_csv_path=ROOTS["hanna_csv_path"], output_root=output, cell_id=cell["cell_id"], allow_remote=True, trusted_gate_verifier=_trusted_gate_verifier, endpoint=OPENAI_ENDPOINT)
+    assert first == {"cell_id": cell["cell_id"], "state": "provider_returned_unpromotable", "provider_calls_made": 1, "resumed": False}
+    settled = json.loads((output / cell["cell_id"] / "result" / "attempt-result.json").read_text(encoding="utf-8"))
+    assert settled["route_evidence"] == {"evidence_class": "development_selector_candidate_not_promotable", "reasoning_attested": None, "reasoning_attestation": "not_applicable"}
+    second = executor.dispatch_prepared_cell(freeze_path=freeze_path, frozen_successor_path=ROOTS["frozen_successor_path"], hanna_csv_path=ROOTS["hanna_csv_path"], output_root=output, cell_id=cell["cell_id"], allow_remote=True, trusted_gate_verifier=_trusted_gate_verifier, endpoint=OPENAI_ENDPOINT)
+    assert second["resumed"] is True and second["provider_calls_made"] == 0
+    assert calls == 1
+
+
+def test_executor_rejects_forged_gate_or_orphaned_prepared_root(tmp_path: Path) -> None:
+    manifest = freeze.derive_execution_freeze(**ROOTS)
+    cell = manifest["schedule"][0]
+    acknowledgement, receipt, _ = _external_execution_gates(tmp_path, manifest, cell)
+    freeze_path = tmp_path / "freeze.json"
+    freeze_path.write_bytes(study.canonical(manifest))
+    forged = json.loads(receipt.read_text(encoding="utf-8"))
+    forged["issuer"] = ""
+    receipt.write_bytes(study.canonical(forged))
+    with pytest.raises(ValueError, match="zero-charge"):
+        executor.prepare_cell(freeze_path=freeze_path, frozen_successor_path=ROOTS["frozen_successor_path"], hanna_csv_path=ROOTS["hanna_csv_path"], cell_id=cell["cell_id"], output_root=tmp_path / "forged", acknowledgement_path=acknowledgement, zero_charge_route_receipt_path=receipt, trusted_gate_verifier=_trusted_gate_verifier, endpoint=OPENAI_ENDPOINT)
+    with pytest.raises(ValueError, match="disjoint"):
+        executor.prepare_cell(freeze_path=freeze_path, frozen_successor_path=ROOTS["frozen_successor_path"], hanna_csv_path=ROOTS["hanna_csv_path"], cell_id=cell["cell_id"], output_root=tmp_path, acknowledgement_path=acknowledgement, zero_charge_route_receipt_path=receipt, trusted_gate_verifier=_trusted_gate_verifier, endpoint=OPENAI_ENDPOINT)
+    acknowledgement, receipt, _ = _external_execution_gates(tmp_path, manifest, cell)
+    output = tmp_path / "prepared"
+    executor.prepare_cell(freeze_path=freeze_path, frozen_successor_path=ROOTS["frozen_successor_path"], hanna_csv_path=ROOTS["hanna_csv_path"], cell_id=cell["cell_id"], output_root=output, acknowledgement_path=acknowledgement, zero_charge_route_receipt_path=receipt, trusted_gate_verifier=_trusted_gate_verifier, endpoint=OPENAI_ENDPOINT)
+    (output / cell["cell_id"] / "orphan.json").write_text("{}", encoding="utf-8")
+    with pytest.raises(ValueError, match="unknown or missing"):
+        executor.prepare_cell(freeze_path=freeze_path, frozen_successor_path=ROOTS["frozen_successor_path"], hanna_csv_path=ROOTS["hanna_csv_path"], cell_id=cell["cell_id"], output_root=output, acknowledgement_path=acknowledgement, zero_charge_route_receipt_path=receipt, trusted_gate_verifier=_trusted_gate_verifier, endpoint=OPENAI_ENDPOINT)
+
+
+def test_executor_has_no_confirmation_cell_surface_and_rechecks_reparse_gate(tmp_path: Path, monkeypatch) -> None:
+    manifest = freeze.derive_execution_freeze(**ROOTS)
+    cell = dict(manifest["schedule"][0])
+    cell["partition"] = "confirmation"
+    with pytest.raises(ValueError, match="confirmation"):
+        executor._cell({"schedule": [cell]}, cell["cell_id"])
+    acknowledgement, receipt, _ = _external_execution_gates(tmp_path, manifest, manifest["schedule"][0])
+    actual_lstat = study.os.lstat
+    target = Path(os.path.abspath(acknowledgement))
+
+    def reparse_lstat(path, *args, **kwargs):
+        metadata = actual_lstat(path, *args, **kwargs)
+        if Path(os.path.abspath(path)) == target:
+            return SimpleNamespace(st_mode=metadata.st_mode, st_file_attributes=0x400)
+        return metadata
+
+    monkeypatch.setattr(study.os, "lstat", reparse_lstat)
+    freeze_path = tmp_path / "freeze.json"
+    freeze_path.write_bytes(study.canonical(manifest))
+    with pytest.raises(ValueError, match="symlink or reparse"):
+        executor.prepare_cell(freeze_path=freeze_path, frozen_successor_path=ROOTS["frozen_successor_path"], hanna_csv_path=ROOTS["hanna_csv_path"], cell_id=manifest["schedule"][0]["cell_id"], output_root=tmp_path / "never", acknowledgement_path=acknowledgement, zero_charge_route_receipt_path=receipt, trusted_gate_verifier=_trusted_gate_verifier, endpoint=OPENAI_ENDPOINT)
+
+
+def test_executor_revalidates_frozen_effective_request_and_rejects_result_orphans(tmp_path: Path) -> None:
+    manifest = freeze.derive_execution_freeze(**ROOTS)
+    cell = manifest["schedule"][0]
+    acknowledgement, receipt, _ = _external_execution_gates(tmp_path, manifest, cell)
+    freeze_path = tmp_path / "freeze.json"
+    freeze_path.write_bytes(study.canonical(manifest))
+    output = tmp_path / "prepared"
+    executor.prepare_cell(freeze_path=freeze_path, frozen_successor_path=ROOTS["frozen_successor_path"], hanna_csv_path=ROOTS["hanna_csv_path"], cell_id=cell["cell_id"], output_root=output, acknowledgement_path=acknowledgement, zero_charge_route_receipt_path=receipt, trusted_gate_verifier=_trusted_gate_verifier, endpoint=OPENAI_ENDPOINT)
+    with pytest.raises(ValueError, match="request, or route wrapper drifted"):
+        executor.dispatch_prepared_cell(freeze_path=freeze_path, frozen_successor_path=ROOTS["frozen_successor_path"], hanna_csv_path=ROOTS["hanna_csv_path"], output_root=output, cell_id=cell["cell_id"], allow_remote=True, trusted_gate_verifier=_trusted_gate_verifier, endpoint="https://substituted.example.invalid/v1/chat/completions")
+    persisted_acknowledgement = output / cell["cell_id"] / "acknowledgement.json"
+    altered_gate = json.loads(persisted_acknowledgement.read_text(encoding="utf-8"))
+    altered_gate["acknowledged"] = False
+    persisted_acknowledgement.write_bytes(study.canonical(altered_gate))
+    with pytest.raises(ValueError, match="external acknowledgement"):
+        executor.dispatch_prepared_cell(freeze_path=freeze_path, frozen_successor_path=ROOTS["frozen_successor_path"], hanna_csv_path=ROOTS["hanna_csv_path"], output_root=output, cell_id=cell["cell_id"], allow_remote=True, trusted_gate_verifier=_trusted_gate_verifier, endpoint=OPENAI_ENDPOINT)
+    (output / cell["cell_id"] / "result").mkdir()
+    (output / cell["cell_id"] / "result" / "attempt-result.json").write_bytes(study.canonical({"forged": True}))
+    with pytest.raises(ValueError, match="orphan"):
+        executor.dispatch_prepared_cell(freeze_path=freeze_path, frozen_successor_path=ROOTS["frozen_successor_path"], hanna_csv_path=ROOTS["hanna_csv_path"], output_root=output, cell_id=cell["cell_id"], allow_remote=True, trusted_gate_verifier=_trusted_gate_verifier, endpoint=OPENAI_ENDPOINT)
+
+
+def test_executor_preserves_runner_failure_and_never_resends(tmp_path: Path, monkeypatch) -> None:
+    manifest = freeze.derive_execution_freeze(**ROOTS)
+    cell = manifest["schedule"][0]
+    acknowledgement, receipt, _ = _external_execution_gates(tmp_path, manifest, cell)
+    freeze_path = tmp_path / "freeze.json"
+    freeze_path.write_bytes(study.canonical(manifest))
+    output = tmp_path / "prepared"
+    executor.prepare_cell(freeze_path=freeze_path, frozen_successor_path=ROOTS["frozen_successor_path"], hanna_csv_path=ROOTS["hanna_csv_path"], cell_id=cell["cell_id"], output_root=output, acknowledgement_path=acknowledgement, zero_charge_route_receipt_path=receipt, trusted_gate_verifier=_trusted_gate_verifier, endpoint=OPENAI_ENDPOINT)
+
+    class NativeFailure(RuntimeError):
+        retryable = True
+        content = "exact native failure body"
+        provider_record = {"native": "record"}
+
+    monkeypatch.setattr(executor, "_dispatch_via_runner", lambda **_kwargs: (_ for _ in ()).throw(NativeFailure("provider transport failed")))
+    with pytest.raises(NativeFailure):
+        executor.dispatch_prepared_cell(freeze_path=freeze_path, frozen_successor_path=ROOTS["frozen_successor_path"], hanna_csv_path=ROOTS["hanna_csv_path"], output_root=output, cell_id=cell["cell_id"], allow_remote=True, trusted_gate_verifier=_trusted_gate_verifier, endpoint=OPENAI_ENDPOINT)
+    root = output / cell["cell_id"]
+    assert (root / "result" / "provider-failure.json").is_file()
+    assert (root / "result" / "provider-failure-content.txt").read_text(encoding="utf-8") == "exact native failure body"
+    resumed = executor.dispatch_prepared_cell(freeze_path=freeze_path, frozen_successor_path=ROOTS["frozen_successor_path"], hanna_csv_path=ROOTS["hanna_csv_path"], output_root=output, cell_id=cell["cell_id"], allow_remote=True, trusted_gate_verifier=_trusted_gate_verifier, endpoint=OPENAI_ENDPOINT)
+    assert resumed == {"cell_id": cell["cell_id"], "state": "contact_outcome_unresolved_no_resend", "provider_calls_made": 0, "resumed": True}
+
+
+def test_executor_hook_rejects_post_snapshot_mutation_before_mocked_contact(tmp_path: Path, monkeypatch) -> None:
+    manifest = freeze.derive_execution_freeze(**ROOTS)
+    cell = manifest["schedule"][0]
+    acknowledgement, receipt, _ = _external_execution_gates(tmp_path, manifest, cell)
+    freeze_path = tmp_path / "freeze.json"
+    freeze_path.write_bytes(study.canonical(manifest))
+    output = tmp_path / "prepared"
+    executor.prepare_cell(freeze_path=freeze_path, frozen_successor_path=ROOTS["frozen_successor_path"], hanna_csv_path=ROOTS["hanna_csv_path"], cell_id=cell["cell_id"], output_root=output, acknowledgement_path=acknowledgement, zero_charge_route_receipt_path=receipt, trusted_gate_verifier=_trusted_gate_verifier, endpoint=OPENAI_ENDPOINT)
+    contacts = 0
+
+    def mutate_then_hook(**kwargs):
+        nonlocal contacts
+        disclosure = output / cell["cell_id"] / "disclosure.json"
+        disclosure.write_bytes(disclosure.read_bytes() + b" ")
+        kwargs["before_provider_attempt"]()
+        contacts += 1
+        raise AssertionError("provider mock must not be reached")
+
+    monkeypatch.setattr(executor, "_dispatch_via_runner", mutate_then_hook)
+    with pytest.raises(ValueError, match="changed after final pre-contact snapshot"):
+        executor.dispatch_prepared_cell(freeze_path=freeze_path, frozen_successor_path=ROOTS["frozen_successor_path"], hanna_csv_path=ROOTS["hanna_csv_path"], output_root=output, cell_id=cell["cell_id"], allow_remote=True, trusted_gate_verifier=_trusted_gate_verifier, endpoint=OPENAI_ENDPOINT)
+    assert contacts == 0
+
+
+def test_executor_rejects_result_namespace_insertion_race(tmp_path: Path) -> None:
+    manifest = freeze.derive_execution_freeze(**ROOTS)
+    cell = manifest["schedule"][0]
+    acknowledgement, receipt, _ = _external_execution_gates(tmp_path, manifest, cell)
+    freeze_path = tmp_path / "freeze.json"
+    freeze_path.write_bytes(study.canonical(manifest))
+    output = tmp_path / "prepared"
+    executor.prepare_cell(freeze_path=freeze_path, frozen_successor_path=ROOTS["frozen_successor_path"], hanna_csv_path=ROOTS["hanna_csv_path"], cell_id=cell["cell_id"], output_root=output, acknowledgement_path=acknowledgement, zero_charge_route_receipt_path=receipt, trusted_gate_verifier=_trusted_gate_verifier, endpoint=OPENAI_ENDPOINT)
+    root = output / cell["cell_id"]
+    (root / "result").mkdir()
+    (root / "result" / "attempt-result.json").write_bytes(study.canonical({"forged": True}))
+    with pytest.raises(ValueError, match="orphan provider evidence"):
+        executor.dispatch_prepared_cell(freeze_path=freeze_path, frozen_successor_path=ROOTS["frozen_successor_path"], hanna_csv_path=ROOTS["hanna_csv_path"], output_root=output, cell_id=cell["cell_id"], allow_remote=True, trusted_gate_verifier=_trusted_gate_verifier, endpoint=OPENAI_ENDPOINT)

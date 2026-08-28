@@ -15,8 +15,8 @@ from study import CONTRACT, _is_hash, _read_bytes_checked, _exact, canonical, ch
 STUDY_ID = CONTRACT["study_id"]
 DIMENSIONS = ("Relevance", "Coherence", "Empathy", "Surprise", "Engagement", "Complexity")
 ROUTES = {
-    "gpt-5.6-sol": {"provider": "openai", "model": "gpt-5.6-sol", "reasoning_effort": "high", "transport_identity": "openai_responses_api_v1", "paid_api": False, "no_charge_proof_required_before_contact": "trusted_zero_charge_route_receipt"},
-    "grok-4.6": {"provider": "xai", "model": "grok-4.6", "reasoning_effort": "high", "transport_identity": "xai_chat_completions_api_v1", "paid_api": False, "no_charge_proof_required_before_contact": "trusted_zero_charge_route_receipt"},
+    "gpt-5.6-sol": {"provider": "openai", "model": "gpt-5.6-sol", "reasoning_effort": "high", "transport_identity": "hbqrs_openai_compatible_chat_completions_v1", "evidence_class": "development_selector_candidate_not_promotable", "paid_api": False, "no_charge_proof_required_before_contact": "trusted_zero_charge_route_receipt"},
+    "grok-4.6": {"provider": "xai", "model": "grok-4.6", "reasoning_effort": "high", "transport_identity": "hbqrs_grok_build_cli_structured_output_v1", "evidence_class": "development_provisional_nonselector_requires_reasoning_attestation", "paid_api": False, "no_charge_proof_required_before_contact": "trusted_zero_charge_route_receipt"},
 }
 
 
@@ -129,8 +129,8 @@ def acknowledgement_preview(disclosure: Mapping[str, Any]) -> dict[str, Any]:
 
 
 def future_native_receipt_contract() -> dict[str, Any]:
-    """A non-accepting preview of evidence a future trusted executor must supply."""
-    return {"format_version": 1, "study_id": STUDY_ID, "status": "unimplemented", "required_fields": ["cell_id", "provider", "model", "transport_identity", "reasoning_effort", "paid_api", "zero_charge_route_receipt_sha256", "request_sha256", "status", "session_id", "response_sha256", "response"], "acceptance": "UNIMPLEMENTED_BLOCKER"}
+    """Name the native evidence a later promotion verifier must recompute."""
+    return {"format_version": 1, "study_id": STUDY_ID, "status": "promotion_verifier_required", "required_fields": ["cell_id", "provider", "model", "transport_identity", "reasoning_effort", "paid_api", "zero_charge_route_receipt_sha256", "request_sha256", "status", "session_id", "response_sha256", "response"], "acceptance": "requires_exact_raw_wire_and_session_recomputation"}
 
 
 def derive_execution_freeze(*, frozen_successor_path: Path, hanna_csv_path: Path) -> dict[str, Any]:
@@ -145,7 +145,7 @@ def derive_execution_freeze(*, frozen_successor_path: Path, hanna_csv_path: Path
         "format_version": 1,
         "study_id": STUDY_ID,
         "kind": "provider_free_execution_freeze",
-        "provider_execution": "not_implemented",
+        "provider_execution": "gated_by_executor",
         "split_sha256": sha256(split),
         "frozen_successor_sha256": _hash_bytes(_read_bytes_checked(checked_path(frozen_successor_path, must_exist=True))),
         "hanna_csv_sha256": _hash_bytes(_read_bytes_checked(checked_path(hanna_csv_path, must_exist=True))),
@@ -165,7 +165,7 @@ def execution_disclosure(freeze: Mapping[str, Any], *, frozen_successor_path: Pa
     return {
         "format_version": 1,
         "study_id": STUDY_ID,
-        "mode": "prepared_execution_freeze_only",
+        "mode": "prepared_execution_freeze_before_deployment_gates",
         "execution_freeze_sha256": sha256(freeze),
         "remote_destinations": [ROUTES[model] for model in MODEL_TARGETS],
         "artifacts_leaving_machine": ["per-cell prompt and writing bytes", "candidate instruction/profile bytes", "response-schema bytes"],
@@ -179,7 +179,7 @@ def execution_disclosure(freeze: Mapping[str, Any], *, frozen_successor_path: Pa
 def validate_execution_freeze(value: Mapping[str, Any], *, frozen_successor_path: Path, hanna_csv_path: Path) -> None:
     keys = {"format_version", "study_id", "kind", "provider_execution", "split_sha256", "frozen_successor_sha256", "hanna_csv_sha256", "candidate_commitments", "response_schema_sha256", "sampler", "routes", "schedule", "schedule_sha256", "canaries", "confirmation"}
     _exact(value, keys, "execution freeze")
-    if value["format_version"] != 1 or value["study_id"] != STUDY_ID or value["kind"] != "provider_free_execution_freeze" or value["provider_execution"] != "not_implemented" or value["sampler"] != SAMPLER or value["routes"] != [ROUTES[model] for model in MODEL_TARGETS] or value["confirmation"] != {"status": "structurally_unreachable", "cells": 76}:
+    if value["format_version"] != 1 or value["study_id"] != STUDY_ID or value["kind"] != "provider_free_execution_freeze" or value["provider_execution"] != "gated_by_executor" or value["sampler"] != SAMPLER or value["routes"] != [ROUTES[model] for model in MODEL_TARGETS] or value["confirmation"] != {"status": "structurally_unreachable", "cells": 76}:
         raise ValueError("HANNA execution freeze identity drifted")
     if not all(_is_hash(value[key]) for key in ("split_sha256", "frozen_successor_sha256", "hanna_csv_sha256", "response_schema_sha256", "schedule_sha256")) or value["response_schema_sha256"] != _hash_bytes(response_schema_bytes()) or value["schedule_sha256"] != sha256(value["schedule"]):
         raise ValueError("HANNA execution freeze hash drifted")

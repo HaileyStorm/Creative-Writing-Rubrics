@@ -167,7 +167,7 @@ def load_contract(path: Path = CONTRACT_PATH) -> dict[str, Any]:
         "endpoints", "budgets", "optimizer_interfaces", "outputs", "interpretation_limits",
     }
     _exact(contract, required, "contract")
-    if contract["format_version"] != 1 or contract["study_id"] != "hbq-human-alignment-optimizer-v1" or contract["kind"] != "development_only_prompt_profile_optimizer" or contract["analysis_only"] is not True or contract["provider_execution"] != "not_implemented_by_this_package" or contract["outputs"] != ["public-summary.json", "manifest.json"]:
+    if contract["format_version"] != 1 or contract["study_id"] != "hbq-human-alignment-optimizer-v1" or contract["kind"] != "development_only_prompt_profile_optimizer" or contract["analysis_only"] is not False or contract["provider_execution"] != "gated_one_cell_train_development_driver_without_promotable_receipts" or contract["outputs"] != ["public-summary.json", "manifest.json"]:
         raise ValueError("HANNA optimizer contract identity drifted")
     parent = _exact(contract["parents"], {"fresh88_primary"}, "parent")["fresh88_primary"]
     parent_keys = {"study_id", "frozen_successor_sha256", "freeze_receipt_sha256", "execution_contract_sha256", "execution_receipt_sha256", "runtime_source_manifest_sha256", "mapping_sets_sha256"}
@@ -206,7 +206,7 @@ def load_contract(path: Path = CONTRACT_PATH) -> dict[str, Any]:
     budgets = _exact(contract["budgets"], {"development", "confirmation"}, "budgets")
     if budgets != {"development": {"candidate_count": 6, "train_item_count": 48, "development_item_count": 13, "providers": ["gpt-5.6-sol", "grok-4.6"], "candidate_train_calls": 576, "candidate_development_calls": 156, "maximum_provider_calls": 732}, "confirmation": {"candidate_and_control": 2, "confirmation_item_count": 19, "providers": ["gpt-5.6-sol", "grok-4.6"], "provider_calls": 76, "maximum_provider_calls": 76}}:
         raise ValueError("HANNA optimizer call geometry drifted")
-    if contract["optimizer_interfaces"] != {"dspy_miprov2": {"optional": True, "development_only": True, "runtime_dependency": False}, "optuna": {"optional": True, "development_only": True, "runtime_dependency": False}} or contract["interpretation_limits"] != ["This package prepares and validates a development protocol; it makes no provider call and claims no alignment improvement.", "HANNA is human-reference context, not literary ground truth.", "A selected development candidate is not a production prompt or a confirmed result.", "The public projection is aggregate-only and must not contain story or prompt prose, per-item rows, raw model responses, session identifiers, local paths, or provider credentials."]:
+    if contract["optimizer_interfaces"] != {"dspy_miprov2": {"optional": True, "development_only": True, "runtime_dependency": False}, "optuna": {"optional": True, "development_only": True, "runtime_dependency": False}} or contract["interpretation_limits"] != ["The gated executor may make one disclosed train/development provider call only after external acknowledgement, trusted zero-charge proof, and --allow-remote; it claims no alignment improvement.", "HANNA is human-reference context, not literary ground truth.", "A selected development candidate is not a production prompt or a confirmed result.", "The public projection is aggregate-only and must not contain story or prompt prose, per-item rows, raw model responses, session identifiers, local paths, or provider credentials."]:
         raise ValueError("HANNA optimizer policy drifted")
     return contract
 

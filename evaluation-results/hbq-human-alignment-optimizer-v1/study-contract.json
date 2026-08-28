@@ -2,8 +2,8 @@
   "format_version": 1,
   "study_id": "hbq-human-alignment-optimizer-v1",
   "kind": "development_only_prompt_profile_optimizer",
-  "analysis_only": true,
-  "provider_execution": "not_implemented_by_this_package",
+  "analysis_only": false,
+  "provider_execution": "gated_one_cell_train_development_driver_without_promotable_receipts",
   "parents": {
     "fresh88_primary": {
       "study_id": "hbq-human-alignment-v3-fresh88-analysis-v1",
@@ -124,7 +124,7 @@
   },
   "outputs": ["public-summary.json", "manifest.json"],
   "interpretation_limits": [
-    "This package prepares and validates a development protocol; it makes no provider call and claims no alignment improvement.",
+    "The gated executor may make one disclosed train/development provider call only after external acknowledgement, trusted zero-charge proof, and --allow-remote; it claims no alignment improvement.",
     "HANNA is human-reference context, not literary ground truth.",
     "A selected development candidate is not a production prompt or a confirmed result.",
     "The public projection is aggregate-only and must not contain story or prompt prose, per-item rows, raw model responses, session identifiers, local paths, or provider credentials."
