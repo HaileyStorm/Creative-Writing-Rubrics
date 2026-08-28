@@ -1,0 +1,73 @@
+{
+  "format_version": 2,
+  "study_id": "cwr-guided-revision-gain-v1",
+  "frozen_before_execution": true,
+  "status": "provider_free_scaffold",
+  "purpose": "A crossed development study of whether CWR-guided revision produces gains under blinded non-CWR endpoint measures. It is not a universal literary-improvement or human-judgment claim.",
+  "source_population": {
+    "kind": "external_local_hanna_repeatability_inputs",
+    "parent_study_id": "hbq-multisample-repeatability-v1",
+    "parent_frozen_run_contract_sha256": "5fb06e5a4775ecfe1cee10132e52100733c7e765e8eae9865374bb23f1addddd",
+    "source_material_policy": "The public package contains identifiers and fingerprints only. Complete source and prompt text stay in a separately authorized local work root.",
+    "selection_rule": "Sort the eligible generated IDs lexicographically and take the first six before any revision output exists.",
+    "pilot_item_ids": ["hanna-1035", "hanna-178", "hanna-225", "hanna-382", "hanna-445", "hanna-523"],
+    "held_back_item_ids": ["hanna-594", "hanna-731", "hanna-817", "hanna-907"],
+    "input_commitments": {
+      "hanna-1035": {"source.md": {"bytes": 1150, "sha256": "355d60558a316d5f929ab49048d3fe93bd3b75e333f1ec9b6711d647f50cde65"}, "prompt.md": {"bytes": 66, "sha256": "c74713d6d5ef2afb4103afa47b23bbf717e25239d7410abb1b5390cda1c0d684"}},
+      "hanna-178": {"source.md": {"bytes": 998, "sha256": "ea93589492ac9f89b9ed69f00544e432d202e8ad71cd4fe48c3737f6a989fc6f"}, "prompt.md": {"bytes": 110, "sha256": "c85edd8245f2bf73dca1a09b5a789ea6219f9aab9d6b7bff5509238729f8dfb9"}},
+      "hanna-225": {"source.md": {"bytes": 768, "sha256": "d566cb89670d71d05219ad3e600676fac96e84d7697907f5f0171c73e9641f75"}, "prompt.md": {"bytes": 199, "sha256": "91868234f35c72d99f7ce2178eb31ab714300982b3371687bd055da98adb0e6a"}},
+      "hanna-382": {"source.md": {"bytes": 1321, "sha256": "d5a51cddd902d05b919b987f28e821d85ab3174880968967c1a7072c4cb7646d"}, "prompt.md": {"bytes": 281, "sha256": "cbf8ca8395c777f3267bd746b09b6675eb1ccd5f94b367844381a2aa828a466f"}},
+      "hanna-445": {"source.md": {"bytes": 1350, "sha256": "7b95c1713eaaf11f9674c86b77498f8b04a206394e9a6fdaca9d4f6c85b82497"}, "prompt.md": {"bytes": 114, "sha256": "489dbd34451e1ce7dd64a857c18ef01ff51e8489a5591e46865f35e2953bca1f"}},
+      "hanna-523": {"source.md": {"bytes": 1726, "sha256": "64c83268f591efdbc22f170dab9e7851f2189f5940a8f6e3d473ef672f296e65"}, "prompt.md": {"bytes": 194, "sha256": "3286f1e85780066d24b6c48f7db645648dcea6e25736248a38bcae8c414802ab"}},
+      "hanna-594": {"source.md": {"bytes": 1224, "sha256": "1ac8b69bb3f547425e3a02270ed168040b15554f37859f5beaf84fdc7d8042ba"}, "prompt.md": {"bytes": 137, "sha256": "6b7fff0c3794370cee85bf2f63a80d3efc87e72e006254c048ddd37147e34025"}},
+      "hanna-731": {"source.md": {"bytes": 1750, "sha256": "92b20bdd4bc34ed3c89a48918d7ce6475f85af87b7aa652b61f0d3adac10a26d"}, "prompt.md": {"bytes": 29, "sha256": "2c4f2e59857191f6cdfdde6936dc633d61f7d6e29b7f486f557d6d1068498541"}},
+      "hanna-817": {"source.md": {"bytes": 499, "sha256": "62f66a845d4bf5f4bc0d2c9c8c15aa67b5ef88776793baed483ecce64052972c"}, "prompt.md": {"bytes": 185, "sha256": "f88bef9d00608441ac76b289ea3dc71c0f2a3989f4a6a205deb9c2e9c350b4ff"}},
+      "hanna-907": {"source.md": {"bytes": 350, "sha256": "2c5ba1624e7e370d39e9c51f838da9fa3f27d1f5c5cb647db9da18f45e9783fc"}, "prompt.md": {"bytes": 194, "sha256": "3286f1e85780066d24b6c48f7db645648dcea6e25736248a38bcae8c414802ab"}}
+    }
+  },
+  "cycles": {"fixed_first_cycle": true, "second_cycle_item_ids": ["hanna-1035", "hanna-178"], "adaptive_extension": false, "best_of_n": false, "stopping_rule": "Run each frozen cell once; never add, drop, repeat, choose, or extend cells because of observed prose or scores."},
+  "provider_routes": {
+    "grok-4.6-high": {"destination": "xai_grok_build_subscription", "model": "grok-4.6", "reasoning": "high", "paid_api": false},
+    "gpt-5.6-sol-high": {"destination": "codex", "model": "gpt-5.6-sol", "reasoning": "high", "paid_api": false},
+    "deepseek-v4-flash-max": {"destination": "nous", "model": "deepseek/deepseek-v4-flash-0731", "reasoning": "max", "paid_api": false},
+    "gpt-5.6-luna-xhigh": {"destination": "codex", "model": "gpt-5.6-luna", "reasoning": "xhigh", "paid_api": false}
+  },
+  "generation": {
+    "guidance_arms": [{"arm_id": "cwr_guided"}, {"arm_id": "generic_no_feedback"}],
+    "instruction_asset": {"path": "revision-instructions.json", "bytes": 1090, "sha256": "f001c1195cb52c173dc29f7cce8812bc8bce7da7ebd18259707d5602e0a42908"},
+    "generator_routes": [
+      {"generator_id": "grok-4.6", "route_id": "grok-4.6-high", "tier": "strong", "cycles": [1, 2], "cwr_feedback_route_id": "gpt-5.6-sol-high"},
+      {"generator_id": "gpt-5.6-sol", "route_id": "gpt-5.6-sol-high", "tier": "strong", "cycles": [1, 2], "cwr_feedback_route_id": "grok-4.6-high"},
+      {"generator_id": "deepseek-v4-flash", "route_id": "deepseek-v4-flash-max", "tier": "breadth", "cycles": [1, 2], "item_ids": ["hanna-1035", "hanna-178"], "cwr_feedback_route_id": "gpt-5.6-sol-high"},
+      {"generator_id": "gpt-5.6-luna", "route_id": "gpt-5.6-luna-xhigh", "tier": "breadth", "cycles": [1, 2], "item_ids": ["hanna-1035", "hanna-178"], "cwr_feedback_route_id": "grok-4.6-high"}
+    ],
+    "source_policy": "Each output is a versioned descendant of its declared source item and parent cycle. Source bytes are never overwritten."
+  },
+  "cwr_runtime": {
+    "bundle_id": "prose.short_story",
+    "files": {
+      "src/hbqrs/runner.py": {"bytes": 185851, "sha256": "78ed4edb86dea44a0adc61b925eaeb192604078f9ad967fcb9b8b519a09dfa26"},
+      "src/hbqrs/longform_runner.py": {"bytes": 81468, "sha256": "0e30f538ac952971f39f4220ac39682cb2173a1e47c35ecb312b23ec76a95845"},
+      "registry/all_modules.json": {"bytes": 2200481, "sha256": "43a33ee015310097f79c8a04bb7c3a8782813e758d523b1db08ae2b14d51f66f"},
+      "bundles/all_bundles.json": {"bytes": 513512, "sha256": "012af060e8630b8980661465b368e129ddeec82dfa7b48e13e7a35a473eb95a8"},
+      "prompts/judge/BINARY_EVALUATION_PROMPT.md": {"bytes": 1476, "sha256": "6c1cac901d820c1ab866e19f9191896e8c97a6aadf35bdae4eac640fd199a3a2"},
+      "schema/hbq_judge_response.schema.json": {"bytes": 1977, "sha256": "49c7d824ba5dd957e67968ba3ae6ceb8a7ed9434dfb0dfc654836a76613c7854"}
+    }
+  },
+  "endpoint_evaluation": {
+    "blind_fields": ["source_item_id", "cycle", "generator_id", "guidance_arm"],
+    "judges": ["gpt-5.6-sol-high", "grok-4.6-high"],
+    "non_cwr_primary": true,
+    "judging_protocol": {"blind": true, "stateless": true, "identical_prompt_per_measure_across_judges": true},
+    "measures": [
+      {"measure_id": "holistic_anchored", "scalar_field": "overall", "minimum": 1, "maximum": 7, "prompt": {"path": "endpoint-instruments/holistic-v1.prompt.md", "bytes": 860, "sha256": "ba5e3b5c7ac61fc8a9f430a98dd47fbb191cfd3c6ba578accdb44d1f7e19e86e"}, "schema": {"path": "endpoint-instruments/holistic-v1.schema.json", "bytes": 676, "sha256": "dfc2dfd731ccf817210b083079e5366c2b59393c6559318860abfc83764f296c"}},
+      {"measure_id": "compact_analytic", "scalar_field": "overall", "minimum": 1, "maximum": 5, "prompt": {"path": "endpoint-instruments/compact-v1.prompt.md", "bytes": 565, "sha256": "e5d8f48f890e72e2c79c07e6fddf1aeddced5d7fbb921c4786f362b4f4d61d4b"}, "schema": {"path": "endpoint-instruments/compact-v1.schema.json", "bytes": 1155, "sha256": "f5a9a7adf753a80dadb3ebf4161c5856feaa117e023eaee527a72c605e305fdd"}}
+    ],
+    "endpoint_order": {"kind": "deterministic_anonymous_balanced", "seed": 560820, "target_count": 54, "calls": 216}
+  },
+  "execution_geometry": {"revision_descendants": 48, "source_baselines": 6, "endpoint_judges": 2, "endpoint_measures": 2, "endpoint_provider_calls": 216, "formula": "(48 descendants + 6 baselines) x 2 judges x 2 measures"},
+  "remote_disclosure": {"required_before_dispatch": true, "destination_roles": ["cwr_feedback", "revision_generation", "blind_endpoint_judgment"], "phase_call_counts": {"cwr_feedback": 24, "revision_generation": 48, "blind_endpoint_judgment": 216}, "payload_composition": {"cwr_feedback": ["one immutable source or parent descendant", "frozen CWR feedback instruction", "pinned CWR runtime"], "revision_generation": ["one immutable source or parent descendant", "one identical neutral base revision instruction", "frozen CWR feedback only for guided cells"], "blind_endpoint_judgment": ["one blinded target artifact", "one frozen endpoint prompt", "one frozen response schema"]}, "acknowledgement": "An owner-reviewed acknowledgement bound to the exact no-prose preview SHA-256 is required before CWR feedback or generation; a separate post-generation endpoint disclosure is required before blinded endpoint judgment.", "payment_settings": "This study never changes account, credit-card, payment, or subscription settings."},
+  "reporting": {"equal_weight_unit": "source_generator_cycle_within_each_judge_measure_scale", "raw_scale_pooling": false, "summaries": ["mean guided-minus-control by judge x measure x scale", "positive-zero-negative directional consistency by judge x measure x scale", "raw paired rows retained; this small development pilot does not estimate an uncertainty interval"], "cycle2_label": "cumulative_from_cycle1_parent", "secondary_endpoint_delta": "cycle2 child-minus-cycle1-parent by guidance arm x judge x measure x scale"},
+  "execution_status": {"cwr_feedback": "precomposition_only_no_composed_rubric_or_provider_payload", "promotion_requires": ["exact_cwr_composition_manifest", "exact_provider_payload_and_schema", "provider_native_transport_receipt"]},
+  "primary_outcome": {"estimand": "Within source, generator, cycle, endpoint judge, and endpoint measure: cwr_guided scalar overall minus generic_no_feedback scalar overall.", "secondary": ["cycle2 child-minus-cycle1-parent endpoint deltas", "CWR finding resolution", "preservation and mechanics checks", "judge disagreement and self-preference diagnostics"], "interpretation_limits": ["Endpoint measures are model judgments, not human ground truth.", "This development pilot cannot establish general literary quality or HANNA alignment.", "CWR scores and feedback are explanatory process data, not the primary success metric."]}
+}

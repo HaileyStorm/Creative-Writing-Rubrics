@@ -1,0 +1,14 @@
+{
+  "format_version": 1,
+  "cwr_feedback_packet": {
+    "maximum_findings": 3,
+    "maximum_words": 360,
+    "required_fields_per_finding": ["location", "observation", "repair_target"],
+    "instruction": "Return at most three localized, evidence-grounded revision findings. Each finding must name a location, state an observable craft issue, and name one repair target. Do not assign an overall quality score, invent text, or prescribe an unrelated rewrite. Keep the complete packet within 360 words."
+  },
+  "neutral_base_revision_instruction": "Produce one revised descendant of the supplied manuscript. Improve the text where warranted while preserving its central events, point of view, and recognizable voice. Do not mention CWR, feedback, scoring, or this instruction in the manuscript. Return only the revised manuscript.",
+  "arm_difference": {
+    "cwr_guided": "Append the frozen CWR feedback packet after the identical neutral base revision instruction.",
+    "generic_no_feedback": "Do not append a feedback packet after the identical neutral base revision instruction."
+  }
+}
