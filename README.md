@@ -65,6 +65,12 @@ pretending they have answers yet:
   freezes portable study geometry and an offline, non-authoritative per-root
   request journal. Native Linux execution, trusted route evidence, and pairing
   remain future work.
+- [Flash-Next Linux portability diagnostic](evaluation-results/hbq-supplemental-providers-flash-next-linux-portability-v1/)
+  binds the exact predecessor contract, adapter, policy, asset manifest,
+  study, and adapter tests. It adds an executable provider-free plan plus a
+  Linux-only, exclusive-published self-integrity diagnostic. It remains
+  explicit NO-GO evidence: no native Linux run, independent attestation,
+  provider/runtime provenance, pairing, or promotion is claimed.
 
 ## Install and try it
 

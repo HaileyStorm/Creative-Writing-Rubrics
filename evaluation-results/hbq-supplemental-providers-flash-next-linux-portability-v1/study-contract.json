@@ -1,0 +1,32 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-supplemental-providers-flash-next-linux-portability-v1",
+  "status": "provider_free_linux_diagnostic_no_go",
+  "semantic_contract_sha256": "3a555b4e95182cdc98222cc577bd638ea5e33bfd03f2ff08b12585482ac3bf12",
+  "predecessor": {
+    "study_id": "hbq-supplemental-providers-flash-next-v1",
+    "assets": [
+      {"path": "evaluation-results/hbq-supplemental-providers-flash-next-v1/study-contract.json", "bytes": 3496, "sha256": "9eb4356a73677ce42f3ef461c87c7bb1127ba6feb227cb579b7aa873e8c2dedc"},
+      {"path": "evaluation-results/hbq-supplemental-providers-flash-next-v1/adapter.py", "bytes": 35583, "sha256": "ffc0d9af0d993e6e3fe87a48ab965770a34bb7b3220554668198deadaa5b31a9"},
+      {"path": "evaluation-results/hbq-supplemental-providers-flash-next-v1/runtime-policy.json", "bytes": 327, "sha256": "3a08f705c146295cf2b469040004208b2414130392ef985ac5b0153b96e52360"},
+      {"path": "evaluation-results/hbq-supplemental-providers-flash-next-v1/adapter-assets.json", "bytes": 1488, "sha256": "0d6382f1658f0bf763fd82abd8136049d4c5d48064e45d2edac7736211d6a191"},
+      {"path": "evaluation-results/hbq-supplemental-providers-flash-next-v1/study.py", "bytes": 10668, "sha256": "2028d245b27a9f231447d1acba00262e28f022d2d10bb9622ba4d569408a1479"},
+      {"path": "tests/test_hbq_flash_next_linux_adapter_v1.py", "bytes": 6374, "sha256": "6b3117e8862fe898ef3774499ca0a4751fba2e9b1a95e9c835dc9721aa295bb8"},
+      {"path": "tests/test_hbq_supplemental_providers_flash_next_v1.py", "bytes": 6432, "sha256": "3908571ae26d21220cb13d3063a2403aebb3e5083cf4f8854d7c7a2ede919c64"}
+    ]
+  },
+  "allowed_cli_commands": ["plan", "verify", "validate-evidence"],
+  "execution_constraints": {
+    "linux_only": true,
+    "evidence_root": "new, caller-supplied, external, non-reparse directory",
+    "action_surface": "no network, provider, dispatch, model, or billing implementation or observed action",
+    "native_portability": "NO_GO_NATIVE_PORTABILITY_OR_PROMOTION"
+  },
+  "evidence_classification": "exclusive_published_self_integrity_linux_diagnostic",
+  "interpretation_limits": [
+    "This successor records an exclusive-published, self-integrity Linux diagnostic of bound offline adapter publication primitives.",
+    "Self-integrity and schema validation do not attest the host, process, source execution, filesystem behavior, or native provenance.",
+    "Root identity checks detect only sampled swaps and do not prove absence of TOCTOU races.",
+    "The diagnostic is always NO-GO for native portability, model-runtime, response provenance, pairing, quality, alignment, revision gain, and promotion."
+  ]
+}
