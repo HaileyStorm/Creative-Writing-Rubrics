@@ -57,8 +57,9 @@ pretending they have answers yet:
   generic revision with blinded, non-CWR endpoint measures. It makes no
   revision-gain claim until independently measured outcomes exist.
 - [Flash-Next/Linux planning](evaluation-results/hbq-supplemental-providers-flash-next-v1/)
-  freezes portable study geometry only. The Linux adapter, route disclosure,
-  and execution remain future work.
+  freezes portable study geometry and an offline, non-authoritative per-root
+  request journal. Native Linux execution, trusted route evidence, and pairing
+  remain future work.
 
 ## Install and try it
 

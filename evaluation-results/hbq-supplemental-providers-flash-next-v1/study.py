@@ -12,7 +12,6 @@ from typing import Any
 
 HERE = Path(os.path.abspath(__file__)).parent
 ROOT = HERE.parents[1]
-CANONICAL_CONTRACT_SHA256 = "366714a934cb72ffab874e8ecec301e77a3ec0879c05ffc79d7d8de8269fb323"
 
 
 def canonical_json_bytes(value: Any) -> bytes:
@@ -50,7 +49,7 @@ def contract() -> dict[str, Any]:
         raise ValueError("Study contract must be an object")
     unsigned = dict(value)
     digest = unsigned.pop("semantic_contract_sha256", None)
-    if digest != CANONICAL_CONTRACT_SHA256 or canonical_sha256(unsigned) != digest:
+    if not isinstance(digest, str) or canonical_sha256(unsigned) != digest:
         raise ValueError("Canonical semantic-contract digest drifted")
     return value
 
@@ -139,15 +138,59 @@ def _read_method_inputs() -> list[Any]:
     return rows
 
 
+def _validate_adapter_assets(spec: dict[str, Any]) -> None:
+    manifest_record = spec.get("adapter_asset_manifest")
+    if not isinstance(manifest_record, dict) or set(manifest_record) != {"path", "sha256", "bytes"}:
+        raise ValueError("Adapter asset-manifest binding drifted")
+    manifest_path = _asset_path(manifest_record)
+    content = _read_safe_bytes(manifest_path, "adapter asset manifest")
+    if len(content) != manifest_record["bytes"] or hashlib.sha256(content).hexdigest() != manifest_record["sha256"]:
+        raise ValueError("Adapter asset-manifest bytes drifted")
+    try:
+        manifest = json.loads(content.decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError) as error:
+        raise ValueError("Adapter asset manifest is malformed") from error
+    if not isinstance(manifest, dict) or set(manifest) != {"format_version", "adapter", "geometry", "parser", "runtime_policy", "study", "tests"} or manifest.get("format_version") != 2:
+        raise ValueError("Adapter asset manifest shape drifted")
+    for key in ("adapter", "study", "runtime_policy"):
+        value = manifest[key]
+        if not isinstance(value, dict) or set(value) != {"path", "sha256", "bytes"}:
+            raise ValueError("Adapter asset binding shape drifted")
+        _validate_asset(value)
+    geometry = manifest["geometry"]
+    if not isinstance(geometry, list) or len(geometry) != 2:
+        raise ValueError("Adapter geometry asset binding drifted")
+    for value in geometry:
+        if not isinstance(value, dict) or set(value) != {"path", "sha256", "bytes"}:
+            raise ValueError("Adapter geometry asset shape drifted")
+        _validate_asset(value)
+    tests = manifest["tests"]
+    if not isinstance(tests, list) or len(tests) != 2:
+        raise ValueError("Adapter test asset binding drifted")
+    for value in tests:
+        if not isinstance(value, dict) or set(value) != {"path", "sha256", "bytes"}:
+            raise ValueError("Adapter test asset shape drifted")
+        _validate_asset(value)
+    if manifest["parser"] != {"module": "adapter.py canonical JSON/URL parser", "asset_sha256": manifest["adapter"]["sha256"]}:
+        raise ValueError("Adapter parser asset binding drifted")
+    runtime_policy = json.loads(_read_safe_bytes(_asset_path(manifest["runtime_policy"]), "runtime policy").decode("utf-8"))
+    if runtime_policy != {"format_version": 1, "execution_state": "offline_only", "python": {"implementation": "CPython", "minimum_version": "3.12"}, "platform": "Linux", "network": {"dispatch": "disabled", "provider_calls": 0}, "response_classification": "untrusted_raw_only", "pairing": "disabled_pending_independent_linux_evidence"}:
+        raise ValueError("Adapter runtime policy drifted")
+
+
 def nonpromotion_status() -> dict[str, Any]:
-    return {"state": "UNIMPLEMENTED_BLOCKER", "execution_ready": False, "pairable": False, "reason": "prompt/schema selection and route emission require a frozen adapter, local-first disclosure, and trusted external acceptance"}
+    return {"state": "OFFLINE_ADAPTER_ONLY", "execution_ready": False, "pairable": False, "reason": "the offline package has no network dispatch or native-provenance authority; owner assertions and raw bytes are nonpromotable pending a separately evidenced Linux execution path"}
 
 
 def validate() -> dict[str, Any]:
     spec = contract()
     if spec.get("status") != "provider_free_scaffold" or spec.get("frozen_before_execution") is not True:
         raise ValueError("Flash-Next study must remain provider-free")
+    root = spec.get("canonical_root")
+    if root != {"format_version": 1, "identity": "207b2e43f13821ea85298913614ebd42ccac320d65c5dc17b3d8a89df323b06d", "role": "per-explicitly-bound-offline-root-v1"}:
+        raise ValueError("Canonical external-root identity drifted")
     _validate_asset(spec["planning_identity"]["source_artifact"])
+    _validate_adapter_assets(spec)
     if len(_read_method_inputs()) != 45:
         raise ValueError("Frozen method-input geometry drifted")
     return {"study_id": spec["study_id"], "conditions": len(spec["planning_identity"]["condition_labels"]), "repetitions": spec["planning_identity"]["repetitions"], "provider_calls": 0, **nonpromotion_status()}

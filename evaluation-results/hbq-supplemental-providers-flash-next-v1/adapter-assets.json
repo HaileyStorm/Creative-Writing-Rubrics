@@ -1,0 +1,15 @@
+{
+  "format_version": 2,
+  "adapter": {"path": "evaluation-results/hbq-supplemental-providers-flash-next-v1/adapter.py", "sha256": "ffc0d9af0d993e6e3fe87a48ab965770a34bb7b3220554668198deadaa5b31a9", "bytes": 35583},
+  "geometry": [
+    {"path": "evaluation-results/hbq-supplemental-providers-flash-next-v1/method-inputs.jsonl", "sha256": "1c665a1e8f5df59f977da11c3a0d3911ede1870b586634447d8402c1e86da37d", "bytes": 56975},
+    {"path": "evaluation-results/the-part-that-arrives-first-repeatability/source.md", "sha256": "ed6fb2e19f07174f56eb02e0a5d4c4419eecba324752881439b9b2992f082729", "bytes": 64490}
+  ],
+  "parser": {"module": "adapter.py canonical JSON/URL parser", "asset_sha256": "ffc0d9af0d993e6e3fe87a48ab965770a34bb7b3220554668198deadaa5b31a9"},
+  "runtime_policy": {"path": "evaluation-results/hbq-supplemental-providers-flash-next-v1/runtime-policy.json", "sha256": "3a08f705c146295cf2b469040004208b2414130392ef985ac5b0153b96e52360", "bytes": 327},
+  "study": {"path": "evaluation-results/hbq-supplemental-providers-flash-next-v1/study.py", "sha256": "2028d245b27a9f231447d1acba00262e28f022d2d10bb9622ba4d569408a1479", "bytes": 10668},
+  "tests": [
+    {"path": "tests/test_hbq_flash_next_linux_adapter_v1.py", "sha256": "6b3117e8862fe898ef3774499ca0a4751fba2e9b1a95e9c835dc9721aa295bb8", "bytes": 6374},
+    {"path": "tests/test_hbq_supplemental_providers_flash_next_v1.py", "sha256": "3908571ae26d21220cb13d3063a2403aebb3e5083cf4f8854d7c7a2ede919c64", "bytes": 6432}
+  ]
+}

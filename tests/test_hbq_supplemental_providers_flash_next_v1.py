@@ -27,10 +27,10 @@ def test_provider_neutral_method_input_checkpoint_is_nonpromotable():
     study = load()
     result = study.validate()
     assert result["provider_calls"] == 0
-    assert result["state"] == "UNIMPLEMENTED_BLOCKER"
+    assert result["state"] == "OFFLINE_ADAPTER_ONLY"
     assert result["execution_ready"] is False and result["pairable"] is False
     contract = study.contract()
-    assert set(contract) == {"format_version", "study_id", "status", "frozen_before_execution", "purpose", "semantic_contract_sha256", "planning_identity", "method_input_manifest", "invariants", "interpretation_limits"}
+    assert set(contract) == {"format_version", "study_id", "status", "frozen_before_execution", "canonical_root", "purpose", "semantic_contract_sha256", "planning_identity", "method_input_manifest", "adapter_asset_manifest", "invariants", "interpretation_limits"}
     assert set(contract["method_input_manifest"]) == {"artifact", "row_required_fields", "contents", "route_specific_transport"}
 
 

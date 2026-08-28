@@ -1,0 +1,9 @@
+{
+  "format_version": 1,
+  "execution_state": "offline_only",
+  "python": {"implementation": "CPython", "minimum_version": "3.12"},
+  "platform": "Linux",
+  "network": {"dispatch": "disabled", "provider_calls": 0},
+  "response_classification": "untrusted_raw_only",
+  "pairing": "disabled_pending_independent_linux_evidence"
+}
