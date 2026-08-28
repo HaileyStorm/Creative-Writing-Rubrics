@@ -1,6 +1,6 @@
 # Current matched Grok/Sol calibration screen
 
-This is a small, public-synthetic, current-HEAD verdict-agreement calibration screen for Grok 4.6 alongside GPT-5.6 Sol during development. It is deliberately narrower than a literary-quality, HANNA, or release study: it measures agreement and frozen-design-intent error patterns on matched leaf inputs, not judge interchangeability, material compatibility, or writing quality.
+This is a small, public-synthetic verdict-agreement calibration screen bound to exact HBQ-RS runtime hashes for Grok 4.6 alongside GPT-5.6 Sol during development. It is deliberately narrower than a literary-quality, HANNA, or release study: it measures agreement and frozen-design-intent error patterns on matched leaf inputs, not judge interchangeability, material compatibility, or writing quality.
 
 The frozen protocol has 12 synthetic cases across task, form, core, craft, and penalty concerns; it includes all four HBQ verdict states, runs each condition three times, and permits exactly one provider attempt per singleton. The optional future candidate condition is off by default and stays separate from the Sol/Grok comparison.
 
@@ -10,10 +10,10 @@ The package emits only `DEVELOPMENT_SCREENING_FIXTURE` structural evidence and l
 
 The analyzer reports four-state cross-judge confusion, each judge's confusion and exact agreement against frozen case design intent, a case/repetition disagreement ledger, joint YES/NO binary agreement, and source-specific exact-quote offsets. The ledger retains both judges' evidence so exact agreement cannot hide a common-mode error. It deliberately does not invent a score/rank metric for a one-leaf screen or use a free-form result JSONL. The current runner does not persist structured elapsed time, scope classification, or materiality classification; those limits stay explicit. `joint_no_same_declared_leaf` is a narrow observation label, not a materiality metric.
 
-Earlier aggregate Grok/Sol evidence remains separately documented historical context until its public artifact and exact binding are identified. It is not a result of this frozen current-HEAD protocol.
+Earlier aggregate Grok/Sol evidence remains separately documented historical context until its public artifact and exact binding are identified. It is not a result of this exact-runtime-bound protocol.
 
 ## Execution boundary
 
-`orchestrator.py inspect` performs a local, provider-free check of one scheduled cell and its exact public outbound bytes. `execute` is intentionally fail-closed on this host: `trusted_launcher.py` binds the installed launcher, `hbqrs.runner.run_judge`, and Python bytes, then reports that no independently trusted launch authority is installed. A locally authored receipt, proof, callback, or substitute runner cannot turn that state into a dispatch authorization.
+`orchestrator.py inspect` performs a local, provider-free check of one scheduled cell and its exact public outbound bytes. `execute` is intentionally fail-closed in this package because no independently trusted launch authority or dispatch implementation is bundled. `trusted_launcher.py` binds the installed launcher, `hbqrs.runner.run_judge`, and Python bytes; a locally authored receipt, proof, callback, or substitute runner cannot turn that state into a dispatch authorization.
 
 Completed native evidence can be revalidated through `validate_completed_cell`, which reuses the analyzer's exact V4 run-manifest, configuration, prompt, checkpoint, raw-response, effective-setting, provider-artifact, and Grok envelope/session/request checks. An interrupted intent is recoverable only as a no-resend classification. This preserves a development-only, nonpromotable screen: Sol remains consequential; Grok remains a development screen until separately measured evidence changes that decision.

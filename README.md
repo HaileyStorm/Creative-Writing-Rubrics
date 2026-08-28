@@ -34,9 +34,9 @@ default hierarchy of literary quality.
 ## Active work, not results
 
 The live V8 multisample continuation is an **unpublished operational
-checkpoint**, validated through sequence 204. It is proceeding one settled,
-trace-bound sequence at a time; it is not a new public repeatability result
-until the complete run and its analysis pass their integrity gates.
+checkpoint**, proceeding one settled, trace-bound sequence at a time. Its exact
+live sequence count is not promoted here; it becomes a public repeatability
+result only after completion and integrity-checked analysis.
 
 Four committed study packages make the next questions reproducible without
 pretending they have answers yet:
@@ -47,8 +47,10 @@ pretending they have answers yet:
   groups and Sol/Grok schedule are frozen. An externally gated, one-cell,
   no-resend driver now exists; remote execution, empirical optimization, and
   confirmation are still pending.
-  DSPy and Optuna are optional, offline development helpers only, with no
-  runtime or sealed-confirmation role.
+  Provider-free candidate generation, Optuna legal-factor exploration, and a
+  DSPy wording-adapter contract exist. No empirical DSPy/Optuna optimization
+  or remote HANNA execution has run; confirmation remains pending. Neither
+  dependency is used at runtime or on sealed confirmation data.
 - [Matched Grok/Sol calibration](evaluation-results/hbq-grok-sol-current-matched-v1/)
   is a provider-free, public-synthetic pre-execution screen. It will measure
   a narrow matched-verdict agreement question, not declare judge
@@ -187,7 +189,8 @@ print(report["status"], report["final_score"])
 
 Release checks cover fresh-clone and isolated-wheel installation, CLI and
 Python APIs, strict schemas, local endpoint transport, public-result verifiers,
-and the provider-backed study paths described in the evidence packages. The
+and provider-adapter/evidence-validation paths. Actual remote-execution
+evidence is package-specific and explicitly labeled. The
 public case studies preserve their own contracts, manifests, aggregate outputs,
 and privacy checks; private manuscript prose and raw model responses are not
 distributed.
