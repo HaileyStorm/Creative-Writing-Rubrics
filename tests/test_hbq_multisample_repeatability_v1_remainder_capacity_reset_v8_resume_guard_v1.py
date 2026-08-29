@@ -199,6 +199,17 @@ def test_physical_count_must_equal_journal_and_source_is_unchanged(guard: Module
     assert hashlib.sha256(V8_PATH.read_bytes()).hexdigest() == source_before
 
 
+def test_duplicate_identical_provider_contact_rows_are_rejected(guard: ModuleType, v8: ModuleType, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+    schedule = _events()
+    work = _prepared_work(v8, tmp_path)
+    _write_hbq_output(v8, work, schedule[1])
+    contact = {"event": "provider-contacts", "sequence": 183, "recorded_provider_contacts": 6}
+    _append_jsonl(work / v8.JOURNAL, contact, contact)
+    root = _prepare_guard(guard, v8, tmp_path, monkeypatch, accepted=schedule[:2], schedule=schedule, work=work)
+    with pytest.raises(ValueError, match="duplicate sequence"):
+        guard.preflight(source_root=tmp_path / "source", closed_root=tmp_path / "closed", v7_root=tmp_path / "v7", work_root=work, guard_root=root, v8_runtime_root=V8_PATH.parent)
+
+
 def test_default_dispatch_is_provider_disabled_before_any_intent(guard: ModuleType, v8: ModuleType, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
     schedule = _events()
     work = _prepared_work(v8, tmp_path)
@@ -206,6 +217,24 @@ def test_default_dispatch_is_provider_disabled_before_any_intent(guard: ModuleTy
     with pytest.raises(ValueError, match="disabled"):
         guard.dispatch_next(source_root=tmp_path / "source", closed_root=tmp_path / "closed", v7_root=tmp_path / "v7", work_root=work, guard_root=root, v8_runtime_root=V8_PATH.parent)
     assert [row["event"] for row in guard._guard_rows(root)] == ["guard-prepared"]
+
+
+def test_guard_claim_and_journal_bind_complete_event_identity(guard: ModuleType, v8: ModuleType, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+    schedule = _events()
+    work = _prepared_work(v8, tmp_path)
+    root = _prepare_guard(guard, v8, tmp_path, monkeypatch, accepted=schedule[:1], schedule=schedule, work=work)
+    claim = guard._create_claim(root, schedule[1])
+    guard._append_guard(root, {**claim, "event_sha256": "b" * 64})
+    with pytest.raises(ValueError, match="journal event identity"):
+        guard.preflight(source_root=tmp_path / "source", closed_root=tmp_path / "closed", v7_root=tmp_path / "v7", work_root=work, guard_root=root, v8_runtime_root=V8_PATH.parent)
+
+    second = tmp_path / "second-guard"
+    guard.prepare_guard(source_root=tmp_path / "source", closed_root=tmp_path / "closed", v7_root=tmp_path / "v7", work_root=work, guard_root=second, v8_runtime_root=V8_PATH.parent)
+    claim = guard._create_claim(second, schedule[1])
+    (second / guard.CLAIMS / "sequence-0183.json").write_text(json.dumps({**claim, "event_sha256": "c" * 64}), encoding="utf-8")
+    guard._append_guard(second, claim)
+    with pytest.raises(ValueError, match="claim event identity"):
+        guard.preflight(source_root=tmp_path / "source", closed_root=tmp_path / "closed", v7_root=tmp_path / "v7", work_root=work, guard_root=second, v8_runtime_root=V8_PATH.parent)
 
 
 def test_unresolved_v8_state_is_rejected_before_mutating_accepted_path(guard: ModuleType, v8: ModuleType, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):

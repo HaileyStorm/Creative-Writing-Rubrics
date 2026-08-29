@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import re
 import stat
 import types
 from contextlib import contextmanager
@@ -254,15 +255,28 @@ def _claims(root: Path) -> dict[int, dict[str, Any]]:
     return values
 
 
+def _event_hashes(accepted: list[Mapping[str, Any]], next_event: Mapping[str, Any]) -> dict[int, str]:
+    values: dict[int, str] = {}
+    for event in [*accepted, next_event]:
+        sequence = event.get("sequence")
+        if not isinstance(sequence, int) or sequence in values:
+            raise ValueError("V8 accepted or next event identity is malformed")
+        values[sequence] = hashlib.sha256(canonical(event)).hexdigest()
+    return values
+
+
 def _validate_guard_journal(root: Path, accepted: list[Mapping[str, Any]], next_event: Mapping[str, Any], *, pending_completion: int | None = None) -> set[int]:
     rows = _guard_rows(root)
     active: dict[int, dict[str, Any]] = {}
     completed: set[int] = set()
     accepted_sequences = {int(row["sequence"]) for row in accepted}
+    commitments = _event_hashes(accepted, next_event)
     for row in rows[1:]:
         sequence = row.get("sequence")
         if not isinstance(sequence, int):
             raise ValueError("Guard journal sequence is malformed")
+        if not isinstance(row.get("event_sha256"), str) or not re.fullmatch(r"[0-9a-f]{64}", row["event_sha256"]) or commitments.get(sequence) != row["event_sha256"]:
+            raise ValueError("Guard journal event identity commitment drifted")
         if row.get("event") == "delegate-intent":
             if set(row) != {"event", "sequence", "event_sha256"} or sequence in active or sequence in completed:
                 raise ValueError("Guard intent is malformed or repeated")
@@ -284,9 +298,19 @@ def _validate_guard_journal(root: Path, accepted: list[Mapping[str, Any]], next_
     return completed
 
 
+def _validate_claim_identities(root: Path, accepted: list[Mapping[str, Any]], next_event: Mapping[str, Any]) -> dict[int, dict[str, Any]]:
+    claims = _claims(root)
+    commitments = _event_hashes(accepted, next_event)
+    for sequence in claims:
+        claim = claims[sequence]
+        if not isinstance(claim.get("event_sha256"), str) or not re.fullmatch(r"[0-9a-f]{64}", claim["event_sha256"]) or commitments.get(sequence) != claim["event_sha256"]:
+            raise ValueError("Guard claim event identity commitment drifted")
+    return claims
+
+
 def _validate_claims(root: Path, accepted: list[Mapping[str, Any]], next_event: Mapping[str, Any], completed: set[int], *, pending_completion: int | None = None) -> None:
     accepted_sequences = {int(event["sequence"]) for event in accepted}
-    claims = _claims(root)
+    claims = _validate_claim_identities(root, accepted, next_event)
     next_sequence = int(next_event["sequence"])
     if next_sequence in claims:
         raise ValueError("An existing guard claim blocks rerun or resend of the next V8 sequence")
@@ -329,7 +353,16 @@ def _assert_no_unresolved_v8_state(v8: Any, work: Path) -> None:
 
 def _recompute_contacts(v8: Any, work: Path, accepted: list[Mapping[str, Any]]) -> int:
     rows = _jsonl(work / v8.JOURNAL)
-    journaled = {row.get("sequence"): row for row in rows if row.get("event") == "provider-contacts"}
+    journaled: dict[int, dict[str, Any]] = {}
+    for row in rows:
+        if row.get("event") != "provider-contacts":
+            continue
+        sequence = row.get("sequence")
+        if not isinstance(sequence, int):
+            raise ValueError("V8 provider-contact journal sequence is malformed")
+        if sequence in journaled:
+            raise ValueError("V8 provider-contact journal has a duplicate sequence")
+        journaled[sequence] = row
     total = 0
     for event in accepted:
         sequence = int(event["sequence"])
@@ -381,6 +414,7 @@ def preflight(
     else:
         next_event = remaining[0]
         target._require_no_orphan_output_cells(work, remaining)
+    _validate_claim_identities(root, accepted, next_event)
     completed = _validate_guard_journal(root, accepted, next_event, pending_completion=_pending_completion)
     _validate_claims(root, accepted, next_event, completed, pending_completion=_pending_completion)
     contacts = _recompute_contacts(target, work, accepted)
