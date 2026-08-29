@@ -1,0 +1,74 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-human-alignment-optimizer-v2",
+  "kind": "provider_free_supplied_receipt_development_analyzer_selection_preview",
+  "parent": {
+    "study_id": "hbq-human-alignment-optimizer-v1",
+    "study_contract_sha256": "c57c72370d5c6b9a0a581846fc10be51a370b2fcbd5f3a31e437e88f5df025ba",
+    "study_source_sha256": "0651e7eb412ed8cf71b0cbc0db0440953a977224c83dda25eda141cb4b9f8acf",
+    "offline_harness_sha256": "a0b660e184fb8bbc7d28c6e03f66e20261771e08f85ca63ada936f9f08e2f012",
+    "execution_freeze_sha256": "6c80090b21f4bd9a8cb3aa7e48dd3cd55dc0cf3a770e0019170880a38eb78413"
+  },
+  "geometry": {
+    "eligible_items": 80,
+    "prompt_groups": 39,
+    "partitions": {
+      "train": {"items": 48, "groups": 24},
+      "development": {"items": 13, "groups": 7},
+      "confirmation": {"items": 19, "groups": 8}
+    },
+    "candidates": 6,
+    "providers": ["gpt-5.6-sol", "grok-4.6"],
+    "required_native_cells": 732,
+    "train_cells": 576,
+    "development_cells": 156,
+    "confirmation_cells": 0
+  },
+  "native_evidence": {
+    "format": "canonical_json_exact_raw_native_cell_receipts_v1",
+    "cell_fields": ["cell_id", "task_payload_sha256", "native_response_base64", "native_receipt"],
+    "caller_aggregates_accepted": false,
+    "complete_schedule_required": true,
+    "raw_native_bytes_hashed_without_reserialization": true,
+    "receipt_binding_verifier_required": true,
+    "request_response_provider_model_transport_and_contact_identity_binding_required": true,
+    "cryptographically_pinned_external_trust_root": false,
+    "empirical_selection_authority": "none_until_a_versioned_successor_pins_and_verifies_an_external_trust_root"
+  },
+  "endpoint": {
+    "dimensions": ["Relevance", "Coherence", "Empathy", "Surprise", "Engagement", "Complexity"],
+    "unit": "prompt_group_equal_weight",
+    "development_group_count": 7,
+    "within_group_aggregation": "arithmetic_mean_of_item_values_per_dimension",
+    "macro_spearman": "arithmetic_mean_of_six_tie_aware_spearman_coefficients_across_seven_prompt_group_means",
+    "mean_absolute_error": "arithmetic_mean_of_42_prompt_group_by_dimension_absolute_errors",
+    "all_six_spearman_coefficients_required_for_every_reported_development_endpoint": true,
+    "selection_preview_partition": "development",
+    "selection_preview_provider": "gpt-5.6-sol",
+    "tie_breakers": ["mean_absolute_error:ascending", "candidate_id:lexicographic"],
+    "grok_role": "separate_descriptive_screen_guard_only"
+  },
+  "optimizer_interfaces": {
+    "dspy": {"development_only": true, "runtime_dependency": false, "selection_authority": "none"},
+    "optuna": {"development_only": true, "runtime_dependency": false, "selection_authority": "none"}
+  },
+  "confirmation": {
+    "status": "unopened",
+    "accepted_evidence_cells": 0,
+    "selection_cannot_open_confirmation": true
+  },
+  "outputs": {
+    "aggregate_only": true,
+    "no_overwrite_atomic_file": true,
+    "provenance": ["analyze_py_sha256", "python_implementation", "python_version", "python_cache_tag", "unicode_database_version", "runtime_identity_sha256"],
+    "forbidden": ["prompt prose", "story prose", "raw provider response", "session identifier", "request identifier", "local path"]
+  },
+  "interpretation_limits": [
+    "HANNA is human-reference context, not literary ground truth.",
+    "A development selection is neither a production prompt nor a confirmed alignment gain.",
+    "Receipt binding labels are caller-supplied and not cryptographic external trust; all metrics and the deterministic selection preview are non-empirical.",
+    "Grok endpoints are descriptive and never pooled with or substituted for the Sol selector.",
+    "The parent v1 Sol adapter does not transmit or natively attest its configured reasoning effort; the Grok adapter requests but does not natively attest reasoning effort.",
+    "This analyzer makes no provider calls and accepts no caller-supplied aggregate metrics."
+  ]
+}
