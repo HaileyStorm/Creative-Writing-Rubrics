@@ -393,6 +393,7 @@ def _call_codex(
     batch_number: int,
     timeout: float,
     attempt_number: int = 1,
+    before_provider_attempt: Callable[[], None] | None = None,
 ) -> tuple[str, dict[str, Any]]:
     message_path = output_dir / "responses" / f"batch-{batch_number:04d}.attempt-{attempt_number:04d}.message.json"
     if message_path.exists():
@@ -466,8 +467,11 @@ def _call_codex(
         "-",
     ]
     try:
+        command = _command_argv(executable, arguments)
+        if before_provider_attempt is not None:
+            before_provider_attempt()
         completed = subprocess.run(
-            _command_argv(executable, arguments),
+            command,
             input=prompt,
             text=True,
             encoding="utf-8",

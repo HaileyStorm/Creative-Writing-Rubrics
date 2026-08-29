@@ -32,6 +32,7 @@ dependencies = ["pyyaml>=6.0", "jsonschema>=4.0"]
 # Compatibility alias for existing `.[schema]` installs; validation is now available in the base package.
 schema = ["jsonschema>=4.0"]
 dev = ["hatchling>=1.27", "pytest>=8.0"]
+hanna-dev = ["dspy==3.3.1", "optuna==4.9.0"]
 
 [project.scripts]
 cwr = "hbqrs.cli:main"

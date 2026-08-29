@@ -39,22 +39,22 @@ trace-bound sequence at a time. Its exact live sequence count is not promoted
 here; it becomes a public repeatability result only after completion and
 integrity-checked analysis.
 
-Five committed study packages make the next questions reproducible without
+The committed study packages make the next questions reproducible without
 pretending they have answers yet:
 
-- [HANNA optimizer v1](evaluation-results/hbq-human-alignment-optimizer-v1/)
-  is a frozen development scaffold for the correct 80-item, 39-prompt-group
-  Fresh88 geometry. Its 48/13/19-item split across 24/7/8 disjoint prompt
-  groups and Sol/Grok schedule are frozen. An externally gated, one-cell,
-  no-resend driver now exists; remote execution, empirical optimization, and
-  confirmation are still pending.
-  Provider-free candidate generation is implemented, with only local,
-  legal-factor Optuna exploration. A train-only DSPy data adapter derives 288
-  local examples from pinned sources, binding exact candidate, prompt, story,
-  and published human-reference targets without aggregating or emitting
-  held-out targets. No empirical DSPy/Optuna optimization or remote HANNA
-  execution has run; confirmation remains pending. Neither dependency is used
-  at runtime.
+- [HANNA optimizer v3](evaluation-results/hbq-human-alignment-optimizer-v3/)
+  freezes five prompt candidates, the corrected 80-item/39-prompt-group
+  Fresh88 geometry, and disjoint 48/13/19-item train/development/confirmation
+  partitions. Its [native-subscription v4 successor](evaluation-results/hbq-human-alignment-optimizer-v4-native-subscription-v1/)
+  keeps the exact prompt bytes while naming Grok Build and Codex ChatGPT
+  subscription routes honestly. The mandatory development gate is 65 Grok
+  cells followed by 35 unchanged Sol validation cells; the 360-cell training
+  pool is optional and confirmation remains unopened.
+  The separate [development optimizer](evaluation-results/hbq-human-alignment-optimizer-v4-development-optimizer-v1/)
+  can run deterministic Optuna search only over independently verified raw
+  training cells and exposes a development-only DSPy program for versioned
+  prompt descendants. Provider calls, empirical optimization, and confirmation
+  have not run; neither dependency is imported by the scoring runtime.
 - [Matched Grok/Sol calibration](evaluation-results/hbq-grok-sol-current-matched-v1/)
   is a provider-free, public-synthetic pre-execution screen. It will measure
   a narrow matched-verdict agreement question, not declare judge
@@ -81,6 +81,8 @@ pip install "git+https://github.com/HaileyStorm/Creative-Writing-Rubrics.git"
 ```
 
 From a clone, install development dependencies with `pip install -e ".[dev]"`.
+HANNA prompt-development work additionally uses
+`pip install -e ".[dev,hanna-dev]"`; DSPy and Optuna remain development-only.
 Python 3.10+ is supported. The CLI is `cwr` (with `hbq` as an alias).
 
 Score the included example verdicts, inspect a bundle, or render a

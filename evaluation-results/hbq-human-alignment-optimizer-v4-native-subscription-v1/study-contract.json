@@ -1,0 +1,51 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-human-alignment-optimizer-v4-native-subscription-v1",
+  "kind": "provider_free_native_subscription_development_executor",
+  "parent": {
+    "study_id": "hbq-human-alignment-optimizer-v3",
+    "schedule_reuse": "exact_prompt_component_bytes_and_pinned_v2_equal_group_endpoint"
+  },
+  "routes": {
+    "grok_primary": {
+      "provider": "xai_grok_build",
+      "destination": "xai_grok_build_subscription",
+      "requested_model": "grok-4.6",
+      "effective_model": "grok-4.6-build",
+      "provider_reported_model": "grok-4.6-build",
+      "reasoning_attested": false,
+      "tool_policy": "tool_free_no_web_no_plan_no_subagents"
+    },
+    "sol_validation": {
+      "provider": "openai_codex",
+      "destination": "openai_codex_chatgpt_subscription",
+      "requested_model": "gpt-5.6-sol",
+      "effective_model": "gpt-5.6-sol",
+      "provider_reported_model": null,
+      "identity_evidence": "requested_and_local_effective_settings_only_not_provider_attested",
+      "tool_policy": "tool_free_no_web_no_plan_no_subagents"
+    }
+  },
+  "geometry": {
+    "mandatory_development": {"grok": 65, "sol": 35, "total": 100},
+    "optional_training_pool": {"grok": 240, "sol": 120, "total": 360},
+    "confirmation_cells": 0
+  },
+  "execution": {
+    "payload": "exact_unchanged_task_instruction_profile_schema_prompt_story_bytes",
+    "contact_rule": "exclusive_intent_before_contact_one_native_call_max",
+    "ambiguous_rule": "reconcile_required_no_auto_resend",
+    "zero_charge_only": true,
+    "paid_fallback_forbidden": true,
+    "api_fallback_forbidden": true,
+    "live_runner": "absent_private_seam"
+  },
+  "optimizer": {
+    "training_pool": "optional_development_only",
+    "dspy_runtime_dependency": false,
+    "optuna_runtime_dependency": false,
+    "selection_authority": "none"
+  },
+  "confirmation": {"status": "unopened", "scheduled_cells": 0},
+  "result_authority": "development_evidence_only_pending_independent_adapter_receipt_and_native_request_review"
+}

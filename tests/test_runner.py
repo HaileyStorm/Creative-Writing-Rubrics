@@ -1435,6 +1435,73 @@ def test_codex_backend_uses_schema_and_read_only_ephemeral_exec(tmp_path: Path, 
     assert "stderr_tail" not in response["provider"]
 
 
+def test_codex_before_provider_attempt_is_not_called_for_precontact_rejection(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    message_path = tmp_path / "responses" / "batch-0001.attempt-0001.message.json"
+    message_path.parent.mkdir(parents=True)
+    message_path.write_text("{}", encoding="utf-8")
+    schema = tmp_path / "schema.json"
+    schema.write_text("{}", encoding="utf-8")
+    observed: list[str] = []
+
+    monkeypatch.setattr(
+        "hbqrs.runner.subprocess.run",
+        lambda *_args, **_kwargs: pytest.fail("precontact rejection launched Codex"),
+    )
+    with pytest.raises(HBQError, match="output path already exists"):
+        _call_codex(
+            executable="codex-fixture",
+            model="gpt-5.6-sol",
+            reasoning="high",
+            prompt="judge this",
+            output_dir=tmp_path,
+            response_schema=schema,
+            batch_number=1,
+            timeout=10,
+            before_provider_attempt=lambda: observed.append("called"),
+        )
+    assert observed == []
+
+
+def test_codex_before_provider_attempt_is_called_once_at_launch(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    schema = tmp_path / "schema.json"
+    schema.write_text("{}", encoding="utf-8")
+    events: list[str] = []
+
+    def fake_run(argv: list[str], **_kwargs: object) -> subprocess.CompletedProcess[str]:
+        events.append("subprocess")
+        message_path = Path(argv[argv.index("--output-last-message") + 1])
+        message_path.parent.mkdir(parents=True, exist_ok=True)
+        message_path.write_text("{}", encoding="utf-8")
+        stderr = "model: gpt-5.6-sol\nprovider: openai\nreasoning effort: high\nsession id: fixture\nuser\n"
+        return subprocess.CompletedProcess(argv, 0, stdout="", stderr=stderr)
+
+    monkeypatch.setattr("hbqrs.runner.subprocess.run", fake_run)
+    content, record = _call_codex(
+        executable="codex-fixture",
+        model="gpt-5.6-sol",
+        reasoning="high",
+        prompt="judge this",
+        output_dir=tmp_path,
+        response_schema=schema,
+        batch_number=1,
+        timeout=10,
+        before_provider_attempt=lambda: events.append("before_provider_attempt"),
+    )
+
+    assert content == "{}"
+    assert record["reported"] == {
+        "model": "gpt-5.6-sol",
+        "provider": "openai",
+        "reasoning_effort": "high",
+        "session_id": "fixture",
+    }
+    assert events == ["before_provider_attempt", "subprocess"]
+
+
 def test_codex_environment_retains_only_auth_paths_and_safe_process_keys(monkeypatch) -> None:
     for name in runner_module._CODEX_ENVIRONMENT_KEYS:
         monkeypatch.delenv(name, raising=False)
