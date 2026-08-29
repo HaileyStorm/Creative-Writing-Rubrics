@@ -137,3 +137,23 @@ any future adapter is considered.
 Cycle-two composition additionally requires a validated immutable cycle-one
 revision-lineage manifest in the same work root; its declared parent
 descendant, rather than caller-selected bytes, is the only accepted input.
+
+## Provider-free deterministic checks
+
+`deterministic_checks.py` computes exact source/descendant counts and fixed
+mechanics, repetition, prompt-overlap, and voice/style proxies. These are
+descriptive review aids only: they do not score literary quality, parse prompt
+constraints, establish instruction following, or demonstrate revision gain.
+Run it against immutable local inputs and a versioned descendant:
+
+```powershell
+python evaluation-results/cwr-guided-revision-gain-v1/deterministic_checks.py `
+  --source C:\path\to\source.md `
+  --descendant C:\path\to\descendant.md `
+  --originating-prompt C:\path\to\prompt.md `
+  --output C:\path\to\local-evidence\deterministic-checks.json
+```
+
+The optional prompt-overlap output contains matching prompt tokens. Keep that
+output in the authorized local evidence root, or redact those tokens before
+publishing summaries; the public package remains identifiers/fingerprints-only.
