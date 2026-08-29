@@ -1,0 +1,14 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-multisample-repeatability-v1-remainder-capacity-reset-v8-resume-guard-v1",
+  "status": "CONTROL_GUARD_ONLY",
+  "purpose": "Provider-free pre-delegation control for an immutable V8 multisample work root.",
+  "claims": {"scientific_result": false, "provider_execution": false, "remote_dispatch": false},
+  "pinned_v8_runtime": {"root": "explicit external runtime root, bound per guard root", "executor_relative_path": "executor.py", "executor_sha256": "515ea015074883be64b64ec63b832c00c8452e65cd1786dd9ba81dc23b92b2d6", "study_id": "hbq-multisample-repeatability-v1-remainder-capacity-reset-successor-v8"},
+  "invariants": [
+    "V8 source/runtime and prepared external-root identities are bound before delegation.",
+    "Physical session topology must equal V8 journaled provider-contact rows.",
+    "An unresolved V8 or guard intent is terminal for this controller and cannot be resent.",
+    "An exclusive immutable per-sequence claim spans delegation and completion is recorded only after a second read-only V8 validation."
+  ]
+}
