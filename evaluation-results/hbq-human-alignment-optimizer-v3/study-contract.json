@@ -1,0 +1,96 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-human-alignment-optimizer-v3",
+  "kind": "grok_primary_sol_cross_model_generalization_gate",
+  "parent": {
+    "study_id": "hbq-human-alignment-optimizer-v2",
+    "analyze_sha256": "dc8479a962e4a0e2d0082a4619e0e52922d9d82663bd97bc6e17694781aef822",
+    "study_contract_sha256": "b7623ff071ebf5404269fd6534a13901845e9ce5350bdab81c9d59b6e96932d5",
+    "reuse": "split_derivation_equal_group_endpoint_and_selection_key"
+  },
+  "governing_invariant": "Grok supplies iteration volume, but no candidate may be promoted for being Grok-specific; the Grok choice is frozen before Sol validation and Sol may validate or veto but never select an alternative.",
+  "baseline": {
+    "candidate_id": "candidate-52d1be4bc34e0018",
+    "candidate_sha256": "52d1be4bc34e001860137edb6b215738baae5e6f1e4c97ef405091c945e576f9",
+    "kind": "predeclared_first_deterministic_parent_control"
+  },
+  "candidate_pack": {
+    "count": 5,
+    "control_selection": "lexicographically_first_maximum_hamming_distance_pair_over_four_v1_factor_fields",
+    "parent_controls": [
+      {"candidate_id": "candidate-52d1be4bc34e0018", "candidate_sha256": "52d1be4bc34e001860137edb6b215738baae5e6f1e4c97ef405091c945e576f9"},
+      {"candidate_id": "candidate-b0132f5204b87586", "candidate_sha256": "b0132f5204b8758666abbdcc92b43fd5d4070494a874793f5cb49ba4b394dc96"}
+    ],
+    "descendants": [
+      {"name": "absence-defect-split", "candidate_id": "candidate-da7b35e407b89386", "candidate_sha256": "da7b35e407b89386aa952717c0b46b9d2bafa520d3788ca796aa6df15cde65f7", "instruction_sha256": "a9501af6f8d7f1f984199d770b3e48def005d5b4576910f04a852a54aa555612", "profile_sha256": "9638d2a231aeb06b6bfd5f2d68c5a4750dab4d5c4425c72b105c339f10c3f785"},
+      {"name": "construct-lock-antihalo", "candidate_id": "candidate-2b57cd5298e5bbc6", "candidate_sha256": "2b57cd5298e5bbc67f35567e07714c7146d12b65e0420068f30180e54a845227", "instruction_sha256": "d5065c3c0c6429f5edfb0ccabf0cc88292fd86a2befc3f1f62d8f44572768772", "profile_sha256": "dbca49b01efaec92c2cb72f2ad29d02ca1fc958dd873c4e2912f30896e8502ee"},
+      {"name": "realization-without-midpoint", "candidate_id": "candidate-ea8e3fd12157cc90", "candidate_sha256": "ea8e3fd12157cc9054f6e43b41409fc3158810cfa97034352cae18153b796c0d", "instruction_sha256": "d7ff4bacb2e0302906e556653a91961d2788e5826f72555db62d4407e43e8efb", "profile_sha256": "a0d0856b86c57b9120208897e6c7acb11a1865f665aedc822162bcf23924a1d6"}
+    ],
+    "generation_provenance": {
+      "queue_item_id": "7c6df77366ad4739b15a986c50b13431",
+      "queue_result_sha256": "bf2f171ca103359120f8aa73700a73a57b5f55e6390dc3a7642e996e060a8376",
+      "queue_output_sha256": "c2b29d6cfb5f7c50332b841b510316292527e2702d9c1323dedbbbd07847cc27",
+      "generator_identity": {"route_adapter": "grok_exec", "requested_model": "grok-4.6", "requested_reasoning_effort": "high", "reported_model": "grok-4.6-build", "identity_evidence": "requested_only", "reasoning_attested": false},
+      "internal_review_identity": {"kind": "internal_sol_subagent_review_handoff", "task": "/root/hanna_grok_wave_sol_refiner", "reviewed_material": "unchanged_grok_queue_result_candidate_bytes", "native_provider_receipt": null, "provider_contact_claim": "none", "transport_attestation": null}
+    }
+  },
+  "frozen_schedule": {
+    "schedule_sha256": "0fc0ab37ff1ea0cbc3d934274295765441eeb645fc3e9c946f6753ad616ef885",
+    "candidate_set_sha256": "e402f802c98f42aa8199acc61ff915f9c2d090f5c9308b0af159936a2a4295e3",
+    "unchanged_prompt_bindings_sha256": "4473202713a8e58403e6b662bf0a823f8f4a2e198919ec1dab451e95e8705d4b",
+    "grok_primary_cells_sha256": "567baea01c4586a4866e33a81d095622719aee4b9b1e6acb94657efa34bf0e34",
+    "sol_validation_cells_sha256": "f9cc86b95c953a72ae8095c57124bd269bc5acd58c1bc2497d35917ca2117ad9"
+  },
+  "routes": {
+    "grok_primary": {"provider": "xai", "model": "grok-4.6", "configured_reasoning_effort": "high", "transport_identity": "hbqrs_grok_build_cli_structured_output_v1", "role": "primary_iteration_and_selection_preview"},
+    "sol_validation": {"provider": "openai", "model": "gpt-5.6-sol", "configured_reasoning_effort": "high", "transport_identity": "hbqrs_openai_compatible_chat_completions_v1", "role": "cross_model_generalization_validation_only"},
+    "deepseek_v4_flash": {"provider": "nous", "model": "deepseek/deepseek-v4-flash-0731", "configured_reasoning_effort": "max", "transport_identity": "future_trusted_native_adapter_required", "role": "optional_provisional_nonblocking_anchor"},
+    "luna": {"provider": "openai", "model": "gpt-5.6-luna", "configured_reasoning_effort": "xhigh", "transport_identity": "future_trusted_native_adapter_required", "role": "optional_provisional_nonblocking_anchor"}
+  },
+  "schedule": {
+    "grok_primary": "all_61_train_development_items_for_all_five_candidates",
+    "sol_validation": "lexicographically_first_item_per_each_of_31_train_development_prompt_groups_for_all_five_candidates",
+    "sol_anchor_order": "deterministic_train_development_group_interleave_then_candidate_id",
+    "supplemental_each": "lexicographically_first_item_per_each_of_7_development_prompt_groups_for_all_five_candidates",
+    "confirmation_cells": 0,
+    "unchanged_candidate_task_schema_bytes_across_models": true
+  },
+  "call_geometry": {
+    "parent_full": 732,
+    "mandatory": {"grok": 305, "sol": 155, "total": 460, "saved": 272, "saved_fraction": "272/732"},
+    "optional_each": 35,
+    "with_both_optional": {"total": 530, "saved": 202, "saved_fraction": "202/732"}
+  },
+  "endpoint": {
+    "unit": "prompt_group_equal_weight",
+    "primary": "grok_development_macro_spearman_descending",
+    "tie_breakers": ["mean_absolute_error:ascending", "candidate_id:lexicographic"],
+    "sol_gate": "chosen_macro_spearman_gte_baseline_and_chosen_mean_absolute_error_lte_baseline",
+    "failure": "chosen_candidate_not_validation_eligible_no_sol_favored_substitution"
+  },
+  "evidence": {
+    "endpoint_rows": "project_exact_native_cells_through_pinned_v2_equal_group_analyzer",
+    "required_per_cell_bindings": ["request_hash", "exact_response_bytes_hash", "provider", "model", "transport_identity", "native_contact_identity"],
+    "caller_supplied_metrics_are_empirical": false,
+    "new_receipt_framework": false
+  },
+  "supplemental": {
+    "providers": ["deepseek_v4_flash", "luna"],
+    "evidence_class": "provisional_nonblocking_signal",
+    "absence_or_failure_blocks_grok_sol_policy": false,
+    "selection_authority": "none"
+  },
+  "optimizer_interfaces": {
+    "dspy": {"development_only": true, "runtime_dependency": false, "objective": "grok_primary_subject_to_frozen_sol_generalization_gate"},
+    "optuna": {"development_only": true, "runtime_dependency": false, "objective": "grok_primary_subject_to_frozen_sol_generalization_gate"}
+  },
+  "confirmation": {"status": "unopened", "scheduled_cells": 0},
+  "result_authority": "nonempirical_until_native_request_response_trust_is_independently_verified",
+  "interpretation_limits": [
+    "Grok is the high-throughput development model, not the target of model-specific prompt fitting.",
+    "Sol is retained as an independent cross-model generalization gate and cannot choose a replacement candidate.",
+    "Optional DeepSeek V4 Flash and Luna anchors are provisional signals only.",
+    "HANNA is human-reference context, not literary ground truth.",
+    "Confirmation remains unopened."
+  ]
+}
