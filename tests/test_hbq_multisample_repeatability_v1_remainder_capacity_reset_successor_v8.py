@@ -245,3 +245,69 @@ def test_dry_run_adopts_182_and_never_dispatches_it(tmp_path: Path):
     journal = value._jsonl(tmp_path / "v8-work" / value.JOURNAL)
     assert [row["event"] for row in journal] == ["admitted-prefix", "adopted-v7-output"]
     assert result["accounting"]["minimum_physical_provider_contacts"] == 269
+
+
+def test_orphan_output_is_rejected_before_a_fresh_intent(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+    value = module()
+    work = tmp_path / "work"
+    work.mkdir()
+    source = tmp_path / "source"
+    source.mkdir()
+    event = {"sequence": 183, "item_id": "fixture", "arm_id": "naplan_narrative_2022", "repetition": 1}
+    (work / value.BINDING).write_text("{}\n", encoding="utf-8")
+    value._append(work / value.JOURNAL, {"event": "fixture-prefix"})
+    target = value._output_path(work, event)
+    target.parent.mkdir(parents=True)
+    target.write_text("{}\n", encoding="utf-8")
+    before = (work / value.JOURNAL).read_bytes()
+
+    class Predecessor:
+        @staticmethod
+        def _revalidate_predecessor_event(*_args: object) -> None:
+            return None
+
+    monkeypatch.setattr(value, "validate_capacity_evidence", lambda *_args, **_kwargs: {"observed_at": "2026-08-29T00:00:00+00:00"})
+    monkeypatch.setattr(value, "_validate_disclosure_ack", lambda *_args, **_kwargs: None)
+    monkeypatch.setattr(value, "_load_predecessor_runner", lambda: Predecessor())
+
+    with pytest.raises(ValueError, match="orphan output"):
+        value._settle_one(object(), {}, source, work, [event], {}, [], event, tmp_path / "capacity.json", work / value.DISCLOSURE_ACK, 1.0)
+
+    assert (work / value.JOURNAL).read_bytes() == before
+    assert not (work / value.CLAIM).exists()
+
+
+@pytest.mark.parametrize(
+    "name,is_directory",
+    [
+        ("preflight-disclosure.json", False),
+        ("v8-binding.json", False),
+        ("admitted-v7-prefix.json", False),
+        ("schedule.jsonl", False),
+        ("execution-journal.jsonl", False),
+        ("disclosure-acknowledgement.json", False),
+        ("active-epoch-claim.json", False),
+        ("unresolved-attempt-recovery.json", False),
+        ("retry-disclosures", True),
+        ("retry-disclosure-acknowledgements", True),
+        ("capacity-proofs", True),
+        ("scope-compatibility-overrides", True),
+        ("runs", True),
+    ],
+)
+def test_every_prepared_v8_root_entry_rejects_reparse_or_symlink(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, name: str, is_directory: bool
+):
+    value = module()
+    work = tmp_path / "work"
+    work.mkdir()
+    entry = work / name
+    if is_directory:
+        entry.mkdir()
+    else:
+        entry.write_text("{}\n", encoding="utf-8")
+    original = value._is_reparse
+    monkeypatch.setattr(value, "_is_reparse", lambda candidate: candidate == entry or original(candidate))
+
+    with pytest.raises(ValueError, match="V8 work root contains a symlink/reparse entry"):
+        value._assert_plain_work_tree(work)

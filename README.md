@@ -33,12 +33,13 @@ default hierarchy of literary quality.
 
 ## Active work, not results
 
-The live V8 multisample continuation is an **unpublished operational
-checkpoint**, proceeding one settled, trace-bound sequence at a time. Its exact
-live sequence count is not promoted here; it becomes a public repeatability
-result only after completion and integrity-checked analysis.
+The [V8 multisample continuation](evaluation-results/hbq-multisample-repeatability-v1-remainder-capacity-reset-successor-v8/)
+is an **unpublished, paused operational checkpoint**, proceeding one settled,
+trace-bound sequence at a time. Its exact live sequence count is not promoted
+here; it becomes a public repeatability result only after completion and
+integrity-checked analysis.
 
-Four committed study packages make the next questions reproducible without
+Five committed study packages make the next questions reproducible without
 pretending they have answers yet:
 
 - [HANNA optimizer v1](evaluation-results/hbq-human-alignment-optimizer-v1/)
@@ -47,12 +48,13 @@ pretending they have answers yet:
   groups and Sol/Grok schedule are frozen. An externally gated, one-cell,
   no-resend driver now exists; remote execution, empirical optimization, and
   confirmation are still pending.
-  Provider-free candidate generation and Optuna legal-factor exploration
-  remain. A train-only DSPy data adapter now derives 288 local examples from
-  the pinned sources, binding exact candidate, prompt, story, and published
-  human-reference targets without aggregating or emitting held-out targets.
-  No empirical DSPy/Optuna optimization or remote HANNA execution has run; confirmation
-  remains pending. Neither dependency is used at runtime.
+  Provider-free candidate generation is implemented, with only local,
+  legal-factor Optuna exploration. A train-only DSPy data adapter derives 288
+  local examples from pinned sources, binding exact candidate, prompt, story,
+  and published human-reference targets without aggregating or emitting
+  held-out targets. No empirical DSPy/Optuna optimization or remote HANNA
+  execution has run; confirmation remains pending. Neither dependency is used
+  at runtime.
 - [Matched Grok/Sol calibration](evaluation-results/hbq-grok-sol-current-matched-v1/)
   is a provider-free, public-synthetic pre-execution screen. It will measure
   a narrow matched-verdict agreement question, not declare judge

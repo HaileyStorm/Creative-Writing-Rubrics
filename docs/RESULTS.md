@@ -15,7 +15,18 @@ product test succeeded; `Negative` means a proposed claim or treatment failed;
 | QPC1's isolated figurative leaves passed everything and distinguished nothing. | **Negative** | [QPC1 aggregate](../evaluation-results/hbq-qpc1-figurative-treatment-v1/) | 105/105 accepted verdicts were `YES`; the result blocked a split, reweight, or new density owner. |
 | Full-rubric QPC24 separated the public control strongly but found only limited stable separation between the private drafts. | **Bounded** | [QPC24 V5 aggregate](../evaluation-results/hbq-qpc24-two-pass-product-confirmation-v5-public-result-v1/) | Six complete 221-leaf passes; four differing leaves among 189 leaves stable in both author-original and GPT-5.6 Pro rewrite repetitions. |
 | Four small wording repairs survived development, disjoint confirmation, and review without changing ownership or influence. | **Positive** | [Validation and repair journey](VALIDATION_AND_REPAIR_JOURNEY.md#repair-became-a-portfolio-not-a-reflex) | Recurrence/applicability, explicit excerpt scope, figurative semantic hinges, and material-context line breaks changed; IDs, owners, weights, and bundle influence did not. |
-| The current *Gray Blood* full-book rebaseline completed at full declared fidelity. | **Bounded** | [QPC24 V9 full-book aggregate](../evaluation-results/hbq-gray-blood-full-book-qpc24-rebaseline-v9-public-result-v1/) | HBQ-RS `1.2.1`, CWR runtime `1.2.3`, 150/150 binary calls, 3,406 positions, no sampling, and no rubric promotion. The GPT-5.6 Pro rewrite scored `+10.2167` above the author-original under this protocol; bounds are non-statistical, with 8 units / 1,817 positions versus 7 / 1,589. |
+| The current *Gray Blood* work-in-progress manuscript rebaseline completed at full declared fidelity. | **Bounded** | [QPC24 V9 full-book aggregate](../evaluation-results/hbq-gray-blood-full-book-qpc24-rebaseline-v9-public-result-v1/) | HBQ-RS `1.2.1`, CWR runtime `1.2.3`, 150/150 binary calls, 3,406 positions, no sampling, and no rubric promotion. The GPT-5.6 Pro rewrite scored `+10.2167` above the author-original under this protocol; bounds are non-statistical, with 8 units / 1,817 positions versus 7 / 1,589. |
+
+## Current development checkpoints — no result yet
+
+These packages preserve the next questions and their gates. They are not
+empirical findings, and none authorize a rubric, model, or runtime promotion.
+
+- [HANNA optimizer v1](../evaluation-results/hbq-human-alignment-optimizer-v1/): frozen 80-item, 39-prompt-group development geometry; provider-free candidate generation and train-only DSPy data preparation exist, but empirical DSPy/Optuna optimization and remote execution do not.
+- [CWR-guided revision gain](../evaluation-results/cwr-guided-revision-gain-v1/): blinded, non-CWR endpoint design for an independently measured revision-gain question.
+- [Matched Grok/Sol calibration](../evaluation-results/hbq-grok-sol-current-matched-v1/): public-synthetic, provider-free pre-execution agreement screen; it does not establish judge interchangeability.
+- [Flash-Next planning](../evaluation-results/hbq-supplemental-providers-flash-next-v1/) and its [Linux portability diagnostic](../evaluation-results/hbq-supplemental-providers-flash-next-linux-portability-v1/): planning and self-integrity evidence only; native Linux execution, attestation, pairing, and promotion remain NO-GO.
+- [V8 multisample continuation](../evaluation-results/hbq-multisample-repeatability-v1-remainder-capacity-reset-successor-v8/): an unpublished, paused operational checkpoint; a public repeatability result awaits completion and integrity-checked analysis.
 
 ## Exact HANNA generated-only result
 
@@ -88,7 +99,7 @@ The complete story is [owner-authorized for publication](../evaluation-results/t
 | Current six-chapter comparison (`e2fc09b`) | HBQ-RS `1.0.0`; Sol high; complete current WIP protocol | Direction reversed: GPT-5.6 Pro rewrite `83.4127`, author-original `75.5214`. | Results are comparable only within this protocol; five authorized excerpts are public and the remaining manuscript is private. |
 | Figurative QPC1 (`8970e09`) | HBQ-RS 1.2/content-treatment era; seven one-leaf requests | 105/105 `YES`; no separation. | The isolated prompt/scope treatment was insufficient and authorized no rubric change. |
 | Full-rubric QPC24 V5 (`3e840f3`) | Six complete 221-leaf passes at exact CWR head `4ce1204` | Strong public-control separation, but only four stable author-original/GPT-5.6 Pro rewrite differences. | Bounded discrimination evidence; no wording or weight promotion. |
-| Full-book V7/V8/V9 (`0110cc6`) | HBQ-RS `1.2.1`; CWR runtime `1.2.3`; full declared book coverage | Author-original `63.0202`; GPT-5.6 Pro rewrite `73.2369`; difference `+10.2167`. | Strongest current execution-and-coverage evidence for this artifact pair, not a comparative inference beyond its WIP protocol. Bounds are non-statistical, with 8 units / 1,817 positions versus 7 / 1,589. V8 remains archived incomplete; V9 is a zero-call deterministic correction, not a new run. |
+| Full-book V7/V8/V9 (`0110cc6`) | HBQ-RS `1.2.1`; CWR runtime `1.2.3`; full declared coverage of the work-in-progress manuscript | Author-original `63.0202`; GPT-5.6 Pro rewrite `73.2369`; difference `+10.2167`. | Strongest current execution-and-coverage evidence for this artifact pair, not a comparative inference beyond its WIP protocol. Bounds are non-statistical, with 8 units / 1,817 positions versus 7 / 1,589. V8 remains archived incomplete; V9 is a zero-call deterministic correction, not a new run. |
 
 Public Gray Blood material is limited to aggregate reports and the five
 owner-authorized excerpts in the
