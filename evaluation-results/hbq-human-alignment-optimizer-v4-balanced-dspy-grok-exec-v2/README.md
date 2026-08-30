@@ -1,0 +1,7 @@
+# Governed balanced DSPy-shaped Grok descendants (v2)
+
+V2 accepts exactly one pinned `dspy-descendant-input-preparation.json` from the clean balanced optimizer r3. Its outbound prompt is a governed DSPy-shaped serialization of that already-frozen input, not a claimed capture of DSPy's internal prompt rendering. The frozen preparation identifies DSPy 3.3.1; this executor does not import DSPy or give it runtime-selection authority.
+
+Preparation writes a unique sample root for each of the ten fixed samples and makes no provider contact. Execution invokes the real, pinned shared `grok_exec.py` adapter using the broker's subprocess argument protocol with this package's exact descendant schema. A pinned local capture wrapper waits for the broker's inherited-stdin EOF handshake before spawning the adapter, then tees exact adapter stdout to immutable evidence and keeps the adapter and any Grok child in the broker's bounded process tree. A definite-not-contacted control response records zero native contact and strands its root; any post-launch ambiguity is terminal reconciliation-required. There is no resend path.
+
+After all ten independently complete, `freeze_all_ten()` validates identical request bytes, distinct adapter request/session identities, parent lineage, and no duplicate or parent-identical descendants before writing a development-only manifest. It does not evaluate, select, or open confirmation.
