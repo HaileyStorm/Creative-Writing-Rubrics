@@ -70,10 +70,18 @@ pretending they have answers yet:
   retained subset. The objective is `0.8 ×` Grok MAE + `0.2 ×` Sol MAE with
   only tiny additive coverage and request-byte penalties. Small-sample
   Spearman is often undefined and is not imputed or used for selection.
-  Confirmation remains unopened. Grok reasoning is unattested; Sol evidence
-  proves local lifecycle only, with native contact cardinality unproven. DSPy
-  `3.3.1` exact descendant inputs are prepared, and a governed ten-sample Grok
-  executor is under review—there is no descendant gain claim yet.
+  The reviewed [balanced held-out evaluation](evaluation-results/hbq-human-alignment-optimizer-v4-balanced-dspy-heldout-eval-v1/)
+  and [versioned executor](evaluation-results/hbq-human-alignment-optimizer-v4-balanced-dspy-heldout-exec-v1/)
+  then evaluated ten DSPy descendants plus the baseline on four
+  prompt-group-disjoint development groups: 44 Grok cells, followed by 22 Sol
+  cells on two matched groups after Grok selection was frozen. Grok selected
+  `candidate-0ca942ad28cb4104`, reducing MAE from `1.069444` to `0.875`, but
+  the unchanged candidate increased Sol MAE from `1.368056` to `1.427778`.
+  The endpoints are not pooled: this is a model-specific Grok development
+  improvement and a Sol reversal, not independently observed cross-endpoint
+  gain. Confirmation remains unopened; Grok reasoning is unattested; Sol
+  proves local lifecycle only, with native endpoint/contact cardinality
+  unproven; DSPy and Optuna have no runtime authority.
 
   All 65 [receipt-verified native Grok development cells](evaluation-results/hbq-human-alignment-optimizer-v4-native-subscription-exec-v1/) are now settled across the frozen 13-item, five-candidate development leg. Each has exactly one tool-free, zero-new-spend Grok Build subscription process launch and proven native envelope/contact, reports Grok CLI `1.0.13` and `grok-4.6-build`, requests `high` reasoning without independent attestation, and has a provider-free [admitted predecessor-shaped immutable descendant](evaluation-results/hbq-human-alignment-optimizer-v4-native-admission-v1/) with a proof file. The last twenty cells were collected in two independent ten-wide waves; all 65 native executions and all 65 admissions completed without retry. These are development observations, not an alignment or prompt-selection result.
 
