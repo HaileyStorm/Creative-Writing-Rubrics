@@ -87,8 +87,10 @@ pretending they have answers yet:
   [partial reconciler](evaluation-results/hbq-human-alignment-optimizer-v4-balanced-dspy-grok-reconcile-v3/)
   grants no evaluation or selection authority. Its reviewed
   [single-sample replacement executor](evaluation-results/hbq-human-alignment-optimizer-v4-balanced-dspy-grok-exec-v4/)
-  must supply the missing descendant before the ten-candidate shrinkage
-  readout.
+  made one fresh launch, but that launch reached its 900-second postlaunch
+  deadline with zero output and unknown native-contact cardinality. The root
+  is an immutable ambiguous exclusion and cannot be resent; a new logical
+  successor candidate is required before the ten-candidate shrinkage readout.
 
   All 65 [receipt-verified native Grok development cells](evaluation-results/hbq-human-alignment-optimizer-v4-native-subscription-exec-v1/) are now settled across the frozen 13-item, five-candidate development leg. Each has exactly one tool-free, zero-new-spend Grok Build subscription process launch and proven native envelope/contact, reports Grok CLI `1.0.13` and `grok-4.6-build`, requests `high` reasoning without independent attestation, and has a provider-free [admitted predecessor-shaped immutable descendant](evaluation-results/hbq-human-alignment-optimizer-v4-native-admission-v1/) with a proof file. The last twenty cells were collected in two independent ten-wide waves; all 65 native executions and all 65 admissions completed without retry. These are development observations, not an alignment or prompt-selection result.
 
