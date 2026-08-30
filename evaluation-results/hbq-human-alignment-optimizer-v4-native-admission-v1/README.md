@@ -2,11 +2,11 @@
 
 This provider-free package admits one completed, independently verified
 historical exec-v1 Grok cell per fresh destination into a predecessor-shaped
-settled-cell root. It never launches a process or provider. It has admitted 10
-mandatory-development cells across the first two items and all five frozen
-candidates: cell 1 is in `cwr-hanna-v4-native-observations-f22bf26`; cells
-2–10 are in fresh, disjoint `...-<cell_id>` roots. Every source root remains
-untouched.
+settled-cell root. It never launches a process or provider. It has admitted 15
+mandatory-development cells across the first three items and all five frozen
+candidates. Every cell has exactly one tool-free, zero-new-spend Grok Build
+subscription process launch and proven native envelope/contact; every source
+root remains untouched.
 
 `admit.py --admit-completed-grok` pins the exec-v1 executor at
 `5d2bd6871fe2013b8af5e166d89eeb020ff98889ce30494dd8889f7bee2d942f` and
@@ -30,9 +30,12 @@ rejected rather than resumed or overwritten.
 Each resulting descendant is not a metric result; projection remains owned by
 the predecessor. A byte-identical copied source is the same evidence, not a
 second observation: downstream consumers must deduplicate the bound
-cell/contact/session/request/response commitments. The 10 Grok cells are early
+cell/contact/session/request/response commitments. The 15 Grok cells are early
 diagnostic observations, not candidate selection, alignment, Grok/Sol
-agreement, confirmation, or revision-gain evidence. A once-launched exact
-matched Sol cell is terminally excluded as
-`reconcile_required_after_process_launch` after a Code Mode unavailable error;
-its later message is not accepted Sol evidence and it will not be resent.
+agreement, confirmation, or revision-gain evidence. Two once-launched exact
+matched Sol diagnostics are terminally excluded without resend: v1 after a
+Code Mode startup error, and v2 after a clean lifecycle failed its stderr-label
+gate. The first verified matched Sol local lifecycle is documented in
+[exec v3](../hbq-human-alignment-optimizer-v4-native-subscription-exec-v3/);
+its local receipt does not prove provider identity, reasoning, native endpoint,
+or cardinality.
