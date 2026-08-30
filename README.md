@@ -59,11 +59,21 @@ pretending they have answers yet:
   development-only: neither is imported by the scoring runtime or has runtime,
   selection, validation, or confirmation authority.
   The reviewed [lean training collector](evaluation-results/hbq-human-alignment-optimizer-v4-lean-training-exec-v1/)
-  and [35-row verifier](evaluation-results/hbq-human-alignment-optimizer-v4-lean-training-verifier-v1/)
-  now bind the frozen 25 Grok-primary and 10 sprinkled-Sol training rows to
-  exact native artifacts and independently replayable optimizer observations.
-  Real provider-free Grok and Sol prepares pass; live training outcomes remain
-  pending.
+  and [balanced development optimizer](evaluation-results/hbq-human-alignment-optimizer-v4-lean-development-balanced-v1/)
+  now replay the retained balanced subset: 20 Grok cells across four complete
+  prompt groups plus 10 sprinkled Sol cells. The entire five-candidate Grok
+  group containing immutable, no-resend terminal
+  `v4-cell-327fe788866eb61b` is excluded. Optuna `4.9.0` selected the existing
+  `candidate-52d1be4bc34e0018` baseline (objective `1.5722222267539725`;
+  Grok MAE `1.6388888889`; Sol MAE `1.3055555556`; Grok coverage `1.0`);
+  none of the five current candidates improved on that baseline within this
+  retained subset. The objective is `0.8 ×` Grok MAE + `0.2 ×` Sol MAE with
+  only tiny additive coverage and request-byte penalties. Small-sample
+  Spearman is often undefined and is not imputed or used for selection.
+  Confirmation remains unopened. Grok reasoning is unattested; Sol evidence
+  proves local lifecycle only, with native contact cardinality unproven. DSPy
+  `3.3.1` exact descendant inputs are prepared, and a governed ten-sample Grok
+  executor is under review—there is no descendant gain claim yet.
 
   All 65 [receipt-verified native Grok development cells](evaluation-results/hbq-human-alignment-optimizer-v4-native-subscription-exec-v1/) are now settled across the frozen 13-item, five-candidate development leg. Each has exactly one tool-free, zero-new-spend Grok Build subscription process launch and proven native envelope/contact, reports Grok CLI `1.0.13` and `grok-4.6-build`, requests `high` reasoning without independent attestation, and has a provider-free [admitted predecessor-shaped immutable descendant](evaluation-results/hbq-human-alignment-optimizer-v4-native-admission-v1/) with a proof file. The last twenty cells were collected in two independent ten-wide waves; all 65 native executions and all 65 admissions completed without retry. These are development observations, not an alignment or prompt-selection result.
 

@@ -97,6 +97,32 @@ def test_empty_runner_responses_before_callback_is_not_precontact_residue(tmp_pa
     assert root.joinpath("launch-intent.json").exists() and not root.joinpath("precontact-failure.json").exists()
 
 
+def test_callback_validator_rechecks_all_prepared_entries_and_allows_only_empty_responses(monkeypatch, tmp_path: Path) -> None:
+    cell_id = "v4-sol-replacement-25aec056875cb72c"; route = sol_route(); root = tmp_path / cell_id
+    executor.prepare_only(output_root=tmp_path, cell_id=cell_id, queue_root=tmp_path / "queue", authorization_acknowledgement_sha256=AUTH, broker_factory=factory(route))
+    row = executor._row(cell_id); responses = root / "responses"; responses.mkdir()
+    prepared, task, schema = executor._validated_prepared(root, row, AUTH, allow_empty_responses=True)
+    assert prepared["cell_id"] == cell_id and task and schema
+    original = executor._plain_entry
+    for name in sorted(executor.PREPARED_FILES | {"responses"}):
+        target = root / name
+        with monkeypatch.context() as scoped:
+            def reject(path: Path, *, directory: bool = False, target: Path = target):
+                if path == target:
+                    raise ValueError("fixture callback-time reparse")
+                return original(path, directory=directory)
+            scoped.setattr(executor, "_plain_entry", reject)
+            with pytest.raises(ValueError, match="reparse"):
+                executor._validated_prepared(root, row, AUTH, allow_empty_responses=True)
+    orphan = root / "callback-extra.bin"; orphan.write_bytes(b"unexpected")
+    with pytest.raises(ValueError, match="inventory"):
+        executor._validated_prepared(root, row, AUTH, allow_empty_responses=True)
+    orphan.unlink()
+    (responses / "runner-residue.bin").write_bytes(b"unexpected")
+    with pytest.raises(ValueError, match="responses residue"):
+        executor._validated_prepared(root, row, AUTH, allow_empty_responses=True)
+
+
 @pytest.mark.parametrize("malformed", [True])
 def test_malformed_lifecycle_never_reports_success(tmp_path: Path, malformed: bool) -> None:
     cell_id = "v4-sol-replacement-af46262aed40d89e"; route = sol_route(); calls: list[dict] = []
