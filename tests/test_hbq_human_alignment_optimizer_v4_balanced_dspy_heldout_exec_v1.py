@@ -346,9 +346,134 @@ def test_grok_identity_mismatch_is_terminal(prepared, monkeypatch: pytest.Monkey
 
 
 def test_wave_enforces_ten_grok_and_one_sol(prepared, monkeypatch: pytest.MonkeyPatch):
-    schedule, roots, queue = prepared; active = {"grok": 0, "sol": 0, "grok_max": 0, "sol_max": 0}
-    def fake(**kwargs):
-        key = "grok" if kwargs["cell_id"] in {row["cell_id"] for row in schedule["cells"][:44]} else "sol"; active[key] += 1; active[f"{key}_max"] = max(active[f"{key}_max"], active[key]); time.sleep(0.01); active[key] -= 1; return {"cell_id": kwargs["cell_id"]}
-    monkeypatch.setattr(executor, "execute_cell", fake)
-    asyncio.run(executor.execute_wave(**PATHS, cell_ids=[row["cell_id"] for row in schedule["cells"]], output_root=roots, queue_root=queue, authorization_acknowledgement_sha256=ACK, allow_remote=True))
-    assert active["grok_max"] <= 10 and active["sol_max"] == 1
+    schedule, roots, queue = prepared; active = {"grok": 0, "sol": 0, "grok_max": 0, "sol_max": 0}; owned: set[int] = set()
+    class Owner:
+        def __init__(self, child): owned.add(id(child))
+        async def stop(self): pass
+        def close(self): pass
+    grok_cells = {row["cell_id"] for row in schedule["cells"][:44]}
+    class Process:
+        returncode = 0
+        def __init__(self, cell_id: str, key: str, gate: Path): self.cell_id, self.key, self.gate = cell_id, key, gate
+        async def communicate(self):
+            assert id(self) in owned
+            assert self.gate.read_bytes() == b"heldout-exec-isolation-gate-v1\n"
+            await asyncio.sleep(0.01); active[self.key] -= 1
+            return executor.canonical({"cell_id": self.cell_id, "state": "fixture"}), b""
+    async def spawn(*argv, **_kwargs):
+        assert argv[:2] == (sys.executable, str((PACKAGE / "executor.py").resolve())) and "--allow-remote" in argv
+        gate = Path(argv[argv.index("--isolation-gate") + 1]); cell_id = argv[argv.index("--cell-id") + 1]; key = "grok" if cell_id in grok_cells else "sol"; active[key] += 1; active[f"{key}_max"] = max(active[f"{key}_max"], active[key]); return Process(cell_id, key, gate)
+    monkeypatch.setattr(asyncio, "create_subprocess_exec", spawn)
+    monkeypatch.setattr(executor, "_ChildTreeOwner", Owner)
+    result = asyncio.run(executor.execute_wave(**PATHS, cell_ids=[row["cell_id"] for row in schedule["cells"]], output_root=roots, queue_root=queue, authorization_acknowledgement_sha256=ACK, allow_remote=True))
+    assert len(result) == 66
+    assert active["grok_max"] <= 10 and active["sol_max"] == 1 and not (roots / ".isolated-gates").exists()
+
+
+def test_wave_malformed_child_strands_prepared_root_without_resend(prepared, monkeypatch: pytest.MonkeyPatch):
+    _schedule, roots, queue = prepared; executor.prepare_cell(**PATHS, cell_id="cell-00", output_root=roots, queue_root=queue, authorization_acknowledgement_sha256=ACK)
+    class Owner:
+        def __init__(self, _child): pass
+        async def stop(self): pass
+        def close(self): pass
+    class Process:
+        returncode = 0
+        async def communicate(self): return b"{}", b""
+    async def spawn(*_argv, **_kwargs): return Process()
+    monkeypatch.setattr(asyncio, "create_subprocess_exec", spawn)
+    monkeypatch.setattr(executor, "_ChildTreeOwner", Owner)
+    result = asyncio.run(executor.execute_wave(**PATHS, cell_ids=["cell-00"], output_root=roots, queue_root=queue, authorization_acknowledgement_sha256=ACK, allow_remote=True))
+    assert result[0]["state"] == "isolated_child_reconcile_required" and (roots / "cell-00" / executor.ISOLATION_RECONCILE).is_file()
+    with pytest.raises(ValueError, match="cannot resend"):
+        executor.execute_cell(**PATHS, cell_id="cell-00", output_root=roots, queue_root=queue, authorization_acknowledgement_sha256=ACK, allow_remote=True)
+
+
+@pytest.mark.parametrize("kind", ["invalid_utf8", "nonzero", "spawn_error"])
+def test_wave_child_transport_failures_strand_without_resend(prepared, monkeypatch: pytest.MonkeyPatch, kind: str):
+    _schedule, roots, queue = prepared; executor.prepare_cell(**PATHS, cell_id="cell-00", output_root=roots, queue_root=queue, authorization_acknowledgement_sha256=ACK)
+    class Owner:
+        def __init__(self, _child): pass
+        async def stop(self): pass
+        def close(self): pass
+    class Process:
+        returncode = 1 if kind == "nonzero" else 0
+        async def communicate(self): return (b"\xff" if kind == "invalid_utf8" else b""), b""
+    async def spawn(*_argv, **_kwargs):
+        if kind == "spawn_error": raise OSError("fixture")
+        return Process()
+    monkeypatch.setattr(asyncio, "create_subprocess_exec", spawn); monkeypatch.setattr(executor, "_ChildTreeOwner", Owner)
+    result = asyncio.run(executor.execute_wave(**PATHS, cell_ids=["cell-00"], output_root=roots, queue_root=queue, authorization_acknowledgement_sha256=ACK, allow_remote=True))
+    assert result[0]["state"] == "isolated_child_reconcile_required" and (roots / "cell-00" / executor.ISOLATION_RECONCILE).is_file()
+
+
+def test_isolated_success_requires_exact_child_and_durable_root_bindings(collection_copy: Path):
+    schedule = executor._schedule(); row = next(cell for cell in schedule["cells"] if cell["route_name"] == "grok_primary"); root = collection_copy / row["cell_id"]
+    child = {"cell_id": row["cell_id"], "state": "grok_completed", "provider_calls_made": 1, "process_launches": 1, "native_endpoint_contact_cardinality": "proven_exactly_one"}
+    assert executor._admit_isolated_child_success(root, row, child, schedule) == child
+    with pytest.raises(ValueError): executor._admit_isolated_child_success(root, row, {**child, "extra": True}, schedule)
+    (root / "extra.bin").write_bytes(b"forged")
+    with pytest.raises(ValueError): executor._admit_isolated_child_success(root, row, child, schedule)
+
+
+def test_wave_timeout_and_cancellation_stop_owned_child_before_return(prepared, monkeypatch: pytest.MonkeyPatch):
+    _schedule, roots, queue = prepared; executor.prepare_cell(**PATHS, cell_id="cell-00", output_root=roots, queue_root=queue, authorization_acknowledgement_sha256=ACK); stopped: list[str] = []; entered: list[asyncio.Event] = []
+    class Process:
+        returncode = None
+        async def communicate(self): entered[-1].set(); await asyncio.Event().wait(); return b"", b""
+    class Owner:
+        def __init__(self, _child): pass
+        async def stop(self): stopped.append("stop")
+        def close(self): pass
+    async def spawn(*_argv, **_kwargs): return Process()
+    monkeypatch.setattr(asyncio, "create_subprocess_exec", spawn); monkeypatch.setattr(executor, "_ChildTreeOwner", Owner); monkeypatch.setattr(executor, "ISOLATED_CHILD_TIMEOUT_SECONDS", 0.01)
+    entered.append(asyncio.Event())
+    timeout = asyncio.run(executor.execute_wave(**PATHS, cell_ids=["cell-00"], output_root=roots, queue_root=queue, authorization_acknowledgement_sha256=ACK, allow_remote=True))
+    assert timeout[0]["state"] == "isolated_child_reconcile_required" and stopped == ["stop"]
+    roots2 = roots.parent / "roots2"; executor.prepare_cell(**PATHS, cell_id="cell-00", output_root=roots2, queue_root=queue, authorization_acknowledgement_sha256=ACK); stopped.clear()
+    async def cancelled():
+        event = asyncio.Event(); entered.append(event)
+        task = asyncio.create_task(executor.execute_wave(**PATHS, cell_ids=["cell-00"], output_root=roots2, queue_root=queue, authorization_acknowledgement_sha256=ACK, allow_remote=True)); await event.wait(); task.cancel()
+        with pytest.raises(asyncio.CancelledError): await task
+    asyncio.run(cancelled())
+    assert stopped == ["stop"] and (roots2 / "cell-00" / executor.ISOLATION_RECONCILE).is_file()
+
+
+def test_wave_owner_construction_failure_stops_spawned_child(prepared, monkeypatch: pytest.MonkeyPatch):
+    _schedule, roots, queue = prepared; executor.prepare_cell(**PATHS, cell_id="cell-00", output_root=roots, queue_root=queue, authorization_acknowledgement_sha256=ACK); terminated: list[str] = []
+    class Process:
+        returncode = None
+        def terminate(self): terminated.append("terminate"); self.returncode = 1
+        def kill(self): terminated.append("kill"); self.returncode = 1
+        async def wait(self): return self.returncode
+        async def communicate(self): raise AssertionError("owner construction must stop before child communication")
+    class BrokenOwner:
+        def __init__(self, _child): raise OSError("fixture Job assignment failure")
+    async def spawn(*_argv, **_kwargs): return Process()
+    monkeypatch.setattr(asyncio, "create_subprocess_exec", spawn); monkeypatch.setattr(executor, "_ChildTreeOwner", BrokenOwner)
+    result = asyncio.run(executor.execute_wave(**PATHS, cell_ids=["cell-00"], output_root=roots, queue_root=queue, authorization_acknowledgement_sha256=ACK, allow_remote=True))
+    assert terminated == ["terminate"] and result[0]["state"] == "isolated_child_reconcile_required" and (roots / "cell-00" / executor.ISOLATION_RECONCILE).is_file()
+
+
+@pytest.mark.skipif(os.name != "nt", reason="Windows Job Object semantics")
+def test_windows_child_owner_terminates_actual_process() -> None:
+    async def exercise() -> None:
+        child = await asyncio.create_subprocess_exec(sys.executable, "-c", "import time; time.sleep(30)", stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE, creationflags=getattr(subprocess, "CREATE_NEW_PROCESS_GROUP", 0))
+        owner = executor._ChildTreeOwner(child)
+        await owner.stop(); owner.close()
+        assert child.returncode is not None
+    asyncio.run(exercise())
+
+
+@pytest.mark.skipif(os.name == "nt", reason="POSIX process-group semantics")
+def test_posix_child_owner_kills_descendant_after_leader_exit(tmp_path: Path):
+    async def exercise() -> None:
+        script = "import subprocess,sys,time; child=subprocess.Popen([sys.executable,'-c','import time; time.sleep(30)']); print(child.pid,flush=True); time.sleep(30)"
+        child = await asyncio.create_subprocess_exec(sys.executable, "-c", script, stdout=asyncio.subprocess.PIPE, start_new_session=True)
+        assert child.stdout is not None; descendant = int((await child.stdout.readline()).decode("ascii"))
+        owner = executor._ChildTreeOwner(child); await owner.stop(); owner.close()
+        for _ in range(30):
+            try: os.kill(descendant, 0)
+            except ProcessLookupError: return
+            await asyncio.sleep(0.01)
+        pytest.fail("POSIX descendant survived process-group cleanup")
+    asyncio.run(exercise())

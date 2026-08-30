@@ -4,15 +4,20 @@ from __future__ import annotations
 
 import argparse
 import asyncio
+import ctypes
 import hashlib
 import importlib.util
 import json
 import math
 import os
 import re
+import signal
 import stat
+import subprocess
 import sys
 import threading
+import time
+import uuid
 from pathlib import Path
 from types import ModuleType, SimpleNamespace
 from typing import Any, Awaitable, Callable, Mapping
@@ -32,6 +37,8 @@ NATIVE_SHA256 = "5d2bd6871fe2013b8af5e166d89eeb020ff98889ce30494dd8889f7bee2d942
 SOL_V4_PATH = HERE.parent / "hbq-human-alignment-optimizer-v4-native-subscription-exec-v4" / "executor.py"
 SOL_V4_SHA256 = "4c961721b08dca237f1c4bd5f743438e3d54ef66af650e7c07bfc775b209f426"
 PREPARED = frozenset({"payload.bin", "response-schema.json", "disclosure.json", "authorization-acknowledgement.json", "zero-charge-route-proof.json", "prepared.json"})
+ISOLATION_RECONCILE = "isolated-child-reconcile.json"
+ISOLATED_CHILD_TIMEOUT_SECONDS = 960
 _LOAD_LOCK = threading.RLock()
 _MODULE_CACHE: dict[tuple[Path, str], ModuleType] = {}
 _SCHEDULE_CACHE: dict[tuple[Path, Path, Path], tuple[tuple[str, str, str], bytes]] = {}
@@ -294,6 +301,103 @@ def _intent(root: Path, row: Mapping[str, Any], prepared: Mapping[str, Any]) -> 
     _write_new(root / "launch-intent.json", canonical(value))
 
 
+def _isolated_child_argv(*, reconciliation_manifest_path: Path, frozen_successor_path: Path, hanna_csv_path: Path, cell_id: str, output_root: Path, queue_root: Path, authorization_acknowledgement_sha256: str, isolation_gate: Path) -> list[str]:
+    return [sys.executable, str(Path(__file__).resolve()), "--reconciliation-manifest", str(Path(reconciliation_manifest_path)), "--frozen-successor", str(Path(frozen_successor_path)), "--hanna-csv", str(Path(hanna_csv_path)), "--output-root", str(Path(output_root)), "--queue-root", str(Path(queue_root)), "--acknowledgement-sha256", authorization_acknowledgement_sha256, "--cell-id", cell_id, "--allow-remote", "--isolation-gate", str(isolation_gate)]
+
+
+def _await_isolation_gate(path: Path) -> None:
+    deadline = time.monotonic() + 30
+    while time.monotonic() < deadline:
+        if path.exists():
+            absolute = Path(os.path.abspath(path)); current = Path(absolute.anchor)
+            for part in absolute.parts[1:]:
+                current /= part
+                if not _plain(current, directory=current != absolute): raise ValueError("heldout exec v1 isolation gate is unsafe")
+            if stable_bytes(absolute) == b"heldout-exec-isolation-gate-v1\n": return
+            raise ValueError("heldout exec v1 isolation gate bytes drifted")
+        time.sleep(0.01)
+    raise ValueError("heldout exec v1 isolation gate timed out")
+
+
+def _strand_isolated_child(root: Path, row: Mapping[str, Any], *, detail: str) -> None:
+    if not root.is_dir() or not _plain(root, directory=True) or any((root / name).exists() for name in ("precontact-failure.json", "launch-intent.json", "result.json", "execution-receipt.json", ISOLATION_RECONCILE)):
+        return
+    value = {"format_version": 1, "study_id": STUDY_ID, "kind": "isolated_child_reconcile_required", "cell_id": row["cell_id"], "detail": detail, "provider_calls_made": None, "process_launches": None, "native_contact_proven": False, "native_endpoint_contact_cardinality": "unknown", "retry_policy": "fresh_output_root_required_no_in_place_retry"}
+    _write_new(root / ISOLATION_RECONCILE, canonical(value))
+
+
+class _ChildTreeOwner:
+    def __init__(self, child: asyncio.subprocess.Process):
+        self.child = child; self.handle: Any | None = None
+        if os.name != "nt": return
+        transport = getattr(child, "_transport", None); proc = transport.get_extra_info("subprocess") if transport is not None else None
+        handle = getattr(proc, "_handle", None)
+        if handle is None: raise ValueError("heldout exec v1 isolated child lacks a Windows process handle")
+        kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
+        kernel32.CreateJobObjectW.argtypes = (ctypes.c_void_p, ctypes.c_wchar_p); kernel32.CreateJobObjectW.restype = ctypes.c_void_p
+        kernel32.SetInformationJobObject.argtypes = (ctypes.c_void_p, ctypes.c_int, ctypes.c_void_p, ctypes.c_uint32); kernel32.SetInformationJobObject.restype = ctypes.c_int
+        kernel32.AssignProcessToJobObject.argtypes = (ctypes.c_void_p, ctypes.c_void_p); kernel32.AssignProcessToJobObject.restype = ctypes.c_int
+        kernel32.CloseHandle.argtypes = (ctypes.c_void_p,); kernel32.CloseHandle.restype = ctypes.c_int
+        job = kernel32.CreateJobObjectW(None, None)
+        if not job: raise OSError(ctypes.get_last_error(), "CreateJobObjectW")
+        class Basic(ctypes.Structure):
+            _fields_ = [("PerProcessUserTimeLimit", ctypes.c_int64), ("PerJobUserTimeLimit", ctypes.c_int64), ("LimitFlags", ctypes.c_uint32), ("MinimumWorkingSetSize", ctypes.c_size_t), ("MaximumWorkingSetSize", ctypes.c_size_t), ("ActiveProcessLimit", ctypes.c_uint32), ("Affinity", ctypes.c_size_t), ("PriorityClass", ctypes.c_uint32), ("SchedulingClass", ctypes.c_uint32)]
+        class IoCounters(ctypes.Structure):
+            _fields_ = [(name, ctypes.c_uint64) for name in ("ReadOperationCount", "WriteOperationCount", "OtherOperationCount", "ReadTransferCount", "WriteTransferCount", "OtherTransferCount")]
+        class Extended(ctypes.Structure):
+            _fields_ = [("BasicLimitInformation", Basic), ("IoInfo", IoCounters), ("ProcessMemoryLimit", ctypes.c_size_t), ("JobMemoryLimit", ctypes.c_size_t), ("PeakProcessMemoryUsed", ctypes.c_size_t), ("PeakJobMemoryUsed", ctypes.c_size_t)]
+        info = Extended(); info.BasicLimitInformation.LimitFlags = 0x00002000
+        if not kernel32.SetInformationJobObject(job, 9, ctypes.byref(info), ctypes.sizeof(info)) or not kernel32.AssignProcessToJobObject(job, ctypes.c_void_p(handle)):
+            error = ctypes.get_last_error(); kernel32.CloseHandle(job); raise OSError(error, "SetInformationJobObject or AssignProcessToJobObject")
+        self.handle = job
+
+    async def stop(self) -> None:
+        if os.name == "nt":
+            if self.child.returncode is None: self.child.terminate()
+            try: await asyncio.wait_for(self.child.wait(), timeout=5)
+            except asyncio.TimeoutError:
+                self.child.kill()
+                await self.child.wait()
+            return
+        try: os.killpg(self.child.pid, signal.SIGTERM)
+        except ProcessLookupError: pass
+        try: await asyncio.wait_for(self.child.wait(), timeout=5)
+        except asyncio.TimeoutError: pass
+        try: os.killpg(self.child.pid, signal.SIGKILL)
+        except ProcessLookupError: pass
+        await self.child.wait()
+
+    def close(self) -> None:
+        if self.handle is not None:
+            kernel32 = ctypes.WinDLL("kernel32", use_last_error=True); kernel32.CloseHandle.argtypes = (ctypes.c_void_p,); kernel32.CloseHandle.restype = ctypes.c_int; kernel32.CloseHandle(self.handle); self.handle = None
+
+
+async def _stop_unowned_child(child: asyncio.subprocess.Process) -> None:
+    if os.name == "nt":
+        if child.returncode is None: child.terminate()
+        try: await asyncio.wait_for(child.wait(), timeout=5)
+        except asyncio.TimeoutError:
+            child.kill(); await child.wait()
+        return
+    try: os.killpg(child.pid, signal.SIGTERM)
+    except ProcessLookupError: pass
+    try: await asyncio.wait_for(child.wait(), timeout=5)
+    except asyncio.TimeoutError: pass
+    try: os.killpg(child.pid, signal.SIGKILL)
+    except ProcessLookupError: pass
+    await child.wait()
+
+
+def _admit_isolated_child_success(root: Path, row: Mapping[str, Any], value: Any, frozen: Mapping[str, Any]) -> dict[str, Any]:
+    _verify_completed_cell(frozen=frozen, cell=row, cell_root=root)
+    if row["route_name"] == "grok_primary":
+        expected = {"cell_id": row["cell_id"], "state": "grok_completed", "provider_calls_made": 1, "process_launches": 1, "native_endpoint_contact_cardinality": "proven_exactly_one"}
+    else:
+        expected = {"cell_id": row["cell_id"], "state": "sol_local_lifecycle_completed", "provider_calls_made": None, "process_launches": 1, "native_endpoint_contact_cardinality": "unproven"}
+    if value != expected: raise ValueError("heldout exec v1 isolated child stdout drifted")
+    return expected
+
+
 def _grok_invoke(grok: ModuleType, broker: Any, route: Mapping[str, Any], payload: bytes, schema: Mapping[str, Any], capture: Path) -> tuple[Any, bytes]:
     adapter_route = grok._adapter_command(broker, route, schema)
     wrapper = {**adapter_route, "command": [sys.executable, str(grok.CAPTURE_WRAPPER_PATH), "--capture-path", str(capture.resolve()), "--", *adapter_route["command"]]}
@@ -309,7 +413,7 @@ def _grok_invoke(grok: ModuleType, broker: Any, route: Mapping[str, Any], payloa
 def execute_cell(*, reconciliation_manifest_path: Path, frozen_successor_path: Path, hanna_csv_path: Path, cell_id: str, output_root: Path, queue_root: Path, authorization_acknowledgement_sha256: str, allow_remote: bool) -> dict[str, Any]:
     if allow_remote is not True: raise ValueError("heldout exec v1 requires explicit allow_remote=True")
     _contract(); frozen = _schedule(reconciliation_manifest_path=reconciliation_manifest_path, frozen_successor_path=frozen_successor_path, hanna_csv_path=hanna_csv_path); row = _cell(frozen, cell_id); root = Path(output_root) / cell_id
-    if any((root / name).exists() for name in ("precontact-failure.json", "launch-intent.json", "result.json", "execution-receipt.json")):
+    if any((root / name).exists() for name in ("precontact-failure.json", "launch-intent.json", "result.json", "execution-receipt.json", ISOLATION_RECONCILE)):
         raise ValueError("heldout exec v1 terminal or launched root cannot resend")
     try:
         prepared, route, payload, evidence, files = _prepared(root, row, frozen, Path(queue_root), authorization_acknowledgement_sha256)
@@ -370,22 +474,48 @@ def execute_cell(*, reconciliation_manifest_path: Path, frozen_successor_path: P
 
 
 async def execute_wave(*, reconciliation_manifest_path: Path, frozen_successor_path: Path, hanna_csv_path: Path, cell_ids: list[str], output_root: Path, queue_root: Path, authorization_acknowledgement_sha256: str, allow_remote: bool) -> list[dict[str, Any]]:
+    if allow_remote is not True: raise ValueError("heldout exec v1 requires explicit allow_remote=True")
     frozen = _schedule(reconciliation_manifest_path=reconciliation_manifest_path, frozen_successor_path=frozen_successor_path, hanna_csv_path=hanna_csv_path); rows = [_cell(frozen, cell_id) for cell_id in cell_ids]
     if len(set(cell_ids)) != len(cell_ids): raise ValueError("heldout exec v1 wave has duplicate cells")
     grok_limit, sol_limit = asyncio.Semaphore(10), asyncio.Semaphore(1)
     async def one(row: Mapping[str, Any]) -> dict[str, Any]:
         limit = grok_limit if row["route_name"] == "grok_primary" else sol_limit
-        async with limit: return await asyncio.to_thread(execute_cell, reconciliation_manifest_path=reconciliation_manifest_path, frozen_successor_path=frozen_successor_path, hanna_csv_path=hanna_csv_path, cell_id=row["cell_id"], output_root=output_root, queue_root=queue_root, authorization_acknowledgement_sha256=authorization_acknowledgement_sha256, allow_remote=allow_remote)
+        async with limit:
+            gate = Path(output_root) / ".isolated-gates" / f"{row['cell_id']}-{uuid.uuid4().hex}.gate"; argv = _isolated_child_argv(reconciliation_manifest_path=reconciliation_manifest_path, frozen_successor_path=frozen_successor_path, hanna_csv_path=hanna_csv_path, cell_id=row["cell_id"], output_root=output_root, queue_root=queue_root, authorization_acknowledgement_sha256=authorization_acknowledgement_sha256, isolation_gate=gate)
+            child: asyncio.subprocess.Process | None = None; owner: _ChildTreeOwner | None = None
+            try:
+                kwargs: dict[str, Any] = {"stdout": asyncio.subprocess.PIPE, "stderr": asyncio.subprocess.PIPE}
+                if os.name == "nt": kwargs["creationflags"] = getattr(subprocess, "CREATE_NEW_PROCESS_GROUP", 0)
+                else: kwargs["start_new_session"] = True
+                child = await asyncio.create_subprocess_exec(*argv, **kwargs); owner = _ChildTreeOwner(child); _safe_output_ancestry(gate.parent); gate.parent.mkdir(parents=True, exist_ok=True); _write_new(gate, b"heldout-exec-isolation-gate-v1\n")
+                stdout, _stderr = await asyncio.wait_for(child.communicate(), timeout=ISOLATED_CHILD_TIMEOUT_SECONDS)
+                if child.returncode != 0: raise ValueError("nonzero")
+                result = json.loads(stdout.decode("utf-8"))
+                if not isinstance(result, dict) or canonical(result) != stdout: raise ValueError("malformed")
+                return _admit_isolated_child_success(Path(output_root) / row["cell_id"], row, result, frozen)
+            except asyncio.CancelledError:
+                if owner is not None: await owner.stop()
+                elif child is not None: await _stop_unowned_child(child)
+                _strand_isolated_child(Path(output_root) / row["cell_id"], row, detail="CancelledError")
+                raise
+            except BaseException as error:
+                if owner is not None: await owner.stop()
+                elif child is not None: await _stop_unowned_child(child)
+                _strand_isolated_child(Path(output_root) / row["cell_id"], row, detail=type(error).__name__)
+                return {"cell_id": row["cell_id"], "state": "isolated_child_reconcile_required", "provider_calls_made": None, "process_launches": None, "native_contact_proven": False, "native_endpoint_contact_cardinality": "unknown"}
+            finally:
+                if owner is not None: owner.close()
+                if gate.exists(): gate.unlink()
+                try: gate.parent.rmdir()
+                except OSError: pass
     return await asyncio.gather(*(one(row) for row in rows))
 
 
-def freeze_collection(*, reconciliation_manifest_path: Path, frozen_successor_path: Path, hanna_csv_path: Path, output_root: Path, manifest_path: Path) -> dict[str, Any]:
-    frozen = _schedule(reconciliation_manifest_path=reconciliation_manifest_path, frozen_successor_path=frozen_successor_path, hanna_csv_path=hanna_csv_path); root = Path(output_root)
-    entries = {entry.name: entry for entry in root.iterdir()} if root.is_dir() and _plain(root, directory=True) else {}
-    if set(entries) != {row["cell_id"] for row in frozen["cells"]} or any(not _plain(path, directory=True) for path in entries.values()): raise ValueError("heldout exec v1 collection inventory is incomplete or unsafe")
-    rows: list[dict[str, Any]] = []; requests: set[str] = set(); sessions: set[str] = set(); study = _study(); sol_module = _sol_v4()
-    for cell in frozen["cells"]:
-        cell_root = root / cell["cell_id"]
+def _verify_completed_cell(*, frozen: Mapping[str, Any], cell: Mapping[str, Any], cell_root: Path, requests: set[str] | None = None, sessions: set[str] | None = None) -> dict[str, Any]:
+    study = _study(); sol_module = _sol_v4()
+    if requests is None: requests = set()
+    if sessions is None: sessions = set()
+    try:
         children = {entry.name: entry for entry in cell_root.iterdir()} if cell_root.is_dir() and _plain(cell_root, directory=True) else {}
         for path in children.values():
             if not _plain(path, directory=path.name == "responses"): raise ValueError("heldout exec v1 completed root is unsafe")
@@ -434,7 +564,18 @@ def freeze_collection(*, reconciliation_manifest_path: Path, frozen_successor_pa
             _validate_response(final, json.loads(expected["response-schema.json"].decode("utf-8")))
             expected_result = {"format_version": 1, "study_id": STUDY_ID, "kind": "sol_local_lifecycle_completed", "cell_id": cell["cell_id"], "provider_calls_made": None, "process_launches": 1, "receipt_sha256": sha256(canonical(receipt)), "final_response_sha256": sha256(final)}
             if result != expected_result: raise ValueError("heldout exec v1 Sol result binding drifted")
-        rows.append({"cell_id": cell["cell_id"], "route_name": cell["route_name"], "payload_sha256": cell["payload_sha256"], "receipt_sha256": sha256(canonical(receipt)), "result_sha256": sha256(canonical(result))})
+        return {"cell_id": cell["cell_id"], "route_name": cell["route_name"], "payload_sha256": cell["payload_sha256"], "receipt_sha256": sha256(canonical(receipt)), "result_sha256": sha256(canonical(result))}
+    except (AttributeError, KeyError, TypeError) as error:
+        raise ValueError("heldout exec v1 completed root has malformed structured evidence") from error
+
+
+def freeze_collection(*, reconciliation_manifest_path: Path, frozen_successor_path: Path, hanna_csv_path: Path, output_root: Path, manifest_path: Path) -> dict[str, Any]:
+    frozen = _schedule(reconciliation_manifest_path=reconciliation_manifest_path, frozen_successor_path=frozen_successor_path, hanna_csv_path=hanna_csv_path); root = Path(output_root)
+    entries = {entry.name: entry for entry in root.iterdir()} if root.is_dir() and _plain(root, directory=True) else {}
+    if set(entries) != {row["cell_id"] for row in frozen["cells"]} or any(not _plain(path, directory=True) for path in entries.values()): raise ValueError("heldout exec v1 collection inventory is incomplete or unsafe")
+    rows: list[dict[str, Any]] = []; requests: set[str] = set(); sessions: set[str] = set()
+    for cell in frozen["cells"]:
+        rows.append(_verify_completed_cell(frozen=frozen, cell=cell, cell_root=root / cell["cell_id"], requests=requests, sessions=sessions))
     if len(requests) != 44 or len(sessions) != 44: raise ValueError("heldout exec v1 Grok collection cardinality drifted")
     manifest = {"format_version": 1, "study_id": STUDY_ID, "kind": "heldout_execution_collection", "schedule_sha256": SCHEDULE_SHA256, "cells": rows, "grok_completed_native_identities": 44, "sol_native_endpoint_cardinality": "unproven", "provider_calls_made": None, "process_launches": 66, "confirmation": {"status": "unopened", "cells": 0}}
     manifest["manifest_sha256"] = sha256(canonical(manifest)); target = Path(manifest_path)
@@ -443,8 +584,10 @@ def freeze_collection(*, reconciliation_manifest_path: Path, frozen_successor_pa
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description=__doc__); parser.add_argument("--reconciliation-manifest", type=Path, required=True); parser.add_argument("--frozen-successor", type=Path, required=True); parser.add_argument("--hanna-csv", type=Path, required=True); parser.add_argument("--output-root", type=Path, required=True); parser.add_argument("--queue-root", type=Path, required=True); parser.add_argument("--acknowledgement-sha256", required=True); parser.add_argument("--prepare-all", action="store_true"); parser.add_argument("--cell-id"); parser.add_argument("--allow-remote", action="store_true")
-    args = parser.parse_args(argv); common = {"reconciliation_manifest_path": args.reconciliation_manifest, "frozen_successor_path": args.frozen_successor, "hanna_csv_path": args.hanna_csv, "output_root": args.output_root, "queue_root": args.queue_root, "authorization_acknowledgement_sha256": args.acknowledgement_sha256}
+    parser = argparse.ArgumentParser(description=__doc__); parser.add_argument("--reconciliation-manifest", type=Path, required=True); parser.add_argument("--frozen-successor", type=Path, required=True); parser.add_argument("--hanna-csv", type=Path, required=True); parser.add_argument("--output-root", type=Path, required=True); parser.add_argument("--queue-root", type=Path, required=True); parser.add_argument("--acknowledgement-sha256", required=True); parser.add_argument("--prepare-all", action="store_true"); parser.add_argument("--cell-id"); parser.add_argument("--allow-remote", action="store_true"); parser.add_argument("--isolation-gate", type=Path, help=argparse.SUPPRESS)
+    args = parser.parse_args(argv)
+    if args.isolation_gate is not None: _await_isolation_gate(args.isolation_gate)
+    common = {"reconciliation_manifest_path": args.reconciliation_manifest, "frozen_successor_path": args.frozen_successor, "hanna_csv_path": args.hanna_csv, "output_root": args.output_root, "queue_root": args.queue_root, "authorization_acknowledgement_sha256": args.acknowledgement_sha256}
     if args.prepare_all: result = prepare_all(**common)
     else:
         if not args.cell_id: parser.error("--cell-id is required for execution")
