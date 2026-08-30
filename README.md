@@ -53,13 +53,20 @@ pretending they have answers yet:
   The separate [development optimizer](evaluation-results/hbq-human-alignment-optimizer-v4-development-optimizer-v1/)
   can run deterministic Optuna search only over independently verified raw
   training cells and exposes a development-only DSPy program for versioned
-  prompt descendants. Empirical optimization and confirmation have not run;
-  neither dependency is imported by the scoring runtime or makes provider
-  calls.
+  prompt descendants. The [lean development pilot](evaluation-results/hbq-human-alignment-optimizer-v4-lean-development-v1/)
+  has exercised real Optuna `4.9.0` search and DSPy `3.3.1` descendant
+  generation over independently verified persisted evidence. Both remain
+  development-only: neither is imported by the scoring runtime or has runtime,
+  selection, validation, or confirmation authority.
 
   All 65 [receipt-verified native Grok development cells](evaluation-results/hbq-human-alignment-optimizer-v4-native-subscription-exec-v1/) are now settled across the frozen 13-item, five-candidate development leg. Each has exactly one tool-free, zero-new-spend Grok Build subscription process launch and proven native envelope/contact, reports Grok CLI `1.0.13` and `grok-4.6-build`, requests `high` reasoning without independent attestation, and has a provider-free [admitted predecessor-shaped immutable descendant](evaluation-results/hbq-human-alignment-optimizer-v4-native-admission-v1/) with a proof file. The last twenty cells were collected in two independent ten-wide waves; all 65 native executions and all 65 admissions completed without retry. These are development observations, not an alignment or prompt-selection result.
 
-  The original 35-cell Sol schedule is also settled without resend: 33 [exec-v3](evaluation-results/hbq-human-alignment-optimizer-v4-native-subscription-exec-v3/) local Codex/Sol lifecycles succeeded, while the two earlier once-launched diagnostics remain immutable terminal exclusions after a Code Mode startup error and a stderr-label gate failure. The successful receipts preserve exact matched task/schema bytes and structured scores, but prove only local Codex process/thread lifecycle; provider identity, reasoning, native endpoint, retry cardinality, and contact cardinality remain unproven. A versioned descendant schedule will replace the two failed analysis slots without rewriting or relaunching either source. Until those replacements and the dedicated Sol lifecycle-admission projection pass, these observations do not establish Grok-as-Sol substitution, agreement, alignment, candidate selection, confirmation, or revision gain. DSPy `3.3.1` and Optuna `4.9.0` remain development-only; the lean pilot is being wired to independently verified training evidence rather than treating development cells or caller aggregates as optimizer input.
+  The original 35-cell Sol schedule is also settled without resend: 33 [exec-v3](evaluation-results/hbq-human-alignment-optimizer-v4-native-subscription-exec-v3/) local Codex/Sol lifecycles succeeded, while the two earlier once-launched diagnostics remain immutable terminal exclusions after a Code Mode startup error and a stderr-label gate failure. Two [versioned same-group descendants](evaluation-results/hbq-human-alignment-optimizer-v4-sol-replacement-schedule-v1/) subsequently completed through the repaired [exec-v4 lifecycle](evaluation-results/hbq-human-alignment-optimizer-v4-native-subscription-exec-v4/) without rewriting or relaunching either predecessor. All successful Sol evidence preserves exact task/schema bytes and structured scores but proves only local Codex process/thread lifecycle: provider identity, reasoning, native endpoint, retry cardinality, and contact cardinality remain unproven. The [provider-free lifecycle admission](evaluation-results/hbq-human-alignment-optimizer-v4-sol-local-lifecycle-admission-v1/) preserves that ceiling as `local_lifecycle_verified_native_endpoint_contact_cardinality_unproven`. These observations do not establish Grok-as-Sol substitution, agreement, alignment, candidate selection, confirmation, or revision gain.
+- The [33-pair Grok/Sol descriptive readout](evaluation-results/hbq-human-alignment-optimizer-v4-grok-sol-readout-v1/)
+  reports mean absolute score difference `0.4392` across `172` covered
+  pair-by-dimension observations. It is a frozen-sample discrepancy summary,
+  not evidence of agreement, interchangeability, provider ranking, alignment,
+  selection, generalization, confirmation, or revision gain.
 - [Matched Grok/Sol calibration](evaluation-results/hbq-grok-sol-current-matched-v1/)
   is a provider-free, public-synthetic pre-execution screen. It will measure
   a narrow matched-verdict agreement question, not declare judge

@@ -1,0 +1,25 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-human-alignment-optimizer-v4-grok-sol-readout-v1",
+  "inputs": {
+    "exec_v3_sha256": "cea177b5185a84b682bd5271ae7384cd7742add872d31b45227433d72c7f7e90",
+    "exec_v3_contract_sha256": "d92970c60a538a229c8f5470d53e8fd3dd4d163aff25b0110b6453f6caf080f5",
+    "admission_sha256": "a1c18d224c40e51a822cf2a46b2da273fef37d47df0fe207d1abe8b49bc75304",
+    "admission_contract_sha256": "43f8bdab947a360224d5f9c02d0e69f5dd98fc261bc8d5e94dc17fc9997f92e8",
+    "frozen_successor_sha256": "b0f6dd24415c388a3104f8c9304ce301193cf0a48631a86c4886bc8ce48468e7",
+    "hanna_csv_sha256": "ef59054d27fa32def06cfdc57243b1dd09c7e71f40b6d9d43fecfbf60e59026b"
+  },
+  "geometry": {
+    "matched_pairs": 33,
+    "dimensions": 6,
+    "excluded_terminal_cells": ["v4-cell-2eb4f20b3db15aac", "v4-cell-233337f220433ced"]
+  },
+  "sol_evidence": "local_lifecycle_verified_native_endpoint_contact_cardinality_unproven",
+  "historical_route_replay": "persisted_prepared_proof_receipt_equality_not_current_route_claim",
+  "coverage_policy": "uncovered_grok_dimensions_are_retained_per_pair_but_excluded_from_all_paired_aggregates_with_exact_counts",
+  "identity_policy": "reject_provider_contact_reuse_provider_session_reuse_and_duplicate_item_candidate_independently",
+  "endpoint_identity": "exact_provider_requested_model_effective_model_provider_reported_model_requested_reasoning_reasoning_attestation_route_transport_and_identity_evidence",
+  "result_input_hashes": "frozen_successor_hanna_csv_executor_executor_contract_admission_admission_contract_analyzer_analyzer_contract",
+  "output": "public_pair_ids_prompt_hashes_coverage_absolute_differences_and_recomputable_covered_only_difference_means_no_story_text",
+  "claims": {"selection": false, "substitution": false, "generalization": false, "provider_quality_ranking": false}
+}
