@@ -1,0 +1,16 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-human-alignment-optimizer-v4-native-subscription-exec-v3",
+  "predecessor": {
+    "study_id": "hbq-human-alignment-optimizer-v4-native-subscription-exec-v2",
+    "executor_sha256": "2c4629aa22c24f5c9093fd69fb45942ddd2e84bc057a6d01ff01275fa166a92b",
+    "contract_sha256": "238a5e26ccbb370b473ee8d48eaebd110dc8bdfe8a208bd18112e91877dfb83d"
+  },
+  "change": {
+    "scope": "sol_stderr_evidence_only",
+    "tool_policy": "v2 exact argv; code_mode explicitly disabled and code_mode_host not disabled",
+    "stderr_policy": "persist raw bytes; absent labels are unknown; malformed, duplicate, conflicting, or error labels reconcile",
+    "contact_policy": "one local process lifecycle only; native contact and retries remain unproven"
+  },
+  "runtime_dependencies": {"dspy": false, "optuna": false}
+}
