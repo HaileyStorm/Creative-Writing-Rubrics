@@ -1,0 +1,23 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-human-alignment-optimizer-v4-native-admission-v1",
+  "kind": "provider_free_completed_grok_admission_descendant",
+  "predecessor": {
+    "study_id": "hbq-human-alignment-optimizer-v4-native-subscription-v1",
+    "executor_sha256": "6d93f69216d62bd0847aa6b338b6e2360587c82608669f78fbad245a34ba1c49",
+    "contract_sha256": "aac0c8952894a2501bd364fcf7fff392399633de8f310be1b97108061e78bbe9"
+  },
+  "native_exec": {
+    "study_id": "hbq-human-alignment-optimizer-v4-native-subscription-exec-v1",
+    "executor_sha256": "5d2bd6871fe2013b8af5e166d89eeb020ff98889ce30494dd8889f7bee2d942f"
+  },
+  "admission": {
+    "accepted_route": "grok_primary",
+    "provider_calls_made": 0,
+    "source_root": "completed_exec_v1_cell_root",
+    "destination_shape": "predecessor_native_returned_unprojected",
+    "source_immutability": "required",
+    "projection": "owned_by_predecessor",
+    "clone_semantics": "identical_source_artifacts_are_same_evidence_and_require_downstream_contact_deduplication"
+  }
+}

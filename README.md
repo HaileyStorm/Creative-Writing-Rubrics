@@ -53,8 +53,11 @@ pretending they have answers yet:
   The separate [development optimizer](evaluation-results/hbq-human-alignment-optimizer-v4-development-optimizer-v1/)
   can run deterministic Optuna search only over independently verified raw
   training cells and exposes a development-only DSPy program for versioned
-  prompt descendants. Provider calls, empirical optimization, and confirmation
-  have not run; neither dependency is imported by the scoring runtime.
+  prompt descendants. Empirical optimization and confirmation have not run;
+  neither dependency is imported by the scoring runtime or makes provider
+  calls.
+
+  One [receipt-verified native Grok development cell](evaluation-results/hbq-human-alignment-optimizer-v4-native-subscription-exec-v1/) has now run: `v4-cell-ebd4bf38ae5656d9` used the tool-free Grok Build subscription route for one process/model call. Its request SHA-256 is `1559da913ef40e7fff06317a034bb8d9be4893ae4cf4583549a017fd477cb7ea`; its receipt-envelope SHA-256 is `cb31a4da158e02a11a0a2957d937af2709b6b5c29989c4859defaf144bc2c550`. The receipt reports `grok-4.6-build`; `high` was requested but is not independently attested. Scores were Relevance `1`, Coherence `1`, Empathy `2`, Surprise `1`, Engagement `1`, and Complexity `1`, with every coverage flag true. The [admission package](evaluation-results/hbq-human-alignment-optimizer-v4-native-admission-v1/) admits that receipt provider-free into the predecessor-shaped immutable observation format; it remains only 1 of 100 mandatory cells. The CLI's nominal usage estimate was `$0.01221688`, but this was a zero-new-spend subscription route, not a charged cost. This single development observation is not alignment improvement, candidate selection, Grok/Sol agreement, confirmation, or revision-gain evidence.
 - [Matched Grok/Sol calibration](evaluation-results/hbq-grok-sol-current-matched-v1/)
   is a provider-free, public-synthetic pre-execution screen. It will measure
   a narrow matched-verdict agreement question, not declare judge
