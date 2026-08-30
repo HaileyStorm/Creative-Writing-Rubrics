@@ -1,0 +1,20 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-human-alignment-optimizer-v4-lean-training-exec-v1",
+  "kind": "governed_frozen_training_collection_adapter",
+  "scope": {
+    "accepted_partition": "lean_training_only_25_grok_plus_10_sprinkled_sol",
+    "grok": "training_row_local_collector_then_paired_receipt_verifier",
+    "sol": "training_row_local_collector_native_cardinality_unproven",
+    "confirmation": "forbidden",
+    "grok_development": "forbidden"
+  },
+  "invariants": {
+    "prompt_and_schema": "exact_parent_training_row_bytes",
+    "dispatch": "one_cell_explicit_remote_authorization_no_resend_after_launch_paired_receipt_verifier_required_for_ingest",
+    "precontact": "recoverable_only_when_no_launch",
+    "postlaunch": "reconcile_required",
+    "collector_manifest": "separate_paired_verifier_input_only_not_a_projection_or_success_proof"
+  },
+  "provider_calls_made_by_prepare_or_manifest": 0
+}

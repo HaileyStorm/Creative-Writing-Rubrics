@@ -58,6 +58,12 @@ pretending they have answers yet:
   generation over independently verified persisted evidence. Both remain
   development-only: neither is imported by the scoring runtime or has runtime,
   selection, validation, or confirmation authority.
+  The reviewed [lean training collector](evaluation-results/hbq-human-alignment-optimizer-v4-lean-training-exec-v1/)
+  and [35-row verifier](evaluation-results/hbq-human-alignment-optimizer-v4-lean-training-verifier-v1/)
+  now bind the frozen 25 Grok-primary and 10 sprinkled-Sol training rows to
+  exact native artifacts and independently replayable optimizer observations.
+  Real provider-free Grok and Sol prepares pass; live training outcomes remain
+  pending.
 
   All 65 [receipt-verified native Grok development cells](evaluation-results/hbq-human-alignment-optimizer-v4-native-subscription-exec-v1/) are now settled across the frozen 13-item, five-candidate development leg. Each has exactly one tool-free, zero-new-spend Grok Build subscription process launch and proven native envelope/contact, reports Grok CLI `1.0.13` and `grok-4.6-build`, requests `high` reasoning without independent attestation, and has a provider-free [admitted predecessor-shaped immutable descendant](evaluation-results/hbq-human-alignment-optimizer-v4-native-admission-v1/) with a proof file. The last twenty cells were collected in two independent ten-wide waves; all 65 native executions and all 65 admissions completed without retry. These are development observations, not an alignment or prompt-selection result.
 
