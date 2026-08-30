@@ -1,0 +1,46 @@
+{
+  "schema": "codex-nous-tool-free-judge-request-v2",
+  "model": "deepseek/deepseek-v4-flash-0731",
+  "reasoning_effort": "max",
+  "max_physical_http_attempts_per_logical_request": 1,
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a development-only prompt candidate generator for a creative-writing evaluation rubric. Produce diverse, concrete descendants of the supplied judge instruction. Do not claim empirical performance, do not select a winner, and do not request tools or source text."
+    },
+    {
+      "role": "user",
+      "content": "Generate exactly eight materially distinct judge-instruction descendants for HANNA development. The judge scores six dimensions: Relevance, Coherence, Empathy, Surprise, Engagement, and Complexity. Current Grok development evidence covers 65/65 cells; the only public aggregate signal is that five frozen candidates have descriptive overall means 1.2222222222, 1.2777777778, 1.1666666667, 1.2777777778, and 0.9222222222 over three balanced items, with no alignment or selection claim. Optimize candidate designs for calibrated use of the full score scale, dimension separation, evidence-grounded explanations without requiring quotations, stable JSON-only scoring, and cross-model portability to Grok, Sol, and DeepSeek. Keep each instruction self-contained and under 220 words. Vary mechanisms rather than wording: for example anchored contrast, counterfactual checks, dimension-specific failure modes, or staged independent scoring. These will be evaluated later on frozen partitions by Grok-primary development and Sol validation; do not use or infer private stories, human targets, confirmation data, or candidate winners."
+    }
+  ],
+  "response_format": {
+    "type": "json_schema",
+    "json_schema": {
+      "name": "hanna_prompt_candidates",
+      "strict": true,
+      "schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "candidate_prompts": {
+            "type": "array",
+            "minItems": 8,
+            "maxItems": 8,
+            "items": {"type": "string"}
+          },
+          "mechanism_labels": {
+            "type": "array",
+            "minItems": 8,
+            "maxItems": 8,
+            "items": {"type": "string"}
+          },
+          "risks": {
+            "type": "array",
+            "items": {"type": "string"}
+          }
+        },
+        "required": ["candidate_prompts", "mechanism_labels", "risks"]
+      }
+    }
+  }
+}

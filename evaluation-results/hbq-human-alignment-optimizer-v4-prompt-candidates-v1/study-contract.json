@@ -1,0 +1,35 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-human-alignment-optimizer-v4-prompt-candidates-v1",
+  "kind": "development_only_prompt_candidate_catalog",
+  "parent": {
+    "study_id": "hbq-human-alignment-optimizer-v4-lean-development-v1",
+    "parent_candidate_id": "candidate-52d1be4bc34e0018",
+    "fresh88_mapping": "fixed"
+  },
+  "inputs": {
+    "luna": {"source_file": "luna-source.json", "candidates": 8, "model": "gpt-5.6-luna"},
+    "deepseek": {
+      "request_file": "nous-request.json",
+      "result_file": "nous-result.json",
+      "candidates": 8,
+      "provider": "nous",
+      "requested_model": "deepseek/deepseek-v4-flash-0731",
+      "exact_gate_eligible": false
+    }
+  },
+  "output": {
+    "catalog_file": "catalog.json",
+    "shortlist_candidates": 12,
+    "luna_verbatim_candidates": 8,
+    "local_deepseek_descendants": 4,
+    "promotion": "mechanical-distinctness cataloging only"
+  },
+  "authority": {
+    "runtime": false,
+    "selection": false,
+    "confirmation": "unopened",
+    "empirical_alignment_claim": false,
+    "provider_dispatch": false
+  }
+}

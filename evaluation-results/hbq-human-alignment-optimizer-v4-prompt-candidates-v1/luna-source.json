@@ -1,0 +1,30 @@
+{
+  "format_version": 1,
+  "source_id": "luna-u8-20260830",
+  "source_kind": "gpt-5.6-luna development candidate lane",
+  "source_recording": "root-task handoff; no provider payload is represented as a native receipt",
+  "model": "gpt-5.6-luna",
+  "seed_or_order": "20260830",
+  "sampling": "U8 mutually exclusive primary mechanisms; representative, not uniform",
+  "common_prefix": "Use exactly these equally weighted HANNA dimensions:\nRelevance—fit to the requested story; Coherence—consistency of events, time, and reference; Empathy—understanding of feeling as depicted or elicited; Surprise—an unforeseeable development that still fits; Engagement—hold on attention; Complexity—layered structure and inference load.\n\nScore each independently on the supplied finite scale from observable realization, not confidence. Score only what is present; thin or absent material is not automatically a demonstrated defect and is never a convenience midpoint. A visible construct breakdown is lower. Do not transfer credit between dimensions, use length/style/global liking as a proxy, add constructs, match HANNA ratings, or apply confidence/coverage as score weights. HANNA is human-reference context, not ground truth. Return only the required six-dimensional schema.",
+  "candidates": [
+    {"source_candidate_id": "luna-u8-01", "mechanism": "six-slot-evidence-ledger", "delta": "Check every dimension once in canonical order before finalizing any output. For each, locate dimension-bearing material or note internally that no qualifying material is supplied. Do not let a skipped or empty check inherit a neighboring score."},
+    {"source_candidate_id": "luna-u8-02", "mechanism": "fit-continuity-first", "delta": "First inspect Relevance against the declared story request and Coherence against event, time, and reference continuity. Then reset attention and score Empathy, Surprise, Engagement, and Complexity afresh. This is attention control, not weighting; first-pass impressions cannot anchor later scores."},
+    {"source_candidate_id": "luna-u8-03", "mechanism": "support-limit-balance", "delta": "For each dimension identify observed support and observed limitation, when either exists. Use only those observations; never invent a missing counterexample or turn absent evidence into strength. Magnitude follows degree of realized construction, not confidence, global liking, or example count."},
+    {"source_candidate_id": "luna-u8-04", "mechanism": "human-reader-clean-room", "delta": "Read the supplied artifact as an ordinary reader of the declared task, then apply only the six fixed definitions. Do not import style-guide, toxicity, moral, genre-familiarity, or general literary-quality judgments unless explicitly declared. Human-reference framing describes reader response; it does not create an overall target score."},
+    {"source_candidate_id": "luna-u8-05", "mechanism": "scope-materiality-fence", "delta": "Bind every judgment to the declared evaluation unit and supplied context. Relevance means fit at that scope; Coherence means only supplied event/time/reference relations. Do not infer whole-work properties from an excerpt or missing context. Separate unavailable scope from demonstrated weakness and leave other dimensions unaffected."},
+    {"source_candidate_id": "luna-u8-06", "mechanism": "independent-two-pass-audit", "delta": "Pass 1 assigns six independent scores. Pass 2 audits only for omission, cross-dimension leakage, and unsupported score changes. Change a score only when its own evidence and definition justify it; do not average passes, apply confidence adjustments, or rerank the vector to look balanced."},
+    {"source_candidate_id": "luna-u8-07", "mechanism": "dimension-first-overall-last", "delta": "Finalize all six dimension scores before considering any overall impression. If an overall impression is used for context, it is non-scoring and cannot revise the six. Revisit dimensions in reverse order only to catch omission, never to smooth disagreements or equalize scores."},
+    {"source_candidate_id": "luna-u8-08", "mechanism": "full-scale-realization", "delta": "Use the supplied numeric scale as warranted: reserve the midpoint for genuinely middling realization, and use low or high values only when observed realization supports them. Do not compress every dimension toward the middle or force artificial spread. Ties remain valid when evidence is genuinely indistinguishable."}
+  ],
+  "profile_invariant": {
+    "parent_candidate_id": "candidate-52d1be4bc34e0018",
+    "fresh88_mapping": "fixed",
+    "dimension_weights": [1, 1, 1, 1, 1, 1],
+    "demonstrations": 0,
+    "grok_sol_task_schema_story_bytes": "identical",
+    "runtime_authority": "none",
+    "selection_authority": "none",
+    "confirmation": "unopened"
+  }
+}
