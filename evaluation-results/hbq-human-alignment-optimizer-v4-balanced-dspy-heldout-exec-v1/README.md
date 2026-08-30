@@ -1,0 +1,5 @@
+# Native heldout execution composition (v1)
+
+This versioned executor prepares and dispatches only the pinned 66-cell heldout schedule. Grok uses the pinned broker/capture-wrapper transport and is capped at ten independent cells. Sol uses a callback-safe local Codex lifecycle and is conservatively capped at one; its endpoint cardinality remains unproven.
+
+Every root is fresh, local-first, exact-payload-bound, and no-resend. Preparation is provider-free. Post-intent failures are terminal reconciliation cases; a definite precontact failure is also preserved and requires a fresh root.
