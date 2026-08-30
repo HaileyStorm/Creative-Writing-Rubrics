@@ -1,0 +1,33 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-human-alignment-optimizer-v4-lean-development-v1",
+  "parent": {
+    "study_id": "hbq-human-alignment-optimizer-v4-native-subscription-v1",
+    "executor_sha256": "6d93f69216d62bd0847aa6b338b6e2360587c82608669f78fbad245a34ba1c49",
+    "contract_sha256": "aac0c8952894a2501bd364fcf7fff392399633de8f310be1b97108061e78bbe9"
+  },
+  "geometry": {
+    "training": {"grok_cells": 25, "sol_sprinkled_cells": 10, "candidates": 5},
+    "grok_development": {"cells": 65, "authority": "validate_or_veto_only"},
+    "sol_validation": {"cells_after_successful_grok_validation": 7, "prompt_bytes": "unchanged_parent_rows"},
+    "confirmation": {"status": "unopened", "cells": 0}
+  },
+  "optimizer": {
+    "optuna": "4.9.0_training_evidence_only",
+    "dspy": "3.3.1_real_predict_program_recomputed_verified_optuna_bytes_only",
+    "runtime_dependency": false,
+    "confirmation_authority": false
+  },
+  "evidence": {
+    "caller_aggregates_or_raw_envelopes": "rejected",
+    "persisted_roots": "admitted_grok_proof_or_pinned_sol_exec_v3_receipt_required",
+    "sol_evidence_class": "local_codex_lifecycle_received_native_contact_unproven",
+    "provider_route_inspector": "required_before_live_dispatch"
+  },
+  "interfaces": {
+    "prepare": "provider_free_exact_training_payload_bindings",
+    "ingest": "provider_free_persisted_root_reverification",
+    "freeze": "optuna_training_only_recomputation_required_before_late_bound_sol_rows"
+  },
+  "dispatch": "not_implemented_in_this_package_preflight_only"
+}
