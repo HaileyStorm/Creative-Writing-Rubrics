@@ -1,0 +1,5 @@
+# Feedback-bound Grok descendant wave (v3)
+
+V3 creates a fresh ten-sample Grok wave from the immutable balanced DSPy preparation and an exact, caller-supplied canonical r4 feedback file. The feedback file binds the completed two-phase result and selection hashes, public result summary, wave identifier, and seed. It is development input only: V3 does not evaluate, select, or open confirmation.
+
+Preparation is provider-free and writes local-first disclosure, acknowledgement, route proof, baseline parent lineage, and a unique wave-namespaced sample ID. It also copies the verified producer contract/source, schemas, selection, and result authorities into each immutable root; post-launch validation replays those copies rather than mutable external paths. Execution is intentionally one-shot: it uses the pinned v2 Grok transport with tools, web, plans, and subagents disabled; its strict native receipts remain the prerequisite for any later all-ten freeze. A launch may never be resent; ambiguous or post-write validation outcomes are terminal reconciliation cases.
