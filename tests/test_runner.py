@@ -1502,6 +1502,343 @@ def test_codex_before_provider_attempt_is_called_once_at_launch(
     assert events == ["before_provider_attempt", "subprocess"]
 
 
+def test_codex_default_does_not_capture_raw_events(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    schema = tmp_path / "schema.json"
+    schema.write_text("{}", encoding="utf-8")
+    observed: dict[str, object] = {}
+
+    def fake_run(argv: list[str], **kwargs: object) -> subprocess.CompletedProcess[str]:
+        observed["argv"] = argv
+        observed.update(kwargs)
+        message_path = Path(argv[argv.index("--output-last-message") + 1])
+        message_path.parent.mkdir(parents=True, exist_ok=True)
+        message_path.write_text("{}", encoding="utf-8")
+        stderr = "model: gpt-5.6-sol\nprovider: openai\nreasoning effort: high\nsession id: fixture\nuser\n"
+        return subprocess.CompletedProcess(argv, 0, stdout="", stderr=stderr)
+
+    monkeypatch.setattr("hbqrs.runner.subprocess.run", fake_run)
+    _call_codex(
+        executable="codex-fixture",
+        model="gpt-5.6-sol",
+        reasoning="high",
+        prompt="judge this",
+        output_dir=tmp_path,
+        response_schema=schema,
+        batch_number=1,
+        timeout=10,
+    )
+
+    assert "--json" not in observed["argv"]
+    assert observed["input"] == "judge this"
+    assert observed["text"] is True
+    assert not list((tmp_path / "responses").glob("*.events.jsonl"))
+
+
+def test_codex_capture_preserves_raw_events_and_tool_free_json_argv(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    schema = tmp_path / "schema.json"
+    schema.write_text("{}", encoding="utf-8")
+    raw_events = b'{"type":"thread.started"}\r\n{"type":"turn.completed"}\n'
+    observed: dict[str, object] = {}
+
+    def fake_run(argv: list[str], **kwargs: object) -> subprocess.CompletedProcess[bytes]:
+        observed["argv"] = argv
+        observed.update(kwargs)
+        assert argv[0] == "codex-fixture"
+        assert argv[1:3] == ["exec", "--json"]
+        for feature in (
+            "shell_tool",
+            "unified_exec",
+            "code_mode_host",
+            "hooks",
+            "auth_elicitation",
+            "memories",
+            "plugins",
+            "multi_agent",
+            "apps",
+            "browser_use",
+            "browser_use_external",
+            "computer_use",
+            "image_generation",
+            "view_image",
+            "workspace_dependencies",
+            "skill_search",
+            "tool_suggest",
+            "tool_call_mcp_elicitation",
+            "unbounded_connection_retries",
+        ):
+            assert feature in argv
+        assert "mcp_servers={}" in argv
+        assert 'web_search="disabled"' in argv
+        assert 'approval_policy="never"' in argv
+        assert argv[argv.index("--sandbox") + 1] == "read-only"
+        assert kwargs["input"] == b"judge this"
+        assert "text" not in kwargs
+        message_path = Path(argv[argv.index("--output-last-message") + 1])
+        message_path.parent.mkdir(parents=True, exist_ok=True)
+        message_path.write_text("{}", encoding="utf-8")
+        stderr = b"model: gpt-5.6-sol\nprovider: openai\nreasoning effort: high\nsession id: fixture\nuser\n"
+        return subprocess.CompletedProcess(argv, 0, stdout=raw_events, stderr=stderr)
+
+    monkeypatch.setattr("hbqrs.runner.subprocess.run", fake_run)
+    content, record = _call_codex(
+        executable="codex-fixture",
+        model="gpt-5.6-sol",
+        reasoning="high",
+        prompt="judge this",
+        output_dir=tmp_path,
+        response_schema=schema,
+        batch_number=1,
+        timeout=10,
+        capture_jsonl_events=True,
+    )
+
+    events_path = tmp_path / "responses" / "batch-0001.attempt-0001.events.jsonl"
+    assert content == "{}"
+    assert events_path.read_bytes() == raw_events
+    artifact = record["provider_artifacts"]["codex_events"]
+    assert artifact == {
+        "path": "responses/batch-0001.attempt-0001.events.jsonl",
+        "bytes": len(raw_events),
+        "sha256": hashlib.sha256(raw_events).hexdigest(),
+    }
+    _validate_provider_artifacts(tmp_path, {"provider": record})
+
+
+def test_codex_capture_rejects_orphan_event_artifact_before_callback(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    response_dir = tmp_path / "responses"
+    response_dir.mkdir(parents=True)
+    (response_dir / "batch-0001.attempt-0001.events.jsonl").write_bytes(b"orphan")
+    schema = tmp_path / "schema.json"
+    schema.write_text("{}", encoding="utf-8")
+    observed: list[str] = []
+
+    monkeypatch.setattr(
+        "hbqrs.runner.subprocess.run",
+        lambda *_args, **_kwargs: pytest.fail("orphan event artifact launched Codex"),
+    )
+    with pytest.raises(HBQError, match="raw event path already exists"):
+        _call_codex(
+            executable="codex-fixture",
+            model="gpt-5.6-sol",
+            reasoning="high",
+            prompt="judge this",
+            output_dir=tmp_path,
+            response_schema=schema,
+            batch_number=1,
+            timeout=10,
+            before_provider_attempt=lambda: observed.append("called"),
+            capture_jsonl_events=True,
+        )
+    assert observed == []
+
+
+def test_codex_capture_keeps_partial_events_as_provider_failure(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    schema = tmp_path / "schema.json"
+    schema.write_text("{}", encoding="utf-8")
+    raw_events = b'{"type":"turn.started"}\n'
+    observed: list[str] = []
+
+    def fake_run(argv: list[str], **kwargs: object) -> subprocess.CompletedProcess[bytes]:
+        observed.append("subprocess")
+        assert kwargs["input"] == b"judge this"
+        return subprocess.CompletedProcess(argv, 7, stdout=raw_events, stderr=b"temporary failure\n")
+
+    monkeypatch.setattr("hbqrs.runner.subprocess.run", fake_run)
+    with pytest.raises(runner_module._ProviderAttemptFailure) as exc_info:
+        _call_codex(
+            executable="codex-fixture",
+            model="gpt-5.6-sol",
+            reasoning="high",
+            prompt="judge this",
+            output_dir=tmp_path,
+            response_schema=schema,
+            batch_number=1,
+            timeout=10,
+            before_provider_attempt=lambda: observed.append("before_provider_attempt"),
+            capture_jsonl_events=True,
+        )
+
+    assert observed == ["before_provider_attempt", "subprocess"]
+    assert exc_info.value.retryable is True
+    event_path = tmp_path / "responses" / "batch-0001.attempt-0001.events.jsonl"
+    assert event_path.read_bytes() == raw_events
+    assert exc_info.value.provider_record == {
+        "reported": {},
+        "provider_artifacts": {
+            "codex_events": {
+                "path": "responses/batch-0001.attempt-0001.events.jsonl",
+                "bytes": len(raw_events),
+                "sha256": hashlib.sha256(raw_events).hexdigest(),
+            }
+        },
+    }
+
+
+def test_codex_capture_timeout_remains_retryable_with_partial_events(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    schema = tmp_path / "schema.json"
+    schema.write_text("{}", encoding="utf-8")
+    raw_events = b'{"type":"thread.started"}\n'
+
+    def fake_run(argv: list[str], **_kwargs: object) -> subprocess.CompletedProcess[bytes]:
+        raise subprocess.TimeoutExpired(argv, 10, output=raw_events, stderr=b"partial")
+
+    monkeypatch.setattr("hbqrs.runner.subprocess.run", fake_run)
+    with pytest.raises(runner_module._ProviderAttemptFailure) as exc_info:
+        _call_codex(
+            executable="codex-fixture",
+            model="gpt-5.6-sol",
+            reasoning="high",
+            prompt="judge this",
+            output_dir=tmp_path,
+            response_schema=schema,
+            batch_number=1,
+            timeout=10,
+            capture_jsonl_events=True,
+        )
+
+    assert exc_info.value.retryable is True
+    event_path = tmp_path / "responses" / "batch-0001.attempt-0001.events.jsonl"
+    assert event_path.read_bytes() == raw_events
+
+
+def test_codex_capture_reservation_allows_one_concurrent_claimant(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    schema = tmp_path / "schema.json"
+    schema.write_text("{}", encoding="utf-8")
+    callback_entered = threading.Event()
+    release_callback = threading.Event()
+    callback_events: list[str] = []
+    subprocess_events: list[str] = []
+    first_result: dict[str, object] = {}
+
+    def fake_run(argv: list[str], **_kwargs: object) -> subprocess.CompletedProcess[bytes]:
+        subprocess_events.append("subprocess")
+        message_path = Path(argv[argv.index("--output-last-message") + 1])
+        message_path.parent.mkdir(parents=True, exist_ok=True)
+        message_path.write_text("{}", encoding="utf-8")
+        stderr = b"model: gpt-5.6-sol\nprovider: openai\nreasoning effort: high\nsession id: fixture\nuser\n"
+        return subprocess.CompletedProcess(argv, 0, stdout=b'{"type":"done"}\n', stderr=stderr)
+
+    def first_callback() -> None:
+        callback_events.append("winner")
+        callback_entered.set()
+        if not release_callback.wait(5):
+            raise AssertionError("test did not release the first claimant")
+
+    def first_claimant() -> None:
+        try:
+            _call_codex(
+                executable="codex-fixture",
+                model="gpt-5.6-sol",
+                reasoning="high",
+                prompt="judge this",
+                output_dir=tmp_path,
+                response_schema=schema,
+                batch_number=1,
+                timeout=10,
+                before_provider_attempt=first_callback,
+                capture_jsonl_events=True,
+            )
+        except BaseException as exc:  # propagate the worker outcome through the assertion below
+            first_result["error"] = exc
+
+    monkeypatch.setattr("hbqrs.runner.subprocess.run", fake_run)
+    worker = threading.Thread(target=first_claimant)
+    worker.start()
+    assert callback_entered.wait(5)
+
+    loser_callbacks: list[str] = []
+    try:
+        with pytest.raises(HBQError, match="raw event path already exists"):
+            _call_codex(
+                executable="codex-fixture",
+                model="gpt-5.6-sol",
+                reasoning="high",
+                prompt="judge this",
+                output_dir=tmp_path,
+                response_schema=schema,
+                batch_number=1,
+                timeout=10,
+                before_provider_attempt=lambda: loser_callbacks.append("loser"),
+                capture_jsonl_events=True,
+            )
+    finally:
+        release_callback.set()
+        worker.join(timeout=5)
+
+    assert not worker.is_alive()
+    assert "error" not in first_result
+    assert callback_events == ["winner"]
+    assert loser_callbacks == []
+    assert subprocess_events == ["subprocess"]
+
+
+def test_codex_capture_callback_failure_releases_prelaunch_reservation(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    schema = tmp_path / "schema.json"
+    schema.write_text("{}", encoding="utf-8")
+    monkeypatch.setattr(
+        "hbqrs.runner.subprocess.run",
+        lambda *_args, **_kwargs: pytest.fail("callback failure launched Codex"),
+    )
+
+    def fail_before_launch() -> None:
+        raise RuntimeError("gate rejected")
+
+    with pytest.raises(RuntimeError, match="gate rejected"):
+        _call_codex(
+            executable="codex-fixture",
+            model="gpt-5.6-sol",
+            reasoning="high",
+            prompt="judge this",
+            output_dir=tmp_path,
+            response_schema=schema,
+            batch_number=1,
+            timeout=10,
+            before_provider_attempt=fail_before_launch,
+            capture_jsonl_events=True,
+        )
+
+    assert not (tmp_path / "responses" / "batch-0001.attempt-0001.events.jsonl").exists()
+
+
+def test_codex_capture_command_construction_failure_releases_prelaunch_reservation(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    schema = tmp_path / "schema.json"
+    schema.write_text("{}", encoding="utf-8")
+    monkeypatch.setattr(
+        runner_module,
+        "_command_argv",
+        lambda *_args: (_ for _ in ()).throw(RuntimeError("argv rejected")),
+    )
+
+    with pytest.raises(RuntimeError, match="argv rejected"):
+        _call_codex(
+            executable="codex-fixture",
+            model="gpt-5.6-sol",
+            reasoning="high",
+            prompt="judge this",
+            output_dir=tmp_path,
+            response_schema=schema,
+            batch_number=1,
+            timeout=10,
+            capture_jsonl_events=True,
+        )
+
+    assert not (tmp_path / "responses" / "batch-0001.attempt-0001.events.jsonl").exists()
+
+
 def test_codex_environment_retains_only_auth_paths_and_safe_process_keys(monkeypatch) -> None:
     for name in runner_module._CODEX_ENVIRONMENT_KEYS:
         monkeypatch.delenv(name, raising=False)

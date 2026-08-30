@@ -15,7 +15,7 @@ import re
 import shutil
 import subprocess
 import sys
-from typing import Any, Callable, Mapping, Sequence
+from typing import Any, BinaryIO, Callable, Mapping, Sequence
 import uuid
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlparse
@@ -394,11 +394,16 @@ def _call_codex(
     timeout: float,
     attempt_number: int = 1,
     before_provider_attempt: Callable[[], None] | None = None,
+    capture_jsonl_events: bool = False,
 ) -> tuple[str, dict[str, Any]]:
     message_path = output_dir / "responses" / f"batch-{batch_number:04d}.attempt-{attempt_number:04d}.message.json"
     if message_path.exists():
         raise HBQError(f"Codex attempt output path already exists: {message_path.name}")
+    events_path = output_dir / "responses" / f"batch-{batch_number:04d}.attempt-{attempt_number:04d}.events.jsonl"
+    if capture_jsonl_events and events_path.exists():
+        raise HBQError(f"Codex raw event path already exists: {events_path.name}")
     message_path.parent.mkdir(parents=True, exist_ok=True)
+    events_handle: BinaryIO | None = None
     arguments = [
         "exec",
         "--ephemeral",
@@ -466,33 +471,116 @@ def _call_codex(
         str(output_dir),
         "-",
     ]
+    if capture_jsonl_events:
+        arguments.insert(1, "--json")
+        try:
+            events_handle = events_path.open("xb")
+        except FileExistsError as exc:
+            raise HBQError(f"Codex raw event path already exists: {events_path.name}") from exc
+
+    def capture_events(stdout: bytes | str | None) -> dict[str, Any] | None:
+        nonlocal events_handle
+        if not capture_jsonl_events or events_handle is None:
+            return None
+        raw = b"" if stdout is None else stdout if isinstance(stdout, bytes) else stdout.encode("utf-8")
+        try:
+            events_handle.write(raw)
+            events_handle.flush()
+        finally:
+            events_handle.close()
+            events_handle = None
+        return _provider_artifact(output_dir, events_path)
+
+    def close_event_reservation() -> None:
+        nonlocal events_handle
+        if events_handle is not None:
+            events_handle.close()
+            events_handle = None
+
+    def release_event_reservation() -> None:
+        if not capture_jsonl_events:
+            return
+        close_event_reservation()
+        try:
+            events_path.unlink()
+        except FileNotFoundError:
+            pass
+
+    events_artifact: dict[str, Any] | None = None
     try:
         command = _command_argv(executable, arguments)
         if before_provider_attempt is not None:
             before_provider_attempt()
-        completed = subprocess.run(
-            command,
-            input=prompt,
-            text=True,
-            encoding="utf-8",
-            capture_output=True,
-            timeout=timeout,
-            check=False,
-            env=_codex_environment(),
-        )
+    except BaseException:
+        release_event_reservation()
+        raise
+    launch_started = False
+    try:
+        if capture_jsonl_events:
+            prompt_bytes = prompt.encode("utf-8")
+            environment = _codex_environment()
+            launch_started = True
+            completed = subprocess.run(
+                command,
+                input=prompt_bytes,
+                capture_output=True,
+                timeout=timeout,
+                check=False,
+                env=environment,
+            )
+        else:
+            completed = subprocess.run(
+                command,
+                input=prompt,
+                text=True,
+                encoding="utf-8",
+                capture_output=True,
+                timeout=timeout,
+                check=False,
+                env=_codex_environment(),
+            )
     except (OSError, subprocess.TimeoutExpired) as exc:
+        if capture_jsonl_events:
+            events_artifact = capture_events(exc.stdout if isinstance(exc, subprocess.TimeoutExpired) else None)
+        failure_record = (
+            {"provider_artifacts": {"codex_events": events_artifact}}
+            if events_artifact is not None
+            else None
+        )
         raise _ProviderAttemptFailure(
             f"Codex CLI failed to run: {exc}",
             retryable=isinstance(exc, subprocess.TimeoutExpired),
+            provider_record=failure_record,
         ) from exc
+    except BaseException:
+        if capture_jsonl_events and not launch_started:
+            release_event_reservation()
+        elif capture_jsonl_events:
+            close_event_reservation()
+        raise
+    if capture_jsonl_events:
+        events_artifact = capture_events(completed.stdout)
+        stderr = (
+            completed.stderr.decode("utf-8", errors="replace")
+            if isinstance(completed.stderr, bytes)
+            else completed.stderr or ""
+        )
+        stdout = (
+            completed.stdout.decode("utf-8", errors="replace")
+            if isinstance(completed.stdout, bytes)
+            else completed.stdout or ""
+        )
+    else:
+        stderr = completed.stderr
+        stdout = completed.stdout
     if completed.returncode != 0:
-        error_start = completed.stderr.rfind("ERROR:")
+        error_start = stderr.rfind("ERROR:")
         if error_start >= 0:
-            detail = completed.stderr[error_start : error_start + 4000].strip()
+            detail = stderr[error_start : error_start + 4000].strip()
         else:
-            lines = [line.strip() for line in completed.stderr.splitlines() if line.strip()]
+            lines = [line.strip() for line in stderr.splitlines() if line.strip()]
             detail = "\n".join(lines[-12:])[:4000] or "no structured provider error was reported"
-        content = message_path.read_text(encoding="utf-8") if message_path.is_file() else completed.stdout or None
+        content = message_path.read_text(encoding="utf-8") if message_path.is_file() else stdout or None
         lower_detail = detail.lower()
         input_too_large = bool(
             re.search(
@@ -511,18 +599,27 @@ def _call_codex(
                 "configuration",
             )
         ) or input_too_large
+        failure_record = {"reported": _codex_reported_settings(stderr)}
+        if events_artifact is not None:
+            failure_record["provider_artifacts"] = {"codex_events": events_artifact}
         raise _ProviderAttemptFailure(
             f"Codex CLI exited {completed.returncode}: {detail}",
             retryable=not permanent,
             content=content,
-            provider_record={"reported": _codex_reported_settings(completed.stderr)},
+            provider_record=failure_record,
         )
     if not message_path.is_file():
+        failure_record = (
+            {"provider_artifacts": {"codex_events": events_artifact}}
+            if events_artifact is not None
+            else None
+        )
         raise _ProviderAttemptFailure(
             "Codex CLI completed without writing its final response",
             retryable=True,
+            provider_record=failure_record,
         )
-    reported = _codex_reported_settings(completed.stderr)
+    reported = _codex_reported_settings(stderr)
     expected = {"model": model, "provider": "openai", "reasoning_effort": reasoning}
     mismatches = {
         key: {"expected": value, "reported": reported.get(key)}
@@ -530,16 +627,22 @@ def _call_codex(
         if reported.get(key) != value
     }
     if mismatches:
+        failure_record = {"reported": reported}
+        if events_artifact is not None:
+            failure_record["provider_artifacts"] = {"codex_events": events_artifact}
         raise _ProviderAttemptFailure(
             f"Codex CLI effective settings did not match the request: {json.dumps(mismatches)}",
             retryable=False,
             content=message_path.read_text(encoding="utf-8"),
-            provider_record={"reported": reported},
+            provider_record=failure_record,
         )
-    return message_path.read_text(encoding="utf-8"), {
+    provider_record: dict[str, Any] = {
         "command": [executable, *arguments[:-1], "<prompt-via-stdin>"],
         "reported": reported,
     }
+    if events_artifact is not None:
+        provider_record["provider_artifacts"] = {"codex_events": events_artifact}
+    return message_path.read_text(encoding="utf-8"), provider_record
 
 
 def _grok_cli_version(*, executable: str, timeout: float) -> str:

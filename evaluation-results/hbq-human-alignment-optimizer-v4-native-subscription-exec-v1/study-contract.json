@@ -1,0 +1,58 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-human-alignment-optimizer-v4-native-subscription-exec-v1",
+  "predecessor": {
+    "study_id": "hbq-human-alignment-optimizer-v4-native-subscription-v1",
+    "executor_sha256": "6d93f69216d62bd0847aa6b338b6e2360587c82608669f78fbad245a34ba1c49",
+    "contract_sha256": "aac0c8952894a2501bd364fcf7fff392399633de8f310be1b97108061e78bbe9"
+  },
+  "runner_sha256": "de1dccd28c8ba544207b3b000d086948fa8c429a327b055762e8d7032e3fa938",
+  "codex_adapter_sha256": "89b906fe488c663d23cc1f5d0d8d3b5d0bf105fbdae96a848598bc2a1f6e3cee",
+  "grok": {
+    "route": "grok-build-grok-4.6",
+    "model": "grok-4.6",
+    "reported_model": "grok-4.6-build",
+    "reasoning": "high_unattested",
+    "tool_policy": "one_turn_tool_free_no_web_no_plan_no_subagents",
+    "exact_outbound_disclosure": "task_schema_system_prompt_and_tool_free_argv",
+    "contact_label": "process_launch_intent_until_valid_envelope_receipt"
+  },
+  "sol": {
+    "route": "codex-chatgpt-gpt-5.6-sol",
+    "provider": "openai_codex",
+    "account_class": "chatgpt_subscription",
+    "model": "gpt-5.6-sol",
+    "reasoning": "high_requested_and_local_effective_only",
+    "provider_attested": false,
+    "tool_policy": "ephemeral_read_only_tool_free_no_web_no_plugins_no_subagents",
+    "event_policy": "exact_raw_jsonl_one_coherent_thread_and_turn_no_error_completed_agent_message_usage",
+    "contact_label": "local_codex_thread_lifecycle_only_native_endpoint_contact_unproven",
+    "native_endpoint_contact_cardinality": "unproven",
+    "internal_retry_cardinality": "unproven",
+    "independent_exact_contact_study_acceptance": false
+  },
+  "preparation": {
+    "fresh_source_derivation": true,
+    "execute_time_fresh_row_rederivation": true,
+    "artifact_identity_binding": "exact_cell_kind_study_route_destination_and_fresh_row",
+    "caller_predecessor_payload": "forbidden",
+    "authorization_acknowledgement": "required_lowercase_sha256_reference",
+    "local_first_disclosure": "exact_task_schema_system_prompt_and_argv_bytes_text_destination_route_tool_policy_zero_calls"
+  },
+  "execution_state": {
+    "precontact_cleanup": "only_exact_known_execution_owned_zero_contact_artifacts",
+    "callback_gate": "current_route_evidence_revalidated_adjacent_to_launch",
+    "launch_intent_provenance": "exact_canonical_content_hash_bound_into_completed_receipt",
+    "completed_inventory": "exact_route_specific_files_only_no_extra_directory_or_reparse",
+    "post_launch_uncertainty": "reconcile_required_no_resend"
+  },
+  "cli": {
+    "mutually_exclusive_modes": ["prepare_only", "execute_one_grok", "execute_one_sol"],
+    "live_remote_flag_required": true,
+    "programmatic_allow_remote_true_required": true,
+    "authorization_acknowledgement_sha256_required": true,
+    "success_output": "canonical_json_safe_summary_raw_bytes_omitted_with_count_and_sha256",
+    "persisted_evidence_authoritative": true
+  },
+  "result_authority": "Grok_requires_valid_native_envelope;_Sol_local_events_do_not_independently_prove_exact_native_contact"
+}
