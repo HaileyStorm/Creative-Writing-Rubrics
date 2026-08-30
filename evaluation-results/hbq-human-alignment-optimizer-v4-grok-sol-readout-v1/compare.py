@@ -102,7 +102,7 @@ SOL_SUCCESS_ROOTS = (
     ("v4-cell-ffce809d8c7eaf0c", "cwr-hanna-v4-sol-wave3-eed083d-v4-cell-ffce809d8c7eaf0c"),
 )
 SOL_CELLS = tuple(cell_id for cell_id, _root_name in SOL_SUCCESS_ROOTS)
-EXCLUDED_TERMINAL_CELLS = frozenset({"v4-cell-2eb4f20b3db15aac", "v4-cell-233337f220433ced"})
+EXCLUDED_TERMINAL_CELLS = frozenset({"v4-cell-2eb4f20b3db15aac", "v4-cell-2333370999fb84f3"})
 
 
 def canonical(value: Any) -> bytes:

@@ -12,7 +12,7 @@
   "geometry": {
     "matched_pairs": 33,
     "dimensions": 6,
-    "excluded_terminal_cells": ["v4-cell-2eb4f20b3db15aac", "v4-cell-233337f220433ced"]
+    "excluded_terminal_cells": ["v4-cell-2eb4f20b3db15aac", "v4-cell-2333370999fb84f3"]
   },
   "sol_evidence": "local_lifecycle_verified_native_endpoint_contact_cardinality_unproven",
   "historical_route_replay": "persisted_prepared_proof_receipt_equality_not_current_route_claim",

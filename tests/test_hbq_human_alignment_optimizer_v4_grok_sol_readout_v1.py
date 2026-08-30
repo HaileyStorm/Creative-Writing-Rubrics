@@ -36,6 +36,10 @@ def test_pins_exact_verifiers_and_freezes_33_distinct_success_roots() -> None:
     assert {spec["sol_cell_id"] for spec in specs} == set(compare.SOL_CELLS)
     assert len({str(spec["sol_execution_root"]) for spec in specs}) == 33
     assert set(compare.SOL_CELLS).isdisjoint(compare.EXCLUDED_TERMINAL_CELLS)
+    assert compare.EXCLUDED_TERMINAL_CELLS == {
+        "v4-cell-2eb4f20b3db15aac",
+        "v4-cell-2333370999fb84f3",
+    }
     assert specs[0]["sol_execution_root"].name == "cwr-hanna-v4-native-pilot-42ef2e9-v3"
 
 
