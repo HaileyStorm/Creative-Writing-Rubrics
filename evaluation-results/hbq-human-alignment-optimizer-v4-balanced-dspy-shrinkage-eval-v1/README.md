@@ -1,0 +1,7 @@
+# HANNA shrinkage evaluation v1
+
+Provider-free next-iteration contract for conservative, feedback-bound prompt changes. It replays the real governed ten-root reconciliation and admits the unchanged baseline plus ten descendants, each with exactly one **declared** mechanism. This is not a claim that each instruction is semantically a single-mechanism edit; the admission explicitly records `semantic_single_mechanism_verified=false`.
+
+The schedule is bound to the completed r4 public result chain and uses the three development prompt groups not used by the preceding four-group screen (33 Grok cells). A candidate advances only after a negative shrinkage objective, two leave-one-group-out wins, two raw-group improvements, and no group worsening above 0.10. Caller-supplied edit mass is never trusted: it is recomputed from immutable instruction bytes and changed profile keys. Only an analyzer-minted, recomputed frozen decision can construct the unchanged baseline-plus-winner Sol schedule on the first two matched groups (4 cells); Sol cannot substitute another candidate. A stop creates zero Sol cells.
+
+Optuna 4.9 `GridSampler` is an optional development replay in `development_optuna.py`. The runtime study and analyzer do not import DSPy or Optuna. Confirmation remains unopened, the package launches no providers, and every result remains **NO-GO** until independently replayed native evidence is supplied.
