@@ -27,7 +27,7 @@ HELDOUT_STUDY_SHA256 = "770b8c496df3c86dbc6ae3c7673d462428f81bcbddf84e493ea7c671
 GROK_EXEC_PATH = HERE.parent / "hbq-human-alignment-optimizer-v4-balanced-dspy-grok-exec-v2" / "executor.py"
 GROK_EXEC_SHA256 = "475f5d2fb02cdddcf5b14810d25ef63bd166c85f129dc64106b443f33895fbc4"
 NATIVE_PATH = HERE.parent / "hbq-human-alignment-optimizer-v4-native-subscription-exec-v1" / "executor.py"
-NATIVE_SHA256 = "6d93f69216d62bd0847aa6b338b6e2360587c82608669f78fbad245a34ba1c49"
+NATIVE_SHA256 = "5d2bd6871fe2013b8af5e166d89eeb020ff98889ce30494dd8889f7bee2d942f"
 SOL_V4_PATH = HERE.parent / "hbq-human-alignment-optimizer-v4-native-subscription-exec-v4" / "executor.py"
 SOL_V4_SHA256 = "4c961721b08dca237f1c4bd5f743438e3d54ef66af650e7c07bfc775b209f426"
 PREPARED = frozenset({"payload.bin", "response-schema.json", "disclosure.json", "authorization-acknowledgement.json", "zero-charge-route-proof.json", "prepared.json"})
@@ -423,3 +423,7 @@ def main(argv: list[str] | None = None) -> int:
         if not args.cell_id: parser.error("--cell-id is required for execution")
         result = execute_cell(**common, cell_id=args.cell_id, allow_remote=args.allow_remote)
     print(canonical(result).decode("utf-8"), end=""); return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

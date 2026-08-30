@@ -3,6 +3,8 @@ from __future__ import annotations
 import asyncio
 import json
 import shutil
+import subprocess
+import sys
 import time
 from pathlib import Path
 from types import SimpleNamespace
@@ -164,6 +166,11 @@ def test_real_pinned_schedule_reconstruction_and_embedded_schema():
     assert schema["required"] == ["scores", "evidence", "coverage"] and set(schema["properties"]["scores"]["properties"]) == {"Relevance", "Coherence", "Empathy", "Surprise", "Engagement", "Complexity"}
 
 
+def test_pinned_native_route_module_exposes_both_prepare_validators():
+    native = executor._native()
+    assert callable(native.validate_live_grok_route) and callable(native.validate_live_sol_route)
+
+
 def test_freeze_identity_rejects_same_request_and_session_per_cell():
     request = "1" * 64; requests: set[str] = set(); sessions: set[str] = set()
     with pytest.raises(ValueError, match="request/session"):
@@ -177,6 +184,40 @@ def test_prepare_all_66_has_zero_calls_and_cross_route_payload_parity(prepared):
     assert len(rows) == 66 and all(row["provider_calls_made"] == row["process_launches"] == 0 for row in rows)
     assert (roots / "cell-00" / "payload.bin").read_bytes() == (roots / "cell-44" / "payload.bin").read_bytes() == b"{}"
     assert json.loads((roots / "cell-00" / "prepared.json").read_bytes())["confirmation"] == {"status": "unopened", "cells": 0}
+
+
+def test_cli_main_guard_prepares_all_66_provider_free_roots(tmp_path: Path):
+    direct = subprocess.run([sys.executable, str(PACKAGE / "executor.py"), "--help"], capture_output=True, text=True)
+    assert direct.returncode == 0 and "--prepare-all" in direct.stdout
+    output = tmp_path / "roots"; source = (PACKAGE / "executor.py").as_posix()
+    script = f'''import hashlib, importlib.util, json, sys
+from pathlib import Path
+from types import SimpleNamespace
+path = Path({source!r})
+spec = importlib.util.spec_from_file_location("heldout_cli", path)
+module = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(module)
+cells = []
+for index in range(66):
+    route = "grok_primary" if index < 44 else "sol_validation"
+    cells.append({{"cell_id": f"cell-{{index:02d}}", "route_name": route, "payload_base64": "e30=", "payload_sha256": hashlib.sha256(b"{{}}").hexdigest(), "item_id": f"item-{{index % 4}}", "candidate_id": f"candidate-{{index % 11}}"}})
+schedule = {{"schedule_sha256": module.SCHEDULE_SHA256, "confirmation": {{"status": "unopened", "cells": 0}}, "geometry": {{"candidates": 11, "grok_cells": 44, "sol_cells": 22, "total_cells": 66}}, "cells": cells}}
+schema = {{"format_version": 1, "type": "object", "additionalProperties": False, "required": ["scores", "evidence", "coverage"], "properties": {{"scores": {{}}, "evidence": {{}}, "coverage": {{}}}}}}
+module._schedule = lambda **_: schedule
+module._study = lambda: SimpleNamespace(payload_bytes=lambda row: b"{{}}")
+module._schema = lambda _: module.canonical(schema)
+module._route = lambda route_name, queue_root: (SimpleNamespace(), SimpleNamespace(), {{"destination": "grok-subscription" if route_name == "grok_primary" else "sol-subscription", "codex_command": ["codex"]}}, {{"fixture": route_name}})
+sys.argv = [str(path), "--reconciliation-manifest", "unused", "--frozen-successor", "unused", "--hanna-csv", "unused", "--output-root", {str(output)!r}, "--queue-root", "unused", "--acknowledgement-sha256", "a" * 64, "--prepare-all"]
+raise SystemExit(module.main())
+'''
+    prepared = subprocess.run([sys.executable, "-c", script], capture_output=True, text=True)
+    assert prepared.returncode == 0, prepared.stderr
+    result = json.loads(prepared.stdout)
+    assert len(result) == 66 and all(row["provider_calls_made"] == row["process_launches"] == 0 for row in result)
+    assert {entry.name for entry in output.iterdir()} == {f"cell-{index:02d}" for index in range(66)}
+    assert all({entry.name for entry in (output / f"cell-{index:02d}").iterdir()} == executor.PREPARED for index in range(66))
+    missing = subprocess.run([sys.executable, str(PACKAGE / "executor.py")], capture_output=True, text=True)
+    assert missing.returncode != 0 and "required" in missing.stderr
 
 
 def test_confirmation_and_existing_or_extra_roots_fail_before_contact(prepared, monkeypatch: pytest.MonkeyPatch):
