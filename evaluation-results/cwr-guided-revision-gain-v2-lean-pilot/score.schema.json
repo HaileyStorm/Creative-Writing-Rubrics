@@ -1,0 +1,1 @@
+{"additionalProperties":false,"properties":{"overall":{"type":"integer"},"rationale":{"minLength":1,"type":"string"}},"required":["overall","rationale"],"type":"object"}

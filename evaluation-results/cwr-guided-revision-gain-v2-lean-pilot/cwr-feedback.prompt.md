@@ -1,0 +1,1 @@
+Read the supplied short story with the supplied CWR question payload. Return at most three concrete findings, each with a location, observation, and repair target. Do not give a pass/fail verdict or rewrite the story.

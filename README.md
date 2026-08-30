@@ -82,6 +82,12 @@ pretending they have answers yet:
   is a provider-free, pre-execution design for testing guided versus matched
   generic revision with blinded, non-CWR endpoint measures. It makes no
   revision-gain claim until independently measured outcomes exist.
+  The reviewed [lean v2 pilot](evaluation-results/cwr-guided-revision-gain-v2-lean-pilot/)
+  narrows execution to two immutable sources, eight Grok revision cells, four
+  Sol CWR-feedback cells, and forty unchanged blinded Sol/Grok endpoint cells
+  (52 contacts total). It has no dispatch or result yet; the next step is the
+  thin governed live adapter and independently recomputed guided-versus-control
+  plus arm-versus-baseline outcomes.
 - [Flash-Next/Linux planning](evaluation-results/hbq-supplemental-providers-flash-next-v1/)
   freezes portable study geometry and an offline, non-authoritative per-root
   request journal. Native Linux execution, trusted route evidence, and pairing

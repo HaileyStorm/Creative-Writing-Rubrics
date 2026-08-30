@@ -1,0 +1,1 @@
+Blindly assess the supplied story as a complete short work. Give one integer overall score from 1 to 7, with a concise rationale grounded only in the story. Do not infer its source, generator, arm, or revision cycle.

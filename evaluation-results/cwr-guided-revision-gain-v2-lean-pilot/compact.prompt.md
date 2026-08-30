@@ -1,0 +1,1 @@
+Blindly assess the supplied story for clarity, coherence, specificity, and control. Give one integer overall score from 1 to 5, with a concise rationale grounded only in the story. Do not infer its source, generator, arm, or revision cycle.
