@@ -12,6 +12,7 @@ import os
 import re
 import stat
 import sys
+import threading
 from pathlib import Path
 from types import ModuleType, SimpleNamespace
 from typing import Any, Awaitable, Callable, Mapping
@@ -31,6 +32,9 @@ NATIVE_SHA256 = "5d2bd6871fe2013b8af5e166d89eeb020ff98889ce30494dd8889f7bee2d942
 SOL_V4_PATH = HERE.parent / "hbq-human-alignment-optimizer-v4-native-subscription-exec-v4" / "executor.py"
 SOL_V4_SHA256 = "4c961721b08dca237f1c4bd5f743438e3d54ef66af650e7c07bfc775b209f426"
 PREPARED = frozenset({"payload.bin", "response-schema.json", "disclosure.json", "authorization-acknowledgement.json", "zero-charge-route-proof.json", "prepared.json"})
+_LOAD_LOCK = threading.RLock()
+_MODULE_CACHE: dict[tuple[Path, str], ModuleType] = {}
+_SCHEDULE_CACHE: dict[tuple[Path, Path, Path], tuple[tuple[str, str, str], bytes]] = {}
 
 
 def canonical(value: Any) -> bytes:
@@ -67,11 +71,16 @@ def stable_bytes(path: Path) -> bytes:
 
 
 def _load(path: Path, digest: str, name: str) -> ModuleType:
-    raw = stable_bytes(path)
-    if sha256(raw) != digest: raise ValueError(f"heldout exec v1 pinned dependency drifted: {path.name}")
-    module = ModuleType(name); module.__file__ = str(path); exec(compile(raw, str(path), "exec"), module.__dict__)
-    if stable_bytes(path) != raw: raise ValueError(f"heldout exec v1 dependency changed during load: {path.name}")
-    return module
+    resolved = Path(path).resolve(); key = (resolved, digest)
+    with _LOAD_LOCK:
+        raw = stable_bytes(resolved)
+        if sha256(raw) != digest: raise ValueError(f"heldout exec v1 pinned dependency drifted: {resolved.name}")
+        cached = _MODULE_CACHE.get(key)
+        if cached is not None: return cached
+        module = ModuleType(name); module.__file__ = str(resolved); exec(compile(raw, str(resolved), "exec"), module.__dict__)
+        if stable_bytes(resolved) != raw: raise ValueError(f"heldout exec v1 dependency changed during load: {resolved.name}")
+        _MODULE_CACHE[key] = module
+        return module
 
 
 def _contract() -> dict[str, Any]:
@@ -107,22 +116,40 @@ def _safe_output_ancestry(path: Path) -> None:
         if current.exists() and not _plain(current, directory=True): raise ValueError("heldout exec v1 output ancestry is unsafe")
 
 
+def _verified_source_path(path: Path) -> Path:
+    absolute = Path(os.path.abspath(path)); current = Path(absolute.anchor)
+    for part in absolute.parts[1:]:
+        current /= part
+        if not current.exists() or not _plain(current, directory=current != absolute): raise ValueError("heldout exec v1 pinned schedule source path is unsafe")
+    resolved = absolute.resolve(strict=True)
+    if os.path.normcase(str(resolved)) != os.path.normcase(str(absolute)): raise ValueError("heldout exec v1 pinned schedule source path resolves elsewhere")
+    return absolute
+
+
 def _schedule(*, reconciliation_manifest_path: Path, frozen_successor_path: Path, hanna_csv_path: Path) -> dict[str, Any]:
-    schedule = _study().build_schedule(reconciliation_manifest_path=Path(reconciliation_manifest_path), frozen_successor_path=Path(frozen_successor_path), hanna_csv_path=Path(hanna_csv_path))
-    if not isinstance(schedule, Mapping) or schedule.get("schedule_sha256") != SCHEDULE_SHA256 or schedule.get("confirmation") != {"status": "unopened", "cells": 0} or schedule.get("geometry") != {"candidates": 11, "grok_cells": 44, "sol_cells": 22, "total_cells": 66}:
-        raise ValueError("heldout exec v1 frozen schedule drifted")
-    cells = schedule.get("cells")
-    if not isinstance(cells, list) or len(cells) != 66 or len({row.get("cell_id") for row in cells if isinstance(row, Mapping)}) != 66: raise ValueError("heldout exec v1 requires exactly 66 unique cells")
-    grok = [row for row in cells if row.get("route_name") == "grok_primary"]; sol = [row for row in cells if row.get("route_name") == "sol_validation"]
-    if len(grok) != 44 or len(sol) != 22 or len({row.get("candidate_id") for row in cells}) != 11:
-        raise ValueError("heldout exec v1 route geometry drifted")
-    for row in cells:
-        if not isinstance(row.get("payload_base64"), str) or not isinstance(row.get("payload_sha256"), str) or not re.fullmatch(r"[0-9a-f]{64}", row["payload_sha256"]): raise ValueError("heldout exec v1 cell payload binding is invalid")
-    for row in sol:
-        matches = [peer for peer in grok if peer.get("item_id") == row.get("item_id") and peer.get("candidate_id") == row.get("candidate_id")]
-        if len(matches) != 1 or matches[0].get("payload_base64") != row.get("payload_base64") or matches[0].get("payload_sha256") != row.get("payload_sha256"):
-            raise ValueError("heldout exec v1 paired payload bytes drifted")
-    return dict(schedule)
+    key = tuple(_verified_source_path(Path(value)) for value in (reconciliation_manifest_path, frozen_successor_path, hanna_csv_path))
+    with _LOAD_LOCK:
+        study = _study()
+        before = tuple(sha256(stable_bytes(path)) for path in key)
+        cached = _SCHEDULE_CACHE.get(key)
+        if cached is not None and cached[0] == before: return json.loads(cached[1].decode("utf-8"))
+        schedule = study.build_schedule(reconciliation_manifest_path=key[0], frozen_successor_path=key[1], hanna_csv_path=key[2])
+        if tuple(sha256(stable_bytes(path)) for path in key) != before: raise ValueError("heldout exec v1 pinned schedule inputs changed during build")
+        if not isinstance(schedule, Mapping) or schedule.get("schedule_sha256") != SCHEDULE_SHA256 or schedule.get("confirmation") != {"status": "unopened", "cells": 0} or schedule.get("geometry") != {"candidates": 11, "grok_cells": 44, "sol_cells": 22, "total_cells": 66}:
+            raise ValueError("heldout exec v1 frozen schedule drifted")
+        cells = schedule.get("cells")
+        if not isinstance(cells, list) or len(cells) != 66 or len({row.get("cell_id") for row in cells if isinstance(row, Mapping)}) != 66: raise ValueError("heldout exec v1 requires exactly 66 unique cells")
+        grok = [row for row in cells if row.get("route_name") == "grok_primary"]; sol = [row for row in cells if row.get("route_name") == "sol_validation"]
+        if len(grok) != 44 or len(sol) != 22 or len({row.get("candidate_id") for row in cells}) != 11:
+            raise ValueError("heldout exec v1 route geometry drifted")
+        for row in cells:
+            if not isinstance(row.get("payload_base64"), str) or not isinstance(row.get("payload_sha256"), str) or not re.fullmatch(r"[0-9a-f]{64}", row["payload_sha256"]): raise ValueError("heldout exec v1 cell payload binding is invalid")
+        for row in sol:
+            matches = [peer for peer in grok if peer.get("item_id") == row.get("item_id") and peer.get("candidate_id") == row.get("candidate_id")]
+            if len(matches) != 1 or matches[0].get("payload_base64") != row.get("payload_base64") or matches[0].get("payload_sha256") != row.get("payload_sha256"):
+                raise ValueError("heldout exec v1 paired payload bytes drifted")
+        _SCHEDULE_CACHE[key] = (before, canonical(schedule))
+        return json.loads(_SCHEDULE_CACHE[key][1].decode("utf-8"))
 
 
 def _cell(schedule: Mapping[str, Any], cell_id: str) -> dict[str, Any]:
@@ -135,7 +162,7 @@ def _schema(payload: bytes) -> bytes:
     value = json.loads(payload.decode("utf-8")); schema = value.get("response_schema") if isinstance(value, Mapping) else None
     if not isinstance(schema, Mapping) or set(schema) != {"format_version", "type", "additionalProperties", "required", "properties"} or schema.get("format_version") != 1 or schema.get("type") != "object" or schema.get("additionalProperties") is not False or schema.get("required") != ["scores", "evidence", "coverage"]:
         raise ValueError("heldout exec v1 embedded response schema drifted")
-    return canonical(dict(schema))
+    return canonical({"$schema_version": 1, **dict(schema)})
 
 
 def _validate_response(raw: bytes, schema: Mapping[str, Any]) -> dict[str, Any]:

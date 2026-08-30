@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import asyncio
+import importlib.util
 import json
+import os
 import shutil
 import subprocess
 import sys
@@ -169,6 +171,78 @@ def test_real_pinned_schedule_reconstruction_and_embedded_schema():
 def test_pinned_native_route_module_exposes_both_prepare_validators():
     native = executor._native()
     assert callable(native.validate_live_grok_route) and callable(native.validate_live_sol_route)
+
+
+def test_disclosed_adapter_schema_parses_and_reaches_fake_grok_launch(tmp_path: Path):
+    schedule = executor._schedule(**PATHS); payload = executor._payload(executor._study(), schedule["cells"][0]); schema = json.loads(executor._schema(payload))
+    grok = executor._grok(); spec = importlib.util.spec_from_file_location("heldout_grok_adapter", grok.GROK_ADAPTER_PATH); adapter = importlib.util.module_from_spec(spec); assert spec.loader is not None; spec.loader.exec_module(adapter)
+    assert adapter._parse_schema(json.dumps(schema, sort_keys=True, separators=(",", ":"))) == schema
+    reached = []
+    class Broker:
+        root = tmp_path
+        @staticmethod
+        def _load_json_artifact(_digest: str) -> dict: return {}
+        def _run_subprocess(self, route: dict, request: dict, _parse):
+            index = route["command"].index("--output-schema-json"); assert adapter._parse_schema(route["command"][index + 1]) == schema; assert request == {"prompt": payload.decode("utf-8")}; reached.append(True); return SimpleNamespace(state="definitely_not_contacted")
+    route = {"subscription_receipt_hash": "a" * 64, "nonvisual_max_turns": 1, "command": [sys.executable, str(grok.GROK_ADAPTER_PATH)], "grok_command": ["grok"], "model": "grok-4.6", "reported_model": "grok-4.6-build", "reasoning_effort": "high", "grok_command_identity": {}, "cli_version_command": ["grok", "--version"], "cli_version_identity": {}, "grok_cli_version": "fixture", "timeout_seconds": 1}
+    outcome, raw = executor._grok_invoke(grok, Broker(), route, payload, schema, tmp_path / "capture.bin")
+    assert outcome.state == "definitely_not_contacted" and raw == b"" and reached == [True]
+
+
+def test_subprocess_ten_wide_prepare_uses_real_concurrent_schedule_paths(tmp_path: Path):
+    source = (PACKAGE / "executor.py").as_posix(); output = tmp_path / "roots"
+    script = f'''import concurrent.futures, importlib.util, json
+from pathlib import Path
+from types import SimpleNamespace
+path = Path({source!r})
+spec = importlib.util.spec_from_file_location("heldout_concurrent", path)
+module = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(module)
+paths = {{"reconciliation_manifest_path": Path(r"{str(MANIFEST)}"), "frozen_successor_path": Path(r"{str(FROZEN)}"), "hanna_csv_path": Path(r"{str(CSV)}")}}
+schedule = module._schedule(**paths)
+cells = [row["cell_id"] for row in schedule["cells"][:10]]
+module._route = lambda route_name, queue_root: (SimpleNamespace(), SimpleNamespace(), {{"destination": "fixture", "codex_command": ["codex"]}}, {{"route": route_name}})
+def prepare(cell_id): return module.prepare_cell(**paths, cell_id=cell_id, output_root=Path(r"{str(output)}"), queue_root=Path("unused"), authorization_acknowledgement_sha256="a" * 64)
+with concurrent.futures.ThreadPoolExecutor(max_workers=10) as pool: result = list(pool.map(prepare, cells))
+assert all(row["provider_calls_made"] == row["process_launches"] == 0 for row in result)
+print(json.dumps(result, sort_keys=True))
+'''
+    completed = subprocess.run([sys.executable, "-c", script], capture_output=True, text=True)
+    assert completed.returncode == 0, completed.stderr
+    result = json.loads(completed.stdout)
+    assert len(result) == 10 and len({row["cell_id"] for row in result}) == 10
+
+
+def test_schedule_cache_rejects_same_path_source_tamper_after_warm(monkeypatch: pytest.MonkeyPatch, tmp_path: Path):
+    baseline = executor._schedule(**PATHS); manifest = tmp_path / "manifest.json"; shutil.copyfile(MANIFEST, manifest); digest = executor.sha256(manifest.read_bytes()); calls: list[Path] = []
+    class Study:
+        def build_schedule(self, *, reconciliation_manifest_path: Path, **_kwargs):
+            calls.append(reconciliation_manifest_path)
+            if executor.sha256(reconciliation_manifest_path.read_bytes()) != digest: raise ValueError("fixture source changed")
+            return baseline
+    monkeypatch.setattr(executor, "_study", lambda: Study())
+    paths = {**PATHS, "reconciliation_manifest_path": manifest}
+    assert executor._schedule(**paths)["schedule_sha256"] == executor.SCHEDULE_SHA256
+    manifest.write_bytes(b"{}")
+    with pytest.raises(ValueError, match="fixture source changed"):
+        executor._schedule(**paths)
+    assert calls == [manifest.resolve(), manifest.resolve()]
+
+
+def test_schedule_rejects_file_symlink_before_source_read(tmp_path: Path):
+    target = tmp_path / "manifest.json"; shutil.copyfile(MANIFEST, target); link = tmp_path / "manifest-link.json"
+    try: os.symlink(target, link)
+    except OSError: pytest.skip("file symlink privilege is unavailable")
+    with pytest.raises(ValueError, match="source path"):
+        executor._schedule(**{**PATHS, "reconciliation_manifest_path": link})
+
+
+def test_schedule_rejects_directory_junction_before_source_read(tmp_path: Path):
+    linked = tmp_path / "manifest-dir"
+    try: os.symlink(MANIFEST.parent, linked, target_is_directory=True)
+    except OSError: pytest.skip("directory junction privilege is unavailable")
+    with pytest.raises(ValueError, match="source path"):
+        executor._schedule(**{**PATHS, "reconciliation_manifest_path": linked / MANIFEST.name})
 
 
 def test_freeze_identity_rejects_same_request_and_session_per_cell():

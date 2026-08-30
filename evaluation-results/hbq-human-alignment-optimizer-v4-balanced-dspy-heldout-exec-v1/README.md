@@ -6,4 +6,4 @@ Every root is fresh, local-first, exact-payload-bound, and no-resend. Preparatio
 
 ## Volatile route preflight
 
-Route arming and zero-charge evidence are intentionally checked live and are not fixture claims. On 2026-08-30, a provider-free prepare against the current local route registry produced `prepared_no_contact` for `heldout-cell-391a0019df39f385` (Grok) and `heldout-cell-ad3411192bb7a35b` (Sol), with `[0, 0]` provider calls. That is only an adjacent local-route preflight; it does not authorize dispatch or establish native-contact evidence.
+Route arming and zero-charge evidence are intentionally checked live and are not fixture claims. On 2026-08-30, the r2 provider-free prepare against the current local route registry produced `prepared_no_contact` for `heldout-cell-391a0019df39f385` (Grok) and `heldout-cell-ad3411192bb7a35b` (Sol), with `[0, 0]` provider calls; the disclosed Grok schema carried `$schema_version: 1`. That is only an adjacent local-route preflight; it does not authorize dispatch or establish native-contact evidence. The preserved r1 roots are never retried in place.
