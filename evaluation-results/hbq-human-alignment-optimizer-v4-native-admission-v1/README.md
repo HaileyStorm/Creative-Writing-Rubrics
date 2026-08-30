@@ -1,8 +1,12 @@
 # HANNA v4 completed-Grok admission v1
 
-This provider-free descendant admits exactly one completed, independently
-verified historical exec-v1 Grok cell into a new predecessor-shaped settled-cell root. It
-never launches a process or provider. The source root remains untouched.
+This provider-free package admits one completed, independently verified
+historical exec-v1 Grok cell per fresh destination into a predecessor-shaped
+settled-cell root. It never launches a process or provider. It has admitted 10
+mandatory-development cells across the first two items and all five frozen
+candidates: cell 1 is in `cwr-hanna-v4-native-observations-f22bf26`; cells
+2–10 are in fresh, disjoint `...-<cell_id>` roots. Every source root remains
+untouched.
 
 `admit.py --admit-completed-grok` pins the exec-v1 executor at
 `5d2bd6871fe2013b8af5e166d89eeb020ff98889ce30494dd8889f7bee2d942f` and
@@ -23,7 +27,12 @@ the published destination and proof for reconciliation. Existing
 source/destination/proof paths, reparse points, and partial outputs are
 rejected rather than resumed or overwritten.
 
-The resulting one-cell descendant is not a metric result; projection remains
-owned by the predecessor. A byte-identical copied source is the same evidence,
-not a second observation: downstream consumers must deduplicate the bound
-cell/contact/session/request/response commitments.
+Each resulting descendant is not a metric result; projection remains owned by
+the predecessor. A byte-identical copied source is the same evidence, not a
+second observation: downstream consumers must deduplicate the bound
+cell/contact/session/request/response commitments. The 10 Grok cells are early
+diagnostic observations, not candidate selection, alignment, Grok/Sol
+agreement, confirmation, or revision-gain evidence. A once-launched exact
+matched Sol cell is terminally excluded as
+`reconcile_required_after_process_launch` after a Code Mode unavailable error;
+its later message is not accepted Sol evidence and it will not be resent.

@@ -1,0 +1,30 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-human-alignment-optimizer-v4-native-subscription-exec-v2",
+  "predecessor": {
+    "study_id": "hbq-human-alignment-optimizer-v4-native-subscription-exec-v1",
+    "executor_sha256": "5d2bd6871fe2013b8af5e166d89eeb020ff98889ce30494dd8889f7bee2d942f",
+    "contract_sha256": "b132f0d29273a4896c2308f684c7df6547408195ef36c6d4f5f54ed263f86562"
+  },
+  "change": {
+    "scope": "sol_codex_startup_flags_only",
+    "code_mode": "explicitly_disabled",
+    "code_mode_host": "not_disabled_because_codex_0_151_0_reports_stable_true_host_support",
+    "launcher": "pinned_shared_runner_loaded_through_exact_one_replacement_localized_seam",
+    "launcher_patch": "one_exact_code_mode_host_token_replaced_by_code_mode_before_compile",
+    "all_other_exec_v1_and_runner_behavior": "exact_byte_pinned_and_reused",
+    "postlaunch_parser_policy": "unchanged_fail_closed_reconcile_required_no_resend"
+  },
+  "sol": {
+    "route": "codex-chatgpt-gpt-5.6-sol",
+    "model": "gpt-5.6-sol",
+    "reasoning": "high_requested_and_local_effective_only",
+    "tool_policy": "ephemeral_read_only_tool_free_no_web_no_plugins_no_subagents_code_mode_disabled",
+    "event_policy": "exact_raw_jsonl_one_coherent_thread_and_turn_no_error_completed_agent_message_usage",
+    "native_endpoint_contact_cardinality": "unproven"
+  },
+  "runtime_dependencies": {
+    "dspy": false,
+    "optuna": false
+  }
+}
