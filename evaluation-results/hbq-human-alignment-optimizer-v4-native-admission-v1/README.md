@@ -2,14 +2,15 @@
 
 This provider-free package admits one completed, independently verified
 historical exec-v1 Grok cell per fresh destination into a predecessor-shaped
-settled-cell root. It never launches a process or provider. It has admitted 20
-mandatory-development cells across the first four items and all five frozen
+settled-cell root. It never launches a process or provider. It has admitted 25
+mandatory-development cells across the first five items and all five frozen
 candidates. Every cell has exactly one tool-free, zero-new-spend Grok Build
 subscription process launch, proven native envelope/contact, and provider-free
-admission proof; every source root remains untouched. Cells 16–20 are
-`v4-cell-aff3e9e452578781`, `v4-cell-7b3adfd63809c14b`,
-`v4-cell-0e0f71d03712b0aa`, `v4-cell-4e60777e232aa526`, and
-`v4-cell-e3c472eea3d119c4`.
+admission proof; every source root remains untouched. Cells 21–25 are
+`v4-cell-beebf9def7e001cf`, `v4-cell-815a3cb3ee5bc624`,
+`v4-cell-9f5e96782c7bfd9f`, `v4-cell-b59116d7071a971e`, and
+`v4-cell-7c56658c1985539d`; their independent parallel admissions all returned
+`accepted:true` with `provider_calls_made:0`.
 
 `admit.py --admit-completed-grok` pins the exec-v1 executor at
 `5d2bd6871fe2013b8af5e166d89eeb020ff98889ce30494dd8889f7bee2d942f` and
@@ -33,7 +34,7 @@ rejected rather than resumed or overwritten.
 Each resulting descendant is not a metric result; projection remains owned by
 the predecessor. A byte-identical copied source is the same evidence, not a
 second observation: downstream consumers must deduplicate the bound
-cell/contact/session/request/response commitments. The 20 Grok cells are early
+cell/contact/session/request/response commitments. The 25 Grok cells are early
 diagnostic observations, not candidate selection, alignment, Grok/Sol
 agreement, confirmation, or revision-gain evidence. Two once-launched exact
 matched Sol diagnostics are terminally excluded without resend: v1 after a
