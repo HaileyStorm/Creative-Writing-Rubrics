@@ -12,6 +12,12 @@ admission proof; every source root remains untouched. Cells 31–35 are
 `v4-cell-c6ef9be1c65a7ab6`; their independent parallel admissions all returned
 `accepted:true` with `provider_calls_made:0`.
 
+The named 35-cell inventory above is the package's historical first checkpoint,
+not the final development count. The same immutable admission contract was later
+applied to all 65 Grok development cells; the complete proof replay and its
+balanced descriptive projection are published separately in the
+[65-cell development readout](../hbq-human-alignment-optimizer-v4-development-readout-v1/).
+
 `admit.py --admit-completed-grok` pins the exec-v1 executor at
 `5d2bd6871fe2013b8af5e166d89eeb020ff98889ce30494dd8889f7bee2d942f` and
 pins the v4 native-subscription predecessor executor and contract. It
