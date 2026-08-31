@@ -256,6 +256,18 @@ smaller, evidence-sensitive edits can travel across these two endpoints, but
 future revisions still need to test that claim separately rather than assume
 one model's improvement is everyone's.
 
+A subsequent Fresh96 validation widened that check without reopening the
+Fresh88 confirmation. Grok produced 63 of 64 planned logical cells: across the
+31 paired items its MAE reduction was 20.3827%, and across the 15 fully
+complete groups it was 20.1230%. Sol independently produced 63 of 64 cells:
+the corresponding reductions were 14.2169% and 13.7292%. Each endpoint had one
+terminally ambiguous logical cell, which was excluded without imputation or
+resend. Sol's coverage came from two fresh roots, with the second root taking
+precedence and the first filling three gaps; 54 repeated successes were
+excluded rather than counted as extra observations. This is partial validation
+of the same-direction effect, not another confirmation split or a claim of
+generalization.
+
 ## Negative evidence changed the operating model
 
 The most productive progress did not always look like a new wording change.
