@@ -23,28 +23,33 @@ product test succeeded; `Negative` means a proposed claim or treatment failed;
 These packages preserve the next questions, gates, and bounded descriptive
 readouts. None authorize a rubric, model, or runtime promotion.
 
-- [HANNA optimizer v3](../evaluation-results/hbq-human-alignment-optimizer-v3/), [native-subscription v4](../evaluation-results/hbq-human-alignment-optimizer-v4-native-subscription-v1/), [native execution v4](../evaluation-results/hbq-human-alignment-optimizer-v4-native-subscription-exec-v1/), [native admission v4](../evaluation-results/hbq-human-alignment-optimizer-v4-native-admission-v1/), the [lean development pilot](../evaluation-results/hbq-human-alignment-optimizer-v4-lean-development-v1/), and the [33-pair Grok/Sol readout](../evaluation-results/hbq-human-alignment-optimizer-v4-grok-sol-readout-v1/): all 65 Grok development cells completed with verified native envelopes and provider-free admissions. The original Sol schedule settled at 33 successful local lifecycles plus two immutable terminal exclusions; two versioned same-group descendants then completed without resend. Sol evidence remains `local_lifecycle_verified_native_endpoint_contact_cardinality_unproven`. Across 33 matched frozen pairs, the descriptive mean absolute difference is `0.4392` over `172` covered pair-by-dimension observations; this is not agreement, interchangeability, provider ranking, alignment, selection, generalization, confirmation, or revision-gain evidence. Real Optuna `4.9.0` search and DSPy `3.3.1` descendant generation have run development-only over independently verified persisted evidence. The later [balanced held-out evaluation](../evaluation-results/hbq-human-alignment-optimizer-v4-balanced-dspy-heldout-eval-v1/) completed 44 Grok cells across four prompt-group-disjoint development groups and 22 unchanged-candidate Sol cells across two matched groups. The Grok-selected descendant improved Grok MAE but reversed on Sol, so it is not promoted as a general improvement. Confirmation remains unopened, and neither optimizer has runtime authority.
-- [CWR-guided revision gain](../evaluation-results/cwr-guided-revision-gain-v1/) and its reviewed [lean v2 pilot](../evaluation-results/cwr-guided-revision-gain-v2-lean-pilot/): two immutable sources, eight Grok revision cells, four Sol CWR-feedback cells, and forty unchanged blinded Sol/Grok endpoint cells (52 contacts total). The exact lineage, payload, receipt, one-launch, reconciliation, and independent projection contract is provider-free and reviewed; no live dispatch or revision-gain result exists yet.
+- [HANNA optimizer v3](../evaluation-results/hbq-human-alignment-optimizer-v3/), [native-subscription v4](../evaluation-results/hbq-human-alignment-optimizer-v4-native-subscription-v1/), [native execution v4](../evaluation-results/hbq-human-alignment-optimizer-v4-native-subscription-exec-v1/), [native admission v4](../evaluation-results/hbq-human-alignment-optimizer-v4-native-admission-v1/), the [lean development pilot](../evaluation-results/hbq-human-alignment-optimizer-v4-lean-development-v1/), and the [33-pair Grok/Sol readout](../evaluation-results/hbq-human-alignment-optimizer-v4-grok-sol-readout-v1/): all 65 Grok development cells completed with verified native envelopes and provider-free admissions. The original Sol schedule settled at 33 successful local lifecycles plus two immutable terminal exclusions; two versioned same-group descendants then completed without resend. Sol evidence remains `local_lifecycle_verified_native_endpoint_contact_cardinality_unproven`. Across 33 matched frozen pairs, the descriptive mean absolute difference is `0.4392` over `172` covered pair-by-dimension observations; this is not agreement, interchangeability, provider ranking, alignment, selection, generalization, confirmation, or revision-gain evidence. Real Optuna `4.9.0` search and DSPy `3.3.1` descendant generation have run development-only over independently verified persisted evidence. The later [balanced held-out evaluation](../evaluation-results/hbq-human-alignment-optimizer-v4-balanced-dspy-heldout-eval-v1/) completed 44 Grok cells across four prompt-group-disjoint development groups and 22 unchanged-candidate Sol cells across two matched groups. Its Grok-selected descendant improved Grok MAE but reversed on Sol. Subsequent [three-group development](../evaluation-results/hbq-human-alignment-optimizer-v5-f20-nextwave-grok-score-result-v1/), [broader development](../evaluation-results/hbq-human-alignment-optimizer-v5-f20-broader-development-grok-result-v2-v3-exec/), and frozen [confirmation](../evaluation-results/hbq-human-alignment-optimizer-v5-f20-confirmation-freeze-v1/) produced endpoint-separate improvement readouts; the [Grok confirmation replay](../evaluation-results/hbq-human-alignment-optimizer-v5-f20-confirmation-grok-replay-v2-native-json-normalization/) and [Sol final-message recovery](../evaluation-results/hbq-human-alignment-optimizer-v5-f20-confirmation-sol-reconcile-v3-final-message/) are measurement-only. Neither optimizer has runtime authority.
+- [CWR-guided revision gain](../evaluation-results/cwr-guided-revision-gain-v1/), its reviewed [lean v2 pilot](../evaluation-results/cwr-guided-revision-gain-v2-lean-pilot/), and [V8 result](../evaluation-results/cwr-guided-revision-gain-v2-live-exec-v8-crlf-replay-result-v1/): 40 independently recomputed endpoint judgments include 16 guided-control and 32 arm-baseline comparisons. Guided-control means are positive for both endpoints: Sol `+2.25` holistic / `+2.25` compact and Grok `+1.75` / `+1.50`. Endpoints remain separate; Sol contact cardinality is unproven, the local replay depends on exact V6 inputs, and this establishes neither provider ranking nor generalization.
 - [Matched Grok/Sol calibration](../evaluation-results/hbq-grok-sol-current-matched-v1/): public-synthetic, provider-free pre-execution agreement screen; it does not establish judge interchangeability.
 - [Flash-Next planning](../evaluation-results/hbq-supplemental-providers-flash-next-v1/) and its [Linux portability diagnostic](../evaluation-results/hbq-supplemental-providers-flash-next-linux-portability-v1/): planning and self-integrity evidence only; native Linux execution, attestation, pairing, and promotion remain NO-GO.
 - [V8 multisample continuation](../evaluation-results/hbq-multisample-repeatability-v1-remainder-capacity-reset-successor-v8/): an unpublished, paused operational checkpoint; a public repeatability result awaits completion and integrity-checked analysis.
 
-## Balanced HANNA prompt-development result
+## HANNA prompt-development and held-out confirmation
 
-Lower MAE is better. Grok-primary selection was frozen before the Sol roots
-were opened, and the unchanged candidate was then evaluated on Sol. Endpoint
-results were not pooled.
+Lower MAE is better. Grok-primary development selection was frozen before Sol
+validation. Endpoint results were not pooled.
 
-| Endpoint check | Prompt groups / cells | Baseline MAE | Selected MAE | Outcome |
+| Stage / endpoint | Prompt groups / cells | Baseline MAE | Descendant MAE | Outcome |
 | --- | ---: | ---: | ---: | --- |
-| Grok development | 4 / 44 | `1.069444` | `0.875` | Improvement of `0.194444`; selected `candidate-0ca942ad28cb4104`. |
-| Sol matched check | 2 / 22 | `1.368056` | `1.427778` | Reversal: selected candidate was worse by `0.059722`. |
+| Three-group development — Grok | 3 / development slice | `0.925926` | `0.750000` | `19.00%` MAE reduction. |
+| Three-group development — Sol | 3 / matched slice | `1.252778` | `1.135185` | `9.39%` MAE reduction. |
+| Broader development — Grok | 7 / development slice | `0.988095` | `0.738095` | `25.30%` MAE reduction. |
+| Broader development — Sol | 7 / matched slice | `1.247619` | `1.067460` | `14.44%` baseline-to-descendant MAE reduction. |
+| Frozen confirmation — Grok | 8 / 19 | `1.256944` | `0.937500` | `25.414%` MAE reduction. |
+| Frozen confirmation — Sol | 8 / 19 | `1.426736` | `1.243924` | `12.813%` MAE reduction. |
 
-This establishes a model-specific Grok development improvement, not an
-independently observed cross-endpoint gain. The Sol evidence verifies the
-local Codex lifecycle but not native endpoint/contact cardinality. The frozen
-confirmation partition remains unopened, and DSPy/Optuna have no runtime
-selection authority.
+The confirmation partition comprises 19 untouched Fresh88 items, eight prompt
+groups, and 38 endpoint-specific cells. It is held out within Fresh88 only:
+these measurements do not establish endpoint interchangeability, runtime or
+prompt promotion, or general literary validity. The Grok baseline has two
+cells with incomplete dimension coverage; both descendant cells are complete.
+Native endpoint/contact cardinality remains unproven for both endpoints.
+DSPy/Optuna remain development-only and have no runtime selection authority.
 
 ## Exact HANNA generated-only result
 
