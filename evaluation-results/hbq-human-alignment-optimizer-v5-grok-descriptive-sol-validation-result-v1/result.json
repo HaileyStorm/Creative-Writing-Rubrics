@@ -1,0 +1,103 @@
+{
+  "authority": {
+    "confirmation": "unopened",
+    "endpoint_pooling": "forbidden",
+    "general_hanna": "none",
+    "promotion": "none",
+    "runtime": "none",
+    "selection": "none"
+  },
+  "cell_commitments": [
+    {
+      "candidate_id": "candidate-102cc7f06c9a99a7",
+      "cell_id": "sol-v5-descriptive-baseline-g1",
+      "final_response_sha256": "7abcca62fa86c8b3dafd4bdc92a17bb071d89b9fddb6839d09e84eb4301729ab",
+      "lifecycle_identity_sha256": "ee1dcf5e064cc17c0117aceb706859be30f72b03436c4ca5f5d18c32cddcce3c",
+      "payload_sha256": "b83151f2befc01004b560f9492d7df52786113c4c2cf5b7307fb9f5cf6cf12cc",
+      "prompt_group_id": "prompt-7c393c4bcb3a7484",
+      "raw_events_sha256": "e716b803b91248475261d77d7e4d5d8d3567cb4bd97de7e53603c4cd5d5bbff1",
+      "receipt_sha256": "5735ae92466c48f3ea6714198f4629f12dee4ecdaf56e85b5de33abdb7b0a18c",
+      "target_vector_sha256": "a50d7c977ca1a591fd3f620cf8076200f8414e3fb17f372be3d2b86003650544",
+      "tree_sha256": "1615b1a2cb329f1ff6ca93ec637c62a77487954415e8b24ccbd7d346b5004c34"
+    },
+    {
+      "candidate_id": "candidate-102cc7f06c9a99a7",
+      "cell_id": "sol-v5-descriptive-baseline-g2",
+      "final_response_sha256": "b0d4120f180c2e8f3a10062e2b2ab97086ee2f16b7c7cc5163353cad5269f9d4",
+      "lifecycle_identity_sha256": "9c052057b888d1c8ad63c39edeacd21aebfee45bcbcfc331dd2c777c6b41ddb0",
+      "payload_sha256": "42917fe83f126b81b4dc654537b98e47498f158a1048c4704b7bdaa094a43f8a",
+      "prompt_group_id": "prompt-8997770ce6efe4d5",
+      "raw_events_sha256": "dfbbd87bf398b9b82c90350def86f791db24256b0d199c663b6dd415be3d0849",
+      "receipt_sha256": "d7ca31fa932f0dd43f09b13a7da9896152eb05ed2830ac024040f8503a5996f9",
+      "target_vector_sha256": "add6e95f039bffa8d01d5186cc0d1fa5ada04d03b08f9dc910ff444e6bbfa7e5",
+      "tree_sha256": "ada43d274caf5e0a56cf49a79f6de6da4a31f66ea12518a700a73ad53674c953"
+    },
+    {
+      "candidate_id": "candidate-69720ac6257db007",
+      "cell_id": "sol-v5-descriptive-low-g1",
+      "final_response_sha256": "9116833543176bd289d1447191fcd4a6b96395b8e5c99f643bf72806ee9f6c72",
+      "lifecycle_identity_sha256": "2b2aa9b00b6560eb992df1698d18a564dfd882a272919fdfdd77a975d4679255",
+      "payload_sha256": "d46b0503130cadcf5ccb3b4ef64ae70f2d7c0108bf2763d54ad479e47bfed765",
+      "prompt_group_id": "prompt-7c393c4bcb3a7484",
+      "raw_events_sha256": "7944454e35540ed93d27c08a47052d1573a90e5916bdbb40c04bbc7535ed5b99",
+      "receipt_sha256": "a398409bad3c88f0fb7cac0e65390a7b08755ab4cb008919a30712b94cf1bda6",
+      "target_vector_sha256": "67412c5d27f6ac398dc4bdfea2512aed31a1c6736332dbb2f2262ee20e04b36c",
+      "tree_sha256": "6495df9ea19d7b0ffff84e486b30bcaae78bdd6b32bab80adb2b0cbe1cf6444c"
+    },
+    {
+      "candidate_id": "candidate-69720ac6257db007",
+      "cell_id": "sol-v5-descriptive-low-g2",
+      "final_response_sha256": "8e67fc83acdbf0e1f3aabf2b14584778ea88c85e11b2924a43a27b8738b745bb",
+      "lifecycle_identity_sha256": "3812fe89373b793ba952090136b6a6d67a30bbfe43b4e5050687278e57181915",
+      "payload_sha256": "ab262c9de71fa144245b777c8a115698c08fe060b366deb044356ae3391ecdfb",
+      "prompt_group_id": "prompt-8997770ce6efe4d5",
+      "raw_events_sha256": "fd31a659f1e4fbdf61ededb8a2a8d0dec1d262274343ba7292dd684bbf85a9f4",
+      "receipt_sha256": "ad27543558e475e08bb748f0e50cef609aeb46ea7e41009964139f2fe903f4cf",
+      "target_vector_sha256": "796c28096d176114bc31676de9b8edf7e8d505c5907b8cfd3af7b8f215a5cffc",
+      "tree_sha256": "57107b42b64e50dbe5e3b77459777cc9e43211c900f69b010ff4867fa854073a"
+    }
+  ],
+  "claim": "DESCRIPTIVE_TWO_DEVELOPMENT_GROUP_SOL_FOLLOWUP_ONLY",
+  "comparison": {
+    "absolute_delta": -0.1347222222222222,
+    "baseline_candidate_id": "candidate-102cc7f06c9a99a7",
+    "candidate_id": "candidate-69720ac6257db007",
+    "relative_reduction": 0.14586466165413528
+  },
+  "evidence_ceiling": "local Codex lifecycle only; native endpoint contact cardinality is unproven",
+  "format_version": 1,
+  "kind": "descriptive_two_group_sol_mae_public_result",
+  "metrics": [
+    {
+      "candidate_id": "candidate-102cc7f06c9a99a7",
+      "equal_group_mae": 0.9236111111111112,
+      "group_mae": {
+        "prompt-7c393c4bcb3a7484": 0.8333333333333334,
+        "prompt-8997770ce6efe4d5": 1.013888888888889
+      }
+    },
+    {
+      "candidate_id": "candidate-69720ac6257db007",
+      "equal_group_mae": 0.788888888888889,
+      "group_mae": {
+        "prompt-7c393c4bcb3a7484": 0.7000000000000001,
+        "prompt-8997770ce6efe4d5": 0.8777777777777779
+      }
+    }
+  ],
+  "publication_geometry": {
+    "candidate_observations": 2,
+    "cells": 4,
+    "dimensions": 6,
+    "prompt_groups": 2
+  },
+  "result_internal_sha256": "be33b9812af0ed989b94d8fc56fa74a98c154178e6359903d4f2b5495381bb9e",
+  "source_execution": {
+    "executor_commit": "b3b2f4495bc187b5a5cdca41edc075b4f0f74cc4",
+    "executor_sha256": "7f8a9934bb8fea18ab4cba315f97ebe46e3b6e1bc04a1f4bfb6f2816f76daebd",
+    "executor_study_contract_sha256": "90e44ff10d345c3cd8d5172cb981219a06a8c26a7d4d7c2c18a36f16d6160835",
+    "live_root_tree_sha256": "5a0dcb312d182362d88b3ce65a8f2db3738a557bf6847912bae22e752152de33",
+    "test_sha256": "aaf9686454fd2fa3f4f61d1b40e7c2aa0758319111a9e74321b1e706e6afdff7"
+  },
+  "study_id": "hbq-human-alignment-optimizer-v5-grok-descriptive-sol-validation-exec-v1"
+}

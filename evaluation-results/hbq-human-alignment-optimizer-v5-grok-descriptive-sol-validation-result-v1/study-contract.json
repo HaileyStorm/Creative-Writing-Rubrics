@@ -1,0 +1,29 @@
+{
+  "authority": {
+    "confirmation": "unopened",
+    "endpoint_pooling": "forbidden",
+    "general_hanna": "none",
+    "promotion": "none",
+    "runtime": "none",
+    "selection": "none"
+  },
+  "comparison": {
+    "absolute_delta": -0.1347222222222222,
+    "baseline_candidate_id": "candidate-102cc7f06c9a99a7",
+    "candidate_id": "candidate-69720ac6257db007",
+    "relative_reduction": 0.14586466165413528
+  },
+  "evidence_ceiling": "local Codex lifecycle only; native endpoint contact cardinality is unproven",
+  "format_version": 1,
+  "kind": "immutable_descriptive_sol_public_result_publication",
+  "result_file_sha256": "26a610965a7a57741ec3fd126b959af5aaa05314dbd4ac505b218311ff14980b",
+  "result_internal_sha256": "be33b9812af0ed989b94d8fc56fa74a98c154178e6359903d4f2b5495381bb9e",
+  "source_execution": {
+    "executor_commit": "b3b2f4495bc187b5a5cdca41edc075b4f0f74cc4",
+    "executor_sha256": "7f8a9934bb8fea18ab4cba315f97ebe46e3b6e1bc04a1f4bfb6f2816f76daebd",
+    "executor_study_contract_sha256": "90e44ff10d345c3cd8d5172cb981219a06a8c26a7d4d7c2c18a36f16d6160835",
+    "live_root_tree_sha256": "5a0dcb312d182362d88b3ce65a8f2db3738a557bf6847912bae22e752152de33",
+    "test_sha256": "aaf9686454fd2fa3f4f61d1b40e7c2aa0758319111a9e74321b1e706e6afdff7"
+  },
+  "study_id": "hbq-human-alignment-optimizer-v5-grok-descriptive-sol-validation-exec-v1"
+}
