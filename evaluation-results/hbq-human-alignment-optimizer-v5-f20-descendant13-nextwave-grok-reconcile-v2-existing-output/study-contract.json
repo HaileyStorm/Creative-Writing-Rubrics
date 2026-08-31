@@ -1,0 +1,36 @@
+{
+  "authority": {"confirmation": "none", "promotion": "none", "runtime": "none", "selection": "none"},
+  "format_version": 1,
+  "kind": "provider_free_existing_output_recovery",
+  "pins": {
+    "source_catalog": {
+      "commit": "1424f79d7dd99dd6d95249e57b973572bc7d515f",
+      "envelope_sha256_by_cell": {
+        "descendant13-nextwave-01-scale-adjacency": "5c2816b0b007649fe5936f064de6eb6062795eff55c5a2c89b2f4af49a9def60",
+        "descendant13-nextwave-02-speaker-attribution": "5a16ab7b99497f4912680afbaad6974d7949bee25db593f95bd915fdf9e017b8",
+        "descendant13-nextwave-03-temporal-causality-separation": "73defa4de26a4fc9d53fd1b522dfb91339139e26b59314112c505685bec5ec10",
+        "descendant13-nextwave-04-surprise-reversal-specificity": "9cc414ef0ebdcfbf042c77e9921aebea4c850f5619e56c1aae0752e579986cf3",
+        "descendant13-nextwave-05-complexity-interrelation": "7e2450e8880715d1c8b5fc2bc904fe02394f0dcf898b23f41e89ff34d3865be5",
+        "descendant13-nextwave-06-relevance-task-binding": "6b1f89d0fc763eb2bded57992ebeef67a48f77dde39edaa4d6676024b07b6763",
+        "descendant13-nextwave-07-empathy-perspective-distinction": "3baea37b600f474396db0d168b53a43b55741fa42082d72fb201f56e03219bb4",
+        "descendant13-nextwave-08-engagement-stakes-distinction": "0f1861e49ae99f42c969ada1e8e7d6b62f4760a7c86e08c8828cc9f29a3dd96d",
+        "descendant13-nextwave-09-coherence-reference-resolution": "0bae24c86c9f67635c775c699df7c35e305cd7a2f4fc6a4acf2f8a6539d06d58",
+        "descendant13-nextwave-10-rhetorical-question-disambiguation": "7b459091861c5f26228f34b40f5be22ec4d489596df936ae82d3927f2474ee8e"
+      },
+      "executor_relative_path": "evaluation-results/hbq-human-alignment-optimizer-v5-f20-descendant13-nextwave-grok-exec-v1/executor.py",
+      "executor_sha256": "14412535b946cbf6f8b758452b39d17a9d7de5558a7b7f0edc712a7838bc19b6"
+    }
+  },
+  "recovery": {
+    "new_provider_calls": 0,
+    "new_process_launches": 0,
+    "new_process_launches_scope": "provider_or_executor_only; local Git provenance subprocesses are excluded",
+    "original_process_launches_per_cell": 1,
+    "original_provider_calls_per_cell": "unknown",
+    "recovered_cells": 10,
+    "rejected_profile_factor_drift": 3,
+    "rejected_profile_geometry_drift": 7
+  },
+  "study_id": "hbq-human-alignment-optimizer-v5-f20-descendant13-nextwave-grok-reconcile-v2-existing-output",
+  "tools_enabled": false
+}
