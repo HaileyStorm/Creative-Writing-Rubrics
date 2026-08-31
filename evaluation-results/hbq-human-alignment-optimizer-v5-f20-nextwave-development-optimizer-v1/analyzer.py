@@ -17,7 +17,6 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Callable
 
-
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[1]
 SCORER = REPO / "evaluation-results" / "hbq-human-alignment-optimizer-v5-f20-nextwave-grok-score-exec-v1" / "executor.py"
@@ -65,8 +64,9 @@ class FileAdmission:
 @dataclass(frozen=True)
 class DirectoryAdmission:
     path: Path
-    identity: tuple[int, int, int, int]
+    identity: tuple[int, int, int]
     relative_files: tuple[str, ...]
+    relative_entries: tuple[tuple[str, str], ...]
 
 
 class SourceSnapshot:
@@ -91,10 +91,10 @@ class SourceSnapshot:
     def verify_unchanged(self) -> None:
         for root, admitted in self._directories.items():
             _assert_plain(root, directory=True)
-            if _identity(root.stat()) != admitted.identity:
+            if _directory_identity(root.stat()) != admitted.identity:
                 raise ValueError(f"admitted source directory identity changed: {root.name}")
-            current = _directory_files(root)[0]
-            if current != admitted.relative_files:
+            current_files, current_entries, _members = _directory_inventory(root)
+            if current_files != admitted.relative_files or current_entries != admitted.relative_entries:
                 raise ValueError(f"admitted source directory inventory changed: {root.name}")
         for path, admitted in self._files.items():
             _assert_plain(path, directory=False)
@@ -136,6 +136,11 @@ def _identity(value: os.stat_result) -> tuple[int, int, int, int]:
     return (int(value.st_dev), int(value.st_ino), int(value.st_size), int(value.st_mtime_ns))
 
 
+def _directory_identity(value: os.stat_result) -> tuple[int, int, int]:
+    """Directory size is unstable on Windows; device, inode, and mtime are not."""
+    return (int(value.st_dev), int(value.st_ino), int(value.st_mtime_ns))
+
+
 def _is_reparse(path: Path) -> bool:
     try:
         value = path.lstat()
@@ -175,30 +180,35 @@ def _admit_directory(path: Path) -> tuple[DirectoryAdmission, list[Path]]:
     root = _absolute(path)
     _assert_plain(root, directory=True)
     before = root.stat()
-    relative, entries = _directory_files(root)
+    relative_files, relative_entries, entries = _directory_inventory(root)
     after = root.stat()
-    if _identity(before) != _identity(after):
+    if _directory_identity(before) != _directory_identity(after):
         raise ValueError(f"source directory changed while admitted: {root.name}")
-    return DirectoryAdmission(root, _identity(after), relative), entries
+    return DirectoryAdmission(root, _directory_identity(after), relative_files, relative_entries), entries
 
 
-def _directory_files(root: Path) -> tuple[tuple[str, ...], list[Path]]:
-    entries: list[Path] = []
+def _directory_inventory(root: Path) -> tuple[tuple[str, ...], tuple[tuple[str, str], ...], list[Path]]:
+    files: list[Path] = []
+    typed_entries: list[tuple[str, str]] = []
     pending = [root]
     while pending:
         current = pending.pop()
         for candidate in current.iterdir():
+            relative = candidate.relative_to(root).as_posix()
             if candidate.is_dir():
                 _assert_plain(candidate, directory=True)
+                typed_entries.append((relative, "directory"))
                 pending.append(candidate)
             elif candidate.is_file():
                 _assert_plain(candidate, directory=False)
-                entries.append(candidate)
+                typed_entries.append((relative, "file"))
+                files.append(candidate)
             else:
                 raise ValueError(f"unsupported source entry kind: {candidate.name}")
-    entries.sort(key=lambda value: value.relative_to(root).as_posix())
-    relative = tuple(candidate.relative_to(root).as_posix() for candidate in entries)
-    return relative, entries
+    files.sort(key=lambda value: value.relative_to(root).as_posix())
+    typed_entries.sort()
+    relative_files = tuple(candidate.relative_to(root).as_posix() for candidate in files)
+    return relative_files, tuple(typed_entries), files
 
 
 def canonical(value: Any) -> bytes:

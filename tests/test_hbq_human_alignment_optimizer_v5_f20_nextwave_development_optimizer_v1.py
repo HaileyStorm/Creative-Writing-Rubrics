@@ -6,9 +6,9 @@ import json
 import os
 import sys
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
-
 
 ROOT = Path(__file__).resolve().parents[1]
 PACKAGE = ROOT / "evaluation-results" / "hbq-human-alignment-optimizer-v5-f20-nextwave-development-optimizer-v1"
@@ -60,7 +60,7 @@ def test_frozen_empirical_replay_runs_real_optuna_and_dspy_without_lm():
 
 
 def test_candidate08_preference_is_contextualized_and_runtime_stays_clean():
-    value = module()
+    module()
     result = json.loads((PACKAGE / "result.json").read_bytes())
     assert result["finding"]["candidate08_remains_preferred_across_low_penalty_grid"] is True
     assert result["optimizer"]["outside_grid_sensitivity"]["winner"] == "normalized-nextwave-04-untouched-calibration"
@@ -153,6 +153,46 @@ def test_admitted_snapshot_rejects_between_phase_bytes_and_identity_replacement(
     replacement.write_bytes(b'{"value":1}')
     os.replace(replacement, source)
     with pytest.raises(ValueError, match="identity changed|identity or bytes changed"):
+        snapshot.verify_unchanged()
+
+
+def test_directory_identity_ignores_only_windows_directory_size():
+    value = module()
+    common = {"st_dev": 7, "st_ino": 11, "st_mtime_ns": 13}
+    empty = SimpleNamespace(**common, st_size=0)
+    populated = SimpleNamespace(**common, st_size=4096)
+    assert value._directory_identity(empty) == value._directory_identity(populated) == (7, 11, 13)
+    for field, changed in (("st_dev", 17), ("st_ino", 19), ("st_mtime_ns", 23)):
+        drifted = SimpleNamespace(**{**common, field: changed}, st_size=4096)
+        assert value._directory_identity(drifted) != value._directory_identity(empty)
+
+
+@pytest.mark.parametrize("identity_index", (0, 1, 2), ids=("device", "inode", "mtime"))
+def test_admitted_snapshot_rejects_directory_identity_drift(tmp_path, monkeypatch, identity_index):
+    value = module()
+    root = tmp_path / "source"
+    root.mkdir()
+    snapshot = _snapshot(value, root)
+    directory = snapshot._directories[value._absolute(root)]
+    drifted = list(directory.identity)
+    drifted[identity_index] += 1
+    monkeypatch.setattr(value, "_directory_identity", lambda _stat: tuple(drifted))
+    with pytest.raises(ValueError, match="directory identity changed"):
+        snapshot.verify_unchanged()
+
+
+def test_admitted_snapshot_rejects_empty_directory_inventory_mutation(tmp_path, monkeypatch):
+    value = module()
+    root = tmp_path / "source"
+    empty = root / "empty"
+    empty.mkdir(parents=True)
+    snapshot = _snapshot(value, root)
+    directory = snapshot._directories[value._absolute(root)]
+    assert directory.relative_entries == (("empty", "directory"),)
+
+    monkeypatch.setattr(value, "_directory_identity", lambda _stat: directory.identity)
+    empty.rmdir()
+    with pytest.raises(ValueError, match="directory inventory changed"):
         snapshot.verify_unchanged()
 
 
