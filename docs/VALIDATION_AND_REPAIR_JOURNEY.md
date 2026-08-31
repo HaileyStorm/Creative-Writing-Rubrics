@@ -215,6 +215,47 @@ simple manual repair cannot answer the question. It is not a runtime dependency,
 not a judge, and not a shortcut around a frozen holdout. Any candidate it helps
 propose still needs ordinary review, a frozen test, and supported confirmation.
 
+## HANNA learned to change by less
+
+The August 2026 HANNA work began with a useful failure. A Grok-selected
+instruction improved the small Grok development slice, then reversed on the
+same unchanged tasks when checked on Sol. That was enough to stop treating a
+fast endpoint as an interchangeable judge. Grok became the productive primary
+iteration lane, while Sol remained an independent validation lane; scores stay
+endpoint-separated throughout.
+
+The next round used actual development work rather than a new runtime
+mechanism. DSPy 3.3.1 constructed the local development view and Optuna 4.9.0
+ran 198 deterministic development trials in the [next-wave
+optimizer](../evaluation-results/hbq-human-alignment-optimizer-v5-f20-nextwave-development-optimizer-v1/README.md).
+Neither package made a provider call or entered the shipped scorer. The useful
+lesson was about edit mass: candidate 08, a smaller-step change, reduced MAE by
+19% on Grok and 9.39% on Sol across the three-group screen. A more forceful
+rewrite had looked attractive to one endpoint precisely because the screen was
+too small to trust it.
+
+The smaller change was then tested across seven frozen development groups. Its
+winning single-factor descendant, `broader-nextwave-13-missing_evidence_not_no`, reduced Grok
+MAE from 0.9881 to 0.7381 (25.30%) in the [broader Grok
+result](../evaluation-results/hbq-human-alignment-optimizer-v5-f20-broader-development-grok-result-v2-v3-exec/README.md),
+and reduced Sol MAE from 1.2476 to 1.0675 (14.44%) in the [separate Sol
+validation](../evaluation-results/hbq-human-alignment-optimizer-v5-f20-broader-development-sol-result-v1/README.md).
+That did not license a pooled number or a runtime switch. It earned an
+untouched eight-group Fresh88 confirmation split.
+
+The confirmation held in the same direction: Grok moved from 1.2569 to 0.9375
+(25.414%) in its [confirmation replay](../evaluation-results/hbq-human-alignment-optimizer-v5-f20-confirmation-grok-replay-v2-native-json-normalization/README.md),
+while Sol moved from 1.4267 to 1.2439 (12.813%) in its [separate confirmation
+recovery](../evaluation-results/hbq-human-alignment-optimizer-v5-f20-confirmation-sol-reconcile-v3-final-message/README.md).
+One Sol cell had emitted an incomplete interim message before its complete
+final native message. The result recovered only that matching final message;
+it did not resend the cell or turn repair into another observation. The exact
+instruction is now published as a [development-only profile](../evaluation-results/hbq-human-alignment-optimizer-v5-f20-recommended-development-profile-v1/README.md),
+not a default or promotion. The practical conclusion is modest and valuable:
+smaller, evidence-sensitive edits can travel across these two endpoints, but
+future revisions still need to test that claim separately rather than assume
+one model's improvement is everyone's.
+
 ## Negative evidence changed the operating model
 
 The most productive progress did not always look like a new wording change.
