@@ -1,0 +1,55 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-human-alignment-hanna96-fresh-split-v1",
+  "kind": "score_blind_residual_hanna_split",
+  "dataset": {
+    "repository": "https://github.com/dig-team/hanna-benchmark-asg",
+    "upstream_commit": "282f27536a5d05ad4ce14298abcd70c45668fed2",
+    "csv_name": "hanna_stories_annotations.csv",
+    "csv_git_blob_oid_sha1": "2eec3bbf5b1363a998dbf73199228e4fe13405ca",
+    "csv_bytes": 13219167,
+    "csv_sha256": "ef59054d27fa32def06cfdc57243b1dd09c7e71f40b6d9d43fecfbf60e59026b",
+    "license": "MIT"
+  },
+  "fresh88": {
+    "study_id": "hbq-human-alignment-optimizer-v1",
+    "contract_path": "evaluation-results/hbq-human-alignment-optimizer-v1/study-contract.json",
+    "contract_sha256": "c57c72370d5c6b9a0a581846fc10be51a370b2fcbd5f3a31e437e88f5df025ba",
+    "group_count": 39,
+    "group_ids": [
+      "prompt-03b5182826a1a361", "prompt-132112dd8eeb2d4d", "prompt-1bd56a5f8b073caa",
+      "prompt-224828d8a6b2b338", "prompt-2c4f2e59857191f6", "prompt-2f5d381ef8ed6651",
+      "prompt-3286f1e85780066d", "prompt-3ea05aae03d4b979", "prompt-3f844c5cdc6b51ae",
+      "prompt-489dbd34451e1ce7", "prompt-577e90eb9a834995", "prompt-624948bf9021d60a",
+      "prompt-6450c4baa52d6998", "prompt-6a99e79cf010b289", "prompt-6b7fff0c3794370c",
+      "prompt-6f4bd6b8f36ecdba", "prompt-7c393c4bcb3a7484", "prompt-7c9df668d681b1fc",
+      "prompt-8355ff141c67473d", "prompt-8997770ce6efe4d5", "prompt-8d3d397a4f6ba0ea",
+      "prompt-91868234f35c72d9", "prompt-933b864147df69bd", "prompt-99469c00b48a832c",
+      "prompt-9e29d5b528d4bd23", "prompt-ad31d13c97493f95", "prompt-c6cad0cde5728914",
+      "prompt-c74713d6d5ef2afb", "prompt-c85edd8245f2bf73", "prompt-cbf8ca8395c777f3",
+      "prompt-cd99981780aa5821", "prompt-dd2a0062e1557ba7", "prompt-de45c912392c4d17",
+      "prompt-e2786d4e3fd2bd47", "prompt-e74620e2360d16d6", "prompt-ea26ed67b3d13cb8",
+      "prompt-f36b641461570b32", "prompt-f88bef9d00608441", "prompt-f8da77867f880e17"
+    ],
+    "group_ids_sha256": "38d18199cd642d36835fb7ad0d5473e38b770168316a4324e19cdaf2cec9b351"
+  },
+  "selection": {
+    "public_seed": "hanna96-fresh-split-v1|202608311",
+    "public_group_rank": "sha256(public_seed + '|' + prompt_group_id)",
+    "private_group_and_story_rank": "sha256(private_seed + '|' + prompt_group_id [+ '|' + story_id])",
+    "selected_items_per_group": 2,
+    "score_access": "aggregate six-dimension annotations only after deterministic story selection"
+  },
+  "partitions": {
+    "validation": {"group_count": 16, "item_count": 32, "status": "open"},
+    "future_confirmation": {"group_count": 16, "item_count": 32, "status": "privately_frozen_unopened"},
+    "reserve": {"group_count": 25, "item_count": 50, "status": "privately_frozen_unopened"}
+  },
+  "outputs": ["manifest.json"],
+  "interpretation_limits": [
+    "This is a score-blind source split, not an alignment result or runtime promotion.",
+    "Only validation is public and open; later partitions are locally withheld as privately_frozen_unopened, not claimed secret beyond that withholding.",
+    "The source Git blob identifier is SHA-1 by Git definition; SHA-256 separately identifies source bytes.",
+    "No provider, DSPy, Optuna, or runtime execution occurs in this package."
+  ]
+}
