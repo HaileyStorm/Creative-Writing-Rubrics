@@ -127,12 +127,18 @@ pretending they have answers yet:
   resent, and a versioned repair is in progress. No revision-gain result is
   claimed yet.
 - The [HANNA v5 mixed-provenance shrinkage evaluator](evaluation-results/hbq-human-alignment-optimizer-v5-balanced-dspy-mixed-provenance-shrinkage-eval-v1/)
-  is ready for collection. Its 33 Grok development cells remain pending; four
-  unchanged-byte Sol validation cells stay gated behind the fixed shrinkage
-  decision. The separate 18-lane Grok breadth wave is provisional candidate
-  generation only, not evidence of prompt efficacy, alignment, selection,
-  cross-endpoint transfer, or native-contact cardinality. The evaluator remains
-  development-only, with no runtime, promotion, or confirmation authority.
+  completed its Grok-primary development collection: 33 logical cells reduced
+  to 30 unique, tool-free Grok payloads across ten effective candidates; three
+  byte-identical baseline descendants remain lineage-only aliases. The
+  [immutable descriptive result](evaluation-results/hbq-human-alignment-optimizer-v5-balanced-dspy-mixed-provenance-live-result-v1/)
+  reports a baseline equal-group MAE of `1.1296296296296295` and a lowest
+  observed candidate MAE of `0.6666666666666666` (descriptive delta
+  `-0.4629629629629629`, `40.98360655737705%` relative reduction). This is
+  Grok-only development evidence with native endpoint contact cardinality
+  unproven: it does not select a winner or establish strict-v5 projection, Sol
+  validation, confirmation, general HANNA gain, promotion, or runtime
+  authority. The separate 18-lane Grok breadth wave remains provisional
+  candidate generation only.
 - [Flash-Next/Linux planning](evaluation-results/hbq-supplemental-providers-flash-next-v1/)
   freezes portable study geometry and an offline, non-authoritative per-root
   request journal. Native Linux execution, trusted route evidence, and pairing

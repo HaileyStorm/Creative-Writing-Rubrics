@@ -1,0 +1,44 @@
+{
+  "alias_manifest_sha256": "fe79880e3d3a719255784900e21c28d04caa5f849649d1327658971b7f86d35f",
+  "authority": {
+    "confirmation": {"cells": 0, "status": "unopened"},
+    "promotion": "none",
+    "runtime": "none",
+    "selection": "none"
+  },
+  "claim": "DESCRIPTIVE_DEVELOPMENT_ONLY; strict v5 native projector rejects unproven-cardinality receipts; no general HANNA claim",
+  "collector_sha256": "4af3adcfabf4410e895468e929f368bbfb0f20fbf834df767a2fb646fd0b6809",
+  "format_version": 1,
+  "publication_geometry": {
+    "aliases": 3,
+    "effective_candidates": 10,
+    "logical_cells": 33,
+    "prompt_groups": 3,
+    "unique_payload_cells": 30
+  },
+  "kind": "descriptive_equal_group_grok_mae_cardinality_unproven",
+  "metrics": [
+    {"candidate_id": "candidate-69720ac6257db007", "cells": 3, "equal_group_mae": 0.6666666666666666, "group_mae": {"prompt-7c393c4bcb3a7484": 0.2777777777777778, "prompt-8997770ce6efe4d5": 0.4444444444444444, "prompt-8d3d397a4f6ba0ea": 1.2777777777777777}},
+    {"candidate_id": "candidate-9863032916e37cd2", "cells": 3, "equal_group_mae": 0.8333333333333334, "group_mae": {"prompt-7c393c4bcb3a7484": 0.2777777777777778, "prompt-8997770ce6efe4d5": 0.9444444444444445, "prompt-8d3d397a4f6ba0ea": 1.2777777777777777}},
+    {"candidate_id": "candidate-f544c01ab3d15480", "cells": 3, "equal_group_mae": 0.8444444444444444, "group_mae": {"prompt-7c393c4bcb3a7484": 1.0833333333333333, "prompt-8997770ce6efe4d5": 0.6722222222222222, "prompt-8d3d397a4f6ba0ea": 0.7777777777777777}},
+    {"candidate_id": "candidate-16e5eb1904290c91", "cells": 3, "equal_group_mae": 0.8888888888888888, "group_mae": {"prompt-7c393c4bcb3a7484": 0.4444444444444445, "prompt-8997770ce6efe4d5": 0.9444444444444443, "prompt-8d3d397a4f6ba0ea": 1.2777777777777777}},
+    {"candidate_id": "candidate-3356cd7e47a87f71", "cells": 3, "equal_group_mae": 0.9629629629629629, "group_mae": {"prompt-7c393c4bcb3a7484": 0.2777777777777778, "prompt-8997770ce6efe4d5": 1.0, "prompt-8d3d397a4f6ba0ea": 1.611111111111111}},
+    {"candidate_id": "candidate-b3d9e8647959f744", "cells": 3, "equal_group_mae": 0.9629629629629629, "group_mae": {"prompt-7c393c4bcb3a7484": 0.5, "prompt-8997770ce6efe4d5": 0.9444444444444443, "prompt-8d3d397a4f6ba0ea": 1.4444444444444444}},
+    {"candidate_id": "candidate-8369b42c182b3c3e", "cells": 3, "equal_group_mae": 1.0185185185185184, "group_mae": {"prompt-7c393c4bcb3a7484": 0.3333333333333333, "prompt-8997770ce6efe4d5": 1.111111111111111, "prompt-8d3d397a4f6ba0ea": 1.611111111111111}},
+    {"candidate_id": "candidate-c39b2d192fb3ed93", "cells": 3, "equal_group_mae": 1.074074074074074, "group_mae": {"prompt-7c393c4bcb3a7484": 0.3333333333333333, "prompt-8997770ce6efe4d5": 1.111111111111111, "prompt-8d3d397a4f6ba0ea": 1.7777777777777777}},
+    {"candidate_id": "candidate-e1fee4dbee8412ca", "cells": 3, "equal_group_mae": 1.0740740740740742, "group_mae": {"prompt-7c393c4bcb3a7484": 0.5833333333333334, "prompt-8997770ce6efe4d5": 0.9444444444444443, "prompt-8d3d397a4f6ba0ea": 1.6944444444444444}},
+    {"candidate_id": "candidate-102cc7f06c9a99a7", "cells": 3, "equal_group_mae": 1.1296296296296295, "group_mae": {"prompt-7c393c4bcb3a7484": 0.5, "prompt-8997770ce6efe4d5": 1.111111111111111, "prompt-8d3d397a4f6ba0ea": 1.7777777777777777}}
+  ],
+  "native_endpoint_contact_cardinality": "unproven",
+  "result_sha256": "c3da5428731bf85da13e3aaa10f36a4407a4efc8deb232b0e473913b5237a7d6",
+  "source_artifacts": {
+    "alias_manifest_sha256": "fe79880e3d3a719255784900e21c28d04caa5f849649d1327658971b7f86d35f",
+    "collector_file_sha256": "4af3adcfabf4410e895468e929f368bbfb0f20fbf834df767a2fb646fd0b6809",
+    "executor_commit": "856451a906ff387ead4d7627b28a5418c8a52f83",
+    "executor_sha256": "331c9749e29779de450f83871cf9b23001e1d705227f3b4d0b0de8a650292079",
+    "result_file_sha256": "ba43a42d7959ae184cb1bd341062a82bac49a04a39f68e5af1bf0405d9c4ce3d",
+    "result_internal_sha256": "c3da5428731bf85da13e3aaa10f36a4407a4efc8deb232b0e473913b5237a7d6",
+    "schedule_sha256": "5056e681cbcef92aef3335ed58d7a20dabf3a8c4b962f5e463752ce827d39104"
+  },
+  "study_id": "hbq-human-alignment-optimizer-v5-balanced-dspy-mixed-provenance-live-exec-v1"
+}

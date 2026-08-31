@@ -1,0 +1,31 @@
+{
+  "authority": {
+    "confirmation": {"cells": 0, "status": "unopened"},
+    "general_hanna_gain": "none",
+    "promotion": "none",
+    "runtime": "none",
+    "selection": "none",
+    "sol_validation": "none",
+    "strict_v5_projection": "rejected"
+  },
+  "evidence_ceiling": "Grok-only descriptive development evidence with unproven native endpoint contact cardinality",
+  "format_version": 1,
+  "geometry": {
+    "aliases": 3,
+    "effective_candidates": 10,
+    "logical_cells": 33,
+    "prompt_groups": 3,
+    "unique_payload_cells": 30
+  },
+  "kind": "immutable_descriptive_result_publication",
+  "source_artifacts": {
+    "alias_manifest_sha256": "fe79880e3d3a719255784900e21c28d04caa5f849649d1327658971b7f86d35f",
+    "collector_file_sha256": "4af3adcfabf4410e895468e929f368bbfb0f20fbf834df767a2fb646fd0b6809",
+    "executor_commit": "856451a906ff387ead4d7627b28a5418c8a52f83",
+    "executor_sha256": "331c9749e29779de450f83871cf9b23001e1d705227f3b4d0b0de8a650292079",
+    "result_file_sha256": "ba43a42d7959ae184cb1bd341062a82bac49a04a39f68e5af1bf0405d9c4ce3d",
+    "result_internal_sha256": "c3da5428731bf85da13e3aaa10f36a4407a4efc8deb232b0e473913b5237a7d6",
+    "schedule_sha256": "5056e681cbcef92aef3335ed58d7a20dabf3a8c4b962f5e463752ce827d39104"
+  },
+  "study_id": "hbq-human-alignment-optimizer-v5-balanced-dspy-mixed-provenance-live-exec-v1"
+}
