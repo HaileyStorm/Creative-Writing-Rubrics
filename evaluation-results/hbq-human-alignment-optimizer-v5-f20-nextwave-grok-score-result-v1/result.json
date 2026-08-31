@@ -1,0 +1,153 @@
+{
+  "authority": {
+    "confirmation": "unopened",
+    "endpoint_pooling": "forbidden",
+    "general_hanna": "none",
+    "promotion": "none",
+    "runtime": "none",
+    "selection": "none",
+    "sol_validation": "none"
+  },
+  "claim": "DESCRIPTIVE_THREE_DEVELOPMENT_GROUP_GROK_RESULT_ONLY",
+  "comparison": {
+    "absolute_delta": -0.17592592592592593,
+    "baseline_candidate_id": "candidate-102cc7f06c9a99a7",
+    "baseline_equal_group_mae": 0.9259259259259259,
+    "lowest_observed_candidate_id": "normalized-nextwave-08-conservative-hybrid",
+    "lowest_observed_equal_group_mae": 0.75,
+    "relative_reduction": 0.19
+  },
+  "evidence_ceiling": "Grok development-only; three groups and 33 cells; native endpoint contact cardinality unproven; no Sol, selection, confirmation, generalization, promotion, or runtime authority",
+  "format_version": 1,
+  "kind": "descriptive_equal_group_grok_mae_public_result",
+  "metrics": [
+    {
+      "candidate_id": "normalized-nextwave-08-conservative-hybrid",
+      "cells": 3,
+      "equal_group_mae": 0.75,
+      "group_mae": {
+        "prompt-7c393c4bcb3a7484": 0.2777777777777778,
+        "prompt-8997770ce6efe4d5": 0.861111111111111,
+        "prompt-8d3d397a4f6ba0ea": 1.111111111111111
+      }
+    },
+    {
+      "candidate_id": "normalized-nextwave-10-calibrated-paraphrase",
+      "cells": 3,
+      "equal_group_mae": 0.8703703703703703,
+      "group_mae": {
+        "prompt-7c393c4bcb3a7484": 0.4444444444444445,
+        "prompt-8997770ce6efe4d5": 0.7222222222222223,
+        "prompt-8d3d397a4f6ba0ea": 1.4444444444444444
+      }
+    },
+    {
+      "candidate_id": "normalized-nextwave-09-connective-hybrid",
+      "cells": 3,
+      "equal_group_mae": 0.9074074074074073,
+      "group_mae": {
+        "prompt-7c393c4bcb3a7484": 0.5555555555555555,
+        "prompt-8997770ce6efe4d5": 0.8888888888888888,
+        "prompt-8d3d397a4f6ba0ea": 1.2777777777777777
+      }
+    },
+    {
+      "candidate_id": "normalized-nextwave-06-symmetric-evidence",
+      "cells": 3,
+      "equal_group_mae": 0.9074074074074074,
+      "group_mae": {
+        "prompt-7c393c4bcb3a7484": 0.2777777777777778,
+        "prompt-8997770ce6efe4d5": 0.8333333333333334,
+        "prompt-8d3d397a4f6ba0ea": 1.611111111111111
+      }
+    },
+    {
+      "candidate_id": "candidate-102cc7f06c9a99a7",
+      "cells": 3,
+      "equal_group_mae": 0.9259259259259259,
+      "group_mae": {
+        "prompt-7c393c4bcb3a7484": 0.2777777777777778,
+        "prompt-8997770ce6efe4d5": 0.888888888888889,
+        "prompt-8d3d397a4f6ba0ea": 1.611111111111111
+      }
+    },
+    {
+      "candidate_id": "normalized-nextwave-01-baseline-local-evidence",
+      "cells": 3,
+      "equal_group_mae": 0.9259259259259259,
+      "group_mae": {
+        "prompt-7c393c4bcb3a7484": 0.2777777777777778,
+        "prompt-8997770ce6efe4d5": 0.888888888888889,
+        "prompt-8d3d397a4f6ba0ea": 1.611111111111111
+      }
+    },
+    {
+      "candidate_id": "normalized-nextwave-05-polarity-order",
+      "cells": 3,
+      "equal_group_mae": 0.9259259259259259,
+      "group_mae": {
+        "prompt-7c393c4bcb3a7484": 0.4444444444444445,
+        "prompt-8997770ce6efe4d5": 0.888888888888889,
+        "prompt-8d3d397a4f6ba0ea": 1.4444444444444444
+      }
+    },
+    {
+      "candidate_id": "normalized-nextwave-03-halo-suppression",
+      "cells": 3,
+      "equal_group_mae": 0.9444444444444443,
+      "group_mae": {
+        "prompt-7c393c4bcb3a7484": 0.2777777777777778,
+        "prompt-8997770ce6efe4d5": 1.111111111111111,
+        "prompt-8d3d397a4f6ba0ea": 1.4444444444444444
+      }
+    },
+    {
+      "candidate_id": "normalized-nextwave-04-untouched-calibration",
+      "cells": 3,
+      "equal_group_mae": 0.9814814814814814,
+      "group_mae": {
+        "prompt-7c393c4bcb3a7484": 0.7777777777777778,
+        "prompt-8997770ce6efe4d5": 1.0555555555555556,
+        "prompt-8d3d397a4f6ba0ea": 1.111111111111111
+      }
+    },
+    {
+      "candidate_id": "normalized-nextwave-07-paraphrase-binding",
+      "cells": 3,
+      "equal_group_mae": 1.1296296296296295,
+      "group_mae": {
+        "prompt-7c393c4bcb3a7484": 0.5,
+        "prompt-8997770ce6efe4d5": 1.111111111111111,
+        "prompt-8d3d397a4f6ba0ea": 1.7777777777777777
+      }
+    },
+    {
+      "candidate_id": "normalized-nextwave-02-best-small-step",
+      "cells": 3,
+      "equal_group_mae": 1.4444444444444444,
+      "group_mae": {
+        "prompt-7c393c4bcb3a7484": 0.2777777777777778,
+        "prompt-8997770ce6efe4d5": 2.444444444444444,
+        "prompt-8d3d397a4f6ba0ea": 1.611111111111111
+      }
+    }
+  ],
+  "publication_geometry": {
+    "candidate_observations": 11,
+    "cells": 33,
+    "dimensions": 6,
+    "prompt_groups": 3
+  },
+  "result_internal_sha256": "88656d9be836ac6c550b9d62360f60062eb708a3bfca3851ab76e826cfa671e9",
+  "source_execution": {
+    "collector_sha256": "d2f4c329fb05f31a27578483548855cfb7ab77c26ee75bbb44367019a2e8fe99",
+    "executor_commit": "6cfd64e8db03b06c70d39d79ca4aac24ba498232",
+    "executor_sha256": "c1641089073c07d5906d31685101dedbd5cdc936568baeb039a612f85b0f7539",
+    "executor_study_contract_sha256": "a423fab63440525ed1a69bf2ea857408abf3df6c6530b4afafd75ea79e7cc56a",
+    "normalized_source_manifest_sha256": "7eba326fca7f6621edbc9a809d9305b580f6487fc6ba4de4c9f3e9d9c88a5a36",
+    "schedule_file_sha256": "eb54e261111719716d056f6b5024b668894f0e49899b84351e2dbfe20e47b2cc",
+    "target_reconstruction_contract_sha256": "e4e8b5ee124f74da311baf6f681f55598face684a2d407824f9a2f1ba5daea5f",
+    "target_reconstruction_executor_sha256": "331c9749e29779de450f83871cf9b23001e1d705227f3b4d0b0de8a650292079"
+  },
+  "study_id": "hbq-human-alignment-optimizer-v5-f20-nextwave-grok-score-exec-v1"
+}
