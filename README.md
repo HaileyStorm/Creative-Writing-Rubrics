@@ -118,9 +118,21 @@ pretending they have answers yet:
   The reviewed [lean v2 pilot](evaluation-results/cwr-guided-revision-gain-v2-lean-pilot/)
   narrows execution to two immutable sources, eight Grok revision cells, four
   Sol CWR-feedback cells, and forty unchanged blinded Sol/Grok endpoint cells
-  (52 contacts total). It has no dispatch or result yet; the next step is the
-  thin governed live adapter and independently recomputed guided-versus-control
-  plus arm-versus-baseline outcomes.
+  (52 contacts total). The versioned [live executor v3](evaluation-results/cwr-guided-revision-gain-v2-live-exec-v3/)
+  now carries the repaired schema, identity, and reconciliation boundary. The
+  current immutable continuation has two settled and ingested Sol feedback
+  cells; they remain local-lifecycle evidence with native endpoint/contact
+  cardinality unproven. Four Grok revision outputs reached terminal
+  `reconcile_required` on a static-versus-ephemeral identity mismatch; none was
+  resent, and a versioned repair is in progress. No revision-gain result is
+  claimed yet.
+- The [HANNA v5 mixed-provenance shrinkage evaluator](evaluation-results/hbq-human-alignment-optimizer-v5-balanced-dspy-mixed-provenance-shrinkage-eval-v1/)
+  is ready for collection. Its 33 Grok development cells remain pending; four
+  unchanged-byte Sol validation cells stay gated behind the fixed shrinkage
+  decision. The separate 18-lane Grok breadth wave is provisional candidate
+  generation only, not evidence of prompt efficacy, alignment, selection,
+  cross-endpoint transfer, or native-contact cardinality. The evaluator remains
+  development-only, with no runtime, promotion, or confirmation authority.
 - [Flash-Next/Linux planning](evaluation-results/hbq-supplemental-providers-flash-next-v1/)
   freezes portable study geometry and an offline, non-authoritative per-root
   request journal. Native Linux execution, trusted route evidence, and pairing
