@@ -1,0 +1,5 @@
+# Fresh96 validation analysis v1
+
+`analyze.py` accepts only closed roots: `--schedule-root` is admitted by the paired freeze, while `--projection-root` contains exactly `grok.json` and `sol.json`. Each canonical projection-set file binds its allowed endpoint (`grok-4.6` or `gpt-5.6-sol`), the exact schedule hash, the reviewed endpoint executor ID/SHA-256 pair, and all 64 normalized cell projections through its own canonical `projection_set_sha256`. The hashed public result retains each endpoint’s projection-set commitment and executor binding; the Sol binding is the reviewed projection-writer successor, not its superseded predecessor.
+
+Every projection has candidate, source, target, and outbound-payload bindings plus six finite 0–5 scores. The analyzer computes per-item MAE, then the mean of two items in each group, then the equal mean over 16 groups separately for each endpoint and candidate. It rejects missing, duplicate, swapped, tampered, aggregate-only, path-like endpoint, and non-persisted inputs. Its public result intentionally omits stories, prompts, local paths, item/group identifiers, and native provider payloads.
