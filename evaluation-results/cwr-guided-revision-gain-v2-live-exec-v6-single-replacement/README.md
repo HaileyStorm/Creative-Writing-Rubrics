@@ -9,3 +9,10 @@ not an extra vote. Only a completed one-launch replacement can be adopted as
 the original logical event, after which the frozen pilot validates all eight
 revision records and may freeze the ten targets. Ambiguous, malformed, or
 duplicate outcomes are terminal and cannot be adopted or resent.
+
+The contract also pins the V5 wrapper and its V4 import root, executor, and
+inventory commitments. Preparation requires current governed-route evidence;
+after a settled launch, adoption replays only the persisted launch-time route,
+canonical admission/schema commitments, and exact adapter stdout/control
+bindings. It never treats a later route refresh or expiry as a reason to
+reinterpret a settled response.

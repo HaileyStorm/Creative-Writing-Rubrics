@@ -18,6 +18,10 @@ STUDY_ID = "cwr-guided-revision-gain-v2-live-exec-v6-single-replacement"
 V5_PATH = ROOT / "evaluation-results" / "cwr-guided-revision-gain-v2-live-exec-v5" / "executor.py"
 V5_SHA256 = "42ce0b571c638e9b7883af0706fdff023f6c8805c34a48220d366237dce862a9"
 V5_ROOT = Path(r"C:\Users\Haile\Documents\cwr-revision-gain-v5-live-1e97a19-20260831a")
+V4_PATH = ROOT / "evaluation-results" / "cwr-guided-revision-gain-v2-live-exec-v4" / "executor.py"
+V4_SHA256 = "1f962cd5cb731968e6baef37932c6aebb7c5667c99ea57a59cc7dc52f9f88250"
+V4_ROOT = Path(r"C:\Users\Haile\Documents\cwr-revision-gain-v4-reconcile-1f57ad1-20260830a")
+V4_INVENTORY_SHA256 = "d184f015ef98a59df777eaafbf62ad6f38ad51911654480d7077dd9af45a9773"
 EVENT_ID = "revision-v2-c2-hanna-178-grok-4.6-generic_no_feedback"
 ACK = "2fb371ff82b37fe22d238a223fc030ad7a7bb9a10b672719da081470d25dbe78"
 TERMINAL_FILES = frozenset({"adapter-control.json", "adapter-schema-binding.json", "adapter-stdout-binding.json", "adapter-stdout.raw", "governed-route-proof.json", "launch-intent.json", "live-admission.json", "outbound-payload.json", "payload.json", "prepared-cell.json", "terminal-outcome.json"})
@@ -64,6 +68,32 @@ def _plain(path: Path) -> bytes:
     if os.lstat(path).st_size != before.st_size:
         raise ValueError("V6 replacement artifact changed during read")
     return raw
+
+
+def _json(path: Path, *, label: str) -> Any:
+    raw = _plain(path)
+    try:
+        value = json.loads(raw)
+    except json.JSONDecodeError as error:
+        raise ValueError(f"V6 {label} is not JSON") from error
+    if canonical(value) + b"\n" != raw:
+        raise ValueError(f"V6 {label} is not canonical")
+    return value
+
+
+def _directory(directory: Path, *, expected: set[str], label: str) -> None:
+    info = os.lstat(directory)
+    if (not stat.S_ISDIR(info.st_mode) or stat.S_ISLNK(info.st_mode)
+            or bool(getattr(info, "st_file_attributes", 0) & 0x400)
+            or {path.name for path in directory.iterdir()} != expected):
+        raise ValueError(f"V6 {label} inventory drifted")
+
+
+def _replacement_inventory(root: Path, *, state: str) -> None:
+    expected = PRELAUNCH_FILES if state == "prelaunch" else SETTLED_FILES
+    _directory(root, expected=set(expected), label=f"replacement {state}")
+    for name in expected:
+        _plain(root / name)
 
 
 def _write(path: Path, value: Any) -> None:
@@ -126,10 +156,13 @@ def verify_terminal() -> dict[str, Any]:
 
 
 def contract() -> dict[str, Any]:
-    expected = {"format_version": 1, "study_id": STUDY_ID, "base_commit": "1e97a192e2be50f02917604f7ae8ae247aaf5e06", "base_executor_sha256": V5_SHA256, "v5_root": str(V5_ROOT), "original_event_id": EVENT_ID, "authorized_acknowledgement_sha256": ACK, "dispatch": "one_fresh_replacement_only_after_terminal_verification", "provider_calls_made_by_prepare": 0}
+    expected = {"format_version": 1, "study_id": STUDY_ID, "base_commit": "1e97a192e2be50f02917604f7ae8ae247aaf5e06", "base_executor_sha256": V5_SHA256, "v5_root": str(V5_ROOT), "v4_import": {"source_run_root": str(V4_ROOT), "executor_sha256": V4_SHA256, "inventory_sha256": V4_INVENTORY_SHA256}, "original_event_id": EVENT_ID, "authorized_acknowledgement_sha256": ACK, "dispatch": "one_fresh_replacement_only_after_terminal_verification", "provider_calls_made_by_prepare": 0}
     raw = _plain(HERE / "study-contract.json")
     if canonical(expected) + b"\n" != raw:
         raise ValueError("V6 study contract drifted")
+    if _sha(_plain(V4_PATH)) != V4_SHA256:
+        raise ValueError("V6 pinned V4 executor drifted")
+    _base()._validate_v4_import_root()
     return expected
 
 
@@ -170,23 +203,24 @@ def _safe_target_root(run_root: Path, target_root: Path, source_root: Path) -> P
     return target_root
 
 
-def _validate_run_inventory(run_root: Path, *, adopted: bool) -> None:
+def _validate_run_inventory(run_root: Path, *, adopted: bool, replacement_state: str) -> None:
     expected = {"frozen-inputs.json", "frozen-cwr-question-payload.json", "imports", "carry-forward", "replacement-cells"}
     if adopted:
         expected |= {"adoptions", "descendants"}
-    if {path.name for path in run_root.iterdir()} != expected:
-        raise ValueError("V6 replacement run-root inventory drifted")
+    _directory(run_root, expected=expected, label="replacement run-root")
+    for name in ("imports", "carry-forward", "replacement-cells"):
+        info = os.lstat(run_root / name)
+        if not stat.S_ISDIR(info.st_mode) or stat.S_ISLNK(info.st_mode) or bool(getattr(info, "st_file_attributes", 0) & 0x400):
+            raise ValueError("V6 replacement run-root has an unsafe directory")
+    _plain(run_root / "frozen-inputs.json")
+    _plain(run_root / "frozen-cwr-question-payload.json")
     replacements = run_root / "replacement-cells"
-    if {path.name for path in replacements.iterdir()} != {_replacement_id(run_root)}:
-        raise ValueError("V6 replacement cell inventory drifted")
+    _directory(replacements, expected={_replacement_id(run_root)}, label="replacement cell")
+    _replacement_inventory(replacements / _replacement_id(run_root), state=replacement_state)
     if adopted:
         for directory, filename in (("adoptions", f"{EVENT_ID}.json"), ("descendants", f"{EVENT_ID}.md")):
             root = run_root / directory
-            info = os.lstat(root)
-            if (not stat.S_ISDIR(info.st_mode) or stat.S_ISLNK(info.st_mode)
-                    or bool(getattr(info, "st_file_attributes", 0) & 0x400)
-                    or {path.name for path in root.iterdir()} != {filename}):
-                raise ValueError("V6 replacement adopted inventory drifted")
+            _directory(root, expected={filename}, label="replacement adopted")
             _plain(root / filename)
 
 
@@ -209,6 +243,32 @@ def _prior_native_ids() -> set[str]:
     return ids
 
 
+def _prepared_admission(base: Any, run_root: Path, root: Path, *, state: str) -> tuple[dict[str, Any], bytes, dict[str, Any], dict[str, Any]]:
+    _replacement_inventory(root, state=state)
+    admission = _json(root / "replacement-admission.json", label="replacement admission")
+    prepared = _json(root / "prepared-cell.json", label="prepared cell")
+    if not isinstance(admission, Mapping) or not isinstance(prepared, Mapping):
+        raise ValueError("V6 replacement admission is malformed")
+    schema = base._decorate_adapter_schema(base._REVISION_RESPONSE_SCHEMA)
+    expected_schema = {"format_version": 1, "study_id": STUDY_ID, "kind": "adapter_schema_decoration", "underlying_pilot_response_schema": base._REVISION_RESPONSE_SCHEMA, "underlying_pilot_response_schema_sha256": _sha(canonical(base._REVISION_RESPONSE_SCHEMA)), "adapter_output_schema": schema, "adapter_output_schema_sha256": _sha(canonical(schema))}
+    if (admission.get("prepared") != prepared or prepared.get("event_id") != EVENT_ID
+            or prepared.get("work_root") != str(run_root.resolve()) or prepared.get("provider_model") != "grok-4.6"
+            or prepared.get("reasoning") != "high" or prepared.get("tools_enabled") is not False
+            or _plain(root / "payload.json") != _plain(_terminal_root() / "payload.json")
+            or _json(root / "adapter-schema-binding.json", label="adapter schema") != expected_schema):
+        raise ValueError("V6 replacement prepared payload or settings drifted")
+    outbound_raw = _plain(root / "outbound-payload.json")
+    outbound = _json(root / "outbound-payload.json", label="outbound payload")
+    proof = _json(root / "governed-route-proof.json", label="governed route proof")
+    expected_identity = {"study_id": STUDY_ID, "successor_event_id": _replacement_id(run_root), "logical_sample_id": _sha(canonical({"original_event_id": EVENT_ID, "original_payload_sha256": _sha(_plain(root / "payload.json"))}))}
+    expected_admission = {"format_version": 1, "study_id": STUDY_ID, "kind": "single_replacement_prepared", "replacement_event_id": _replacement_id(run_root), "original_event_id": EVENT_ID, "original_terminal": verify_terminal(), "prepared": prepared, "route_evidence": _commit(run_root, root / "governed-route-proof.json"), "adapter_schema": _commit(run_root, root / "adapter-schema-binding.json"), "original_payload": _commit(V5_ROOT, _terminal_root() / "payload.json"), "original_outbound_payload": _commit(V5_ROOT, _terminal_root() / "outbound-payload.json"), "replacement_payload": _commit(run_root, root / "payload.json"), "outbound_payload": _commit(run_root, root / "outbound-payload.json"), "provider_calls_made": 0, "no_resend": True}
+    if (not isinstance(outbound, Mapping) or outbound.get("identity") != expected_identity
+            or canonical(outbound.get("pilot_payload")) + b"\n" != _plain(root / "payload.json")
+            or admission != expected_admission or not isinstance(proof, Mapping)):
+        raise ValueError("V6 replacement admission or outbound identity drifted")
+    return dict(prepared), outbound_raw, dict(outbound), dict(proof)
+
+
 def _pilot(base: Any):
     """Permit copied V5 authorities only after byte-for-byte source replay."""
     pilot = base._imported_sol_reader(base._pilot())
@@ -218,27 +278,26 @@ def _pilot(base: Any):
         if path.name == "replacement-authority.json":
             root = path.parent
             run_root = root.parent.parent
-            if {child.name for child in root.iterdir()} != SETTLED_FILES:
-                raise ValueError("V6 replacement settled inventory drifted")
-            value = json.loads(_plain(path))
-            prepared = json.loads(_plain(root / "prepared-cell.json"))
-            outbound = _plain(root / "outbound-payload.json")
+            _safe_root(run_root)
+            _replacement_inventory(root, state="settled")
+            prepared, outbound, _outbound, _proof = _prepared_admission(base, run_root, root, state="settled")
+            value = _json(path, label="replacement authority")
             launch_raw = _plain(root / "launch-route-binding.json")
-            launch = json.loads(launch_raw)
+            launch = _json(root / "launch-route-binding.json", label="launch route binding")
             expected_launch = {"format_version": 1, "study_id": STUDY_ID, "kind": "launch_time_route_identity", "prepared": _commit(run_root, root / "prepared-cell.json"), "admission_sha256": _sha(_plain(root / "replacement-admission.json")), "route_evidence": _commit(run_root, root / "governed-route-proof.json"), "adapter_schema": _commit(run_root, root / "adapter-schema-binding.json"), "route": launch.get("route")}
             route = launch.get("route")
-            if (canonical(launch) + b"\n" != launch_raw or launch != expected_launch or not isinstance(route, Mapping)
+            if (launch != expected_launch or not isinstance(route, Mapping)
                     or set(route) != {"model", "reported_model", "reasoning_effort", "grok_command_identity", "subscription_receipt_hash"}
                     or route["model"] != "grok-4.6" or route["reported_model"] != "grok-4.6-build" or route["reasoning_effort"] != "high"):
                 raise ValueError("V6 launch-time route identity drifted")
             stdout = _plain(root / "adapter-stdout.raw")
             control = base._adapter_envelope(stdout)
-            if (json.loads(_plain(root / "adapter-control.json")) != control
-                    or json.loads(_plain(root / "adapter-stdout-binding.json")) != {"format_version": 1, "study_id": STUDY_ID, "kind": "exact_raw_adapter_stdout", "raw_stdout": _commit(run_root, root / "adapter-stdout.raw"), "control": _commit(run_root, root / "adapter-control.json")}):
+            if (canonical(control) + b"\n" != _plain(root / "adapter-control.json")
+                    or _json(root / "adapter-stdout-binding.json", label="adapter stdout binding") != {"format_version": 1, "study_id": STUDY_ID, "kind": "exact_raw_adapter_stdout", "raw_stdout": _commit(run_root, root / "adapter-stdout.raw"), "control": _commit(run_root, root / "adapter-control.json")}):
                 raise ValueError("V6 replacement stdout/control replay drifted")
             actual = base._receipt_from_control(pilot=pilot, root=root, prepared=prepared, route=route, control_raw=stdout, payload_override=outbound)
             expected = {"format_version": 1, "study_id": STUDY_ID, "kind": "v6_wrapper_bound_native_replacement_authority", "original_event_id": EVENT_ID, "replacement_event_id": _replacement_id(run_root), "prepared": _commit(run_root, root / "prepared-cell.json"), "outbound_payload": _commit(run_root, root / "outbound-payload.json"), "launch_route": _commit(run_root, root / "launch-route-binding.json"), "actual_native_receipt": actual}
-            if canonical(value) + b"\n" != _plain(path) or value != expected or expected_event_id != EVENT_ID or expected_phase != "revision_generation":
+            if value != expected or expected_event_id != EVENT_ID or expected_phase != "revision_generation":
                 raise ValueError("V6 replacement authority drifted")
             normalized = dict(actual)
             normalized["transmitted_payload_sha256"] = prepared["payload"]["sha256"]
@@ -366,42 +425,24 @@ def execute_replacement(*, run_root: Path, allow_remote: bool) -> dict[str, Any]
     if allow_remote is not True:
         raise ValueError("V6 requires explicit allow_remote=True")
     run_root = _safe_root(Path(run_root)); base = _base(); pilot = _pilot(base); root = _replacement_root(run_root)
-    _validate_run_inventory(run_root, adopted=False)
+    _validate_run_inventory(run_root, adopted=False, replacement_state="prelaunch")
     if (root / "launch-intent.json").exists() or (root / "terminal-outcome.json").exists() or (root / "replacement-authority.json").exists():
         raise ValueError("V6 replacement is one-shot and cannot resend")
-    if {path.name for path in root.iterdir()} != PRELAUNCH_FILES:
-        raise ValueError("V6 replacement prelaunch inventory drifted")
+    prepared, outbound_raw, _outbound, proof = _prepared_admission(base, run_root, root, state="prelaunch")
     admission_raw = _plain(root / "replacement-admission.json")
-    admission = json.loads(admission_raw)
-    prepared = admission["prepared"]
-    prepared_raw = _plain(root / "prepared-cell.json")
     schema = base._decorate_adapter_schema(base._REVISION_RESPONSE_SCHEMA)
-    expected_schema = {"format_version": 1, "study_id": STUDY_ID, "kind": "adapter_schema_decoration", "underlying_pilot_response_schema": base._REVISION_RESPONSE_SCHEMA, "underlying_pilot_response_schema_sha256": _sha(canonical(base._REVISION_RESPONSE_SCHEMA)), "adapter_output_schema": schema, "adapter_output_schema_sha256": _sha(canonical(schema))}
-    if (canonical(prepared) + b"\n" != prepared_raw or prepared.get("event_id") != EVENT_ID
-            or prepared.get("work_root") != str(run_root.resolve()) or prepared.get("provider_model") != "grok-4.6"
-            or prepared.get("reasoning") != "high" or prepared.get("tools_enabled") is not False
-            or _plain(root / "payload.json") != _plain(_terminal_root() / "payload.json")
-            or json.loads(_plain(root / "adapter-schema-binding.json")) != expected_schema):
-        raise ValueError("V6 replacement prepared payload or settings drifted")
-    outbound_raw = _plain(root / "outbound-payload.json")
-    outbound = json.loads(outbound_raw)
-    expected_identity = {"study_id": STUDY_ID, "successor_event_id": _replacement_id(run_root), "logical_sample_id": _sha(canonical({"original_event_id": EVENT_ID, "original_payload_sha256": _sha(_plain(root / "payload.json"))}))}
-    expected_admission = {"format_version": 1, "study_id": STUDY_ID, "kind": "single_replacement_prepared", "replacement_event_id": _replacement_id(run_root), "original_event_id": EVENT_ID, "original_terminal": verify_terminal(), "prepared": prepared, "route_evidence": _commit(run_root, root / "governed-route-proof.json"), "adapter_schema": _commit(run_root, root / "adapter-schema-binding.json"), "original_payload": _commit(V5_ROOT, _terminal_root() / "payload.json"), "original_outbound_payload": _commit(V5_ROOT, _terminal_root() / "outbound-payload.json"), "replacement_payload": _commit(run_root, root / "payload.json"), "outbound_payload": _commit(run_root, root / "outbound-payload.json"), "provider_calls_made": 0, "no_resend": True}
-    if (canonical(outbound) + b"\n" != outbound_raw or outbound.get("identity") != expected_identity
-            or canonical(outbound.get("pilot_payload")) + b"\n" != _plain(root / "payload.json")
-            or canonical(admission) + b"\n" != admission_raw or admission != expected_admission):
-        raise ValueError("V6 replacement admission or outbound identity drifted")
     pilot._validate_current_prepared(prepared_root=root, prepared=prepared)
-    queue_root = _safe_root(Path(json.loads(_plain(root / "governed-route-proof.json"))["queue_root"]))
+    queue_root = _safe_root(Path(proof["queue_root"]))
     _disjoint(run_root, queue_root, label="work/queue")
     broker, route, current = base._governed_route(pilot, queue_root=queue_root, phase="revision_generation", event_id=EVENT_ID)
-    proof = json.loads(_plain(root / "governed-route-proof.json"))
     if any(proof.get(k) != current.get(k) for k in set(proof) - {"validated_at"}):
         raise ValueError("V6 governed route drifted")
     args = ["--grok-command-json", canonical(route["grok_command"]).decode(), "--model", route["model"], "--reported-model", route["reported_model"], "--reasoning-effort", route["reasoning_effort"], "--output-schema-json", canonical(schema).decode(), "--expected-command-identity-json", canonical(route["grok_command_identity"]).decode(), "--cli-version-command-json", canonical(route["cli_version_command"]).decode(), "--expected-cli-version-identity-json", canonical(route["cli_version_identity"]).decode(), "--expected-cli-version", route["grok_cli_version"], "--subscription-receipt-json", canonical(broker._load_json_artifact(route["subscription_receipt_hash"])).decode(), "--broker-root", str(broker.root), "--timeout-seconds", str(route["timeout_seconds"]), "--nonvisual-max-turns", str(route["nonvisual_max_turns"])]
-    verify_terminal(); contract(); prior_ids = _prior_native_ids()
-    if _plain(root / "outbound-payload.json") != outbound_raw:
-        raise ValueError("V6 replacement outbound bytes changed before launch")
+    prior_ids = _prior_native_ids()
+    verify_terminal(); contract()
+    prepared, replay_outbound, _outbound, replay_proof = _prepared_admission(base, run_root, root, state="prelaunch")
+    if replay_outbound != outbound_raw or replay_proof != proof:
+        raise ValueError("V6 replacement admission changed before launch")
     launch_route = {"format_version": 1, "study_id": STUDY_ID, "kind": "launch_time_route_identity", "prepared": _commit(run_root, root / "prepared-cell.json"), "admission_sha256": _sha(admission_raw), "route_evidence": _commit(run_root, root / "governed-route-proof.json"), "adapter_schema": _commit(run_root, root / "adapter-schema-binding.json"), "route": {"model": route["model"], "reported_model": route["reported_model"], "reasoning_effort": route["reasoning_effort"], "grok_command_identity": route["grok_command_identity"], "subscription_receipt_hash": route["subscription_receipt_hash"]}}
     _write(root / "launch-route-binding.json", launch_route)
     pilot.begin_one_launch(prepared_root=root)
@@ -429,7 +470,7 @@ def execute_replacement(*, run_root: Path, allow_remote: bool) -> dict[str, Any]
 
 def adopt_original_event(*, run_root: Path) -> dict[str, Any]:
     run_root = _safe_root(Path(run_root)); base = _base(); pilot = _pilot(base); root = _replacement_root(run_root)
-    _validate_run_inventory(run_root, adopted=False)
+    verify_terminal(); contract(); _validate_run_inventory(run_root, adopted=False, replacement_state="settled")
     if (root / "terminal-outcome.json").exists():
         raise ValueError("V6 cannot adopt an ambiguous replacement")
     verified = pilot._read_verified_receipt(root / "replacement-authority.json", expected_event_id=EVENT_ID, expected_phase="revision_generation")
@@ -448,7 +489,7 @@ def adopt_original_event(*, run_root: Path) -> dict[str, Any]:
 
 
 def validate_full_lineage(*, run_root: Path) -> dict[str, Any]:
-    run_root = _safe_root(Path(run_root)); _validate_run_inventory(run_root, adopted=True); base = _base(); pilot = _pilot(base); records = _carry_records(base, run_root)
+    run_root = _safe_root(Path(run_root)); verify_terminal(); contract(); _validate_run_inventory(run_root, adopted=True, replacement_state="settled"); base = _base(); pilot = _pilot(base); records = _carry_records(base, run_root)
     raw = _plain(Path(run_root) / "adoptions" / f"{EVENT_ID}.json")
     adoption = json.loads(raw)
     record = adoption.get("record")
