@@ -20,6 +20,8 @@ The strongest public evidence is deliberately bounded:
 - The [Gray Blood full-book V9 aggregate](evaluation-results/hbq-gray-blood-full-book-qpc24-rebaseline-v9-public-result-v1/) is a settled full-fidelity aggregate for a work-in-progress manuscript, with no sampling: author-original `63.0202` (8 units / 1,817 positions) versus the explicitly labeled GPT-5.6 Pro rewrite `73.2369` (7 units / 1,589 positions), a difference of `+10.2167`. The non-statistical result is diagnostic for this rubric, scope, and frozen design, not a general ranking.
 - The primary [Fresh88 generated-only HANNA analysis](evaluation-results/hbq-human-alignment-v3-fresh88-overlap-analysis-v1/) is negative: across 80 generated stories, final-score Spearman was `-0.0441` and the six-dimension macro was `-0.0361`. Current evidence does not demonstrate human-reference alignment.
 - A [four-cell Sol descriptive follow-up](evaluation-results/hbq-human-alignment-optimizer-v5-grok-descriptive-sol-validation-result-v1/) on two development prompt groups observed equal-group MAE `0.9236111111111112` for `candidate-102cc7f06c9a99a7` and `0.788888888888889` for `candidate-69720ac6257db007` (`-0.1347222222222222`, a `14.586466165413528%` relative reduction). Its local Codex lifecycle does not prove native endpoint contact cardinality; it is neither selection nor confirmation evidence, does not establish general HANNA alignment, and does not pool endpoints or grant promotion/runtime authority.
+- The [next-wave Grok HANNA development result](evaluation-results/hbq-human-alignment-optimizer-v5-f20-nextwave-grok-score-result-v1/) covers three frozen development prompt groups and 33 cells: baseline equal-group MAE `0.9259259259259259` versus `0.75` for `normalized-nextwave-08-conservative-hybrid` (a `-0.17592592592592593`, `19%` reduction). Its [development-only optimizer readout](evaluation-results/hbq-human-alignment-optimizer-v5-f20-nextwave-development-optimizer-v1/) completed all `198/198` Optuna `4.9.0` grid trials; DSPy `3.3.1` validated 11 frozen evidence examples and signatures with zero LM calls. Candidate 08 won all 18 low-penalty settings, while strong robustness penalties flip to candidate 04. This is Grok-only development evidence with unproven native contact cardinality: it grants no selection authority beyond that provisional development ranking, has no Sol validation or confirmation, and does not establish general alignment, pool endpoints, permit promotion, or grant runtime authority.
+- The [CWR-guided revision V8 result](evaluation-results/cwr-guided-revision-gain-v2-live-exec-v8-crlf-replay-result-v1/) independently recomputes 40 endpoint judgments, including 16 guided-control and 32 arm-baseline comparisons. Every guided-control comparison was positive: mean holistic/compact differences were `+2.25`/`+2.25` for Sol and `+1.75`/`+1.50` for Grok. Endpoints remain separate; Sol contact cardinality is unproven, local-only replay depends on exact V6 inputs, and the result makes no provider-ranking or generalization claim.
 
 ![Five-run native-scale score distributions](evaluation-results/the-part-that-arrives-first-repeatability/established-v4/results/score-distributions.svg)
 
@@ -113,20 +115,11 @@ pretending they have answers yet:
   a narrow matched-verdict agreement question, not declare judge
   interchangeability or literary quality.
 - [CWR-guided revision gain](evaluation-results/cwr-guided-revision-gain-v1/)
-  is a provider-free, pre-execution design for testing guided versus matched
-  generic revision with blinded, non-CWR endpoint measures. It makes no
-  revision-gain claim until independently measured outcomes exist.
-  The reviewed [lean v2 pilot](evaluation-results/cwr-guided-revision-gain-v2-lean-pilot/)
-  narrows execution to two immutable sources, eight Grok revision cells, four
-  Sol CWR-feedback cells, and forty unchanged blinded Sol/Grok endpoint cells
-  (52 contacts total). The versioned [live executor v3](evaluation-results/cwr-guided-revision-gain-v2-live-exec-v3/)
-  now carries the repaired schema, identity, and reconciliation boundary. The
-  current immutable continuation has two settled and ingested Sol feedback
-  cells; they remain local-lifecycle evidence with native endpoint/contact
-  cardinality unproven. Four Grok revision outputs reached terminal
-  `reconcile_required` on a static-versus-ephemeral identity mismatch; none was
-  resent, and a versioned repair is in progress. No revision-gain result is
-  claimed yet.
+  remains the provider-free study design for blinded, non-CWR endpoint
+  measures. The reviewed [lean v2 pilot](evaluation-results/cwr-guided-revision-gain-v2-lean-pilot/)
+  and [live executor v3](evaluation-results/cwr-guided-revision-gain-v2-live-exec-v3/)
+  preserve the earlier repaired schema, identity, reconciliation, and terminal
+  provenance; the current endpoint result is summarized above.
 - The [HANNA v5 mixed-provenance shrinkage evaluator](evaluation-results/hbq-human-alignment-optimizer-v5-balanced-dspy-mixed-provenance-shrinkage-eval-v1/)
   completed its Grok-primary development collection: 33 logical cells reduced
   to 30 unique, tool-free Grok payloads across ten effective candidates; three
