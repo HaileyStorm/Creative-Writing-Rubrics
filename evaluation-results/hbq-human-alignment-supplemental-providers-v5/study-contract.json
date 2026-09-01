@@ -1,0 +1,8 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-human-alignment-supplemental-providers-v5",
+  "purpose": "Executable, tool-free successor to the provider-free v4 compatibility snapshot. It freezes three exact first-eight-question cells from v4 before contact and preserves sealed current Nous evidence as provisional breadth only.",
+  "provider": {"provider": "nous", "model": "deepseek/deepseek-v4-flash-0731", "reasoning": "max", "tools_enabled": false},
+  "execution_policy": {"cells": 3, "workers": 1, "batch_size": 8, "batch_attempts": 1, "max_physical_http_attempts_per_logical_request": 1, "timeout_seconds": 600, "maximum_completion_seconds_exclusive": 100},
+  "limits": ["Every cell is a fresh root.", "The callback writes one launch intent after revalidating the prepared root, current runtime, route proof, source bytes, prompt bytes, task-contract bytes, schedule, and schema.", "Any exception after launch intent is terminal reconcile_required; no in-place resend is available.", "A completion is always PROVISIONAL_BREADTH_ONLY, including when the sealed bridge evidence is valid."]
+}
