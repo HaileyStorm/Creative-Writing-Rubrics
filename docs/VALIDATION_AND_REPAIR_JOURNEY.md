@@ -287,6 +287,15 @@ pooling result. The lower-step continuation is therefore a development lead
 for the next endpoint-separated check, not evidence that the public profile
 should change.
 
+The endpoint-separated Sol check then reversed that lower-step preference.
+Across the same seven development groups, the referent-resolution child was
+**3.73% worse than its descendant-13 parent** under Sol, although it remained
+**7.27% better than the original baseline**. The result therefore identifies a
+Grok-specific incremental improvement rather than a general replacement for
+descendant 13. The Sol run completed 21 local lifecycles without resend; native
+endpoint-contact cardinality remains unproven, and the comparison does not pool
+judges or reopen confirmation.
+
 ## Negative evidence changed the operating model
 
 The most productive progress did not always look like a new wording change.
