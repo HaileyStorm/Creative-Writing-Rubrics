@@ -3,6 +3,7 @@ from __future__ import annotations
 import ast
 import base64
 import importlib.util
+import json
 import sys
 import threading
 import time
@@ -15,6 +16,7 @@ ROOT = Path(__file__).resolve().parents[1]
 PACKAGE = ROOT / "evaluation-results" / "hbq-human-alignment-optimizer-v6-desc15-referent-sol-veto-exec-v1"
 DOCUMENTS = Path(r"C:\Users\Haile\Documents")
 GROK_ROOT = DOCUMENTS / "cwr-desc15-referent-grok-eebf740-20260831a"
+LIVE_SOL_ROOT = DOCUMENTS / "cwr-desc15-referent-sol-veto-a435881-20260831a"
 
 
 def module():
@@ -217,7 +219,12 @@ def test_wave_uses_at_most_ten_codex_lanes(monkeypatch, tmp_path: Path):
     guard = threading.Lock()
     monkeypatch.setattr(value, "validate_package", dict)
     monkeypatch.setattr(value, "_resolve", lambda **_kwargs: {"rows": rows, "bindings": {}, "schedule": {}})
-    monkeypatch.setattr(value, "_configured_base", lambda _resolution: SimpleNamespace())
+    class Base:
+        @staticmethod
+        def _inventory(_path, *, completed=False):
+            assert completed is True
+
+    monkeypatch.setattr(value, "_configured_base", lambda _resolution: Base())
     monkeypatch.setattr(value, "_prepared_inventory", lambda *_args: None)
     monkeypatch.setattr(value, "_terminal_state", lambda *_args: False)
     monkeypatch.setattr(value, "_locks", lambda _root: tmp_path / "locks")
@@ -321,6 +328,71 @@ def test_finalize_uses_completed_inventory_and_writes_replayable_collector(monke
     assert persisted["parent_sol_reference"] == parent
 
 
+def test_live_codex_reported_shape_is_semantically_bound():
+    value = module()
+    projection = {"thread_id": "thread-1"}
+    identity = {
+        "provider": "openai_codex",
+        "provider_reported_model": None,
+        "reasoning_attested": False,
+        "session_id": "local-codex-thread-session:thread-1",
+    }
+    settings = {
+        "provider_attested": False,
+        "local_effective_reasoning_effort": "high",
+    }
+    record = {
+        "command": ["codex"],
+        "provider_artifacts": {},
+        "reported": {"model": None, "provider": None, "reasoning_effort": None, "session_id": None},
+    }
+    assert value._validated_reported_record(
+        record,
+        identity=identity,
+        settings=settings,
+        projection=projection,
+    ) == record["reported"]
+    for field, forged in (
+        ("model", "gpt-5.6-sol"),
+        ("provider", "openai_codex"),
+        ("reasoning_effort", "high"),
+        ("session_id", "unrelated-session"),
+    ):
+        mutated = json.loads(json.dumps(record))
+        mutated["reported"][field] = forged
+        with pytest.raises(ValueError):
+            value._validated_reported_record(
+                mutated,
+                identity=identity,
+                settings=settings,
+                projection=projection,
+            )
+
+
+def test_live_39_cell_root_finalizes_and_replays_provider_free_without_mutation(tmp_path: Path):
+    if not LIVE_SOL_ROOT.is_dir():
+        pytest.skip("opt-in immutable live Sol evidence is unavailable")
+    value = module()
+    before = value._tree_commitment(LIVE_SOL_ROOT)
+    collector = tmp_path / "collector.json"
+    finalized = value.finalize_collector(
+        output_root=LIVE_SOL_ROOT,
+        collector_output=collector,
+        authorization_acknowledgement_sha256="2fb371ff82b37fe22d238a223fc030ad7a7bb9a10b672719da081470d25dbe78",
+        **real_inputs(),
+    )
+    assert finalized["cells"] == finalized["process_launches"] == 39
+    assert finalized["provider_calls_made"] is None
+    replayed = value.replay_collector(
+        output_root=LIVE_SOL_ROOT,
+        collector_path=collector,
+        **real_inputs(),
+    )
+    assert replayed["cells"] == replayed["process_launches"] == 39
+    assert replayed["native_endpoint_contact_cardinality"] == "unproven"
+    assert value._tree_commitment(LIVE_SOL_ROOT) == before
+
+
 def test_collector_replay_rejects_forged_response_even_with_matching_hash(monkeypatch, tmp_path: Path):
     value = module()
     rows = fake_rows(value)
@@ -357,7 +429,13 @@ def test_collector_replay_rejects_forged_response_even_with_matching_hash(monkey
         "result_file_sha256": value.PARENT_SOL_RESULT_SHA256,
     }
     monkeypatch.setattr(value, "_resolve", lambda **_kwargs: {"rows": rows, "parent_sol_reference": parent})
-    monkeypatch.setattr(value, "_configured_base", lambda _resolution: SimpleNamespace())
+
+    class Base:
+        @staticmethod
+        def _inventory(_path, *, completed=False):
+            assert completed is True
+
+    monkeypatch.setattr(value, "_configured_base", lambda _resolution: Base())
     monkeypatch.setattr(value, "sol_v4", lambda: SimpleNamespace())
     monkeypatch.setattr(value, "_admit_completed_cell", admitted)
     cells = []
@@ -394,17 +472,21 @@ def test_collector_replay_rejects_forged_response_even_with_matching_hash(monkey
         "process_launches": 39,
     }
     path = tmp_path / "collector.json"
+    output = tmp_path / "output"
+    output.mkdir()
+    for row in rows:
+        (output / row["cell_id"]).mkdir()
     path.write_bytes(value.canonical(collector))
-    replayed = value.replay_collector(output_root=tmp_path, collector_path=path)
+    replayed = value.replay_collector(output_root=output, collector_path=path)
     assert replayed["cells"] == replayed["process_launches"] == 39
     collector["format_version"] = 2
     path.write_bytes(value.canonical(collector))
     with pytest.raises(ValueError, match="collector drifted"):
-        value.replay_collector(output_root=tmp_path, collector_path=path)
+        value.replay_collector(output_root=output, collector_path=path)
     collector["format_version"] = 1
     forged = value.canonical({"forged": True})
     collector["cells"][0]["final_response_base64"] = base64.b64encode(forged).decode("ascii")
     collector["cells"][0]["final_response_sha256"] = value.sha256(forged)
     path.write_bytes(value.canonical(collector))
     with pytest.raises(ValueError, match="persisted Sol receipt"):
-        value.replay_collector(output_root=tmp_path, collector_path=path)
+        value.replay_collector(output_root=output, collector_path=path)

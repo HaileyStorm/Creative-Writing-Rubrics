@@ -668,6 +668,43 @@ def execute_wave(
             locks.rmdir()
 
 
+def _validated_reported_record(
+    record: Mapping[str, Any],
+    *,
+    identity: Mapping[str, Any],
+    settings: Mapping[str, Any],
+    projection: Mapping[str, Any],
+) -> dict[str, Any]:
+    if set(record) != {"command", "provider_artifacts", "reported"}:
+        raise ValueError("Codex record field set drifted")
+    reported = record.get("reported")
+    required = {"model", "provider", "reasoning_effort", "session_id"}
+    if not isinstance(reported, Mapping) or set(reported) != required:
+        raise ValueError("Codex reported identity field set drifted")
+    if any(value is not None and (not isinstance(value, str) or not value) for value in reported.values()):
+        raise ValueError("Codex reported identity value is invalid")
+    provider_attested = settings.get("provider_attested")
+    if type(provider_attested) is not bool:
+        raise TypeError("Codex provider attestation flag is invalid")
+    if not provider_attested and any(reported[key] is not None for key in ("model", "provider", "reasoning_effort")):
+        raise ValueError("Codex record claims unattested provider identity")
+    if reported["model"] != identity.get("provider_reported_model"):
+        raise ValueError("Codex reported model differs from lifecycle identity")
+    reasoning_attested = identity.get("reasoning_attested")
+    if (
+        type(reasoning_attested) is not bool
+        or (reported["reasoning_effort"] is None) != (reasoning_attested is False)
+        or (reported["reasoning_effort"] is not None and reported["reasoning_effort"] != settings.get("local_effective_reasoning_effort"))
+    ):
+        raise ValueError("Codex reported reasoning differs from lifecycle identity")
+    if reported["provider"] is not None and reported["provider"] != identity.get("provider"):
+        raise ValueError("Codex reported provider differs from lifecycle identity")
+    allowed_sessions = {None, projection.get("thread_id"), identity.get("session_id")}
+    if reported["session_id"] not in allowed_sessions:
+        raise ValueError("Codex reported session differs from event/receipt identity")
+    return dict(reported)
+
+
 def _admit_completed_cell(
     base: ModuleType,
     v4: ModuleType,
@@ -765,6 +802,7 @@ def _admit_completed_cell(
         "identity": expected_identity,
         "human_score_projection": answer,
     }
+    reported = _validated_reported_record(record, identity=identity, settings=settings, projection=projection)
     identity_key = (identity.get("thread_id"), identity.get("session_id"), identity.get("contact_id"))
     if (
         any(base.stable(root / name) != raw for name, raw in expected.items())
@@ -776,7 +814,7 @@ def _admit_completed_cell(
         or sha256(payload) != row["payload_sha256"]
         or prepared.get("cell") != row
         or settings != expected_settings
-        or record != expected_record
+        or record != {**expected_record, "reported": reported}
         or receipt != expected_receipt
         or final != base.stable(root / "responses" / "batch-0001.attempt-0001.message.json")
         or response_events != events
@@ -876,10 +914,12 @@ def replay_collector(
     **inputs: Any,
 ) -> dict[str, Any]:
     validate_package()
+    _disjoint(Path(collector_path), HERE, REPO, Path(output_root), *(Path(value) for value in inputs.values()))
     resolution = _resolve(**inputs)
     base = _configured_base(resolution)
     v4 = sol_v4()
     rows = resolution["rows"]
+    _prepared_inventory(base, Path(output_root), rows, completed=True)
     collector = strict(stable(Path(collector_path)), "Sol veto collector")
     expected_keys = {
         "format_version", "study_id", "kind", "authorization_acknowledgement_sha256",
