@@ -307,6 +307,22 @@ select a successor. This negative extension narrowed the next wave: retain
 descendant 13 and test three smaller referent clauses across all 13 existing
 development items, with confirmation and Fresh96 still closed.
 
+That narrower [Grok wave](../evaluation-results/hbq-human-alignment-optimizer-v6-desc15-referent-grok-result-v1/README.md)
+completed all **52 development cells**: descendant 13 plus three one-clause
+referent children across 13 items and seven equal-weight prompt groups. All
+responses reported complete dimension coverage. Descendant
+13 scored **0.8552 MAE**; the construct-framing child scored **0.8492**
+(**0.70% lower**), the missing-evidence child **0.8294** (**3.02% lower**), and
+the scope-materiality child **0.8373** (**2.09% lower**). A provider-free
+replay reran the frozen 24-trial Optuna grid and constructed four zero-LM DSPy
+evidence examples. Every child remained no worse than its parent in all six
+robustness settings, so all three were frozen before Sol. This is the strongest
+Grok development lead among the smaller referent edits, especially for the
+missing-evidence clause, but it is not yet a cross-model result: Sol is pending
+and may only veto, while confirmation, promotion, and runtime use remain
+closed. The 52 local lifecycle receipts are complete; native endpoint-contact
+cardinality remains unproven.
+
 ## Negative evidence changed the operating model
 
 The most productive progress did not always look like a new wording change.
