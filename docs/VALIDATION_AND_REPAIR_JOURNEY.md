@@ -431,3 +431,24 @@ result into a default quality hierarchy. What they do provide is a more useful
 starting point for the next decision: a public rubric system that remembers
 which assumptions failed, preserves the negative evidence, and changes only
 when a smaller claim has genuinely earned it.
+
+## HANNA: a promising cross-model checkpoint, then a smaller next step
+
+The first meaningful Fresh88 confirmation checkpoint held on the untouched
+split: Grok reduced MAE by **25.41%** and Sol independently reduced it by
+**12.81%**. That was the evidence worth pursuing—not a reason to declare the
+alignment problem solved. The subsequent work stayed on the development split
+and kept endpoints separate so that a fast Grok iteration could become a Sol
+veto question rather than a pooled score.
+
+The new desc16 Grok replay made the next improvement smaller and more legible.
+Against the freshly re-evaluated desc15 child-20 parent in the same 52-cell,
+13-item, seven-group wave (MAE **0.8532**), the contradiction-threshold child
+reached **0.8254** (**3.26% lower**) and the dimension-isolation child reached
+**0.8175** (**4.19% lower**). The local-antecedent child reached **0.8730** and
+was rejected. Both surviving children passed all six frozen robustness
+settings; a replayed 24-trial Optuna grid and four zero-LM DSPy evidence
+examples froze them before Sol. This is useful movement, not a confirmation
+result: Sol has not yet vetoed or retained either child, confirmation remains
+unopened, no endpoint scores are pooled, and the 52 lifecycle receipts do not
+prove native endpoint-contact cardinality.
