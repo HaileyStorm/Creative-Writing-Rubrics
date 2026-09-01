@@ -452,3 +452,18 @@ examples froze them before Sol. This is useful movement, not a confirmation
 result: Sol has not yet vetoed or retained either child, confirmation remains
 unopened, no endpoint scores are pooled, and the 52 lifecycle receipts do not
 prove native endpoint-contact cardinality.
+
+The [matched desc16 Sol veto](../evaluation-results/hbq-human-alignment-optimizer-v7-desc16-referent-evidence-sol-veto-result-v1/README.md)
+closed that small development branch cleanly. Neither Grok qualifier beat the
+exact Sol child-20 parent (**1.0101 MAE**): contradiction-threshold was
+**1.0188** (0.86% higher) and dimension-isolation **1.0409** (3.04% higher).
+The former also carried one false Empathy-coverage flag, so it could not supply
+clean positive Sol evidence even apart from its higher error. Both were vetoed;
+child20 remains the retained development profile and Sol introduced no favored
+replacement. This is a useful negative check on a promising Grok direction,
+not a reversal of the earlier Fresh88 confirmation checkpoint: that untouched
+split still recorded the separate **25.41% Grok** and **12.81% Sol** reductions.
+The endpoint metrics are not pooled, confirmation stays unopened, and there is
+still no promotion, runtime, or generalization claim. All 26 local Sol
+lifecycle receipts replayed, while native endpoint-contact cardinality remains
+unproven.
