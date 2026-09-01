@@ -467,3 +467,32 @@ The endpoint metrics are not pooled, confirmation stays unopened, and there is
 still no promotion, runtime, or generalization claim. All 26 local Sol
 lifecycle receipts replayed, while native endpoint-contact cardinality remains
 unproven.
+
+## Revision-gain V9 and desc17: a useful negative branch
+
+The compact CWR revision-gain **V9** historical replay, pushed at `443ac69`,
+recovered the current-checkout path without remaking a provider call. It keeps
+the endpoint results separate: the declared Sol measures were **+2.25/+2.25**
+and the declared Grok measures **+1.75/+1.50**. That is historical development
+evidence, not a pooled provider ranking, a promotion, or a general claim; Sol
+native endpoint-contact cardinality remains unproven.
+
+The next HANNA question deliberately broadened the surviving child-20 wording.
+The first ten-lane desc17 root completed 51 cells and left one terminal cell.
+Review found a collector-format gap and the hardened executor was pushed at
+`69e7a40`; a separately prepared zero-contact `b` root was never launched.
+The hardened ten-lane `c` root then completed 49 cells and left three terminal
+cells. Those partial roots are preserved as operational evidence only. The
+sequential one-cell `d` root completed all **52 of 52** cells and alone supplies
+the result.
+
+That result is cleanly negative. Against the same refreshed child-20 parent
+(**1.0433 MAE**), the six-slot evidence ledger reached **1.3389**, the
+clean-room framing **1.1746**, and the full-scale framing **1.1052**. All three
+were worse on raw MAE and in every one of the six frozen robustness settings;
+the ledger and full-scale variants also had incomplete coverage. No candidate
+qualified, the parent was retained, and Sol made **zero** calls. The replay
+uses 24 development-only Optuna trials and four zero-LM DSPy evidence examples.
+It opens no confirmation, promotion, runtime, pooled-endpoint, or
+generalization claim, and the 52 local lifecycle receipts still do not prove
+native endpoint-contact cardinality.
