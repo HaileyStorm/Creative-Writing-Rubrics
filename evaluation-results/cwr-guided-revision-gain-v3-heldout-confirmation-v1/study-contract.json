@@ -1,0 +1,35 @@
+{
+  "format_version": 1,
+  "study_id": "cwr-guided-revision-gain-v3-heldout-confirmation-v1",
+  "predecessors": {
+    "v1_contract": {"path": "evaluation-results/cwr-guided-revision-gain-v1/study-contract.json", "sha256": "035f946ebaaf9211b6b0933473dd09ce204713518a409b4b6d2bc9578c8480ab"},
+    "v2_assets": {
+      "revision_instruction": {"path": "evaluation-results/cwr-guided-revision-gain-v2-lean-pilot/revision-instruction.md", "sha256": "edbd7e178e5c7c65f1ec8866c423d8baf52d882610efbb173365793e55737da7"},
+      "cwr_feedback": {"path": "evaluation-results/cwr-guided-revision-gain-v2-lean-pilot/cwr-feedback.prompt.md", "sha256": "4bb001fb7b8d3496744e4fc258c1c4bb1beb62fc2f742b1f62923b3642142f4d"},
+      "cwr_feedback_schema": {"path": "evaluation-results/cwr-guided-revision-gain-v2-lean-pilot/cwr-feedback.schema.json", "sha256": "5a6aa2765f0f5fb6081d14b484370bf0da403ac11cc77434a941cfacb6521ad1"},
+      "holistic": {"path": "evaluation-results/cwr-guided-revision-gain-v2-lean-pilot/holistic.prompt.md", "sha256": "96893ebc4ec0fbae33f621559d46ab79e1fda61c61c8bfdf837bb9fd5eb55e44"},
+      "compact": {"path": "evaluation-results/cwr-guided-revision-gain-v2-lean-pilot/compact.prompt.md", "sha256": "1fa3e54b4ffaf4508d91d7852a7501e698bc039a87fdadc7951b53cf45b6714a"},
+      "score_schema": {"path": "evaluation-results/cwr-guided-revision-gain-v2-lean-pilot/score.schema.json", "sha256": "341eafa1feb4eb35126ad8b3b5c26fa5a0d69ecd589075f9c07ad1290671d1ab"}
+    }
+  },
+  "sources": {
+    "source_root_layout": "inputs/<item-id>/{source.md,prompt.md}",
+    "items": {
+      "hanna-594": {"source.md": {"bytes": 1224, "sha256": "1ac8b69bb3f547425e3a02270ed168040b15554f37859f5beaf84fdc7d8042ba"}, "prompt.md": {"bytes": 137, "sha256": "6b7fff0c3794370cee85bf2f63a80d3efc87e72e006254c048ddd37147e34025"}},
+      "hanna-731": {"source.md": {"bytes": 1750, "sha256": "92b20bdd4bc34ed3c89a48918d7ce6475f85af87b7aa652b61f0d3adac10a26d"}, "prompt.md": {"bytes": 29, "sha256": "2c4f2e59857191f6cdfdde6936dc633d61f7d6e29b7f486f557d6d1068498541"}},
+      "hanna-817": {"source.md": {"bytes": 499, "sha256": "62f66a845d4bf5f4bc0d2c9c8c15aa67b5ef88776793baed483ecce64052972c"}, "prompt.md": {"bytes": 185, "sha256": "f88bef9d00608441ac76b289ea3dc71c0f2a3989f4a6a205deb9c2e9c350b4ff"}},
+      "hanna-907": {"source.md": {"bytes": 350, "sha256": "2c5ba1624e7e370d39e9c51f838da9fa3f27d1f5c5cb647db9da18f45e9783fc"}, "prompt.md": {"bytes": 194, "sha256": "3286f1e85780066d24b6c48f7db645648dcea6e25736248a38bcae8c414802ab"}}
+    }
+  },
+  "routes": {
+    "generator": {"destination": "xai_grok_build_subscription", "model": "grok-4.6", "reasoning": "high", "tools_enabled": false, "paid_api": false},
+    "cwr_feedback": {"destination": "codex", "model": "gpt-5.6-sol", "reasoning": "high", "tools_enabled": false, "paid_api": false},
+    "judges": {
+      "gpt-5.6-sol-high": {"destination": "codex", "model": "gpt-5.6-sol", "reasoning": "high", "tools_enabled": false, "paid_api": false},
+      "grok-4.6-high": {"destination": "xai_grok_build_subscription", "model": "grok-4.6", "reasoning": "high", "tools_enabled": false, "paid_api": false}
+    }
+  },
+  "design": {"cycles": 1, "arms": ["cwr_guided", "generic_no_feedback"], "adaptive_repeats": false, "best_of_n": false, "tuning": false, "source_policy": "immutable_versioned_descendants_only", "endpoint_policy": "blinded_receipt_only_separate_endpoints_no_pooling"},
+  "geometry": {"sources": 4, "revision_descendants": 8, "source_baselines": 4, "blind_targets": 12, "endpoint_cells": 48},
+  "execution_status": "NO_GO_no_disclosure_route_prepared_record_or_native_receipt_executor"
+}
