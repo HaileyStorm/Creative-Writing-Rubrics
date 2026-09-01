@@ -1,0 +1,47 @@
+{
+  "adapter_request_manifest_only": true,
+  "cells": [
+    {
+      "assets": {
+        "context": {"base64": "eyJleGNlcnB0IjoiQSBsYW1wIGZsaWNrZXJlZCBvdmVyIHRoZSBlbXB0eSBzdGF0aW9uLiIsInNvdXJjZV9jbGFzcyI6InB1YmxpY19zeW50aGV0aWNfaW1tdXRhYmxlIiwic291cmNlX3JldmlzaW9uIjoiZmxhc2gtbmV4dC1wb3J0YWJpbGl0eS1maXh0dXJlLXNvdXJjZS12MSJ9Cg==", "bytes": 160, "sha256": "dff26bb30bb29532f24bac45c1df053844e576d212ecfd8df9dddb1849d9b1c0"},
+        "prompt": {"base64": "R2VuZXJhdGUgYSBjb25jaXNlIGNvbnRpbnVhdGlvbiBvZiB0aGUgcHVibGljLXN5bnRoZXRpYyBleGNlcnB0LiBSZXR1cm4gb25seSB0aGUgcmVxdWVzdGVkIEpTT04gb2JqZWN0Lg==", "bytes": 103, "sha256": "0bedd69587cfa924fd2ab9a3678f11d19ea2d5b8435c9b3813975e361d0008cb"},
+        "sampler": {"base64": "eyJtYXhfb3V0cHV0X3Rva2VucyI6MTIwLCJzZWVkIjoxNywidGVtcGVyYXR1cmUiOjB9Cg==", "bytes": 52, "sha256": "69e9d79b2f3d269983cdd17f36d3a700589d1c8ab94745042428a1dfd07818f5"},
+        "schema": {"base64": "eyJhZGRpdGlvbmFsUHJvcGVydGllcyI6ZmFsc2UsInByb3BlcnRpZXMiOnsidGV4dCI6eyJ0eXBlIjoic3RyaW5nIn19LCJyZXF1aXJlZCI6WyJ0ZXh0Il0sInR5cGUiOiJvYmplY3QifQo=", "bytes": 107, "sha256": "6e38cca2dedb77b783958f9887cce05f694bd67314589eccf3c831e765af2905"}
+      },
+      "cell_id": "flash-next-generation-representative-v1",
+      "operation": "generation",
+      "outbound_payload_base64": "eyJjZWxsX2lkIjoiZmxhc2gtbmV4dC1nZW5lcmF0aW9uLXJlcHJlc2VudGF0aXZlLXYxIiwiY29udGV4dF9zaGEyNTYiOiJkZmYyNmJiMzBiYjI5NTMyZjI0YmFjNDVjMWRmMDUzODQ0ZTU3NmQyMTJlY2ZkOGRmOWRkZGIxODQ5ZDliMWMwIiwiZm9ybWF0X3ZlcnNpb24iOjEsIm9wZXJhdGlvbiI6ImdlbmVyYXRpb24iLCJwcm9tcHRfc2hhMjU2IjoiMGJlZGQ2OTU4N2NmYTkyNGZkMmFiOWEzNjc4ZjExZDE5ZWEyZDViODQzNWM5YjM4MTM5NzVlMzYxZDAwMDhjYiIsInJlcXVlc3RlZF9tb2RlbCI6ImZsYXNoLW5leHQiLCJyZXNwb25zZV9lbnZlbG9wZV9zY2hlbWEiOiJmbGFzaC1uZXh0LWZpeHR1cmUtZW52ZWxvcGUtdjEiLCJzYW1wbGVyX3NoYTI1NiI6IjY5ZTlkNzliMmYzZDI2OTk4M2NkZDE3ZjM2ZDNhNzAwNTg5ZDFjOGFiOTQ3NDUwNDI0MjhhMWRmZDA3ODE4ZjUiLCJzY2hlbWFfc2hhMjU2IjoiNmUzOGNjYTJkZWRiNzdiNzgzOTU4Zjk4ODdjY2UwNWY2OTRiZDY3MzE0NTg5ZWNjZjNjODMxZTc2NWFmMjkwNSIsInNvdXJjZV9jbGFzcyI6InB1YmxpY19zeW50aGV0aWNfaW1tdXRhYmxlIiwic3R1ZHlfaWQiOiJoYnEtc3VwcGxlbWVudGFsLXByb3ZpZGVycy1mbGFzaC1uZXh0LWV4ZWN1dGlvbi1jb250cmFjdC12MSJ9Cg==",
+      "outbound_payload_sha256": "9e56c3c64baa78838a2f869f98562c9a2ad8743708cb94cd21e43ef34b26280e"
+    },
+    {
+      "assets": {
+        "context": {"base64": "eyJleGNlcnB0IjoiVGhlIHRyYWluIGxlZnQgd2l0aG91dCBpdHMgcGFzc2VuZ2Vycy4iLCJzb3VyY2VfY2xhc3MiOiJwdWJsaWNfc3ludGhldGljX2ltbXV0YWJsZSIsInNvdXJjZV9yZXZpc2lvbiI6ImZsYXNoLW5leHQtcG9ydGFiaWxpdHktZml4dHVyZS1zb3VyY2UtdjEifQo=", "bytes": 158, "sha256": "4a05c36fbaae2bee1646e216040e95522f85efd4b3ec0cd8817ded553a34c41e"},
+        "prompt": {"base64": "SnVkZ2UgdGhlIHB1YmxpYy1zeW50aGV0aWMgZXhjZXJwdCBmb3IgY29oZXJlbmNlLiBSZXR1cm4gb25seSB0aGUgcmVxdWVzdGVkIEpTT04gb2JqZWN0Lg==", "bytes": 88, "sha256": "68dc238c7fe81418366549b9e92992ad3ee681885e519de4225885c6a393d42c"},
+        "sampler": {"base64": "eyJtYXhfb3V0cHV0X3Rva2VucyI6ODAsInNlZWQiOjE5LCJ0ZW1wZXJhdHVyZSI6MH0K", "bytes": 51, "sha256": "235a24cfa388a6fbc9a5efa1bbe26ba9e812051b11e26eb4e84973c860a510d0"},
+        "schema": {"base64": "eyJhZGRpdGlvbmFsUHJvcGVydGllcyI6ZmFsc2UsInByb3BlcnRpZXMiOnsiZXZpZGVuY2UiOnsidHlwZSI6InN0cmluZyJ9LCJzY29yZSI6eyJ0eXBlIjoibnVtYmVyIn19LCJyZXF1aXJlZCI6WyJzY29yZSIsImV2aWRlbmNlIl0sInR5cGUiOiJvYmplY3QifQo=", "bytes": 149, "sha256": "f6aee0f46f24f771203d93f3987ff8ea47ae28254b2fd9fa85921e1c3a62c5a5"}
+      },
+      "cell_id": "flash-next-judging-representative-v1",
+      "operation": "judging",
+      "outbound_payload_base64": "eyJjZWxsX2lkIjoiZmxhc2gtbmV4dC1qdWRnaW5nLXJlcHJlc2VudGF0aXZlLXYxIiwiY29udGV4dF9zaGEyNTYiOiI0YTA1YzM2ZmJhYWUyYmVlMTY0NmUyMTYwNDBlOTU1MjJmODVlZmQ0YjNlYzBjZDg4MTdkZWQ1NTNhMzRjNDFlIiwiZm9ybWF0X3ZlcnNpb24iOjEsIm9wZXJhdGlvbiI6Imp1ZGdpbmciLCJwcm9tcHRfc2hhMjU2IjoiNjhkYzIzOGM3ZmU4MTQxODM2NjU0OWI5ZTkyOTkyYWQzZWU2ODE4ODVlNTE5ZGU0MjI1ODg1YzZhMzkzZDQyYyIsInJlcXVlc3RlZF9tb2RlbCI6ImZsYXNoLW5leHQiLCJyZXNwb25zZV9lbnZlbG9wZV9zY2hlbWEiOiJmbGFzaC1uZXh0LWZpeHR1cmUtZW52ZWxvcGUtdjEiLCJzYW1wbGVyX3NoYTI1NiI6IjIzNWEyNGNmYTM4OGE2ZmJjOWE1ZWZhMWJiZTI2YmE5ZTgxMjA1MWIxMWUyNmViNGU4NDk3M2M4NjBhNTEwZDAiLCJzY2hlbWFfc2hhMjU2IjoiZjZhZWUwZjQ2ZjI0Zjc3MTIwM2Q5M2YzOTg3ZmY4ZWE0N2FlMjgyNTRiMmZkOWZhODU5MjFlMWMzYTYyYzVhNSIsInNvdXJjZV9jbGFzcyI6InB1YmxpY19zeW50aGV0aWNfaW1tdXRhYmxlIiwic3R1ZHlfaWQiOiJoYnEtc3VwcGxlbWVudGFsLXByb3ZpZGVycy1mbGFzaC1uZXh0LWV4ZWN1dGlvbi1jb250cmFjdC12MSJ9Cg==",
+      "outbound_payload_sha256": "6c53cac00849e5b4ff8e7eb9697a3dd1b79af8b4700dbe7673a9bad31ad07745"
+    }
+  ],
+  "evidence_limits": [
+    "Fixture subprocess output is not native Linux, provider, model, or endpoint evidence.",
+    "Promotion, pairing, and native endpoint contact cardinality remain NO-GO.",
+    "A future external Linux run must create a new root and bind native executable, runtime, model, request, session, raw response, and receipt evidence."
+  ],
+  "execution_policy": {"fixture_process_limit_per_cell": 1, "fixture_subprocess_only": true, "native_dispatch_enabled": false, "provider_calls_made": 0, "remote_fallback_allowed": false, "resend_allowed": false},
+  "fixture_envelope_schema": {"identity_required_keys": ["model", "provider", "request_id", "runtime", "session_id"], "required_keys": ["fixture_only", "format_version", "identity", "output", "request_sha256", "schema"], "schema": "flash-next-fixture-envelope-v1"},
+  "format_version": 1,
+  "future_linux_native_invocation": {"command": ["<python3>", "<executor.py>", "native-run", "--prepared-root", "<new-external-linux-root>", "--cell-id", "<frozen-cell-id>", "--runner", "<verified-native-runner>"], "current_implementation": "disabled; metadata-only", "required_before_use": ["fresh local-first disclosure naming the remote destination and exact outbound payload", "fresh no-liability route evidence", "native executable and runtime hashes", "provider/model/request/session identity", "immutable raw response and receipt bindings"]},
+  "predecessor_assets": [
+    {"bytes": 35583, "path": "evaluation-results/hbq-supplemental-providers-flash-next-v1/adapter.py", "sha256": "ffc0d9af0d993e6e3fe87a48ab965770a34bb7b3220554668198deadaa5b31a9"},
+    {"bytes": 3496, "path": "evaluation-results/hbq-supplemental-providers-flash-next-v1/study-contract.json", "sha256": "9eb4356a73677ce42f3ef461c87c7bb1127ba6feb227cb579b7aa873e8c2dedc"},
+    {"bytes": 20263, "path": "evaluation-results/hbq-supplemental-providers-flash-next-linux-portability-v1/preflight.py", "sha256": "f693a17e97b93c5a478f5538f462251f829b54b3b203577e3569ab91d59189f2"},
+    {"bytes": 2644, "path": "evaluation-results/hbq-supplemental-providers-flash-next-linux-portability-v1/study-contract.json", "sha256": "7101e8d6ed85f55552b466b7149654a6eeec3ff6f50833e08b34c555789f6a73"}
+  ],
+  "semantic_contract_sha256": "685c69ea99f3c76a087980995c3661c4b45ecda580d180b9d1ca1950f9fcbd1b",
+  "status": "fixture_contract_only_no_go",
+  "study_id": "hbq-supplemental-providers-flash-next-execution-contract-v1"
+}
