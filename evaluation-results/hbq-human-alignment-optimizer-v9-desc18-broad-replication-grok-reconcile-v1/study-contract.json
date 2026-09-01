@@ -1,0 +1,31 @@
+{
+  "authority": {
+    "confirmation": "unopened",
+    "promotion": "none",
+    "runtime": "none",
+    "selection": "none"
+  },
+  "format_version": 1,
+  "geometry": {
+    "historical_process_launches": 64,
+    "provider_calls_during_reconciliation": 0,
+    "reconciled_cells": 64
+  },
+  "kind": "provider_free_reconciliation_of_desc18_grok_native_json_formatting_failure",
+  "native_endpoint_contact_cardinality": "unproven",
+  "output_kind": "reconciled_64_desc18_open_validation_grok_receipts_cardinality_unproven",
+  "pins": {
+    "authorization_acknowledgement_sha256": "2fb371ff82b37fe22d238a223fc030ad7a7bb9a10b672719da081470d25dbe78",
+    "freeze_commit": "83d7be718c99c1135302ccb4f8d339a4c68f292f",
+    "freeze_schedule_sha256": "1e45510b99e328388ea663ef42523d202322011959ad7f0e62629c3ec8075dfa",
+    "source_commit": "4d3b2ef20f5fad4ea0974e888f37550d4b8480f2",
+    "source_executor_sha256": "d719d484fabc12110fe36f61c379edf8d15aa701f97f025d1ff2ac24f1d2f4a4",
+    "source_output_root_name": "cwr-desc18-broad-grok-4d3b2ef-20260901a"
+  },
+  "prohibitions": [
+    "no provider calls or process launches",
+    "no mutation or in-place retry of source evidence",
+    "no pooled endpoint or native-contact-cardinality claim"
+  ],
+  "study_id": "hbq-human-alignment-optimizer-v9-desc18-broad-replication-grok-reconcile-v1"
+}
