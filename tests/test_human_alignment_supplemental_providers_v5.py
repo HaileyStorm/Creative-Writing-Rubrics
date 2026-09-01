@@ -5,6 +5,7 @@ import gzip
 import hashlib
 import importlib.util
 import json
+import shutil
 import sys
 from pathlib import Path
 
@@ -67,7 +68,7 @@ def prepared(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, *, question_ids: l
     return work, cells
 
 
-def fake_runner(calls: list[str], *, fail_after_callback: bool = False):
+def fake_runner(calls: list[str], *, fail_after_callback: bool = False, sealed_failed_http: bool = False):
     def invoke(**kwargs):
         calls.append(str(kwargs["artifact_id"]))
         root = kwargs["output_dir"]; root.mkdir()
@@ -76,7 +77,7 @@ def fake_runner(calls: list[str], *, fail_after_callback: bool = False):
         (root / "run.json").write_bytes(runner_module._json_bytes({"config_sha256": config_sha}))
         (root / "response.schema.json").write_bytes(schema)
         (root / "responses").mkdir()
-        prompt = "fixture exact prompt\n"
+        prompt = f"fixture exact prompt {kwargs['artifact_id']}\n"
         (root / "responses" / "batch-0001.prompt.txt.gz").write_bytes(gzip.compress(prompt.encode(), mtime=0))
         kwargs["before_provider_attempt"]({
             "run": {"run_id": f"run-{kwargs['artifact_id']}", "config_sha256": config_sha},
@@ -86,6 +87,31 @@ def fake_runner(calls: list[str], *, fail_after_callback: bool = False):
             "response_schema": {"text": schema.decode(), "bytes": len(schema), "sha256": hashlib.sha256(schema).hexdigest()},
         })
         if fail_after_callback:
+            if sealed_failed_http:
+                source = Path(kwargs["artifact_path"])
+                context = Path(kwargs["context_paths"][0])
+                run_id = f"run-{kwargs['artifact_id']}"
+                configuration = {
+                    "artifact_id": kwargs["artifact_id"], "provider": "nous", "model": study.MODEL, "reasoning": "max",
+                    "question_ids": kwargs["question_ids"],
+                    "artifact": {"sha256": hashlib.sha256(source.read_bytes()).hexdigest()},
+                    "contexts": [{"sha256": hashlib.sha256(context.read_bytes()).hexdigest()}],
+                }
+                (root / "run.json").write_bytes(runner_module._json_bytes({"config_sha256": config_sha, "run_id": run_id, "configuration": configuration}))
+                request = root / "responses" / "batch-0001.attempt-0001.nous.request.json"
+                request.write_text(json.dumps({"model": study.MODEL, "reasoning_effort": "max", "max_physical_http_attempts_per_logical_request": 1, "messages": [{"role": "system", "content": "fixture"}, {"role": "user", "content": prompt}]}), encoding="utf-8")
+                evidence = root / "responses" / "batch-0001.attempt-0001.nous.evidence"
+                proof = evidence / "proof"; judge = evidence / "judge"
+                proof.mkdir(parents=True); judge.mkdir()
+                (proof / "manifest.json").write_text(json.dumps({"mode": "serialization-proof", "run_id": "proof-session"}), encoding="utf-8")
+                (proof / "receipt.json").write_text(json.dumps({"run_id": "proof-session", "status": "success"}), encoding="utf-8")
+                (judge / "manifest.json").write_text(json.dumps({"mode": "judge", "requested_provider": "nous", "requested_model": study.MODEL, "requested_reasoning_effort": "max", "run_id": "failure-session"}), encoding="utf-8")
+                (judge / "receipt.json").write_text(json.dumps({"run_id": "failure-session", "status": "failure"}), encoding="utf-8")
+                events = [
+                    {"event_type": "judge_boundary", "data": {"request_sha256": hashlib.sha256(json.dumps(json.loads(request.read_text(encoding="utf-8")), ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")).hexdigest(), "transport_policy": {"logical_requests_per_attempt": 1, "max_physical_attempts_per_logical_request": 1}}},
+                    {"event_type": "http_attempt", "data": {"method": "POST", "status": 502, "logical_request_id": "failure-logical-request"}},
+                ]
+                (judge / "events.jsonl").write_text("".join(json.dumps(event) + "\n" for event in events), encoding="utf-8")
             raise OSError("fixture postcontact failure")
         request = root / "responses" / "judge-request.json"; request.write_bytes(b"request")
         result = root / "responses" / "judge-result.json"; result.write_bytes(b"result")
@@ -186,6 +212,57 @@ def test_postcontact_failure_is_terminal_reconcile_required(monkeypatch, tmp_pat
     result = executor.execute_one(work, cell_id="pilot-01", allow_remote=True, runner=fake_runner(calls, fail_after_callback=True), sealed_evidence_validator=lambda _: "session-1")
     assert result["state"] == "reconcile_required" and calls == ["item-1"]
     assert executor.execute_one(work, cell_id="pilot-01", allow_remote=True, runner=fake_runner(calls), sealed_evidence_validator=lambda _: "session-1")["state"] == "reconcile_required"
+
+
+def test_unsealed_terminal_accounting_cannot_be_reminted(monkeypatch, tmp_path: Path):
+    work, _ = prepared(monkeypatch, tmp_path); calls: list[str] = []
+    assert executor.execute_one(work, cell_id="pilot-01", allow_remote=True, runner=fake_runner(calls, fail_after_callback=True), sealed_evidence_validator=lambda _: "session-1")["state"] == "reconcile_required"
+    terminal_path = work / "cells" / "pilot-01" / "terminal-reconcile-required.json"
+    terminal = study.read_json(terminal_path)
+    terminal["confirmed_process_launches"] = 1; terminal["confirmed_provider_calls"] = 1
+    terminal_path.write_bytes(study.canonical(terminal))
+    with pytest.raises(ValueError, match="unsupported without sealed failure evidence"):
+        executor.execute_one(work, cell_id="pilot-01", allow_remote=True, runner=fake_runner(calls), sealed_evidence_validator=lambda _: "session-1")
+    assert calls == ["item-1"]
+
+
+def test_one_sealed_failed_http_attempt_is_durably_accounted(monkeypatch, tmp_path: Path):
+    work, _ = prepared(monkeypatch, tmp_path); calls: list[str] = []
+    result = executor.execute_one(work, cell_id="pilot-01", allow_remote=True, runner=fake_runner(calls, fail_after_callback=True, sealed_failed_http=True), sealed_evidence_validator=lambda _: "failure-session")
+    terminal = study.read_json(work / "cells" / "pilot-01" / "terminal-reconcile-required.json")
+    assert result["state"] == "reconcile_required" and {key: result[key] for key in ("confirmed_process_launches", "confirmed_provider_calls")} == {"confirmed_process_launches": 1, "confirmed_provider_calls": 1}
+    assert {key: terminal[key] for key in ("confirmed_process_launches", "confirmed_provider_calls")} == {"confirmed_process_launches": 1, "confirmed_provider_calls": 1}
+    assert terminal["failure_contact_evidence"]["physical_http_attempt_count"] == 1 and terminal["failure_contact_evidence"]["recovered_request_count"] == 0
+    assert executor.execute_one(work, cell_id="pilot-01", allow_remote=True, runner=fake_runner(calls), sealed_evidence_validator=lambda _: "failure-session")["state"] == "reconcile_required"
+    assert calls == ["item-1"]
+
+
+def test_swapped_hmac_valid_failed_evidence_is_rejected_by_cell_bindings(monkeypatch, tmp_path: Path):
+    work, cells = prepared(monkeypatch, tmp_path); calls: list[str] = []
+    sealed = lambda _: "failure-session"
+    assert executor.execute_one(work, cell_id="pilot-01", allow_remote=True, runner=fake_runner(calls, fail_after_callback=True, sealed_failed_http=True), sealed_evidence_validator=sealed)["state"] == "reconcile_required"
+    second = work / "cells" / "pilot-02" / "native-run"
+    second_cell = cells[1]; second_folder = Path(second_cell["input_folder"])
+    with pytest.raises(OSError, match="postcontact"):
+        fake_runner([], fail_after_callback=True, sealed_failed_http=True)(artifact_path=second_folder / "source.md", context_paths=[second_folder / "prompt.md"], artifact_id=second_cell["item_id"], output_dir=second, question_ids=second_cell["question_ids"], before_provider_attempt=lambda _: None)
+    first_evidence = work / "cells" / "pilot-01" / "native-run" / "responses" / "batch-0001.attempt-0001.nous.evidence"
+    second_evidence = second / "responses" / "batch-0001.attempt-0001.nous.evidence"
+    shutil.rmtree(first_evidence)
+    shutil.copytree(second_evidence, first_evidence)
+    with pytest.raises(ValueError, match="prompt or run binding|cell configuration|immutable inputs|outbound request binding"):
+        executor.execute_one(work, cell_id="pilot-01", allow_remote=True, runner=fake_runner(calls), sealed_evidence_validator=sealed)
+
+
+@pytest.mark.skipif(not Path(r"C:\Users\Haile\Documents\cwr-supplemental-providers-v5-20260901-59a285b-r1").is_dir() or not Path(r"C:\Users\Haile\Documents\cwr-supplemental-providers-v5-20260901-6ff4e74-r2").is_dir(), reason="immutable external V5 roots are unavailable")
+def test_actual_r1_r2_legacy_terminal_views_are_read_only():
+    roots = ((Path(r"C:\Users\Haile\Documents\cwr-supplemental-providers-v5-20260901-59a285b-r1"), "pilot-01"), (Path(r"C:\Users\Haile\Documents\cwr-supplemental-providers-v5-20260901-6ff4e74-r2"), "pilot-02"))
+    before = {str(path): hashlib.sha256(path.read_bytes()).hexdigest() for root, _ in roots for path in root.rglob("*") if path.is_file()}
+    for root, cell_id in roots:
+        result = executor.execute_one(root, cell_id=cell_id, allow_remote=True)
+        assert result["state"] == "reconcile_required" and result["terminal_accounting_view"]["kind"] == "derived_read_only_terminal_contact_accounting"
+        assert result["confirmed_process_launches"] == result["confirmed_provider_calls"] == 1
+    after = {str(path): hashlib.sha256(path.read_bytes()).hexdigest() for root, _ in roots for path in root.rglob("*") if path.is_file()}
+    assert after == before
 
 
 def test_sealed_evidence_validation_failure_after_intent_is_terminal(monkeypatch, tmp_path: Path):

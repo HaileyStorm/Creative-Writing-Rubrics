@@ -277,6 +277,86 @@ def _completion_payload(cell_root: Path, native_root: Path, cell: Mapping[str, A
     return result
 
 
+def _failed_contact_evidence(cell_root: Path, native_root: Path, cell: Mapping[str, Any], sealed_evidence_validator: Callable[[Path], str]) -> dict[str, Any] | None:
+    responses = native_root / "responses"
+    if not responses.is_dir():
+        return None
+    evidence_roots = sorted(path for path in responses.glob("batch-0001.attempt-0001.nous.evidence") if path.is_dir())
+    if not evidence_roots:
+        return None
+    if len(evidence_roots) != 1:
+        raise ValueError("v5 failure evidence has an ambiguous native attempt root")
+    evidence_root = evidence_roots[0]
+    study.plain_entry(evidence_root, directory=True)
+    session_id = sealed_evidence_validator(evidence_root)
+    judges: list[Path] = []
+    for candidate in evidence_root.iterdir():
+        if not candidate.is_dir() or not (candidate / "manifest.json").is_file() or not (candidate / "receipt.json").is_file():
+            continue
+        manifest = json.loads(study.stable_bytes(candidate / "manifest.json").decode("utf-8"))
+        if isinstance(manifest, Mapping) and manifest.get("mode") == "judge":
+            judges.append(candidate)
+    if len(judges) != 1:
+        raise ValueError("v5 failure evidence lacks one sealed judge session")
+    judge = judges[0]
+    manifest = json.loads(study.stable_bytes(judge / "manifest.json").decode("utf-8"))
+    receipt = json.loads(study.stable_bytes(judge / "receipt.json").decode("utf-8"))
+    if not isinstance(manifest, Mapping) or not isinstance(receipt, Mapping) or manifest.get("requested_provider") != "nous" or manifest.get("requested_model") != study.MODEL or manifest.get("requested_reasoning_effort") != "max" or receipt.get("run_id") != session_id or receipt.get("status") != "failure":
+        raise ValueError("v5 failure evidence judge identity drifted")
+    events_path = judge / "events.jsonl"
+    events = [json.loads(line) for line in study.stable_bytes(events_path).decode("utf-8").splitlines()]
+    attempts = [event.get("data") for event in events if isinstance(event, Mapping) and event.get("event_type") == "http_attempt"]
+    boundaries = [event.get("data") for event in events if isinstance(event, Mapping) and event.get("event_type") == "judge_boundary"]
+    if len(attempts) != 1 or len(boundaries) != 1 or not isinstance(attempts[0], Mapping) or not isinstance(boundaries[0], Mapping):
+        raise ValueError("v5 failure evidence does not prove exactly one judge HTTP attempt")
+    attempt = attempts[0]
+    transport = boundaries[0].get("transport_policy")
+    if attempt.get("method") != "POST" or not isinstance(attempt.get("status"), int) or 200 <= attempt["status"] < 300 or not isinstance(attempt.get("logical_request_id"), str) or not isinstance(transport, Mapping) or transport.get("logical_requests_per_attempt") != 1 or transport.get("max_physical_attempts_per_logical_request") != 1:
+        raise ValueError("v5 failure evidence contact accounting drifted")
+    intent = study.read_json(cell_root / "launch-intent.json")
+    callback = intent.get("callback")
+    run = study.read_json(native_root / "run.json", canonical_required=False)
+    request_path = responses / "batch-0001.attempt-0001.nous.request.json"
+    request = json.loads(study.stable_bytes(request_path).decode("utf-8"))
+    prompt_path = responses / "batch-0001.prompt.txt.gz"
+    try:
+        prompt_bytes = gzip.decompress(study.stable_bytes(prompt_path))
+    except (OSError, EOFError) as error:
+        raise ValueError("v5 failure evidence prompt is unreadable") from error
+    if not isinstance(callback, Mapping) or not isinstance(run, Mapping) or not isinstance(request, Mapping):
+        raise TypeError("v5 failure evidence lacks request bindings")
+    callback_prompt = callback.get("prompt")
+    callback_run = callback.get("run")
+    configuration = run.get("configuration")
+    messages = request.get("messages")
+    user_message = messages[1] if isinstance(messages, list) and len(messages) == 2 else None
+    if not isinstance(callback_prompt, Mapping) or not isinstance(callback_run, Mapping) or not isinstance(configuration, Mapping) or not isinstance(user_message, Mapping) or user_message.get("role") != "user" or not isinstance(user_message.get("content"), str):
+        raise TypeError("v5 failure evidence request geometry is malformed")
+    prompt_sha = study.sha_bytes(prompt_bytes)
+    if callback_prompt.get("sha256") != prompt_sha or callback_prompt.get("bytes") != len(prompt_bytes) or user_message["content"].encode("utf-8") != prompt_bytes or run.get("config_sha256") != callback_run.get("config_sha256") or run.get("run_id") != callback_run.get("run_id"):
+        raise ValueError("v5 failure evidence prompt or run binding drifted")
+    if configuration.get("artifact_id") != cell.get("item_id") or configuration.get("provider") != "nous" or configuration.get("model") != study.MODEL or configuration.get("reasoning") != "max" or configuration.get("question_ids") != cell.get("question_ids"):
+        raise ValueError("v5 failure evidence cell configuration drifted")
+    artifact = configuration.get("artifact")
+    contexts = configuration.get("contexts")
+    if not isinstance(artifact, Mapping) or artifact.get("sha256") != cell["inputs"]["source.md"]["sha256"] or not isinstance(contexts, list) or len(contexts) != 1 or not isinstance(contexts[0], Mapping) or contexts[0].get("sha256") != cell["inputs"]["prompt.md"]["sha256"]:
+        raise ValueError("v5 failure evidence immutable inputs drifted")
+    boundary = boundaries[0]
+    request_sha = study.sha_bytes(json.dumps(request, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8"))
+    if boundary.get("request_sha256") != request_sha or request.get("model") != study.MODEL or request.get("reasoning_effort") != "max" or request.get("max_physical_http_attempts_per_logical_request") != 1:
+        raise ValueError("v5 failure evidence outbound request binding drifted")
+    return {
+        "confirmed_process_launches": 1,
+        "confirmed_provider_calls": 1,
+        "failure_contact_evidence": {
+            "judge_session_id": session_id,
+            "judge_events": study.fingerprint(events_path),
+            "physical_http_attempt_count": 1,
+            "recovered_request_count": 0,
+        },
+    }
+
+
 def _receipt_session(cell_root: Path, native_root: Path, cell: Mapping[str, Any], receipt_name: str, sealed_evidence_validator: Callable[[Path], str]) -> str:
     receipt = study.read_json(cell_root / receipt_name)
     elapsed = receipt.get("elapsed_seconds")
@@ -351,6 +431,28 @@ def _predecessor_snapshot(work_dir: Path, frozen: Mapping[str, Any], cell: Mappi
     return {"predecessors": records}
 
 
+def _terminal_accounting_view(cell_root: Path, native_root: Path, cell: Mapping[str, Any], sealed_evidence_validator: Callable[[Path], str]) -> dict[str, Any]:
+    terminal_path = cell_root / "terminal-reconcile-required.json"
+    record = study.read_json(terminal_path)
+    failed = _failed_contact_evidence(cell_root, native_root, cell, sealed_evidence_validator)
+    if failed is None:
+        if record.get("confirmed_process_launches") != 0 or record.get("confirmed_provider_calls") != 0 or "failure_contact_evidence" in record:
+            raise ValueError("v5 reconcile terminal contact accounting is unsupported without sealed failure evidence")
+        return {
+            "kind": "persisted_terminal_contact_accounting",
+            "source_terminal": study.fingerprint(terminal_path),
+            "confirmed_process_launches": record["confirmed_process_launches"],
+            "confirmed_provider_calls": record["confirmed_provider_calls"],
+        }
+    expected = {key: failed[key] for key in ("confirmed_process_launches", "confirmed_provider_calls", "failure_contact_evidence")}
+    observed = {key: record.get(key) for key in expected}
+    if observed == expected:
+        return {"kind": "persisted_terminal_contact_accounting", "source_terminal": study.fingerprint(terminal_path), **expected}
+    if observed == {"confirmed_process_launches": 0, "confirmed_provider_calls": 0, "failure_contact_evidence": None}:
+        return {"kind": "derived_read_only_terminal_contact_accounting", "source_terminal": study.fingerprint(terminal_path), **expected}
+    raise ValueError("v5 reconcile terminal contact accounting drifted")
+
+
 def _terminal_state(cell_root: Path, native_root: Path, cell: Mapping[str, Any], work_dir: Path, frozen: Mapping[str, Any], sealed_evidence_validator: Callable[[Path], str]) -> tuple[str, str | None]:
     completion = cell_root / "completion-receipt.json"
     reconcile = cell_root / "terminal-reconcile-required.json"
@@ -374,6 +476,7 @@ def _terminal_state(cell_root: Path, native_root: Path, cell: Mapping[str, Any],
         record = study.read_json(reconcile)
         if record.get("study_id") != study.STUDY_ID or record.get("cell_id") != cell["cell_id"] or record.get("contact_state") != "ambiguous_after_intent" or record.get("confirmed_provider_calls") not in {0, 1} or record.get("confirmed_process_launches") not in {0, 1}:
             raise ValueError("v5 reconcile terminal record is malformed")
+        _terminal_accounting_view(cell_root, native_root, cell, sealed_evidence_validator)
         return "reconcile_required", None
     raise ValueError("v5 launch state is incomplete or contradictory")
 
@@ -401,7 +504,12 @@ def execute_one(work_dir: Path, *, cell_id: str, allow_remote: bool, runner: Cal
     existing_sessions = _existing_sessions(work_dir, frozen, sealed_evidence_validator)
     terminal, session = _terminal_state(cell_root, cell_root / "native-run", cell, work_dir, frozen, sealed_evidence_validator)
     if terminal != "new":
-        return {"cell_id": cell_id, "state": "terminal_no_resend" if terminal == "completed" else terminal, "confirmed_provider_calls": 0, "confirmed_process_launches": 0, "session_id": session}
+        result = {"cell_id": cell_id, "state": "terminal_no_resend" if terminal == "completed" else terminal, "confirmed_provider_calls": 0, "confirmed_process_launches": 0, "session_id": session}
+        if terminal == "reconcile_required":
+            view = _terminal_accounting_view(cell_root, cell_root / "native-run", cell, sealed_evidence_validator)
+            result.update({key: view[key] for key in ("confirmed_provider_calls", "confirmed_process_launches")})
+            result["terminal_accounting_view"] = view
+        return result
     records = _prepared_root(cell_root, cell)
     _predecessor_snapshot(work_dir, frozen, cell, sealed_evidence_validator)
     native_root = cell_root / "native-run"
@@ -434,12 +542,24 @@ def execute_one(work_dir: Path, *, cell_id: str, allow_remote: bool, runner: Cal
         if launched:
             confirmed = {"confirmed_process_launches": 0, "confirmed_provider_calls": 0}
             validation_error: dict[str, str] | None = None
+            failure_evidence: dict[str, Any] | None = None
             try:
                 settled = _completion_payload(cell_root, native_root, cell, started, sealed_evidence_validator)
                 confirmed = {key: settled[key] for key in confirmed}
             except Exception as evidence_error:  # noqa: BLE001 - any validator failure is terminal after intent.
-                validation_error = {"class": type(evidence_error).__name__, "message": str(evidence_error)[:1000]}
+                try:
+                    failed = _failed_contact_evidence(cell_root, native_root, cell, sealed_evidence_validator)
+                except Exception as failure_error:  # noqa: BLE001 - an unsealed failure cannot prove contact.
+                    validation_error = {"class": type(failure_error).__name__, "message": str(failure_error)[:1000]}
+                else:
+                    if failed is None:
+                        validation_error = {"class": type(evidence_error).__name__, "message": str(evidence_error)[:1000]}
+                    else:
+                        confirmed = {key: failed[key] for key in confirmed}
+                        failure_evidence = failed["failure_contact_evidence"]
             terminal = {"format_version": 1, "study_id": study.STUDY_ID, "kind": "postlaunch_terminal_reconcile_required", "cell_id": cell_id, "contact_state": "ambiguous_after_intent", **confirmed, "error": {"class": type(error).__name__, "message": str(error)[:1000]}, "retry_policy": "no_resend_fresh_successor_only"}
+            if failure_evidence is not None:
+                terminal["failure_contact_evidence"] = failure_evidence
             if validation_error is not None:
                 terminal["evidence_validation_error"] = validation_error
             _write_new(cell_root / "terminal-reconcile-required.json", terminal)
