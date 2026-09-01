@@ -530,7 +530,7 @@ The frozen qualification then opened the matched Sol veto, not a Sol-selected
 replacement. The [executor](../evaluation-results/hbq-human-alignment-optimizer-v9-desc18-broad-replication-sol-veto-exec-v1/README.md)
 at [`926f8f1`](https://github.com/HaileyStorm/Creative-Writing-Rubrics/commit/926f8f158d2551c2edb6ba40888d875a1aaf18a8)
 and its [recomputed result](../evaluation-results/hbq-human-alignment-optimizer-v9-desc18-broad-replication-sol-veto-result-v1/README.md)
-at [`2edd54b`](https://github.com/HaileyStorm/Creative-Writing-Rubrics/commit/2edd54b)
+at [`2edd54b`](https://github.com/HaileyStorm/Creative-Writing-Rubrics/commit/2edd54bfc469a3ad6fa5dcba58b53b18afc2338f)
 showed Sol MAE falling from **1.1751736** to **1.0699653** (**8.9526%**),
 with all **384 of 384** coverage flags true. Child20 therefore survives this
 development veto.
