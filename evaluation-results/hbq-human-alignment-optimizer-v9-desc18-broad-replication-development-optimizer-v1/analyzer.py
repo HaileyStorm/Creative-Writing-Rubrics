@@ -20,20 +20,21 @@ from typing import Any
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[1]
 STUDY_ID = "hbq-human-alignment-optimizer-v9-desc18-broad-replication-development-optimizer-v1"
-EXECUTOR_ID = "hbq-human-alignment-optimizer-v9-desc18-broad-replication-grok-exec-v1"
-EXECUTOR_ROOT = HERE.parent / EXECUTOR_ID
+RECONCILIATION_ID = "hbq-human-alignment-optimizer-v9-desc18-broad-replication-grok-reconcile-v1"
+RECONCILIATION_ROOT = HERE.parent / RECONCILIATION_ID
+SOURCE_EXECUTOR_ID = "hbq-human-alignment-optimizer-v9-desc18-broad-replication-grok-exec-v1"
 FREEZE_ID = "hbq-human-alignment-optimizer-v9-desc18-broad-replication-candidates-v1"
 FREEZE_ROOT = HERE.parent / FREEZE_ID
 FREEZE_COMMIT = "83d7be718c99c1135302ccb4f8d339a4c68f292f"
 FREEZE_STUDY_SHA256 = "99387d9626ae13f20ef58f0a7f6624ebe850d8477ba17934c4f35735ca9eda16"
 FREEZE_CONTRACT_SHA256 = "5115e46f3f8c858e7954ceffa77d2d9dbff3e781f36a5aaf04fb2506c7c07dd2"
 FREEZE_SCHEDULE_SHA256 = "1e45510b99e328388ea663ef42523d202322011959ad7f0e62629c3ec8075dfa"
-EXECUTOR_COMMIT = "4d3b2ef20f5fad4ea0974e888f37550d4b8480f2"
-EXECUTOR_FILES = {
-    "README.md": "ebd7397922aa57e043f54f4facf85e0a513020b318c7b56f8aac49a3bc43b0b4",
-    "executor.py": "d719d484fabc12110fe36f61c379edf8d15aa701f97f025d1ff2ac24f1d2f4a4",
-    "study-contract.json": "43a41a10f2a56e8518bd34fb265a870d55e5d8c58a9227c11f05618b9b50ac77",
-    "tests/test_hbq_human_alignment_optimizer_v9_desc18_broad_replication_grok_exec_v1.py": "863498d736128d17af9434f5854f03f6105886a18778415344141c67d3e90613",
+RECONCILIATION_COMMIT = "b33c501c4d6b87a90d6a5d307f7e025839e4afec"
+RECONCILIATION_FILES = {
+    "README.md": "492c4fb33ba903a9e399b541b28dbfbc633140b8e1a812958d3d9b94c11477f5",
+    "reconcile.py": "6274f1afb1b81a351c91a87d5fa17dddc51821c2b393ea118d87f797fdbb3552",
+    "study-contract.json": "d997b5a80b9f5ea48c6b6a5cc59fb3b9fde8185c0373b334db80cd2a18bf7535",
+    "tests/test_hbq_human_alignment_optimizer_v9_desc18_broad_replication_grok_reconcile_v1.py": "3f0cc146a8858b68c7ba9caeeaca1bea81c97082302caafa84817456689f6341",
 }
 PARENT = "broader-nextwave-13-missing_evidence_not_no"
 CHILD = "broader-nextwave-20-missing_evidence_not_no-referent-evidence"
@@ -43,6 +44,7 @@ WORST_GROUP_WEIGHTS = (0.0, 0.15, 0.30)
 STABILITY_WEIGHTS = (0.0, 0.10)
 SEED = 202609012
 PUBLIC_FILES = {"README.md", "analyzer.py", "study-contract.json"}
+SOURCE_LINEAGE = {"source_study_id": SOURCE_EXECUTOR_ID, "source_commit": "4d3b2ef20f5fad4ea0974e888f37550d4b8480f2", "source_root_name": "cwr-desc18-broad-grok-4d3b2ef-20260901a", "source_terminal_kind": "reconcile_required_after_process_launch", "reconciliation_reason": "native_json_formatting_only", "freeze_commit": FREEZE_COMMIT}
 AUTHORITY = {
     "confirmation": "unopened",
     "endpoint_pooling": "forbidden",
@@ -84,7 +86,7 @@ def stable(path: Path, *, directory: bool = False) -> bytes:
     return raw
 
 
-def strict(raw: bytes, label: str) -> dict[str, Any]:
+def strict(raw: bytes, label: str, *, canonical_required: bool = True) -> dict[str, Any]:
     def pairs(items: list[tuple[str, Any]]) -> dict[str, Any]:
         value: dict[str, Any] = {}
         for key, item in items:
@@ -97,7 +99,7 @@ def strict(raw: bytes, label: str) -> dict[str, Any]:
         value = json.loads(raw.decode("utf-8"), object_pairs_hook=pairs, parse_constant=lambda token: (_ for _ in ()).throw(ValueError(token)))
     except (UnicodeDecodeError, json.JSONDecodeError, ValueError) as error:
         raise ValueError(f"invalid {label}") from error
-    if type(value) is not dict or canonical(value) != raw:
+    if type(value) is not dict or canonical_required and canonical(value) != raw:
         raise ValueError(f"noncanonical {label}")
     return value
 
@@ -127,21 +129,21 @@ def _load_freeze() -> Any:
     return module
 
 
-def validate_executor_binding() -> None:
-    """Require the reviewed executor, contract, README, and regression test at one commit."""
-    if len(EXECUTOR_COMMIT) != 40 or set(EXECUTOR_FILES) != {"README.md", "executor.py", "study-contract.json", "tests/test_hbq_human_alignment_optimizer_v9_desc18_broad_replication_grok_exec_v1.py"}:
-        raise ValueError("Desc18 executor binding is malformed")
+def validate_reconciliation_binding() -> None:
+    """Require the reviewed reconciliation package at one commit."""
+    if len(RECONCILIATION_COMMIT) != 40 or set(RECONCILIATION_FILES) != {"README.md", "reconcile.py", "study-contract.json", "tests/test_hbq_human_alignment_optimizer_v9_desc18_broad_replication_grok_reconcile_v1.py"}:
+        raise ValueError("Desc18 reconciliation binding is malformed")
     import subprocess
 
-    for name, digest in EXECUTOR_FILES.items():
+    for name, digest in RECONCILIATION_FILES.items():
         if len(digest) != 64 or any(character not in "0123456789abcdef" for character in digest):
-            raise ValueError("Desc18 executor binding is malformed")
-        relative = name if name.startswith("tests/") else (EXECUTOR_ROOT / name).relative_to(REPO).as_posix()
+            raise ValueError("Desc18 reconciliation binding is malformed")
+        relative = name if name.startswith("tests/") else (RECONCILIATION_ROOT / name).relative_to(REPO).as_posix()
         path = REPO / relative
         raw = stable(path)
-        committed = subprocess.run(["git", "-C", str(REPO), "show", f"{EXECUTOR_COMMIT}:{relative}"], capture_output=True, check=False)
+        committed = subprocess.run(["git", "-C", str(REPO), "show", f"{RECONCILIATION_COMMIT}:{relative}"], capture_output=True, check=False)
         if committed.returncode or committed.stdout != raw or sha256(raw) != digest:
-            raise ValueError("Desc18 executor binding drifted or is not committed")
+            raise ValueError("Desc18 reconciliation binding drifted or is not committed")
 
 
 def reconstruct_open_targets(freeze_root: Path) -> dict[str, Any]:
@@ -185,7 +187,7 @@ def reconstruct_open_targets(freeze_root: Path) -> dict[str, Any]:
 
 
 def _native_scores(raw: bytes) -> tuple[dict[str, float], dict[str, bool]]:
-    response = strict(raw, "native Grok response")
+    response = strict(raw, "native Grok response", canonical_required=False)
     structured = response.get("structuredOutput")
     if not isinstance(structured, Mapping) or set(structured) != {"coverage", "evidence", "scores"}:
         raise ValueError("native Grok structured response drifted")
@@ -195,7 +197,7 @@ def _native_scores(raw: bytes) -> tuple[dict[str, float], dict[str, bool]]:
     values = {name: scores[name] for name in DIMENSIONS}
     if any(isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value) or not 1 <= float(value) <= 5 for value in values.values()):
         raise ValueError("invalid, all-zero, or out-of-scale native scores")
-    if all(float(value) == 0.0 for value in values.values()) or any(type(coverage[name]) is not bool for name in DIMENSIONS):
+    if any(type(coverage[name]) is not bool for name in DIMENSIONS):
         raise ValueError("invalid native coverage")
     for item in evidence.values():
         if not isinstance(item, str):
@@ -210,17 +212,28 @@ def _native_scores(raw: bytes) -> tuple[dict[str, float], dict[str, bool]]:
     return ({name: float(values[name]) for name in DIMENSIONS}, {name: coverage[name] for name in DIMENSIONS})
 
 
-def _project(schedule: Mapping[str, Any], collector: Mapping[str, Any]) -> dict[str, Any]:
+def _project(schedule: Mapping[str, Any], collector: Mapping[str, Any], *, reconciliation_replay: Mapping[str, Any]) -> dict[str, Any]:
+    if (set(reconciliation_replay) != {"format_version", "study_id", "collector_sha256", "cells", "provider_calls_made", "process_launches", "historical_process_launches", "equal_group_projection_ready", "native_endpoint_contact_cardinality", "authority"}
+            or reconciliation_replay.get("format_version") != 1
+            or reconciliation_replay.get("study_id") != RECONCILIATION_ID
+            or reconciliation_replay.get("collector_sha256") != sha256(collector)
+            or reconciliation_replay.get("cells") != 64
+            or reconciliation_replay.get("provider_calls_made") != 0
+            or reconciliation_replay.get("process_launches") != 0
+            or reconciliation_replay.get("historical_process_launches") != 64
+            or reconciliation_replay.get("equal_group_projection_ready") is not True
+            or reconciliation_replay.get("native_endpoint_contact_cardinality") != "unproven"):
+        raise ValueError("reconciliation replay certificate drifted")
     cells = schedule.get("cells")
     if not isinstance(cells, list) or len(cells) != 64:
         raise ValueError("Fresh96 schedule is incomplete")
     index = {row.get("cell_id"): row for row in cells if isinstance(row, Mapping)}
     if len(index) != 64:
         raise ValueError("duplicate Fresh96 schedule cell")
-    required_collector = {"format_version", "study_id", "kind", "schedule_sha256", "authorization_acknowledgement_sha256", "route", "route_evidence", "cells", "native_endpoint_contact_cardinality", "provider_calls_made", "process_launches"}
+    required_collector = {"format_version", "study_id", "kind", "source_lineage", "schedule_sha256", "authorization_acknowledgement_sha256", "route", "route_evidence", "cells", "native_endpoint_contact_cardinality", "provider_calls_made", "process_launches", "historical_process_launches"}
     supplied = collector.get("cells")
-    if (set(collector) != required_collector or collector.get("format_version") != 1 or collector.get("study_id") != EXECUTOR_ID or collector.get("kind") != "complete_64_desc18_open_validation_grok_receipts_cardinality_unproven" or collector.get("schedule_sha256") != schedule.get("schedule_sha256") or collector.get("native_endpoint_contact_cardinality") != "unproven" or collector.get("provider_calls_made") is not None or collector.get("process_launches") != 64 or not isinstance(supplied, list) or len(supplied) != 64):
-        raise ValueError("64-cell native collector or caller aggregate surface drifted")
+    if (set(collector) != required_collector or collector.get("format_version") != 1 or collector.get("study_id") != RECONCILIATION_ID or collector.get("kind") != "reconciled_64_desc18_open_validation_grok_receipts_cardinality_unproven" or collector.get("source_lineage") != SOURCE_LINEAGE or collector.get("native_endpoint_contact_cardinality") != "unproven" or collector.get("provider_calls_made") != 0 or collector.get("process_launches") != 0 or collector.get("historical_process_launches") != 64 or not isinstance(supplied, list) or len(supplied) != 64):
+        raise ValueError("reconciled 64-cell native collector surface drifted")
     required_entry = {"cell_id", "payload_base64", "payload_sha256", "native_request_base64", "native_request_sha256", "native_response_base64", "native_response_sha256", "identity", "effective_settings", "effective_settings_sha256"}
     observations: dict[str, dict[str, list[tuple[str, float]]]] = {candidate: defaultdict(list) for candidate in CANDIDATES}
     coverage_false: dict[str, list[dict[str, str]]] = {candidate: [] for candidate in CANDIDATES}
@@ -332,30 +345,49 @@ def build_dspy_evidence(metrics: list[Mapping[str, Any]], qualification: Mapping
     return {"evidence_chain_sha256": sha256([example.toDict() for example in examples]), "evidence_examples": len(examples), "library": f"dspy@{dspy.__version__}", "lm_calls": 0, "predict_calls": 0, "proposal_generated": False, "qualifiers_frozen_before_sol": list(qualification["qualifiers"]), "signature": ReplayedDesc18Evidence.__name__}
 
 
-def replay_projection(*, freeze_root: Path, collector_path: Path) -> dict[str, Any]:
-    validate_executor_binding()
-    schedule = reconstruct_open_targets(Path(freeze_root))
+def _replay_reconciliation(*, output_root: Path, freeze_root: Path, collector_path: Path) -> dict[str, Any]:
+    validate_reconciliation_binding()
+    path = RECONCILIATION_ROOT / "reconcile.py"
+    spec = importlib.util.spec_from_file_location("_desc18_exact_reconciliation", path)
+    if spec is None or spec.loader is None:
+        raise ValueError("Desc18 reconciliation cannot be loaded")
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
+    try:
+        spec.loader.exec_module(module)
+        replay = module.replay_collector(output_root=Path(output_root), freeze_root=Path(freeze_root), collector_path=Path(collector_path))
+    finally:
+        sys.modules.pop(spec.name, None)
+    if not isinstance(replay, dict):
+        raise TypeError("Desc18 reconciliation replay certificate is invalid")
+    return replay
+
+
+def replay_projection(*, output_root: Path, freeze_root: Path, collector_path: Path) -> dict[str, Any]:
+    validate_reconciliation_binding()
     collector_raw = stable(Path(collector_path))
     collector = strict(collector_raw, "64-cell Desc18 collector")
-    projection = _project(schedule, collector)
-    projection["source_execution"] = {"collector_sha256": sha256(collector_raw), "executor_binding": {"commit": EXECUTOR_COMMIT, "files": dict(sorted(EXECUTOR_FILES.items())), "status": "exact_committed"}, "frozen_schedule_sha256": FREEZE_SCHEDULE_SHA256, "schedule_sha256": schedule["schedule_sha256"]}
+    reconciliation_replay = _replay_reconciliation(output_root=Path(output_root), freeze_root=Path(freeze_root), collector_path=Path(collector_path))
+    schedule = reconstruct_open_targets(Path(freeze_root))
+    projection = _project(schedule, collector, reconciliation_replay=reconciliation_replay)
+    projection["source_execution"] = {"collector_sha256": sha256(collector_raw), "reconciliation_binding": {"commit": RECONCILIATION_COMMIT, "files": dict(sorted(RECONCILIATION_FILES.items())), "status": "exact_committed"}, "reconciliation_replay": reconciliation_replay, "frozen_schedule_sha256": FREEZE_SCHEDULE_SHA256, "schedule_sha256": schedule["schedule_sha256"]}
     projection["projection_sha256"] = sha256(projection)
     return projection
 
 
-def analyze(*, freeze_root: Path, collector_path: Path) -> dict[str, Any]:
-    projection = replay_projection(freeze_root=freeze_root, collector_path=collector_path)
+def analyze(*, output_root: Path, freeze_root: Path, collector_path: Path) -> dict[str, Any]:
+    projection = replay_projection(output_root=output_root, freeze_root=freeze_root, collector_path=collector_path)
     metrics = projection["metrics"]
     optimizer = run_optuna(metrics)
     qualification = qualify(metrics, optimizer)
     dspy_evidence = build_dspy_evidence(metrics, qualification)
-    result = {"format_version": 1, "study_id": STUDY_ID, "kind": "desc18_open_fresh96_replication_optimizer_and_sol_veto_freeze", "source": {"collector_sha256": projection["source_execution"]["collector_sha256"], "executor_binding": projection["source_execution"]["executor_binding"], "projection_sha256": projection["projection_sha256"]}, "geometry": {"candidates": 2, "open_validation_groups": 16, "open_validation_items": 32, "grok_cells": 64, "optuna_trials": 12, "sol_cells_executed": 0, "confirmation_cells": 0}, "metrics": metrics, "optimizer": optimizer, "qualification": qualification, "dspy_evidence": dspy_evidence, "authority": {"confirmation": {"cells": 0, "status": "unopened"}, "promotion": "none", "runtime": "none", "selection": qualification["development_decision"], "sol": "veto_only_pending" if qualification["qualifiers"] else "not_required_zero_calls"}, "claim": "This public/open Fresh96 development replay freezes child20 only if it improves raw prompt-group-equal MAE over descendant13 and is no worse under all six frozen robustness settings. Sol may veto a frozen qualifier but cannot substitute a Sol-favored candidate. No confirmation, promotion, runtime, pooled-endpoint, or general claim follows."}
+    result = {"format_version": 1, "study_id": STUDY_ID, "kind": "desc18_open_fresh96_replication_optimizer_and_sol_veto_freeze", "source": {"collector_sha256": projection["source_execution"]["collector_sha256"], "reconciliation_binding": projection["source_execution"]["reconciliation_binding"], "projection_sha256": projection["projection_sha256"]}, "geometry": {"candidates": 2, "open_validation_groups": 16, "open_validation_items": 32, "grok_cells": 64, "optuna_trials": 12, "sol_cells_executed": 0, "confirmation_cells": 0}, "metrics": metrics, "optimizer": optimizer, "qualification": qualification, "dspy_evidence": dspy_evidence, "authority": {"confirmation": {"cells": 0, "status": "unopened"}, "promotion": "none", "runtime": "none", "selection": qualification["development_decision"], "sol": "veto_only_pending" if qualification["qualifiers"] else "not_required_zero_calls"}, "claim": "This public/open Fresh96 development replay uses the immutable desc18 Grok reconciliation, which validates the exact previously launched native receipts without resending them. It freezes child20 only if it improves raw prompt-group-equal MAE over descendant13 and is no worse under every frozen robustness setting. Sol may veto a frozen qualifier but cannot substitute a Sol-favored candidate. No confirmation, promotion, runtime, pooled-endpoint, or general claim follows."}
     result["result_sha256"] = sha256(result)
     return result
 
 
 def _contract() -> dict[str, Any]:
-    return {"authority": {"confirmation": "unopened", "generalization": "none", "promotion": "none", "runtime": "none", "selection": "grok_open_validation_qualification_only", "sol": "veto_only"}, "executor_binding": "committed_exact_executor_contract_readme_test_hashes", "format_version": 1, "geometry": {"candidates": 2, "grok_cells": 64, "open_validation_groups": 16, "open_validation_items": 32, "optuna_grid_settings": 6}, "kind": "provider_free_desc18_open_fresh96_replication_optimizer", "pinned_executor": {"commit": EXECUTOR_COMMIT, "files": dict(sorted(EXECUTOR_FILES.items())), "study_id": EXECUTOR_ID}, "pinned_freeze": {"commit": FREEZE_COMMIT, "schedule_sha256": FREEZE_SCHEDULE_SHA256, "study_contract_sha256": FREEZE_CONTRACT_SHA256, "study_sha256": FREEZE_STUDY_SHA256}, "qualification_rule": {"raw_equal_group_mae": "child20_strictly_below_descendant13", "robustness": "child20_no_worse_than_descendant13_in_all_six_settings", "sol": "freeze_child20_before_sol_then_veto_only", "zero_qualifiers": "retain_descendant13_and_make_zero_sol_calls"}, "runtime_dependencies": {"dspy": "development_only_zero_lm_calls", "optuna": "development_only_grid_sampler", "production": "none"}, "study_id": STUDY_ID}
+    return {"authority": {"confirmation": "unopened", "generalization": "none", "promotion": "none", "runtime": "none", "selection": "grok_open_validation_qualification_only", "sol": "veto_only"}, "reconciliation_binding": "committed_exact_reconciliation_contract_readme_test_hashes_and_replay_before_projection", "format_version": 1, "geometry": {"candidates": 2, "grok_cells": 64, "open_validation_groups": 16, "open_validation_items": 32, "optuna_grid_settings": 6}, "kind": "provider_free_desc18_open_fresh96_replication_optimizer", "pinned_reconciliation": {"commit": RECONCILIATION_COMMIT, "files": dict(sorted(RECONCILIATION_FILES.items())), "study_id": RECONCILIATION_ID}, "pinned_freeze": {"commit": FREEZE_COMMIT, "schedule_sha256": FREEZE_SCHEDULE_SHA256, "study_contract_sha256": FREEZE_CONTRACT_SHA256, "study_sha256": FREEZE_STUDY_SHA256}, "qualification_rule": {"raw_equal_group_mae": "child20_strictly_below_descendant13", "robustness": "child20_no_worse_than_descendant13_in_all_six_settings", "sol": "freeze_child20_before_sol_then_veto_only", "zero_qualifiers": "retain_descendant13_and_make_zero_sol_calls"}, "runtime_dependencies": {"dspy": "development_only_zero_lm_calls", "optuna": "development_only_grid_sampler", "production": "none"}, "study_id": STUDY_ID}
 
 
 def validate_package() -> dict[str, Any]:
@@ -365,14 +397,21 @@ def validate_package() -> dict[str, Any]:
     contract = strict(stable(HERE / "study-contract.json"), "Desc18 study contract")
     if contract != _contract():
         raise ValueError("Desc18 optimizer contract drifted")
-    validate_executor_binding()
+    validate_reconciliation_binding()
     return contract
 
 
-def write_result(path: Path, result: Mapping[str, Any]) -> None:
-    target = Path(path)
+def _fresh_plain_output(path: Path) -> Path:
+    target = Path(os.path.abspath(path))
+    for current in (target.parent, *target.parent.parents):
+        _plain(current, directory=True)
     if target.exists() or target.is_symlink():
         raise ValueError("Desc18 result output must be a fresh plain file")
+    return target
+
+
+def write_result(path: Path, result: Mapping[str, Any]) -> None:
+    target = _fresh_plain_output(path)
     raw = canonical(dict(result))
     flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL
     if hasattr(os, "O_NOFOLLOW"):
@@ -387,12 +426,13 @@ def write_result(path: Path, result: Mapping[str, Any]) -> None:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--output-root", type=Path, required=True)
     parser.add_argument("--freeze-root", type=Path, required=True)
     parser.add_argument("--collector-path", type=Path, required=True)
     parser.add_argument("--result-output", type=Path)
     args = parser.parse_args(argv)
     validate_package()
-    result = analyze(freeze_root=args.freeze_root, collector_path=args.collector_path)
+    result = analyze(output_root=args.output_root, freeze_root=args.freeze_root, collector_path=args.collector_path)
     if args.result_output is not None:
         write_result(args.result_output, result)
     print(canonical(result).decode("utf-8"), end="")

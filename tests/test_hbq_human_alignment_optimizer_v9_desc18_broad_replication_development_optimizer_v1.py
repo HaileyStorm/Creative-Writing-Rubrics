@@ -11,6 +11,10 @@ import pytest
 ROOT = Path(__file__).resolve().parents[1]
 PACKAGE = ROOT / "evaluation-results" / "hbq-human-alignment-optimizer-v9-desc18-broad-replication-development-optimizer-v1"
 CANDIDATES = ROOT / "evaluation-results" / "hbq-human-alignment-optimizer-v9-desc18-broad-replication-candidates-v1" / "study.py"
+RECONCILIATION = ROOT / "evaluation-results" / "hbq-human-alignment-optimizer-v9-desc18-broad-replication-grok-reconcile-v1" / "reconcile.py"
+LIVE_ROOT = Path(r"C:\Users\Haile\Documents\cwr-desc18-broad-grok-4d3b2ef-20260901a")
+LIVE_FREEZE_ROOT = Path(r"C:\Users\Haile\Documents\cwr-hanna-desc18-open-freeze-83d7be7-20260901a")
+LIVE_COLLECTOR = Path(r"C:\Users\Haile\Documents\cwr-desc18-broad-grok-4d3b2ef-20260901a.reconciled-v1.collector.json")
 
 
 def load():
@@ -33,25 +37,36 @@ def freeze(root: Path):
     return value.freeze(root)
 
 
-def collector(value, schedule, *, child_score: float = 2.0, evidence: str = "grounded local evidence"):
-    cells = []
-    for row in schedule["cells"]:
-        score = child_score if row["candidate_id"] == value.CHILD else 3.0
-        response = value.canonical({"structuredOutput": {"scores": {dimension: score for dimension in value.DIMENSIONS}, "coverage": {dimension: True for dimension in value.DIMENSIONS}, "evidence": {dimension: evidence for dimension in value.DIMENSIONS}}})
-        request = value.canonical({"cell_id": row["cell_id"]})
-        cells.append({"cell_id": row["cell_id"], "payload_base64": row["payload_base64"], "payload_sha256": row["payload_sha256"], "native_request_base64": base64.b64encode(request).decode("ascii"), "native_request_sha256": value.sha256(request), "native_response_base64": base64.b64encode(response).decode("ascii"), "native_response_sha256": value.sha256(response), "identity": {"provider": "xai", "requested_model": "grok-4.6", "reported_model": "grok-4.6-build", "request_id": "request-" + row["cell_id"], "session_id": "session-" + row["cell_id"], "tools_enabled": False}, "effective_settings": {"tools_enabled": False}, "effective_settings_sha256": value.sha256({"tools_enabled": False})})
-    return {"format_version": 1, "study_id": value.EXECUTOR_ID, "kind": "complete_64_desc18_open_validation_grok_receipts_cardinality_unproven", "schedule_sha256": schedule["schedule_sha256"], "authorization_acknowledgement_sha256": "a" * 64, "route": {"route": "grok"}, "route_evidence": {"fixture": True}, "cells": cells, "native_endpoint_contact_cardinality": "unproven", "provider_calls_made": None, "process_launches": 64}
+def load_reconciliation():
+    spec = importlib.util.spec_from_file_location("_desc18_reconciliation_fixture", RECONCILIATION)
+    assert spec and spec.loader
+    value = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = value
+    try:
+        spec.loader.exec_module(value)
+    finally:
+        sys.modules.pop(spec.name, None)
+    return value
 
 
-def test_package_pins_committed_executor_contract_readme_and_regression_test(monkeypatch: pytest.MonkeyPatch):
+@pytest.fixture(scope="module")
+def evidence(tmp_path_factory: pytest.TempPathFactory):
+    if not (LIVE_ROOT.is_dir() and LIVE_FREEZE_ROOT.is_dir() and LIVE_COLLECTOR.is_file()):
+        pytest.skip("immutable Desc18 reconciliation evidence is not present")
+    collector = tmp_path_factory.mktemp("desc18-reconciliation-evidence") / "collector.json"
+    collector.write_bytes(LIVE_COLLECTOR.read_bytes())
+    return LIVE_ROOT, LIVE_FREEZE_ROOT, collector
+
+
+def test_package_pins_committed_reconciliation_contract_readme_and_regression_test(monkeypatch: pytest.MonkeyPatch):
     value = load()
     contract = value.validate_package()
     assert contract["pinned_freeze"]["commit"] == "83d7be718c99c1135302ccb4f8d339a4c68f292f"
-    assert contract["pinned_executor"] == {"commit": "4d3b2ef20f5fad4ea0974e888f37550d4b8480f2", "files": value.EXECUTOR_FILES, "study_id": value.EXECUTOR_ID}
-    value.validate_executor_binding()
-    monkeypatch.setitem(value.EXECUTOR_FILES, "executor.py", "0" * 64)
+    assert contract["pinned_reconciliation"] == {"commit": "b33c501c4d6b87a90d6a5d307f7e025839e4afec", "files": value.RECONCILIATION_FILES, "study_id": value.RECONCILIATION_ID}
+    value.validate_reconciliation_binding()
+    monkeypatch.setitem(value.RECONCILIATION_FILES, "reconcile.py", "0" * 64)
     with pytest.raises(ValueError, match="binding"):
-        value.validate_executor_binding()
+        value.validate_reconciliation_binding()
 
 
 def test_import_does_not_load_development_libraries(monkeypatch: pytest.MonkeyPatch):
@@ -76,10 +91,10 @@ def test_reconstructs_committed_public_open_fresh96_targets(tmp_path: Path):
     assert len({row["prompt_group_id"] for row in reconstructed["cells"]}) == 16
 
 
-def test_independent_64_receipt_projection_uses_equal_prompt_group_weighting(tmp_path: Path):
+def test_independent_64_receipt_projection_uses_equal_prompt_group_weighting(evidence):
     value = load()
-    schedule = freeze(tmp_path / "freeze")
-    projected = value._project(schedule, collector(value, schedule))
+    output_root, freeze_root, collector_path = evidence
+    projected = value.replay_projection(output_root=output_root, freeze_root=freeze_root, collector_path=collector_path)
     rows = {row["candidate_id"]: row for row in projected["metrics"]}
     assert rows[value.PARENT]["cells"] == rows[value.CHILD]["cells"] == 32
     assert len(rows[value.PARENT]["group_mae"]) == len(rows[value.CHILD]["group_mae"]) == 16
@@ -92,47 +107,53 @@ def test_independent_64_receipt_projection_uses_equal_prompt_group_weighting(tmp
     assert dspy["lm_calls"] == dspy["predict_calls"] == 0 and dspy["evidence_examples"] == 2
 
 
-@pytest.mark.parametrize("mutation", ("partial", "duplicate_identity", "payload", "zero", "placeholder", "coverage", "evidence", "score"))
-def test_rejects_partial_duplicate_misassociated_and_placeholder_native_receipts(tmp_path: Path, mutation: str):
+@pytest.mark.parametrize("mutation", ("route", "acknowledgement", "request", "receipt_swap"))
+def test_reconciliation_replay_rejects_forged_or_misassociated_native_receipts_before_projection(tmp_path: Path, evidence, monkeypatch: pytest.MonkeyPatch, mutation: str):
     value = load()
-    schedule = freeze(tmp_path / "freeze")
-    evidence = collector(value, schedule)
-    if mutation == "partial":
-        evidence["cells"].pop()
-    elif mutation == "duplicate_identity":
-        evidence["cells"][1]["identity"] = dict(evidence["cells"][0]["identity"])
-    elif mutation == "payload":
-        evidence["cells"][0]["payload_sha256"] = "0" * 64
-    else:
+    output_root, freeze_root, original_collector = evidence
+    collector_path = tmp_path / "forged-collector.json"
+    evidence = value.strict(original_collector.read_bytes(), "fixture")
+    if mutation == "route":
+        evidence["route"]["name"] = "forged-route"
+    elif mutation == "acknowledgement":
+        evidence["authorization_acknowledgement_sha256"] = "0" * 64
+    elif mutation == "request":
         first = evidence["cells"][0]
-        response = value.strict(base64.b64decode(first["native_response_base64"]), "fixture")
-        structured = response["structuredOutput"]
-        if mutation == "zero":
-            structured["scores"] = {dimension: 0.0 for dimension in value.DIMENSIONS}
-        elif mutation == "placeholder":
-            structured["evidence"]["Coherence"] = "[placeholder]"
-        elif mutation == "coverage":
-            structured["coverage"]["Coherence"] = "yes"
-        elif mutation == "evidence":
-            structured["evidence"]["Coherence"] = 3
-        else:
-            structured["scores"]["Coherence"] = True
-        raw = value.canonical(response)
-        first["native_response_base64"] = base64.b64encode(raw).decode("ascii")
-        first["native_response_sha256"] = value.sha256(raw)
-    with pytest.raises((TypeError, ValueError), match="collector|identity|binding|native|placeholder|partial"):
-        value._project(schedule, evidence)
+        request = b'{"forged":true}\n'
+        first["native_request_base64"] = base64.b64encode(request).decode("ascii")
+        first["native_request_sha256"] = value.sha256(request)
+    else:
+        left, right = evidence["cells"][0], evidence["cells"][1]
+        for key in set(left) - {"cell_id"}:
+            left[key], right[key] = right[key], left[key]
+    collector_path.write_bytes(value.canonical(evidence))
+    called = False
+
+    def forbidden(*_args, **_kwargs):
+        nonlocal called
+        called = True
+        raise AssertionError("projection must not run after replay failure")
+
+    monkeypatch.setattr(value, "_project", forbidden)
+    with pytest.raises((TypeError, ValueError), match="collector|route|acknowledgement|receipt|execution|binding"):
+        value.replay_projection(output_root=output_root, freeze_root=freeze_root, collector_path=collector_path)
+    assert called is False
 
 
-def test_replay_rejects_caller_aggregate_and_writes_only_fresh_result(tmp_path: Path):
+def test_replay_requires_reconciliation_evidence_and_writes_only_fresh_result(tmp_path: Path, evidence):
     value = load()
-    schedule = freeze(tmp_path / "freeze")
-    path = tmp_path / "collector.json"
-    path.write_bytes(value.canonical(collector(value, schedule)))
-    projection = value.replay_projection(freeze_root=tmp_path / "freeze", collector_path=path)
-    assert projection["source_execution"]["executor_binding"]["status"] == "exact_committed"
+    output_root, freeze_root, original_collector = evidence
+    path = tmp_path / "tampered-collector.json"
+    path.write_bytes(original_collector.read_bytes())
+    projection = value.replay_projection(output_root=output_root, freeze_root=freeze_root, collector_path=path)
+    assert projection["source_execution"]["reconciliation_binding"]["status"] == "exact_committed"
+    assert projection["source_execution"]["reconciliation_replay"]["equal_group_projection_ready"] is True
     tampered = value.strict(path.read_bytes(), "fixture")
     tampered["metrics"] = []
     path.write_bytes(value.canonical(tampered))
-    with pytest.raises(ValueError, match="caller aggregate"):
-        value.replay_projection(freeze_root=tmp_path / "freeze", collector_path=path)
+    with pytest.raises(ValueError, match="collector"):
+        value.replay_projection(output_root=output_root, freeze_root=freeze_root, collector_path=path)
+    result = tmp_path / "result.json"
+    value.write_result(result, {"ok": True})
+    with pytest.raises(ValueError, match="fresh plain"):
+        value.write_result(result, {"ok": True})
