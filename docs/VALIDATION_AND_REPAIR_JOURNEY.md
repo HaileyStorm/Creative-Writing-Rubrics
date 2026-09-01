@@ -496,3 +496,14 @@ uses 24 development-only Optuna trials and four zero-LM DSPy evidence examples.
 It opens no confirmation, promotion, runtime, pooled-endpoint, or
 generalization claim, and the 52 local lifecycle receipts still do not prove
 native endpoint-contact cardinality.
+
+### Correction: desc17 input fidelity withdraws that branch
+
+A later provider-free input-fidelity audit found that all **52** desc17
+payloads contained only `prompt:<id>` and `writing:<id>` identifiers rather
+than the actual prompt and writing. The same immutable collector has ten
+all-zero score responses, two `"x"` evidence responses, and four placeholder
+or `Searching workspace` responses. The earlier desc17 package remains
+immutable operational history, but its semantic and generalization conclusions
+are withdrawn. This correction is limited to desc17; it does not reinterpret
+the separate desc15, desc16, or Fresh88 evidence.
