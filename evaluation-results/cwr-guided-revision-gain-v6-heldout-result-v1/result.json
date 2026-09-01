@@ -1,0 +1,45 @@
+{
+  "format_version": 1,
+  "study_id": "cwr-guided-revision-gain-v6-heldout-result-v1",
+  "source_evidence": {
+    "commit": "655e11830676fdf7f6891ce1d80e4cde53a0f106",
+    "executor": {
+      "path": "evaluation-results/cwr-guided-revision-gain-v6-governed-heldout-exec-v1/executor.py",
+      "sha256": "6e5641de603baedbc645f34987455f761085040ab181b6354d707deb5c3cfb9b"
+    },
+    "external_run_root_basename": "cwr-guided-revision-gain-v6-20260901-655e118-r2",
+    "verified_receipts": {
+      "cwr_feedback_sol": 4,
+      "revision_descendants_grok": 8,
+      "blind_endpoint_cells": 48,
+      "total": 60,
+      "unique_native_identities": 60
+    }
+  },
+  "endpoint_results_are_not_pooled": true,
+  "endpoint_evidence": {
+    "gpt-5.6-sol-high": {
+      "blind_endpoint_cells": 24,
+      "native_endpoint_contact_cardinality": "unproven"
+    },
+    "grok-4.6-high": {
+      "blind_endpoint_cells": 24,
+      "native_endpoint_contact_cardinality": 1
+    }
+  },
+  "mean_score_deltas": {
+    "guided_minus_control": {
+      "gpt-5.6-sol-high": {"holistic": 1.0, "compact": 0.75},
+      "grok-4.6-high": {"holistic": 0.75, "compact": 0.0}
+    },
+    "guided_minus_source": {
+      "gpt-5.6-sol-high": {"holistic": 3.0, "compact": 2.25},
+      "grok-4.6-high": {"holistic": 2.75, "compact": 1.5}
+    },
+    "generic_minus_source": {
+      "gpt-5.6-sol-high": {"holistic": 2.0, "compact": 1.5},
+      "grok-4.6-high": {"holistic": 2.0, "compact": 1.5}
+    }
+  },
+  "publication_scope": "aggregate_only_no_story_prompt_feedback_unprocessed_output_or_absolute_path"
+}
