@@ -195,6 +195,12 @@ def test_wave_is_one_route_load_at_most_ten_lanes_and_collector_replays(tmp_path
     forged_counter_path.write_bytes(value.canonical(forged_counter))
     with pytest.raises(ValueError, match="collector drifted"):
         value.replay_collector(output_root=args["output_root"], freeze_root=FREEZE, collector_path=forged_counter_path)
+    forged_format = json.loads(collector.read_bytes())
+    forged_format["format_version"] = 2
+    forged_format_path = tmp_path / "forged-format-collector.json"
+    forged_format_path.write_bytes(value.canonical(forged_format))
+    with pytest.raises(ValueError, match="collector drifted"):
+        value.replay_collector(output_root=args["output_root"], freeze_root=FREEZE, collector_path=forged_format_path)
     forged_ack = json.loads(collector.read_bytes())
     forged_ack["authorization_acknowledgement_sha256"] = "0" * 64
     forged_ack_path = tmp_path / "forged-acknowledgement-collector.json"

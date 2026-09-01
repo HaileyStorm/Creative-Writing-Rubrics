@@ -471,7 +471,7 @@ def replay_collector(*, output_root: Path, freeze_root: Path, collector_path: Pa
     with _bound_source(freeze_root=Path(freeze_root)) as (lifecycle, source, schedule, _base, _runtime):
         collector = strict(stable(Path(collector_path)), "collector")
         expected = {"format_version", "study_id", "kind", "schedule_sha256", "authorization_acknowledgement_sha256", "route", "route_evidence", "cells", "native_endpoint_contact_cardinality", "provider_calls_made", "process_launches"}
-        if (set(collector) != expected or collector.get("study_id") != STUDY_ID or collector.get("kind") != "complete_52_desc17_generalization_grok_receipts_cardinality_unproven"
+        if (set(collector) != expected or collector.get("format_version") != 1 or collector.get("study_id") != STUDY_ID or collector.get("kind") != "complete_52_desc17_generalization_grok_receipts_cardinality_unproven"
                 or collector.get("schedule_sha256") != schedule["schedule_sha256"] or collector.get("native_endpoint_contact_cardinality") != "unproven"
                 or collector.get("provider_calls_made") is not None
                 or type(collector.get("process_launches")) is not int or collector["process_launches"] != 52
