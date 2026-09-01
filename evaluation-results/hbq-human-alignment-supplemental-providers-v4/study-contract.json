@@ -1,0 +1,25 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-human-alignment-supplemental-providers-v4",
+  "frozen_before_execution": true,
+  "purpose": "Provider-free compatibility/runtime snapshot. It validates the immutable failed v2 batch-16 record and its v1 input lineage without importing predecessor runtime code, then freezes current transport identities for later review; it is not an executable batch-8 successor.",
+  "predecessors": {
+    "v1": {"study_id": "hbq-human-alignment-supplemental-providers-v1", "files": {"analyze_study.py": "0ecf52ddff38c2aab2e5f5242534295828455413dad93896317002ed2026f3a6", "prepare_provider.py": "8c1ab0bbff89f65120730bf15f05b5735514ade0ca2526dada9e5fe9d3500d7d", "promotion_gate.py": "5b5d917fc223a34759c99721eaf6bbfc7eb14a52d19473d5f04cb363cfb7b2db", "README.md": "dc393e993686ae549878c1ebaf2907793bf57d5542cb14528dc198f9e657c845", "run_study.py": "f33015ac25d32dc14a64fc4f1cd854e49724622d664d5cc427017c4afe53f522", "study-contract.json": "b72ad42eafdfe67d70fc52adc509dc1eecd00ed47d2a50c24dd6d5dd0afceef5", "study.py": "2839146db034993a20431196c2151f2525b95c22b4e320cbc16486f56287f697"}},
+    "v2": {"study_id": "hbq-human-alignment-supplemental-providers-v2", "files": {"enable_development.py": "14a45f88ea8e700b27522124cf7db4ba259a949b2801cfb8846323a89854addb", "prepare_transport_successor.py": "66355fb63bec70854d0f07730e808157cbf8c6b85cafe566dab756f4206a0e83", "README.md": "1f27f8dd7350df9404edd31fd11e9d5022335a4814f66c5e9e1db40c1dfdd357", "run_development.py": "861b68607f32fa1bda2af4c710124aa0a5263e37ffc2c8a108520419f33a7bdc", "run_transport_pilot.py": "d46822b94d30ade4c46a96125d0bc3b4f373a14d7e355b8efff33227f57c5e80", "study-contract.json": "dd75c6dbd88c01452bf03af2c1a80169911a0f1fb2bfa588e64644878e8f7692", "study.py": "2e738f5353a1b9959e803b3f51d24de4ee1d6a6051fd28c036c352e564a6e380", "verify_transport_pilot.py": "d6acca791f0d099fb9d2cc99ec68ad55ce5ef0c92242f389c72906d593b4318d"}},
+    "v3": {"study_id": "hbq-human-alignment-supplemental-providers-v3", "files": {"enable_development.py": "e6e6590c2792020bb87d1da58c845bb5540f60fcce7569132ae1a5a873011845", "prepare_transport_successor.py": "764a29d2edf2acb9cf808aaee7b20c0cdb07c4326a24b9ddd4f5dd466d089a3b", "README.md": "c2959ab6b31d28fca94024f43b230f5a3eb6963d9432cf397f1e7705f683c6d1", "run_development.py": "e968fcf230faa16e6cb9ae3b7f73212d77fec8abe768b84d38202ab098bd8c8d", "run_transport_pilot.py": "4a89c16ef0086e8529cbe7fe50050229253f25c58924bc4a4c1c23012eaadfd7", "study-contract.json": "248b740ed04f888bf8643f82079e90d539c2a4bf2d932afc517499ded52a462d", "study.py": "f8c6ddbaee6175b9dda139a12bc412601ed000bd1965ffd485f4bffb1f5ce15b", "verify_transport_pilot.py": "b42c2df65498774faa2f348bc2185388166bedc34a53b0f96a209a69a941cd21"}}
+  },
+  "failed_v2": {
+    "commitments": {
+      "frozen-transport-contract.json": {"bytes": 10170, "sha256": "37fe8263e1d770c2efd8faccdee722bd5c267d5e100dd3e69d6ee900d7aa2b74"},
+      "pilot-execution-claim.json": {"bytes": 847, "sha256": "02c376711fbc17eca4caa93bccf5c088cf64da3e9966aff4444e26c63d33d8fc"},
+      "pilot-invocation.json": {"bytes": 2378, "sha256": "735cae503e894366e4ba8f8daedd925da1f36f734584cc60c56a4931fbeef56d"},
+      "pilot-journal/0001-pilot-01.json": {"bytes": 1403, "sha256": "cc676ff7de1b09c23b83e955caaa5a562f9d45751a9468623e62b7cfc736ce11"},
+      "runs/pilot/pilot-01/responses/rejected/batch-0001/attempt-0001.json": {"bytes": 3255, "sha256": "93df516046a4cd76928f8747d7db725ce723e15056acb5ff9e92c754bd51348f"}
+    },
+    "raw_evidence_tree": {"path": "runs/pilot/pilot-01/responses/batch-0001.attempt-0001.nous.evidence", "files": 7, "sha256": "83b08bf6ad551440601faf89ccc5efd0d1ea23ae0f35ae2fd09eddbcecdde3a3", "excluded": [".evidence-hmac.key"]},
+    "terminal_http_statuses": [524, 524]
+  },
+  "pilot_policy": {"cells": 3, "batch_size": 8, "batch_attempts": 1, "workers": 1, "timeout_seconds": 600, "maximum_completion_seconds_exclusive": 100, "success_rule": "Three sequential distinct-session 2xx completions; each has exactly one physical attempt, valid exact raw transport verification, zero recovery, and duration below 100 seconds."},
+  "compatibility_snapshot": {"historical_cell_question_count": 16, "execution_ready": false, "future_execution_requires": ["a new exact 8-question schedule", "per-cell disclosure", "current zero-charge route evidence", "native runner and request bindings"]},
+  "execution_status": "CLOSED_PENDING_REVIEWED_DISCLOSURE_ZERO_CHARGE_ROUTE_AND_NATIVE_RUNNER"
+}
