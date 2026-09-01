@@ -6,8 +6,10 @@ import argparse
 import gzip
 import importlib.util
 import json
+import sys
 import time
 from collections.abc import Callable, Mapping
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 
@@ -119,10 +121,10 @@ def _load_frozen(work: Path) -> dict[str, Any]:
     return frozen
 
 
-def _prepared_root(cell_root: Path, cell: Mapping[str, Any], *, allow_native_run: bool = False) -> dict[str, Any]:
+def _prepared_root(cell_root: Path, cell: Mapping[str, Any], *, allow_native_run: bool = False, allowed_extra: frozenset[str] = frozenset()) -> dict[str, Any]:
     study.plain_entry(cell_root, directory=True)
     children = {child.name: child for child in cell_root.iterdir()}
-    expected = set(study.PREPARED_FILES) | ({"native-run"} if allow_native_run else set())
+    expected = set(study.PREPARED_FILES) | ({"native-run"} if allow_native_run else set()) | set(allowed_extra)
     if set(children) != expected:
         raise ValueError("v5 prepared root has missing, extra, or unsafe artifacts")
     for name, path in children.items():
@@ -190,19 +192,58 @@ def _sealed_session_id(evidence_root: Path) -> str:
     if spec is None or spec.loader is None:
         raise ValueError("v5 canonical bridge validator is unavailable")
     bridge = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(bridge)
+    previous = sys.modules.get(spec.name)
+    sys.modules[spec.name] = bridge
+    try:
+        spec.loader.exec_module(bridge)
+    finally:
+        if previous is None:
+            sys.modules.pop(spec.name, None)
+        else:
+            sys.modules[spec.name] = previous
     candidates = [path for path in evidence_root.iterdir() if path.is_dir() and (path / "manifest.json").is_file() and (path / "receipt.json").is_file()]
-    if len(candidates) != 1:
-        raise ValueError("v5 sealed evidence does not have one native session")
-    validated = bridge.validate_evidence(candidates[0])
-    receipt = json.loads((candidates[0] / "receipt.json").read_text(encoding="utf-8"))
-    session_id = receipt.get("run_id") if isinstance(validated, Mapping) and validated.get("valid") is True and isinstance(receipt, Mapping) else None
+    records: list[tuple[Path, Mapping[str, Any], Mapping[str, Any]]] = []
+    for candidate in candidates:
+        validated = bridge.validate_evidence(candidate)
+        manifest = json.loads((candidate / "manifest.json").read_text(encoding="utf-8"))
+        receipt = json.loads((candidate / "receipt.json").read_text(encoding="utf-8"))
+        if not isinstance(validated, Mapping) or validated.get("valid") is not True or not isinstance(manifest, Mapping) or not isinstance(receipt, Mapping):
+            raise ValueError("v5 sealed evidence is malformed")
+        records.append((candidate, manifest, receipt))
+    judges = [(manifest, receipt) for _, manifest, receipt in records if manifest.get("mode") == "judge"]
+    proofs = [(manifest, receipt) for _, manifest, receipt in records if manifest.get("mode") == "serialization-proof"]
+    if len(judges) != 1 or len(proofs) != 1 or len(records) != 2:
+        raise ValueError("v5 sealed evidence does not have one judge and one serialization session")
+    manifest, receipt = judges[0]
+    session_id = receipt.get("run_id") if manifest.get("run_id") == receipt.get("run_id") else None
     if not isinstance(session_id, str) or not session_id:
         raise ValueError("v5 sealed evidence lacks its native session identity")
     return session_id
 
 
-def _completion_payload(cell_root: Path, native_root: Path, cell: Mapping[str, Any], started: float, sealed_evidence_validator: Callable[[Path], str]) -> dict[str, Any]:
+def _sealed_elapsed_seconds(evidence_root: Path) -> float:
+    """Derive elapsed wall time from the two sealed bridge session timestamps."""
+    stamps: list[datetime] = []
+    for candidate in evidence_root.iterdir():
+        if not candidate.is_dir() or not (candidate / "manifest.json").is_file() or not (candidate / "receipt.json").is_file():
+            continue
+        manifest = json.loads((candidate / "manifest.json").read_text(encoding="utf-8"))
+        receipt = json.loads((candidate / "receipt.json").read_text(encoding="utf-8"))
+        if not isinstance(manifest, Mapping) or not isinstance(receipt, Mapping):
+            raise TypeError("v5 sealed evidence timestamps are malformed")
+        for value in (manifest.get("created_at"), receipt.get("sealed_at")):
+            if not isinstance(value, str):
+                raise TypeError("v5 sealed evidence lacks a timestamp")
+            stamps.append(datetime.fromisoformat(value.replace("Z", "+00:00")))
+    if len(stamps) != 4:
+        raise ValueError("v5 sealed evidence does not have the required timestamp geometry")
+    elapsed = (max(stamps) - min(stamps)).total_seconds()
+    if not 0 < elapsed < 100:
+        raise ValueError("v5 sealed evidence exceeds the frozen 100-second bound")
+    return elapsed
+
+
+def _completion_payload(cell_root: Path, native_root: Path, cell: Mapping[str, Any], started: float | None, sealed_evidence_validator: Callable[[Path], str], *, elapsed_seconds: float | None = None) -> dict[str, Any]:
     checkpoint = study.read_json(native_root / "responses" / "batch-0001.json", canonical_required=False)
     provider = checkpoint.get("provider")
     if not isinstance(provider, Mapping) or provider.get("requested") != {"model": study.MODEL, "reasoning_effort": "max"} or provider.get("logical_provider_request_count") != 1 or provider.get("physical_http_attempt_count") != 1 or provider.get("recovered_request_count") != 0 or provider.get("tool_free") is not True:
@@ -223,8 +264,8 @@ def _completion_payload(cell_root: Path, native_root: Path, cell: Mapping[str, A
     except Exception as error:
         raise ValueError("v5 native artifact envelope is not replayable") from error
     session_id = sealed_evidence_validator(evidence_path)
-    elapsed = time.monotonic() - started
-    if not 0 < elapsed < 100:
+    elapsed = elapsed_seconds if elapsed_seconds is not None else (time.monotonic() - started if started is not None else None)
+    if not isinstance(elapsed, (int, float)) or isinstance(elapsed, bool) or not 0 < elapsed < 100:
         raise ValueError("v5 completion exceeded the frozen 100-second bound")
     result = {
         "format_version": 1, "study_id": study.STUDY_ID, "kind": "provisional_breadth_only_completion",
@@ -236,28 +277,86 @@ def _completion_payload(cell_root: Path, native_root: Path, cell: Mapping[str, A
     return result
 
 
-def _completed_session(cell_root: Path, native_root: Path, cell: Mapping[str, Any], sealed_evidence_validator: Callable[[Path], str]) -> str:
-    receipt = study.read_json(cell_root / "completion-receipt.json")
-    if receipt.get("study_id") != study.STUDY_ID or receipt.get("kind") != "provisional_breadth_only_completion" or receipt.get("cell_id") != cell["cell_id"] or receipt.get("confirmed_provider_calls") != 1 or receipt.get("confirmed_process_launches") != 1:
-        raise ValueError("v5 completed receipt is malformed")
-    checkpoint = study.read_json(native_root / "responses" / "batch-0001.json", canonical_required=False)
-    provider = checkpoint.get("provider")
-    artifacts = provider.get("provider_artifacts") if isinstance(provider, Mapping) else None
-    if not isinstance(artifacts, Mapping):
-        raise TypeError("v5 completed receipt lacks native provider artifacts")
-    runner_module._validate_provider_artifacts(native_root, checkpoint)
-    evidence_path = native_root / str(artifacts.get("evidence_tree", {}).get("path", ""))
-    session_id = sealed_evidence_validator(evidence_path)
-    if receipt.get("native_contact_identity", {}).get("session_id") != session_id:
-        raise ValueError("v5 completed receipt session binding drifted")
-    return session_id
+def _receipt_session(cell_root: Path, native_root: Path, cell: Mapping[str, Any], receipt_name: str, sealed_evidence_validator: Callable[[Path], str]) -> str:
+    receipt = study.read_json(cell_root / receipt_name)
+    elapsed = receipt.get("elapsed_seconds")
+    expected = _completion_payload(cell_root, native_root, cell, None, sealed_evidence_validator, elapsed_seconds=elapsed)
+    if receipt_name == "completion-receipt.json":
+        if receipt != expected:
+            raise ValueError("v5 completed receipt is malformed or drifted")
+    else:
+        terminal = cell_root / "terminal-reconcile-required.json"
+        expected["kind"] = "reconciled_provisional_breadth_only_completion"
+        expected["reconciliation"] = {
+            "kind": "post_intent_read_only_replay",
+            "terminal_reconcile_required": study.fingerprint(terminal),
+        }
+        if receipt != expected:
+            raise ValueError("v5 reconciled completion is malformed or drifted")
+    session = expected["native_contact_identity"]["session_id"]
+    if not isinstance(session, str):
+        raise TypeError("v5 completed receipt lacks a session identity")
+    return session
 
 
-def _terminal_state(cell_root: Path, native_root: Path, cell: Mapping[str, Any], sealed_evidence_validator: Callable[[Path], str]) -> tuple[str, str | None]:
+def _predecessors(frozen: Mapping[str, Any], cell: Mapping[str, Any]) -> list[Mapping[str, Any]]:
+    cells = frozen.get("cells")
+    if not isinstance(cells, list):
+        raise TypeError("v5 frozen schedule is malformed")
+    for index, candidate in enumerate(cells):
+        if candidate.get("cell_id") == cell.get("cell_id"):
+            return cells[:index]
+    raise ValueError("v5 cell is outside the frozen schedule")
+
+
+def _snapshot_is_ordered(work_dir: Path, snapshot: Any, frozen: Mapping[str, Any], cell: Mapping[str, Any], sealed_evidence_validator: Callable[[Path], str]) -> bool:
+    predecessors = _predecessors(frozen, cell)
+    if snapshot is None:
+        return not predecessors
+    if not isinstance(snapshot, Mapping) or set(snapshot) != {"predecessors"}:
+        return False
+    records = snapshot.get("predecessors")
+    if not isinstance(records, list) or len(records) != len(predecessors):
+        return False
+    for record, predecessor in zip(records, predecessors, strict=True):
+        receipt = record.get("completion_receipt") if isinstance(record, Mapping) else None
+        if not isinstance(receipt, Mapping) or set(record) != {"cell_id", "state", "completion_receipt"}:
+            return False
+        if record.get("cell_id") != predecessor.get("cell_id") or record.get("state") not in {"completed", "reconciled"}:
+            return False
+        expected_receipt = "completion-receipt.json" if record["state"] == "completed" else "reconciled-completion.json"
+        if receipt.get("name") != expected_receipt or not isinstance(receipt.get("bytes"), int) or not isinstance(receipt.get("sha256"), str) or len(receipt["sha256"]) != 64:
+            return False
+        predecessor_root = _cell_root(work_dir, str(predecessor["cell_id"]))
+        try:
+            if study.fingerprint(predecessor_root / expected_receipt) != dict(receipt):
+                return False
+            state, _session = _terminal_state(predecessor_root, predecessor_root / "native-run", predecessor, work_dir, frozen, sealed_evidence_validator)
+        except (OSError, TypeError, ValueError):
+            return False
+        if state != record["state"]:
+            return False
+    return True
+
+
+def _predecessor_snapshot(work_dir: Path, frozen: Mapping[str, Any], cell: Mapping[str, Any], sealed_evidence_validator: Callable[[Path], str]) -> dict[str, Any]:
+    records: list[dict[str, Any]] = []
+    for predecessor in _predecessors(frozen, cell):
+        predecessor_root = _cell_root(work_dir, str(predecessor["cell_id"]))
+        state, _session = _terminal_state(predecessor_root, predecessor_root / "native-run", predecessor, work_dir, frozen, sealed_evidence_validator)
+        if state not in {"completed", "reconciled"}:
+            raise ValueError("v5 later-cell launch requires every predecessor to be durably completed")
+        receipt_name = "completion-receipt.json" if state == "completed" else "reconciled-completion.json"
+        records.append({"cell_id": predecessor["cell_id"], "state": state, "completion_receipt": study.fingerprint(predecessor_root / receipt_name)})
+    return {"predecessors": records}
+
+
+def _terminal_state(cell_root: Path, native_root: Path, cell: Mapping[str, Any], work_dir: Path, frozen: Mapping[str, Any], sealed_evidence_validator: Callable[[Path], str]) -> tuple[str, str | None]:
     completion = cell_root / "completion-receipt.json"
     reconcile = cell_root / "terminal-reconcile-required.json"
+    reconciled = cell_root / "reconciled-completion.json"
     intent = cell_root / "launch-intent.json"
-    present = [path for path in (completion, reconcile, intent) if path.exists()]
+    present = [path for path in (completion, reconcile, reconciled, intent) if path.exists()]
     if not present:
         return "new", None
     if not intent.exists():
@@ -265,9 +364,13 @@ def _terminal_state(cell_root: Path, native_root: Path, cell: Mapping[str, Any],
     intent_record = study.read_json(intent)
     if intent_record.get("study_id") != study.STUDY_ID or intent_record.get("cell_id") != cell["cell_id"] or intent_record.get("contact_state") != "pre_native_intent" or intent_record.get("confirmed_process_launches") != 0 or intent_record.get("confirmed_provider_calls") != 0 or intent_record.get("intended_maximum_process_launches") != 1 or intent_record.get("intended_maximum_provider_calls") != 1:
         raise ValueError("v5 launch intent is malformed")
+    if not _snapshot_is_ordered(work_dir, intent_record.get("predecessor_snapshot"), frozen, cell, sealed_evidence_validator):
+        return "historical_policy_violation", None
     if completion.exists() and not reconcile.exists() and intent.exists():
-        return "completed", _completed_session(cell_root, native_root, cell, sealed_evidence_validator)
-    if reconcile.exists() and not completion.exists() and intent.exists():
+        return "completed", _receipt_session(cell_root, native_root, cell, "completion-receipt.json", sealed_evidence_validator)
+    if reconcile.exists() and reconciled.exists() and not completion.exists() and intent.exists():
+        return "reconciled", _receipt_session(cell_root, native_root, cell, "reconciled-completion.json", sealed_evidence_validator)
+    if reconcile.exists() and not completion.exists() and not reconciled.exists() and intent.exists():
         record = study.read_json(reconcile)
         if record.get("study_id") != study.STUDY_ID or record.get("cell_id") != cell["cell_id"] or record.get("contact_state") != "ambiguous_after_intent" or record.get("confirmed_provider_calls") not in {0, 1} or record.get("confirmed_process_launches") not in {0, 1}:
             raise ValueError("v5 reconcile terminal record is malformed")
@@ -279,8 +382,8 @@ def _existing_sessions(work_dir: Path, frozen: Mapping[str, Any], sealed_evidenc
     sessions: set[str] = set()
     for cell in frozen["cells"]:
         cell_root = _cell_root(work_dir, str(cell["cell_id"]))
-        state, session = _terminal_state(cell_root, cell_root / "native-run", cell, sealed_evidence_validator)
-        if state == "completed":
+        state, session = _terminal_state(cell_root, cell_root / "native-run", cell, work_dir, frozen, sealed_evidence_validator)
+        if state in {"completed", "reconciled"}:
             if session in sessions:
                 raise ValueError("v5 completed cells reused a native Nous session")
             sessions.add(str(session))
@@ -296,10 +399,11 @@ def execute_one(work_dir: Path, *, cell_id: str, allow_remote: bool, runner: Cal
         raise TypeError("v5 cell is outside the frozen schedule")
     cell_root = _cell_root(work_dir, cell_id)
     existing_sessions = _existing_sessions(work_dir, frozen, sealed_evidence_validator)
-    terminal, session = _terminal_state(cell_root, cell_root / "native-run", cell, sealed_evidence_validator)
+    terminal, session = _terminal_state(cell_root, cell_root / "native-run", cell, work_dir, frozen, sealed_evidence_validator)
     if terminal != "new":
         return {"cell_id": cell_id, "state": "terminal_no_resend" if terminal == "completed" else terminal, "confirmed_provider_calls": 0, "confirmed_process_launches": 0, "session_id": session}
     records = _prepared_root(cell_root, cell)
+    _predecessor_snapshot(work_dir, frozen, cell, sealed_evidence_validator)
     native_root = cell_root / "native-run"
     if native_root.exists():
         raise ValueError("v5 refuses a pre-existing native run directory")
@@ -311,9 +415,10 @@ def execute_one(work_dir: Path, *, cell_id: str, allow_remote: bool, runner: Cal
         if launched:
             raise ValueError("v5 callback attempted a second provider launch")
         records = _prepared_root(cell_root, cell, allow_native_run=True)
+        predecessor_snapshot = _predecessor_snapshot(work_dir, frozen, cell, sealed_evidence_validator)
         checkpoint_prompt, schema_bytes = _native_precontact_dir(native_root)
         binding = _validate_callback_context(context, native_root, cell, records["prepared.json"], checkpoint_prompt, schema_bytes)
-        _write_new(cell_root / "launch-intent.json", {"format_version": 1, "study_id": study.STUDY_ID, "kind": "single_native_nous_launch_intent", "cell_id": cell_id, "prepared_sha256": study.sha(cell_root / "prepared.json"), "route_proof_sha256": study.sha(cell_root / "zero-new-spend-route-proof.json"), "callback": binding, "contact_state": "pre_native_intent", "confirmed_process_launches": 0, "confirmed_provider_calls": 0, "intended_maximum_process_launches": 1, "intended_maximum_provider_calls": 1})
+        _write_new(cell_root / "launch-intent.json", {"format_version": 1, "study_id": study.STUDY_ID, "kind": "single_native_nous_launch_intent", "cell_id": cell_id, "prepared_sha256": study.sha(cell_root / "prepared.json"), "route_proof_sha256": study.sha(cell_root / "zero-new-spend-route-proof.json"), "callback": binding, "predecessor_snapshot": predecessor_snapshot, "contact_state": "pre_native_intent", "confirmed_process_launches": 0, "confirmed_provider_calls": 0, "intended_maximum_process_launches": 1, "intended_maximum_provider_calls": 1})
         launched = True
 
     folder = Path(str(cell["input_folder"]))
@@ -343,9 +448,65 @@ def execute_one(work_dir: Path, *, cell_id: str, allow_remote: bool, runner: Cal
     return {"cell_id": cell_id, "state": "completed_provisional_breadth_only", "confirmed_provider_calls": 1, "confirmed_process_launches": 1, "receipt": receipt}
 
 
+def reconcile_existing(work_dir: Path, *, sealed_evidence_validator: Callable[[Path], str] = _sealed_session_id, elapsed_reader: Callable[[Path], float] = _sealed_elapsed_seconds) -> list[dict[str, Any]]:
+    """Replay native artifacts only; it never invokes a provider or runner."""
+    frozen = _load_frozen(work_dir)
+    sessions = _existing_sessions(work_dir, frozen, sealed_evidence_validator)
+    results: list[dict[str, Any]] = []
+    blocked_by: str | None = None
+    for cell in frozen["cells"]:
+        cell_id = str(cell["cell_id"])
+        cell_root = _cell_root(work_dir, cell_id)
+        native_root = cell_root / "native-run"
+        state, session = _terminal_state(cell_root, native_root, cell, work_dir, frozen, sealed_evidence_validator)
+        if state in {"completed", "reconciled"}:
+            if session in sessions:
+                results.append({"cell_id": cell_id, "state": state, "session_id": session})
+                continue
+            raise ValueError("v5 persisted completion session inventory drifted")
+        if state == "new":
+            results.append({"cell_id": cell_id, "state": "unstarted"})
+            continue
+        if state == "historical_policy_violation":
+            results.append({"cell_id": cell_id, "state": "historical_policy_violation_not_promoted"})
+            continue
+        if blocked_by is not None:
+            results.append({"cell_id": cell_id, "state": "historical_policy_violation_not_promoted", "blocked_by": blocked_by})
+            continue
+        try:
+            _prepared_root(cell_root, cell, allow_native_run=True, allowed_extra=frozenset({"launch-intent.json", "terminal-reconcile-required.json"}))
+            checkpoint = study.read_json(native_root / "responses" / "batch-0001.json", canonical_required=False)
+            provider = checkpoint.get("provider")
+            artifacts = provider.get("provider_artifacts") if isinstance(provider, Mapping) else None
+            if not isinstance(artifacts, Mapping):
+                raise TypeError("v5 terminal native result lacks provider artifacts")
+            evidence_root = native_root / str(artifacts.get("evidence_tree", {}).get("path", ""))
+            receipt = _completion_payload(cell_root, native_root, cell, None, sealed_evidence_validator, elapsed_seconds=elapsed_reader(evidence_root))
+            session = receipt["native_contact_identity"]["session_id"]
+            if session in sessions:
+                raise ValueError("v5 reconciled completion reused a native Nous session")
+            receipt["kind"] = "reconciled_provisional_breadth_only_completion"
+            receipt["reconciliation"] = {
+                "kind": "post_intent_read_only_replay",
+                "terminal_reconcile_required": study.fingerprint(cell_root / "terminal-reconcile-required.json"),
+            }
+            _write_new(cell_root / "reconciled-completion.json", receipt)
+            sessions.add(session)
+            results.append({"cell_id": cell_id, "state": "reconciled_completion_provisional_breadth_only", "session_id": session})
+        except Exception as error:  # noqa: BLE001 - a terminal root remains terminal until a complete replay validates.
+            blocked_by = cell_id
+            results.append({"cell_id": cell_id, "state": "reconcile_required", "error": {"class": type(error).__name__, "message": str(error)[:1000]}})
+    return results
+
+
 def execute(work_dir: Path, *, allow_remote: bool, timeout: float = 600, runner: Callable[..., Any] = run_judge, sealed_evidence_validator: Callable[[Path], str] = _sealed_session_id) -> list[dict[str, Any]]:
     frozen = _load_frozen(work_dir)
-    results = [execute_one(work_dir, cell_id=str(cell["cell_id"]), allow_remote=allow_remote, timeout=timeout, runner=runner, sealed_evidence_validator=sealed_evidence_validator) for cell in frozen["cells"]]
+    results: list[dict[str, Any]] = []
+    for cell in frozen["cells"]:
+        result = execute_one(work_dir, cell_id=str(cell["cell_id"]), allow_remote=allow_remote, timeout=timeout, runner=runner, sealed_evidence_validator=sealed_evidence_validator)
+        results.append(result)
+        if result.get("state") != "completed_provisional_breadth_only":
+            break
     sessions = [result["receipt"]["native_contact_identity"]["session_id"] for result in results if result.get("state") == "completed_provisional_breadth_only"]
     if len(sessions) != len(set(sessions)):
         raise ValueError("v5 cells reused a native Nous session")

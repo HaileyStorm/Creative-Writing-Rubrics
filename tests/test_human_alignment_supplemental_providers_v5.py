@@ -166,6 +166,21 @@ def test_three_cells_run_sequentially_with_distinct_native_sessions(monkeypatch,
     assert [result["receipt"]["native_contact_identity"]["session_id"] for result in results] == ["pilot-01", "pilot-02", "pilot-03"]
 
 
+def test_execute_stops_before_later_cells_after_first_terminal(monkeypatch, tmp_path: Path):
+    work, _ = prepared(monkeypatch, tmp_path); calls: list[str] = []
+    results = executor.execute(work, allow_remote=True, runner=fake_runner(calls, fail_after_callback=True), sealed_evidence_validator=lambda _: "session-1")
+    assert [result["state"] for result in results] == ["reconcile_required"]
+    assert calls == ["item-1"]
+    assert not (work / "cells" / "pilot-02" / "native-run").exists()
+
+
+def test_direct_later_execute_requires_completed_predecessor(monkeypatch, tmp_path: Path):
+    work, _ = prepared(monkeypatch, tmp_path); calls: list[str] = []
+    with pytest.raises(ValueError, match="predecessor"):
+        executor.execute_one(work, cell_id="pilot-02", allow_remote=True, runner=fake_runner(calls), sealed_evidence_validator=lambda _: "session-2")
+    assert calls == [] and not (work / "cells" / "pilot-02" / "native-run").exists()
+
+
 def test_postcontact_failure_is_terminal_reconcile_required(monkeypatch, tmp_path: Path):
     work, _ = prepared(monkeypatch, tmp_path); calls: list[str] = []
     result = executor.execute_one(work, cell_id="pilot-01", allow_remote=True, runner=fake_runner(calls, fail_after_callback=True), sealed_evidence_validator=lambda _: "session-1")
@@ -190,6 +205,116 @@ def test_duplicate_prior_session_is_revalidated_and_terminal(monkeypatch, tmp_pa
     result = executor.execute_one(work, cell_id="pilot-02", allow_remote=True, runner=fake_runner(calls), sealed_evidence_validator=session)
     assert result["state"] == "reconcile_required" and verified
     assert (work / "cells" / "pilot-02" / "terminal-reconcile-required.json").is_file()
+
+
+def _replace_completion_with_terminal(work: Path, cell_id: str) -> None:
+    root = work / "cells" / cell_id
+    (root / "completion-receipt.json").unlink()
+    study.immutable_json(root / "terminal-reconcile-required.json", {
+        "format_version": 1, "study_id": study.STUDY_ID, "kind": "postlaunch_terminal_reconcile_required",
+        "cell_id": cell_id, "contact_state": "ambiguous_after_intent", "confirmed_process_launches": 0,
+        "confirmed_provider_calls": 0, "error": {"class": "Fixture", "message": "post-intent"},
+        "retry_policy": "no_resend_fresh_successor_only",
+    })
+
+
+def _synthetic_terminal_cell(work: Path, calls: list[str], cell_id: str, *, predecessor_snapshot: dict | None = None) -> Path:
+    root = work / "cells" / cell_id
+    cell = study.read_json(root / "schedule.json")["cell"]
+    fake_runner(calls)(artifact_id=cell["item_id"], output_dir=root / "native-run", question_ids=cell["question_ids"], before_provider_attempt=lambda _: None)
+    intent = {
+        "format_version": 1, "study_id": study.STUDY_ID, "kind": "single_native_nous_launch_intent", "cell_id": cell_id,
+        "prepared_sha256": study.sha(root / "prepared.json"), "route_proof_sha256": study.sha(root / "zero-new-spend-route-proof.json"),
+        "callback": {}, "contact_state": "pre_native_intent", "confirmed_process_launches": 0, "confirmed_provider_calls": 0,
+        "intended_maximum_process_launches": 1, "intended_maximum_provider_calls": 1,
+    }
+    if predecessor_snapshot is not None:
+        intent["predecessor_snapshot"] = predecessor_snapshot
+    study.immutable_json(root / "launch-intent.json", intent)
+    study.immutable_json(root / "terminal-reconcile-required.json", {
+        "format_version": 1, "study_id": study.STUDY_ID, "kind": "postlaunch_terminal_reconcile_required", "cell_id": cell_id,
+        "contact_state": "ambiguous_after_intent", "confirmed_process_launches": 0, "confirmed_provider_calls": 0,
+        "error": {"class": "Fixture", "message": "out-of-order"}, "retry_policy": "no_resend_fresh_successor_only",
+    })
+    return root
+
+
+def test_reconcile_existing_replays_complete_native_artifacts_without_runner(monkeypatch, tmp_path: Path):
+    work, _ = prepared(monkeypatch, tmp_path); calls: list[str] = []
+    assert executor.execute_one(work, cell_id="pilot-01", allow_remote=True, runner=fake_runner(calls), sealed_evidence_validator=lambda _: "session-1")["state"] == "completed_provisional_breadth_only"
+    _replace_completion_with_terminal(work, "pilot-01")
+    results = executor.reconcile_existing(work, sealed_evidence_validator=lambda _: "session-1", elapsed_reader=lambda _: 1.0)
+    root = work / "cells" / "pilot-01"
+    assert results[0] == {"cell_id": "pilot-01", "state": "reconciled_completion_provisional_breadth_only", "session_id": "session-1"}
+    assert (root / "terminal-reconcile-required.json").is_file() and (root / "reconciled-completion.json").is_file()
+    assert calls == ["item-1"]
+
+
+def test_reconciled_predecessor_permits_later_fresh_launch(monkeypatch, tmp_path: Path):
+    work, _ = prepared(monkeypatch, tmp_path); calls: list[str] = []
+    assert executor.execute_one(work, cell_id="pilot-01", allow_remote=True, runner=fake_runner(calls), sealed_evidence_validator=lambda root: root.parent.parent.parent.name)["state"] == "completed_provisional_breadth_only"
+    _replace_completion_with_terminal(work, "pilot-01")
+    assert executor.reconcile_existing(work, sealed_evidence_validator=lambda root: root.parent.parent.parent.name, elapsed_reader=lambda _: 1.0)[0]["state"] == "reconciled_completion_provisional_breadth_only"
+    result = executor.execute_one(work, cell_id="pilot-02", allow_remote=True, runner=fake_runner(calls), sealed_evidence_validator=lambda root: root.parent.parent.parent.name)
+    assert result["state"] == "completed_provisional_breadth_only" and calls == ["item-1", "item-2"]
+    intent = study.read_json(work / "cells" / "pilot-02" / "launch-intent.json")
+    assert intent["predecessor_snapshot"]["predecessors"][0]["state"] == "reconciled"
+
+
+def test_reconcile_existing_preserves_later_historical_policy_violation(monkeypatch, tmp_path: Path):
+    work, _ = prepared(monkeypatch, tmp_path); calls: list[str] = []
+    assert executor.execute_one(work, cell_id="pilot-01", allow_remote=True, runner=fake_runner(calls), sealed_evidence_validator=lambda _: "session-1")["state"] == "completed_provisional_breadth_only"
+    _replace_completion_with_terminal(work, "pilot-01")
+    second = _synthetic_terminal_cell(work, calls, "pilot-02")
+    first = work / "cells" / "pilot-01"
+    results = executor.reconcile_existing(work, sealed_evidence_validator=lambda root: root.parent.parent.parent.name, elapsed_reader=lambda _: 1.0)
+    assert results[0]["state"] == "reconciled_completion_provisional_breadth_only"
+    assert results[1] == {"cell_id": "pilot-02", "state": "historical_policy_violation_not_promoted"}
+    assert (first / "reconciled-completion.json").is_file() and not (second / "reconciled-completion.json").exists()
+
+
+def test_reconcile_existing_marks_later_terminal_historical_when_predecessor_never_started(monkeypatch, tmp_path: Path):
+    work, _ = prepared(monkeypatch, tmp_path); calls: list[str] = []
+    second = _synthetic_terminal_cell(work, calls, "pilot-02")
+    results = executor.reconcile_existing(work, sealed_evidence_validator=lambda _: "session-2", elapsed_reader=lambda _: 1.0)
+    assert results[:2] == [{"cell_id": "pilot-01", "state": "unstarted"}, {"cell_id": "pilot-02", "state": "historical_policy_violation_not_promoted"}]
+    assert not (second / "reconciled-completion.json").exists()
+
+
+def test_reconcile_existing_rejects_forged_predecessor_receipt_hash(monkeypatch, tmp_path: Path):
+    work, _ = prepared(monkeypatch, tmp_path); calls: list[str] = []
+    assert executor.execute_one(work, cell_id="pilot-01", allow_remote=True, runner=fake_runner(calls), sealed_evidence_validator=lambda _: "session-1")["state"] == "completed_provisional_breadth_only"
+    receipt = study.fingerprint(work / "cells" / "pilot-01" / "completion-receipt.json")
+    receipt["sha256"] = "f" * 64
+    second = _synthetic_terminal_cell(work, calls, "pilot-02", predecessor_snapshot={"predecessors": [{"cell_id": "pilot-01", "state": "completed", "completion_receipt": receipt}]})
+    results = executor.reconcile_existing(work, sealed_evidence_validator=lambda _: "session-1", elapsed_reader=lambda _: 1.0)
+    assert results[1] == {"cell_id": "pilot-02", "state": "historical_policy_violation_not_promoted"}
+    assert not (second / "reconciled-completion.json").exists()
+
+
+def test_reconcile_existing_rejects_absent_predecessor_receipt(monkeypatch, tmp_path: Path):
+    work, _ = prepared(monkeypatch, tmp_path); calls: list[str] = []
+    assert executor.execute_one(work, cell_id="pilot-01", allow_remote=True, runner=fake_runner(calls), sealed_evidence_validator=lambda _: "session-1")["state"] == "completed_provisional_breadth_only"
+    receipt = study.fingerprint(work / "cells" / "pilot-01" / "completion-receipt.json")
+    _replace_completion_with_terminal(work, "pilot-01")
+    second = _synthetic_terminal_cell(work, calls, "pilot-02", predecessor_snapshot={"predecessors": [{"cell_id": "pilot-01", "state": "completed", "completion_receipt": receipt}]})
+    results = executor.reconcile_existing(work, sealed_evidence_validator=lambda _: "session-1", elapsed_reader=lambda _: 1.0)
+    assert results[0]["state"] == "reconciled_completion_provisional_breadth_only"
+    assert results[1] == {"cell_id": "pilot-02", "state": "historical_policy_violation_not_promoted"}
+    assert not (second / "reconciled-completion.json").exists()
+
+
+def test_dynamic_bridge_import_registers_dataclass_module(monkeypatch, tmp_path: Path):
+    bridge = tmp_path / "bridge.py"
+    bridge.write_text("from dataclasses import dataclass\n@dataclass\nclass Record:\n    value: str\ndef validate_evidence(path):\n    return {'valid': Record('ok').value == 'ok'}\n", encoding="utf-8")
+    original = importlib.util.spec_from_file_location
+    monkeypatch.setattr(importlib.util, "spec_from_file_location", lambda name, _: original(name, bridge))
+    evidence = tmp_path / "evidence"
+    for name, mode in (("proof", "serialization-proof"), ("judge", "judge")):
+        child = evidence / name; child.mkdir(parents=True)
+        (child / "manifest.json").write_text(json.dumps({"mode": mode, "run_id": "native-session"}), encoding="utf-8")
+        (child / "receipt.json").write_text(json.dumps({"run_id": "native-session"}), encoding="utf-8")
+    assert executor._sealed_session_id(evidence) == "native-session"
 
 
 def test_tampered_prepared_or_native_envelope_is_rejected(monkeypatch, tmp_path: Path):
