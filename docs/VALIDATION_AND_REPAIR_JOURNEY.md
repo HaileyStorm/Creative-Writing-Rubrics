@@ -323,6 +323,18 @@ and may only veto, while confirmation, promotion, and runtime use remain
 closed. The 52 local lifecycle receipts are complete; native endpoint-contact
 cardinality remains unproven.
 
+The matched Sol veto then completed all **39 frozen child cells** over the same
+13 development items and seven equal-weight prompt groups. Replaying every
+persisted receipt and target vector kept endpoint metrics separate: the
+construct-framing child scored **1.1371 MAE** and the scope-materiality child
+**1.1448**, both worse than the exact Sol parent at **1.1167**, so Sol vetoed
+them. The missing-evidence referent child scored **1.0101**, **9.54% below**
+that parent, and is the only child that survived the veto. All **234 coverage
+flags** were true. This cross-model development result is encouraging but
+still deliberately narrow: confirmation remains unopened, there is no
+promotion or runtime decision, endpoint scores are not pooled, and native
+endpoint-contact cardinality remains unproven.
+
 ## Negative evidence changed the operating model
 
 The most productive progress did not always look like a new wording change.
