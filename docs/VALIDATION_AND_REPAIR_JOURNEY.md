@@ -296,6 +296,17 @@ descendant 13. The Sol run completed 21 local lifecycles without resend; native
 endpoint-contact cardinality remains unproven, and the comparison does not pool
 judges or reopen confirmation.
 
+The three other lower-step mechanisms were then checked on Sol rather than
+discarded from their Grok ordering alone. Temporal causality was the closest at
+**1.1452 MAE**, followed by sustained stakes at **1.1631** and speaker
+attribution at **1.1718**. All three remained better than the original
+**1.2492** baseline, but all three were worse than descendant 13 at **1.1167**.
+One temporal-causality response marked Relevance coverage false, so the
+21-cell aggregate is explicitly provisional descriptive evidence. It does not
+select a successor. This negative extension narrowed the next wave: retain
+descendant 13 and test three smaller referent clauses across all 13 existing
+development items, with confirmation and Fresh96 still closed.
+
 ## Negative evidence changed the operating model
 
 The most productive progress did not always look like a new wording change.
