@@ -268,6 +268,25 @@ excluded rather than counted as extra observations. This is partial validation
 of the same-direction effect, not another confirmation split or a claim of
 generalization.
 
+The next continuation deliberately turned the learning rate down again. Four
+one-factor children of that prior Grok development winner changed only speaker
+attribution, temporal causality, sustained stakes, or referent resolution.
+The first executor exposed a Windows slot-visibility fault before provider
+contact; its fresh root is immutable zero-contact prelaunch evidence. Its
+successor fixed that observation, then uncovered a staged-prompt callback
+mismatch before provider contact; that separate fresh root is likewise
+immutable zero-contact evidence. Neither root was resumed. The next fresh,
+staged execution completed all 35 planned Grok development cells (five
+candidates across seven frozen groups). An independent replay selected the
+referent-resolution child, reducing equal-group development MAE by **2.22%**.
+
+That smaller result is useful directionally, not a new product claim. Native
+endpoint-contact cardinality remains unproven, and this wave has no Sol
+validation, confirmation, generalization, promotion, runtime, or endpoint
+pooling result. The lower-step continuation is therefore a development lead
+for the next endpoint-separated check, not evidence that the public profile
+should change.
+
 ## Negative evidence changed the operating model
 
 The most productive progress did not always look like a new wording change.
