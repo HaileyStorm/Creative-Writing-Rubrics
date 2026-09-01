@@ -507,3 +507,34 @@ or `Searching workspace` responses. The earlier desc17 package remains
 immutable operational history, but its semantic and generalization conclusions
 are withdrawn. This correction is limited to desc17; it does not reinterpret
 the separate desc15, desc16, or Fresh88 evidence.
+
+## Desc18: recovering a completed wave and testing the retained profile
+
+An app-reset recovery found a narrow admission bug in the desc18 Grok wave:
+the executor expected canonical JSON bytes, while Grok had persisted valid
+pretty-printed native envelopes. All **64** outputs were already present, so
+the source root was kept immutable and a distinct, zero-call reconciliation
+replayed them instead of resending any work. The
+[reconciliation package](../evaluation-results/hbq-human-alignment-optimizer-v9-desc18-broad-replication-grok-reconcile-v1/README.md)
+was pushed at [`b33c501`](https://github.com/HaileyStorm/Creative-Writing-Rubrics/commit/b33c501c4d6b87a90d6a5d307f7e025839e4afec).
+
+On the same public/open Fresh96 development slice, child20 reduced Grok
+equal-group MAE from **0.7951389** to **0.7795139** (**1.965%**). It was no
+worse under all six frozen robustness settings. The provider-free
+[development optimizer](../evaluation-results/hbq-human-alignment-optimizer-v9-desc18-broad-replication-development-optimizer-v1/README.md),
+pushed at [`4fe1329`](https://github.com/HaileyStorm/Creative-Writing-Rubrics/commit/4fe1329b05deb0030c80b5d0f1904d807cf6674e),
+used the real Optuna grid for **12 of 12** trials and recorded two DSPy
+examples, with zero LM calls.
+
+The frozen qualification then opened the matched Sol veto, not a Sol-selected
+replacement. The [executor](../evaluation-results/hbq-human-alignment-optimizer-v9-desc18-broad-replication-sol-veto-exec-v1/README.md)
+at [`926f8f1`](https://github.com/HaileyStorm/Creative-Writing-Rubrics/commit/926f8f158d2551c2edb6ba40888d875a1aaf18a8)
+and its [recomputed result](../evaluation-results/hbq-human-alignment-optimizer-v9-desc18-broad-replication-sol-veto-result-v1/README.md)
+at [`2edd54b`](https://github.com/HaileyStorm/Creative-Writing-Rubrics/commit/2edd54b)
+showed Sol MAE falling from **1.1751736** to **1.0699653** (**8.9526%**),
+with all **384 of 384** coverage flags true. Child20 therefore survives this
+development veto.
+
+This is still open-development evidence only. It opens no new confirmation,
+generalization, runtime, or promotion claim; endpoint results are separate,
+and native endpoint-contact cardinality remains unproven.
