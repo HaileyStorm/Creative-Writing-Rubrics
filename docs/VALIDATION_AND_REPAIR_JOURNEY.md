@@ -706,3 +706,28 @@ IDs were unique, and no anomalies were observed. Native contact cardinality
 and attestation remain unproven. This remains endpoint-separated TRAIN
 development evidence and does not authorize confirmation, generalization,
 selection, promotion, runtime, or pooling.
+
+## A separate V12 development checkpoint made the calibration limit plainer
+
+The [V14 DSPy development checkpoint](../evaluation-results/hbq-human-alignment-optimizer-v14-dspy-train-pilot-v1/DEVELOPMENT.md)
+measured the same frozen DSPy descendant against unchanged child20 on 13 V12
+development items, 7 groups, and 26 Grok cells. Equal-group item MAE moved
+from `0.9642857142857143` to `0.763888888888889` (`20.78189300411522%`; five
+group wins and two losses). A fixed, non-fitted constant-3 diagnostic was
+`0.7658730158730158`, only `0.001984126984126866` above the DSPy result. This
+is useful calibration context, not a candidate, vote, or selection rule.
+
+The descriptive average-tie Spearman readout was higher in only Relevance and
+Surprise, and lower in the other four dimensions at both the item and
+group-mean units. All 156 finite numeric scores were retained, including one
+all-zero vector; no coverage flag was false. Direct raw replay checked schedule
+payload bindings, CSV target reconstruction, native receipt/response digest
+agreement, and 26 unique request and session identities. The physical schedule
+file digest and its canonical semantic schedule digest are deliberately distinct
+commitments, recorded in the [public aggregate](../evaluation-results/hbq-human-alignment-optimizer-v14-dspy-train-pilot-v1/development-result.json).
+
+Sol development measurement is pending and no Sol result is inferred from this
+Grok checkpoint. It remains in-sample development evidence only: it creates no
+confirmation, generalization, endpoint pooling, promotion, runtime, or
+automatic dispatch authority. Frozen predecessor optimizer packages remain
+history for their different inputs, not runtime dependencies.

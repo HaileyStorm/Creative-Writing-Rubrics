@@ -1,0 +1,89 @@
+{
+  "analysis_rule": {
+    "coverage": "include_every_finite_numeric_score_even_when_coverage_is_false",
+    "primary": "absolute_error_per_item_then_mean_within_each_prompt_group_then_equal_mean_across_7_prompt_groups",
+    "rank_correlations": "average_tie_Spearman_per_dimension; descriptive_only; no_p_values"
+  },
+  "authority": {
+    "confirmation": "none",
+    "development_in_sample_only": true,
+    "endpoint_pooling": "forbidden",
+    "generalization": "none",
+    "promotion": "none",
+    "runtime": "none",
+    "selection": "none",
+    "sol_development": "pending_not_measured"
+  },
+  "candidates": {
+    "child20": "broader-nextwave-20-missing_evidence_not_no-referent-evidence",
+    "dspy_descendant": {
+      "candidate_id": "candidate-62195a3b90edd96d",
+      "candidate_sha256": "62195a3b90edd96d619279b5e229f78862b971ba44d10de86468dee6badbe9e4",
+      "instruction_sha256": "a62778cd4ad4612bb8efc6ac3ec82e49da7dc0c933c4c70f086d51304cdf957c",
+      "profile_sha256": "07cd3652f4792aef082a0e2d9d615229013663b14599abd011637daf8f185a20"
+    }
+  },
+  "comparison": {
+    "child20_equal_group_mae": 0.9642857142857143,
+    "dspy_descendant_equal_group_mae": 0.763888888888889,
+    "dspy_minus_child20": -0.20039682539682535,
+    "dspy_minus_fixed_three": -0.001984126984126866,
+    "dspy_vs_child20_group_wins_ties_losses": [5, 0, 2],
+    "dspy_vs_fixed_three_group_wins_ties_losses": [4, 0, 3],
+    "fixed_three_equal_group_mae": 0.7658730158730158,
+    "fixed_three_relative_reduction_by_dspy": 0.00259067357512938,
+    "relative_reduction_by_dspy": 0.2078189300411522,
+    "strict_primary_mae_improvement": true
+  },
+  "coverage": {
+    "all_zero_score_vectors_retained": 1,
+    "finite_numeric_scores_retained": true,
+    "false_coverage_flags": 0,
+    "score_dimensions": 6,
+    "scored_dimensions": 156
+  },
+  "endpoint": {
+    "grok_primary": {
+      "model": "grok-4.6",
+      "payloads": 26,
+      "provider_attested": false,
+      "reasoning": "high",
+      "reported_model": "grok-4.6-build",
+      "tools": "off"
+    },
+    "sol_development": {"status": "pending_not_measured"}
+  },
+  "format_version": 1,
+  "geometry": {"grok_cells": 26, "items": 13, "prompt_groups": 7},
+  "integrity": {
+    "grok_and_later_sol_schedule_payload_sha256s_match": true,
+    "native_endpoint_contact_cardinality": "unproven",
+    "unique_native_requests": 26,
+    "unique_native_sessions": 26,
+    "raw_native_response_and_receipt_digests_agree": true,
+    "schedule_file_bytes_sha256": "eaef1e6d25e4a6ac1fb4a55d5924f6c34bf651a42ba390ed581bc7ce7b4ac8c8",
+    "schedule_semantic_sha256": "de024cc4e7bd548b6a73cdbe6424f996d4ffece4399bf651c235f8ae7219a8b2"
+  },
+  "kind": "receipt_derived_26_cell_grok_dspy_child20_development_checkpoint",
+  "rank_correlations": {
+    "definition": "average_tie_Spearman; higher_is_better; descriptive_only",
+    "group_mean_7": {
+      "child20": {"Coherence": 0.36181361349331637, "Complexity": 0.19418390934515434, "Empathy": 0.11157311356586717, "Engagement": 0.8249579113843054, "Relevance": -0.23145502494313785, "Surprise": -0.09128709291752768},
+      "dspy_descendant": {"Coherence": -0.14817355731532722, "Complexity": -0.21182963643408087, "Empathy": 0.10393492741038726, "Engagement": -0.4260064336151292, "Relevance": -0.05976143046671969, "Surprise": 0.44780186120543974},
+      "higher_dimensions": ["Relevance", "Surprise"],
+      "lower_dimensions": ["Coherence", "Empathy", "Engagement", "Complexity"]
+    },
+    "item_13": {
+      "child20": {"Coherence": 0.18658444088846715, "Complexity": 0.1624721686591964, "Empathy": 0.18885817045805692, "Engagement": 0.22645540682891915, "Relevance": -0.20043894080075436, "Surprise": 0.20150400674502605},
+      "dspy_descendant": {"Coherence": 0.056426570655454096, "Complexity": -0.20135518909541097, "Empathy": 0.0, "Engagement": -0.13608276348795434, "Relevance": 0.06775245737407602, "Surprise": 0.21198965429135935},
+      "higher_dimensions": ["Relevance", "Surprise"],
+      "lower_dimensions": ["Coherence", "Empathy", "Engagement", "Complexity"]
+    }
+  },
+  "source": {
+    "development_contract_sha256": "37dd1f1a9f26dc7091bcafb7c49ddd03d891c0ec12cdab028535a89bbf679994",
+    "development_source_commit": "3cda5ef",
+    "development_source_sha256": "48cff43b8ba31962eaf618af1f70c18fd9581e9d59a8da62bf646cf7a2317fa8"
+  },
+  "study_id": "hbq-human-alignment-optimizer-v14-dspy-development-panel-v1"
+}
