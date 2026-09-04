@@ -3,12 +3,12 @@
   "study_id": "hbq-multisample-repeatability-v1",
   "package_files": {
     "README.md": {
-      "bytes": 3920,
-      "sha256": "5c283478582c68d88e010b7d5071b73a7499bf0463304015c57cf4dd6cb9f263"
+      "bytes": 4164,
+      "sha256": "66e8c100ac32c73eeac1d7881d9aad844aa99667f8cc4945fc96e6916723ba46"
     },
     "result.json": {
-      "bytes": 5452,
-      "sha256": "b72bcc92bff396a6a13b35d98cfe12dccaa3d7d9275196e8ab2110b8164c2186"
+      "bytes": 5894,
+      "sha256": "54ce84aa498b9d6867d9db54d8d8854d0735a2ad1171f634fffd62bb0d8d2ab6"
     },
     "repeatability-and-alignment.svg": {
       "bytes": 4998,

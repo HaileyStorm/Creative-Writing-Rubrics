@@ -19,12 +19,12 @@
     "metric": "native_scale_normalized_within_input_variation",
     "interpretation": "lower normalized MAPD and SD indicate less within-input variation; native scales are not cross-compared",
     "arms": [
-      {"arm": "hbq_short_story_batch32", "normalized_mapd": 0.025280018181818176, "normalized_sample_sd": 0.02206794454379392},
-      {"arm": "compact_analytic", "normalized_mapd": 0.009090909090909092, "normalized_sample_sd": 0.010163945352271771},
-      {"arm": "holistic_anchored", "normalized_mapd": 0.00909090909090909, "normalized_sample_sd": 0.008298826628866152},
-      {"arm": "cambridge_igcse_0500_p2_mj_2024", "normalized_mapd": 0.029545454545454545, "normalized_sample_sd": 0.026810679358746935},
-      {"arm": "naplan_narrative_2022", "normalized_mapd": 0.030560928433268856, "normalized_sample_sd": 0.027044545371490206},
-      {"arm": "oregon_narrative_2017", "normalized_mapd": 0.03272727272727272, "normalized_sample_sd": 0.03136837488478225}
+      {"arm": "hbq_short_story_batch32", "normalized_mapd": 0.025280018181818176, "normalized_sample_sd": 0.02206794454379392, "distinct_item_mean_count": 10},
+      {"arm": "compact_analytic", "normalized_mapd": 0.009090909090909092, "normalized_sample_sd": 0.010163945352271771, "distinct_item_mean_count": 2},
+      {"arm": "holistic_anchored", "normalized_mapd": 0.00909090909090909, "normalized_sample_sd": 0.008298826628866152, "distinct_item_mean_count": 2},
+      {"arm": "cambridge_igcse_0500_p2_mj_2024", "normalized_mapd": 0.029545454545454545, "normalized_sample_sd": 0.026810679358746935, "distinct_item_mean_count": 10},
+      {"arm": "naplan_narrative_2022", "normalized_mapd": 0.030560928433268856, "normalized_sample_sd": 0.027044545371490206, "distinct_item_mean_count": 9},
+      {"arm": "oregon_narrative_2017", "normalized_mapd": 0.03272727272727272, "normalized_sample_sd": 0.03136837488478225, "distinct_item_mean_count": 8}
     ],
     "paired_prompt_cluster_bootstrap_vs_hbq": {
       "unit": "prompt_cluster",
@@ -54,6 +54,7 @@
       {"arm": "naplan_narrative_2022", "pooled_descriptive_rho": 0.6255772980187957},
       {"arm": "oregon_narrative_2017", "pooled_descriptive_rho": 0.0320373682108383}
     ],
+    "low_discrimination_limit": "compact_analytic and holistic_anchored each have two distinct item means overall and one distinct item mean in the later five-item cohort; their descriptive rho values do not establish robust item-level discrimination.",
     "hbq_version_cohorts": [
       {"cohort": "original_rubric_v1_0_0", "item_count": 6, "cell_count": 30, "rho": 0.7142857142857143},
       {"cohort": "v8_rubric_v1_2_1", "item_count": 5, "cell_count": 25, "rho": -0.872081599272381}

@@ -19,6 +19,8 @@ The frozen study comprises 11 items in 10 prompt clusters, each scored five time
 | NAPLAN narrative | 0.030561 | 0.027045 | 0.625577 |
 | Oregon narrative | 0.032727 | 0.031368 | 0.032037 |
 
+The compact-analytic and holistic-anchored arms each have only two distinct item means across this panel and are constant in the later five-item cohort. Their displayed rho values therefore do not demonstrate robust item-level discrimination.
+
 \* HBQ's pooled rho is explicitly non-primary: its two rubric-version cohorts differ in both rubric version and items. The original cohort has 6 items / 30 cells and rho 0.714286; the later cohort has 5 items / 25 cells and rho -0.872082. Across all 11 HBQ items there are 10 distinct repeat-mean values (6 in the original cohort and 4 in the later cohort). Neither the pooled value nor the between-cohort difference supports a wording, version, or causal claim.
 
 The paired, 10-prompt-cluster bootstrap compares each arm's normalized MAPD with HBQ (arm minus HBQ; negative favors lower variation):
