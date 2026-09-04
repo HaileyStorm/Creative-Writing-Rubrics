@@ -561,3 +561,10 @@ One baseline Empathy coverage flag is false; its numeric score remains in MAE,
 and the child has complete coverage. Endpoints remain separate, native contact
 cardinality is unproven, and this does not promote a runtime profile or repair
 the original full-rubric correlation result by implication.
+
+The [literal child20 export](../evaluation-results/hbq-human-alignment-optimizer-v10-child20-development-profile-v1/)
+makes that result usable for opt-in development: the unchanged 794-byte
+instruction and 1,644-byte profile reconstruct exactly from the frozen V10
+candidate. Its verifier binds both endpoint results and needs no private study
+root or provider call. Child13 remains preserved as the parent; no automatic
+runtime promotion or Linux/Flash-Next claim is added.

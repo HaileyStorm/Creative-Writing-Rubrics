@@ -73,6 +73,10 @@ evidence that the two judges are interchangeable. They validate this prompt
 comparison within Fresh96, not the original full-rubric HANNA correlation or
 general literary quality. No runtime promotion follows automatically.
 
+The [opt-in child20 development profile](../evaluation-results/hbq-human-alignment-optimizer-v10-child20-development-profile-v1/)
+publishes the exact frozen instruction and profile text with a provider-free
+verifier. It does not change a runtime default or establish Flash-Next support.
+
 ## Held-back revision comparison
 
 The [four-item held-back result](../evaluation-results/cwr-guided-revision-gain-v6-heldout-result-v1/)
