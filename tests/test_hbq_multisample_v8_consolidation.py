@@ -495,6 +495,8 @@ def test_derived_analyzer_selects_only_six_checkpoints_without_mutating_attempt_
 
     assert derived_source == original_source.replace(
         module.LEGACY_ACCEPTED_CHECKPOINT_GLOB, module.EXACT_ACCEPTED_CHECKPOINT_GLOB
+    ).replace(
+        module.LEGACY_HBQ_MANIFEST_BINDING, module.DERIVED_HBQ_MANIFEST_BINDING
     ).replace(module.LEGACY_PROMPT_BINDING_BLOCK, module.DERIVED_PROMPT_BINDING_BLOCK)
     assert len(list(responses.glob("batch-*.json"))) == 12
     assert [path.name for path in sorted(responses.glob("batch-[0-9][0-9][0-9][0-9].json"))] == [
@@ -502,6 +504,42 @@ def test_derived_analyzer_selects_only_six_checkpoints_without_mutating_attempt_
     ]
     assert {path: path.read_bytes() for path in attempts} == attempts
     assert all(path.exists() for path in attempts)
+
+
+def test_derived_manifest_binding_accepts_only_versions_3_and_4_with_full_configuration_hash() -> None:
+    module = _module()
+    configuration = {
+        "provider": "codex",
+        "model": "fixture-model",
+        "retry_semantics": "cumulative_batch_attempts_v1",
+        "evidence_normalization_policy": {"mode": "strict"},
+        "validation_feedback_policy": {"enabled": True},
+        "unrelated_frozen_setting": "must-remain-bound",
+    }
+    digest = hashlib.sha256(module._canonical(configuration)).hexdigest()
+
+    def accepted(manifest: dict[str, Any], candidate: dict[str, Any]) -> bool:
+        return manifest.get("format_version") in {3, 4} and manifest.get("config_sha256") == hashlib.sha256(module._canonical(candidate)).hexdigest()
+
+    assert module.DERIVED_HBQ_MANIFEST_BINDING == (
+        '        if manifest.get("format_version") not in {3, 4} or manifest.get("config_sha256") '
+        '!= hashlib.sha256(_json_bytes(config)).hexdigest():\n'
+        '            raise ValueError("HBQ manifest configuration binding is invalid")\n'
+    )
+    assert all(accepted({"format_version": version, "config_sha256": digest}, configuration) for version in (3, 4))
+    assert not accepted({"config_sha256": digest}, configuration)
+    assert not accepted({"format_version": 5, "config_sha256": digest}, configuration)
+    assert not accepted({"format_version": 3, "config_sha256": "0" * 64}, configuration)
+
+    for key, replacement in (
+        ("retry_semantics", "other"),
+        ("evidence_normalization_policy", {"mode": "other"}),
+        ("validation_feedback_policy", {"enabled": False}),
+        ("unrelated_frozen_setting", "drifted"),
+    ):
+        mutated = {**configuration, key: replacement}
+        assert hashlib.sha256(module._canonical(mutated)).hexdigest() != digest
+        assert not accepted({"format_version": 4, "config_sha256": digest}, mutated)
 
 
 def test_derived_prompt_binding_allows_only_pinned_pairs_and_exact_schema() -> None:

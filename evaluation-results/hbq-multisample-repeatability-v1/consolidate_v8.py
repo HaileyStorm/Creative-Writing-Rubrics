@@ -102,6 +102,8 @@ SUPPORT_FILES = {
 }
 LEGACY_ACCEPTED_CHECKPOINT_GLOB = 'checkpoints = sorted((path / "responses").glob("batch-*.json"))'
 EXACT_ACCEPTED_CHECKPOINT_GLOB = 'checkpoints = sorted((path / "responses").glob("batch-[0-9][0-9][0-9][0-9].json"))'
+LEGACY_HBQ_MANIFEST_BINDING = '        if manifest.get("format_version") != 3 or manifest.get("config_sha256") != hashlib.sha256(_json_bytes(config)).hexdigest():\n            raise ValueError("HBQ manifest-v3 configuration binding is invalid")\n'
+DERIVED_HBQ_MANIFEST_BINDING = '        if manifest.get("format_version") not in {3, 4} or manifest.get("config_sha256") != hashlib.sha256(_json_bytes(config)).hexdigest():\n            raise ValueError("HBQ manifest configuration binding is invalid")\n'
 RETAINED_LF_PROMPT_BINDINGS = [
     {"name": "JUDGE_PREFIX.md", "bytes": 1184, "sha256": "ba48be75c55502d762f1029745b6a4b3b4d12674317f20906443467a00f8f3a5"},
     {"name": "BINARY_EVALUATION_PROMPT.md", "bytes": 1460, "sha256": "3dd432228d2ad747e9a3958320e1b7eccf725bbc985aec1cd74eeb865254bd1c"},
@@ -385,11 +387,13 @@ def _derived_analyzer_source(analyzer_path: Path) -> str:
     if (
         source.count(LEGACY_ACCEPTED_CHECKPOINT_GLOB) != 1
         or EXACT_ACCEPTED_CHECKPOINT_GLOB in source
+        or source.count(LEGACY_HBQ_MANIFEST_BINDING) != 1
+        or DERIVED_HBQ_MANIFEST_BINDING in source
         or source.count(LEGACY_PROMPT_BINDING_BLOCK) != 1
         or DERIVED_PROMPT_BINDING_BLOCK in source
     ):
         raise ValueError("Original analyzer compatibility anchors are not the reviewed legacy form")
-    return source.replace(LEGACY_ACCEPTED_CHECKPOINT_GLOB, EXACT_ACCEPTED_CHECKPOINT_GLOB).replace(LEGACY_PROMPT_BINDING_BLOCK, DERIVED_PROMPT_BINDING_BLOCK)
+    return source.replace(LEGACY_ACCEPTED_CHECKPOINT_GLOB, EXACT_ACCEPTED_CHECKPOINT_GLOB).replace(LEGACY_HBQ_MANIFEST_BINDING, DERIVED_HBQ_MANIFEST_BINDING).replace(LEGACY_PROMPT_BINDING_BLOCK, DERIVED_PROMPT_BINDING_BLOCK)
 
 
 def _derived_prompt_binding_is_accepted(
@@ -1071,6 +1075,7 @@ def consolidate(
                 "legacy_glob": "batch-*.json",
                 "accepted_checkpoint_glob": "batch-[0-9][0-9][0-9][0-9].json",
                 "preserved_attempt_artifacts_remain_validated": True,
+                "accepted_manifest_format_versions": [3, 4],
                 "retained_lf_prompt_bindings": RETAINED_LF_PROMPT_BINDINGS,
                 "retained_lf_variant_cells": analyzer._derived_prompt_variant_cells,
                 "response_schema_binding_remains_exact": True,
