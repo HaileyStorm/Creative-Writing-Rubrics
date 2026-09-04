@@ -75,6 +75,14 @@ evidence that the two judges are interchangeable. They validate this prompt
 comparison within Fresh96, not the original full-rubric HANNA correlation or
 general literary quality. No runtime promotion follows automatically.
 
+A later deterministic calibration check is post-hoc context, not a tuned or
+preregistered comparator. A fixed, non-fitted constant-3 predictor has MAE
+`0.750000`: child20 is only `0.004340278` lower on Grok (`0.745659722`) and is
+worse on Sol (`1.1078125`). The paired MAE reductions remain real, but they do
+not establish general ranking success; every frozen numeric score, including
+the false-coverage Sol Empathy score, remains included. This check made no
+provider calls.
+
 The [opt-in child20 development profile](../evaluation-results/hbq-human-alignment-optimizer-v10-child20-development-profile-v1/)
 publishes the exact frozen instruction and profile text with a provider-free
 verifier. It does not change a runtime default or establish Flash-Next support.

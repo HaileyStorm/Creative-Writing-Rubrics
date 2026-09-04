@@ -562,6 +562,22 @@ and the child has complete coverage. Endpoints remain separate, native contact
 cardinality is unproven, and this does not promote a runtime profile or repair
 the original full-rubric correlation result by implication.
 
+After this confirmation had opened, a deterministic, post-hoc calibration
+diagnostic used the preserved Grok collector
+`0049b04bdd29560a468be78c8b3c4d9bf979914cf1c77aded839100465b4eeb5`, Sol
+collector `8f881c2f655cc454764d42a816865c2439f0dfd543742bf4fb083a835a8223b0`,
+and frozen schedule
+`f988ce4aaf496d80dd61be8cf2aaa5a4b5e04a689fdbf4011a53f43726b52997`; it made
+no provider calls and was neither tuning nor a preregistered comparator. The
+fixed, non-fitted constant-3 baseline has MAE 0.750000, so the Grok child MAE
+of 0.745659722 is only 0.004340278 lower and the Sol child MAE of 1.1078125 is
+worse. The magnitude of mean signed error decreased in five of six dimensions for each
+endpoint; ranks improved in three of six Grok dimensions and five of six Sol
+dimensions (Sol Complexity was nearly unchanged), while Relevance declined for
+both. Every frozen numeric score, including the false-coverage value, stayed
+in the calculation. These MAE gains are real paired measurements, not general
+ranking-success evidence.
+
 The [literal child20 export](../evaluation-results/hbq-human-alignment-optimizer-v10-child20-development-profile-v1/)
 makes that result usable for opt-in development: the unchanged 794-byte
 instruction and 1,644-byte profile reconstruct exactly from the frozen V10
@@ -578,3 +594,12 @@ eight responses and six dimensions were included; independent replay of the
 raw scores and human target means agreed. This is encouraging development
 coverage, not another confirmation test. It opens the planned matched Sol
 measurement without changing the prompt or reopening confirmation for tuning.
+
+The [matched eight-cell Sol measurement](../evaluation-results/hbq-human-alignment-optimizer-v11-train-sol-result-v1/)
+then reduced MAE from 1.338889 to 1.125000 (15.98%), with three groups improving
+and one worsening slightly. All eight requests ran in parallel with unchanged
+Grok payload bytes and completed with separate normal receipts. This supports
+the direction of the paired improvement, not strong absolute alignment: the
+non-fitted midpoint-3 context scores 0.763889 on these four stories, better than
+either Sol candidate. No TRAIN result is relabeled as confirmation or used to
+change the already-opened confirmation comparison.
