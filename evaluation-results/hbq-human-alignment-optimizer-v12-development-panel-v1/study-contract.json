@@ -1,0 +1,45 @@
+{
+  "analysis_rule": {
+    "coverage": "include_every_finite_numeric_score_even_when_coverage_is_false",
+    "primary": "absolute_error_per_item_then_mean_within_each_prompt_group_then_equal_mean_across_7_prompt_groups",
+    "rank_correlations": {
+      "group_mean_7": "Spearman of per-group mean model score versus per-group mean human target, per dimension",
+      "item_13": "Spearman of item model score versus item human target, per dimension"
+    }
+  },
+  "authority": {
+    "confirmation_access": "forbidden_in_this_study",
+    "confirmation_cells": 0,
+    "development_only": true,
+    "dspy_optuna_runtime": false,
+    "previous_results": "unchanged",
+    "promotion": "none",
+    "selection": "none",
+    "sol_execution": "unopened"
+  },
+  "format_version": 1,
+  "geometry": {
+    "candidates": 2,
+    "development_groups": 7,
+    "development_items": 13,
+    "grok_cells": 26,
+    "sol_cells": 0
+  },
+  "historical_baseline_context": {
+    "adopted_into_metrics": false,
+    "extra_votes": false,
+    "prior_baseline_cells": 3,
+    "schedule_sha256": "e8de7435e7cb1cab43f2a4d99438b2d136f6b763e758766cf3fe8626e1eda9e5",
+    "status": "planned_repeats_context_only"
+  },
+  "kind": "fresh_matched_child20_development_panel",
+  "requested_judge": {
+    "endpoint": "grok_primary",
+    "model": "grok-4.6",
+    "provider_attested": false,
+    "reasoning": "high",
+    "reported_model": "grok-4.6-build",
+    "tools": "off"
+  },
+  "study_id": "hbq-human-alignment-optimizer-v12-development-panel-v1"
+}
