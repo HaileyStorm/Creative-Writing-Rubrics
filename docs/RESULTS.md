@@ -41,8 +41,8 @@ validation. Endpoint results were not pooled.
 | Three-group development — Sol | 3 / matched slice | `1.252778` | `1.135185` | `9.39%` MAE reduction. |
 | Broader development — Grok | 7 / development slice | `0.988095` | `0.738095` | `25.30%` MAE reduction. |
 | Broader development — Sol | 7 / matched slice | `1.247619` | `1.067460` | `14.44%` baseline-to-descendant MAE reduction. |
-| Frozen confirmation — Grok | 8 / 19 | `1.256944` | `0.937500` | `25.414%` MAE reduction. |
-| Frozen confirmation — Sol | 8 / 19 | `1.426736` | `1.243924` | `12.813%` MAE reduction. |
+| Fresh88 confirmation — Grok | 8 / 38 | `1.256944` | `0.937500` | `25.414%` MAE reduction. |
+| Fresh88 confirmation — Sol | 8 / 38 | `1.426736` | `1.243924` | `12.813%` MAE reduction. |
 
 The confirmation partition comprises 19 untouched Fresh88 items, eight prompt
 groups, and 38 endpoint-neutral logical cells; each endpoint ran its own frozen
@@ -52,6 +52,36 @@ prompt promotion, or general literary validity. The Grok baseline has two
 cells with incomplete dimension coverage; both descendant cells are complete.
 Native endpoint/contact cardinality remains unproven for both endpoints.
 DSPy/Optuna remain development-only and have no runtime selection authority.
+
+### Fresh96 confirmation: the retained smaller edit holds on Sol
+
+The [frozen Fresh96 panel](../evaluation-results/hbq-human-alignment-optimizer-v10-fresh96-confirmation-candidates-v1/)
+compared the baseline with retained child20 on 32 untouched items in 16 prompt
+groups. Both endpoints received the same 64 frozen payloads; no prompt was
+retuned after the Grok result.
+
+| Endpoint | Baseline MAE | Child20 MAE | Relative reduction | Group wins / ties / losses |
+| --- | ---: | ---: | ---: | ---: |
+| [Grok](../evaluation-results/hbq-human-alignment-optimizer-v10-fresh96-confirmation-grok-result-v1/) | `1.045139` | `0.745660` | `28.6545%` | 15 / 1 / 0 |
+| [Sol](../evaluation-results/hbq-human-alignment-optimizer-v10-fresh96-confirmation-sol-result-v1/) | `1.350087` | `1.107813` | `17.9451%` | 15 / 0 / 1 |
+
+Sol baseline coverage is 191/192 dimension flags; child20 is 192/192. The
+baseline's flagged Empathy score remains in the frozen numeric-score MAE.
+Grok coverage is complete for both candidates. These are separate
+human-reference error measurements, not percentages of human agreement or
+evidence that the two judges are interchangeable. They validate this prompt
+comparison within Fresh96, not the original full-rubric HANNA correlation or
+general literary quality. No runtime promotion follows automatically.
+
+## Held-back revision comparison
+
+The [four-item held-back result](../evaluation-results/cwr-guided-revision-gain-v6-heldout-result-v1/)
+compares CWR-guided and generic revisions under independent holistic and compact
+judgments. All 60 receipts replay: four Sol feedback, eight Grok revisions,
+and 48 endpoint judgments. Guided-minus-generic means are Sol `+1.00` holistic
+and `+0.75` compact; Grok `+0.75` and `0.00`. The compact Grok tie matters: this is a small,
+endpoint-separated result, not universal revision superiority. Sol native
+contact cardinality remains unproven.
 
 ## Exact HANNA generated-only result
 

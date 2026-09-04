@@ -538,3 +538,26 @@ development veto.
 This is still open-development evidence only. It opens no new confirmation,
 generalization, runtime, or promotion claim; endpoint results are separate,
 and native endpoint-contact cardinality remains unproven.
+
+## Fresh96 confirmation: smaller edits transfer again
+
+After Desc18, we froze baseline versus retained child20 on 32 previously
+untouched Fresh96 items across 16 prompt groups. The candidate and all 64
+payloads were fixed before opening the panel; Sol received those same bytes
+after Grok, without another tuning step.
+
+The [Grok confirmation](../evaluation-results/hbq-human-alignment-optimizer-v10-fresh96-confirmation-grok-result-v1/)
+reduced equal-group MAE from 1.045139 to 0.745660 (28.6545%), improving 15
+groups and tying one. The [paired Sol result](../evaluation-results/hbq-human-alignment-optimizer-v10-fresh96-confirmation-sol-result-v1/)
+reduced MAE from 1.350087 to 1.107813 (17.9451%), improving 15 groups and
+worsening one. This is another same-direction held-out result after the early
+Grok-only improvement reversed on Sol. It supports retaining the smaller
+referent-evidence edit, not assuming every subsequent edit will help.
+
+The ten-lane Sol wave finished before a usage-limit interruption. Its 63
+ordinary receipts and one interim-plus-final response were reconciled without
+resending. Restart recovery replayed all 64 cells from their preserved evidence.
+One baseline Empathy coverage flag is false; its numeric score remains in MAE,
+and the child has complete coverage. Endpoints remain separate, native contact
+cardinality is unproven, and this does not promote a runtime profile or repair
+the original full-rubric correlation result by implication.
