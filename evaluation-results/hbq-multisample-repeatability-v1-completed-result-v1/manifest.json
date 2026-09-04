@@ -1,0 +1,25 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-multisample-repeatability-v1",
+  "package_files": {
+    "README.md": {
+      "bytes": 3920,
+      "sha256": "5c283478582c68d88e010b7d5071b73a7499bf0463304015c57cf4dd6cb9f263"
+    },
+    "result.json": {
+      "bytes": 5452,
+      "sha256": "b72bcc92bff396a6a13b35d98cfe12dccaa3d7d9275196e8ab2110b8164c2186"
+    },
+    "repeatability-and-alignment.svg": {
+      "bytes": 4998,
+      "sha256": "b1f1f171983f7eb6357cc6f9f06e2e1eea0c54b1123eaf1d2d2aba0b8de71414"
+    }
+  },
+  "completed_analysis_commitments": {
+    "analysis_revision_prefix": "b8bbca10",
+    "repository_revision_prefix": "ec48de1",
+    "summary_sha256": "667d1af0d6886a235325eb017b67f902a172e9d30757f1e205d7499605581444",
+    "consolidation_provenance_sha256": "cc7d765690f3d092b53a4d6d6272753c66d603e23afe26c5e3af4427da7f3eda"
+  },
+  "public_scope": "aggregate metrics and commitments only; no input-level source material or private locations"
+}

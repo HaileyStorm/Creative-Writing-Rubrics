@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="570" viewBox="0 0 1080 570" role="img" aria-labelledby="title desc">
+  <title id="title">Repeatability and descriptive human-reference association across six scoring arms</title>
+  <desc id="desc">Left panel shows normalized within-input mean absolute pairwise difference, lower is more repeatable. Right panel shows pooled descriptive average-tie Spearman rho against the available human reference, higher is not a general-validity result.</desc>
+  <style>
+    text { font-family: Arial, sans-serif; fill: #1f2937; }
+    .small { font-size: 13px; } .label { font-size: 14px; } .title { font-size: 22px; font-weight: 700; }
+    .subtitle { font-size: 15px; fill: #4b5563; } .axis { stroke: #94a3b8; stroke-width: 1; }
+    .grid { stroke: #e2e8f0; stroke-width: 1; } .hbq { fill: #7c3aed; } .other { fill: #0f766e; }
+    .negative { fill: #b91c1c; } .note { font-size: 12px; fill: #475569; }
+  </style>
+  <rect width="1080" height="570" fill="#ffffff"/>
+  <text x="48" y="42" class="title">Five-repeat multisample panel: repeatability is not alignment</text>
+  <text x="48" y="66" class="subtitle">11 items · 10 prompt clusters · 5 repetitions · 6 arms · 330 cells · all requests: Sol high</text>
+
+  <rect x="38" y="92" width="486" height="390" rx="10" fill="#f8fafc" stroke="#cbd5e1"/>
+  <text x="58" y="124" class="title">Within-input variation</text>
+  <text x="58" y="147" class="subtitle">Normalized MAPD · lower is more repeatable</text>
+  <line x1="238" y1="170" x2="488" y2="170" class="axis"/>
+  <text x="238" y="188" class="note">0</text><text x="358" y="188" class="note">0.02</text><text x="468" y="188" class="note">0.04</text>
+  <line x1="238" y1="170" x2="238" y2="435" class="grid"/><line x1="358" y1="170" x2="358" y2="435" class="grid"/><line x1="478" y1="170" x2="478" y2="435" class="grid"/>
+  <text x="58" y="218" class="label">HBQ</text><rect x="238" y="200" width="151.7" height="22" class="hbq"/><text x="397" y="217" class="small">0.025280</text>
+  <text x="58" y="258" class="label">Compact</text><rect x="238" y="240" width="54.5" height="22" class="other"/><text x="300" y="257" class="small">0.009091</text>
+  <text x="58" y="298" class="label">Holistic</text><rect x="238" y="280" width="54.5" height="22" class="other"/><text x="300" y="297" class="small">0.009091</text>
+  <text x="58" y="338" class="label">Cambridge</text><rect x="238" y="320" width="177.3" height="22" class="other"/><text x="423" y="337" class="small">0.029545</text>
+  <text x="58" y="378" class="label">NAPLAN</text><rect x="238" y="360" width="183.4" height="22" class="other"/><text x="429" y="377" class="small">0.030561</text>
+  <text x="58" y="418" class="label">Oregon</text><rect x="238" y="400" width="196.4" height="22" class="other"/><text x="442" y="417" class="small">0.032727</text>
+  <text x="58" y="458" class="note">Point estimates; paired 10-cluster MAPD intervals versus HBQ: result.json</text>
+
+  <rect x="556" y="92" width="486" height="390" rx="10" fill="#f8fafc" stroke="#cbd5e1"/>
+  <text x="576" y="124" class="title">Descriptive association</text>
+  <text x="576" y="147" class="subtitle">Pooled average-tie Spearman rho · higher is not general validity</text>
+  <line x1="604" y1="170" x2="992" y2="170" class="axis"/>
+  <text x="600" y="188" class="note">-1</text><text x="788" y="188" class="note">0</text><text x="978" y="188" class="note">1</text>
+  <line x1="796" y1="170" x2="796" y2="435" class="axis"/>
+  <text x="576" y="218" class="label">HBQ*</text><rect x="788" y="200" width="8" height="22" class="negative"/><text x="804" y="217" class="small">-0.041002</text>
+  <text x="576" y="258" class="label">Compact</text><rect x="796" y="240" width="96" height="22" class="other"/><text x="900" y="257" class="small">0.500000</text>
+  <text x="576" y="298" class="label">Holistic</text><rect x="796" y="280" width="96" height="22" class="other"/><text x="900" y="297" class="small">0.500000</text>
+  <text x="576" y="338" class="label">Cambridge</text><rect x="796" y="320" width="120.7" height="22" class="other"/><text x="925" y="337" class="small">0.628703</text>
+  <text x="576" y="378" class="label">NAPLAN</text><rect x="796" y="360" width="120.1" height="22" class="other"/><text x="925" y="377" class="small">0.625577</text>
+  <text x="576" y="418" class="label">Oregon</text><rect x="796" y="400" width="6.2" height="22" class="other"/><text x="811" y="417" class="small">0.032037</text>
+  <text x="576" y="452" class="note"><tspan x="576" dy="0">Point estimates. *HBQ pooled rho is non-primary.</tspan><tspan x="576" dy="15">30/25-cell cohorts differ in items and version.</tspan></text>
+  <text x="48" y="516" class="note"><tspan x="48" dy="0">No ceiling was observed in the frozen quality-band summary.</tspan><tspan x="48" dy="15">Stability and recorded identity do not establish human alignment, provider attestation, or endpoint behavior beyond this study.</tspan></text>
+</svg>

@@ -1,0 +1,92 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-multisample-repeatability-v1",
+  "kind": "completed_multisample_repeatability_and_descriptive_alignment_aggregate",
+  "geometry": {
+    "arm_count": 6,
+    "item_count": 11,
+    "prompt_cluster_count": 10,
+    "repetitions_per_item": 5,
+    "cell_count": 330
+  },
+  "requested_judge": {
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "high",
+    "all_cells_requested_with_this_identity": true,
+    "provider_attested": false
+  },
+  "repeatability": {
+    "metric": "native_scale_normalized_within_input_variation",
+    "interpretation": "lower normalized MAPD and SD indicate less within-input variation; native scales are not cross-compared",
+    "arms": [
+      {"arm": "hbq_short_story_batch32", "normalized_mapd": 0.025280018181818176, "normalized_sample_sd": 0.02206794454379392},
+      {"arm": "compact_analytic", "normalized_mapd": 0.009090909090909092, "normalized_sample_sd": 0.010163945352271771},
+      {"arm": "holistic_anchored", "normalized_mapd": 0.00909090909090909, "normalized_sample_sd": 0.008298826628866152},
+      {"arm": "cambridge_igcse_0500_p2_mj_2024", "normalized_mapd": 0.029545454545454545, "normalized_sample_sd": 0.026810679358746935},
+      {"arm": "naplan_narrative_2022", "normalized_mapd": 0.030560928433268856, "normalized_sample_sd": 0.027044545371490206},
+      {"arm": "oregon_narrative_2017", "normalized_mapd": 0.03272727272727272, "normalized_sample_sd": 0.03136837488478225}
+    ],
+    "paired_prompt_cluster_bootstrap_vs_hbq": {
+      "unit": "prompt_cluster",
+      "prompt_cluster_count": 10,
+      "draws": 10000,
+      "seed": 560820,
+      "estimand": "equal_sample_mean_paired_delta",
+      "metric": "normalized_mapd",
+      "orientation": "arm_minus_hbq; negative indicates lower within-input variation",
+      "comparisons": [
+        {"arm": "compact_analytic", "estimate": -0.01618910909090909, "ci_95_low": -0.031216549999999996, "ci_95_high": 0.007324200000000011},
+        {"arm": "holistic_anchored", "estimate": -0.01618910909090909, "ci_95_low": -0.031090999999999997, "ci_95_high": 0.008071340000000005},
+        {"arm": "cambridge_igcse_0500_p2_mj_2024", "estimate": 0.004265436363636367, "ci_95_low": -0.00283227999999999, "ci_95_high": 0.011958180000000004},
+        {"arm": "naplan_narrative_2022", "estimate": 0.00528091025145068, "ci_95_low": -0.005583968248772499, "ci_95_high": 0.019331388781431338},
+        {"arm": "oregon_narrative_2017", "estimate": 0.007447254545454551, "ci_95_low": -0.006875244444444441, "ci_95_high": 0.02412395333333334}
+      ]
+    }
+  },
+  "descriptive_alignment": {
+    "metric": "continuous_average_tie_spearman_of_repeat_mean_vs_available_human_reference",
+    "scope": "descriptive only; not general validity, a cross-rubric quality ranking, or a promotion criterion",
+    "arms": [
+      {"arm": "hbq_short_story_batch32", "pooled_descriptive_rho": -0.04100238428203847, "version_cohorted_not_pooled_primary": true},
+      {"arm": "compact_analytic", "pooled_descriptive_rho": 0.5},
+      {"arm": "holistic_anchored", "pooled_descriptive_rho": 0.5},
+      {"arm": "cambridge_igcse_0500_p2_mj_2024", "pooled_descriptive_rho": 0.6287032256579231},
+      {"arm": "naplan_narrative_2022", "pooled_descriptive_rho": 0.6255772980187957},
+      {"arm": "oregon_narrative_2017", "pooled_descriptive_rho": 0.0320373682108383}
+    ],
+    "hbq_version_cohorts": [
+      {"cohort": "original_rubric_v1_0_0", "item_count": 6, "cell_count": 30, "rho": 0.7142857142857143},
+      {"cohort": "v8_rubric_v1_2_1", "item_count": 5, "cell_count": 25, "rho": -0.872081599272381}
+    ],
+    "hbq_distinct_repeat_mean_count": 10,
+    "hbq_distinct_repeat_mean_counts_by_cohort": {"original_rubric_v1_0_0": 6, "v8_rubric_v1_2_1": 4},
+    "hbq_cohort_limit": "Small cohorts differ jointly in item set and rubric version, so pooled and between-cohort comparisons are non-causal."
+  },
+  "hbq_leaf_repeatability_aggregate": {
+    "exact_all_repetition_agreement": 0.7866937531742001,
+    "mean_modal_proportion": 0.9353986795327578,
+    "mean_pairwise_agreement": 0.8917724733367192,
+    "ceiling_count_in_frozen_quality_band_summary": 0,
+    "repeat_consensus_is_not_human_truth": true
+  },
+  "recorded_identity_integrity": {
+    "status": "verified_unique",
+    "observed_session_count": 609,
+    "artifact_commitment_count": 613,
+    "observed_session_sha256": "27479535b3417cc932bd288ebab5e402dd547054640e1671539f12fbdf231ffe",
+    "artifact_commitments_sha256": "ea6abd02124c7b6ad9539d9f9c9515c30bb50ae2bbcf287ef89d0f6bea86a063",
+    "limitation": "Recorded identities and artifact commitments are not independent provider identity attestation or provider-contact cardinality proof."
+  },
+  "source_commitments": {
+    "analysis_revision_prefix": "b8bbca10",
+    "repository_revision_prefix": "ec48de1",
+    "summary_sha256": "667d1af0d6886a235325eb017b67f902a172e9d30757f1e205d7499605581444",
+    "consolidation_provenance_sha256": "cc7d765690f3d092b53a4d6d6272753c66d603e23afe26c5e3af4427da7f3eda"
+  },
+  "privacy": "Public aggregate only: no prose, prompts, item identifiers, per-item ratings, response bytes, private paths, or source artifacts are exported.",
+  "limitations": [
+    "No arm is shown to be human-aligned merely because it is repeatable.",
+    "No ceiling explanation was observed in this panel.",
+    "This is not a runtime, selection, promotion, endpoint-cardinality, or generalization result."
+  ]
+}

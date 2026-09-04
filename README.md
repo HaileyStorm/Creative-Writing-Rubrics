@@ -16,18 +16,20 @@ and bundle IDs are the public contract.
 
 The strongest public evidence is deliberately bounded:
 
-- In the [established-rubric repeatability study](evaluation-results/the-part-that-arrives-first-repeatability/established-v4/), one complete authorized story was judged five times with GPT-5.6 Sol. HBQ-RS had 91.01% all-five leaf agreement, 97.08% mean modal-label agreement, and no total-score ceiling; the comparison rubrics were more ceiling-bound on this case. This demonstrates repeatability and available headroom for one story, not general validity or literary superiority.
+- The [completed multisample study](evaluation-results/hbq-multisample-repeatability-v1-completed-result-v1/) contains 330 Sol-requested cells: 11 stories, six methods, five repetitions. HBQ showed substantial leaf repeatability but weak descriptive human-reference alignment (`rho = -0.041`), versus about `0.626` for NAPLAN and `0.629` for Cambridge. Its two frozen rubric-version cohorts contain different stories, so this small panel cannot establish a version effect or general ranking. Improving alignment remains active work.
 - The [Gray Blood full-book V9 aggregate](evaluation-results/hbq-gray-blood-full-book-qpc24-rebaseline-v9-public-result-v1/) is a settled full-fidelity aggregate for a work-in-progress manuscript, with no sampling: author-original `63.0202` (8 units / 1,817 positions) versus the explicitly labeled GPT-5.6 Pro rewrite `73.2369` (7 units / 1,589 positions), a difference of `+10.2167`. The non-statistical result is diagnostic for this rubric, scope, and frozen design, not a general ranking.
 - The original full-rubric [Fresh88 generated-only HANNA analysis](evaluation-results/hbq-human-alignment-v3-fresh88-overlap-analysis-v1/) is negative: across 80 generated stories, final-score Spearman was `-0.0441` and the six-dimension macro was `-0.0361`. Later prompt-level MAE improvements below do not retroactively validate that full-rubric result.
 - The [frozen Fresh88 HANNA confirmation](evaluation-results/hbq-human-alignment-optimizer-v5-f20-confirmation-grok-replay-v2-native-json-normalization/) now compares baseline with `broader-nextwave-13-missing_evidence_not_no` across 19 untouched items, eight prompt groups, and 38 endpoint-neutral cells: Grok moved from equal-group MAE `1.2569444` to `0.9375` (`25.414%` reduction), while the separate [Sol confirmation](evaluation-results/hbq-human-alignment-optimizer-v5-f20-confirmation-sol-reconcile-v3-final-message/) moved from `1.4267361` to `1.2439236` (`12.813%`). The exact descendant is published as a reconstructable [development profile](evaluation-results/hbq-human-alignment-optimizer-v5-f20-recommended-development-profile-v1/). This is held-out Fresh88 evidence only: endpoints are not pooled, the result grants no runtime dependency or promotion, native contact cardinality is unproven, and the Grok baseline includes two incomplete-coverage cells.
 - The subsequent [Fresh96 confirmation](docs/RESULTS.md#fresh96-confirmation-the-retained-smaller-edit-holds-on-sol) tested baseline versus [retained child20](evaluation-results/hbq-human-alignment-optimizer-v10-child20-development-profile-v1/) on 32 untouched items / 16 groups with identical frozen payloads across endpoints. Grok MAE fell `28.65%` (`1.04514` to `0.74566`); Sol fell `17.95%` (`1.35009` to `1.10781`). Each improved on 15 groups. One Sol baseline coverage flag is false and its numeric score is retained. The exact child20 text is available as an opt-in development profile, not a runtime default. This is bounded prompt-level confirmation, not general literary validity; the [development journey](docs/VALIDATION_AND_REPAIR_JOURNEY.md#fresh96-confirmation-smaller-edits-transfer-again) stays outside this README.
 - The [CWR-guided revision V9 result](evaluation-results/cwr-guided-revision-gain-v2-live-exec-v9-historical-input-replay-result-v1/) independently recomputes 40 endpoint judgments, including 16 guided-control and 32 arm-baseline comparisons, only from the exact completed external V7 evidence root plus the pinned historical V6 executor. Every guided-control comparison was positive: mean holistic/compact differences were `+2.25`/`+2.25` for Sol and `+1.75`/`+1.50` for Grok. Endpoints remain separate; Sol contact cardinality is unproven, and the result makes no provider-ranking or generalization claim.
 
-![Five-run native-scale score distributions](evaluation-results/the-part-that-arrives-first-repeatability/established-v4/results/score-distributions.svg)
+![Multisample repeat variation and descriptive human-reference association](evaluation-results/hbq-multisample-repeatability-v1-completed-result-v1/repeatability-and-alignment.svg)
 
-*Five repetitions of one story, keeping each rubric on its native scale. The
-chart is a repeatability view, not a cross-rubric quality ranking; its numbers
-and SVG are bound by the study's result manifest and verifier.*
+*Point estimates across 11 stories. Lower repeat variation does not imply better
+human alignment. The linked result includes paired uncertainty intervals,
+mixed-version limitations, and the coarse score range of the compact anchors.
+The earlier [single-story study](evaluation-results/the-part-that-arrives-first-repeatability/established-v4/)
+remains available as separate historical evidence.*
 
 These results show what the system can make inspectable today: repeatability,
 scope-aware reports, explicit uncertainty, and bounded comparisons. They do
@@ -35,12 +37,6 @@ not complete human-alignment validation, establish reader outcomes, or create a
 default hierarchy of literary quality.
 
 ## Active development and bounded evidence
-
-The [V8 multisample continuation](evaluation-results/hbq-multisample-repeatability-v1-remainder-capacity-reset-successor-v8/)
-has collected all **330 cells**: 11 stories, six methods, five repetitions.
-The repeatability result remains unpublished pending integrity-checked analysis.
-Each story's HBQ repetitions use one frozen rubric version; the full panel
-contains both HBQ-RS 1.0.0 and 1.2.1 and will be reported with that limitation.
 
 The live release-facing work is narrower than the historical experiment log:
 

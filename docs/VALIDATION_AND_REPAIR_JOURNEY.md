@@ -765,3 +765,46 @@ in four of six dimensions, but fold-specific calibrators and fit-constant priors
 story-ranking evidence. This is post-hoc TRAIN-only diagnostic evidence, with
 confirmation still forbidden and no runtime, selection, promotion, feature,
 rubric-weight, or canonical-score change.
+
+## Next: discrimination, not just lower error
+
+The [completed 330-cell multisample replay](../evaluation-results/hbq-multisample-repeatability-v1-completed-result-v1/)
+now preserves every cell across the interrupted continuation. Independent
+raw-score recomputation matches the final aggregate. HBQ's pooled descriptive
+human-reference rho is `-0.041002`; NAPLAN and Cambridge are approximately
+`0.626` and `0.629`. The two HBQ versions use different story cohorts, so the
+large cohort difference is not a measured wording effect.
+
+A separate post-hoc diagnostic stayed inside the frozen 48-story TRAIN split.
+Reading the raw `base_score.observed` before penalties restores 48 distinct
+scores and removes the final score's 10 zeros, but overall story-level rho
+only changes from approximately `-0.105` to `-0.095`. Penalties therefore
+compress some distinctions without explaining the basic alignment failure.
+The current mapped six-dimension YES fractions are themselves weakly aligned;
+score calibration or removal of the floor alone is not enough. These checks
+changed no rubric weights or canonical outputs.
+
+The next objective is to approach competitive HANNA alignment, not to stop at
+a repeatable score or a lower MAE. The [BatchEval paper, Table 3](https://aclanthology.org/2024.acl-long.846.pdf)
+reports six-criterion story-level mean Spearman of `0.520` for its G-Eval
+baseline and `0.568` for BatchEval. Those are useful research reference points,
+not directly comparable results on our smaller, differently selected panels.
+
+The first planned test uses the existing frozen 48 TRAIN stories / 24 prompt
+groups. It compares a direct integer 1–5 judge with four cumulative yes/no
+thresholds per criterion, using the same six criterion definitions and scale
+anchors. Monotone threshold answers reconstruct the same scale as
+`1 + number of passed thresholds`; raw answers stay available. This tests
+elicitation and deterministic aggregation, not an assumed advantage of binary
+questions. It does not change the canonical rubric.
+
+Grok leads development; Sol checks the unchanged candidates separately.
+Primary readouts are all six story-level rank correlations and their macro,
+with ties, score occupancy, failed cells, and prompt-group-aware uncertainty.
+MAE and constant-score controls remain secondary checks. Undefined correlations
+and invalid threshold patterns cannot be dropped to manufacture a win.
+Existing DEV/confirmation results will not select this new candidate.
+
+Parallel work checks the coarse existing HANNA mapping, criterion wording,
+and pairwise approaches. A low-error constant predictor is a control, not
+successful literary evaluation. New execution and results remain pending.
