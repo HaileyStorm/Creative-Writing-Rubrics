@@ -1,0 +1,64 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-human-alignment-optimizer-v15-rank-discrimination-v1",
+  "kind": "grok_train_rank_discrimination_result",
+  "status": "complete_matched_96_cells",
+  "endpoint": "grok_primary",
+  "judge_identity": {
+    "provider": "xai_grok_build",
+    "requested_model": "grok-4.6",
+    "reported_model": "grok-4.6-build",
+    "requested_reasoning_effort": "high",
+    "reported_reasoning_effort": null
+  },
+  "geometry": {
+    "cell_count": 96,
+    "item_count": 48,
+    "prompt_group_count": 24,
+    "conditions": ["direct_integer", "ordinal_thresholds"],
+    "group_weighting": "equal_group_mean_of_per_item_six_dimension_mae",
+    "group_sizes_are_not_assumed_uniform": true
+  },
+  "source_commitments": {
+    "native_report_sha256": "3d6d5163d36f7291ac98e5fad2c0a13cec4d11d98215a1f735d78a252060c3f4",
+    "independent_arithmetic_comparison_sha256": "cde5a7dc2038eddc76a2e5bf3bc4d45946f9efc7fe79801a64bffc7c3205ec75",
+    "independent_arithmetic_status": "match"
+  },
+  "primary_rank_metric": {
+    "definition": "mean of six average-tie item-level Spearman correlations across 48 TRAIN items; undefined if any criterion is constant",
+    "direct_integer": 0.20311136989621129,
+    "ordinal_thresholds": 0.1728341673770619,
+    "interpretation": "Both values are weak on this TRAIN-only panel; the lower threshold value is not a rank improvement."
+  },
+  "equal_group_mae": {
+    "direct_integer": 0.9527391975308642,
+    "ordinal_thresholds": 0.9253858024691358,
+    "fixed_three": 0.7777777777777777,
+    "threshold_minus_direct": -0.0273533950617284,
+    "interpretation": "Thresholds have slightly lower MAE than direct scores, but both are worse than fixed three and thresholds have lower primary rank association."
+  },
+  "criterion_item_spearman": {
+    "Relevance": {"direct_integer": 0.5302890826700589, "ordinal_thresholds": 0.5884861518617613},
+    "Coherence": {"direct_integer": 0.13264040532220261, "ordinal_thresholds": 0.050721678499631925},
+    "Empathy": {"direct_integer": 0.11555912431998629, "ordinal_thresholds": 0.15297777399698007},
+    "Surprise": {"direct_integer": -0.25876502341361096, "ordinal_thresholds": -0.2870777725231099},
+    "Engagement": {"direct_integer": 0.3503394119078589, "ordinal_thresholds": 0.3720700787027509},
+    "Complexity": {"direct_integer": 0.3486052185707719, "ordinal_thresholds": 0.15982709372435688}
+  },
+  "occupancy_summary": {
+    "criterion": "Surprise",
+    "bottom_score": 1,
+    "direct_integer_bottom_score_count": 45,
+    "ordinal_thresholds_bottom_score_count": 44,
+    "per_condition_item_count": 48
+  },
+  "coverage": {
+    "all_six_criteria_covered_for_all_48_items_in_each_condition": true
+  },
+  "native_identity_counts": {
+    "unique_request_ids": 96,
+    "unique_session_ids": 96
+  },
+  "sol_status": "separate matched 96-cell native replay and independent arithmetic match complete; no endpoint pooling or cross-endpoint selection is asserted",
+  "authority": "TRAIN_only_development_measurement; no selection, promotion, confirmation, runtime, full-CWR-rubric, paper-comparability, or generalization claim"
+}

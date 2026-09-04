@@ -1,0 +1,63 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-human-alignment-optimizer-v15-rank-discrimination-sol-v1",
+  "kind": "sol_train_rank_discrimination_result",
+  "status": "complete_matched_96_cells_independent_arithmetic_match",
+  "endpoint": "sol_later",
+  "judge_identity": {
+    "provider": "ChatGPT_subscription_via_local_Codex",
+    "requested_model": "gpt-5.6-sol",
+    "reported_model": null,
+    "requested_reasoning_effort": "high",
+    "reported_reasoning_effort": null,
+    "limitation": "requested settings and local lifecycle evidence, not independent provider model or effort attestation"
+  },
+  "geometry": {
+    "cell_count": 96,
+    "item_count": 48,
+    "prompt_group_count": 24,
+    "conditions": ["direct_integer", "ordinal_thresholds"],
+    "group_weighting": "equal_group_mean_of_per_item_six_dimension_mae",
+    "group_sizes_are_not_assumed_uniform": true
+  },
+  "source_commitments": {
+    "native_report_sha256": "56b046657adeec603ad872eebaebdb98ff7e855f0cde515dadfbaa60867c46b4",
+    "independent_arithmetic_result_sha256": "6e02fe90884d9d14fdde2b94f4c7fd64f1b642c51c2351e2e65f8998730ff852",
+    "independent_arithmetic_checker_sha256": "a8f3fd283a177ccb481bd66a272f1b326f8988e7269b23be6824a67e59f82059",
+    "independent_arithmetic_status": "MATCH"
+  },
+  "primary_rank_metric": {
+    "definition": "mean of six average-tie item-level Spearman correlations across 48 TRAIN items; undefined if any criterion is constant",
+    "direct_integer": 0.16748418077773755,
+    "ordinal_thresholds": 0.26357633418906495,
+    "interpretation": "Thresholds improve this endpoint's primary rank measure, unlike Grok, but the values remain weak and do not establish success."
+  },
+  "equal_group_mae": {
+    "direct_integer": 0.9061342592592592,
+    "ordinal_thresholds": 0.8435185185185184,
+    "fixed_three": 0.7777777777777777,
+    "threshold_minus_direct": -0.0626157407407408,
+    "interpretation": "Thresholds have lower MAE than direct scores, but both remain worse than fixed three."
+  },
+  "criterion_item_spearman": {
+    "Relevance": {"direct_integer": 0.5982529348993946, "ordinal_thresholds": 0.5875601609657775},
+    "Coherence": {"direct_integer": 0.08633896512374764, "ordinal_thresholds": 0.17677897488133265},
+    "Empathy": {"direct_integer": 0.058037411501567535, "ordinal_thresholds": 0.14393233891762341},
+    "Surprise": {"direct_integer": -0.1421346926860032, "ordinal_thresholds": -0.16842979203829275},
+    "Engagement": {"direct_integer": 0.03691863337706275, "ordinal_thresholds": 0.4598412952634135},
+    "Complexity": {"direct_integer": 0.36749183245065603, "ordinal_thresholds": 0.38177502714453554}
+  },
+  "coverage": {
+    "all_six_criteria_covered_for_all_48_items_in_each_condition": true
+  },
+  "native_identity_counts": {
+    "unique_session_ids": 96,
+    "unique_thread_ids": 96
+  },
+  "human_reference": {
+    "local_target": "average of three human labels",
+    "outbound_target_omission": "prevents target leakage; it is not an agreement claim"
+  },
+  "endpoint_separation": "Grok and Sol results remain separate; no pooled metric or cross-endpoint selection is reported.",
+  "authority": "TRAIN_only_reference_free_HANNA_adaptation; not the original HANNA design of ten systems/stories per prompt with three human raters, and no promotion, runtime, full-CWR-rubric, paper-comparability, or generalization claim"
+}

@@ -798,13 +798,43 @@ anchors. Monotone threshold answers reconstruct the same scale as
 elicitation and deterministic aggregation, not an assumed advantage of binary
 questions. It does not change the canonical rubric.
 
-Grok leads development; Sol checks the unchanged candidates separately.
+Grok and Sol have measured the unchanged candidates separately.
 Primary readouts are all six story-level rank correlations and their macro,
 with ties, score occupancy, failed cells, and prompt-group-aware uncertainty.
 MAE and constant-score controls remain secondary checks. Undefined correlations
 and invalid threshold patterns cannot be dropped to manufacture a win.
-Existing DEV/confirmation results will not select this new candidate.
+Existing DEV/confirmation results will not select this new candidate. The Grok
+measurement below completes the planned TRAIN-only checkpoint; the separate
+Sol native report and independent arithmetic replay are complete and match.
+
+## V15 found a weak direct HANNA judge, not a route to promotion
+
+The matched 96-cell Grok TRAIN measurement completed over 48 stories in 24
+unequal prompt groups. Direct integer scores reached a six-criterion,
+item-level mean tied Spearman of `0.20311136989621129` and equal-group MAE of
+`0.9527391975308642`. Cumulative thresholds slightly lowered MAE to
+`0.9253858024691358`, but lowered the primary rank metric to
+`0.1728341673770619`. Both are weak results, and the fixed-three control's
+MAE was lower still at `0.7777777777777777`.
+
+The score shapes reinforce that warning rather than rescuing either form:
+Surprise received the bottom score for 45 of 48 direct cases and 44 of 48
+threshold cases. This is a small, reference-free HANNA adaptation on TRAIN
+stories, not a result about CWR's full rubric or a comparison with the larger,
+differently constructed paper samples. It changes no rubric, runtime,
+selection, promotion, or confirmation decision. An independent raw-response
+arithmetic replay matched the native report. Sol has now completed a separate
+native report on the same frozen cells: thresholds improve its weak primary
+rank macro from `0.16748418077773755` to `0.26357633418906495`, while that
+form lowered Grok's primary rank metric. The independent Sol arithmetic replay
+matches its native report, and neither endpoint is pooled or selected.
+
+Both endpoint panels use local targets averaged from three human labels. Keeping
+those targets out of outbound payloads prevents leakage; it does not create an
+agreement result. This is not the original HANNA design of ten systems/stories
+per prompt with three human raters.
 
 Parallel work checks the coarse existing HANNA mapping, criterion wording,
 and pairwise approaches. A low-error constant predictor is a control, not
-successful literary evaluation. New execution and results remain pending.
+successful literary evaluation. Both endpoint-specific arithmetic replays are
+now complete; their results remain separate.
