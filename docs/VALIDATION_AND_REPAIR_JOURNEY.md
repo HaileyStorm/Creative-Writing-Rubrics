@@ -740,3 +740,28 @@ payloads. This is in-sample development evidence only: it creates no
 confirmation, generalization, endpoint pooling, promotion, runtime, or
 automatic dispatch authority. Frozen predecessor optimizer packages remain
 history for their different inputs, not runtime dependencies.
+
+## Mapped-score calibration did not establish HBQ feature value
+
+A provider-free [Fresh88 TRAIN calibration diagnostic](../evaluation-results/hbq-human-alignment-v3-fresh88-analysis-v1/DEVELOPMENT_CALIBRATION.md)
+tested six mapped HBQ YES fractions over 27 leaves, rather than all rubric
+module weights or the canonical final HBQ score. It used 48 TRAIN items and 24
+leave-one-prompt-group-out folds, fitting 23 groups each time. Fixed-3 MAE was
+`0.7777777777777777`; the four frozen arms were `1.1057947530864196` for
+diagnostic `1 + 4p`, `0.8816612086157968` for positive affine mapping, and
+`0.6206068094466785` for ridge residual mapping.
+
+That apparent ridge improvement is not a feature-value result. A post-hoc
+no-feature comparator formed each held-out prediction from per-dimension means
+across its 23 fitting groups, using fixed-3 only for a missing mapped dimension.
+It reached `0.544949622025407` equal-group MAE (group-weighted lower median
+`0.55625`), below ridge. It was not a frozen primary arm and cannot select a
+profile, but it is the necessary negative control: the experiment demonstrated
+no advantage of mapped HBQ features over learned TRAIN priors.
+
+The calibration used real Optuna `4.9.0` over 1,536 TPE trials plus 24 ridge
+fits and made no model calls. Ridge pooled out-of-fold rank values were negative
+in four of six dimensions, but fold-specific calibrators and fit-constant priors do not create
+story-ranking evidence. This is post-hoc TRAIN-only diagnostic evidence, with
+confirmation still forbidden and no runtime, selection, promotion, feature,
+rubric-weight, or canonical-score change.
