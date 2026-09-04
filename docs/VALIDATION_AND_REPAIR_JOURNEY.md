@@ -618,3 +618,18 @@ retained; none of the 26 observed vectors was all zero, although the inherited
 Grok quality guard has a latent all-zero finite-score limitation recorded in the
 public provenance. No prompt retuning, selection, promotion, or runtime change
 followed from this panel.
+
+The [matched Sol panel](../evaluation-results/hbq-human-alignment-optimizer-v12-development-sol-result-v1/)
+then completed all 26 calls with the same payload bytes, at up to ten concurrent
+calls. Equal-group mean item MAE fell from 1.355754 to 1.144048 (15.62%): six
+groups improved and one worsened. Four of 156 coverage flags were false; their
+finite scores stayed in the measurement. This repeats the direction of the
+paired improvement across endpoints, not its magnitude.
+
+The next problem is clearer too. Constant-3 predictions score 0.765873 here,
+well below the tuned Sol prompt's error. Rank correlations improved in only
+two of six dimensions across items and one of six across group means. Better
+calibration against the original prompt has not yet produced broadly better
+ranking. We keep this development result separate from untouched confirmation
+and retain both the gains and the counterexamples as we develop the next
+TRAIN-only candidates.

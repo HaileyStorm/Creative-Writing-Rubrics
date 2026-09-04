@@ -1,0 +1,31 @@
+{
+  "format_version": 1,
+  "grok_prerequisite": {
+    "acknowledgement_sha256": "3b84782a4fe0745c46c77209e0a76fe13babc7e747d58ad2ec2e52093939d85c",
+    "replayed_report_sha256": "f235c65eea6513bdfc542c0eaae1ed3f9c1579e454f57e470d75992c17982879"
+  },
+  "publication_scope": {
+    "native_request_response_bodies": "not_published",
+    "private_source_prose": "not_published",
+    "request_thread_and_session_identifiers": "not_published",
+    "targets_and_item_level_scores": "not_published"
+  },
+  "receipt_replay": {
+    "authorization_acknowledgement_sha256": "ba402c6b8aa07f2049e8887316ff9e414f941cb7bba75b0b7596b04f39a3d8dd",
+    "canonical_report_sha256": "a08fdace4df7e3dca1b6f1479961832e2bf867204ba16a1baba26267d22ce409",
+    "common_route_evidence_sha256": "a5cbe8953323d7786acb732a5c22b59754cd7b45b890083f016af9c3501f2f12",
+    "common_route_sha256": "3b06dccde9c86f88a6b0ca47b61d271d1eae7cda09e81c74d5b0b1e1bf2b02ca",
+    "source_report_recomputed": true
+  },
+  "sol_executor": {
+    "executor_sha256": "2b980ca291d2e5d408d01e1fa08a88e7e3733716c27dd367a797f467d945e37e",
+    "study_contract_sha256": "ccf9a2e0a7516342ca02e57fef94fd55ce8702b1936a43eae4fa376c1c907c75",
+    "study_id": "hbq-human-alignment-optimizer-v12-development-sol-exec-v1"
+  },
+  "source_study": {
+    "commit": "10d4251",
+    "study_sha256": "a1100bc16528287571d1b7198729124a705990ab7561385d271df27a7e2b7851",
+    "study_id": "hbq-human-alignment-optimizer-v12-development-panel-v1"
+  },
+  "study_id": "hbq-human-alignment-optimizer-v12-development-sol-result-v1"
+}
