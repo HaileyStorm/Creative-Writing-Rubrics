@@ -34,13 +34,13 @@ scope-aware reports, explicit uncertainty, and bounded comparisons. They do
 not complete human-alignment validation, establish reader outcomes, or create a
 default hierarchy of literary quality.
 
-## Active work, not results
+## Active development and bounded evidence
 
 The [V8 multisample continuation](evaluation-results/hbq-multisample-repeatability-v1-remainder-capacity-reset-successor-v8/)
-is an **unpublished operational continuation**, proceeding one settled,
-trace-bound sequence at a time. Its exact live sequence count is not promoted
-here; it becomes a public repeatability result only after completion and
-integrity-checked analysis.
+has collected all **330 cells**: 11 stories, six methods, five repetitions.
+The repeatability result remains unpublished pending integrity-checked analysis.
+Each story's HBQ repetitions use one frozen rubric version; the full panel
+contains both HBQ-RS 1.0.0 and 1.2.1 and will be reported with that limitation.
 
 The live release-facing work is narrower than the historical experiment log:
 
