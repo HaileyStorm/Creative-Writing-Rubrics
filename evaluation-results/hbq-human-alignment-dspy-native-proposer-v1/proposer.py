@@ -12,6 +12,7 @@ import base64
 import hashlib
 import importlib.util
 import json
+import math
 import os
 import re
 from collections.abc import Mapping
@@ -100,6 +101,17 @@ def _object(raw: bytes, *, label: str) -> dict[str, Any]:
         raise ValueError(f"{label} is not canonical JSON") from error
     if not isinstance(value, dict) or canonical(value) != raw:
         raise ValueError(f"{label} is not a canonical object")
+    return value
+
+
+def _wire_object(raw: bytes, *, label: str) -> dict[str, Any]:
+    """Parse native adapter JSON without imposing local canonical-artifact bytes."""
+    try:
+        value = json.loads(raw.decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError) as error:
+        raise ValueError(f"{label} is not JSON") from error
+    if not isinstance(value, dict):
+        raise TypeError(f"{label} is not an object")
     return value
 
 
@@ -354,11 +366,12 @@ def prepare_one(*, output_root: Path, v11_grok_root: Path, v11_acknowledgement_s
     }
 
 
-def _stored_prepared(root: Path) -> tuple[dict[str, Any], dict[str, bytes]]:
+def _stored_prepared(root: Path, *, extra_files: frozenset[str] = frozenset()) -> tuple[dict[str, Any], dict[str, bytes]]:
     if not _plain(root, directory=True):
         raise ValueError("prepared root is missing or unsafe")
     names = {entry.name for entry in root.iterdir()}
-    if names not in (set(PREPARED_FILES), set(BOUND_FILES)):
+    allowed = (set(PREPARED_FILES) | set(extra_files), set(BOUND_FILES) | set(extra_files))
+    if names not in allowed:
         raise ValueError("prepared root has an unexpected inventory")
     raw = {name: stable(root / name) for name in names}
     _object(raw["training-report.json"], label="stored V11 report")
@@ -454,6 +467,157 @@ def _terminal(root: Path, *, state: str, detail: str | None, launches: int, cont
     return result
 
 
+def _descendant_from_completion(*, parent: Mapping[str, Any], report: Mapping[str, Any], completion: str) -> tuple[dict[str, Any], dict[str, str]]:
+    diagnostics, _teaching_input = _diagnostics(report)
+    dspy = _dspy()
+    adapter = dspy.ChatAdapter(use_native_function_calling=False, use_json_adapter_fallback=False)
+    parsed = adapter.parse(_signature(dspy), completion)
+    instruction = parsed["descendant_instruction"].encode("utf-8")
+    if not instruction.strip() or len(instruction) > 16_384 or instruction == parent["instruction_bytes"] or b"\x00" in instruction:
+        raise ValueError("DSPy response did not contain one distinct versionable instruction edit")
+    fixed_profile = parent["profile_bytes"]
+    candidate_commitment = {
+        "format_version": 1, "candidate_kind": "dspy_native_train_instruction_descendant",
+        "parent_candidate_sha256": parent["candidate_sha256"], "instruction_sha256": sha256(instruction),
+        "profile_sha256": sha256(fixed_profile), "training_diagnostics_sha256": sha256(diagnostics),
+    }
+    candidate_sha = sha256(candidate_commitment)
+    descendant = {
+        "format_version": 1, "candidate_kind": "dspy_native_train_instruction_descendant",
+        "instruction_base64": base64.b64encode(instruction).decode("ascii"),
+        "profile_base64": base64.b64encode(fixed_profile).decode("ascii"), "candidate_sha256": candidate_sha,
+        "parent": {"candidate_id": parent["candidate_id"], "candidate_sha256": parent["candidate_sha256"], "instruction_sha256": parent["instruction_sha256"], "profile_sha256": parent["profile_sha256"]},
+        "training_diagnostics": diagnostics, "candidate_commitment": candidate_commitment,
+        "selection_authority": "none", "runtime_authority": "none",
+    }
+    lineage = {
+        "parent_candidate_id": parent["candidate_id"], "parent_candidate_sha256": parent["candidate_sha256"],
+        "parent_instruction_sha256": parent["instruction_sha256"], "parent_profile_sha256": parent["profile_sha256"],
+        "descendant_instruction_sha256": sha256(instruction), "descendant_profile_sha256": sha256(fixed_profile),
+        "descendant_candidate_sha256": candidate_sha,
+    }
+    return descendant, lineage
+
+
+def _completed_wire(*, control_raw: bytes, payload: bytes, route_evidence: Mapping[str, Any]) -> tuple[dict[str, Any], Mapping[str, Any], Mapping[str, Any]]:
+    control = _wire_object(control_raw, label="adapter control envelope")
+    result = control.get("result")
+    if control.get("control") != {"version": 1, "state": "completed"} or not isinstance(result, Mapping):
+        raise ValueError("adapter did not report one completed native response")
+    output = result.get("output")
+    runtime = result.get("runtime")
+    required_runtime = {
+        "adapter_version", "requested_model", "reported_model", "requested_reasoning_effort", "reasoning_attested",
+        "reasoning_attestation", "identity_evidence", "cli_version", "session_id_hash", "request_id_hash",
+        "envelope_hash", "command_identity", "command_identity_hash", "subscription_receipt_hash",
+        "execution_policy", "usage_telemetry", "nonvisual_max_turns", "observed_turns",
+    }
+    identity_hashes = ("request_id_hash", "session_id_hash", "envelope_hash", "command_identity_hash")
+    telemetry = runtime.get("usage_telemetry") if isinstance(runtime, Mapping) else None
+    if (set(result) != {"schema_version", "request_hash", "output", "output_hash", "runtime"}
+            or result.get("schema_version") != 1 or result.get("request_hash") != sha256({"prompt": payload.decode("utf-8")})
+            or not isinstance(output, Mapping) or set(output) != {"completion"} or not isinstance(output.get("completion"), str)
+            or result.get("output_hash") != sha256(canonical(dict(output))) or not isinstance(runtime, Mapping)
+            or set(runtime) != required_runtime or runtime.get("adapter_version") != 1
+            or runtime.get("requested_model") != "grok-4.6" or runtime.get("reported_model") != "grok-4.6-build"
+            or runtime.get("requested_reasoning_effort") != "high" or runtime.get("nonvisual_max_turns") != 1
+            or runtime.get("observed_turns") != 1 or runtime.get("reasoning_attested") is not False
+            or runtime.get("reasoning_attestation") != "not_reported_by_grok_build_cli" or runtime.get("identity_evidence") != "requested_only"
+            or runtime.get("execution_policy") != "bounded_nonvisual_read_only" or runtime.get("cli_version") != route_evidence.get("grok_cli_version")
+            or runtime.get("subscription_receipt_hash") != route_evidence.get("subscription_receipt_hash")
+            or not isinstance(runtime.get("command_identity"), Mapping)
+            or sha256(canonical(dict(runtime["command_identity"])) + b"\n") != route_evidence.get("grok_command_identity_sha256")
+            or any(not isinstance(runtime.get(key), str) or not re.fullmatch(r"[0-9a-f]{64}", runtime[key]) for key in identity_hashes)
+            or runtime.get("request_id_hash") == runtime.get("session_id_hash")
+            or not isinstance(telemetry, Mapping) or telemetry.get("status") not in {"reported", "not_reported"}
+            or set(telemetry) - {"status", "total_cost_usd", "total_cost_usd_ticks", "model_cost_usd"}
+            or (telemetry.get("status") == "not_reported" and set(telemetry) != {"status"})
+            or (telemetry.get("status") == "reported" and set(telemetry) == {"status"})
+            or any(not isinstance(telemetry[key], (int, float)) or isinstance(telemetry[key], bool) or not math.isfinite(telemetry[key]) or telemetry[key] < 0 for key in ("total_cost_usd", "model_cost_usd") if key in telemetry)
+            or ("total_cost_usd_ticks" in telemetry and (type(telemetry["total_cost_usd_ticks"]) is not int or telemetry["total_cost_usd_ticks"] < 0))):
+        raise ValueError("adapter output, request binding, or one-shot runtime identity drifted")
+    return control, output, runtime
+
+
+def _replay_prepared_inputs(*, raw: Mapping[str, bytes], prepared: Mapping[str, Any], v11_grok_root: Path, v11_acknowledgement_sha256: str, split_manifest: Path, hanna_csv: Path, successor_contract: Path) -> tuple[dict[str, Any], dict[str, Any]]:
+    report = _training_report(
+        v11_grok_root=Path(v11_grok_root), v11_acknowledgement_sha256=v11_acknowledgement_sha256,
+        split_manifest=Path(split_manifest), hanna_csv=Path(hanna_csv), successor_contract=Path(successor_contract),
+    )
+    parent = _parent(); diagnostics, teaching_input = _diagnostics(report)
+    request, payload, _adapter, _proposer, _inputs, _diagnostic_sha = _render_dspy_request(parent=parent, diagnostics=diagnostics, teaching_input=teaching_input)
+    route = _object(raw["disclosure.json"], label="stored disclosure")["route_identity"]
+    _expected, files = _artifacts(report=report, request=request, payload=payload, parent=parent, diagnostics=diagnostics, route=route, evidence=prepared["route_evidence"])
+    if any(raw.get(name) != value for name, value in files.items()):
+        raise ValueError("frozen source, DSPy request, or exact payload replay drifted")
+    return parent, report
+
+
+def recover_completed_terminal(*, terminal_root: Path, recovery_root: Path, v11_grok_root: Path, v11_acknowledgement_sha256: str, split_manifest: Path, hanna_csv: Path, successor_contract: Path) -> dict[str, Any]:
+    """Recover a received raw native response without reopening its terminal root or route."""
+    terminal = Path(terminal_root)
+    extras = frozenset({"launch-intent.json", "adapter-stdout.bin", "result.json"})
+    prepared, raw = _stored_prepared(terminal, extra_files=extras)
+    acknowledgement = _object(raw["authorization-acknowledgement.json"], label="bound acknowledgement")
+    expected_acknowledgement = {
+        "format_version": 1, "study_id": STUDY_ID, "kind": "authorization_acknowledgement_reference", "cell_id": STUDY_ID,
+        "disclosure_sha256": sha256(raw["disclosure.json"]), "acknowledgement_sha256": acknowledgement.get("acknowledgement_sha256"),
+    }
+    if (not re.fullmatch(r"[0-9a-f]{64}", str(acknowledgement.get("acknowledgement_sha256")))
+            or acknowledgement != expected_acknowledgement):
+        raise ValueError("terminal acknowledgement scope drifted")
+    terminal_result = _object(raw["result.json"], label="terminal result")
+    expected_terminal = {
+        "format_version": 1, "study_id": STUDY_ID, "kind": "reconcile_required_after_process_launch", "detail": "ValueError",
+        "provider_calls_made": None, "process_launches": 1, "native_contact_proven": False,
+        "native_endpoint_contact_cardinality": "unknown",
+    }
+    if terminal_result != expected_terminal:
+        raise ValueError("terminal root is not the exact recoverable parse-failure state")
+    intent = _object(raw["launch-intent.json"], label="launch intent")
+    expected_intent = {
+        "format_version": 1, "study_id": STUDY_ID, "kind": "adapter_subprocess_launch_intent_not_native_contact",
+        "prepared_sha256": sha256(raw["prepared.json"]), "payload_sha256": sha256(raw["prompt-request.bin"]),
+        "route_evidence": prepared["route_evidence"], "native_contact_proven": False,
+    }
+    if intent != expected_intent:
+        raise ValueError("terminal launch intent binding drifted")
+    parent, report = _replay_prepared_inputs(
+        raw=raw, prepared=prepared, v11_grok_root=Path(v11_grok_root), v11_acknowledgement_sha256=v11_acknowledgement_sha256,
+        split_manifest=Path(split_manifest), hanna_csv=Path(hanna_csv), successor_contract=Path(successor_contract),
+    )
+    control, output, runtime = _completed_wire(control_raw=raw["adapter-stdout.bin"], payload=raw["prompt-request.bin"], route_evidence=prepared["route_evidence"])
+    descendant, lineage = _descendant_from_completion(parent=parent, report=report, completion=output["completion"])
+    recovery = Path(recovery_root)
+    _safe_new_root(recovery)
+    _disjoint_output(
+        recovery, terminal, Path(v11_grok_root), Path(split_manifest), Path(hanna_csv),
+        Path(successor_contract), REPO,
+    )
+    provenance = {
+        "format_version": 1, "study_id": STUDY_ID, "kind": "offline_terminal_response_recovery_provenance",
+        "terminal_root": str(terminal.resolve()), "terminal_result_sha256": sha256(raw["result.json"]),
+        "prepared_sha256": sha256(raw["prepared.json"]), "launch_intent_sha256": sha256(raw["launch-intent.json"]),
+        "adapter_stdout_sha256": sha256(raw["adapter-stdout.bin"]), "adapter_control_canonical_sha256": sha256(canonical(control)),
+        "payload_sha256": sha256(raw["prompt-request.bin"]), "route_evidence": prepared["route_evidence"], "runtime": dict(runtime),
+        "native_contact_proven": False, "native_endpoint_contact_cardinality": "unproven", "provider_calls_made": 0, "process_launches": 0,
+        "lineage": lineage, "descendant_sha256": sha256(canonical(descendant)),
+        "authority": {"development_only": True, "selection": "none", "promotion": "none", "confirmation": {"status": "unopened", "cells": 0}},
+    }
+    final = {
+        "format_version": 1, "study_id": STUDY_ID, "kind": "recovered_dspy_native_development_descendant",
+        "descendant": descendant, "descendant_sha256": sha256(canonical(descendant)), "provenance_sha256": sha256(canonical(provenance)),
+        "provider_calls_made": 0, "process_launches": 0, "native_endpoint_contact_cardinality": "unproven",
+        "selection_authority": "none", "runtime_authority": "none",
+    }
+    recovery.mkdir(parents=True, exist_ok=False)
+    _write_new(recovery / "adapter-stdout.bin", raw["adapter-stdout.bin"])
+    _write_new(recovery / "adapter-control-envelope.json", canonical(control))
+    _write_new(recovery / "recovered-descendant.json", canonical(final))
+    _write_new(recovery / "recovery-provenance.json", canonical(provenance))
+    return {"study_id": STUDY_ID, "state": "recovered_completed_terminal_without_resend", "provider_calls_made": 0, "process_launches": 0, "descendant_sha256": final["descendant_sha256"], "provenance_sha256": final["provenance_sha256"]}
+
+
 def execute_one(*, output_root: Path, queue_root: Path, allow_remote: bool, v11_grok_root: Path, v11_acknowledgement_sha256: str, split_manifest: Path, hanna_csv: Path, successor_contract: Path) -> dict[str, Any]:
     """Dispatch the already-frozen DSPy payload once; a terminal root can never resend."""
     if allow_remote is not True:
@@ -500,46 +664,9 @@ def execute_one(*, output_root: Path, queue_root: Path, allow_remote: bool, v11_
     if getattr(outcome, "state", None) != "completed":
         return _terminal(root, state="reconcile_required_after_process_launch", detail=getattr(outcome, "detail", None), launches=1, control_raw=control_raw)
     try:
-        control = _object(control_raw, label="adapter control envelope")
-        result = control.get("result")
-        if control.get("control") != {"version": 1, "state": "completed"} or not isinstance(result, Mapping):
-            raise ValueError("adapter did not report one completed native response")
-        output = result.get("output")
-        runtime = result.get("runtime")
-        if (not isinstance(output, Mapping) or set(output) != {"completion"} or not isinstance(output.get("completion"), str)
-                or result.get("output_hash") != sha256(canonical(dict(output))) or not isinstance(runtime, Mapping)
-                or runtime.get("requested_model") != "grok-4.6" or runtime.get("reported_model") != "grok-4.6-build"
-                or runtime.get("requested_reasoning_effort") != "high" or runtime.get("nonvisual_max_turns") != 1
-                or runtime.get("observed_turns") != 1):
-            raise ValueError("adapter output or one-shot runtime identity drifted")
-        parent = _parent(); report = _object(raw["training-report.json"], label="stored V11 report"); diagnostics, _teaching_input = _diagnostics(report)
-        dspy = _dspy(); adapter = dspy.ChatAdapter(use_native_function_calling=False, use_json_adapter_fallback=False)
-        parsed = adapter.parse(_signature(dspy), output["completion"])
-        instruction = parsed["descendant_instruction"].encode("utf-8")
-        if not instruction.strip() or len(instruction) > 16_384 or instruction == parent["instruction_bytes"] or b"\x00" in instruction:
-            raise ValueError("DSPy response did not contain one distinct versionable instruction edit")
-        fixed_profile = parent["profile_bytes"]
-        candidate_commitment = {
-            "format_version": 1, "candidate_kind": "dspy_native_train_instruction_descendant",
-            "parent_candidate_sha256": parent["candidate_sha256"], "instruction_sha256": sha256(instruction),
-            "profile_sha256": sha256(fixed_profile), "training_diagnostics_sha256": sha256(diagnostics),
-        }
-        candidate_sha = sha256(candidate_commitment)
-        descendant = {
-            "format_version": 1, "candidate_kind": "dspy_native_train_instruction_descendant",
-            "instruction_base64": base64.b64encode(instruction).decode("ascii"),
-            "profile_base64": base64.b64encode(fixed_profile).decode("ascii"), "candidate_sha256": candidate_sha,
-            "parent": {"candidate_id": parent["candidate_id"], "candidate_sha256": parent["candidate_sha256"], "instruction_sha256": parent["instruction_sha256"], "profile_sha256": parent["profile_sha256"]},
-            "training_diagnostics": diagnostics, "candidate_commitment": candidate_commitment,
-            "selection_authority": "none", "runtime_authority": "none",
-        }
-        lineage = {
-            "parent_candidate_id": parent["candidate_id"], "parent_candidate_sha256": parent["candidate_sha256"],
-            "parent_instruction_sha256": parent["instruction_sha256"], "parent_profile_sha256": parent["profile_sha256"],
-            "descendant_instruction_sha256": sha256(base64.b64decode(descendant["instruction_base64"], validate=True)),
-            "descendant_profile_sha256": sha256(base64.b64decode(descendant["profile_base64"], validate=True)),
-            "descendant_candidate_sha256": descendant["candidate_sha256"],
-        }
+        control, output, runtime = _completed_wire(control_raw=control_raw, payload=raw["prompt-request.bin"], route_evidence=evidence)
+        parent = _parent(); report = _object(raw["training-report.json"], label="stored V11 report")
+        descendant, lineage = _descendant_from_completion(parent=parent, report=report, completion=output["completion"])
         receipt = {
             "format_version": 1, "study_id": STUDY_ID, "kind": "dspy_native_grok_receipt",
             "prepared_sha256": sha256(raw["prepared.json"]), "launch_intent_sha256": sha256(canonical(intent)),

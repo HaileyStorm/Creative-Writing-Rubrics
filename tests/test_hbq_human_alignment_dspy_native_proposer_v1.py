@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import base64
+import hashlib
 import importlib.util
 import json
 from pathlib import Path
@@ -56,8 +57,50 @@ def _route(_queue: Path):
         "adapter": "grok_exec",
         "destination": "xai_grok_build_subscription",
     }
-    evidence = {"route_name": route["name"], "route_sha256": "e" * 64}
+    command_identity = {"version": 1, "artifacts": []}
+    evidence = {
+        "route_name": route["name"],
+        "route_sha256": "e" * 64,
+        "grok_cli_version": "fixture",
+        "subscription_receipt_hash": "s" * 64,
+        "grok_command_identity_sha256": hashlib.sha256(json.dumps(command_identity, sort_keys=True, separators=(",", ":")).encode("utf-8") + b"\n").hexdigest(),
+    }
     return SimpleNamespace(), SimpleNamespace(), SimpleNamespace(), route, evidence
+
+
+def _completed_jsonl(value, payload: bytes, evidence: dict[str, str], completion: str) -> bytes:
+    output = {"completion": completion}
+    runtime = {
+        "adapter_version": 1,
+        "requested_model": "grok-4.6",
+        "reported_model": "grok-4.6-build",
+        "requested_reasoning_effort": "high",
+        "reasoning_attested": False,
+        "reasoning_attestation": "not_reported_by_grok_build_cli",
+        "identity_evidence": "requested_only",
+        "nonvisual_max_turns": 1,
+        "observed_turns": 1,
+        "cli_version": evidence["grok_cli_version"],
+        "subscription_receipt_hash": evidence["subscription_receipt_hash"],
+        "command_identity": {"version": 1, "artifacts": []},
+        "command_identity_hash": evidence["grok_command_identity_sha256"],
+        "request_id_hash": "1" * 64,
+        "session_id_hash": "2" * 64,
+        "envelope_hash": "3" * 64,
+        "execution_policy": "bounded_nonvisual_read_only",
+        "usage_telemetry": {"status": "not_reported"},
+    }
+    control = {
+        "control": {"version": 1, "state": "completed"},
+        "result": {
+            "schema_version": 1,
+            "request_hash": value.sha256({"prompt": payload.decode("utf-8")}),
+            "output": output,
+            "output_hash": value.sha256(value.canonical(output)),
+            "runtime": runtime,
+        },
+    }
+    return json.dumps(control, ensure_ascii=False).encode("utf-8") + b"\n"
 
 
 def _common(v11_train: dict[str, object], output_root: Path) -> dict[str, object]:
@@ -202,16 +245,12 @@ def test_one_fake_native_command_replays_bytes_parses_and_validates_candidate(mo
         assert received_route == route
         assert schema == json.loads(value._schema().decode("utf-8"))
         calls.append(payload)
-        output = {"completion": "[[ ## descendant_instruction ## ]]\nRequire each score to name a concrete supporting passage from the submitted story.\n\n[[ ## completed ## ]]"}
-        runtime = {
-            "requested_model": "grok-4.6",
-            "reported_model": "grok-4.6-build",
-            "requested_reasoning_effort": "high",
-            "nonvisual_max_turns": 1,
-            "observed_turns": 1,
-        }
-        control = {"control": {"version": 1, "state": "completed"}, "result": {"output": output, "output_hash": value.sha256(value.canonical(output)), "runtime": runtime}}
-        raw = value.canonical(control)
+        raw = _completed_jsonl(
+            value,
+            payload,
+            evidence,
+            "[[ ## descendant_instruction ## ]]\nRequire each score to name a concrete supporting passage from the submitted story.\n\n[[ ## completed ## ]]",
+        )
         capture.write_bytes(raw)
         return SimpleNamespace(state="completed", detail=None), raw
 
@@ -241,3 +280,91 @@ def test_one_fake_native_command_replays_bytes_parses_and_validates_candidate(mo
     with pytest.raises(ValueError, match="cannot resend"):
         value.execute_one(allow_remote=True, **common)
     assert len(calls) == 1
+
+
+def test_completed_jsonl_terminal_recovers_offline_without_mutating_or_resending(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, v11_train: dict[str, object]):
+    value = proposer()
+    common = _common(v11_train, tmp_path / "terminal")
+    route = _route(common["queue_root"])[3]
+    evidence = _route(common["queue_root"])[4]
+    calls: list[bytes] = []
+
+    def invoke(_grok, _broker, _route_value, payload: bytes, _schema: dict[str, object], capture: Path):
+        calls.append(payload)
+        raw = _completed_jsonl(
+            value,
+            payload,
+            evidence,
+            "[[ ## descendant_instruction ## ]]\nBind every score to named textual evidence in the submitted story.\n\n[[ ## completed ## ]]",
+        )
+        capture.write_bytes(raw)
+        return SimpleNamespace(state="completed", detail=None), raw
+
+    heldout = SimpleNamespace(_grok_invoke=invoke)
+    monkeypatch.setattr(value, "_route", lambda _queue: (SimpleNamespace(), heldout, SimpleNamespace(), route, evidence))
+    value.prepare_one(**common)
+    terminal = common["output_root"]
+    disclosure = json.loads((terminal / "disclosure.json").read_bytes())
+    acknowledgement = {
+        "format_version": 1,
+        "study_id": value.STUDY_ID,
+        "kind": "authorization_acknowledgement_reference",
+        "cell_id": value.STUDY_ID,
+        "disclosure_sha256": value.sha256(value.canonical(disclosure)),
+        "acknowledgement_sha256": "d" * 64,
+    }
+    acknowledgement_path = tmp_path / "acknowledgement.json"
+    acknowledgement_path.write_bytes(value.canonical(acknowledgement))
+    value.bind_authorization(output_root=terminal, acknowledgement_path=acknowledgement_path)
+    original_descendant = value._descendant_from_completion
+    monkeypatch.setattr(value, "_descendant_from_completion", lambda **_kwargs: (_ for _ in ()).throw(ValueError("prior parser boundary")))
+    terminal_result = value.execute_one(allow_remote=True, **common)
+    assert terminal_result["kind"] == "reconcile_required_after_process_launch" and terminal_result["detail"] == "ValueError"
+    assert calls == [(terminal / "prompt-request.bin").read_bytes()]
+    before = {path.relative_to(terminal).as_posix(): path.read_bytes() for path in terminal.iterdir()}
+    monkeypatch.setattr(value, "_descendant_from_completion", original_descendant)
+    monkeypatch.setattr(value, "_route", lambda _queue: (_ for _ in ()).throw(AssertionError("recovery must not route")))
+    recovery = tmp_path / "recovery"
+    result = value.recover_completed_terminal(
+        terminal_root=terminal,
+        recovery_root=recovery,
+        v11_grok_root=common["v11_grok_root"],
+        v11_acknowledgement_sha256=common["v11_acknowledgement_sha256"],
+        split_manifest=common["split_manifest"],
+        hanna_csv=common["hanna_csv"],
+        successor_contract=common["successor_contract"],
+    )
+    assert result["state"] == "recovered_completed_terminal_without_resend"
+    assert calls == [(terminal / "prompt-request.bin").read_bytes()]
+    assert {path.relative_to(terminal).as_posix(): path.read_bytes() for path in terminal.iterdir()} == before
+    assert {path.name for path in recovery.iterdir()} == {"adapter-stdout.bin", "adapter-control-envelope.json", "recovered-descendant.json", "recovery-provenance.json"}
+    assert (recovery / "adapter-stdout.bin").read_bytes() == before["adapter-stdout.bin"]
+    provenance = json.loads((recovery / "recovery-provenance.json").read_bytes())
+    descendant = json.loads((recovery / "recovered-descendant.json").read_bytes())["descendant"]
+    assert provenance["adapter_stdout_sha256"] == value.sha256(before["adapter-stdout.bin"])
+    assert provenance["runtime"]["request_id_hash"] == "1" * 64
+    assert provenance["runtime"]["session_id_hash"] == "2" * 64
+    assert base64.b64decode(descendant["profile_base64"], validate=True) == value._parent()["profile_bytes"]
+    with pytest.raises(ValueError, match="cannot resend"):
+        value.execute_one(allow_remote=True, **common)
+    protected_roots = (
+        Path(common["v11_grok_root"]),
+        Path(common["split_manifest"]).parent,
+        Path(common["hanna_csv"]).parent,
+        Path(common["successor_contract"]).parent,
+    )
+    for index, protected in enumerate(protected_roots):
+        overlap = protected / f"native-proposer-overlap-{tmp_path.name}-{index}"
+        assert not overlap.exists()
+        with pytest.raises(ValueError):
+            value.recover_completed_terminal(
+                terminal_root=terminal,
+                recovery_root=overlap,
+                v11_grok_root=common["v11_grok_root"],
+                v11_acknowledgement_sha256=common["v11_acknowledgement_sha256"],
+                split_manifest=common["split_manifest"],
+                hanna_csv=common["hanna_csv"],
+                successor_contract=common["successor_contract"],
+            )
+        assert not overlap.exists()
+        assert {path.relative_to(terminal).as_posix(): path.read_bytes() for path in terminal.iterdir()} == before

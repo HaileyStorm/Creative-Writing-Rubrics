@@ -32,3 +32,13 @@ remain byte-identical in the resulting descendant.
 The receipt records a locally observed completed adapter control response but
 does **not** claim independently proven native-contact cardinality. Any failed
 or ambiguous post-launch outcome is reconciliation-required and terminal.
+
+If an already-terminal root contains a completed native control that could not
+be reconciled solely because its adapter wire JSON used ordinary spacing or a
+trailing newline, `recover_completed_terminal` can make a fresh, provider-free
+recovery descendant. It preserves the original `adapter-stdout.bin` bytes,
+replays the frozen TRAIN/DSPy inputs and all stored bindings, validates the
+one-turn runtime against the persisted route proof, and never refreshes a route
+or resends. Its fresh output must also be outside every replayed source root
+and this package repository. The recovered result remains development-only
+with native-contact cardinality unproven; it does not modify the terminal root.
