@@ -726,8 +726,17 @@ agreement, and 26 unique request and session identities. The physical schedule
 file digest and its canonical semantic schedule digest are deliberately distinct
 commitments, recorded in the [public aggregate](../evaluation-results/hbq-human-alignment-optimizer-v14-dspy-train-pilot-v1/development-result.json).
 
-Sol development measurement is pending and no Sol result is inferred from this
-Grok checkpoint. It remains in-sample development evidence only: it creates no
+The separate matched Sol replay is now complete. Its MAE moved from
+`1.1908730158730159` to `0.9607142857142857` (`19.326891036321223%`; seven
+group wins, no ties, no losses). Fixed-3 remained `0.7658730158730158` on the
+same reconstructed targets and was better than both Sol candidates. Sol ranks
+were higher in 5/6 item dimensions (all but Surprise) and 4/6 group dimensions
+(Relevance, Empathy, Surprise, Complexity); this still is not universal ranking
+success. Sol had one false-coverage cell for each candidate and no all-zero
+vectors. These are cell counts, not coverage-dimension counts.
+
+The endpoints remain separately reported despite byte-identical schedule
+payloads. This is in-sample development evidence only: it creates no
 confirmation, generalization, endpoint pooling, promotion, runtime, or
 automatic dispatch authority. Frozen predecessor optimizer packages remain
 history for their different inputs, not runtime dependencies.

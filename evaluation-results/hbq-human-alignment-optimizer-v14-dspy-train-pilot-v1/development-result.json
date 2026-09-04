@@ -12,7 +12,7 @@
     "promotion": "none",
     "runtime": "none",
     "selection": "none",
-    "sol_development": "pending_not_measured"
+    "sol_development": "separate_receipt_derived_measurement_complete"
   },
   "candidates": {
     "child20": "broader-nextwave-20-missing_evidence_not_no-referent-evidence",
@@ -36,11 +36,20 @@
     "strict_primary_mae_improvement": true
   },
   "coverage": {
-    "all_zero_score_vectors_retained": 1,
-    "finite_numeric_scores_retained": true,
-    "false_coverage_flags": 0,
-    "score_dimensions": 6,
-    "scored_dimensions": 156
+    "grok_primary": {
+      "all_zero_score_vectors_retained": 1,
+      "false_coverage_dimensions": 0,
+      "finite_numeric_scores_retained": true,
+      "score_dimensions": 6,
+      "scored_dimensions": 156
+    },
+    "sol_later": {
+      "all_zero_score_vectors_retained": 0,
+      "false_coverage_cells_per_candidate": 1,
+      "finite_numeric_scores_retained": true,
+      "score_dimensions": 6,
+      "scored_dimensions": 156
+    }
   },
   "endpoint": {
     "grok_primary": {
@@ -51,18 +60,25 @@
       "reported_model": "grok-4.6-build",
       "tools": "off"
     },
-    "sol_development": {"status": "pending_not_measured"}
+    "sol_later": {
+      "payloads": 26,
+      "provider_attested": false,
+      "status": "receipt_derived_complete"
+    }
   },
   "format_version": 1,
   "geometry": {"grok_cells": 26, "items": 13, "prompt_groups": 7},
   "integrity": {
-    "grok_and_later_sol_schedule_payload_sha256s_match": true,
+    "grok_and_sol_schedule_payload_sha256s_match": true,
     "native_endpoint_contact_cardinality": "unproven",
     "unique_native_requests": 26,
     "unique_native_sessions": 26,
     "raw_native_response_and_receipt_digests_agree": true,
     "schedule_file_bytes_sha256": "eaef1e6d25e4a6ac1fb4a55d5924f6c34bf651a42ba390ed581bc7ce7b4ac8c8",
-    "schedule_semantic_sha256": "de024cc4e7bd548b6a73cdbe6424f996d4ffece4399bf651c235f8ae7219a8b2"
+    "schedule_semantic_sha256": "de024cc4e7bd548b6a73cdbe6424f996d4ffece4399bf651c235f8ae7219a8b2",
+    "sol_raw_csv_targets_equal_to_grok_replay": true,
+    "sol_unique_native_requests": 26,
+    "sol_unique_native_sessions": 26
   },
   "kind": "receipt_derived_26_cell_grok_dspy_child20_development_checkpoint",
   "rank_correlations": {
@@ -80,10 +96,40 @@
       "lower_dimensions": ["Coherence", "Empathy", "Engagement", "Complexity"]
     }
   },
+  "sol_comparison": {
+    "child20_equal_group_mae": 1.1908730158730159,
+    "dspy_descendant_equal_group_mae": 0.9607142857142857,
+    "dspy_minus_child20": -0.23015873015873012,
+    "dspy_vs_child20_group_wins_ties_losses": [7, 0, 0],
+    "fixed_three_equal_group_mae": 0.7658730158730158,
+    "relative_reduction_by_dspy": 0.19326891036321223,
+    "strict_primary_mae_improvement": true,
+    "both_candidates_worse_than_fixed_three": true
+  },
+  "sol_rank_correlations": {
+    "definition": "average_tie_Spearman; higher_is_better; descriptive_only",
+    "group_mean_7": {
+      "child20": {"Coherence": 0.900937462695559, "Complexity": 0.48181205582971576, "Empathy": 0.5370370370370371, "Engagement": 0.8240740740740741, "Relevance": -0.03571428571428571, "Surprise": 0.6546536707079771},
+      "dspy_descendant": {"Coherence": 0.6636363636363637, "Complexity": 0.8414522910076114, "Empathy": 0.8703703703703703, "Engagement": 0.8001322641986387, "Relevance": 0.10714285714285714, "Surprise": 0.9274260335029676},
+      "higher_dimensions": ["Relevance", "Empathy", "Surprise", "Complexity"],
+      "lower_dimensions": ["Coherence", "Engagement"]
+    },
+    "item_13": {
+      "child20": {"Coherence": 0.427357364969989, "Complexity": 0.057757653098254244, "Empathy": 0.36119125100103383, "Engagement": 0.4463437117588088, "Relevance": 0.20933542863498109, "Surprise": 0.653432807663687},
+      "dspy_descendant": {"Coherence": 0.4993548846858302, "Complexity": 0.503088667130458, "Empathy": 0.5955150157763337, "Engagement": 0.4555934326364519, "Relevance": 0.4207677094020913, "Surprise": 0.5447119475218809},
+      "higher_dimensions": ["Relevance", "Coherence", "Empathy", "Engagement", "Complexity"],
+      "lower_dimensions": ["Surprise"]
+    }
+  },
   "source": {
     "development_contract_sha256": "37dd1f1a9f26dc7091bcafb7c49ddd03d891c0ec12cdab028535a89bbf679994",
     "development_source_commit": "3cda5ef",
-    "development_source_sha256": "48cff43b8ba31962eaf618af1f70c18fd9581e9d59a8da62bf646cf7a2317fa8"
+    "development_source_sha256": "48cff43b8ba31962eaf618af1f70c18fd9581e9d59a8da62bf646cf7a2317fa8",
+    "sol_acknowledgement_sha256": "6cc8c5897c8081d4e8b368b91e84fe26b7442a4f7542c0e32dd88a0c0c319047",
+    "sol_receipt_inventory_sha256": "860e8b33bcaf012a150789fe5d32a825a843d639af264e181d5fe649239ca6aa",
+    "sol_source_commit": "5c4c8e7",
+    "sol_source_sha256": "d407df43917b1e513cc1a7696bb04ccd292ad266e78e189771d5e8248c6a70f3",
+    "sol_tree_sha256": "aa4a50382bdb92d7e6009f634e84ca5b708eea36744692e8c23a381a85767ffc"
   },
   "study_id": "hbq-human-alignment-optimizer-v14-dspy-development-panel-v1"
 }
