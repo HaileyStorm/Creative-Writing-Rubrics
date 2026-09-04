@@ -1,0 +1,29 @@
+{
+  "format_version": 1,
+  "publication_scope": {
+    "native_request_response_bodies": "not_published",
+    "private_source_prose": "not_published",
+    "request_and_session_identifiers": "not_published",
+    "targets_and_item_level_scores": "not_published"
+  },
+  "receipt_replay": {
+    "acknowledgement_sha256": "3b84782a4fe0745c46c77209e0a76fe13babc7e747d58ad2ec2e52093939d85c",
+    "common_route_evidence_sha256": "4a54101e9056e576362ba5de9e56764d73894c0dbb8c5aba52af60860ba32a5d",
+    "common_route_sha256": "89b80ba1a42d6f97630770cdb6d2ee1bb33434735e641973d6048aea3da1ed3a",
+    "independent_replay": true,
+    "replayed_report_sha256": "f235c65eea6513bdfc542c0eaae1ed3f9c1579e454f57e470d75992c17982879"
+  },
+  "source_study": {
+    "commit": "10d4251",
+    "study_contract_sha256": "a39bbb4569f51f2147c53d4350dc9def7e0aeacc301617695965f6e6d36fc354",
+    "study_id": "hbq-human-alignment-optimizer-v12-development-panel-v1",
+    "study_sha256": "a1100bc16528287571d1b7198729124a705990ab7561385d271df27a7e2b7851"
+  },
+  "study_id": "hbq-human-alignment-optimizer-v12-development-grok-result-v1",
+  "validator_limitation": {
+    "all_zero_finite_scores": "the inherited Grok response-quality guard rejects an all-zero score vector although it is finite under this study's inclusion rule",
+    "affected_observed_cells": 0,
+    "pinned_reconciler_commit": "c7d9191",
+    "pinned_reconciler_sha256": "6c132ade2b95bad54a580736e9e8b66fef4cb8b9733f91c0398dd35e4488293d"
+  }
+}

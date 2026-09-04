@@ -603,3 +603,18 @@ the direction of the paired improvement, not strong absolute alignment: the
 non-fitted midpoint-3 context scores 0.763889 on these four stories, better than
 either Sol candidate. No TRAIN result is relabeled as confirmation or used to
 change the already-opened confirmation comparison.
+
+A later [fresh seven-group Grok development panel](../evaluation-results/hbq-human-alignment-optimizer-v12-development-grok-result-v1/)
+kept child20 unchanged on 13 development items (26 matched cells). Independent
+receipt replay gave equal-group mean item MAE of 1.126984 for baseline and
+0.767857 for child20: a 31.87% reduction, with six group wins, one tie, and
+no losses. This remains development-only—not Fresh96 confirmation, endpoint
+cardinality attestation, runtime evidence, or a general ranking claim. A
+non-fitted constant-3 context scores 0.765873, marginally lower than child20.
+Descriptive rank correlation improved in five of six dimensions at both the
+13-item and seven-group units, but the declining dimension differs (Engagement
+for item scores and Relevance for group means). All finite numeric scores were
+retained; none of the 26 observed vectors was all zero, although the inherited
+Grok quality guard has a latent all-zero finite-score limitation recorded in the
+public provenance. No prompt retuning, selection, promotion, or runtime change
+followed from this panel.

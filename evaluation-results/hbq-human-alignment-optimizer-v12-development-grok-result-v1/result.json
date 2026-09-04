@@ -1,0 +1,78 @@
+{
+  "analysis_rule": {
+    "coverage": "include_every_finite_numeric_score_even_when_coverage_is_false",
+    "primary": "absolute_error_per_item_then_mean_within_each_prompt_group_then_equal_mean_across_7_prompt_groups"
+  },
+  "authority": {
+    "confirmation_cells": 0,
+    "development_only": true,
+    "endpoint_cardinality_attested": false,
+    "promotion": "none",
+    "runtime": "none",
+    "selection": "none",
+    "sol_execution": "unopened"
+  },
+  "comparison": {
+    "absolute_mae_reduction": 0.3591269841269842,
+    "baseline_candidate_id": "candidate-102cc7f06c9a99a7",
+    "child20_minus_baseline": -0.3591269841269842,
+    "child_candidate_id": "broader-nextwave-20-missing_evidence_not_no-referent-evidence",
+    "group_wins_ties_losses": [6, 1, 0],
+    "relative_mae_reduction": 0.3186619718309859,
+    "strict_mean_mae_improvement": true
+  },
+  "coverage": {
+    "dimensions": 6,
+    "finite_numeric_scores_included": true,
+    "flags_false": 0,
+    "flags_total": 156
+  },
+  "endpoint": {
+    "name": "grok_primary",
+    "provider_attested": false,
+    "reported_model": "grok-4.6-build",
+    "requested_model": "grok-4.6",
+    "requested_reasoning": "high",
+    "tools": false,
+    "web": false
+  },
+  "format_version": 1,
+  "geometry": {
+    "candidates": 2,
+    "cells": 26,
+    "dimensions": 6,
+    "groups": 7,
+    "items": 13
+  },
+  "integrity": {
+    "all_zero_score_vectors": 0,
+    "common_frozen_route": true,
+    "common_route_evidence": true,
+    "native_endpoint_contact_cardinality": "unproven",
+    "unique_request_ids": 26,
+    "unique_session_ids": 26
+  },
+  "kind": "receipt_derived_26_cell_grok_development_panel_result",
+  "metrics": [
+    {
+      "candidate_id": "candidate-102cc7f06c9a99a7",
+      "equal_group_mean_item_mae": 1.126984126984127
+    },
+    {
+      "candidate_id": "broader-nextwave-20-missing_evidence_not_no-referent-evidence",
+      "equal_group_mean_item_mae": 0.7678571428571429
+    }
+  ],
+  "posthoc_calibration_context": {
+    "constant_prediction": 3,
+    "constant_three_equal_group_mean_item_mae": 0.7658730158730158,
+    "constant_three_minus_child20": -0.0019841269841271,
+    "not_a_tuned_or_preregistered_comparator": true,
+    "rank_context": {
+      "constant_three": "undefined because every prediction ties",
+      "group_mean_7": "child20 exceeds baseline in 5 of 6 dimensions; Relevance declines",
+      "item_13": "child20 exceeds baseline in 5 of 6 dimensions; Engagement declines"
+    }
+  },
+  "study_id": "hbq-human-alignment-optimizer-v12-development-grok-result-v1"
+}
