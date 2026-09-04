@@ -1,0 +1,24 @@
+{
+  "format_version": 1,
+  "publication_scope": {
+    "native_request_response_bodies": "not_published",
+    "private_source_prose": "not_published",
+    "request_and_session_identifiers": "not_published",
+    "targets_and_item_level_scores": "not_published"
+  },
+  "receipt_replay": {
+    "acknowledgement_sha256": "4ea607c7a2ff5b0a8536897f87d1c51fe497aa4943970c70e3ad2abdbeae176a",
+    "canonical_report_sha256": "7cc6520d36c4f0c6cbe3585752ce21109ad0afd2d458b9a7d4d30e12f99f54de",
+    "independent_csv_and_native_receipt_replay": true,
+    "native_response_inventory_sha256": "47987e8b23ceadbe12a2dcb108e3b74edc371ae26ab063f899a56844540f657a",
+    "receipt_inventory_sha256": "22c4baaaae4f21cf7faa8170f3296421fd2d78add953835cf3fdab20ba472e92",
+    "schedule_raw_sha256": "2d66a311912e82f5cc1e4bb411e94493a22e6b0761da43ee6d580972a5d589db"
+  },
+  "source_study": {
+    "commit": "9c76e81",
+    "study_contract_sha256": "f4868f88e001d07a02c5cf35b12b923c9fa8c53a0ce6010151b1142ad87495a9",
+    "study_id": "hbq-human-alignment-optimizer-v13-train-expansion-v1",
+    "study_sha256": "f2b5a4c178cf2a7919b5dfd8c5ddde7bf5c1e0e9aa81a2f2f4d0bdd9b97c8261"
+  },
+  "study_id": "hbq-human-alignment-optimizer-v13-train-expansion-result-v1"
+}

@@ -1,0 +1,98 @@
+{
+  "analysis_rule": {
+    "coverage": "include_every_finite_numeric_score_even_when_coverage_is_false",
+    "primary": "absolute_error_per_item_then_mean_within_each_prompt_group_then_equal_mean_across_22_prompt_groups"
+  },
+  "authority": {
+    "confirmation_access": "forbidden_in_this_study",
+    "confirmation_cells": 0,
+    "development_only": true,
+    "dspy_optuna_runtime": false,
+    "endpoint_pooling": "forbidden",
+    "generalization": "none",
+    "previous_results": "unchanged",
+    "promotion": "none",
+    "runtime": "none",
+    "selection": "none",
+    "sol_execution": "unopened"
+  },
+  "comparison": {
+    "absolute_mae_reduction": 0.3399410774410774,
+    "baseline_candidate_id": "candidate-102cc7f06c9a99a7",
+    "child20_minus_baseline": -0.3399410774410774,
+    "child_candidate_id": "broader-nextwave-20-missing_evidence_not_no-referent-evidence",
+    "group_wins_ties_losses": [19, 0, 3],
+    "relative_mae_reduction": 0.2761650767600095,
+    "strict_primary_mae_improvement": true
+  },
+  "coverage": {
+    "dimensions": 6,
+    "finite_numeric_scores_included": true,
+    "flags_false": 0,
+    "flags_total": 528
+  },
+  "endpoint": {
+    "name": "grok_primary",
+    "provider_attested": false,
+    "reported_model": "grok-4.6-build",
+    "requested_model": "grok-4.6",
+    "requested_reasoning": "high",
+    "tools": false,
+    "web": false
+  },
+  "format_version": 1,
+  "geometry": {
+    "candidates": 2,
+    "cells": 88,
+    "dimensions": 6,
+    "groups": 22,
+    "items": 44
+  },
+  "integrity": {
+    "all_zero_score_vectors": 0,
+    "native_endpoint_contact_cardinality": "unproven",
+    "unique_request_ids": 88,
+    "unique_session_ids": 88
+  },
+  "kind": "receipt_derived_88_cell_grok_train_expansion_result",
+  "metrics": [
+    {
+      "candidate_id": "candidate-102cc7f06c9a99a7",
+      "equal_group_mean_item_mae": 1.2309343434343434
+    },
+    {
+      "candidate_id": "broader-nextwave-20-missing_evidence_not_no-referent-evidence",
+      "equal_group_mean_item_mae": 0.890993265993266
+    }
+  ],
+  "posthoc_calibration_context": {
+    "constant_prediction": 3,
+    "constant_three_equal_group_mean_item_mae": 0.7760942760942761,
+    "constant_three_minus_child20": -0.11489898989898994,
+    "not_a_tuned_or_preregistered_comparator": true,
+    "rank_context": {
+      "average_tie_spearman": "stdlib implementation; descriptive posthoc context; no p-values",
+      "group_mean_22": {
+        "Complexity": {"baseline": 0.279491, "child20": 0.178170},
+        "Coherence": {"baseline": 0.141628, "child20": -0.121320},
+        "Empathy": {"baseline": 0.060424, "child20": 0.060421},
+        "Engagement": {"baseline": 0.011351, "child20": -0.089946},
+        "Relevance": {"baseline": 0.529438, "child20": 0.382424},
+        "Surprise": {"baseline": 0.262587, "child20": -0.279232},
+        "child20_higher_dimensions": 0,
+        "child20_lower_dimensions": 6
+      },
+      "item_44": {
+        "Complexity": {"baseline": 0.435622, "child20": 0.180019},
+        "Coherence": {"baseline": -0.074576, "child20": -0.051498},
+        "Empathy": {"baseline": 0.069453, "child20": 0.260360},
+        "Engagement": {"baseline": 0.099077, "child20": 0.036925},
+        "Relevance": {"baseline": 0.486187, "child20": 0.426730},
+        "Surprise": {"baseline": 0.164579, "child20": 0.009758},
+        "child20_higher_dimensions": 2,
+        "child20_lower_dimensions": 4
+      }
+    }
+  },
+  "study_id": "hbq-human-alignment-optimizer-v13-train-expansion-result-v1"
+}

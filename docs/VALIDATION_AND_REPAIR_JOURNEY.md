@@ -633,3 +633,18 @@ calibration against the original prompt has not yet produced broadly better
 ranking. We keep this development result separate from untouched confirmation
 and retain both the gains and the counterexamples as we develop the next
 TRAIN-only candidates.
+
+The [V13 remaining TRAIN expansion](../evaluation-results/hbq-human-alignment-optimizer-v13-train-expansion-result-v1/)
+then measured the unchanged baseline and child20 on the other 44 frozen TRAIN
+items, in 22 unequal prompt groups and 88 Grok cells. Independent CSV and
+native-receipt replay retained every finite score: child20's equal-group mean
+item MAE was 0.890993 versus 1.230934 for baseline (27.62%; 19 group wins, no
+ties, and 3 losses). This is still development measurement, not a new held-out
+confirmation, a Sol result, selection, promotion, runtime, or general ranking
+claim. A fixed non-fitted constant-3 diagnostic scored 0.776094, lower than
+child20 by 0.114899. The real DSPy proposal recovered during this work was not
+measured in this panel, so no gain is claimed for it. The post-hoc descriptive
+average-tie Spearman readout is a counterexample to treating MAE calibration as
+ranking success: child20 is higher on only 2/6 item correlations and lower on
+all 6 group-mean correlations. Those stdlib calculations have no p-values and
+are not part of the primary MAE measurement.
