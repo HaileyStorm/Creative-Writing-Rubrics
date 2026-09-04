@@ -13,6 +13,8 @@ not human scores or model performance. Human-reference stories are excluded.
   reused portion is historical, not a contemporaneous randomized control.
 - **Comparative arm:** each ten-story group appears in two opposite orders.
   Average each story's two scores; never choose the more favorable order.
+  This supplies two judgments per story and larger shared context, so any gain
+  is not an equal-token-budget or batching-only claim.
 - **Cost:** 39 new calls per endpoint. The first batch is a counted validity
   check; a malformed result blocks the remaining batches without automatic retry.
 - **Endpoints:** Grok and Sol receive identical task payloads and remain separate.
