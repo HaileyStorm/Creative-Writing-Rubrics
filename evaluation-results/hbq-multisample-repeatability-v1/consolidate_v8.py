@@ -102,6 +102,20 @@ SUPPORT_FILES = {
 }
 LEGACY_ACCEPTED_CHECKPOINT_GLOB = 'checkpoints = sorted((path / "responses").glob("batch-*.json"))'
 EXACT_ACCEPTED_CHECKPOINT_GLOB = 'checkpoints = sorted((path / "responses").glob("batch-[0-9][0-9][0-9][0-9].json"))'
+RETAINED_LF_PROMPT_BINDINGS = [
+    {"name": "JUDGE_PREFIX.md", "bytes": 1184, "sha256": "ba48be75c55502d762f1029745b6a4b3b4d12674317f20906443467a00f8f3a5"},
+    {"name": "BINARY_EVALUATION_PROMPT.md", "bytes": 1460, "sha256": "3dd432228d2ad747e9a3958320e1b7eccf725bbc985aec1cd74eeb865254bd1c"},
+]
+LEGACY_PROMPT_BINDING_BLOCK = '''        expected_prompts = [fingerprint(prompts_dir() / "judge" / name) for name in ("JUDGE_PREFIX.md", "BINARY_EVALUATION_PROMPT.md")]
+        expected_schema = fingerprint(schema_dir() / "hbq_judge_response.schema.json")
+        if [_compact(item) for item in config.get("prompts", [])] != [_frozen_input_compact(item) for item in expected_prompts] or _compact(config.get("response_schema")) != _frozen_input_compact(expected_schema):
+            raise ValueError("HBQ prompt or response-schema fingerprint drifted")
+'''
+DERIVED_PROMPT_BINDING_BLOCK = '''        expected_prompts = [fingerprint(prompts_dir() / "judge" / name) for name in ("JUDGE_PREFIX.md", "BINARY_EVALUATION_PROMPT.md")]
+        expected_schema = fingerprint(schema_dir() / "hbq_judge_response.schema.json")
+        if not _derived_prompt_binding_is_accepted(config, expected_prompts, expected_schema, _compact, _frozen_input_compact, sample, arm, repetition, _derived_prompt_variant_cells):
+            raise ValueError("HBQ prompt or response-schema fingerprint drifted")
+'''
 
 
 def _sha(path: Path) -> str:
@@ -368,9 +382,39 @@ def _verify_analysis_runtime(runtime_root: Path, original_root: Path) -> None:
 
 def _derived_analyzer_source(analyzer_path: Path) -> str:
     source = analyzer_path.read_text(encoding="utf-8")
-    if source.count(LEGACY_ACCEPTED_CHECKPOINT_GLOB) != 1 or EXACT_ACCEPTED_CHECKPOINT_GLOB in source:
-        raise ValueError("Original analyzer accepted-checkpoint enumeration is not the reviewed legacy form")
-    return source.replace(LEGACY_ACCEPTED_CHECKPOINT_GLOB, EXACT_ACCEPTED_CHECKPOINT_GLOB)
+    if (
+        source.count(LEGACY_ACCEPTED_CHECKPOINT_GLOB) != 1
+        or EXACT_ACCEPTED_CHECKPOINT_GLOB in source
+        or source.count(LEGACY_PROMPT_BINDING_BLOCK) != 1
+        or DERIVED_PROMPT_BINDING_BLOCK in source
+    ):
+        raise ValueError("Original analyzer compatibility anchors are not the reviewed legacy form")
+    return source.replace(LEGACY_ACCEPTED_CHECKPOINT_GLOB, EXACT_ACCEPTED_CHECKPOINT_GLOB).replace(LEGACY_PROMPT_BINDING_BLOCK, DERIVED_PROMPT_BINDING_BLOCK)
+
+
+def _derived_prompt_binding_is_accepted(
+    config: Mapping[str, Any],
+    expected_prompts: list[dict[str, Any]],
+    expected_schema: Mapping[str, Any],
+    compact: Callable[[Any], dict[str, Any] | None],
+    frozen_input_compact: Callable[[Mapping[str, Any]], dict[str, Any]],
+    sample: Mapping[str, Any],
+    arm: Mapping[str, Any],
+    repetition: int,
+    variants: list[dict[str, Any]],
+) -> bool:
+    prompts = [compact(item) for item in config.get("prompts", [])]
+    schema = compact(config.get("response_schema"))
+    if schema != frozen_input_compact(expected_schema):
+        return False
+    if prompts == [frozen_input_compact(item) for item in expected_prompts]:
+        return True
+    if prompts != RETAINED_LF_PROMPT_BINDINGS:
+        return False
+    cell = {"item_id": sample["item_id"], "arm_id": arm["arm_id"], "repetition": repetition}
+    if cell not in variants:
+        variants.append(cell)
+    return True
 
 
 def _load_frozen_analyzer(runtime_root: Path) -> Any:
@@ -398,8 +442,10 @@ def _load_frozen_analyzer(runtime_root: Path) -> Any:
         sys.modules["study"] = study
         study_spec.loader.exec_module(study)
         analyzer = importlib.util.module_from_spec(analyzer_spec)
+        analyzer._derived_prompt_binding_is_accepted = _derived_prompt_binding_is_accepted
+        analyzer._derived_prompt_variant_cells = []
         source = _derived_analyzer_source(analyzer_path)
-        # The exact pinned source is byte-checked; this in-memory one-token derivation avoids mutating evidence.
+        # The exact pinned source is byte-checked; these in-memory derivations avoid mutating evidence.
         exec(compile(source, str(analyzer_path), "exec"), analyzer.__dict__)  # noqa: S102
         return analyzer
     finally:
@@ -1020,11 +1066,15 @@ def consolidate(
             "sha256": _sha(analysis_runtime_root / ANALYZER.relative_to(HERE.parent.parent)),
             "executed_derived_source_sha256": hashlib.sha256(_derived_analyzer_source(analysis_runtime_root / ANALYZER.relative_to(HERE.parent.parent)).encode("utf-8")).hexdigest(),
             "consolidator_sha256": _sha(Path(__file__)),
-            "derived_checkpoint_filename_compatibility": {
+            "derived_analysis_compatibility": {
                 "in_memory_only": True,
                 "legacy_glob": "batch-*.json",
                 "accepted_checkpoint_glob": "batch-[0-9][0-9][0-9][0-9].json",
                 "preserved_attempt_artifacts_remain_validated": True,
+                "retained_lf_prompt_bindings": RETAINED_LF_PROMPT_BINDINGS,
+                "retained_lf_variant_cells": analyzer._derived_prompt_variant_cells,
+                "response_schema_binding_remains_exact": True,
+                "newline_only_artifact_variants_are_not_outbound_byte_identity_evidence": True,
             },
         },
         "analysis_runtime": {"root": str(analysis_runtime_root), "reconstruction_provenance_sha256": _sha(analysis_runtime_root / "reconstruction-provenance.json")},

@@ -175,6 +175,7 @@ def _fake_analyzer(frozen: dict[str, Any], *, duplicate_sessions: bool = False) 
         _scale=lambda arm_id: [0, 10],
         _quality=lambda rows, repetitions: {"fixture": True},
         _bootstrap=lambda rows_by_arm, seed, draws: {"fixture": True},
+        _derived_prompt_variant_cells=[],
         statistics=statistics,
     )
 
@@ -492,13 +493,98 @@ def test_derived_analyzer_selects_only_six_checkpoints_without_mutating_attempt_
 
     derived_source = module._derived_analyzer_source(analyzer_path)
 
-    assert derived_source == original_source.replace(module.LEGACY_ACCEPTED_CHECKPOINT_GLOB, module.EXACT_ACCEPTED_CHECKPOINT_GLOB)
+    assert derived_source == original_source.replace(
+        module.LEGACY_ACCEPTED_CHECKPOINT_GLOB, module.EXACT_ACCEPTED_CHECKPOINT_GLOB
+    ).replace(module.LEGACY_PROMPT_BINDING_BLOCK, module.DERIVED_PROMPT_BINDING_BLOCK)
     assert len(list(responses.glob("batch-*.json"))) == 12
     assert [path.name for path in sorted(responses.glob("batch-[0-9][0-9][0-9][0-9].json"))] == [
         f"batch-{batch:04d}.json" for batch in range(1, 7)
     ]
     assert {path: path.read_bytes() for path in attempts} == attempts
     assert all(path.exists() for path in attempts)
+
+
+def test_derived_prompt_binding_allows_only_pinned_pairs_and_exact_schema() -> None:
+    module = _module()
+    expected_prompts = [
+        {"name": "JUDGE_PREFIX.md", "bytes": 1200, "sha256": "crlf-prefix"},
+        {"name": "BINARY_EVALUATION_PROMPT.md", "bytes": 1500, "sha256": "crlf-binary"},
+    ]
+    expected_schema = {"name": "hbq_judge_response.schema.json", "bytes": 10, "sha256": "schema"}
+    sample = {"item_id": "hanna-523"}
+    arm = {"arm_id": "hbq_short_story_batch32"}
+    variants: list[dict[str, Any]] = []
+    compact = lambda value: value
+    frozen_input_compact = lambda value: value
+
+    assert module.RETAINED_LF_PROMPT_BINDINGS == [
+        {"name": "JUDGE_PREFIX.md", "bytes": 1184, "sha256": "ba48be75c55502d762f1029745b6a4b3b4d12674317f20906443467a00f8f3a5"},
+        {"name": "BINARY_EVALUATION_PROMPT.md", "bytes": 1460, "sha256": "3dd432228d2ad747e9a3958320e1b7eccf725bbc985aec1cd74eeb865254bd1c"},
+    ]
+    assert module._derived_prompt_binding_is_accepted(
+        {"prompts": expected_prompts, "response_schema": expected_schema},
+        expected_prompts,
+        expected_schema,
+        compact,
+        frozen_input_compact,
+        sample,
+        arm,
+        1,
+        variants,
+    )
+    assert variants == []
+
+    retained = [dict(item) for item in module.RETAINED_LF_PROMPT_BINDINGS]
+    assert module._derived_prompt_binding_is_accepted(
+        {"prompts": retained, "response_schema": expected_schema},
+        expected_prompts,
+        expected_schema,
+        compact,
+        frozen_input_compact,
+        sample,
+        arm,
+        1,
+        variants,
+    )
+    assert variants == [{"item_id": "hanna-523", "arm_id": "hbq_short_story_batch32", "repetition": 1}]
+    assert module._derived_prompt_binding_is_accepted(
+        {"prompts": retained, "response_schema": expected_schema},
+        expected_prompts,
+        expected_schema,
+        compact,
+        frozen_input_compact,
+        sample,
+        arm,
+        1,
+        variants,
+    )
+    assert len(variants) == 1
+
+    one_byte_drift = [dict(item) for item in retained]
+    one_byte_drift[0]["bytes"] += 1
+    assert not module._derived_prompt_binding_is_accepted(
+        {"prompts": one_byte_drift, "response_schema": expected_schema},
+        expected_prompts,
+        expected_schema,
+        compact,
+        frozen_input_compact,
+        sample,
+        arm,
+        2,
+        variants,
+    )
+    assert not module._derived_prompt_binding_is_accepted(
+        {"prompts": retained, "response_schema": {**expected_schema, "sha256": "schema-drift"}},
+        expected_prompts,
+        expected_schema,
+        compact,
+        frozen_input_compact,
+        sample,
+        arm,
+        2,
+        variants,
+    )
+    assert len(variants) == 1
 
 
 def test_consolidate_rejects_analysis_runtime_gate_before_loading_analyzer(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -539,6 +625,7 @@ def test_consolidate_replays_cross_root_330_geometry_without_copying_evidence(tm
     assert provenance["terminal_admission"]["accepted_sequence_count"] == 149
     assert provenance["terminal_admission"]["adopted_sequence"] == 182
     assert provenance["analysis_runtime"]["root"] == str(roots["analysis_runtime"])
+    assert provenance["original_analyzer"]["derived_analysis_compatibility"]["retained_lf_variant_cells"] == []
     assert [cell["sequence"] for cell in provenance["cells"]] == list(range(1, 331))
     assert {cell["sequence"]: cell["run_binding_sha256"] for cell in provenance["cells"]} == bindings
     assert {name: module._tree_hash(path) for name, path in roots.items() if name not in {"runtime", "data"}} == source_tree_hashes
