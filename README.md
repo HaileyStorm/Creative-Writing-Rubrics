@@ -50,6 +50,11 @@ The live release-facing work is narrower than the historical experiment log:
   now has endpoint-separated Grok-primary/Sol-validation results, including the
   Fresh96 confirmation summarized above. DSPy and Optuna remain
   development-only and have no production runtime authority.
+  The [actual DSPy prompt comparison](evaluation-results/hbq-human-alignment-optimizer-v14-dspy-train-expansion-result-v1/)
+  reduced TRAIN MAE by `14.90%` on Grok and `12.41%` on Sol across 44 stories.
+  The separate [Optuna calibration diagnostic](evaluation-results/hbq-human-alignment-optimizer-v13-train-expansion-v1/CALIBRATION.md)
+  measures score calibration, not improved literary discrimination. See the
+  results pages for constant-score comparators and mixed rank agreement.
 - [CWR-guided revision gain](evaluation-results/cwr-guided-revision-gain-v6-heldout-result-v1/)
   now includes a four-item held-back comparison. Guided-minus-generic means
   were Sol `+1.00` holistic / `+0.75` compact and Grok `+0.75` / `0.00`.
