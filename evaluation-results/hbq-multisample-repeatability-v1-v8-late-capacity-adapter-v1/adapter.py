@@ -204,7 +204,6 @@ def dispatch_one(
             raise exact.RetryPauseTerminal("V8 retry-disclosure pause is terminal under the late-capacity adapter; do not resend") from exc
         if settled != [*accepted, dict(event)]:
             raise ValueError("frozen V8 settlement did not accept exactly the one guarded event")
-        v8._validate_contact_sessions(source, work, admission, settled)
         return settled
 
     outcome = guard.dispatch_next(

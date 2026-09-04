@@ -92,7 +92,12 @@ def _harness(
             state["claims"] += 1
             state["order"].append("claim")
             state["order"].append(f"guard-preflight-age:{state['preflight_age_seconds']}")
-            return delegate(dict(guard_event))
+            result = delegate(dict(guard_event))
+            postflight_rows = [dict(row) for row in result]
+            if drift == "postflight":
+                postflight_rows[-1]["sequence"] = 999
+            contact(roots["source"], roots["work"], {"admission": "frozen"}, postflight_rows)
+            return result
 
     guard = Guard()
 
@@ -115,6 +120,8 @@ def _harness(
     def contact(_source: Path, _work: Path, _admission: Any, rows: list[dict[str, Any]]) -> None:
         state["contact_lengths"].append(len(rows))
         state["order"].append("postflight" if len(rows) == 2 else "contact")
+        if len(rows) == 2 and rows != [accepted_event, next_event]:
+            raise ValueError("guard postflight session drift")
 
     def orphan(_work: Path, _remaining: list[dict[str, Any]]) -> None:
         state["order"].append("payload")
@@ -255,6 +262,7 @@ def test_late_supplier_is_one_shot_after_final_verify_and_no_resend(
     assert state["module_load_calls"] == 1
     supplier = state["order"].index("supplier")
     settle = state["order"].index("settle")
+    assert settle < state["order"].index("postflight")
     assert state["order"].index("accepted") < state["order"].index("runner") < supplier < settle
     assert state["order"][supplier + 1 : settle] == ["capacity"]
     with pytest.raises(ValueError, match="claim"):
@@ -264,6 +272,23 @@ def test_late_supplier_is_one_shot_after_final_verify_and_no_resend(
     assert state["capacity_validations"] == 2
     assert state["exact_load_calls"] == 2
     assert state["query_binding_calls"] == state["module_load_calls"] == 2
+
+
+def test_guard_postflight_rejects_drift_without_resending(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    module = _adapter()
+    state, _roots, kwargs = _harness(module, tmp_path, monkeypatch, drift="postflight")
+    with pytest.raises(ValueError, match="guard postflight"):
+        module.dispatch_one(**kwargs)
+    assert state["claims"] == state["native_commands"] == 1
+    assert len(state["supplier_paths"]) == 1
+    assert state["contact_lengths"] == [1, 2]
+    assert state["order"].index("settle") < state["order"].index("postflight")
+    with pytest.raises(ValueError, match="claim"):
+        module.dispatch_one(**kwargs)
+    assert state["claims"] == state["native_commands"] == 1
+    assert len(state["supplier_paths"]) == 1
 
 
 @pytest.mark.parametrize(
