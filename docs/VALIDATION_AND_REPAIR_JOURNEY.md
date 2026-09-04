@@ -568,3 +568,13 @@ instruction and 1,644-byte profile reconstruct exactly from the frozen V10
 candidate. Its verifier binds both endpoint results and needs no private study
 root or provider call. Child13 remains preserved as the parent; no automatic
 runtime promotion or Linux/Flash-Next claim is added.
+
+## Checking the retained prompt on more training stories
+
+We next kept child20 unchanged and measured four previously unused Fresh88
+TRAIN groups, paired against baseline. The [eight-cell Grok screen](../evaluation-results/hbq-human-alignment-optimizer-v11-train-grok-result-v1/)
+reduced MAE from 1.041667 to 0.708333 (32%), improving all four groups. All
+eight responses and six dimensions were included; independent replay of the
+raw scores and human target means agreed. This is encouraging development
+coverage, not another confirmation test. It opens the planned matched Sol
+measurement without changing the prompt or reopening confirmation for tuning.
