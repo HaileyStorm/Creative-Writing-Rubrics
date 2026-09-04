@@ -92,7 +92,16 @@ SUPPORT_FILES = {
         "transform": "identity",
         "purpose": "HANNA v3 compatibility-contract binding",
     },
+    "schema/hbq_verdict.schema.json": {
+        "oid": "d11fbcfa0c98865b75d246dd5e2bedac149cebb8",
+        "sha256": "5cd3dd25ce506689e75cbc290620a2f22198c8f9581a5fa7bd3debe90237f3f4",
+        "bytes": 3482,
+        "transform": "identity",
+        "purpose": "HBQ checkpoint replay verdict schema",
+    },
 }
+LEGACY_ACCEPTED_CHECKPOINT_GLOB = 'checkpoints = sorted((path / "responses").glob("batch-*.json"))'
+EXACT_ACCEPTED_CHECKPOINT_GLOB = 'checkpoints = sorted((path / "responses").glob("batch-[0-9][0-9][0-9][0-9].json"))'
 
 
 def _sha(path: Path) -> str:
@@ -357,8 +366,15 @@ def _verify_analysis_runtime(runtime_root: Path, original_root: Path) -> None:
             raise ValueError(f"Derived original analysis runtime support provenance drifted: {relative}")
 
 
+def _derived_analyzer_source(analyzer_path: Path) -> str:
+    source = analyzer_path.read_text(encoding="utf-8")
+    if source.count(LEGACY_ACCEPTED_CHECKPOINT_GLOB) != 1 or EXACT_ACCEPTED_CHECKPOINT_GLOB in source:
+        raise ValueError("Original analyzer accepted-checkpoint enumeration is not the reviewed legacy form")
+    return source.replace(LEGACY_ACCEPTED_CHECKPOINT_GLOB, EXACT_ACCEPTED_CHECKPOINT_GLOB)
+
+
 def _load_frozen_analyzer(runtime_root: Path) -> Any:
-    """Load the original analyzer against the separate exact-byte analysis runtime."""
+    """Load an in-memory, filename-compatible derivation of the original analyzer."""
     runtime_root = _plain_tree(runtime_root, "Derived original analysis runtime")
     analyzer_path = runtime_root / ANALYZER.relative_to(HERE.parent.parent)
     study_path = runtime_root / STUDY.relative_to(HERE.parent.parent)
@@ -382,7 +398,9 @@ def _load_frozen_analyzer(runtime_root: Path) -> Any:
         sys.modules["study"] = study
         study_spec.loader.exec_module(study)
         analyzer = importlib.util.module_from_spec(analyzer_spec)
-        analyzer_spec.loader.exec_module(analyzer)
+        source = _derived_analyzer_source(analyzer_path)
+        # The exact pinned source is byte-checked; this in-memory one-token derivation avoids mutating evidence.
+        exec(compile(source, str(analyzer_path), "exec"), analyzer.__dict__)  # noqa: S102
         return analyzer
     finally:
         sys.path.remove(str(source_root))
@@ -828,6 +846,27 @@ def _analysis_summary(
     }
 
 
+def _validate_native_normalizations(
+    events: list[dict[str, Any]],
+    sources: Mapping[int, tuple[str, Path]],
+    frozen: Mapping[str, Any],
+    original_root: Path,
+    normalizer: Any,
+    normalization_runner: Any,
+) -> None:
+    arms = {arm["arm_id"]: arm for arm in frozen["contract"]["arms"]}
+    for event in events:
+        if arms[event["arm_id"]]["kind"] != "native":
+            continue
+        sequence = int(event["sequence"])
+        _source_kind, root = sources[sequence]
+        binding = _run_path(root, event, arms[event["arm_id"]]["kind"])
+        if not binding.is_file():
+            raise ValueError(f"Mapped source run manifest is missing: sequence {sequence}")
+        source = (original_root / "inputs" / str(event["item_id"]) / "source.md").read_text(encoding="utf-8")
+        normalizer._validate_normalization(normalization_runner, binding.parent, source)
+
+
 def consolidate(
     *,
     original_root: Path,
@@ -878,6 +917,7 @@ def consolidate(
         frozen=frozen,
         events=events,
     )
+    _validate_native_normalizations(events, sources, frozen, original_root, normalizer, normalization_runner)
     output_root = _fresh_output(Path(output_root), [*all_roots, guard_root, query_binding_root, runtime_root, analysis_runtime_root, data_dir, repository_root])
     _verify_analysis_runtime(analysis_runtime_root, original_root)
     analyzer = _load_frozen_analyzer(analysis_runtime_root)
@@ -899,9 +939,6 @@ def consolidate(
         binding = _run_path(root, event, arm["kind"])
         if not binding.is_file():
             raise ValueError(f"Mapped source run manifest is missing: sequence {sequence}")
-        if arm["kind"] == "native":
-            source = (original_root / "inputs" / item_id / "source.md").read_text(encoding="utf-8")
-            normalizer._validate_normalization(normalization_runner, binding.parent, source)
         work = _SplitWork(original_root, root)
         score, sessions, commitments, verdicts, metadata = analyzer._load_run(work, sample, arm, repetition)
         all_sessions.extend(sessions)
@@ -978,7 +1015,18 @@ def consolidate(
             "adopted_sequence": v8_admission.get("sequence"),
         },
         "frozen_contract": {"path": str(original_root / "frozen-run-contract.json"), "sha256": _sha(original_root / "frozen-run-contract.json")},
-        "original_analyzer": {"path": str(analysis_runtime_root / ANALYZER.relative_to(HERE.parent.parent)), "sha256": _sha(analysis_runtime_root / ANALYZER.relative_to(HERE.parent.parent))},
+        "original_analyzer": {
+            "path": str(analysis_runtime_root / ANALYZER.relative_to(HERE.parent.parent)),
+            "sha256": _sha(analysis_runtime_root / ANALYZER.relative_to(HERE.parent.parent)),
+            "executed_derived_source_sha256": hashlib.sha256(_derived_analyzer_source(analysis_runtime_root / ANALYZER.relative_to(HERE.parent.parent)).encode("utf-8")).hexdigest(),
+            "consolidator_sha256": _sha(Path(__file__)),
+            "derived_checkpoint_filename_compatibility": {
+                "in_memory_only": True,
+                "legacy_glob": "batch-*.json",
+                "accepted_checkpoint_glob": "batch-[0-9][0-9][0-9][0-9].json",
+                "preserved_attempt_artifacts_remain_validated": True,
+            },
+        },
         "analysis_runtime": {"root": str(analysis_runtime_root), "reconstruction_provenance_sha256": _sha(analysis_runtime_root / "reconstruction-provenance.json")},
         "cells": provenance_cells,
     }

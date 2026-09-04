@@ -62,6 +62,8 @@ def _reconstruction_fixture(
         runtime_rows.append({"path": relative, "bytes": len(value), "sha256": hashlib.sha256(value).hexdigest()})
     for relative, support in sorted(module.SUPPORT_FILES.items()):
         raw = (ROOT / relative).read_bytes()
+        if hashlib.sha256(raw).hexdigest() != support["sha256"]:
+            raw = raw.replace(b"\r\n", b"\n")
         assert len(raw) == support["bytes"]
         assert hashlib.sha256(raw).hexdigest() == support["sha256"]
         blobs[support["oid"]] = raw
@@ -262,6 +264,7 @@ def _admission_stubs(
         item_id = destination.parents[1].name
         assert source == f"fixture-source-{item_id}\n"
         assert isinstance(json.loads((destination / "pass.json").read_text(encoding="utf-8"))["fixture_sequence"], int)
+        state["phases"].append("native_normalization")
         state["normalizations"].append(destination)
         if not normalization_valid:
             raise ValueError("fixture normalization rejected raw run")
@@ -375,10 +378,11 @@ def _fixture(
     for name in ("guard", "query"):
         roots[name].mkdir()
         (roots[name] / "immutable-binding.json").write_text("{}\n", encoding="utf-8", newline="\n")
-    state: dict[str, list[Any]] = {"query": [], "terminal": [], "receipts": [], "normalizations": [], "v8": [], "analysis_runtime": [], "analysis_verifications": []}
+    state: dict[str, list[Any]] = {"query": [], "terminal": [], "receipts": [], "normalizations": [], "v8": [], "analysis_runtime": [], "analysis_verifications": [], "phases": []}
     def fake_analysis_verification(runtime_root: Path, original_root: Path) -> None:
         state["analysis_verifications"].append((runtime_root, original_root))
     def fake_analyzer(runtime_root: Path) -> Any:
+        state["phases"].append("original_analyzer_import")
         state["analysis_runtime"].append(runtime_root)
         return _fake_analyzer(frozen, duplicate_sessions=duplicate_sessions)
     monkeypatch.setattr(module, "_verify_analysis_runtime", fake_analysis_verification)
@@ -419,7 +423,7 @@ def test_reconstruct_original_analysis_runtime_materializes_exact_manifest_witho
     provenance = json.loads((output / "reconstruction-provenance.json").read_text(encoding="utf-8"))
     assert result["status"] == "derived_exact_manifest"
     assert result["file_count"] == 34
-    assert result["support_file_count"] == 4
+    assert result["support_file_count"] == len(module.SUPPORT_FILES)
     assert len(provenance["files"]) == 34
     assert provenance["not_a_single_historical_git_snapshot"] is True
     assert provenance["not_an_original_execution_root"] is True
@@ -471,6 +475,32 @@ def test_analysis_runtime_consumption_rejects_altered_support_bytes(tmp_path: Pa
         module._verify_analysis_runtime(output, original_root)
 
 
+def test_derived_analyzer_selects_only_six_checkpoints_without_mutating_attempt_artifacts(tmp_path: Path) -> None:
+    module = _module()
+    analyzer_path = tmp_path / "analyze_study.py"
+    original_source = module.ANALYZER.read_text(encoding="utf-8")
+    analyzer_path.write_text(original_source, encoding="utf-8", newline="\n")
+    responses = tmp_path / "responses"
+    responses.mkdir()
+    attempts: dict[Path, bytes] = {}
+    for batch in range(1, 7):
+        (responses / f"batch-{batch:04d}.json").write_text('{"checkpoint": true}\n', encoding="utf-8", newline="\n")
+        attempt = responses / f"batch-{batch:04d}.attempt-0001.message.json"
+        payload = f'{{"attempt": {batch}}}\n'.encode()
+        attempt.write_bytes(payload)
+        attempts[attempt] = payload
+
+    derived_source = module._derived_analyzer_source(analyzer_path)
+
+    assert derived_source == original_source.replace(module.LEGACY_ACCEPTED_CHECKPOINT_GLOB, module.EXACT_ACCEPTED_CHECKPOINT_GLOB)
+    assert len(list(responses.glob("batch-*.json"))) == 12
+    assert [path.name for path in sorted(responses.glob("batch-[0-9][0-9][0-9][0-9].json"))] == [
+        f"batch-{batch:04d}.json" for batch in range(1, 7)
+    ]
+    assert {path: path.read_bytes() for path in attempts} == attempts
+    assert all(path.exists() for path in attempts)
+
+
 def test_consolidate_rejects_analysis_runtime_gate_before_loading_analyzer(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     module, roots, _, _, state = _fixture(tmp_path, monkeypatch)
 
@@ -519,6 +549,7 @@ def test_consolidate_replays_cross_root_330_geometry_without_copying_evidence(tm
     assert state["analysis_verifications"] == [(roots["analysis_runtime"], roots["original"])]
     assert state["analysis_runtime"] == [roots["analysis_runtime"]]
     assert len(state["normalizations"]) == 330
+    assert state["phases"] == ["native_normalization"] * 330 + ["original_analyzer_import"]
     assert {path / "pass.json" for path in state["normalizations"]} == {
         _binding(roots["original"], event) for event in events[:76]
     } | {
