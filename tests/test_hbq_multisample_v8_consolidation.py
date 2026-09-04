@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import gzip
 import hashlib
 import importlib.util
 import json
@@ -92,7 +93,7 @@ def _reconstruction_fixture(
 
 def _event_fixture(module: ModuleType) -> tuple[dict[str, Any], list[dict[str, Any]]]:
     arms = [
-        {"arm_id": "hbq_short_story_batch32", "kind": "native", "native_scale": [0, 10]},
+        {"arm_id": "hbq_short_story_batch32", "kind": "hbq", "native_scale": [0, 10]},
         *[
             {"arm_id": f"native-arm-{index}", "kind": "native", "native_scale": [0, 10]}
             for index in range(2, 7)
@@ -106,13 +107,13 @@ def _event_fixture(module: ModuleType) -> tuple[dict[str, Any], list[dict[str, A
             "human_overall": 3.0,
             "frozen_quality_band": "middle",
         }
-        for item_id in ("item-01", "item-02", "item-03", "item-04", "item-05", "item-06", "hanna-523", "item-08", "item-09", "item-10", "item-11")
+        for item_id in ("item-01", "item-02", "item-03", "item-04", "item-05", "item-06", "hanna-523", "hanna-594", "hanna-731", "hanna-817", "hanna-907")
     ]
     schedule = [
-        {"item_id": sample["item_id"], "arm_id": arm["arm_id"], "repetition": repetition}
+        {"item_id": sample["item_id"], "arm_id": arms[(repetition - 1 + position) % len(arms)]["arm_id"], "repetition": repetition}
         for sample in samples
-        for arm in arms
         for repetition in range(1, 6)
+        for position in range(len(arms))
     ]
     events = [{"sequence": index, **event} for index, event in enumerate(schedule, 1)]
     assert len(events) == module.CELL_COUNT
@@ -131,7 +132,8 @@ def _event_fixture(module: ModuleType) -> tuple[dict[str, Any], list[dict[str, A
 
 
 def _binding(root: Path, event: dict[str, Any]) -> Path:
-    return root / "runs" / event["item_id"] / event["arm_id"] / f"run-{event['repetition']:02d}" / "pass.json"
+    filename = "run.json" if event["arm_id"] == "hbq_short_story_batch32" else "pass.json"
+    return root / "runs" / event["item_id"] / event["arm_id"] / f"run-{event['repetition']:02d}" / filename
 
 
 def _write_run(root: Path, event: dict[str, Any]) -> Path:
@@ -152,7 +154,8 @@ def _fake_analyzer(frozen: dict[str, Any], *, duplicate_sessions: bool = False) 
 
     def load_run(work: Any, sample: dict[str, Any], arm: dict[str, Any], repetition: int) -> tuple[float, list[str], list[str], None, None]:
         assert (work / "inputs" / "immutable-input.txt").read_bytes() == b"original-input-bytes\n"
-        binding = work / "runs" / sample["item_id"] / arm["arm_id"] / f"run-{repetition:02d}" / "pass.json"
+        filename = "run.json" if arm["kind"] == "hbq" else "pass.json"
+        binding = work / "runs" / sample["item_id"] / arm["arm_id"] / f"run-{repetition:02d}" / filename
         sequence = json.loads(binding.read_text(encoding="utf-8"))["fixture_sequence"]
         session = "duplicate-session" if duplicate_sessions else f"session-{sequence}"
         return float(sequence % 11), [session], [f"commitment-{sequence}"], None, None
@@ -379,15 +382,37 @@ def _fixture(
     for name in ("guard", "query"):
         roots[name].mkdir()
         (roots[name] / "immutable-binding.json").write_text("{}\n", encoding="utf-8", newline="\n")
-    state: dict[str, list[Any]] = {"query": [], "terminal": [], "receipts": [], "normalizations": [], "v8": [], "analysis_runtime": [], "analysis_verifications": [], "phases": []}
+    state: dict[str, list[Any]] = {"query": [], "terminal": [], "receipts": [], "normalizations": [], "v8": [], "analysis_runtime": [], "analysis_verifications": [], "phases": [], "read_order": []}
     def fake_analysis_verification(runtime_root: Path, original_root: Path) -> None:
         state["analysis_verifications"].append((runtime_root, original_root))
     def fake_analyzer(runtime_root: Path) -> Any:
         state["phases"].append("original_analyzer_import")
         state["analysis_runtime"].append(runtime_root)
-        return _fake_analyzer(frozen, duplicate_sessions=duplicate_sessions)
+        reader = _fake_analyzer(frozen, duplicate_sessions=duplicate_sessions)
+        load_run = reader._load_run
+
+        def tracked_load_run(work: Any, sample: dict[str, Any], arm: dict[str, Any], repetition: int) -> tuple[float, list[str], list[str], None, None]:
+            state["read_order"].append(("original", sample["item_id"], arm["arm_id"], repetition))
+            return load_run(work, sample, arm, repetition)
+
+        reader._load_run = tracked_load_run
+        return reader
+
+    def fake_v8_reader(runtime_root: Path) -> Any:
+        state["read_order"].append(("v8_reader_loaded",))
+        reader = _fake_analyzer(frozen, duplicate_sessions=duplicate_sessions)
+        load_run = reader._load_run
+
+        def tracked_load_run(work: Any, sample: dict[str, Any], arm: dict[str, Any], repetition: int) -> tuple[float, list[str], list[str], None, None]:
+            state["read_order"].append(("v8", sample["item_id"], arm["arm_id"], repetition))
+            return load_run(work, sample, arm, repetition)
+
+        reader._load_run = tracked_load_run
+        return reader
+
     monkeypatch.setattr(module, "_verify_analysis_runtime", fake_analysis_verification)
     monkeypatch.setattr(module, "_load_frozen_analyzer", fake_analyzer)
+    monkeypatch.setattr(module, "_load_v8_hbq_reader", fake_v8_reader)
     _admission_stubs(module, monkeypatch, roots, events, state, terminal_valid=terminal_valid, normalization_valid=normalization_valid)
     return module, roots, events, bindings, state
 
@@ -406,6 +431,217 @@ def _consolidate(module: ModuleType, roots: dict[str, Path], output: Path) -> di
         analysis_runtime_root=roots["analysis_runtime"],
         runtime_root=roots["runtime"],
     )
+
+
+def _retry_native_fixture(module: ModuleType, tmp_path: Path, *, sequence: int) -> tuple[dict[str, Any], dict[str, Any]]:
+    original_root, v8_root, artifacts = tmp_path / "original", tmp_path / "v8", tmp_path / "artifacts"
+    sample = {"item_id": "hanna-523"}
+    arm = {"arm_id": "native-arm", "prompt": "arms/fixture.md", "schema": "schema.json"}
+    event = {"sequence": sequence, "item_id": sample["item_id"], "arm_id": arm["arm_id"], "repetition": 1}
+    source, prompt_context, base_prompt = "source\n", "prompt\n", "fixture base prompt\n"
+    (original_root / "inputs" / sample["item_id"]).mkdir(parents=True)
+    (original_root / "inputs" / sample["item_id"] / "source.md").write_text(source, encoding="utf-8", newline="\n")
+    (original_root / "inputs" / sample["item_id"] / "prompt.md").write_text(prompt_context, encoding="utf-8", newline="\n")
+    (artifacts / "arms").mkdir(parents=True)
+    (artifacts / arm["prompt"]).write_text("fixture rubric\n", encoding="utf-8", newline="\n")
+    schema = {"type": "object"}
+    _write_json(artifacts / arm["schema"], schema)
+    state: dict[str, Any] = {"feedback": {"reason": "quote fail"}}
+
+    def structured(value: Any) -> bytes:
+        return module._canonical(value)
+
+    def write_pass(directory: Path, rendered_prompt: str, result: dict[str, Any], session: str) -> tuple[dict[str, Any], dict[str, Any]]:
+        directory.mkdir(parents=True, exist_ok=True)
+        (directory / "request.prompt.txt.gz").write_bytes(gzip.compress(rendered_prompt.encode("utf-8")))
+        (directory / "response.schema.json").write_bytes(structured(schema))
+        configuration = {
+            "name": "hanna-523-native-arm-run-01",
+            "provider": "codex",
+            "model": "fixture-model",
+            "reasoning": "fixture-reasoning",
+            "prompt_sha256": hashlib.sha256(rendered_prompt.encode("utf-8")).hexdigest(),
+            "schema_sha256": hashlib.sha256(structured(schema)).hexdigest(),
+        }
+        manifest = {"format_version": 1, "configuration": configuration, "config_sha256": hashlib.sha256(structured(configuration)).hexdigest()}
+        response = {
+            "format_version": 1,
+            "content": json.dumps(result, sort_keys=True),
+            "config_sha256": manifest["config_sha256"],
+            "prompt_sha256": configuration["prompt_sha256"],
+            "schema_sha256": configuration["schema_sha256"],
+            "session": session,
+        }
+        response["content_sha256"] = hashlib.sha256(response["content"].encode("utf-8")).hexdigest()
+        response["result_sha256"] = hashlib.sha256(structured(result)).hexdigest()
+        _write_json(directory / "pass.json", manifest)
+        _write_json(directory / "response.json", response)
+        _write_json(directory / "result.json", result)
+        return manifest, response
+
+    output = tmp_path / "run"
+    archive = output / "retry-attempts" / "attempt-0001"
+    rejected_result, accepted_result = {"kind": "rejected"}, {"kind": "accepted"}
+    _archive_manifest, rejected_response = write_pass(archive, base_prompt, rejected_result, "session-first")
+    _write_json(
+        output / "attempts" / "rejected-0001.json",
+        {"format_version": 1, "reason": "quote fail", "response": rejected_response, "result": rejected_result},
+    )
+    retry_prompt = f"{base_prompt.rstrip()}\n\n<validation_feedback>{structured(state['feedback']).decode('utf-8')}</validation_feedback>\n"
+    _accepted_manifest, _accepted_response = write_pass(output, retry_prompt, accepted_result, "session-second")
+    first_message, second_message = output / "attempt-0001.message.json", output / "attempt-0002.message.json"
+    _write_json(first_message, rejected_result)
+    _write_json(second_message, accepted_result)
+
+    disclosure_sha = "a" * 64
+    _write_json(v8_root / "disclosure.json", {"profile": {"provider": "fixture"}})
+    _write_json(v8_root / "retry-disclosure.json", {"provider_attempt_context": {"feedback": state["feedback"], "prompt": retry_prompt}})
+    ack_path = v8_root / "retry-ack.json"
+    _write_json(ack_path, {"ack": True})
+    journal = [
+        {"event": "attempt-intent", "sequence": sequence},
+        {"event": "retry-disclosure-pause", "sequence": sequence, "retry_disclosure_sha256": disclosure_sha},
+        {"event": "retry-intent", "sequence": sequence, "retry_disclosure_sha256": disclosure_sha, "retry_ack_sha256": _sha(ack_path)},
+    ]
+
+    def semantic(result: dict[str, Any], arm_id: str, received_source: str) -> None:
+        assert arm_id == arm["arm_id"] and received_source == source
+        if result == rejected_result:
+            raise ValueError("quote fail")
+
+    def project(result: dict[str, Any], received_source: str) -> None:
+        assert received_source == source
+        if result == rejected_result:
+            raise ValueError("quote fail")
+
+    analyzer = SimpleNamespace(
+        HERE=artifacts,
+        _json=lambda path: json.loads(Path(path).read_text(encoding="utf-8")),
+        _structured_json_bytes=structured,
+        _provider_response_schema=lambda value: value,
+        Draft202012Validator=lambda value: SimpleNamespace(iter_errors=lambda result: []),
+        _artifact_prompt=lambda _rubric, _source, _prompt: base_prompt,
+        _parse_model_json=json.loads,
+        _provider_ok=lambda response, provider: None,
+        _validate_provider_artifacts=lambda directory, response: None,
+        _session=lambda response: response["session"],
+        _semantic_native=semantic,
+        _native_score=lambda arm_id, result: 7.0,
+        contract=lambda: {"provider": {"model": "fixture-model", "reasoning": "fixture-reasoning"}},
+    )
+    retry_helper = SimpleNamespace(
+        _native_rejection_chain=lambda directory: {"chain": "fixture"},
+        _native_retry_feedback=lambda chain: state["feedback"],
+        _canonical=structured,
+        _provider_identity=lambda frozen, profile: {"provider": "fixture"},
+        _native_context=lambda **kwargs: {"feedback": kwargs["validation_feedback"], "prompt": kwargs["prompt"]},
+        _semantic_native=lambda *args: pytest.fail("successor semantic native must not run"),
+    )
+    normalizer = SimpleNamespace(
+        _project_result_quotes=project,
+        _semantic_native=lambda *args: pytest.fail("successor semantic native must not run"),
+    )
+    v8 = SimpleNamespace(
+        DISCLOSURE="disclosure.json",
+        read_json=lambda path: json.loads(Path(path).read_text(encoding="utf-8")),
+        _read_journal=lambda root: journal,
+        _retry_pause_record=lambda root, pause, prior, received_event: None,
+        _retry_disclosure_path=lambda root, digest: root / "retry-disclosure.json",
+        _retry_ack_path=lambda root, digest: ack_path,
+        _validate_retry_ack=lambda root, digest, path: None,
+        _native_message_evidence=lambda directory, allow_missing: [(1, first_message), (2, second_message)],
+        _physical_output_sessions=lambda directory, received_event: ["session-first", "session-second"],
+        _recorded_provider_contacts=lambda root, received_event: 2,
+        sha=_sha,
+    )
+    return {
+        "analyzer": analyzer,
+        "v8": v8,
+        "retry_helper": retry_helper,
+        "normalizer": normalizer,
+        "v8_root": v8_root,
+        "original_root": original_root,
+        "frozen": {"provider": "fixture"},
+        "event": event,
+        "path": output / "pass.json",
+        "sample": sample,
+        "arm": arm,
+        "repetition": 1,
+    }, {"state": state, "archive": archive, "output": output}
+
+
+@pytest.mark.parametrize("drifted", ["analyzer", "study"])
+def test_load_v8_hbq_reader_rejects_drifted_bytes_before_import(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, drifted: str) -> None:
+    module = _module()
+    runtime = tmp_path / "runtime"
+    analyzer_path, study_path = runtime / module.V8_ANALYZER_RELATIVE, runtime / module.V8_STUDY_RELATIVE
+    analyzer_path.parent.mkdir(parents=True)
+    study_path.parent.mkdir(parents=True, exist_ok=True)
+    (runtime / "src").mkdir()
+    analyzer_bytes, study_bytes = b"expected analyzer\n", b"expected study\n"
+    analyzer_path.write_bytes(b"drifted analyzer\n" if drifted == "analyzer" else analyzer_bytes)
+    study_path.write_bytes(b"drifted study\n" if drifted == "study" else study_bytes)
+    monkeypatch.setattr(module, "V8_ANALYZER_SHA256", hashlib.sha256(analyzer_bytes).hexdigest())
+    monkeypatch.setattr(module, "V8_STUDY_SHA256", hashlib.sha256(study_bytes).hexdigest())
+
+    with pytest.raises(ValueError, match="Frozen V8 HBQ reader bytes drifted from the admitted runtime"):
+        module._load_v8_hbq_reader(runtime)
+
+
+@pytest.mark.parametrize("sequence", [223, 244])
+def test_load_retry_native_run_replays_two_persisted_attempts_without_successor_semantics(tmp_path: Path, sequence: int) -> None:
+    module = _module()
+    arguments, _fixture = _retry_native_fixture(module, tmp_path, sequence=sequence)
+
+    score, sessions, commitments, provenance = module._load_retry_native_run(**arguments)
+
+    assert score == 7.0
+    assert sessions == ["session-first", "session-second"]
+    assert len(commitments) == 4
+    assert provenance == {
+        "sequence": sequence,
+        "item_id": "hanna-523",
+        "arm_id": "native-arm",
+        "repetition": 1,
+        "original_semantic_rejection_reason": "quote fail",
+        "successor_normalization_rejection_reason": "quote fail",
+        "physical_messages": [
+            {"attempt": 1, "path": str(arguments["path"].parent / "attempt-0001.message.json"), "sha256": _sha(arguments["path"].parent / "attempt-0001.message.json")},
+            {"attempt": 2, "path": str(arguments["path"].parent / "attempt-0002.message.json"), "sha256": _sha(arguments["path"].parent / "attempt-0002.message.json")},
+        ],
+        "reported_sessions": sessions,
+        "physical_messages_do_not_independently_attest_reported_sessions": True,
+    }
+
+
+@pytest.mark.parametrize(
+    ("mutation", "error"),
+    [
+        ("feedback", "Retry-native reconstructed attempt-two context drifted from its retry disclosure"),
+        ("rejection", "Retry-native successor normalization reason drifted"),
+        ("archive", "Retry-native output lacks the immutable first-attempt archive"),
+        ("schema", "Retry-native persisted prompt or projected schema drifted"),
+    ],
+)
+def test_load_retry_native_run_rejects_altered_immutable_retry_evidence(tmp_path: Path, mutation: str, error: str) -> None:
+    module = _module()
+    arguments, paths = _retry_native_fixture(module, tmp_path, sequence=223)
+    if mutation == "feedback":
+        paths["state"]["feedback"] = {"reason": "tampered"}
+    elif mutation == "rejection":
+        rejected_path = paths["output"] / "attempts" / "rejected-0001.json"
+        rejected = json.loads(rejected_path.read_text(encoding="utf-8"))
+        rejected["reason"] = "tampered"
+        _write_json(rejected_path, rejected)
+    elif mutation == "archive":
+        paths["archive"].rename(paths["archive"].with_name("attempt-0001-moved"))
+    elif mutation == "schema":
+        (paths["output"] / "response.schema.json").write_bytes(b"{}")
+    else:
+        raise AssertionError(f"Unexpected fixture mutation: {mutation}")
+
+    with pytest.raises(ValueError, match=error):
+        module._load_retry_native_run(**arguments)
 
 
 def test_reconstruct_original_analysis_runtime_materializes_exact_manifest_without_git(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -647,6 +883,7 @@ def test_consolidate_replays_cross_root_330_geometry_without_copying_evidence(tm
 
     output = tmp_path / "derived"
     provenance = json.loads((output / "consolidation-provenance.json").read_text(encoding="utf-8"))
+    summary = json.loads((output / "summary.json").read_text(encoding="utf-8"))
     assert result["status"] == "complete_330"
     assert result["geometry"] == {"expected_cells": 330, "observed_cells": 330, "unique_cell_identities": 330}
     assert result["source_kind_counts"] == {
@@ -664,6 +901,12 @@ def test_consolidate_replays_cross_root_330_geometry_without_copying_evidence(tm
     assert provenance["terminal_admission"]["adopted_sequence"] == 182
     assert provenance["analysis_runtime"]["root"] == str(roots["analysis_runtime"])
     assert provenance["original_analyzer"]["derived_analysis_compatibility"]["retained_lf_variant_cells"] == []
+    hbq_quality = summary["arms"]["hbq_short_story_batch32"]["quality_sensitivity"]
+    assert hbq_quality["status"] == "version_cohorted_not_pooled"
+    assert {version: details["sample_count"] for version, details in hbq_quality["cohorts"].items()} == {
+        "original_rubric_v1_0_0": 6,
+        "v8_rubric_v1_2_1": 5,
+    }
     assert [cell["sequence"] for cell in provenance["cells"]] == list(range(1, 331))
     assert {cell["sequence"]: cell["run_binding_sha256"] for cell in provenance["cells"]} == bindings
     assert {name: module._tree_hash(path) for name, path in roots.items() if name not in {"runtime", "data"}} == source_tree_hashes
@@ -673,21 +916,43 @@ def test_consolidate_replays_cross_root_330_geometry_without_copying_evidence(tm
     assert state["receipts"] == [(roots["missing181"], roots["runtime"])]
     assert state["analysis_verifications"] == [(roots["analysis_runtime"], roots["original"])]
     assert state["analysis_runtime"] == [roots["analysis_runtime"]]
-    assert len(state["normalizations"]) == 330
-    assert state["phases"] == ["native_normalization"] * 330 + ["original_analyzer_import"]
+    native_events = [event for event in events if event["arm_id"] != "hbq_short_story_batch32"]
+    assert len(state["normalizations"]) == len(native_events) == 275
+    assert state["phases"] == ["native_normalization"] * len(native_events) + ["original_analyzer_import"]
+
+    def source_root(event: dict[str, Any]) -> Path:
+        sequence = event["sequence"]
+        if sequence <= 76:
+            return roots["original"]
+        if sequence <= 177:
+            return roots["closed"]
+        if sequence == 178:
+            return roots["v4"]
+        if sequence <= 180:
+            return roots["v6"]
+        if sequence == 181:
+            return roots["missing181"]
+        if sequence == 182:
+            return roots["v7"]
+        return roots["v8"]
+
     assert {path / "pass.json" for path in state["normalizations"]} == {
-        _binding(roots["original"], event) for event in events[:76]
-    } | {
-        _binding(roots["closed"], event) for event in events[76:177]
-    } | {
-        _binding(roots["v4"], events[177]),
-        _binding(roots["v6"], events[178]),
-        _binding(roots["v6"], events[179]),
-        _binding(roots["missing181"], events[180]),
-        _binding(roots["v7"], events[181]),
-    } | {
-        _binding(roots["v8"], event) for event in events[182:]
+        _binding(source_root(event), event) for event in native_events
     }
+    v8_hbq_events = [
+        event
+        for event in events
+        if event["arm_id"] == "hbq_short_story_batch32" and (event["sequence"] == 181 or event["sequence"] >= 183)
+    ]
+    assert len(v8_hbq_events) == 25
+    assert {event["item_id"] for event in v8_hbq_events} == module.V8_HBQ_ITEM_IDS
+    expected_original = [
+        ("original", event["item_id"], event["arm_id"], event["repetition"])
+        for event in events
+        if event not in v8_hbq_events
+    ]
+    expected_v8 = [("v8", event["item_id"], event["arm_id"], event["repetition"]) for event in v8_hbq_events]
+    assert state["read_order"] == [*expected_original, ("v8_reader_loaded",), *expected_v8]
 
 
 @pytest.mark.parametrize(

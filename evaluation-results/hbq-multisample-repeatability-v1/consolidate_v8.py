@@ -8,6 +8,7 @@ study's completed cells are immutable evidence retained in several roots.
 from __future__ import annotations
 
 import argparse
+import gzip
 import hashlib
 import importlib.util
 import json
@@ -23,10 +24,15 @@ HERE = Path(__file__).resolve().parent
 ANALYZER = HERE / "analyze_study.py"
 STUDY = HERE / "study.py"
 V8_RUNTIME_DEFAULT = Path(r"C:\Users\Haile\Documents\Creative-Writing-Rubrics-v8-runtime-e50dd50")
+V8_ANALYZER_RELATIVE = Path("evaluation-results/hbq-multisample-repeatability-v1/analyze_study.py")
+V8_STUDY_RELATIVE = Path("evaluation-results/hbq-multisample-repeatability-v1/study.py")
+V8_ANALYZER_SHA256 = "65b049c3afd02aef0bd758093510f4ce6294dd14187f534a03943365c7d7751b"
+V8_STUDY_SHA256 = "6efb67a772dd9dc59b24ce5609118ef683ef772d648222de00ca6714b31d2d3c"
 QUERY_ONLY = HERE.parent / "hbq-multisample-repeatability-v1-v8-query-only-process-adapter-v1" / "adapter.py"
 QUERY_ONLY_SHA256 = "39405850d20f9963b7ea7a760441611133ecc2d6b0b3d6a26efa17af432e0b53"
 CELL_COUNT = 330
 MISSING_181 = {"sequence": 181, "item_id": "hanna-523", "arm_id": "hbq_short_story_batch32", "repetition": 1}
+V8_HBQ_ITEM_IDS = {"hanna-523", "hanna-594", "hanna-731", "hanna-817", "hanna-907"}
 RETAINED_CORE_RELATIVE = "src/hbqrs/core.py"
 GIT_RUNTIME_SOURCES = {
     "evaluation-results/hbq-multisample-repeatability-v1/study-contract.json": {"oid": "3db1cfd8e32b35c0c8c86ca4fdeed40146d02831", "transform": "identity"},
@@ -456,6 +462,47 @@ def _load_frozen_analyzer(runtime_root: Path) -> Any:
         sys.path.remove(str(source_root))
 
 
+def _derived_v8_hbq_reader_source(analyzer_path: Path) -> str:
+    source = analyzer_path.read_text(encoding="utf-8")
+    if (
+        source.count(LEGACY_ACCEPTED_CHECKPOINT_GLOB) != 1
+        or EXACT_ACCEPTED_CHECKPOINT_GLOB in source
+        or source.count(LEGACY_HBQ_MANIFEST_BINDING) != 1
+        or DERIVED_HBQ_MANIFEST_BINDING in source
+    ):
+        raise ValueError("Frozen V8 analyzer checkpoint anchor is not the reviewed legacy form")
+    return source.replace(LEGACY_ACCEPTED_CHECKPOINT_GLOB, EXACT_ACCEPTED_CHECKPOINT_GLOB).replace(LEGACY_HBQ_MANIFEST_BINDING, DERIVED_HBQ_MANIFEST_BINDING)
+
+
+def _load_v8_hbq_reader(runtime_root: Path) -> Any:
+    """Load the V8 rubric reader for the admitted later HBQ cohort only."""
+    runtime_root = _plain_tree(runtime_root, "Frozen V8 runtime")
+    analyzer_path, study_path, source_root = runtime_root / V8_ANALYZER_RELATIVE, runtime_root / V8_STUDY_RELATIVE, runtime_root / "src"
+    if not analyzer_path.is_file() or not study_path.is_file() or not source_root.is_dir():
+        raise ValueError("Frozen V8 runtime lacks the version-bound HBQ reader")
+    if _sha(analyzer_path) != V8_ANALYZER_SHA256 or _sha(study_path) != V8_STUDY_SHA256:
+        raise ValueError("Frozen V8 HBQ reader bytes drifted from the admitted runtime")
+    sys.path.insert(0, str(source_root))
+    try:
+        for name in tuple(sys.modules):
+            if name == "hbqrs" or name.startswith("hbqrs."):
+                sys.modules.pop(name, None)
+        sys.modules.pop("study", None)
+        study_spec = importlib.util.spec_from_file_location("study", study_path)
+        reader_spec = importlib.util.spec_from_file_location("consolidated_v8_hbq_reader", analyzer_path)
+        if study_spec is None or study_spec.loader is None or reader_spec is None or reader_spec.loader is None:
+            raise RuntimeError("Cannot load frozen V8 HBQ reader")
+        study = importlib.util.module_from_spec(study_spec)
+        sys.modules["study"] = study
+        study_spec.loader.exec_module(study)
+        reader = importlib.util.module_from_spec(reader_spec)
+        source = _derived_v8_hbq_reader_source(analyzer_path)
+        exec(compile(source, str(analyzer_path), "exec"), reader.__dict__)  # noqa: S102
+        return reader
+    finally:
+        sys.path.remove(str(source_root))
+
+
 def _v8_runtime_dir(runtime_root: Path) -> Path:
     directory = runtime_root / "evaluation-results" / "hbq-multisample-repeatability-v1-remainder-capacity-reset-successor-v8"
     if not (directory / "executor.py").is_file():
@@ -830,6 +877,7 @@ def _analysis_summary(
     leaves_by_arm: Mapping[str, list[dict[str, Any]]],
     sessions: list[str | None],
     commitments: list[str],
+    hbq_quality_cohorts: Mapping[str, set[str]],
 ) -> dict[str, Any]:
     arms = frozen["contract"]["arms"]
     repetitions = frozen["contract"]["repetitions"]
@@ -850,6 +898,21 @@ def _analysis_summary(
                 "repeat_consensus_is_not_truth": True,
                 "canonical_score_and_coverage_unchanged": True,
             }
+        quality_sensitivity = analyzer._quality(rows, repetitions)
+        if arm_id == "hbq_short_story_batch32":
+            quality_sensitivity = {
+                "status": "version_cohorted_not_pooled",
+                "between_cohort_differences_are_not_wording_effect_evidence": True,
+                "pooled_descriptive_only": quality_sensitivity,
+                "cohorts": {
+                    version: {
+                        "item_ids": sorted(item_ids),
+                        "sample_count": len(item_ids),
+                        "quality_sensitivity": analyzer._quality([row for row in rows if row["item_id"] in item_ids], repetitions),
+                    }
+                    for version, item_ids in hbq_quality_cohorts.items()
+                },
+            }
         summaries[arm_id] = {
             "native_scale": arm["native_scale"],
             "sample_count": len(rows),
@@ -858,7 +921,7 @@ def _analysis_summary(
             "per_sample": rows,
             "full_sample_distributions": {row["item_id"]: row["values"] for row in rows},
             "leaf_repeatability": leaf_summary,
-            "quality_sensitivity": analyzer._quality(rows, repetitions),
+            "quality_sensitivity": quality_sensitivity,
         }
     observed = [session for session in sessions if session is not None]
     if len(observed) != len(sessions) or len(observed) != len(set(observed)):
@@ -872,6 +935,7 @@ def _analysis_summary(
         "repetitions": repetitions,
         "native_scales_are_not_cross_compared": True,
         "canonical_scores_and_coverage_are_not_confidence_weighted": True,
+        "hbq_quality_sensitivity_is_version_cohorted": True,
         "frozen_full_development_quality_cutpoints": frozen["full_development_quality_cutpoints"],
         "arms": summaries,
         "paired_prompt_cluster_bootstrap": {
@@ -892,7 +956,7 @@ def _analysis_summary(
             "artifact_commitment_count": len(commitments),
             "artifact_commitments_sha256": hashlib.sha256("\n".join(sorted(commitments)).encode()).hexdigest(),
         },
-        "privacy": "No prose, prompts, raw HANNA ratings, or copied source artifacts are emitted into this analysis.",
+        "privacy": "External analysis retains per-item human-reference aggregates; no prose, prompts, raw HANNA ratings, or copied source artifacts are emitted. A public export must omit per-item reference aggregates.",
     }
 
 
@@ -915,6 +979,174 @@ def _validate_native_normalizations(
             raise ValueError(f"Mapped source run manifest is missing: sequence {sequence}")
         source = (original_root / "inputs" / str(event["item_id"]) / "source.md").read_text(encoding="utf-8")
         normalizer._validate_normalization(normalization_runner, binding.parent, source)
+
+
+def _validate_retry_native_pass(
+    analyzer: Any,
+    directory: Path,
+    manifest: Mapping[str, Any],
+    response: Mapping[str, Any],
+    result: Mapping[str, Any],
+    sample: Mapping[str, Any],
+    arm: Mapping[str, Any],
+    repetition: int,
+    rendered_prompt: str,
+) -> str:
+    configuration = manifest.get("configuration")
+    schema = analyzer._json(analyzer.HERE / arm["schema"])
+    projected_schema = analyzer._structured_json_bytes(analyzer._provider_response_schema(schema))
+    prompt_path, schema_path = directory / "request.prompt.txt.gz", directory / "response.schema.json"
+    if not prompt_path.is_file() or not schema_path.is_file():
+        raise ValueError("Retry-native pass lacks persisted prompt or projected schema")
+    try:
+        persisted_prompt = gzip.decompress(prompt_path.read_bytes())
+    except OSError as exc:
+        raise ValueError("Retry-native persisted prompt is not gzip") from exc
+    prompt_bytes = rendered_prompt.encode("utf-8")
+    if persisted_prompt != prompt_bytes or schema_path.read_bytes() != projected_schema:
+        raise ValueError("Retry-native persisted prompt or projected schema drifted")
+    if (
+        manifest.get("format_version") != 1
+        or not isinstance(configuration, Mapping)
+        or manifest.get("config_sha256") != hashlib.sha256(analyzer._structured_json_bytes(configuration)).hexdigest()
+    ):
+        raise ValueError("Retry-native pass configuration binding is invalid")
+    expected = {
+        "name": f"{sample['item_id']}-{arm['arm_id']}-run-{repetition:02d}",
+        "provider": "codex",
+        "model": analyzer.contract()["provider"]["model"],
+        "reasoning": analyzer.contract()["provider"]["reasoning"],
+        "prompt_sha256": hashlib.sha256(prompt_bytes).hexdigest(),
+        "schema_sha256": hashlib.sha256(analyzer._structured_json_bytes(schema)).hexdigest(),
+    }
+    if any(configuration.get(key) != value for key, value in expected.items()):
+        raise ValueError("Retry-native pass configuration drifted")
+    content = response.get("content")
+    bindings = {
+        "config_sha256": manifest["config_sha256"],
+        "prompt_sha256": configuration["prompt_sha256"],
+        "schema_sha256": configuration["schema_sha256"],
+    }
+    if (
+        response.get("format_version") != 1
+        or not isinstance(content, str)
+        or any(response.get(key) != value for key, value in bindings.items())
+        or response.get("content_sha256") != hashlib.sha256(content.encode("utf-8")).hexdigest()
+        or response.get("result_sha256") != hashlib.sha256(analyzer._structured_json_bytes(result)).hexdigest()
+        or analyzer._parse_model_json(content) != result
+        or list(analyzer.Draft202012Validator(schema).iter_errors(result))
+    ):
+        raise ValueError("Retry-native response/result binding drifted")
+    analyzer._provider_ok(dict(response), analyzer.contract()["provider"])
+    analyzer._validate_provider_artifacts(directory, dict(response))
+    return analyzer._session(response)
+
+
+def _load_retry_native_run(
+    *,
+    analyzer: Any,
+    v8: Any,
+    retry_helper: Any,
+    normalizer: Any,
+    v8_root: Path,
+    original_root: Path,
+    frozen: Mapping[str, Any],
+    event: Mapping[str, Any],
+    path: Path,
+    sample: Mapping[str, Any],
+    arm: Mapping[str, Any],
+    repetition: int,
+) -> tuple[float, list[str], list[str], dict[str, Any]]:
+    output, archive = path.parent, path.parent / "retry-attempts" / "attempt-0001"
+    rejected_path = output / "attempts" / "rejected-0001.json"
+    if not archive.is_dir() or not rejected_path.is_file():
+        raise ValueError("Retry-native output lacks the immutable first-attempt archive")
+    archive = _plain_tree(archive, "Retry-native first-attempt archive")
+    rejected = analyzer._json(rejected_path)
+    response, result = rejected.get("response"), rejected.get("result")
+    if set(rejected) != {"format_version", "reason", "response", "result"} or rejected.get("format_version") != 1 or not isinstance(rejected.get("reason"), str) or not isinstance(response, Mapping) or not isinstance(result, Mapping):
+        raise ValueError("Retry-native rejected checkpoint is malformed")
+    source = (original_root / "inputs" / str(sample["item_id"]) / "source.md").read_text(encoding="utf-8")
+    prompt_context = (original_root / "inputs" / str(sample["item_id"]) / "prompt.md").read_text(encoding="utf-8")
+    base_prompt = analyzer._artifact_prompt((analyzer.HERE / arm["prompt"]).read_text(encoding="utf-8"), source, prompt_context)
+    archive_manifest = analyzer._json(archive / "pass.json")
+    first_session = _validate_retry_native_pass(analyzer, archive, archive_manifest, response, result, sample, arm, repetition, base_prompt)
+    try:
+        analyzer._semantic_native(dict(result), str(arm["arm_id"]), source)
+    except ValueError as original_error:
+        original_reason = str(original_error)
+    else:
+        raise ValueError("Retry-native rejected attempt is semantically valid under the original analyzer")
+    try:
+        normalizer._project_result_quotes(result, source)
+    except ValueError as exc:
+        if str(exc) != rejected["reason"]:
+            raise ValueError("Retry-native successor normalization reason drifted") from exc
+    else:
+        raise ValueError("Retry-native rejected attempt unexpectedly permits a normalization projection")
+
+    chain = retry_helper._native_rejection_chain(output)
+    feedback = retry_helper._native_retry_feedback(chain)
+    retry_prompt = f"{base_prompt.rstrip()}\n\n<validation_feedback>{retry_helper._canonical(feedback).decode('utf-8')}</validation_feedback>\n"
+    disclosure = v8.read_json(v8_root / v8.DISCLOSURE)
+    provider = retry_helper._provider_identity(frozen, disclosure["profile"])
+    expected_context = retry_helper._native_context(
+        event=event,
+        provider=provider,
+        attempt=2,
+        prompt=retry_prompt,
+        schema=analyzer._structured_json_bytes(analyzer._provider_response_schema(analyzer._json(analyzer.HERE / arm["schema"]))),
+        output=output,
+        validation_feedback=feedback,
+        rejected_chain=chain,
+        base_prompt=base_prompt,
+    )
+    journal = v8._read_journal(v8_root)
+    pauses = [(index, row) for index, row in enumerate(journal) if row.get("event") == "retry-disclosure-pause" and row.get("sequence") == event["sequence"]]
+    if len(pauses) != 1:
+        raise ValueError("Retry-native output lacks one V8 retry-disclosure pause")
+    index, pause = pauses[0]
+    prior = next((row for row in reversed(journal[:index]) if row.get("event") == "attempt-intent" and row.get("sequence") == event["sequence"]), None)
+    if not isinstance(prior, Mapping):
+        raise TypeError("Retry-native pause lacks its first-attempt intent")
+    v8._retry_pause_record(v8_root, pause, prior, event)
+    retry_disclosure = v8.read_json(v8._retry_disclosure_path(v8_root, str(pause["retry_disclosure_sha256"])))
+    if retry_disclosure.get("provider_attempt_context") != expected_context:
+        raise ValueError("Retry-native reconstructed attempt-two context drifted from its retry disclosure")
+    retry_intents = [row for row in journal[index + 1 :] if row.get("event") == "retry-intent" and row.get("sequence") == event["sequence"]]
+    if len(retry_intents) != 1 or retry_intents[0].get("retry_disclosure_sha256") != pause["retry_disclosure_sha256"]:
+        raise ValueError("Retry-native output lacks one retry intent bound to its disclosure")
+    ack_path = v8._retry_ack_path(v8_root, str(pause["retry_disclosure_sha256"]))
+    if retry_intents[0].get("retry_ack_sha256") != v8.sha(ack_path):
+        raise ValueError("Retry-native retry acknowledgement commitment drifted")
+    v8._validate_retry_ack(v8_root, str(pause["retry_disclosure_sha256"]), ack_path)
+
+    accepted_manifest, accepted_response, accepted_result = analyzer._json(path), analyzer._json(output / "response.json"), analyzer._json(output / "result.json")
+    second_session = _validate_retry_native_pass(analyzer, output, accepted_manifest, accepted_response, accepted_result, sample, arm, repetition, retry_prompt)
+    analyzer._semantic_native(accepted_result, str(arm["arm_id"]), source)
+    messages = v8._native_message_evidence(output, allow_missing=False)
+    sessions = v8._physical_output_sessions(output, event)
+    if v8._recorded_provider_contacts(v8_root, event) != 2 or len(messages) != 2 or len(sessions) != 2 or [ordinal for ordinal, _path in messages] != [1, 2] or sessions != [first_session, second_session]:
+        raise ValueError("Retry-native physical attempts or reported sessions drifted")
+    if [analyzer._json(message) for _ordinal, message in messages] != [result, accepted_result]:
+        raise ValueError("Retry-native physical message payloads do not reproduce rejected and accepted results")
+    commitments = [v8.sha(rejected_path), v8.sha(output / "response.json"), *(v8.sha(message) for _ordinal, message in messages)]
+    return (
+        analyzer._native_score(str(arm["arm_id"]), accepted_result),
+        sessions,
+        commitments,
+        {
+            "sequence": event["sequence"],
+            "item_id": sample["item_id"],
+            "arm_id": arm["arm_id"],
+            "repetition": repetition,
+            "original_semantic_rejection_reason": original_reason,
+            "successor_normalization_rejection_reason": rejected["reason"],
+            "physical_messages": [{"attempt": ordinal, "path": str(message), "sha256": v8.sha(message)} for ordinal, message in messages],
+            "reported_sessions": sessions,
+            "physical_messages_do_not_independently_attest_reported_sessions": True,
+        },
+    )
 
 
 def consolidate(
@@ -956,6 +1188,7 @@ def consolidate(
         query_binding_root=query_binding_root,
         runtime_root=runtime_root,
     )
+    retry_helper = _v8._load_successor_runner() if callable(getattr(_v8, "_load_successor_runner", None)) else None
     sources, all_roots = _source_map(
         original_root=original_root,
         closed_successor_root=closed_successor_root,
@@ -976,11 +1209,24 @@ def consolidate(
 
     arms = {arm["arm_id"]: arm for arm in frozen["contract"]["arms"]}
     samples = {sample["item_id"]: sample for sample in frozen["samples"]}
+    v8_hbq_sequences = {
+        int(event["sequence"])
+        for event in events
+        if arms[event["arm_id"]]["kind"] == "hbq"
+        and sources[int(event["sequence"])][0] in {"missing181_detached_completion", "v8_accepted_183_330"}
+    }
+    if (
+        len(v8_hbq_sequences) != 25
+        or {event["item_id"] for event in events if int(event["sequence"]) in v8_hbq_sequences} != V8_HBQ_ITEM_IDS
+        or any(sources[sequence][0] == "v8_accepted_183_330" and sequence < 183 for sequence in v8_hbq_sequences)
+    ):
+        raise ValueError("V8 HBQ reader phase does not match the admitted later source lineage")
     values: dict[tuple[str, str], list[tuple[int, float, list[dict[str, Any]] | None, list[dict[str, Any]] | None]]] = {}
     provenance_cells: list[dict[str, Any]] = []
+    retry_native_cells: list[dict[str, Any]] = []
     all_sessions: list[str | None] = []
     all_commitments: list[str] = []
-    for event in events:
+    def read_event(event: Mapping[str, Any], reader: Any) -> None:
         sequence, item_id, arm_id, repetition = _event_key(event)
         source_kind, root = sources[sequence]
         sample, arm = samples.get(item_id), arms.get(arm_id)
@@ -989,8 +1235,29 @@ def consolidate(
         binding = _run_path(root, event, arm["kind"])
         if not binding.is_file():
             raise ValueError(f"Mapped source run manifest is missing: sequence {sequence}")
-        work = _SplitWork(original_root, root)
-        score, sessions, commitments, verdicts, metadata = analyzer._load_run(work, sample, arm, repetition)
+        retry_archive = binding.parent / "retry-attempts" / "attempt-0001"
+        if source_kind == "v8_accepted_183_330" and arm["kind"] == "native" and retry_archive.is_dir():
+            if retry_helper is None:
+                raise TypeError("Pinned V8 terminal runtime lacks the retry-native context helper")
+            score, sessions, commitments, retry_provenance = _load_retry_native_run(
+                analyzer=reader,
+                v8=_v8,
+                retry_helper=retry_helper,
+                normalizer=normalizer,
+                v8_root=v8_root,
+                original_root=original_root,
+                frozen=frozen,
+                event=event,
+                path=binding,
+                sample=sample,
+                arm=arm,
+                repetition=repetition,
+            )
+            verdicts, metadata = None, None
+            retry_native_cells.append(retry_provenance)
+        else:
+            work = _SplitWork(original_root, root)
+            score, sessions, commitments, verdicts, metadata = reader._load_run(work, sample, arm, repetition)
         all_sessions.extend(sessions)
         all_commitments.extend(commitments)
         values.setdefault((item_id, arm_id), []).append((repetition, score, verdicts, metadata))
@@ -1011,6 +1278,15 @@ def consolidate(
             }
         )
 
+    for event in events:
+        if int(event["sequence"]) not in v8_hbq_sequences:
+            read_event(event, analyzer)
+    v8_hbq_reader = _load_v8_hbq_reader(runtime_root)
+    for event in events:
+        if int(event["sequence"]) in v8_hbq_sequences:
+            read_event(event, v8_hbq_reader)
+    provenance_cells.sort(key=lambda cell: int(cell["sequence"]))
+
     if len(provenance_cells) != CELL_COUNT or len({_event_key(cell) for cell in provenance_cells}) != CELL_COUNT:
         raise ValueError("Consolidated geometry is incomplete or nonunique")
     expected_keys = {(sample["item_id"], arm["arm_id"]) for sample in frozen["samples"] for arm in frozen["contract"]["arms"]}
@@ -1019,7 +1295,7 @@ def consolidate(
 
     rows_by_arm: dict[str, list[dict[str, Any]]] = {arm_id: [] for arm_id in arms}
     leaves_by_arm: dict[str, list[dict[str, Any]]] = {arm_id: [] for arm_id in arms}
-    for arm_id, arm in arms.items():
+    for arm_id in arms:
         for sample in frozen["samples"]:
             loaded = sorted(values[(sample["item_id"], arm_id)])
             scores = [row[1] for row in loaded]
@@ -1045,7 +1321,11 @@ def consolidate(
                 leaf["item_id"] = sample["item_id"]
                 leaves_by_arm[arm_id].append(leaf)
 
-    summary = _analysis_summary(analyzer, frozen, rows_by_arm, leaves_by_arm, all_sessions, all_commitments)
+    hbq_quality_cohorts = {
+        "original_rubric_v1_0_0": set(samples) - V8_HBQ_ITEM_IDS,
+        "v8_rubric_v1_2_1": set(V8_HBQ_ITEM_IDS),
+    }
+    summary = _analysis_summary(analyzer, frozen, rows_by_arm, leaves_by_arm, all_sessions, all_commitments, hbq_quality_cohorts)
     source_counts = Counter(cell["source_kind"] for cell in provenance_cells)
     provenance = {
         "format_version": 1,
@@ -1080,6 +1360,23 @@ def consolidate(
                 "retained_lf_variant_cells": analyzer._derived_prompt_variant_cells,
                 "response_schema_binding_remains_exact": True,
                 "newline_only_artifact_variants_are_not_outbound_byte_identity_evidence": True,
+                "retry_native_cells": retry_native_cells,
+                "retry_native_cells_retain_both_physical_messages_and_reported_sessions": True,
+                "physical_messages_do_not_independently_attest_reported_sessions": True,
+                "version_bound_hbq_readers": {
+                    "selection": "admitted source lineage and item-cohort identity, not a caller-provided version",
+                    "original_rubric_v1_0_0": {"item_ids": sorted(hbq_quality_cohorts["original_rubric_v1_0_0"]), "runs": 30},
+                    "v8_rubric_v1_2_1": {
+                        "item_ids": sorted(hbq_quality_cohorts["v8_rubric_v1_2_1"]),
+                        "runs": 25,
+                        "analyzer_path": str(runtime_root / V8_ANALYZER_RELATIVE),
+                        "analyzer_sha256": V8_ANALYZER_SHA256,
+                        "study_path": str(runtime_root / V8_STUDY_RELATIVE),
+                        "study_sha256": V8_STUDY_SHA256,
+                        "executed_derived_source_sha256": hashlib.sha256(_derived_v8_hbq_reader_source(runtime_root / V8_ANALYZER_RELATIVE).encode("utf-8")).hexdigest(),
+                    },
+                    "full_eleven_item_hbq_quality_sensitivity_is_not_homogeneous": True,
+                },
             },
         },
         "analysis_runtime": {"root": str(analysis_runtime_root), "reconstruction_provenance_sha256": _sha(analysis_runtime_root / "reconstruction-provenance.json")},
