@@ -649,6 +649,19 @@ ranking success: child20 is higher on only 2/6 item correlations and lower on
 all 6 group-mean correlations. Those stdlib calculations have no p-values and
 are not part of the primary MAE measurement.
 
+## Optuna calibration stayed distinct from prompt search
+
+The [V13 calibration](../evaluation-results/hbq-human-alignment-optimizer-v13-train-expansion-v1/CALIBRATION.md)
+used real Optuna `4.9.0` for `22` leave-one-group-out folds with `64` trials per
+fold (`1,408` trials total) over the native Grok TRAIN replay. Out-of-fold MAE moved
+from `0.890993265993266` for child20 to `0.7485954607139592` (`15.9819%`),
+while fixed-3 was `0.7760942760942761`; OOF was `3.5432%` lower. Rank
+readouts improved `2/6` and worsened `4/6`. This is calibration-only
+cross-validation: it made no new model calls and produced no prompt candidate,
+new discrimination, generalization, runtime, or selection evidence. The
+[public calibration aggregate](../evaluation-results/hbq-human-alignment-optimizer-v13-train-expansion-v1/calibration-result.json)
+keeps this result separate from the V14 DSPy prompt comparison.
+
 ## A DSPy descendant showed endpoint-sensitive movement
 
 The [V14 DSPy TRAIN pilot](../evaluation-results/hbq-human-alignment-optimizer-v14-dspy-train-pilot-result-v1/)
@@ -671,3 +684,25 @@ ranking statistic was measured in this four-item pilot.
 This remains in-sample TRAIN development evidence only: no confirmation,
 generalization, selection, promotion, runtime, or pooling claim follows, and
 native endpoint-contact cardinality remains unproven.
+
+## The broader V14 replay completed as endpoint-separated development evidence
+
+The [V14 DSPy TRAIN expansion](../evaluation-results/hbq-human-alignment-optimizer-v14-dspy-train-expansion-result-v1/)
+completed both endpoint replays over 44 frozen TRAIN items, 22 groups, and 88
+cells per endpoint using the same child20/DSPy candidate and profile as the
+pilot. Grok MAE moved from `0.8842592592592592` to `0.7525042087542088`
+(`14.9000%`; 29/7/8 item and 17/2/3 group wins/ties/losses). Against fixed-3,
+the Grok DSPy descendant was better while child20 was worse; its W/T/L was
+21/2/21 by item and 10/1/11 by group. Sol MAE moved from `1.1681755050505052`
+to `1.0232617845117844` (`12.4051%`; 17 wins, no ties, 5 losses), while
+fixed-3 at `0.7760942760942761` was better than both Sol candidates.
+
+Post-hoc Grok rank readouts improved `3/6` item dimensions (Relevance,
+Empathy, Complexity) and `4/6` group dimensions (Relevance, Empathy, Surprise,
+Complexity). The separate Sol readouts improved `2/6` in each view; these are
+mixed discrimination readouts, not universal ranking evidence. Exact payload
+and CSV replay passed, all 88 Grok receipts/native responses/request-session
+IDs were unique, and no anomalies were observed. Native contact cardinality
+and attestation remain unproven. This remains endpoint-separated TRAIN
+development evidence and does not authorize confirmation, generalization,
+selection, promotion, runtime, or pooling.

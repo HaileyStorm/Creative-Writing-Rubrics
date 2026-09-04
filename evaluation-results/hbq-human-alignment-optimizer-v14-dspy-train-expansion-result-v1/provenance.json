@@ -1,0 +1,67 @@
+{
+  "candidate_lineage": {
+    "descendant_candidate_sha256": "62195a3b90edd96d619279b5e229f78862b971ba44d10de86468dee6badbe9e4",
+    "shared_profile_sha256": "07cd3652f4792aef082a0e2d9d615229013663b14599abd011637daf8f185a20",
+    "proposal": "independently_verified_real_dspy_proposal_from_v11_four_train_diagnostics",
+    "profile_unchanged": true,
+    "same_candidate_and_profile_as_v14_pilot": true
+  },
+  "format_version": 1,
+  "publication_scope": {
+    "native_request_response_bodies": "not_published",
+    "private_source_prose": "not_published",
+    "request_session_and_thread_identifiers": "not_published",
+    "targets_and_item_level_scores": "not_published",
+    "local_paths": "not_published",
+    "grok_expansion_metrics": "aggregate_only"
+  },
+  "replay_integrity": {
+    "grok_receipt_count": 88,
+    "grok_native_response_count": 88,
+    "grok_unique_request_session_id_count": 88,
+    "grok_exact_payload_replay": "pass",
+    "grok_exact_csv_replay": "pass",
+    "grok_anomalies": 0,
+    "sol_unique_native_identity_count": 88,
+    "exact_grok_payload_parity": true,
+    "raw_csv_target_replay": "pass",
+    "sol_child20_coverage_flags_false": 2,
+    "sol_dspy_descendant_coverage_flags_false": 4,
+    "sol_coverage_flags_total_per_candidate": 264,
+    "sol_child20_all_zero_score_vectors": 0,
+    "sol_dspy_descendant_all_zero_score_vectors": 0,
+    "finite_scores_retained_when_coverage_false": true,
+    "native_endpoint_contact_cardinality": "unproven",
+    "native_attestation": "unproven"
+  },
+  "model_context": {
+    "dspy_version": "3.3.1",
+    "generator_provider": "xai",
+    "generator_requested_model": "grok-4.6",
+    "generator_reported_model": "grok-4.6-build",
+    "generator_requested_reasoning": "high",
+    "judges": {
+      "grok": {"provider": "xai", "requested_model": "grok-4.6", "reported_model": "grok-4.6-build", "requested_reasoning": "high"},
+      "sol": {"provider": "openai", "requested_model": "gpt-5.6-sol", "requested_reasoning": "high"}
+    },
+    "attestation": "unproven",
+    "runtime_dependency": false
+  },
+  "source_commitments": {
+    "grok": {
+      "study_commit": "8bd2f09",
+      "study_sha256": "359fc5a9d4b60ab8c8b42f30c7c3598d7742fabf22962bc133db372716174e05",
+      "terminal_inventory_sha256": "67b2684cd68f33935c66286d017f3c30df7931e67331d5703aedb45eb1610b5c",
+      "semantic_schedule_sha256": "55950f306896aa99e0dee2dc0ed1734fabb178c5f9cee05cca60bc2ce25cc018"
+    },
+    "sol": {
+      "study_commit": "2cd262f",
+      "study_sha256": "6625435919fd840cf74342357de82fbb14d5ab360baec4a89eb5d80ff8857d03",
+      "report_sha256": "6980bdbdb148d346f3c63259b76cff1daa9de99f3052c8ff00933da56aa95a7d",
+      "receipt_inventory_sha256": "aecee5a9624833950edca121b5668170cc22febe11539b30e92f73dee93118e4",
+      "final_output_sha256": "98fc714616a641cd2eb2ded23a71d746f4475b98215d69c2f7beca97dc0df6a7",
+      "events_sha256": "6359d50eacb6947a3e6e70f57ae482acdb2aa9def4118c761dd46b22319e4b53"
+    }
+  },
+  "study_id": "hbq-human-alignment-optimizer-v14-dspy-train-expansion-result-v1"
+}

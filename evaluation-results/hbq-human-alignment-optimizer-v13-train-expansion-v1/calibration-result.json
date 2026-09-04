@@ -1,0 +1,97 @@
+{
+  "analysis_rule": {
+    "coverage": "include_every_finite_numeric_score_even_when_coverage_is_false",
+    "fitting": "child20_only_leave_one_prompt_group_out; each heldout group excluded from its fold fit",
+    "primary": "six_dimension_item_mae_then_mean_within_group_then_equal_mean_across_22_groups",
+    "rank": "pooled_average_tie_spearman_descriptive_only; no_p_values_or_crossfold_rank_preservation_claim"
+  },
+  "authority": {
+    "confirmation": "none",
+    "development_train_cross_validation_only": true,
+    "endpoint_pooling": "forbidden",
+    "generalization": "none",
+    "prompt_improvement": "not_established",
+    "runtime": "none",
+    "selection": "none"
+  },
+  "calibration": {
+    "clip": [0.0, 5.0],
+    "folds": 22,
+    "intercept": [-2.0, 2.0],
+    "optimizer": "optuna.TPESampler@4.9.0",
+    "seed": 20260904,
+    "single_worker": true,
+    "slope": [0.1, 2.0],
+    "total_trials": 1408,
+    "trials_per_fold": 64
+  },
+  "comparison": {
+    "calibrated_minus_child20": -0.1423978052793068,
+    "calibrated_minus_fixed_three": -0.027498815380316843,
+    "calibrated_relative_mae_reduction_vs_child20": 0.15981917115901415,
+    "calibrated_relative_mae_reduction_vs_fixed_three": 0.035432313093076366,
+    "group_wins_ties_losses_vs_child20": [14, 0, 8],
+    "group_wins_ties_losses_vs_fixed_three": [13, 0, 9],
+    "item_wins_ties_losses_vs_child20": [30, 0, 14],
+    "item_wins_ties_losses_vs_fixed_three": [26, 0, 18]
+  },
+  "format_version": 1,
+  "geometry": {
+    "child20_cells": 44,
+    "dimensions": 6,
+    "fitting_groups_per_fold": 21,
+    "heldout_groups": 22,
+    "items": 44,
+    "prompt_groups": 22
+  },
+  "integrity": {
+    "all_heldout_groups_assembled_once": true,
+    "independent_replay": true,
+    "input_data_sha256": "7ec0c24ef1bba87a5bff683ac6ae0894326e1b3b5e74c04b4b8994c0c93993a9",
+    "native_endpoint_contact_cardinality": "unproven",
+    "new_provider_calls": 0
+  },
+  "kind": "receipt_derived_v13_child20_leave_one_group_out_affine_calibration_diagnostic",
+  "metrics": {
+    "fixed_three_equal_group_mean_item_mae": 0.7760942760942761,
+    "out_of_fold_calibrated_child20_equal_group_mean_item_mae": 0.7485954607139592,
+    "uncalibrated_child20_equal_group_mean_item_mae": 0.890993265993266
+  },
+  "pooled_average_tie_spearman": {
+    "out_of_fold_calibrated_child20": {
+      "Coherence": -0.09176576464365885,
+      "Complexity": 0.14563653961004483,
+      "Empathy": 0.14045756899328055,
+      "Engagement": 0.042637290672483404,
+      "Relevance": 0.5281687296745006,
+      "Surprise": -0.060000839259883844
+    },
+    "uncalibrated_child20": {
+      "Coherence": -0.051498144082396335,
+      "Complexity": 0.1800191559115714,
+      "Empathy": 0.26035978611158994,
+      "Engagement": 0.03692522714753858,
+      "Relevance": 0.42673043938945027,
+      "Surprise": 0.00975758346069915
+    },
+    "calibrated_higher_dimensions": ["Relevance", "Engagement"],
+    "calibrated_lower_dimensions": ["Coherence", "Empathy", "Surprise", "Complexity"],
+    "fixed_three": "undefined because every prediction ties"
+  },
+  "publication_scope": {
+    "fold_parameters_and_predictions": "not_published",
+    "local_output_paths": "not_published",
+    "native_request_response_bodies": "not_published",
+    "private_source_prose": "not_published",
+    "request_and_session_identifiers": "not_published",
+    "targets_and_item_level_scores": "not_published"
+  },
+  "source": {
+    "calibration_contract_sha256": "c9b6aeefc2e66fbe8cb331f43f655d1f3ae5d88b3a3507084bd58441f250ae77",
+    "calibration_output_sha256": "e3900856addc8a4385f0dc578de87ecf88ab921e20a0ab9998bfa653d430caa8",
+    "calibration_source_commit": "aedec40",
+    "calibration_source_sha256": "a7b3d07791b12af67eb6bafea1b37e9c8564207e625d13a70fbce1f920264c9c",
+    "v13_canonical_report_sha256": "7cc6520d36c4f0c6cbe3585752ce21109ad0afd2d458b9a7d4d30e12f99f54de"
+  },
+  "study_id": "hbq-human-alignment-optimizer-v13-train-expansion-calibration-v1"
+}
