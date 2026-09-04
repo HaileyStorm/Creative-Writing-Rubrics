@@ -247,6 +247,10 @@ def _provider_identity(profile: Mapping[str, Any]) -> dict[str, Any]:
     return {key: profile[key] for key in ("provider", "model", "reasoning")}
 
 
+def _callback_provider_identity(profile: Mapping[str, Any]) -> dict[str, Any]:
+    return {**_provider_identity(profile), "endpoint": None}
+
+
 def _binding(root: Path) -> dict[str, Any]:
     root = _plain(root)
     allowed = {BINDING, DISCLOSURE, LOCK, OVERRIDES, ACKNOWLEDGEMENT, CLAIM, RECEIPT, "runs"}
@@ -389,7 +393,7 @@ def _validate_attempt(
     request = expected.get("request")
     if (
         not isinstance(request, Mapping)
-        or provider != _provider_identity(binding["profile"])
+        or provider != _callback_provider_identity(binding["profile"])
         or batch.get("question_ids") != expected.get("question_ids")
         or prompt.get("encoding") != "utf-8"
         or schema.get("encoding") != "utf-8"
@@ -417,7 +421,7 @@ def _validate_provider_boundary(
     context: Mapping[str, Any],
     commitments: Mapping[str, Any],
 ) -> None:
-    if context.get("provider") != _provider_identity(profile):
+    if context.get("provider") != _callback_provider_identity(profile):
         raise ValueError("Provider boundary context drifted")
     expected = {
         "provider": _provider_identity(profile),

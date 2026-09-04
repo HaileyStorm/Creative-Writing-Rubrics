@@ -7,3 +7,5 @@ This is a fresh, default-off, isolated completion controller for logical sequenc
 The runner receives the exact V8 successor-runner keyword contract and writes `runs/hanna-523/hbq_short_story_batch32/run-01/run.json` beneath the new controller root. Before every first attempt of each batch, the controller rechecks the frozen runtime, source contract/runtime projection, disclosure, acknowledgement, override, and current capacity evidence. A changed retry attempt is terminal for this controller.
 
 A normal receipt requires the raw 179 verdict IDs, all six batch32 checkpoint records, accepted-attempt totals, and unique persisted session-bearing records. Those records are locally validated evidence; they are not independently verified provider endpoint contact proof.
+
+The first external controller (`66ffd94` r1) is immutable and non-resumable. Its precontact callback incorrectly omitted the frozen Codex runner's explicit `endpoint: null` context field, so it stopped before a provider message or accepted batch. A corrected version requires a distinct fresh controller root; r1 must not be retried, adopted, or mutated.
