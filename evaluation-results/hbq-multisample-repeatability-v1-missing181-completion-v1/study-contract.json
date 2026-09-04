@@ -1,0 +1,10 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-multisample-repeatability-v1-missing181-completion-v1",
+  "status": "PREPARED_DEFAULT_OFF",
+  "target": {"sequence": 181, "item_id": "hanna-523", "arm_id": "hbq_short_story_batch32", "repetition": 1},
+  "historical_basis": {"settlement_sha256": "258ccbda1fdf619bffb8728dc55f17c47f5658028100a9b8b41e19d7812a2b52", "classification": "immutable local zero-contact forensic settlement, not provider attestation"},
+  "runtime": {"executor_sha256": "515ea015074883be64b64ec63b832c00c8452e65cd1786dd9ba81dc23b92b2d6", "guard_sha256": "fb20800c50dd374d35a6314b2c7889bc1e523cb3ab4346d13f2d27dbaa92b4c8", "runtime_policy": "explicit frozen V8 runtime root only; a fresh checkout is not accepted"},
+  "execution": {"allow_remote_default": false, "max_workers": 1, "one_dispatch_claim": true, "retry_policy": "stop without resend after any claimed ambiguity or retry", "batch_geometry": {"questions": 179, "batch_size": 32, "batch_attempts": 3}},
+  "receipt": {"requires": ["raw verdict JSONL exact question IDs", "six accepted batch checkpoints", "recomputed persisted attempts", "unique persisted session-bearing records"], "does_not_claim": "independent provider endpoint contact proof"}
+}
