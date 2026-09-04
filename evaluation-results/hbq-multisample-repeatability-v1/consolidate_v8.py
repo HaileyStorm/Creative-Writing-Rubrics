@@ -11,9 +11,11 @@ import argparse
 import hashlib
 import importlib.util
 import json
+import posixpath
+import subprocess
 import sys
 from collections import Counter
-from collections.abc import Mapping
+from collections.abc import Callable, Mapping
 from pathlib import Path
 from typing import Any
 
@@ -25,6 +27,42 @@ QUERY_ONLY = HERE.parent / "hbq-multisample-repeatability-v1-v8-query-only-proce
 QUERY_ONLY_SHA256 = "39405850d20f9963b7ea7a760441611133ecc2d6b0b3d6a26efa17af432e0b53"
 CELL_COUNT = 330
 MISSING_181 = {"sequence": 181, "item_id": "hanna-523", "arm_id": "hbq_short_story_batch32", "repetition": 1}
+RETAINED_CORE_RELATIVE = "src/hbqrs/core.py"
+GIT_RUNTIME_SOURCES = {
+    "evaluation-results/hbq-multisample-repeatability-v1/study-contract.json": {"oid": "3db1cfd8e32b35c0c8c86ca4fdeed40146d02831", "transform": "identity"},
+    "evaluation-results/hbq-multisample-repeatability-v1/study.py": {"oid": "f1ad4375385dfb75fbe9fe6736c6c23eaca9bb47", "transform": "identity"},
+    "evaluation-results/hbq-multisample-repeatability-v1/prepare_study.py": {"oid": "fc33fb697e84814eb8bdb13436afec51554a40d1", "transform": "identity"},
+    "evaluation-results/hbq-multisample-repeatability-v1/run_study.py": {"oid": "3569c2ea8170ce88df174cff6c214bb650c8dfc9", "transform": "identity"},
+    "evaluation-results/hbq-multisample-repeatability-v1/analyze_study.py": {"oid": "d32b9e9e363da7fb70b11d799ad40b904a8aa841", "transform": "identity"},
+    "evaluation-results/hbq-human-alignment-v3/study.py": {"oid": "dafcd49087eef15a3d42f615907a52ea390b2183", "transform": "identity"},
+    "evaluation-results/hbq-human-alignment-v3/study-contract.json": {"oid": "612a523fdce2244c76e4842d5c83f31acd83a19d", "transform": "identity"},
+    "evaluation-results/hbq-human-alignment-v3/run_study.py": {"oid": "b83a39283700ba0beca290a57ccd7fe6c95b45a2", "transform": "identity"},
+    "evaluation-results/hbq-human-alignment-v3/analyze_study.py": {"oid": "95da2893a8dd878716a4945aa0990119e3d3b950", "transform": "identity"},
+    "evaluation-results/the-part-that-arrives-first-repeatability/established-v4/run_study.py": {"oid": "974e26f621a96b132720c17992251c8f01731283", "transform": "identity"},
+    "evaluation-results/the-part-that-arrives-first-repeatability/established-v4/analyze_study.py": {"oid": "289c5a5936ee38d355dfe2ce8fd30b9dfd7039ea", "transform": "identity"},
+    "evaluation-results/the-part-that-arrives-first-repeatability/established-v4/study-contract.json": {"oid": "ae9dc4cc580b7fab167fae0ecbb609b1f1a9a6fe", "transform": "identity"},
+    "evaluation-results/the-part-that-arrives-first-repeatability/established-v2/arms/naplan-narrative-2022.prompt.md": {"oid": "a3783aff97388c85f9c15eb18306bb3511766079", "transform": "identity"},
+    "evaluation-results/the-part-that-arrives-first-repeatability/established-v4/arms/naplan-narrative-2022.strict.schema.json": {"oid": "abe864b207695b07370ec6a39a3e3ada50bef11a", "transform": "identity"},
+    "evaluation-results/the-part-that-arrives-first-repeatability/established-v2/arms/cambridge-igcse-0500-p2-mj-2024.prompt.md": {"oid": "6b0b462f71792f522d88363b6b75d8ee3ab641ab", "transform": "identity"},
+    "evaluation-results/the-part-that-arrives-first-repeatability/established-v4/arms/cambridge-igcse-0500-p2-mj-2024.strict.schema.json": {"oid": "17754a04d200c7eb28dde6c483fff985ad53ac52", "transform": "identity"},
+    "evaluation-results/the-part-that-arrives-first-repeatability/established-v2/arms/oregon-narrative-2017.prompt.md": {"oid": "ce3b90560841e82b42c9fc8253fc7a487a15fda6", "transform": "identity"},
+    "evaluation-results/the-part-that-arrives-first-repeatability/established-v2/arms/oregon-narrative-2017.schema.json": {"oid": "f3c2775264f17442aa107873758ff61f6f2370ea", "transform": "identity"},
+    "evaluation-results/the-part-that-arrives-first-repeatability/arms/compact-analytic.prompt.md": {"oid": "c8e356e414ea899467cba7eec62dae743e4e5159", "transform": "identity"},
+    "evaluation-results/the-part-that-arrives-first-repeatability/arms/compact-analytic.schema.json": {"oid": "10eb06c813516723eaf5b54f3428128a35a598e3", "transform": "identity"},
+    "evaluation-results/the-part-that-arrives-first-repeatability/arms/holistic-anchored.prompt.md": {"oid": "13c58fb1fc538db2b8638f1cd853ce093d98f83e", "transform": "identity"},
+    "evaluation-results/the-part-that-arrives-first-repeatability/arms/holistic-anchored.schema.json": {"oid": "8dec7e61e2cd5042271aaf52dd20816e6299d321", "transform": "identity"},
+    "registry/all_modules.json": {"oid": "d991ebc7f28f00d7cd301a0bdce208d7d6b04974", "transform": "lf_to_crlf"},
+    "bundles/all_bundles.json": {"oid": "e6dc8b31fe6709acec7d4b5dbf95c8f21c1df8d6", "transform": "lf_to_crlf"},
+    "prompts/judge/BINARY_EVALUATION_PROMPT.md": {"oid": "d2662edfccc115c6d0c4d97af82a10c9e926b853", "transform": "identity"},
+    "prompts/judge/JUDGE_PREFIX.md": {"oid": "7f07f76fb339a8f6b86cbeb4ce8ba9220e2e2a5e", "transform": "lf_to_crlf"},
+    "schema/hbq_judge_response.schema.json": {"oid": "1034a35dcd6c30a75101f369627d60e155d65c2c", "transform": "identity"},
+    "schema/hbq_score_report.schema.json": {"oid": "2d08e4a42af6b9b9b2bf5845f9df1a5a4db81094", "transform": "lf_to_crlf"},
+    "src/hbqrs/runner.py": {"oid": "80780321485df23e741ee414aa799c011f769e3a", "transform": "identity"},
+    "src/hbqrs/longform_runner.py": {"oid": "5c46a564bf50daf31e6c7d8aa19b75b0f77c2cc0", "transform": "identity"},
+    "src/hbqrs/weights.py": {"oid": "5b0a59489d03a8b2f7a7b7647a59ac4d97913071", "transform": "identity"},
+    "src/hbqrs/__init__.py": {"oid": "69e4844d594cd92419528fc024493508ae7542e1", "transform": "identity"},
+    "src/hbqrs/paths.py": {"oid": "4950dd03104189a93c2e9d23cd2d98315be1a31a", "transform": "lf_to_crlf"},
+}
 
 
 def _sha(path: Path) -> str:
@@ -98,6 +136,94 @@ def _fresh_output(output: Path, roots: list[Path]) -> Path:
     return output
 
 
+def _runtime_manifest(original_root: Path) -> tuple[dict[str, Any], dict[str, dict[str, Any]]]:
+    frozen = _json(original_root / "frozen-run-contract.json")
+    rows = frozen.get("runtime_files")
+    if not isinstance(rows, list) or len(rows) != 34:
+        raise ValueError("Original frozen contract lacks its exact 34-file runtime manifest")
+    if frozen.get("runtime_sha256") != hashlib.sha256(_canonical(rows)).hexdigest():
+        raise ValueError("Original frozen runtime manifest commitment drifted")
+    manifest: dict[str, dict[str, Any]] = {}
+    for row in rows:
+        if not isinstance(row, Mapping) or set(row) != {"bytes", "path", "sha256"} or not isinstance(row["path"], str) or not isinstance(row["bytes"], int) or not isinstance(row["sha256"], str):
+            raise ValueError("Original frozen runtime manifest record is malformed")
+        relative = posixpath.normpath(row["path"])
+        if "\\" in relative or relative.startswith("../") or relative == "." or Path(relative).is_absolute() or relative in manifest:
+            raise ValueError("Original frozen runtime manifest path is unsafe or duplicated")
+        manifest[relative] = dict(row)
+    if set(manifest) != {*GIT_RUNTIME_SOURCES, RETAINED_CORE_RELATIVE}:
+        raise ValueError("Original frozen runtime manifest does not match the reviewed reconstruction inventory")
+    return frozen, manifest
+
+
+def _git_blob(oid: str, git_blob_reader: Callable[[str], bytes] | None) -> bytes:
+    if git_blob_reader is not None:
+        value = git_blob_reader(oid)
+        if not isinstance(value, bytes):
+            raise TypeError("Injected Git blob reader did not return bytes")
+        return value
+    try:
+        return subprocess.run(["git", "cat-file", "blob", oid], cwd=HERE.parent.parent, check=True, capture_output=True).stdout
+    except (OSError, subprocess.SubprocessError) as exc:
+        raise ValueError(f"Cannot read required local Git blob {oid}") from exc
+
+
+def _reconstruction_bytes(raw: bytes, transform: str) -> bytes:
+    if transform == "identity":
+        return raw
+    if transform == "lf_to_crlf":
+        return raw.replace(b"\r\n", b"\n").replace(b"\n", b"\r\n")
+    raise ValueError("Reconstruction transform is not reviewed")
+
+
+def reconstruct_original_analysis_runtime(
+    *,
+    output_root: Path,
+    original_root: Path,
+    historical_core_root: Path,
+    git_blob_reader: Callable[[str], bytes] | None = None,
+) -> dict[str, Any]:
+    """Derive a hash-checked analysis runtime; it is not a historic execution root."""
+    original_root = _plain_tree(Path(original_root), "Original evidence")
+    historical_core_root = _plain_tree(Path(historical_core_root), "Retained historical core snapshot")
+    repository_root = _plain_tree(HERE.parent.parent, "CWR repository")
+    frozen, manifest = _runtime_manifest(original_root)
+    core_path = historical_core_root / RETAINED_CORE_RELATIVE
+    if not core_path.is_file() or _is_reparse(core_path):
+        raise ValueError("Retained historical core snapshot is missing or redirected")
+    assembled: list[tuple[str, bytes, dict[str, Any]]] = []
+    for relative, expected in sorted(manifest.items()):
+        if relative == RETAINED_CORE_RELATIVE:
+            value = core_path.read_bytes()
+            provenance = {"source_kind": "retained_historical_snapshot", "source_path": str(core_path), "source_sha256": _sha(core_path), "transform": "identity"}
+        else:
+            source = GIT_RUNTIME_SOURCES[relative]
+            raw = _git_blob(source["oid"], git_blob_reader)
+            value = _reconstruction_bytes(raw, source["transform"])
+            provenance = {"source_kind": "local_git_blob", "git_blob_oid": source["oid"], "blob_sha256": hashlib.sha256(raw).hexdigest(), "transform": source["transform"]}
+        if len(value) != expected["bytes"] or hashlib.sha256(value).hexdigest() != expected["sha256"]:
+            raise ValueError(f"Reconstructed runtime bytes do not match the original frozen manifest: {relative}")
+        assembled.append((relative, value, {"path": relative, "bytes": len(value), "sha256": expected["sha256"], **provenance}))
+    output_root = _fresh_output(Path(output_root), [original_root, historical_core_root, repository_root])
+    output_root.mkdir(parents=False)
+    for relative, value, _provenance in assembled:
+        target = output_root / relative
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes(value)
+    provenance = {
+        "format_version": 1,
+        "kind": "derived_exact_byte_analysis_runtime",
+        "original_frozen_contract": {"path": str(original_root / "frozen-run-contract.json"), "sha256": _sha(original_root / "frozen-run-contract.json"), "runtime_sha256": frozen.get("runtime_sha256")},
+        "not_a_single_historical_git_snapshot": True,
+        "not_an_original_execution_root": True,
+        "files": [record for _relative, _value, record in assembled],
+    }
+    _write_json(output_root / "reconstruction-provenance.json", provenance)
+    if [_sha(output_root / relative) for relative, _value, _provenance in assembled] != [record["sha256"] for _relative, _value, record in assembled]:
+        raise ValueError("Published reconstructed runtime bytes drifted")
+    return {"format_version": 1, "status": "derived_exact_manifest", "output_root": str(output_root), "provenance_path": str(output_root / "reconstruction-provenance.json"), "runtime_sha256": frozen.get("runtime_sha256"), "file_count": len(assembled)}
+
+
 class _SplitWork:
     """Route original inputs and one immutable evidence root without copying either."""
 
@@ -114,15 +240,15 @@ class _SplitWork:
 
 
 def _load_frozen_analyzer(runtime_root: Path) -> Any:
-    """Load the unmodified original analyzer against the frozen V8 runtime."""
-    runtime_root = _plain_tree(runtime_root, "Frozen V8 runtime")
+    """Load the original analyzer against the separate exact-byte analysis runtime."""
+    runtime_root = _plain_tree(runtime_root, "Derived original analysis runtime")
     analyzer_path = runtime_root / ANALYZER.relative_to(HERE.parent.parent)
     study_path = runtime_root / STUDY.relative_to(HERE.parent.parent)
     source_root = runtime_root / "src"
     if not analyzer_path.is_file() or not study_path.is_file() or not source_root.is_dir():
-        raise ValueError("Frozen V8 runtime lacks the original analyzer or its source package")
+        raise ValueError("Derived original analysis runtime lacks the original analyzer or its source package")
     if _sha(analyzer_path) != _sha(ANALYZER) or _sha(study_path) != _sha(STUDY):
-        raise ValueError("Frozen V8 original analyzer/study bytes drift from this adapter's pinned source")
+        raise ValueError("Derived original analysis runtime analyzer/study bytes drift from this adapter's pinned source")
     sys.path.insert(0, str(source_root))
     try:
         for name in tuple(sys.modules):
@@ -595,6 +721,7 @@ def consolidate(
     query_binding_root: Path,
     output_root: Path,
     data_dir: Path,
+    analysis_runtime_root: Path,
     runtime_root: Path = V8_RUNTIME_DEFAULT,
 ) -> dict[str, Any]:
     """Replay complete cross-root evidence into a fresh derived analysis view."""
@@ -606,9 +733,9 @@ def consolidate(
     guard_root = _plain_tree(Path(guard_root), "V8 query-safe guard evidence")
     query_binding_root = _plain_tree(Path(query_binding_root), "V8 query-only binding evidence")
     runtime_root = _plain_tree(Path(runtime_root), "Frozen V8 runtime")
+    analysis_runtime_root = _plain_tree(Path(analysis_runtime_root), "Derived original analysis runtime")
     data_dir = _plain_tree(Path(data_dir), "Pinned HANNA data")
     repository_root = _plain_tree(HERE.parent.parent, "CWR repository")
-    analyzer = _load_frozen_analyzer(runtime_root)
     normalizer = _load_frozen_successor_normalizer(runtime_root)
     normalization_runner = normalizer._v1_runner()
     frozen, events = _frozen_events(original_root)
@@ -633,7 +760,8 @@ def consolidate(
         frozen=frozen,
         events=events,
     )
-    output_root = _fresh_output(Path(output_root), [*all_roots, guard_root, query_binding_root, runtime_root, data_dir, repository_root])
+    output_root = _fresh_output(Path(output_root), [*all_roots, guard_root, query_binding_root, runtime_root, analysis_runtime_root, data_dir, repository_root])
+    analyzer = _load_frozen_analyzer(analysis_runtime_root)
     if analyzer.validate(original_root, data_dir) != frozen:
         raise ValueError("Original frozen study validation did not reproduce the source contract")
 
@@ -731,7 +859,8 @@ def consolidate(
             "adopted_sequence": v8_admission.get("sequence"),
         },
         "frozen_contract": {"path": str(original_root / "frozen-run-contract.json"), "sha256": _sha(original_root / "frozen-run-contract.json")},
-        "original_analyzer": {"path": str(runtime_root / ANALYZER.relative_to(HERE.parent.parent)), "sha256": _sha(runtime_root / ANALYZER.relative_to(HERE.parent.parent))},
+        "original_analyzer": {"path": str(analysis_runtime_root / ANALYZER.relative_to(HERE.parent.parent)), "sha256": _sha(analysis_runtime_root / ANALYZER.relative_to(HERE.parent.parent))},
+        "analysis_runtime": {"root": str(analysis_runtime_root), "reconstruction_provenance_sha256": _sha(analysis_runtime_root / "reconstruction-provenance.json")},
         "cells": provenance_cells,
     }
     output_root.mkdir(parents=False)
@@ -761,6 +890,7 @@ if __name__ == "__main__":
     parser.add_argument("--query-binding-root", required=True, type=Path)
     parser.add_argument("--data-dir", required=True, type=Path)
     parser.add_argument("--output-root", required=True, type=Path)
+    parser.add_argument("--analysis-runtime-root", required=True, type=Path)
     parser.add_argument("--runtime-root", type=Path, default=V8_RUNTIME_DEFAULT)
     args = parser.parse_args()
     print(json.dumps(consolidate(**vars(args)), ensure_ascii=False, sort_keys=True))

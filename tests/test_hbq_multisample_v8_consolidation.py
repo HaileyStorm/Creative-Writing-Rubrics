@@ -36,6 +36,53 @@ def _write_jsonl(path: Path, rows: list[dict[str, Any]]) -> None:
     path.write_text("".join(json.dumps(row, sort_keys=True) + "\n" for row in rows), encoding="utf-8", newline="\n")
 
 
+def _bypass_repository_tree_scan(module: ModuleType, monkeypatch: pytest.MonkeyPatch) -> None:
+    plain_tree = module._plain_tree
+    repository_root = module.HERE.parent.parent.absolute()
+
+    def fixture_plain_tree(root: Path, label: str) -> Path:
+        if Path(root).absolute() == repository_root:
+            return repository_root
+        return plain_tree(root, label)
+
+    monkeypatch.setattr(module, "_plain_tree", fixture_plain_tree)
+
+
+def _reconstruction_fixture(
+    module: ModuleType, tmp_path: Path, *, corrupt: bool = False
+) -> tuple[Path, Path, dict[str, bytes]]:
+    original_root = tmp_path / "original"
+    historical_core_root = tmp_path / "historical-core"
+    blobs: dict[str, bytes] = {}
+    runtime_rows: list[dict[str, Any]] = []
+    for relative, source in sorted(module.GIT_RUNTIME_SOURCES.items()):
+        raw = f"fixture local blob {relative}\n".encode()
+        blobs[source["oid"]] = raw
+        value = module._reconstruction_bytes(raw, source["transform"])
+        runtime_rows.append({"path": relative, "bytes": len(value), "sha256": hashlib.sha256(value).hexdigest()})
+    core_path = historical_core_root / module.RETAINED_CORE_RELATIVE
+    core_path.parent.mkdir(parents=True)
+    core_path.write_bytes(b"retained historical core fixture\n")
+    runtime_rows.append(
+        {
+            "path": module.RETAINED_CORE_RELATIVE,
+            "bytes": core_path.stat().st_size,
+            "sha256": _sha(core_path),
+        }
+    )
+    runtime_rows.sort(key=lambda row: row["path"])
+    if corrupt:
+        runtime_rows[0] = {**runtime_rows[0], "sha256": "0" * 64}
+    _write_json(
+        original_root / "frozen-run-contract.json",
+        {
+            "runtime_files": runtime_rows,
+            "runtime_sha256": hashlib.sha256(module._canonical(runtime_rows)).hexdigest(),
+        },
+    )
+    return original_root, historical_core_root, blobs
+
+
 def _event_fixture(module: ModuleType) -> tuple[dict[str, Any], list[dict[str, Any]]]:
     arms = [
         {"arm_id": "hbq_short_story_batch32", "kind": "native", "native_scale": [0, 10]},
@@ -229,15 +276,7 @@ def _fixture(
     normalization_valid: bool = True,
 ) -> tuple[ModuleType, dict[str, Path], list[dict[str, Any]], dict[int, str], dict[str, list[Any]]]:
     module = _module()
-    plain_tree = module._plain_tree
-    repository_root = module.HERE.parent.parent.absolute()
-
-    def fixture_plain_tree(root: Path, label: str) -> Path:
-        if Path(root).absolute() == repository_root:
-            return repository_root
-        return plain_tree(root, label)
-
-    monkeypatch.setattr(module, "_plain_tree", fixture_plain_tree)
+    _bypass_repository_tree_scan(module, monkeypatch)
     frozen, events = _event_fixture(module)
     roots = {name: tmp_path / name for name in ("original", "closed", "v4", "v6", "v7", "missing181", "v8", "guard", "query")}
     original, closed, v4, v6, v7, missing181, v8 = (roots[name] for name in ("original", "closed", "v4", "v6", "v7", "missing181", "v8"))
@@ -319,14 +358,23 @@ def _fixture(
     runtime_analyzer = runtime / module.ANALYZER.relative_to(module.HERE.parent.parent)
     runtime_analyzer.parent.mkdir(parents=True)
     runtime_analyzer.write_bytes(module.ANALYZER.read_bytes())
+    analysis_runtime = tmp_path / "analysis-runtime"
+    analysis_runtime.mkdir()
+    analysis_analyzer = analysis_runtime / module.ANALYZER.relative_to(module.HERE.parent.parent)
+    analysis_analyzer.parent.mkdir(parents=True)
+    analysis_analyzer.write_bytes(module.ANALYZER.read_bytes())
+    _write_json(analysis_runtime / "reconstruction-provenance.json", {"fixture": True})
     data_dir = tmp_path / "data"
     data_dir.mkdir()
-    monkeypatch.setattr(module, "_load_frozen_analyzer", lambda runtime_root: _fake_analyzer(frozen, duplicate_sessions=duplicate_sessions))
-    roots.update({"runtime": runtime, "data": data_dir})
+    roots.update({"runtime": runtime, "analysis_runtime": analysis_runtime, "data": data_dir})
     for name in ("guard", "query"):
         roots[name].mkdir()
         (roots[name] / "immutable-binding.json").write_text("{}\n", encoding="utf-8", newline="\n")
-    state: dict[str, list[Any]] = {"query": [], "terminal": [], "receipts": [], "normalizations": [], "v8": []}
+    state: dict[str, list[Any]] = {"query": [], "terminal": [], "receipts": [], "normalizations": [], "v8": [], "analysis_runtime": []}
+    def fake_analyzer(runtime_root: Path) -> Any:
+        state["analysis_runtime"].append(runtime_root)
+        return _fake_analyzer(frozen, duplicate_sessions=duplicate_sessions)
+    monkeypatch.setattr(module, "_load_frozen_analyzer", fake_analyzer)
     _admission_stubs(module, monkeypatch, roots, events, state, terminal_valid=terminal_valid, normalization_valid=normalization_valid)
     return module, roots, events, bindings, state
 
@@ -342,8 +390,49 @@ def _consolidate(module: ModuleType, roots: dict[str, Path], output: Path) -> di
         query_binding_root=roots["query"],
         output_root=output,
         data_dir=roots["data"],
+        analysis_runtime_root=roots["analysis_runtime"],
         runtime_root=roots["runtime"],
     )
+
+
+def test_reconstruct_original_analysis_runtime_materializes_exact_manifest_without_git(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    module = _module()
+    _bypass_repository_tree_scan(module, monkeypatch)
+    original_root, historical_core_root, blobs = _reconstruction_fixture(module, tmp_path)
+
+    output = tmp_path / "derived-analysis-runtime"
+    result = module.reconstruct_original_analysis_runtime(
+        output_root=output,
+        original_root=original_root,
+        historical_core_root=historical_core_root,
+        git_blob_reader=blobs.__getitem__,
+    )
+
+    provenance = json.loads((output / "reconstruction-provenance.json").read_text(encoding="utf-8"))
+    assert result["status"] == "derived_exact_manifest"
+    assert result["file_count"] == 34
+    assert len(provenance["files"]) == 34
+    assert provenance["not_a_single_historical_git_snapshot"] is True
+    assert provenance["not_an_original_execution_root"] is True
+    retained = next(row for row in provenance["files"] if row["path"] == module.RETAINED_CORE_RELATIVE)
+    assert retained["source_kind"] == "retained_historical_snapshot"
+    assert all(_sha(output / row["path"]) == row["sha256"] for row in provenance["files"])
+
+
+def test_reconstruct_original_analysis_runtime_rejects_one_byte_manifest_drift(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    module = _module()
+    _bypass_repository_tree_scan(module, monkeypatch)
+    original_root, historical_core_root, blobs = _reconstruction_fixture(module, tmp_path, corrupt=True)
+
+    output = tmp_path / "rejected-analysis-runtime"
+    with pytest.raises(ValueError, match="Reconstructed runtime bytes do not match the original frozen manifest"):
+        module.reconstruct_original_analysis_runtime(
+            output_root=output,
+            original_root=original_root,
+            historical_core_root=historical_core_root,
+            git_blob_reader=blobs.__getitem__,
+        )
+    assert not output.exists()
 
 
 def test_consolidate_replays_cross_root_330_geometry_without_copying_evidence(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -369,6 +458,7 @@ def test_consolidate_replays_cross_root_330_geometry_without_copying_evidence(tm
     assert provenance["missing181_not_v8_acceptance"] is True
     assert provenance["terminal_admission"]["accepted_sequence_count"] == 149
     assert provenance["terminal_admission"]["adopted_sequence"] == 182
+    assert provenance["analysis_runtime"]["root"] == str(roots["analysis_runtime"])
     assert [cell["sequence"] for cell in provenance["cells"]] == list(range(1, 331))
     assert {cell["sequence"]: cell["run_binding_sha256"] for cell in provenance["cells"]} == bindings
     assert {name: module._tree_hash(path) for name, path in roots.items() if name not in {"runtime", "data"}} == source_tree_hashes
@@ -376,6 +466,7 @@ def test_consolidate_replays_cross_root_330_geometry_without_copying_evidence(tm
     assert state["query"] == [(roots["runtime"], roots["query"])]
     assert state["terminal"] == ["verify_prepared", "guard_clear", "accepted", "contacts", "preflight", "guard_binding", "canonical_runtime", "static_identity", "guard_journal", "claims", "contacts_recomputed"]
     assert state["receipts"] == [(roots["missing181"], roots["runtime"])]
+    assert state["analysis_runtime"] == [roots["analysis_runtime"]]
     assert len(state["normalizations"]) == 330
     assert {path / "pass.json" for path in state["normalizations"]} == {
         _binding(roots["original"], event) for event in events[:76]
