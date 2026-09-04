@@ -226,3 +226,32 @@ remain explicit: **author-original** and **GPT-5.6 Pro rewrite**.
 
 For the longer account of why negative evidence changed the product, see the
 [validation and repair journey](VALIDATION_AND_REPAIR_JOURNEY.md).
+
+## V16 comparative HANNA TRAIN measurement
+
+The [V16 aggregate](../evaluation-results/hbq-human-alignment-optimizer-v16-comparative-train-v1/result.json)
+records a useful but bounded direction: on 50 stories in five selected TRAIN
+groups, scoring each ten-story prompt group in shared context twice in opposite
+orders raised the HANNA-compatible drop-undefined six-axis
+prompt-macro tied Spearman from `0.205269` to `0.337593` for Grok and from
+`0.249094` to `0.329532` for Sol when the two comparison orders are averaged.
+Mean six-axis MAE also fell from `1.121111` to `0.765333` for Grok and from
+`0.993333` to `0.814722` for Sol. Independent raw-receipt arithmetic matched
+both endpoint reports with zero mismatches. The direct strict all-five-prompt
+result is undefined: retained prompt counts by axis were `5/5/5/1/4/5` for
+Grok and `5/5/5/3/5/5` for Sol, while the mean comparative result retained all
+five prompts on all six axes. That coverage difference limits the comparison.
+
+The result is endpoint-separated, development-only, and not a full HANNA
+comparison. It does not isolate comparison/batching/decimal/token effects:
+comparative cells use two judgements per story and larger shared context, the
+direct cells are historical rather than contemporaneous, and forward versus
+reverse order still differs. Grok requested `grok-4.6` and reported
+`grok-4.6-build`; Sol locally resolved requested `gpt-5.6-sol` at `high`.
+Tools/subagents/web were disabled. Native contact cardinality remains unproven,
+and Sol/provider reasoning attestation is absent; the independent check proves
+receipt arithmetic, not those identities. It opens no confirmation,
+generalization, selection, promotion, runtime, or endpoint-pooling claim. See the separate
+[Grok](../evaluation-results/hbq-human-alignment-optimizer-v16-comparative-train-v1/GROK_TRAIN.md)
+and [Sol](../evaluation-results/hbq-human-alignment-optimizer-v16-comparative-train-v1/SOL_TRAIN.md)
+summaries.

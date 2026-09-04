@@ -834,6 +834,43 @@ those targets out of outbound payloads prevents leakage; it does not create an
 agreement result. This is not the original HANNA design of ten systems/stories
 per prompt with three human raters.
 
+## V16 made the comparison direction measurable, then repaired the independent check
+
+The V16 TRAIN measurement held task bytes fixed for 50 stories in five selected
+prompt groups and ran the fresh comparative cells separately on Grok and Sol.
+Each endpoint added 29 fresh individual-direct cells and 10 fresh ten-story
+comparative batch cells, and reused 21 preserved direct cells. The
+mean of forward and reverse comparative orders lifted the six-axis prompt-macro
+tied Spearman from `0.205269` to `0.337593` on Grok and from `0.249094` to
+`0.329532` on Sol; mean six-axis MAE fell from `1.121111` to `0.765333` and
+from `0.993333` to `0.814722`, respectively. That is a promising combined
+method result, not proof that one prompt, batching shape, decimals, or token
+budget caused it: comparative cells have two judgements per story and larger
+shared context, direct evidence is noncontemporaneous, and order remains
+material.
+
+The macro comparison also changes coverage. Direct prompt correlations were
+undefined on some axes (retained counts `5/5/5/1/4/5` for Grok and
+`5/5/5/3/5/5` for Sol), so both direct strict all-five results are undefined;
+the mean comparative arm retained all five prompts on every axis. Fresh Grok
+records requested `grok-4.6`, reported `grok-4.6-build`, disabled tools, and did
+not attest requested `high` reasoning. Fresh Sol records locally resolved
+requested `gpt-5.6-sol` at `high` with tools/subagents/web disabled, but lacked
+provider/model/reasoning attestation. Both endpoints retain unique lifecycle
+identities while native contact cardinality remains unproven.
+
+The first independent arithmetic outputs failed closed. The checker had parsed
+the BOM-prefixed HANNA CSV without BOM handling, parsed text floats too
+narrowly, and initially expected a top-level Sol schedule rather than the
+native child manifests. We repaired those checker paths without changing the
+frozen reports or rerunning any provider call. The failed outputs remain
+immutable provenance; the final independent raw-receipt replays match each
+endpoint report with zero mismatches. This repairs arithmetic verification,
+not provider contact or attestation, and
+not the experiment's scope: it remains endpoint-separated TRAIN development
+with no confirmation, generalization, selection, promotion, runtime,
+endpoint-pooling, or full-HANNA claim.
+
 Parallel work checks the coarse existing HANNA mapping, criterion wording,
 and pairwise approaches. A low-error constant predictor is a control, not
 successful literary evaluation. Both endpoint-specific arithmetic replays are
