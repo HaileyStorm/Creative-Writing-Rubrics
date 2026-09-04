@@ -57,9 +57,14 @@ The live release-facing work is narrower than the historical experiment log:
   now includes a four-item held-back comparison. Guided-minus-generic means
   were Sol `+1.00` holistic / `+0.75` compact and Grok `+0.75` / `0.00`.
   This small, endpoint-separated result does not establish general benefit.
-- [Matched Grok/Sol calibration](evaluation-results/hbq-grok-sol-current-matched-v1/)
-  remains a provider-free public-synthetic screen, not judge-interchangeability
-  evidence.
+- [V14 matched Grok-primary/Sol development results](evaluation-results/hbq-human-alignment-optimizer-v14-dspy-train-expansion-result-v1/README.md#what-this-says-about-development-judges)
+  and the [separate DEV checkpoint](evaluation-results/hbq-human-alignment-optimizer-v14-dspy-train-pilot-v1/DEVELOPMENT.md)
+  are receipt-derived measurements: 88 matched TRAIN cells per endpoint and 26
+  DEV cells per endpoint, with exact matched outbound payloads within each
+  panel. Coverage and rank readouts differ by endpoint; this supports separate
+  Grok-primary development and Sol validation, not interchangeability or speed
+  claims. The [historical public-synthetic screen](evaluation-results/hbq-grok-sol-current-matched-v1/)
+  remains provider-free pre-execution context only.
 - [Flash-Next/Linux planning](evaluation-results/hbq-supplemental-providers-flash-next-v1/)
   and its [portability diagnostic](evaluation-results/hbq-supplemental-providers-flash-next-linux-portability-v1/)
   remain explicit NO-GO evidence pending native Linux execution, identity,
