@@ -1,0 +1,49 @@
+{
+  "format_version": 1,
+  "study_id": "hbq-human-alignment-wpb-pilot-v1",
+  "kind": "provider_free_source_freeze_then_endpoint_separate_pairwise_pilot",
+  "source": {
+    "upstream_commit": "c6ac5821582e77fb34d27f6b54aac937904ee112",
+    "readme_sha256": "529c50e79d43dd637d4210c3362d66aeeb8a32220ce460ed852f6a1ef3d74fa3",
+    "english_json_sha256": "c80907b42f83673f026280b3af6cc998b69db4045081745b994f1c20c11a8bdd",
+    "license": "ODC-BY; attribution and source terms are in the pinned upstream README",
+    "immutability": "The pinned source remains untouched; each freeze is a new immutable local descendant."
+  },
+  "source_schema": {
+    "rows": 1200,
+    "categories": 51,
+    "required_row_keys": ["prompt", "prompt_id", "tag", "chosen", "rejected"],
+    "required_response_keys": ["response", "score", "model", "completion_tokens", "prompt_tokens", "word_len"]
+  },
+  "selection": {
+    "rows_per_category": 3,
+    "component_links": ["same_prompt_id", "same_exact_prompt_sha256", "same_exact_response_sha256"],
+    "cross_category_components": "exclude every member before selection",
+    "selection_key": "seeded hash of prompt_id, prompt hash, and sorted response hashes; never chosen/rejected order, score, or model output",
+    "distinct_components_per_category": true,
+    "partitions": {"train_categories": 35, "dev_categories": 8, "confirmation_categories": 8},
+    "partition_key": "seeded category hash only; whole categories remain together and no label, score, or model output participates"
+  },
+  "execution": {
+    "task": "endpoint-neutral pairwise A/B/TIE judgment with response side assigned by exact response SHA-256",
+    "grok_role": "primary development endpoint",
+    "sol_role": "separate validation endpoint",
+    "grok_sol_task_bytes": "must be identical for each frozen cell",
+    "default_schedule": "TRAIN and DEV only; confirmation is absent",
+    "confirmation": "selected and locally committed, but not executable here; a future real pairwise analyzer/profile-decision package must define and bind any opening contract",
+    "local_targets": "separate from execution inputs and never disclosed to providers"
+  },
+  "analysis": {
+    "primary_metric": "pairwise accuracy with win/tie/loss accounting",
+    "aggregation": "macro-average categories within each partition",
+    "score_scale": "Do not compute MAE across the 0-3 source scores.",
+    "family_weights": "TRAIN fit only; DEV selects a frozen candidate; this source-freeze package cannot open confirmation",
+    "genre_interactions": "not part of this pilot"
+  },
+  "authority": {
+    "runtime": "none",
+    "promotion": "none",
+    "selection": "development-only; no confirmation-opening surface exists in this package",
+    "endpoint_pooling": "forbidden"
+  }
+}
