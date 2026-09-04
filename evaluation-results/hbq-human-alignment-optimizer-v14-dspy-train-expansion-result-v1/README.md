@@ -36,3 +36,17 @@ The proposal used real DSPy `3.3.1`; its generator and judging settings are
 recorded as requested/reported context, not provider attestations or a runtime
 dependency. See the aggregate [result](result.json) and public-only
 [provenance commitments](provenance.json).
+
+## What this says about development judges
+
+Both endpoints completed 88 parseable, receipt-bearing cells with a configured
+maximum of 10 concurrent lanes. Their 88 outbound payload hashes match exactly.
+Grok supplied all 528 coverage flags as true; Sol supplied 522, with six false
+flags across five cells. All numeric scores were retained in the comparisons.
+This supports using Grok for development iteration while retaining independent
+Sol checks; it does not establish interchangeable judgments.
+
+These runs do not establish which endpoint is faster. They lack persisted
+execution timestamps suitable for a matched latency analysis, and filesystem
+write gaps confound model time with different scheduling and startup paths.
+Process-launch counts also do not prove native contact counts or billing.
