@@ -60,6 +60,11 @@ def _reconstruction_fixture(
         blobs[source["oid"]] = raw
         value = module._reconstruction_bytes(raw, source["transform"])
         runtime_rows.append({"path": relative, "bytes": len(value), "sha256": hashlib.sha256(value).hexdigest()})
+    for relative, support in sorted(module.SUPPORT_FILES.items()):
+        raw = (ROOT / relative).read_bytes()
+        assert len(raw) == support["bytes"]
+        assert hashlib.sha256(raw).hexdigest() == support["sha256"]
+        blobs[support["oid"]] = raw
     core_path = historical_core_root / module.RETAINED_CORE_RELATIVE
     core_path.parent.mkdir(parents=True)
     core_path.write_bytes(b"retained historical core fixture\n")
@@ -370,10 +375,13 @@ def _fixture(
     for name in ("guard", "query"):
         roots[name].mkdir()
         (roots[name] / "immutable-binding.json").write_text("{}\n", encoding="utf-8", newline="\n")
-    state: dict[str, list[Any]] = {"query": [], "terminal": [], "receipts": [], "normalizations": [], "v8": [], "analysis_runtime": []}
+    state: dict[str, list[Any]] = {"query": [], "terminal": [], "receipts": [], "normalizations": [], "v8": [], "analysis_runtime": [], "analysis_verifications": []}
+    def fake_analysis_verification(runtime_root: Path, original_root: Path) -> None:
+        state["analysis_verifications"].append((runtime_root, original_root))
     def fake_analyzer(runtime_root: Path) -> Any:
         state["analysis_runtime"].append(runtime_root)
         return _fake_analyzer(frozen, duplicate_sessions=duplicate_sessions)
+    monkeypatch.setattr(module, "_verify_analysis_runtime", fake_analysis_verification)
     monkeypatch.setattr(module, "_load_frozen_analyzer", fake_analyzer)
     _admission_stubs(module, monkeypatch, roots, events, state, terminal_valid=terminal_valid, normalization_valid=normalization_valid)
     return module, roots, events, bindings, state
@@ -411,12 +419,21 @@ def test_reconstruct_original_analysis_runtime_materializes_exact_manifest_witho
     provenance = json.loads((output / "reconstruction-provenance.json").read_text(encoding="utf-8"))
     assert result["status"] == "derived_exact_manifest"
     assert result["file_count"] == 34
+    assert result["support_file_count"] == 4
     assert len(provenance["files"]) == 34
     assert provenance["not_a_single_historical_git_snapshot"] is True
     assert provenance["not_an_original_execution_root"] is True
+    assert provenance["support_files_are_not_part_of_original_runtime_manifest"] is True
     retained = next(row for row in provenance["files"] if row["path"] == module.RETAINED_CORE_RELATIVE)
     assert retained["source_kind"] == "retained_historical_snapshot"
     assert all(_sha(output / row["path"]) == row["sha256"] for row in provenance["files"])
+    assert {row["path"] for row in provenance["support_files"]} == set(module.SUPPORT_FILES)
+    assert all(
+        row["source_kind"] == "local_git_blob"
+        and row["purpose"] == module.SUPPORT_FILES[row["path"]]["purpose"]
+        and _sha(output / row["path"]) == row["sha256"]
+        for row in provenance["support_files"]
+    )
 
 
 def test_reconstruct_original_analysis_runtime_rejects_one_byte_manifest_drift(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -433,6 +450,39 @@ def test_reconstruct_original_analysis_runtime_rejects_one_byte_manifest_drift(t
             git_blob_reader=blobs.__getitem__,
         )
     assert not output.exists()
+
+
+def test_analysis_runtime_consumption_rejects_altered_support_bytes(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    module = _module()
+    _bypass_repository_tree_scan(module, monkeypatch)
+    original_root, historical_core_root, blobs = _reconstruction_fixture(module, tmp_path)
+    output = tmp_path / "derived-analysis-runtime"
+    module.reconstruct_original_analysis_runtime(
+        output_root=output,
+        original_root=original_root,
+        historical_core_root=historical_core_root,
+        git_blob_reader=blobs.__getitem__,
+    )
+    module._verify_analysis_runtime(output, original_root)
+    support_path = output / next(iter(sorted(module.SUPPORT_FILES)))
+    support_path.write_bytes(support_path.read_bytes() + b"x")
+
+    with pytest.raises(ValueError, match="Derived original analysis runtime support bytes drifted"):
+        module._verify_analysis_runtime(output, original_root)
+
+
+def test_consolidate_rejects_analysis_runtime_gate_before_loading_analyzer(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    module, roots, _, _, state = _fixture(tmp_path, monkeypatch)
+
+    def reject_analysis_runtime(runtime_root: Path, original_root: Path) -> None:
+        state["analysis_verifications"].append((runtime_root, original_root))
+        raise ValueError("Derived original analysis runtime support bytes drifted: fixture")
+
+    monkeypatch.setattr(module, "_verify_analysis_runtime", reject_analysis_runtime)
+    with pytest.raises(ValueError, match="Derived original analysis runtime support bytes drifted"):
+        _consolidate(module, roots, tmp_path / "rejected-analysis-runtime")
+    assert state["analysis_verifications"] == [(roots["analysis_runtime"], roots["original"])]
+    assert state["analysis_runtime"] == []
 
 
 def test_consolidate_replays_cross_root_330_geometry_without_copying_evidence(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -466,6 +516,7 @@ def test_consolidate_replays_cross_root_330_geometry_without_copying_evidence(tm
     assert state["query"] == [(roots["runtime"], roots["query"])]
     assert state["terminal"] == ["verify_prepared", "guard_clear", "accepted", "contacts", "preflight", "guard_binding", "canonical_runtime", "static_identity", "guard_journal", "claims", "contacts_recomputed"]
     assert state["receipts"] == [(roots["missing181"], roots["runtime"])]
+    assert state["analysis_verifications"] == [(roots["analysis_runtime"], roots["original"])]
     assert state["analysis_runtime"] == [roots["analysis_runtime"]]
     assert len(state["normalizations"]) == 330
     assert {path / "pass.json" for path in state["normalizations"]} == {

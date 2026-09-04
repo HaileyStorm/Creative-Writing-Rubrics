@@ -63,6 +63,36 @@ GIT_RUNTIME_SOURCES = {
     "src/hbqrs/__init__.py": {"oid": "69e4844d594cd92419528fc024493508ae7542e1", "transform": "identity"},
     "src/hbqrs/paths.py": {"oid": "4950dd03104189a93c2e9d23cd2d98315be1a31a", "transform": "lf_to_crlf"},
 }
+SUPPORT_FILES = {
+    "src/hbqrs/longform.py": {
+        "oid": "95c0c540cd9f6ec1d874f3c1fa0db3b439455cec",
+        "sha256": "de8db9bba3ddf332646facaa63e57c46afb70e3eb8d47bdaa5b50fe788b6f016",
+        "bytes": 78971,
+        "transform": "identity",
+        "purpose": "longform_runner import closure",
+    },
+    "src/hbqrs/scoring_v2.py": {
+        "oid": "228885e8ca2ec71913c52cd67b1c62da744808f5",
+        "sha256": "80592c5ffb5972ad391bd5e870da8311c888307081e5eed86c9b160b69148049",
+        "bytes": 8227,
+        "transform": "identity",
+        "purpose": "longform scoring import closure",
+    },
+    "evaluation-results/hbq-human-alignment-v2/study.py": {
+        "oid": "b3c1a6c809774c75eccc28eee342c97e66d050b0",
+        "sha256": "ffacff20b4b267bc13eccf826b33138a23b24a0c5b1b15a563899c15604e9a42",
+        "bytes": 18838,
+        "transform": "identity",
+        "purpose": "HANNA v3 compatibility core",
+    },
+    "evaluation-results/hbq-human-alignment-v2/study-contract.json": {
+        "oid": "545a01bc331508fdcb01f803c85ec10839097efe",
+        "sha256": "9ec0aa16f0d3bc4d8f2d06e45c9a96a27bf9ba9ea9ca8719b8163eaab1d18ece",
+        "bytes": 2820,
+        "transform": "identity",
+        "purpose": "HANNA v3 compatibility-contract binding",
+    },
+}
 
 
 def _sha(path: Path) -> str:
@@ -204,9 +234,33 @@ def reconstruct_original_analysis_runtime(
         if len(value) != expected["bytes"] or hashlib.sha256(value).hexdigest() != expected["sha256"]:
             raise ValueError(f"Reconstructed runtime bytes do not match the original frozen manifest: {relative}")
         assembled.append((relative, value, {"path": relative, "bytes": len(value), "sha256": expected["sha256"], **provenance}))
+    support: list[tuple[str, bytes, dict[str, Any]]] = []
+    for relative, expected in sorted(SUPPORT_FILES.items()):
+        if relative in manifest:
+            raise ValueError("Derived analysis support overlaps the original frozen runtime manifest")
+        raw = _git_blob(expected["oid"], git_blob_reader)
+        value = _reconstruction_bytes(raw, expected["transform"])
+        if len(value) != expected["bytes"] or hashlib.sha256(value).hexdigest() != expected["sha256"]:
+            raise ValueError(f"Derived analysis support bytes drifted: {relative}")
+        support.append(
+            (
+                relative,
+                value,
+                {
+                    "path": relative,
+                    "bytes": len(value),
+                    "sha256": expected["sha256"],
+                    "purpose": expected["purpose"],
+                    "source_kind": "local_git_blob",
+                    "git_blob_oid": expected["oid"],
+                    "blob_sha256": hashlib.sha256(raw).hexdigest(),
+                    "transform": expected["transform"],
+                },
+            )
+        )
     output_root = _fresh_output(Path(output_root), [original_root, historical_core_root, repository_root])
     output_root.mkdir(parents=False)
-    for relative, value, _provenance in assembled:
+    for relative, value, _provenance in [*assembled, *support]:
         target = output_root / relative
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_bytes(value)
@@ -217,11 +271,15 @@ def reconstruct_original_analysis_runtime(
         "not_a_single_historical_git_snapshot": True,
         "not_an_original_execution_root": True,
         "files": [record for _relative, _value, record in assembled],
+        "support_files_are_not_part_of_original_runtime_manifest": True,
+        "support_files": [record for _relative, _value, record in support],
     }
     _write_json(output_root / "reconstruction-provenance.json", provenance)
     if [_sha(output_root / relative) for relative, _value, _provenance in assembled] != [record["sha256"] for _relative, _value, record in assembled]:
         raise ValueError("Published reconstructed runtime bytes drifted")
-    return {"format_version": 1, "status": "derived_exact_manifest", "output_root": str(output_root), "provenance_path": str(output_root / "reconstruction-provenance.json"), "runtime_sha256": frozen.get("runtime_sha256"), "file_count": len(assembled)}
+    if [_sha(output_root / relative) for relative, _value, _provenance in support] != [record["sha256"] for _relative, _value, record in support]:
+        raise ValueError("Published derived analysis support bytes drifted")
+    return {"format_version": 1, "status": "derived_exact_manifest", "output_root": str(output_root), "provenance_path": str(output_root / "reconstruction-provenance.json"), "runtime_sha256": frozen.get("runtime_sha256"), "file_count": len(assembled), "support_file_count": len(support)}
 
 
 class _SplitWork:
@@ -237,6 +295,66 @@ class _SplitWork:
         if part == "runs":
             return self._runs_root / part
         raise ValueError(f"Unexpected original-analyzer work path segment: {part!r}")
+
+
+def _verify_analysis_runtime(runtime_root: Path, original_root: Path) -> None:
+    """Bind the imported derived closure to its authenticated 34-file source manifest."""
+    frozen, manifest = _runtime_manifest(original_root)
+    provenance = _json(runtime_root / "reconstruction-provenance.json")
+    if (
+        provenance.get("kind") != "derived_exact_byte_analysis_runtime"
+        or provenance.get("not_an_original_execution_root") is not True
+        or provenance.get("support_files_are_not_part_of_original_runtime_manifest") is not True
+    ):
+        raise ValueError("Derived original analysis runtime provenance is not the reviewed reconstruction format")
+    original_binding = provenance.get("original_frozen_contract")
+    if (
+        not isinstance(original_binding, Mapping)
+        or original_binding.get("sha256") != _sha(original_root / "frozen-run-contract.json")
+        or original_binding.get("runtime_sha256") != frozen.get("runtime_sha256")
+    ):
+        raise ValueError("Derived original analysis runtime does not bind the selected original frozen contract")
+
+    def records(rows: Any, expected: Mapping[str, Mapping[str, Any]], label: str) -> dict[str, Mapping[str, Any]]:
+        if not isinstance(rows, list) or len(rows) != len(expected) or not all(isinstance(row, Mapping) for row in rows):
+            raise ValueError(f"Derived original analysis runtime {label} provenance is incomplete")
+        by_path = {row.get("path"): row for row in rows}
+        if len(by_path) != len(rows) or set(by_path) != set(expected):
+            raise ValueError(f"Derived original analysis runtime {label} provenance paths drifted")
+        for relative, expected_row in expected.items():
+            row = by_path[relative]
+            path = runtime_root / relative
+            if (
+                row.get("bytes") != expected_row["bytes"]
+                or row.get("sha256") != expected_row["sha256"]
+                or not path.is_file()
+                or _is_reparse(path)
+                or path.stat().st_size != expected_row["bytes"]
+                or _sha(path) != expected_row["sha256"]
+            ):
+                raise ValueError(f"Derived original analysis runtime {label} bytes drifted: {relative}")
+        return by_path
+
+    files = records(provenance.get("files"), manifest, "original-manifest")
+    for relative, expected in manifest.items():
+        if relative == RETAINED_CORE_RELATIVE:
+            continue
+        if files[relative].get("source_kind") != "local_git_blob" or files[relative].get("git_blob_oid") != GIT_RUNTIME_SOURCES[relative]["oid"] or files[relative].get("transform") != GIT_RUNTIME_SOURCES[relative]["transform"]:
+            raise ValueError(f"Derived original analysis runtime original-manifest provenance drifted: {relative}")
+    core = files[RETAINED_CORE_RELATIVE]
+    if core.get("source_kind") != "retained_historical_snapshot" or core.get("transform") != "identity":
+        raise ValueError("Derived original analysis runtime retained-core provenance drifted")
+    support = records(provenance.get("support_files"), SUPPORT_FILES, "support")
+    for relative, expected in SUPPORT_FILES.items():
+        row = support[relative]
+        if (
+            row.get("purpose") != expected["purpose"]
+            or row.get("source_kind") != "local_git_blob"
+            or row.get("git_blob_oid") != expected["oid"]
+            or row.get("blob_sha256") != expected["sha256"]
+            or row.get("transform") != expected["transform"]
+        ):
+            raise ValueError(f"Derived original analysis runtime support provenance drifted: {relative}")
 
 
 def _load_frozen_analyzer(runtime_root: Path) -> Any:
@@ -761,6 +879,7 @@ def consolidate(
         events=events,
     )
     output_root = _fresh_output(Path(output_root), [*all_roots, guard_root, query_binding_root, runtime_root, analysis_runtime_root, data_dir, repository_root])
+    _verify_analysis_runtime(analysis_runtime_root, original_root)
     analyzer = _load_frozen_analyzer(analysis_runtime_root)
     if analyzer.validate(original_root, data_dir) != frozen:
         raise ValueError("Original frozen study validation did not reproduce the source contract")
