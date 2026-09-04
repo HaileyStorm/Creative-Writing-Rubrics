@@ -648,3 +648,26 @@ average-tie Spearman readout is a counterexample to treating MAE calibration as
 ranking success: child20 is higher on only 2/6 item correlations and lower on
 all 6 group-mean correlations. Those stdlib calculations have no p-values and
 are not part of the primary MAE measurement.
+
+## A DSPy descendant showed endpoint-sensitive movement
+
+The [V14 DSPy TRAIN pilot](../evaluation-results/hbq-human-alignment-optimizer-v14-dspy-train-pilot-result-v1/)
+reused the same four frozen TRAIN items as V11 and compared unchanged child20
+with one independently verified DSPy descendant. The descendant retained
+child20's profile bytes and changed only the instruction. On Grok, child20's
+MAE was `0.625` and the descendant's was `0.611111` (`2.22%`; one group win,
+two ties, one loss). The earlier V11 child20 value was `0.708333`, so the
+`0.083333` control-run shift exceeds the pilot's `0.013889` Grok delta; this
+small in-sample movement does not support a reliability or significance claim.
+
+The separate Sol comparison moved from `1.163889` to `1.070139` (`8.05%`;
+three group wins, no ties, one loss). A fixed non-fitted constant-3 diagnostic
+scored `0.763889` on these same items: worse than both Grok candidates and
+better than both Sol candidates. Grok and Sol used the same eight frozen
+payload bytes, and their results remain endpoint-separated. Grok had `0/48`
+false coverage flags and Sol had `1/48`; no observed vector was all zero. No
+ranking statistic was measured in this four-item pilot.
+
+This remains in-sample TRAIN development evidence only: no confirmation,
+generalization, selection, promotion, runtime, or pooling claim follows, and
+native endpoint-contact cardinality remains unproven.

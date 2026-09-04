@@ -1,0 +1,119 @@
+{
+  "analysis_rule": {
+    "coverage": "include_every_finite_numeric_score_even_when_coverage_is_false",
+    "primary": "absolute_error_per_item_then_equal_mean_across_4_prompt_groups",
+    "ranking_metrics_measured": false
+  },
+  "authority": {
+    "confirmation_access": "forbidden",
+    "development_in_sample_only": true,
+    "endpoint_pooling": "forbidden",
+    "generalization": "none",
+    "promotion": "none",
+    "runtime": "none",
+    "selection": "none",
+    "sol": "separate_endpoint_measurement"
+  },
+  "candidates": {
+    "parent": "child20",
+    "descendant": "dspy_descendant",
+    "descendant_candidate_sha256": "62195a3b90edd96d619279b5e229f78862b971ba44d10de86468dee6badbe9e4",
+    "descendant_instruction_sha256": "a62778cd4ad4612bb8efc6ac3ec82e49da7dc0c933c4c70f086d51304cdf957c",
+    "shared_profile_sha256": "07cd3652f4792aef082a0e2d9d615229013663b14599abd011637daf8f185a20"
+  },
+  "comparison_scope": {
+    "partition": "train",
+    "items": 4,
+    "groups": 4,
+    "dimensions": 6,
+    "grok_cells": 8,
+    "sol_cells": 8,
+    "same_frozen_items_as_v11": true,
+    "same_frozen_payload_bytes_across_endpoints": 8,
+    "profile_unchanged_from_child20": true
+  },
+  "control_context": {
+    "v11_child20_equal_group_mean_item_mae": 0.7083333333333334,
+    "current_child20_equal_group_mean_item_mae": 0.625,
+    "control_run_shift": 0.08333333333333337,
+    "control_run_shift_exceeds_grok_descendant_delta": true,
+    "constant_three_equal_group_mean_item_mae": 0.7638888888888888,
+    "constant_three_relative_to_grok": "worse_than_both_candidates",
+    "constant_three_relative_to_sol": "better_than_both_candidates"
+  },
+  "endpoints": {
+    "grok_primary": {
+      "provider": "xai",
+      "requested_model": "grok-4.6",
+      "reported_model": "grok-4.6-build",
+      "requested_reasoning": "high",
+      "provider_attested": false,
+      "child20_equal_group_mean_item_mae": 0.625,
+      "dspy_descendant_equal_group_mean_item_mae": 0.6111111111111112,
+      "descendant_minus_child20": -0.01388888888888884,
+      "relative_reduction": 0.022222222222222143,
+      "group_wins_ties_losses": [1, 2, 1],
+      "coverage_flags_false": 0,
+      "coverage_flags_total": 48,
+      "all_zero_score_vectors": 0
+    },
+    "sol_separate": {
+      "provider": "openai",
+      "requested_model": "gpt-5.6-sol",
+      "requested_reasoning": "high",
+      "provider_attested": false,
+      "child20_equal_group_mean_item_mae": 1.163888888888889,
+      "dspy_descendant_equal_group_mean_item_mae": 1.0701388888888888,
+      "descendant_minus_child20": -0.09375000000000022,
+      "relative_reduction": 0.08054892601432,
+      "group_wins_ties_losses": [3, 0, 1],
+      "coverage_flags_false": 1,
+      "coverage_flags_total": 48,
+      "all_zero_score_vectors": 0
+    }
+  },
+  "integrity": {
+    "grok_unique_native_identity_count": 8,
+    "sol_unique_native_identity_count": 8,
+    "native_endpoint_contact_cardinality": "unproven",
+    "finite_scores_retained_when_coverage_false": true
+  },
+  "dspy": {
+    "version": "3.3.1",
+    "generator_provider": "xai",
+    "generator_requested_model": "grok-4.6",
+    "generator_reported_model": "grok-4.6-build",
+    "generator_requested_reasoning": "high",
+    "generator_provider_attested": false,
+    "proposal": "independently_verified_real_dspy_proposal_from_v11_four_train_diagnostics",
+    "runtime_dependency": false,
+    "profile_unchanged": true
+  },
+  "source_commitments": {
+    "grok": {
+      "study_commit": "f28db1b",
+      "study_sha256": "4446c2b3e1472039b2aa0c607cfe84656aa5504d3fe37ae428945a1f7b62fc3f",
+      "report_sha256": "dbf6e799c050b3f65ba1ec1737a6927bb13636f1de15c16152592be7662bd99d",
+      "receipt_inventory_sha256": "83c7488b8948d60f6d7c837c90cbc826844daedaf28006356114a70ae0ffe318",
+      "response_inventory_sha256": "e9361ba90e8c0da3b7df4af3483f4f4f25621640c958372723e72f6a110de049"
+    },
+    "sol": {
+      "study_commit": "932ddbd",
+      "study_sha256": "ac84ce7af8797b7e19feb79ec4026a4e68ae7f973e70e7e851cb70d9886c27b2",
+      "report_sha256": "ba98020f1f458226bc4a6b495b826ef2d2732c83f4678422f848f08f82ee6bc5",
+      "receipt_inventory_sha256": "8f17fc3111aeb158790820c49cac9dd8d4aa33b6dfeba84f04cea32d5284046e",
+      "final_output_sha256": "cab5c2e12746fb7889df2eb45541dc604750da5a0c8a533af35d6a9aa6a976be"
+    }
+  },
+  "format_version": 1,
+  "geometry": {
+    "candidates": 2,
+    "items": 4,
+    "groups": 4,
+    "dimensions": 6,
+    "grok_cells": 8,
+    "sol_cells": 8
+  },
+  "kind": "receipt_derived_8_cell_dspy_train_pilot_comparison",
+  "study_id": "hbq-human-alignment-optimizer-v14-dspy-train-pilot-result-v1"
+}

@@ -1,0 +1,45 @@
+{
+  "candidate_lineage": {
+    "descendant_candidate_sha256": "62195a3b90edd96d619279b5e229f78862b971ba44d10de86468dee6badbe9e4",
+    "descendant_instruction_sha256": "a62778cd4ad4612bb8efc6ac3ec82e49da7dc0c933c4c70f086d51304cdf957c",
+    "shared_profile_sha256": "07cd3652f4792aef082a0e2d9d615229013663b14599abd011637daf8f185a20",
+    "proposal": "independently_verified_real_dspy_proposal_from_v11_four_train_diagnostics",
+    "profile_unchanged": true
+  },
+  "format_version": 1,
+  "publication_scope": {
+    "native_request_response_bodies": "not_published",
+    "private_source_prose": "not_published",
+    "request_session_and_thread_identifiers": "not_published",
+    "targets_and_item_level_scores": "not_published",
+    "local_paths": "not_published"
+  },
+  "receipt_replay": {
+    "grok_unique_native_identity_count": 8,
+    "sol_unique_native_identity_count": 8,
+    "grok_coverage_flags_false": 0,
+    "sol_coverage_flags_false": 1,
+    "grok_all_zero_score_vectors": 0,
+    "sol_all_zero_score_vectors": 0,
+    "same_frozen_payload_bytes": 8,
+    "finite_scores_retained_when_coverage_false": true,
+    "native_endpoint_contact_cardinality": "unproven"
+  },
+  "source_commitments": {
+    "grok": {
+      "study_commit": "f28db1b",
+      "study_sha256": "4446c2b3e1472039b2aa0c607cfe84656aa5504d3fe37ae428945a1f7b62fc3f",
+      "report_sha256": "dbf6e799c050b3f65ba1ec1737a6927bb13636f1de15c16152592be7662bd99d",
+      "receipt_inventory_sha256": "83c7488b8948d60f6d7c837c90cbc826844daedaf28006356114a70ae0ffe318",
+      "response_inventory_sha256": "e9361ba90e8c0da3b7df4af3483f4f4f25621640c958372723e72f6a110de049"
+    },
+    "sol": {
+      "study_commit": "932ddbd",
+      "study_sha256": "ac84ce7af8797b7e19feb79ec4026a4e68ae7f973e70e7e851cb70d9886c27b2",
+      "report_sha256": "ba98020f1f458226bc4a6b495b826ef2d2732c83f4678422f848f08f82ee6bc5",
+      "receipt_inventory_sha256": "8f17fc3111aeb158790820c49cac9dd8d4aa33b6dfeba84f04cea32d5284046e",
+      "final_output_sha256": "cab5c2e12746fb7889df2eb45541dc604750da5a0c8a533af35d6a9aa6a976be"
+    }
+  },
+  "study_id": "hbq-human-alignment-optimizer-v14-dspy-train-pilot-result-v1"
+}
