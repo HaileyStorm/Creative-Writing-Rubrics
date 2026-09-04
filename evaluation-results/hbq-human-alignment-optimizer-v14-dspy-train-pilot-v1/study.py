@@ -126,7 +126,7 @@ def schedule(*, split_manifest: Path, hanna_csv: Path, successor_contract: Path,
     v10 = v11.load(v11.V10, v11.V10_COMMIT, v11.V10_SHA256, "_v14_v10")
     validation = v10._module(v10.VALIDATION, v10.VALIDATION_SHA256, "_v14_validation")
     child = next((row for row in v10._panel(validation) if row["candidate_id"] == CHILD20), None)
-    if not isinstance(child, Mapping):
+    if child is None:
         raise ValueError("pinned child20 candidate is absent")
     descendant = _recovered_candidate(Path(recovered_descendant))
     if child.get("profile_raw") != descendant["profile_raw"] or child.get("profile_sha256") != DESCENDANT_PROFILE_SHA256:
@@ -169,14 +169,18 @@ def _known_payloads(value: Mapping[str, Any]) -> set[bytes]:
         raise ValueError("V14 payload geometry drifted")
     payloads: set[bytes] = set()
     for row in cells:
-        if not isinstance(row, Mapping) or not isinstance(row.get("payload_base64"), str) or not isinstance(row.get("payload_sha256"), str):
-            raise ValueError("V14 payload binding drifted")
+        if not isinstance(row, Mapping):
+            raise TypeError("V14 payload row is not a mapping")
+        if not isinstance(row.get("payload_base64"), str) or not isinstance(row.get("payload_sha256"), str):
+            raise TypeError("V14 payload binding has invalid types")
         try:
             raw = base64.b64decode(row["payload_base64"], validate=True)
         except ValueError as error:
             raise ValueError("V14 payload encoding drifted") from error
         writing = strict(raw, "frozen V14 outbound payload").get("writing")
-        if sha256(raw) != row["payload_sha256"] or not isinstance(writing, Mapping) or set(writing) != {"prompt", "story"} or any(not isinstance(writing[name], str) for name in writing):
+        if not isinstance(writing, Mapping) or any(not isinstance(writing[name], str) for name in writing):
+            raise TypeError("V14 payload wrapper has invalid types")
+        if sha256(raw) != row["payload_sha256"] or set(writing) != {"prompt", "story"}:
             raise ValueError("V14 payload wrapper drifted")
         payloads.add(raw)
     if len(payloads) != 8:
