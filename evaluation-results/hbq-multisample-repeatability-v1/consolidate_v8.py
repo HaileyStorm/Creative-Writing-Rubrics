@@ -1,0 +1,766 @@
+"""Build a provenance-preserving, cross-root view of the 330-cell study.
+
+This adapter deliberately does not reconstruct ``schedule-journal.jsonl``:
+the original analyzer's journal contract describes one work root, while this
+study's completed cells are immutable evidence retained in several roots.
+"""
+
+from __future__ import annotations
+
+import argparse
+import hashlib
+import importlib.util
+import json
+import sys
+from collections import Counter
+from collections.abc import Mapping
+from pathlib import Path
+from typing import Any
+
+HERE = Path(__file__).resolve().parent
+ANALYZER = HERE / "analyze_study.py"
+STUDY = HERE / "study.py"
+V8_RUNTIME_DEFAULT = Path(r"C:\Users\Haile\Documents\Creative-Writing-Rubrics-v8-runtime-e50dd50")
+QUERY_ONLY = HERE.parent / "hbq-multisample-repeatability-v1-v8-query-only-process-adapter-v1" / "adapter.py"
+QUERY_ONLY_SHA256 = "39405850d20f9963b7ea7a760441611133ecc2d6b0b3d6a26efa17af432e0b53"
+CELL_COUNT = 330
+MISSING_181 = {"sequence": 181, "item_id": "hanna-523", "arm_id": "hbq_short_story_batch32", "repetition": 1}
+
+
+def _sha(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def _canonical(value: Any) -> bytes:
+    return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")
+
+
+def _json(path: Path) -> dict[str, Any]:
+    try:
+        value = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise ValueError(f"Invalid JSON object: {path}") from exc
+    if not isinstance(value, dict):
+        raise TypeError(f"Expected JSON object: {path}")
+    return value
+
+
+def _jsonl(path: Path) -> list[dict[str, Any]]:
+    raw = path.read_bytes()
+    if raw and not raw.endswith(b"\n"):
+        raise ValueError(f"JSONL has a partial tail: {path}")
+    rows: list[dict[str, Any]] = []
+    for line in raw.splitlines():
+        try:
+            value = json.loads(line)
+        except json.JSONDecodeError as exc:
+            raise ValueError(f"Malformed JSONL: {path}") from exc
+        if not isinstance(value, dict):
+            raise TypeError(f"JSONL record is not an object: {path}")
+        rows.append(value)
+    return rows
+
+
+def _is_reparse(path: Path) -> bool:
+    try:
+        return bool(path.lstat().st_file_attributes & 0x400)
+    except AttributeError:
+        return path.is_symlink()
+
+
+def _plain_tree(root: Path, label: str) -> Path:
+    root = root.absolute()
+    if not root.is_dir():
+        raise ValueError(f"{label} is missing or not a directory: {root}")
+    for path in [root, *root.rglob("*")]:
+        if _is_reparse(path):
+            raise ValueError(f"{label} contains a symlink/reparse point: {path}")
+    return root
+
+
+def _fresh_output(output: Path, roots: list[Path]) -> Path:
+    output = output.absolute()
+    if output.exists():
+        raise ValueError("Refusing to merge into or overwrite consolidation output")
+    parent = output.parent
+    if not parent.is_dir():
+        raise ValueError("Consolidation output parent is unavailable or redirected")
+    probe = parent
+    while True:
+        if _is_reparse(probe):
+            raise ValueError("Consolidation output ancestry contains a symlink/reparse point")
+        if probe.parent == probe:
+            break
+        probe = probe.parent
+    for root in roots:
+        if output == root or output in root.parents or root in output.parents:
+            raise ValueError("Consolidation output must be disjoint from immutable evidence roots")
+    return output
+
+
+class _SplitWork:
+    """Route original inputs and one immutable evidence root without copying either."""
+
+    def __init__(self, inputs_root: Path, runs_root: Path) -> None:
+        self._inputs_root = inputs_root
+        self._runs_root = runs_root
+
+    def __truediv__(self, part: str) -> Path:
+        if part == "inputs":
+            return self._inputs_root / part
+        if part == "runs":
+            return self._runs_root / part
+        raise ValueError(f"Unexpected original-analyzer work path segment: {part!r}")
+
+
+def _load_frozen_analyzer(runtime_root: Path) -> Any:
+    """Load the unmodified original analyzer against the frozen V8 runtime."""
+    runtime_root = _plain_tree(runtime_root, "Frozen V8 runtime")
+    analyzer_path = runtime_root / ANALYZER.relative_to(HERE.parent.parent)
+    study_path = runtime_root / STUDY.relative_to(HERE.parent.parent)
+    source_root = runtime_root / "src"
+    if not analyzer_path.is_file() or not study_path.is_file() or not source_root.is_dir():
+        raise ValueError("Frozen V8 runtime lacks the original analyzer or its source package")
+    if _sha(analyzer_path) != _sha(ANALYZER) or _sha(study_path) != _sha(STUDY):
+        raise ValueError("Frozen V8 original analyzer/study bytes drift from this adapter's pinned source")
+    sys.path.insert(0, str(source_root))
+    try:
+        for name in tuple(sys.modules):
+            if name == "hbqrs" or name.startswith("hbqrs."):
+                sys.modules.pop(name, None)
+        if "study" in sys.modules:
+            sys.modules.pop("study")
+        study_spec = importlib.util.spec_from_file_location("study", study_path)
+        analyzer_spec = importlib.util.spec_from_file_location("consolidated_original_analyzer", analyzer_path)
+        if study_spec is None or study_spec.loader is None or analyzer_spec is None or analyzer_spec.loader is None:
+            raise RuntimeError("Cannot load frozen original analyzer")
+        study = importlib.util.module_from_spec(study_spec)
+        sys.modules["study"] = study
+        study_spec.loader.exec_module(study)
+        analyzer = importlib.util.module_from_spec(analyzer_spec)
+        analyzer_spec.loader.exec_module(analyzer)
+        return analyzer
+    finally:
+        sys.path.remove(str(source_root))
+
+
+def _v8_runtime_dir(runtime_root: Path) -> Path:
+    directory = runtime_root / "evaluation-results" / "hbq-multisample-repeatability-v1-remainder-capacity-reset-successor-v8"
+    if not (directory / "executor.py").is_file():
+        raise ValueError("Frozen V8 runtime lacks the pinned executor directory")
+    return directory
+
+
+def _load_frozen_successor_normalizer(runtime_root: Path) -> Any:
+    folder = runtime_root / "evaluation-results" / "hbq-multisample-repeatability-v1-successor-v1"
+    path, study_path = folder / "run_successor.py", folder / "study.py"
+    if not path.is_file() or not study_path.is_file():
+        raise ValueError("Frozen V8 runtime lacks the successor-v1 normalization validator")
+    study_spec = importlib.util.spec_from_file_location("study", study_path)
+    spec = importlib.util.spec_from_file_location("consolidated_successor_v1_normalizer", path)
+    if study_spec is None or study_spec.loader is None or spec is None or spec.loader is None:
+        raise RuntimeError("Cannot load frozen successor-v1 normalization validator")
+    previous_study = sys.modules.get("study")
+    study = importlib.util.module_from_spec(study_spec)
+    sys.modules["study"] = study
+    try:
+        study_spec.loader.exec_module(study)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+    finally:
+        if previous_study is None:
+            sys.modules.pop("study", None)
+        else:
+            sys.modules["study"] = previous_study
+    if not callable(getattr(module, "_validate_normalization", None)) or not callable(getattr(module, "_v1_runner", None)):
+        raise TypeError("Frozen successor-v1 normalization validator is incomplete")
+    return module
+
+
+def _load_query_safe_v8(runtime_root: Path, query_binding_root: Path) -> tuple[Any, Any]:
+    if not QUERY_ONLY.is_file() or _sha(QUERY_ONLY) != QUERY_ONLY_SHA256:
+        raise ValueError("Pinned query-only terminal-admission adapter drifted")
+    spec = importlib.util.spec_from_file_location("consolidated_v8_query_only", QUERY_ONLY)
+    if spec is None or spec.loader is None:
+        raise RuntimeError("Cannot load frozen V8 query-only adapter")
+    query = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(query)
+    query._binding(query_binding_root, runtime_root)
+    exact = query.load_query_only_exact_one()
+    guard = exact._load_guard()
+    runtime, executor = guard._canonical_runtime(runtime_root)
+    v8 = guard._load_v8(executor)
+    if runtime != runtime_root or not callable(getattr(v8, "_accepted", None)):
+        raise ValueError("Pinned query-only terminal-admission runtime drifted")
+    return guard, v8
+
+
+def _verify_missing181_receipt(missing181_root: Path, runtime_root: Path) -> None:
+    path = HERE.parent / "hbq-multisample-repeatability-v1-missing181-completion-v1" / "executor.py"
+    spec = importlib.util.spec_from_file_location("consolidated_missing181", path)
+    if spec is None or spec.loader is None:
+        raise RuntimeError("Cannot load missing181 receipt validator")
+    missing = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(missing)
+    binding = missing._binding(missing181_root)
+    historical = binding.get("v7_zero_contact_settlement")
+    if not isinstance(historical, Mapping):
+        raise TypeError("Missing181 binding lacks its immutable V7 zero-contact settlement")
+    missing._settlement(Path(str(historical.get("path", ""))))
+    _guard, v8, runtime, executor = missing._load_runtime(_v8_runtime_dir(runtime_root))
+    if binding.get("runtime") != {"root": str(runtime), "executor": str(executor), "executor_sha256": missing.sha(executor), "study_id": v8.contract()["study_id"]}:
+        raise ValueError("Missing181 binding does not match the frozen V8 runtime")
+    source = v8._external(Path(str(binding.get("source", {}).get("root", ""))))
+    frozen = v8.read_json(source / "frozen-run-contract.json")
+    missing._validate_original_binding(source, frozen)
+    projection = binding.get("source", {}).get("runtime_projection")
+    if not isinstance(projection, Mapping) or v8._runtime_projection(frozen) != projection:
+        raise ValueError("Missing181 source runtime projection drifted")
+    profile = binding.get("profile")
+    if not isinstance(profile, Mapping):
+        raise TypeError("Missing181 source provider profile is malformed")
+    policy = missing._source_provider_policy(frozen, profile)
+    if hashlib.sha256(missing.canonical(policy)).hexdigest() != binding.get("source", {}).get("provider_policy_sha256"):
+        raise ValueError("Missing181 source provider policy commitment drifted")
+    missing._assert_frozen_hbq_imports(v8, projection)
+    disclosure, overrides, expected_question_ids = missing._event_and_questions(v8, source, frozen)
+    question_ids = binding.get("question_ids")
+    if not isinstance(question_ids, list) or question_ids != expected_question_ids or binding.get("question_ids_sha256") != hashlib.sha256(missing.canonical(question_ids)).hexdigest() or binding.get("event") != MISSING_181:
+        raise ValueError("Missing181 binding does not carry the exact frozen event and question identities")
+    if _json(missing181_root / missing.DISCLOSURE) != disclosure or missing.sha(missing181_root / missing.DISCLOSURE) != binding.get("disclosure_sha256") or _json(missing181_root / missing.ACKNOWLEDGEMENT) != missing._expected_ack(binding):
+        raise ValueError("Missing181 acknowledgement does not bind its exact immutable disclosure")
+    if len(overrides) != 1:
+        raise ValueError("Missing181 has an invalid scope-compatibility override geometry")
+    override = overrides[0]
+    override_path = missing181_root / missing.OVERRIDES / Path(str(override["path"])).name
+    if _json(override_path) != override["schema"] or missing.sha(override_path) != override["sha256"]:
+        raise ValueError("Missing181 scope-compatibility override drifted")
+    claim = _json(missing181_root / missing.CLAIM)
+    if set(claim) != {"format_version", "study_id", "event", "binding_sha256", "capacity_evidence_sha256", "capacity_observed_at", "claim_policy"} or claim.get("format_version") != 1 or claim.get("study_id") != missing.STUDY_ID or claim.get("event") != MISSING_181 or claim.get("binding_sha256") != missing.sha(missing181_root / missing.BINDING) or claim.get("claim_policy") != "one dispatch only; retain this claim after every outcome" or not isinstance(claim.get("capacity_evidence_sha256"), str) or len(claim["capacity_evidence_sha256"]) != 64:
+        raise ValueError("Missing181 immutable dispatch claim drifted")
+    v8._validate_time(claim.get("capacity_observed_at"))
+    output = missing._completed_output(v8, missing181_root, question_ids)
+    receipt = _json(missing181_root / "normal-receipt.json")
+    expected = {
+        "format_version": 1,
+        "study_id": missing.STUDY_ID,
+        "status": "NORMAL_RECEIPT_WITH_PERSISTED_EVIDENCE",
+        "event": dict(MISSING_181),
+        "binding_sha256": missing.sha(missing181_root / missing.BINDING),
+        "output": output,
+        "attestation_limit": "Persisted attempts and unique session-bearing records are locally validated evidence, not independent provider endpoint contact proof.",
+    }
+    if receipt != expected:
+        raise ValueError("Detached missing181 normal receipt does not fully replay its controller and raw output")
+
+
+def _require_terminal_journal(v8: Any, work: Path) -> None:
+    rows = _jsonl(work / v8.JOURNAL)
+    completed = [row.get("sequence") for row in rows if row.get("event") == "completed"]
+    if completed != list(range(183, 331)) or not rows or rows[-1].get("event") != "completed" or rows[-1].get("sequence") != 330:
+        raise ValueError("V8 journal is not a terminal 183-330 completion")
+    active: set[int] = set()
+    contacts: set[int] = set()
+    for row in rows:
+        event, sequence = row.get("event"), row.get("sequence")
+        if event in {"attempt-intent", "retry-intent", "retry-disclosure-pause"}:
+            if not isinstance(sequence, int):
+                raise ValueError("V8 journal has a malformed active sequence")
+            active.add(sequence)
+        elif event == "provider-contacts":
+            if not isinstance(sequence, int):
+                raise ValueError("V8 journal has a malformed contact sequence")
+            contacts.add(sequence)
+        elif event == "completed":
+            active.discard(sequence)
+            contacts.discard(sequence)
+    if active or contacts:
+        raise ValueError("V8 journal has unresolved state; terminal admission would not be query-safe")
+
+
+def _terminal_admission(
+    *,
+    original_root: Path,
+    closed_successor_root: Path,
+    v7_root: Path,
+    v8_root: Path,
+    guard_root: Path,
+    query_binding_root: Path,
+    runtime_root: Path,
+) -> tuple[Any, list[dict[str, Any]], dict[str, Any]]:
+    v8_runtime_root = _v8_runtime_dir(runtime_root)
+    guard, v8 = _load_query_safe_v8(v8_runtime_root, query_binding_root)
+    _require_terminal_journal(v8, v8_root)
+    binding, schedule, admission = v8._verify_prepared(original_root, closed_successor_root, v7_root, v8_root)
+    guard._assert_no_unresolved_v8_state(v8, v8_root)
+    accepted = v8._accepted(v8_root, schedule, admission)
+    v8._validate_contact_sessions(original_root, v8_root, admission, accepted)
+    if [event.get("sequence") for event in accepted] != list(range(182, 331)) or binding.get("runtime") is None:
+        raise ValueError("Pinned V8 terminal admission is incomplete")
+    try:
+        guard.preflight(
+            source_root=original_root,
+            closed_root=closed_successor_root,
+            v7_root=v7_root,
+            work_root=v8_root,
+            guard_root=guard_root,
+            v8_runtime_root=v8_runtime_root,
+        )
+    except ValueError as exc:
+        if str(exc) != "V8 has no untouched sequence remaining":
+            raise
+    else:
+        raise ValueError("Query-safe guard unexpectedly found a nonterminal V8 event")
+    record = guard._guard_binding(guard_root)
+    runtime, executor = guard._canonical_runtime(v8_runtime_root)
+    if record.get("v8_identity") != guard._v8_static_identity(v8, runtime, executor, v8_root) or record.get("v8_prepared_runtime_projection") != binding.get("runtime"):
+        raise ValueError("Query-safe guard binding does not match the terminal V8 admission")
+    terminal_sentinel = {"sequence": -1}
+    completed = guard._validate_guard_journal(guard_root, accepted, terminal_sentinel)
+    guard._validate_claims(guard_root, accepted, terminal_sentinel, completed)
+    if 330 not in completed or guard._recompute_contacts(v8, v8_root, accepted) < 148:
+        raise ValueError("Query-safe guard does not prove all terminal V8 claims and contact topology")
+    return v8, schedule, admission
+
+
+def _event_key(event: Mapping[str, Any]) -> tuple[int, str, str, int]:
+    sequence, item, arm, repetition = (event.get(name) for name in ("sequence", "item_id", "arm_id", "repetition"))
+    if not isinstance(sequence, int) or not isinstance(item, str) or not isinstance(arm, str) or not isinstance(repetition, int):
+        raise TypeError("Study event lacks a complete sequence/item/arm/repetition identity")
+    return sequence, item, arm, repetition
+
+
+def _frozen_events(original_root: Path) -> tuple[dict[str, Any], list[dict[str, Any]]]:
+    frozen = _json(original_root / "frozen-run-contract.json")
+    schedule = frozen.get("schedule")
+    if not isinstance(schedule, list) or len(schedule) != CELL_COUNT:
+        raise ValueError("Original frozen schedule is not the required 330-cell geometry")
+    events = [{"sequence": sequence, **dict(row)} for sequence, row in enumerate(schedule, 1) if isinstance(row, Mapping)]
+    if len(events) != CELL_COUNT or [_event_key(event)[0] for event in events] != list(range(1, CELL_COUNT + 1)):
+        raise ValueError("Original frozen schedule contains malformed events")
+    if len({_event_key(event) for event in events}) != CELL_COUNT:
+        raise ValueError("Original frozen schedule contains duplicate cell identities")
+    return frozen, events
+
+
+def _completed_prefix(path: Path, expected: list[dict[str, Any]], *, planned_count: int, completed_sequences: list[int]) -> list[dict[str, Any]]:
+    rows = _jsonl(path)
+    plans = [{"event": "planned", **event} for event in expected]
+    if rows[:planned_count] != plans[:planned_count]:
+        raise ValueError(f"Journal planned prefix drifted: {path}")
+    completed = [row for row in rows[planned_count:] if row.get("event") == "completed"]
+    if [row.get("sequence") for row in completed] != completed_sequences:
+        raise ValueError(f"Journal completed prefix drifted: {path}")
+    return completed
+
+
+def _v6_and_v4_roots(v7_root: Path) -> tuple[Path, Path]:
+    binding = _json(v7_root / "v7-binding.json")
+    v6 = Path(str(binding.get("roots", {}).get("v6", "")))
+    v6 = _plain_tree(v6, "V6 prefix evidence")
+    rows = _jsonl(v6 / "execution-journal.jsonl")
+    if not rows or rows[0].get("event") != "admitted-prefix" or rows[0].get("sequence") != 178:
+        raise ValueError("V6 evidence does not admit the exact sequence 178 prefix")
+    v4 = Path(str(rows[0].get("v4_root", "")))
+    return v6, _plain_tree(v4, "V4 sequence-178 evidence")
+
+
+def _run_path(root: Path, event: Mapping[str, Any], kind: str) -> Path:
+    binding = "run.json" if kind == "hbq" else "pass.json"
+    return root / "runs" / str(event["item_id"]) / str(event["arm_id"]) / f"run-{int(event['repetition']):02d}" / binding
+
+
+def _tree_hash(root: Path) -> str:
+    records: list[dict[str, Any]] = []
+    for path in sorted(root.rglob("*")):
+        if _is_reparse(path):
+            raise ValueError(f"Run evidence contains a symlink/reparse point: {path}")
+        if path.is_file():
+            records.append({"path": path.relative_to(root).as_posix(), "bytes": path.stat().st_size, "sha256": _sha(path)})
+    if not records:
+        raise ValueError(f"Run evidence is empty: {root}")
+    return hashlib.sha256(_canonical(records)).hexdigest()
+
+
+def _scheduled_rows(path: Path, expected: list[dict[str, Any]], label: str) -> None:
+    rows = _jsonl(path)
+    if len(rows) != len(expected) or [_event_key(row) for row in rows] != [_event_key(row) for row in expected]:
+        raise ValueError(f"{label} schedule does not match the frozen cell identities")
+
+
+def _completed_rows(path: Path, expected_sequences: list[int], label: str) -> list[dict[str, Any]]:
+    rows = _jsonl(path)
+    completed = [row for row in rows if row.get("event") == "completed"]
+    if [row.get("sequence") for row in completed] != expected_sequences:
+        raise ValueError(f"{label} does not have the exact required completed sequence range")
+    return completed
+
+
+def _check_completed_bindings(
+    root: Path,
+    events: list[dict[str, Any]],
+    completed: list[dict[str, Any]],
+    arms: Mapping[str, Mapping[str, Any]],
+    label: str,
+) -> None:
+    by_sequence = {event["sequence"]: event for event in events}
+    for row in completed:
+        sequence = row.get("sequence")
+        event = by_sequence.get(sequence)
+        digest = row.get("run_binding_sha256", row.get("output_sha256"))
+        if event is None or not isinstance(digest, str):
+            raise ValueError(f"{label} completion record is malformed")
+        if any(key in row and row[key] != event[key] for key in ("item_id", "arm_id", "repetition")):
+            raise ValueError(f"{label} completion record relabels its frozen event")
+        arm = arms.get(str(event["arm_id"]))
+        if arm is None:
+            raise ValueError(f"{label} event has an unknown arm")
+        binding = _run_path(root, event, str(arm["kind"]))
+        if not binding.is_file() or _sha(binding) != digest:
+            raise ValueError(f"{label} completion does not bind its exact raw run manifest")
+
+
+def _source_map(
+    *,
+    original_root: Path,
+    closed_successor_root: Path,
+    v7_root: Path,
+    missing181_root: Path,
+    v8_root: Path,
+    v8_schedule: list[dict[str, Any]],
+    v8_admission: Mapping[str, Any],
+    frozen: Mapping[str, Any],
+    events: list[dict[str, Any]],
+) -> tuple[dict[int, tuple[str, Path]], list[Path]]:
+    arms_value = frozen.get("contract", {}).get("arms") if isinstance(frozen.get("contract"), Mapping) else None
+    if not isinstance(arms_value, list):
+        raise TypeError("Frozen contract lacks arm definitions")
+    arms = {str(arm.get("arm_id")): arm for arm in arms_value if isinstance(arm, Mapping)}
+    if len(arms) != 6:
+        raise ValueError("Frozen contract arm geometry drifted")
+
+    original_completed = _completed_prefix(original_root / "schedule-journal.jsonl", events, planned_count=CELL_COUNT, completed_sequences=list(range(1, 77)))
+    _check_completed_bindings(original_root, events, original_completed, arms, "Original")
+    closed_completed = _completed_prefix(closed_successor_root / "successor-schedule-journal.jsonl", events[76:], planned_count=254, completed_sequences=list(range(77, 178)))
+    _check_completed_bindings(closed_successor_root, events, closed_completed, arms, "Closed successor")
+
+    v6_root, v4_root = _v6_and_v4_roots(v7_root)
+    v6_schedule = _jsonl(v6_root / "schedule.jsonl")
+    if [_event_key(row) for row in v6_schedule[:2]] != [_event_key(event) for event in events[178:180]]:
+        raise ValueError("V6 schedule does not bind sequences 179-180")
+    v6_completed = _completed_rows(v6_root / "execution-journal.jsonl", [179, 180], "V6")
+    _check_completed_bindings(v6_root, events, v6_completed, arms, "V6")
+
+    v4_event = events[177]
+    if _event_key(v4_event)[0] != 178:
+        raise ValueError("Frozen schedule no longer places the V4 adoption at sequence 178")
+    v4_binding = _run_path(v4_root, v4_event, str(arms[str(v4_event["arm_id"])]["kind"]))
+    admitted = _jsonl(v6_root / "execution-journal.jsonl")[0]
+    if not v4_binding.is_file() or admitted.get("v4_run_sha256") != _sha(v4_binding):
+        raise ValueError("V4 sequence 178 admission no longer binds its raw run manifest")
+
+    v7_schedule = _jsonl(v7_root / "schedule.jsonl")
+    if len(v7_schedule) < 2 or _event_key(v7_schedule[1]) != _event_key(events[181]):
+        raise ValueError("V7 schedule does not bind adopted sequence 182")
+    v7_journal = _jsonl(v7_root / "execution-journal.jsonl")
+    if [row.get("event") for row in v7_journal] != ["admitted-prefix", "forensic-precontact", "attempt-intent"]:
+        raise ValueError("V7 immutable journal is not the sealed adopted-output state")
+    v7_binding = _run_path(v7_root, events[181], str(arms[str(events[181]["arm_id"])]["kind"]))
+    if not v7_binding.is_file():
+        raise ValueError("Adopted V7 sequence 182 raw output is missing")
+
+    missing_binding = _json(missing181_root / "completion-binding.json")
+    missing_receipt = _json(missing181_root / "normal-receipt.json")
+    if missing_binding.get("event") != MISSING_181 or missing_receipt.get("event") != MISSING_181:
+        raise ValueError("Detached missing181 evidence does not identify the exact sequence 181 cell")
+    if missing_receipt.get("binding_sha256") != _sha(missing181_root / "completion-binding.json"):
+        raise ValueError("Detached missing181 receipt does not bind its completion controller")
+    missing_path = _run_path(missing181_root, events[180], str(arms[str(events[180]["arm_id"])]["kind"]))
+    output = missing_receipt.get("output")
+    if not isinstance(output, Mapping) or output.get("path") != str(missing_path) or output.get("sha256") != _sha(missing_path):
+        raise ValueError("Detached missing181 receipt does not bind its raw run manifest")
+
+    _scheduled_rows(v8_root / "schedule.jsonl", events[181:], "V8")
+    if [_event_key(event) for event in v8_schedule] != [_event_key(event) for event in events[181:]]:
+        raise ValueError("Pinned V8 terminal schedule does not match the frozen source geometry")
+    v8_rows = _jsonl(v8_root / "execution-journal.jsonl")
+    if len(v8_rows) < 2 or v8_rows[0] != {"event": "admitted-prefix", **dict(v8_admission)} or v8_rows[1] != {"event": "adopted-v7-output", "sequence": 182, "settlement_sha256": v8_admission.get("settlement_sha256")}:
+        raise ValueError("V8 does not retain the adopted V7 sequence 182 provenance")
+
+    sources: dict[int, tuple[str, Path]] = {}
+    for sequence in range(1, 77):
+        sources[sequence] = ("original_1_76", original_root)
+    for sequence in range(77, 178):
+        sources[sequence] = ("closed_successor_77_177", closed_successor_root)
+    sources[178] = ("adopted_v4_178", v4_root)
+    sources[179] = sources[180] = ("admitted_v6_179_180", v6_root)
+    sources[181] = ("missing181_detached_completion", missing181_root)
+    sources[182] = ("adopted_v7_182", v7_root)
+    for sequence in range(183, 331):
+        sources[sequence] = ("v8_accepted_183_330", v8_root)
+    if sorted(sources) != list(range(1, CELL_COUNT + 1)):
+        raise ValueError("Consolidation source map is incomplete or nonunique")
+    return sources, [original_root, closed_successor_root, v4_root, v6_root, v7_root, missing181_root, v8_root]
+
+
+def _source_record(root: Path) -> dict[str, Any]:
+    return {"path": str(root), "tree_sha256": _tree_hash(root)}
+
+
+def _write_json(path: Path, value: Mapping[str, Any]) -> None:
+    path.write_text(json.dumps(value, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8", newline="\n")
+
+
+def _analysis_summary(
+    analyzer: Any,
+    frozen: Mapping[str, Any],
+    rows_by_arm: Mapping[str, list[dict[str, Any]]],
+    leaves_by_arm: Mapping[str, list[dict[str, Any]]],
+    sessions: list[str | None],
+    commitments: list[str],
+) -> dict[str, Any]:
+    arms = frozen["contract"]["arms"]
+    repetitions = frozen["contract"]["repetitions"]
+    summaries: dict[str, Any] = {}
+    for arm in arms:
+        arm_id = arm["arm_id"]
+        rows = rows_by_arm[arm_id]
+        leaves = leaves_by_arm[arm_id]
+        macro = {key: analyzer.statistics.fmean(row[key] for row in rows) for key in ("exact_all_repetition_agreement", "modal_proportion", "pairwise_exact_agreement", "normalized_sample_sd", "normalized_mapd", "normalized_range")}
+        leaf_summary = None
+        if leaves:
+            leaf_summary = {key: analyzer.statistics.fmean(row[key] for row in leaves) for key in ("exact_all_repetition_agreement", "mean_modal_proportion", "mean_pairwise_agreement")}
+            leaf_summary["per_sample_confidence_diagnostics"] = [{"item_id": row["item_id"], **row["confidence_diagnostics"]} for row in leaves]
+            leaf_summary["confidence_macro"] = {
+                "mean_raw_confidence": analyzer.statistics.fmean(row["confidence_diagnostics"]["raw_confidence"]["mean_raw_confidence"] for row in leaves),
+                "mean_same_input_empirical_repeat_probability": analyzer.statistics.fmean(row["confidence_diagnostics"]["same_input_empirical_repeat_probability"] for row in leaves),
+                "mean_effective_confidence_mass": analyzer.statistics.fmean(row["confidence_diagnostics"]["effective_confidence_mass"] for row in leaves),
+                "repeat_consensus_is_not_truth": True,
+                "canonical_score_and_coverage_unchanged": True,
+            }
+        summaries[arm_id] = {
+            "native_scale": arm["native_scale"],
+            "sample_count": len(rows),
+            "repetitions": repetitions,
+            "equal_sample_macro": macro,
+            "per_sample": rows,
+            "full_sample_distributions": {row["item_id"]: row["values"] for row in rows},
+            "leaf_repeatability": leaf_summary,
+            "quality_sensitivity": analyzer._quality(rows, repetitions),
+        }
+    observed = [session for session in sessions if session is not None]
+    if len(observed) != len(sessions) or len(observed) != len(set(observed)):
+        raise ValueError("Consolidated fresh-session requirement failed across source roots")
+    return {
+        "format_version": 1,
+        "study_id": frozen["study_id"],
+        "analysis_kind": "cross_root_immutable_consolidation",
+        "sample_count": len(frozen["samples"]),
+        "prompt_cluster_count": len({sample["prompt_sha256"] for sample in frozen["samples"]}),
+        "repetitions": repetitions,
+        "native_scales_are_not_cross_compared": True,
+        "canonical_scores_and_coverage_are_not_confidence_weighted": True,
+        "frozen_full_development_quality_cutpoints": frozen["full_development_quality_cutpoints"],
+        "arms": summaries,
+        "paired_prompt_cluster_bootstrap": {
+            "seed": frozen["contract"]["primary_metrics"]["bootstrap"]["seed"],
+            "draws": 10000,
+            "unit": "prompt_cluster",
+            "cluster_count": len({sample["prompt_sha256"] for sample in frozen["samples"]}),
+            "estimand": "equal_sample_mean_paired_delta",
+            "results": analyzer._bootstrap(rows_by_arm, seed=560820, draws=10000),
+        },
+        "fresh_session_commitment": {
+            "status": "verified_unique",
+            "source_record_count": len(sessions),
+            "session_id_record_count": len(observed),
+            "unavailable_record_count": 0,
+            "unique_observed_session_count": len(set(observed)),
+            "observed_session_sha256": hashlib.sha256("\n".join(sorted(observed)).encode()).hexdigest(),
+            "artifact_commitment_count": len(commitments),
+            "artifact_commitments_sha256": hashlib.sha256("\n".join(sorted(commitments)).encode()).hexdigest(),
+        },
+        "privacy": "No prose, prompts, raw HANNA ratings, or copied source artifacts are emitted into this analysis.",
+    }
+
+
+def consolidate(
+    *,
+    original_root: Path,
+    closed_successor_root: Path,
+    v7_root: Path,
+    missing181_root: Path,
+    v8_root: Path,
+    guard_root: Path,
+    query_binding_root: Path,
+    output_root: Path,
+    data_dir: Path,
+    runtime_root: Path = V8_RUNTIME_DEFAULT,
+) -> dict[str, Any]:
+    """Replay complete cross-root evidence into a fresh derived analysis view."""
+    original_root = _plain_tree(Path(original_root), "Original evidence")
+    closed_successor_root = _plain_tree(Path(closed_successor_root), "Closed-successor evidence")
+    v7_root = _plain_tree(Path(v7_root), "V7 evidence")
+    missing181_root = _plain_tree(Path(missing181_root), "Detached missing181 evidence")
+    v8_root = _plain_tree(Path(v8_root), "V8 evidence")
+    guard_root = _plain_tree(Path(guard_root), "V8 query-safe guard evidence")
+    query_binding_root = _plain_tree(Path(query_binding_root), "V8 query-only binding evidence")
+    runtime_root = _plain_tree(Path(runtime_root), "Frozen V8 runtime")
+    data_dir = _plain_tree(Path(data_dir), "Pinned HANNA data")
+    repository_root = _plain_tree(HERE.parent.parent, "CWR repository")
+    analyzer = _load_frozen_analyzer(runtime_root)
+    normalizer = _load_frozen_successor_normalizer(runtime_root)
+    normalization_runner = normalizer._v1_runner()
+    frozen, events = _frozen_events(original_root)
+    _verify_missing181_receipt(missing181_root, runtime_root)
+    _v8, v8_schedule, v8_admission = _terminal_admission(
+        original_root=original_root,
+        closed_successor_root=closed_successor_root,
+        v7_root=v7_root,
+        v8_root=v8_root,
+        guard_root=guard_root,
+        query_binding_root=query_binding_root,
+        runtime_root=runtime_root,
+    )
+    sources, all_roots = _source_map(
+        original_root=original_root,
+        closed_successor_root=closed_successor_root,
+        v7_root=v7_root,
+        missing181_root=missing181_root,
+        v8_root=v8_root,
+        v8_schedule=v8_schedule,
+        v8_admission=v8_admission,
+        frozen=frozen,
+        events=events,
+    )
+    output_root = _fresh_output(Path(output_root), [*all_roots, guard_root, query_binding_root, runtime_root, data_dir, repository_root])
+    if analyzer.validate(original_root, data_dir) != frozen:
+        raise ValueError("Original frozen study validation did not reproduce the source contract")
+
+    arms = {arm["arm_id"]: arm for arm in frozen["contract"]["arms"]}
+    samples = {sample["item_id"]: sample for sample in frozen["samples"]}
+    values: dict[tuple[str, str], list[tuple[int, float, list[dict[str, Any]] | None, list[dict[str, Any]] | None]]] = {}
+    provenance_cells: list[dict[str, Any]] = []
+    all_sessions: list[str | None] = []
+    all_commitments: list[str] = []
+    for event in events:
+        sequence, item_id, arm_id, repetition = _event_key(event)
+        source_kind, root = sources[sequence]
+        sample, arm = samples.get(item_id), arms.get(arm_id)
+        if sample is None or arm is None:
+            raise ValueError("Frozen event does not resolve a unique sample and arm")
+        binding = _run_path(root, event, arm["kind"])
+        if not binding.is_file():
+            raise ValueError(f"Mapped source run manifest is missing: sequence {sequence}")
+        if arm["kind"] == "native":
+            source = (original_root / "inputs" / item_id / "source.md").read_text(encoding="utf-8")
+            normalizer._validate_normalization(normalization_runner, binding.parent, source)
+        work = _SplitWork(original_root, root)
+        score, sessions, commitments, verdicts, metadata = analyzer._load_run(work, sample, arm, repetition)
+        all_sessions.extend(sessions)
+        all_commitments.extend(commitments)
+        values.setdefault((item_id, arm_id), []).append((repetition, score, verdicts, metadata))
+        run_root = binding.parent
+        provenance_cells.append(
+            {
+                "sequence": sequence,
+                "item_id": item_id,
+                "arm_id": arm_id,
+                "repetition": repetition,
+                "source_kind": source_kind,
+                "source_root": str(root),
+                "run_binding_path": str(binding),
+                "run_binding_sha256": _sha(binding),
+                "run_tree_sha256": _tree_hash(run_root),
+                "session_ids": [session for session in sessions if session is not None],
+                "artifact_commitments": commitments,
+            }
+        )
+
+    if len(provenance_cells) != CELL_COUNT or len({_event_key(cell) for cell in provenance_cells}) != CELL_COUNT:
+        raise ValueError("Consolidated geometry is incomplete or nonunique")
+    expected_keys = {(sample["item_id"], arm["arm_id"]) for sample in frozen["samples"] for arm in frozen["contract"]["arms"]}
+    if set(values) != expected_keys or any(len(rows) != 5 or [row[0] for row in sorted(rows)] != [1, 2, 3, 4, 5] for rows in values.values()):
+        raise ValueError("Consolidated repetitions are incomplete or nonunique")
+
+    rows_by_arm: dict[str, list[dict[str, Any]]] = {arm_id: [] for arm_id in arms}
+    leaves_by_arm: dict[str, list[dict[str, Any]]] = {arm_id: [] for arm_id in arms}
+    for arm_id, arm in arms.items():
+        for sample in frozen["samples"]:
+            loaded = sorted(values[(sample["item_id"], arm_id)])
+            scores = [row[1] for row in loaded]
+            metrics = analyzer._numeric_metrics(scores, analyzer._scale(arm_id))
+            lower, upper = analyzer._scale(arm_id)
+            row = {
+                "item_id": sample["item_id"],
+                "source_model": sample["model"],
+                "prompt_sha256": sample["prompt_sha256"],
+                "human_overall": sample["human_overall"],
+                "frozen_quality_band": sample["frozen_quality_band"],
+                **metrics,
+                "normalized_values": [(score - lower) / (upper - lower) for score in scores],
+                "mean_normalized_score": analyzer.statistics.fmean((score - lower) / (upper - lower) for score in scores),
+            }
+            rows_by_arm[arm_id].append(row)
+            verdict_runs = [row[2] for row in loaded if row[2] is not None]
+            if verdict_runs:
+                metadata = loaded[0][3]
+                if metadata is None or any(row[3] != metadata for row in loaded):
+                    raise ValueError("HBQ question metadata drifted across consolidated repetitions")
+                leaf = analyzer._leaf_metrics(verdict_runs, metadata)
+                leaf["item_id"] = sample["item_id"]
+                leaves_by_arm[arm_id].append(leaf)
+
+    summary = _analysis_summary(analyzer, frozen, rows_by_arm, leaves_by_arm, all_sessions, all_commitments)
+    source_counts = Counter(cell["source_kind"] for cell in provenance_cells)
+    provenance = {
+        "format_version": 1,
+        "study_id": frozen["study_id"],
+        "analysis_kind": "cross_root_immutable_consolidation",
+        "geometry": {"expected_cells": CELL_COUNT, "observed_cells": len(provenance_cells), "unique_cell_identities": len({_event_key(cell) for cell in provenance_cells})},
+        "source_kind_counts": dict(sorted(source_counts.items())),
+        "missing181_not_v8_acceptance": True,
+        "v8_accepted_suffix": {"first_sequence": 183, "last_sequence": 330, "count": 148},
+        "source_roots": [_source_record(root) for root in all_roots],
+        "terminal_admission": {
+            "guard_root": _source_record(guard_root),
+            "query_binding_root": _source_record(query_binding_root),
+            "runtime_root": _source_record(runtime_root),
+            "query_only_adapter": {"path": str(QUERY_ONLY), "sha256": _sha(QUERY_ONLY)},
+            "accepted_sequence_count": len(v8_schedule),
+            "adopted_sequence": v8_admission.get("sequence"),
+        },
+        "frozen_contract": {"path": str(original_root / "frozen-run-contract.json"), "sha256": _sha(original_root / "frozen-run-contract.json")},
+        "original_analyzer": {"path": str(runtime_root / ANALYZER.relative_to(HERE.parent.parent)), "sha256": _sha(runtime_root / ANALYZER.relative_to(HERE.parent.parent))},
+        "cells": provenance_cells,
+    }
+    output_root.mkdir(parents=False)
+    _write_json(output_root / "summary.json", summary)
+    _write_json(output_root / "consolidation-provenance.json", provenance)
+    files = {path.name: {"bytes": path.stat().st_size, "sha256": _sha(path)} for path in sorted(output_root.iterdir()) if path.is_file()}
+    _write_json(output_root / "manifest.json", {"format_version": 1, "study_id": frozen["study_id"], "files": files})
+    return {
+        "format_version": 1,
+        "status": "complete_330",
+        "geometry": provenance["geometry"],
+        "source_kind_counts": provenance["source_kind_counts"],
+        "summary_path": str(output_root / "summary.json"),
+        "provenance_path": str(output_root / "consolidation-provenance.json"),
+        "manifest_path": str(output_root / "manifest.json"),
+    }
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Replay the completed 330-cell study from immutable per-cell roots.")
+    parser.add_argument("--original-root", required=True, type=Path)
+    parser.add_argument("--closed-successor-root", required=True, type=Path)
+    parser.add_argument("--v7-root", required=True, type=Path)
+    parser.add_argument("--missing181-root", required=True, type=Path)
+    parser.add_argument("--v8-root", required=True, type=Path)
+    parser.add_argument("--guard-root", required=True, type=Path)
+    parser.add_argument("--query-binding-root", required=True, type=Path)
+    parser.add_argument("--data-dir", required=True, type=Path)
+    parser.add_argument("--output-root", required=True, type=Path)
+    parser.add_argument("--runtime-root", type=Path, default=V8_RUNTIME_DEFAULT)
+    args = parser.parse_args()
+    print(json.dumps(consolidate(**vars(args)), ensure_ascii=False, sort_keys=True))
