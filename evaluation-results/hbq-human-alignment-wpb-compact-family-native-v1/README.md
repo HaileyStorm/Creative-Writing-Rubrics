@@ -11,3 +11,9 @@ Grok now uses a bounded renewal chain: `create_campaign`, `prepare_next_batch`, 
 `report` independently reloads the pinned core and r3 freeze, follows every immutable batch settlement, re-admits the exact 129 completed cells, and permits a different governed route proof per batch. Every completed Grok cell must also retain a canonical shared-native result that binds the admitted request bytes, prompt, response schema, raw envelope descriptor, structured output, route, runtime identity, and settings. It rejects partial campaigns, duplicate identities, duplicate completed cells, missing or altered shared evidence, endpoint pooling, runtime fitting, promotion, or confirmation.
 
 No command-line entry point is provided. A reviewed caller owns route refresh, outbound disclosure, and the explicit decision to make provider contact.
+
+## Collection status: incomplete
+
+The 2026-09-05 Grok campaign stopped in batch 9 with 89 successful cells, one ambiguous terminal cell, and 39 unstarted cells. [The reconciliation receipt](grok-incomplete.json) binds the frozen executor, campaign, settlement, and failure hashes. Independent replay admitted all 89 successful receipts and confirmed the shared route was revoked with zero active slots.
+
+The failed cell returned no trusted structured provider status after launch. Its bounded receipt identifies `GrokBuildValidationFailure`, but cannot establish a narrower cause, HTTP 402, or quota exhaustion. Raw failed stdout was discarded under the shared transport contract. The cell remains preserved and non-resendable; no successor batch is authorized by this reconciliation. The incomplete campaign produces no alignment metrics or Optuna fit, and the subsequent Sol validation has not started.
