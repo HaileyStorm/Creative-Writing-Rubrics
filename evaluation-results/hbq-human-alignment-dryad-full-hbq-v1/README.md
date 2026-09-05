@@ -12,8 +12,10 @@ python source.py verify --freeze-root FROZEN_DRYAD_ROOT --output-root PACKET_ROO
 python source.py preview --freeze-root FROZEN_DRYAD_ROOT --opaque-story-id PUBLIC_STORY_ID
 ```
 
-`preview` renders the complete unbatched question set through the current runner for Grok and Sol and requires byte-identical prompts. It is a local preview, not authorization for a single all-in-one request, batch, provider process, or provider call.
+`preview` renders the complete unbatched question set through the pinned runner for Grok and Sol and requires byte-identical prompts. It is a local preview, not authorization for a single all-in-one request, batch, provider process, or provider call.
 
 Creation requires the generator, contract, and parent public-loader bytes to be committed at HEAD. Provenance records their repository paths, hashes, and generator commit. Verification resolves that recorded commit, so advancing HEAD without changing those files does not invalidate the packet. Source verification may invoke read-only Git commands; it never launches a provider.
+
+Runtime bindings are also immutable. Later runner development intentionally fails this packet's current-tree runtime check. Replay requires the matching historical source snapshot (generator commit `6ee872b` for the first committed packet), with every runtime hash verified. Four runtime files were pinned with working-tree CRLF or mixed line endings, whereas Git stores LF. The tests reconstruct those exact bytes from local historical Git blobs using recorded line-ending ranges, then require the original hashes. They do not repin this packet or treat a newer runner as historical execution evidence. Live work on a changed runtime requires a versioned descendant.
 
 The contract sets `batch_size` to null, execution authority to false, metric eligibility to false, and provider process launches to 0. This package has no live provider surface. The canonical runner's direct Grok path still requires shared Broker/host-gate integration; exact response-schema support, empirical batch qualification, and a frozen analysis protocol are also prerequisites. No human-axis mapping is added. Human targets are absent from the packet; the parent loader performs its existing source-integrity verification.

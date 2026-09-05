@@ -1,7 +1,10 @@
 import importlib.util
+import hashlib
+import subprocess
 import json
 import tempfile
 import unittest
+from contextlib import contextmanager
 from types import SimpleNamespace
 from pathlib import Path
 from unittest.mock import patch
@@ -13,6 +16,52 @@ SPEC = importlib.util.spec_from_file_location("dryad_full_hbq_v1", SOURCE)
 subject = importlib.util.module_from_spec(SPEC)
 assert SPEC and SPEC.loader
 SPEC.loader.exec_module(subject)
+FROZEN_COMMIT = "6ee872b9d969ede9576bdf518a9be2a3576ffd11"
+# The generator bound working-tree CRLF bytes for these files.  Git's stored
+# blobs are LF-normalized, so this recipe reconstructs only the documented
+# CRLF ranges recorded on 2026-09-05 after verifying normalized equality.
+# The frozen contract hash, not today's worktree, verifies reconstruction.
+CRLF_REPRESENTATION_RANGES = {
+    "src/hbqrs/core.py": ((1, 254), (264, 326), (333, 345), (347, 392), (400, 423), (425, 443), (554, 554), (556, 565), (568, 579), (597, 734), (743, 744), (746, 964), (968, 993), (996, 1026)),
+    "src/hbqrs/paths.py": ((1, 52),),
+    "registry/all_modules.json": ((1, 52038),),
+    "bundles/all_bundles.json": ((1, 16988),),
+}
+
+
+def reconstruct_frozen_bytes(relative: str, git_blob: bytes) -> bytes:
+    ranges = CRLF_REPRESENTATION_RANGES.get(relative)
+    if not ranges:
+        return git_blob
+    lines = git_blob.splitlines(keepends=True)
+    for start, end in ranges:
+        for index in range(start - 1, end):
+            if lines[index].endswith(b"\n"):
+                lines[index] = lines[index][:-1] + b"\r\n"
+    return b"".join(lines)
+
+
+@contextmanager
+def frozen_runtime():
+    contract = subject.load_contract()
+    with tempfile.TemporaryDirectory() as temporary:
+        root = Path(temporary)
+        for relative, expected in contract["runtime_bindings"].items():
+            raw = subprocess.run(
+                ["git", "-C", str(ROOT), "show", f"{FROZEN_COMMIT}:{relative}"],
+                check=True,
+                capture_output=True,
+            ).stdout
+            raw = reconstruct_frozen_bytes(relative, raw)
+            assert hashlib.sha256(raw).hexdigest() == expected
+            target = root / relative
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes(raw)
+        dryad_copy = root / "evaluation-results" / "hbq-human-alignment-dryad-pilot-v1" / "source.py"
+        dryad_copy.parent.mkdir(parents=True, exist_ok=True)
+        dryad_copy.write_bytes(subject.DRYAD_SOURCE.read_bytes())
+        assert hashlib.sha256(dryad_copy.read_bytes()).hexdigest() == subject.DRYAD_SOURCE_SHA256
+        yield root
 
 
 class _PublicInputs:
@@ -45,16 +94,24 @@ class DryadFullHBQTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "changed during verification"):
                 subject._generator_identity("0" * 40)
 
-    def test_cached_same_path_runtime_cannot_change_bank_or_preview(self) -> None:
+    def test_historical_runtime_compiles_and_rejects_actual_drift(self) -> None:
+        with frozen_runtime() as runtime, patch.object(subject, "REPOSITORY", runtime):
+            expected = subject.compiled_question_bank(subject.load_contract())
+            self.assertEqual(subject.compiled_question_bank(subject.load_contract()), expected)
+            runner = runtime / "src" / "hbqrs" / "runner.py"
+            runner.write_bytes(runner.read_bytes() + b"\n")
+            with self.assertRaisesRegex(ValueError, "Runtime hash drift"):
+                subject.compiled_question_bank(subject.load_contract())
+
+    def test_same_path_cached_modules_cannot_change_bank_or_preview(self) -> None:
         from hbqrs import core, runner
-        expected = subject.compiled_question_bank(subject.load_contract())
-        with patch.object(subject, "load_dryad_source", return_value=_PublicInputs()):
+
+        with frozen_runtime() as runtime, patch.object(subject, "REPOSITORY", runtime), patch.object(subject, "DRYAD_SOURCE", runtime / "evaluation-results" / "hbq-human-alignment-dryad-pilot-v1" / "source.py"), patch.object(subject, "load_dryad_source", return_value=_PublicInputs()):
+            expected = subject.compiled_question_bank(subject.load_contract())
             preview = subject.preview_story(Path("unused"), "train-0")
-            with patch.object(core, "compile_bundle", side_effect=AssertionError("cached code executed")), patch.object(runner, "_render_prompt", return_value="tampered"):
+            with patch.object(core, "__file__", str(runtime / "src" / "hbqrs" / "core.py")), patch.object(runner, "__file__", str(runtime / "src" / "hbqrs" / "runner.py")), patch.object(core, "compile_bundle", side_effect=AssertionError("cached normal module executed")), patch.object(runner, "_render_prompt", return_value="tampered"):
                 self.assertEqual(subject.compiled_question_bank(subject.load_contract()), expected)
                 self.assertEqual(subject.preview_story(Path("unused"), "train-0"), preview)
-                with patch.object(core, "__file__", str(ROOT / "foreign-checkout" / "core.py")):
-                    self.assertEqual(subject.compiled_question_bank(subject.load_contract()), expected)
 
     def test_contract_change_between_reads_is_rejected(self) -> None:
         original = Path.read_bytes
@@ -74,17 +131,18 @@ class DryadFullHBQTests(unittest.TestCase):
                 subject.load_contract()
 
     def test_complete_canonical_short_story_question_bank(self) -> None:
-        contract = subject.load_contract()
-        first = subject.compiled_question_bank(contract)
-        second = subject.compiled_question_bank(contract)
-        self.assertEqual(first, second)
-        self.assertEqual(len(first["questions"]), 178)
-        self.assertEqual(len(first["ordered_question_ids"]), 178)
-        self.assertEqual(first["bundle_id"], "prose.short_story")
+        with frozen_runtime() as runtime, patch.object(subject, "REPOSITORY", runtime):
+            contract = subject.load_contract()
+            first = subject.compiled_question_bank(contract)
+            second = subject.compiled_question_bank(contract)
+            self.assertEqual(first, second)
+            self.assertEqual(len(first["questions"]), 178)
+            self.assertEqual(len(first["ordered_question_ids"]), 178)
+            self.assertEqual(first["bundle_id"], "prose.short_story")
 
     def test_packet_verifier_rejects_byte_mutation(self) -> None:
         identity = {"evidence_class": "TEST_FIXTURE", "git_commit": "0" * 40}
-        with patch.object(subject, "load_dryad_source", return_value=_PublicInputs()), patch.object(subject, "_generator_identity", return_value=identity):
+        with frozen_runtime() as runtime, patch.object(subject, "REPOSITORY", runtime), patch.object(subject, "DRYAD_SOURCE", runtime / "evaluation-results" / "hbq-human-alignment-dryad-pilot-v1" / "source.py"), patch.object(subject, "load_dryad_source", return_value=_PublicInputs()), patch.object(subject, "_generator_identity", return_value=identity):
             with tempfile.TemporaryDirectory() as temporary:
                 root = Path(temporary)
                 artifacts = subject.expected_artifacts(root)

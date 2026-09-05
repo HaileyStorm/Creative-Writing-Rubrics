@@ -3300,8 +3300,21 @@ def run_judge(
     max_physical_http_attempts_per_logical_request: int | None = None,
     attempt_lifecycle_policy: str | None = None,
     before_provider_attempt: Callable[[Mapping[str, Any]], None] | None = None,
+    grok_transport: Callable[[Mapping[str, Any]], tuple[str, dict[str, Any]]] | None = None,
+    grok_transport_sha256: str | None = None,
 ) -> dict[str, Any]:
-    """Judge one artifact against one bundle, checkpointing every batch."""
+    """Judge one artifact against one bundle, checkpointing every batch.
+
+    An injected Grok transport receives the exact attempt context and owns the
+    reviewed Broker lease and immediately-before-contact host gate. Its declared
+    SHA binds resume configuration; it is not independent verification of code,
+    provider contact, billing, or returned provenance. No CLI fallback is used.
+    Exceptions have unknown contact status and use the existing nonretryable
+    outcome solely to prevent resend. Successful metadata permits only the
+    requested model, evidence SHA-256, and optional request/session SHA-256 and
+    reasoning_attested boolean. tool_free must be True, and reasoning_attested
+    must be True unless explicitly waived; the caller verifies that evidence.
+    """
 
     if provider not in {"openai", "codex", "grok", "nous"}:
         raise HBQError("provider must be 'openai', 'codex', 'grok', or 'nous'")
@@ -3336,6 +3349,21 @@ def run_judge(
         raise HBQError(f"attempt_lifecycle_policy must be {ATTEMPT_LIFECYCLE_POLICY!r} when set")
     if before_provider_attempt is not None and not callable(before_provider_attempt):
         raise HBQError("before_provider_attempt must be callable when set")
+    if grok_transport is not None:
+        if provider != "grok" or not callable(grok_transport):
+            raise HBQError("grok_transport requires provider 'grok' and a callable")
+        if not isinstance(grok_transport_sha256, str) or re.fullmatch(r"[0-9a-f]{64}", grok_transport_sha256) is None:
+            raise HBQError("grok_transport requires a lowercase SHA-256 binding")
+        if batch_attempts != 1 or attempt_lifecycle_policy != ATTEMPT_LIFECYCLE_POLICY:
+            raise HBQError("grok_transport requires batch_attempts=1 and terminal_sidecar_v1")
+    elif grok_transport_sha256 is not None:
+        raise HBQError("grok_transport_sha256 requires grok_transport")
+    grok_transport_binding = {
+        "protocol": "injected_grok_attempt_v1",
+        "declared_sha256": grok_transport_sha256,
+        "identity_evidence": "caller_declared_unverified",
+        "timeout": timeout,
+    } if grok_transport is not None else None
 
     artifact = _read_text_record(Path(artifact_path))
     contexts = [_read_text_record(Path(path)) for path in context_paths]
@@ -3455,7 +3483,9 @@ def run_judge(
     configured_batches = (len(selected_ids) + batch_size - 1) // batch_size
     disclosure_inputs = {
         "destination": (
-            "Codex CLI -> authenticated OpenAI service"
+            "Injected reviewed-caller transport -> authenticated xAI service"
+            if grok_transport is not None
+            else "Codex CLI -> authenticated OpenAI service"
             if provider == "codex"
             else "Grok Build CLI -> authenticated xAI service"
             if provider == "grok"
@@ -3481,6 +3511,8 @@ def run_judge(
             if provider == "nous" else None
         ),
     }
+    if grok_transport_binding is not None:
+        disclosure_inputs["grok_transport"] = dict(grok_transport_binding)
     if remote and not allow_remote and not dry_run:
         print(json.dumps({"disclosure": disclosure_inputs}, ensure_ascii=False, indent=2), file=sys.stderr)
         raise HBQError("This run sends artifact text off-machine; review the disclosure and pass --allow-remote")
@@ -3518,7 +3550,10 @@ def run_judge(
         "compiled_bundle_sha256": _sha256_bytes(_json_bytes(compiled)),
     }
     if provider == "grok":
-        configuration["grok_bin"] = grok_bin
+        if grok_transport is not None:
+            configuration["grok_transport"] = dict(grok_transport_binding)
+        else:
+            configuration["grok_bin"] = grok_bin
     if provider in {"grok", "nous"}:
         configuration["allow_unattested_reasoning"] = allow_unattested_reasoning
     if provider == "nous":
@@ -3776,7 +3811,8 @@ def run_judge(
                 effective_prompt, feedback = prompt, None
             effective_prompt_sha256 = _sha256_bytes(effective_prompt.encode("utf-8"))
             attempt_index = len(records) + 1
-            if before_provider_attempt is not None:
+            attempt_context = None
+            if before_provider_attempt is not None or grok_transport is not None:
                 attempt_rejected_chain = _rejected_chain_binding(
                     destination,
                     batch_number=batch_number,
@@ -3785,31 +3821,36 @@ def run_judge(
                     normalization_policy=active_normalization_policy,
                     allow_legacy_rejection_records=legacy_rejection_compat,
                 )
-                before_provider_attempt(
-                    _before_provider_attempt_context(
-                        destination=destination,
-                        schema_path=schema_path,
-                        run_id=run_id,
-                        config_sha256=active_config_sha256,
-                        provider=provider,
-                        model=model,
-                        reasoning=reasoning,
-                        endpoint=str(endpoint) if endpoint is not None else None,
-                        batch_number=batch_number,
-                        question_ids=expected,
-                        attempt_number=attempt_index,
-                        batch_attempts=batch_attempts,
-                        base_prompt_sha256=base_prompt_sha256,
-                        effective_prompt=effective_prompt,
-                        feedback_policy=(
-                            VALIDATION_FEEDBACK_POLICY
-                            if active_normalization_policy == EVIDENCE_NORMALIZATION_POLICY
-                            else None
-                        ),
-                        feedback=feedback,
-                        rejected_chain=attempt_rejected_chain,
-                    )
+                attempt_context = _before_provider_attempt_context(
+                    destination=destination,
+                    schema_path=schema_path,
+                    run_id=run_id,
+                    config_sha256=active_config_sha256,
+                    provider=provider,
+                    model=model,
+                    reasoning=reasoning,
+                    endpoint=str(endpoint) if endpoint is not None else None,
+                    batch_number=batch_number,
+                    question_ids=expected,
+                    attempt_number=attempt_index,
+                    batch_attempts=batch_attempts,
+                    base_prompt_sha256=base_prompt_sha256,
+                    effective_prompt=effective_prompt,
+                    feedback_policy=(
+                        VALIDATION_FEEDBACK_POLICY
+                        if active_normalization_policy == EVIDENCE_NORMALIZATION_POLICY
+                        else None
+                    ),
+                    feedback=feedback,
+                    rejected_chain=attempt_rejected_chain,
                 )
+                if grok_transport is not None:
+                    attempt_context["transport"] = {
+                        **configuration["grok_transport"],
+                        "allow_unattested_reasoning": allow_unattested_reasoning,
+                    }
+                if before_provider_attempt is not None:
+                    before_provider_attempt(deepcopy(attempt_context))
             if attempt_lifecycle_policy == ATTEMPT_LIFECYCLE_POLICY:
                 _write_attempt_start(
                     output_dir=destination,
@@ -3846,6 +3887,42 @@ def run_judge(
                         timeout=timeout,
                         attempt_number=codex_message_attempt,
                     )
+                elif provider == "grok" and grok_transport is not None:
+                    try:
+                        result = grok_transport(deepcopy(attempt_context))
+                        if (
+                            not isinstance(result, tuple) or len(result) != 2
+                            or not isinstance(result[0], str) or not isinstance(result[1], dict)
+                        ):
+                            raise ValueError("Invalid injected transport result")
+                        content, provider_record = result
+                        hash_fields = {"evidence_sha256", "request_id_sha256", "session_id_sha256"}
+                        bool_fields = {"reasoning_attested", "tool_free"}
+                        if (
+                            not {"model", "evidence_sha256"} <= provider_record.keys()
+                            or not provider_record.keys() <= {"model", *hash_fields, *bool_fields}
+                            or provider_record["model"] != model
+                            or any(
+                                not isinstance(provider_record[key], str)
+                                or re.fullmatch(r"[0-9a-f]{64}", provider_record[key]) is None
+                                for key in hash_fields & provider_record.keys()
+                            )
+                            or any(type(provider_record[key]) is not bool for key in bool_fields & provider_record.keys())
+                            or provider_record.get("tool_free") is not True
+                            or (not allow_unattested_reasoning and provider_record.get("reasoning_attested") is not True)
+                        ):
+                            raise ValueError("Invalid injected transport metadata")
+                        metadata_bytes = _json_bytes(provider_record)
+                        if len(metadata_bytes) > 4096 or len(content.encode("utf-8")) > MAX_RESPONSE_BYTES:
+                            raise ValueError("Injected transport result exceeds limits")
+                        provider_record = json.loads(metadata_bytes)
+                    except Exception:
+                        # Never persist or classify exception text from a transport.
+                        raise _ProviderAttemptFailure(
+                            "Injected Grok transport contact outcome unknown; no valid result returned; reconcile before any new run",
+                            retryable=False,
+                            attempt_outcome="provider_nonretryable_failure",
+                        ) from None
                 else:
                     cli_message_attempt = _next_codex_message_attempt(destination, batch_number)
                     if provider == "grok":
