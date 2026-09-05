@@ -1,5 +1,7 @@
 # Dryad source-freeze pilot
 
+The committed generator passed the real supplied-archive freeze and replay on Windows: 176 TRAIN, 60 DEV, and 57 confirmation stories across nine strata. Eight regression tests passed. The public loader returns 236 TRAIN/DEV story inputs. This is source-readiness evidence only; no model call or alignment measurement has occurred. [Frozen-source result](freeze-result.json).
+
 ## Source plan
 
 This package freezes a local, independently audited source corpus before any model work. `source.py` imports the exact hash-pinned Dryad audit program from commit `6cb64b2`, asks it to reconstruct the already pinned archive in memory, verifies its complete reconciliation, and writes a new external freeze root only when that root does not exist. It does not execute supplied upstream scripts or make provider calls.

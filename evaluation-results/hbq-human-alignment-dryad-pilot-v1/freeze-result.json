@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "evidence_class": "host_local_real_source_freeze_and_replay",
+  "status": "PASS",
+  "generator": {
+    "git_commit": "758cf1460847a1fe4a3d47897e60599da87955c2",
+    "source_sha256": "ebe3792f8f8255d18528e55a7a5ae5749a1a0f811e841181fbffa45562024d63",
+    "contract_sha256": "a1b79020c7d53f581fbe2867405adf78f2853ec70a57096b93a0022fef14c040"
+  },
+  "provenance_sha256": "458490dd5b33a33457ca0a93295f8a517a19aa3eafb0eb8b34e5b7a8bd47af0b",
+  "partitions": {"TRAIN": 176, "DEV": 60, "CONFIRMATION": 57},
+  "strata": 9,
+  "public_input_count": 236,
+  "public_input_fields": ["opaque_story_id", "story_text"],
+  "regression_tests_passed": 8,
+  "model_calls": 0,
+  "alignment_metrics": null,
+  "scope": "Source freezing only; no provider-ready judging contract, full HBQ mapping, endpoint measurement, confirmation evaluation, or runtime promotion."
+}
