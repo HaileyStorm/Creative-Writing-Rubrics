@@ -24,3 +24,5 @@ It creates exact-byte local artifacts in a fresh external root:
 Actual freeze creation records the current exact Git commit plus runtime-computed generator-source and contract hashes, and requires those bytes to be committed at that HEAD. Later verification checks the recorded historical commit rather than requiring the verifier to run at the same current HEAD. Explicit `TEST_FIXTURE` identity is available only for isolated tests.
 
 This is source-freeze evidence only. It does not establish model alignment, an HBQ-RS mapping, a pooled score with HANNA or WPB, or a runtime/profile promotion.
+
+The separate [fixed-split human-agreement baseline](../hbq-human-alignment-dryad-human-agreement-v1/README.md) reports reproducible TRAIN/DEV agreement between evaluator halves. It provides context for later measurement and does not establish a model-performance ceiling.

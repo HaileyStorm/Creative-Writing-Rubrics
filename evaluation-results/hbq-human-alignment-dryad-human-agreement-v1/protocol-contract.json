@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "evidence_class": "human_internal_agreement_one_fixed_split_only",
+  "sources": {
+    "v2_sha256": "e391d638f04eac7a9632811922d0c4fed4e95dd6613f07311d8513b9a52e128b",
+    "split_manifest_sha256": "2e2314b283bc7a3b5653cbd98951ecb85612c0a5f3b4d2a4b31324bc89342521"
+  },
+  "historical_parent_reference": {
+    "aggregate_result_sha256": "050c810f58314116725f7ac34fc3cff6b4dcfe38dbb6d85132648b86fd021fe7",
+    "description": "Immutable local parent aggregate used to verify the published descendant's 24 result rows."
+  },
+  "partitions": {"open": {"TRAIN": 176, "DEV": 60}, "confirmation": "route out before any rating-axis parsing"},
+  "evaluator_split": {
+    "seed": "dryad-pilot-v1-evaluator-split-half-20260905",
+    "rule": "sort all 600 evaluator_index values by SHA256(seed + NUL + evaluator_index); first 300 are A and remaining 300 are B"
+  },
+  "measurement": {
+    "axes": ["novel", "original", "rare", "appropriate", "feasible", "publishable", "well_written", "enjoyed", "boring", "funny", "twist", "future"],
+    "story_aggregation": "unweighted arithmetic mean within each evaluator half",
+    "minimum_ratings_per_story_per_half": 2,
+    "statistic": "Spearman correlation with average ranks for ties across eligible stories, independently by partition and axis"
+  },
+  "non_claims": {
+    "model_alignment": false,
+    "human_ceiling": false,
+    "confidence_interval": false,
+    "bootstrap": false,
+    "posthoc_seed_or_coverage_selection": false,
+    "confirmation_outcome_analysis": false,
+    "provider_calls": false,
+    "hbq_mapping": false
+  }
+}
