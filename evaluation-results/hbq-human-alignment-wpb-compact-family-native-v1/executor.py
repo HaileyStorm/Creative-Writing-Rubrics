@@ -8,8 +8,9 @@ import json
 import math
 import subprocess
 import sys
+import threading
 from collections.abc import Callable, Iterator, Mapping
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import FIRST_COMPLETED, ThreadPoolExecutor, wait
 from contextlib import contextmanager
 from pathlib import Path
 from types import ModuleType, SimpleNamespace
@@ -30,6 +31,7 @@ CONTRACT = HERE / "study-contract.json"
 CONTRACT_SHA256 = "011e8fa91774c78ed63a786a677dc8d02cf0a5f9fd3c6c5125e519f534843c22"
 ENDPOINTS = {"grok", "sol"}
 MAX_CONCURRENCY = 10
+SUCCESS_STATES = {"Grok": "provisional_scoring_received", "Sol": "local_codex_lifecycle_received_native_contact_unproven"}
 TRANSPORT_TARGET = {"Relevance": 0.0, "Coherence": 0.0, "Empathy": 0.0, "Surprise": 0.0, "Engagement": 0.0, "Complexity": 0.0}
 EXPECTED_CONTRACT = {"authority": {"confirmation": "closed", "endpoint_pooling": "forbidden", "promotion": "none", "runtime": "none", "selection": "development_only"}, "core": {"commit": CORE_COMMIT, "path": CORE.relative_to(REPO).as_posix(), "sha256": CORE_SHA256}, "execution": {"endpoints": ["grok", "sol"], "max_concurrency": 10, "payload_parity": "exact identical bytes per cell across endpoints", "precontact": "prepare_all makes zero provider calls or process launches", "transport": "pinned V16 native Grok/Sol lifecycle; endpoint adapters are test overrides only", "unit": "one rederived WPB pair per call"}, "format_version": 1, "kind": "wpb_compact_family_native_execution", "local_only": {"excluded_from_provider_payload": ["category", "source model", "preferred side", "chosen/rejected labels", "source scores", "local targets"], "sol_transport_target": "fixed all-zero V16 compatibility sentinel; never a WPB label or outbound payload"}, "native_runtime": {"commit": V16_COMMIT, "path": V16.relative_to(REPO).as_posix(), "sha256": V16_SHA256}, "study_id": STUDY_ID}
 
@@ -189,6 +191,60 @@ def _grok_execute(resolution: Mapping[str, Any], *, output_root: Path, queue_roo
         return v11._execute_bound(value=_execution_schedule(resolution), lifecycle=lifecycle, runtime=base, v9=v9, reconciler=SimpleNamespace(_response=parse), response_helper=helper, selected=selected, output_root=Path(output_root), queue_root=Path(queue_root), authorization_acknowledgement_sha256=acknowledgement, cell_id=cell_id, route_provider=lambda _ignored: (route, evidence))
 
 
+def _fail_fast_wave(*, rows: tuple[Mapping[str, Any], ...], output_root: Path, endpoint: str, run: Callable[[Mapping[str, Any]], dict[str, Any]]) -> list[dict[str, Any]]:
+    """Keep at most ten native calls in flight and stop queuing after a failure."""
+    stop = threading.Event()
+    outcomes: list[dict[str, Any]] = []
+    queued = iter(rows)
+
+    def guarded(row: Mapping[str, Any]) -> dict[str, Any]:
+        try:
+            if stop.is_set():
+                raise ValueError(f"WPB {endpoint} wave already stopped before native dispatch")
+            outcome = run(row)
+            cell_id = str(row["cell_id"])
+            if not isinstance(outcome, Mapping) or outcome.get("cell_id") != cell_id or outcome.get("state") != SUCCESS_STATES[endpoint] or not (Path(output_root) / cell_id / "execution-receipt.json").is_file():
+                raise ValueError(f"WPB {endpoint} native call has no exact terminal receipt")
+            return dict(outcome)
+        except BaseException:
+            stop.set()
+            raise
+
+    with ThreadPoolExecutor(max_workers=MAX_CONCURRENCY) as pool:
+        pending = {}
+        while len(pending) < MAX_CONCURRENCY and not stop.is_set():
+            try:
+                row = next(queued)
+            except StopIteration:
+                break
+            pending[pool.submit(guarded, row)] = row
+        failure: BaseException | None = None
+        while pending:
+            completed, _ = wait(tuple(pending), return_when=FIRST_COMPLETED)
+            for future in completed:
+                pending.pop(future)
+                try:
+                    outcomes.append(future.result())
+                except BaseException as error:
+                    failure = failure or error
+            if failure is None and not stop.is_set():
+                while len(pending) < MAX_CONCURRENCY:
+                    try:
+                        row = next(queued)
+                    except StopIteration:
+                        break
+                    if stop.is_set():
+                        break
+                    pending[pool.submit(guarded, row)] = row
+        if failure is not None:
+            raise ValueError(f"WPB {endpoint} native wave stopped after a terminal failure; queued cells were not started") from failure
+    expected = {str(row["cell_id"]) for row in rows}
+    observed = {str(value.get("cell_id")) for value in outcomes}
+    if observed != expected or len(outcomes) != len(rows):
+        raise ValueError(f"incomplete WPB {endpoint} native terminal receipt wave")
+    return outcomes
+
+
 def _grok_wave(resolution: Mapping[str, Any], *, output_root: Path, queue_root: Path, acknowledgement: str, route_provider: Callable[[Path], tuple[dict[str, Any], dict[str, Any]]] | None, runner: Callable[..., Mapping[str, Any]] | None) -> list[dict[str, Any]]:
     rows = tuple(resolution["rows"])
     with _grok_bound(resolution) as (lifecycle, base, v9, v11, v13, _v15):
@@ -204,13 +260,7 @@ def _grok_wave(resolution: Mapping[str, Any], *, output_root: Path, queue_root: 
                 return _grok_answer(resolution["core"], helper, raw, receipt_route)
             return v11._execute_bound(value=execution, lifecycle=lifecycle, runtime=base, v9=v9, reconciler=SimpleNamespace(_response=parse), response_helper=helper, selected=selected, output_root=Path(output_root), queue_root=Path(queue_root), authorization_acknowledgement_sha256=acknowledgement, cell_id=str(row["cell_id"]), route_provider=lambda _ignored: (route, evidence))
 
-        with ThreadPoolExecutor(max_workers=MAX_CONCURRENCY) as pool:
-            outcomes = list(pool.map(run, rows))
-    expected = {str(row["cell_id"]) for row in rows}
-    observed = {str(value.get("cell_id")) for value in outcomes if isinstance(value, Mapping)}
-    if observed != expected or len(outcomes) != 129 or any(not (Path(output_root) / cell_id / "execution-receipt.json").is_file() for cell_id in expected):
-        raise ValueError("incomplete WPB Grok native terminal receipt wave")
-    return outcomes
+        return _fail_fast_wave(rows=rows, output_root=Path(output_root), endpoint="Grok", run=run)
 
 
 def _sol_runtime(resolution: Mapping[str, Any]) -> tuple[ModuleType, ModuleType, tuple[dict[str, Any], ...]]:
@@ -291,13 +341,7 @@ def _sol_wave(resolution: Mapping[str, Any], *, output_root: Path, queue_root: P
     try:
         def run(row: Mapping[str, Any]) -> dict[str, Any]:
             return lifecycle._execute_prepared(base=runtime, row=row, output_root=Path(output_root), queue_root=Path(queue_root), authorization_acknowledgement_sha256=acknowledgement, allow_remote=True, locks=locks, broker_factory=broker_factory, call_codex=call_codex)
-        with ThreadPoolExecutor(max_workers=MAX_CONCURRENCY) as pool:
-            outcomes = list(pool.map(run, rows))
-        expected = {str(row["cell_id"]) for row in rows}
-        observed = {str(value.get("cell_id")) for value in outcomes if isinstance(value, Mapping)}
-        if observed != expected or len(outcomes) != 129 or any(not (Path(output_root) / cell_id / "execution-receipt.json").is_file() for cell_id in expected):
-            raise ValueError("incomplete WPB Sol native terminal receipt wave")
-        return outcomes
+        return _fail_fast_wave(rows=rows, output_root=Path(output_root), endpoint="Sol", run=run)
     finally:
         if locks.exists() and not any(locks.iterdir()):
             locks.rmdir()
@@ -321,7 +365,8 @@ def execute_one(*, endpoint: str, output_root: Path, queue_root: Path, freeze_ro
         outcome = _grok_execute(resolution, output_root=Path(output_root), queue_root=Path(queue_root), acknowledgement=authorization_acknowledgement_sha256, cell_id=cell_id, route_provider=grok_route_provider, runner=grok_runner)
     else:
         outcome = _sol_execute(resolution, output_root=Path(output_root), queue_root=Path(queue_root), acknowledgement=authorization_acknowledgement_sha256, cell_id=cell_id, broker_factory=sol_broker_factory, call_codex=call_codex)
-    if not isinstance(outcome, Mapping) or outcome.get("cell_id") != cell_id or not (Path(output_root) / cell_id / "execution-receipt.json").is_file():
+    state = SUCCESS_STATES["Grok" if endpoint == "grok" else "Sol"]
+    if not isinstance(outcome, Mapping) or outcome.get("cell_id") != cell_id or outcome.get("state") != state or not (Path(output_root) / cell_id / "execution-receipt.json").is_file():
         raise ValueError("WPB native execution did not produce an exact terminal receipt")
     return dict(outcome)
 

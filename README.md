@@ -7,6 +7,10 @@ dataset evaluation, benchmarking, and synthetic-data workflows without hiding
 the rubric, coverage, or uncertainty behind one opaque score. It does not turn
 a literary judgment into an unquestionable truth.
 
+This is the development tree, including unreleased changes after the 1.2.3
+release. Use the exact revision below for a reproducible installation; study
+packages retain their own frozen runtime pins.
+
 The current HBQ-RS content contains **278 modules**, **2,145 atomic leaves**,
 and **85 bundle presets**. A judge answers one yes/no leaf at a time;
 aggregation is code, not another model call. Stable module, question, criterion,
@@ -49,6 +53,9 @@ The live release-facing work is narrower than the historical experiment log:
   The separate [Optuna calibration diagnostic](evaluation-results/hbq-human-alignment-optimizer-v13-train-expansion-v1/CALIBRATION.md)
   measures score calibration, not improved literary discrimination. See the
   results pages for constant-score comparators and mixed rank agreement.
+  The latest [rank replication](docs/RESULTS.md#v17-standalone-sol-replication)
+  is a standalone Sol TRAIN result. Grok quota exhaustion left its paired run
+  incomplete and the prepared WPB collection unexecuted.
 - [CWR-guided revision gain](evaluation-results/cwr-guided-revision-gain-v6-heldout-result-v1/)
   now includes a four-item held-back comparison. Guided-minus-generic means
   were Sol `+1.00` holistic / `+0.75` compact and Grok `+0.75` / `0.00`.
@@ -69,7 +76,7 @@ The live release-facing work is narrower than the historical experiment log:
 ## Install and try it
 
 ```bash
-pip install "git+https://github.com/HaileyStorm/Creative-Writing-Rubrics.git"
+pip install "git+https://github.com/HaileyStorm/Creative-Writing-Rubrics.git@e1c6f3bd0d34325ff4806cad8d49afaa340c49ca"
 ```
 
 From a clone, install development dependencies with `pip install -e ".[dev]"`.

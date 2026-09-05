@@ -7,6 +7,7 @@ import json
 import threading
 import time
 from collections import Counter
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from typing import Any
 
@@ -84,6 +85,8 @@ class Contacts:
         self.active = 0
         self.maximum = 0
         self.failed = False
+        self.failure_started = threading.Event()
+        self.failure_observed = threading.Event()
         self.lock = threading.Lock()
 
     def enter(self, cell_id: str) -> None:
@@ -104,13 +107,15 @@ class Contacts:
             return True
 
 
-def grok_runner(value: Any, rows: tuple[dict[str, Any], ...], contacts: Contacts, *, fail_after_contact: bool = False):
+def grok_runner(value: Any, rows: tuple[dict[str, Any], ...], contacts: Contacts, *, fail_after_contact: bool = False, start_gate: threading.Barrier | None = None, failure_cell: str | None = None, success_release: threading.Event | None = None):
     index = {str(row["cell_id"]): row for row in rows}
 
     def run(*, prompt: bytes, schema_path: Path, output_dir: Path, route: dict[str, Any], before_contact):
         row = index[output_dir.name]
         contacts.enter(str(row["cell_id"]))
         try:
+            if start_gate is not None:
+                start_gate.wait(timeout=10)
             time.sleep(0.002)
             assert prompt == base64.b64decode(row["payload_base64"], validate=True)
             outbound = json.loads(prompt)
@@ -136,8 +141,11 @@ def grok_runner(value: Any, rows: tuple[dict[str, Any], ...], contacts: Contacts
             before_contact()
             (responses / "batch-0001.attempt-0001.prompt.txt").write_bytes(prompt)
             (responses / "batch-0001.attempt-0001.grok.envelope.json").write_bytes(response)
-            if fail_after_contact and contacts.fail_once():
+            if fail_after_contact and (str(row["cell_id"]) == failure_cell if failure_cell is not None else contacts.fail_once()):
+                contacts.failure_started.set()
                 raise RuntimeError("fixture post-contact failure")
+            if success_release is not None:
+                assert success_release.wait(timeout=10)
             return {
                 "native_request_bytes": json.dumps({"prompt": prompt.decode("utf-8")}, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8"),
                 "native_response_bytes": response,
@@ -150,7 +158,7 @@ def grok_runner(value: Any, rows: tuple[dict[str, Any], ...], contacts: Contacts
     return run
 
 
-def sol_runner(value: Any, rows: tuple[dict[str, Any], ...], contacts: Contacts, *, fail_after_contact: bool = False):
+def sol_runner(value: Any, rows: tuple[dict[str, Any], ...], contacts: Contacts, *, fail_after_contact: bool = False, start_gate: threading.Barrier | None = None, failure_cell: str | None = None, success_release: threading.Event | None = None):
     index = {str(row["cell_id"]): row for row in rows}
     native = load(NATIVE, "wpb_native_sol_command")
 
@@ -159,6 +167,8 @@ def sol_runner(value: Any, rows: tuple[dict[str, Any], ...], contacts: Contacts,
         row = index[root.name]
         contacts.enter(str(row["cell_id"]))
         try:
+            if start_gate is not None:
+                start_gate.wait(timeout=10)
             time.sleep(0.002)
             final = json.dumps(answer(value), ensure_ascii=False, sort_keys=True, separators=(",", ":"))
             responses = root / "responses"
@@ -170,8 +180,11 @@ def sol_runner(value: Any, rows: tuple[dict[str, Any], ...], contacts: Contacts,
             events_path.write_bytes(events)
             (responses / "batch-0001.attempt-0001.message.json").write_text(final, encoding="utf-8")
             stderr_path.write_bytes(b"")
-            if fail_after_contact and contacts.fail_once():
+            if fail_after_contact and (str(row["cell_id"]) == failure_cell if failure_cell is not None else contacts.fail_once()):
+                contacts.failure_started.set()
                 raise RuntimeError("fixture post-contact failure")
+            if success_release is not None:
+                assert success_release.wait(timeout=10)
             return final, {"command": native._expected_codex_command(kwargs["executable"], root), "reported": {"model": None, "provider": None, "reasoning_effort": None, "session_id": f"fixture-thread-{row['cell_id']}"}, "provider_artifacts": {"codex_events": {"path": events_path.relative_to(root).as_posix(), "bytes": len(events), "sha256": hashlib.sha256(events).hexdigest()}, "codex_stderr": {"path": stderr_path.relative_to(root).as_posix(), "bytes": 0, "sha256": hashlib.sha256(b"").hexdigest()}}}
         finally:
             contacts.leave()
@@ -302,3 +315,48 @@ def test_alternate_route_is_rejected_precontact_and_postcontact_failure_is_termi
     with pytest.raises((TypeError, ValueError)):
         value.execute_one(**post_call, cell_id=selected, allow_remote=True, grok_runner=lambda **_kwargs: pytest.fail("terminal Grok cell was resent"), call_codex=lambda **_kwargs: pytest.fail("terminal Sol cell was resent"))
     assert contacts.calls == [selected]
+
+
+@pytest.mark.parametrize("endpoint", ("grok", "sol"))
+def test_wave_stops_queued_cells_after_first_terminal_failure_and_never_resends(tmp_path: Path, endpoint: str, monkeypatch: pytest.MonkeyPatch) -> None:
+    value = executor()
+    args = common(value, tmp_path, endpoint)
+    resolution = value._resolution(freeze_root=FREEZE)
+    rows = resolution["rows"]
+    initial = tuple(str(row["cell_id"]) for row in rows[: value.MAX_CONCURRENCY])
+    failed = initial[0]
+    value.prepare_all(**args)
+    contacts = Contacts()
+    gate = threading.Barrier(value.MAX_CONCURRENCY)
+    original_pool = ThreadPoolExecutor
+
+    class ObservingPool(original_pool):
+        def submit(self, fn: Any, /, *submit_args: Any, **submit_kwargs: Any):
+            future = super().submit(fn, *submit_args, **submit_kwargs)
+            if submit_args and str(submit_args[0]["cell_id"]) == failed:
+                future.add_done_callback(lambda _future: contacts.failure_observed.set())
+            return future
+
+    monkeypatch.setattr(value, "ThreadPoolExecutor", ObservingPool)
+    with pytest.raises((RuntimeError, TypeError, ValueError)):
+        value.execute_wave(
+            **execute_args(args),
+            allow_remote=True,
+            grok_runner=grok_runner(value, rows, contacts, fail_after_contact=True, start_gate=gate, failure_cell=failed, success_release=contacts.failure_observed) if endpoint == "grok" else None,
+            call_codex=sol_runner(value, rows, contacts, fail_after_contact=True, start_gate=gate, failure_cell=failed, success_release=contacts.failure_observed) if endpoint == "sol" else None,
+        )
+    assert contacts.maximum == value.MAX_CONCURRENCY
+    assert set(contacts.calls) == set(initial)
+    assert len(contacts.calls) == value.MAX_CONCURRENCY
+    failed_root = args["output_root"] / failed
+    assert (failed_root / "result.json").is_file()
+    assert not (failed_root / "execution-receipt.json").exists()
+    assert sum((args["output_root"] / cell_id / "execution-receipt.json").is_file() for cell_id in initial) == value.MAX_CONCURRENCY - 1
+    with pytest.raises((TypeError, ValueError)):
+        value.execute_wave(
+            **execute_args(args),
+            allow_remote=True,
+            grok_runner=lambda **_kwargs: pytest.fail("terminal Grok wave cell was resent"),
+            call_codex=lambda **_kwargs: pytest.fail("terminal Sol wave cell was resent"),
+        )
+    assert set(contacts.calls) == set(initial)

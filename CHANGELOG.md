@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+- Added pre-contact retry disclosure and guarded native development/evidence paths after the 1.2.3 release; the README now pins a tested Git revision instead of installing floating main.
+- Added focused local test lanes, installed-wheel book/CLI smoke checks, and public v2 descendant/resume coverage. Packaged evidence documentation links resolve to immutable public Git paths.
+- Published completed multisample and development-only DSPy/Optuna evidence, including the negative three-family weighting fit and standalone V17 Sol rank replication. V17 Grok is incomplete after quota exhaustion; the prepared WPB collection remains unexecuted.
+- No new rubric version, runtime profile promotion, general literary-validity claim, or native Linux proof is implied by these development checkpoints.
+
 ## 1.2.3 — 2026-08-26
 
 - Published the work-in-progress QPC24 V9 full-book aggregate: both complete artifacts are `VALID`, all selected units were evaluated without sampling, and the aggregate makes no rubric, weight, or criterion-ownership change.

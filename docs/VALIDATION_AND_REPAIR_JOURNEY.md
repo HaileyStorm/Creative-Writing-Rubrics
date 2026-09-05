@@ -893,3 +893,26 @@ three-family experiment with a negative result; it does not rule out every
 weighting scheme, but it supplies no reason to change runtime weights or freeze
 a winning profile. No new model calls, DSPy search, or confirmation access
 were involved.
+
+## Replication narrowed the comparative claim
+
+V17 repeated the direct-versus-comparative design on five additional TRAIN
+prompt groups. Grok exhausted its included allowance after 23 response-backed
+cells; 25 cells became terminal failures. Independent replay preserved every
+cell and admitted the 23 successes, but the incomplete subset received no
+metrics. The route was revoked and no failed request was resent.
+
+The already-planned Sol panel completed all 48 fresh cells and its 12 pinned
+V15 direct reuses. Independent raw-score arithmetic matched the
+[published report](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/e1c6f3bd0d34325ff4806cad8d49afaa340c49ca/evaluation-results/hbq-human-alignment-optimizer-v17-comparative-train-replication-native-v1/sol-result.json)
+exactly. Averaging both comparative orders gave prompt-macro Spearman
+`0.423961` and mean six-axis MAE `0.784167`, with full coverage on every axis.
+The direct arm also reached `0.417514`; however, two
+undefined Surprise groups prevent a strict complete-panel comparison.
+
+That is a useful standalone Sol readout, not a clean replication of V16's
+relative gain, a Grok performance comparison, or full-HANNA validation.
+The three-family weight fit also remained negative. The next broader WPB
+measurement has reviewed source and seven passing native fixture tests, but
+its Grok-first collection is blocked by the exhausted allowance. Preparation
+and green fixtures do not replace that missing measurement.

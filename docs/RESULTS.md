@@ -31,6 +31,10 @@ product test succeeded; `Negative` means a proposed claim or treatment failed;
 
 ## Current development checkpoints — descriptive readouts, no promotion
 
+Latest: [V17 standalone Sol replication](#v17-standalone-sol-replication)
+is complete; Grok is incomplete after quota exhaustion, and the prepared WPB
+collection remains unexecuted.
+
 The [full-tree family-weight diagnostic](https://github.com/HaileyStorm/Creative-Writing-Rubrics/tree/b4ba4c5d2963040ffc6f26010de089e21331a0b4/evaluation-results/hbq-human-alignment-family-weighting-v1)
 completed 3,072 provider-free Optuna trials over 48 TRAIN stories across 24
 leave-one-prompt-group-out TRAIN folds. Fitted pooled Spearman remained negative (`-0.105024` to
@@ -263,3 +267,22 @@ generalization, selection, promotion, runtime, or endpoint-pooling claim. See th
 [Grok](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/b4ba4c5d2963040ffc6f26010de089e21331a0b4/evaluation-results/hbq-human-alignment-optimizer-v16-comparative-train-v1/GROK_TRAIN.md)
 and [Sol](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/b4ba4c5d2963040ffc6f26010de089e21331a0b4/evaluation-results/hbq-human-alignment-optimizer-v16-comparative-train-v1/SOL_TRAIN.md)
 summaries.
+
+## V17 standalone Sol replication
+
+The [Sol result](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/e1c6f3bd0d34325ff4806cad8d49afaa340c49ca/evaluation-results/hbq-human-alignment-optimizer-v17-comparative-train-replication-native-v1/sol-result.json)
+independently replays 48 fresh cells plus 12 pinned V15 measurements across 50
+stories and five additional TRAIN groups. The primary mean-of-both-orders
+Spearman is `0.423961`, with all five groups retained on every axis; mean
+six-axis MAE is `0.784167`. The direct arm's descriptive macro is `0.417514`,
+but Surprise retains only three groups, leaving its strict-five macro
+undefined. This does not establish a clean comparative-method gain or
+full-HANNA competitiveness.
+
+The [Grok settlement](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/e1c6f3bd0d34325ff4806cad8d49afaa340c49ca/evaluation-results/hbq-human-alignment-optimizer-v17-comparative-train-replication-native-v1/grok-incomplete.json)
+retains 23 response-backed cells and 25 terminal failures after a native quota
+exhaustion observation. It is ineligible for subset metrics or an endpoint
+performance comparison. Sol is a standalone TRAIN diagnostic, with no
+confirmation, generalization, canonical full-HBQ, or runtime-promotion claim.
+The source-reviewed and fixture-tested WPB executor remains unexecuted because
+its required Grok-primary collection is unavailable.
