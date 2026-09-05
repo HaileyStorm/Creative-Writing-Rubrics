@@ -56,16 +56,20 @@ def common(value: Any, root: Path, endpoint: str) -> dict[str, Any]:
         broker.run_grok_native_contact = lambda _route, contact: {"state": "completed", "result": contact(), "failure": None}
         return broker
 
-    return {
+    arguments = {
         "endpoint": endpoint,
         "output_root": root / f"{endpoint}-output",
         "queue_root": queue,
         "freeze_root": FREEZE,
         "authorization_acknowledgement_sha256": ACK,
-        "grok_route_provider": load(V15_GROK_TEST, f"wpb_{endpoint}_grok_route_support")._route_provider(),
-        "grok_broker_factory": grok_broker_factory,
-        "sol_broker_factory": lambda _root: support.Broker(route),
     }
+    if endpoint == "sol":
+        arguments["sol_broker_factory"] = lambda _root: support.Broker(route)
+    else:
+        route_support = load(V15_GROK_TEST, "wpb_grok_route_support")
+        arguments["grok_route_provider"] = lambda queue_root: route_support._route_provider()(queue_root)
+        arguments["grok_broker_factory"] = grok_broker_factory
+    return arguments
 
 
 def answer(value: Any) -> dict[str, Any]:
@@ -117,6 +121,15 @@ class Contacts:
             return True
 
 
+def native_envelope(structured: dict[str, Any], session_id: str, request_id: str) -> dict[str, Any]:
+    return {
+        "modelUsage": {"grok-4.6-build": {"inputTokens": 2, "outputTokens": 2, "cacheReadInputTokens": 0, "cacheCreationInputTokens": 0, "modelCalls": 1, "costUSD": 0.0}},
+        "num_turns": 1, "requestId": request_id, "sessionId": session_id, "stopReason": "end_turn", "structuredOutput": structured,
+        "text": json.dumps(structured, ensure_ascii=False, sort_keys=True, separators=(",", ":")), "thought": "", "total_cost_usd": 0.0, "total_cost_usd_ticks": 0,
+        "usage": {"input_tokens": 2, "output_tokens": 2, "cache_read_input_tokens": 0, "cache_creation_input_tokens": 0, "reasoning_tokens": 0, "total_tokens": 4},
+    }
+
+
 def grok_runner(value: Any, rows: tuple[dict[str, Any], ...], contacts: Contacts, *, fail_after_contact: bool = False, start_gate: threading.Barrier | None = None, failure_cell: str | None = None, success_release: threading.Event | None = None):
     index = {str(row["cell_id"]): row for row in rows}
 
@@ -132,19 +145,7 @@ def grok_runner(value: Any, rows: tuple[dict[str, Any], ...], contacts: Contacts
             assert json.loads(schema_path.read_bytes()) == outbound["response_schema"]
             assert not {"category", "source_model", "preferred_side", "chosen_score", "rejected_score", "target"} & set(outbound)
             structured = answer(value)
-            envelope = {
-                "modelUsage": {"grok-4.6-build": {"inputTokens": 2, "outputTokens": 2, "cacheReadInputTokens": 0, "cacheCreationInputTokens": 0, "modelCalls": 1, "costUSD": 0.0}},
-                "num_turns": 1,
-                "requestId": f"request-{output_dir.name}",
-                "sessionId": f"session-{output_dir.name}",
-                "stopReason": "end_turn",
-                "structuredOutput": structured,
-                "text": json.dumps(structured, ensure_ascii=False, sort_keys=True, separators=(",", ":")),
-                "thought": "",
-                "total_cost_usd": 0.0,
-                "total_cost_usd_ticks": 0,
-                "usage": {"input_tokens": 2, "output_tokens": 2, "cache_read_input_tokens": 0, "cache_creation_input_tokens": 0, "reasoning_tokens": 0, "total_tokens": 4},
-            }
+            envelope = native_envelope(structured, f"session-{output_dir.name}", f"request-{output_dir.name}")
             response = json.dumps(envelope, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
             responses = output_dir / "responses"
             responses.mkdir()
@@ -156,6 +157,9 @@ def grok_runner(value: Any, rows: tuple[dict[str, Any], ...], contacts: Contacts
                 raise RuntimeError("fixture post-contact failure")
             if success_release is not None:
                 assert success_release.wait(timeout=10)
+            proof = value._shared_result_path(output_dir)
+            proof.parent.mkdir(exist_ok=True)
+            proof.write_bytes(value.canonical(shared_result(value, prompt, json.loads(schema_path.read_bytes()), route, response)))
             return {
                 "native_request_bytes": json.dumps({"prompt": prompt.decode("utf-8")}, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8"),
                 "native_response_bytes": response,
@@ -166,6 +170,32 @@ def grok_runner(value: Any, rows: tuple[dict[str, Any], ...], contacts: Contacts
             contacts.leave()
 
     return run
+
+
+def shared_result(value: Any, prompt: bytes, schema: dict[str, Any], route: dict[str, Any], raw: bytes) -> dict[str, Any]:
+    """Synthetic transport evidence for component tests; never provider proof."""
+    compact = lambda obj: json.dumps(obj, ensure_ascii=False, sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")
+    envelope = json.loads(raw)
+    output = envelope["structuredOutput"]
+    runtime = {
+        "adapter_version": 2, "requested_model": "grok-4.6", "reported_model": "grok-4.6-build",
+        "requested_reasoning_effort": "high", "reasoning_attested": False,
+        "reasoning_attestation": "not_reported_by_grok_build_cli", "identity_evidence": "requested_only",
+        "cli_version": route["grok_cli_version"], "session_id_hash": value.sha256(envelope["sessionId"].encode()),
+        "request_id_hash": value.sha256(envelope["requestId"].encode()), "envelope_hash": value.sha256(raw),
+        "command_identity": route["grok_command_identity"],
+        "command_identity_hash": value.sha256(compact({"adapter_version": 2, "grok_command": route["grok_command"],
+                                                        "model": "grok-4.6", "reported_model": "grok-4.6-build", "reasoning_effort": "high"})),
+        "subscription_receipt_hash": route["subscription_receipt_hash"], "execution_policy": "bounded_nonvisual_read_only",
+        "usage_telemetry": {"status": "reported", "total_cost_usd": 0.0, "total_cost_usd_ticks": 0, "model_cost_usd": 0.0},
+        "execution_contract": {"schema_version": 1, "output_schema_hash": value.sha256(compact(schema)),
+                               "max_turns": 1, "tools": "none", "staged_prompt_sha256": value.sha256(prompt), "staged_prompt_byte_length": len(prompt)},
+        "transport": {"schema_version": 1, "exit_code": 0, "stdout_byte_length": len(raw), "stderr_byte_length": 0},
+        "nonvisual_max_turns": 1, "observed_turns": 1,
+    }
+    return {"schema_version": 2, "request_hash": value.sha256(compact({"prompt": prompt.decode("utf-8")})),
+            "output": output, "output_hash": value.sha256(compact(output)), "runtime": runtime,
+            "native_envelope_artifact": {"schema_version": 1, "sha256": value.sha256(raw), "byte_length": len(raw)}}
 
 
 def sol_runner(value: Any, rows: tuple[dict[str, Any], ...], contacts: Contacts, *, fail_after_contact: bool = False, start_gate: threading.Barrier | None = None, failure_cell: str | None = None, success_release: threading.Event | None = None):
@@ -225,7 +255,7 @@ def broker_fixture(value: Any) -> tuple[Any, Any, dict[str, Any]]:
     return case, support, route
 
 
-@pytest.fixture(scope="module", params=("grok", "sol"))
+@pytest.fixture(scope="module", params=("sol",))
 def completed_native_material(request: pytest.FixtureRequest, tmp_path_factory: pytest.TempPathFactory) -> dict[str, Any]:
     endpoint = str(request.param)
     value = executor()
@@ -233,7 +263,7 @@ def completed_native_material(request: pytest.FixtureRequest, tmp_path_factory: 
     resolution = value._resolution(freeze_root=FREEZE)
     prepared = value.prepare_all(**prepare_args(args))
     contacts = Contacts()
-    outcomes = value.execute_wave(**execute_args(args), allow_remote=True, grok_runner_factory=(lambda _error: grok_runner(value, resolution["rows"], contacts)) if endpoint == "grok" else None, call_codex=sol_runner(value, resolution["rows"], contacts) if endpoint == "sol" else None)
+    outcomes = value.execute_wave(**execute_args(args), allow_remote=True, call_codex=sol_runner(value, resolution["rows"], contacts))
     assert len(outcomes) == len(contacts.calls) == 129
     report = value.report(endpoint=endpoint, output_root=args["output_root"], freeze_root=FREEZE, authorization_acknowledgement_sha256=ACK, profile=profile())
     return {"value": value, "args": args, "resolution": resolution, "prepared": prepared, "contacts": contacts, "report": report}
@@ -276,36 +306,16 @@ def test_grok_native_broker_guard_is_explicitly_gated_and_persists_terminal_outc
         case.tearDown()
 
 
-def test_executor_routes_grok_native_dispatch_through_explicit_temporary_broker_gate(tmp_path: Path) -> None:
+def test_single_root_grok_paths_are_retired(tmp_path: Path) -> None:
     value = executor()
-    args = common(value, tmp_path, "grok")
-    case, _support, route = broker_fixture(value)
-    try:
-        governed_route, _evidence = args["grok_route_provider"](args["queue_root"])
-        route["name"] = governed_route["name"]
-        case.write_route(route)
-        case.broker._revoke_grok_route(route, "fixture revocation")
-        value.prepare_all(**prepare_args(args))
-        cell_id = value._resolution(freeze_root=FREEZE)["rows"][0]["cell_id"]
-        called = False
-
-        def forbidden(**_kwargs: Any) -> dict[str, Any]:
-            nonlocal called
-            called = True
-            return {"unexpected": True}
-
-        call = execute_args(args)
-        call["grok_broker_factory"] = lambda _root, broker_type, _error: broker_type(case.root, grok_host_gate_path=case.grok_host_gate)
-        with pytest.raises((TypeError, ValueError)):
-            value.execute_one(**call, cell_id=cell_id, allow_remote=True, grok_runner_factory=lambda _error: forbidden)
-        root = args["output_root"] / cell_id
-        record = json.loads((root / "broker-contact-outcome.json").read_bytes())
-        assert not called and record["state"] == "definitely_not_contacted"
-        with pytest.raises((TypeError, ValueError)):
-            value.execute_one(**call, cell_id=cell_id, allow_remote=True, grok_runner_factory=lambda _error: lambda **_kwargs: pytest.fail("revoked native Grok cell was resent"))
-        assert not called
-    finally:
-        case.tearDown()
+    args = {"endpoint": "grok", "output_root": tmp_path / "output", "queue_root": tmp_path / "queue", "freeze_root": FREEZE, "authorization_acknowledgement_sha256": ACK}
+    with pytest.raises(ValueError, match="retired"):
+        value.prepare_all(**args)
+    with pytest.raises(ValueError, match="retired"):
+        value.execute_one(**args, cell_id="unused", allow_remote=True)
+    with pytest.raises(ValueError, match="retired"):
+        value.execute_wave(**args, allow_remote=True)
+    assert not args["output_root"].exists()
 
 
 def test_pinned_grok_broker_loader_rejects_cached_module_bypass(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -342,22 +352,8 @@ def test_pinned_grok_broker_dependency_drift_is_rejected(tmp_path: Path, monkeyp
     assert not any(name.startswith("_wpb_pinned_model_work_queue") for name in sys.modules)
 
 
-def test_default_grok_runner_is_explicitly_blocked_before_broker_or_contact(tmp_path: Path) -> None:
+def test_grok_broker_typed_and_unknown_failures(tmp_path: Path) -> None:
     value = executor()
-    args = common(value, tmp_path, "grok")
-    value.prepare_all(**prepare_args(args))
-    cell_id = value._resolution(freeze_root=FREEZE)["rows"][0]["cell_id"]
-    constructed = False
-
-    def forbidden_broker(_root: Path, _broker_type: type[Any], _error_type: type[Exception]) -> Any:
-        nonlocal constructed
-        constructed = True
-        pytest.fail("default Grok runner reached broker construction")
-
-    with pytest.raises(ValueError, match="requires a broker-aware runner"):
-        value.execute_one(**(execute_args(args) | {"grok_broker_factory": forbidden_broker}), cell_id=cell_id, allow_remote=True)
-    assert not constructed
-    assert not (args["output_root"] / cell_id / "launch-intent.json").exists()
 
     case, support, route = broker_fixture(value)
     try:
@@ -473,7 +469,7 @@ def test_report_rejects_raw_identity_receipt_ack_route_and_payload_mutations(com
             artifact.write_bytes(original)
 
 
-@pytest.mark.parametrize("endpoint", ("grok", "sol"))
+@pytest.mark.parametrize("endpoint", ("sol",))
 def test_alternate_route_is_rejected_precontact_and_postcontact_failure_is_terminal(tmp_path: Path, endpoint: str) -> None:
     value = executor()
     args = common(value, tmp_path, endpoint)
@@ -501,17 +497,17 @@ def test_alternate_route_is_rejected_precontact_and_postcontact_failure_is_termi
     post_call = execute_args(post_args)
     contacts = Contacts()
     with pytest.raises((RuntimeError, TypeError, ValueError)):
-            value.execute_one(**post_call, cell_id=selected, allow_remote=True, grok_runner_factory=(lambda _error: grok_runner(value, resolution["rows"], contacts, fail_after_contact=True)) if endpoint == "grok" else None, call_codex=sol_runner(value, resolution["rows"], contacts, fail_after_contact=True) if endpoint == "sol" else None)
+        value.execute_one(**post_call, cell_id=selected, allow_remote=True, call_codex=sol_runner(value, resolution["rows"], contacts, fail_after_contact=True))
     assert contacts.calls == [selected] and contacts.failed
     failed_root = post_args["output_root"] / selected
     assert (failed_root / "result.json").is_file()
     assert not (failed_root / "execution-receipt.json").exists()
     with pytest.raises((TypeError, ValueError)):
-        value.execute_one(**post_call, cell_id=selected, allow_remote=True, grok_runner_factory=(lambda _error: lambda **_kwargs: pytest.fail("terminal Grok cell was resent")) if endpoint == "grok" else None, call_codex=lambda **_kwargs: pytest.fail("terminal Sol cell was resent"))
+        value.execute_one(**post_call, cell_id=selected, allow_remote=True, call_codex=lambda **_kwargs: pytest.fail("terminal Sol cell was resent"))
     assert contacts.calls == [selected]
 
 
-@pytest.mark.parametrize("endpoint", ("grok", "sol"))
+@pytest.mark.parametrize("endpoint", ("sol",))
 def test_wave_stops_queued_cells_after_first_terminal_failure_and_never_resends(tmp_path: Path, endpoint: str, monkeypatch: pytest.MonkeyPatch) -> None:
     value = executor()
     args = common(value, tmp_path, endpoint)
@@ -536,8 +532,7 @@ def test_wave_stops_queued_cells_after_first_terminal_failure_and_never_resends(
         value.execute_wave(
             **execute_args(args),
             allow_remote=True,
-            grok_runner_factory=(lambda _error: grok_runner(value, rows, contacts, fail_after_contact=True, start_gate=gate, failure_cell=failed, success_release=contacts.failure_observed)) if endpoint == "grok" else None,
-            call_codex=sol_runner(value, rows, contacts, fail_after_contact=True, start_gate=gate, failure_cell=failed, success_release=contacts.failure_observed) if endpoint == "sol" else None,
+            call_codex=sol_runner(value, rows, contacts, fail_after_contact=True, start_gate=gate, failure_cell=failed, success_release=contacts.failure_observed),
         )
     assert contacts.maximum == value.MAX_CONCURRENCY
     assert set(contacts.calls) == set(initial)
@@ -550,7 +545,6 @@ def test_wave_stops_queued_cells_after_first_terminal_failure_and_never_resends(
         value.execute_wave(
             **execute_args(args),
             allow_remote=True,
-            grok_runner_factory=(lambda _error: lambda **_kwargs: pytest.fail("terminal Grok wave cell was resent")) if endpoint == "grok" else None,
             call_codex=lambda **_kwargs: pytest.fail("terminal Sol wave cell was resent"),
         )
     assert set(contacts.calls) == set(initial)
