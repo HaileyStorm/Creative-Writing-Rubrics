@@ -52,9 +52,9 @@ The `cwr score` command emits v2 by default. Use `--report-version 1` only to in
 
 `CANNOT_ASSESS` widens the interval. If coverage is below the bundle threshold, the result is `PROVISIONAL` and must not drive unattended acceptance. Missing modalities (no audio for an audio leaf) are `CANNOT_ASSESS`, not `NO`.
 
-For worked public examples, see the [established-rubric repeatability study](../evaluation-results/the-part-that-arrives-first-repeatability/established-v4/), its [authorized source story](../evaluation-results/the-part-that-arrives-first-repeatability/source.md), and the sanitized [Gray Blood long-form comparison](../evaluation-results/gray-blood-ch1-6/).
+For worked public examples, see the [established-rubric repeatability study](https://github.com/HaileyStorm/Creative-Writing-Rubrics/tree/b4ba4c5d2963040ffc6f26010de089e21331a0b4/evaluation-results/the-part-that-arrives-first-repeatability/established-v4), its [authorized source story](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/b4ba4c5d2963040ffc6f26010de089e21331a0b4/evaluation-results/the-part-that-arrives-first-repeatability/source.md), and the sanitized [Gray Blood long-form comparison](https://github.com/HaileyStorm/Creative-Writing-Rubrics/tree/b4ba4c5d2963040ffc6f26010de089e21331a0b4/evaluation-results/gray-blood-ch1-6).
 
-The [QPC24 V9 full-book rebaseline aggregate](../evaluation-results/hbq-gray-blood-full-book-qpc24-rebaseline-v9-public-result-v1/) is work in progress: it reports all selected units without sampling, keeps bounds non-statistical, and makes no rubric promotion.
+The [QPC24 V9 full-book rebaseline aggregate](https://github.com/HaileyStorm/Creative-Writing-Rubrics/tree/b4ba4c5d2963040ffc6f26010de089e21331a0b4/evaluation-results/hbq-gray-blood-full-book-qpc24-rebaseline-v9-public-result-v1) is work in progress: it reports all selected units without sampling, keeps bounds non-statistical, and makes no rubric promotion.
 
 ## Bias controls
 

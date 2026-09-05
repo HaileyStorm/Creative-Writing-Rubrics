@@ -227,7 +227,7 @@ endpoint-separated throughout.
 The next round used actual development work rather than a new runtime
 mechanism. DSPy 3.3.1 constructed the local development view and Optuna 4.9.0
 ran 198 deterministic development trials in the [next-wave
-optimizer](../evaluation-results/hbq-human-alignment-optimizer-v5-f20-nextwave-development-optimizer-v1/README.md).
+optimizer](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/b4ba4c5d2963040ffc6f26010de089e21331a0b4/evaluation-results/hbq-human-alignment-optimizer-v5-f20-nextwave-development-optimizer-v1/README.md).
 Neither package made a provider call or entered the shipped scorer. The useful
 lesson was about edit mass: candidate 08, a smaller-step change, reduced MAE by
 19% on Grok and 9.39% on Sol across the three-group screen. A more forceful
@@ -237,20 +237,20 @@ too small to trust it.
 The smaller change was then tested across seven frozen development groups. Its
 winning single-factor descendant, `broader-nextwave-13-missing_evidence_not_no`, reduced Grok
 MAE from 0.9881 to 0.7381 (25.30%) in the [broader Grok
-result](../evaluation-results/hbq-human-alignment-optimizer-v5-f20-broader-development-grok-result-v2-v3-exec/README.md),
+result](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/b4ba4c5d2963040ffc6f26010de089e21331a0b4/evaluation-results/hbq-human-alignment-optimizer-v5-f20-broader-development-grok-result-v2-v3-exec/README.md),
 and reduced Sol MAE from 1.2476 to 1.0675 (14.44%) in the [separate Sol
-validation](../evaluation-results/hbq-human-alignment-optimizer-v5-f20-broader-development-sol-result-v1/README.md).
+validation](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/b4ba4c5d2963040ffc6f26010de089e21331a0b4/evaluation-results/hbq-human-alignment-optimizer-v5-f20-broader-development-sol-result-v1/README.md).
 That did not license a pooled number or a runtime switch. It earned an
 untouched eight-group Fresh88 confirmation split.
 
 The confirmation held in the same direction: Grok moved from 1.2569 to 0.9375
-(25.414%) in its [confirmation replay](../evaluation-results/hbq-human-alignment-optimizer-v5-f20-confirmation-grok-replay-v2-native-json-normalization/README.md),
+(25.414%) in its [confirmation replay](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/b4ba4c5d2963040ffc6f26010de089e21331a0b4/evaluation-results/hbq-human-alignment-optimizer-v5-f20-confirmation-grok-replay-v2-native-json-normalization/README.md),
 while Sol moved from 1.4267 to 1.2439 (12.813%) in its [separate confirmation
-recovery](../evaluation-results/hbq-human-alignment-optimizer-v5-f20-confirmation-sol-reconcile-v3-final-message/README.md).
+recovery](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/b4ba4c5d2963040ffc6f26010de089e21331a0b4/evaluation-results/hbq-human-alignment-optimizer-v5-f20-confirmation-sol-reconcile-v3-final-message/README.md).
 One Sol cell had emitted an incomplete interim message before its complete
 final native message. The result recovered only that matching final message;
 it did not resend the cell or turn repair into another observation. The exact
-instruction is now published as a [development-only profile](../evaluation-results/hbq-human-alignment-optimizer-v5-f20-recommended-development-profile-v1/README.md),
+instruction is now published as a [development-only profile](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/b4ba4c5d2963040ffc6f26010de089e21331a0b4/evaluation-results/hbq-human-alignment-optimizer-v5-f20-recommended-development-profile-v1/README.md),
 not a default or promotion. The practical conclusion is modest and valuable:
 smaller, evidence-sensitive edits can travel across these two endpoints, but
 future revisions still need to test that claim separately rather than assume
@@ -307,7 +307,7 @@ select a successor. This negative extension narrowed the next wave: retain
 descendant 13 and test three smaller referent clauses across all 13 existing
 development items, with confirmation and Fresh96 still closed.
 
-That narrower [Grok wave](../evaluation-results/hbq-human-alignment-optimizer-v6-desc15-referent-grok-result-v1/README.md)
+That narrower [Grok wave](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/b4ba4c5d2963040ffc6f26010de089e21331a0b4/evaluation-results/hbq-human-alignment-optimizer-v6-desc15-referent-grok-result-v1/README.md)
 completed all **52 development cells**: descendant 13 plus three one-clause
 referent children across 13 items and seven equal-weight prompt groups. All
 responses reported complete dimension coverage. Descendant
@@ -453,7 +453,7 @@ result: Sol has not yet vetoed or retained either child, confirmation remains
 unopened, no endpoint scores are pooled, and the 52 lifecycle receipts do not
 prove native endpoint-contact cardinality.
 
-The [matched desc16 Sol veto](../evaluation-results/hbq-human-alignment-optimizer-v7-desc16-referent-evidence-sol-veto-result-v1/README.md)
+The [matched desc16 Sol veto](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/b4ba4c5d2963040ffc6f26010de089e21331a0b4/evaluation-results/hbq-human-alignment-optimizer-v7-desc16-referent-evidence-sol-veto-result-v1/README.md)
 closed that small development branch cleanly. Neither Grok qualifier beat the
 exact Sol child-20 parent (**1.0101 MAE**): contradiction-threshold was
 **1.0188** (0.86% higher) and dimension-isolation **1.0409** (3.04% higher).
@@ -515,21 +515,21 @@ the executor expected canonical JSON bytes, while Grok had persisted valid
 pretty-printed native envelopes. All **64** outputs were already present, so
 the source root was kept immutable and a distinct, zero-call reconciliation
 replayed them instead of resending any work. The
-[reconciliation package](../evaluation-results/hbq-human-alignment-optimizer-v9-desc18-broad-replication-grok-reconcile-v1/README.md)
+[reconciliation package](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/b4ba4c5d2963040ffc6f26010de089e21331a0b4/evaluation-results/hbq-human-alignment-optimizer-v9-desc18-broad-replication-grok-reconcile-v1/README.md)
 was pushed at [`b33c501`](https://github.com/HaileyStorm/Creative-Writing-Rubrics/commit/b33c501c4d6b87a90d6a5d307f7e025839e4afec).
 
 On the same public/open Fresh96 development slice, child20 reduced Grok
 equal-group MAE from **0.7951389** to **0.7795139** (**1.965%**). It was no
 worse under all six frozen robustness settings. The provider-free
-[development optimizer](../evaluation-results/hbq-human-alignment-optimizer-v9-desc18-broad-replication-development-optimizer-v1/README.md),
+[development optimizer](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/b4ba4c5d2963040ffc6f26010de089e21331a0b4/evaluation-results/hbq-human-alignment-optimizer-v9-desc18-broad-replication-development-optimizer-v1/README.md),
 pushed at [`4fe1329`](https://github.com/HaileyStorm/Creative-Writing-Rubrics/commit/4fe1329b05deb0030c80b5d0f1904d807cf6674e),
 used the real Optuna grid for **12 of 12** trials and recorded two DSPy
 examples, with zero LM calls.
 
 The frozen qualification then opened the matched Sol veto, not a Sol-selected
-replacement. The [executor](../evaluation-results/hbq-human-alignment-optimizer-v9-desc18-broad-replication-sol-veto-exec-v1/README.md)
+replacement. The [executor](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/b4ba4c5d2963040ffc6f26010de089e21331a0b4/evaluation-results/hbq-human-alignment-optimizer-v9-desc18-broad-replication-sol-veto-exec-v1/README.md)
 at [`926f8f1`](https://github.com/HaileyStorm/Creative-Writing-Rubrics/commit/926f8f158d2551c2edb6ba40888d875a1aaf18a8)
-and its [recomputed result](../evaluation-results/hbq-human-alignment-optimizer-v9-desc18-broad-replication-sol-veto-result-v1/README.md)
+and its [recomputed result](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/b4ba4c5d2963040ffc6f26010de089e21331a0b4/evaluation-results/hbq-human-alignment-optimizer-v9-desc18-broad-replication-sol-veto-result-v1/README.md)
 at [`2edd54b`](https://github.com/HaileyStorm/Creative-Writing-Rubrics/commit/2edd54bfc469a3ad6fa5dcba58b53b18afc2338f)
 showed Sol MAE falling from **1.1751736** to **1.0699653** (**8.9526%**),
 with all **384 of 384** coverage flags true. Child20 therefore survives this
@@ -546,9 +546,9 @@ untouched Fresh96 items across 16 prompt groups. The candidate and all 64
 payloads were fixed before opening the panel; Sol received those same bytes
 after Grok, without another tuning step.
 
-The [Grok confirmation](../evaluation-results/hbq-human-alignment-optimizer-v10-fresh96-confirmation-grok-result-v1/)
+The [Grok confirmation](https://github.com/HaileyStorm/Creative-Writing-Rubrics/tree/b4ba4c5d2963040ffc6f26010de089e21331a0b4/evaluation-results/hbq-human-alignment-optimizer-v10-fresh96-confirmation-grok-result-v1)
 reduced equal-group MAE from 1.045139 to 0.745660 (28.6545%), improving 15
-groups and tying one. The [paired Sol result](../evaluation-results/hbq-human-alignment-optimizer-v10-fresh96-confirmation-sol-result-v1/)
+groups and tying one. The [paired Sol result](https://github.com/HaileyStorm/Creative-Writing-Rubrics/tree/b4ba4c5d2963040ffc6f26010de089e21331a0b4/evaluation-results/hbq-human-alignment-optimizer-v10-fresh96-confirmation-sol-result-v1)
 reduced MAE from 1.350087 to 1.107813 (17.9451%), improving 15 groups and
 worsening one. This is another same-direction held-out result after the early
 Grok-only improvement reversed on Sol. It supports retaining the smaller
@@ -578,7 +578,7 @@ both. Every frozen numeric score, including the false-coverage value, stayed
 in the calculation. These MAE gains are real paired measurements, not general
 ranking-success evidence.
 
-The [literal child20 export](../evaluation-results/hbq-human-alignment-optimizer-v10-child20-development-profile-v1/)
+The [literal child20 export](https://github.com/HaileyStorm/Creative-Writing-Rubrics/tree/b4ba4c5d2963040ffc6f26010de089e21331a0b4/evaluation-results/hbq-human-alignment-optimizer-v10-child20-development-profile-v1)
 makes that result usable for opt-in development: the unchanged 794-byte
 instruction and 1,644-byte profile reconstruct exactly from the frozen V10
 candidate. Its verifier binds both endpoint results and needs no private study
@@ -588,14 +588,14 @@ runtime promotion or Linux/Flash-Next claim is added.
 ## Checking the retained prompt on more training stories
 
 We next kept child20 unchanged and measured four previously unused Fresh88
-TRAIN groups, paired against baseline. The [eight-cell Grok screen](../evaluation-results/hbq-human-alignment-optimizer-v11-train-grok-result-v1/)
+TRAIN groups, paired against baseline. The [eight-cell Grok screen](https://github.com/HaileyStorm/Creative-Writing-Rubrics/tree/b4ba4c5d2963040ffc6f26010de089e21331a0b4/evaluation-results/hbq-human-alignment-optimizer-v11-train-grok-result-v1)
 reduced MAE from 1.041667 to 0.708333 (32%), improving all four groups. All
 eight responses and six dimensions were included; independent replay of the
 raw scores and human target means agreed. This is encouraging development
 coverage, not another confirmation test. It opens the planned matched Sol
 measurement without changing the prompt or reopening confirmation for tuning.
 
-The [matched eight-cell Sol measurement](../evaluation-results/hbq-human-alignment-optimizer-v11-train-sol-result-v1/)
+The [matched eight-cell Sol measurement](https://github.com/HaileyStorm/Creative-Writing-Rubrics/tree/b4ba4c5d2963040ffc6f26010de089e21331a0b4/evaluation-results/hbq-human-alignment-optimizer-v11-train-sol-result-v1)
 then reduced MAE from 1.338889 to 1.125000 (15.98%), with three groups improving
 and one worsening slightly. All eight requests ran in parallel with unchanged
 Grok payload bytes and completed with separate normal receipts. This supports
@@ -604,7 +604,7 @@ non-fitted midpoint-3 context scores 0.763889 on these four stories, better than
 either Sol candidate. No TRAIN result is relabeled as confirmation or used to
 change the already-opened confirmation comparison.
 
-A later [fresh seven-group Grok development panel](../evaluation-results/hbq-human-alignment-optimizer-v12-development-grok-result-v1/)
+A later [fresh seven-group Grok development panel](https://github.com/HaileyStorm/Creative-Writing-Rubrics/tree/b4ba4c5d2963040ffc6f26010de089e21331a0b4/evaluation-results/hbq-human-alignment-optimizer-v12-development-grok-result-v1)
 kept child20 unchanged on 13 development items (26 matched cells). Independent
 receipt replay gave equal-group mean item MAE of 1.126984 for baseline and
 0.767857 for child20: a 31.87% reduction, with six group wins, one tie, and
@@ -619,7 +619,7 @@ Grok quality guard has a latent all-zero finite-score limitation recorded in the
 public provenance. No prompt retuning, selection, promotion, or runtime change
 followed from this panel.
 
-The [matched Sol panel](../evaluation-results/hbq-human-alignment-optimizer-v12-development-sol-result-v1/)
+The [matched Sol panel](https://github.com/HaileyStorm/Creative-Writing-Rubrics/tree/b4ba4c5d2963040ffc6f26010de089e21331a0b4/evaluation-results/hbq-human-alignment-optimizer-v12-development-sol-result-v1)
 then completed all 26 calls with the same payload bytes, at up to ten concurrent
 calls. Equal-group mean item MAE fell from 1.355754 to 1.144048 (15.62%): six
 groups improved and one worsened. Four of 156 coverage flags were false; their
@@ -634,7 +634,7 @@ ranking. We keep this development result separate from untouched confirmation
 and retain both the gains and the counterexamples as we develop the next
 TRAIN-only candidates.
 
-The [V13 remaining TRAIN expansion](../evaluation-results/hbq-human-alignment-optimizer-v13-train-expansion-result-v1/)
+The [V13 remaining TRAIN expansion](https://github.com/HaileyStorm/Creative-Writing-Rubrics/tree/b4ba4c5d2963040ffc6f26010de089e21331a0b4/evaluation-results/hbq-human-alignment-optimizer-v13-train-expansion-result-v1)
 then measured the unchanged baseline and child20 on the other 44 frozen TRAIN
 items, in 22 unequal prompt groups and 88 Grok cells. Independent CSV and
 native-receipt replay retained every finite score: child20's equal-group mean
@@ -651,7 +651,7 @@ are not part of the primary MAE measurement.
 
 ## Optuna calibration stayed distinct from prompt search
 
-The [V13 calibration](../evaluation-results/hbq-human-alignment-optimizer-v13-train-expansion-v1/CALIBRATION.md)
+The [V13 calibration](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/b4ba4c5d2963040ffc6f26010de089e21331a0b4/evaluation-results/hbq-human-alignment-optimizer-v13-train-expansion-v1/CALIBRATION.md)
 used real Optuna `4.9.0` for `22` leave-one-group-out folds with `64` trials per
 fold (`1,408` trials total) over the native Grok TRAIN replay. Out-of-fold MAE moved
 from `0.890993265993266` for child20 to `0.7485954607139592` (`15.9819%`),
@@ -659,12 +659,12 @@ while fixed-3 was `0.7760942760942761`; OOF was `3.5432%` lower. Rank
 readouts improved `2/6` and worsened `4/6`. This is calibration-only
 cross-validation: it made no new model calls and produced no prompt candidate,
 new discrimination, generalization, runtime, or selection evidence. The
-[public calibration aggregate](../evaluation-results/hbq-human-alignment-optimizer-v13-train-expansion-v1/calibration-result.json)
+[public calibration aggregate](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/b4ba4c5d2963040ffc6f26010de089e21331a0b4/evaluation-results/hbq-human-alignment-optimizer-v13-train-expansion-v1/calibration-result.json)
 keeps this result separate from the V14 DSPy prompt comparison.
 
 ## A DSPy descendant showed endpoint-sensitive movement
 
-The [V14 DSPy TRAIN pilot](../evaluation-results/hbq-human-alignment-optimizer-v14-dspy-train-pilot-result-v1/)
+The [V14 DSPy TRAIN pilot](https://github.com/HaileyStorm/Creative-Writing-Rubrics/tree/b4ba4c5d2963040ffc6f26010de089e21331a0b4/evaluation-results/hbq-human-alignment-optimizer-v14-dspy-train-pilot-result-v1)
 reused the same four frozen TRAIN items as V11 and compared unchanged child20
 with one independently verified DSPy descendant. The descendant retained
 child20's profile bytes and changed only the instruction. On Grok, child20's
@@ -687,7 +687,7 @@ native endpoint-contact cardinality remains unproven.
 
 ## The broader V14 replay completed as endpoint-separated development evidence
 
-The [V14 DSPy TRAIN expansion](../evaluation-results/hbq-human-alignment-optimizer-v14-dspy-train-expansion-result-v1/)
+The [V14 DSPy TRAIN expansion](https://github.com/HaileyStorm/Creative-Writing-Rubrics/tree/b4ba4c5d2963040ffc6f26010de089e21331a0b4/evaluation-results/hbq-human-alignment-optimizer-v14-dspy-train-expansion-result-v1)
 completed both endpoint replays over 44 frozen TRAIN items, 22 groups, and 88
 cells per endpoint using the same child20/DSPy candidate and profile as the
 pilot. Grok MAE moved from `0.8842592592592592` to `0.7525042087542088`
@@ -709,7 +709,7 @@ selection, promotion, runtime, or pooling.
 
 ## A separate V12 development checkpoint made the calibration limit plainer
 
-The [V14 DSPy development checkpoint](../evaluation-results/hbq-human-alignment-optimizer-v14-dspy-train-pilot-v1/DEVELOPMENT.md)
+The [V14 DSPy development checkpoint](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/b4ba4c5d2963040ffc6f26010de089e21331a0b4/evaluation-results/hbq-human-alignment-optimizer-v14-dspy-train-pilot-v1/DEVELOPMENT.md)
 measured the same frozen DSPy descendant against unchanged child20 on 13 V12
 development items, 7 groups, and 26 Grok cells. Equal-group item MAE moved
 from `0.9642857142857143` to `0.763888888888889` (`20.78189300411522%`; five
@@ -724,7 +724,7 @@ all-zero vector; no coverage flag was false. Direct raw replay checked schedule
 payload bindings, CSV target reconstruction, native receipt/response digest
 agreement, and 26 unique request and session identities. The physical schedule
 file digest and its canonical semantic schedule digest are deliberately distinct
-commitments, recorded in the [public aggregate](../evaluation-results/hbq-human-alignment-optimizer-v14-dspy-train-pilot-v1/development-result.json).
+commitments, recorded in the [public aggregate](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/b4ba4c5d2963040ffc6f26010de089e21331a0b4/evaluation-results/hbq-human-alignment-optimizer-v14-dspy-train-pilot-v1/development-result.json).
 
 The separate matched Sol replay is now complete. Its MAE moved from
 `1.1908730158730159` to `0.9607142857142857` (`19.326891036321223%`; seven
@@ -743,7 +743,7 @@ history for their different inputs, not runtime dependencies.
 
 ## Mapped-score calibration did not establish HBQ feature value
 
-A provider-free [Fresh88 TRAIN calibration diagnostic](../evaluation-results/hbq-human-alignment-v3-fresh88-analysis-v1/DEVELOPMENT_CALIBRATION.md)
+A provider-free [Fresh88 TRAIN calibration diagnostic](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/b4ba4c5d2963040ffc6f26010de089e21331a0b4/evaluation-results/hbq-human-alignment-v3-fresh88-analysis-v1/DEVELOPMENT_CALIBRATION.md)
 tested six mapped HBQ YES fractions over 27 leaves, rather than all rubric
 module weights or the canonical final HBQ score. It used 48 TRAIN items and 24
 leave-one-prompt-group-out folds, fitting 23 groups each time. Fixed-3 MAE was
@@ -768,7 +768,7 @@ rubric-weight, or canonical-score change.
 
 ## Next: discrimination, not just lower error
 
-The [completed 330-cell multisample replay](../evaluation-results/hbq-multisample-repeatability-v1-completed-result-v1/)
+The [completed 330-cell multisample replay](https://github.com/HaileyStorm/Creative-Writing-Rubrics/tree/b4ba4c5d2963040ffc6f26010de089e21331a0b4/evaluation-results/hbq-multisample-repeatability-v1-completed-result-v1)
 now preserves every cell across the interrupted continuation. Independent
 raw-score recomputation matches the final aggregate. HBQ's pooled descriptive
 human-reference rho is `-0.041002`; NAPLAN and Cambridge are approximately
@@ -878,7 +878,7 @@ now complete; their results remain separate.
 
 ## Family weights did not repair the historical score
 
-The next [provider-free weight diagnostic](../evaluation-results/hbq-human-alignment-family-weighting-v1/)
+The next [provider-free weight diagnostic](https://github.com/HaileyStorm/Creative-Writing-Rubrics/tree/b4ba4c5d2963040ffc6f26010de089e21331a0b4/evaluation-results/hbq-human-alignment-family-weighting-v1)
 tested the full historical HBQ tree rather than only its six mapped YES
 fractions. It varied three relative family multipliers—core, craft, and form—
 using 128 Optuna trials in each of 24 leave-one-prompt-group-out folds. All 48
