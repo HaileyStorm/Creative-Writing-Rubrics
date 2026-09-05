@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "evidence_class": "source_data_audit_only_no_model_measurement",
+  "dataset_doi": "10.5061/dryad.qfttdz0pm",
+  "source_version": "2024-06-14",
+  "extraction_program_sha256": "4184280abae4d84dad970ba3e0f994a078f083cd12e3cb3d2ff6f3f60e89746d",
+  "local_complete_reconciliation_sha256": "c60f111d48fe9b560652f1e006100753ec1b73464edd681cb1d3cd8466915042",
+  "archive_sha256": "af9c67124f94bb52368cf9eeba87ce6e77aaffafa83b9239af6d9e24b9d5f14a",
+  "nested_archive_sha256": "1eeb56f8882b5eb47e971cb85959f7c947c7a95e2ecff4cfdda9a29f18473942",
+  "writers_member_sha256": "8918b9f87d2120d331dc0e3ff19290fb3d3dec8481a534a61e83a98646844b76",
+  "evaluators_member_sha256": "538bb43773442ee0df93d440e55f9497f618de22b42aad2f2ac2932433fef9e3",
+  "derivatives": {
+    "six_axis_v1_sha256": "48ef6c11cc7550c17e43ffbf18ba8c54d2219d5c8b0cf246a562ee85e8191adc",
+    "twelve_axis_v2_sha256": "e391d638f04eac7a9632811922d0c4fed4e95dd6613f07311d8513b9a52e128b"
+  },
+  "counts": {
+    "writer_source_rows": 500,
+    "completed_writers": 296,
+    "human_only_ai_admissions_excluded": 3,
+    "retained_stories": 293,
+    "completed_evaluators": 600,
+    "completed_evaluator_story_slots": 3600,
+    "excluded_story_slots": 81,
+    "admitted_ai_excluded_slots": 35,
+    "nonfinal_writer_excluded_slots": 46,
+    "unknown_story_ids": 0,
+    "blinded_evaluations": 3519,
+    "complete_blinded_axes": 12
+  },
+  "rating_scale": [1, 9],
+  "rating_axes": ["novel", "original", "rare", "appropriate", "feasible", "publishable", "well_written", "enjoyed", "boring", "funny", "twist", "future"],
+  "story_conditions": {"human": 95, "human_1AI": 100, "human_5AI": 98},
+  "story_topic_counts": {"an adventure on the open seas": 94, "an adventure in the jungle": 100, "an adventure on a different planet": 99},
+  "ratings_per_story_frequency": {"9": 1, "10": 9, "11": 61, "12": 141, "13": 77, "14": 4},
+  "model_calls": 0,
+  "alignment_metrics": null,
+  "authority": {
+    "source_readiness_only": true,
+    "full_hbq_mapping": false,
+    "endpoint_pooling": "forbidden",
+    "cross_dataset_scale_pooling": "forbidden",
+    "runtime_or_profile_promotion": "none"
+  }
+}
