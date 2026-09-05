@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "status": "provider_free_packet_only",
+  "source_freeze": {
+    "expected_provenance_sha256": "458490dd5b33a33457ca0a93295f8a517a19aa3eafb0eb8b34e5b7a8bd47af0b",
+    "open_partitions": {"TRAIN": 176, "DEV": 60},
+    "confirmation": "rejected before packet construction",
+    "public_input_fields": ["opaque_story_id", "story_text"]
+  },
+  "rubric": {
+    "bundle_id": "prose.short_story",
+    "question_count": 178,
+    "role_counts": {"domain": 143, "penalty": 18, "supplemental": 17, "hard_gate": 0},
+    "ordered_question_ids_sha256": "5bc1c7067a96acddc1513f8e69e0814f282856061e37129ec38cf6e91024d524",
+    "task_contract": null,
+    "dynamic_goal": null,
+    "sampler": "absent"
+  },
+  "runtime_bindings": {
+    "src/hbqrs/paths.py": "dedadb6d9f8e3cf700c16012b29e1a590a2b1175c8ead0cf17c44aa6417b8266",
+    "src/hbqrs/weights.py": "6893e8cdbb7ae5de1bb732f6004df558c73838c80bb75d1b2cadb651cc37f139",
+    "src/hbqrs/core.py": "70b4cd16bd536f2f6ddb8e066f801090a037a39605652b14d6c7f6ff312446cb",
+    "src/hbqrs/runner.py": "de1dccd28c8ba544207b3b000d086948fa8c429a327b055762e8d7032e3fa938",
+    "registry/all_modules.json": "43a33ee015310097f79c8a04bb7c3a8782813e758d523b1db08ae2b14d51f66f",
+    "bundles/all_bundles.json": "012af060e8630b8980661465b368e129ddeec82dfa7b48e13e7a35a473eb95a8",
+    "prompts/judge/BINARY_EVALUATION_PROMPT.md": "6c1cac901d820c1ab866e19f9191896e8c97a6aadf35bdae4eac640fd199a3a2",
+    "schema/hbq_judge_response.schema.json": "49c7d824ba5dd957e67968ba3ae6ceb8a7ed9434dfb0dfc654836a76613c7854"
+  },
+  "execution": {
+    "batch_size": null,
+    "execution_authority": false,
+    "metric_eligible": false,
+    "provider_process_launches": 0,
+    "live_provider_surface": "absent"
+  },
+  "future_execution_blockers": [
+    "The canonical direct Grok CLI path lacks the shared Broker and host gate and is not authorized for this packet.",
+    "A separately reviewed adapter is required.",
+    "Exact shared-transport support for the pinned canonical response schema must be verified.",
+    "An empirical batch qualification on the exact runtime stack is required.",
+    "A frozen analysis protocol is required before any execution."
+  ],
+  "non_claims": {
+    "model_alignment": false,
+    "human_axis_mapping": false,
+    "coarse_proxy": false,
+    "leaf_sampling": false,
+    "provider_calls": false,
+    "confirmation_outcomes": false
+  }
+}
