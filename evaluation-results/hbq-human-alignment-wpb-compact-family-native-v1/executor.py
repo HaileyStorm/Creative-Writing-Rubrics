@@ -434,7 +434,8 @@ def prepare_next_batch(*, campaign_root: Path, queue_root: Path, freeze_root: Pa
         number, batch = len(numbers) + 1, _batch_root(root, len(numbers) + 1)
         acknowledgement = {"format_version": 1, "kind": "wpb_grok_batch_acknowledgement", "study_id": STUDY_ID, "campaign_sha256": campaign_sha256, "batch_number": number, "cell_ids": selected, "authorization_acknowledgement_sha256": authorization_acknowledgement_sha256}
         lifecycle._disjoint(batch / "execution", REPO, Path(queue_root), Path(resolution["freeze_root"]))
-        route, evidence = v9._validated_route(v9.parent_stack(), base, Path(queue_root), grok_route_provider)(Path(queue_root))
+        provider = grok_route_provider or (lambda path: _grok_live_route(lifecycle, path))
+        route, evidence = v9._validated_route(v9.parent_stack(), base, Path(queue_root), provider)(Path(queue_root))
         expiry = _fresh_route(v9, route)
         batch.mkdir(parents=True)
         _write_new(batch / "batch-acknowledgement.json", acknowledgement)
@@ -463,6 +464,12 @@ class GrokNativeContactOutcome(RuntimeError):
         self.state = state
         self.failure_sha256 = failure_sha256
         super().__init__("Grok native contact did not complete")
+
+
+def _grok_live_route(lifecycle: ModuleType, queue_root: Path) -> tuple[dict[str, Any], dict[str, Any]]:
+    broker, _error_type = _grok_broker(Path(queue_root), None)
+    native = lifecycle.live()._native_exec()
+    return native.validate_live_grok_route(Path(queue_root), broker_factory=lambda _root: broker)
 
 
 def _grok_broker_module() -> ModuleType:

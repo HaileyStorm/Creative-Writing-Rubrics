@@ -3,6 +3,7 @@ from __future__ import annotations
 import importlib.util
 import json
 import threading
+from types import SimpleNamespace
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from typing import Any
@@ -319,3 +320,34 @@ def test_batch_cannot_rebind_its_authorization_away_from_campaign(tmp_path: Path
         value._batch_plan(args["output_root"], 1, value.sha256((args["output_root"] / "campaign.json").read_bytes()))
     assert not (batch / "execution-active.json").exists()
     assert not (batch / "execution" / ".claims").exists()
+
+
+def test_live_route_uses_current_pinned_broker_not_historical_loader(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    value = support.executor()
+    broker = object()
+    calls = []
+
+    def native_validate(root, *, broker_factory):
+        assert root == tmp_path and broker_factory(root) is broker
+        calls.append(root)
+        return {"name": "fixture"}, {"proof": "fixture"}
+
+    monkeypatch.setattr(value, "_grok_broker", lambda root, factory: (broker, RuntimeError))
+    lifecycle = SimpleNamespace(live=lambda: SimpleNamespace(_native_exec=lambda: SimpleNamespace(validate_live_grok_route=native_validate)))
+    assert value._grok_live_route(lifecycle, tmp_path) == ({"name": "fixture"}, {"proof": "fixture"})
+    assert calls == [tmp_path]
+
+
+def test_default_batch_preparation_uses_reviewed_live_route(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    value = support.executor()
+    args = support.common(value, tmp_path, "grok")
+    value.create_campaign(**campaign_args(args))
+    calls = []
+
+    def live(_lifecycle, root):
+        calls.append(root)
+        return args["grok_route_provider"](root)
+
+    monkeypatch.setattr(value, "_grok_live_route", live)
+    batch = value.prepare_next_batch(**campaign_args(args, queue=True))
+    assert len(batch["prepared_cells"]) == 10 and calls == [args["queue_root"]]
