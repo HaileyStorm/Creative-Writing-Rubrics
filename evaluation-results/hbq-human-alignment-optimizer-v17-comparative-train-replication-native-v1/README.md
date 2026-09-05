@@ -40,5 +40,29 @@ provider error message or prove endpoint-contact cardinality.
 
 The route was revoked and no failed cell was resent. This incomplete,
 non-random subset is ineligible for metrics or cross-endpoint performance
-comparison. A complete Sol run, if obtained, is a separate TRAIN diagnostic;
+comparison. The complete Sol run below is a separate TRAIN diagnostic;
 it cannot establish Grok performance from this partial execution.
+
+## Standalone Sol TRAIN result
+
+The [complete Sol aggregate](sol-result.json) includes all 48 fresh cells plus
+12 pinned V15 direct measurements: 50 stories in five additional TRAIN prompt
+groups. Independent raw-score arithmetic and receipt commitments match the
+native report with zero mismatches.
+
+| Condition | Prompt-macro Spearman | Mean six-axis MAE | Full five-group coverage |
+| --- | ---: | ---: | --- |
+| Historical/noncontemporaneous direct | 0.417514 | 0.814444 | No: Surprise retains 3/5 |
+| Comparative forward | 0.407013 | 0.809222 | Yes |
+| Comparative reverse | 0.410504 | 0.804667 | Yes |
+| Per-story mean of both orders (primary) | 0.423961 | 0.784167 | Yes |
+
+The primary correlation is defined on all five groups for all six axes.
+The direct arm's strict-five macro is undefined, so its descriptive macro
+cannot establish a clean comparative-method gain. The mean-order method uses
+two judgments and larger shared context; direct receipts are partly historical.
+This small development panel does not establish full-HANNA competitiveness,
+canonical full-HBQ quality, confirmation, generalization, or runtime promotion.
+Grok's incomplete run supplies no endpoint performance comparison. Local Sol
+identities are distinct, but provider/model/reasoning attestation and native
+endpoint-contact cardinality remain unproven.
