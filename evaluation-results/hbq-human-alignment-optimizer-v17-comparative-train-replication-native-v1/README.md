@@ -28,6 +28,17 @@ attestation, generalization, confirmation, selection, promotion, runtime use,
 or any public-performance claim.  Grok remains the primary development route;
 Sol uses identical frozen payload bytes as an independent endpoint check.
 
-No provider was contacted by creation of this package.  A future execution
-requires a fresh, reviewed no-liability route proof and explicit disclosure at
-the caller before its prepared output root is created.
+## Grok execution is incomplete
+
+The [Grok settlement](grok-incomplete.json) retains 23 response-backed cells
+(22 direct and one forward comparison) and 25 terminal provider-attempt
+failures. Independent native re-admission verified all 23 successes and the
+exact 48-cell inventory; no cells are unsettled. Native logs reported HTTP 402
+usage-balance exhaustion during the wave. Individual terminal records retain
+only the exception type, so they do not independently preserve each underlying
+provider error message or prove endpoint-contact cardinality.
+
+The route was revoked and no failed cell was resent. This incomplete,
+non-random subset is ineligible for metrics or cross-endpoint performance
+comparison. A complete Sol run, if obtained, is a separate TRAIN diagnostic;
+it cannot establish Grok performance from this partial execution.
