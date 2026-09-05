@@ -28,12 +28,20 @@ V16 = HERE.parent / "hbq-human-alignment-optimizer-v16-comparative-train-v1" / "
 V16_COMMIT = "3c1bec6"
 V16_SHA256 = "554c6ab1e70a74a89c9b7cefab7c15ea66146a44aea7a8d38293ae6c2d4956db"
 CONTRACT = HERE / "study-contract.json"
-CONTRACT_SHA256 = "011e8fa91774c78ed63a786a677dc8d02cf0a5f9fd3c6c5125e519f534843c22"
+CONTRACT_SHA256 = "dabd9481466d80b62e84b0246659bcebef16e43abf78e8b6928788ce4bdae5ad"
+QUEUE_TOOLS_ROOT = Path(r"C:\Users\Haile\.codex\tools")
+BROKER_PATH = QUEUE_TOOLS_ROOT / "model_work_queue" / "broker.py"
+BROKER_SHA256 = "7d26483450a9a7fb53557d506d2badf3eb153c254b2e3b14c086c217b0e3c383"
+IMAGE_CANARY_PATH = QUEUE_TOOLS_ROOT / "model_work_queue" / "image_canary.py"
+IMAGE_CANARY_SHA256 = "e473364f18849fc04bdad0ca23157fc4d4d14c7edeff2f8ac46cc0db1ef4122d"
 ENDPOINTS = {"grok", "sol"}
 MAX_CONCURRENCY = 10
 SUCCESS_STATES = {"Grok": "provisional_scoring_received", "Sol": "local_codex_lifecycle_received_native_contact_unproven"}
 TRANSPORT_TARGET = {"Relevance": 0.0, "Coherence": 0.0, "Empathy": 0.0, "Surprise": 0.0, "Engagement": 0.0, "Complexity": 0.0}
-EXPECTED_CONTRACT = {"authority": {"confirmation": "closed", "endpoint_pooling": "forbidden", "promotion": "none", "runtime": "none", "selection": "development_only"}, "core": {"commit": CORE_COMMIT, "path": CORE.relative_to(REPO).as_posix(), "sha256": CORE_SHA256}, "execution": {"endpoints": ["grok", "sol"], "max_concurrency": 10, "payload_parity": "exact identical bytes per cell across endpoints", "precontact": "prepare_all makes zero provider calls or process launches", "transport": "pinned V16 native Grok/Sol lifecycle; endpoint adapters are test overrides only", "unit": "one rederived WPB pair per call"}, "format_version": 1, "kind": "wpb_compact_family_native_execution", "local_only": {"excluded_from_provider_payload": ["category", "source model", "preferred side", "chosen/rejected labels", "source scores", "local targets"], "sol_transport_target": "fixed all-zero V16 compatibility sentinel; never a WPB label or outbound payload"}, "native_runtime": {"commit": V16_COMMIT, "path": V16.relative_to(REPO).as_posix(), "sha256": V16_SHA256}, "study_id": STUDY_ID}
+EXPECTED_CONTRACT = {"authority": {"confirmation": "closed", "endpoint_pooling": "forbidden", "promotion": "none", "runtime": "none", "selection": "development_only"}, "core": {"commit": CORE_COMMIT, "path": CORE.relative_to(REPO).as_posix(), "sha256": CORE_SHA256}, "execution": {"endpoints": ["grok", "sol"], "grok_native_contact_guard": {"api": "Broker.run_grok_native_contact", "path": "C:/Users/Haile/.codex/tools/model_work_queue/broker.py", "sha256": BROKER_SHA256}, "max_concurrency": 10, "payload_parity": "exact identical bytes per cell across endpoints", "precontact": "prepare_all makes zero provider calls or process launches", "transport": "pinned V16 native Grok/Sol lifecycle; endpoint adapters are test overrides only", "unit": "one rederived WPB pair per call"}, "format_version": 1, "kind": "wpb_compact_family_native_execution", "local_only": {"excluded_from_provider_payload": ["category", "source model", "preferred side", "chosen/rejected labels", "source scores", "local targets"], "sol_transport_target": "fixed all-zero V16 compatibility sentinel; never a WPB label or outbound payload"}, "native_runtime": {"commit": V16_COMMIT, "path": V16.relative_to(REPO).as_posix(), "sha256": V16_SHA256}, "study_id": STUDY_ID}
+
+EXPECTED_CONTRACT["execution"]["transport"] = "pinned V16 Sol lifecycle plus broker-guarded Grok runner; freeform Grok default is blocked pending structured telemetry"
+EXPECTED_CONTRACT["execution"]["grok_native_contact_guard"].update({"image_canary_path": "C:/Users/Haile/.codex/tools/model_work_queue/image_canary.py", "image_canary_sha256": IMAGE_CANARY_SHA256})
 
 
 def canonical(value: Any) -> bytes:
@@ -174,7 +182,86 @@ def _grok_prepare(resolution: Mapping[str, Any], *, output_root: Path, queue_roo
     return {"study_id": STUDY_ID, "endpoint": "grok", "prepared_cells": cells, "logical_cells": 129, "partitions": {"train": 105, "dev": 24}, "provider_calls_made": 0, "process_launches": 0, "native_contact_count": 0, "native_contact_count_semantics": "prepared_precontact_only"}
 
 
-def _grok_execute(resolution: Mapping[str, Any], *, output_root: Path, queue_root: Path, acknowledgement: str, cell_id: str, route_provider: Callable[[Path], tuple[dict[str, Any], dict[str, Any]]] | None, runner: Callable[..., Mapping[str, Any]] | None) -> dict[str, Any]:
+class GrokNativeContactOutcome(RuntimeError):
+    def __init__(self, state: str, failure_sha256: str):
+        self.state = state
+        self.failure_sha256 = failure_sha256
+        super().__init__("Grok native contact did not complete")
+
+
+def _grok_broker_module() -> ModuleType:
+    raw, image_raw = BROKER_PATH.read_bytes(), IMAGE_CANARY_PATH.read_bytes()
+    if sha256(raw) != BROKER_SHA256 or sha256(image_raw) != IMAGE_CANARY_SHA256:
+        raise ValueError("installed Grok contact broker dependency drifted")
+    package_name = "_wpb_pinned_model_work_queue"
+    module_name, image_name = package_name + ".broker", package_name + ".image_canary"
+    if any(name in sys.modules for name in (package_name, module_name, image_name)):
+        raise ValueError("Grok contact broker module cache is not accepted")
+    package = ModuleType(package_name)
+    package.__path__ = [str(BROKER_PATH.parent)]  # type: ignore[attr-defined]
+    package.__package__ = package_name
+    image_spec = importlib.util.spec_from_file_location(image_name, IMAGE_CANARY_PATH)
+    broker_spec = importlib.util.spec_from_file_location(module_name, BROKER_PATH)
+    if image_spec is None or broker_spec is None:
+        raise ValueError("Grok contact broker dependency cannot load")
+    image_module, broker_module = importlib.util.module_from_spec(image_spec), importlib.util.module_from_spec(broker_spec)
+    sys.modules[package_name], sys.modules[image_name], sys.modules[module_name] = package, image_module, broker_module
+    try:
+        exec(compile(image_raw, str(IMAGE_CANARY_PATH), "exec"), image_module.__dict__)
+        exec(compile(raw, str(BROKER_PATH), "exec"), broker_module.__dict__)
+    finally:
+        sys.modules.pop(module_name, None)
+        sys.modules.pop(image_name, None)
+        sys.modules.pop(package_name, None)
+    if BROKER_PATH.read_bytes() != raw or IMAGE_CANARY_PATH.read_bytes() != image_raw or not isinstance(getattr(broker_module, "Broker", None), type) or not isinstance(getattr(broker_module, "GrokNativeProviderError", None), type):
+        raise ValueError("Grok contact broker import drifted")
+    return broker_module
+
+
+def _grok_broker(queue_root: Path, factory: Callable[[Path, type[Any], type[Exception]], Any] | None) -> tuple[Any, type[Exception]]:
+    if factory is not None:
+        module = _grok_broker_module()
+        broker = factory(Path(queue_root), module.Broker, module.GrokNativeProviderError)
+        if type(broker) is not module.Broker:
+            raise ValueError("Grok broker factory must return the exact verified Broker type")
+        return broker, module.GrokNativeProviderError
+    module = _grok_broker_module()
+    return module.Broker(Path(queue_root)), module.GrokNativeProviderError
+
+
+def _broker_contact_outcome(root: Path, *, route_name: str, outcome: Mapping[str, Any], prompt: bytes) -> None:
+    state, failure = outcome.get("state"), outcome.get("failure")
+    if state not in {"definitely_not_contacted", "unavailable", "ambiguous"} or not isinstance(failure, Mapping):
+        raise ValueError("Grok broker contact outcome is malformed")
+    bindings = {"cell_id": Path(root).name, "outbound_payload_sha256": sha256(prompt)}
+    for name, key in (("prepared.json", "prepared_sha256"), ("authorization-acknowledgement.json", "acknowledgement_record_sha256"), ("launch-intent.json", "launch_intent_sha256")):
+        path = Path(root) / name
+        if path.is_file():
+            bindings[key] = sha256(path.read_bytes())
+    record = {"format_version": 1, "study_id": STUDY_ID, "kind": "grok_native_broker_contact_outcome", "state": state, "route_name": route_name, "broker_sha256": BROKER_SHA256, "bindings": bindings, "failure": dict(failure), "failure_sha256": sha256(failure)}
+    path = Path(root) / "broker-contact-outcome.json"
+    with path.open("xb") as handle:
+        handle.write(canonical(record))
+
+
+def _brokered_grok_runner(*, broker: Any, route_name: str, runner: Callable[..., Mapping[str, Any]]) -> Callable[..., Mapping[str, Any]]:
+    def guarded(**kwargs: Any) -> Mapping[str, Any]:
+        outcome = broker.run_grok_native_contact(route_name, lambda: runner(**kwargs))
+        if not isinstance(outcome, Mapping) or set(outcome) != {"state", "result", "failure"}:
+            raise ValueError("Grok broker returned an invalid contact envelope")
+        if outcome["state"] == "completed" and outcome["failure"] is None and isinstance(outcome["result"], Mapping):
+            return outcome["result"]
+        prompt = kwargs.get("prompt")
+        if not isinstance(prompt, bytes):
+            raise ValueError("Grok runner omitted its outbound payload bytes")
+        _broker_contact_outcome(Path(kwargs["output_dir"]), route_name=route_name, outcome=outcome, prompt=prompt)
+        raise GrokNativeContactOutcome(str(outcome["state"]), sha256(outcome["failure"]))
+    return guarded
+
+
+def _grok_execute(resolution: Mapping[str, Any], *, output_root: Path, queue_root: Path, acknowledgement: str, cell_id: str, route_provider: Callable[[Path], tuple[dict[str, Any], dict[str, Any]]] | None, runner_factory: Callable[[type[Exception]], Callable[..., Mapping[str, Any]]], broker_factory: Callable[[Path, type[Any], type[Exception]], Any] | None) -> dict[str, Any]:
+    if not callable(runner_factory):
+        raise ValueError("Grok execution requires a broker-aware runner with structured provider-error telemetry")
     with _grok_bound(resolution) as (lifecycle, base, v9, v11, v13, _v15):
         rows = {str(row["cell_id"]): row for row in resolution["rows"]}
         if cell_id not in rows:
@@ -183,7 +270,12 @@ def _grok_execute(resolution: Mapping[str, Any], *, output_root: Path, queue_roo
         helper = v13.load(v13.RECONCILE, v13.RECONCILE_COMMIT, v13.RECONCILE_SHA256, "_wpb_grok_response_helper").helper()
         parent = v9.parent_stack()
         route, evidence = v9._validated_route(parent, base, Path(queue_root), route_provider)(Path(queue_root))
-        selected = parent._guard_runner(runner or lifecycle.live()._default_runner, lifecycle, _execution_schedule(resolution))
+        broker, error_type = _grok_broker(Path(queue_root), broker_factory)
+        selected = parent._guard_runner(runner_factory(error_type), lifecycle, _execution_schedule(resolution))
+        route_name = route.get("name")
+        if not isinstance(route_name, str) or not route_name:
+            raise ValueError("Grok route lacks a governed route name")
+        selected = _brokered_grok_runner(broker=broker, route_name=route_name, runner=selected)
 
         def parse(_helper: Any, raw: bytes, receipt_route: Mapping[str, Any]) -> Any:
             return _grok_answer(resolution["core"], helper, raw, receipt_route)
@@ -245,7 +337,9 @@ def _fail_fast_wave(*, rows: tuple[Mapping[str, Any], ...], output_root: Path, e
     return outcomes
 
 
-def _grok_wave(resolution: Mapping[str, Any], *, output_root: Path, queue_root: Path, acknowledgement: str, route_provider: Callable[[Path], tuple[dict[str, Any], dict[str, Any]]] | None, runner: Callable[..., Mapping[str, Any]] | None) -> list[dict[str, Any]]:
+def _grok_wave(resolution: Mapping[str, Any], *, output_root: Path, queue_root: Path, acknowledgement: str, route_provider: Callable[[Path], tuple[dict[str, Any], dict[str, Any]]] | None, runner_factory: Callable[[type[Exception]], Callable[..., Mapping[str, Any]]], broker_factory: Callable[[Path, type[Any], type[Exception]], Any] | None) -> list[dict[str, Any]]:
+    if not callable(runner_factory):
+        raise ValueError("Grok execution requires a broker-aware runner with structured provider-error telemetry")
     rows = tuple(resolution["rows"])
     with _grok_bound(resolution) as (lifecycle, base, v9, v11, v13, _v15):
         lifecycle._disjoint(Path(output_root), REPO, Path(queue_root), Path(resolution["freeze_root"]))
@@ -253,7 +347,12 @@ def _grok_wave(resolution: Mapping[str, Any], *, output_root: Path, queue_root: 
         parent = v9.parent_stack()
         route, evidence = v9._validated_route(parent, base, Path(queue_root), route_provider)(Path(queue_root))
         execution = _execution_schedule(resolution)
-        selected = parent._guard_runner(runner or lifecycle.live()._default_runner, lifecycle, execution)
+        broker, error_type = _grok_broker(Path(queue_root), broker_factory)
+        selected = parent._guard_runner(runner_factory(error_type), lifecycle, execution)
+        route_name = route.get("name")
+        if not isinstance(route_name, str) or not route_name:
+            raise ValueError("Grok route lacks a governed route name")
+        selected = _brokered_grok_runner(broker=broker, route_name=route_name, runner=selected)
 
         def run(row: Mapping[str, Any]) -> dict[str, Any]:
             def parse(_helper: Any, raw: bytes, receipt_route: Mapping[str, Any]) -> Any:
@@ -357,12 +456,12 @@ def prepare_all(*, endpoint: str, output_root: Path, queue_root: Path, freeze_ro
     return _sol_prepare(resolution, output_root=Path(output_root), queue_root=Path(queue_root), acknowledgement=authorization_acknowledgement_sha256, broker_factory=sol_broker_factory)
 
 
-def execute_one(*, endpoint: str, output_root: Path, queue_root: Path, freeze_root: Path | str, authorization_acknowledgement_sha256: str, cell_id: str, allow_remote: bool, grok_route_provider: Callable[[Path], tuple[dict[str, Any], dict[str, Any]]] | None = None, sol_broker_factory: Callable[[Path], Any] | None = None, grok_runner: Callable[..., Mapping[str, Any]] | None = None, call_codex: Callable[..., Any] | None = None) -> dict[str, Any]:
+def execute_one(*, endpoint: str, output_root: Path, queue_root: Path, freeze_root: Path | str, authorization_acknowledgement_sha256: str, cell_id: str, allow_remote: bool, grok_route_provider: Callable[[Path], tuple[dict[str, Any], dict[str, Any]]] | None = None, grok_broker_factory: Callable[[Path, type[Any], type[Exception]], Any] | None = None, grok_runner_factory: Callable[[type[Exception]], Callable[..., Mapping[str, Any]]] | None = None, sol_broker_factory: Callable[[Path], Any] | None = None, call_codex: Callable[..., Any] | None = None) -> dict[str, Any]:
     if endpoint not in ENDPOINTS or allow_remote is not True:
         raise ValueError("execution requires endpoint and explicit allow_remote=True")
     resolution = _resolution(freeze_root=freeze_root)
     if endpoint == "grok":
-        outcome = _grok_execute(resolution, output_root=Path(output_root), queue_root=Path(queue_root), acknowledgement=authorization_acknowledgement_sha256, cell_id=cell_id, route_provider=grok_route_provider, runner=grok_runner)
+        outcome = _grok_execute(resolution, output_root=Path(output_root), queue_root=Path(queue_root), acknowledgement=authorization_acknowledgement_sha256, cell_id=cell_id, route_provider=grok_route_provider, runner_factory=grok_runner_factory, broker_factory=grok_broker_factory)
     else:
         outcome = _sol_execute(resolution, output_root=Path(output_root), queue_root=Path(queue_root), acknowledgement=authorization_acknowledgement_sha256, cell_id=cell_id, broker_factory=sol_broker_factory, call_codex=call_codex)
     state = SUCCESS_STATES["Grok" if endpoint == "grok" else "Sol"]
@@ -371,12 +470,12 @@ def execute_one(*, endpoint: str, output_root: Path, queue_root: Path, freeze_ro
     return dict(outcome)
 
 
-def execute_wave(*, endpoint: str, output_root: Path, queue_root: Path, freeze_root: Path | str, authorization_acknowledgement_sha256: str, allow_remote: bool, grok_route_provider: Callable[[Path], tuple[dict[str, Any], dict[str, Any]]] | None = None, sol_broker_factory: Callable[[Path], Any] | None = None, grok_runner: Callable[..., Mapping[str, Any]] | None = None, call_codex: Callable[..., Any] | None = None) -> list[dict[str, Any]]:
+def execute_wave(*, endpoint: str, output_root: Path, queue_root: Path, freeze_root: Path | str, authorization_acknowledgement_sha256: str, allow_remote: bool, grok_route_provider: Callable[[Path], tuple[dict[str, Any], dict[str, Any]]] | None = None, grok_broker_factory: Callable[[Path, type[Any], type[Exception]], Any] | None = None, grok_runner_factory: Callable[[type[Exception]], Callable[..., Mapping[str, Any]]] | None = None, sol_broker_factory: Callable[[Path], Any] | None = None, call_codex: Callable[..., Any] | None = None) -> list[dict[str, Any]]:
     if endpoint not in ENDPOINTS or allow_remote is not True:
         raise ValueError("execution requires endpoint and explicit allow_remote=True")
     resolution = _resolution(freeze_root=freeze_root)
     if endpoint == "grok":
-        return _grok_wave(resolution, output_root=Path(output_root), queue_root=Path(queue_root), acknowledgement=authorization_acknowledgement_sha256, route_provider=grok_route_provider, runner=grok_runner)
+        return _grok_wave(resolution, output_root=Path(output_root), queue_root=Path(queue_root), acknowledgement=authorization_acknowledgement_sha256, route_provider=grok_route_provider, runner_factory=grok_runner_factory, broker_factory=grok_broker_factory)
     return _sol_wave(resolution, output_root=Path(output_root), queue_root=Path(queue_root), acknowledgement=authorization_acknowledgement_sha256, broker_factory=sol_broker_factory, call_codex=call_codex)
 
 
