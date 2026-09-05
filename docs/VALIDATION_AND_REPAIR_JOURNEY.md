@@ -875,3 +875,21 @@ Parallel work checks the coarse existing HANNA mapping, criterion wording,
 and pairwise approaches. A low-error constant predictor is a control, not
 successful literary evaluation. Both endpoint-specific arithmetic replays are
 now complete; their results remain separate.
+
+## Family weights did not repair the historical score
+
+The next [provider-free weight diagnostic](../evaluation-results/hbq-human-alignment-family-weighting-v1/)
+tested the full historical HBQ tree rather than only its six mapped YES
+fractions. It varied three relative family multipliers—core, craft, and form—
+using 128 Optuna trials in each of 24 leave-one-prompt-group-out folds. All 48
+TRAIN stories retained their original verdicts, and the all-one configuration
+reproduced every historical score before fitting.
+
+The completed fit did not rescue discrimination. Against the mean human
+rating, pooled Spearman moved from `-0.105024` to `-0.092254`, while equal-group
+MAE worsened from `0.973766` to `0.991439`. Independent reconstruction matched
+the stored out-of-fold scores and metrics exactly. This closes the narrow
+three-family experiment with a negative result; it does not rule out every
+weighting scheme, but it supplies no reason to change runtime weights or freeze
+a winning profile. No new model calls, DSPy search, or confirmation access
+were involved.

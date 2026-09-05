@@ -40,10 +40,29 @@ It reports pooled Spearman, global and equal-group MAE, plus per-axis
 descriptive Spearman and MAE for Relevance, Coherence, Empathy, Surprise,
 Engagement, and Complexity.
 
+## Measured TRAIN result
+
+The [completed aggregate](result.json) does not support changing family weights.
+All 24 leave-one-prompt-group-out folds completed 128 Optuna trials each
+(3,072 total), with no new provider calls. Independent source reconstruction
+reproduced all 48 historical scores and all fitted out-of-fold scores exactly.
+
+| Metric | Historical all-one | Fitted out-of-fold |
+| --- | ---: | ---: |
+| Pooled Spearman | -0.105024 | -0.092254 |
+| Global MAE | 1.036863 | 1.048511 |
+| Equal-prompt-group MAE | 0.973766 | 0.991439 |
+
+The small upward rank movement remains negative, and both error measures
+worsen. These metrics compare the rescaled final HBQ score with the mean of
+the six human dimensions; they are not the six separate-dimension prompt
+metrics used by other HANNA experiments. Fixed-three and fold-training-only
+human-prior controls both have lower MAE. No winning global profile was frozen.
+
 ## Limits
 
-No fit result exists yet. This package has no confirmation partition, genre or
+This package has no confirmation partition, genre or
 format interaction model, model prior, runtime dependency, selection authority,
-or promotion authority. Any eventual result is a TRAIN-only development signal:
+or promotion authority. The result is a TRAIN-only development diagnostic:
 it cannot alter runtime weights or support a general HANNA-improvement claim
 without a separately frozen, independently recomputable evaluation.

@@ -31,6 +31,14 @@ product test succeeded; `Negative` means a proposed claim or treatment failed;
 
 ## Current development checkpoints — descriptive readouts, no promotion
 
+The [full-tree family-weight diagnostic](../evaluation-results/hbq-human-alignment-family-weighting-v1/)
+completed 3,072 provider-free Optuna trials over 48 TRAIN stories across 24
+leave-one-prompt-group-out TRAIN folds. Fitted pooled Spearman remained negative (`-0.105024` to
+`-0.092254`) and equal-group MAE worsened (`0.973766` to `0.991439`). Independent
+reconstruction matched every out-of-fold score. This compares the rescaled
+final HBQ score against the mean human rating; it does not support new runtime
+weights or competitive human alignment.
+
 These packages preserve the next questions, gates, and bounded descriptive
 readouts. None authorize a rubric, model, or runtime promotion.
 
