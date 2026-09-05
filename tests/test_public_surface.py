@@ -56,13 +56,14 @@ def test_lazy_public_exports_preserve_attribute_and_from_import_semantics() -> N
     for name in hbqrs.__all__:
         assert getattr(hbqrs, name) is not None
         namespace: dict[str, object] = {}
-        exec(f"from hbqrs import {name}", namespace)
+        exec(f"from hbqrs import {name}", namespace)  # noqa: S102 - exercise literal public exports
         assert namespace[name] is getattr(hbqrs, name)
 
 
 def test_citation_distinguishes_package_release_from_rubric_standard_identity() -> None:
-    import hbqrs
     import yaml
+
+    import hbqrs
 
     citation = yaml.safe_load((book_root() / "CITATION.cff").read_text(encoding="utf-8"))
     assert citation["version"] == hbqrs.__version__
@@ -227,6 +228,38 @@ def test_built_distributions_include_the_intended_public_surface(tmp_path: Path)
     assert "Version: 1.2.3" in metadata
     assert "Requires-Dist: jsonschema>=4.0" in metadata
     assert not any("evaluation-results/" in name for name in names)
+
+    installed = tmp_path / "installed-wheel"
+    subprocess.run(
+        [sys.executable, "-m", "pip", "install", "--disable-pip-version-check",
+         "--no-index", "--no-deps", "--target", str(installed), str(wheel)],
+        check=True, capture_output=True, text=True,
+    )
+    # Reuse installed third-party dependencies, but require HBQ code and book
+    # data to resolve from the wheel in a neutral working directory.
+    dependency_paths = [p for p in sys.path if Path(p).name in {"site-packages", "dist-packages"}]
+    smoke = (
+        "import json,sys; from pathlib import Path; "
+        "installed=Path(sys.argv[1]).resolve(); "
+        "sys.path[:0]=[str(installed),*json.loads(sys.argv[2])]; "
+        "import hbqrs; from hbqrs.cli import main; "
+        "assert Path(hbqrs.__file__).resolve().is_relative_to(installed); "
+        "assert hbqrs.book_root().resolve()==installed/'hbqrs'/'book'; "
+        "raise SystemExit(main(['validate']))"
+    )
+    clean_environment = {key: value for key, value in os.environ.items() if key not in {"HBQRS_ROOT", "PYTHONPATH"}}
+    validated = subprocess.run(
+        [sys.executable, "-I", "-c", smoke, str(installed), json.dumps(dependency_paths)],
+        cwd=tmp_path, env=clean_environment, check=True, capture_output=True, text=True,
+    )
+    assert json.loads(validated.stdout)["valid"] is True
+    entrypoint = installed / "bin" / ("cwr.exe" if os.name == "nt" else "cwr")
+    clean_environment["PYTHONPATH"] = os.pathsep.join([str(installed), *dependency_paths])
+    help_result = subprocess.run(
+        [str(entrypoint), "--help"], cwd=tmp_path, env=clean_environment,
+        check=True, capture_output=True, text=True,
+    )
+    assert "validate" in help_result.stdout
 
     subprocess.run(
         [

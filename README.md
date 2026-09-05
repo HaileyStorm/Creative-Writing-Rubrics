@@ -191,13 +191,15 @@ print(report["status"], report["final_score"])
 
 ## Verification, license, and support
 
-Release checks cover fresh-clone and isolated-wheel installation, CLI and
-Python APIs, strict schemas, local endpoint transport, public-result verifiers,
+Local checks cover wheel installation in a separate directory, packaged-book
+validation and the installed CLI, Python APIs, strict schemas, local endpoint transport, public-result verifiers,
 and provider-adapter/evidence-validation paths. Actual remote-execution
 evidence is package-specific and explicitly labeled. The
 public case studies preserve their own contracts, manifests, aggregate outputs,
 and privacy checks; private manuscript prose and raw model responses are not
-distributed.
+distributed. The wheel smoke test reuses installed third-party dependencies;
+it is not clean-machine proof. See [focused local checks](docs/LOCAL_VALIDATION.md)
+for the separate core, package, and historical-study commands.
 
 This project is Apache-2.0 licensed; see [LICENSE](LICENSE) and [NOTICE](NOTICE).
 Optional donations and their safety notes are documented in
