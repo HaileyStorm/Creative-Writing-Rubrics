@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "status": "source_freeze_plan_only",
+  "dataset": {
+    "doi": "10.5061/dryad.qfttdz0pm",
+    "audited_source_commit": "6cb64b20ce19bde24dfe86357cc744b2c71cd7cf",
+    "audited_source_path": "evaluation-results/hbq-human-alignment-dryad-source-audit-v1/source.py",
+    "audited_source_sha256": "4184280abae4d84dad970ba3e0f994a078f083cd12e3cb3d2ff6f3f60e89746d",
+    "archive_sha256": "af9c67124f94bb52368cf9eeba87ce6e77aaffafa83b9239af6d9e24b9d5f14a",
+    "nested_archive_sha256": "1eeb56f8882b5eb47e971cb85959f7c947c7a95e2ecff4cfdda9a29f18473942",
+    "writers_member_sha256": "8918b9f87d2120d331dc0e3ff19290fb3d3dec8481a534a61e83a98646844b76",
+    "evaluators_member_sha256": "538bb43773442ee0df93d440e55f9497f618de22b42aad2f2ac2932433fef9e3",
+    "twelve_axis_derivative_sha256": "e391d638f04eac7a9632811922d0c4fed4e95dd6613f07311d8513b9a52e128b"
+  },
+  "target_definition": {
+    "unit": "story",
+    "stories": 293,
+    "human_ratings": 3519,
+    "aggregation": "unweighted arithmetic mean of the retained blinded ratings for each story and each axis",
+    "axes": ["novel", "original", "rare", "appropriate", "feasible", "publishable", "well_written", "enjoyed", "boring", "funny", "twist", "future"],
+    "scale": [1, 9],
+    "target_storage": "local-targets.jsonl only; confirmation targets are written separately"
+  },
+  "partition": {
+    "seed": "dryad-pilot-v1-story-partitions-20260905",
+    "strata": ["topic", "condition"],
+    "weights": {"TRAIN": 3, "DEV": 1, "CONFIRMATION": 1},
+    "quota_rule": "floor(n * weight / 5), then allocate remaining positions by largest fractional residue with TRAIN, DEV, CONFIRMATION tie order",
+    "order_rule": "SHA256(seed + canonical story ID + text SHA256), then canonical story ID",
+    "label_independence": "human targets, ratings, and means do not affect assignment; condition and topic select the required stratum only, while source-ID/text-hash order and stratum size determine the assignment within it"
+  },
+  "public_loader": {
+    "default_partitions": ["TRAIN", "DEV"],
+    "fields": ["opaque_story_id", "story_text"],
+    "forbidden_fields": ["human_means", "ratings", "condition", "topic", "confirmation"],
+    "confirmation_loading_api": false
+  },
+  "non_claims": {
+    "model_alignment": false,
+    "rubric_mapping": false,
+    "cross_dataset_pooling": false,
+    "runtime_promotion": false,
+    "provider_calls": false
+  }
+}
