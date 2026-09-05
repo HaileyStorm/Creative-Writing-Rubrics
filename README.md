@@ -76,7 +76,7 @@ The live release-facing work is narrower than the historical experiment log:
 ## Install and try it
 
 ```bash
-pip install "git+https://github.com/HaileyStorm/Creative-Writing-Rubrics.git@e1c6f3bd0d34325ff4806cad8d49afaa340c49ca"
+pip install "git+https://github.com/HaileyStorm/Creative-Writing-Rubrics.git@bc551f0758b12138fd83809833a98d762621e240"
 ```
 
 From a clone, install development dependencies with `pip install -e ".[dev]"`.
