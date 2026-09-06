@@ -55,7 +55,13 @@ The live release-facing work is narrower than the historical experiment log:
   results pages for constant-score comparators and mixed rank agreement.
   The latest [rank replication](docs/RESULTS.md#v17-standalone-sol-replication)
   is a standalone Sol TRAIN result. Grok quota exhaustion left its paired run
-  incomplete and the prepared WPB collection unexecuted.
+  incomplete. The later [WPB collection](docs/RESULTS.md#wpb-terminal-collection)
+  stopped after 89 successful cells and one ambiguous terminal cell; 39 were
+  unstarted. Neither incomplete collection permits subset metrics or resends.
+- [Dryad source and full-HBQ preparation](docs/RESULTS.md#dryad-source-and-full-hbq-preparation)
+  adds an audited independent corpus and a frozen 176 TRAIN / 60 DEV / 57
+  confirmation split. Qualification, fitting, and DEV comparison code are
+  implemented, but live qualification and alignment measurements are pending.
 - [CWR-guided revision gain](evaluation-results/cwr-guided-revision-gain-v6-heldout-result-v1/)
   now includes a four-item held-back comparison. Guided-minus-generic means
   were Sol `+1.00` holistic / `+0.75` compact and Grok `+0.75` / `0.00`.

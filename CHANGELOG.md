@@ -4,7 +4,8 @@
 
 - Added pre-contact retry disclosure and guarded native development/evidence paths after the 1.2.3 release; the README now pins a tested Git revision instead of installing floating main.
 - Added focused local test lanes, installed-wheel book/CLI smoke checks, and public v2 descendant/resume coverage. Packaged evidence documentation links resolve to immutable public Git paths.
-- Published completed multisample and development-only DSPy/Optuna evidence, including the negative three-family weighting fit and standalone V17 Sol rank replication. V17 Grok is incomplete after quota exhaustion; the prepared WPB collection remains unexecuted.
+- Published completed multisample and development-only DSPy/Optuna evidence, including the negative three-family weighting fit and standalone V17 Sol rank replication. V17 Grok is incomplete after quota exhaustion. The later WPB collection stopped with 89 successful cells, one ambiguous terminal cell, and 39 unstarted cells; its failure has no established narrower cause and permits no subset metrics or automatic resend.
+- Audited the supplied Dryad corpus and froze TRAIN/DEV targets and a full-HBQ qualification plan. Added governed cohort execution, native evidence replay, the fixed 128-trial TRAIN optimizer, and conditional DEV comparison. These implementation checks are not live Dryad alignment results.
 - No new rubric version, runtime profile promotion, general literary-validity claim, or native Linux proof is implied by these development checkpoints.
 
 ## 1.2.3 — 2026-08-26

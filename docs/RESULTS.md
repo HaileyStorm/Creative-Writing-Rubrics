@@ -32,8 +32,11 @@ product test succeeded; `Negative` means a proposed claim or treatment failed;
 ## Current development checkpoints — descriptive readouts, no promotion
 
 Latest: [V17 standalone Sol replication](#v17-standalone-sol-replication)
-is complete; Grok is incomplete after quota exhaustion, and the prepared WPB
-collection remains unexecuted.
+is complete; its paired Grok run is incomplete after quota exhaustion. The
+later [WPB collection](#wpb-terminal-collection) stopped with 89 successful,
+one ambiguous terminal, and 39 unstarted cells; it permits no subset metrics
+or automatic resend. [Dryad preparation](#dryad-source-and-full-hbq-preparation)
+is implemented, with live qualification and alignment still pending.
 
 The [full-tree family-weight diagnostic](https://github.com/HaileyStorm/Creative-Writing-Rubrics/tree/b4ba4c5d2963040ffc6f26010de089e21331a0b4/evaluation-results/hbq-human-alignment-family-weighting-v1)
 completed 3,072 provider-free Optuna trials over 48 TRAIN stories across 24
@@ -284,5 +287,30 @@ retains 23 response-backed cells and 25 terminal failures after a native quota
 exhaustion observation. It is ineligible for subset metrics or an endpoint
 performance comparison. Sol is a standalone TRAIN diagnostic, with no
 confirmation, generalization, canonical full-HBQ, or runtime-promotion claim.
-The source-reviewed and fixture-tested WPB executor remains unexecuted because
-its required Grok-primary collection is unavailable.
+
+## WPB terminal collection
+
+The later [WPB Grok settlement](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/87ae86b1cde49177b43d5791483421888f2d5ec6/evaluation-results/hbq-human-alignment-wpb-compact-family-native-v1/grok-incomplete.json)
+records 89 successful cells, one ambiguous terminal cell, and 39 unstarted
+cells out of 129 planned. The failure is `unclassified_after_launch`; the
+retained evidence does not establish quota exhaustion, HTTP 402, or a specific
+validation cause. The campaign remains terminal: no automatic resend,
+successor batch, subset alignment metrics, or fit is permitted. This coarse
+family comparison is not a full-HBQ alignment result.
+
+## Dryad source and full-HBQ preparation
+
+The [Dryad source audit](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/87ae86b1cde49177b43d5791483421888f2d5ec6/evaluation-results/hbq-human-alignment-dryad-source-audit-v1/README.md)
+reconciles 293 stories and 3,519 blinded evaluations from 600 evaluators. The
+[frozen analysis protocol and implementation](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/87ae86b1cde49177b43d5791483421888f2d5ec6/evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/README.md)
+use 176 TRAIN and 60 DEV stories; 57 confirmation stories remain closed.
+Source-defined novelty and usefulness are separate co-primary targets, with
+all twelve raw axes also reported separately. There is no invented twelve-axis
+human composite or sampled-leaf substitute for the full 178-question rubric.
+
+The provider-free qualification plan covers 18 passes and 261 requests.
+Governed cohort execution, complete native replay, the fixed 128-trial TRAIN
+optimizer, and conditional DEV comparison are implemented and locally tested.
+Actual Grok qualification, fresh alignment measurement, and unchanged-payload
+Sol validation remain pending. The empirical batch cap is unset; synthetic
+tests and prepared targets establish neither alignment nor generalization.
