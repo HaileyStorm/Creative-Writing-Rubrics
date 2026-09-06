@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "evidence_class": "provider_free_fixed_baseline_preparation",
+  "study_id": "dryad-fixed-batch8-measurement-v1",
+  "generator_commit": "d8e6cf69a4f05b854859a0f14496066e5c898dd6",
+  "contract_sha256": "6ae404e31ecafbeac0ef69814127c5222ac8da5fd24c2700f185ca2f8af5cf37",
+  "plan_sha256": "edeadb93c485ba227153329b5ae420de1c9d08d95e920bac0635d197fd3dbd7f",
+  "public_inputs_sha256": "6254f58d3366667c9578e2661a1ca0d105a603a0f8affe2d925a767957937c42",
+  "files": 11094,
+  "train_stories": 176,
+  "dev_stories": 60,
+  "questions_per_story": 178,
+  "complete_passes_per_endpoint": 236,
+  "logical_requests_per_endpoint": 5428,
+  "dispatch_batch_size": 8,
+  "empirical_batch_cap": null,
+  "byte_exact_regeneration": true,
+  "provider_calls": 0,
+  "native_admission": false,
+  "execution_authority": false,
+  "alignment_result": false,
+  "qualification_satisfied": false,
+  "limitations": [
+    "Operational batch size only; no batch repeatability or size-32 equivalence claim.",
+    "Collection, native admission, TRAIN fitting, DEV comparison and independent Sol validation remain incomplete.",
+    "Earlier failed attempts remain immutable and cannot supply replacement measurements."
+  ]
+}
