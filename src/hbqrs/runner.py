@@ -13,6 +13,7 @@ import os
 from pathlib import Path
 import re
 import shutil
+import stat
 import subprocess
 import sys
 from typing import Any, BinaryIO, Callable, Mapping, Sequence
@@ -127,6 +128,15 @@ class _ProviderAttemptFailure(HBQError):
 
 class RetryDisclosurePause(HBQError):
     """An intentional pre-dispatch stop after the exact retry payload is available."""
+
+
+class GrokTransportEvidenceFailure(HBQError):
+    """A fixed-message terminal failure carrying only local evidence descriptors."""
+
+    def __init__(self, *, evidence_sha256: str, provider_artifacts: Mapping[str, Any]) -> None:
+        super().__init__("Grok transport did not complete; inspect bound local evidence")
+        self.evidence_sha256 = evidence_sha256
+        self.provider_artifacts = deepcopy(dict(provider_artifacts))
 
 
 class _NoRedirect(HTTPRedirectHandler):
@@ -786,7 +796,25 @@ def _grok_structured_output(
 
 
 def _provider_artifact(output_dir: Path, path: Path) -> dict[str, Any]:
-    raw = path.read_bytes()
+    def ancestry() -> list[tuple[int, int, int]]:
+        identities = []
+        for candidate in (path, *path.parents):
+            info = candidate.lstat()
+            if stat.S_ISLNK(info.st_mode) or getattr(info, "st_file_attributes", 0) & 0x400:
+                raise HBQError("Provider artifact ancestry contains a link or reparse point")
+            identities.append((info.st_dev, info.st_ino, info.st_mode))
+        return identities
+
+    before = ancestry()
+    with path.open("rb") as stream:
+        opened = os.fstat(stream.fileno())
+        if not stat.S_ISREG(opened.st_mode) or before[0] != (opened.st_dev, opened.st_ino, opened.st_mode):
+            raise HBQError("Provider artifact is not a stable regular file")
+        raw = stream.read()
+        after = os.fstat(stream.fileno())
+    if (ancestry() != before or (opened.st_size, opened.st_mtime_ns) != (after.st_size, after.st_mtime_ns)
+            or len(raw) != after.st_size or path.stat().st_mtime_ns != after.st_mtime_ns):
+        raise HBQError("Provider artifact changed while reading")
     return {"path": path.relative_to(output_dir).as_posix(), "bytes": len(raw), "sha256": _sha256_bytes(raw)}
 
 
@@ -822,6 +850,26 @@ def _validate_provider_artifacts(output_dir: Path, record: Mapping[str, Any]) ->
                 raise HBQError("Accepted provider evidence artifact is not bound")
         elif not path.is_file() or _provider_artifact(output_dir, path) != dict(item):
             raise HBQError("Accepted provider artifact is not bound")
+
+
+def _validate_grok_transport_evidence(output_dir: Path, metadata: Mapping[str, Any]) -> None:
+    artifacts = metadata.get("provider_artifacts")
+    if artifacts is None:
+        return
+    if not isinstance(artifacts, dict) or not 1 <= len(artifacts) <= 5 or "receipt" not in artifacts:
+        raise HBQError("Invalid injected transport evidence inventory")
+    for name, item in artifacts.items():
+        if (
+            not isinstance(name, str) or re.fullmatch(r"[a-z][a-z0-9_]{0,63}", name) is None
+            or not isinstance(item, dict) or set(item) != {"path", "bytes", "sha256"}
+            or not isinstance(item["path"], str)
+            or type(item["bytes"]) is not int or item["bytes"] < 0
+            or not isinstance(item["sha256"], str) or re.fullmatch(r"[0-9a-f]{64}", item["sha256"]) is None
+        ):
+            raise HBQError("Invalid injected transport evidence descriptor")
+    if artifacts["receipt"]["sha256"] != metadata.get("evidence_sha256"):
+        raise HBQError("Injected transport receipt identity differs")
+    _validate_provider_artifacts(output_dir, {"provider": metadata})
 
 
 def _call_grok(
@@ -2181,6 +2229,7 @@ def _rejected_records(output_dir: Path, batch_number: int) -> list[tuple[Path, M
             raise HBQError(f"Invalid rejected attempt {path}") from exc
         if not isinstance(record, Mapping):
             raise HBQError(f"Rejected attempt {path} must be an object")
+        _validate_provider_artifacts(output_dir, record)
         records.append((path, record))
     return records
 
@@ -2790,6 +2839,9 @@ def _write_rejected_attempt(
     }
     if attempt_outcome is not None:
         record["attempt_outcome"] = attempt_outcome
+    if provider_record is not None and provider_record.get("provider_artifacts") is not None:
+        _validate_provider_artifacts(output_dir, {"provider": provider_record})
+        record["provider"]["provider_artifacts"] = deepcopy(provider_record["provider_artifacts"])
     _write_json(record_path, record)
     return record_path
 
@@ -3314,6 +3366,7 @@ def run_judge(
     requested model, evidence SHA-256, and optional request/session SHA-256 and
     reasoning_attested boolean. tool_free must be True, and reasoning_attested
     must be True unless explicitly waived; the caller verifies that evidence.
+    Optional provider_artifacts bind local evidence files for checkpoint replay.
     """
 
     if provider not in {"openai", "codex", "grok", "nous"}:
@@ -3900,7 +3953,7 @@ def run_judge(
                         bool_fields = {"reasoning_attested", "tool_free"}
                         if (
                             not {"model", "evidence_sha256"} <= provider_record.keys()
-                            or not provider_record.keys() <= {"model", *hash_fields, *bool_fields}
+                            or not provider_record.keys() <= {"model", "provider_artifacts", *hash_fields, *bool_fields}
                             or provider_record["model"] != model
                             or any(
                                 not isinstance(provider_record[key], str)
@@ -3912,15 +3965,30 @@ def run_judge(
                             or (not allow_unattested_reasoning and provider_record.get("reasoning_attested") is not True)
                         ):
                             raise ValueError("Invalid injected transport metadata")
+                        _validate_grok_transport_evidence(destination, provider_record)
                         metadata_bytes = _json_bytes(provider_record)
                         if len(metadata_bytes) > 4096 or len(content.encode("utf-8")) > MAX_RESPONSE_BYTES:
                             raise ValueError("Injected transport result exceeds limits")
                         provider_record = json.loads(metadata_bytes)
-                    except Exception:
+                    except Exception as transport_error:
+                        failure_record = None
+                        if isinstance(transport_error, GrokTransportEvidenceFailure):
+                            candidate = {
+                                "evidence_sha256": transport_error.evidence_sha256,
+                                "provider_artifacts": transport_error.provider_artifacts,
+                            }
+                            try:
+                                _validate_grok_transport_evidence(destination, candidate)
+                                encoded = _json_bytes(candidate)
+                                if len(encoded) <= 4096:
+                                    failure_record = json.loads(encoded)
+                            except Exception:
+                                pass
                         # Never persist or classify exception text from a transport.
                         raise _ProviderAttemptFailure(
                             "Injected Grok transport contact outcome unknown; no valid result returned; reconcile before any new run",
                             retryable=False,
+                            provider_record=failure_record,
                             attempt_outcome="provider_nonretryable_failure",
                         ) from None
                 else:
@@ -4086,6 +4154,7 @@ def run_judge(
         if response_path.exists():
             raise HBQError(f"Refusing to overwrite response checkpoint {response_path.name}")
         response_bytes = _json_bytes(response_record)
+        _validate_provider_artifacts(destination, response_record)
         _atomic_write(response_path, response_bytes)
         if attempt_lifecycle_policy == ATTEMPT_LIFECYCLE_POLICY:
             _settle_attempt(

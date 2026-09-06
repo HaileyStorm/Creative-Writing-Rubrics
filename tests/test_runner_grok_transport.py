@@ -3,6 +3,8 @@
 from copy import deepcopy
 import hashlib
 import json
+from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 
@@ -219,3 +221,41 @@ def test_tool_free_assertion_is_required(tmp_path, tool_free):
         return content, metadata
     with pytest.raises(HBQError, match="contact outcome unknown"):
         run(tmp_path, transport)
+
+
+@pytest.mark.parametrize("bad", ["hash", "size", "escape", "receipt", "unknown_field"])
+def test_evidence_artifact_must_match_before_acceptance(tmp_path, bad):
+    def transport(context):
+        content, metadata = answer(context)
+        folder = tmp_path / "run"
+        (folder / "proof.json").write_bytes(b"{}")
+        proof_hash = hashlib.sha256(b"{}").hexdigest()
+        item = {"path": "proof.json", "bytes": 2, "sha256": proof_hash}
+        if bad == "hash":
+            item["sha256"] = "0" * 64
+        elif bad == "size":
+            item["bytes"] = True
+        elif bad == "escape":
+            item["path"] = "../artifact.txt"
+        elif bad == "unknown_field":
+            item["unknown"] = "not allowed"
+        metadata["evidence_sha256"] = "f" * 64 if bad == "receipt" else item["sha256"]
+        metadata["provider_artifacts"] = {"receipt": item}
+        return content, metadata
+    with pytest.raises(HBQError, match="contact outcome unknown"):
+        run(tmp_path, transport)
+    assert not (tmp_path / "run/responses/batch-0001.json").exists()
+
+
+def test_provider_artifact_rejects_reparse_ancestry(tmp_path, monkeypatch):
+    proof = tmp_path / "proof.json"
+    proof.write_bytes(b"{}")
+    original = Path.lstat
+    def reparse(path, *args, **kwargs):
+        info = original(path, *args, **kwargs)
+        if path == tmp_path:
+            return SimpleNamespace(st_mode=info.st_mode, st_file_attributes=0x400)
+        return info
+    monkeypatch.setattr(Path, "lstat", reparse)
+    with pytest.raises(HBQError, match="reparse"):
+        runner._provider_artifact(tmp_path, proof)
