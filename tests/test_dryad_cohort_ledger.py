@@ -217,6 +217,19 @@ def test_verify_ledger_rejects_duplicate_native_identity(tmp_path: Path) -> None
         ledger.verify_ledger(tmp_path, plan_raw, plan_sha256, head)
 
 
+def test_verify_ledger_rejects_unreviewed_executor_change_between_cohorts(tmp_path: Path) -> None:
+    plan = _plan()
+    plan_raw = _raw(plan)
+    plan_sha256 = _sha256(plan_raw)
+    head = _build_ledger(tmp_path, plan, plan_sha256=plan_sha256)
+    prepared_path = tmp_path / "cohorts/0002/prepared.json"
+    prepared = json.loads(prepared_path.read_bytes())
+    prepared["execution_source_sha256"] = _hash("unreviewed-intermediate-executor")
+    prepared_path.write_bytes(_raw(prepared))
+    with pytest.raises(ValueError, match="executor transition"):
+        ledger.verify_ledger(tmp_path, plan_raw, plan_sha256, head)
+
+
 def test_verify_ledger_rejects_boolean_schema_version(tmp_path: Path) -> None:
     plan = _plan()
     plan_raw = _raw(plan)
@@ -267,7 +280,7 @@ def test_verify_prefix_zero_requires_empty_ledger_directories(tmp_path: Path) ->
     (tmp_path / "cohorts").mkdir()
     (tmp_path / "contacts").mkdir()
     verified = ledger.verify_prefix(tmp_path, plan_raw, plan_sha256, ledger.GENESIS_SETTLEMENT_SHA256, 0)
-    assert verified == {"routes": {}, "contacts": {}, "head": {"cohort_number": 0, "settlement_sha256": ledger.GENESIS_SETTLEMENT_SHA256}}
+    assert verified == {"routes": {}, "contacts": {}, "head": {"cohort_number": 0, "settlement_sha256": ledger.GENESIS_SETTLEMENT_SHA256}, "authorization_chain": []}
 
 
 def test_verify_prefix_one_returns_only_the_settled_prefix(tmp_path: Path) -> None:

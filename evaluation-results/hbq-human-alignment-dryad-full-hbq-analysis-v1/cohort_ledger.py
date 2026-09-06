@@ -17,6 +17,7 @@ REVIEWER_TASK = "019ff75c-e610-7581-bacc-33ee869d521a"
 _SHA256 = re.compile(r"[0-9a-f]{64}\Z")
 _PASS_FIELDS = {"pass_id", "batch_size", "source_sha256"}
 _REQUEST_FIELDS = {"ordinal", "pass_id", "prompt_sha256", "schema_sha256"}
+_CONTINUATION_FIELDS = {"schema_version", "reviewer_task", "decision", "prepared_sha256", "route_sha256", "prior_authorization_sha256", "previous_execution_source_sha256", "execution_source_sha256", "completed_prefix", "reviewed_at", "expires_at"}
 
 
 def _require(condition: bool, message: str) -> None:
@@ -190,6 +191,48 @@ def _review_window(review: Mapping[str, Any], prepared_sha256: str, reviewer_tas
     return reviewed_at, expires_at
 
 
+def _continuation_records(root: Path, prefix: str, snapshot: Mapping[str, str], prepared_sha256: str, route_sha256: str, initial_authorization_sha256: str, initial_execution_source_sha256: str) -> list[dict[str, Any]]:
+    """Read the append-only reviewer-authored authorization chain for one cohort."""
+    pattern = re.compile(re.escape(prefix) + r"/review-continuations/(\d{4})\.json\Z")
+    numbered = []
+    for relative in snapshot:
+        match = pattern.fullmatch(relative)
+        if match:
+            numbered.append((int(match.group(1)), relative))
+    _require([number for number, _ in sorted(numbered)] == list(range(1, len(numbered) + 1)), "Continuation inventory differs")
+    prior_hash, prior_source = initial_authorization_sha256, initial_execution_source_sha256
+    records: list[dict[str, Any]] = []
+    for _, relative in sorted(numbered):
+        raw = _read_ledger_file(root, relative, snapshot)
+        value = _json_object(raw, "Continuation record")
+        _assert_keys(value, _CONTINUATION_FIELDS, "Continuation record")
+        _require(_integer(value["schema_version"], "Continuation schema version") == 1, "Continuation schema version differs")
+        _require(value["reviewer_task"] == REVIEWER_TASK and value["decision"] == "approved_continuation", "Continuation approval differs")
+        _require(value["prepared_sha256"] == prepared_sha256 and value["route_sha256"] == route_sha256, "Continuation cohort binding differs")
+        _require(value["prior_authorization_sha256"] == prior_hash and value["previous_execution_source_sha256"] == prior_source and _is_hash(value["execution_source_sha256"]), "Continuation source chain differs")
+        _review_window({"schema_version": 1, "reviewer_task": value["reviewer_task"], "decision": "approved_cohort", "prepared_sha256": value["prepared_sha256"], "reviewed_at": value["reviewed_at"], "expires_at": value["expires_at"]}, prepared_sha256, REVIEWER_TASK)
+        prefix_value = value["completed_prefix"]
+        _assert_keys(prefix_value, {"ordinals", "contacts", "run_files", "run_tree_sha256"}, "Continuation prefix") if isinstance(prefix_value, Mapping) else _require(False, "Continuation prefix differs")
+        _require(isinstance(prefix_value["ordinals"], list) and prefix_value["ordinals"] and all(type(item) is int for item in prefix_value["ordinals"]) and prefix_value["ordinals"] == list(range(prefix_value["ordinals"][0], prefix_value["ordinals"][0] + len(prefix_value["ordinals"]))), "Continuation prefix ordinals differ")
+        _require(isinstance(prefix_value["contacts"], list) and len(prefix_value["contacts"]) == len(prefix_value["ordinals"]) and isinstance(prefix_value["run_files"], dict) and prefix_value["run_files"] and all(isinstance(path, str) and _is_hash(digest) for path, digest in prefix_value["run_files"].items()) and _is_hash(prefix_value["run_tree_sha256"]) and _digest(_canonical(prefix_value["run_files"])) == prefix_value["run_tree_sha256"], "Continuation prefix differs")
+        for ordinal, contact in zip(prefix_value["ordinals"], prefix_value["contacts"], strict=True):
+            _require(isinstance(contact, Mapping), "Continuation prefix contact differs")
+            _assert_keys(contact, {"ordinal", "contact_sha256", "checkpoint_sha256", "request_id_hash", "session_id_hash"}, "Continuation prefix contact")
+            _require(_integer(contact["ordinal"], "Continuation prefix ordinal") == ordinal and all(_is_hash(contact[field]) for field in ("contact_sha256", "checkpoint_sha256", "request_id_hash", "session_id_hash")), "Continuation prefix contact differs")
+        prior_hash, prior_source = _digest(raw), value["execution_source_sha256"]
+        records.append({"sha256": prior_hash, "source_sha256": prior_source, "value": value, "raw": raw})
+    return records
+
+
+def continuation_chain(execution_root: Path, cohort_number: int, prepared_raw: bytes, route: Mapping[str, Any], review_raw: bytes) -> list[dict[str, Any]]:
+    """Return a verified continuation chain for a prepared cohort without accepting it as an approval."""
+    root = Path(execution_root)
+    files, _ = _ledger_snapshot(root)
+    prepared = _json_object(prepared_raw, "Prepared record")
+    _require(_is_hash(prepared.get("execution_source_sha256")), "Prepared execution source differs")
+    return _continuation_records(root, f"cohorts/{cohort_number:04d}", files, _digest(prepared_raw), _digest(_canonical(dict(route))), _digest(review_raw), prepared["execution_source_sha256"])
+
+
 def _pending_paths(value: frozenset[str]) -> frozenset[str]:
     _require(isinstance(value, frozenset) and all(type(item) is str for item in value), "Pending paths differ")
     for item in value:
@@ -231,6 +274,18 @@ def _verify_prefix(
         prefix = f"cohorts/{number:04d}"
         expected_files.update(f"{prefix}/{name}" for name in ("prepared.json", "review.json", "route.json", "settlement.json"))
     expected_files.update(f"contacts/request-{ordinal:04d}.json" for group in groups[:through_cohort] for ordinal in group)
+    continuation_pattern = re.compile(r"cohorts/(\d{4})/review-continuations/(\d{4})\.json\Z")
+    continuation_files: dict[int, list[tuple[int, str]]] = {}
+    for relative in before_files:
+        match = continuation_pattern.fullmatch(relative)
+        if match:
+            cohort_number, number = (int(value) for value in match.groups())
+            _require(1 <= cohort_number <= 27 and (cohort_number <= through_cohort or relative in pending_paths), "Continuation inventory differs")
+            if cohort_number <= through_cohort:
+                continuation_files.setdefault(cohort_number, []).append((number, relative))
+                expected_files.add(relative)
+    for values in continuation_files.values():
+        _require([number for number, _ in sorted(values)] == list(range(1, len(values) + 1)), "Continuation inventory differs")
     _require(expected_files.isdisjoint(pending_paths), "Pending paths overlap settled ledger")
     expected_inventory = expected_files | set(pending_paths)
     _require(set(before_files) == expected_inventory and before_directories == _ledger_directories(expected_inventory), "Ledger inventory differs")
@@ -239,8 +294,10 @@ def _verify_prefix(
     contacts: dict[int, dict[str, Any]] = {}
     native_request_ids: set[str] = set()
     native_session_ids: set[str] = set()
+    all_authorizations: list[dict[str, str]] = []
     previous_settlement = GENESIS_SETTLEMENT_SHA256
     previous_settled_at = None
+    previous_execution_source: str | None = None
 
     for cohort_number, ordinals in enumerate(groups[:through_cohort], start=1):
         prefix = f"cohorts/{cohort_number:04d}"
@@ -254,6 +311,7 @@ def _verify_prefix(
         route_sha256 = _digest(_canonical(route))
         _assert_schema(prepared, {"schema_version", "cohort_number", "plan_sha256", "previous_settlement_sha256", "request_ordinals", "route_sha256", "execution_source_sha256"}, "Prepared record")
         _require(_is_hash(prepared["execution_source_sha256"]), "Prepared execution source differs")
+        _require(previous_execution_source is None or prepared["execution_source_sha256"] == previous_execution_source, "Prepared executor transition differs")
         _require(_integer(prepared["cohort_number"], "Prepared cohort number") == cohort_number, "Prepared cohort number differs")
         _require(prepared["plan_sha256"] == expected_plan_sha256 and prepared["previous_settlement_sha256"] == previous_settlement, "Prepared chain binding differs")
         _require(isinstance(prepared["request_ordinals"], list) and all(type(value) is int for value in prepared["request_ordinals"]), "Prepared request ordinals differ")
@@ -262,8 +320,25 @@ def _verify_prefix(
         _require(previous_settled_at is None or reviewed_at >= previous_settled_at, "Review precedes previous settlement")
         _require(route_sha256 not in routes or routes[route_sha256] == route, "Route hash collision differs")
         routes[route_sha256] = route
+        continuations = _continuation_records(root, prefix, before_files, prepared_sha256, route_sha256, review_sha256, prepared["execution_source_sha256"])
+        authorizations = [{"sha256": review_sha256, "source_sha256": prepared["execution_source_sha256"]}, *[{"sha256": item["sha256"], "source_sha256": item["source_sha256"]} for item in continuations]]
+        all_authorizations.extend(authorizations)
 
-        _assert_schema(settlement, {"schema_version", "cohort_number", "plan_sha256", "prepared_sha256", "review_sha256", "route_sha256", "previous_settlement_sha256", "settled_at", "contacts"}, "Settlement record")
+        settlement_version = _integer(settlement.get("schema_version"), "Settlement schema version")
+        expected_settlement_fields = {"schema_version", "cohort_number", "plan_sha256", "prepared_sha256", "review_sha256", "route_sha256", "previous_settlement_sha256", "settled_at", "contacts"}
+        if settlement_version == 1:
+            _assert_keys(settlement, expected_settlement_fields, "Settlement record")
+            _require(not continuations, "Legacy settlement cannot retain continuations")
+        elif settlement_version == 2:
+            _assert_keys(settlement, expected_settlement_fields | {"authorization_chain"}, "Settlement record")
+            chain = settlement["authorization_chain"]
+            _require(isinstance(chain, list) and len(chain) == len(authorizations), "Settlement authorization chain differs")
+            for expected, observed in zip(authorizations, chain, strict=True):
+                _require(isinstance(observed, Mapping), "Settlement authorization differs")
+                _assert_keys(observed, {"authorization_sha256", "execution_source_sha256", "ordinals"}, "Settlement authorization")
+                _require(observed["authorization_sha256"] == expected["sha256"] and observed["execution_source_sha256"] == expected["source_sha256"] and isinstance(observed["ordinals"], list) and observed["ordinals"] and all(type(item) is int for item in observed["ordinals"]), "Settlement authorization differs")
+        else:
+            raise ValueError("Settlement schema version differs")
         settled_at = _parse_utc(settlement["settled_at"], "Settlement time")
         _require(_integer(settlement["cohort_number"], "Settlement cohort number") == cohort_number, "Settlement cohort number differs")
         _require(settlement["plan_sha256"] == expected_plan_sha256 and settlement["prepared_sha256"] == prepared_sha256 and settlement["review_sha256"] == review_sha256, "Settlement review binding differs")
@@ -271,6 +346,15 @@ def _verify_prefix(
         settlement_contacts = settlement["contacts"]
         _require(isinstance(settlement_contacts, list) and len(settlement_contacts) == len(ordinals), "Settlement contacts differ")
         _require([entry.get("ordinal") if isinstance(entry, dict) else None for entry in settlement_contacts] == list(ordinals), "Settlement contact order differs")
+        authorization_by_hash = {item["sha256"]: item["source_sha256"] for item in authorizations}
+        authorization_windows = {review_sha256: (reviewed_at, expires_at)}
+        for continuation in continuations:
+            value = continuation["value"]
+            window = _review_window({"schema_version": 1, "reviewer_task": value["reviewer_task"], "decision": "approved_cohort", "prepared_sha256": prepared_sha256, "reviewed_at": value["reviewed_at"], "expires_at": value["expires_at"]}, prepared_sha256, REVIEWER_TASK)
+            _require(window[0] >= next(reversed(authorization_windows.values()))[0], "Continuation review order differs")
+            authorization_windows[continuation["sha256"]] = window
+        used_authorizations: dict[str, list[int]] = {item["sha256"]: [] for item in authorizations}
+        contact_times: dict[int, datetime] = {}
         for ordinal, settlement_contact in zip(ordinals, settlement_contacts, strict=True):
             _require(isinstance(settlement_contact, dict), "Settlement contact is malformed")
             _assert_keys(settlement_contact, {"ordinal", "contact_sha256", "checkpoint_sha256", "request_id_hash", "session_id_hash"}, "Settlement contact")
@@ -285,14 +369,22 @@ def _verify_prefix(
             _require(_digest(contact_raw) == settlement_contact["contact_sha256"], "Settlement contact hash differs")
             request, pass_record = requests[ordinal], passes[requests[ordinal]["pass_id"]]
             _require(_integer(contact["cohort_number"], "Contact cohort number") == cohort_number and _integer(contact["ordinal"], "Contact ordinal") == ordinal, "Contact identity differs")
-            _require(contact["plan_sha256"] == expected_plan_sha256 and contact["prepared_sha256"] == prepared_sha256 and contact["review_sha256"] == review_sha256 and contact["route_sha256"] == route_sha256, "Contact authorization binding differs")
+            _require(contact["plan_sha256"] == expected_plan_sha256 and contact["prepared_sha256"] == prepared_sha256 and contact["route_sha256"] == route_sha256, "Contact authorization binding differs")
+            if settlement_version == 1:
+                _require(contact["review_sha256"] == review_sha256, "Contact authorization binding differs")
+            else:
+                _require(contact["review_sha256"] in authorization_by_hash, "Contact authorization binding differs")
+                used_authorizations[contact["review_sha256"]].append(ordinal)
             _require(contact["prompt_sha256"] == request["prompt_sha256"] and contact["schema_sha256"] == request["schema_sha256"], "Contact plan binding differs")
             admitted_at = _parse_utc(contact["admitted_at"], "Contact admission time")
-            _require(reviewed_at <= admitted_at <= expires_at, "Contact is outside the review window")
+            contact_window = authorization_windows[contact["review_sha256"]]
+            _require(contact_window[0] <= admitted_at <= contact_window[1], "Contact is outside the review window")
             _require(admitted_at <= settled_at, "Settlement precedes contact admission")
+            contact_times[ordinal] = admitted_at
             contacts[ordinal] = {
                 "cohort_number": cohort_number,
-                "execution_source_sha256": prepared["execution_source_sha256"],
+                "execution_source_sha256": authorization_by_hash.get(contact["review_sha256"], prepared["execution_source_sha256"]),
+                "authorization_sha256": contact["review_sha256"],
                 "ordinal": ordinal,
                 "pass_id": request["pass_id"],
                 "source_sha256": pass_record["source_sha256"],
@@ -304,8 +396,23 @@ def _verify_prefix(
                 "request_id_hash": settlement_contact["request_id_hash"],
                 "session_id_hash": settlement_contact["session_id_hash"],
             }
+        if settlement_version == 2:
+            ordered = [ordinal for item in authorizations for ordinal in used_authorizations[item["sha256"]]]
+            _require(ordered == list(ordinals) and all(used_authorizations[item["sha256"]] for item in authorizations), "Settlement authorization order differs")
+            for authorization in settlement["authorization_chain"]:
+                _require(authorization["ordinals"] == used_authorizations[authorization["authorization_sha256"]], "Settlement authorization ordinals differ")
+            completed = 0
+            for index, continuation in enumerate(continuations):
+                completed += len(used_authorizations[authorizations[index]["sha256"]])
+                prefix_value = continuation["value"]["completed_prefix"]
+                prefix_ordinals = prefix_value["ordinals"]
+                _require(prefix_ordinals == list(ordinals[:completed]) and 0 < completed < len(ordinals), "Continuation prefix ordinals differ")
+                _require(authorization_windows[continuation["sha256"]][0] >= max(contact_times[ordinal] for ordinal in prefix_ordinals), "Continuation review precedes completed prefix")
+                for expected_contact, actual in zip(settlement_contacts[:len(prefix_ordinals)], prefix_value["contacts"], strict=True):
+                    _require(actual == expected_contact, "Continuation prefix contact differs")
         previous_settlement = _digest(settlement_raw)
         previous_settled_at = settled_at
+        previous_execution_source = authorizations[-1]["source_sha256"]
 
     expected_contacts = sum(len(group) for group in groups[:through_cohort])
     _require(len(contacts) == len(native_request_ids) == len(native_session_ids) == expected_contacts, "Ledger contact cardinality differs")
@@ -316,6 +423,7 @@ def _verify_prefix(
         "routes": routes,
         "contacts": contacts,
         "head": {"cohort_number": through_cohort, "settlement_sha256": previous_settlement},
+        "authorization_chain": all_authorizations,
     }
 
 

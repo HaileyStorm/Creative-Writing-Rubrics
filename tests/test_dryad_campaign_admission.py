@@ -47,6 +47,7 @@ def campaign(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
     routes = {_hash(b"route-a"): {"route": "a"}, _hash(b"route-b"): {"route": "b"}}
     route_a, route_b = tuple(routes)
     passes, requests, contacts, by_pass, run_by_id = [], [], {}, {}, {}
+    authorization_sha256 = _hash(b"original-reviewed-authorization")
     ordinal = 0
     for batch_size in (8, 32):
         for repetition in range(1, 4):
@@ -86,7 +87,7 @@ def campaign(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
                     contacts[ordinal] = {"source_sha256": record["source_sha256"], "checkpoint_sha256": _hash(checkpoint),
                                          "execution_source_sha256": _hash(b"reviewed executor"),
                                          "request_id_hash": _hash(f"request-{ordinal}".encode()), "session_id_hash": _hash(f"session-{ordinal}".encode()),
-                                         "route_sha256": route_a}
+                                          "route_sha256": route_a, "authorization_sha256": authorization_sha256}
     assert ordinal == 261 and len(passes) == 18
     plan = {"passes": passes, "requests": requests, "runtime": {"question_ids": question_ids}}
     plan_raw = _json(plan)
@@ -104,7 +105,12 @@ def campaign(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
     def verify_ledger(root: Path, raw: bytes, expected_plan: str, expected_head: str):
         assert root == execution_root and raw == plan_raw and expected_plan == plan_sha256 and expected_head == head
         state["ledger_calls"] += 1
-        return {"routes": routes, "contacts": contacts, "head": {"cohort_number": 27, "settlement_sha256": head}}
+        return {
+            "routes": routes,
+            "contacts": contacts,
+            "head": {"cohort_number": 27, "settlement_sha256": head},
+            "authorization_chain": [{"sha256": authorization_sha256, "source_sha256": _hash(b"reviewed executor")}],
+        }
 
     runtime = SimpleNamespace(verify=lambda: None)
 

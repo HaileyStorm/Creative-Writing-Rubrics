@@ -21,7 +21,7 @@ NATIVE_SOURCE = ROOT / "native_admission.py"
 MATH_SOURCE = ROOT / "qualification_math.py"
 SOURCE_PINS = {
     PLAN_SOURCE: "46a98eb1134d308a96bd7a34aee4b92a26f2e85e92768305e813daa08cb7b655",
-    LEDGER_SOURCE: "ec70e52eb99abdf21342a949a5a77f1a19f542ee585e198b5f8eb147e2594a3d",
+    LEDGER_SOURCE: "3b07db6d58c5bfdbca5c662c8b4fb5fdcc833fd1e421d58ce7e7d0e9928fe44a",
     NATIVE_SOURCE: "11d7f8bec870a0945fe2eb169fa1580bc351b4e07eaa46b831c4e8703431d122",
     MATH_SOURCE: "25c57a64ce18d938c900ef3de47cdc04282ce2b6aff92f897f8ad012b25098d0",
 }
@@ -194,12 +194,15 @@ def admit_campaign(
     plan, plan_raw = _plan(plan_root, expected_plan_sha256, plan_module, public_inputs_path)
     _, by_pass, _ = _rows(plan, plan_root, execution_root)
     ledger = ledger_module.verify_ledger(execution_root, plan_raw, expected_plan_sha256, expected_final_settlement_sha256)
-    _require(isinstance(ledger, dict) and set(ledger) == {"routes", "contacts", "head"}, "Ledger return shape differs")
-    routes, contacts = ledger["routes"], ledger["contacts"]
+    _require(isinstance(ledger, dict) and set(ledger) == {"routes", "contacts", "head", "authorization_chain"}, "Ledger return shape differs")
+    routes, contacts, authorization_chain = ledger["routes"], ledger["contacts"], ledger["authorization_chain"]
     _require(isinstance(routes, dict) and isinstance(contacts, dict) and set(contacts) == set(range(1, 262)), "Ledger cardinality differs")
-    _require(isinstance(expected_execution_sha256, str) and _HASH.fullmatch(expected_execution_sha256) is not None
-             and {contact.get("execution_source_sha256") for contact in contacts.values()} == {expected_execution_sha256},
-             "Campaign execution source differs")
+    _require(isinstance(expected_execution_sha256, str) and _HASH.fullmatch(expected_execution_sha256) is not None and isinstance(authorization_chain, list) and authorization_chain, "Campaign execution source differs")
+    authorization_sources: dict[str, str] = {}
+    for entry in authorization_chain:
+        _require(isinstance(entry, Mapping) and set(entry) == {"sha256", "source_sha256"} and _HASH.fullmatch(entry["sha256"]) is not None and _HASH.fullmatch(entry["source_sha256"]) is not None and entry["sha256"] not in authorization_sources, "Campaign execution source chain differs")
+        authorization_sources[entry["sha256"]] = entry["source_sha256"]
+    _require(authorization_chain[-1]["source_sha256"] == expected_execution_sha256 and all(contact.get("authorization_sha256") in authorization_sources and contact.get("execution_source_sha256") == authorization_sources[contact["authorization_sha256"]] for contact in contacts.values()), "Campaign execution source differs")
     execution_before = ledger_module._regular_tree(execution_root, "Campaign execution")
     allowed_prefixes = ("cohorts/", "contacts/", *(row["run_path"] + "/" for row in plan["passes"]))
     _require(all(path.startswith(allowed_prefixes) for path in execution_before[0]), "Unexpected campaign evidence")
@@ -247,6 +250,7 @@ def admit_campaign(
     return {"evidence_class": "complete_native_campaign_admission", "execution_authority": False, "provider_calls": 0,
             "admission_sha256": expected_admission_sha256,
             "execution_source_sha256": expected_execution_sha256,
+            "execution_source_chain": authorization_chain,
             "dependency_source_sha256": {path.name: expected for path, expected in SOURCE_PINS.items()},
             "plan_sha256": expected_plan_sha256, "ledger_head": ledger["head"], "admitted_passes": len(result_rows),
             "logical_requests": len(request_ids), "comparability": comparability, "cap": cap}
