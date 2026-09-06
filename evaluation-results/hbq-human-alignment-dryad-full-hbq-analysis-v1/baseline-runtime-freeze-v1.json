@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "evidence_class": "reviewed_source_binding_and_shared_canary_handoff",
+  "runtime_manifest_sha256": "3b1f70a40a6dac8028d11c52f747400ab88dff3a193f828e3940c53813f3273d",
+  "runtime_loader_sha256": "5130bc037e0700f8d498c40ca790aaf248e986189818ae059934ee6488bbfbcd",
+  "reviewer_task": "019ff75c-e610-7581-bacc-33ee869d521a",
+  "shared_parser_commit": "9be5e316f00b156a1034388a84d3625f29793cb5",
+  "shared_handoff_commit": "6eb6f67",
+  "shared_source_tests_passed": 145,
+  "shared_installed_tests_passed": 145,
+  "expected_platform_skips_per_suite": 2,
+  "root_source_binding_verification": "six shared sources and full 178-question runtime matched",
+  "shared_canary": {
+    "scope": "public_synthetic_shared_transport_only",
+    "distinct_attempt": "r4",
+    "contacts": 1,
+    "retries": 0,
+    "native_envelope_sha256": "80a87788c903dd3e880926831e4d39f98dc9f2466733d4b8c023fd0be6b1f021",
+    "native_envelope_bytes": 897,
+    "root_envelope_hash_readback_verified": true,
+    "observed_turns": 1,
+    "stop_reason": "end_turn",
+    "tool_policy_attestation_hash": "ae194a9006c09ea8b6fdc5068f6411a2e7d544ad7a92b22690b4e6f9f0a77d47"
+  },
+  "route_sha256": "6e26084b12aaeb48dfc907be9672f69fe404aa7ad6b4e977ce5f98f7a1ee380e",
+  "routes_file_sha256_at_freeze": "37d1986ae4a3e3ab5e3311d6f78626dfc2156266e5590ed1a3193fb61e54eaa1",
+  "allowance_receipt_sha256": "d2b53427517292c99f7474f9b242817e3f7e14121b2133404a1e1cd44295a54b",
+  "allowance_source_evidence_sha256": "b388c8e9f343d7dfa595eb63be09abe3c0846e05bdb68ab015c9fd7e71744d8d",
+  "receipt_expires_at": "2026-09-07T14:20:20Z",
+  "source_install_manifest_sha256": "968f5b3d98462b393b5952bf8f2838dd5a9ecd0f7e47c540244d1a164e0b91e1",
+  "rollback_manifest_sha256": "45d8b0939ff70891ec723b2f6388cdb88afb0110c68ff779a6bdfb33d7837816",
+  "new_cwr_provider_contacts": 0,
+  "project_native_admission": false,
+  "execution_authority": false,
+  "cohort_review_required": true,
+  "limitations": [
+    "Shared compatibility does not constitute CWR native measurement admission.",
+    "Every project contact still requires current source, route, host gate and reviewed cohort checks.",
+    "Failed canaries and Dryad qualification contact 28 remain immutable and excluded from reuse."
+  ]
+}

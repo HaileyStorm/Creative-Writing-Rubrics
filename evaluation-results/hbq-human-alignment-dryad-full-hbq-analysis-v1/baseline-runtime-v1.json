@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "evidence_class": "baseline_runtime_source_bindings",
+  "baseline_plan_sha256": "edeadb93c485ba227153329b5ae420de1c9d08d95e920bac0635d197fd3dbd7f",
+  "parent_protocol_sha256": "33e7dde670bf212da0ee7c4cd6cf628f9a43949dc597cea47b0d97aa4e158e2b",
+  "bridge_path": "src/hbqrs/grok_broker_transport_v2.py",
+  "bridge_sha256": "da9698e23aee9eb4fc0daaa76b9d32dfc0090462ad6fede587b865caa363eaa5",
+  "shared_runtime_bindings": {
+    "prepare_grok_evidence.py": "8562536fecbb417365003ec86db606c87fc2e434043cbf1fc98cee34ec7539b3",
+    "broker.py": "4cfe6b0b41172e9ecc32d572fbaa27c725b1aceb3beda95c3505c57bc2a6c02a",
+    "adapters/grok_exec.py": "38be13e86f329ecf069a8d82f8f0d615c88006e26c6eb2b173297f0735ff1921",
+    "adapters/json_schema_subset.py": "9b593fbc7f45b9fd965b567e3153b34fd8efd842248f6c5bb10821c643592c95",
+    "image_canary.py": "17104449da596b2be542d7670f6dee5034a13b78b13f16732da63c852f5e4998",
+    "grok_usage_evidence.py": "dc5e00849699858445d966783bfa2b2afc5255b896f41544196ac023c82be99f"
+  },
+  "adapter_version": 4,
+  "execution_policy": "bounded_nonvisual_deny_wins_attested",
+  "tools": "deny_wins_none_attested"
+}
