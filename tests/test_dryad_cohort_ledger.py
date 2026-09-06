@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 import importlib.util
 import json
+import shutil
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
@@ -151,6 +152,16 @@ def _build_ledger(
     return previous
 
 
+def _truncate_ledger(root: Path, plan: dict[str, object], through_cohort: int) -> str:
+    groups = ledger.cohort_groups(plan)
+    for number in range(through_cohort + 1, len(groups) + 1):
+        shutil.rmtree(root / "cohorts" / f"{number:04d}")
+    for group in groups[through_cohort:]:
+        for ordinal in group:
+            (root / "contacts" / f"request-{ordinal:04d}.json").unlink()
+    return ledger.GENESIS_SETTLEMENT_SHA256 if through_cohort == 0 else _sha256((root / "cohorts" / f"{through_cohort:04d}" / "settlement.json").read_bytes())
+
+
 def test_cohort_groups_match_the_qualification_geometry() -> None:
     groups = ledger.cohort_groups(_plan())
     assert len(groups) == 27
@@ -246,3 +257,63 @@ def test_verify_ledger_rejects_missing_and_extra_inventory(tmp_path: Path) -> No
     (extra / "contacts" / "orphan.json").write_text("{}", encoding="utf-8")
     with pytest.raises(ValueError, match="inventory"):
         ledger.verify_ledger(extra, plan_raw, plan_sha256, extra_head)
+
+
+def test_verify_prefix_zero_requires_empty_ledger_directories(tmp_path: Path) -> None:
+    plan = _plan()
+    plan_raw = _raw(plan)
+    plan_sha256 = _sha256(plan_raw)
+    (tmp_path / "cohorts").mkdir()
+    (tmp_path / "contacts").mkdir()
+    verified = ledger.verify_prefix(tmp_path, plan_raw, plan_sha256, ledger.GENESIS_SETTLEMENT_SHA256, 0)
+    assert verified == {"routes": {}, "contacts": {}, "head": {"cohort_number": 0, "settlement_sha256": ledger.GENESIS_SETTLEMENT_SHA256}}
+
+
+def test_verify_prefix_one_returns_only_the_settled_prefix(tmp_path: Path) -> None:
+    plan = _plan()
+    plan_raw = _raw(plan)
+    plan_sha256 = _sha256(plan_raw)
+    _build_ledger(tmp_path, plan, plan_sha256=plan_sha256)
+    head = _truncate_ledger(tmp_path, plan, 1)
+    verified = ledger.verify_prefix(tmp_path, plan_raw, plan_sha256, head, 1)
+    assert len(verified["contacts"]) == 10
+    assert verified["head"] == {"cohort_number": 1, "settlement_sha256": head}
+
+
+def test_verify_prefix_accepts_only_explicit_pending_paths(tmp_path: Path) -> None:
+    plan = _plan()
+    plan_raw = _raw(plan)
+    plan_sha256 = _sha256(plan_raw)
+    _build_ledger(tmp_path, plan, plan_sha256=plan_sha256)
+    head = _truncate_ledger(tmp_path, plan, 1)
+    pending = frozenset({
+        "cohorts/0002/prepared.json",
+        "cohorts/0002/review.json",
+        "cohorts/0002/route.json",
+        "contacts/request-0011.json",
+    })
+    for relative in pending:
+        _write(tmp_path, relative, {"caller": "authenticates-pending-content"})
+    with pytest.raises(ValueError, match="inventory"):
+        ledger.verify_prefix(tmp_path, plan_raw, plan_sha256, head, 1)
+    verified = ledger.verify_prefix(tmp_path, plan_raw, plan_sha256, head, 1, pending)
+    assert verified["head"]["settlement_sha256"] == head
+
+
+def test_verify_prefix_rejects_unlisted_orphan_paths(tmp_path: Path) -> None:
+    plan = _plan()
+    plan_raw = _raw(plan)
+    plan_sha256 = _sha256(plan_raw)
+    _build_ledger(tmp_path, plan, plan_sha256=plan_sha256)
+    head = _truncate_ledger(tmp_path, plan, 1)
+    _write(tmp_path, "contacts/request-0011.json", {"orphan": True})
+    with pytest.raises(ValueError, match="inventory"):
+        ledger.verify_prefix(tmp_path, plan_raw, plan_sha256, head, 1)
+
+
+def test_verify_prefix_all_cohorts_matches_full_verification(tmp_path: Path) -> None:
+    plan = _plan()
+    plan_raw = _raw(plan)
+    plan_sha256 = _sha256(plan_raw)
+    head = _build_ledger(tmp_path, plan, plan_sha256=plan_sha256)
+    assert ledger.verify_prefix(tmp_path, plan_raw, plan_sha256, head, 27) == ledger.verify_ledger(tmp_path, plan_raw, plan_sha256, head)

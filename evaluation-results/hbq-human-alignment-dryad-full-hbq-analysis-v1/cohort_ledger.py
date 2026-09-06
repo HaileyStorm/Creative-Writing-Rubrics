@@ -8,7 +8,7 @@ import os
 import re
 import stat
 from datetime import datetime, timedelta, timezone
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from typing import Any, Mapping
 
 
@@ -190,14 +190,36 @@ def _review_window(review: Mapping[str, Any], prepared_sha256: str, reviewer_tas
     return reviewed_at, expires_at
 
 
-def verify_ledger(
+def _pending_paths(value: frozenset[str]) -> frozenset[str]:
+    _require(isinstance(value, frozenset) and all(type(item) is str for item in value), "Pending paths differ")
+    for item in value:
+        path = PurePosixPath(item)
+        _require(path.parts and not path.is_absolute() and path.as_posix() == item, "Pending path differs")
+        _require(all(part not in (".", "..") for part in path.parts) and path.parts[0] in {"cohorts", "contacts"}, "Pending path escapes ledger")
+    return value
+
+
+def _ledger_directories(files: set[str]) -> frozenset[str]:
+    directories: set[str] = set()
+    for relative in files:
+        parent = PurePosixPath(relative).parent
+        while len(parent.parts) > 1:
+            directories.add(parent.as_posix())
+            parent = parent.parent
+    return frozenset(directories)
+
+
+def _verify_prefix(
     execution_root: Path,
     plan_raw: bytes,
     expected_plan_sha256: str,
-    expected_final_settlement_sha256: str,
+    expected_settlement_sha256: str,
+    through_cohort: int,
+    allowed_pending_paths: frozenset[str],
 ) -> dict[str, Any]:
-    """Verify all review, routing, and contact bindings without contacting a provider."""
-    _require(_is_hash(expected_plan_sha256) and _is_hash(expected_final_settlement_sha256), "Expected ledger hashes differ")
+    _require(_is_hash(expected_plan_sha256) and _is_hash(expected_settlement_sha256), "Expected ledger hashes differ")
+    _require(type(through_cohort) is int and 0 <= through_cohort <= 27, "Prefix cohort differs")
+    pending_paths = _pending_paths(allowed_pending_paths)
     _require(isinstance(plan_raw, bytes) and _digest(plan_raw) == expected_plan_sha256, "Exact plan hash differs")
     plan = _json_object(plan_raw, "Plan")
     groups = cohort_groups(plan)
@@ -205,12 +227,13 @@ def verify_ledger(
     root = Path(execution_root)
     before_files, before_directories = _ledger_snapshot(root)
     expected_files: set[str] = set()
-    expected_directories = {f"cohorts/{number:04d}" for number in range(1, len(groups) + 1)}
-    for number in range(1, len(groups) + 1):
+    for number in range(1, through_cohort + 1):
         prefix = f"cohorts/{number:04d}"
         expected_files.update(f"{prefix}/{name}" for name in ("prepared.json", "review.json", "route.json", "settlement.json"))
-    expected_files.update(f"contacts/request-{ordinal:04d}.json" for ordinal in range(1, 262))
-    _require(set(before_files) == expected_files and before_directories == expected_directories, "Ledger inventory differs")
+    expected_files.update(f"contacts/request-{ordinal:04d}.json" for group in groups[:through_cohort] for ordinal in group)
+    _require(expected_files.isdisjoint(pending_paths), "Pending paths overlap settled ledger")
+    expected_inventory = expected_files | set(pending_paths)
+    _require(set(before_files) == expected_inventory and before_directories == _ledger_directories(expected_inventory), "Ledger inventory differs")
 
     routes: dict[str, dict[str, Any]] = {}
     contacts: dict[int, dict[str, Any]] = {}
@@ -219,7 +242,7 @@ def verify_ledger(
     previous_settlement = GENESIS_SETTLEMENT_SHA256
     previous_settled_at = None
 
-    for cohort_number, ordinals in enumerate(groups, start=1):
+    for cohort_number, ordinals in enumerate(groups[:through_cohort], start=1):
         prefix = f"cohorts/{cohort_number:04d}"
         prepared_raw = _read_ledger_file(root, f"{prefix}/prepared.json", before_files)
         review_raw = _read_ledger_file(root, f"{prefix}/review.json", before_files)
@@ -282,12 +305,35 @@ def verify_ledger(
         previous_settlement = _digest(settlement_raw)
         previous_settled_at = settled_at
 
-    _require(len(contacts) == len(native_request_ids) == len(native_session_ids) == 261, "Ledger contact cardinality differs")
-    _require(previous_settlement == expected_final_settlement_sha256, "Ledger closing settlement differs")
+    expected_contacts = sum(len(group) for group in groups[:through_cohort])
+    _require(len(contacts) == len(native_request_ids) == len(native_session_ids) == expected_contacts, "Ledger contact cardinality differs")
+    _require(previous_settlement == expected_settlement_sha256, "Ledger closing settlement differs")
     after_files, after_directories = _ledger_snapshot(root)
     _require(before_files == after_files and before_directories == after_directories, "Ledger changed during verification")
     return {
         "routes": routes,
         "contacts": contacts,
-        "head": {"cohort_number": len(groups), "settlement_sha256": previous_settlement},
+        "head": {"cohort_number": through_cohort, "settlement_sha256": previous_settlement},
     }
+
+
+def verify_prefix(
+    execution_root: Path,
+    plan_raw: bytes,
+    expected_plan_sha256: str,
+    expected_settlement_sha256: str,
+    through_cohort: int,
+    allowed_pending_paths: frozenset[str] = frozenset(),
+) -> dict[str, Any]:
+    """Verify a contiguous settled ledger prefix without contacting a provider."""
+    return _verify_prefix(execution_root, plan_raw, expected_plan_sha256, expected_settlement_sha256, through_cohort, allowed_pending_paths)
+
+
+def verify_ledger(
+    execution_root: Path,
+    plan_raw: bytes,
+    expected_plan_sha256: str,
+    expected_final_settlement_sha256: str,
+) -> dict[str, Any]:
+    """Verify the complete closed ledger without contacting a provider."""
+    return _verify_prefix(execution_root, plan_raw, expected_plan_sha256, expected_final_settlement_sha256, 27, frozenset())
