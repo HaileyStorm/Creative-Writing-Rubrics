@@ -321,3 +321,13 @@ no automatic resend or subset metrics. Fresh alignment measurement and
 unchanged-payload Sol validation remain pending. The empirical batch cap is
 unset; synthetic tests and prepared targets establish neither alignment nor
 generalization.
+
+The separately frozen [v2 attempt](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/868355f316a1b6fb559a3e365613a6d3ea8748c0/evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/qualification-attempt-2.json)
+constrained each batch's response IDs and retained the original stories,
+questions and prompt bytes. It produced 27 accepted checkpoints, including
+one complete 178-question pass whose 23 native identities replayed successfully.
+Contact 28 then returned an ambiguous post-launch transport outcome with no
+native receipt or recoverable completed result. The run is quarantined,
+with 233 requests unstarted and no cap, alignment result, subset metrics or
+automatic resend. The structured failure does not establish a quota, billing
+or timeout cause.

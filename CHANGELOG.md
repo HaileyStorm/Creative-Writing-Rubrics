@@ -8,6 +8,7 @@
 - Audited the supplied Dryad corpus and froze TRAIN/DEV targets and a full-HBQ qualification plan. Added governed cohort execution, native evidence replay, the fixed 128-trial TRAIN optimizer, and conditional DEV comparison. These implementation checks are not live Dryad alignment results.
 - Added append-only cohort approval renewal with preserved native receipts and executor history. The first Dryad qualification attempt is terminal: five accepted checkpoints, one semantically rejected response, and 255 unstarted requests. It yields no cap or alignment result and will not be automatically resent.
 - Added opt-in batch question-ID schemas, persisted schema commitments, guarded initialization recovery, and offline verification. A prospective Dryad v2 qualification retains the original stories, prompts and scientific thresholds while constraining response IDs; the failed predecessor remains preserved.
+- The Dryad v2 attempt retained 27 accepted checkpoints and one replayed 178-question pass before an ambiguous post-launch contact lacked a native result. Its evidence is quarantined with no cap, alignment metrics, or automatic resend; the transport cause remains unclassified.
 - No new rubric version, runtime profile promotion, general literary-validity claim, or native Linux proof is implied by these development checkpoints.
 
 ## 1.2.3 — 2026-08-26
