@@ -40,6 +40,14 @@ def _canonical(value: Any) -> bytes:
     return json.dumps(value, sort_keys=True, separators=(",", ":")).encode("utf-8")
 
 
+def test_current_collector_dependencies_load_without_a_provider() -> None:
+    subject = _load()
+    captured, modules = subject._sources()
+    core, core_raw = modules[1]._core()
+    assert callable(core.verify_prefix) and core_raw
+    assert captured[subject.LEDGER_SOURCE] == subject.LEDGER_SOURCE.read_bytes()
+
+
 @pytest.mark.parametrize("value", ("2026-09-06T20:09:51.240413Z", "2026-09-06T20:09:51.240413+00:00"))
 def test_time_accepts_only_equivalent_zero_utc_spellings(value: str) -> None:
     assert _load()._time(value, "synthetic") == datetime(2026, 9, 6, 20, 9, 51, 240413, tzinfo=timezone.utc)
