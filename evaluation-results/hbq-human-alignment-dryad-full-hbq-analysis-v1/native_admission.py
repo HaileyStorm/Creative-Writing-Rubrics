@@ -15,7 +15,7 @@ import uuid
 ROOT = Path(__file__).resolve().parent
 REPOSITORY = ROOT.parents[1]
 SHARED = Path.home() / ".codex/tools/model_work_queue"
-PROTOCOL_SHA256 = "f6cf28247f8759a8a823bbdfb7f94e0af33a2661b9ffeb0ce17a1099662c7441"
+PROTOCOL_SHA256 = "a0e2412be904a2fa89b200dbe734cdd42508c6ec40edf621a02f1c1cbd02272d"
 SUPPLEMENTARY_PINS = {
     "src/hbqrs/paths.py": "dedadb6d9f8e3cf700c16012b29e1a590a2b1175c8ead0cf17c44aa6417b8266",
     "schema/hbq_weight_profile.schema.json": "06e87d35c9d1f2e2434f01dba87c4e0ffd978bd3c42815f85ac8dd21212566c5",
@@ -81,7 +81,7 @@ def load_runtime():
     def verify():
         require(all(path.read_bytes() == value for path, value in captures.items()), "Runtime changed during replay")
     hbq = _private_modules(REPOSITORY / "src/hbqrs", ("core", "paths", "weights", "runner", "grok_broker_transport"), captures)
-    shared = _private_modules(SHARED, ("adapters.json_schema_subset", "image_canary", "grok_usage_evidence", "broker", "adapters.grok_exec"), captures)
+    shared = _private_modules(SHARED, ("adapters.json_schema_subset", "image_canary", "grok_usage_evidence", "prepare_grok_evidence", "broker", "adapters.grok_exec"), captures)
     require(hbq["paths"].book_root().resolve() == REPOSITORY.resolve(), "HBQ book root differs from pinned source")
     core = hbq["core"]
     modules = core.load_modules(REPOSITORY / "registry/all_modules.json")

@@ -65,7 +65,8 @@
     "schema/hbq_judge_response.schema.json": "49c7d824ba5dd957e67968ba3ae6ceb8a7ed9434dfb0dfc654836a76613c7854"
   },
   "shared_runtime_bindings": {
-    "broker.py": "8869b4500760ede3b6b8c199c349b081cd5bd51bdd03e426b679f4dca705d367",
+    "prepare_grok_evidence.py": "8562536fecbb417365003ec86db606c87fc2e434043cbf1fc98cee34ec7539b3",
+    "broker.py": "6f7b4a2c1bf68ac58ccfb68e13e783301d6e73fd9a1f6f2f0355698546c4c77c",
     "adapters/grok_exec.py": "f870671d90fde2670dd62c155488b004cee9d900b4f5185921b26323034a75f7",
     "adapters/json_schema_subset.py": "9b593fbc7f45b9fd965b567e3153b34fd8efd842248f6c5bb10821c643592c95",
     "image_canary.py": "17104449da596b2be542d7670f6dee5034a13b78b13f16732da63c852f5e4998",

@@ -23,7 +23,7 @@ DEV_COUNT = 60
 BOOTSTRAP_REPLICATES = 2000
 BOOTSTRAP_SEED = 20260905
 PROTOCOL_PATH = Path(__file__).resolve().with_name("protocol.json")
-PROTOCOL_SHA256 = "f6cf28247f8759a8a823bbdfb7f94e0af33a2661b9ffeb0ce17a1099662c7441"
+PROTOCOL_SHA256 = "a0e2412be904a2fa89b200dbe734cdd42508c6ec40edf621a02f1c1cbd02272d"
 
 
 def _protocol() -> bytes:

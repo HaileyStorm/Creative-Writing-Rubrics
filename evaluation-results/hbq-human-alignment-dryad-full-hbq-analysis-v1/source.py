@@ -20,7 +20,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parent
 REPOSITORY = ROOT.parents[1]
 PROTOCOL_PATH = ROOT / "protocol.json"
-PROTOCOL_SHA256 = "f6cf28247f8759a8a823bbdfb7f94e0af33a2661b9ffeb0ce17a1099662c7441"
+PROTOCOL_SHA256 = "a0e2412be904a2fa89b200dbe734cdd42508c6ec40edf621a02f1c1cbd02272d"
 PARTITIONS = ("TRAIN", "DEV", "CONFIRMATION")
 OPEN_PARTITIONS = ("TRAIN", "DEV")
 AXES = (

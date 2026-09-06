@@ -18,10 +18,11 @@ from hbqrs.grok_broker_transport import bind_grok_broker_transport
 
 SHARED = Path.home() / ".codex/tools/model_work_queue"
 PINS = {
-    "broker.py": "8869b4500760ede3b6b8c199c349b081cd5bd51bdd03e426b679f4dca705d367",
+    "prepare_grok_evidence.py": "8562536fecbb417365003ec86db606c87fc2e434043cbf1fc98cee34ec7539b3",
+    "broker.py": "6f7b4a2c1bf68ac58ccfb68e13e783301d6e73fd9a1f6f2f0355698546c4c77c",
     "adapters/grok_exec.py": "f870671d90fde2670dd62c155488b004cee9d900b4f5185921b26323034a75f7",
     "adapters/json_schema_subset.py": "9b593fbc7f45b9fd965b567e3153b34fd8efd842248f6c5bb10821c643592c95",
-    "test_grok_adapter.py": "653c403e98aae388bdc8f05c0c76b50e525ce02c03aaa6b54f317ec49102c9b5",
+    "test_grok_adapter.py": "70dcea4f44bd39a481ab763e746474762f1886c1a51a2412c75c7c60ccf58d62",
     "image_canary.py": "17104449da596b2be542d7670f6dee5034a13b78b13f16732da63c852f5e4998",
     "grok_usage_evidence.py": "dc5e00849699858445d966783bfa2b2afc5255b896f41544196ac023c82be99f",
 }
