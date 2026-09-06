@@ -58,8 +58,8 @@ def _manifest_record(path: Path) -> dict[str, Any]:
 def _execution(frozen: Mapping[str, Any]) -> dict[str, Any]:
     value = frozen.get("execution")
     required = {"artifact_id", "bundle_id", "batch_size", "batch_attempts", "strict_ai", "provider", "model", "reasoning", "codex_bin"}
-    permitted = {frozenset(required), frozenset({*required, "attempt_lifecycle_policy"})}
-    if not isinstance(value, Mapping) or frozenset(value) not in permitted:
+    optional = {"attempt_lifecycle_policy", "response_schema_mode"}
+    if not isinstance(value, Mapping) or not required <= set(value) or not set(value) <= required | optional:
         raise core.HBQError("Frozen execution contract is malformed")
     if not isinstance(value["artifact_id"], str) or not value["artifact_id"] or not isinstance(value["bundle_id"], str) or not value["bundle_id"]:
         raise core.HBQError("Frozen execution identity is malformed")
@@ -71,6 +71,8 @@ def _execution(frozen: Mapping[str, Any]) -> dict[str, Any]:
         raise core.HBQError("Frozen provider execution contract is malformed")
     if "attempt_lifecycle_policy" in value and value["attempt_lifecycle_policy"] != runner.ATTEMPT_LIFECYCLE_POLICY:
         raise core.HBQError("Frozen attempt lifecycle policy is malformed")
+    if "response_schema_mode" in value and value["response_schema_mode"] != "batch_question_ids_v1":
+        raise core.HBQError("Frozen response schema mode is malformed")
     return dict(value)
 
 
@@ -145,6 +147,12 @@ def _configuration(
     }
     if "attempt_lifecycle_policy" in execution:
         configuration["attempt_lifecycle_policy"] = execution["attempt_lifecycle_policy"]
+    if "response_schema_mode" in execution:
+        batch_schema_records, _ = runner._batch_schema_plan(
+            configuration["question_ids"], execution["batch_size"]
+        )
+        configuration["response_schema_mode"] = execution["response_schema_mode"]
+        configuration["batch_response_schemas"] = batch_schema_records
     if prompt_rendering_version == runner.PROMPT_RENDERING_VERSION:
         configuration.update(
             {
@@ -360,6 +368,13 @@ def verify_binary_run(run_dir: str | Path, frozen: Mapping[str, Any]) -> dict[st
         raise core.HBQError("Run manifest configuration binding is invalid")
     if dict(configuration) != expected_configuration:
         raise core.HBQError("Run configuration does not independently match its frozen inputs")
+    response_schema_mode = execution.get("response_schema_mode")
+    if response_schema_mode is not None:
+        if manifest.get("response_schema_initialization") != "complete":
+            raise core.HBQError("Frozen batch response-schema initialization is incomplete")
+        runner._validate_recorded_batch_schemas(directory)
+    elif "response_schema_initialization" in manifest:
+        raise core.HBQError("Legacy run has unexpected batch response-schema initialization")
     if configuration.get("question_ids") != [str(item["question"]["id"]) for item in questions]:
         raise core.HBQError("Run does not contain the complete nondiagnostic question set")
     if (directory / "diagnostic.json").exists():
@@ -430,6 +445,14 @@ def verify_binary_run(run_dir: str | Path, frozen: Mapping[str, Any]) -> dict[st
             for path in sorted(lifecycle_root.glob("batch-*/attempt-*.json"))
         ]
     commitments = {"verdicts": _relative_commitment(directory, directory / "verdicts.jsonl"), "prompts": prompt_commitments, "accepted_response_artifacts": accepted_artifacts, "rejected_attempts": rejected, "provider_artifacts": provider_artifacts, "attempt_lifecycle": lifecycle_artifacts}
+    if response_schema_mode is not None:
+        batch_schema_commitments = [
+            _relative_commitment(directory, directory / record["path"])
+            for record in expected_configuration["batch_response_schemas"]
+        ]
+        if batch_schema_commitments != expected_configuration["batch_response_schemas"]:
+            raise core.HBQError("Batch response-schema commitments differ")
+        commitments["batch_response_schemas"] = batch_schema_commitments
     return {
         "run_sha256": _sha256(directory / "run.json"),
         "score_sha256": _sha256(score_path),

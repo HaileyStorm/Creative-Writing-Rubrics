@@ -22,12 +22,12 @@ import optuna
 
 ANALYSIS_ROOT = Path(__file__).resolve().parent
 ROOT = ANALYSIS_ROOT.parents[1]
-PROTOCOL_PATH = ANALYSIS_ROOT / "protocol.json"
-PROTOCOL_SHA256 = "a0e2412be904a2fa89b200dbe734cdd42508c6ec40edf621a02f1c1cbd02272d"
+PROTOCOL_PATH = ANALYSIS_ROOT / "protocol-v2.json"
+PROTOCOL_SHA256 = "33e7dde670bf212da0ee7c4cd6cf628f9a43949dc597cea47b0d97aa4e158e2b"
 ANALYSIS_MATH_PATH = ANALYSIS_ROOT / "analysis_math.py"
-ANALYSIS_MATH_SHA256 = "bc859774688a5c9fa12906b2100b75fa6480b0f98493d3ed81e075859e43637a"
+ANALYSIS_MATH_SHA256 = "237c6ff2fb9c343b7a7000fdbbe17ad76db29afde1164a4fa7f0affa0963b41f"
 NATIVE_ADMISSION_PATH = ANALYSIS_ROOT / "native_admission.py"
-NATIVE_ADMISSION_SHA256 = "11d7f8bec870a0945fe2eb169fa1580bc351b4e07eaa46b831c4e8703431d122"
+NATIVE_ADMISSION_SHA256 = "22ccfe3299bab0e04045a7ec01ab4799929818a3a84aecc8549bb6cb3032a1ec"
 DOMAIN_ORDER = ("task", "character", "movement", "language", "setting", "effect", "fresh", "mechanics", "holistic")
 CANONICAL_POINTS = (8, 15, 19, 16, 9, 10, 10, 5, 8)
 MULTIPLIERS = (0.5, 1.0, 2.0)

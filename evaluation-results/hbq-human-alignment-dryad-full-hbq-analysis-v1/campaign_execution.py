@@ -22,9 +22,9 @@ PLAN_SOURCE = ROOT / "campaign_plan.py"
 LEDGER_SOURCE = ROOT / "cohort_ledger.py"
 NATIVE_SOURCE = ROOT / "native_admission.py"
 SOURCE_PINS = {
-    PLAN_SOURCE: "46a98eb1134d308a96bd7a34aee4b92a26f2e85e92768305e813daa08cb7b655",
+    PLAN_SOURCE: "208337b99c44aead7ab11614381e44238dcdcd0799a8fcc9f0fa3869a15ee472",
     LEDGER_SOURCE: "3b07db6d58c5bfdbca5c662c8b4fb5fdcc833fd1e421d58ce7e7d0e9928fe44a",
-    NATIVE_SOURCE: "11d7f8bec870a0945fe2eb169fa1580bc351b4e07eaa46b831c4e8703431d122",
+    NATIVE_SOURCE: "22ccfe3299bab0e04045a7ec01ab4799929818a3a84aecc8549bb6cb3032a1ec",
 }
 _HASH = re.compile(r"[0-9a-f]{64}\Z")
 
@@ -365,6 +365,11 @@ def run_cohort(public_inputs_path: Path, plan_root: Path, execution_root: Path, 
         for protected in (plan_root, execution_root, REPOSITORY):
             _require(not queue_root.is_relative_to(protected) and not protected.is_relative_to(queue_root), "Queue root overlaps study evidence")
         runtime = native.load_runtime(); runtime.verify()
+        plan_mode = plan.get("response_schema_mode")
+        _require(plan_mode in {None, "batch_question_ids_v1"}, "Plan response schema mode differs")
+        _require(isinstance(plan.get("runtime"), Mapping) and plan["runtime"].get("response_schema_mode") == plan_mode,
+                 "Plan runtime response schema mode differs")
+        _require(getattr(runtime, "response_schema_mode", None) == plan_mode, "Loaded runtime response schema mode differs")
         if completed_ordinals:
             prefix_contacts = {item["ordinal"]: item for item in (continuations[-1]["value"]["completed_prefix"]["contacts"] if continuations else [])}
             replayed_prefixes: dict[str, Any] = {}
@@ -419,14 +424,23 @@ def run_cohort(public_inputs_path: Path, plan_root: Path, execution_root: Path, 
             if request["ordinal"] not in current: raise runtime.runner.RetryDisclosurePause("outside reviewed cohort")
             if not inner:
                 phase["value"] = "before_contact"
-            prompt = _relative(plan_root, request["prompt_path"], directory=False).read_bytes(); schema = runtime.runner._json_bytes(runtime.runner._response_schema())
+            prompt = _relative(plan_root, request["prompt_path"], directory=False).read_bytes()
+            planned_schema = _relative(plan_root, request["schema_path"], directory=False).read_bytes()
+            schema = runtime.runner._json_bytes(
+                runtime.runner._batch_response_schema(request["question_ids"])
+                if plan_mode is not None else runtime.runner._response_schema()
+            )
             _require(_hash(prompt) == request["prompt_sha256"] and len(prompt) == request["prompt_bytes"]
-                     and _hash(schema) == request["schema_sha256"] and len(schema) == request["schema_bytes"], "Planned payload differs")
+                     and planned_schema == schema and _hash(planned_schema) == request["schema_sha256"]
+                     and len(planned_schema) == request["schema_bytes"], "Planned payload differs")
             prompt_record, schema_record = context["prompt"], context["response_schema"]
             _require(isinstance(prompt_record, Mapping) and isinstance(schema_record, Mapping), "Runner context descriptors differ")
             _require(prompt_record.get("text", "").encode("utf-8") == prompt and prompt_record.get("sha256") == _hash(prompt) and prompt_record.get("bytes") == len(prompt), "Prompt binding differs")
             schema_text = schema_record.get("text")
-            _require(isinstance(schema_text, str) and runtime.runner._json_bytes(json.loads(schema_text)) == schema and schema_record.get("sha256") == _hash(schema_text.encode()) and schema_record.get("bytes") == len(schema_text.encode()), "Schema binding differs")
+            _require(isinstance(schema_text, str) and schema_text.encode("utf-8") == schema
+                     and runtime.runner._json_bytes(json.loads(schema_text)) == schema
+                     and schema_record.get("sha256") == request["schema_sha256"]
+                     and schema_record.get("bytes") == request["schema_bytes"], "Schema binding differs")
             _require(context["batch"]["question_ids"] == request["question_ids"] and context["attempt"]["number"] == 1, "Attempt binding differs")
             prefix_unchanged(); prefix_runs_unchanged(); payloads_unchanged(); approval_unchanged(); runtime.verify(); _fresh_route(broker, route); _unchanged(captured)
             now = datetime.now(timezone.utc); _require(authorization_window[0] <= now <= authorization_window[1], "Review window expired")
@@ -448,7 +462,7 @@ def run_cohort(public_inputs_path: Path, plan_root: Path, execution_root: Path, 
         for pass_id in dict.fromkeys(requests[number]["pass_id"] for number in ordinals):
             record = passes[pass_id]; source = _relative(plan_root, record["input_path"], directory=False); destination = _relative(execution_root, record["run_path"])
             try:
-                runtime.runner.run_judge(artifact_path=source, bundle_id="prose.short_story", provider="grok", model="grok-4.6", output_dir=destination, registry=REPOSITORY / "registry/all_modules.json", bundles=REPOSITORY / "bundles/all_bundles.json", question_ids=plan["runtime"]["question_ids"], batch_size=record["batch_size"], batch_attempts=1, reasoning="high", allow_remote=True, resume=destination.exists(), timeout=route["timeout_seconds"], artifact_id=record["opaque_story_id"], judge_id="grok:grok-4.6", allow_unattested_reasoning=True, attempt_lifecycle_policy="terminal_sidecar_v1", before_provider_attempt=check, grok_transport=transport, grok_transport_sha256=runtime.transport_sha256)
+                runtime.runner.run_judge(artifact_path=source, bundle_id="prose.short_story", provider="grok", model="grok-4.6", output_dir=destination, registry=REPOSITORY / "registry/all_modules.json", bundles=REPOSITORY / "bundles/all_bundles.json", question_ids=plan["runtime"]["question_ids"], batch_size=record["batch_size"], batch_attempts=1, reasoning="high", allow_remote=True, resume=destination.exists(), timeout=route["timeout_seconds"], artifact_id=record["opaque_story_id"], judge_id="grok:grok-4.6", allow_unattested_reasoning=True, attempt_lifecycle_policy="terminal_sidecar_v1", before_provider_attempt=check, grok_transport=transport, grok_transport_sha256=runtime.transport_sha256, **({"response_schema_mode": plan_mode} if plan_mode is not None else {}))
             except runtime.runner.RetryDisclosurePause:
                 pass
         completed_after, _, _ = _current_contact_prefix(execution_root, ordinals, ledger)

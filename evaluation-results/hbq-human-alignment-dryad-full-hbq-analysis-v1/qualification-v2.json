@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "status": "preregistered_prospective_no_provider_authority",
+  "purpose": "Operational comparability of batch 32 against reference batch 8 on the exact pinned full-HBQ stack; not human accuracy, generalization, or release proof.",
+  "public_inputs_sha256": "6254f58d3366667c9578e2661a1ca0d105a603a0f8affe2d925a767957937c42",
+  "selection": {
+    "partition": "TRAIN",
+    "count": 3,
+    "seed": "dryad-full-hbq-qualification-v1",
+    "key": "SHA256(UTF8(seed + U+0000 + opaque_story_id)), lowercase hex; sort by key then opaque_story_id and take first three. No human ratings, condition, topic, or model outcomes enter selection.",
+    "continuity": "Retain the original label-independent calibration cohort and seed; do not reroll to select easier stories after the prior output-format failure."
+  },
+  "cohort": [
+    {
+      "opaque_story_id": "dryad-cec700bfc2d75abb112b3e05",
+      "story_text_sha256": "c17c17499dbcfd42eb33e91027ca3580f788337ba6ec744ccfa9b95f8cffaa8a",
+      "selection_sha256": "003dd95dc04105a2571cd5d2fe5226a233a2a9155e91b01bcda730dae6bc5640"
+    },
+    {
+      "opaque_story_id": "dryad-44cae24e55019e2cbf491660",
+      "story_text_sha256": "e02d428bdf017354f63caf58552659c89bdedd465dc612f607556d49786e60ca",
+      "selection_sha256": "04e4b75feda0cfec1e2b5c8e76fbbafb502d1d506e664eb37579805e28a859c2"
+    },
+    {
+      "opaque_story_id": "dryad-1fdece08b78477bd30f527f0",
+      "story_text_sha256": "8b5827e3cf2b6da78207b8e0a9a99c9b369b68bbfcf10cc3bb69774ffdc993e1",
+      "selection_sha256": "057fc4f4fd1ee55387b3a56e68c96ff8529a6e6aae67680034912ca0b7ff4f24"
+    }
+  ],
+  "question_set": {
+    "bundle_id": "prose.short_story",
+    "count": 178,
+    "leaf_sampling": false,
+    "order": "Exact pinned runner compiled_questions order after its stable hard_gate/domain/penalty/supplemental ordering; contiguous chunks with the final short chunk retained."
+  },
+  "reference_batch_size": 8,
+  "candidate_batch_size": 32,
+  "complete_passes_per_story_per_size": 3,
+  "logical_requests": {
+    "reference": 207,
+    "candidate": 54,
+    "total": 261
+  },
+  "schedule": "Reference size 8 first, then size 32; within each size iterate repetitions 1..3, then cohort order, then contiguous batch order. No overlapping unreviewed cohorts.",
+  "execution_bounds": {
+    "maximum_concurrent_contacts": 10,
+    "maximum_new_contacts_per_reviewed_cohort": 10,
+    "cumulative_attempts_per_batch": 1,
+    "native_turns_per_request": 1,
+    "precontact": "Outer runner hook pauses before attempt-start if an exact prepared prompt is outside the reviewed cohort. Broker admission repeats the exact source/prompt/schema/route checks while holding the host slot. Fresh usage evidence and independent review are required for each next bounded cohort; no implicit carryover."
+  },
+  "admission": "All 18 complete passes must retain 178 unique validated outcomes, native request/session identities, exact question/source/prompt commitments, finite canonical final_score.observed, and coverage >=0.88. No recovered transport failures, resends, missing, duplicate, or unadmitted items. Every native receipt must be independently replayable.",
+  "comparability": {
+    "leaf_disagreement": "For two passes of the same story, count unequal canonical verdict strings over all 178 fixed IDs and divide by 178. Include every verdict category without collapsing or filtering.",
+    "reference_instability": "Arithmetic mean disagreement across all three unordered pairs of the three reference passes.",
+    "candidate_instability": "Arithmetic mean disagreement across all three unordered pairs of the three candidate passes.",
+    "cross_size_disagreement": "Arithmetic mean disagreement across all nine reference-candidate pass pairs; no optimal or outcome-chosen pairing.",
+    "score_shift": "Absolute difference between the reference and candidate three-pass mean canonical final_score.observed for each story.",
+    "candidate_gate": "For every one of the three stories, cross_size_disagreement <= reference_instability + 0.05 AND candidate_instability <= reference_instability + 0.05 AND score_shift <= 5.0 points on 0..100.",
+    "interpretation": "These are prespecified engineering tolerances, not statistical equivalence or accuracy thresholds. Report absolute within-size instability and all score distributions even if the comparative gate passes. Weak repeatability remains a limitation."
+  },
+  "cap_rule": "If all admission and comparability gates pass, cap=32; if all admission gates pass but comparability fails, cap=8. Otherwise cap=null. Never infer a larger cap or carry this proof to different prompts, tasks, runtime, sampler, or model mapping.",
+  "failure_policy": "Any provider ambiguity, billing/quota failure, or invalid native output stops the campaign. Preserve terminal cells and bound evidence. No automatic resend, fallback, replacement pass, or downward retry after such a failure.",
+  "alignment_measurement": "Qualification outputs never substitute for the later fresh one-pass 236-story Grok measurement, including these three TRAIN stories. Keep distinct purpose and logical sample IDs; no favorable-pass selection or pooling.",
+  "execution_authority": false,
+  "current_empirical_cap": null,
+  "qualification_id": "dryad-full-hbq-qualification-v2-batch-question-ids",
+  "response_schema_mode": "batch_question_ids_v1",
+  "predecessor": {
+    "qualification_sha256": "18e2b199bafdf49328402d78a7f9f7b83d408c6140acccb2e35993c046a11989",
+    "plan_sha256": "03302416c03f72f0c422342904be9eb7876c520ac2c021dfce14c546e23f7c28",
+    "disposition": "terminal_invalid_preserved_no_resend",
+    "reason": "The prior schema permitted a placeholder question ID. This prospective version constrains each batch schema to its requested IDs and minimum item count. It does not repair, resume or relabel the prior attempt."
+  }
+}

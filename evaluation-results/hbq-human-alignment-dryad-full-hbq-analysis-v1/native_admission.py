@@ -15,7 +15,7 @@ import uuid
 ROOT = Path(__file__).resolve().parent
 REPOSITORY = ROOT.parents[1]
 SHARED = Path.home() / ".codex/tools/model_work_queue"
-PROTOCOL_SHA256 = "a0e2412be904a2fa89b200dbe734cdd42508c6ec40edf621a02f1c1cbd02272d"
+PROTOCOL_SHA256 = "33e7dde670bf212da0ee7c4cd6cf628f9a43949dc597cea47b0d97aa4e158e2b"
 SUPPLEMENTARY_PINS = {
     "src/hbqrs/paths.py": "dedadb6d9f8e3cf700c16012b29e1a590a2b1175c8ead0cf17c44aa6417b8266",
     "schema/hbq_weight_profile.schema.json": "06e87d35c9d1f2e2434f01dba87c4e0ffd978bd3c42815f85ac8dd21212566c5",
@@ -68,10 +68,15 @@ def _private_modules(root, names, captures):
 
 
 def load_runtime():
-    raw = (ROOT / "protocol.json").read_bytes()
+    protocol_path = ROOT / "protocol-v2.json"
+    raw = protocol_path.read_bytes()
     require(digest(raw) == PROTOCOL_SHA256, "Analysis protocol drift")
     protocol = json.loads(raw)
-    captures = {ROOT / "protocol.json": raw}
+    execution = protocol.get("execution")
+    require(isinstance(execution, dict), "Analysis protocol execution contract differs")
+    response_schema_mode = execution.get("response_schema_mode")
+    require(response_schema_mode in {None, "batch_question_ids_v1"}, "Unsupported response schema mode")
+    captures = {protocol_path: raw}
     for root, bindings in ((REPOSITORY, {**protocol["runtime_bindings"], **SUPPLEMENTARY_PINS}), (SHARED, protocol["shared_runtime_bindings"])):
         for relative, expected in bindings.items():
             path = root / relative
@@ -94,7 +99,8 @@ def load_runtime():
     return SimpleNamespace(core=core, runner=hbq["runner"], weights=hbq["weights"], broker=shared["broker"],
                            transport=hbq["grok_broker_transport"], transport_sha256=protocol["runtime_bindings"]["src/hbqrs/grok_broker_transport.py"],
                            adapter=shared["adapters.grok_exec"], modules=modules, bundle=bundle,
-                           compiled=compiled, questions=questions, verify=verify)
+                           compiled=compiled, questions=questions, response_schema_mode=response_schema_mode,
+                           verify=verify)
 
 
 def _read(run_root, relative, runtime):
@@ -166,6 +172,11 @@ def _admit_replay(run_root, *, source, batch_size, approved_routes, expected_bat
     require(manifest.get("format_version") == 5, "Qualification requires current terminal lifecycle")
     config = manifest["configuration"]
     expected_ids = [item["question"]["id"] for item in runtime.questions]
+    response_schema_mode = getattr(runtime, "response_schema_mode", None)
+    require(response_schema_mode in {None, "batch_question_ids_v1"}, "Unsupported response schema mode")
+    batch_schema_records, batch_schema_raw = [], {}
+    if response_schema_mode is not None:
+        batch_schema_records, batch_schema_raw = runner._batch_schema_plan(expected_ids, batch_size)
     expected = {
         "provider": "grok", "model": "grok-4.6", "reasoning": "high",
         "bundle_id": "prose.short_story", "artifact_id": source["opaque_story_id"],
@@ -181,9 +192,16 @@ def _admit_replay(run_root, *, source, batch_size, approved_routes, expected_bat
         "validation_feedback_policy": runner.VALIDATION_FEEDBACK_POLICY,
         "prompt_rendering_version": runner.PROMPT_RENDERING_VERSION,
     }
+    if response_schema_mode is not None:
+        expected["response_schema_mode"] = response_schema_mode
+        expected["batch_response_schemas"] = batch_schema_records
     require(all(config.get(key) == value for key, value in expected.items()), "Run configuration differs from qualification")
     require(set(config) == set(expected) | {"artifact", "weight_profile", "bundle_version", "prompts", "response_schema",
                                          "questions_sha256", "compiled_bundle_sha256", "grok_transport"}, "Run configuration shape differs")
+    if response_schema_mode is None:
+        require("response_schema_initialization" not in manifest, "Generic schema run has batch initialization state")
+    else:
+        require(manifest.get("response_schema_initialization") == "complete", "Batch response-schema initialization is incomplete")
     require(config["bundle_version"] == runtime.bundle.get("version"), "Bundle version differs")
     require(manifest["config_sha256"] == digest(runner._json_bytes(config)), "Run configuration hash differs")
     text = source["story_text"]
@@ -221,6 +239,10 @@ def _admit_replay(run_root, *, source, batch_size, approved_routes, expected_bat
     binary = (REPOSITORY / "prompts/judge/BINARY_EVALUATION_PROMPT.md").read_bytes().decode("utf-8-sig").strip()
     identities = []
     allowed_files = {"run.json", "response.schema.json", "verdicts.jsonl"}
+    if response_schema_mode is not None:
+        for number, record in enumerate(batch_schema_records, start=1):
+            require(_read(root, record["path"], runtime) == batch_schema_raw[number], "Batch response schema differs")
+            allowed_files.add(record["path"])
     if full_pass:
         allowed_files.add("score.json")
     if full_pass and (root / "score.v2.json").is_file():
@@ -229,6 +251,9 @@ def _admit_replay(run_root, *, source, batch_size, approved_routes, expected_bat
         checkpoint = _json(root, f"responses/batch-{number:04d}.json", runtime)
         require(checkpoint["format_version"] == 5 and checkpoint["accepted_attempt"] == 1, "Checkpoint attempt policy differs")
         chunk = runtime.questions[(number - 1) * batch_size:number * batch_size]
+        active_schema = runner._batch_response_schema([q["question"]["id"] for q in chunk]) if response_schema_mode is not None else schema
+        active_schema_raw = runner._json_bytes(active_schema)
+        active_schema_path = root / batch_schema_records[number - 1]["path"] if response_schema_mode is not None else root / "response.schema.json"
         prompt = runner._render_prompt(binary_prompt=binary, artifact={"name": config["artifact"]["name"], "text": text},
                                        contexts=[], bundle_id="prose.short_story", artifact_id=source["opaque_story_id"],
                                        questions=chunk, provider="grok", model="grok-4.6")
@@ -247,15 +272,15 @@ def _admit_replay(run_root, *, source, batch_size, approved_routes, expected_bat
         require(all(receipt[key] == digest(value) for key, value in {
             "request_sha256": request_raw, "context_sha256": context_raw,
             "outcome_sha256": outcome_raw, "envelope_sha256": envelope_raw,
-            "result_sha256": canonical(outcome["result"]), "schema_sha256": runner._json_bytes(schema),
+            "result_sha256": canonical(outcome["result"]), "schema_sha256": active_schema_raw,
         }.items()), "Native receipt binding differs")
         route_hash = receipt["route_sha256"]
         require(route_hash in approved_routes and digest(canonical(approved_routes[route_hash])) == route_hash, "Native route snapshot missing or differs")
         route = approved_routes[route_hash]
         require(route["timeout_seconds"] == config["grok_transport"]["timeout"], "Native timeout differs")
-        identity = _native_result(runtime, outcome["result"], envelope_raw, route, prompt, schema, receipt["session_id_hash"])
+        identity = _native_result(runtime, outcome["result"], envelope_raw, route, prompt, active_schema, receipt["session_id_hash"])
         context = runner._before_provider_attempt_context(
-            destination=root, schema_path=root / "response.schema.json", run_id=manifest["run_id"],
+            destination=root, schema_path=active_schema_path, run_id=manifest["run_id"],
             config_sha256=manifest["config_sha256"], provider="grok", model="grok-4.6", reasoning="high", endpoint=None,
             batch_number=number, question_ids=[q["question"]["id"] for q in chunk], attempt_number=1, batch_attempts=1,
             base_prompt_sha256=digest(prompt_bytes), effective_prompt=prompt,
@@ -267,7 +292,7 @@ def _admit_replay(run_root, *, source, batch_size, approved_routes, expected_bat
         expected_receipt = {
             "schema_version": 1, "source_sha256": runtime.transport_sha256, "route_sha256": route_hash,
             "request_sha256": digest(request_raw), "context_sha256": digest(context_raw),
-            "schema_sha256": digest(runner._json_bytes(schema)), "result_sha256": digest(canonical(outcome["result"])),
+            "schema_sha256": digest(active_schema_raw), "result_sha256": digest(canonical(outcome["result"])),
             "outcome_sha256": digest(outcome_raw), "envelope_sha256": digest(envelope_raw),
             "session_id_hash": identity["session_id_hash"], "request_id_hash": identity["request_id_hash"],
         }

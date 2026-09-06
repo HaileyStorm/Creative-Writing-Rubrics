@@ -480,6 +480,7 @@ def _cmd_judge(args: argparse.Namespace) -> int:
         reasoning=args.reasoning,
         codex_bin=args.codex_bin,
         grok_bin=args.grok_bin,
+        response_schema_mode=args.response_schema_mode,
         allow_remote=args.allow_remote,
         resume=args.resume,
         dry_run=args.dry_run,
@@ -788,6 +789,7 @@ def build_parser() -> argparse.ArgumentParser:
     judge.add_argument("--weight-profile", help="strict scoring-weight profile JSON/YAML")
     judge.add_argument("--question-id", action="append", default=[], help="limit to a selected leaf; repeatable")
     judge.add_argument("--batch-size", type=int, default=12)
+    judge.add_argument("--response-schema-mode", choices=["batch_question_ids_v1"], help="opt in to an exact per-batch question-ID response schema")
     judge.add_argument(
         "--batch-attempts",
         type=int,

@@ -19,8 +19,8 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parent
 REPOSITORY = ROOT.parents[1]
-PROTOCOL_PATH = ROOT / "protocol.json"
-PROTOCOL_SHA256 = "a0e2412be904a2fa89b200dbe734cdd42508c6ec40edf621a02f1c1cbd02272d"
+PROTOCOL_PATH = ROOT / "protocol-v2.json"
+PROTOCOL_SHA256 = "33e7dde670bf212da0ee7c4cd6cf628f9a43949dc597cea47b0d97aa4e158e2b"
 PARTITIONS = ("TRAIN", "DEV", "CONFIRMATION")
 OPEN_PARTITIONS = ("TRAIN", "DEV")
 AXES = (

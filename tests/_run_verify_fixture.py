@@ -7,6 +7,7 @@ import hashlib
 import json
 from pathlib import Path
 from typing import Any
+from unittest.mock import patch
 
 from hbqrs import core, runner, scoring_v2
 from hbqrs.paths import bundles_path, prompts_dir, registry_path, schema_dir
@@ -35,6 +36,7 @@ def build_fixture(
     input_paths: tuple[Path, Path, Path] | None = None,
     prompt_rendering_version: int = runner.PROMPT_RENDERING_VERSION,
     task_contract_enabled: bool = True,
+    response_schema_mode: str | None = None,
 ) -> tuple[Path, dict[str, Any]]:
     """Materialize a complete run from source inputs; never edits an existing run."""
 
@@ -113,6 +115,50 @@ def build_fixture(
     compiled = core.compile_bundle(modules, bundle, task_contract=task_for_scoring)
     order = {"hard_gate": 0, "domain": 1, "penalty": 2, "supplemental": 3}
     questions = sorted(core.compiled_questions(compiled), key=lambda item: order.get(str(item.get("role")), 99))
+    if response_schema_mode is not None:
+        if response_schema_mode != "batch_question_ids_v1" or prompt_rendering_version != runner.PROMPT_RENDERING_VERSION:
+            raise ValueError("Unsupported opt-in verifier fixture configuration")
+        frozen["execution"]["response_schema_mode"] = response_schema_mode
+        calls = 0
+
+        def fake_codex(*, response_schema: Path, **_kwargs: Any) -> tuple[str, dict[str, Any]]:
+            nonlocal calls
+            calls += 1
+            schema = json.loads(response_schema.read_text(encoding="utf-8"))
+            ids = schema["properties"]["verdicts"]["items"]["properties"]["question_id"]["enum"]
+            content = json.dumps({"verdicts": [{"question_id": question_id, "verdict": "YES", "confidence": 0.8,
+                "evidence": [{"kind": "exact_quote", "reference": "story", "exact_quote": "lantern", "summary": None}],
+                "note": "grounded"} for question_id in ids]}, ensure_ascii=False)
+            return content, {"reported": {"provider": "openai", "model": "gpt-5.6-sol", "reasoning_effort": "high", "session_id": f"{provider_session_prefix}-{calls}"}}
+
+        with patch.object(runner, "_call_codex", fake_codex):
+            runner.run_judge(
+                artifact_path=artifact,
+                context_paths=(context,),
+                task_contract_path=task_path if task_contract_enabled else None,
+                scope_compatibility_override_path=scope_override if task_contract_enabled else None,
+                bundle_id="prose.short_story",
+                provider="codex",
+                model="gpt-5.6-sol",
+                output_dir=run,
+                registry=registry_path(),
+                bundles=bundles_path(),
+                question_ids=[str(item["question"]["id"]) for item in questions],
+                batch_size=32,
+                batch_attempts=3,
+                reasoning="high",
+                allow_remote=True,
+                artifact_id=artifact_id,
+                response_schema_mode=response_schema_mode,
+            )
+        if calls != (len(questions) + 31) // 32:
+            raise AssertionError("Opt-in fixture did not execute every frozen batch")
+        completed = core.load_verdicts(run / "verdicts.jsonl")
+        descendant = scoring_v2.score_bundle(modules, bundle, completed, artifact_id=artifact_id, task_contract=task_for_scoring)
+        descendant["weight_profile"] = weight
+        descendant["parent_score_sha256"] = hashlib.sha256((run / "score.json").read_bytes()).hexdigest()
+        write_json(run / "score.v2.json", descendant)
+        return run, frozen
     artifact_record, context_record = runner._read_text_record(artifact), runner._read_text_record(context)
     task_record = None
     task_context = None

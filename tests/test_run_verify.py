@@ -88,6 +88,37 @@ def test_verifies_a_genuine_complete_v4_run_and_returns_raw_commitments(tmp_path
     assert result["checkpoint_chain_head_sha256"] == hashlib.sha256((run / "responses" / "batch-0006.json").read_bytes()).hexdigest()
     assert len(result["commitments"]["prompts"]) == len(result["commitments"]["accepted_response_artifacts"]) == 6
     assert result["commitments"]["rejected_attempts"] == []
+    assert "batch_response_schemas" not in result["commitments"]
+
+
+def test_verifies_a_genuine_complete_v4_run_with_batch_response_schemas(tmp_path: Path) -> None:
+    run, frozen = _fixture(tmp_path, response_schema_mode="batch_question_ids_v1")
+    records = json.loads((run / "run.json").read_text(encoding="utf-8"))["configuration"]["batch_response_schemas"]
+    result = verify_binary_run(run, frozen)
+    assert result["checkpoint_count"] == len(records) == 6
+    assert result["commitments"]["batch_response_schemas"] == records
+
+
+def test_rejects_batch_response_schema_tampering_and_incomplete_initialization(tmp_path: Path) -> None:
+    run, frozen = _fixture(tmp_path / "schema-tamper", response_schema_mode="batch_question_ids_v1")
+    records = json.loads((run / "run.json").read_text(encoding="utf-8"))["configuration"]["batch_response_schemas"]
+    (run / records[0]["path"]).write_bytes(runner._json_bytes({"forged": True}))
+    with pytest.raises(core.HBQError, match="Batch response-schema drift"):
+        verify_binary_run(run, frozen)
+
+    run, frozen = _fixture(tmp_path / "initialization-tamper", response_schema_mode="batch_question_ids_v1")
+    manifest = json.loads((run / "run.json").read_text(encoding="utf-8"))
+    manifest["response_schema_initialization"] = "pending"
+    _write(run / "run.json", manifest)
+    with pytest.raises(core.HBQError, match="initialization is incomplete"):
+        verify_binary_run(run, frozen)
+
+
+def test_rejects_unknown_frozen_response_schema_mode(tmp_path: Path) -> None:
+    run, frozen = _fixture(tmp_path)
+    frozen["execution"]["response_schema_mode"] = "unknown"
+    with pytest.raises(core.HBQError, match="response schema mode is malformed"):
+        verify_binary_run(run, frozen)
 
 
 @pytest.mark.parametrize(

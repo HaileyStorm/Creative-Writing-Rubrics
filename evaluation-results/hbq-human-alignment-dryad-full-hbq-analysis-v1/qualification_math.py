@@ -21,8 +21,8 @@ COHORT = (
 SIZES = (8, 32)
 REPETITIONS = (1, 2, 3)
 QUESTION_COUNT = 178
-QUALIFICATION_PATH = Path(__file__).with_name("qualification.json")
-QUALIFICATION_SHA256 = "18e2b199bafdf49328402d78a7f9f7b83d408c6140acccb2e35993c046a11989"
+QUALIFICATION_PATH = Path(__file__).with_name("qualification-v2.json")
+QUALIFICATION_SHA256 = "a407401ea07b344475e65296fd8eb474d85ec92b3bb909606a382cd62e137c13"
 CANONICAL_VERDICTS = {"YES", "NO", "NOT_APPLICABLE", "CANNOT_ASSESS"}
 _ROW_KEYS = {"opaque_story_id", "batch_size", "repetition", "verdicts", "score", "coverage"}
 

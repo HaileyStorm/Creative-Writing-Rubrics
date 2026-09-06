@@ -190,6 +190,109 @@ def _response_schema() -> dict[str, Any]:
     return load_data(schema_dir() / "hbq_judge_response.schema.json")
 
 
+def _batch_response_schema(question_ids: Sequence[str]) -> dict[str, Any]:
+    """Constrain only the current regular-run batch; semantic validation remains local."""
+    schema = _response_schema()
+    if not isinstance(schema, dict) or not question_ids or len(question_ids) != len(set(question_ids)):
+        raise HBQError("Batch response-schema question IDs differ")
+    try:
+        verdicts = schema["properties"]["verdicts"]
+        item = verdicts["items"]
+        question_id = item["properties"]["question_id"]
+    except (KeyError, TypeError) as exc:
+        raise HBQError("Generic response schema cannot derive a batch schema") from exc
+    if not isinstance(verdicts, dict) or not isinstance(question_id, dict):
+        raise HBQError("Generic response schema cannot derive a batch schema")
+    schema = json.loads(json.dumps(schema))
+    verdicts = schema["properties"]["verdicts"]
+    verdicts["minItems"] = len(question_ids)
+    verdicts.pop("maxItems", None)
+    verdicts["items"]["properties"]["question_id"]["enum"] = list(question_ids)
+    return schema
+
+
+def _validate_batch_schema_inventory(destination: Path, records: Sequence[Mapping[str, Any]], raws: Mapping[int, bytes]) -> None:
+    root = destination / "responses" / "schemas"
+    expected = [str(item["path"]) for item in records]
+    for ancestor in (root, *root.parents):
+        info = ancestor.lstat()
+        if not stat.S_ISDIR(info.st_mode) or stat.S_ISLNK(info.st_mode) or getattr(info, "st_file_attributes", 0) & 0x400:
+            raise HBQError("Batch response-schema inventory differs")
+    paths = list(root.iterdir())
+    if sorted(path.relative_to(destination).as_posix() for path in paths) != expected:
+        raise HBQError("Batch response-schema inventory differs")
+    for batch_number, record in enumerate(records, start=1):
+        raw = raws[batch_number]
+        descriptor = _provider_artifact(destination, destination / str(record["path"]))
+        if descriptor != dict(record) or descriptor["sha256"] != _sha256_bytes(raw) or descriptor["bytes"] != len(raw):
+            raise HBQError("Batch response-schema drift")
+
+
+def _batch_schema_plan(question_ids: Sequence[str], batch_size: int) -> tuple[list[dict[str, Any]], dict[int, bytes]]:
+    if type(batch_size) is not int or batch_size < 1 or not isinstance(question_ids, (list, tuple)) or not question_ids or any(not isinstance(value, str) or not value for value in question_ids) or len(question_ids) != len(set(question_ids)):
+        raise HBQError("Batch response-schema configuration differs")
+    records, raws = [], {}
+    for number, start in enumerate(range(0, len(question_ids), batch_size), start=1):
+        raw = _json_bytes(_batch_response_schema(question_ids[start:start + batch_size]))
+        raws[number] = raw
+        records.append({"path": f"responses/schemas/batch-{number:04d}.json", "sha256": _sha256_bytes(raw), "bytes": len(raw)})
+    return records, raws
+
+
+def _validate_recorded_batch_schemas(destination: Path) -> None:
+    manifest_path = destination / "run.json"
+    if not manifest_path.is_file():
+        return
+    manifest = json.loads(manifest_path.read_bytes())
+    config = manifest.get("configuration", {})
+    mode = config.get("response_schema_mode")
+    if mode is None and "batch_response_schemas" not in config:
+        return
+    if mode != "batch_question_ids_v1" or manifest.get("response_schema_initialization") != "complete" or manifest.get("config_sha256") != _sha256_bytes(_json_bytes(config)):
+        raise HBQError("Batch response-schema manifest differs")
+    records, raws = _batch_schema_plan(config.get("question_ids", []), config.get("batch_size"))
+    if config.get("batch_response_schemas") != records:
+        raise HBQError("Batch response-schema configuration differs")
+    _validate_batch_schema_inventory(destination, records, raws)
+
+
+def _complete_batch_schema_initialization(destination: Path, manifest: dict[str, Any], records: Sequence[Mapping[str, Any]], raws: Mapping[int, bytes]) -> None:
+    if manifest.get("response_schema_initialization") == "complete":
+        return
+    if manifest.get("response_schema_initialization") != "pending":
+        raise HBQError("Batch response-schema initialization state differs")
+    if _provider_artifact(destination, destination / "run.json")["sha256"] != _sha256_bytes(_json_bytes(manifest)):
+        raise HBQError("Batch response-schema initialization manifest changed")
+    expected_raws = {str(record["path"]): raws[number] for number, record in enumerate(records, start=1)}
+    expected_raws["response.schema.json"] = _json_bytes(_response_schema())
+    allowed_files = {"run.json", *expected_raws}
+    allowed_dirs = {parent.as_posix() for name in expected_raws for parent in Path(name).parents if parent != Path(".")}
+    for path in destination.rglob("*"):
+        relative = path.relative_to(destination).as_posix()
+        info = path.lstat()
+        if stat.S_ISLNK(info.st_mode) or getattr(info, "st_file_attributes", 0) & 0x400:
+            raise HBQError("Batch schema initialization contains a link or reparse point")
+        if stat.S_ISDIR(info.st_mode):
+            if relative not in allowed_dirs:
+                raise HBQError("Batch schema initialization has execution evidence")
+        elif relative not in allowed_files or not stat.S_ISREG(info.st_mode):
+            raise HBQError("Batch schema initialization has execution evidence")
+    for relative, raw in expected_raws.items():
+        path = destination / relative
+        if path.exists():
+            if _provider_artifact(destination, path) != {"path": relative, "bytes": len(raw), "sha256": _sha256_bytes(raw)}:
+                raise HBQError("Batch schema initialization artifact differs")
+        else:
+            path.parent.mkdir(parents=True, exist_ok=True)
+            with path.open("xb") as stream:
+                stream.write(raw)
+                stream.flush()
+                os.fsync(stream.fileno())
+    _validate_batch_schema_inventory(destination, records, raws)
+    manifest["response_schema_initialization"] = "complete"
+    _write_json(destination / "run.json", manifest)
+
+
 def _endpoint_url(base_url: str) -> str:
     value = base_url.rstrip("/")
     parsed = urlparse(value)
@@ -266,6 +369,7 @@ def _call_openai(
     timeout: float,
     attempt_lifecycle_policy: str | None = None,
     before_provider_attempt: Callable[[], None] | None = None,
+    response_schema: Path | None = None,
 ) -> tuple[str, dict[str, Any]]:
     payload: dict[str, Any] = {
         "model": model,
@@ -277,6 +381,11 @@ def _call_openai(
     }
     if temperature is not None:
         payload["temperature"] = temperature
+    if response_schema is not None:
+        payload["response_format"] = {"type": "json_schema", "json_schema": {
+            "name": "hbq_batch_verdicts", "strict": True,
+            "schema": json.loads(response_schema.read_bytes()),
+        }}
     headers = {"Content-Type": "application/json"}
     api_key = os.environ.get(api_key_env)
     if api_key:
@@ -3069,6 +3178,7 @@ def _load_checkpoints(
     normalization_policy: str | None = EVIDENCE_NORMALIZATION_POLICY,
     allow_legacy_rejection_records: bool = False,
 ) -> tuple[list[dict[str, Any]], int, str | None]:
+    _validate_recorded_batch_schemas(output_dir)
     _validate_rejected_attempt_store(output_dir)
     response_dir = output_dir / "responses"
     paths = sorted(response_dir.glob("batch-[0-9][0-9][0-9][0-9].json")) if response_dir.is_dir() else []
@@ -3354,6 +3464,7 @@ def run_judge(
     before_provider_attempt: Callable[[Mapping[str, Any]], None] | None = None,
     grok_transport: Callable[[Mapping[str, Any]], tuple[str, dict[str, Any]]] | None = None,
     grok_transport_sha256: str | None = None,
+    response_schema_mode: str | None = None,
 ) -> dict[str, Any]:
     """Judge one artifact against one bundle, checkpointing every batch.
 
@@ -3371,6 +3482,8 @@ def run_judge(
 
     if provider not in {"openai", "codex", "grok", "nous"}:
         raise HBQError("provider must be 'openai', 'codex', 'grok', or 'nous'")
+    if response_schema_mode not in {None, "batch_question_ids_v1"}:
+        raise HBQError("Unknown response_schema_mode")
     if not model.strip():
         raise HBQError("--model cannot be empty")
     if batch_size < 1:
@@ -3534,6 +3647,10 @@ def run_judge(
     endpoint = _endpoint_url(base_url) if provider == "openai" else None
     remote = provider in {"codex", "grok", "nous"} or not _is_loopback_url(str(endpoint))
     configured_batches = (len(selected_ids) + batch_size - 1) // batch_size
+    batch_schema_records: list[dict[str, Any]] = []
+    batch_schema_raw: dict[int, bytes] = {}
+    if response_schema_mode is not None:
+        batch_schema_records, batch_schema_raw = _batch_schema_plan(selected_ids, batch_size)
     disclosure_inputs = {
         "destination": (
             "Injected reviewed-caller transport -> authenticated xAI service"
@@ -3566,6 +3683,9 @@ def run_judge(
     }
     if grok_transport_binding is not None:
         disclosure_inputs["grok_transport"] = dict(grok_transport_binding)
+    if response_schema_mode is not None:
+        disclosure_inputs["response_schema_mode"] = response_schema_mode
+        disclosure_inputs["batch_response_schemas"] = deepcopy(batch_schema_records)
     if remote and not allow_remote and not dry_run:
         print(json.dumps({"disclosure": disclosure_inputs}, ensure_ascii=False, indent=2), file=sys.stderr)
         raise HBQError("This run sends artifact text off-machine; review the disclosure and pass --allow-remote")
@@ -3602,6 +3722,9 @@ def run_judge(
         "questions_sha256": _sha256_bytes(_json_bytes(_question_payload(questions))),
         "compiled_bundle_sha256": _sha256_bytes(_json_bytes(compiled)),
     }
+    if response_schema_mode is not None:
+        configuration["response_schema_mode"] = response_schema_mode
+        configuration["batch_response_schemas"] = batch_schema_records
     if provider == "grok":
         if grok_transport is not None:
             configuration["grok_transport"] = dict(grok_transport_binding)
@@ -3708,8 +3831,16 @@ def run_judge(
             "remote": remote,
             "configuration": configuration,
         }
+        if response_schema_mode is not None:
+            manifest["response_schema_initialization"] = "pending"
         _write_json(manifest_path, manifest)
         _write_json(schema_path, _response_schema())
+        for batch_number, raw in batch_schema_raw.items():
+            _atomic_write(destination / f"responses/schemas/batch-{batch_number:04d}.json", raw)
+
+    if response_schema_mode is not None:
+        _complete_batch_schema_initialization(destination, dict(prior_manifest) if prior_manifest is not None else manifest, batch_schema_records, batch_schema_raw)
+        _validate_batch_schema_inventory(destination, batch_schema_records, batch_schema_raw)
 
     completed = _load_completed(verdicts_path)
     checkpointed, checkpoint_count, previous_checkpoint_sha256 = _load_checkpoints(
@@ -3794,6 +3925,9 @@ def run_judge(
         else:
             _atomic_write(prompt_path, gzip.compress(prompt_bytes, mtime=0))
         expected = [str(item["question"]["id"]) for item in batch]
+        active_schema_path = destination / f"responses/schemas/batch-{batch_number:04d}.json" if response_schema_mode is not None else schema_path
+        if response_schema_mode is not None:
+            _validate_batch_schema_inventory(destination, batch_schema_records, batch_schema_raw)
         base_prompt_sha256 = _sha256_bytes(prompt_bytes)
         records = _rejected_records(destination, batch_number)
         if attempt_lifecycle_policy == ATTEMPT_LIFECYCLE_POLICY:
@@ -3876,7 +4010,7 @@ def run_judge(
                 )
                 attempt_context = _before_provider_attempt_context(
                     destination=destination,
-                    schema_path=schema_path,
+                    schema_path=active_schema_path,
                     run_id=run_id,
                     config_sha256=active_config_sha256,
                     provider=provider,
@@ -3904,6 +4038,8 @@ def run_judge(
                     }
                 if before_provider_attempt is not None:
                     before_provider_attempt(deepcopy(attempt_context))
+            if response_schema_mode is not None:
+                _validate_batch_schema_inventory(destination, batch_schema_records, batch_schema_raw)
             if attempt_lifecycle_policy == ATTEMPT_LIFECYCLE_POLICY:
                 _write_attempt_start(
                     output_dir=destination,
@@ -3926,6 +4062,7 @@ def run_judge(
                         allow_model_mismatch=allow_model_mismatch,
                         timeout=timeout,
                         attempt_lifecycle_policy=attempt_lifecycle_policy,
+                        **({"response_schema": active_schema_path} if response_schema_mode is not None else {}),
                     )
                 elif provider == "codex":
                     codex_message_attempt = _next_codex_message_attempt(destination, batch_number)
@@ -3935,7 +4072,7 @@ def run_judge(
                         reasoning=reasoning,
                         prompt=effective_prompt,
                         output_dir=destination,
-                        response_schema=schema_path,
+                        response_schema=active_schema_path,
                         batch_number=batch_number,
                         timeout=timeout,
                         attempt_number=codex_message_attempt,
@@ -4000,7 +4137,7 @@ def run_judge(
                             reasoning=reasoning,
                             prompt=effective_prompt,
                             output_dir=destination,
-                            response_schema=schema_path,
+                            response_schema=active_schema_path,
                             batch_number=batch_number,
                             timeout=timeout,
                             attempt_number=cli_message_attempt,
@@ -4012,7 +4149,7 @@ def run_judge(
                             reasoning=reasoning,
                             prompt=effective_prompt,
                             output_dir=destination,
-                            response_schema=schema_path,
+                            response_schema=active_schema_path,
                             batch_number=batch_number,
                             timeout=timeout,
                             attempt_number=cli_message_attempt,
@@ -4123,6 +4260,8 @@ def run_judge(
             normalization_policy=active_normalization_policy,
             allow_legacy_rejection_records=legacy_rejection_compat,
         )
+        if response_schema_mode is not None:
+            _validate_batch_schema_inventory(destination, batch_schema_records, batch_schema_raw)
         response_record = {
             "format_version": 5 if attempt_lifecycle_policy == ATTEMPT_LIFECYCLE_POLICY else 4,
             "batch": batch_number,

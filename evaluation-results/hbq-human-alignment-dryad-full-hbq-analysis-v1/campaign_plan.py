@@ -18,13 +18,13 @@ from typing import Any, Mapping
 
 ROOT = Path(__file__).resolve().parent
 REPOSITORY = ROOT.parents[1]
-QUALIFICATION_PATH = ROOT / "qualification.json"
-PROTOCOL_PATH = ROOT / "protocol.json"
+QUALIFICATION_PATH = ROOT / "qualification-v2.json"
+PROTOCOL_PATH = ROOT / "protocol-v2.json"
 NATIVE_ADMISSION_PATH = ROOT / "native_admission.py"
-PROTOCOL_SHA256 = "a0e2412be904a2fa89b200dbe734cdd42508c6ec40edf621a02f1c1cbd02272d"
-QUALIFICATION_SHA256 = "18e2b199bafdf49328402d78a7f9f7b83d408c6140acccb2e35993c046a11989"
+PROTOCOL_SHA256 = "33e7dde670bf212da0ee7c4cd6cf628f9a43949dc597cea47b0d97aa4e158e2b"
+QUALIFICATION_SHA256 = "a407401ea07b344475e65296fd8eb474d85ec92b3bb909606a382cd62e137c13"
 PUBLIC_INPUTS_SHA256 = "6254f58d3366667c9578e2661a1ca0d105a603a0f8affe2d925a767957937c42"
-NATIVE_ADMISSION_SHA256 = "11d7f8bec870a0945fe2eb169fa1580bc351b4e07eaa46b831c4e8703431d122"
+NATIVE_ADMISSION_SHA256 = "22ccfe3299bab0e04045a7ec01ab4799929818a3a84aecc8549bb6cb3032a1ec"
 
 
 def digest(raw: bytes) -> str:
@@ -131,13 +131,18 @@ def _runtime_identity(runtime: Any, protocol: Mapping[str, Any]) -> dict[str, An
     require(len(runtime.questions) == 178, "Canonical question count differs")
     question_ids = [item["question"]["id"] for item in runtime.questions]
     require(len(question_ids) == len(set(question_ids)) == 178, "Canonical question identities differ")
-    return {
+    identity = {
         "runtime_bindings": checked,
         "registry_sha256": checked["registry/all_modules.json"],
         "compiled_bundle_sha256": digest(runtime.runner._json_bytes(runtime.compiled)),
         "question_payload_sha256": digest(runtime.runner._json_bytes(runtime.runner._question_payload(runtime.questions))),
         "question_ids": question_ids,
     }
+    response_schema_mode = getattr(runtime, "response_schema_mode", None)
+    require(response_schema_mode in {None, "batch_question_ids_v1"}, "Unsupported response schema mode")
+    if response_schema_mode is not None:
+        identity["response_schema_mode"] = response_schema_mode
+    return identity
 
 
 def build_plan(public_inputs_raw: bytes, runtime: Any) -> tuple[dict[str, Any], dict[str, bytes]]:
@@ -147,6 +152,13 @@ def build_plan(public_inputs_raw: bytes, runtime: Any) -> tuple[dict[str, Any], 
     protocol_raw = _read_exact(PROTOCOL_PATH, PROTOCOL_SHA256, "Analysis protocol")
     qualification = _load_json(qualification_raw, "Qualification")
     protocol = _load_json(protocol_raw, "Protocol")
+    protocol_execution = protocol.get("execution")
+    require(isinstance(protocol_execution, Mapping), "Protocol execution contract differs")
+    qualification_schema_mode = qualification.get("response_schema_mode")
+    protocol_schema_mode = protocol_execution.get("response_schema_mode")
+    require(qualification_schema_mode == protocol_schema_mode, "Qualification/protocol response schema modes differ")
+    require(protocol_schema_mode in {None, "batch_question_ids_v1"}, "Unsupported response schema mode")
+    require(getattr(runtime, "response_schema_mode", None) == protocol_schema_mode, "Runtime response schema mode differs")
     require(qualification.get("public_inputs_sha256") == PUBLIC_INPUTS_SHA256, "Qualification public-input commitment differs")
     require(protocol.get("execution", {}).get("qualification_protocol_sha256") == digest(qualification_raw), "Qualification commitment differs")
     sources = _load_inputs(public_inputs_raw, qualification)
@@ -184,11 +196,17 @@ def build_plan(public_inputs_raw: bytes, runtime: Any) -> tuple[dict[str, Any], 
                     require(prompt == sol_prompt, "Sol prompt rendering differs from Grok")
                     prompt_path = f"prompts/request-{ordinal:04d}.txt"
                     artifacts[prompt_path] = prompt
+                    request_schema_raw = schema_raw
+                    request_schema_path = "response.schema.json"
+                    if protocol_schema_mode is not None:
+                        request_schema_raw = runtime.runner._json_bytes(runtime.runner._batch_response_schema(question_ids))
+                        request_schema_path = f"schemas/request-{ordinal:04d}.json"
+                        artifacts[request_schema_path] = request_schema_raw
                     requests.append({
                         "ordinal": ordinal, "pass_id": pass_id, "batch_number": batch_number,
                         "question_ids": question_ids, "prompt_path": prompt_path,
                         "prompt_sha256": digest(prompt), "prompt_bytes": len(prompt),
-                        "schema_path": "response.schema.json", "schema_sha256": digest(schema_raw), "schema_bytes": len(schema_raw),
+                        "schema_path": request_schema_path, "schema_sha256": digest(request_schema_raw), "schema_bytes": len(request_schema_raw),
                     })
                 passes.append({
                     "pass_id": pass_id, "batch_size": batch_size, "repetition": repetition,
@@ -217,6 +235,8 @@ def build_plan(public_inputs_raw: bytes, runtime: Any) -> tuple[dict[str, Any], 
         "passes": passes,
         "requests": all_requests,
     }
+    if protocol_schema_mode is not None:
+        plan["response_schema_mode"] = protocol_schema_mode
     artifacts["plan.json"] = runtime.runner._json_bytes(plan)
     runtime.verify()
     require(QUALIFICATION_PATH.read_bytes() == qualification_raw and PROTOCOL_PATH.read_bytes() == protocol_raw, "Qualification inputs changed during plan build")

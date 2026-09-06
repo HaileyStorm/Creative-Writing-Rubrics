@@ -1,0 +1,169 @@
+{
+  "schema_version": 1,
+  "status": "preregistered_prospective_no_model_results",
+  "study_id": "dryad-full-hbq-analysis-v2",
+  "source": {
+    "ratings_sha256": "e391d638f04eac7a9632811922d0c4fed4e95dd6613f07311d8513b9a52e128b",
+    "split_sha256": "2e2314b283bc7a3b5653cbd98951ecb85612c0a5f3b4d2a4b31324bc89342521",
+    "parent_provenance_sha256": "458490dd5b33a33457ca0a93295f8a517a19aa3eafb0eb8b34e5b7a8bd47af0b",
+    "author_evaluator_script_sha256": "81166f9ec207f08bd91fbdfed048c532c95062adde08672a4f58ed7451fdd1e4",
+    "author_index_lines": [
+      94,
+      95
+    ],
+    "partitions": {
+      "TRAIN": 176,
+      "DEV": 60,
+      "CONFIRMATION": 57
+    },
+    "confirmation": "Exclude before interpreting any human rating value; no confirmation target or outcome API.",
+    "axes": [
+      "novel",
+      "original",
+      "rare",
+      "appropriate",
+      "feasible",
+      "publishable",
+      "well_written",
+      "enjoyed",
+      "boring",
+      "funny",
+      "twist",
+      "future"
+    ]
+  },
+  "human_targets": {
+    "unit": "story",
+    "aggregation": "Exact rational arithmetic: mean retained blinded rating per axis; novelty/usefulness are means of their three complete axis means, equivalent to pooling within-evaluator indices because all retained rows have all axes.",
+    "co_primary": {
+      "novelty": [
+        "novel",
+        "original",
+        "rare"
+      ],
+      "usefulness": [
+        "appropriate",
+        "feasible",
+        "publishable"
+      ]
+    },
+    "secondary": "For each of all twelve axes compute rho(model_score, raw pooled axis mean), with no sign inversion. For boring, negative association is the desirable direction; report the raw negative rho. The other eleven also remain raw; do not reinterpret humor, twist, or future as universal quality. No twelve-axis composite, leaf-axis mapping, cross-corpus pooling, or invented survey wording."
+  },
+  "model_score": {
+    "bundle_id": "prose.short_story",
+    "question_count": 178,
+    "role_counts": {
+      "domain": 143,
+      "penalty": 18,
+      "supplemental": 17,
+      "hard_gate": 0
+    },
+    "field": "final_score.observed",
+    "scale": [
+      0,
+      100
+    ],
+    "minimum_reported_coverage": 0.88,
+    "task_contract": null,
+    "leaf_sampling": false,
+    "admission": "Require all 236 unique open stories and 178 unique admitted leaf outcomes per story per endpoint, exact source/question/prompt commitments, unique request and session identities, complete native proof, deterministic score replay, finite observed scores, and coverage at least 0.88. Any missing, duplicate, unadmitted, or nonfinite item rejects the complete comparison; no silent filtering."
+  },
+  "optimization": {
+    "scope": "TRAIN-only development; never runtime selection authority",
+    "optuna_version": "4.9.0",
+    "sampler": "TPESampler",
+    "seed": 20260905,
+    "sampler_settings": {
+      "n_startup_trials": 10,
+      "n_ei_candidates": 24,
+      "multivariate": false,
+      "group": false,
+      "constant_liar": false
+    },
+    "trials_total_including_baseline": 128,
+    "parallel_jobs": 1,
+    "domain_order": [
+      "task",
+      "character",
+      "movement",
+      "language",
+      "setting",
+      "effect",
+      "fresh",
+      "mechanics",
+      "holistic"
+    ],
+    "canonical_points": [
+      8,
+      15,
+      19,
+      16,
+      9,
+      10,
+      10,
+      5,
+      8
+    ],
+    "multipliers": [
+      0.5,
+      1,
+      2
+    ],
+    "application": "Supply canonical_points times the selected multipliers as the nine domain_weights to the pinned materialize_weight_profile, which alone normalizes them to 100 with its deterministic residual anchor. No separate pre-normalization; no module, leaf, penalty, supplemental, or task-contract weight changes.",
+    "trial_zero": "Enqueue and execute the all-one canonical baseline as trial 0; it counts toward 128.",
+    "objective": "Arithmetic mean of TRAIN Spearman correlations to source-defined novelty and usefulness. This two-correlation development objective is not an author-defined human composite.",
+    "ties": "Highest exact computed objective, then minimum sum of absolute base-2 log multipliers, then lexicographically smallest multiplier vector in domain_order, then lowest trial number.",
+    "failures": "Any undefined TRAIN correlation or invalid trial rejects fitting; preserve every attempted trial and no silent replacement. Recompute every trial from frozen leaf receipts independently of Optuna's stored objective."
+  },
+  "comparison": {
+    "rank_ties": "Average ranks, one-based; ties use exact target rational values and pinned canonical score values.",
+    "dev_rule": "Compare only frozen TRAIN winner versus canonical baseline on all 60 DEV stories. Both co-primary deltas must be nonnegative and their mean strictly positive. Exact ties retain baseline. No refit after DEV.",
+    "bootstrap": {
+      "replicates": 2000,
+      "seed": 20260905,
+      "sample_size": 60,
+      "sampling": "Paired story indices sampled with replacement; recompute both candidate-minus-baseline Spearman correlations and their mean in each replicate.",
+      "lower_bound_percentile": 2.5,
+      "quantile_method": "Linear interpolation between sorted order statistics at (n-1)*0.025.",
+      "undefined_replicates": "Count all undefined replicates and fail the gain gate if any; never drop or redraw.",
+      "gain_gate": "The lower bound of the mean co-primary delta must exceed zero as well as the dev_rule.",
+      "limitation": "Conditional on observed human story means; shared evaluator uncertainty is not modeled. This is not a human ceiling or confirmation test."
+    },
+    "reporting": "Report absolute baseline and winner correlations and all deltas. Label weak alignment plainly even when relative improvement passes.",
+    "sol": "Judge identical frozen user-payload bytes and question IDs independently with Sol, after Grok TRAIN/DEV selection. Preserve endpoint-specific adapter/system/runtime metadata; do not claim entire service instructions are identical. Replay baseline and the same selected weights on Sol leaves and apply the same DEV comparison. No pooling or retroactive Grok winner selection from Sol.",
+    "confirmation": "Closed; any later release of confirmation requires a separately frozen gate and independently reviewed descendant."
+  },
+  "execution": {
+    "provider_calls_authorized_by_this_file": false,
+    "live_batch_cap": null,
+    "qualification_protocol_sha256": "a407401ea07b344475e65296fd8eb474d85ec92b3bb909606a382cd62e137c13",
+    "requirements": [
+      "Exact committed study launcher and analyzer implementations",
+      "Current runtime and native validator pins",
+      "Frozen full-pass batch qualification cohort and protocol",
+      "Reviewed source disclosure and each bounded execution cohort",
+      "Fresh host allowance review and separately armed shared route"
+    ],
+    "response_schema_mode": "batch_question_ids_v1",
+    "predecessor": "The first generic-schema qualification remains terminal and invalid. New qualification requires a separately committed plan and new native sample identities; no prior receipt substitution or automatic resend."
+  },
+  "runtime_bindings": {
+    "src/hbqrs/core.py": "70b4cd16bd536f2f6ddb8e066f801090a037a39605652b14d6c7f6ff312446cb",
+    "src/hbqrs/weights.py": "6893e8cdbb7ae5de1bb732f6004df558c73838c80bb75d1b2cadb651cc37f139",
+    "src/hbqrs/runner.py": "3af6dd86088fddb91c2979ed6ddef00efb3da767e959972f8ee1ee0c1ab034f6",
+    "src/hbqrs/runner_v2.py": "a79dae04f2fe4de91747e951724270f2f5d29983da9846f08c4d82320871aee8",
+    "src/hbqrs/grok_broker_transport.py": "cd349c9b512a3524f6bd0f9787035af618754f2b06363dc2e9aceda7e72305be",
+    "registry/all_modules.json": "43a33ee015310097f79c8a04bb7c3a8782813e758d523b1db08ae2b14d51f66f",
+    "bundles/all_bundles.json": "012af060e8630b8980661465b368e129ddeec82dfa7b48e13e7a35a473eb95a8",
+    "prompts/judge/BINARY_EVALUATION_PROMPT.md": "6c1cac901d820c1ab866e19f9191896e8c97a6aadf35bdae4eac640fd199a3a2",
+    "schema/hbq_judge_response.schema.json": "49c7d824ba5dd957e67968ba3ae6ceb8a7ed9434dfb0dfc654836a76613c7854"
+  },
+  "shared_runtime_bindings": {
+    "prepare_grok_evidence.py": "8562536fecbb417365003ec86db606c87fc2e434043cbf1fc98cee34ec7539b3",
+    "broker.py": "6f7b4a2c1bf68ac58ccfb68e13e783301d6e73fd9a1f6f2f0355698546c4c77c",
+    "adapters/grok_exec.py": "f870671d90fde2670dd62c155488b004cee9d900b4f5185921b26323034a75f7",
+    "adapters/json_schema_subset.py": "9b593fbc7f45b9fd965b567e3153b34fd8efd842248f6c5bb10821c643592c95",
+    "image_canary.py": "17104449da596b2be542d7670f6dee5034a13b78b13f16732da63c852f5e4998",
+    "grok_usage_evidence.py": "dc5e00849699858445d966783bfa2b2afc5255b896f41544196ac023c82be99f"
+  }
+}

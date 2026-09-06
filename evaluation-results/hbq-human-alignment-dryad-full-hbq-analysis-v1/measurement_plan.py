@@ -20,10 +20,10 @@ ROOT = Path(__file__).resolve().parent
 REPOSITORY = ROOT.parents[1]
 CAMPAIGN_PLAN_PATH = ROOT / "campaign_plan.py"
 ADMISSION_PATH = ROOT / "campaign_admission.py"
-PROTOCOL_PATH = ROOT / "protocol.json"
-CAMPAIGN_PLAN_SHA256 = "46a98eb1134d308a96bd7a34aee4b92a26f2e85e92768305e813daa08cb7b655"
-ADMISSION_SHA256 = "3aabdbce34ad3ddacfeb383586c432654793d3307d6629ff019b081dcc193226"
-PROTOCOL_SHA256 = "a0e2412be904a2fa89b200dbe734cdd42508c6ec40edf621a02f1c1cbd02272d"
+PROTOCOL_PATH = ROOT / "protocol-v2.json"
+CAMPAIGN_PLAN_SHA256 = "208337b99c44aead7ab11614381e44238dcdcd0799a8fcc9f0fa3869a15ee472"
+ADMISSION_SHA256 = "f52e99767af43aeab9590a9f4a10fe62d1804c1e5acacc5f0dac8dfb537d77b3"
+PROTOCOL_SHA256 = "33e7dde670bf212da0ee7c4cd6cf628f9a43949dc597cea47b0d97aa4e158e2b"
 PUBLIC_INPUTS_SHA256 = "6254f58d3366667c9578e2661a1ca0d105a603a0f8affe2d925a767957937c42"
 _HASH = re.compile(r"[0-9a-f]{64}\Z")
 
@@ -160,6 +160,11 @@ def build_plan(public_inputs_raw: bytes, runtime: Any, admission: Mapping[str, A
     binary_raw = (REPOSITORY / "prompts/judge/BINARY_EVALUATION_PROMPT.md").read_bytes()
     binary = binary_raw.decode("utf-8-sig").strip()
     protocol = _json(PROTOCOL_PATH.read_bytes(), "Protocol")
+    protocol_execution = protocol.get("execution")
+    require(isinstance(protocol_execution, Mapping), "Protocol execution contract differs")
+    response_schema_mode = protocol_execution.get("response_schema_mode")
+    require(response_schema_mode in {None, "batch_question_ids_v1"}, "Unsupported response schema mode")
+    require(getattr(runtime, "response_schema_mode", None) == response_schema_mode, "Runtime response schema mode differs")
     require(digest(binary_raw) == protocol["runtime_bindings"]["prompts/judge/BINARY_EVALUATION_PROMPT.md"], "Judge prompt hash differs")
     artifacts: dict[str, bytes] = {"response.schema.json": schema_raw}
     passes, requests = [], []
@@ -176,12 +181,24 @@ def build_plan(public_inputs_raw: bytes, runtime: Any, admission: Mapping[str, A
             require(payloads["grok"] == payloads["sol"], "Endpoint user payload differs")
             relative = f"prompts/request-{ordinal:04d}.txt"
             artifacts[relative] = payloads["grok"]
-            requests.append({"ordinal": ordinal, "logical_sample_id": sample_id, "pass_id": pass_id, "batch_number": batch_number, "question_ids": [item["question"]["id"] for item in chunk], "prompt_path": relative, "prompt_sha256": digest(payloads["grok"]), "prompt_bytes": len(payloads["grok"]), "endpoint_user_payloads": {endpoint: {"sha256": digest(raw), "bytes": len(raw)} for endpoint, raw in payloads.items()}, "schema_path": "response.schema.json", "schema_sha256": digest(schema_raw), "schema_bytes": len(schema_raw)})
+            request_question_ids = [item["question"]["id"] for item in chunk]
+            request_schema_raw = schema_raw
+            request_schema_path = "response.schema.json"
+            if response_schema_mode is not None:
+                request_schema_raw = runtime.runner._json_bytes(runtime.runner._batch_response_schema(request_question_ids))
+                request_schema_path = f"schemas/request-{ordinal:04d}.json"
+                artifacts[request_schema_path] = request_schema_raw
+            requests.append({"ordinal": ordinal, "logical_sample_id": sample_id, "pass_id": pass_id, "batch_number": batch_number, "question_ids": request_question_ids, "prompt_path": relative, "prompt_sha256": digest(payloads["grok"]), "prompt_bytes": len(payloads["grok"]), "endpoint_user_payloads": {endpoint: {"sha256": digest(raw), "bytes": len(raw)} for endpoint, raw in payloads.items()}, "schema_path": request_schema_path, "schema_sha256": digest(request_schema_raw), "schema_bytes": len(request_schema_raw)})
         raw = source["story_text"].encode("utf-8")
         artifacts[f"inputs/{source['opaque_story_id']}.txt"] = raw
         passes.append({"logical_sample_id": sample_id, "pass_id": pass_id, "purpose": "fresh_post_qualification_measurement", "partition": source["partition"], "opaque_story_id": source["opaque_story_id"], "input_path": f"inputs/{source['opaque_story_id']}.txt", "source_sha256": digest(raw), "source_bytes": len(raw), "batch_size": cap, "batches": (178 + cap - 1) // cap, "run_path": f"runs/{pass_id}"})
     require(len(passes) == 236 and len(requests) == 236 * ((178 + cap - 1) // cap), "Measurement plan geometry differs")
-    plan = {"schema_version": 1, "evidence_class": "provider_free_dryad_measurement_plan", "execution_authority": False, "provider_calls": 0, "purpose": "fresh_post_qualification_measurement", "namespace": {"measurement_pass_prefix": "measurement/", "measurement_logical_sample_prefix": "measurement-", "disallowed_qualification_pass_prefixes": ["size-"], "disallowed_qualification_logical_sample_prefixes": ["qualification-"]}, "public_inputs_sha256": digest(public_inputs_raw), "generator": dict(generator), "qualification_admission": dict(admission), "cap": cap, "runtime": {"question_ids": question_ids, "compiled_bundle_sha256": digest(runtime.runner._json_bytes(runtime.compiled)), "question_payload_sha256": digest(runtime.runner._json_bytes(runtime.runner._question_payload(runtime.questions)))}, "response_schema": {"path": "response.schema.json", "sha256": digest(schema_raw), "bytes": len(schema_raw)}, "endpoints": {"grok": {"provider": "grok", "model": "grok-4.6", "native_execution_authority": False}, "sol": {"provider": "codex", "model": "gpt-5.6-sol", "native_execution_authority": False}}, "counts": {"train_stories": 176, "dev_stories": 60, "stories": 236, "questions_per_story": 178, "logical_requests": len(requests)}, "passes": passes, "requests": requests}
+    runtime_identity = {"question_ids": question_ids, "compiled_bundle_sha256": digest(runtime.runner._json_bytes(runtime.compiled)), "question_payload_sha256": digest(runtime.runner._json_bytes(runtime.runner._question_payload(runtime.questions)))}
+    if response_schema_mode is not None:
+        runtime_identity["response_schema_mode"] = response_schema_mode
+    plan = {"schema_version": 1, "evidence_class": "provider_free_dryad_measurement_plan", "execution_authority": False, "provider_calls": 0, "purpose": "fresh_post_qualification_measurement", "namespace": {"measurement_pass_prefix": "measurement/", "measurement_logical_sample_prefix": "measurement-", "disallowed_qualification_pass_prefixes": ["size-"], "disallowed_qualification_logical_sample_prefixes": ["qualification-"]}, "public_inputs_sha256": digest(public_inputs_raw), "generator": dict(generator), "qualification_admission": dict(admission), "cap": cap, "runtime": runtime_identity, "response_schema": {"path": "response.schema.json", "sha256": digest(schema_raw), "bytes": len(schema_raw)}, "endpoints": {"grok": {"provider": "grok", "model": "grok-4.6", "native_execution_authority": False}, "sol": {"provider": "codex", "model": "gpt-5.6-sol", "native_execution_authority": False}}, "counts": {"train_stories": 176, "dev_stories": 60, "stories": 236, "questions_per_story": 178, "logical_requests": len(requests)}, "passes": passes, "requests": requests}
+    if response_schema_mode is not None:
+        plan["response_schema_mode"] = response_schema_mode
     artifacts["plan.json"] = _canonical(plan)
     runtime.verify()
     return plan, artifacts
