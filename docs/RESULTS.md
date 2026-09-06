@@ -36,7 +36,9 @@ is complete; its paired Grok run is incomplete after quota exhaustion. The
 later [WPB collection](#wpb-terminal-collection) stopped with 89 successful,
 one ambiguous terminal, and 39 unstarted cells; it permits no subset metrics
 or automatic resend. [Dryad preparation](#dryad-source-and-full-hbq-preparation)
-is implemented, with live qualification and alignment still pending.
+is implemented. Its first live qualification attempt stopped after six contacts:
+five accepted checkpoints and one semantically rejected response. It yields no
+batch cap or alignment result and permits no automatic resend.
 
 The [full-tree family-weight diagnostic](https://github.com/HaileyStorm/Creative-Writing-Rubrics/tree/b4ba4c5d2963040ffc6f26010de089e21331a0b4/evaluation-results/hbq-human-alignment-family-weighting-v1)
 completed 3,072 provider-free Optuna trials over 48 TRAIN stories across 24
@@ -311,6 +313,11 @@ human composite or sampled-leaf substitute for the full 178-question rubric.
 The provider-free qualification plan covers 18 passes and 261 requests.
 Governed cohort execution, complete native replay, the fixed 128-trial TRAIN
 optimizer, and conditional DEV comparison are implemented and locally tested.
-Actual Grok qualification, fresh alignment measurement, and unchanged-payload
-Sol validation remain pending. The empirical batch cap is unset; synthetic
-tests and prepared targets establish neither alignment nor generalization.
+The [first live qualification attempt](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/0b3437b022d4ed41418483ccab08eaca71c6cc08/evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/qualification-attempt-1.json)
+is terminal and invalid: six contacts produced five accepted HBQ checkpoints
+and one response with an unexpected `question_id` of `pending`. Request 7
+never started; 255 requests remain unstarted. All evidence is preserved, with
+no automatic resend or subset metrics. Fresh alignment measurement and
+unchanged-payload Sol validation remain pending. The empirical batch cap is
+unset; synthetic tests and prepared targets establish neither alignment nor
+generalization.
