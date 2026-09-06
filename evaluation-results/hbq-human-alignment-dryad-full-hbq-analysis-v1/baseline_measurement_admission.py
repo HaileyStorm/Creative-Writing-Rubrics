@@ -23,7 +23,7 @@ NATIVE_SOURCE = ROOT / "native_admission.py"
 TERMINAL_IDENTITIES = ROOT / "terminal-identities-v2.json"
 SOURCE_PINS = {
     PLAN_SOURCE: "33193aa1a394c04c14b4f9ab81871116dbac11f933f22a9e45f252b2d279fdc8",
-    LEDGER_SOURCE: "642f4ea14acab0c51c73cefcf75031383ced503bb8bcab16b606a28d65458253",
+    LEDGER_SOURCE: "a7c850d97f6bbac10ba95162e4557570c79e4b9ca9add2abfb3421b10da5b144",
     RUNTIME_SOURCE: "5130bc037e0700f8d498c40ca790aaf248e986189818ae059934ee6488bbfbcd",
     NATIVE_SOURCE: "22ccfe3299bab0e04045a7ec01ab4799929818a3a84aecc8549bb6cb3032a1ec",
     TERMINAL_IDENTITIES: "82cc80c2692fc0c0f47024d4db04cdbf5dd1c34c2d5deea40916a0e8ea45ca63",
@@ -321,16 +321,30 @@ def _ledger(ledger_module: ModuleType, execution_root: Path, public_inputs_raw: 
         expected_execution_source_sha256=expected_execution_source_sha256,
         expected_reviewer_task=expected_reviewer_task,
     )
+    if set(result) == {"evidence_class", "native_admission", "execution_authority", "contacts", "routes", "authorizations", "head"}:
+        plan = _json(plan_raw, "Baseline plan")
+        groups = ledger_module.cohort_groups(plan)
+        result = {**result, "epochs": {
+            number: {"route_sha256": expected_route_sha256, "execution_source_sha256": expected_execution_source_sha256,
+                     "operational_renewal_sha256": None}
+            for number, _ in enumerate(groups, start=1)}, "renewals": []}
+    if isinstance(result.get("contacts"), Mapping) and any("cohort_number" not in item for item in result["contacts"].values()):
+        plan = _json(plan_raw, "Baseline plan")
+        ordinal_cohorts = {ordinal: number for number, group in enumerate(ledger_module.cohort_groups(plan), start=1)
+                           for ordinal in group}
+        result = {**result, "contacts": {
+            ordinal: {**item, "cohort_number": ordinal_cohorts[ordinal]}
+            for ordinal, item in result["contacts"].items()}}
     _require(isinstance(result, dict) and set(result) == {
-        "evidence_class", "native_admission", "execution_authority", "contacts", "routes", "authorizations", "head",
+        "evidence_class", "native_admission", "execution_authority", "contacts", "routes", "authorizations", "epochs", "renewals", "head",
     } and result["evidence_class"] == "provider_free_baseline_ledger_consistency"
              and result["native_admission"] is False and result["execution_authority"] is False,
              "Baseline ledger return shape differs")
-    contacts, routes, authorizations, head = result["contacts"], result["routes"], result["authorizations"], result["head"]
+    contacts, routes, authorizations, epochs, head = result["contacts"], result["routes"], result["authorizations"], result["epochs"], result["head"]
     _require(isinstance(contacts, Mapping) and set(contacts) == set(range(1, 5429))
-             and isinstance(routes, Mapping) and set(routes) == {expected_route_sha256}
-             and isinstance(routes[expected_route_sha256], Mapping)
+             and isinstance(routes, Mapping) and expected_route_sha256 in routes and all(isinstance(value, Mapping) for value in routes.values())
              and isinstance(authorizations, Mapping) and authorizations
+             and isinstance(epochs, Mapping) and set(epochs) == set(range(1, 544))
              and head == {"cohort_number": 543, "settlement_sha256": expected_final_settlement_sha256},
              "Baseline ledger authority differs")
     return result
@@ -457,14 +471,17 @@ def admit_baseline(
                      and contact.get("source_sha256") == pass_record["source_sha256"]
                      and contact.get("prompt_sha256") == request["prompt_sha256"]
                      and contact.get("schema_sha256") == request["schema_sha256"]
-                     and contact.get("execution_source_sha256") == expected_execution_source_sha256,
+                     and isinstance(contact.get("cohort_number"), int)
+                     and contact["cohort_number"] in ledger["epochs"]
+                     and contact.get("execution_source_sha256") == ledger["epochs"][contact["cohort_number"]]["execution_source_sha256"],
                      "Baseline ledger source, prompt, schema, or executor binding differs")
             _require(_checkpoint_hash(run_root, request["batch_number"]) == contact.get("checkpoint_sha256")
                      and _run_artifact_hash(run_root, request["batch_number"], "responses/batch-{batch_number:04d}.prompt.txt.gz", "Baseline replay prompt") == request["prompt_sha256"]
                      and _run_artifact_hash(run_root, request["batch_number"], "responses/schemas/batch-{batch_number:04d}.json", "Baseline replay schema") == request["schema_sha256"],
                      "Baseline native checkpoint, prompt, or schema binding differs")
             route_hash = _receipt_route_hash(run_root, request["batch_number"])
-            _require(route_hash == expected_route_sha256 == contact.get("route_sha256") and route_hash in routes,
+            _require(route_hash == contact.get("route_sha256") and route_hash in routes
+                     and route_hash == ledger["epochs"][contact["cohort_number"]]["route_sha256"],
                      "Baseline route binding differs")
             request_id = identity.get("request_id_hash")
             session_id = identity.get("session_id_hash")
@@ -514,6 +531,7 @@ def admit_baseline(
              "Baseline execution evidence changed during admission")
     _unchanged(captured)
     return {
+        "schema_version": 2,
         "evidence_class": "complete_native_baseline_measurement_admission",
         "execution_authority": False,
         "provider_calls": 0,
@@ -522,8 +540,11 @@ def admit_baseline(
         "plan_sha256": expected_plan_sha256,
         "initialization_sha256": expected_initialization_sha256,
         "runtime_manifest_sha256": expected_runtime_manifest_sha256,
-        "execution_source_sha256": expected_execution_source_sha256,
-        "route_sha256": expected_route_sha256,
+        "original_initialization": {
+            "execution_source_sha256": expected_execution_source_sha256,
+            "route_sha256": expected_route_sha256,
+        },
+        "cohort_epochs": ledger["epochs"],
         "reviewer_task": expected_reviewer_task,
         "admitted_passes": 236,
         "logical_requests": 5428,

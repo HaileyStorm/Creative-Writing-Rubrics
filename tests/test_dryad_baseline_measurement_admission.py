@@ -80,6 +80,8 @@ def baseline(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
     (plan_root / "schemas" / "shared.json").write_bytes(schema)
     route = _hash(b"reviewed route")
     executor = _hash(b"reviewed executor")
+    renewed_route = _hash(b"renewed route")
+    renewed_executor = _hash(b"renewed executor")
     settlement = _hash(b"final settlement")
     passes, requests, contacts, by_pass, by_run_batch = [], [], {}, {}, {}
     ordinal = 0
@@ -174,6 +176,8 @@ def baseline(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
         "identity_mode": "unique",
         "checkpoint_mismatch": None,
         "mutation": None,
+        "operational_epoch": False,
+        "wrong_epoch_receipt": False,
     }
 
     def verify_ledger(root, inputs, raw, expected_plan, expected_settlement, **kwargs):
@@ -185,6 +189,35 @@ def baseline(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
             "expected_reviewer_task": "synthetic-review",
         }
         state["ledger_calls"] += 1
+        if state["operational_epoch"]:
+            epochs = {
+                number: {
+                    "route_sha256": route if number == 1 else renewed_route,
+                    "execution_source_sha256": executor if number == 1 else renewed_executor,
+                    "operational_renewal_sha256": None if number == 1 else _hash(b"operational-renewal"),
+                }
+                for number in range(1, 544)
+            }
+            epoch_contacts = {
+                ordinal: {
+                    **contact,
+                    "cohort_number": (ordinal - 1) // 10 + 1,
+                    "route_sha256": route if ordinal <= 10 else renewed_route,
+                    "execution_source_sha256": executor if ordinal <= 10 else renewed_executor,
+                }
+                for ordinal, contact in contacts.items()
+            }
+            return {
+                "evidence_class": "provider_free_baseline_ledger_consistency",
+                "native_admission": False,
+                "execution_authority": False,
+                "contacts": epoch_contacts,
+                "routes": {route: {"kind": "synthetic"}, renewed_route: {"kind": "synthetic"}},
+                "authorizations": {"synthetic": {"reviewed": True}},
+                "epochs": epochs,
+                "renewals": [],
+                "head": {"cohort_number": 543, "settlement_sha256": settlement},
+            }
         return {
             "evidence_class": "provider_free_baseline_ledger_consistency",
             "native_admission": False,
@@ -210,7 +243,10 @@ def baseline(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
         return runtime
 
     def admit_pass(run_root, *, source, batch_size, approved_routes, runtime):
-        assert batch_size == 8 and approved_routes == {route: {"kind": "synthetic"}}
+        expected_routes = {route: {"kind": "synthetic"}}
+        if state["operational_epoch"]:
+            expected_routes[renewed_route] = {"kind": "synthetic"}
+        assert batch_size == 8 and approved_routes == expected_routes
         state["native_calls"] += 1
         record = next(item for item in passes if item["run_path"] == run_root.relative_to(execution_root).as_posix())
         identities = []
@@ -239,9 +275,12 @@ def baseline(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
             "evidence_class": "native_record_replay_only",
         }
 
+    def cohort_groups(_: object) -> list[tuple[int, ...]]:
+        return [tuple(range(start, min(start + 10, 5429))) for start in range(1, 5429, 10)]
+
     monkeypatch.setattr(subject, "_sources", lambda: (
         captured,
-        (SimpleNamespace(), SimpleNamespace(verify_ledger=verify_ledger),
+        (SimpleNamespace(), SimpleNamespace(verify_ledger=verify_ledger, cohort_groups=cohort_groups),
          SimpleNamespace(load_runtime=load_runtime), SimpleNamespace(admit_pass=admit_pass)),
         terminal_raw,
     ))
@@ -284,7 +323,13 @@ def baseline(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
             "prompt_sha256" if label == "Baseline replay prompt" else "schema_sha256"
         ],
     )
-    monkeypatch.setattr(subject, "_receipt_route_hash", lambda *_: route)
+    def receipt_route_hash(run_root, batch_number):
+        request = by_run_batch[(run_root, batch_number)]
+        if state["operational_epoch"] and request["ordinal"] > 10:
+            return route if state["wrong_epoch_receipt"] else renewed_route
+        return route
+
+    monkeypatch.setattr(subject, "_receipt_route_hash", receipt_route_hash)
     return SimpleNamespace(
         state=state,
         plan=plan,
@@ -298,6 +343,8 @@ def baseline(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
         source_pin=source_pin,
         route=route,
         executor=executor,
+        renewed_route=renewed_route,
+        renewed_executor=renewed_executor,
         settlement=settlement,
     )
 
@@ -331,6 +378,8 @@ def test_complete_synthetic_composition_has_no_native_or_provider_authority(base
         "identity_mode": "unique",
         "checkpoint_mismatch": None,
         "mutation": None,
+        "operational_epoch": False,
+        "wrong_epoch_receipt": False,
     }
 
 
@@ -400,3 +449,30 @@ def test_rejects_runtime_source_or_input_drift(baseline, mutation, message):
     with pytest.raises(ValueError, match=message):
         _admit(baseline)
     assert baseline.state["native_calls"] == 236
+
+
+def test_admission_returns_ordered_operational_epochs_without_global_source_mislabel(baseline):
+    baseline.state["operational_epoch"] = True
+    result = _admit(baseline)
+    assert result["original_initialization"] == {
+        "execution_source_sha256": baseline.executor,
+        "route_sha256": baseline.route,
+    }
+    assert result["cohort_epochs"][1] == {
+        "route_sha256": baseline.route,
+        "execution_source_sha256": baseline.executor,
+        "operational_renewal_sha256": None,
+    }
+    assert result["cohort_epochs"][2] == {
+        "route_sha256": baseline.renewed_route,
+        "execution_source_sha256": baseline.renewed_executor,
+        "operational_renewal_sha256": _hash(b"operational-renewal"),
+    }
+
+
+def test_admission_rejects_receipt_from_another_epoch_even_when_route_is_known(baseline):
+    baseline.state["operational_epoch"] = True
+    baseline.state["wrong_epoch_receipt"] = True
+    with pytest.raises(ValueError, match="Baseline route binding differs"):
+        _admit(baseline)
+    assert baseline.state["native_calls"] == 1

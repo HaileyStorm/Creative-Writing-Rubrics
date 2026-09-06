@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 import importlib.util
 import json
+import sys
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from types import SimpleNamespace
@@ -145,3 +146,46 @@ def test_wrapper_validates_schema3_renewal_candidate_with_pinned_core(monkeypatc
         with pytest.raises(ValueError):
             subject.validate_candidate_cohort(b"synthetic", b"synthetic", plan_sha256,
                                              **{**kwargs, "settlement": bad_settlement, "contact_records": bad_contacts})
+
+
+def test_wrapper_reads_renewal_epochs_through_its_pinned_core(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    core_tests = ROOT / "tests" / "test_cohort_ledger_core.py"
+    spec = importlib.util.spec_from_file_location("renewal_core_test_support", core_tests)
+    assert spec and spec.loader
+    support = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = support
+    try:
+        spec.loader.exec_module(support)
+        fixture = support.operational_renewal_ledger(tmp_path)
+    finally:
+        sys.modules.pop(spec.name, None)
+
+    subject = load()
+    fake_core_path = fixture["core"].__file__
+    monkeypatch.setattr(subject, "CORE", Path(fake_core_path))
+    monkeypatch.setattr(subject, "CORE_SHA256", hashlib.sha256(Path(fake_core_path).read_bytes()).hexdigest())
+    monkeypatch.setattr(subject, "_geometry", lambda *_: fixture["geometry"])
+    original_core = subject._core
+
+    def pinned_core():
+        loaded, raw = original_core()
+        loaded.HISTORICAL_OPERATIONAL_REVISION = fixture["core"].HISTORICAL_OPERATIONAL_REVISION
+        return loaded, raw
+
+    monkeypatch.setattr(subject, "_core", pinned_core)
+    kwargs = {
+        "expected_route_sha256": support.sha(fixture["routes"][0]),
+        "expected_execution_source_sha256": fixture["sources"][0],
+        "expected_reviewer_task": fixture["reviewer"],
+    }
+    verified = subject.verify_prefix(
+        fixture["root"], b"synthetic-public-inputs", b"synthetic-plan", "a" * 64, fixture["head"], 3, **kwargs,
+    )
+    assert [item["sha256"] for item in verified["renewals"]] == list(fixture["renewals"])
+    assert verified["epochs"][3]["operational_renewal_sha256"] == fixture["renewals"][1]
+
+    with pytest.raises(ValueError):
+        subject.verify_prefix(
+            fixture["root"], b"synthetic-public-inputs", b"synthetic-plan", "a" * 64, fixture["head"], 3,
+            **{**kwargs, "expected_route_sha256": "0" * 64},
+        )

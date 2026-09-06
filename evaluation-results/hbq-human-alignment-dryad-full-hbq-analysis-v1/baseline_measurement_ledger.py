@@ -1,8 +1,4 @@
-"""Read-only reviewed-cohort verification for one fixed-source baseline run.
-
-This baseline accepts one externally pinned execution source throughout.  It
-does not implement historical source-transition admission or native lifecycle.
-"""
+"""Read-only baseline cohort verification across reviewed operational renewals."""
 
 from __future__ import annotations
 
@@ -25,7 +21,7 @@ PREPARATION = ROOT / "baseline-preparation-v1.json"
 CORE = ROOT / "cohort_ledger_core.py"
 PLAN_SOURCE_SHA256 = "33193aa1a394c04c14b4f9ab81871116dbac11f933f22a9e45f252b2d279fdc8"
 CONTRACT_SHA256 = "6ae404e31ecafbeac0ef69814127c5222ac8da5fd24c2700f185ca2f8af5cf37"
-CORE_SHA256 = "9ede3ae1d19c9d848aef9ab077bf8e84b0127a0f5f9feebff25883e62718987c"
+CORE_SHA256 = "0e42b5ea59aa1fcc2be7689878fae90ad1ef158b7630fb997286ec555fc1286c"
 PREPARATION_SHA256 = "64d8deb56082ecc9ca899b264cab6a3b50f91333a8ada5bc0bb9573bfbf1924a"
 PUBLIC_INPUTS_SHA256 = "6254f58d3366667c9578e2661a1ca0d105a603a0f8affe2d925a767957937c42"
 PLAN_SHA256 = "edeadb93c485ba227153329b5ae420de1c9d08d95e920bac0635d197fd3dbd7f"

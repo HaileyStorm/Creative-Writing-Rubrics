@@ -11,6 +11,7 @@ import json
 import os
 import re
 import stat
+import subprocess
 from collections.abc import Mapping
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
@@ -18,7 +19,17 @@ from pathlib import Path, PurePosixPath
 from typing import Any
 
 GENESIS_SETTLEMENT_SHA256 = "0" * 64
+GENESIS_RENEWAL_SHA256 = "0" * 64
+HISTORICAL_OPERATIONAL_REVISION = "49f662f1f03b636feed003b99c2f094ff19353ba"
 _HASH = re.compile(r"[0-9a-f]{64}\Z")
+_REVISION = re.compile(r"[0-9a-f]{40}\Z")
+_OPERATIONAL_FILES = (
+    "evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/cohort_ledger_core.py",
+    "evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/baseline_measurement_ledger.py",
+    "evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/baseline_measurement_admission.py",
+    "evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/baseline_measurement_execution.py",
+)
+_DERIVATION = "runner_normalized_verdicts_v1"
 
 
 def _require(condition: bool, message: str) -> None:
@@ -147,6 +158,135 @@ def _pending(paths: frozenset[str]) -> frozenset[str]:
     return paths
 
 
+def _route_hash(route: Mapping[str, Any]) -> str:
+    _require(isinstance(route, Mapping), "Route snapshot differs")
+    return digest(canonical(dict(route)))
+
+
+def _source_manifest(value: Any, label: str, *, require_current: bool) -> dict[str, Any]:
+    _require(isinstance(value, Mapping) and set(value) == {"revision", "files"}, f"{label} source manifest differs")
+    revision, files = value["revision"], value["files"]
+    _require(isinstance(revision, str) and _REVISION.fullmatch(revision) is not None
+             and isinstance(files, Mapping) and set(files) == set(_OPERATIONAL_FILES)
+             and all(_hash(item) for item in files.values()), f"{label} source manifest differs")
+    repository = Path(__file__).resolve().parents[2]
+    for relative in _OPERATIONAL_FILES:
+        result = subprocess.run(("git", "-C", str(repository), "show", f"{revision}:{relative}"),
+                                check=False, capture_output=True)
+        _require(result.returncode == 0 and digest(result.stdout) == files[relative],
+                 f"{label} source manifest Git evidence differs")
+        if require_current:
+            path = repository / relative
+            _require(path.is_file() and digest(path.read_bytes()) == files[relative],
+                     f"{label} current source differs")
+    return {"revision": revision, "files": dict(files)}
+
+
+def _route_transition(old: Mapping[str, Any], new: Mapping[str, Any]) -> None:
+    _require(set(old) == set(new) and "subscription_receipt_hash" in old and "cost_evidence" in old,
+             "Renewal route keyset differs")
+    _require(all(old[key] == new[key] for key in old if key not in {"subscription_receipt_hash", "cost_evidence"}),
+             "Renewal route contract differs")
+    old_cost, new_cost = old["cost_evidence"], new["cost_evidence"]
+    _require(isinstance(old_cost, Mapping) and isinstance(new_cost, Mapping) and set(old_cost) == set(new_cost)
+             and {"evidence_hash", "checked_at", "expires_at", "allowance_state", "kind", "version"} <= set(old_cost),
+             "Renewal cost evidence keyset differs")
+    _require(all(old_cost[key] == new_cost[key] for key in old_cost
+                 if key not in {"evidence_hash", "checked_at", "expires_at"}),
+             "Renewal cost evidence contract differs")
+
+
+def _prefix_manifest(value: Any) -> dict[str, Any]:
+    _require(isinstance(value, Mapping) and set(value) == {"immutable_files", "derived_aggregate_prefixes"},
+             "Renewal preserved-prefix manifest differs")
+    immutable, aggregates = value["immutable_files"], value["derived_aggregate_prefixes"]
+    _require(isinstance(immutable, Mapping) and isinstance(aggregates, Mapping)
+             and set(immutable).isdisjoint(aggregates)
+             and all(isinstance(path, str) and _hash(item) for path, item in immutable.items()),
+             "Renewal immutable prefix differs")
+    for path, item in aggregates.items():
+        _require(isinstance(path, str) and isinstance(item, Mapping)
+                 and set(item) == {"derivation", "sha256", "bytes", "verdict_count"}
+                 and item.get("derivation") == _DERIVATION and _hash(item.get("sha256"))
+                 and type(item.get("bytes")) is int and item["bytes"] >= 0
+                 and type(item.get("verdict_count")) is int and item["verdict_count"] >= 0,
+                 "Renewal aggregate prefix differs")
+    return {"immutable_files": dict(immutable), "derived_aggregate_prefixes": dict(aggregates)}
+
+
+def _renewals(root: Path, snapshot: Mapping[str, str], geometry: LedgerGeometry, *,
+              initialization_sha256: str, through_cohort: int) -> list[dict[str, Any]]:
+    pattern = re.compile(r"cohorts/(\d{4})/operational-renewals/0001\.json\Z")
+    found = sorted((int(match.group(1)), relative) for relative in snapshot if (match := pattern.fullmatch(relative)))
+    _require(all(1 <= number <= through_cohort for number, _ in found) and len({number for number, _ in found}) == len(found),
+             "Operational renewal inventory differs")
+    prior_hash = GENESIS_RENEWAL_SHA256
+    prior_route_sha256: str | None = None
+    prior_manifest: dict[str, Any] | None = None
+    result: list[dict[str, Any]] = []
+    for number, relative in found:
+        raw = _read(root, relative, snapshot); value = _json(raw, "Operational renewal")
+        fields = {"schema_version", "evidence_class", "reviewer_task", "decision", "original_initialization_sha256",
+                  "previous_renewal_sha256", "settled_cohort_number", "settled_head_settlement_sha256",
+                  "preserved_prefix", "next_cohort_number", "remaining_ordinals", "old_route", "old_route_sha256",
+                  "new_route", "new_route_sha256", "old_receipt_sha256", "new_receipt_sha256",
+                  "old_operational_source_manifest", "new_operational_source_manifest", "reviewed_at"}
+        _keys(value, fields, "Operational renewal", version=1)
+        _require(value["evidence_class"] == "independently_reviewed_operational_renewal"
+                 and isinstance(value["reviewer_task"], str) and value["reviewer_task"]
+                 and value["decision"] == "approved_operational_renewal"
+                 and value["original_initialization_sha256"] == initialization_sha256
+                 and value["previous_renewal_sha256"] == prior_hash
+                 and value["settled_cohort_number"] == number and number < len(geometry.groups)
+                 and value["next_cohort_number"] == number + 1
+                 and _hash(value["settled_head_settlement_sha256"])
+                 and isinstance(value["remaining_ordinals"], list)
+                 and value["remaining_ordinals"] == [ordinal for group in geometry.groups[number:] for ordinal in group]
+                 and value["remaining_ordinals"],
+                 "Operational renewal binding differs")
+        old_route, new_route = value["old_route"], value["new_route"]
+        _require(isinstance(old_route, Mapping) and isinstance(new_route, Mapping)
+                 and value["old_route_sha256"] == _route_hash(old_route)
+                 and value["new_route_sha256"] == _route_hash(new_route)
+                 and value["old_receipt_sha256"] == old_route.get("subscription_receipt_hash")
+                 and value["new_receipt_sha256"] == new_route.get("subscription_receipt_hash")
+                 and _hash(value["old_receipt_sha256"]) and _hash(value["new_receipt_sha256"]),
+                 "Operational renewal route binding differs")
+        _route_transition(old_route, new_route)
+        old_manifest = _source_manifest(value["old_operational_source_manifest"], "Old operational", require_current=False)
+        new_manifest = _source_manifest(value["new_operational_source_manifest"], "New operational", require_current=False)
+        if prior_manifest is None:
+            _require(old_manifest["revision"] == HISTORICAL_OPERATIONAL_REVISION, "Initial operational source revision differs")
+        else:
+            _require(value["old_route_sha256"] == prior_route_sha256
+                     and old_manifest == prior_manifest, "Operational renewal chain differs")
+        _require(old_route["subscription_receipt_hash"] == value["old_receipt_sha256"]
+                 and new_route["subscription_receipt_hash"] == value["new_receipt_sha256"]
+                 and _utc(value["reviewed_at"], "Operational renewal review time") is not None,
+                 "Operational renewal evidence differs")
+        manifest = _prefix_manifest(value["preserved_prefix"])
+        prior_hash = digest(raw)
+        prior_route_sha256, prior_manifest = value["new_route_sha256"], new_manifest
+        result.append({"sha256": prior_hash, "value": value, "cohort_number": number,
+                       "old_source": old_manifest, "new_source": new_manifest,
+                       "manifest": manifest})
+    return result
+
+
+def _verify_renewal_prefix(root: Path, renewal: Mapping[str, Any]) -> None:
+    raw_files, _ = _tree(root, "Execution evidence")
+    manifest = renewal["manifest"]
+    immutable, aggregates = manifest["immutable_files"], manifest["derived_aggregate_prefixes"]
+    _require(set(immutable).isdisjoint(aggregates)
+             and all(raw_files.get(path) == sha256 for path, sha256 in immutable.items()),
+             "Renewal preserved immutable prefix differs")
+    for path, value in aggregates.items():
+        raw = (root / path).read_bytes()
+        _require(path in raw_files and len(raw) >= value["bytes"]
+                 and digest(raw[:value["bytes"]]) == value["sha256"],
+                 "Renewal preserved aggregate prefix differs")
+
+
 @dataclass(frozen=True)
 class LedgerGeometry:
     plan_sha256: str
@@ -160,7 +300,9 @@ class LedgerGeometry:
         for ordinal, request in self.requests.items():
             _require(isinstance(request, Mapping) and request.get("ordinal") == ordinal and isinstance(request.get("pass_id"), str) and request["pass_id"] in self.passes and _hash(request.get("prompt_sha256")) and _hash(request.get("schema_sha256")), "Ledger request binding differs")
         for pass_id, value in self.passes.items():
-            _require(isinstance(pass_id, str) and isinstance(value, Mapping) and value.get("pass_id") == pass_id and _hash(value.get("source_sha256")) and isinstance(value.get("logical_sample_id"), str) and value["logical_sample_id"], "Ledger pass binding differs")
+            _require(isinstance(pass_id, str) and isinstance(value, Mapping) and value.get("pass_id") == pass_id
+                     and _hash(value.get("source_sha256")) and isinstance(value.get("logical_sample_id"), str)
+                     and value["logical_sample_id"], "Ledger pass binding differs")
 
 
 def _review(raw: bytes, prepared_sha256: str, reviewer_task: str) -> tuple[dict[str, Any], datetime, datetime]:
@@ -292,34 +434,92 @@ def verify_prefix(execution_root: Path, geometry: LedgerGeometry, expected_settl
         if match := continuation_pattern.fullmatch(relative):
             number = int(match.group(1)); _require(1 <= number <= len(geometry.groups) and (number <= through_cohort or relative in pending), "Continuation inventory differs")
             if number <= through_cohort: expected_files.add(relative)
+    renewal_pattern = re.compile(r"cohorts/(\d{4})/operational-renewals/0001\.json\Z")
+    renewal_paths = [relative for relative in files if renewal_pattern.fullmatch(relative)]
+    if renewal_paths:
+        initialization_raw = (root / "initialization.json").read_bytes()
+        initialization_sha256 = digest(initialization_raw)
+        renewals = _renewals(root, files, geometry, initialization_sha256=initialization_sha256,
+                             through_cohort=through_cohort)
+    else:
+        renewals = []
+    for relative in files:
+        if match := renewal_pattern.fullmatch(relative):
+            number = int(match.group(1)); _require(number <= through_cohort, "Operational renewal inventory differs")
+            expected_files.add(relative)
     _require(expected_files.isdisjoint(pending) and set(files) == expected_files | set(pending) and directories == _directories(expected_files | set(pending)), "Ledger inventory differs")
-    previous_settlement, previous_source, previous_settled = GENESIS_SETTLEMENT_SHA256, None, None
+    if renewals:
+        initialization = _json(initialization_raw, "Initialization")
+        _require(initialization.get("route_sha256") == expected_route_sha256
+                 and initialization.get("execution_source_sha256") == expected_execution_source_sha256
+                 and all(item["value"]["original_initialization_sha256"] == initialization_sha256 for item in renewals),
+                 "Operational renewal initialization differs")
+    renewals_by_cohort = {item["cohort_number"]: item for item in renewals}
+    previous_settlement, previous_settled = GENESIS_SETTLEMENT_SHA256, None
+    current_route_sha256, current_source_sha256 = expected_route_sha256, expected_execution_source_sha256
+    current_renewal_sha256: str | None = None
     contacts: dict[int, dict[str, Any]] = {}; request_ids: set[str] = set(); session_ids: set[str] = set(); routes: dict[str, dict[str, Any]] = {}
     authorizations: dict[str, dict[str, Any]] = {}
+    epochs: dict[int, dict[str, Any]] = {}
     for number, ordinals in enumerate(geometry.groups[:through_cohort], start=1):
         prefix = f"cohorts/{number:04d}"; prepared_raw = _read(root, f"{prefix}/prepared.json", files); review_raw = _read(root, f"{prefix}/review.json", files); route_raw = _read(root, f"{prefix}/route.json", files); settlement_raw = _read(root, f"{prefix}/settlement.json", files)
         prepared, route, settlement = _json(prepared_raw, "Prepared record"), _json(route_raw, "Route snapshot"), _json(settlement_raw, "Settlement record")
         prepared_sha, review_sha, route_sha = digest(prepared_raw), digest(review_raw), digest(canonical(route))
-        _keys(prepared, {"schema_version", "cohort_number", "plan_sha256", "previous_settlement_sha256", "request_ordinals", "route_sha256", "execution_source_sha256"}, "Prepared record", version=1)
-        _require(prepared["cohort_number"] == number and prepared["plan_sha256"] == geometry.plan_sha256 and prepared["previous_settlement_sha256"] == previous_settlement and tuple(prepared["request_ordinals"]) == ordinals and prepared["route_sha256"] == route_sha == expected_route_sha256 and prepared["execution_source_sha256"] == expected_execution_source_sha256 and (previous_source is None or previous_source == expected_execution_source_sha256), "Prepared binding differs")
+        prepared_fields = {"schema_version", "cohort_number", "plan_sha256", "previous_settlement_sha256", "request_ordinals", "route_sha256", "execution_source_sha256"}
+        version = _integer(prepared.get("schema_version"), "Prepared schema version")
+        if version == 1:
+            _keys(prepared, prepared_fields, "Prepared record", version=1)
+            _require(current_renewal_sha256 is None, "Renewal-bound cohort requires preparation schema 2")
+        elif version == 2:
+            _keys(prepared, prepared_fields | {"operational_renewal_sha256"}, "Prepared record", version=2)
+            _require(current_renewal_sha256 is not None and prepared["operational_renewal_sha256"] == current_renewal_sha256,
+                     "Prepared operational renewal differs")
+        else:
+            raise ValueError("Prepared schema version differs")
+        _require(prepared["cohort_number"] == number and prepared["plan_sha256"] == geometry.plan_sha256
+                 and prepared["previous_settlement_sha256"] == previous_settlement
+                 and tuple(prepared["request_ordinals"]) == ordinals and prepared["route_sha256"] == route_sha == current_route_sha256
+                 and prepared["execution_source_sha256"] == current_source_sha256,
+                 "Prepared binding differs")
         _, reviewed_at, expires_at = _review(review_raw, prepared_sha, reviewer_task); _require(previous_settled is None or reviewed_at >= previous_settled, "Review precedes previous settlement")
         _require(route_sha not in routes or routes[route_sha] == route, "Route hash collision differs"); routes[route_sha] = route
-        continuations = _continuations(root, prefix, files, prepared_sha, route_sha, review_sha, expected_execution_source_sha256, reviewer_task)
-        _require(all(item["source_sha256"] == expected_execution_source_sha256 for item in continuations), "Continuation execution source differs")
+        continuations = _continuations(root, prefix, files, prepared_sha, route_sha, review_sha, current_source_sha256, reviewer_task)
+        _require(all(item["source_sha256"] == current_source_sha256 for item in continuations), "Continuation execution source differs")
         contact_records = {ordinal: _read(root, f"contacts/request-{ordinal:04d}.json", files) for ordinal in ordinals}
         cohort_contacts, authorization = validate_candidate_cohort(
             geometry, cohort_number=number, ordinals=ordinals, prepared_sha256=prepared_sha,
             review_sha256=review_sha, route_sha256=route_sha, previous_settlement_sha256=previous_settlement,
             review_start=reviewed_at, review_end=expires_at, continuations=continuations, settlement=settlement,
-            contact_records=contact_records, expected_execution_source_sha256=expected_execution_source_sha256,
+            contact_records=contact_records, expected_execution_source_sha256=current_source_sha256,
             request_ids=request_ids, session_ids=session_ids,
         )
         for authorization_sha, (source_sha, start, end) in authorization.items():
             _require(authorization_sha not in authorizations, "Authorization reused across cohorts")
             authorizations[authorization_sha] = {"execution_source_sha256": source_sha, "reviewed_at": start.isoformat(), "expires_at": end.isoformat(), "cohort_number": number}
         contacts.update(cohort_contacts)
+        epochs[number] = {"route_sha256": current_route_sha256, "execution_source_sha256": current_source_sha256,
+                          "operational_renewal_sha256": current_renewal_sha256}
         settled_at = _utc(settlement["settled_at"], "Settlement time")
-        previous_settlement, previous_source, previous_settled = digest(settlement_raw), expected_execution_source_sha256, settled_at
+        if renewal := renewals_by_cohort.get(number):
+            value = renewal["value"]
+            _require(value["settled_head_settlement_sha256"] == digest(settlement_raw)
+                     and value["old_route_sha256"] == current_route_sha256
+                     and value["old_operational_source_manifest"]["files"][_OPERATIONAL_FILES[-1]] == current_source_sha256
+                     and _utc(value["reviewed_at"], "Operational renewal review time") >= settled_at,
+                     "Operational renewal boundary differs")
+            _verify_renewal_prefix(root, renewal)
+            current_route_sha256 = value["new_route_sha256"]
+            current_source_sha256 = renewal["new_source"]["files"][_OPERATIONAL_FILES[-1]]
+            current_renewal_sha256 = renewal["sha256"]
+        previous_settlement, previous_settled = digest(settlement_raw), settled_at
     _require(previous_settlement == expected_settlement_sha256 and len(contacts) == sum(map(len, geometry.groups[:through_cohort])) and len(request_ids) == len(session_ids) == len(contacts), "Ledger closing settlement differs")
+    if renewals:
+        _source_manifest(renewals[-1]["value"]["new_operational_source_manifest"], "Latest operational", require_current=True)
     after_files, after_directories = _snapshot(root); _require(files == after_files and directories == after_directories, "Ledger changed during verification")
-    return {"evidence_class": "provider_free_baseline_ledger_consistency", "native_admission": False, "execution_authority": False, "contacts": contacts, "routes": routes, "authorizations": authorizations, "head": {"cohort_number": through_cohort, "settlement_sha256": previous_settlement}}
+    result = {"evidence_class": "provider_free_baseline_ledger_consistency", "native_admission": False,
+              "execution_authority": False, "contacts": contacts, "routes": routes,
+              "authorizations": authorizations, "head": {"cohort_number": through_cohort,
+              "settlement_sha256": previous_settlement}}
+    if renewals:
+        result.update({"epochs": epochs, "renewals": renewals})
+    return result

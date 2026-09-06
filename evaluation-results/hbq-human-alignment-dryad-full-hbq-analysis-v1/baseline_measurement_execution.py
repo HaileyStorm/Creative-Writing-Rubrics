@@ -18,6 +18,7 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parent
 REPOSITORY = ROOT.parents[1]
+EXECUTION_SOURCE_RELATIVE = Path(__file__).relative_to(REPOSITORY).as_posix()
 PLAN_SOURCE = ROOT / "baseline_measurement_plan.py"
 LEDGER_SOURCE = ROOT / "baseline_measurement_ledger.py"
 RUNTIME_SOURCE = ROOT / "baseline_native_runtime.py"
@@ -27,10 +28,10 @@ TERMINAL_IDENTITIES = ROOT / "terminal-identities-v2.json"
 PLAN_SHA256 = "edeadb93c485ba227153329b5ae420de1c9d08d95e920bac0635d197fd3dbd7f"
 SOURCE_PINS = {
     PLAN_SOURCE: "33193aa1a394c04c14b4f9ab81871116dbac11f933f22a9e45f252b2d279fdc8",
-    LEDGER_SOURCE: "642f4ea14acab0c51c73cefcf75031383ced503bb8bcab16b606a28d65458253",
+    LEDGER_SOURCE: "a7c850d97f6bbac10ba95162e4557570c79e4b9ca9add2abfb3421b10da5b144",
     RUNTIME_SOURCE: "5130bc037e0700f8d498c40ca790aaf248e986189818ae059934ee6488bbfbcd",
     NATIVE_SOURCE: "22ccfe3299bab0e04045a7ec01ab4799929818a3a84aecc8549bb6cb3032a1ec",
-    ADMISSION_SOURCE: "8c8c7a2b9545d8ddb051fc949a366299b07593ef46757dc5e5d97a0b00638df2",
+    ADMISSION_SOURCE: "09bf619908a0aab489353f76659b5932453b32662f391a689a1425f851cea071",
     TERMINAL_IDENTITIES: "82cc80c2692fc0c0f47024d4db04cdbf5dd1c34c2d5deea40916a0e8ea45ca63",
 }
 _HASH = re.compile(r"[0-9a-f]{64}\Z")
@@ -168,11 +169,11 @@ def _plan(plan_root: Path, expected_plan_sha256: str) -> tuple[dict[str, Any], b
 
 def _groups(ledger: ModuleType, plan: Mapping[str, Any], number: int) -> tuple[int, ...]:
     groups = ledger.cohort_groups(plan)
-    _require(type(number) is int and 1 <= number <= 543 and len(groups) == 543,
-             "Baseline cohort number differs")
+    _require(type(number) is int and 1 <= number <= len(groups), "Baseline cohort number differs")
     group = groups[number - 1]
-    _require(tuple(group) == tuple(range(group[0], group[0] + len(group)))
-             and len(group) == (8 if number == 543 else 10), "Baseline cohort group differs")
+    _require(group and tuple(group) == tuple(range(group[0], group[0] + len(group)))
+             and tuple(ordinal for item in groups for ordinal in item) == tuple(range(1, len(plan["requests"]) + 1)),
+             "Baseline cohort group differs")
     return tuple(group)
 
 
@@ -284,29 +285,57 @@ def initialize(public_inputs_path: Path, plan_root: Path, execution_root: Path, 
             "plan_inventory_sha256": record["plan_inventory_sha256"], "route_sha256": record["route_sha256"]}
 
 
+def _epoch(initialization: Mapping[str, Any], prior: Mapping[str, Any],
+           expected_operational_renewal_sha256: str | None = None) -> dict[str, Any]:
+    renewals = prior.get("renewals", [])
+    _require(isinstance(renewals, list), "Operational renewal inventory differs")
+    if not renewals:
+        _require(expected_operational_renewal_sha256 is None, "Unexpected operational renewal anchor")
+        return {"route": None, "route_sha256": initialization["route_sha256"],
+                "execution_source_sha256": initialization["execution_source_sha256"],
+                "operational_renewal_sha256": None}
+    latest = renewals[-1]
+    _require(isinstance(latest, Mapping) and isinstance(latest.get("sha256"), str)
+             and _HASH.fullmatch(latest["sha256"]) is not None
+             and expected_operational_renewal_sha256 == latest["sha256"]
+             and isinstance(latest.get("value"), Mapping) and isinstance(latest["value"].get("new_route"), Mapping)
+             and isinstance(latest.get("new_source"), Mapping) and isinstance(latest["new_source"].get("files"), Mapping),
+             "Latest operational renewal differs")
+    return {"route": dict(latest["value"]["new_route"]), "route_sha256": latest["value"]["new_route_sha256"],
+            "execution_source_sha256": latest["new_source"]["files"][EXECUTION_SOURCE_RELATIVE],
+            "operational_renewal_sha256": latest["sha256"]}
+
+
 def _prepared(execution_root: Path, number: int, expected_sha256: str, initialization: Mapping[str, Any],
-              ordinals: tuple[int, ...], previous_settlement_sha256: str, route: Mapping[str, Any]) -> tuple[dict[str, Any], bytes]:
+              ordinals: tuple[int, ...], previous_settlement_sha256: str, route: Mapping[str, Any],
+              epoch: Mapping[str, Any]) -> tuple[dict[str, Any], bytes]:
     raw = _relative(execution_root, f"cohorts/{number:04d}/prepared.json", directory=False).read_bytes()
     _require(_hash(raw) == expected_sha256, "Prepared cohort anchor differs")
     value = _json(raw, "Prepared cohort")
     required = {"schema_version", "cohort_number", "plan_sha256", "previous_settlement_sha256",
                 "request_ordinals", "route_sha256", "execution_source_sha256"}
-    _require(set(value) == required and value.get("schema_version") == 1 and value.get("cohort_number") == number
-             and value.get("plan_sha256") == initialization["plan_sha256"]
+    version = value.get("schema_version")
+    if epoch["operational_renewal_sha256"] is None:
+        _require(set(value) == required and version == 1, "Prepared cohort differs")
+    else:
+        _require(set(value) == required | {"operational_renewal_sha256"} and version == 2
+                 and value.get("operational_renewal_sha256") == epoch["operational_renewal_sha256"],
+                 "Prepared cohort operational renewal differs")
+    _require(value.get("cohort_number") == number and value.get("plan_sha256") == initialization["plan_sha256"]
              and value.get("previous_settlement_sha256") == previous_settlement_sha256
-             and value.get("request_ordinals") == list(ordinals) and value.get("route_sha256") == _route_hash(route)
-             and value.get("execution_source_sha256") == initialization["execution_source_sha256"],
-             "Prepared cohort differs")
+             and value.get("request_ordinals") == list(ordinals) and value.get("route_sha256") == _route_hash(route) == epoch["route_sha256"]
+             and value.get("execution_source_sha256") == epoch["execution_source_sha256"], "Prepared cohort differs")
     return value, raw
 
 
 def prepare_cohort(public_inputs_path: Path, plan_root: Path, execution_root: Path, cohort_number: int,
                    route: Mapping[str, Any], *, expected_plan_sha256: str, expected_initialization_sha256: str,
-                   expected_previous_settlement_sha256: str) -> dict[str, str]:
+                   expected_previous_settlement_sha256: str,
+                   expected_operational_renewal_sha256: str | None = None) -> dict[str, str]:
     """Provider-free creation of one exact reviewed-cohort preparation record."""
     _require(expected_plan_sha256 == PLAN_SHA256 and all(_HASH.fullmatch(value) is not None for value in
              (expected_initialization_sha256, expected_previous_settlement_sha256)), "Preparation anchors differ")
-    captured, (_, ledger, runtime_loader, _, _) = _sources()
+    captured, (_, ledger, runtime_loader, native, _) = _sources()
     public_inputs_path = _plain(public_inputs_path, directory=False)
     plan_root = _plain(plan_root, directory=True)
     execution_root = _plain(execution_root, directory=True)
@@ -314,17 +343,20 @@ def prepare_cohort(public_inputs_path: Path, plan_root: Path, execution_root: Pa
     _require(_hash(public_inputs_path.read_bytes()) == initialization["public_inputs_sha256"],
              "Initialization public inputs binding differs")
     own = _plain(Path(__file__), directory=False)
-    _require(_hash(captured[own]) == initialization["execution_source_sha256"],
-             "Initialization execution source differs")
     runtime = runtime_loader.load_runtime(ROOT / "baseline-runtime-v1.json",
                                           expected_manifest_sha256=initialization["runtime_manifest_sha256"])
     runtime.verify()
     plan, plan_raw = _plan(plan_root, expected_plan_sha256)
+    all_requests = {row["ordinal"]: row for row in plan["requests"]
+                    if isinstance(row, Mapping) and type(row.get("ordinal")) is int}
+    all_passes = {row["pass_id"]: row for row in plan["passes"]
+                  if isinstance(row, Mapping) and isinstance(row.get("pass_id"), str)}
+    _require(set(all_requests) == set(range(1, len(plan["requests"]) + 1)) and len(all_passes) == len(plan["passes"]),
+             "Full baseline plan inventory differs")
     ordinals = _groups(ledger, plan, cohort_number)
     passes, requests = _rows(plan, plan_root, ordinals)
     _frozen_payloads(plan_root, requests, passes, ordinals)
     route = dict(route)
-    _require(_route_hash(route) == initialization["route_sha256"], "Initialization route binding differs")
     lock, token = _lock(execution_root)
     try:
         prefix = execution_root / "cohorts" / f"{cohort_number:04d}"
@@ -336,10 +368,22 @@ def prepare_cohort(public_inputs_path: Path, plan_root: Path, execution_root: Pa
                                      expected_reviewer_task=REVIEWER_TASK)
         _require(prior["head"]["settlement_sha256"] == expected_previous_settlement_sha256,
                  "Previous baseline settlement differs")
-        prepared = {"schema_version": 1, "cohort_number": cohort_number, "plan_sha256": expected_plan_sha256,
+        renewals = prior.get("renewals", [])
+        if renewals and renewals[-1]["cohort_number"] == cohort_number - 1:
+            _verify_new_renewal_boundary(execution_root, plan_root, prior, renewals[-1], all_passes, all_requests,
+                                         runtime, native)
+        epoch = _epoch(initialization, prior, expected_operational_renewal_sha256)
+        _require(_hash(captured[own]) == epoch["execution_source_sha256"]
+                 and _route_hash(route) == epoch["route_sha256"]
+                 and (epoch["route"] is None or _canonical(route) == _canonical(epoch["route"])),
+                 "Resolved operational epoch differs")
+        prepared = {"schema_version": 1 if epoch["operational_renewal_sha256"] is None else 2,
+                    "cohort_number": cohort_number, "plan_sha256": expected_plan_sha256,
                     "previous_settlement_sha256": expected_previous_settlement_sha256, "request_ordinals": list(ordinals),
-                    "route_sha256": initialization["route_sha256"],
-                    "execution_source_sha256": initialization["execution_source_sha256"]}
+                    "route_sha256": epoch["route_sha256"],
+                    "execution_source_sha256": epoch["execution_source_sha256"]}
+        if epoch["operational_renewal_sha256"] is not None:
+            prepared["operational_renewal_sha256"] = epoch["operational_renewal_sha256"]
         _write_new(prefix / "prepared.json", _canonical(prepared))
         _write_new(prefix / "route.json", _canonical(route))
         _unchanged(captured)
@@ -350,7 +394,7 @@ def prepare_cohort(public_inputs_path: Path, plan_root: Path, execution_root: Pa
         if lock.is_file() and lock.read_bytes() == token:
             lock.unlink()
     return {"prepared_sha256": _hash((execution_root / "cohorts" / f"{cohort_number:04d}" / "prepared.json").read_bytes()),
-            "route_sha256": initialization["route_sha256"]}
+            "route_sha256": _route_hash(route)}
 
 
 def _continuations(execution_root: Path, number: int, prepared_sha256: str, review_sha256: str,
@@ -397,18 +441,6 @@ def _cohort_state(public_inputs_raw: bytes, plan_raw: bytes, execution_root: Pat
                   expected_prepared_sha256: str, expected_review_sha256: str) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any], list[dict[str, Any]], dict[str, Any]]:
     route_raw = _relative(execution_root, f"cohorts/{number:04d}/route.json", directory=False).read_bytes()
     route = _json(route_raw, "Cohort route")
-    _require(_route_hash(route) == initialization["route_sha256"], "Cohort route binding differs")
-    prepared, _prepared_raw = _prepared(execution_root, number, expected_prepared_sha256, initialization, ordinals,
-                                         expected_previous_settlement_sha256, route)
-    review_raw = _relative(execution_root, f"cohorts/{number:04d}/review.json", directory=False).read_bytes()
-    _require(_hash(review_raw) == expected_review_sha256, "Review anchor differs")
-    review = _json(review_raw, "Review")
-    _require(set(review) == {"schema_version", "reviewer_task", "decision", "prepared_sha256", "reviewed_at", "expires_at"}
-             and review.get("schema_version") == 1 and review.get("reviewer_task") == REVIEWER_TASK
-             and review.get("decision") == "approved_cohort" and review.get("prepared_sha256") == expected_prepared_sha256,
-             "Cohort review differs")
-    review_start, review_end = _time(review.get("reviewed_at"), "Review time"), _time(review.get("expires_at"), "Review expiry")
-    _require(review_start < review_end <= review_start + timedelta(minutes=15), "Review window differs")
     files = {f"cohorts/{number:04d}/prepared.json", f"cohorts/{number:04d}/route.json", f"cohorts/{number:04d}/review.json"}
     contacts = execution_root / "contacts"
     if contacts.exists():
@@ -422,6 +454,23 @@ def _cohort_state(public_inputs_raw: bytes, plan_raw: bytes, execution_root: Pat
                                  expected_route_sha256=initialization["route_sha256"],
                                  expected_execution_source_sha256=initialization["execution_source_sha256"],
                                  expected_reviewer_task=REVIEWER_TASK, allowed_pending_paths=frozenset(files))
+    prepared_candidate = _json(_relative(execution_root, f"cohorts/{number:04d}/prepared.json", directory=False).read_bytes(),
+                               "Prepared cohort")
+    epoch = _epoch(initialization, prior, prepared_candidate.get("operational_renewal_sha256"))
+    _require(_route_hash(route) == epoch["route_sha256"]
+             and (epoch["route"] is None or _canonical(route) == _canonical(epoch["route"])),
+             "Cohort route binding differs")
+    prepared, _prepared_raw = _prepared(execution_root, number, expected_prepared_sha256, initialization, ordinals,
+                                         expected_previous_settlement_sha256, route, epoch)
+    review_raw = _relative(execution_root, f"cohorts/{number:04d}/review.json", directory=False).read_bytes()
+    _require(_hash(review_raw) == expected_review_sha256, "Review anchor differs")
+    review = _json(review_raw, "Review")
+    _require(set(review) == {"schema_version", "reviewer_task", "decision", "prepared_sha256", "reviewed_at", "expires_at"}
+             and review.get("schema_version") == 1 and review.get("reviewer_task") == REVIEWER_TASK
+             and review.get("decision") == "approved_cohort" and review.get("prepared_sha256") == expected_prepared_sha256,
+             "Cohort review differs")
+    review_start, review_end = _time(review.get("reviewed_at"), "Review time"), _time(review.get("expires_at"), "Review expiry")
+    _require(review_start < review_end <= review_start + timedelta(minutes=15), "Review window differs")
     if expected_previous_settlement_sha256 != "0" * 64:
         previous_raw = _relative(execution_root, f"cohorts/{number - 1:04d}/settlement.json", directory=False).read_bytes()
         _require(_hash(previous_raw) == expected_previous_settlement_sha256, "Previous baseline settlement differs")
@@ -429,7 +478,7 @@ def _cohort_state(public_inputs_raw: bytes, plan_raw: bytes, execution_root: Pat
         _require(review_start >= _time(previous.get("settled_at"), "Previous settlement time"),
                  "Review precedes previous settlement")
     continuations = _continuations(execution_root, number, expected_prepared_sha256, expected_review_sha256,
-                                   initialization["route_sha256"], initialization["execution_source_sha256"])
+                                   epoch["route_sha256"], epoch["execution_source_sha256"])
     review["_window"] = (review_start, review_end)
     return prepared, route, review, continuations, prior
 
@@ -541,31 +590,52 @@ def _run_files(execution_root: Path) -> dict[str, str]:
 
 
 def _validate_latest_continuation_evidence(continuations: list[dict[str, Any]], completed: list[int],
-                                           contacts: list[dict[str, Any]], files: Mapping[str, str]) -> None:
+                                           contacts: list[dict[str, Any]], files: Mapping[str, str],
+                                           aggregates: Mapping[str, bytes],
+                                           prefix_aggregates: Mapping[str, bytes]) -> None:
     if not continuations:
         return
     prefix = continuations[-1]["value"]["completed_prefix"]
     prefix_ordinals = prefix["ordinals"]
     prefix_length = len(prefix_ordinals)
     _require(prefix_ordinals == completed[:prefix_length] and prefix["contacts"] == contacts[:prefix_length]
-             and prefix["run_tree_sha256"] == _hash(_canonical(prefix["run_files"]))
-             and all(files.get(path) == value for path, value in prefix["run_files"].items()),
+             and prefix["run_tree_sha256"] == _hash(_canonical(prefix["run_files"])),
              "Continuation completed evidence differs")
+    _require(set(prefix["run_files"]).issubset(files), "Continuation completed evidence differs")
+    for path, previous_hash in prefix["run_files"].items():
+        if files.get(path) == previous_hash:
+            continue
+        old, current = prefix_aggregates.get(path), aggregates.get(path)
+        _require(old is not None and current is not None and _hash(old) == previous_hash and current.startswith(old)
+                 and files.get(path) == _hash(current), "Continuation completed evidence differs")
     if prefix_length == len(completed):
         _require(prefix["run_files"] == files, "Continuation completed evidence differs")
 
 
+def _normalized_verdicts(run_root: Path, source_raw: bytes, runtime: Any, admitted: Mapping[str, Any]) -> list[dict[str, Any]]:
+    verdicts, count, head = runtime.runner._load_checkpoints(
+        run_root, artifact_text=source_raw.decode("utf-8"), context_texts=[], batch_attempts=1)
+    projected = [{"question_id": verdict["question_id"], "verdict": verdict["verdict"]} for verdict in verdicts]
+    _require(projected == admitted["verdicts"] and count == len(admitted["native_identities"])
+             and head == admitted["checkpoint_head_sha256"]
+             and ("accepted_count" not in admitted or admitted["accepted_count"] == len(verdicts)),
+             "Native normalized verdict binding differs")
+    return verdicts
+
+
 def _replay_completed_prefix(execution_root: Path, plan_root: Path, ordinals: list[int],
                              passes: Mapping[str, Mapping[str, Any]], requests: Mapping[int, Mapping[str, Any]],
+                             all_requests: Mapping[int, Mapping[str, Any]],
                              runtime: Any, native: ModuleType, admission: ModuleType,
                              captured: Mapping[Path, bytes], prior: Mapping[str, Any], route: Mapping[str, Any],
-                             route_sha256: str) -> tuple[list[dict[str, Any]], dict[str, str]]:
+                             route_sha256: str) -> tuple[list[dict[str, Any]], dict[str, str], dict[str, bytes]]:
     trusted_requests, trusted_sessions = _trusted_identities(admission, captured)
     seen_requests, seen_sessions = set(trusted_requests), set(trusted_sessions)
     for contact in prior["contacts"].values():
         seen_requests.add(contact["request_id_hash"])
         seen_sessions.add(contact["session_id_hash"])
     replayed: dict[str, Any] = {}
+    aggregates: dict[str, bytes] = {}
     contacts: list[dict[str, Any]] = []
     for ordinal in ordinals:
         request, record = requests[ordinal], passes[requests[ordinal]["pass_id"]]
@@ -573,13 +643,26 @@ def _replay_completed_prefix(execution_root: Path, plan_root: Path, ordinals: li
         if admitted is None:
             endpoint = max(item for item in ordinals if requests[item]["pass_id"] == record["pass_id"])
             source_path, source_raw = _source(record, plan_root)
+            response_root = _relative(execution_root, record["run_path"], directory=True) / "responses"
+            actual_batches = len(list(response_root.glob("batch-*.json")))
+            _require(actual_batches >= requests[endpoint]["batch_number"], "Native checkpoint prefix differs")
             admitted = native.admit_prefix(
                 _relative(execution_root, record["run_path"], directory=True),
                 source={"opaque_story_id": record["logical_sample_id"], "story_text": source_raw.decode("utf-8"),
                         "artifact_path": str(source_path), "source_opaque_story_id": record["opaque_story_id"]},
-                batch_size=8, expected_batches=requests[endpoint]["batch_number"],
+                batch_size=8, expected_batches=actual_batches,
                 approved_routes={**prior["routes"], route_sha256: route}, runtime=runtime)
             replayed[record["pass_id"]] = admitted
+            aggregate_path = f"{record['run_path']}/verdicts.jsonl"
+            normalized = _normalized_verdicts(
+                _relative(execution_root, record["run_path"], directory=True), source_raw, runtime, admitted)
+            complete = runtime.runner._verdicts_bytes(normalized)
+            _require(_relative(execution_root, aggregate_path, directory=False).read_bytes() == complete,
+                     "Native verdict aggregate differs")
+            prefix_size = sum(len(item["question_ids"]) for item in all_requests.values()
+                              if item["pass_id"] == record["pass_id"]
+                              and item["batch_number"] <= requests[endpoint]["batch_number"])
+            aggregates[aggregate_path] = runtime.runner._verdicts_bytes(normalized[:prefix_size])
         identity = admitted["native_identities"][request["batch_number"] - 1]
         _require(identity["request_id_hash"] not in seen_requests and identity["session_id_hash"] not in seen_sessions,
                  "Native identity collides with trusted or settled evidence")
@@ -589,17 +672,70 @@ def _replay_completed_prefix(execution_root: Path, plan_root: Path, ordinals: li
         checkpoint = _relative(execution_root / record["run_path"], f"responses/batch-{request['batch_number']:04d}.json", directory=False).read_bytes()
         contacts.append({"ordinal": ordinal, "contact_sha256": _hash(contact_raw), "checkpoint_sha256": _hash(checkpoint),
                          "request_id_hash": identity["request_id_hash"], "session_id_hash": identity["session_id_hash"]})
-    return contacts, _run_files(execution_root)
+    return contacts, _run_files(execution_root), aggregates
+
+
+def _reconstruct_aggregate_prefixes(execution_root: Path, plan_root: Path, ordinals: list[int],
+                                    passes: Mapping[str, Mapping[str, Any]], requests: Mapping[int, Mapping[str, Any]],
+                                    runtime: Any, native: ModuleType, routes: Mapping[str, Mapping[str, Any]]) -> dict[str, bytes]:
+    result: dict[str, bytes] = {}
+    selected = {ordinal: requests[ordinal] for ordinal in ordinals}
+    for pass_id in dict.fromkeys(request["pass_id"] for request in selected.values()):
+        record = passes[pass_id]
+        endpoint = max(request["batch_number"] for request in selected.values() if request["pass_id"] == pass_id)
+        source_path, source_raw = _source(record, plan_root)
+        response_root = _relative(execution_root, record["run_path"], directory=True) / "responses"
+        actual_batches = len(list(response_root.glob("batch-*.json")))
+        _require(actual_batches >= endpoint, "Native checkpoint prefix differs")
+        admitted = native.admit_prefix(
+            _relative(execution_root, record["run_path"], directory=True),
+            source={"opaque_story_id": record["logical_sample_id"], "story_text": source_raw.decode("utf-8"),
+                    "artifact_path": str(source_path), "source_opaque_story_id": record["opaque_story_id"]},
+            batch_size=8, expected_batches=actual_batches, approved_routes=routes, runtime=runtime)
+        aggregate_path = f"{record['run_path']}/verdicts.jsonl"
+        normalized = _normalized_verdicts(
+            _relative(execution_root, record["run_path"], directory=True), source_raw, runtime, admitted)
+        complete = runtime.runner._verdicts_bytes(normalized)
+        _require(_relative(execution_root, aggregate_path, directory=False).read_bytes() == complete,
+                 "Native verdict aggregate differs")
+        prefix_size = sum(len(request["question_ids"]) for request in requests.values()
+                          if request["pass_id"] == pass_id and request["batch_number"] <= endpoint)
+        result[aggregate_path] = runtime.runner._verdicts_bytes(normalized[:prefix_size])
+    return result
+
+
+def _verify_new_renewal_boundary(execution_root: Path, plan_root: Path, prior: Mapping[str, Any],
+                                 renewal: Mapping[str, Any], passes: Mapping[str, Mapping[str, Any]],
+                                 requests: Mapping[int, Mapping[str, Any]], runtime: Any, native: ModuleType) -> None:
+    files, _ = _execution_snapshot(execution_root)
+    record_path = f"cohorts/{renewal['cohort_number']:04d}/operational-renewals/0001.json"
+    _require(record_path in files, "Operational renewal record is missing")
+    files.pop(record_path)
+    manifest = renewal["manifest"]
+    immutable, aggregates = manifest["immutable_files"], manifest["derived_aggregate_prefixes"]
+    _require(set(files) == set(immutable) | set(aggregates) and set(immutable).isdisjoint(aggregates)
+             and all(files[path] == sha256 for path, sha256 in immutable.items()),
+             "Operational renewal immutable prefix differs")
+    reconstructed = _reconstruct_aggregate_prefixes(
+        execution_root, plan_root, sorted(prior["contacts"]), passes, requests, runtime, native, prior["routes"])
+    _require(set(aggregates) == set(reconstructed), "Operational renewal aggregate prefix differs")
+    for path, value in aggregates.items():
+        aggregate = reconstructed[path]
+        _require(files[path] == _hash(aggregate) == value["sha256"] and len(aggregate) == value["bytes"]
+                 and aggregate.count(b"\n") == value["verdict_count"], "Operational renewal aggregate prefix differs")
 
 
 def _prepare_continuation_unlocked(public_inputs_path: Path, plan_root: Path, execution_root: Path, cohort_number: int, *,
                          expected_plan_sha256: str, expected_initialization_sha256: str,
                          expected_previous_settlement_sha256: str, expected_prepared_sha256: str,
-                         expected_review_sha256: str, expected_source_sha256: str) -> dict[str, Any]:
+                         expected_review_sha256: str, expected_source_sha256: str,
+                         expected_operational_renewal_sha256: str | None = None) -> dict[str, Any]:
     """Build a provider-free candidate for an independent continuation review."""
     _require(expected_plan_sha256 == PLAN_SHA256 and all(_HASH.fullmatch(value) is not None for value in
              (expected_initialization_sha256, expected_previous_settlement_sha256, expected_prepared_sha256,
               expected_review_sha256, expected_source_sha256)), "Continuation anchors differ")
+    _require(expected_operational_renewal_sha256 is None or _HASH.fullmatch(expected_operational_renewal_sha256) is not None,
+             "Continuation operational renewal anchor differs")
     captured, (_, ledger, runtime_loader, native, admission) = _sources()
     own = _plain(Path(__file__), directory=False)
     _require(_hash(captured[own]) == expected_source_sha256, "Reviewed execution source differs")
@@ -607,15 +743,23 @@ def _prepare_continuation_unlocked(public_inputs_path: Path, plan_root: Path, ex
     plan_root = _plain(plan_root, directory=True)
     execution_root = _plain(execution_root, directory=True)
     initialization, initialization_raw = _initialization(execution_root, expected_initialization_sha256)
-    _require(initialization["execution_source_sha256"] == expected_source_sha256
-             and _hash(public_inputs_path.read_bytes()) == initialization["public_inputs_sha256"],
+    _require(_hash(public_inputs_path.read_bytes()) == initialization["public_inputs_sha256"],
              "Initialization continuation binding differs")
     plan, plan_raw = _plan(plan_root, expected_plan_sha256)
+    all_requests = {row["ordinal"]: row for row in plan["requests"]
+                    if isinstance(row, Mapping) and type(row.get("ordinal")) is int}
+    _require(set(all_requests) == set(range(1, len(plan["requests"]) + 1)), "Full baseline request inventory differs")
+    all_passes = {row["pass_id"]: row for row in plan["passes"]
+                  if isinstance(row, Mapping) and isinstance(row.get("pass_id"), str)}
+    _require(len(all_passes) == len(plan["passes"]), "Full baseline pass inventory differs")
     ordinals = _groups(ledger, plan, cohort_number)
-    _prepared, route, _review, continuations, prior = _cohort_state(
+    prepared, route, _review, continuations, prior = _cohort_state(
         public_inputs_path.read_bytes(), plan_raw, execution_root, initialization, ledger, cohort_number, ordinals,
         expected_previous_settlement_sha256, expected_prepared_sha256, expected_review_sha256,
     )
+    _require(prepared["execution_source_sha256"] == expected_source_sha256
+             and prepared.get("operational_renewal_sha256") == expected_operational_renewal_sha256,
+             "Prepared operational epoch differs")
     completed = _contact_prefix(execution_root, ordinals)
     _validate_approval_chronology(execution_root, ordinals, expected_review_sha256, _review, continuations)
     _require(len(completed) < len(ordinals), "Continuation requires an incomplete cohort")
@@ -624,12 +768,18 @@ def _prepare_continuation_unlocked(public_inputs_path: Path, plan_root: Path, ex
     runtime.verify()
     passes, requests = _rows(plan, plan_root, ordinals)
     _frozen_payloads(plan_root, requests, passes, ordinals)
-    contacts, files = _replay_completed_prefix(execution_root, plan_root, completed, passes, requests, runtime, native,
-                                                admission, captured, prior, route, initialization["route_sha256"])
-    _validate_latest_continuation_evidence(continuations, completed, contacts, files)
+    contacts, files, aggregates = _replay_completed_prefix(execution_root, plan_root, completed, passes, requests, all_requests, runtime, native,
+                                                            admission, captured, prior, route, prepared["route_sha256"])
+    prefix_aggregates: dict[str, bytes] = {}
+    if continuations:
+        prefix_ordinals = sorted({*prior["contacts"], *continuations[-1]["value"]["completed_prefix"]["ordinals"]})
+        prefix_aggregates = _reconstruct_aggregate_prefixes(
+            execution_root, plan_root, prefix_ordinals, all_passes, all_requests, runtime, native,
+            {**prior["routes"], prepared["route_sha256"]: route})
+    _validate_latest_continuation_evidence(continuations, completed, contacts, files, aggregates, prefix_aggregates)
     prior_authorization = continuations[-1]["sha256"] if continuations else expected_review_sha256
     candidate = {"schema_version": 2, "reviewer_task": REVIEWER_TASK, "decision": "approved_continuation",
-                 "prepared_sha256": expected_prepared_sha256, "route_sha256": initialization["route_sha256"],
+                 "prepared_sha256": expected_prepared_sha256, "route_sha256": prepared["route_sha256"],
                  "prior_authorization_sha256": prior_authorization,
                  "previous_execution_source_sha256": expected_source_sha256,
                  "execution_source_sha256": expected_source_sha256,
@@ -645,7 +795,8 @@ def _prepare_continuation_unlocked(public_inputs_path: Path, plan_root: Path, ex
 def prepare_continuation(public_inputs_path: Path, plan_root: Path, execution_root: Path, cohort_number: int, *,
                          expected_plan_sha256: str, expected_initialization_sha256: str,
                          expected_previous_settlement_sha256: str, expected_prepared_sha256: str,
-                         expected_review_sha256: str, expected_source_sha256: str) -> dict[str, Any]:
+                         expected_review_sha256: str, expected_source_sha256: str,
+                         expected_operational_renewal_sha256: str | None = None) -> dict[str, Any]:
     root = _plain(execution_root, directory=True)
     lock, token = _lock(root)
     before = _execution_snapshot(root)
@@ -655,7 +806,8 @@ def prepare_continuation(public_inputs_path: Path, plan_root: Path, execution_ro
             expected_initialization_sha256=expected_initialization_sha256,
             expected_previous_settlement_sha256=expected_previous_settlement_sha256,
             expected_prepared_sha256=expected_prepared_sha256, expected_review_sha256=expected_review_sha256,
-            expected_source_sha256=expected_source_sha256)
+            expected_source_sha256=expected_source_sha256,
+            expected_operational_renewal_sha256=expected_operational_renewal_sha256)
         _require(_execution_snapshot(root) == before, "Execution evidence changed during continuation preparation")
         _require(lock.is_file() and lock.read_bytes() == token, "Continuation lock ownership changed")
         return result
@@ -674,15 +826,18 @@ def _settle_completed_cohort(execution_root: Path, plan_root: Path, public_input
                              cohort_number: int, ordinals: tuple[int, ...], initialization: Mapping[str, Any],
                              expected_plan_sha256: str, expected_previous_settlement_sha256: str,
                              expected_prepared_sha256: str, expected_review_sha256: str,
-                             expected_source_sha256: str, route: Mapping[str, Any], review: Mapping[str, Any],
+                             expected_source_sha256: str, route: Mapping[str, Any], route_sha256: str, review: Mapping[str, Any],
                              continuations: list[dict[str, Any]], prior: Mapping[str, Any], passes: Mapping[str, Mapping[str, Any]],
                              requests: Mapping[int, Mapping[str, Any]], runtime: Any, native: ModuleType,
                              admission: ModuleType, captured: Mapping[Path, bytes], ledger: ModuleType,
                              provider_calls: int, lock_owned: Any) -> dict[str, Any]:
     """Replay a fully contacted cohort and settle it without another provider contact."""
     lock_owned()
-    contacts, _ = _replay_completed_prefix(execution_root, plan_root, list(ordinals), passes, requests, runtime, native,
-                                            admission, captured, prior, route, initialization["route_sha256"])
+    all_requests = {row["ordinal"]: row for row in _json(plan_raw, "Baseline plan")["requests"]
+                    if isinstance(row, Mapping) and type(row.get("ordinal")) is int}
+    _require(set(all_requests) == set(range(1, len(all_requests) + 1)), "Full baseline request inventory differs")
+    contacts, _, _ = _replay_completed_prefix(execution_root, plan_root, list(ordinals), passes, requests, all_requests, runtime, native,
+                                               admission, captured, prior, route, route_sha256)
     authorizations = [{"authorization_sha256": expected_review_sha256, "execution_source_sha256": expected_source_sha256, "ordinals": []},
                        *[{"authorization_sha256": item["sha256"], "execution_source_sha256": expected_source_sha256, "ordinals": []}
                          for item in continuations]]
@@ -694,7 +849,7 @@ def _settle_completed_cohort(execution_root: Path, plan_root: Path, public_input
         by_authorization[authorization]["ordinals"].append(summary["ordinal"])
     settlement = {"schema_version": 3, "cohort_number": cohort_number, "plan_sha256": expected_plan_sha256,
                    "prepared_sha256": expected_prepared_sha256, "review_sha256": expected_review_sha256,
-                   "route_sha256": initialization["route_sha256"],
+                   "route_sha256": route_sha256,
                    "previous_settlement_sha256": expected_previous_settlement_sha256,
                    "settled_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
                    "contacts": contacts, "authorization_chain": authorizations}
@@ -703,7 +858,7 @@ def _settle_completed_cohort(execution_root: Path, plan_root: Path, public_input
     ledger.validate_candidate_cohort(
         public_inputs_raw, plan_raw, expected_plan_sha256, cohort_number=cohort_number, ordinals=ordinals,
         prepared_sha256=expected_prepared_sha256, review_sha256=expected_review_sha256,
-        route_sha256=initialization["route_sha256"], previous_settlement_sha256=expected_previous_settlement_sha256,
+        route_sha256=route_sha256, previous_settlement_sha256=expected_previous_settlement_sha256,
         review_start=review["_window"][0], review_end=review["_window"][1], continuations=continuations,
         settlement=settlement, contact_records=contact_records,
         expected_execution_source_sha256=expected_source_sha256,
@@ -713,7 +868,7 @@ def _settle_completed_cohort(execution_root: Path, plan_root: Path, public_input
     settlement_sha256 = _hash((execution_root / "cohorts" / f"{cohort_number:04d}" / "settlement.json").read_bytes())
     ledger.verify_prefix(execution_root, public_inputs_raw, plan_raw, expected_plan_sha256, settlement_sha256, cohort_number,
                          expected_route_sha256=initialization["route_sha256"],
-                         expected_execution_source_sha256=expected_source_sha256, expected_reviewer_task=REVIEWER_TASK)
+                         expected_execution_source_sha256=initialization["execution_source_sha256"], expected_reviewer_task=REVIEWER_TASK)
     runtime.verify()
     _unchanged(captured)
     lock_owned()
@@ -725,12 +880,14 @@ def run_cohort(public_inputs_path: Path, plan_root: Path, execution_root: Path, 
                broker_factory: Any | None = None, *, expected_plan_sha256: str, expected_initialization_sha256: str,
                expected_previous_settlement_sha256: str, expected_prepared_sha256: str,
                expected_review_sha256: str, expected_source_sha256: str,
-               expected_continuation_sha256: str | None = None) -> dict[str, Any]:
+               expected_continuation_sha256: str | None = None,
+               expected_operational_renewal_sha256: str | None = None) -> dict[str, Any]:
     """Contact Grok only under an externally reviewed, still-live cohort authorization."""
     anchors = (expected_initialization_sha256, expected_previous_settlement_sha256, expected_prepared_sha256,
                expected_review_sha256, expected_source_sha256)
     _require(expected_plan_sha256 == PLAN_SHA256 and all(_HASH.fullmatch(value) is not None for value in anchors)
-             and (expected_continuation_sha256 is None or _HASH.fullmatch(expected_continuation_sha256) is not None),
+             and (expected_continuation_sha256 is None or _HASH.fullmatch(expected_continuation_sha256) is not None)
+             and (expected_operational_renewal_sha256 is None or _HASH.fullmatch(expected_operational_renewal_sha256) is not None),
              "Execution anchors differ")
     captured, (_, ledger, runtime_loader, native, admission) = _sources()
     own = _plain(Path(__file__), directory=False)
@@ -748,8 +905,7 @@ def run_cohort(public_inputs_path: Path, plan_root: Path, execution_root: Path, 
             _require(lock.is_file() and lock.read_bytes() == token, "Execution lock ownership changed")
 
         initialization, initialization_raw = _initialization(execution_root, expected_initialization_sha256)
-        _require(initialization["execution_source_sha256"] == expected_source_sha256
-                 and _hash(public_inputs_path.read_bytes()) == initialization["public_inputs_sha256"],
+        _require(_hash(public_inputs_path.read_bytes()) == initialization["public_inputs_sha256"],
                  "Initialization execution binding differs")
         plan, plan_raw = _plan(plan_root, expected_plan_sha256)
         ordinals = _groups(ledger, plan, cohort_number)
@@ -757,6 +913,9 @@ def run_cohort(public_inputs_path: Path, plan_root: Path, execution_root: Path, 
             public_inputs_path.read_bytes(), plan_raw, execution_root, initialization, ledger, cohort_number, ordinals,
             expected_previous_settlement_sha256, expected_prepared_sha256, expected_review_sha256,
         )
+        _require(_prepared["execution_source_sha256"] == expected_source_sha256
+                 and _prepared.get("operational_renewal_sha256") == expected_operational_renewal_sha256,
+                 "Prepared operational epoch differs")
         completed = _contact_prefix(execution_root, ordinals)
         _validate_approval_chronology(execution_root, ordinals, expected_review_sha256, review, continuations)
         if completed and len(completed) < len(ordinals) and expected_continuation_sha256 is None:
@@ -799,19 +958,29 @@ def run_cohort(public_inputs_path: Path, plan_root: Path, execution_root: Path, 
         all_requests = {row["ordinal"]: row for row in plan["requests"]
                         if isinstance(row, Mapping) and type(row.get("ordinal")) is int}
         _require(set(all_requests) == set(range(1, 5429)), "Full baseline request inventory differs")
+        all_passes = {row["pass_id"]: row for row in plan["passes"]
+                      if isinstance(row, Mapping) and isinstance(row.get("pass_id"), str)}
+        _require(len(all_passes) == len(plan["passes"]), "Full baseline pass inventory differs")
         payloads = _frozen_payloads(plan_root, requests, passes, ordinals)
-        replayed_contacts, replayed_files = _replay_completed_prefix(
-            execution_root, plan_root, completed, passes, requests, runtime, native, admission, captured, prior,
-            route, initialization["route_sha256"])
+        replayed_contacts, replayed_files, replayed_aggregates = _replay_completed_prefix(
+            execution_root, plan_root, completed, passes, requests, all_requests, runtime, native, admission, captured, prior,
+            route, _prepared["route_sha256"])
         _validate_approval_chronology(execution_root, ordinals, expected_review_sha256, review, continuations,
                                       replayed_contacts=replayed_contacts)
         if len(completed) == len(ordinals):
             return _settle_completed_cohort(
                 execution_root, plan_root, public_inputs_path.read_bytes(), plan_raw, cohort_number, ordinals, initialization,
                 expected_plan_sha256, expected_previous_settlement_sha256, expected_prepared_sha256, expected_review_sha256,
-                expected_source_sha256, route, review, continuations, prior, passes, requests, runtime, native, admission,
+                expected_source_sha256, route, _prepared["route_sha256"], review, continuations, prior, passes, requests, runtime, native, admission,
                 captured, ledger, 0, lock_owned)
-        _validate_latest_continuation_evidence(continuations, completed, replayed_contacts, replayed_files)
+        prefix_aggregates: dict[str, bytes] = {}
+        if continuations:
+            prefix_ordinals = sorted({*prior["contacts"], *continuations[-1]["value"]["completed_prefix"]["ordinals"]})
+            prefix_aggregates = _reconstruct_aggregate_prefixes(
+                execution_root, plan_root, prefix_ordinals, all_passes, all_requests, runtime, native,
+                {**prior["routes"], _prepared["route_sha256"]: route})
+        _validate_latest_continuation_evidence(continuations, completed, replayed_contacts, replayed_files,
+                                               replayed_aggregates, prefix_aggregates)
         factory = broker_factory or (lambda root, cls: cls(root))
         _require(callable(factory), "Broker factory differs")
         broker = factory(queue_root, runtime.broker.Broker)
@@ -844,7 +1013,7 @@ def run_cohort(public_inputs_path: Path, plan_root: Path, execution_root: Path, 
             _require(ledger.verify_prefix(execution_root, public_inputs_path.read_bytes(), plan_raw, expected_plan_sha256,
                                           expected_previous_settlement_sha256, cohort_number - 1,
                                           expected_route_sha256=initialization["route_sha256"],
-                                          expected_execution_source_sha256=expected_source_sha256,
+                                          expected_execution_source_sha256=initialization["execution_source_sha256"],
                                           expected_reviewer_task=REVIEWER_TASK, allowed_pending_paths=pending_paths()) == prior,
                      "Settled ledger prefix changed")
             runtime.verify()
@@ -887,7 +1056,7 @@ def run_cohort(public_inputs_path: Path, plan_root: Path, execution_root: Path, 
             if inner:
                 contact = {"schema_version": 1, "cohort_number": cohort_number, "ordinal": request["ordinal"],
                            "plan_sha256": expected_plan_sha256, "prepared_sha256": expected_prepared_sha256,
-                           "review_sha256": authorization_sha256, "route_sha256": initialization["route_sha256"],
+                           "review_sha256": authorization_sha256, "route_sha256": _prepared["route_sha256"],
                            "prompt_sha256": request["prompt_sha256"], "schema_sha256": request["schema_sha256"],
                            "admitted_at": now.isoformat().replace("+00:00", "Z")}
                 _write_new(execution_root / "contacts" / f"request-{request['ordinal']:04d}.json", _canonical(contact))
@@ -929,7 +1098,7 @@ def run_cohort(public_inputs_path: Path, plan_root: Path, execution_root: Path, 
         return _settle_completed_cohort(
             execution_root, plan_root, public_inputs_path.read_bytes(), plan_raw, cohort_number, ordinals, initialization,
             expected_plan_sha256, expected_previous_settlement_sha256, expected_prepared_sha256, expected_review_sha256,
-            expected_source_sha256, route, review, continuations, prior, passes, requests, runtime, native, admission,
+            expected_source_sha256, route, _prepared["route_sha256"], review, continuations, prior, passes, requests, runtime, native, admission,
             captured, ledger, len(current), lock_owned)
     finally:
         if lock.is_file() and lock.read_bytes() == token:
@@ -947,7 +1116,6 @@ def finalize(public_inputs_path: Path, plan_root: Path, execution_root: Path, ru
              "Final admission anchors differ")
     captured, (planner, ledger, _, _, admission) = _sources()
     own = _plain(Path(__file__), directory=False)
-    _require(_hash(captured[own]) == expected_execution_source_sha256, "Final reviewed execution source differs")
     public_inputs_path = _plain(public_inputs_path, directory=False)
     plan_root = _plain(plan_root, directory=True)
     execution_root = _plain(execution_root, directory=True)
@@ -964,10 +1132,13 @@ def finalize(public_inputs_path: Path, plan_root: Path, execution_root: Path, ru
              and _hash(_canonical(verified)) == initialization["plan_inventory_sha256"],
              "Final full plan inventory differs")
     _plan_value, plan_raw = _plan(plan_root, expected_plan_sha256)
-    ledger.verify_ledger(execution_root, public_inputs_path.read_bytes(), plan_raw, expected_plan_sha256,
-                         expected_final_settlement_sha256, expected_route_sha256=initialization["route_sha256"],
-                         expected_execution_source_sha256=expected_execution_source_sha256,
-                         expected_reviewer_task=REVIEWER_TASK)
+    ledger_result = ledger.verify_ledger(execution_root, public_inputs_path.read_bytes(), plan_raw, expected_plan_sha256,
+                                         expected_final_settlement_sha256, expected_route_sha256=initialization["route_sha256"],
+                                         expected_execution_source_sha256=expected_execution_source_sha256,
+                                         expected_reviewer_task=REVIEWER_TASK)
+    final_source = ledger_result.get("epochs", {}).get(543, {}).get("execution_source_sha256", expected_execution_source_sha256) if isinstance(ledger_result, Mapping) else None
+    _require(_hash(captured[own]) == final_source,
+             "Final reviewed execution source differs")
     result = admission.admit_baseline(
         public_inputs_path, plan_root, execution_root, runtime_manifest_path,
         expected_plan_sha256=expected_plan_sha256,
@@ -1012,13 +1183,17 @@ def main() -> int:
             command.add_argument("--previous-settlement-sha256", required=True)
             if name == "prepare":
                 command.add_argument("--route-json", type=Path, required=True)
+                command.add_argument("--operational-renewal-sha256")
             else:
                 command.add_argument("--prepared-sha256", required=True)
                 command.add_argument("--review-sha256", required=True)
                 command.add_argument("--source-sha256", required=True)
+                if name == "prepare-continuation":
+                    command.add_argument("--operational-renewal-sha256")
                 if name == "run":
                     command.add_argument("--queue-root", type=Path, required=True)
                     command.add_argument("--continuation-sha256")
+                    command.add_argument("--operational-renewal-sha256")
     args = parser.parse_args()
     if args.action == "initialize":
         result = initialize(args.public_inputs, args.plan_root, args.execution_root, args.runtime_manifest, args.route_json,
@@ -1030,21 +1205,24 @@ def main() -> int:
                                 _json(_plain(args.route_json, directory=False).read_bytes(), "Route"),
                                 expected_plan_sha256=args.plan_sha256,
                                 expected_initialization_sha256=args.initialization_sha256,
-                                expected_previous_settlement_sha256=args.previous_settlement_sha256)
+                                expected_previous_settlement_sha256=args.previous_settlement_sha256,
+                                expected_operational_renewal_sha256=args.operational_renewal_sha256)
     elif args.action == "prepare-continuation":
         result = prepare_continuation(args.public_inputs, args.plan_root, args.execution_root, args.cohort,
                                       expected_plan_sha256=args.plan_sha256,
                                       expected_initialization_sha256=args.initialization_sha256,
                                       expected_previous_settlement_sha256=args.previous_settlement_sha256,
                                       expected_prepared_sha256=args.prepared_sha256, expected_review_sha256=args.review_sha256,
-                                      expected_source_sha256=args.source_sha256)
+                                      expected_source_sha256=args.source_sha256,
+                                      expected_operational_renewal_sha256=args.operational_renewal_sha256)
     elif args.action == "run":
         result = run_cohort(args.public_inputs, args.plan_root, args.execution_root, args.cohort, args.queue_root,
                             expected_plan_sha256=args.plan_sha256, expected_initialization_sha256=args.initialization_sha256,
                             expected_previous_settlement_sha256=args.previous_settlement_sha256,
                             expected_prepared_sha256=args.prepared_sha256, expected_review_sha256=args.review_sha256,
                             expected_source_sha256=args.source_sha256,
-                            expected_continuation_sha256=args.continuation_sha256)
+                            expected_continuation_sha256=args.continuation_sha256,
+                            expected_operational_renewal_sha256=args.operational_renewal_sha256)
     else:
         result = finalize(args.public_inputs, args.plan_root, args.execution_root, args.runtime_manifest,
                           expected_plan_sha256=args.plan_sha256, expected_initialization_sha256=args.initialization_sha256,

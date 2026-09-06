@@ -156,6 +156,16 @@ def case(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> SimpleNamespace:
             self.runtime_check = runtime_check
 
     class FakeRunner:
+        @staticmethod
+        def _verdicts_bytes(verdicts: list[dict[str, str]]) -> bytes:
+            return "".join(json.dumps(item, ensure_ascii=False, sort_keys=True) + "\n" for item in verdicts).encode("utf-8")
+
+        @staticmethod
+        def _load_checkpoints(run_root: Path, **_: Any) -> tuple[list[dict[str, Any]], int, str]:
+            verdicts = [json.loads(line) for line in (run_root / "verdicts.jsonl").read_text().splitlines()]
+            checkpoints = sorted((run_root / "responses").glob("batch-*.json"))
+            return verdicts, len(checkpoints), _hash(checkpoints[-1].read_bytes())
+
         def run_judge(self, **kwargs: Any) -> None:
             output = Path(kwargs["output_dir"])
             transport = kwargs["grok_transport"]
@@ -182,6 +192,11 @@ def case(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> SimpleNamespace:
                 response = output / "responses" / f"batch-{request['batch_number']:04d}.json"
                 response.parent.mkdir(parents=True, exist_ok=True)
                 response.write_bytes(_canonical({"ordinal": request["ordinal"], "synthetic": True}))
+                verdicts = [
+                    {"question_id": question, "verdict": "YES", "normalization": "synthetic-v1"}
+                    for question in questions[:min(178, request["batch_number"] * 8)]
+                ]
+                (output / "verdicts.jsonl").write_bytes(self._verdicts_bytes(verdicts))
                 if state["pause_after"] == len(state["stub_contacts"]):
                     state["pause_after"] = None
                     if state["advance_clock_on_pause"] is not None:
@@ -206,9 +221,10 @@ def case(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> SimpleNamespace:
         prior = state["ledger_prior"]
         return {**prior, "changed": True} if state["prefix_drift"] else prior
 
-    def verify_ledger(*args: Any, **kwargs: Any) -> None:
+    def verify_ledger(*args: Any, **kwargs: Any) -> dict[str, Any]:
         del args, kwargs
         state["ledger_final_calls"] += 1
+        return {"epochs": {543: {"execution_source_sha256": _hash(captured[source_path])}}}
 
     def validate_candidate_cohort(*args: Any, **kwargs: Any) -> None:
         del args, kwargs
@@ -234,14 +250,21 @@ def case(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> SimpleNamespace:
         transport=SimpleNamespace(bind_grok_broker_transport=bind_transport),
         transport_sha256=_hash(b"synthetic transport"),
     )
+    state["runner"] = FakeRunner
 
     def native_admit(*args: Any, **kwargs: Any) -> dict[str, Any]:
-        del args, kwargs
+        run_root = Path(args[0])
         state["native_calls"] += 1
+        expected_batches = kwargs["expected_batches"]
+        normalized = [json.loads(line) for line in (run_root / "verdicts.jsonl").read_text().splitlines()]
+        checkpoint = run_root / "responses" / f"batch-{expected_batches:04d}.json"
         return {"native_identities": [
             {"request_id_hash": _hash(f"request-{number}".encode()), "session_id_hash": _hash(f"session-{number}".encode())}
-            for number in range(1, 24)
-        ]}
+            for number in range(1, expected_batches + 1)
+        ], "verdicts": [
+            {"question_id": verdict["question_id"], "verdict": verdict["verdict"]}
+            for verdict in normalized
+        ], "checkpoint_head_sha256": _hash(checkpoint.read_bytes()), "accepted_count": len(normalized)}
 
     def trusted_identities(_: bytes) -> tuple[frozenset[str], frozenset[str]]:
         return frozenset(_hash(f"trusted-request-{number}".encode()) for number in range(33)), frozenset(
@@ -341,9 +364,19 @@ def _initialize(case: SimpleNamespace) -> dict[str, str]:
     return result
 
 
-def _prepare(case: SimpleNamespace, cohort: int = 543, previous_settlement_sha256: str | None = None) -> dict[str, str]:
+def _prepare(
+    case: SimpleNamespace,
+    cohort: int = 543,
+    previous_settlement_sha256: str | None = None,
+    operational_renewal_sha256: str | None = None,
+) -> dict[str, str]:
     value = case.value
     case.cohort = cohort
+    if cohort == 543:
+        response_root = case.execution_root / "runs/pass-236/responses"
+        response_root.mkdir(parents=True, exist_ok=True)
+        for batch in range(1, 16):
+            (response_root / f"batch-{batch:04d}.json").write_bytes(_canonical({"synthetic": batch}))
     previous_settlement_sha256 = previous_settlement_sha256 or (
         "0" * 64 if cohort == 1 else case.previous_settlement_sha256
     )
@@ -356,6 +389,7 @@ def _prepare(case: SimpleNamespace, cohort: int = 543, previous_settlement_sha25
         expected_plan_sha256=value.PLAN_SHA256,
         expected_initialization_sha256=case.initialization["initialization_sha256"],
         expected_previous_settlement_sha256=previous_settlement_sha256,
+        expected_operational_renewal_sha256=operational_renewal_sha256,
     )
 
 
@@ -366,6 +400,67 @@ def _prepare_genesis_actual_ledger(case: SimpleNamespace) -> None:
     prior.parent.rmdir()
     case.state["runner_ordinals"] = list(range(1, 11))
     case.prepared = _prepare(case, 1)
+
+
+def _operational_boundary(case: SimpleNamespace) -> tuple[str, str, datetime]:
+    case.initialization = _initialize(case)
+    stale = case.execution_root / "cohorts/0542/settlement.json"
+    stale.unlink()
+    stale.parent.rmdir()
+    now = case.state["clock"]
+    prior_raw = _canonical({"settled_at": (now - timedelta(minutes=1)).isoformat().replace("+00:00", "Z")})
+    previous_settlement_sha256 = _hash(prior_raw)
+    previous = case.execution_root / "cohorts/0001/settlement.json"
+    previous.parent.mkdir(parents=True)
+    previous.write_bytes(prior_raw)
+    run_root = case.execution_root / "runs/pass-001"
+    response_root = run_root / "responses"
+    response_root.mkdir(parents=True)
+    for batch in range(1, 11):
+        (response_root / f"batch-{batch:04d}.json").write_bytes(_canonical({"synthetic": batch}))
+    prior_verdicts = [
+        {"question_id": question, "verdict": "YES", "normalization": "synthetic-v1"}
+        for question in case.plan["runtime"]["question_ids"][:80]
+    ]
+    aggregate = case.state["runner"]._verdicts_bytes(prior_verdicts)
+    (run_root / "verdicts.jsonl").write_bytes(aggregate)
+    route_sha256 = case.value._route_hash(case.route)
+    renewal_sha256 = _hash(b"synthetic operational renewal")
+    renewal_path = case.execution_root / "cohorts/0001/operational-renewals/0001.json"
+    renewal_path.parent.mkdir(parents=True)
+    renewal_path.write_bytes(b"{}")
+    files, _ = case.value._execution_snapshot(case.execution_root)
+    files.pop("cohorts/0001/operational-renewals/0001.json")
+    aggregate_path = "runs/pass-001/verdicts.jsonl"
+    renewal = {
+        "sha256": renewal_sha256,
+        "cohort_number": 1,
+        "value": {"new_route": dict(case.route), "new_route_sha256": route_sha256},
+        "new_source": {"files": {case.value.EXECUTION_SOURCE_RELATIVE: case.initialization_source_sha256}},
+        "manifest": {
+            "immutable_files": {path: value for path, value in files.items() if path != aggregate_path},
+            "derived_aggregate_prefixes": {
+                aggregate_path: {"sha256": _hash(aggregate), "bytes": len(aggregate),
+                                 "verdict_count": 80},
+            },
+        },
+    }
+    prior_contacts = {
+        ordinal: {
+            "request_id_hash": _hash(f"prior-request-{ordinal}".encode()),
+            "session_id_hash": _hash(f"prior-session-{ordinal}".encode()),
+        }
+        for ordinal in range(1, 11)
+    }
+    case.state["ledger_prior"] = {
+        "contacts": prior_contacts,
+        "routes": {route_sha256: dict(case.route)},
+        "renewals": [renewal],
+        "head": {"settlement_sha256": previous_settlement_sha256},
+    }
+    case.state["runner_ordinals"] = list(range(11, 21))
+    case.prepared = _prepare(case, 2, previous_settlement_sha256, renewal_sha256)
+    return previous_settlement_sha256, renewal_sha256, now
 
 
 def _review(case: SimpleNamespace, *, start: datetime, end: datetime) -> str:
@@ -388,6 +483,7 @@ def _run(
     review_sha256: str,
     continuation_sha256: str | None = None,
     previous_settlement_sha256: str | None = None,
+    operational_renewal_sha256: str | None = None,
 ) -> dict[str, Any]:
     value = case.value
     previous_settlement_sha256 = previous_settlement_sha256 or (
@@ -407,6 +503,7 @@ def _run(
         expected_review_sha256=review_sha256,
         expected_source_sha256=case.initialization_source_sha256,
         expected_continuation_sha256=continuation_sha256,
+        expected_operational_renewal_sha256=operational_renewal_sha256,
     )
 
 
@@ -430,7 +527,11 @@ def _write_continuation(
     return _hash(raw)
 
 
-def _continuation_candidate(case: SimpleNamespace, review_sha256: str) -> dict[str, Any]:
+def _continuation_candidate(
+    case: SimpleNamespace,
+    review_sha256: str,
+    operational_renewal_sha256: str | None = None,
+) -> dict[str, Any]:
     return case.value.prepare_continuation(
         case.public_inputs, case.plan_root, case.execution_root, case.cohort,
         expected_plan_sha256=case.value.PLAN_SHA256,
@@ -439,6 +540,7 @@ def _continuation_candidate(case: SimpleNamespace, review_sha256: str) -> dict[s
         expected_prepared_sha256=case.prepared["prepared_sha256"],
         expected_review_sha256=review_sha256,
         expected_source_sha256=case.initialization_source_sha256,
+        expected_operational_renewal_sha256=operational_renewal_sha256,
     )
 
 
@@ -703,6 +805,78 @@ def test_timeout_feasibility_pauses_before_contact(actual_ledger_case: SimpleNam
     }
     assert case.state["stub_contacts"] == []
     assert not (case.execution_root / "cohorts/0001/settlement.json").exists()
+
+
+def test_same_story_prior_cohort_aggregate_grows_from_native_checkpoint_replay(case: SimpleNamespace) -> None:
+    previous_settlement_sha256, renewal_sha256, now = _operational_boundary(case)
+    review_sha256 = _review(case, start=now, end=now + timedelta(minutes=1))
+    original = _continuation_candidate(case, review_sha256, renewal_sha256)
+    aggregate_path = "runs/pass-001/verdicts.jsonl"
+    original_aggregate_hash = original["completed_prefix"]["run_files"][aggregate_path]
+    assert original["completed_prefix"]["ordinals"] == []
+    renewal_time = now + timedelta(minutes=2)
+    continuation_sha256 = _write_continuation(case, original, reviewed_at=renewal_time,
+                                               expires_at=renewal_time + timedelta(minutes=10))
+    case.state["clock"] = renewal_time
+    case.state["pause_after"] = 1
+    paused = _run(case, review_sha256, continuation_sha256, previous_settlement_sha256, renewal_sha256)
+    assert paused["completed_ordinals"] == [11]
+    current = (case.execution_root / aggregate_path).read_bytes()
+    old = case.state["runner"]._verdicts_bytes([
+        {"question_id": question, "verdict": "YES", "normalization": "synthetic-v1"}
+        for question in case.plan["runtime"]["question_ids"][:80]
+    ])
+    assert current.startswith(old) and _hash(old) == original_aggregate_hash
+    successor = _continuation_candidate(case, review_sha256, renewal_sha256)
+    assert successor["completed_prefix"]["ordinals"] == [11]
+    assert successor["completed_prefix"]["run_files"][aggregate_path] == _hash(current)
+    assert original["completed_prefix"]["run_files"][aggregate_path] == original_aggregate_hash
+
+
+@pytest.mark.parametrize("corruption", ["metadata_strip", "checkpoint"])
+def test_operational_boundary_corruption_blocks_before_contact(case: SimpleNamespace, corruption: str) -> None:
+    previous_settlement_sha256, renewal_sha256, now = _operational_boundary(case)
+    review_sha256 = _review(case, start=now, end=now + timedelta(minutes=1))
+    renewal_time = now + timedelta(minutes=2)
+    continuation_sha256 = _write_continuation(
+        case, _continuation_candidate(case, review_sha256, renewal_sha256), reviewed_at=renewal_time,
+        expires_at=renewal_time + timedelta(minutes=10),
+    )
+    case.state["clock"] = renewal_time
+    if corruption == "metadata_strip":
+        path = case.execution_root / "runs/pass-001/verdicts.jsonl"
+        path.write_bytes(case.state["runner"]._verdicts_bytes([
+            {"question_id": question, "verdict": "YES"}
+            for question in case.plan["runtime"]["question_ids"][:80]
+        ]))
+    else:
+        path = case.execution_root / "runs/pass-001/responses/batch-0001.json"
+        path.write_bytes(b"corrupt")
+    brokers_before = case.state["broker_constructions"]
+    with pytest.raises(ValueError):
+        _run(case, review_sha256, continuation_sha256, previous_settlement_sha256, renewal_sha256)
+    assert case.state["broker_constructions"] == brokers_before
+    assert not (case.execution_root / "contacts/request-0011.json").exists()
+
+
+def test_operational_renewal_anchor_is_required_even_for_offline_settlement(case: SimpleNamespace) -> None:
+    previous_settlement_sha256, renewal_sha256, now = _operational_boundary(case)
+    review_sha256 = _review(case, start=now, end=now + timedelta(minutes=1))
+    renewal_time = now + timedelta(minutes=2)
+    continuation_sha256 = _write_continuation(
+        case, _continuation_candidate(case, review_sha256, renewal_sha256), reviewed_at=renewal_time,
+        expires_at=renewal_time + timedelta(minutes=10),
+    )
+    case.state["clock"] = renewal_time
+    assert _run(case, review_sha256, continuation_sha256, previous_settlement_sha256, renewal_sha256)["status"] == "settled"
+    settlement = case.execution_root / "cohorts/0002/settlement.json"
+    settlement.unlink()
+    brokers_before = case.state["broker_constructions"]
+    for anchor in (None, "0" * 64):
+        with pytest.raises(ValueError):
+            _run(case, review_sha256, continuation_sha256, previous_settlement_sha256, anchor)
+        assert not settlement.exists()
+    assert case.state["broker_constructions"] == brokers_before
 
 
 @pytest.mark.parametrize(
