@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "evidence_class": "preserved_terminal_native_identity_exclusion",
+  "predecessor_plan_sha256": "03302416c03f72f0c422342904be9eb7876c520ac2c021dfce14c546e23f7c28",
+  "terminal_snapshot_path_hash_map_sha256": "93d07252145d9d461ddbec1066949a2f394e995af32e965c31b8ca187f07330f",
+  "terminal_snapshot_files": 73,
+  "records": [
+    {
+      "ordinal": 1,
+      "receipt_path": "runs/size-0008/repetition-01/dryad-cec700bfc2d75abb112b3e05/responses/grok-broker/batch-0001-attempt-0001/receipt.json",
+      "receipt_sha256": "22e2b712165376ab3705366c6d0caeefa9588bd191c9b75fed0e13d43c545786",
+      "request_id_hash": "4f2a08261dcae20c3e9672391fea00615bf59571d6d256378cfd9674696a7d16",
+      "session_id_hash": "d7b582a336773ad235ec4bcd2e680b1934c675bdfb5c24fb66c43a0475152196"
+    },
+    {
+      "ordinal": 2,
+      "receipt_path": "runs/size-0008/repetition-01/dryad-cec700bfc2d75abb112b3e05/responses/grok-broker/batch-0002-attempt-0001/receipt.json",
+      "receipt_sha256": "55eebf21e88731c8b3d67abe866a8c0540c0459455540094019662d7e5cfc34a",
+      "request_id_hash": "c7566d70ed6d615ff51186e58428a915fe4bfcd1bb8175a47e6685928e1e072a",
+      "session_id_hash": "1fbfe061c66f8993440f3da6750066c7747d836a1a9977b2692efd2545d9a9a9"
+    },
+    {
+      "ordinal": 3,
+      "receipt_path": "runs/size-0008/repetition-01/dryad-cec700bfc2d75abb112b3e05/responses/grok-broker/batch-0003-attempt-0001/receipt.json",
+      "receipt_sha256": "73a3e850a5ce9c44f92564e9482f4245de467b7e7565bf9fc208805619a683a7",
+      "request_id_hash": "c52791ccc1072e2534caba04e8cabb35a2413214999117fdaa84c4cc1d332c81",
+      "session_id_hash": "b94c212b98de61118cc3c354fb6ef6de0bc970166ba010f811689128363bc8ec"
+    },
+    {
+      "ordinal": 4,
+      "receipt_path": "runs/size-0008/repetition-01/dryad-cec700bfc2d75abb112b3e05/responses/grok-broker/batch-0004-attempt-0001/receipt.json",
+      "receipt_sha256": "b786fda0f94ee6f4182f39580c613214bf37af49c4a925f85fb9303373d14231",
+      "request_id_hash": "b7bd9c9e9b59835d25e397e551fbebfb5e50e63cf6dc45ecb2dec3d6cbb15171",
+      "session_id_hash": "0320bef464abb300aadb90b07685760c1e1cec76eda0278080eac2c366b1c85c"
+    },
+    {
+      "ordinal": 5,
+      "receipt_path": "runs/size-0008/repetition-01/dryad-cec700bfc2d75abb112b3e05/responses/grok-broker/batch-0005-attempt-0001/receipt.json",
+      "receipt_sha256": "70408b9a5e66f252c84ce7ba5ec81f37aa54e88dc51819a174086f394401f857",
+      "request_id_hash": "93218432028616f6d02fcd96d1b150edfba3bffd9b6c55f7366e736107ab5e09",
+      "session_id_hash": "772e16bdd2dbd5015d718b1ca5a2a64fb2498371d8ef219bbcacdaec80d5b8ba"
+    },
+    {
+      "ordinal": 6,
+      "receipt_path": "runs/size-0008/repetition-01/dryad-cec700bfc2d75abb112b3e05/responses/grok-broker/batch-0006-attempt-0001/receipt.json",
+      "receipt_sha256": "fd0f96f5b5dcd216bd44ea5957ee6d7e4214baf844f2b2698799a00810c0c918",
+      "request_id_hash": "b46216db41011757e76a739d4c55354cd3d8bab59dd24e9d1d8f92ccd2bb025f",
+      "session_id_hash": "caca9c1d724cfc1394f1258bba8d638856937c455f11fa363b041ec35a8b1db0"
+    }
+  ],
+  "native_admission": false
+}
