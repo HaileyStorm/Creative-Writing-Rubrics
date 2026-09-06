@@ -1,0 +1,304 @@
+{
+  "alignment_result": false,
+  "completed_identity_records": 33,
+  "empirical_batch_cap": null,
+  "evidence_class": "preserved_predecessor_native_identity_exclusion",
+  "execution_authority": false,
+  "generator": {
+    "files": {
+      "evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/cohort_ledger.py": "3b07db6d58c5bfdbca5c662c8b4fb5fdcc833fd1e421d58ce7e7d0e9928fe44a",
+      "evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/historical_replay_runtime.py": "d98686761c4af296c4132a477bc54c3bcdfc3bb8b0140ffd2681919652fe81f9",
+      "evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/identity_exclusion.py": "efc3c445137eff401ea2f422eb002d9db20767a2c3b39a674054b047d2c2131b",
+      "evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/native_replay_core.py": "e19ff366586bf6097ceca9b3c74c44033f42d67bd1b2a2042578811288cc1900",
+      "evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/qualification-attempt-2.json": "90639b16cd68d0a4b36821acdcc8ed802d510122973a8621cc0bbea6cc4a0be8",
+      "evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/terminal-identities-v1.json": "62fe2cc523cf8d22dff7f1010980ae98a19338f881d861bdf371ab5f3e37a52f",
+      "evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/terminal_identity_manifest.py": "f1aeb86e997c6297b922e90c362f48989c871691b386b6d9ce0a75345e26e200",
+      "evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/terminal_residue.py": "d525e6eebdd5d6864057c71dd1c6141f3423cfde78459a2f4b8e18fb00789f94"
+    },
+    "git_commit": "0040ee0c1ab07fed5e369718ef6b87b0325b23ed"
+  },
+  "historical_protocol_sha256": "33e7dde670bf212da0ee7c4cd6cf628f9a43949dc597cea47b0d97aa4e158e2b",
+  "historical_rollback_manifest_sha256": "8526728eb65e2941c7e4244f54c2c49da118538ead29375daa2b38c2093b077a",
+  "native_admission": false,
+  "partial_replay_sha256": "3177e88ef6bad01eecd842b361122b8ae4c3078f61dc1d8b28c289e9fadd2aa1",
+  "qualification_satisfied": false,
+  "records": [
+    {
+      "campaign": "qualification-v1",
+      "ordinal": 1,
+      "receipt_path": "runs/size-0008/repetition-01/dryad-cec700bfc2d75abb112b3e05/responses/grok-broker/batch-0001-attempt-0001/receipt.json",
+      "receipt_sha256": "22e2b712165376ab3705366c6d0caeefa9588bd191c9b75fed0e13d43c545786",
+      "request_id_hash": "4f2a08261dcae20c3e9672391fea00615bf59571d6d256378cfd9674696a7d16",
+      "session_id_hash": "d7b582a336773ad235ec4bcd2e680b1934c675bdfb5c24fb66c43a0475152196"
+    },
+    {
+      "campaign": "qualification-v1",
+      "ordinal": 2,
+      "receipt_path": "runs/size-0008/repetition-01/dryad-cec700bfc2d75abb112b3e05/responses/grok-broker/batch-0002-attempt-0001/receipt.json",
+      "receipt_sha256": "55eebf21e88731c8b3d67abe866a8c0540c0459455540094019662d7e5cfc34a",
+      "request_id_hash": "c7566d70ed6d615ff51186e58428a915fe4bfcd1bb8175a47e6685928e1e072a",
+      "session_id_hash": "1fbfe061c66f8993440f3da6750066c7747d836a1a9977b2692efd2545d9a9a9"
+    },
+    {
+      "campaign": "qualification-v1",
+      "ordinal": 3,
+      "receipt_path": "runs/size-0008/repetition-01/dryad-cec700bfc2d75abb112b3e05/responses/grok-broker/batch-0003-attempt-0001/receipt.json",
+      "receipt_sha256": "73a3e850a5ce9c44f92564e9482f4245de467b7e7565bf9fc208805619a683a7",
+      "request_id_hash": "c52791ccc1072e2534caba04e8cabb35a2413214999117fdaa84c4cc1d332c81",
+      "session_id_hash": "b94c212b98de61118cc3c354fb6ef6de0bc970166ba010f811689128363bc8ec"
+    },
+    {
+      "campaign": "qualification-v1",
+      "ordinal": 4,
+      "receipt_path": "runs/size-0008/repetition-01/dryad-cec700bfc2d75abb112b3e05/responses/grok-broker/batch-0004-attempt-0001/receipt.json",
+      "receipt_sha256": "b786fda0f94ee6f4182f39580c613214bf37af49c4a925f85fb9303373d14231",
+      "request_id_hash": "b7bd9c9e9b59835d25e397e551fbebfb5e50e63cf6dc45ecb2dec3d6cbb15171",
+      "session_id_hash": "0320bef464abb300aadb90b07685760c1e1cec76eda0278080eac2c366b1c85c"
+    },
+    {
+      "campaign": "qualification-v1",
+      "ordinal": 5,
+      "receipt_path": "runs/size-0008/repetition-01/dryad-cec700bfc2d75abb112b3e05/responses/grok-broker/batch-0005-attempt-0001/receipt.json",
+      "receipt_sha256": "70408b9a5e66f252c84ce7ba5ec81f37aa54e88dc51819a174086f394401f857",
+      "request_id_hash": "93218432028616f6d02fcd96d1b150edfba3bffd9b6c55f7366e736107ab5e09",
+      "session_id_hash": "772e16bdd2dbd5015d718b1ca5a2a64fb2498371d8ef219bbcacdaec80d5b8ba"
+    },
+    {
+      "campaign": "qualification-v1",
+      "ordinal": 6,
+      "receipt_path": "runs/size-0008/repetition-01/dryad-cec700bfc2d75abb112b3e05/responses/grok-broker/batch-0006-attempt-0001/receipt.json",
+      "receipt_sha256": "fd0f96f5b5dcd216bd44ea5957ee6d7e4214baf844f2b2698799a00810c0c918",
+      "request_id_hash": "b46216db41011757e76a739d4c55354cd3d8bab59dd24e9d1d8f92ccd2bb025f",
+      "session_id_hash": "caca9c1d724cfc1394f1258bba8d638856937c455f11fa363b041ec35a8b1db0"
+    },
+    {
+      "campaign": "qualification-v2",
+      "ordinal": 1,
+      "receipt_path": "runs/size-0008/repetition-01/dryad-cec700bfc2d75abb112b3e05/responses/grok-broker/batch-0001-attempt-0001/receipt.json",
+      "receipt_sha256": "286e2912751e70222e31faca6819ac380d3be3b9e98391dac96ace8c17610ef5",
+      "request_id_hash": "e4369dac3e99a575934d355ab15fd820a419e3a6c9b5f0bf1966950165aaaed9",
+      "session_id_hash": "24ae27f0b4ce4cbfdcd2afe0c620723b265c31700845a8e5147c5201fe6d91e6"
+    },
+    {
+      "campaign": "qualification-v2",
+      "ordinal": 2,
+      "receipt_path": "runs/size-0008/repetition-01/dryad-cec700bfc2d75abb112b3e05/responses/grok-broker/batch-0002-attempt-0001/receipt.json",
+      "receipt_sha256": "a02bf56ad50c9f386bf51eb96f93e21f9e75c18856d11b588e8e8f0f312e6df5",
+      "request_id_hash": "9c2d11ecd2270aff556c923eef0842400944ddc4e17f8ba2c2d3e127545fb9ec",
+      "session_id_hash": "f5ee48c60099673b2c72c0d3ae6472fc4142d1f57512fb6f49a76961fdc12752"
+    },
+    {
+      "campaign": "qualification-v2",
+      "ordinal": 3,
+      "receipt_path": "runs/size-0008/repetition-01/dryad-cec700bfc2d75abb112b3e05/responses/grok-broker/batch-0003-attempt-0001/receipt.json",
+      "receipt_sha256": "d1a77c44ccb1e20ed37a8e58aa719d1ae0702d57a5c2eb9d1100222e620527ed",
+      "request_id_hash": "24d80683d4991f9fd8855ed5b3320acf3792afe06193fe278a752cba7b972840",
+      "session_id_hash": "c1be397f4acab045bb570484360f0d6e6a99713bfbe1036c4ff804eba9cc89f6"
+    },
+    {
+      "campaign": "qualification-v2",
+      "ordinal": 4,
+      "receipt_path": "runs/size-0008/repetition-01/dryad-cec700bfc2d75abb112b3e05/responses/grok-broker/batch-0004-attempt-0001/receipt.json",
+      "receipt_sha256": "a4175fdbb928b2474dbb8cd5fc4539c6f61adc58b4cf1f3f58e720f976b1b64c",
+      "request_id_hash": "5befd386d2cc95c0c5f8fe8fbfecc041704fbcf71bff5ab6cf541849fc457732",
+      "session_id_hash": "fe4bdd36b973d1fc7c505cf72e376b0abd88e2de1229bf5cfd68ff70e0213c44"
+    },
+    {
+      "campaign": "qualification-v2",
+      "ordinal": 5,
+      "receipt_path": "runs/size-0008/repetition-01/dryad-cec700bfc2d75abb112b3e05/responses/grok-broker/batch-0005-attempt-0001/receipt.json",
+      "receipt_sha256": "9bc970fd1a93ed89d8ffbd5b4005462d96a943e416392563051638695d8ff29c",
+      "request_id_hash": "5a135a544b2703b870673d5b92ea25038a2345558c7fa512c273a260a619020c",
+      "session_id_hash": "36c63fdf0bba8cb40ecb15d6169b78ea6bd0d7d1bf14c4e52a49068eea7bdc6f"
+    },
+    {
+      "campaign": "qualification-v2",
+      "ordinal": 6,
+      "receipt_path": "runs/size-0008/repetition-01/dryad-cec700bfc2d75abb112b3e05/responses/grok-broker/batch-0006-attempt-0001/receipt.json",
+      "receipt_sha256": "45cd23ed9699f4a7508f4a89dc26ff6d7dc8b91ecf2a3d0fbd96a9bb0c093959",
+      "request_id_hash": "04af2c2fe03c41b037fb35730ba098dc8607cf70cea0b2c5982b6b46b46402d4",
+      "session_id_hash": "dbacdf17c3f3d49f8a81cd880c962f4f824165eee1426b7bce4b1c6ba9d51053"
+    },
+    {
+      "campaign": "qualification-v2",
+      "ordinal": 7,
+      "receipt_path": "runs/size-0008/repetition-01/dryad-cec700bfc2d75abb112b3e05/responses/grok-broker/batch-0007-attempt-0001/receipt.json",
+      "receipt_sha256": "5fbbe45755ead26e6ca2d9b2ff9a307b2fb80a83bf11863b4049ecd5bc18a4f2",
+      "request_id_hash": "a5de4d0eb691272cb2c2716127da953dbd41dac500ff6d32d324965fb24d0e00",
+      "session_id_hash": "379691bdb611ba8564d5e8c952b41e10ff464ad6d79b78a960994e2a0feb43e7"
+    },
+    {
+      "campaign": "qualification-v2",
+      "ordinal": 8,
+      "receipt_path": "runs/size-0008/repetition-01/dryad-cec700bfc2d75abb112b3e05/responses/grok-broker/batch-0008-attempt-0001/receipt.json",
+      "receipt_sha256": "e8b73decb5254f2cb34953638348b66461851fbf3edac43534cf9f849975c3b1",
+      "request_id_hash": "bb7e19223c8d9c7f3d4f31cd5e4ce0bfaad9da6463ec73764a8b4c6d6bb3c432",
+      "session_id_hash": "b260780da79def7b43a2c490b63fe3d0882d8d45da179875f3ff27404e1175a6"
+    },
+    {
+      "campaign": "qualification-v2",
+      "ordinal": 9,
+      "receipt_path": "runs/size-0008/repetition-01/dryad-cec700bfc2d75abb112b3e05/responses/grok-broker/batch-0009-attempt-0001/receipt.json",
+      "receipt_sha256": "af13924cf2fd35369b816ecad9f9e0e26297721565c507ba31f66b156cf28e7f",
+      "request_id_hash": "548639b3e407451fb9bea6ced39165b93034378b5478dd4a4b8c34a574a09406",
+      "session_id_hash": "a3e0e020563a887c6ad4060d166a003379b87be7f398feb021cc2154cd1ed201"
+    },
+    {
+      "campaign": "qualification-v2",
+      "ordinal": 10,
+      "receipt_path": "runs/size-0008/repetition-01/dryad-cec700bfc2d75abb112b3e05/responses/grok-broker/batch-0010-attempt-0001/receipt.json",
+      "receipt_sha256": "4e4d04784c801b28b49b42dc5e6923d085092bb0d6118063a038e992d37c075a",
+      "request_id_hash": "ed046c45b0a9369f0762665fd68dbfa167e75b78e5dc7267e19ce80913775c38",
+      "session_id_hash": "f6de9924c381537c92761821947100bcf331fc07df302de09e42c7658765b901"
+    },
+    {
+      "campaign": "qualification-v2",
+      "ordinal": 11,
+      "receipt_path": "runs/size-0008/repetition-01/dryad-cec700bfc2d75abb112b3e05/responses/grok-broker/batch-0011-attempt-0001/receipt.json",
+      "receipt_sha256": "0c576b34e1901e6f97ec43b8afe9959bdaf82d0c0f303278bf2706e8aececd69",
+      "request_id_hash": "4f4af4551729769e3d58545cad6456f4e04c806a8e80c7369f65330e619f8890",
+      "session_id_hash": "d8a0ecd74b71b6e42c479c4808563f00ca4eb406450eb384f31daf219c0debd8"
+    },
+    {
+      "campaign": "qualification-v2",
+      "ordinal": 12,
+      "receipt_path": "runs/size-0008/repetition-01/dryad-cec700bfc2d75abb112b3e05/responses/grok-broker/batch-0012-attempt-0001/receipt.json",
+      "receipt_sha256": "7b3f0dbb319b80be70ebdf2f340ce6f172cf076da564462cb187497e771b82b6",
+      "request_id_hash": "24b0a62c1c4678853b8b0f7b1fa6d3cfabed45b2612cf1eab24b92bf0f7843f3",
+      "session_id_hash": "c2d80a390b6a819cfa0bc1d749235c59e4a114645533525170ef0b10b6f1e1d6"
+    },
+    {
+      "campaign": "qualification-v2",
+      "ordinal": 13,
+      "receipt_path": "runs/size-0008/repetition-01/dryad-cec700bfc2d75abb112b3e05/responses/grok-broker/batch-0013-attempt-0001/receipt.json",
+      "receipt_sha256": "c2746bdfe9ed26e4167d2d5eba3c907cda798402d97a02540536426db9c4202b",
+      "request_id_hash": "a902bceb33b788ab98b6412b445b2949f99327e6bf3b2045f2343e88267629df",
+      "session_id_hash": "834b66490539bfe69dd9567172dad0dbfff6f4093cc07750f4415bedf0b62300"
+    },
+    {
+      "campaign": "qualification-v2",
+      "ordinal": 14,
+      "receipt_path": "runs/size-0008/repetition-01/dryad-cec700bfc2d75abb112b3e05/responses/grok-broker/batch-0014-attempt-0001/receipt.json",
+      "receipt_sha256": "4b932b2a5c92d8003037f5487861e9683992fc50082e10327f2e6b2e85ee75c1",
+      "request_id_hash": "512af3e040f5812b0bd462a6715bfc1c4250b8ff8b8ad0cf83536d76b1f17ccb",
+      "session_id_hash": "d45a1c2ced0d13524a1dce0ae9133c4faa75dea102dcfdb731dc9622300e96ad"
+    },
+    {
+      "campaign": "qualification-v2",
+      "ordinal": 15,
+      "receipt_path": "runs/size-0008/repetition-01/dryad-cec700bfc2d75abb112b3e05/responses/grok-broker/batch-0015-attempt-0001/receipt.json",
+      "receipt_sha256": "f41ea3de7df553b3beb1bf19ac31e22313115c4c75f03bfac5874dd6b6cae5ee",
+      "request_id_hash": "9cc6b9de2761effe121f98d71da9670af1d04b69f8e72092028a3dd441089031",
+      "session_id_hash": "af90532cd974c9adb90450eaff2eb91dc88b1526d1354acf0dd6842e662365f1"
+    },
+    {
+      "campaign": "qualification-v2",
+      "ordinal": 16,
+      "receipt_path": "runs/size-0008/repetition-01/dryad-cec700bfc2d75abb112b3e05/responses/grok-broker/batch-0016-attempt-0001/receipt.json",
+      "receipt_sha256": "27f9000e882af4440257be75b822e331fcedc4330db2fcafabea5cff42ea2028",
+      "request_id_hash": "77fb1d3b715168a6f0eb7cce3ef1f28e4ad716db577b25f2d6ac37b0fcf77e5b",
+      "session_id_hash": "08143db269f9b4104766890e716f9459c9e928bcd9e5fe36e5760ddf35dd5480"
+    },
+    {
+      "campaign": "qualification-v2",
+      "ordinal": 17,
+      "receipt_path": "runs/size-0008/repetition-01/dryad-cec700bfc2d75abb112b3e05/responses/grok-broker/batch-0017-attempt-0001/receipt.json",
+      "receipt_sha256": "1640ce94225dd94b610594d26a7e1f055392a7d55c8695a4dc2b8d46da7b7f0c",
+      "request_id_hash": "b649fc9ce8b2b54debcfb0522c4e9d6ec360a721570d42e27354aafbc1ed2e07",
+      "session_id_hash": "bc3f5569b73f2aa255fe4665fc6e6328a20076dc58fd8b16d04d1ad99711a0a5"
+    },
+    {
+      "campaign": "qualification-v2",
+      "ordinal": 18,
+      "receipt_path": "runs/size-0008/repetition-01/dryad-cec700bfc2d75abb112b3e05/responses/grok-broker/batch-0018-attempt-0001/receipt.json",
+      "receipt_sha256": "13809bd05a1e26841513c30897760adf0443c0b72c107d45b459cc74ee8ca50d",
+      "request_id_hash": "be8da7f0143ac79b91c034ef5affa6eeacb7249afbb5fd02f6eaa649c81d511a",
+      "session_id_hash": "d45832db3392ee38f9d8db9256fa9113bb2708dfb6a333982dcb2ed51a685dfb"
+    },
+    {
+      "campaign": "qualification-v2",
+      "ordinal": 19,
+      "receipt_path": "runs/size-0008/repetition-01/dryad-cec700bfc2d75abb112b3e05/responses/grok-broker/batch-0019-attempt-0001/receipt.json",
+      "receipt_sha256": "4bc46266e7f47158e63fe561b19f16a161760d2e5731c2a02fd3b95de28d9e3e",
+      "request_id_hash": "e26d2057a20ad7b051fb3b12f577177bed326f18baaa1f957e15707b7447d89e",
+      "session_id_hash": "4e245528c029d82220f7354a1780d0159c3543b4074e55903858672c8bf95473"
+    },
+    {
+      "campaign": "qualification-v2",
+      "ordinal": 20,
+      "receipt_path": "runs/size-0008/repetition-01/dryad-cec700bfc2d75abb112b3e05/responses/grok-broker/batch-0020-attempt-0001/receipt.json",
+      "receipt_sha256": "7654f091d1e01e020c6b04deef71a9f60247b7c98a3568c25cde80b1c690661c",
+      "request_id_hash": "cecf28a747651c60dec54bb895337cc221c442b67baaf0bde583f34d1acc1c42",
+      "session_id_hash": "4867a486404b7115a6e2e3c8bd725134fef0a09b4033916202917b03b9a9fee7"
+    },
+    {
+      "campaign": "qualification-v2",
+      "ordinal": 21,
+      "receipt_path": "runs/size-0008/repetition-01/dryad-cec700bfc2d75abb112b3e05/responses/grok-broker/batch-0021-attempt-0001/receipt.json",
+      "receipt_sha256": "e8837057fa15313c9703071becdb2dd9181af47734bc1a66c037da118b3e8853",
+      "request_id_hash": "95d6fdbafb9a29165ddf4f1289a554d62147b03641a7730a363bc07502539398",
+      "session_id_hash": "c575425f7a3af43d5839fca7611dee3fe76ec7ddbf616100a47970c2005f1c43"
+    },
+    {
+      "campaign": "qualification-v2",
+      "ordinal": 22,
+      "receipt_path": "runs/size-0008/repetition-01/dryad-cec700bfc2d75abb112b3e05/responses/grok-broker/batch-0022-attempt-0001/receipt.json",
+      "receipt_sha256": "bd3e62220a5cdc17383dad844914fe7a61292b1c044531370127ff9360665ac8",
+      "request_id_hash": "f80567a5b6b122d0f0bd42a2a00b8e051e12b998dfb759d2001646037a06ca72",
+      "session_id_hash": "e96b1475c637799e9a92db2033b4d9077edce4a6b26032c1db725c2305bbac8a"
+    },
+    {
+      "campaign": "qualification-v2",
+      "ordinal": 23,
+      "receipt_path": "runs/size-0008/repetition-01/dryad-cec700bfc2d75abb112b3e05/responses/grok-broker/batch-0023-attempt-0001/receipt.json",
+      "receipt_sha256": "69f527e7855ecf71518aaa61ee6324e672887832c0409adcd4fe73a38af78005",
+      "request_id_hash": "809d3eace2628378824fdf180500857e3bdbdb86262ea636c0abf70792462069",
+      "session_id_hash": "e465a0a77b9a48ba386377c310694ea932b86a4eed43f9d202a5ca6a470a9a7d"
+    },
+    {
+      "campaign": "qualification-v2",
+      "ordinal": 24,
+      "receipt_path": "runs/size-0008/repetition-01/dryad-44cae24e55019e2cbf491660/responses/grok-broker/batch-0001-attempt-0001/receipt.json",
+      "receipt_sha256": "603a635fc4ed828dc1246a25506c41216aae29c4135f137ba5b3663f4d7dc2e0",
+      "request_id_hash": "03a7818d049cd43296496bf1b67a38981075f6dbafdc9015ac7b0d9a85405ace",
+      "session_id_hash": "055798e272dded9fe25e97ebc5153d9c44f7879f7988c369e70eba64c766c0e9"
+    },
+    {
+      "campaign": "qualification-v2",
+      "ordinal": 25,
+      "receipt_path": "runs/size-0008/repetition-01/dryad-44cae24e55019e2cbf491660/responses/grok-broker/batch-0002-attempt-0001/receipt.json",
+      "receipt_sha256": "96e41c10aac27d779dadb0471b2beb41f132e0f88d85e876153b81a3cd45f10b",
+      "request_id_hash": "b158f7306d910284ef640ee906abc7559d939aba6d0aaa955b83273b2eca3c2a",
+      "session_id_hash": "e8592fc42385512e6093e5ec4ba11d8f69211fbb5d3d79cb8ded1762aa119422"
+    },
+    {
+      "campaign": "qualification-v2",
+      "ordinal": 26,
+      "receipt_path": "runs/size-0008/repetition-01/dryad-44cae24e55019e2cbf491660/responses/grok-broker/batch-0003-attempt-0001/receipt.json",
+      "receipt_sha256": "08cbb7fc42f27eef14a5d6a0a854d2ccfeb30695a06bfe0ecba906408c4667ba",
+      "request_id_hash": "80e38686f09c228630a3ee8ca785567310490f8228f29064ca1348a1fce93b3d",
+      "session_id_hash": "87f92e9e8e40a7022a0f30b44f6d004896797b8be197ab6b55e797eafb3941d0"
+    },
+    {
+      "campaign": "qualification-v2",
+      "ordinal": 27,
+      "receipt_path": "runs/size-0008/repetition-01/dryad-44cae24e55019e2cbf491660/responses/grok-broker/batch-0004-attempt-0001/receipt.json",
+      "receipt_sha256": "64a64585f79e86f8995a22a5954c8e7a560d69a7cd1173da36e5aceec03b8d1d",
+      "request_id_hash": "ca794178fb661e01deda9204a84ef53f4422a5623ad92047199ac987b82f6bd3",
+      "session_id_hash": "c9393abb283331f3449bf5b3b633c7cbc94360862202a4631019f241e86c5fc0"
+    }
+  ],
+  "schema_version": 2,
+  "unresolved_contact": {
+    "automatic_resend_permitted": false,
+    "campaign": "qualification-v2",
+    "native_identity_claimed": false,
+    "ordinal": 28,
+    "state": "ambiguous_terminal_no_trusted_native_identity",
+    "terminal_proof_sha256": "b35a84feebcdd948bf2a827b67421f9142efa7698650a439a13e9d6ce59e22ba"
+  },
+  "v1_prior_committed_receipt_identities": 6,
+  "v1_snapshot_sha256": "93d07252145d9d461ddbec1066949a2f394e995af32e965c31b8ca187f07330f",
+  "v2_semantically_replayed_receipt_identities": 27,
+  "v2_snapshot_sha256": "a011ae8cb0f5bf83f7a32ea2a13f819b22d816bc78d837f3cfe0b89a546b46bf"
+}
