@@ -6,12 +6,48 @@ import json
 from pathlib import Path
 
 import pytest
-
 import test_dryad_optimizer as fitting
-
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/dev_comparison.py"
+BASELINE_MANIFEST = SOURCE.parent / "baseline-runtime-v1.json"
+
+
+def test_public_dev_forwards_verified_baseline_binding_before_reading_inputs(monkeypatch):
+    class SelectionReached(RuntimeError):
+        pass
+
+    spec = importlib.util.spec_from_file_location("dryad_dev_public_forwarding", SOURCE)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    capture = module._capture
+    observed = {}
+    manifest_sha = fitting.subject._sha(BASELINE_MANIFEST.read_bytes())
+
+    def capture_with_selection_probe(expected):
+        values = capture(expected)
+        captures, protocol, optimizer, _, _ = values
+        select = optimizer._runtime
+
+        def select_and_stop(runtime, native, **kwargs):
+            loaded, source, binding, _ = select(runtime, native, **kwargs)
+            observed.update(arguments=kwargs, identity=optimizer._identity(protocol, captures, source, binding))
+            loaded.verify()
+            raise SelectionReached
+
+        monkeypatch.setattr(optimizer, "_runtime", select_and_stop)
+        return values
+
+    monkeypatch.setattr(module, "_capture", capture_with_selection_probe)
+    with pytest.raises(SelectionReached):
+        module.evaluate_dev([], [], b"{}", expected_fit_sha256=fitting.subject._sha(b"{}"),
+                            expected_comparison_sha256=fitting.subject._sha(SOURCE.read_bytes()),
+                            baseline_manifest_path=BASELINE_MANIFEST, baseline_manifest_sha256=manifest_sha)
+    assert observed["arguments"] == {
+        "baseline_manifest_path": BASELINE_MANIFEST, "baseline_manifest_sha256": manifest_sha,
+    }
+    assert observed["identity"]["evidence_class"] == "baseline_source_verified_fit_unadmitted"
+    assert observed["identity"]["runtime_pins"]["baseline_manifest"]["sha256"] == manifest_sha
 
 
 @pytest.fixture(scope="module")
@@ -55,7 +91,7 @@ def evaluate(example):
 
 
 def test_frozen_winner_and_canonical_baseline_are_scored_once(example):
-    module, fit, verdicts, targets, runtime, profiles = example
+    _module, fit, verdicts, targets, runtime, profiles = example
     before = copy.deepcopy((fit, verdicts, targets))
     result = evaluate(example)
     assert result["evidence_class"] == "synthetic_dev_comparison_no_authority"
@@ -101,7 +137,14 @@ def test_default_scoring_path_cannot_promote_raw_inputs(example, monkeypatch):
     module, fit, verdicts, targets, runtime, _ = example
     fit["evidence_class"] = fit["identity"]["evidence_class"] = "development_fit_only"
     fit["identity"]["runtime_source"] = "pinned_native_load_runtime"
-    monkeypatch.setattr(module, "_runtime", lambda supplied, native: (runtime, "pinned_native_load_runtime"))
+    capture = module._capture
+
+    def capture_with_test_native(expected):
+        result = capture(expected)
+        monkeypatch.setattr(result[-1], "load_runtime", lambda: runtime)
+        return result
+
+    monkeypatch.setattr(module, "_capture", capture_with_test_native)
     raw = json.dumps(fit, sort_keys=True, separators=(",", ":"), allow_nan=False).encode()
     result = module.evaluate_dev(verdicts, targets, raw,
         expected_fit_sha256=fitting.subject._sha(raw), expected_comparison_sha256=fitting.subject._sha(SOURCE.read_bytes()))
@@ -117,3 +160,37 @@ def test_source_and_fit_anchors_are_required(example):
         with pytest.raises(ValueError, match="hash"):
             module.evaluate_dev(verdicts, targets, raw, expected_fit_sha256=fit_hash, expected_comparison_sha256=source_hash, runtime=runtime)
     assert runtime.core.calls == 0
+
+
+def test_source_verified_baseline_fit_binding_must_match_dev_runtime(example):
+    module, fit, _, _, _, _ = example
+    captures, protocol, optimizer, analysis, _ = module._capture(fitting.subject._sha(SOURCE.read_bytes()))
+    source = optimizer.BASELINE_RUNTIME_SOURCE
+    fit_binding = {
+        "baseline_runtime_loader": {"path": "loader.py", "sha256": "1" * 64},
+        "baseline_manifest": {"path": "manifest.json", "sha256": "2" * 64},
+        "baseline_runtime_provenance": {"evidence_class": "prospective_baseline_runtime_source_binding", "manifest_sha256": "2" * 64, "source_sha256": {"runtime.py": "3" * 64}, "provider_calls": 0, "native_admission": False, "execution_authority": False},
+    }
+    dev_binding = copy.deepcopy(fit_binding)
+    dev_binding["baseline_manifest"]["sha256"] = "4" * 64
+    fit["evidence_class"] = optimizer._evidence_class(source)
+    fit["identity"] = optimizer._identity(protocol, captures, source, fit_binding)
+    raw = json.dumps(fit, sort_keys=True, separators=(",", ":"), allow_nan=False).encode()
+    with pytest.raises(ValueError, match="Frozen fit identity"):
+        module._fit(raw, fitting.subject._sha(raw), optimizer, analysis, source, dev_binding, protocol, captures)
+
+
+def test_injected_dev_runtime_cannot_select_source_verified_baseline_path(example):
+    module, fit, verdicts, targets, runtime, _ = example
+    raw = json.dumps(fit, sort_keys=True, separators=(",", ":"), allow_nan=False).encode()
+    with pytest.raises(ValueError, match="Injected runtime"):
+        module.evaluate_dev(
+            verdicts,
+            targets,
+            raw,
+            expected_fit_sha256=fitting.subject._sha(raw),
+            expected_comparison_sha256=fitting.subject._sha(SOURCE.read_bytes()),
+            runtime=runtime,
+            baseline_manifest_path=BASELINE_MANIFEST,
+            baseline_manifest_sha256="3b1f70a40a6dac8028d11c52f747400ab88dff3a193f828e3940c53813f3273d",
+        )

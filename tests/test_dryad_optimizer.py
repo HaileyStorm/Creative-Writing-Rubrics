@@ -4,19 +4,46 @@ import copy
 import importlib.util
 from fractions import Fraction
 from pathlib import Path
-from types import SimpleNamespace
+from types import ModuleType, SimpleNamespace
 
 import pytest
 
 from hbqrs import materialize_weight_profile, resolve_bundle
 
-
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/optimizer.py"
+BASELINE_MANIFEST = SOURCE.parent / "baseline-runtime-v1.json"
 SPEC = importlib.util.spec_from_file_location("dryad_optimizer", SOURCE)
 subject = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(subject)
 AXES = ("novel", "original", "rare", "appropriate", "feasible", "publishable", "well_written", "enjoyed", "boring", "funny", "twist", "future")
+
+
+def test_public_fit_forwards_verified_baseline_binding_before_reading_inputs(monkeypatch):
+    class SelectionReached(RuntimeError):
+        pass
+
+    select = subject._runtime
+    observed = {}
+    manifest_sha = subject._sha(BASELINE_MANIFEST.read_bytes())
+
+    def select_and_stop(runtime, native, **kwargs):
+        loaded, source, binding, _ = select(runtime, native, **kwargs)
+        captures, protocol, _, _ = subject._capture()
+        captures[SOURCE] = SOURCE.read_bytes()
+        observed.update(arguments=kwargs, identity=subject._identity(protocol, captures, source, binding))
+        loaded.verify()
+        raise SelectionReached
+
+    monkeypatch.setattr(subject, "_runtime", select_and_stop)
+    with pytest.raises(SelectionReached):
+        subject.fit_train([], [], expected_optimizer_sha256=subject._sha(SOURCE.read_bytes()),
+                          baseline_manifest_path=BASELINE_MANIFEST, baseline_manifest_sha256=manifest_sha)
+    assert observed["arguments"] == {
+        "baseline_manifest_path": BASELINE_MANIFEST, "baseline_manifest_sha256": manifest_sha,
+    }
+    assert observed["identity"]["evidence_class"] == "baseline_source_verified_fit_unadmitted"
+    assert observed["identity"]["runtime_pins"]["baseline_manifest"]["sha256"] == manifest_sha
 
 
 def _fraction(value: Fraction) -> dict[str, int]:
@@ -142,6 +169,73 @@ def test_unreviewed_optimizer_identity_rejected():
     verdicts, targets = _data()
     with pytest.raises(ValueError, match="Reviewed optimizer"):
         subject.fit_train(verdicts, targets, runtime=_runtime(SyntheticCore()), expected_optimizer_sha256="0" * 64)
+
+
+def test_source_verified_baseline_loader_records_only_actual_source_provenance():
+    _, _, _, native = subject._capture()
+    runtime, runtime_source, binding, captures = subject._runtime(
+        None,
+        native,
+        baseline_manifest_path=BASELINE_MANIFEST,
+        baseline_manifest_sha256="3b1f70a40a6dac8028d11c52f747400ab88dff3a193f828e3940c53813f3273d",
+    )
+    assert runtime_source == subject.BASELINE_RUNTIME_SOURCE
+    assert binding["baseline_runtime_loader"] == {
+        "path": "evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/baseline_native_runtime.py",
+        "sha256": subject.BASELINE_RUNTIME_SHA256,
+    }
+    assert binding["baseline_manifest"] == {
+        "path": "evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/baseline-runtime-v1.json",
+        "sha256": "3b1f70a40a6dac8028d11c52f747400ab88dff3a193f828e3940c53813f3273d",
+    }
+    assert binding["baseline_runtime_provenance"]["provider_calls"] == 0
+    assert binding["baseline_runtime_provenance"]["native_admission"] is False
+    assert binding["baseline_runtime_provenance"]["execution_authority"] is False
+    assert "shared_runtime_bindings" not in binding
+    assert captures[subject.BASELINE_RUNTIME_PATH] == subject.BASELINE_RUNTIME_PATH.read_bytes()
+    assert isinstance(runtime.broker, ModuleType)
+    broker_type = getattr(runtime.broker, "Broker", None)
+    assert broker_type is None or not isinstance(runtime.broker, broker_type)
+    runtime.verify()
+
+
+def test_source_verified_baseline_loader_rejects_anchor_drift_and_changed_loader_capture(monkeypatch):
+    _, _, _, native = subject._capture()
+    with pytest.raises(ValueError, match="Historical storage path"):
+        subject._runtime(
+            None,
+            native,
+            baseline_manifest_path=BASELINE_MANIFEST.with_name("missing-baseline-runtime-v1.json"),
+            baseline_manifest_sha256="3b1f70a40a6dac8028d11c52f747400ab88dff3a193f828e3940c53813f3273d",
+        )
+    with pytest.raises(ValueError, match="source pin"):
+        subject._runtime(None, native, baseline_manifest_path=BASELINE_MANIFEST, baseline_manifest_sha256="0" * 64)
+    monkeypatch.setattr(subject, "BASELINE_RUNTIME_SHA256", "0" * 64)
+    with pytest.raises(ValueError, match="Baseline runtime loader"):
+        subject._runtime(None, native, baseline_manifest_path=BASELINE_MANIFEST,
+                         baseline_manifest_sha256="3b1f70a40a6dac8028d11c52f747400ab88dff3a193f828e3940c53813f3273d")
+    monkeypatch.undo()
+    runtime, _, _, captures = subject._runtime(
+        None,
+        native,
+        baseline_manifest_path=BASELINE_MANIFEST,
+        baseline_manifest_sha256="3b1f70a40a6dac8028d11c52f747400ab88dff3a193f828e3940c53813f3273d",
+    )
+    captures[subject.BASELINE_RUNTIME_PATH] = b"changed"
+    with pytest.raises(ValueError, match="Pinned optimizer source changed"):
+        subject._assert_unchanged(captures, runtime)
+
+
+def test_injected_runtime_cannot_select_source_verified_baseline_path():
+    with pytest.raises(ValueError, match="Injected runtime"):
+        subject.fit_train(
+            [],
+            [],
+            runtime=_runtime(SyntheticCore()),
+            expected_optimizer_sha256=subject._sha(SOURCE.read_bytes()),
+            baseline_manifest_path=BASELINE_MANIFEST,
+            baseline_manifest_sha256="3b1f70a40a6dac8028d11c52f747400ab88dff3a193f828e3940c53813f3273d",
+        )
 
 
 def test_winner_tie_order_prefers_simplest_then_vector_then_trial_number():

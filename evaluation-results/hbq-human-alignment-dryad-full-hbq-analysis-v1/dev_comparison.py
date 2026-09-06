@@ -10,17 +10,17 @@ import hashlib
 import importlib.util
 import json
 import math
+import uuid
+from collections.abc import Sequence
 from pathlib import Path
 from types import ModuleType
-from typing import Any, Sequence
-import uuid
-
+from typing import Any
 
 ROOT = Path(__file__).resolve().parent
 PROTOCOL_PATH = ROOT / "protocol-v2.json"
 PROTOCOL_SHA256 = "33e7dde670bf212da0ee7c4cd6cf628f9a43949dc597cea47b0d97aa4e158e2b"
 OPTIMIZER_PATH = ROOT / "optimizer.py"
-OPTIMIZER_SHA256 = "6baeb9240c866b9d09ce3042b776836d2f309770fe8a6bc0abcf4b359bfe2c61"
+OPTIMIZER_SHA256 = "304020d4c7d40b1ca09be88d1eafbcc6b392c05717dda184f12faf845000a378"
 ANALYSIS_MATH_PATH = ROOT / "analysis_math.py"
 ANALYSIS_MATH_SHA256 = "237c6ff2fb9c343b7a7000fdbbe17ad76db29afde1164a4fa7f0affa0963b41f"
 NATIVE_ADMISSION_PATH = ROOT / "native_admission.py"
@@ -59,7 +59,7 @@ def _load(path: Path, raw: bytes, label: str) -> ModuleType:
         raise ValueError(f"Cannot load {label}")
     module = importlib.util.module_from_spec(spec)
     module.__file__ = str(path)
-    exec(compile(raw, str(path), "exec"), module.__dict__)
+    exec(compile(raw, str(path), "exec"), module.__dict__)  # noqa: S102 - execute only hash-pinned local source.
     return module
 
 
@@ -82,14 +82,8 @@ def _verify(captures: dict[Path, bytes], runtime: Any) -> None:
         raise ValueError("Pinned DEV comparison source changed during evaluation")
     verify = getattr(runtime, "verify", None)
     if not callable(verify):
-        raise ValueError("Runtime lacks a pinned postcheck")
+        raise ValueError("Runtime lacks a pinned postcheck")  # noqa: TRY004 - missing runtime capability is a contract error.
     verify()
-
-
-def _runtime(runtime: Any, native: ModuleType) -> tuple[Any, str]:
-    if runtime is None:
-        return native.load_runtime(), "pinned_native_load_runtime"
-    return runtime, "caller_supplied_test_runtime_no_authority"
 
 
 def _questions(runtime: Any, optimizer: ModuleType) -> tuple[str, ...]:
@@ -115,7 +109,8 @@ def _verdicts(rows: Sequence[dict[str, Any]], question_ids: tuple[str, ...]) -> 
     return result
 
 
-def _fit(fit_raw: bytes, expected_fit_sha256: str, optimizer: ModuleType, analysis: ModuleType, runtime_source: str, protocol, captures) -> tuple[dict[str, Any], set[str]]:
+def _fit(fit_raw: bytes, expected_fit_sha256: str, optimizer: ModuleType, analysis: ModuleType, runtime_source: str,
+         runtime_binding: dict[str, Any] | None, protocol, captures) -> tuple[dict[str, Any], set[str]]:
     if not isinstance(fit_raw, bytes) or _sha(fit_raw) != _hash(expected_fit_sha256, "expected_fit_sha256"):
         raise ValueError("Frozen fit hash differs from the external review anchor")
     def pairs(items):
@@ -133,9 +128,9 @@ def _fit(fit_raw: bytes, expected_fit_sha256: str, optimizer: ModuleType, analys
         raise ValueError("Frozen fit is not JSON") from error
     if not isinstance(fit, dict) or set(fit) != {"evidence_class", "identity", "input_commitments", "trial_count", "trial_records", "winner"}:
         raise ValueError("Frozen fit shape differs")
-    expected_evidence = "development_fit_only" if runtime_source == "pinned_native_load_runtime" else "synthetic_fit_no_authority"
+    expected_evidence = optimizer._evidence_class(runtime_source)
     identity = fit.get("identity")
-    if fit.get("evidence_class") != expected_evidence or identity != optimizer._identity(protocol, captures, runtime_source):
+    if fit.get("evidence_class") != expected_evidence or identity != optimizer._identity(protocol, captures, runtime_source, runtime_binding):
         raise ValueError("Frozen fit identity or authority classification differs")
     commitments = fit.get("input_commitments")
     if not isinstance(commitments, dict) or set(commitments) != {"verdict_rows_sha256", "target_rows_sha256"}:
@@ -198,14 +193,23 @@ def _scores(runtime: Any, modules: list[dict[str, Any]], bundle: dict[str, Any],
     return rows, hashes
 
 
-def evaluate_dev(verdict_rows: list[dict[str, Any]], target_rows: list[dict[str, Any]], fit_raw: bytes, *, expected_fit_sha256: str, expected_comparison_sha256: str, runtime: Any = None) -> dict[str, Any]:
+def evaluate_dev(verdict_rows: list[dict[str, Any]], target_rows: list[dict[str, Any]], fit_raw: bytes, *,
+                 expected_fit_sha256: str, expected_comparison_sha256: str, runtime: Any = None,
+                 baseline_manifest_path: Path | str | None = None,
+                 baseline_manifest_sha256: str | None = None) -> dict[str, Any]:
     """Score the frozen DEV set under baseline and frozen TRAIN winner profiles."""
     captures, protocol, optimizer, analysis, native = _capture(expected_comparison_sha256)
-    loaded_runtime, runtime_source = _runtime(runtime, native)
+    loaded_runtime, runtime_source, runtime_binding, runtime_captures = optimizer._runtime(
+        runtime,
+        native,
+        baseline_manifest_path=baseline_manifest_path,
+        baseline_manifest_sha256=baseline_manifest_sha256,
+    )
+    captures.update(runtime_captures)
     verdict_input = target_input = None
     try:
         _verify(captures, loaded_runtime)
-        fit, train_ids = _fit(fit_raw, expected_fit_sha256, optimizer, analysis, runtime_source, protocol, captures)
+        fit, train_ids = _fit(fit_raw, expected_fit_sha256, optimizer, analysis, runtime_source, runtime_binding, protocol, captures)
         question_ids = _questions(loaded_runtime, optimizer)
         verdicts = _verdicts(verdict_rows, question_ids)
         partition, targets = analysis._targets(target_rows)
@@ -224,7 +228,8 @@ def evaluate_dev(verdict_rows: list[dict[str, Any]], target_rows: list[dict[str,
         comparison = analysis.compare_dev(baseline_scores, candidate_scores, target_rows)
         if _canonical(sorted(verdict_rows, key=lambda row: row["opaque_story_id"])) != verdict_input or _canonical(sorted(target_rows, key=lambda row: row["opaque_story_id"])) != target_input:
             raise ValueError("DEV inputs changed during comparison")
-        evidence_class = "unadmitted_dev_comparison_only" if runtime_source == "pinned_native_load_runtime" else "synthetic_dev_comparison_no_authority"
+        evidence_class = "baseline_source_verified_dev_comparison_unadmitted" if runtime_source == optimizer.BASELINE_RUNTIME_SOURCE else ("unadmitted_dev_comparison_only" if runtime_source == "pinned_native_load_runtime" else "synthetic_dev_comparison_no_authority")
+        runtime_pins = runtime_binding if runtime_source == optimizer.BASELINE_RUNTIME_SOURCE else {"runtime_bindings": protocol["runtime_bindings"], "shared_runtime_bindings": protocol["shared_runtime_bindings"]}
         result = {
             "evidence_class": evidence_class,
             "native_admission_verified": False,
@@ -236,7 +241,7 @@ def evaluate_dev(verdict_rows: list[dict[str, Any]], target_rows: list[dict[str,
                 "native_admission_sha256": NATIVE_ADMISSION_SHA256,
                 "protocol_sha256": PROTOCOL_SHA256,
                 "runtime_source": runtime_source,
-                "runtime_pins": {"runtime_bindings": protocol["runtime_bindings"], "shared_runtime_bindings": protocol["shared_runtime_bindings"]},
+                "runtime_pins": runtime_pins,
                 "frozen_fit_sha256": _sha(fit_raw),
             },
             "frozen_fit": {"sha256": _sha(fit_raw), "input_commitments": fit["input_commitments"]},
@@ -252,6 +257,6 @@ def evaluate_dev(verdict_rows: list[dict[str, Any]], target_rows: list[dict[str,
     except Exception as error:
         try:
             _verify(captures, loaded_runtime)
-        except Exception as postcheck_error:
+        except Exception as postcheck_error:  # noqa: BLE001 - retain the original failure when its postcheck also fails.
             error.add_note(f"Pinned source/runtime postcheck failed: {type(postcheck_error).__name__}")
         raise

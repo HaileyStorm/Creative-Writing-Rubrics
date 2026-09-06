@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "evidence_class": "locally_replayed_native_baseline_cohort_prefix",
+  "source_commit": "49f662f1f03b636feed003b99c2f094ff19353ba",
+  "execution_source_sha256": "e02a1c90aa6764f29158d175e980b891ba41c32f09c222de1b93800a14502ebd",
+  "initialization_sha256": "cbe3497ce589afe1528641956c28e589d2e75fc5c351002f7bf5b2e207ed4a91",
+  "plan_sha256": "edeadb93c485ba227153329b5ae420de1c9d08d95e920bac0635d197fd3dbd7f",
+  "prepared_sha256": "4f3bcdab2d09146876a6fd19e09232b80a66c3231a516cc0747930c1d136627e",
+  "runtime_manifest_sha256": "3b1f70a40a6dac8028d11c52f747400ab88dff3a193f828e3940c53813f3273d",
+  "route_sha256": "6e26084b12aaeb48dfc907be9672f69fe404aa7ad6b4e977ce5f98f7a1ee380e",
+  "settlement_sha256": "6cc8c0fefd1576893153041777aeab4343a66468971ac1c6a896d84273d9dc85",
+  "cohort_number": 1,
+  "request_ordinals": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+  "native_requests": 10,
+  "distinct_request_identities": 10,
+  "distinct_session_identities": 10,
+  "trusted_predecessor_identities_excluded": 33,
+  "authorization_contact_counts": [3, 3, 3, 1],
+  "authorization_sha256": [
+    "0b14e23ab8636747a0262189c29985a511a045f137ddc1afdb77541ba6810f05",
+    "6e3c4e093c8a21159f8bb51fabebfaf28855109978ef1ce840e0dc8a14d4c8b2",
+    "480f16904df506d8ac58be99ea160d0a0e75404f3018992d38b9365c90789fa1",
+    "66917664a2c860e760e7835fa458eab5c3fd41d39db2ea2c90840b9390bfd1a9"
+  ],
+  "canonical_verdict_leaves": 80,
+  "complete_story_passes": 0,
+  "score": null,
+  "coverage": null,
+  "empirical_batch_cap": null,
+  "full_baseline_admitted": false,
+  "human_alignment_result": false,
+  "execution_files": 145,
+  "execution_bytes": 917749,
+  "execution_file_map_sha256": "ce6dc4b1b5517ab6c87157558210f52dc73c9178b76ab899b736cee3d55cec21",
+  "snapshot_manifest_sha256": "6e5eb51daad00074f520b211ef9e5853d3d9c6bd6f3c84a7accbe98fca39bc40",
+  "byte_exact_snapshot_verified": true,
+  "independent_ledger_and_native_replay_verified": true,
+  "replay_inputs_machine_local": true,
+  "manual_preparation_incident": "CWR-BASELINE-VERDICT-AGGREGATE-GROWTH-20260906",
+  "manual_preparation_proof_sha256": [
+    "7099ae9d89b2914df51664a09e37ee620a03b18a46fed8bf8766c6068eb3820b",
+    "58f3ebe0e0bb3543154cd05fe2200f6a50b2672fa33d053f7220dc266cc34a05"
+  ],
+  "manual_preparation_scope_expired": true,
+  "remaining_operational_work": [
+    "Versioned helper repair must recognize exact checkpoint-derived aggregate growth without weakening immutable evidence checks.",
+    "A reviewed settled-boundary source and receipt renewal must preserve old and new route snapshots, source manifests, and the complete prefix before continued collection."
+  ]
+}

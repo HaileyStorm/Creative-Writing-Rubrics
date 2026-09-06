@@ -7,18 +7,17 @@ profile into runtime use.
 
 from __future__ import annotations
 
-from fractions import Fraction
 import hashlib
 import importlib.util
 import json
 import math
+import uuid
+from collections.abc import Sequence
 from pathlib import Path
 from types import ModuleType
-from typing import Any, Sequence
-import uuid
+from typing import Any
 
 import optuna
-
 
 ANALYSIS_ROOT = Path(__file__).resolve().parent
 ROOT = ANALYSIS_ROOT.parents[1]
@@ -28,6 +27,9 @@ ANALYSIS_MATH_PATH = ANALYSIS_ROOT / "analysis_math.py"
 ANALYSIS_MATH_SHA256 = "237c6ff2fb9c343b7a7000fdbbe17ad76db29afde1164a4fa7f0affa0963b41f"
 NATIVE_ADMISSION_PATH = ANALYSIS_ROOT / "native_admission.py"
 NATIVE_ADMISSION_SHA256 = "22ccfe3299bab0e04045a7ec01ab4799929818a3a84aecc8549bb6cb3032a1ec"
+BASELINE_RUNTIME_PATH = ANALYSIS_ROOT / "baseline_native_runtime.py"
+BASELINE_RUNTIME_SHA256 = "5130bc037e0700f8d498c40ca790aaf248e986189818ae059934ee6488bbfbcd"
+BASELINE_RUNTIME_SOURCE = "source_verified_baseline_runtime"
 DOMAIN_ORDER = ("task", "character", "movement", "language", "setting", "effect", "fresh", "mechanics", "holistic")
 CANONICAL_POINTS = (8, 15, 19, 16, 9, 10, 10, 5, 8)
 MULTIPLIERS = (0.5, 1.0, 2.0)
@@ -66,7 +68,7 @@ def _load_raw_module(path: Path, raw: bytes, label: str) -> ModuleType:
         raise ValueError(f"Cannot load {label}")
     module = importlib.util.module_from_spec(spec)
     module.__file__ = str(path)
-    exec(compile(raw, str(path), "exec"), module.__dict__)
+    exec(compile(raw, str(path), "exec"), module.__dict__)  # noqa: S102 - execute only hash-pinned local source.
     return module
 
 
@@ -92,14 +94,53 @@ def _assert_unchanged(captures: dict[Path, bytes], runtime: Any) -> None:
         raise ValueError("Pinned optimizer source changed during fitting")
     verify = getattr(runtime, "verify", None)
     if not callable(verify):
-        raise ValueError("Runtime lacks a pinned postcheck")
+        raise ValueError("Runtime lacks a pinned postcheck")  # noqa: TRY004 - missing runtime capability is a contract error.
     verify()
 
 
-def _runtime(runtime: Any, native: ModuleType) -> tuple[Any, str]:
-    if runtime is None:
-        return native.load_runtime(), "pinned_native_load_runtime"
-    return runtime, "caller_supplied_test_runtime_no_authority"
+def _relative(path: Path) -> str:
+    try:
+        return path.resolve().relative_to(ROOT).as_posix()
+    except ValueError:
+        return str(path.resolve())
+
+
+def _runtime(runtime: Any, native: ModuleType, *, baseline_manifest_path: Path | str | None = None,
+             baseline_manifest_sha256: str | None = None) -> tuple[Any, str, dict[str, Any] | None, dict[Path, bytes]]:
+    has_manifest = baseline_manifest_path is not None
+    has_hash = baseline_manifest_sha256 is not None
+    if has_manifest != has_hash:
+        raise ValueError("Baseline manifest path and hash must be supplied together")
+    if runtime is not None and has_manifest:
+        raise ValueError("Injected runtime cannot select the source-verified baseline path")
+    if runtime is not None:
+        return runtime, "caller_supplied_test_runtime_no_authority", None, {}
+    if not has_manifest:
+        return native.load_runtime(), "pinned_native_load_runtime", None, {}
+
+    loader_raw = _read_pinned(BASELINE_RUNTIME_PATH, BASELINE_RUNTIME_SHA256, "Baseline runtime loader")
+    loader = _load_raw_module(BASELINE_RUNTIME_PATH, loader_raw, "baseline_runtime")
+    manifest_path = Path(baseline_manifest_path)
+    loaded_runtime = loader.load_runtime(manifest_path, expected_manifest_sha256=baseline_manifest_sha256)
+    provenance = getattr(loaded_runtime, "provenance", None)
+    if not isinstance(provenance, dict) or provenance.get("evidence_class") != "prospective_baseline_runtime_source_binding" or provenance.get("manifest_sha256") != baseline_manifest_sha256 or provenance.get("provider_calls") != 0 or provenance.get("native_admission") is not False or provenance.get("execution_authority") is not False:
+        raise ValueError("Baseline runtime provenance differs from the source-only contract")
+    source_sha256 = provenance.get("source_sha256")
+    if not isinstance(source_sha256, dict) or not source_sha256:
+        raise ValueError("Baseline runtime source provenance is missing")
+    binding = {
+        "baseline_runtime_loader": {"path": _relative(BASELINE_RUNTIME_PATH), "sha256": BASELINE_RUNTIME_SHA256},
+        "baseline_manifest": {"path": _relative(manifest_path), "sha256": baseline_manifest_sha256},
+        "baseline_runtime_provenance": {
+            "evidence_class": provenance["evidence_class"],
+            "manifest_sha256": provenance["manifest_sha256"],
+            "source_sha256": source_sha256,
+            "provider_calls": provenance["provider_calls"],
+            "native_admission": provenance["native_admission"],
+            "execution_authority": provenance["execution_authority"],
+        },
+    }
+    return loaded_runtime, BASELINE_RUNTIME_SOURCE, binding, {BASELINE_RUNTIME_PATH: loader_raw}
 
 
 def _question_ids(runtime: Any) -> tuple[str, ...]:
@@ -196,19 +237,36 @@ def _winner(records: Sequence[dict[str, Any]]) -> dict[str, Any]:
     return min(records, key=key)
 
 
-def _identity(protocol: dict[str, Any], captures: dict[Path, bytes], runtime_source: str) -> dict[str, Any]:
+def _evidence_class(runtime_source: str) -> str:
+    if runtime_source == BASELINE_RUNTIME_SOURCE:
+        return "baseline_source_verified_fit_unadmitted"
+    return "development_fit_only" if runtime_source == "pinned_native_load_runtime" else "synthetic_fit_no_authority"
+
+
+def _identity(protocol: dict[str, Any], captures: dict[Path, bytes], runtime_source: str,
+              runtime_binding: dict[str, Any] | None = None) -> dict[str, Any]:
+    if runtime_source == BASELINE_RUNTIME_SOURCE:
+        if runtime_binding is None:
+            raise ValueError("Baseline runtime identity is missing its source binding")
+        runtime_pins = runtime_binding
+    else:
+        if runtime_binding is not None:
+            raise ValueError("Only the source-verified baseline path may carry a runtime binding")
+        runtime_pins = {"runtime_bindings": protocol["runtime_bindings"], "shared_runtime_bindings": protocol["shared_runtime_bindings"]}
     return {
-        "evidence_class": "development_fit_only" if runtime_source == "pinned_native_load_runtime" else "synthetic_fit_no_authority",
+        "evidence_class": _evidence_class(runtime_source),
         "optimizer_sha256": _sha(captures[Path(__file__).resolve()]),
         "protocol_sha256": PROTOCOL_SHA256,
         "analysis_math": {"path": ANALYSIS_MATH_PATH.relative_to(ROOT).as_posix(), "sha256": _sha(captures[ANALYSIS_MATH_PATH])},
         "native_admission": {"path": NATIVE_ADMISSION_PATH.relative_to(ROOT).as_posix(), "sha256": _sha(captures[NATIVE_ADMISSION_PATH])},
         "runtime_source": runtime_source,
-        "runtime_pins": {"runtime_bindings": protocol["runtime_bindings"], "shared_runtime_bindings": protocol["shared_runtime_bindings"]},
+        "runtime_pins": runtime_pins,
     }
 
 
-def fit_train(verdict_rows: list[dict[str, Any]], target_rows: list[dict[str, Any]], *, expected_optimizer_sha256: str, runtime: Any = None) -> dict[str, Any]:
+def fit_train(verdict_rows: list[dict[str, Any]], target_rows: list[dict[str, Any]], *, expected_optimizer_sha256: str,
+              runtime: Any = None, baseline_manifest_path: Path | str | None = None,
+              baseline_manifest_sha256: str | None = None) -> dict[str, Any]:
     """Fit exactly 128 TRAIN-only profiles from frozen four-state verdict rows."""
     own_path = Path(__file__).resolve()
     own_raw = _read_pinned(own_path, expected_optimizer_sha256, "Reviewed optimizer")
@@ -216,7 +274,13 @@ def fit_train(verdict_rows: list[dict[str, Any]], target_rows: list[dict[str, An
     captures[own_path] = own_raw
     if optuna.__version__ != protocol["optimization"]["optuna_version"]:
         raise ValueError("Optuna version differs from the frozen protocol")
-    loaded_runtime, runtime_source = _runtime(runtime, native)
+    loaded_runtime, runtime_source, runtime_binding, runtime_captures = _runtime(
+        runtime,
+        native,
+        baseline_manifest_path=baseline_manifest_path,
+        baseline_manifest_sha256=baseline_manifest_sha256,
+    )
+    captures.update(runtime_captures)
     records: list[dict[str, Any]] = []
     try:
         _assert_unchanged(captures, loaded_runtime)
@@ -265,7 +329,7 @@ def fit_train(verdict_rows: list[dict[str, Any]], target_rows: list[dict[str, An
         winner = _winner(records)
         if _canonical(sorted(target_rows, key=lambda row: row["opaque_story_id"])) != target_raw:
             raise OptimizationAborted("Frozen targets changed during fitting", records)
-        identity = _identity(protocol, captures, runtime_source)
+        identity = _identity(protocol, captures, runtime_source, runtime_binding)
         result = {"evidence_class": identity["evidence_class"], "identity": identity,
                   "input_commitments": {"verdict_rows_sha256": _sha(verdict_raw), "target_rows_sha256": _sha(target_raw)},
                   "trial_count": len(records), "trial_records": records, "winner": winner}
@@ -275,7 +339,7 @@ def fit_train(verdict_rows: list[dict[str, Any]], target_rows: list[dict[str, An
         failure = error if isinstance(error, OptimizationAborted) or not records else OptimizationAborted("Frozen TRAIN fitting or replay failed", records)
         try:
             _assert_unchanged(captures, loaded_runtime)
-        except Exception as postcheck_error:
+        except Exception as postcheck_error:  # noqa: BLE001 - retain the original failure when its postcheck also fails.
             failure.postcheck_failure = type(postcheck_error).__name__
             failure.add_note("Pinned source/runtime postcheck also failed")
         if failure is error:
