@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "study_id": "dryad-full-hbq-analysis-v2",
+  "evidence_class": "quarantined_reconcile_required_qualification",
+  "planned_requests": 261,
+  "contact_records": 28,
+  "completed_native_receipts": 27,
+  "accepted_hbq_checkpoints": 27,
+  "unresolved_contact_ordinal": 28,
+  "unstarted_requests": 233,
+  "terminal_lifecycle_outcome": "provider_nonretryable_failure",
+  "transport_outcome": "ambiguous",
+  "structured_failure": {
+    "provider": "xai_grok_build",
+    "category": "unknown",
+    "code": "unclassified_after_launch",
+    "provider_error_type": "GrokBuildUnstructuredFailure",
+    "status": null,
+    "revocation_recorded": "host_revoked_and_local_projected",
+    "incident_key": "4912a7063382b600f8f2b5f405dae3d192c7e2c3461a3f033f95250faab56712"
+  },
+  "quota_billing_or_timeout_cause_established": false,
+  "identity_exclusion": {"status": "failed_closed_missing_receipt", "contact_count": 28, "missing_ordinal": 28},
+  "complete_pass_replay": {
+    "count": 1,
+    "verified_leaves": 178,
+    "verified_native_identities": 23,
+    "run_manifest_sha256": "6b8c2acefbfa58ba082d3612275eb84a5fbac18e61cccb3ae34a7a81e03289f7",
+    "checkpoint_head_sha256": "96dfd35233aa32266591d340419273e0e49bd9a81d91d417adee1c1d35120c80",
+    "score_published": false
+  },
+  "qualification_plan_sha256": "63f100dec4b44b103239a117a0c964640260a20e4bea5187de778e0980580100",
+  "execution_source_sha256": "e19095a2f9fd027ef84ddee993df6528e57242cd386bd0897e069612404f5e5d",
+  "contact_record_sha256": "8b92b6160876bcdaf9923b6a08a14e03969748373195d88ba1a343c31524f1ab",
+  "request_sha256": "19a3c8b2e13c35198b6b66ddf1e943565080d1cf4e2e9f8d7144923a619afe34",
+  "outcome_sha256": "a514e4d209aff12a69c0abafca5be308fb5caf5d2f4db60a524ac9cf80f6c0d0",
+  "failure_receipt_sha256": "6d5d638c69162a99ab99beacdd2ce755f9f5ec8b594a11ac1c760a1528e387a6",
+  "rejected_record_sha256": "d430a54dfdb169534fe0893c1fc91184fa8156301fb89fcf88e7d5381f099903",
+  "terminal_record_sha256": "59946af82fbaad9bd819efc992249282c92d881331c4f36123dfdde4d8b80d5c",
+  "preserved_snapshot": {
+    "directory": "cwr-dryad-v2-contact28-reconcile-20260906-r1",
+    "files": 372,
+    "bytes": 2070827,
+    "path_hash_map_sha256": "a011ae8cb0f5bf83f7a32ea2a13f819b22d816bc78d837f3cfe0b89a546b46bf"
+  },
+  "cap": null,
+  "alignment_metrics": null,
+  "automatic_resend_permitted": false,
+  "limitation": "Contact records are not proof of completed upstream requests. The missing result remains unresolved; one replayed pass and partial checkpoints cannot establish qualification or subset alignment metrics."
+}
