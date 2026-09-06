@@ -24,7 +24,7 @@ def completed(tmp_path, fixture):
     route = case.route("hbq", timeout_seconds=30)
     case.write_route(route)
     transport = bind(case, route, lambda context: None)
-    execute(tmp_path, transport, batch_size=32)
+    execute(tmp_path, transport, batch_size=32, response_schema_mode="batch_question_ids_v1")
     routes = {subject.digest(subject.canonical(route)): route}
     runtime = subject.load_runtime()
     source = {"opaque_story_id": "artifact", "story_text": "A short test scene.", "artifact_path": str(tmp_path / "artifact.txt")}
@@ -46,7 +46,7 @@ def partial(tmp_path, fixture):
             raise runtime.runner.RetryDisclosurePause("test prefix pause")
 
     with pytest.raises(runtime.runner.RetryDisclosurePause):
-        execute(tmp_path, transport, batch_size=32, before_provider_attempt=pause_after_prefix)
+        execute(tmp_path, transport, batch_size=32, response_schema_mode="batch_question_ids_v1", before_provider_attempt=pause_after_prefix)
     routes = {subject.digest(subject.canonical(route)): route}
     source = {"opaque_story_id": "artifact", "story_text": "A short test scene.", "artifact_path": str(tmp_path / "artifact.txt")}
     return tmp_path / "run", routes, runtime, source
@@ -61,6 +61,36 @@ def test_replay_recomputes_full_pass_without_writes(completed):
     assert len({item["request_id_hash"] for item in admitted["native_identities"]}) == 6
     assert admitted["coverage"] == 1
     assert {p: p.read_bytes() for p in root.rglob("*") if p.is_file()} == before
+
+
+def test_batch_schema_records_bind_exact_question_ids_and_counts(completed):
+    root, _, runtime, _ = completed
+    manifest = json.loads((root / "run.json").read_bytes())
+    config = manifest["configuration"]
+    assert config["response_schema_mode"] == "batch_question_ids_v1"
+    records = config["batch_response_schemas"]
+    assert len(records) == 6
+    for number, record in enumerate(records, start=1):
+        raw = (root / record["path"]).read_bytes()
+        schema = json.loads(raw)
+        question_ids = [item["question"]["id"] for item in runtime.questions[(number - 1) * 32:number * 32]]
+        assert record == {
+            "path": f"responses/schemas/batch-{number:04d}.json",
+            "sha256": subject.digest(raw),
+            "bytes": len(raw),
+        }
+        assert schema["properties"]["verdicts"]["minItems"] == len(question_ids)
+        assert schema["properties"]["verdicts"]["items"]["properties"]["question_id"]["enum"] == question_ids
+
+
+def test_batch_schema_tamper_is_rejected(completed):
+    root, routes, runtime, source = completed
+    path = root / "responses/schemas/batch-0001.json"
+    schema = json.loads(path.read_bytes())
+    schema["properties"]["verdicts"]["minItems"] += 1
+    path.write_bytes(subject.canonical(schema))
+    with pytest.raises(ValueError, match="schema|configuration|drift|inventory"):
+        subject.admit_pass(root, source=source, batch_size=32, approved_routes=routes, runtime=runtime)
 
 
 @pytest.mark.parametrize("fault", ["score", "source", "route", "missing_checkpoint", "orphan_file", "orphan_dir"])
@@ -107,8 +137,11 @@ def test_raw_native_semantics_are_rechecked(completed, field):
     result["runtime"]["transport"]["stdout_byte_length"] = len(raw)
     request = json.loads((prefix / "request.json").read_bytes())
     with pytest.raises(ValueError):
+        strict_schema = runtime.runner._batch_response_schema(
+            [item["question"]["id"] for item in runtime.questions[:32]]
+        )
         subject._native_result(runtime, result, raw, next(iter(routes.values())), request["prompt"],
-                               runtime.runner._response_schema(), result["runtime"]["session_id_hash"])
+                               strict_schema, result["runtime"]["session_id_hash"])
 
 
 def forge_receipt_context(root, runtime, field, count):
@@ -160,7 +193,7 @@ def test_partial_settlement_cannot_accept_rehashed_semantic_forgery(partial, fie
         subject.admit_prefix(root, source=source, batch_size=32, approved_routes=routes, expected_batches=2, runtime=runtime)
 
 
-@pytest.mark.parametrize("field", ["extra_config", "prompt_path", "schema_path"])
+@pytest.mark.parametrize("field", ["extra_config", "prompt_path", "schema_path", "batch_schema_path"])
 def test_rehashed_configuration_metadata_is_exact(completed, field):
     root, routes, runtime, source = completed
     path = root / "run.json"
@@ -170,11 +203,16 @@ def test_rehashed_configuration_metadata_is_exact(completed, field):
         config["unrecognized_execution_policy"] = "different policy"
     elif field == "prompt_path":
         config["prompts"][0]["path"] = str(root / "different-prompt.md")
+    elif field == "batch_schema_path":
+        config["batch_response_schemas"][0]["path"] = str(root / "different-batch-schema.json")
     else:
         config["response_schema"]["path"] = str(root / "different-schema.json")
     manifest["config_sha256"] = subject.digest(runtime.runner._json_bytes(config))
     path.write_bytes(runtime.runner._json_bytes(manifest))
-    with pytest.raises(ValueError, match="shape differs|metadata differs"):
+    with pytest.raises(
+        ValueError,
+        match="shape differs|metadata differs|Run configuration differs from qualification",
+    ):
         subject.admit_pass(root, source=source, batch_size=32, approved_routes=routes, runtime=runtime)
 
 

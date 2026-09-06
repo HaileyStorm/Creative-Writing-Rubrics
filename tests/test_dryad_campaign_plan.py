@@ -25,9 +25,10 @@ def test_complete_geometry_and_identical_repetitions(built):
     (plan, artifacts), runtime = built
     assert plan["execution_authority"] is False
     assert plan["provider_calls"] == 0
+    assert plan["response_schema_mode"] == "batch_question_ids_v1"
     assert len(plan["passes"]) == 18
     assert len(plan["requests"]) == 261
-    assert len(artifacts) == 266
+    assert len(artifacts) == 527
     assert [row["ordinal"] for row in plan["requests"]] == list(range(1, 262))
     expected_ids = [row["question"]["id"] for row in runtime.questions]
     prompts = {}
@@ -40,6 +41,13 @@ def test_complete_geometry_and_identical_repetitions(built):
             raw = artifacts[row["prompt_path"]]
             assert subject.digest(raw) == row["prompt_sha256"]
             assert len(raw) == row["prompt_bytes"]
+            schema_raw = artifacts[row["schema_path"]]
+            schema = json.loads(schema_raw)
+            assert row["schema_path"].startswith("schemas/request-")
+            assert subject.digest(schema_raw) == row["schema_sha256"]
+            assert len(schema_raw) == row["schema_bytes"]
+            assert schema["properties"]["verdicts"]["minItems"] == len(row["question_ids"])
+            assert schema["properties"]["verdicts"]["items"]["properties"]["question_id"]["enum"] == row["question_ids"]
             key = (item["batch_size"], item["opaque_story_id"], row["batch_number"])
             assert prompts.setdefault(key, raw) == raw
     assert not any(path.startswith("runs/") for path in artifacts)
@@ -69,11 +77,16 @@ def test_prepared_replays_without_writes(prepared):
     assert before == {path: path.stat().st_mtime_ns for path in output.rglob("*")}
 
 
-@pytest.mark.parametrize("mutation", ["prompt", "extra_file", "extra_directory", "generator", "schedule"])
+@pytest.mark.parametrize("mutation", ["prompt", "schema", "extra_file", "extra_directory", "generator", "schedule"])
 def test_mutated_package_rejected(prepared, mutation):
     output, _ = prepared
     if mutation == "prompt":
         (output / "prompts/request-0001.txt").write_bytes(b"changed")
+    elif mutation == "schema":
+        path = output / "schemas/request-0001.json"
+        schema = json.loads(path.read_bytes())
+        schema["properties"]["verdicts"]["minItems"] += 1
+        path.write_bytes(subject._canonical(schema))
     elif mutation == "extra_file":
         (output / "extra.json").write_bytes(b"{}")
     elif mutation == "extra_directory":

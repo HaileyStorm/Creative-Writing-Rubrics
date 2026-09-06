@@ -15,7 +15,7 @@ PACKAGE = ROOT / "evaluation-results" / "hbq-human-alignment-dryad-full-hbq-anal
 SOURCE = PACKAGE / "campaign_execution.py"
 BROKER_TEST = ROOT / "tests" / "test_grok_broker_transport.py"
 PUBLIC_INPUTS = Path.home() / "Documents/cwr-dryad-pilot-source-freeze-20260905-r1/public-inputs.json"
-PLAN_ROOT = Path.home() / "Documents/cwr-dryad-qualification-plan-20260905-r3"
+PLAN_ROOT = Path.home() / "Documents/cwr-dryad-qualification-v2-plan-20260906-r1"
 GENESIS = "0" * 64
 
 

@@ -31,10 +31,21 @@ def test_builds_full_public_geometry_and_endpoint_identical_payloads() -> None:
     generator = {"evidence_class": "synthetic_test_only", "git_commit": "0" * 40, "files": {}}
     for cap, batches in ((8, 23), (32, 6)):
         plan, artifacts = subject.build_plan(raw, runtime, {"cap": cap, "evidence_class": "complete_native_campaign_admission", "provider_calls": 0, "execution_authority": False}, generator=generator)
+        assert plan["response_schema_mode"] == "batch_question_ids_v1"
+        assert plan["runtime"]["response_schema_mode"] == "batch_question_ids_v1"
         assert plan["counts"] == {"train_stories": 176, "dev_stories": 60, "stories": 236, "questions_per_story": 178, "logical_requests": 236 * batches}
         assert len(plan["passes"]) == 236 and len(plan["requests"]) == 236 * batches
+        assert len(artifacts) == 2 + len(plan["passes"]) + (2 * len(plan["requests"]))
         assert all(item["batch_size"] == cap and item["batches"] == batches and item["purpose"] == "fresh_post_qualification_measurement" for item in plan["passes"])
-        assert all(item["question_ids"] and item["endpoint_user_payloads"]["grok"] == item["endpoint_user_payloads"]["sol"] for item in plan["requests"])
+        for item in plan["requests"]:
+            assert item["question_ids"] and item["endpoint_user_payloads"]["grok"] == item["endpoint_user_payloads"]["sol"]
+            assert item["schema_path"].startswith("schemas/request-")
+            schema_raw = artifacts[item["schema_path"]]
+            schema = json.loads(schema_raw)
+            assert hashlib.sha256(schema_raw).hexdigest() == item["schema_sha256"]
+            assert len(schema_raw) == item["schema_bytes"]
+            assert schema["properties"]["verdicts"]["minItems"] == len(item["question_ids"])
+            assert schema["properties"]["verdicts"]["items"]["properties"]["question_id"]["enum"] == item["question_ids"]
         assert plan["namespace"]["measurement_pass_prefix"] == "measurement/"
         assert all(item["pass_id"].startswith("measurement/") and item["logical_sample_id"].startswith("measurement-") and not item["pass_id"].startswith("size-") for item in plan["passes"])
         assert hashlib.sha256(artifacts["plan.json"]).hexdigest() == hashlib.sha256(subject._canonical(plan)).hexdigest()

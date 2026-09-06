@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "evidence_class": "provider_free_prospective_preparation",
+  "generator_commit": "d2b5cafca18501b36e28e3dc8f5963f6d82dbe89",
+  "protocol_sha256": "33e7dde670bf212da0ee7c4cd6cf628f9a43949dc597cea47b0d97aa4e158e2b",
+  "qualification_sha256": "a407401ea07b344475e65296fd8eb474d85ec92b3bb909606a382cd62e137c13",
+  "qualification_plan": {
+    "sha256": "63f100dec4b44b103239a117a0c964640260a20e4bea5187de778e0980580100",
+    "files_replayed": 527,
+    "requests": 261,
+    "complete_passes": 18,
+    "response_schema_mode": "batch_question_ids_v1",
+    "predecessor_plan_sha256": "03302416c03f72f0c422342904be9eb7876c520ac2c021dfce14c546e23f7c28",
+    "predecessor_nonplan_files_byte_identical": 265,
+    "additional_per_request_schemas": 261
+  },
+  "human_targets": {
+    "source_sha256": "d644caf725dfdd54b242fdcf953bfa87fa680eaa50bfb612dfd165a3eb8178f2",
+    "provenance_sha256": "499735faeeb24219dacbc32c4bbedb588aec30eb5ea72730028d5e3a8e10941b",
+    "train": {"stories": 176, "sha256": "029796e36051e791bd1990f7d09c668778bcf5a63ef43ae3dfff984da93156dd"},
+    "dev": {"stories": 60, "sha256": "d9071d48465faf7beb37b249b5120e33645a3bc0925aec7856402d75fc2d35b5"},
+    "byte_exact_replay": true,
+    "unchanged_from_historical_targets": true,
+    "confirmation_numerically_analyzed": false,
+    "individual_targets_published": false
+  },
+  "provider_calls": 0,
+  "execution_authority": false,
+  "empirical_batch_cap": null,
+  "model_alignment_result": false,
+  "predecessor_disposition": "First qualification remains terminal invalid; its six contacts are neither resumed nor reused."
+}

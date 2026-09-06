@@ -134,7 +134,7 @@ def test_source_change_during_derive_is_rejected(tmp_path, monkeypatch):
 
 def test_qualification_document_binding_and_request_budget():
     protocol, _ = subject._load_protocol()
-    raw = SOURCE.with_name("qualification.json").read_bytes()
+    raw = SOURCE.with_name("qualification-v2.json").read_bytes()
     assert subject.sha256_bytes(raw) == protocol["execution"]["qualification_protocol_sha256"]
     qualification = json.loads(raw)
     passes = len(qualification["cohort"]) * qualification["complete_passes_per_story_per_size"]
