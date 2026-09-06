@@ -146,23 +146,26 @@ def _native_result(runtime, result, raw_envelope, route, prompt, schema, session
     return identity
 
 
-def admit_pass(run_root, *, source, batch_size, approved_routes, runtime=None):
-    """Replay one full pass against caller-frozen source/route snapshots.
+def _batch_count(batch_size, question_count):
+    require(type(batch_size) is int and batch_size in (8, 32), "Unexpected qualification batch size")
+    return (question_count + batch_size - 1) // batch_size
 
-    This checks native-record consistency. The campaign layer must establish the
-    source freeze, authorization lineage and unique identities across all passes;
-    this function never authenticates an arbitrary caller's route dictionary.
-    """
+
+def _admit_replay(run_root, *, source, batch_size, approved_routes, expected_batches, runtime=None):
+    """Replay a completed prefix against caller-frozen source/route snapshots."""
     runtime = runtime or load_runtime()
     runtime.verify()
     root = Path(run_root).resolve()
     before = _snapshot(root, runtime)
     runner, core = runtime.runner, runtime.core
+    full_batches = _batch_count(batch_size, len(runtime.questions))
+    require(type(expected_batches) is int and not isinstance(expected_batches, bool)
+            and 1 <= expected_batches <= full_batches, "Expected checkpoint prefix differs")
+    full_pass = expected_batches == full_batches
     manifest = _json(root, "run.json", runtime)
     require(manifest.get("format_version") == 5, "Qualification requires current terminal lifecycle")
     config = manifest["configuration"]
     expected_ids = [item["question"]["id"] for item in runtime.questions]
-    require(type(batch_size) is int and batch_size in (8, 32), "Unexpected qualification batch size")
     expected = {
         "provider": "grok", "model": "grok-4.6", "reasoning": "high",
         "bundle_id": "prose.short_story", "artifact_id": source["opaque_story_id"],
@@ -206,7 +209,8 @@ def admit_pass(run_root, *, source, batch_size, approved_routes, runtime=None):
         require(canonical(records) == canonical([expected_record]), "Judge instruction/schema metadata differs")
     require(not list((root / "responses/rejected").rglob("*.json")), "Qualification cannot contain rejected attempts")
     verdicts, count, head = runner._load_checkpoints(root, artifact_text=text, context_texts=[], batch_attempts=1)
-    require(count == (178 + batch_size - 1) // batch_size and [v["question_id"] for v in verdicts] == expected_ids, "Full-pass checkpoint inventory differs")
+    accepted_count = min(len(expected_ids), expected_batches * batch_size)
+    require(count == expected_batches and [v["question_id"] for v in verdicts] == expected_ids[:accepted_count], "Checkpoint prefix inventory differs")
     require(all(v["artifact_id"] == source["opaque_story_id"] and v["bundle_id"] == "prose.short_story"
                 and v["judge_id"] == "grok:grok-4.6" and v["run_id"] == manifest["run_id"] for v in verdicts), "Verdict identity differs")
     runner._validate_or_reconstruct_attempt_lifecycle(root, config_sha256=manifest["config_sha256"], batch_attempts=1,
@@ -216,8 +220,10 @@ def admit_pass(run_root, *, source, batch_size, approved_routes, runtime=None):
     require(_read(root, "response.schema.json", runtime) == runner._json_bytes(schema), "Response schema differs")
     binary = (REPOSITORY / "prompts/judge/BINARY_EVALUATION_PROMPT.md").read_bytes().decode("utf-8-sig").strip()
     identities = []
-    allowed_files = {"run.json", "response.schema.json", "verdicts.jsonl", "score.json"}
-    if (root / "score.v2.json").is_file():
+    allowed_files = {"run.json", "response.schema.json", "verdicts.jsonl"}
+    if full_pass:
+        allowed_files.add("score.json")
+    if full_pass and (root / "score.v2.json").is_file():
         allowed_files.add("score.v2.json")  # Not an input to qualification arithmetic.
     for number in range(1, count + 1):
         checkpoint = _json(root, f"responses/batch-{number:04d}.json", runtime)
@@ -278,21 +284,75 @@ def admit_pass(run_root, *, source, batch_size, approved_routes, runtime=None):
             f"responses/attempt-lifecycle/batch-{number:04d}/attempt-0001.settled.json",
             *(prefix + "/" + name for name in ("request.json", "context-bindings.json", "outcome.json", "native-envelope.json", "receipt.json")),
         })
+    if not full_pass:
+        next_number = expected_batches + 1
+        next_prompt_path = root / "responses" / f"batch-{next_number:04d}.prompt.txt.gz"
+        if next_prompt_path.is_file():
+            next_chunk = runtime.questions[expected_batches * batch_size:(expected_batches + 1) * batch_size]
+            next_prompt = runner._render_prompt(
+                binary_prompt=binary,
+                artifact={"name": config["artifact"]["name"], "text": text},
+                contexts=[], bundle_id="prose.short_story", artifact_id=source["opaque_story_id"],
+                questions=next_chunk, provider="grok", model="grok-4.6",
+            )
+            prompt_bytes = gzip.decompress(_read(root, next_prompt_path.relative_to(root).as_posix(), runtime))
+            require(prompt_bytes == next_prompt.encode("utf-8"), "Next prompt checkpoint differs")
+            allowed_files.add(next_prompt_path.relative_to(root).as_posix())
     require(set(before) == allowed_files, "Run contains missing or orphan evidence files")
     allowed_dirs = {parent.as_posix() for name in allowed_files for parent in Path(name).parents if parent != Path(".")}
     require({path.relative_to(root).as_posix() for path in root.rglob("*") if path.is_dir()} <= allowed_dirs,
             "Run contains orphan evidence directories")
     require(len({i["request_id_hash"] for i in identities}) == count and len({i["session_id_hash"] for i in identities}) == count,
             "Duplicate native request/session identity")
-    score = core.score_bundle(runtime.modules, runtime.bundle, verdicts, artifact_id=source["opaque_story_id"], task_contract=None)
-    score["weight_profile"] = weight_audit
-    require(_read(root, "score.json", runtime) == runner._json_bytes(score), "Canonical score replay differs")
-    observed, coverage = score["final_score"]["observed"], score["coverage"]
-    require(type(observed) in (int, float) and math.isfinite(observed) and 0 <= observed <= 100 and coverage >= 0.88,
-            "Unqualified score or coverage")
+    observed = coverage = None
+    if full_pass:
+        score = core.score_bundle(runtime.modules, runtime.bundle, verdicts, artifact_id=source["opaque_story_id"], task_contract=None)
+        score["weight_profile"] = weight_audit
+        require(_read(root, "score.json", runtime) == runner._json_bytes(score), "Canonical score replay differs")
+        observed, coverage = score["final_score"]["observed"], score["coverage"]
+        require(type(observed) in (int, float) and math.isfinite(observed) and 0 <= observed <= 100 and coverage >= 0.88,
+                "Unqualified score or coverage")
     runtime.verify()
     require(_snapshot(root, runtime) == before, "Run evidence changed during replay")
-    return {"verdicts": [{"question_id": v["question_id"], "verdict": v["verdict"]} for v in verdicts],
-            "score": observed, "coverage": coverage, "native_identities": identities,
-            "run_manifest_sha256": digest(_read(root, "run.json", runtime)), "checkpoint_head_sha256": head,
-            "evidence_class": "native_record_replay_only"}
+    result = {"verdicts": [{"question_id": v["question_id"], "verdict": v["verdict"]} for v in verdicts],
+              "score": observed, "coverage": coverage, "native_identities": identities,
+              "run_manifest_sha256": digest(_read(root, "run.json", runtime)), "checkpoint_head_sha256": head,
+              "evidence_class": "native_record_replay_only"}
+    if not full_pass:
+        result["accepted_count"] = len(verdicts)
+    return result
+
+
+def admit_prefix(run_root, *, source, batch_size, approved_routes, expected_batches, runtime=None):
+    """Replay an exact nonempty prefix; score only when the pass is complete."""
+
+    runtime = runtime or load_runtime()
+    _batch_count(batch_size, len(runtime.questions))
+    return _admit_replay(
+        run_root,
+        source=source,
+        batch_size=batch_size,
+        approved_routes=approved_routes,
+        expected_batches=expected_batches,
+        runtime=runtime,
+    )
+
+
+def admit_pass(run_root, *, source, batch_size, approved_routes, runtime=None):
+    """Replay one full pass against caller-frozen source/route snapshots.
+
+    This checks native-record consistency. The campaign layer must establish the
+    source freeze, authorization lineage and unique identities across all passes;
+    this function never authenticates an arbitrary caller's route dictionary.
+    """
+
+    runtime = runtime or load_runtime()
+    expected_batches = _batch_count(batch_size, len(runtime.questions))
+    return _admit_replay(
+        run_root,
+        source=source,
+        batch_size=batch_size,
+        approved_routes=approved_routes,
+        expected_batches=expected_batches,
+        runtime=runtime,
+    )

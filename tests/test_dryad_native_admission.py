@@ -31,6 +31,27 @@ def completed(tmp_path, fixture):
     return tmp_path / "run", routes, runtime, source
 
 
+@pytest.fixture
+def partial(tmp_path, fixture):
+    case, _ = fixture
+    raw = case.fake.read_text(encoding="utf-8")
+    case.fake.write_text(raw.replace('"fixture-request"', '"fixture-" + session'), encoding="utf-8")
+    route = case.route("hbq", timeout_seconds=30)
+    case.write_route(route)
+    transport = bind(case, route, lambda context: None)
+    runtime = subject.load_runtime()
+
+    def pause_after_prefix(context):
+        if context["batch"]["number"] == 3:
+            raise runtime.runner.RetryDisclosurePause("test prefix pause")
+
+    with pytest.raises(runtime.runner.RetryDisclosurePause):
+        execute(tmp_path, transport, batch_size=32, before_provider_attempt=pause_after_prefix)
+    routes = {subject.digest(subject.canonical(route)): route}
+    source = {"opaque_story_id": "artifact", "story_text": "A short test scene.", "artifact_path": str(tmp_path / "artifact.txt")}
+    return tmp_path / "run", routes, runtime, source
+
+
 def test_replay_recomputes_full_pass_without_writes(completed):
     root, routes, runtime, source = completed
     before = {p: p.read_bytes() for p in root.rglob("*") if p.is_file()}
@@ -90,9 +111,7 @@ def test_raw_native_semantics_are_rechecked(completed, field):
                                runtime.runner._response_schema(), result["runtime"]["session_id_hash"])
 
 
-@pytest.mark.parametrize("field", ["context", "source", "request_id"])
-def test_rehashed_forged_receipt_context_is_rejected_semantically(completed, field):
-    root, routes, runtime, source = completed
+def forge_receipt_context(root, runtime, field, count):
     prefix = root / "responses/grok-broker/batch-0001-attempt-0001"
     receipt_path = prefix / "receipt.json"
     receipt = json.loads(receipt_path.read_bytes())
@@ -108,7 +127,7 @@ def test_rehashed_forged_receipt_context_is_rejected_semantically(completed, fie
         receipt["request_id_hash"] = "0" * 64
     receipt_path.write_bytes(subject.canonical(receipt))
     previous = None
-    for number in range(1, 7):
+    for number in range(1, count + 1):
         path = root / f"responses/batch-{number:04d}.json"
         checkpoint = json.loads(path.read_bytes())
         checkpoint["previous_checkpoint_sha256"] = previous
@@ -123,8 +142,22 @@ def test_rehashed_forged_receipt_context_is_rejected_semantically(completed, fie
         settled = json.loads(settled_path.read_bytes())
         settled["evidence"]["sha256"] = previous
         settled_path.write_bytes(runtime.runner._json_bytes(settled))
+
+
+@pytest.mark.parametrize("field", ["context", "source", "request_id"])
+def test_rehashed_forged_receipt_context_is_rejected_semantically(completed, field):
+    root, routes, runtime, source = completed
+    forge_receipt_context(root, runtime, field, 6)
     with pytest.raises(ValueError, match="semantic reconstruction"):
         subject.admit_pass(root, source=source, batch_size=32, approved_routes=routes, runtime=runtime)
+
+
+@pytest.mark.parametrize("field", ["context", "request_id"])
+def test_partial_settlement_cannot_accept_rehashed_semantic_forgery(partial, field):
+    root, routes, runtime, source = partial
+    forge_receipt_context(root, runtime, field, 2)
+    with pytest.raises(ValueError, match="semantic reconstruction"):
+        subject.admit_prefix(root, source=source, batch_size=32, approved_routes=routes, expected_batches=2, runtime=runtime)
 
 
 @pytest.mark.parametrize("field", ["extra_config", "prompt_path", "schema_path"])
@@ -143,3 +176,32 @@ def test_rehashed_configuration_metadata_is_exact(completed, field):
     path.write_bytes(runtime.runner._json_bytes(manifest))
     with pytest.raises(ValueError, match="shape differs|metadata differs"):
         subject.admit_pass(root, source=source, batch_size=32, approved_routes=routes, runtime=runtime)
+
+
+def test_prefix_replay_validates_pause_prompt_without_score_or_writes(partial):
+    root, routes, runtime, source = partial
+    before = {p: p.read_bytes() for p in root.rglob("*") if p.is_file()}
+    admitted = subject.admit_prefix(root, source=source, batch_size=32, approved_routes=routes,
+                                    expected_batches=2, runtime=runtime)
+    assert admitted["accepted_count"] == 64
+    assert admitted["score"] is None and admitted["coverage"] is None
+    assert len(admitted["native_identities"]) == 2
+    assert (root / "responses/batch-0003.prompt.txt.gz").is_file()
+    assert not (root / "responses/batch-0003.json").exists()
+    assert not (root / "responses/attempt-lifecycle/batch-0003").exists()
+    assert not (root / "responses/grok-broker/batch-0003-attempt-0001").exists()
+    assert {p: p.read_bytes() for p in root.rglob("*") if p.is_file()} == before
+
+
+def test_full_admission_rejects_partial_prefix(partial):
+    root, routes, runtime, source = partial
+    with pytest.raises(ValueError, match="prefix inventory"):
+        subject.admit_pass(root, source=source, batch_size=32, approved_routes=routes, runtime=runtime)
+
+
+@pytest.mark.parametrize("expected_batches", [0, 1, 3, 7])
+def test_prefix_admission_rejects_wrong_expected_count(partial, expected_batches):
+    root, routes, runtime, source = partial
+    with pytest.raises(ValueError):
+        subject.admit_prefix(root, source=source, batch_size=32, approved_routes=routes,
+                             expected_batches=expected_batches, runtime=runtime)
