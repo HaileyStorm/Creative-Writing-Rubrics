@@ -13,6 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 PACKAGE = ROOT / "evaluation-results" / "hbq-human-alignment-dryad-full-hbq-analysis-v1"
 SOURCE = PACKAGE / "measurement_plan.py"
 PUBLIC_INPUTS = Path.home() / "Documents/cwr-dryad-pilot-source-freeze-20260905-r1/public-inputs.json"
+RENDERER_CAPTURE = ROOT / ".artifacts-temp" / "dryad-renderer-before-refactor.json"
 
 
 def load():
@@ -23,14 +24,20 @@ def load():
     return module
 
 
-def test_builds_full_public_geometry_and_endpoint_identical_payloads() -> None:
+def test_preserves_qualified_geometry_and_legacy_renderer_bytes() -> None:
     subject = load()
     campaign = subject._load(subject.CAMPAIGN_PLAN_PATH, subject.CAMPAIGN_PLAN_SHA256, "Campaign plan")
     runtime = campaign._load_runtime()
     raw = PUBLIC_INPUTS.read_bytes()
-    generator = {"evidence_class": "synthetic_test_only", "git_commit": "0" * 40, "files": {}}
+    capture_raw = RENDERER_CAPTURE.read_bytes()
+    assert hashlib.sha256(capture_raw).hexdigest() == "c9901e0b4ad6cd4e6f972078f37e030927b674dd12323ae21a066ce27f9cc1eb"
+    capture = json.loads(capture_raw)
+    assert capture["evidence_class"] == "synthetic_renderer_regression_only"
+    assert capture["source_sha256"] == "e75aa1398809661848acac9c877ec83346b498d7f283c1f0b8a5a18aa5ab6f52"
+    generator = {"evidence_class": "synthetic_renderer_regression_only", "git_commit": "0" * 40, "files": {}}
     for cap, batches in ((8, 23), (32, 6)):
-        plan, artifacts = subject.build_plan(raw, runtime, {"cap": cap, "evidence_class": "complete_native_campaign_admission", "provider_calls": 0, "execution_authority": False}, generator=generator)
+        admission = {"cap": cap, "evidence_class": "synthetic_renderer_regression_only"}
+        plan, artifacts = subject.build_plan(raw, runtime, admission, generator=generator)
         assert plan["response_schema_mode"] == "batch_question_ids_v1"
         assert plan["runtime"]["response_schema_mode"] == "batch_question_ids_v1"
         assert plan["counts"] == {"train_stories": 176, "dev_stories": 60, "stories": 236, "questions_per_story": 178, "logical_requests": 236 * batches}
@@ -49,6 +56,8 @@ def test_builds_full_public_geometry_and_endpoint_identical_payloads() -> None:
         assert plan["namespace"]["measurement_pass_prefix"] == "measurement/"
         assert all(item["pass_id"].startswith("measurement/") and item["logical_sample_id"].startswith("measurement-") and not item["pass_id"].startswith("size-") for item in plan["passes"])
         assert hashlib.sha256(artifacts["plan.json"]).hexdigest() == hashlib.sha256(subject._canonical(plan)).hexdigest()
+        expected = capture["by_cap"][str(cap)]
+        assert {path: hashlib.sha256(value).hexdigest() for path, value in artifacts.items()} == expected
 
 
 def test_public_input_hash_drift_rejects_before_plan_generation() -> None:

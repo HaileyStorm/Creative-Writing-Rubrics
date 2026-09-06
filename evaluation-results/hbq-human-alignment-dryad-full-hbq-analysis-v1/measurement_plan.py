@@ -21,9 +21,11 @@ REPOSITORY = ROOT.parents[1]
 CAMPAIGN_PLAN_PATH = ROOT / "campaign_plan.py"
 ADMISSION_PATH = ROOT / "campaign_admission.py"
 PROTOCOL_PATH = ROOT / "protocol-v2.json"
+RENDER_PATH = ROOT / "measurement_render.py"
 CAMPAIGN_PLAN_SHA256 = "208337b99c44aead7ab11614381e44238dcdcd0799a8fcc9f0fa3869a15ee472"
 ADMISSION_SHA256 = "f52e99767af43aeab9590a9f4a10fe62d1804c1e5acacc5f0dac8dfb537d77b3"
 PROTOCOL_SHA256 = "33e7dde670bf212da0ee7c4cd6cf628f9a43949dc597cea47b0d97aa4e158e2b"
+RENDER_SHA256 = "e677c31a22bd11e6f84625a817e10c87da6657234f37fccf1e5f9e56dd919266"
 PUBLIC_INPUTS_SHA256 = "6254f58d3366667c9578e2661a1ca0d105a603a0f8affe2d925a767957937c42"
 _HASH = re.compile(r"[0-9a-f]{64}\Z")
 
@@ -88,9 +90,30 @@ def _load(path: Path, expected: str, name: str) -> ModuleType:
         sys.modules.pop(module_name, None)
 
 
+def _renderer() -> ModuleType:
+    path = _plain(RENDER_PATH, directory=False)
+    raw = path.read_bytes()
+    require(digest(raw) == RENDER_SHA256, "Measurement renderer source pin differs")
+    module_name = "_dryad_measurement_render_" + uuid.uuid4().hex
+    module = ModuleType(module_name)
+    module.__file__ = str(path)
+    module.__package__ = ""
+    sys.modules[module_name] = module
+    try:
+        exec(compile(raw, str(path), "exec"), module.__dict__)
+        return module
+    finally:
+        sys.modules.pop(module_name, None)
+
+
+def _inputs(raw: bytes) -> list[dict[str, str]]:
+    return _renderer().load_inputs(raw, expected_sha256=PUBLIC_INPUTS_SHA256)
+
+
 def _sources() -> tuple[dict[Path, bytes], tuple[ModuleType, ModuleType]]:
-    captured = {CAMPAIGN_PLAN_PATH: CAMPAIGN_PLAN_PATH.read_bytes(), ADMISSION_PATH: ADMISSION_PATH.read_bytes(), PROTOCOL_PATH: PROTOCOL_PATH.read_bytes()}
+    captured = {CAMPAIGN_PLAN_PATH: CAMPAIGN_PLAN_PATH.read_bytes(), ADMISSION_PATH: ADMISSION_PATH.read_bytes(), PROTOCOL_PATH: PROTOCOL_PATH.read_bytes(), RENDER_PATH: RENDER_PATH.read_bytes()}
     require(digest(captured[CAMPAIGN_PLAN_PATH]) == CAMPAIGN_PLAN_SHA256 and digest(captured[ADMISSION_PATH]) == ADMISSION_SHA256 and digest(captured[PROTOCOL_PATH]) == PROTOCOL_SHA256, "Measurement dependency source pin differs")
+    require(digest(captured[RENDER_PATH]) == RENDER_SHA256, "Measurement renderer source pin differs")
     modules = (_load(CAMPAIGN_PLAN_PATH, CAMPAIGN_PLAN_SHA256, "Campaign plan"), _load(ADMISSION_PATH, ADMISSION_SHA256, "Campaign admission"))
     captured[Path(__file__).resolve()] = Path(__file__).read_bytes()
     return captured, modules
@@ -98,21 +121,6 @@ def _sources() -> tuple[dict[Path, bytes], tuple[ModuleType, ModuleType]]:
 
 def _unchanged(captured: Mapping[Path, bytes]) -> None:
     require(all(path.read_bytes() == raw for path, raw in captured.items()), "Measurement source changed during operation")
-
-
-def _inputs(raw: bytes) -> list[dict[str, str]]:
-    require(digest(raw) == PUBLIC_INPUTS_SHA256, "Public inputs hash differs")
-    value = _json(raw, "Public inputs")
-    require(set(value) == {"TRAIN", "DEV"} and isinstance(value["TRAIN"], list) and isinstance(value["DEV"], list) and len(value["TRAIN"]) == 176 and len(value["DEV"]) == 60, "Public input partition geometry differs")
-    seen: set[str] = set()
-    result = []
-    for partition in ("TRAIN", "DEV"):
-        for position, row in enumerate(value[partition], start=1):
-            require(isinstance(row, dict) and set(row) == {"opaque_story_id", "story_text"} and isinstance(row["opaque_story_id"], str) and row["opaque_story_id"] not in seen and isinstance(row["story_text"], str), "Public input identity differs")
-            seen.add(row["opaque_story_id"])
-            result.append({"partition": partition, "position": str(position), "opaque_story_id": row["opaque_story_id"], "story_text": row["story_text"]})
-    require(len(result) == 236, "Public measurement source count differs")
-    return result
 
 
 def _admission(admission: ModuleType, public_inputs_path: Path, qualification_plan_root: Path, qualification_execution_root: Path, *, plan_sha256: str, settlement_sha256: str, admission_sha256: str, execution_sha256: str) -> dict[str, Any]:
@@ -135,7 +143,7 @@ def _output(public_inputs_path: Path, output_root: Path, qualification_plan_root
 
 
 def _identity(commit: str | None = None) -> dict[str, Any]:
-    paths = (Path(__file__).resolve(), CAMPAIGN_PLAN_PATH, ADMISSION_PATH, PROTOCOL_PATH)
+    paths = (Path(__file__).resolve(), CAMPAIGN_PLAN_PATH, ADMISSION_PATH, PROTOCOL_PATH, RENDER_PATH)
     captured = {path: path.read_bytes() for path in paths}
     if commit is None:
         process = subprocess.run(["git", "-C", str(REPOSITORY), "rev-parse", "HEAD"], capture_output=True, check=False)
@@ -150,55 +158,22 @@ def _identity(commit: str | None = None) -> dict[str, Any]:
 
 
 def build_plan(public_inputs_raw: bytes, runtime: Any, admission: Mapping[str, Any], *, generator: Mapping[str, Any]) -> tuple[dict[str, Any], dict[str, bytes]]:
-    runtime.verify()
+    renderer = _renderer()
     sources = _inputs(public_inputs_raw)
     require(admission.get("cap") in {8, 32}, "Admission cap differs")
     cap = admission["cap"]
-    question_ids = [item["question"]["id"] for item in runtime.questions]
-    require(len(question_ids) == len(set(question_ids)) == 178, "Canonical question identities differ")
-    schema_raw = runtime.runner._json_bytes(runtime.runner._response_schema())
-    binary_raw = (REPOSITORY / "prompts/judge/BINARY_EVALUATION_PROMPT.md").read_bytes()
-    binary = binary_raw.decode("utf-8-sig").strip()
     protocol = _json(PROTOCOL_PATH.read_bytes(), "Protocol")
-    protocol_execution = protocol.get("execution")
-    require(isinstance(protocol_execution, Mapping), "Protocol execution contract differs")
-    response_schema_mode = protocol_execution.get("response_schema_mode")
-    require(response_schema_mode in {None, "batch_question_ids_v1"}, "Unsupported response schema mode")
-    require(getattr(runtime, "response_schema_mode", None) == response_schema_mode, "Runtime response schema mode differs")
-    require(digest(binary_raw) == protocol["runtime_bindings"]["prompts/judge/BINARY_EVALUATION_PROMPT.md"], "Judge prompt hash differs")
-    artifacts: dict[str, bytes] = {"response.schema.json": schema_raw}
-    passes, requests = [], []
-    ordinal = 0
-    for sample_number, source in enumerate(sources, start=1):
-        sample_id = f"measurement-{source['partition'].lower()}-{sample_number:04d}-{source['opaque_story_id']}"
-        pass_id = f"measurement/{source['partition'].lower()}/{sample_number:04d}/{source['opaque_story_id']}"
-        for batch_number, start in enumerate(range(0, 178, cap), start=1):
-            ordinal += 1
-            chunk = runtime.questions[start:start + cap]
-            payloads = {}
-            for endpoint, provider, model in (("grok", "grok", "grok-4.6"), ("sol", "codex", "gpt-5.6-sol")):
-                payloads[endpoint] = runtime.runner._render_prompt(binary_prompt=binary, artifact={"name": f"{source['opaque_story_id']}.txt", "text": source["story_text"]}, contexts=[], bundle_id="prose.short_story", artifact_id=sample_id, questions=chunk, provider=provider, model=model).encode("utf-8")
-            require(payloads["grok"] == payloads["sol"], "Endpoint user payload differs")
-            relative = f"prompts/request-{ordinal:04d}.txt"
-            artifacts[relative] = payloads["grok"]
-            request_question_ids = [item["question"]["id"] for item in chunk]
-            request_schema_raw = schema_raw
-            request_schema_path = "response.schema.json"
-            if response_schema_mode is not None:
-                request_schema_raw = runtime.runner._json_bytes(runtime.runner._batch_response_schema(request_question_ids))
-                request_schema_path = f"schemas/request-{ordinal:04d}.json"
-                artifacts[request_schema_path] = request_schema_raw
-            requests.append({"ordinal": ordinal, "logical_sample_id": sample_id, "pass_id": pass_id, "batch_number": batch_number, "question_ids": request_question_ids, "prompt_path": relative, "prompt_sha256": digest(payloads["grok"]), "prompt_bytes": len(payloads["grok"]), "endpoint_user_payloads": {endpoint: {"sha256": digest(raw), "bytes": len(raw)} for endpoint, raw in payloads.items()}, "schema_path": request_schema_path, "schema_sha256": digest(request_schema_raw), "schema_bytes": len(request_schema_raw)})
-        raw = source["story_text"].encode("utf-8")
-        artifacts[f"inputs/{source['opaque_story_id']}.txt"] = raw
-        passes.append({"logical_sample_id": sample_id, "pass_id": pass_id, "purpose": "fresh_post_qualification_measurement", "partition": source["partition"], "opaque_story_id": source["opaque_story_id"], "input_path": f"inputs/{source['opaque_story_id']}.txt", "source_sha256": digest(raw), "source_bytes": len(raw), "batch_size": cap, "batches": (178 + cap - 1) // cap, "run_path": f"runs/{pass_id}"})
-    require(len(passes) == 236 and len(requests) == 236 * ((178 + cap - 1) // cap), "Measurement plan geometry differs")
-    runtime_identity = {"question_ids": question_ids, "compiled_bundle_sha256": digest(runtime.runner._json_bytes(runtime.compiled)), "question_payload_sha256": digest(runtime.runner._json_bytes(runtime.runner._question_payload(runtime.questions)))}
-    if response_schema_mode is not None:
-        runtime_identity["response_schema_mode"] = response_schema_mode
-    plan = {"schema_version": 1, "evidence_class": "provider_free_dryad_measurement_plan", "execution_authority": False, "provider_calls": 0, "purpose": "fresh_post_qualification_measurement", "namespace": {"measurement_pass_prefix": "measurement/", "measurement_logical_sample_prefix": "measurement-", "disallowed_qualification_pass_prefixes": ["size-"], "disallowed_qualification_logical_sample_prefixes": ["qualification-"]}, "public_inputs_sha256": digest(public_inputs_raw), "generator": dict(generator), "qualification_admission": dict(admission), "cap": cap, "runtime": runtime_identity, "response_schema": {"path": "response.schema.json", "sha256": digest(schema_raw), "bytes": len(schema_raw)}, "endpoints": {"grok": {"provider": "grok", "model": "grok-4.6", "native_execution_authority": False}, "sol": {"provider": "codex", "model": "gpt-5.6-sol", "native_execution_authority": False}}, "counts": {"train_stories": 176, "dev_stories": 60, "stories": 236, "questions_per_story": 178, "logical_requests": len(requests)}, "passes": passes, "requests": requests}
-    if response_schema_mode is not None:
-        plan["response_schema_mode"] = response_schema_mode
+    execution = protocol.get("execution")
+    require(isinstance(execution, Mapping), "Protocol execution contract differs")
+    rendered, artifacts = renderer.render(
+        sources, runtime, batch_size=cap,
+        namespace={"logical_sample_prefix": "measurement-", "pass_prefix": "measurement/"},
+        purpose="fresh_post_qualification_measurement", protocol=protocol,
+        response_schema_mode=execution.get("response_schema_mode"),
+    )
+    plan = {"schema_version": 1, "evidence_class": "provider_free_dryad_measurement_plan", "execution_authority": False, "provider_calls": 0, "purpose": "fresh_post_qualification_measurement", "namespace": {"measurement_pass_prefix": "measurement/", "measurement_logical_sample_prefix": "measurement-", "disallowed_qualification_pass_prefixes": ["size-"], "disallowed_qualification_logical_sample_prefixes": ["qualification-"]}, "public_inputs_sha256": digest(public_inputs_raw), "generator": dict(generator), "qualification_admission": dict(admission), "cap": cap, "runtime": rendered["runtime"], "response_schema": rendered["response_schema"], "endpoints": {"grok": {"provider": "grok", "model": "grok-4.6", "native_execution_authority": False}, "sol": {"provider": "codex", "model": "gpt-5.6-sol", "native_execution_authority": False}}, "counts": rendered["counts"], "passes": rendered["passes"], "requests": rendered["requests"]}
+    if rendered["response_schema_mode"] is not None:
+        plan["response_schema_mode"] = rendered["response_schema_mode"]
     artifacts["plan.json"] = _canonical(plan)
     runtime.verify()
     return plan, artifacts

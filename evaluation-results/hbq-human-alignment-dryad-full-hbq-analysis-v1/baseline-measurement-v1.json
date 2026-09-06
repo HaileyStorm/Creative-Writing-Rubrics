@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "status": "prospective_no_provider_authority",
+  "study_id": "dryad-fixed-batch8-measurement-v1",
+  "parent_protocol": {
+    "path": "protocol-v2.json",
+    "sha256": "33e7dde670bf212da0ee7c4cd6cf628f9a43949dc597cea47b0d97aa4e158e2b",
+    "inherited_sections": ["source", "human_targets", "model_score", "optimization", "comparison", "runtime_bindings"],
+    "excluded_sections": ["execution", "shared_runtime_bindings"]
+  },
+  "predecessor_evidence": [
+    {
+      "path": "qualification-v2.json",
+      "sha256": "a407401ea07b344475e65296fd8eb474d85ec92b3bb909606a382cd62e137c13"
+    },
+    {
+      "path": "qualification-attempt-2.json",
+      "sha256": "90639b16cd68d0a4b36821acdcc8ed802d510122973a8621cc0bbea6cc4a0be8"
+    },
+    {
+      "path": "qualification-attempt-1.json",
+      "sha256": "0a45387965f57a520db1bd2211187e24705fcdfe2ea0f39691b93cfc314a504f"
+    },
+    {
+      "path": "terminal-identities-v1.json",
+      "sha256": "62fe2cc523cf8d22dff7f1010980ae98a19338f881d861bdf371ab5f3e37a52f"
+    }
+  ],
+  "public_inputs_sha256": "6254f58d3366667c9578e2661a1ca0d105a603a0f8affe2d925a767957937c42",
+  "execution": {
+    "provider_calls_authorized_by_this_file": false,
+    "dispatch_batch_size": 8,
+    "empirical_batch_cap": null,
+    "response_schema_mode": "batch_question_ids_v1",
+    "namespace": "baseline8-v1",
+    "purpose": "fresh_fixed_baseline_measurement",
+    "selection_reason": "Retain the original reference batch size as a prospective operating setting; no empirical qualification or batch-equivalence claim.",
+    "qualification_status": "V2 failed under its frozen rules and is not repaired, resumed, or relabelled.",
+    "release_qualification_satisfied": false,
+    "geometry": {"train_stories": 176, "dev_stories": 60, "questions_per_story": 178, "passes_per_story_per_endpoint": 1, "logical_requests_per_endpoint": 5428},
+    "schedule": "TRAIN then DEV, preserving each frozen public-input array's order, then contiguous question batches in canonical order; retain the final two-question batch.",
+    "artifact_identity": "Use the exact planned logical_sample_id as the judge artifact_id; retain the original opaque source identity and source path separately. Grok and Sol must receive identical frozen user-payload bytes.",
+    "data_policy": "Require all 236 fresh complete passes per endpoint, all 178 unique admitted leaves per story, exact source/prompt/question/schema commitments, deterministic replay, finite observed scores, and coverage at least 0.88. No filtering, favorable-pass selection, qualification-receipt reuse, invented missing verdicts, or subset alignment metrics.",
+    "attempt_policy": "One cumulative attempt per batch under terminal_sidecar_v1. An ambiguous or invalid attempt stops collection for reconciliation; no automatic resend, replacement, or fallback.",
+    "native_execution_prerequisites": ["Separately committed collector and complete native admission", "Independently reviewed endpoint transport and route bindings", "Legitimately restored machine-local included-allowance gate", "Deterministic permitted-tool controls", "Identity exclusion against all trusted completed prior native receipts; preserve unresolved contacts as quarantined no-merge/no-resend records without claiming their native identities"],
+    "provider_transport_authority": "Rendering-only source bindings do not authorize a provider or prove its runtime. Freeze endpoint-specific transport bindings and cohort approvals before any new contact."
+  },
+  "limitations": [
+    "Batch repeatability and size-32 comparability remain unqualified.",
+    "Original v2 contact 28 remains consumed, ambiguous and excluded; this study has new purpose and native identities.",
+    "This is a new fixed-setting measurement, not successful qualification or release proof.",
+    "All inherited TRAIN-only fitting, held-out DEV comparison, paired bootstrap, independent Sol validation and closed confirmation requirements remain unchanged."
+  ]
+}
