@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "study_id": "dryad-full-hbq-analysis-v1",
+  "evidence_class": "terminal_invalid_qualification",
+  "planned_requests": 261,
+  "contacted_requests": 6,
+  "native_transport_receipts": 6,
+  "accepted_hbq_checkpoints": 5,
+  "semantically_rejected_requests": 1,
+  "unstarted_requests": 255,
+  "terminal_ordinal": 6,
+  "terminal_error": "Judge returned unexpected question_id 'pending'",
+  "terminal_outcome": "schema_or_quote_failure",
+  "cap": null,
+  "alignment_metrics": null,
+  "automatic_resend_permitted": false,
+  "provider_usage_failure_observed": false,
+  "qualification_plan_sha256": "03302416c03f72f0c422342904be9eb7876c520ac2c021dfce14c546e23f7c28",
+  "original_review_sha256": "7f3be1b680401449690082c203aac8b210e24b2da27bd8829ca6f880c3e9f0b5",
+  "continuation_sha256": "14f17b3359e7394ec26de20a0226ab0bfbad654785f30a61dc72ded80b08994a",
+  "rejected_record_sha256": "5d8a8adde832c3d1212ae6229aaaebb3413b22519a55981219fc5a3bfcc21382",
+  "terminal_record_sha256": "7760587156986deb1835b269c0f043b36f70a0d21c05c3eea502d12427212c55",
+  "native_envelope_sha256": "5c7df03a23219a77d554865984e4a76870d13c936192416d46e4c854f96bfc16",
+  "execution_sources": [
+    {
+      "ordinals": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "sha256": "dc982709dd704db2bcf71bc801cdd2be75727b542df8754202b84105f05733d6"
+    },
+    {
+      "ordinals": [
+        5,
+        6
+      ],
+      "sha256": "e563cd8625be3abe9349bbd7e1e19b60b7d23decc165e43f585ab15c4b62d39a"
+    }
+  ],
+  "preserved_prior_immutable_files": 50,
+  "terminal_snapshot": {
+    "directory": "cwr-dryad-qualification-terminal-20260906-r1",
+    "files": 73,
+    "bytes": 378179,
+    "path_hash_map_sha256": "93d07252145d9d461ddbec1066949a2f394e995af32e965c31b8ca187f07330f"
+  },
+  "limitation": "Counts describe retained execution artifacts, not complete campaign admission, a batch cap, human alignment, or a subset score."
+}
