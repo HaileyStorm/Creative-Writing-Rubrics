@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "evidence_class": "provider_free_human_target_preparation",
+  "generator_commit": "e07bf57feecd9c54f8825822d9feabcaed2964f6",
+  "source_sha256": "df6e240dd7f074e261ea0b3e090e2c779a5bd51248da4a9a41a3bbcf65676931",
+  "protocol_sha256": "f6cf28247f8759a8a823bbdfb7f94e0af33a2661b9ffeb0ce17a1099662c7441",
+  "provenance_sha256": "5da7c4b413351d1b39e4edcb5acf30f7a103eca8109e276fbfef420bd44fa1da",
+  "partitions": {
+    "TRAIN": {"stories": 176, "ratings": 2116, "target_sha256": "029796e36051e791bd1990f7d09c668778bcf5a63ef43ae3dfff984da93156dd"},
+    "DEV": {"stories": 60, "ratings": 720, "target_sha256": "d9071d48465faf7beb37b249b5120e33645a3bc0925aec7856402d75fc2d35b5"}
+  },
+  "verification": {"byte_exact_replay": true, "independent_per_row_fraction_recomputation": true, "all_twelve_axis_means_match": true, "target_preparation_tests_passed": 15},
+  "confirmation_numerically_analyzed": false,
+  "individual_targets_published": false,
+  "provider_calls": 0,
+  "model_alignment_result": false,
+  "empirical_batch_cap": null
+}
