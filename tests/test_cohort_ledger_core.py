@@ -597,3 +597,47 @@ def test_core_rejects_a_renewal_after_the_final_cohort(tmp_path: Path) -> None:
     )
     with pytest.raises(ValueError, match="Operational renewal.*(?:final|suffix|binding)"):
         verify_operational_ledger(fixture)
+
+
+def test_precontact_recovery_moves_only_an_empty_cohort_to_the_current_source(tmp_path: Path) -> None:
+    core, revisions, manifest = operational_core(tmp_path)
+    root, reviewer = tmp_path / "precontact", "synthetic-reviewer"
+    routes = [renewal_route("1" * 64, "2" * 64, BASE_TIME), renewal_route("3" * 64, "4" * 64, BASE_TIME + timedelta(minutes=3))]
+    manifests = [manifest(revision) for revision in revisions]
+    sources = [item["files"][core._OPERATIONAL_FILES[-1]] for item in manifests]
+    initialization = write(root, "initialization.json", {"route_sha256": sha(routes[0]), "execution_source_sha256": sources[0]})
+    aggregate = b'{"ordinal":1}\n'
+    (root / "runner-normalized-verdicts.jsonl").write_bytes(aggregate)
+    (root / "runs/sample").mkdir(parents=True)
+    (root / "runs/sample/verdicts.jsonl").write_bytes(aggregate)
+    geometry = core.LedgerGeometry("a" * 64, {ordinal: {"ordinal": ordinal, "pass_id": "pass-1", "prompt_sha256": f"{ordinal:064x}", "schema_sha256": "c" * 64} for ordinal in (1, 2, 3, 4)}, {"pass-1": {"pass_id": "pass-1", "logical_sample_id": "sample-1", "source_sha256": "b" * 64}}, ((1,), (2, 3), (4,)))
+    first = write_closed_cohort(root, core, cohort=1, ordinal=1, route=routes[0], source=sources[0], previous_settlement=core.GENESIS_SETTLEMENT_SHA256, reviewer=reviewer, reviewed_at=BASE_TIME)
+    renewal = write_operational_renewal(root, cohort=1, initialization_sha256=sha(initialization), previous=core.GENESIS_RENEWAL_SHA256, settlement=first, old_route=routes[0], new_route=routes[1], old_manifest=manifests[0], new_manifest=manifests[1], remaining=[2, 3, 4], aggregate=aggregate, reviewed_at=BASE_TIME + timedelta(minutes=3))
+    prepared = {"schema_version": 2, "cohort_number": 2, "plan_sha256": "a" * 64, "previous_settlement_sha256": first, "request_ordinals": [2, 3], "route_sha256": sha(routes[1]), "execution_source_sha256": sources[1], "operational_renewal_sha256": renewal}
+    prepared_raw = write(root, "cohorts/0002/prepared.json", prepared)
+    original_review = {"schema_version": 1, "reviewer_task": reviewer, "decision": "approved_cohort", "prepared_sha256": sha(prepared_raw), "reviewed_at": stamp(BASE_TIME + timedelta(minutes=4)).replace("Z", "+00:00"), "expires_at": stamp(BASE_TIME + timedelta(minutes=14)).replace("Z", "+00:00")}
+    original_raw = write(root, "cohorts/0002/review.json", original_review)
+    write(root, "cohorts/0002/route.json", routes[1])
+    candidate = core.precontact_recovery_candidate(root, cohort_number=2, ordinals=(2,), initialization_sha256=sha(initialization), previous_settlement_sha256=first, operational_renewal={"sha256": renewal, "new_source": manifests[1]}, prepared_sha256=sha(prepared_raw), review_sha256=sha(original_raw), route_sha256=sha(routes[1]), reviewer_task=reviewer, old_source_sha256=sources[1], new_source_manifest=core.current_operational_source_manifest())
+    recovery_at = BASE_TIME + timedelta(minutes=15)
+    recovery = {**candidate, "reviewed_at": stamp(recovery_at), "expires_at": stamp(recovery_at + timedelta(minutes=10))}
+    recovery_raw = write(root, "cohorts/0002/review-continuations/0001.json", recovery)
+    pending = frozenset({"cohorts/0002/prepared.json", "cohorts/0002/review.json", "cohorts/0002/route.json", "cohorts/0002/review-continuations/0001.json"})
+    prior = core.verify_prefix(root, geometry, first, 1, expected_route_sha256=sha(routes[0]), expected_execution_source_sha256=sources[0], reviewer_task=reviewer, allowed_pending_paths=pending)
+    assert prior["precontact_recovery"]["sha256"] == sha(recovery_raw)
+    contact = {"schema_version": 1, "cohort_number": 2, "ordinal": 2, "plan_sha256": "a" * 64, "prepared_sha256": sha(prepared_raw), "review_sha256": sha(recovery_raw), "route_sha256": sha(routes[1]), "prompt_sha256": f"{2:064x}", "schema_sha256": "c" * 64, "admitted_at": stamp(recovery_at + timedelta(minutes=1))}
+    contact_raw = write(root, "contacts/request-0002.json", contact)
+    summary = {"ordinal": 2, "contact_sha256": sha(contact_raw), "checkpoint_sha256": f"{22:064x}", "request_id_hash": f"{32:064x}", "session_id_hash": f"{42:064x}"}
+    continuation = {"schema_version": 2, "reviewer_task": reviewer, "decision": "approved_continuation", "prepared_sha256": sha(prepared_raw), "route_sha256": sha(routes[1]), "prior_authorization_sha256": sha(recovery_raw), "previous_execution_source_sha256": sources[2], "execution_source_sha256": sources[2], "completed_prefix": {"ordinals": [2], "contacts": [summary], "run_files": core._run_files(root), "run_tree_sha256": sha(core.canonical(core._run_files(root)))}, "reviewed_at": stamp(recovery_at + timedelta(minutes=11)), "expires_at": stamp(recovery_at + timedelta(minutes=21))}
+    continuation_raw = write(root, "cohorts/0002/review-continuations/0002.json", continuation)
+    contact3 = {**contact, "ordinal": 3, "review_sha256": sha(continuation_raw), "prompt_sha256": f"{3:064x}", "admitted_at": stamp(recovery_at + timedelta(minutes=12))}
+    contact3_raw = write(root, "contacts/request-0003.json", contact3)
+    summary3 = {"ordinal": 3, "contact_sha256": sha(contact3_raw), "checkpoint_sha256": f"{23:064x}", "request_id_hash": f"{33:064x}", "session_id_hash": f"{43:064x}"}
+    settlement = {"schema_version": 3, "cohort_number": 2, "plan_sha256": "a" * 64, "prepared_sha256": sha(prepared_raw), "review_sha256": sha(original_raw), "route_sha256": sha(routes[1]), "previous_settlement_sha256": first, "settled_at": stamp(recovery_at + timedelta(minutes=13)), "contacts": [summary, summary3], "authorization_chain": [{"authorization_sha256": sha(original_raw), "execution_source_sha256": sources[1], "ordinals": []}, {"authorization_sha256": sha(recovery_raw), "execution_source_sha256": sources[2], "ordinals": [2]}, {"authorization_sha256": sha(continuation_raw), "execution_source_sha256": sources[2], "ordinals": [3]}]}
+    second = sha(write(root, "cohorts/0002/settlement.json", settlement))
+    routes.append(renewal_route("5" * 64, "6" * 64, recovery_at + timedelta(minutes=14)))
+    renewal2 = write_operational_renewal(root, cohort=2, initialization_sha256=sha(initialization), previous=renewal, settlement=second, old_route=routes[1], new_route=routes[2], old_manifest=manifests[2], new_manifest=manifests[2], remaining=[4], aggregate=aggregate, reviewed_at=recovery_at + timedelta(minutes=14))
+    third = write_closed_cohort(root, core, cohort=3, ordinal=4, route=routes[2], source=sources[2], previous_settlement=second, reviewer=reviewer, reviewed_at=recovery_at + timedelta(minutes=22), renewal_sha256=renewal2)
+    verified = core.verify_prefix(root, geometry, third, 3, expected_route_sha256=sha(routes[0]), expected_execution_source_sha256=sources[0], reviewer_task=reviewer)
+    assert verified["epochs"][2]["execution_source_sha256"] == sources[2]
+    assert verified["contacts"][2]["authorization_sha256"] == sha(recovery_raw)

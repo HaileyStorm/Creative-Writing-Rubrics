@@ -21,7 +21,7 @@ PREPARATION = ROOT / "baseline-preparation-v1.json"
 CORE = ROOT / "cohort_ledger_core.py"
 PLAN_SOURCE_SHA256 = "33193aa1a394c04c14b4f9ab81871116dbac11f933f22a9e45f252b2d279fdc8"
 CONTRACT_SHA256 = "6ae404e31ecafbeac0ef69814127c5222ac8da5fd24c2700f185ca2f8af5cf37"
-CORE_SHA256 = "0e42b5ea59aa1fcc2be7689878fae90ad1ef158b7630fb997286ec555fc1286c"
+CORE_SHA256 = "0f37317785a23f25e51be91abb05a30e35c227796d1cd6cbda82770adbc4827e"
 PREPARATION_SHA256 = "64d8deb56082ecc9ca899b264cab6a3b50f91333a8ada5bc0bb9573bfbf1924a"
 PUBLIC_INPUTS_SHA256 = "6254f58d3366667c9578e2661a1ca0d105a603a0f8affe2d925a767957937c42"
 PLAN_SHA256 = "edeadb93c485ba227153329b5ae420de1c9d08d95e920bac0635d197fd3dbd7f"
@@ -141,11 +141,11 @@ def cohort_groups(plan: Mapping[str, Any]) -> list[tuple[int, ...]]:
     return [tuple(range(start, min(start + 10, 5429))) for start in range(1, 5429, 10)]
 
 
-def verify_prefix(execution_root: Path, public_inputs_raw: bytes, plan_raw: bytes, expected_plan_sha256: str, expected_settlement_sha256: str, through_cohort: int, *, expected_route_sha256: str, expected_execution_source_sha256: str, expected_reviewer_task: str, allowed_pending_paths: frozenset[str] = frozenset()) -> dict[str, Any]:
+def verify_prefix(execution_root: Path, public_inputs_raw: bytes, plan_raw: bytes, expected_plan_sha256: str, expected_settlement_sha256: str, through_cohort: int, *, expected_route_sha256: str, expected_execution_source_sha256: str, expected_reviewer_task: str, allowed_pending_paths: frozenset[str] = frozenset(), pending_precontact_recovery: Mapping[str, Any] | None = None) -> dict[str, Any]:
     """Verify a provider-free contiguous baseline ledger prefix."""
     core, core_raw = _core()
     geometry = _geometry(public_inputs_raw, plan_raw, expected_plan_sha256, core)
-    result = core.verify_prefix(execution_root, geometry, expected_settlement_sha256, through_cohort, expected_route_sha256=expected_route_sha256, expected_execution_source_sha256=expected_execution_source_sha256, reviewer_task=expected_reviewer_task, allowed_pending_paths=allowed_pending_paths)
+    result = core.verify_prefix(execution_root, geometry, expected_settlement_sha256, through_cohort, expected_route_sha256=expected_route_sha256, expected_execution_source_sha256=expected_execution_source_sha256, reviewer_task=expected_reviewer_task, allowed_pending_paths=allowed_pending_paths, pending_precontact_recovery=pending_precontact_recovery)
     require(_source(CORE, CORE_SHA256, "Ledger core") == core_raw, "Baseline ledger source changed during verification")
     for path, expected in ((PLAN_SOURCE, PLAN_SOURCE_SHA256), (CONTRACT, CONTRACT_SHA256), (PREPARATION, PREPARATION_SHA256)):
         _source(path, expected, "Baseline dependency")
@@ -161,6 +161,48 @@ def validate_candidate_cohort(public_inputs_raw: bytes, plan_raw: bytes, expecte
     for path, expected in ((PLAN_SOURCE, PLAN_SOURCE_SHA256), (CONTRACT, CONTRACT_SHA256), (PREPARATION, PREPARATION_SHA256)):
         _source(path, expected, "Baseline dependency")
     return result
+
+
+def prepare_precontact_recovery_candidate(execution_root: Path, public_inputs_raw: bytes, plan_raw: bytes, *,
+                                          expected_plan_sha256: str, expected_initialization_sha256: str,
+                                          expected_previous_settlement_sha256: str, cohort_number: int,
+                                          expected_prepared_sha256: str, expected_review_sha256: str,
+                                          expected_operational_renewal_sha256: str,
+                                          expected_route_sha256: str, expected_execution_source_sha256: str,
+                                          expected_reviewer_task: str) -> dict[str, Any]:
+    """Create and validate a timestamp-free recovery candidate without provider authority."""
+    core, core_raw = _core()
+    geometry = _geometry(public_inputs_raw, plan_raw, expected_plan_sha256, core)
+    require(type(cohort_number) is int and 1 < cohort_number <= len(geometry.groups)
+            and all(_hash(value) for value in (expected_initialization_sha256, expected_previous_settlement_sha256,
+                                                expected_prepared_sha256, expected_review_sha256,
+                                                expected_operational_renewal_sha256, expected_route_sha256,
+                                                expected_execution_source_sha256))
+            and isinstance(expected_reviewer_task, str) and expected_reviewer_task,
+            "Precontact recovery anchors differ")
+    root = Path(execution_root)
+    renewal_path = root / f"cohorts/{cohort_number - 1:04d}/operational-renewals/0001.json"
+    renewal_raw = renewal_path.read_bytes()
+    renewal = _json(renewal_raw, "Operational renewal")
+    operational = {"sha256": digest(renewal_raw), "new_source": renewal.get("new_operational_source_manifest")}
+    require(operational["sha256"] == expected_operational_renewal_sha256, "Precontact recovery renewal anchor differs")
+    candidate = core.precontact_recovery_candidate(
+        root, cohort_number=cohort_number, ordinals=geometry.groups[cohort_number - 1],
+        initialization_sha256=expected_initialization_sha256,
+        previous_settlement_sha256=expected_previous_settlement_sha256, operational_renewal=operational,
+        prepared_sha256=expected_prepared_sha256, review_sha256=expected_review_sha256,
+        route_sha256=expected_route_sha256, reviewer_task=expected_reviewer_task,
+        old_source_sha256=expected_execution_source_sha256,
+        new_source_manifest=core.current_operational_source_manifest(),
+    )
+    pending = frozenset({f"cohorts/{cohort_number:04d}/{name}" for name in ("prepared.json", "review.json", "route.json")})
+    core.verify_prefix(root, geometry, expected_previous_settlement_sha256, cohort_number - 1,
+                       expected_route_sha256=_json((root / "initialization.json").read_bytes(), "Initialization")["route_sha256"],
+                       expected_execution_source_sha256=_json((root / "initialization.json").read_bytes(), "Initialization")["execution_source_sha256"],
+                       reviewer_task=expected_reviewer_task, allowed_pending_paths=pending,
+                       pending_precontact_recovery=candidate)
+    require(_source(CORE, CORE_SHA256, "Ledger core") == core_raw, "Baseline ledger source changed during validation")
+    return candidate
 
 
 def verify_ledger(execution_root: Path, public_inputs_raw: bytes, plan_raw: bytes, expected_plan_sha256: str, expected_final_settlement_sha256: str, *, expected_route_sha256: str, expected_execution_source_sha256: str, expected_reviewer_task: str) -> dict[str, Any]:

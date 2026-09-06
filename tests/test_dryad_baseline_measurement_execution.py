@@ -40,6 +40,17 @@ def _canonical(value: Any) -> bytes:
     return json.dumps(value, sort_keys=True, separators=(",", ":")).encode("utf-8")
 
 
+@pytest.mark.parametrize("value", ("2026-09-06T20:09:51.240413Z", "2026-09-06T20:09:51.240413+00:00"))
+def test_time_accepts_only_equivalent_zero_utc_spellings(value: str) -> None:
+    assert _load()._time(value, "synthetic") == datetime(2026, 9, 6, 20, 9, 51, 240413, tzinfo=timezone.utc)
+
+
+@pytest.mark.parametrize("value", ("2026-09-06T20:09:51+01:00", "2026-09-06T20:09:51", "not-a-time"))
+def test_time_rejects_nonzero_or_missing_timezone(value: str) -> None:
+    with pytest.raises(ValueError, match="synthetic differs"):
+        _load()._time(value, "synthetic")
+
+
 @pytest.fixture
 def case(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> SimpleNamespace:
     value = _load()
@@ -744,6 +755,183 @@ def test_actual_ledger_accepts_zero_contact_multiple_renewals(actual_ledger_case
         review_sha256, first_sha256, second_sha256,
     ]
     assert [item["ordinals"] for item in settlement["authorization_chain"]] == [[], [], list(range(1, 11))]
+
+
+def test_collector_precontact_recovery_runs_settles_and_prepares_next_cohort(
+    actual_ledger_case: SimpleNamespace, monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+) -> None:
+    case = actual_ledger_case
+    value = case.value
+    captured, modules = value._sources()
+    ledger, runtime = modules[1], modules[2].load_runtime(
+        case.runtime_manifest, expected_manifest_sha256=_hash(case.runtime_manifest.read_bytes()))
+    core, core_raw = ledger._core()
+    monkeypatch.setattr(ledger, "_core", lambda: (core, core_raw))
+
+    # Git provenance has a separate real-repository test; this fixture varies only
+    # the committed source identities and leaves collector/ledger validation real.
+    current_raw = case.source_path.read_bytes()
+    previous_raw = current_raw + b"\n# synthetic predecessor source epoch\n"
+    source_copy = tmp_path / "synthetic-collector.py"
+    source_copy.write_bytes(current_raw)
+    captured.pop(case.source_path)
+    captured[source_copy] = current_raw
+    monkeypatch.setattr(value, "__file__", str(source_copy))
+    files = {relative: _hash((ROOT / relative).read_bytes()) for relative in core._OPERATIONAL_FILES}
+    old_source, new_source = _hash(previous_raw), _hash(current_raw)
+    manifests = [
+        {"revision": core.HISTORICAL_OPERATIONAL_REVISION, "files": dict(files)},
+        {"revision": "1" * 40, "files": {**files, value.EXECUTION_SOURCE_RELATIVE: old_source}},
+        {"revision": "2" * 40, "files": dict(files)},
+    ]
+
+    def checked_manifest(manifest: Any, label: str, *, require_current: bool) -> dict[str, Any]:
+        assert manifest in manifests, label
+        if require_current:
+            assert manifest["files"][value.EXECUTION_SOURCE_RELATIVE] == _hash(source_copy.read_bytes())
+        return json.loads(_canonical(manifest))
+
+    monkeypatch.setattr(core, "_source_manifest", checked_manifest)
+    monkeypatch.setattr(core, "current_operational_source_manifest", lambda: checked_manifest(
+        manifests[2], "synthetic current manifest", require_current=True))
+    now = case.state["clock"]
+    case.route.update({
+        "subscription_receipt_hash": "a" * 64,
+        "cost_evidence": {"allowance_state": "available", "checked_at": now.isoformat(),
+                          "evidence_hash": "b" * 64, "expires_at": (now + timedelta(hours=1)).isoformat(),
+                          "kind": "subscription_included", "version": 1},
+    })
+    case.route_path.write_bytes(_canonical(case.route))
+    monkeypatch.setattr(runtime.transport, "bind_grok_broker_transport", lambda **kwargs: SimpleNamespace(
+        before_contact=kwargs["before_contact"], runtime_check=kwargs["runtime_check"]))
+    _prepare_genesis_actual_ledger(case)
+    first_review = _review(case, start=now, end=now + timedelta(minutes=1))
+    first = _run(case, first_review)
+    assert first["status"] == "settled"
+    first_head = _hash((case.execution_root / "cohorts/0001/settlement.json").read_bytes())
+    prefix, _ = value._execution_snapshot(case.execution_root)
+    aggregate_path = "runs/pass-001/verdicts.jsonl"
+    aggregate = (case.execution_root / aggregate_path).read_bytes()
+    renewal = {
+        "schema_version": 1, "evidence_class": "independently_reviewed_operational_renewal",
+        "reviewer_task": value.REVIEWER_TASK, "decision": "approved_operational_renewal",
+        "original_initialization_sha256": case.initialization["initialization_sha256"],
+        "previous_renewal_sha256": "0" * 64, "settled_cohort_number": 1,
+        "settled_head_settlement_sha256": first_head,
+        "preserved_prefix": {
+            "immutable_files": {path: sha for path, sha in prefix.items() if path != aggregate_path},
+            "derived_aggregate_prefixes": {aggregate_path: {
+                "derivation": "runner_normalized_verdicts_v1", "sha256": _hash(aggregate),
+                "bytes": len(aggregate), "verdict_count": 80}},
+        },
+        "next_cohort_number": 2, "remaining_ordinals": list(range(11, 5429)),
+        "old_route": dict(case.route), "new_route": dict(case.route),
+        "old_route_sha256": value._route_hash(case.route), "new_route_sha256": value._route_hash(case.route),
+        "old_receipt_sha256": "a" * 64, "new_receipt_sha256": "a" * 64,
+        "old_operational_source_manifest": manifests[0], "new_operational_source_manifest": manifests[1],
+        "reviewed_at": now.isoformat(),
+    }
+    renewal_raw = _canonical(renewal)
+    renewal_path = case.execution_root / "cohorts/0001/operational-renewals/0001.json"
+    renewal_path.parent.mkdir()
+    renewal_path.write_bytes(renewal_raw)
+    renewal_sha = _hash(renewal_raw)
+    source_copy.write_bytes(previous_raw)
+    captured[source_copy] = previous_raw
+    case.prepared = _prepare(case, 2, first_head, renewal_sha)
+    review_raw = _canonical({
+        "schema_version": 1, "reviewer_task": value.REVIEWER_TASK, "decision": "approved_cohort",
+        "prepared_sha256": case.prepared["prepared_sha256"], "reviewed_at": now.isoformat(),
+        "expires_at": (now + timedelta(minutes=1)).isoformat(),
+    })
+    review_path = case.execution_root / "cohorts/0002/review.json"
+    review_path.write_bytes(review_raw)
+    immutable_before, _ = value._execution_snapshot(case.execution_root)
+    source_copy.write_bytes(current_raw)
+    captured[source_copy] = current_raw
+    common = {
+        "expected_plan_sha256": value.PLAN_SHA256,
+        "expected_initialization_sha256": case.initialization["initialization_sha256"],
+        "expected_previous_settlement_sha256": first_head,
+        "expected_prepared_sha256": case.prepared["prepared_sha256"],
+        "expected_review_sha256": _hash(review_raw),
+        "expected_operational_renewal_sha256": renewal_sha,
+    }
+    candidate = value.prepare_precontact_recovery(
+        case.public_inputs, case.plan_root, case.execution_root, 2,
+        expected_source_sha256=old_source, **common)
+    assert value._execution_snapshot(case.execution_root)[0] == immutable_before
+    assert candidate["schema_version"] == 3 and candidate["completed_prefix"]["ordinals"] == []
+    case.state["clock"] = now + timedelta(minutes=2)
+    recovery_sha = _write_continuation(case, candidate)
+
+    def run(continuation: str | None = None, recovery: str | None = recovery_sha) -> dict[str, Any]:
+        return value.run_cohort(
+            case.public_inputs, case.plan_root, case.execution_root, 2, case.queue_root,
+            expected_source_sha256=new_source, expected_continuation_sha256=continuation,
+            expected_precontact_recovery_sha256=recovery, **common)
+
+    brokers_before = case.state["broker_constructions"]
+    with pytest.raises(ValueError):
+        run(recovery=None)
+    assert case.state["broker_constructions"] == brokers_before
+    case.state["runner_ordinals"] = list(range(11, 21))
+    case.state["pause_after"] = 11
+    assert run()["completed_ordinals"] == [11]
+    followup = value.prepare_continuation(
+        case.public_inputs, case.plan_root, case.execution_root, 2,
+        expected_source_sha256=new_source, expected_precontact_recovery_sha256=recovery_sha, **common)
+    assert followup["schema_version"] == 2 and followup["completed_prefix"]["ordinals"] == [11]
+    followup_sha = _write_continuation(case, followup)
+
+    candidate_checks: list[str] = []
+    validate = ledger.validate_candidate_cohort
+    write_new = value._write_new
+
+    def checked_candidate(*args: Any, **kwargs: Any) -> Any:
+        assert kwargs["expected_execution_source_sha256"] == old_source
+        result = validate(*args, **kwargs)
+        candidate_checks.append("validated")
+        return result
+
+    def checked_write(path: Path, raw: bytes) -> None:
+        if path == case.execution_root / "cohorts/0002/settlement.json":
+            assert candidate_checks == ["validated"]
+            chain = json.loads(raw)["authorization_chain"]
+            assert [item["execution_source_sha256"] for item in chain] == [old_source, new_source, new_source]
+            assert [item["ordinals"] for item in chain] == [[], [11], list(range(12, 21))]
+        write_new(path, raw)
+
+    monkeypatch.setattr(ledger, "validate_candidate_cohort", checked_candidate)
+    monkeypatch.setattr(value, "_write_new", checked_write)
+    settled = run(followup_sha)
+    assert settled["status"] == "settled" and case.state["stub_contacts"] == list(range(1, 21))
+    second_head = _hash((case.execution_root / "cohorts/0002/settlement.json").read_bytes())
+    verified = ledger.verify_prefix(
+        case.execution_root, case.public_inputs.read_bytes(), (case.plan_root / "plan.json").read_bytes(),
+        value.PLAN_SHA256, second_head, 2, expected_route_sha256=value._route_hash(case.route),
+        expected_execution_source_sha256=case.initialization_source_sha256,
+        expected_reviewer_task=value.REVIEWER_TASK)
+    assert verified["epochs"][2]["execution_source_sha256"] == new_source
+    next_prepared = _prepare(case, 3, second_head, renewal_sha)
+    assert next_prepared["prepared_sha256"] == _hash((case.execution_root / "cohorts/0003/prepared.json").read_bytes())
+    assert json.loads((case.execution_root / "cohorts/0003/prepared.json").read_bytes())["execution_source_sha256"] == new_source
+    case.prepared = next_prepared
+    next_review = _review(case, start=now + timedelta(minutes=2), end=now + timedelta(minutes=3))
+    case.state["clock"] = now + timedelta(minutes=4)
+    next_common = {**common, "expected_previous_settlement_sha256": second_head,
+                   "expected_prepared_sha256": next_prepared["prepared_sha256"],
+                   "expected_review_sha256": next_review, "expected_source_sha256": new_source}
+    ordinary = value.prepare_continuation(case.public_inputs, case.plan_root, case.execution_root, 3, **next_common)
+    assert ordinary["schema_version"] == 2
+    _write_continuation(case, ordinary)
+    case.state["clock"] = now + timedelta(minutes=15)
+    successor = value.prepare_continuation(case.public_inputs, case.plan_root, case.execution_root, 3, **next_common)
+    assert successor["execution_source_sha256"] == successor["previous_execution_source_sha256"] == new_source
+    assert review_path.read_bytes() == review_raw
+    for path, sha in immutable_before.items():
+        if path != aggregate_path:
+            assert _hash((case.execution_root / path).read_bytes()) == sha
 
 
 def test_actual_ledger_accepts_used_then_larger_partial_renewal_without_resend(
