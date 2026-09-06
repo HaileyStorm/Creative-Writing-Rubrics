@@ -181,16 +181,100 @@ def _continuations(root: Path, prefix: str, snapshot: Mapping[str, str], prepare
     for _, relative in found:
         raw = _read(root, relative, snapshot); value = _json(raw, "Continuation record")
         fields = {"schema_version", "reviewer_task", "decision", "prepared_sha256", "route_sha256", "prior_authorization_sha256", "previous_execution_source_sha256", "execution_source_sha256", "completed_prefix", "reviewed_at", "expires_at"}
-        _keys(value, fields, "Continuation record", version=1)
+        version = _integer(value.get("schema_version"), "Continuation schema version")
+        _require(version in {1, 2}, "Continuation schema version differs")
+        _keys(value, fields, "Continuation record", version=version)
         _require(value["reviewer_task"] == reviewer_task and value["decision"] == "approved_continuation" and value["prepared_sha256"] == prepared_sha256 and value["route_sha256"] == route_sha256 and value["prior_authorization_sha256"] == prior_hash and value["previous_execution_source_sha256"] == prior_source and _hash(value["execution_source_sha256"]), "Continuation binding differs")
         _, start, end = _review(canonical({"schema_version": 1, "reviewer_task": value["reviewer_task"], "decision": "approved_cohort", "prepared_sha256": value["prepared_sha256"], "reviewed_at": value["reviewed_at"], "expires_at": value["expires_at"]}), prepared_sha256, reviewer_task)
         prefix_value = value["completed_prefix"]
-        _require(isinstance(prefix_value, Mapping) and set(prefix_value) == {"ordinals", "contacts", "run_files", "run_tree_sha256"} and isinstance(prefix_value["ordinals"], list) and prefix_value["ordinals"] and all(type(item) is int for item in prefix_value["ordinals"]) and prefix_value["ordinals"] == list(range(prefix_value["ordinals"][0], prefix_value["ordinals"][0] + len(prefix_value["ordinals"]))) and isinstance(prefix_value["contacts"], list) and len(prefix_value["contacts"]) == len(prefix_value["ordinals"]) and isinstance(prefix_value["run_files"], dict) and prefix_value["run_files"] and all(isinstance(path, str) and _hash(value) for path, value in prefix_value["run_files"].items()) and _hash(prefix_value["run_tree_sha256"]) and digest(canonical(prefix_value["run_files"])) == prefix_value["run_tree_sha256"], "Continuation prefix differs")
+        _require(isinstance(prefix_value, Mapping) and set(prefix_value) == {"ordinals", "contacts", "run_files", "run_tree_sha256"} and isinstance(prefix_value["ordinals"], list) and (version == 2 or prefix_value["ordinals"]) and all(type(item) is int for item in prefix_value["ordinals"]) and (not prefix_value["ordinals"] or prefix_value["ordinals"] == list(range(prefix_value["ordinals"][0], prefix_value["ordinals"][0] + len(prefix_value["ordinals"])))) and isinstance(prefix_value["contacts"], list) and len(prefix_value["contacts"]) == len(prefix_value["ordinals"]) and isinstance(prefix_value["run_files"], dict) and (version == 2 or prefix_value["run_files"]) and all(isinstance(path, str) and _hash(value) for path, value in prefix_value["run_files"].items()) and _hash(prefix_value["run_tree_sha256"]) and digest(canonical(prefix_value["run_files"])) == prefix_value["run_tree_sha256"], "Continuation prefix differs")
         for ordinal, contact in zip(prefix_value["ordinals"], prefix_value["contacts"], strict=True):
             _require(isinstance(contact, Mapping) and set(contact) == {"ordinal", "contact_sha256", "checkpoint_sha256", "request_id_hash", "session_id_hash"} and contact.get("ordinal") == ordinal and all(_hash(contact.get(field)) for field in ("contact_sha256", "checkpoint_sha256", "request_id_hash", "session_id_hash")), "Continuation prefix contact differs")
         prior_hash, prior_source = digest(raw), value["execution_source_sha256"]
-        result.append({"sha256": prior_hash, "source_sha256": prior_source, "value": value, "start": start, "end": end})
+        result.append({"sha256": prior_hash, "source_sha256": prior_source, "value": value, "start": start, "end": end, "version": version})
     return result
+
+
+def validate_candidate_cohort(geometry: LedgerGeometry, *, cohort_number: int, ordinals: tuple[int, ...],
+                              prepared_sha256: str, review_sha256: str, route_sha256: str,
+                              previous_settlement_sha256: str, review_start: datetime, review_end: datetime,
+                              continuations: list[dict[str, Any]], settlement: Mapping[str, Any],
+                              contact_records: Mapping[int, bytes], expected_execution_source_sha256: str,
+                              request_ids: set[str] | None = None, session_ids: set[str] | None = None) -> tuple[dict[int, dict[str, Any]], dict[str, tuple[str, datetime, datetime]]]:
+    """Validate one complete candidate before its immutable settlement is written."""
+    fields = {"schema_version", "cohort_number", "plan_sha256", "prepared_sha256", "review_sha256", "route_sha256", "previous_settlement_sha256", "settled_at", "contacts"}
+    version = _integer(settlement.get("schema_version"), "Settlement schema version")
+    if version == 1:
+        _keys(settlement, fields, "Settlement record", version=1)
+        _require(not continuations, "Legacy settlement cannot retain continuations")
+    elif version == 2:
+        _keys(settlement, fields | {"authorization_chain"}, "Settlement record", version=2)
+        _require(all(item["version"] == 1 for item in continuations), "Settlement continuation schema differs")
+    elif version == 3:
+        _keys(settlement, fields | {"authorization_chain"}, "Settlement record", version=3)
+        _require(all(item["version"] == 2 for item in continuations), "Settlement continuation schema differs")
+    else:
+        raise ValueError("Settlement schema version differs")
+    settled_at = _utc(settlement["settled_at"], "Settlement time")
+    _require(settlement["cohort_number"] == cohort_number and settlement["plan_sha256"] == geometry.plan_sha256 and settlement["prepared_sha256"] == prepared_sha256 and settlement["review_sha256"] == review_sha256 and settlement["route_sha256"] == route_sha256 and settlement["previous_settlement_sha256"] == previous_settlement_sha256 and isinstance(settlement["contacts"], list) and [item.get("ordinal") if isinstance(item, dict) else None for item in settlement["contacts"]] == list(ordinals), "Settlement binding differs")
+    _require(review_start < review_end <= review_start + timedelta(minutes=15), "Review window differs")
+    prior_reviewed_at = review_start
+    for item in continuations:
+        _require(isinstance(item, Mapping) and _hash(item.get("sha256")) and _hash(item.get("source_sha256"))
+                 and item.get("version") in {1, 2} and isinstance(item.get("start"), datetime)
+                 and isinstance(item.get("end"), datetime) and item["start"] < item["end"] <= item["start"] + timedelta(minutes=15)
+                 and item["start"] >= prior_reviewed_at, "Continuation review order differs")
+        prior_reviewed_at = item["start"]
+    authorization = [(review_sha256, expected_execution_source_sha256, review_start, review_end), *[(item["sha256"], item["source_sha256"], item["start"], item["end"]) for item in continuations]]
+    _require(all(source == expected_execution_source_sha256 for _, source, _, _ in authorization), "Continuation execution source differs")
+    authorization_by_hash = {key: (source, start, end) for key, source, start, end in authorization}
+    _require(len(authorization_by_hash) == len(authorization), "Authorization chain differs")
+    used: dict[str, list[int]] = {key: [] for key in authorization_by_hash}
+    local_request_ids: set[str] = set()
+    local_session_ids: set[str] = set()
+    contacts: dict[int, dict[str, Any]] = {}
+    contact_times: dict[int, datetime] = {}
+    for ordinal, summary in zip(ordinals, settlement["contacts"], strict=True):
+        _keys(summary, {"ordinal", "contact_sha256", "checkpoint_sha256", "request_id_hash", "session_id_hash"}, "Settlement contact")
+        _require(all(_hash(summary[field]) for field in ("contact_sha256", "checkpoint_sha256", "request_id_hash", "session_id_hash")) and summary["request_id_hash"] not in local_request_ids and summary["session_id_hash"] not in local_session_ids and (request_ids is None or summary["request_id_hash"] not in request_ids) and (session_ids is None or summary["session_id_hash"] not in session_ids), "Native identity is duplicated")
+        raw = contact_records.get(ordinal)
+        _require(isinstance(raw, bytes), "Contact record is missing")
+        contact = _json(raw, "Contact record")
+        _keys(contact, {"schema_version", "cohort_number", "ordinal", "plan_sha256", "prepared_sha256", "review_sha256", "route_sha256", "prompt_sha256", "schema_sha256", "admitted_at"}, "Contact record", version=1)
+        request = geometry.requests[ordinal]
+        passed = geometry.passes[request["pass_id"]]
+        _require(digest(raw) == summary["contact_sha256"] and contact["cohort_number"] == cohort_number and contact["ordinal"] == ordinal and contact["plan_sha256"] == geometry.plan_sha256 and contact["prepared_sha256"] == prepared_sha256 and contact["route_sha256"] == route_sha256 and contact["review_sha256"] in authorization_by_hash and contact["prompt_sha256"] == request["prompt_sha256"] and contact["schema_sha256"] == request["schema_sha256"], "Contact binding differs")
+        admitted_at = _utc(contact["admitted_at"], "Contact admission time")
+        source, start, end = authorization_by_hash[contact["review_sha256"]]
+        _require(start <= admitted_at <= end and admitted_at <= settled_at, "Contact is outside its authorization window")
+        local_request_ids.add(summary["request_id_hash"])
+        local_session_ids.add(summary["session_id_hash"])
+        used[contact["review_sha256"]].append(ordinal)
+        contact_times[ordinal] = admitted_at
+        contacts[ordinal] = {"ordinal": ordinal, "pass_id": request["pass_id"], "logical_sample_id": passed["logical_sample_id"], "source_sha256": passed["source_sha256"], "prompt_sha256": request["prompt_sha256"], "schema_sha256": request["schema_sha256"], "route_sha256": route_sha256, "execution_source_sha256": source, "authorization_sha256": contact["review_sha256"], **summary}
+    if version in {2, 3}:
+        chain = settlement["authorization_chain"]
+        _require(isinstance(chain, list) and len(chain) == len(authorization) and [ordinal for key, _, _, _ in authorization for ordinal in used[key]] == list(ordinals), "Settlement authorization order differs")
+        for (expected_sha, source, _, _), record in zip(authorization, chain, strict=True):
+            _require(isinstance(record, Mapping) and set(record) == {"authorization_sha256", "execution_source_sha256", "ordinals"} and record.get("authorization_sha256") == expected_sha and record.get("execution_source_sha256") == source and record.get("ordinals") == used[expected_sha], "Settlement authorization differs")
+        if version == 2:
+            _require(all(used[key] for key, _, _, _ in authorization), "Settlement authorization order differs")
+        else:
+            for index, (key, _, _, expires_at) in enumerate(authorization[:-1]):
+                if not used[key]:
+                    _require(authorization[index + 1][2] >= expires_at, "Unused authorization renewal differs")
+        completed = 0
+        for index, continuation in enumerate(continuations):
+            completed += len(used[authorization[index][0]])
+            prefix = continuation["value"]["completed_prefix"]
+            _require(prefix["ordinals"] == list(ordinals[:completed]) and completed < len(ordinals) and prefix["contacts"] == settlement["contacts"][:completed], "Continuation prefix differs")
+            if completed:
+                _require(continuation["start"] >= max(contact_times[item] for item in prefix["ordinals"]), "Continuation review precedes completed prefix")
+    if request_ids is not None:
+        request_ids.update(local_request_ids)
+    if session_ids is not None:
+        session_ids.update(local_session_ids)
+    return contacts, authorization_by_hash
 
 
 def verify_prefix(execution_root: Path, geometry: LedgerGeometry, expected_settlement_sha256: str, through_cohort: int, *, expected_route_sha256: str, expected_execution_source_sha256: str, reviewer_task: str, allowed_pending_paths: frozenset[str] = frozenset()) -> dict[str, Any]:
@@ -222,48 +306,19 @@ def verify_prefix(execution_root: Path, geometry: LedgerGeometry, expected_settl
         _require(route_sha not in routes or routes[route_sha] == route, "Route hash collision differs"); routes[route_sha] = route
         continuations = _continuations(root, prefix, files, prepared_sha, route_sha, review_sha, expected_execution_source_sha256, reviewer_task)
         _require(all(item["source_sha256"] == expected_execution_source_sha256 for item in continuations), "Continuation execution source differs")
-        authorization = {review_sha: (expected_execution_source_sha256, reviewed_at, expires_at), **{item["sha256"]: (item["source_sha256"], item["start"], item["end"]) for item in continuations}}
+        contact_records = {ordinal: _read(root, f"contacts/request-{ordinal:04d}.json", files) for ordinal in ordinals}
+        cohort_contacts, authorization = validate_candidate_cohort(
+            geometry, cohort_number=number, ordinals=ordinals, prepared_sha256=prepared_sha,
+            review_sha256=review_sha, route_sha256=route_sha, previous_settlement_sha256=previous_settlement,
+            review_start=reviewed_at, review_end=expires_at, continuations=continuations, settlement=settlement,
+            contact_records=contact_records, expected_execution_source_sha256=expected_execution_source_sha256,
+            request_ids=request_ids, session_ids=session_ids,
+        )
         for authorization_sha, (source_sha, start, end) in authorization.items():
             _require(authorization_sha not in authorizations, "Authorization reused across cohorts")
             authorizations[authorization_sha] = {"execution_source_sha256": source_sha, "reviewed_at": start.isoformat(), "expires_at": end.isoformat(), "cohort_number": number}
-        fields = {"schema_version", "cohort_number", "plan_sha256", "prepared_sha256", "review_sha256", "route_sha256", "previous_settlement_sha256", "settled_at", "contacts"}
-        version = _integer(settlement.get("schema_version"), "Settlement schema version")
-        if version == 1:
-            _keys(settlement, fields, "Settlement record", version=1); _require(not continuations, "Legacy settlement cannot retain continuations")
-        elif version == 2:
-            _keys(settlement, fields | {"authorization_chain"}, "Settlement record", version=2)
-            chain = settlement["authorization_chain"]
-            _require(isinstance(chain, list) and len(chain) == len(authorization), "Settlement authorization chain differs")
-        else:
-            raise ValueError("Settlement schema version differs")
+        contacts.update(cohort_contacts)
         settled_at = _utc(settlement["settled_at"], "Settlement time")
-        _require(settlement["cohort_number"] == number and settlement["plan_sha256"] == geometry.plan_sha256 and settlement["prepared_sha256"] == prepared_sha and settlement["review_sha256"] == review_sha and settlement["route_sha256"] == route_sha and settlement["previous_settlement_sha256"] == previous_settlement and isinstance(settlement["contacts"], list) and [item.get("ordinal") if isinstance(item, dict) else None for item in settlement["contacts"]] == list(ordinals), "Settlement binding differs")
-        used: dict[str, list[int]] = {key: [] for key in authorization}
-        contact_times: dict[int, datetime] = {}
-        for ordinal, summary in zip(ordinals, settlement["contacts"], strict=True):
-            _keys(summary, {"ordinal", "contact_sha256", "checkpoint_sha256", "request_id_hash", "session_id_hash"}, "Settlement contact")
-            _require(all(_hash(summary[field]) for field in ("contact_sha256", "checkpoint_sha256", "request_id_hash", "session_id_hash")) and summary["request_id_hash"] not in request_ids and summary["session_id_hash"] not in session_ids, "Native identity is duplicated")
-            request_ids.add(summary["request_id_hash"]); session_ids.add(summary["session_id_hash"])
-            raw = _read(root, f"contacts/request-{ordinal:04d}.json", files); contact = _json(raw, "Contact record")
-            fields = {"schema_version", "cohort_number", "ordinal", "plan_sha256", "prepared_sha256", "review_sha256", "route_sha256", "prompt_sha256", "schema_sha256", "admitted_at"}
-            _keys(contact, fields, "Contact record", version=1); request = geometry.requests[ordinal]; passed = geometry.passes[request["pass_id"]]
-            _require(digest(raw) == summary["contact_sha256"] and contact["cohort_number"] == number and contact["ordinal"] == ordinal and contact["plan_sha256"] == geometry.plan_sha256 and contact["prepared_sha256"] == prepared_sha and contact["route_sha256"] == route_sha and contact["review_sha256"] in authorization and contact["prompt_sha256"] == request["prompt_sha256"] and contact["schema_sha256"] == request["schema_sha256"], "Contact binding differs")
-            admitted_at = _utc(contact["admitted_at"], "Contact admission time"); source, start, end = authorization[contact["review_sha256"]]
-            _require(start <= admitted_at <= end and admitted_at <= settled_at, "Contact is outside its authorization window")
-            used[contact["review_sha256"]].append(ordinal); contact_times[ordinal] = admitted_at
-            contacts[ordinal] = {"ordinal": ordinal, "pass_id": request["pass_id"], "logical_sample_id": passed["logical_sample_id"], "source_sha256": passed["source_sha256"], "prompt_sha256": request["prompt_sha256"], "schema_sha256": request["schema_sha256"], "route_sha256": route_sha, "execution_source_sha256": source, "authorization_sha256": contact["review_sha256"], **summary}
-        if version == 2:
-            ordered = [ordinal for authorization_sha in authorization for ordinal in used[authorization_sha]]
-            _require(ordered == list(ordinals) and all(used[authorization_sha] for authorization_sha in authorization), "Settlement authorization order differs")
-            for expected_sha, record in zip(authorization, settlement["authorization_chain"], strict=True):
-                _require(isinstance(record, Mapping) and set(record) == {"authorization_sha256", "execution_source_sha256", "ordinals"} and record.get("authorization_sha256") == expected_sha and record.get("execution_source_sha256") == expected_execution_source_sha256 and record.get("ordinals") == used[expected_sha], "Settlement authorization differs")
-            completed = 0
-            for index, continuation in enumerate(continuations):
-                completed += len(used[list(authorization)[index]])
-                prefix_value = continuation["value"]["completed_prefix"]
-                prefix_ordinals = prefix_value["ordinals"]
-                _require(prefix_ordinals == list(ordinals[:completed]) and 0 < completed < len(ordinals) and continuation["start"] >= max(contact_times[item] for item in prefix_ordinals), "Continuation prefix differs")
-                _require(prefix_value["contacts"] == settlement["contacts"][:len(prefix_ordinals)], "Continuation prefix contact differs")
         previous_settlement, previous_source, previous_settled = digest(settlement_raw), expected_execution_source_sha256, settled_at
     _require(previous_settlement == expected_settlement_sha256 and len(contacts) == sum(map(len, geometry.groups[:through_cohort])) and len(request_ids) == len(session_ids) == len(contacts), "Ledger closing settlement differs")
     after_files, after_directories = _snapshot(root); _require(files == after_files and directories == after_directories, "Ledger changed during verification")

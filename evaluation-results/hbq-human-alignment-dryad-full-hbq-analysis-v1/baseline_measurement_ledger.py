@@ -25,7 +25,7 @@ PREPARATION = ROOT / "baseline-preparation-v1.json"
 CORE = ROOT / "cohort_ledger_core.py"
 PLAN_SOURCE_SHA256 = "33193aa1a394c04c14b4f9ab81871116dbac11f933f22a9e45f252b2d279fdc8"
 CONTRACT_SHA256 = "6ae404e31ecafbeac0ef69814127c5222ac8da5fd24c2700f185ca2f8af5cf37"
-CORE_SHA256 = "f2dbf57010c324e5b523a23864845d22665af20645a09819c695198c4a11fd6c"
+CORE_SHA256 = "9ede3ae1d19c9d848aef9ab077bf8e84b0127a0f5f9feebff25883e62718987c"
 PREPARATION_SHA256 = "64d8deb56082ecc9ca899b264cab6a3b50f91333a8ada5bc0bb9573bfbf1924a"
 PUBLIC_INPUTS_SHA256 = "6254f58d3366667c9578e2661a1ca0d105a603a0f8affe2d925a767957937c42"
 PLAN_SHA256 = "edeadb93c485ba227153329b5ae420de1c9d08d95e920bac0635d197fd3dbd7f"
@@ -151,6 +151,17 @@ def verify_prefix(execution_root: Path, public_inputs_raw: bytes, plan_raw: byte
     geometry = _geometry(public_inputs_raw, plan_raw, expected_plan_sha256, core)
     result = core.verify_prefix(execution_root, geometry, expected_settlement_sha256, through_cohort, expected_route_sha256=expected_route_sha256, expected_execution_source_sha256=expected_execution_source_sha256, reviewer_task=expected_reviewer_task, allowed_pending_paths=allowed_pending_paths)
     require(_source(CORE, CORE_SHA256, "Ledger core") == core_raw, "Baseline ledger source changed during verification")
+    for path, expected in ((PLAN_SOURCE, PLAN_SOURCE_SHA256), (CONTRACT, CONTRACT_SHA256), (PREPARATION, PREPARATION_SHA256)):
+        _source(path, expected, "Baseline dependency")
+    return result
+
+
+def validate_candidate_cohort(public_inputs_raw: bytes, plan_raw: bytes, expected_plan_sha256: str, **kwargs: Any) -> Any:
+    """Validate one complete prospective cohort without reading or writing its ledger files."""
+    core, core_raw = _core()
+    geometry = _geometry(public_inputs_raw, plan_raw, expected_plan_sha256, core)
+    result = core.validate_candidate_cohort(geometry, **kwargs)
+    require(_source(CORE, CORE_SHA256, "Ledger core") == core_raw, "Baseline ledger source changed during validation")
     for path, expected in ((PLAN_SOURCE, PLAN_SOURCE_SHA256), (CONTRACT, CONTRACT_SHA256), (PREPARATION, PREPARATION_SHA256)):
         _source(path, expected, "Baseline dependency")
     return result

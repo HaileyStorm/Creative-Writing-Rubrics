@@ -27,10 +27,10 @@ TERMINAL_IDENTITIES = ROOT / "terminal-identities-v2.json"
 PLAN_SHA256 = "edeadb93c485ba227153329b5ae420de1c9d08d95e920bac0635d197fd3dbd7f"
 SOURCE_PINS = {
     PLAN_SOURCE: "33193aa1a394c04c14b4f9ab81871116dbac11f933f22a9e45f252b2d279fdc8",
-    LEDGER_SOURCE: "61ec497d7c90f43b8081d3e19746eb9b3385b4d8ad6b911b782835a806c5c0ef",
+    LEDGER_SOURCE: "642f4ea14acab0c51c73cefcf75031383ced503bb8bcab16b606a28d65458253",
     RUNTIME_SOURCE: "5130bc037e0700f8d498c40ca790aaf248e986189818ae059934ee6488bbfbcd",
     NATIVE_SOURCE: "22ccfe3299bab0e04045a7ec01ab4799929818a3a84aecc8549bb6cb3032a1ec",
-    ADMISSION_SOURCE: "adfa8199132dbca515fe82834c8ced9da7429363ef098e133b9061650d08eaa9",
+    ADMISSION_SOURCE: "8c8c7a2b9545d8ddb051fc949a366299b07593ef46757dc5e5d97a0b00638df2",
     TERMINAL_IDENTITIES: "82cc80c2692fc0c0f47024d4db04cdbf5dd1c34c2d5deea40916a0e8ea45ca63",
 }
 _HASH = re.compile(r"[0-9a-f]{64}\Z")
@@ -370,7 +370,8 @@ def _continuations(execution_root: Path, number: int, prepared_sha256: str, revi
         required = {"schema_version", "reviewer_task", "decision", "prepared_sha256", "route_sha256",
                     "prior_authorization_sha256", "previous_execution_source_sha256", "execution_source_sha256",
                     "completed_prefix", "reviewed_at", "expires_at"}
-        _require(set(value) == required and value.get("schema_version") == 1
+        version = value.get("schema_version")
+        _require(set(value) == required and type(version) is int and version in {1, 2}
                  and value.get("reviewer_task") == REVIEWER_TASK and value.get("decision") == "approved_continuation"
                  and value.get("prepared_sha256") == prepared_sha256 and value.get("route_sha256") == route_sha256
                  and value.get("prior_authorization_sha256") == prior_authorization
@@ -380,12 +381,14 @@ def _continuations(execution_root: Path, number: int, prepared_sha256: str, revi
         _require(reviewed_at < expires_at <= reviewed_at + timedelta(minutes=15), "Continuation review window differs")
         prefix = value.get("completed_prefix")
         _require(isinstance(prefix, Mapping) and set(prefix) == {"ordinals", "contacts", "run_files", "run_tree_sha256"}
-                 and isinstance(prefix["ordinals"], list) and prefix["ordinals"]
+                 and isinstance(prefix["ordinals"], list) and (version == 2 or prefix["ordinals"])
                  and isinstance(prefix["contacts"], list) and len(prefix["contacts"]) == len(prefix["ordinals"])
                  and isinstance(prefix["run_files"], Mapping)
                  and _hash(_canonical(prefix["run_files"])) == prefix["run_tree_sha256"], "Continuation prefix differs")
         prior_authorization, prior_source = _hash(raw), source_sha256
-        result.append({"sha256": prior_authorization, "value": value, "reviewed_at": reviewed_at, "expires_at": expires_at})
+        result.append({"sha256": prior_authorization, "value": value, "reviewed_at": reviewed_at,
+                       "expires_at": expires_at, "start": reviewed_at, "end": expires_at,
+                       "source_sha256": source_sha256, "version": version})
     return result
 
 
@@ -474,17 +477,19 @@ def _validate_approval_chronology(execution_root: Path, ordinals: tuple[int, ...
         admitted_at[ordinal] = when
     _require([ordinal for item in authorizations for ordinal in item["ordinals"]] == completed,
              "Settlement authorization order differs")
-    required = authorizations if len(completed) == len(ordinals) else authorizations[:-1]
-    _require(all(item["ordinals"] for item in required), "Settlement authorization order differs")
     completed_before = 0
     for index, continuation in enumerate(continuations):
         completed_before += len(authorizations[index]["ordinals"])
         prefix = continuation["value"]["completed_prefix"]
         prefix_ordinals = prefix["ordinals"]
-        _require(prefix_ordinals == list(ordinals[:completed_before]) and 0 < completed_before < len(ordinals),
-                 "Continuation prefix ordinals differ")
-        _require(continuation["reviewed_at"] >= max(admitted_at[ordinal] for ordinal in prefix_ordinals),
-                 "Continuation review precedes completed prefix")
+        _require(prefix_ordinals == list(ordinals[:completed_before]) and completed_before < len(ordinals),
+                  "Continuation prefix ordinals differ")
+        if completed_before:
+            _require(continuation["reviewed_at"] >= max(admitted_at[ordinal] for ordinal in prefix_ordinals),
+                     "Continuation review precedes completed prefix")
+        if not authorizations[index]["ordinals"]:
+            _require(continuation["reviewed_at"] >= authorizations[index]["expires_at"],
+                     "Unused authorization renewal differs")
         if replayed_contacts is not None:
             _require(prefix["contacts"] == replayed_contacts[:completed_before], "Continuation prefix contact differs")
 
@@ -533,6 +538,21 @@ def _execution_snapshot(root: Path) -> tuple[dict[str, str], frozenset[str]]:
 def _run_files(execution_root: Path) -> dict[str, str]:
     return {path.relative_to(execution_root).as_posix(): _hash(path.read_bytes())
             for path in sorted((execution_root / "runs").rglob("*")) if path.is_file()} if (execution_root / "runs").is_dir() else {}
+
+
+def _validate_latest_continuation_evidence(continuations: list[dict[str, Any]], completed: list[int],
+                                           contacts: list[dict[str, Any]], files: Mapping[str, str]) -> None:
+    if not continuations:
+        return
+    prefix = continuations[-1]["value"]["completed_prefix"]
+    prefix_ordinals = prefix["ordinals"]
+    prefix_length = len(prefix_ordinals)
+    _require(prefix_ordinals == completed[:prefix_length] and prefix["contacts"] == contacts[:prefix_length]
+             and prefix["run_tree_sha256"] == _hash(_canonical(prefix["run_files"]))
+             and all(files.get(path) == value for path, value in prefix["run_files"].items()),
+             "Continuation completed evidence differs")
+    if prefix_length == len(completed):
+        _require(prefix["run_files"] == files, "Continuation completed evidence differs")
 
 
 def _replay_completed_prefix(execution_root: Path, plan_root: Path, ordinals: list[int],
@@ -597,22 +617,18 @@ def _prepare_continuation_unlocked(public_inputs_path: Path, plan_root: Path, ex
         expected_previous_settlement_sha256, expected_prepared_sha256, expected_review_sha256,
     )
     completed = _contact_prefix(execution_root, ordinals)
-    _require(completed and len(completed) < len(ordinals), "Continuation requires a nonempty incomplete cohort")
+    _validate_approval_chronology(execution_root, ordinals, expected_review_sha256, _review, continuations)
+    _require(len(completed) < len(ordinals), "Continuation requires an incomplete cohort")
     runtime = runtime_loader.load_runtime(
         ROOT / "baseline-runtime-v1.json", expected_manifest_sha256=initialization["runtime_manifest_sha256"])
     runtime.verify()
     passes, requests = _rows(plan, plan_root, ordinals)
     _frozen_payloads(plan_root, requests, passes, ordinals)
-    trusted_requests, trusted_sessions = _trusted_identities(admission, captured)
-    seen_requests = set(trusted_requests)
-    seen_sessions = set(trusted_sessions)
-    for contact in prior["contacts"].values():
-        seen_requests.add(contact["request_id_hash"])
-        seen_sessions.add(contact["session_id_hash"])
     contacts, files = _replay_completed_prefix(execution_root, plan_root, completed, passes, requests, runtime, native,
                                                 admission, captured, prior, route, initialization["route_sha256"])
+    _validate_latest_continuation_evidence(continuations, completed, contacts, files)
     prior_authorization = continuations[-1]["sha256"] if continuations else expected_review_sha256
-    candidate = {"schema_version": 1, "reviewer_task": REVIEWER_TASK, "decision": "approved_continuation",
+    candidate = {"schema_version": 2, "reviewer_task": REVIEWER_TASK, "decision": "approved_continuation",
                  "prepared_sha256": expected_prepared_sha256, "route_sha256": initialization["route_sha256"],
                  "prior_authorization_sha256": prior_authorization,
                  "previous_execution_source_sha256": expected_source_sha256,
@@ -667,31 +683,31 @@ def _settle_completed_cohort(execution_root: Path, plan_root: Path, public_input
     lock_owned()
     contacts, _ = _replay_completed_prefix(execution_root, plan_root, list(ordinals), passes, requests, runtime, native,
                                             admission, captured, prior, route, initialization["route_sha256"])
-    windows = {expected_review_sha256: review["_window"],
-               **{item["sha256"]: (item["reviewed_at"], item["expires_at"]) for item in continuations}}
     authorizations = [{"authorization_sha256": expected_review_sha256, "execution_source_sha256": expected_source_sha256, "ordinals": []},
-                      *[{"authorization_sha256": item["sha256"], "execution_source_sha256": expected_source_sha256, "ordinals": []}
-                        for item in continuations]]
+                       *[{"authorization_sha256": item["sha256"], "execution_source_sha256": expected_source_sha256, "ordinals": []}
+                         for item in continuations]]
     by_authorization = {item["authorization_sha256"]: item for item in authorizations}
     for summary in contacts:
         contact = _json(_relative(execution_root, f"contacts/request-{summary['ordinal']:04d}.json", directory=False).read_bytes(), "Contact")
         authorization = contact.get("review_sha256")
-        _require(authorization in by_authorization and contact.get("plan_sha256") == expected_plan_sha256
-                 and contact.get("prepared_sha256") == expected_prepared_sha256
-                 and contact.get("route_sha256") == initialization["route_sha256"], "Completed contact binding differs")
-        admitted_at = _time(contact.get("admitted_at"), "Contact admission")
-        window = windows[authorization]
-        _require(window[0] <= admitted_at <= window[1], "Completed contact lies outside authorization")
+        _require(authorization in by_authorization, "Completed contact authorization differs")
         by_authorization[authorization]["ordinals"].append(summary["ordinal"])
-    _require(all(item["ordinals"] for item in authorizations)
-             and [ordinal for item in authorizations for ordinal in item["ordinals"]] == list(ordinals),
-             "Settlement authorization order differs")
-    settlement = {"schema_version": 2, "cohort_number": cohort_number, "plan_sha256": expected_plan_sha256,
-                  "prepared_sha256": expected_prepared_sha256, "review_sha256": expected_review_sha256,
-                  "route_sha256": initialization["route_sha256"],
-                  "previous_settlement_sha256": expected_previous_settlement_sha256,
-                  "settled_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
-                  "contacts": contacts, "authorization_chain": authorizations}
+    settlement = {"schema_version": 3, "cohort_number": cohort_number, "plan_sha256": expected_plan_sha256,
+                   "prepared_sha256": expected_prepared_sha256, "review_sha256": expected_review_sha256,
+                   "route_sha256": initialization["route_sha256"],
+                   "previous_settlement_sha256": expected_previous_settlement_sha256,
+                   "settled_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+                   "contacts": contacts, "authorization_chain": authorizations}
+    contact_records = {ordinal: _relative(execution_root, f"contacts/request-{ordinal:04d}.json", directory=False).read_bytes()
+                       for ordinal in ordinals}
+    ledger.validate_candidate_cohort(
+        public_inputs_raw, plan_raw, expected_plan_sha256, cohort_number=cohort_number, ordinals=ordinals,
+        prepared_sha256=expected_prepared_sha256, review_sha256=expected_review_sha256,
+        route_sha256=initialization["route_sha256"], previous_settlement_sha256=expected_previous_settlement_sha256,
+        review_start=review["_window"][0], review_end=review["_window"][1], continuations=continuations,
+        settlement=settlement, contact_records=contact_records,
+        expected_execution_source_sha256=expected_source_sha256,
+    )
     lock_owned()
     _write_new(execution_root / "cohorts" / f"{cohort_number:04d}" / "settlement.json", _canonical(settlement))
     settlement_sha256 = _hash((execution_root / "cohorts" / f"{cohort_number:04d}" / "settlement.json").read_bytes())
@@ -763,9 +779,15 @@ def run_cohort(public_inputs_path: Path, plan_root: Path, execution_root: Path, 
                 authorization_sha256 = expected_review_sha256
                 authorization_window = review["_window"]
         else:
-            _require(not continuations and expected_continuation_sha256 is None, "Unexpected continuation authorization")
-            authorization_sha256 = expected_review_sha256
-            authorization_window = review["_window"]
+            if continuations:
+                _require(continuations[-1]["sha256"] == expected_continuation_sha256,
+                         "Continuation authorization differs")
+                authorization_sha256 = expected_continuation_sha256
+                authorization_window = (continuations[-1]["reviewed_at"], continuations[-1]["expires_at"])
+            else:
+                _require(expected_continuation_sha256 is None, "Unexpected continuation authorization")
+                authorization_sha256 = expected_review_sha256
+                authorization_window = review["_window"]
         if len(completed) < len(ordinals) and not authorization_window[0] <= datetime.now(timezone.utc) <= authorization_window[1]:
             lock_owned()
             return {"cohort_number": cohort_number, "completed_ordinals": completed,
@@ -778,26 +800,18 @@ def run_cohort(public_inputs_path: Path, plan_root: Path, execution_root: Path, 
                         if isinstance(row, Mapping) and type(row.get("ordinal")) is int}
         _require(set(all_requests) == set(range(1, 5429)), "Full baseline request inventory differs")
         payloads = _frozen_payloads(plan_root, requests, passes, ordinals)
-        replayed_contacts: list[dict[str, Any]] = []
-        replayed_files: dict[str, str] = {}
-        if completed:
-            replayed_contacts, replayed_files = _replay_completed_prefix(
-                execution_root, plan_root, completed, passes, requests, runtime, native, admission, captured, prior,
-                route, initialization["route_sha256"])
-            _validate_approval_chronology(execution_root, ordinals, expected_review_sha256, review, continuations,
-                                          replayed_contacts=replayed_contacts)
+        replayed_contacts, replayed_files = _replay_completed_prefix(
+            execution_root, plan_root, completed, passes, requests, runtime, native, admission, captured, prior,
+            route, initialization["route_sha256"])
+        _validate_approval_chronology(execution_root, ordinals, expected_review_sha256, review, continuations,
+                                      replayed_contacts=replayed_contacts)
         if len(completed) == len(ordinals):
             return _settle_completed_cohort(
                 execution_root, plan_root, public_inputs_path.read_bytes(), plan_raw, cohort_number, ordinals, initialization,
                 expected_plan_sha256, expected_previous_settlement_sha256, expected_prepared_sha256, expected_review_sha256,
                 expected_source_sha256, route, review, continuations, prior, passes, requests, runtime, native, admission,
                 captured, ledger, 0, lock_owned)
-        if completed:
-            prefix = continuations[-1]["value"]["completed_prefix"]
-            _require(prefix["ordinals"] == completed and prefix["contacts"] == replayed_contacts
-                     and prefix["run_files"] == replayed_files
-                     and prefix["run_tree_sha256"] == _hash(_canonical(replayed_files)),
-                     "Continuation completed evidence differs")
+        _validate_latest_continuation_evidence(continuations, completed, replayed_contacts, replayed_files)
         factory = broker_factory or (lambda root, cls: cls(root))
         _require(callable(factory), "Broker factory differs")
         broker = factory(queue_root, runtime.broker.Broker)
@@ -866,6 +880,10 @@ def run_cohort(public_inputs_path: Path, plan_root: Path, execution_root: Path, 
             frozen_unchanged()
             now = datetime.now(timezone.utc)
             _require(authorization_window[0] <= now <= authorization_window[1], "Review window expired")
+            if authorization_window[1] - now < timedelta(seconds=route["timeout_seconds"]):
+                if inner:
+                    raise ValueError("Review window is too short for another contact")
+                raise runtime.runner.RetryDisclosurePause("review window is too short for another contact")
             if inner:
                 contact = {"schema_version": 1, "cohort_number": cohort_number, "ordinal": request["ordinal"],
                            "plan_sha256": expected_plan_sha256, "prepared_sha256": expected_prepared_sha256,

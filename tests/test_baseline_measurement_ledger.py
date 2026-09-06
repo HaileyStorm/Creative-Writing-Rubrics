@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 import importlib.util
 import json
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -67,3 +68,80 @@ def test_wrapper_rejects_reparse_sources_before_hash_read(tmp_path: Path, monkey
     monkeypatch.setattr(Path, "lstat", original_lstat)
     with pytest.raises(ValueError, match="link or reparse"):
         subject._source(link, subject.PLAN_SOURCE_SHA256, "Baseline planner")
+
+
+def test_wrapper_validates_schema3_renewal_candidate_with_pinned_core(monkeypatch: pytest.MonkeyPatch) -> None:
+    subject = load()
+    core, _ = subject._core()
+    plan_sha256, route_sha256, prepared_sha256 = "a" * 64, "b" * 64, "c" * 64
+    source_sha256, review_sha256, continuation_sha256 = "d" * 64, "e" * 64, "f" * 64
+    passes = {"pass-1": {"pass_id": "pass-1", "logical_sample_id": "sample-1", "source_sha256": "1" * 64}}
+    requests = {
+        ordinal: {"ordinal": ordinal, "pass_id": "pass-1", "prompt_sha256": f"{ordinal:064x}", "schema_sha256": "2" * 64}
+        for ordinal in (1, 2)
+    }
+    geometry = core.LedgerGeometry(plan_sha256, requests, passes, ((1, 2),))
+    monkeypatch.setattr(subject, "_geometry", lambda *_: geometry)
+    renewal_start = datetime(2026, 9, 6, 0, 11, tzinfo=timezone.utc)
+    continuation = {
+        "sha256": continuation_sha256,
+        "source_sha256": source_sha256,
+        "version": 2,
+        "start": renewal_start,
+        "end": renewal_start + timedelta(minutes=10),
+        "value": {"completed_prefix": {"ordinals": [], "contacts": [], "run_files": {},
+                                        "run_tree_sha256": hashlib.sha256(b"{}").hexdigest()}},
+    }
+    contacts: dict[int, bytes] = {}
+    settlement_contacts = []
+    for ordinal in (1, 2):
+        raw = json.dumps({
+            "schema_version": 1, "cohort_number": 1, "ordinal": ordinal, "plan_sha256": plan_sha256,
+            "prepared_sha256": prepared_sha256, "review_sha256": continuation_sha256, "route_sha256": route_sha256,
+            "prompt_sha256": requests[ordinal]["prompt_sha256"], "schema_sha256": "2" * 64,
+            "admitted_at": (renewal_start + timedelta(minutes=ordinal)).isoformat().replace("+00:00", "Z"),
+        }, sort_keys=True, separators=(",", ":")).encode()
+        contacts[ordinal] = raw
+        settlement_contacts.append({"ordinal": ordinal, "contact_sha256": hashlib.sha256(raw).hexdigest(),
+                                    "checkpoint_sha256": f"{ordinal + 20:064x}",
+                                    "request_id_hash": f"{ordinal + 30:064x}",
+                                    "session_id_hash": f"{ordinal + 40:064x}"})
+    settlement = {
+        "schema_version": 3, "cohort_number": 1, "plan_sha256": plan_sha256,
+        "prepared_sha256": prepared_sha256, "review_sha256": review_sha256, "route_sha256": route_sha256,
+        "previous_settlement_sha256": "0" * 64,
+        "settled_at": (renewal_start + timedelta(minutes=3)).isoformat().replace("+00:00", "Z"),
+        "contacts": settlement_contacts,
+        "authorization_chain": [
+            {"authorization_sha256": review_sha256, "execution_source_sha256": source_sha256, "ordinals": []},
+            {"authorization_sha256": continuation_sha256, "execution_source_sha256": source_sha256, "ordinals": [1, 2]},
+        ],
+    }
+    kwargs = {
+        "cohort_number": 1, "ordinals": (1, 2), "prepared_sha256": prepared_sha256,
+        "review_sha256": review_sha256, "route_sha256": route_sha256,
+        "previous_settlement_sha256": "0" * 64,
+        "review_start": datetime(2026, 9, 6, tzinfo=timezone.utc),
+        "review_end": datetime(2026, 9, 6, 0, 10, tzinfo=timezone.utc),
+        "continuations": [continuation], "settlement": settlement, "contact_records": contacts,
+        "expected_execution_source_sha256": source_sha256,
+    }
+    verified, authorizations = subject.validate_candidate_cohort(b"synthetic", b"synthetic", plan_sha256, **kwargs)
+    assert set(verified) == {1, 2} and set(authorizations) == {review_sha256, continuation_sha256}
+
+    for field, replacement in (
+        ("schema_version", 2),
+        ("cohort_number", 2),
+        ("ordinal", 3),
+        ("prompt_sha256", "0" * 64),
+        ("schema_sha256", "0" * 64),
+    ):
+        malformed = json.loads(contacts[1])
+        malformed[field] = replacement
+        malformed_raw = json.dumps(malformed, sort_keys=True, separators=(",", ":")).encode()
+        bad_contacts = {**contacts, 1: malformed_raw}
+        bad_settlement = {**settlement, "contacts": [dict(item) for item in settlement_contacts]}
+        bad_settlement["contacts"][0]["contact_sha256"] = hashlib.sha256(malformed_raw).hexdigest()
+        with pytest.raises(ValueError):
+            subject.validate_candidate_cohort(b"synthetic", b"synthetic", plan_sha256,
+                                             **{**kwargs, "settlement": bad_settlement, "contact_records": bad_contacts})

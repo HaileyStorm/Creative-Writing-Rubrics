@@ -116,6 +116,91 @@ def verify(root: Path, core, **kwargs):
                               expected_execution_source_sha256=execution, reviewer_task=reviewer)
 
 
+def renewal_ledger(root: Path, core, *, first_renewal_at: datetime | None = None):
+    value = geometry(core)
+    route = {"provider": "synthetic", "route": "baseline"}
+    route_sha256 = sha(route)
+    execution_sha256 = "d" * 64
+    reviewer = "synthetic-reviewer"
+    prepared = {"schema_version": 1, "cohort_number": 1, "plan_sha256": value.plan_sha256,
+                "previous_settlement_sha256": core.GENESIS_SETTLEMENT_SHA256, "request_ordinals": [1, 2],
+                "route_sha256": route_sha256, "execution_source_sha256": execution_sha256}
+    prepared_raw = write(root, "cohorts/0001/prepared.json", prepared)
+    review = {"schema_version": 1, "reviewer_task": reviewer, "decision": "approved_cohort",
+              "prepared_sha256": sha(prepared_raw), "reviewed_at": stamp(BASE_TIME),
+              "expires_at": stamp(BASE_TIME + timedelta(minutes=10))}
+    review_raw = write(root, "cohorts/0001/review.json", review)
+    write(root, "cohorts/0001/route.json", route)
+
+    renewal_one = first_renewal_at or BASE_TIME + timedelta(minutes=11)
+    renewal_two = renewal_one + timedelta(minutes=11)
+    renewal_three = renewal_two + timedelta(minutes=11)
+    summaries = []
+    for ordinal, authorization, admitted_at in (
+        (1, None, renewal_one + timedelta(minutes=1)),
+        (2, None, renewal_three + timedelta(minutes=1)),
+    ):
+        contact = {"schema_version": 1, "cohort_number": 1, "ordinal": ordinal,
+                   "plan_sha256": value.plan_sha256, "prepared_sha256": sha(prepared_raw),
+                   "review_sha256": authorization, "route_sha256": route_sha256,
+                   "prompt_sha256": value.requests[ordinal]["prompt_sha256"], "schema_sha256": "c" * 64,
+                   "admitted_at": stamp(admitted_at)}
+        summaries.append({"ordinal": ordinal, "contact": contact,
+                          "checkpoint_sha256": f"{ordinal + 24:064x}",
+                          "request_id_hash": f"{ordinal + 14:064x}",
+                          "session_id_hash": f"{ordinal + 34:064x}"})
+
+    def continuation(prior: str, start: datetime, prefix: list[dict[str, object]]) -> tuple[dict[str, object], str]:
+        files = {"runs/prefix.json": "f" * 64} if prefix else {}
+        value = {"schema_version": 2, "reviewer_task": reviewer, "decision": "approved_continuation",
+                 "prepared_sha256": sha(prepared_raw), "route_sha256": route_sha256,
+                 "prior_authorization_sha256": prior, "previous_execution_source_sha256": execution_sha256,
+                 "execution_source_sha256": execution_sha256,
+                 "completed_prefix": {"ordinals": [item["ordinal"] for item in prefix],
+                                      "contacts": prefix, "run_files": files,
+                                      "run_tree_sha256": sha(files)},
+                 "reviewed_at": stamp(start), "expires_at": stamp(start + timedelta(minutes=10))}
+        encoded = raw(value)
+        return value, sha(encoded)
+
+    first, first_sha = continuation(sha(review_raw), renewal_one, [])
+    summaries[0]["contact"]["review_sha256"] = first_sha
+    write(root, "cohorts/0001/review-continuations/0001.json", first)
+    first_contact_raw = write(root, "contacts/request-0001.json", summaries[0]["contact"])
+    summary_one = {
+        "ordinal": 1,
+        "contact_sha256": sha(first_contact_raw),
+        "checkpoint_sha256": summaries[0]["checkpoint_sha256"],
+        "request_id_hash": summaries[0]["request_id_hash"],
+        "session_id_hash": summaries[0]["session_id_hash"],
+    }
+    second, second_sha = continuation(first_sha, renewal_two, [summary_one])
+    third, third_sha = continuation(second_sha, renewal_three, [summary_one])
+    summaries[1]["contact"]["review_sha256"] = third_sha
+    for number, candidate in ((2, second), (3, third)):
+        write(root, f"cohorts/0001/review-continuations/{number:04d}.json", candidate)
+    second_contact_raw = write(root, "contacts/request-0002.json", summaries[1]["contact"])
+    contacts = [summary_one, {
+        "ordinal": 2,
+        "contact_sha256": sha(second_contact_raw),
+        "checkpoint_sha256": summaries[1]["checkpoint_sha256"],
+        "request_id_hash": summaries[1]["request_id_hash"],
+        "session_id_hash": summaries[1]["session_id_hash"],
+    }]
+    settlement = {"schema_version": 3, "cohort_number": 1, "plan_sha256": value.plan_sha256,
+                  "prepared_sha256": sha(prepared_raw), "review_sha256": sha(review_raw), "route_sha256": route_sha256,
+                  "previous_settlement_sha256": core.GENESIS_SETTLEMENT_SHA256,
+                  "settled_at": stamp(renewal_three + timedelta(minutes=2)), "contacts": contacts,
+                  "authorization_chain": [
+                      {"authorization_sha256": sha(review_raw), "execution_source_sha256": execution_sha256, "ordinals": []},
+                      {"authorization_sha256": first_sha, "execution_source_sha256": execution_sha256, "ordinals": [1]},
+                      {"authorization_sha256": second_sha, "execution_source_sha256": execution_sha256, "ordinals": []},
+                      {"authorization_sha256": third_sha, "execution_source_sha256": execution_sha256, "ordinals": [2]},
+                  ]}
+    settlement_raw = write(root, "cohorts/0001/settlement.json", settlement)
+    return value, sha(settlement_raw), route_sha256, execution_sha256, reviewer
+
+
 def test_core_binds_append_only_hash_chain_route_and_logical_identity(tmp_path: Path) -> None:
     core = load()
     verified = verify(tmp_path, core)
@@ -152,7 +237,7 @@ def test_core_returns_distinct_initial_and_continuation_authorizations(tmp_path:
 
 def test_core_rejects_continuation_before_completed_contact_and_duplicate_native_identity(tmp_path: Path) -> None:
     core = load()
-    with pytest.raises(ValueError, match="Continuation prefix"):
+    with pytest.raises(ValueError, match="Continuation review precedes completed prefix"):
         verify(tmp_path / "early", core, continuation_before_prefix=True)
     with pytest.raises(ValueError, match="Native identity is duplicated"):
         verify(tmp_path / "duplicate", core, duplicate_identity=True)
@@ -188,3 +273,47 @@ def test_core_pending_paths_remain_unadmitted(tmp_path: Path) -> None:
                                   expected_execution_source_sha256="2" * 64, reviewer_task="synthetic-reviewer",
                                   allowed_pending_paths=frozenset({"contacts/request-0001.json"}))
     assert verified["contacts"] == {}
+
+
+def test_core_schema3_retains_unused_approval_history_across_renewals(tmp_path: Path) -> None:
+    core = load()
+    value, head, route, execution, reviewer = renewal_ledger(tmp_path, core)
+    verified = core.verify_prefix(tmp_path, value, head, 1, expected_route_sha256=route,
+                                  expected_execution_source_sha256=execution, reviewer_task=reviewer)
+    settlement = json.loads((tmp_path / "cohorts/0001/settlement.json").read_bytes())
+    assert settlement["schema_version"] == 3
+    assert [entry["ordinals"] for entry in settlement["authorization_chain"]] == [[], [1], [], [2]]
+    assert [verified["contacts"][ordinal]["authorization_sha256"] for ordinal in (1, 2)] == [
+        settlement["authorization_chain"][1]["authorization_sha256"],
+        settlement["authorization_chain"][3]["authorization_sha256"],
+    ]
+
+
+def test_core_schema3_rejects_premature_or_erased_unused_authorization_history(tmp_path: Path) -> None:
+    core = load()
+    value, head, route, execution, reviewer = renewal_ledger(
+        tmp_path / "premature", core, first_renewal_at=BASE_TIME + timedelta(minutes=5),
+    )
+    with pytest.raises(ValueError, match="Unused authorization renewal"):
+        core.verify_prefix(tmp_path / "premature", value, head, 1, expected_route_sha256=route,
+                           expected_execution_source_sha256=execution, reviewer_task=reviewer)
+
+    value, head, route, execution, reviewer = renewal_ledger(tmp_path / "forged", core)
+    settlement_path = tmp_path / "forged" / "cohorts/0001/settlement.json"
+    settlement = json.loads(settlement_path.read_bytes())
+    settlement["authorization_chain"][0]["ordinals"] = [1]
+    settlement_path.write_bytes(raw(settlement))
+    with pytest.raises(ValueError, match="Settlement authorization"):
+        core.verify_prefix(tmp_path / "forged", value, sha(settlement_path.read_bytes()), 1,
+                           expected_route_sha256=route, expected_execution_source_sha256=execution,
+                           reviewer_task=reviewer)
+
+    value, head, route, execution, reviewer = renewal_ledger(tmp_path / "erased", core)
+    settlement_path = tmp_path / "erased" / "cohorts/0001/settlement.json"
+    settlement = json.loads(settlement_path.read_bytes())
+    settlement["authorization_chain"].pop(2)
+    settlement_path.write_bytes(raw(settlement))
+    with pytest.raises(ValueError, match="Settlement authorization"):
+        core.verify_prefix(tmp_path / "erased", value, sha(settlement_path.read_bytes()), 1,
+                           expected_route_sha256=route, expected_execution_source_sha256=execution,
+                           reviewer_task=reviewer)

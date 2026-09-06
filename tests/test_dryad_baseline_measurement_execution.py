@@ -13,10 +13,19 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "evaluation-results" / "hbq-human-alignment-dryad-full-hbq-analysis-v1" / "baseline_measurement_execution.py"
+LEDGER_SOURCE = SOURCE.with_name("baseline_measurement_ledger.py")
 
 
 def _load() -> Any:
     spec = importlib.util.spec_from_file_location("dryad_baseline_measurement_execution", SOURCE)
+    assert spec and spec.loader
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def _load_ledger() -> Any:
+    spec = importlib.util.spec_from_file_location("dryad_baseline_measurement_ledger", LEDGER_SOURCE)
     assert spec and spec.loader
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
@@ -106,6 +115,7 @@ def case(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> SimpleNamespace:
         "full_verifications": 0,
         "ledger_prefix_calls": 0,
         "ledger_final_calls": 0,
+        "candidate_validation_calls": 0,
         "native_calls": 0,
         "admission_calls": 0,
         "runtime_checks": 0,
@@ -200,6 +210,10 @@ def case(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> SimpleNamespace:
         del args, kwargs
         state["ledger_final_calls"] += 1
 
+    def validate_candidate_cohort(*args: Any, **kwargs: Any) -> None:
+        del args, kwargs
+        state["candidate_validation_calls"] += 1
+
     def load_runtime(path: Path, *, expected_manifest_sha256: str) -> Any:
         assert expected_manifest_sha256 == _hash(runtime_manifest.read_bytes())
         assert path in {runtime_manifest, value.ROOT / "baseline-runtime-v1.json"}
@@ -247,7 +261,12 @@ def case(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> SimpleNamespace:
         captured,
         (
             SimpleNamespace(verify=full_verify),
-            SimpleNamespace(cohort_groups=cohort_groups, verify_prefix=verify_prefix, verify_ledger=verify_ledger),
+            SimpleNamespace(
+                cohort_groups=cohort_groups,
+                verify_prefix=verify_prefix,
+                verify_ledger=verify_ledger,
+                validate_candidate_cohort=validate_candidate_cohort,
+            ),
             SimpleNamespace(load_runtime=load_runtime),
             SimpleNamespace(admit_prefix=native_admit),
             SimpleNamespace(_trusted_identities=trusted_identities, admit_baseline=admit_baseline),
@@ -278,6 +297,21 @@ def case(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> SimpleNamespace:
         source_path=source_path,
         verified=verified,
     )
+
+
+@pytest.fixture
+def actual_ledger_case(case: SimpleNamespace, monkeypatch: pytest.MonkeyPatch) -> SimpleNamespace:
+    ledger = _load_ledger()
+
+    def geometry(_: bytes, __: bytes, expected_plan_sha256: str, core: Any) -> Any:
+        requests = {item["ordinal"]: item for item in case.plan["requests"]}
+        passes = {item["pass_id"]: item for item in case.plan["passes"]}
+        return core.LedgerGeometry(expected_plan_sha256, requests, passes, tuple(ledger.cohort_groups(case.plan)))
+
+    monkeypatch.setattr(ledger, "_geometry", geometry)
+    captured, modules = case.value._sources()
+    monkeypatch.setattr(case.value, "_sources", lambda: (captured, (modules[0], ledger, *modules[2:])))
+    return case
 
 
 def _initialize(case: SimpleNamespace) -> dict[str, str]:
@@ -323,6 +357,15 @@ def _prepare(case: SimpleNamespace, cohort: int = 543, previous_settlement_sha25
         expected_initialization_sha256=case.initialization["initialization_sha256"],
         expected_previous_settlement_sha256=previous_settlement_sha256,
     )
+
+
+def _prepare_genesis_actual_ledger(case: SimpleNamespace) -> None:
+    case.initialization = _initialize(case)
+    prior = case.execution_root / "cohorts/0542/settlement.json"
+    prior.unlink()
+    prior.parent.rmdir()
+    case.state["runner_ordinals"] = list(range(1, 11))
+    case.prepared = _prepare(case, 1)
 
 
 def _review(case: SimpleNamespace, *, start: datetime, end: datetime) -> str:
@@ -385,6 +428,18 @@ def _write_continuation(
     path.parent.mkdir(exist_ok=True)
     path.write_bytes(raw)
     return _hash(raw)
+
+
+def _continuation_candidate(case: SimpleNamespace, review_sha256: str) -> dict[str, Any]:
+    return case.value.prepare_continuation(
+        case.public_inputs, case.plan_root, case.execution_root, case.cohort,
+        expected_plan_sha256=case.value.PLAN_SHA256,
+        expected_initialization_sha256=case.initialization["initialization_sha256"],
+        expected_previous_settlement_sha256="0" * 64 if case.cohort == 1 else case.previous_settlement_sha256,
+        expected_prepared_sha256=case.prepared["prepared_sha256"],
+        expected_review_sha256=review_sha256,
+        expected_source_sha256=case.initialization_source_sha256,
+    )
 
 
 def test_initialize_binds_full_inventory_route_and_exclusive_record(case: SimpleNamespace) -> None:
@@ -458,6 +513,196 @@ def test_expired_original_review_resumes_only_with_fresh_continuation_and_never_
     ]
     assert (case.execution_root / "contacts/request-5421.json").read_bytes() == first_contact
     assert candidate["completed_prefix"]["ordinals"] == [5421, 5422, 5423]
+
+
+def test_unused_initial_and_later_renewals_remain_append_only_before_first_contact(case: SimpleNamespace) -> None:
+    case.initialization = _initialize(case)
+    case.prepared = _prepare(case)
+    review_start = case.state["clock"]
+    review_sha256 = _review(case, start=review_start, end=review_start + timedelta(minutes=1))
+    now = review_start + timedelta(minutes=2)
+    case.state["clock"] = now
+    first = case.value.prepare_continuation(
+        case.public_inputs, case.plan_root, case.execution_root, 543,
+        expected_plan_sha256=case.value.PLAN_SHA256,
+        expected_initialization_sha256=case.initialization["initialization_sha256"],
+        expected_previous_settlement_sha256=case.previous_settlement_sha256,
+        expected_prepared_sha256=case.prepared["prepared_sha256"],
+        expected_review_sha256=review_sha256,
+        expected_source_sha256=case.initialization_source_sha256,
+    )
+    first_sha256 = _write_continuation(case, first, reviewed_at=now, expires_at=now + timedelta(minutes=1))
+    case.state["clock"] = now + timedelta(minutes=2)
+    second = case.value.prepare_continuation(
+        case.public_inputs, case.plan_root, case.execution_root, 543,
+        expected_plan_sha256=case.value.PLAN_SHA256,
+        expected_initialization_sha256=case.initialization["initialization_sha256"],
+        expected_previous_settlement_sha256=case.previous_settlement_sha256,
+        expected_prepared_sha256=case.prepared["prepared_sha256"],
+        expected_review_sha256=review_sha256,
+        expected_source_sha256=case.initialization_source_sha256,
+    )
+    second_sha256 = _write_continuation(case, second)
+    assert first["schema_version"] == second["schema_version"] == 2
+    assert first["completed_prefix"]["ordinals"] == second["completed_prefix"]["ordinals"] == []
+    assert case.state["broker_constructions"] == 0
+    settled = _run(case, review_sha256, second_sha256)
+    assert settled["status"] == "settled" and settled["provider_calls"] == 8
+    assert case.state["stub_contacts"] == list(range(5421, 5429))
+    assert case.state["candidate_validation_calls"] == 1
+    chain = json.loads((case.execution_root / "cohorts/0543/settlement.json").read_text())["authorization_chain"]
+    assert [entry["authorization_sha256"] for entry in chain] == [review_sha256, first_sha256, second_sha256]
+    assert [entry["ordinals"] for entry in chain] == [[], [], list(range(5421, 5429))]
+
+
+def test_used_renewal_can_be_followed_by_a_larger_partial_prefix_without_resend(case: SimpleNamespace) -> None:
+    case.initialization = _initialize(case)
+    case.prepared = _prepare(case)
+    now = case.state["clock"]
+    review_sha256 = _review(case, start=now - timedelta(minutes=1), end=now + timedelta(minutes=10))
+    case.state["pause_after"] = 2
+    assert _run(case, review_sha256)["status"] == "paused_for_continuation_review"
+    first_contact = (case.execution_root / "contacts/request-5421.json").read_bytes()
+    first = case.value.prepare_continuation(
+        case.public_inputs, case.plan_root, case.execution_root, 543,
+        expected_plan_sha256=case.value.PLAN_SHA256,
+        expected_initialization_sha256=case.initialization["initialization_sha256"],
+        expected_previous_settlement_sha256=case.previous_settlement_sha256,
+        expected_prepared_sha256=case.prepared["prepared_sha256"],
+        expected_review_sha256=review_sha256,
+        expected_source_sha256=case.initialization_source_sha256,
+    )
+    first_sha256 = _write_continuation(case, first, reviewed_at=now, expires_at=now + timedelta(minutes=1))
+    case.state["pause_after"] = 4
+    assert _run(case, review_sha256, first_sha256)["status"] == "paused_for_continuation_review"
+    case.state["clock"] = now + timedelta(minutes=2)
+    second = case.value.prepare_continuation(
+        case.public_inputs, case.plan_root, case.execution_root, 543,
+        expected_plan_sha256=case.value.PLAN_SHA256,
+        expected_initialization_sha256=case.initialization["initialization_sha256"],
+        expected_previous_settlement_sha256=case.previous_settlement_sha256,
+        expected_prepared_sha256=case.prepared["prepared_sha256"],
+        expected_review_sha256=review_sha256,
+        expected_source_sha256=case.initialization_source_sha256,
+    )
+    second_sha256 = _write_continuation(case, second)
+    assert first["completed_prefix"]["ordinals"] == [5421, 5422]
+    assert second["completed_prefix"]["ordinals"] == [5421, 5422, 5423, 5424]
+    settled = _run(case, review_sha256, second_sha256)
+    assert settled["status"] == "settled" and settled["provider_calls"] == 4
+    assert case.state["stub_contacts"] == list(range(5421, 5429))
+    assert (case.execution_root / "contacts/request-5421.json").read_bytes() == first_contact
+
+
+def test_completed_zero_prefix_renewal_recovery_requires_exact_latest_anchor(case: SimpleNamespace) -> None:
+    case.initialization = _initialize(case)
+    case.prepared = _prepare(case)
+    review_start = case.state["clock"]
+    review_sha256 = _review(case, start=review_start, end=review_start + timedelta(minutes=1))
+    now = review_start + timedelta(minutes=2)
+    case.state["clock"] = now
+    candidate = case.value.prepare_continuation(
+        case.public_inputs, case.plan_root, case.execution_root, 543,
+        expected_plan_sha256=case.value.PLAN_SHA256,
+        expected_initialization_sha256=case.initialization["initialization_sha256"],
+        expected_previous_settlement_sha256=case.previous_settlement_sha256,
+        expected_prepared_sha256=case.prepared["prepared_sha256"],
+        expected_review_sha256=review_sha256,
+        expected_source_sha256=case.initialization_source_sha256,
+    )
+    continuation_sha256 = _write_continuation(case, candidate)
+    assert _run(case, review_sha256, continuation_sha256)["status"] == "settled"
+    settlement = case.execution_root / "cohorts/0543/settlement.json"
+    settlement.unlink()
+    case.state["clock"] = now + timedelta(minutes=20)
+    brokers_before = case.state["broker_constructions"]
+    for anchor in (None, "0" * 64):
+        with pytest.raises(ValueError, match="continuation anchor"):
+            _run(case, review_sha256, anchor)
+        assert not settlement.exists()
+    recovered = _run(case, review_sha256, continuation_sha256)
+    assert recovered["status"] == "settled" and recovered["provider_calls"] == 0
+    assert case.state["broker_constructions"] == brokers_before
+
+
+def test_actual_ledger_accepts_zero_contact_multiple_renewals(actual_ledger_case: SimpleNamespace) -> None:
+    case = actual_ledger_case
+    _prepare_genesis_actual_ledger(case)
+    initial = case.state["clock"]
+    review_sha256 = _review(case, start=initial - timedelta(minutes=2), end=initial - timedelta(minutes=1))
+    first = _continuation_candidate(case, review_sha256)
+    first_sha256 = _write_continuation(case, first, reviewed_at=initial, expires_at=initial + timedelta(minutes=1))
+    case.state["clock"] = initial + timedelta(minutes=2)
+    second = _continuation_candidate(case, review_sha256)
+    second_sha256 = _write_continuation(case, second)
+    settled = _run(case, review_sha256, second_sha256)
+    assert settled["status"] == "settled" and settled["provider_calls"] == 10
+    settlement = json.loads((case.execution_root / "cohorts/0001/settlement.json").read_text())
+    assert [item["authorization_sha256"] for item in settlement["authorization_chain"]] == [
+        review_sha256, first_sha256, second_sha256,
+    ]
+    assert [item["ordinals"] for item in settlement["authorization_chain"]] == [[], [], list(range(1, 11))]
+
+
+def test_actual_ledger_accepts_used_then_larger_partial_renewal_without_resend(
+    actual_ledger_case: SimpleNamespace,
+) -> None:
+    case = actual_ledger_case
+    _prepare_genesis_actual_ledger(case)
+    now = case.state["clock"]
+    review_sha256 = _review(case, start=now - timedelta(minutes=1), end=now + timedelta(minutes=10))
+    case.state["pause_after"] = 2
+    assert _run(case, review_sha256)["status"] == "paused_for_continuation_review"
+    first_contact = (case.execution_root / "contacts/request-0001.json").read_bytes()
+    first = _continuation_candidate(case, review_sha256)
+    first_sha256 = _write_continuation(case, first, reviewed_at=now, expires_at=now + timedelta(minutes=1))
+    case.state["pause_after"] = 4
+    assert _run(case, review_sha256, first_sha256)["status"] == "paused_for_continuation_review"
+    case.state["clock"] = now + timedelta(minutes=2)
+    second = _continuation_candidate(case, review_sha256)
+    second_sha256 = _write_continuation(case, second)
+    assert first["completed_prefix"]["ordinals"] == [1, 2]
+    assert second["completed_prefix"]["ordinals"] == [1, 2, 3, 4]
+    settled = _run(case, review_sha256, second_sha256)
+    assert settled["status"] == "settled" and settled["provider_calls"] == 6
+    assert (case.execution_root / "contacts/request-0001.json").read_bytes() == first_contact
+
+
+def test_actual_ledger_rejects_corrupt_contact_before_immutable_settlement(
+    actual_ledger_case: SimpleNamespace,
+) -> None:
+    case = actual_ledger_case
+    _prepare_genesis_actual_ledger(case)
+    now = case.state["clock"]
+    review_sha256 = _review(case, start=now - timedelta(minutes=1), end=now + timedelta(minutes=10))
+    assert _run(case, review_sha256)["status"] == "settled"
+    settlement = case.execution_root / "cohorts/0001/settlement.json"
+    settlement.unlink()
+    contact = case.execution_root / "contacts/request-0001.json"
+    corrupted = json.loads(contact.read_text())
+    corrupted["prompt_sha256"] = "0" * 64
+    contact.write_bytes(_canonical(corrupted))
+    brokers_before = case.state["broker_constructions"]
+    with pytest.raises(ValueError):
+        _run(case, review_sha256)
+    assert not settlement.exists()
+    assert case.state["broker_constructions"] == brokers_before
+
+
+def test_timeout_feasibility_pauses_before_contact(actual_ledger_case: SimpleNamespace) -> None:
+    case = actual_ledger_case
+    _prepare_genesis_actual_ledger(case)
+    now = case.state["clock"]
+    review_sha256 = _review(case, start=now, end=now + timedelta(milliseconds=500))
+    paused = _run(case, review_sha256)
+    assert paused == {
+        "cohort_number": 1,
+        "completed_ordinals": [],
+        "status": "paused_for_continuation_review",
+        "provider_calls": 0,
+    }
+    assert case.state["stub_contacts"] == []
+    assert not (case.execution_root / "cohorts/0001/settlement.json").exists()
 
 
 @pytest.mark.parametrize(
