@@ -20,9 +20,9 @@ LEDGER_SOURCE = ROOT / "cohort_ledger.py"
 NATIVE_SOURCE = ROOT / "native_admission.py"
 MATH_SOURCE = ROOT / "qualification_math.py"
 SOURCE_PINS = {
-    PLAN_SOURCE: "a129a4d58e6e0228c68a44ec8a4ac607371f3aff4b298f080703088fc45d182e",
-    LEDGER_SOURCE: "909f2001429b7933ba4d9a7f701d545194b255dd1c65bbd5f65d7c48e3d79814",
-    NATIVE_SOURCE: "547d2a0e6d7fb0bbcd9202c662ec75b0df6d51df7c7dd1cd23078d762e775daa",
+    PLAN_SOURCE: "21d25bf51017665d0893efe8eed152fc337688115e303304a09824419bd5e622",
+    LEDGER_SOURCE: "ec70e52eb99abdf21342a949a5a77f1a19f542ee585e198b5f8eb147e2594a3d",
+    NATIVE_SOURCE: "e061d768449adfaab96b15c62a8ebe213d6de10e9ec6d7755e52d911a57b71ac",
     MATH_SOURCE: "25c57a64ce18d938c900ef3de47cdc04282ce2b6aff92f897f8ad012b25098d0",
 }
 _HASH = re.compile(r"[0-9a-f]{64}\Z")
@@ -179,6 +179,7 @@ def admit_campaign(
     expected_plan_sha256: str,
     expected_final_settlement_sha256: str,
     expected_admission_sha256: str,
+    expected_execution_sha256: str,
 ) -> dict[str, Any]:
     """Replay the complete approved campaign and return its bounded cap decision."""
     _require(_HASH.fullmatch(expected_plan_sha256) is not None and _HASH.fullmatch(expected_final_settlement_sha256) is not None, "Trusted external anchors are required")
@@ -196,6 +197,9 @@ def admit_campaign(
     _require(isinstance(ledger, dict) and set(ledger) == {"routes", "contacts", "head"}, "Ledger return shape differs")
     routes, contacts = ledger["routes"], ledger["contacts"]
     _require(isinstance(routes, dict) and isinstance(contacts, dict) and set(contacts) == set(range(1, 262)), "Ledger cardinality differs")
+    _require(isinstance(expected_execution_sha256, str) and _HASH.fullmatch(expected_execution_sha256) is not None
+             and {contact.get("execution_source_sha256") for contact in contacts.values()} == {expected_execution_sha256},
+             "Campaign execution source differs")
     execution_before = ledger_module._regular_tree(execution_root, "Campaign execution")
     allowed_prefixes = ("cohorts/", "contacts/", *(row["run_path"] + "/" for row in plan["passes"]))
     _require(all(path.startswith(allowed_prefixes) for path in execution_before[0]), "Unexpected campaign evidence")
@@ -242,6 +246,7 @@ def admit_campaign(
     cap = 32 if comparability["overall_candidate_comparable"] else 8
     return {"evidence_class": "complete_native_campaign_admission", "execution_authority": False, "provider_calls": 0,
             "admission_sha256": expected_admission_sha256,
+            "execution_source_sha256": expected_execution_sha256,
             "dependency_source_sha256": {path.name: expected for path, expected in SOURCE_PINS.items()},
             "plan_sha256": expected_plan_sha256, "ledger_head": ledger["head"], "admitted_passes": len(result_rows),
             "logical_requests": len(request_ids), "comparability": comparability, "cap": cap}

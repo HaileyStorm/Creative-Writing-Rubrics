@@ -252,7 +252,8 @@ def _verify_prefix(
         route, settlement = _json_object(route_raw, "Route snapshot"), _json_object(settlement_raw, "Settlement record")
         prepared_sha256, review_sha256 = _digest(prepared_raw), _digest(review_raw)
         route_sha256 = _digest(_canonical(route))
-        _assert_schema(prepared, {"schema_version", "cohort_number", "plan_sha256", "previous_settlement_sha256", "request_ordinals", "route_sha256"}, "Prepared record")
+        _assert_schema(prepared, {"schema_version", "cohort_number", "plan_sha256", "previous_settlement_sha256", "request_ordinals", "route_sha256", "execution_source_sha256"}, "Prepared record")
+        _require(_is_hash(prepared["execution_source_sha256"]), "Prepared execution source differs")
         _require(_integer(prepared["cohort_number"], "Prepared cohort number") == cohort_number, "Prepared cohort number differs")
         _require(prepared["plan_sha256"] == expected_plan_sha256 and prepared["previous_settlement_sha256"] == previous_settlement, "Prepared chain binding differs")
         _require(isinstance(prepared["request_ordinals"], list) and all(type(value) is int for value in prepared["request_ordinals"]), "Prepared request ordinals differ")
@@ -291,6 +292,7 @@ def _verify_prefix(
             _require(admitted_at <= settled_at, "Settlement precedes contact admission")
             contacts[ordinal] = {
                 "cohort_number": cohort_number,
+                "execution_source_sha256": prepared["execution_source_sha256"],
                 "ordinal": ordinal,
                 "pass_id": request["pass_id"],
                 "source_sha256": pass_record["source_sha256"],

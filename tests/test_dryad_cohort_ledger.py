@@ -94,6 +94,7 @@ def _build_ledger(
         route = {"provider": "grok", "timeout_seconds": 60, "cohort": number % 2}
         route_sha256 = hashlib.sha256(_raw(route)).hexdigest()
         prepared = {
+            "execution_source_sha256": _hash("reviewed-execution-source"),
             "schema_version": prepared_schema_version,
             "cohort_number": number,
             "plan_sha256": plan_sha256,

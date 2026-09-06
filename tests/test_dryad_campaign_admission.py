@@ -84,6 +84,7 @@ def campaign(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
                     receipt.parent.mkdir(parents=True, exist_ok=True)
                     receipt.write_bytes(_json({"route_sha256": route_a}))
                     contacts[ordinal] = {"source_sha256": record["source_sha256"], "checkpoint_sha256": _hash(checkpoint),
+                                         "execution_source_sha256": _hash(b"reviewed executor"),
                                          "request_id_hash": _hash(f"request-{ordinal}".encode()), "session_id_hash": _hash(f"session-{ordinal}".encode()),
                                          "route_sha256": route_a}
     assert ordinal == 261 and len(passes) == 18
@@ -136,7 +137,7 @@ def campaign(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
 def _admit(state):
     return subject.admit_campaign(state.public_inputs, state.plan_root, state.execution_root,
                                   expected_plan_sha256=state.plan_sha256, expected_final_settlement_sha256=state.head,
-                                  expected_admission_sha256=_hash(Path(subject.__file__).read_bytes()))
+                                  expected_admission_sha256=_hash(Path(subject.__file__).read_bytes()), expected_execution_sha256=_hash(b"reviewed executor"))
 
 
 def test_complete_mocked_composition_has_no_native_or_provider_evidence(campaign):
@@ -154,6 +155,13 @@ def test_complete_but_noncomparable_campaign_retains_reference_cap(campaign):
     result = _admit(campaign)
     assert result["cap"] == 8
     assert result["comparability"]["overall_candidate_comparable"] is False
+
+
+def test_mixed_executor_sources_rejected_before_native_replay(campaign):
+    campaign.contacts[261]["execution_source_sha256"] = "b" * 64
+    with pytest.raises(ValueError, match="execution source"):
+        _admit(campaign)
+    assert campaign.state["calls"] == 0
 
 
 def test_rejects_route_swapped_to_another_approved_route(campaign):
@@ -208,11 +216,11 @@ def test_rejects_missing_anchors_and_source_pin_drift(campaign, monkeypatch):
     with pytest.raises(ValueError, match="anchors"):
         subject.admit_campaign(campaign.public_inputs, campaign.plan_root, campaign.execution_root,
                                expected_plan_sha256="bad", expected_final_settlement_sha256=campaign.head,
-                               expected_admission_sha256=_hash(Path(subject.__file__).read_bytes()))
+                               expected_admission_sha256=_hash(Path(subject.__file__).read_bytes()), expected_execution_sha256=_hash(b"reviewed executor"))
     with pytest.raises(ValueError, match="Reviewed admission source"):
         subject.admit_campaign(campaign.public_inputs, campaign.plan_root, campaign.execution_root,
                                expected_plan_sha256=campaign.plan_sha256, expected_final_settlement_sha256=campaign.head,
-                               expected_admission_sha256="0" * 64)
+                               expected_admission_sha256="0" * 64, expected_execution_sha256=_hash(b"reviewed executor"))
     monkeypatch.setitem(subject.SOURCE_PINS, subject.PLAN_SOURCE, "0" * 64)
     with pytest.raises(ValueError, match="source pin"):
         ORIGINAL_SOURCES()
