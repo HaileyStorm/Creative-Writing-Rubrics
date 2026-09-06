@@ -1,0 +1,145 @@
+"""Native-record replay using only isolated shared-broker fake CLI fixtures."""
+
+import importlib.util
+import json
+from pathlib import Path
+
+import pytest
+
+from test_grok_broker_transport import fixture, execute, bind
+
+
+ROOT = Path(__file__).resolve().parents[1]
+SOURCE = ROOT / "evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/native_admission.py"
+SPEC = importlib.util.spec_from_file_location("dryad_native_admission", SOURCE)
+subject = importlib.util.module_from_spec(SPEC)
+SPEC.loader.exec_module(subject)
+
+
+@pytest.fixture
+def completed(tmp_path, fixture):
+    case, _ = fixture
+    raw = case.fake.read_text(encoding="utf-8")
+    case.fake.write_text(raw.replace('"fixture-request"', '"fixture-" + session'), encoding="utf-8")
+    route = case.route("hbq", timeout_seconds=30)
+    case.write_route(route)
+    transport = bind(case, route, lambda context: None)
+    execute(tmp_path, transport, batch_size=32)
+    routes = {subject.digest(subject.canonical(route)): route}
+    runtime = subject.load_runtime()
+    source = {"opaque_story_id": "artifact", "story_text": "A short test scene.", "artifact_path": str(tmp_path / "artifact.txt")}
+    return tmp_path / "run", routes, runtime, source
+
+
+def test_replay_recomputes_full_pass_without_writes(completed):
+    root, routes, runtime, source = completed
+    before = {p: p.read_bytes() for p in root.rglob("*") if p.is_file()}
+    admitted = subject.admit_pass(root, source=source, batch_size=32, approved_routes=routes, runtime=runtime)
+    assert len(admitted["verdicts"]) == 178
+    assert len(admitted["native_identities"]) == 6
+    assert len({item["request_id_hash"] for item in admitted["native_identities"]}) == 6
+    assert admitted["coverage"] == 1
+    assert {p: p.read_bytes() for p in root.rglob("*") if p.is_file()} == before
+
+
+@pytest.mark.parametrize("fault", ["score", "source", "route", "missing_checkpoint", "orphan_file", "orphan_dir"])
+def test_pass_admission_rejects_unqualified_evidence(completed, fault):
+    root, routes, runtime, source = completed
+    if fault == "score":
+        path = root / "score.json"
+        path.write_bytes(path.read_bytes() + b" ")
+    elif fault == "source":
+        source = {**source, "story_text": "different source"}
+    elif fault == "route":
+        routes = {}
+    elif fault == "missing_checkpoint":
+        (root / "responses/batch-0006.json").unlink()
+    elif fault == "orphan_file":
+        (root / "responses/grok-broker/orphan.json").write_bytes(b"{}")
+    else:
+        (root / "responses/orphan").mkdir()
+    with pytest.raises(Exception):
+        subject.admit_pass(root, source=source, batch_size=32, approved_routes=routes, runtime=runtime)
+
+
+@pytest.mark.parametrize("field", ["paid", "turns", "model", "stop", "schema_error", "telemetry"])
+def test_raw_native_semantics_are_rechecked(completed, field):
+    root, routes, runtime, _ = completed
+    prefix = root / "responses/grok-broker/batch-0001-attempt-0001"
+    result = json.loads((prefix / "outcome.json").read_bytes())["result"]
+    native = json.loads((prefix / "native-envelope.json").read_bytes())
+    if field == "paid":
+        native["weeklyAllowanceExhausted"] = True
+    elif field == "turns":
+        native["num_turns"] = 2
+    elif field == "model":
+        native["modelUsage"] = {"other-model": {"costUSD": 0}}
+    elif field == "stop":
+        native["stopReason"] = "max_turns"
+    elif field == "schema_error":
+        native["structuredOutputError"] = "failure"
+    else:
+        native["modelUsage"]["grok-4.6-build"]["costUSD"] = 12
+    raw = subject.canonical(native)
+    result["native_envelope_artifact"].update({"sha256": subject.digest(raw), "byte_length": len(raw)})
+    result["runtime"]["envelope_hash"] = subject.digest(raw)
+    result["runtime"]["transport"]["stdout_byte_length"] = len(raw)
+    request = json.loads((prefix / "request.json").read_bytes())
+    with pytest.raises(ValueError):
+        subject._native_result(runtime, result, raw, next(iter(routes.values())), request["prompt"],
+                               runtime.runner._response_schema(), result["runtime"]["session_id_hash"])
+
+
+@pytest.mark.parametrize("field", ["context", "source", "request_id"])
+def test_rehashed_forged_receipt_context_is_rejected_semantically(completed, field):
+    root, routes, runtime, source = completed
+    prefix = root / "responses/grok-broker/batch-0001-attempt-0001"
+    receipt_path = prefix / "receipt.json"
+    receipt = json.loads(receipt_path.read_bytes())
+    if field == "context":
+        context_path = prefix / "context-bindings.json"
+        context = json.loads(context_path.read_bytes())
+        context["run"]["run_id"] = "forged-run-id"
+        context_path.write_bytes(subject.canonical(context))
+        receipt["context_sha256"] = subject.digest(context_path.read_bytes())
+    elif field == "source":
+        receipt["source_sha256"] = "0" * 64
+    else:
+        receipt["request_id_hash"] = "0" * 64
+    receipt_path.write_bytes(subject.canonical(receipt))
+    previous = None
+    for number in range(1, 7):
+        path = root / f"responses/batch-{number:04d}.json"
+        checkpoint = json.loads(path.read_bytes())
+        checkpoint["previous_checkpoint_sha256"] = previous
+        if number == 1:
+            metadata = checkpoint["provider"]
+            for name, descriptor in list(metadata["provider_artifacts"].items()):
+                metadata["provider_artifacts"][name] = runtime.runner._provider_artifact(root, root / descriptor["path"])
+            metadata["evidence_sha256"] = subject.digest(receipt_path.read_bytes())
+        path.write_bytes(runtime.runner._json_bytes(checkpoint))
+        previous = subject.digest(path.read_bytes())
+        settled_path = root / f"responses/attempt-lifecycle/batch-{number:04d}/attempt-0001.settled.json"
+        settled = json.loads(settled_path.read_bytes())
+        settled["evidence"]["sha256"] = previous
+        settled_path.write_bytes(runtime.runner._json_bytes(settled))
+    with pytest.raises(ValueError, match="semantic reconstruction"):
+        subject.admit_pass(root, source=source, batch_size=32, approved_routes=routes, runtime=runtime)
+
+
+@pytest.mark.parametrize("field", ["extra_config", "prompt_path", "schema_path"])
+def test_rehashed_configuration_metadata_is_exact(completed, field):
+    root, routes, runtime, source = completed
+    path = root / "run.json"
+    manifest = json.loads(path.read_bytes())
+    config = manifest["configuration"]
+    if field == "extra_config":
+        config["unrecognized_execution_policy"] = "different policy"
+    elif field == "prompt_path":
+        config["prompts"][0]["path"] = str(root / "different-prompt.md")
+    else:
+        config["response_schema"]["path"] = str(root / "different-schema.json")
+    manifest["config_sha256"] = subject.digest(runtime.runner._json_bytes(config))
+    path.write_bytes(runtime.runner._json_bytes(manifest))
+    with pytest.raises(ValueError, match="shape differs|metadata differs"):
+        subject.admit_pass(root, source=source, batch_size=32, approved_routes=routes, runtime=runtime)
