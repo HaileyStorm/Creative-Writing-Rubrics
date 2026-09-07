@@ -1,0 +1,212 @@
+from __future__ import annotations
+
+import importlib.util
+import subprocess
+from datetime import datetime, timedelta, timezone
+from pathlib import Path
+from types import SimpleNamespace
+from typing import Any
+
+import pytest
+
+ROOT = Path(__file__).resolve().parents[1]
+SOURCE = ROOT / "evaluation-results/hbq-human-alignment-wpb-compact-family-native-v1/sol_batched_execution.py"
+SUPPORT = Path(__file__).with_name("test_hbq_human_alignment_wpb_compact_native_v1.py")
+FREEZE_ROOT = Path(r"C:\Users\Haile\Documents\cwr-wpb-pilot-source-freeze-20260904-r3")
+VERIFIER_SHA256 = "e" * 64
+
+
+def load(path: Path, name: str) -> Any:
+    spec = importlib.util.spec_from_file_location(name, path)
+    assert spec and spec.loader
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def subject() -> Any:
+    return load(SOURCE, "wpb_sol_batched_execution_test")
+
+
+def support() -> Any:
+    return load(SUPPORT, "wpb_sol_batched_execution_support")
+
+
+def context(value: Any) -> dict[str, Any]:
+    resolution = value._frozen()._resolution(freeze_root=FREEZE_ROOT)
+    return {
+        "freeze_sha256": "f" * 64,
+        "selection_frozen_at": "2026-09-07T00:00:00Z",
+        "selected_profile": {"core": 1.0, "craft": 1.0, "form": 1.0},
+        "schedule_sha256": resolution["schedule_sha256"],
+        "source_bindings": {"fixture": "synthetic_only"},
+        "evidence_files": {"fixture": "synthetic_only"},
+        "native_measurement_count": 129,
+    }
+
+
+def install_freeze(monkeypatch: pytest.MonkeyPatch, value: Any, frozen: dict[str, Any]) -> None:
+    def verify(path: Path, expected: str, *, replay_native: bool) -> dict[str, Any]:
+        assert path.name == "grok-selection-freeze.json" and expected == frozen["freeze_sha256"]
+        return dict(frozen)
+    monkeypatch.setattr(value, "_freeze_module", lambda expected: SimpleNamespace(verify_freeze=verify))
+
+
+def review(value: Any, root: Path, *, campaign_sha256: str, batch_number: int, cell_ids: list[str],
+           freeze_sha256: str, route_sha256: str) -> tuple[Path, str]:
+    now = datetime.now(timezone.utc)
+    path = root / f"review-{batch_number:04d}.json"
+    record = {"format_version": 1, "kind": "approved_wpb_sol_batched_dispatch", "decision": "approved_wpb_sol_batched_dispatch", "campaign_sha256": campaign_sha256,
+              "batch_number": batch_number, "cell_ids": cell_ids, "freeze_sha256": freeze_sha256,
+              "route_sha256": route_sha256, "reviewed_at": now.strftime("%Y-%m-%dT%H:%M:%SZ"),
+              "expires_at": (now + timedelta(hours=2)).strftime("%Y-%m-%dT%H:%M:%SZ")}
+    path.write_bytes(value.canonical(record))
+    return path, value.sha256(path.read_bytes())
+
+
+def fresh_route(route: dict[str, Any]) -> dict[str, Any]:
+    route = {**route, "cost_evidence": dict(route["cost_evidence"])}
+    route["cost_evidence"]["expires_at"] = (datetime.now(timezone.utc) + timedelta(minutes=30)).isoformat()
+    return route
+
+
+def freeze_review(value: Any, root: Path, freeze_sha256: str) -> tuple[Path, str]:
+    path = root / "freeze-review.json"
+    path.write_bytes(value.canonical({"format_version": 1, "kind": "wpb_grok_selection_freeze_independent_review",
+                                      "freeze_sha256": freeze_sha256, "freeze_verifier_sha256": VERIFIER_SHA256,
+                                      "decision": "approved_wpb_grok_selection_freeze", "reviewed_at": "2026-09-07T00:00:00Z"}))
+    return path, value.sha256(path.read_bytes())
+
+
+def test_preparation_is_lazy_bounded_and_replays_freeze_before_route(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    value, helpers = subject(), support(); frozen = context(value); install_freeze(monkeypatch, value, frozen)
+    root, queue = tmp_path / "external-campaign", tmp_path / "queue"; queue.mkdir()
+    freeze_approval, freeze_approval_sha = freeze_review(value, tmp_path, frozen["freeze_sha256"])
+    created = value.create_campaign(campaign_root=root, queue_root=queue, freeze_root=FREEZE_ROOT,
+                                    freeze_path=tmp_path / "grok-selection-freeze.json", expected_freeze_sha256=frozen["freeze_sha256"],
+                                    expected_freeze_verifier_sha256=VERIFIER_SHA256, independent_review_path=freeze_approval, expected_independent_review_sha256=freeze_approval_sha)
+    route, _evidence = helpers.load(helpers.V12_TEST, "wpb_sol_batched_route_support").sol_route(); route = fresh_route(route)
+    ids = [row["cell_id"] for row in value._frozen()._resolution(freeze_root=FREEZE_ROOT)["rows"][:10]]
+    approved, approval_sha = review(value, tmp_path, campaign_sha256=created["campaign_sha256"], batch_number=1, cell_ids=ids,
+                                    freeze_sha256=frozen["freeze_sha256"], route_sha256=value.sha256(route))
+    result = value.prepare_next_batch(campaign_root=root, queue_root=queue, freeze_root=FREEZE_ROOT,
+                                      freeze_path=tmp_path / "grok-selection-freeze.json", expected_freeze_sha256=frozen["freeze_sha256"],
+                                      expected_freeze_verifier_sha256=VERIFIER_SHA256,
+                                      review_path=approved, expected_review_sha256=approval_sha, authorization_acknowledgement_sha256="a" * 64,
+                                      broker_factory=lambda _root: helpers.load(helpers.V12_TEST, "wpb_sol_batched_broker_support").Broker(route))
+    assert result["prepared_cells"] == ids and result["provider_calls_made"] == result["process_launches"] == 0
+    assert not (root / "batches/0002").exists()
+    binding = root / "batches/0001/prepared-source-bindings.json"
+    binding_value = __import__("json").loads(binding.read_bytes())
+    assert binding.is_file() and len(binding_value["prepared_sha256s"]) == 10
+    assert binding_value["freeze_verifier_sha256"] == VERIFIER_SHA256
+
+
+def test_expiring_route_cannot_create_a_batch(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    value, helpers = subject(), support(); frozen = context(value); install_freeze(monkeypatch, value, frozen)
+    root, queue = tmp_path / "external-campaign", tmp_path / "queue"; queue.mkdir()
+    freeze_approval, freeze_approval_sha = freeze_review(value, tmp_path, frozen["freeze_sha256"])
+    created = value.create_campaign(campaign_root=root, queue_root=queue, freeze_root=FREEZE_ROOT,
+                                    freeze_path=tmp_path / "grok-selection-freeze.json", expected_freeze_sha256=frozen["freeze_sha256"],
+                                    expected_freeze_verifier_sha256=VERIFIER_SHA256, independent_review_path=freeze_approval, expected_independent_review_sha256=freeze_approval_sha)
+    route, _evidence = helpers.load(helpers.V12_TEST, "wpb_sol_batched_expiry_route_support").sol_route()
+    ids = [row["cell_id"] for row in value._frozen()._resolution(freeze_root=FREEZE_ROOT)["rows"][:10]]
+    approved, approval_sha = review(value, tmp_path, campaign_sha256=created["campaign_sha256"], batch_number=1, cell_ids=ids,
+                                    freeze_sha256=frozen["freeze_sha256"], route_sha256=value.sha256(route))
+    with pytest.raises(ValueError, match="900-second"):
+        value.prepare_next_batch(campaign_root=root, queue_root=queue, freeze_root=FREEZE_ROOT,
+                                 freeze_path=tmp_path / "grok-selection-freeze.json", expected_freeze_sha256=frozen["freeze_sha256"],
+                                 expected_freeze_verifier_sha256=VERIFIER_SHA256,
+                                 review_path=approved, expected_review_sha256=approval_sha, authorization_acknowledgement_sha256="a" * 64,
+                                 broker_factory=lambda _root: helpers.load(helpers.V12_TEST, "wpb_sol_batched_expiry_broker_support").Broker(route))
+    assert not (root / "batches").exists()
+
+
+def test_private_wpb_wrapper_keeps_frozen_artifact_paths_and_disables_code_mode(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    value = subject(); runtime = value._frozen()._sol_runtime(value._frozen()._resolution(freeze_root=FREEZE_ROOT))[1]
+    calls: list[list[str]] = []
+    def fake_run(command: list[str], **_kwargs: Any) -> subprocess.CompletedProcess[bytes]:
+        calls.append(command)
+        message = Path(command[command.index("--output-last-message") + 1])
+        message.parent.mkdir(parents=True, exist_ok=True); message.write_text("{}", encoding="utf-8")
+        return subprocess.CompletedProcess(command, 0, stdout=b'{"type":"thread.started","thread_id":"fixture"}\n', stderr=b"")
+    monkeypatch.setattr(subprocess, "run", fake_run)
+    invoke = value._current_call_codex(runtime)
+    root, schema, gated = tmp_path / "cell", tmp_path / "schema.json", []
+    root.mkdir(); schema.write_text("{}", encoding="utf-8")
+    content, record = invoke(executable="fixture-codex", model="gpt-5.6-sol", reasoning="high", prompt="{}", output_dir=root,
+                             response_schema=schema, batch_number=1, timeout=1, before_provider_attempt=lambda: gated.append(True),
+                             capture_jsonl_events=True)
+    assert content == "{}" and gated == [True] and calls[0][-1] == "-"
+    assert calls[0][calls[0].index("code_mode") - 1:calls[0].index("code_mode") + 1] == ["--disable", "code_mode"]
+    assert record["command"][record["command"].index("--output-last-message") + 1] == str(root / "responses/batch-0001.attempt-0001.message.json")
+    assert calls[0] == [*record["command"][:-1], "-"]
+    assert (root / "raw-codex-stderr.bin").is_file() and (root / "responses/batch-0001.attempt-0001.events.jsonl").is_file()
+
+
+def test_persisted_review_companion_rejects_expiry_without_rewriting_history(tmp_path: Path) -> None:
+    value = subject()
+    plan = {"campaign_sha256": "c" * 64, "batch_number": 1, "cell_ids": ["cell-1"],
+            "freeze_sha256": "f" * 64, "route_sha256": "r" * 64}
+    review_path = tmp_path / "independent-review.json"
+    review_path.write_bytes(value.canonical({
+        "format_version": 1, "kind": "approved_wpb_sol_batched_dispatch",
+        "decision": "approved_wpb_sol_batched_dispatch", "campaign_sha256": plan["campaign_sha256"],
+        "batch_number": plan["batch_number"], "cell_ids": plan["cell_ids"], "freeze_sha256": plan["freeze_sha256"],
+        "route_sha256": plan["route_sha256"], "reviewed_at": "2026-09-07T00:00:00Z", "expires_at": "2026-09-07T00:01:00Z",
+    }))
+    plan["review_sha256"] = value.sha256(review_path.read_bytes())
+    value._review_companion(tmp_path, plan, require_unexpired=False)
+    with pytest.raises(ValueError, match="has expired"):
+        value._review_companion(tmp_path, plan, require_unexpired=True)
+
+
+def test_freeze_review_binds_the_exact_verifier_source(tmp_path: Path) -> None:
+    value = subject()
+    path = tmp_path / "freeze-review.json"
+    path.write_bytes(value.canonical({
+        "format_version": 1, "kind": "wpb_grok_selection_freeze_independent_review",
+        "freeze_sha256": "f" * 64, "freeze_verifier_sha256": "0" * 64,
+        "decision": "approved_wpb_grok_selection_freeze", "reviewed_at": "2026-09-07T00:00:00Z",
+    }))
+    with pytest.raises(ValueError, match="independent review differs"):
+        value._freeze_review(path, value.sha256(path.read_bytes()), "f" * 64, VERIFIER_SHA256)
+
+
+def test_batched_synthetic_fixture_uses_frozen_parser_and_closes_before_all_epochs(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    value, helpers = subject(), support(); frozen = context(value); install_freeze(monkeypatch, value, frozen)
+    root, queue = tmp_path / "external-campaign", tmp_path / "queue"; queue.mkdir()
+    freeze_approval, freeze_approval_sha = freeze_review(value, tmp_path, frozen["freeze_sha256"])
+    created = value.create_campaign(campaign_root=root, queue_root=queue, freeze_root=FREEZE_ROOT,
+                                    freeze_path=tmp_path / "grok-selection-freeze.json", expected_freeze_sha256=frozen["freeze_sha256"],
+                                    expected_freeze_verifier_sha256=VERIFIER_SHA256, independent_review_path=freeze_approval, expected_independent_review_sha256=freeze_approval_sha)
+    route_support = helpers.load(helpers.V12_TEST, "wpb_sol_batched_full_route_support")
+    route, _evidence = route_support.sol_route(); route = fresh_route(route)
+    factory = lambda _root: route_support.Broker(route)
+    resolution = value._frozen()._resolution(freeze_root=FREEZE_ROOT)
+    contacts = helpers.Contacts()
+    runner = helpers.sol_runner(value._frozen(), resolution["rows"], contacts)
+    for number in (1,):
+        ids = [row["cell_id"] for row in resolution["rows"][:10]]
+        approved, approval_sha = review(value, tmp_path, campaign_sha256=created["campaign_sha256"], batch_number=number, cell_ids=ids,
+                                        freeze_sha256=frozen["freeze_sha256"], route_sha256=value.sha256(route))
+        prepared = value.prepare_next_batch(campaign_root=root, queue_root=queue, freeze_root=FREEZE_ROOT,
+                                            freeze_path=tmp_path / "grok-selection-freeze.json", expected_freeze_sha256=frozen["freeze_sha256"],
+                                            expected_freeze_verifier_sha256=VERIFIER_SHA256,
+                                            review_path=approved, expected_review_sha256=approval_sha, authorization_acknowledgement_sha256="a" * 64,
+                                            broker_factory=factory)
+        assert prepared["prepared_cells"] == ids
+        outcomes = value.dispatch_batch(campaign_root=root, queue_root=queue, freeze_root=FREEZE_ROOT,
+                                        freeze_path=tmp_path / "grok-selection-freeze.json", expected_freeze_sha256=frozen["freeze_sha256"],
+                                        expected_freeze_verifier_sha256=VERIFIER_SHA256,
+                                        batch_number=number, allow_remote=True, broker_factory=factory, call_codex=runner)
+        assert len(outcomes) == len(ids)
+        settled = value.settle_batch(campaign_root=root, freeze_root=FREEZE_ROOT,
+                                     freeze_path=tmp_path / "grok-selection-freeze.json", expected_freeze_sha256=frozen["freeze_sha256"],
+                                     expected_freeze_verifier_sha256=VERIFIER_SHA256,
+                                     batch_number=number)
+        assert settled["status"] == "completed" and settled["completed_cells"] == ids
+    report = value.report(campaign_root=root, freeze_root=FREEZE_ROOT,
+                          freeze_path=tmp_path / "grok-selection-freeze.json", expected_freeze_sha256=frozen["freeze_sha256"], expected_freeze_verifier_sha256=VERIFIER_SHA256)
+    assert report == {"status": "closed_incomplete", "authority": "development_screening_only", "completed_batches": 1, "metrics": None}
+    assert len(contacts.calls) == len(set(contacts.calls)) == 10
