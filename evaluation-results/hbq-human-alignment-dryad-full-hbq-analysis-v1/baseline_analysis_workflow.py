@@ -20,9 +20,11 @@ from typing import Any
 ROOT = Path(__file__).resolve().parent
 REPOSITORY = ROOT.parents[1]
 ADMISSION_PATH = ROOT / "baseline_measurement_admission.py"
+FINALIZER_PATH = ROOT / "baseline_measurement_execution.py"
 OPTIMIZER_PATH = ROOT / "optimizer.py"
 COMPARISON_PATH = ROOT / "dev_comparison.py"
 SOURCE_PATH = ROOT / "source.py"
+RECOVERY_MANIFEST = "recovery-manifest.json"
 PUBLIC_INPUTS_SHA256 = "6254f58d3366667c9578e2661a1ca0d105a603a0f8affe2d925a767957937c42"
 TARGET_FREEZE_SHA256 = "cf8d2306fd4977e0ed7d4572987b9665029c37a46107ba71d847a2b4de026988"
 TRAIN_TARGETS_SHA256 = "029796e36051e791bd1990f7d09c668778bcf5a63ef43ae3dfff984da93156dd"
@@ -82,17 +84,53 @@ def _load_module(path: Path, raw: bytes, label: str) -> ModuleType:
     return module
 
 
+def _recovery_context(execution_root: Path | str, *, recovery_manifest_path: Path | str | None,
+                      expected_recovery_manifest_sha256: str | None,
+                      expected_recovery_execution_sha256: str | None) -> dict[str, Any] | None:
+    marker = Path(execution_root).resolve().parent / RECOVERY_MANIFEST
+    if not marker.exists():
+        if any(value is not None for value in (recovery_manifest_path, expected_recovery_manifest_sha256,
+                                               expected_recovery_execution_sha256)):
+            raise ValueError("Unexpected recovery manifest arguments")
+        return None
+    if (recovery_manifest_path is None or expected_recovery_manifest_sha256 is None
+            or expected_recovery_execution_sha256 is None):
+        raise ValueError("Recovery manifest arguments are required")
+    manifest_path, manifest_raw = _read_pinned(recovery_manifest_path, expected_recovery_manifest_sha256,
+                                                "Recovery manifest")
+    if manifest_path != marker.resolve():
+        raise ValueError("Recovery manifest locator differs")
+    return {
+        "manifest_path": manifest_path,
+        "manifest_raw": manifest_raw,
+        "manifest_sha256": _hash(expected_recovery_manifest_sha256, "Recovery manifest expected hash"),
+        "finalizer_sha256": _hash(expected_recovery_execution_sha256, "Recovery finalizer expected hash"),
+    }
+
+
 def _capture(expected_workflow_sha256: str, expected_admission_sha256: str,
              expected_engine_sha256: str, engine_path: Path, engine_label: str,
-             runtime_manifest_path: Path | str, expected_runtime_manifest_sha256: str) -> tuple[dict[Path, bytes], ModuleType, ModuleType]:
+             runtime_manifest_path: Path | str, expected_runtime_manifest_sha256: str,
+             recovery: Mapping[str, Any] | None) -> tuple[dict[Path, bytes], ModuleType, ModuleType, ModuleType | None]:
     own_path, own_raw = _read_pinned(Path(__file__), expected_workflow_sha256, "Workflow")
     admission_path, admission_raw = _read_pinned(ADMISSION_PATH, expected_admission_sha256, "Admission")
     loaded_engine_path, engine_raw = _read_pinned(engine_path, expected_engine_sha256, engine_label)
     manifest_path, manifest_raw = _read_pinned(runtime_manifest_path, expected_runtime_manifest_sha256, "Runtime manifest")
     source_raw = SOURCE_PATH.read_bytes()
-    return ({own_path: own_raw, admission_path: admission_raw, loaded_engine_path: engine_raw,
-             manifest_path: manifest_raw, SOURCE_PATH: source_raw}, _load_module(admission_path, admission_raw, "admission"),
-            _load_module(loaded_engine_path, engine_raw, engine_label))
+    captured = {own_path: own_raw, admission_path: admission_raw, loaded_engine_path: engine_raw,
+                manifest_path: manifest_raw, SOURCE_PATH: source_raw}
+    finalizer = None
+    if recovery is not None:
+        finalizer_path, finalizer_raw = _read_pinned(FINALIZER_PATH, recovery["finalizer_sha256"], "Recovery finalizer")
+        captured[finalizer_path] = finalizer_raw
+        captured[recovery["manifest_path"]] = recovery["manifest_raw"]
+        finalizer = _load_module(finalizer_path, finalizer_raw, "recovery_finalizer")
+    return (
+        captured,
+        _load_module(admission_path, admission_raw, "admission"),
+        _load_module(loaded_engine_path, engine_raw, engine_label),
+        finalizer,
+    )
 
 
 def _unchanged(captured: Mapping[Path, bytes]) -> None:
@@ -131,25 +169,58 @@ def _partition_ids(path: Path | str) -> tuple[Path, bytes, dict[str, set[str]]]:
     return checked, raw, result
 
 
-def _admit(module: ModuleType, public_inputs_path: Path | str, plan_root: Path | str,
-           execution_root: Path | str, runtime_manifest_path: Path | str, *,
+def _admit(module: ModuleType, finalizer: ModuleType | None, recovery: Mapping[str, Any] | None,
+           public_inputs_path: Path | str, plan_root: Path | str, execution_root: Path | str,
+           runtime_manifest_path: Path | str, *,
            expected_plan_sha256: str, expected_final_settlement_sha256: str,
            expected_execution_source_sha256: str, expected_route_sha256: str,
            expected_runtime_manifest_sha256: str, expected_admission_sha256: str,
            expected_reviewer_task: str, expected_initialization_sha256: str) -> dict[str, Any]:
-    result = module.admit_baseline(
-        Path(public_inputs_path), Path(plan_root), Path(execution_root), Path(runtime_manifest_path),
-        expected_plan_sha256=expected_plan_sha256,
-        expected_final_settlement_sha256=expected_final_settlement_sha256,
-        expected_execution_source_sha256=expected_execution_source_sha256,
-        expected_route_sha256=expected_route_sha256,
-        expected_runtime_manifest_sha256=expected_runtime_manifest_sha256,
-        expected_admission_sha256=expected_admission_sha256,
-        expected_reviewer_task=expected_reviewer_task,
-        expected_initialization_sha256=expected_initialization_sha256,
-    )
-    if not isinstance(result, dict) or result.get("evidence_class") != "complete_native_baseline_measurement_admission" or result.get("execution_authority") is not False or result.get("provider_calls") != 0 or result.get("admitted_passes") != ADMITTED_COUNT or result.get("logical_requests") != REQUEST_COUNT:
+    if recovery is None:
+        result = module.admit_baseline(
+            Path(public_inputs_path), Path(plan_root), Path(execution_root), Path(runtime_manifest_path),
+            expected_plan_sha256=expected_plan_sha256,
+            expected_final_settlement_sha256=expected_final_settlement_sha256,
+            expected_execution_source_sha256=expected_execution_source_sha256,
+            expected_route_sha256=expected_route_sha256,
+            expected_runtime_manifest_sha256=expected_runtime_manifest_sha256,
+            expected_admission_sha256=expected_admission_sha256,
+            expected_reviewer_task=expected_reviewer_task,
+            expected_initialization_sha256=expected_initialization_sha256,
+        )
+        expected_evidence_class = "complete_native_baseline_measurement_admission"
+    else:
+        if finalizer is None or getattr(finalizer, "REVIEWER_TASK", None) != expected_reviewer_task:
+            raise ValueError("Recovery finalizer reviewer task differs")
+        result = finalizer.finalize(
+            Path(public_inputs_path), Path(plan_root), Path(execution_root), Path(runtime_manifest_path),
+            expected_plan_sha256=expected_plan_sha256,
+            expected_initialization_sha256=expected_initialization_sha256,
+            expected_final_settlement_sha256=expected_final_settlement_sha256,
+            expected_execution_source_sha256=expected_execution_source_sha256,
+            expected_runtime_manifest_sha256=expected_runtime_manifest_sha256,
+            expected_admission_sha256=expected_admission_sha256,
+            recovery_manifest_path=recovery["manifest_path"],
+            expected_recovery_manifest_sha256=recovery["manifest_sha256"],
+        )
+        expected_evidence_class = "complete_native_baseline_measurement_admission_with_grok51_recovery_provenance"
+    if not isinstance(result, dict) or result.get("evidence_class") != expected_evidence_class or result.get("execution_authority") is not False or result.get("provider_calls") != 0 or result.get("admitted_passes") != ADMITTED_COUNT or result.get("logical_requests") != REQUEST_COUNT:
         raise ValueError("Complete native baseline admission is required")
+    if recovery is not None:
+        original = result.get("original_initialization")
+        manifest = _json(recovery["manifest_raw"], "Recovery manifest")
+        provenance = result.get("recovery_provenance")
+        expected_provenance = {
+            "manifest_sha256": recovery["manifest_sha256"],
+            "replacement_ordinal": manifest.get("replacement_ordinal"),
+            "origin_root": manifest.get("origin_root"),
+            "derivative_root": manifest.get("derivative_root"),
+        }
+        if (not isinstance(original, Mapping) or original.get("route_sha256") != expected_route_sha256
+                or provenance != expected_provenance):
+            raise ValueError("Recovery finalizer lineage differs")
+        result = dict(result)
+        result["recovery_provenance"] = {**expected_provenance, "finalizer_sha256": recovery["finalizer_sha256"]}
     # Admission uses integer cohort keys in memory; hash its persisted JSON shape.
     return _json(_canonical(result), "Admission result")
 
@@ -287,18 +358,27 @@ def fit_admitted_train(
     expected_runtime_manifest_sha256: str, expected_admission_sha256: str,
     expected_reviewer_task: str, expected_initialization_sha256: str,
     expected_workflow_sha256: str, expected_optimizer_sha256: str,
+    recovery_manifest_path: Path | str | None = None,
+    expected_recovery_manifest_sha256: str | None = None,
+    expected_recovery_execution_sha256: str | None = None,
 ) -> dict[str, Any]:
     """Admit all native rows, fit the frozen TRAIN 176, then write a fresh freeze."""
+    recovery = _recovery_context(
+        execution_root, recovery_manifest_path=recovery_manifest_path,
+        expected_recovery_manifest_sha256=expected_recovery_manifest_sha256,
+        expected_recovery_execution_sha256=expected_recovery_execution_sha256,
+    )
     output = _output_preflight(output_root, public_inputs_path, plan_root, execution_root,
-                                runtime_manifest_path, target_freeze_path, train_targets_path)
-    captured, admission_module, optimizer = _capture(
+                                runtime_manifest_path, target_freeze_path, train_targets_path,
+                                *((recovery["manifest_path"],) if recovery is not None else ()))
+    captured, admission_module, optimizer, finalizer = _capture(
         expected_workflow_sha256, expected_admission_sha256, expected_optimizer_sha256,
-        OPTIMIZER_PATH, "Optimizer", runtime_manifest_path, expected_runtime_manifest_sha256,
+        OPTIMIZER_PATH, "Optimizer", runtime_manifest_path, expected_runtime_manifest_sha256, recovery,
     )
     freeze_path, freeze_raw, freeze = _target_freeze(target_freeze_path)
     captured[freeze_path] = freeze_raw
     admission = _admit(
-        admission_module, public_inputs_path, plan_root, execution_root, runtime_manifest_path,
+        admission_module, finalizer, recovery, public_inputs_path, plan_root, execution_root, runtime_manifest_path,
         expected_plan_sha256=expected_plan_sha256,
         expected_final_settlement_sha256=expected_final_settlement_sha256,
         expected_execution_source_sha256=expected_execution_source_sha256,
@@ -361,19 +441,28 @@ def compare_admitted_dev(
     expected_initialization_sha256: str, expected_workflow_sha256: str,
     expected_comparison_sha256: str, expected_fit_sha256: str,
     expected_train_freeze_sha256: str,
+    recovery_manifest_path: Path | str | None = None,
+    expected_recovery_manifest_sha256: str | None = None,
+    expected_recovery_execution_sha256: str | None = None,
 ) -> dict[str, Any]:
     """Re-admit rows and compare DEV only after the exact TRAIN freeze binds."""
+    recovery = _recovery_context(
+        execution_root, recovery_manifest_path=recovery_manifest_path,
+        expected_recovery_manifest_sha256=expected_recovery_manifest_sha256,
+        expected_recovery_execution_sha256=expected_recovery_execution_sha256,
+    )
     output = _output_preflight(output_root, public_inputs_path, plan_root, execution_root,
                                 runtime_manifest_path, target_freeze_path, dev_targets_path,
-                                fit_path, train_freeze_path)
-    captured, admission_module, comparison = _capture(
+                                fit_path, train_freeze_path,
+                                *((recovery["manifest_path"],) if recovery is not None else ()))
+    captured, admission_module, comparison, finalizer = _capture(
         expected_workflow_sha256, expected_admission_sha256, expected_comparison_sha256,
-        COMPARISON_PATH, "Comparison", runtime_manifest_path, expected_runtime_manifest_sha256,
+        COMPARISON_PATH, "Comparison", runtime_manifest_path, expected_runtime_manifest_sha256, recovery,
     )
     freeze_path, freeze_raw, freeze = _target_freeze(target_freeze_path)
     captured[freeze_path] = freeze_raw
     admission = _admit(
-        admission_module, public_inputs_path, plan_root, execution_root, runtime_manifest_path,
+        admission_module, finalizer, recovery, public_inputs_path, plan_root, execution_root, runtime_manifest_path,
         expected_plan_sha256=expected_plan_sha256,
         expected_final_settlement_sha256=expected_final_settlement_sha256,
         expected_execution_source_sha256=expected_execution_source_sha256,

@@ -70,7 +70,9 @@ def workflow(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
     comparison_path = subject.COMPARISON_PATH
     calls: list[str] = []
     admission_kwargs: list[dict[str, object]] = []
-    state = {"fit_commitment_mismatch": False, "fit_error": None}
+    finalizer_kwargs: list[dict[str, object]] = []
+    state = {"fit_commitment_mismatch": False, "fit_error": None, "fit_mutation": None,
+             "compare_mutation": None, "finalizer_reviewer_task": "synthetic-reviewer"}
     rows = [
         {"opaque_story_id": story, "verdicts": [{"question_id": "q", "verdict": "YES"}],
          "coverage": 1.0, "source_sha256": _sha(story.encode())}
@@ -99,6 +101,8 @@ def workflow(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
         assert kwargs["baseline_manifest_path"] == runtime
         if state["fit_error"] is not None:
             raise state["fit_error"]
+        if state["fit_mutation"] is not None:
+            state["fit_mutation"]()
         commitments = {
             "verdict_rows_sha256": _sha(subject._canonical(verdicts)),
             "target_rows_sha256": _sha(subject._canonical(sorted(targets, key=lambda row: row["opaque_story_id"]))),
@@ -116,6 +120,8 @@ def workflow(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
         assert {row["opaque_story_id"] for row in verdicts} == dev_ids
         assert {row["opaque_story_id"] for row in targets} == dev_ids
         assert json.loads(fit_raw)["evidence_class"] == "baseline_source_verified_fit_unadmitted"
+        if state["compare_mutation"] is not None:
+            state["compare_mutation"]()
         return {
             "evidence_class": "baseline_source_verified_dev_comparison_unadmitted",
             "identity": {"kind": "synthetic"},
@@ -125,9 +131,34 @@ def workflow(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
             },
         }
 
+    def finalize(_public_inputs: Path, _plan_root: Path, _execution_root: Path, _runtime_manifest: Path,
+                 **kwargs: object) -> dict[str, object]:
+        calls.append("finalize")
+        finalizer_kwargs.append(kwargs)
+        manifest = json.loads(Path(kwargs["recovery_manifest_path"]).read_bytes())
+        return {
+            "schema_version": 2,
+            "evidence_class": "complete_native_baseline_measurement_admission_with_grok51_recovery_provenance",
+            "execution_authority": False,
+            "provider_calls": 0,
+            "admitted_passes": 236,
+            "logical_requests": 5428,
+            "original_initialization": {"execution_source_sha256": "a" * 64, "route_sha256": "b" * 64},
+            "cohort_epochs": {number: {"route_sha256": "b" * 64} for number in range(1, 13)},
+            "endpoint_grok_rows": rows,
+            "recovery_provenance": {
+                "manifest_sha256": kwargs["expected_recovery_manifest_sha256"],
+                "replacement_ordinal": manifest["replacement_ordinal"],
+                "origin_root": manifest["origin_root"],
+                "derivative_root": manifest["derivative_root"],
+            },
+        }
+
     def load(path, raw, _label):
         if path == admission_path:
             return SimpleNamespace(admit_baseline=lambda *args, **kwargs: admission(**kwargs))
+        if path == subject.FINALIZER_PATH:
+            return SimpleNamespace(finalize=finalize, REVIEWER_TASK=state["finalizer_reviewer_task"])
         if path == optimizer_path:
             return SimpleNamespace(fit_train=fit)
         if path == comparison_path:
@@ -140,7 +171,8 @@ def workflow(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
     monkeypatch.setattr(subject, "DEV_TARGETS_SHA256", _sha(dev_raw))
     monkeypatch.setattr(subject, "_load_module", load)
     return SimpleNamespace(
-        subject=subject, calls=calls, rows=rows, admission_kwargs=admission_kwargs, state=state, train_ids=train_ids, dev_ids=dev_ids,
+        subject=subject, calls=calls, rows=rows, admission_kwargs=admission_kwargs,
+        finalizer_kwargs=finalizer_kwargs, state=state, train_ids=train_ids, dev_ids=dev_ids,
         public_inputs=public_inputs, target_freeze=target_freeze, train_targets=train_targets,
         dev_targets=dev_targets, runtime=runtime, tmp_path=tmp_path,
     )
@@ -190,6 +222,30 @@ def _compare(case, train_output: Path, output: Path | None = None, **override):
         expected_fit_sha256=expected_fit,
         expected_train_freeze_sha256=expected_train_freeze,
     )
+
+
+def _recovery(case: SimpleNamespace, monkeypatch: pytest.MonkeyPatch, *,
+              finalizer_source: Path | None = None) -> dict[str, str | Path]:
+    execution = case.tmp_path / "execution"
+    execution.mkdir(exist_ok=True)
+    if finalizer_source is not None:
+        monkeypatch.setattr(case.subject, "FINALIZER_PATH", finalizer_source)
+    manifest = execution.parent / case.subject.RECOVERY_MANIFEST
+    raw = _json({
+        "replacement_ordinal": 51,
+        "origin_root": str(case.public_inputs.parent),
+        "derivative_root": str(execution),
+    })
+    manifest.write_bytes(raw)
+    return {
+        "recovery_manifest_path": manifest,
+        "expected_recovery_manifest_sha256": _sha(raw),
+        "expected_recovery_execution_sha256": _sha(case.subject.FINALIZER_PATH.read_bytes()),
+    }
+
+
+def _external_output(case: SimpleNamespace, name: str) -> Path:
+    return case.tmp_path.parent / f"{case.tmp_path.name}-{name}"
 
 
 def test_train_admits_before_reading_targets_and_retains_v2_evidence(workflow, monkeypatch):
@@ -253,6 +309,111 @@ def test_forwards_the_existing_original_initialization_anchors(workflow):
         "expected_reviewer_task": "synthetic-reviewer",
         "expected_initialization_sha256": "5" * 64,
     }]
+
+
+def test_recovery_train_and_dev_bind_exact_finalizer_lineage(
+    workflow: SimpleNamespace, monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    recovery = _recovery(workflow, monkeypatch)
+    anchors = {**recovery, "expected_execution_source_sha256": "a" * 64,
+               "expected_route_sha256": "b" * 64}
+    train_output = _external_output(workflow, "recovery-train")
+    train = _fit(workflow, train_output, **anchors)
+    expected = {
+        "manifest_sha256": recovery["expected_recovery_manifest_sha256"],
+        "replacement_ordinal": 51,
+        "origin_root": str(workflow.public_inputs.parent),
+        "derivative_root": str(workflow.tmp_path / "execution"),
+        "finalizer_sha256": recovery["expected_recovery_execution_sha256"],
+    }
+    assert workflow.calls == ["finalize", "fit"]
+    assert (train["freeze"]["admission"]["evidence_class"]
+            == "complete_native_baseline_measurement_admission_with_grok51_recovery_provenance")
+    assert train["freeze"]["admission"]["recovery_provenance"] == expected
+    assert train["freeze"]["admission_binding"]["admission_sha256"] == _sha(
+        workflow.subject._canonical(train["freeze"]["admission"])
+    )
+    dev = _compare(workflow, train_output, _external_output(workflow, "recovery-dev"), **anchors)
+    assert workflow.calls == ["finalize", "fit", "finalize", "compare"]
+    assert dev["freeze"]["admission"]["recovery_provenance"] == expected
+    assert dev["freeze"]["admission_binding"] == train["freeze"]["admission_binding"]
+    assert workflow.finalizer_kwargs[0]["expected_initialization_sha256"] == "5" * 64
+    assert workflow.finalizer_kwargs[0]["expected_final_settlement_sha256"] == "2" * 64
+
+
+def test_recovery_marker_requires_exact_arguments_before_outputs_or_optimizer(
+    workflow: SimpleNamespace, monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    recovery = _recovery(workflow, monkeypatch)
+    output = _external_output(workflow, "recovery-missing")
+    with pytest.raises(ValueError, match="Recovery manifest arguments are required"):
+        _fit(workflow, output)
+    assert workflow.calls == [] and not output.exists()
+    wrong = workflow.tmp_path.parent / f"{workflow.tmp_path.name}-wrong-manifest.json"
+    wrong.write_bytes(Path(recovery["recovery_manifest_path"]).read_bytes())
+    mismatched = {**recovery, "recovery_manifest_path": wrong}
+    with pytest.raises(ValueError, match="Recovery manifest locator differs"):
+        _fit(workflow, _external_output(workflow, "recovery-wrong"), **mismatched)
+    with pytest.raises(ValueError, match="Recovery finalizer hash drift"):
+        _fit(workflow, _external_output(workflow, "recovery-source"),
+             **{**recovery, "expected_recovery_execution_sha256": "0" * 64})
+    assert workflow.calls == []
+
+
+def test_recovery_explicitly_binds_finalizer_reviewer_and_original_route(
+    workflow: SimpleNamespace, monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    recovery = _recovery(workflow, monkeypatch)
+    anchors = {**recovery, "expected_execution_source_sha256": "a" * 64,
+               "expected_route_sha256": "b" * 64}
+    workflow.state["finalizer_reviewer_task"] = "unexpected-reviewer"
+    with pytest.raises(ValueError, match="Recovery finalizer reviewer task differs"):
+        _fit(workflow, _external_output(workflow, "recovery-reviewer"), **anchors)
+    workflow.state["finalizer_reviewer_task"] = "synthetic-reviewer"
+    with pytest.raises(ValueError, match="Recovery finalizer lineage differs"):
+        _fit(workflow, _external_output(workflow, "recovery-route"),
+             **{**anchors, "expected_route_sha256": "c" * 64})
+    assert workflow.calls == ["finalize"]
+
+
+def test_recovery_train_to_dev_rejects_changed_manifest_or_finalizer_source(
+    workflow: SimpleNamespace, monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    finalizer_source = workflow.tmp_path / "synthetic-finalizer.py"
+    finalizer_source.write_bytes(b"first")
+    recovery = _recovery(workflow, monkeypatch, finalizer_source=finalizer_source)
+    anchors = {**recovery, "expected_execution_source_sha256": "a" * 64,
+               "expected_route_sha256": "b" * 64}
+    train_output = _external_output(workflow, "recovery-drift-train")
+    _fit(workflow, train_output, **anchors)
+    marker = Path(recovery["recovery_manifest_path"])
+    original_manifest = marker.read_bytes()
+    marker.write_bytes(original_manifest + b" ")
+    dev_output = _external_output(workflow, "recovery-drift-dev")
+    with pytest.raises(ValueError, match="Recovery manifest hash drift"):
+        _compare(workflow, train_output, dev_output, **anchors)
+    assert not dev_output.exists()
+    marker.write_bytes(original_manifest)
+    finalizer_source.write_bytes(b"second")
+    with pytest.raises(ValueError, match="Recovery finalizer hash drift"):
+        _compare(workflow, train_output, dev_output, **anchors)
+    assert workflow.calls == ["finalize", "fit"] and not dev_output.exists()
+
+
+def test_recovery_manifest_change_during_dev_comparison_is_rejected(
+    workflow: SimpleNamespace, monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    recovery = _recovery(workflow, monkeypatch)
+    anchors = {**recovery, "expected_execution_source_sha256": "a" * 64,
+               "expected_route_sha256": "b" * 64}
+    train_output = _external_output(workflow, "recovery-captured-train")
+    _fit(workflow, train_output, **anchors)
+    marker = Path(recovery["recovery_manifest_path"])
+    workflow.state["compare_mutation"] = lambda: marker.write_bytes(b"changed")
+    dev_output = _external_output(workflow, "recovery-captured-dev")
+    with pytest.raises(ValueError, match="Pinned admitted-workflow source changed during execution"):
+        _compare(workflow, train_output, dev_output, **anchors)
+    assert workflow.calls == ["finalize", "fit", "finalize", "compare"] and not dev_output.exists()
 
 
 def test_train_rejects_mismatched_inner_input_commitments(workflow):
