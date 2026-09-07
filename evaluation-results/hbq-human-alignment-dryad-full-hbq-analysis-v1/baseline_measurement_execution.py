@@ -25,6 +25,8 @@ RUNTIME_SOURCE = ROOT / "baseline_native_runtime.py"
 NATIVE_SOURCE = ROOT / "native_admission.py"
 ADMISSION_SOURCE = ROOT / "baseline_measurement_admission.py"
 TERMINAL_IDENTITIES = ROOT / "terminal-identities-v2.json"
+RECOVERY_SOURCE = ROOT / "baseline_recovery.py"
+RECOVERY_MANIFEST = "recovery-manifest.json"
 PLAN_SHA256 = "edeadb93c485ba227153329b5ae420de1c9d08d95e920bac0635d197fd3dbd7f"
 SOURCE_PINS = {
     PLAN_SOURCE: "33193aa1a394c04c14b4f9ab81871116dbac11f933f22a9e45f252b2d279fdc8",
@@ -33,6 +35,7 @@ SOURCE_PINS = {
     NATIVE_SOURCE: "22ccfe3299bab0e04045a7ec01ab4799929818a3a84aecc8549bb6cb3032a1ec",
     ADMISSION_SOURCE: "062a7b3f4e5783a62d3c269ecb01884bc089d3671fec28f5cb52489acda612e2",
     TERMINAL_IDENTITIES: "82cc80c2692fc0c0f47024d4db04cdbf5dd1c34c2d5deea40916a0e8ea45ca63",
+    RECOVERY_SOURCE: "8b4c82af9d73d8fd6c0647436b4c3b394388802ac282314aaee65dd6a168545e",
 }
 _HASH = re.compile(r"[0-9a-f]{64}\Z")
 REVIEWER_TASK = "baseline-human-review"
@@ -124,6 +127,58 @@ def _sources() -> tuple[dict[Path, bytes], tuple[ModuleType, ModuleType, ModuleT
 def _unchanged(captured: Mapping[Path, bytes]) -> None:
     _require(all(_plain(path, directory=False).read_bytes() == raw for path, raw in captured.items()),
              "Baseline execution source changed")
+
+
+def _recovery_context(captured: dict[Path, bytes], execution_root: Path, plan_root: Path, *,
+                      recovery_manifest_path: Path | None,
+                      expected_recovery_manifest_sha256: str | None) -> dict[str, Any] | None:
+    marker = _plain(execution_root.parent, directory=True) / RECOVERY_MANIFEST
+    if not marker.exists():
+        _require(recovery_manifest_path is None and expected_recovery_manifest_sha256 is None,
+                 "Unexpected recovery manifest arguments")
+        return None
+    _require(recovery_manifest_path is not None and expected_recovery_manifest_sha256 is not None
+             and _HASH.fullmatch(expected_recovery_manifest_sha256) is not None,
+             "Recovery manifest arguments are required")
+    manifest_path = _plain(recovery_manifest_path, directory=False)
+    marker = _plain(marker, directory=False)
+    _require(manifest_path == marker, "Recovery manifest locator differs")
+    recovery = _load(RECOVERY_SOURCE, captured[RECOVERY_SOURCE], "_dryad_baseline_recovery_")
+    verified = recovery.verify_projection(marker, expected_recovery_manifest_sha256, allow_progress=True)
+    _require(isinstance(verified, Mapping) and verified.get("status") == "verified"
+             and verified.get("manifest_sha256") == expected_recovery_manifest_sha256,
+             "Recovery projection verification differs")
+    manifest_raw = marker.read_bytes()
+    _require(_hash(manifest_raw) == expected_recovery_manifest_sha256, "Recovery manifest changed")
+    manifest = _json(manifest_raw, "Recovery manifest")
+    derivative = _plain(Path(manifest.get("derivative_root", "")), directory=True)
+    source_plan = _plain(Path(manifest.get("plan_root", "")), directory=True)
+    _require(derivative == execution_root and source_plan == plan_root,
+             "Recovery projection roots differ")
+    approval, incident, probe = manifest.get("approval"), manifest.get("incident"), manifest.get("probe")
+    _require(all(isinstance(binding, Mapping) and isinstance(binding.get("path"), str)
+                 for binding in (approval, incident, probe)),
+             "Recovery projection bindings differ")
+    captured[marker] = manifest_raw
+    for binding in (approval, incident, probe):
+        path = _plain(Path(binding["path"]), directory=False)
+        raw = path.read_bytes()
+        _require(isinstance(binding.get("sha256"), str) and _hash(raw) == binding["sha256"],
+                 "Recovery projection bindings differ")
+        captured[path] = raw
+    return {"manifest": manifest, "manifest_sha256": expected_recovery_manifest_sha256}
+
+
+def _require_recovery_cohort(recovery: Mapping[str, Any] | None, cohort_number: int,
+                             ordinals: tuple[int, ...], expected_previous_settlement_sha256: str) -> None:
+    if recovery is None:
+        return
+    manifest = recovery["manifest"]
+    _require(cohort_number >= 6, "Recovery cohort binding differs")
+    if cohort_number == 6:
+        _require(manifest.get("replacement_ordinal") == 51
+                 and manifest.get("last_settlement_sha256") == expected_previous_settlement_sha256
+                 and 51 in ordinals, "Recovery cohort binding differs")
 
 
 def _write_new(path: Path, raw: bytes) -> None:
@@ -347,9 +402,11 @@ def _prepared(execution_root: Path, number: int, expected_sha256: str, initializ
 
 
 def prepare_cohort(public_inputs_path: Path, plan_root: Path, execution_root: Path, cohort_number: int,
-                   route: Mapping[str, Any], *, expected_plan_sha256: str, expected_initialization_sha256: str,
-                   expected_previous_settlement_sha256: str,
-                   expected_operational_renewal_sha256: str | None = None) -> dict[str, str]:
+                    route: Mapping[str, Any], *, expected_plan_sha256: str, expected_initialization_sha256: str,
+                    expected_previous_settlement_sha256: str,
+                    expected_operational_renewal_sha256: str | None = None,
+                    recovery_manifest_path: Path | None = None,
+                    expected_recovery_manifest_sha256: str | None = None) -> dict[str, str]:
     """Provider-free creation of one exact reviewed-cohort preparation record."""
     _require(expected_plan_sha256 == PLAN_SHA256 and all(_HASH.fullmatch(value) is not None for value in
              (expected_initialization_sha256, expected_previous_settlement_sha256)), "Preparation anchors differ")
@@ -357,6 +414,9 @@ def prepare_cohort(public_inputs_path: Path, plan_root: Path, execution_root: Pa
     public_inputs_path = _plain(public_inputs_path, directory=False)
     plan_root = _plain(plan_root, directory=True)
     execution_root = _plain(execution_root, directory=True)
+    recovery = _recovery_context(captured, execution_root, plan_root,
+                                 recovery_manifest_path=recovery_manifest_path,
+                                 expected_recovery_manifest_sha256=expected_recovery_manifest_sha256)
     initialization, initialization_raw = _initialization(execution_root, expected_initialization_sha256)
     _require(_hash(public_inputs_path.read_bytes()) == initialization["public_inputs_sha256"],
              "Initialization public inputs binding differs")
@@ -372,6 +432,7 @@ def prepare_cohort(public_inputs_path: Path, plan_root: Path, execution_root: Pa
     _require(set(all_requests) == set(range(1, len(plan["requests"]) + 1)) and len(all_passes) == len(plan["passes"]),
              "Full baseline plan inventory differs")
     ordinals = _groups(ledger, plan, cohort_number)
+    _require_recovery_cohort(recovery, cohort_number, ordinals, expected_previous_settlement_sha256)
     passes, requests = _rows(plan, plan_root, ordinals)
     _frozen_payloads(plan_root, requests, passes, ordinals)
     route = dict(route)
@@ -801,9 +862,11 @@ def _verify_new_renewal_boundary(execution_root: Path, plan_root: Path, prior: M
 def _prepare_continuation_unlocked(public_inputs_path: Path, plan_root: Path, execution_root: Path, cohort_number: int, *,
                          expected_plan_sha256: str, expected_initialization_sha256: str,
                          expected_previous_settlement_sha256: str, expected_prepared_sha256: str,
-                         expected_review_sha256: str, expected_source_sha256: str,
-                         expected_operational_renewal_sha256: str | None = None,
-                         expected_precontact_recovery_sha256: str | None = None) -> dict[str, Any]:
+                          expected_review_sha256: str, expected_source_sha256: str,
+                          expected_operational_renewal_sha256: str | None = None,
+                          expected_precontact_recovery_sha256: str | None = None,
+                          recovery_manifest_path: Path | None = None,
+                          expected_recovery_manifest_sha256: str | None = None) -> dict[str, Any]:
     """Build a provider-free candidate for an independent continuation review."""
     _require(expected_plan_sha256 == PLAN_SHA256 and all(_HASH.fullmatch(value) is not None for value in
              (expected_initialization_sha256, expected_previous_settlement_sha256, expected_prepared_sha256,
@@ -818,6 +881,9 @@ def _prepare_continuation_unlocked(public_inputs_path: Path, plan_root: Path, ex
     public_inputs_path = _plain(public_inputs_path, directory=False)
     plan_root = _plain(plan_root, directory=True)
     execution_root = _plain(execution_root, directory=True)
+    recovery = _recovery_context(captured, execution_root, plan_root,
+                                 recovery_manifest_path=recovery_manifest_path,
+                                 expected_recovery_manifest_sha256=expected_recovery_manifest_sha256)
     initialization, initialization_raw = _initialization(execution_root, expected_initialization_sha256)
     _require(_hash(public_inputs_path.read_bytes()) == initialization["public_inputs_sha256"],
              "Initialization continuation binding differs")
@@ -829,6 +895,7 @@ def _prepare_continuation_unlocked(public_inputs_path: Path, plan_root: Path, ex
                   if isinstance(row, Mapping) and isinstance(row.get("pass_id"), str)}
     _require(len(all_passes) == len(plan["passes"]), "Full baseline pass inventory differs")
     ordinals = _groups(ledger, plan, cohort_number)
+    _require_recovery_cohort(recovery, cohort_number, ordinals, expected_previous_settlement_sha256)
     prepared, route, _review, continuations, prior, epoch = _cohort_state(
         public_inputs_path.read_bytes(), plan_raw, execution_root, initialization, ledger, cohort_number, ordinals,
         expected_previous_settlement_sha256, expected_prepared_sha256, expected_review_sha256,
@@ -872,9 +939,11 @@ def _prepare_continuation_unlocked(public_inputs_path: Path, plan_root: Path, ex
 def prepare_continuation(public_inputs_path: Path, plan_root: Path, execution_root: Path, cohort_number: int, *,
                          expected_plan_sha256: str, expected_initialization_sha256: str,
                          expected_previous_settlement_sha256: str, expected_prepared_sha256: str,
-                         expected_review_sha256: str, expected_source_sha256: str,
-                         expected_operational_renewal_sha256: str | None = None,
-                         expected_precontact_recovery_sha256: str | None = None) -> dict[str, Any]:
+                          expected_review_sha256: str, expected_source_sha256: str,
+                          expected_operational_renewal_sha256: str | None = None,
+                          expected_precontact_recovery_sha256: str | None = None,
+                          recovery_manifest_path: Path | None = None,
+                          expected_recovery_manifest_sha256: str | None = None) -> dict[str, Any]:
     root = _plain(execution_root, directory=True)
     lock, token = _lock(root)
     before = _execution_snapshot(root)
@@ -886,7 +955,9 @@ def prepare_continuation(public_inputs_path: Path, plan_root: Path, execution_ro
             expected_prepared_sha256=expected_prepared_sha256, expected_review_sha256=expected_review_sha256,
             expected_source_sha256=expected_source_sha256,
             expected_operational_renewal_sha256=expected_operational_renewal_sha256,
-            expected_precontact_recovery_sha256=expected_precontact_recovery_sha256)
+            expected_precontact_recovery_sha256=expected_precontact_recovery_sha256,
+            recovery_manifest_path=recovery_manifest_path,
+            expected_recovery_manifest_sha256=expected_recovery_manifest_sha256)
         _require(_execution_snapshot(root) == before, "Execution evidence changed during continuation preparation")
         _require(lock.is_file() and lock.read_bytes() == token, "Continuation lock ownership changed")
         return result
@@ -960,9 +1031,11 @@ def run_cohort(public_inputs_path: Path, plan_root: Path, execution_root: Path, 
                broker_factory: Any | None = None, *, expected_plan_sha256: str, expected_initialization_sha256: str,
                expected_previous_settlement_sha256: str, expected_prepared_sha256: str,
                expected_review_sha256: str, expected_source_sha256: str,
-               expected_continuation_sha256: str | None = None,
-               expected_operational_renewal_sha256: str | None = None,
-               expected_precontact_recovery_sha256: str | None = None) -> dict[str, Any]:
+                expected_continuation_sha256: str | None = None,
+                expected_operational_renewal_sha256: str | None = None,
+                expected_precontact_recovery_sha256: str | None = None,
+                recovery_manifest_path: Path | None = None,
+                expected_recovery_manifest_sha256: str | None = None) -> dict[str, Any]:
     """Contact Grok only under an externally reviewed, still-live cohort authorization."""
     anchors = (expected_initialization_sha256, expected_previous_settlement_sha256, expected_prepared_sha256,
                expected_review_sha256, expected_source_sha256)
@@ -978,6 +1051,9 @@ def run_cohort(public_inputs_path: Path, plan_root: Path, execution_root: Path, 
     plan_root = _plain(plan_root, directory=True)
     execution_root = _plain(execution_root, directory=True)
     queue_root = _plain(queue_root, directory=True)
+    recovery = _recovery_context(captured, execution_root, plan_root,
+                                 recovery_manifest_path=recovery_manifest_path,
+                                 expected_recovery_manifest_sha256=expected_recovery_manifest_sha256)
     _require(all(not queue_root.is_relative_to(protected) and not protected.is_relative_to(queue_root)
                  for protected in (public_inputs_path.parent, plan_root, execution_root, REPOSITORY)),
              "Queue root overlaps baseline evidence")
@@ -991,6 +1067,7 @@ def run_cohort(public_inputs_path: Path, plan_root: Path, execution_root: Path, 
                  "Initialization execution binding differs")
         plan, plan_raw = _plan(plan_root, expected_plan_sha256)
         ordinals = _groups(ledger, plan, cohort_number)
+        _require_recovery_cohort(recovery, cohort_number, ordinals, expected_previous_settlement_sha256)
         _prepared, route, review, continuations, prior, epoch = _cohort_state(
             public_inputs_path.read_bytes(), plan_raw, execution_root, initialization, ledger, cohort_number, ordinals,
             expected_previous_settlement_sha256, expected_prepared_sha256, expected_review_sha256,
@@ -1000,6 +1077,10 @@ def run_cohort(public_inputs_path: Path, plan_root: Path, execution_root: Path, 
                  and epoch.get("precontact_recovery_sha256") == expected_precontact_recovery_sha256,
                  "Prepared operational epoch differs")
         completed = _contact_prefix(execution_root, ordinals)
+        if recovery is not None:
+            _require((not completed and expected_continuation_sha256 is None)
+                     or (completed and completed[0] == 51),
+                     "Recovery continuation binding differs")
         _validate_approval_chronology(execution_root, ordinals, expected_review_sha256, review, continuations)
         if completed and len(completed) < len(ordinals) and expected_continuation_sha256 is None:
             lock_owned()
@@ -1115,6 +1196,12 @@ def run_cohort(public_inputs_path: Path, plan_root: Path, execution_root: Path, 
             planned = next((value for value in all_requests.values()
                             if value.get("pass_id") == pass_id and value.get("batch_number") == batch["number"]), None)
             _require(isinstance(planned, Mapping), "Runner request binding differs")
+            if recovery is not None:
+                _require(planned["ordinal"] > 50, "Recovery cannot contact a settled ordinal")
+                if cohort_number == 6 and expected_continuation_sha256 is None and planned["ordinal"] != 51:
+                    if not inner:
+                        raise runtime.runner.RetryDisclosurePause("recovery requires continuation review after ordinal 51")
+                    raise ValueError("Recovery inner contact exceeds ordinal 51")
             if planned["ordinal"] not in current:
                 if not inner:
                     raise runtime.runner.RetryDisclosurePause("reviewed cohort boundary")
@@ -1193,7 +1280,9 @@ def run_cohort(public_inputs_path: Path, plan_root: Path, execution_root: Path, 
 def finalize(public_inputs_path: Path, plan_root: Path, execution_root: Path, runtime_manifest_path: Path, *,
              expected_plan_sha256: str, expected_initialization_sha256: str,
              expected_final_settlement_sha256: str, expected_execution_source_sha256: str,
-             expected_runtime_manifest_sha256: str, expected_admission_sha256: str) -> dict[str, Any]:
+             expected_runtime_manifest_sha256: str, expected_admission_sha256: str,
+             recovery_manifest_path: Path | None = None,
+             expected_recovery_manifest_sha256: str | None = None) -> dict[str, Any]:
     """Read-only final native admission after the 543rd cohort has released its lock."""
     anchors = (expected_initialization_sha256, expected_final_settlement_sha256, expected_execution_source_sha256,
                expected_runtime_manifest_sha256, expected_admission_sha256)
@@ -1205,6 +1294,9 @@ def finalize(public_inputs_path: Path, plan_root: Path, execution_root: Path, ru
     plan_root = _plain(plan_root, directory=True)
     execution_root = _plain(execution_root, directory=True)
     runtime_manifest_path = _plain(runtime_manifest_path, directory=False)
+    recovery = _recovery_context(captured, execution_root, plan_root,
+                                 recovery_manifest_path=recovery_manifest_path,
+                                 expected_recovery_manifest_sha256=expected_recovery_manifest_sha256)
     _require(not (execution_root / ".launch.lock").exists(), "Final admission requires a released execution lock")
     initialization, _ = _initialization(execution_root, expected_initialization_sha256)
     _require(initialization["execution_source_sha256"] == expected_execution_source_sha256
@@ -1239,7 +1331,17 @@ def finalize(public_inputs_path: Path, plan_root: Path, execution_root: Path, ru
              and result.get("admitted_passes") == 236 and result.get("logical_requests") == 5428,
              "Final native admission result differs")
     _unchanged(captured)
-    return dict(result)
+    projected = dict(result)
+    if recovery is not None:
+        manifest = recovery["manifest"]
+        projected["evidence_class"] = "complete_native_baseline_measurement_admission_with_grok51_recovery_provenance"
+        projected["recovery_provenance"] = {
+            "manifest_sha256": recovery["manifest_sha256"],
+            "replacement_ordinal": manifest["replacement_ordinal"],
+            "origin_root": manifest["origin_root"],
+            "derivative_root": manifest["derivative_root"],
+        }
+    return projected
 
 
 def main() -> int:
@@ -1281,6 +1383,9 @@ def main() -> int:
                     command.add_argument("--operational-renewal-sha256")
                 if name in {"prepare-continuation", "run"}:
                     command.add_argument("--precontact-recovery-sha256")
+        if name in {"prepare", "prepare-continuation", "run", "finalize"}:
+            command.add_argument("--recovery-manifest", type=Path)
+            command.add_argument("--recovery-manifest-sha256")
     args = parser.parse_args()
     if args.action == "initialize":
         result = initialize(args.public_inputs, args.plan_root, args.execution_root, args.runtime_manifest, args.route_json,
@@ -1293,7 +1398,9 @@ def main() -> int:
                                 expected_plan_sha256=args.plan_sha256,
                                 expected_initialization_sha256=args.initialization_sha256,
                                 expected_previous_settlement_sha256=args.previous_settlement_sha256,
-                                expected_operational_renewal_sha256=args.operational_renewal_sha256)
+                                expected_operational_renewal_sha256=args.operational_renewal_sha256,
+                                recovery_manifest_path=args.recovery_manifest,
+                                expected_recovery_manifest_sha256=args.recovery_manifest_sha256)
     elif args.action == "prepare-precontact-recovery":
         result = prepare_precontact_recovery(
             args.public_inputs, args.plan_root, args.execution_root, args.cohort,
@@ -1308,9 +1415,11 @@ def main() -> int:
                                       expected_initialization_sha256=args.initialization_sha256,
                                       expected_previous_settlement_sha256=args.previous_settlement_sha256,
                                       expected_prepared_sha256=args.prepared_sha256, expected_review_sha256=args.review_sha256,
-                                      expected_source_sha256=args.source_sha256,
-                                      expected_operational_renewal_sha256=args.operational_renewal_sha256,
-                                      expected_precontact_recovery_sha256=args.precontact_recovery_sha256)
+                                       expected_source_sha256=args.source_sha256,
+                                       expected_operational_renewal_sha256=args.operational_renewal_sha256,
+                                       expected_precontact_recovery_sha256=args.precontact_recovery_sha256,
+                                       recovery_manifest_path=args.recovery_manifest,
+                                       expected_recovery_manifest_sha256=args.recovery_manifest_sha256)
     elif args.action == "run":
         result = run_cohort(args.public_inputs, args.plan_root, args.execution_root, args.cohort, args.queue_root,
                             expected_plan_sha256=args.plan_sha256, expected_initialization_sha256=args.initialization_sha256,
@@ -1319,14 +1428,18 @@ def main() -> int:
                             expected_source_sha256=args.source_sha256,
                             expected_continuation_sha256=args.continuation_sha256,
                             expected_operational_renewal_sha256=args.operational_renewal_sha256,
-                            expected_precontact_recovery_sha256=args.precontact_recovery_sha256)
+                            expected_precontact_recovery_sha256=args.precontact_recovery_sha256,
+                            recovery_manifest_path=args.recovery_manifest,
+                            expected_recovery_manifest_sha256=args.recovery_manifest_sha256)
     else:
         result = finalize(args.public_inputs, args.plan_root, args.execution_root, args.runtime_manifest,
                           expected_plan_sha256=args.plan_sha256, expected_initialization_sha256=args.initialization_sha256,
                           expected_final_settlement_sha256=args.final_settlement_sha256,
                           expected_execution_source_sha256=args.source_sha256,
                           expected_runtime_manifest_sha256=args.runtime_manifest_sha256,
-                          expected_admission_sha256=args.admission_sha256)
+                          expected_admission_sha256=args.admission_sha256,
+                          recovery_manifest_path=args.recovery_manifest,
+                          expected_recovery_manifest_sha256=args.recovery_manifest_sha256)
     print(_canonical(result).decode("utf-8"))
     return 0
 

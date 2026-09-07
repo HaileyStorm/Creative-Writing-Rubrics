@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "evidence_class": "cumulative_sol_local_lifecycle_admission",
+  "plan_sha256": "edeadb93c485ba227153329b5ae420de1c9d08d95e920bac0635d197fd3dbd7f",
+  "execution_source_sha256": "b2ed2aa567bbeab3a933a33cf35ccfad81cb2eb47ec0479a57e52962a3a34a40",
+  "admission_source_sha256": "cd8364c18cbd8a07bc18a9b4d3d0bc1102518cfbed465b9c4f4586245b8eb65d",
+  "admission_record_sha256": "b7bc8c91cf0f7358adc9a0ce6108059c74f400d4f501c6b1fb2824d77b7d6b2b",
+  "cohort_number": 7,
+  "admitted_batches": 70,
+  "planned_requests": 5428,
+  "distinct_native_local_threads": 70,
+  "canonical_verdict_leaves": 542,
+  "complete_story_passes": 3,
+  "planned_story_passes": 236,
+  "partial_story_leaves": 8,
+  "third_complete_pass": {
+    "score": 46.6326,
+    "coverage": 0.9707,
+    "checkpoint_head_sha256": "cede9d9845d9551baf60d98aa6baa0b8c45a2092de8c156deee00ee7298037a7"
+  },
+  "identity_evidence": "requested_only",
+  "native_endpoint_contact_cardinality": "unproven",
+  "provider_attested": false,
+  "empirical_batch_cap": null,
+  "full_baseline_admitted": false,
+  "human_alignment_result": false,
+  "replay_inputs_machine_local": true
+}

@@ -388,6 +388,8 @@ def _prepare(
     cohort: int = 543,
     previous_settlement_sha256: str | None = None,
     operational_renewal_sha256: str | None = None,
+    recovery_manifest_path: Path | None = None,
+    expected_recovery_manifest_sha256: str | None = None,
 ) -> dict[str, str]:
     value = case.value
     case.cohort = cohort
@@ -409,6 +411,8 @@ def _prepare(
         expected_initialization_sha256=case.initialization["initialization_sha256"],
         expected_previous_settlement_sha256=previous_settlement_sha256,
         expected_operational_renewal_sha256=operational_renewal_sha256,
+        recovery_manifest_path=recovery_manifest_path,
+        expected_recovery_manifest_sha256=expected_recovery_manifest_sha256,
     )
 
 
@@ -503,6 +507,8 @@ def _run(
     continuation_sha256: str | None = None,
     previous_settlement_sha256: str | None = None,
     operational_renewal_sha256: str | None = None,
+    recovery_manifest_path: Path | None = None,
+    expected_recovery_manifest_sha256: str | None = None,
 ) -> dict[str, Any]:
     value = case.value
     previous_settlement_sha256 = previous_settlement_sha256 or (
@@ -523,6 +529,8 @@ def _run(
         expected_source_sha256=case.initialization_source_sha256,
         expected_continuation_sha256=continuation_sha256,
         expected_operational_renewal_sha256=operational_renewal_sha256,
+        recovery_manifest_path=recovery_manifest_path,
+        expected_recovery_manifest_sha256=expected_recovery_manifest_sha256,
     )
 
 
@@ -561,6 +569,118 @@ def _continuation_candidate(
         expected_source_sha256=case.initialization_source_sha256,
         expected_operational_renewal_sha256=operational_renewal_sha256,
     )
+
+
+def _recovery_marker(case: SimpleNamespace, monkeypatch: pytest.MonkeyPatch, *,
+                     derivative_root: Path | None = None, plan_root: Path | None = None) -> tuple[Path, str]:
+    value = case.value
+    marker = case.execution_root.parent / value.RECOVERY_MANIFEST
+    approval, incident, probe = (marker.with_name("approval.json"), marker.with_name("incident.json"),
+                                 marker.with_name("probe.json"))
+    approval.write_bytes(b"approval")
+    incident.write_bytes(b"incident")
+    probe.write_bytes(b"probe")
+    manifest = {
+        "derivative_root": str(derivative_root or case.execution_root),
+        "plan_root": str(plan_root or case.plan_root),
+        "approval": {"path": str(approval), "sha256": _hash(approval.read_bytes())},
+        "incident": {"path": str(incident), "sha256": _hash(incident.read_bytes())},
+        "probe": {"path": str(probe), "sha256": _hash(probe.read_bytes())},
+        "replacement_ordinal": 51,
+        "last_settlement_sha256": case.previous_settlement_sha256,
+        "origin_root": str(case.execution_root.parent / "original"),
+    }
+    raw = _canonical(manifest)
+    marker.write_bytes(raw)
+    expected = _hash(raw)
+    case.captured[value.RECOVERY_SOURCE] = value.RECOVERY_SOURCE.read_bytes()
+
+    def verify(path: Path, sha256: str, *, allow_progress: bool) -> dict[str, Any]:
+        assert path == marker and sha256 == expected and allow_progress
+        return {"status": "verified", "manifest_sha256": expected}
+
+    monkeypatch.setattr(value, "_load", lambda path, raw, prefix: (
+        SimpleNamespace(verify_projection=verify) if path == value.RECOVERY_SOURCE else None
+    ))
+    return marker, expected
+
+
+def test_recovery_marker_requires_manifest_pair_and_exact_roots(case: SimpleNamespace, monkeypatch: pytest.MonkeyPatch) -> None:
+    case.initialization = _initialize(case)
+    marker, expected = _recovery_marker(case, monkeypatch)
+    with pytest.raises(ValueError, match="Recovery manifest arguments are required"):
+        _prepare(case, 6, case.previous_settlement_sha256)
+    wrong_marker = marker.with_name("other.json")
+    wrong_marker.write_bytes(marker.read_bytes())
+    with pytest.raises(ValueError, match="Recovery manifest locator differs"):
+        _prepare(case, 6, case.previous_settlement_sha256,
+                 recovery_manifest_path=wrong_marker, expected_recovery_manifest_sha256=expected)
+    with pytest.raises(ValueError, match="Recovery projection roots differ"):
+        wrong_root = case.execution_root.parent / "wrong-root"
+        wrong_root.mkdir()
+        marker, expected = _recovery_marker(case, monkeypatch, derivative_root=wrong_root)
+        _prepare(case, 6, case.previous_settlement_sha256,
+                 recovery_manifest_path=marker, expected_recovery_manifest_sha256=expected)
+
+
+def test_recovery_context_captures_authorization_inputs_for_contact_guards(
+    case: SimpleNamespace, monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    case.initialization = _initialize(case)
+    marker, expected = _recovery_marker(case, monkeypatch)
+    captured = dict(case.captured)
+    case.value._recovery_context(captured, case.execution_root, case.plan_root,
+                                 recovery_manifest_path=marker, expected_recovery_manifest_sha256=expected)
+    marker.with_name("approval.json").write_bytes(b"changed")
+    with pytest.raises(ValueError, match="Baseline execution source changed"):
+        case.value._unchanged(captured)
+
+
+def test_recovery_initial_run_pauses_after_only_derivative_ordinal_51(
+    case: SimpleNamespace, monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    case.initialization = _initialize(case)
+    prior = case.execution_root / "cohorts/0005/settlement.json"
+    prior.parent.mkdir(parents=True)
+    prior.write_bytes((case.execution_root / "cohorts/0542/settlement.json").read_bytes())
+    marker, expected = _recovery_marker(case, monkeypatch)
+    case.state["runner_ordinals"] = list(range(51, 61))
+    case.prepared = _prepare(case, 6, case.previous_settlement_sha256,
+                             recovery_manifest_path=marker, expected_recovery_manifest_sha256=expected)
+    review_sha256 = _review(case, start=case.state["clock"] - timedelta(minutes=1),
+                            end=case.state["clock"] + timedelta(minutes=10))
+    result = _run(case, review_sha256, recovery_manifest_path=marker,
+                  expected_recovery_manifest_sha256=expected)
+    assert result == {"cohort_number": 6, "completed_ordinals": [51],
+                      "status": "paused_for_continuation_review", "provider_calls": 1}
+    assert case.state["stub_contacts"] == [51]
+    assert not (case.execution_root / "contacts/request-0052.json").exists()
+
+
+def test_recovery_marker_preserves_future_cohorts_after_cohort_6(case: SimpleNamespace, monkeypatch: pytest.MonkeyPatch) -> None:
+    case.initialization = _initialize(case)
+    marker, expected = _recovery_marker(case, monkeypatch)
+    settlement_raw = _canonical({"settled_at": (case.state["clock"] - timedelta(minutes=1)).isoformat().replace("+00:00", "Z")})
+    post_recovery_settlement = _hash(settlement_raw)
+    settlement = case.execution_root / "cohorts/0006/settlement.json"
+    settlement.parent.mkdir(parents=True)
+    settlement.write_bytes(settlement_raw)
+    case.state["ledger_prior"] = {"contacts": {}, "routes": {},
+                                  "head": {"settlement_sha256": post_recovery_settlement}}
+    case.state["runner_ordinals"] = list(range(61, 71))
+    prepared = _prepare(case, 7, post_recovery_settlement,
+                        recovery_manifest_path=marker, expected_recovery_manifest_sha256=expected)
+    case.prepared = prepared
+    assert prepared["prepared_sha256"]
+    review_sha256 = _review(case, start=case.state["clock"] - timedelta(seconds=30),
+                            end=case.state["clock"] + timedelta(minutes=10))
+    case.state["pause_after"] = 1
+    result = _run(case, review_sha256, previous_settlement_sha256=post_recovery_settlement,
+                  recovery_manifest_path=marker, expected_recovery_manifest_sha256=expected)
+    assert result["completed_ordinals"] == [61] and case.state["stub_contacts"] == [61]
+    with pytest.raises(ValueError, match="Recovery cohort binding differs"):
+        _prepare(case, 5, case.previous_settlement_sha256,
+                 recovery_manifest_path=marker, expected_recovery_manifest_sha256=expected)
 
 
 def test_initialize_binds_full_inventory_route_and_exclusive_record(case: SimpleNamespace) -> None:
