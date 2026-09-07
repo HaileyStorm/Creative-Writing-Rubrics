@@ -1,11 +1,16 @@
 from __future__ import annotations
 
+import hashlib
 import importlib.util
 import json
+import os
+import sys
 import threading
-from types import SimpleNamespace
+from collections.abc import Iterator
 from concurrent.futures import ThreadPoolExecutor
+from contextlib import contextmanager
 from pathlib import Path
+from types import ModuleType, SimpleNamespace
 from typing import Any
 
 import pytest
@@ -15,6 +20,85 @@ _spec = importlib.util.spec_from_file_location("wpb_native_batch_support", SUPPO
 assert _spec and _spec.loader
 support = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(support)
+
+HISTORICAL_GROK_FIXTURE_ENV = "CWR_WPB_HISTORICAL_FIXTURE_ROOT"
+HISTORICAL_GROK_PROVENANCE = Path(__file__).with_name("fixtures") / "wpb_historical_model_work_queue_v1" / "manifest.json"
+HISTORICAL_GROK_PACKAGE = "_wpb_historical_model_work_queue_v1"
+HISTORICAL_GROK_FILES = {
+    "adapters/grok_exec.py": "8067348efa7024d6d266d9a6f30b11380d2c54adce768cfc6e774f642c3c06aa",
+    "adapters/json_schema_subset.py": "0efa225bbd16746ffb22dd053036c37da18642b19c1399cb2b181970158ee67e",
+    "broker.py": "797aa73cbc7f093e5053ab03bcdb1ca206cf5c1c5946e9c084393ba9fe9892ed",
+    "grok_usage_evidence.py": "dc5e00849699858445d966783bfa2b2afc5255b896f41544196ac023c82be99f",
+    "image_canary.py": "6fa00f59bd0c84d0d752f67ad502b4e3dd5e39850bdc5c75855926fff1454da8",
+}
+
+
+def historical_grok_fixture_root() -> Path:
+    configured_root = os.environ.get(HISTORICAL_GROK_FIXTURE_ENV)
+    if not configured_root:
+        pytest.skip(f"set {HISTORICAL_GROK_FIXTURE_ENV} to the private historical model-work-queue fixture bundle")
+    fixture_root = Path(configured_root)
+    expected_manifest = {
+        "commit": "79b83e29d5ad96ffc0119ad199ce92a706025d22",
+        "files": HISTORICAL_GROK_FILES,
+        "format_version": 1,
+        "source": "harness-process-probe-safety/universal-harness/shared-tools/model-work-queue/model_work_queue",
+    }
+    assert json.loads(HISTORICAL_GROK_PROVENANCE.read_bytes()) == expected_manifest
+    assert fixture_root.is_dir(), f"{HISTORICAL_GROK_FIXTURE_ENV} must name a fixture directory: {fixture_root}"
+    assert json.loads((fixture_root / "manifest.json").read_bytes()) == expected_manifest
+    return fixture_root
+
+
+@contextmanager
+def historical_grok_broker_module() -> Iterator[ModuleType]:
+    fixture_root = historical_grok_fixture_root()
+    sources = {path: (fixture_root / path).read_bytes() for path in HISTORICAL_GROK_FILES}
+    assert {path: hashlib.sha256(source).hexdigest() for path, source in sources.items()} == HISTORICAL_GROK_FILES
+    assert not any(name == HISTORICAL_GROK_PACKAGE or name.startswith(HISTORICAL_GROK_PACKAGE + ".") for name in sys.modules)
+    package_names = (HISTORICAL_GROK_PACKAGE, HISTORICAL_GROK_PACKAGE + ".adapters")
+    module_names = {
+        "adapters/json_schema_subset.py": HISTORICAL_GROK_PACKAGE + ".adapters.json_schema_subset",
+        "image_canary.py": HISTORICAL_GROK_PACKAGE + ".image_canary",
+        "grok_usage_evidence.py": HISTORICAL_GROK_PACKAGE + ".grok_usage_evidence",
+        "broker.py": HISTORICAL_GROK_PACKAGE + ".broker",
+    }
+    for name in package_names:
+        package = ModuleType(name)
+        package.__package__ = name
+        package.__path__ = [str(fixture_root / ("adapters" if name.endswith(".adapters") else "."))]  # type: ignore[attr-defined]
+        sys.modules[name] = package
+    try:
+        for path, name in module_names.items():
+            module = ModuleType(name)
+            module.__file__ = str(fixture_root / path)
+            module.__package__ = name.rpartition(".")[0]
+            sys.modules[name] = module
+            exec(compile(sources[path], module.__file__, "exec"), module.__dict__)  # noqa: S102
+        yield sys.modules[module_names["broker.py"]]
+    finally:
+        for name in tuple(sys.modules):
+            if name == HISTORICAL_GROK_PACKAGE or name.startswith(HISTORICAL_GROK_PACKAGE + "."):
+                sys.modules.pop(name)
+
+
+@pytest.fixture(scope="module", autouse=True)
+def historical_wpb_grok_dispatch_compatibility() -> Iterator[None]:
+    original_executor = support.executor
+    with historical_grok_broker_module() as broker_module:
+        def executor() -> Any:
+            value = original_executor()
+            value._grok_broker_module = lambda: broker_module
+            fixture_root = historical_grok_fixture_root()
+            value.GROK_ADAPTER_PATH = fixture_root / "adapters" / "grok_exec.py"
+            value.SCHEMA_SUBSET_PATH = fixture_root / "adapters" / "json_schema_subset.py"
+            return value
+
+        support.executor = executor
+        try:
+            yield
+        finally:
+            support.executor = original_executor
 
 
 def campaign_args(args: dict[str, Any], *, queue: bool = False) -> dict[str, Any]:

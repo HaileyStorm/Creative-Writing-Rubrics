@@ -1,0 +1,12 @@
+{
+  "commit": "79b83e29d5ad96ffc0119ad199ce92a706025d22",
+  "files": {
+    "adapters/grok_exec.py": "8067348efa7024d6d266d9a6f30b11380d2c54adce768cfc6e774f642c3c06aa",
+    "adapters/json_schema_subset.py": "0efa225bbd16746ffb22dd053036c37da18642b19c1399cb2b181970158ee67e",
+    "broker.py": "797aa73cbc7f093e5053ab03bcdb1ca206cf5c1c5946e9c084393ba9fe9892ed",
+    "grok_usage_evidence.py": "dc5e00849699858445d966783bfa2b2afc5255b896f41544196ac023c82be99f",
+    "image_canary.py": "6fa00f59bd0c84d0d752f67ad502b4e3dd5e39850bdc5c75855926fff1454da8"
+  },
+  "format_version": 1,
+  "source": "harness-process-probe-safety/universal-harness/shared-tools/model-work-queue/model_work_queue"
+}
