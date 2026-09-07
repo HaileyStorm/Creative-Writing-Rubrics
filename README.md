@@ -60,8 +60,13 @@ The live release-facing work is narrower than the historical experiment log:
   unstarted. Neither incomplete collection permits subset metrics or resends.
 - [Dryad source and full-HBQ preparation](docs/RESULTS.md#dryad-source-and-full-hbq-preparation)
   adds an audited independent corpus and a frozen 176 TRAIN / 60 DEV / 57
-  confirmation split. Qualification, fitting, and DEV comparison code are
-  implemented, but live qualification and alignment measurements are pending.
+  confirmation split. The separate fixed-batch-eight baseline has 50 settled
+  Grok requests and a terminal request 51 awaiting its reviewed recovery gate.
+  Sol stopped at 120 requests because collection preceded the protocol's Grok
+  selection stage; those records are not comparison-eligible under the original
+  sequence. The explicit sequencing amendment remains unapproved. Analysis code
+  is implemented, but complete native measurement and alignment results remain
+  pending, and qualification remains unsatisfied.
 - [CWR-guided revision gain](evaluation-results/cwr-guided-revision-gain-v6-heldout-result-v1/)
   now includes a four-item held-back comparison. Guided-minus-generic means
   were Sol `+1.00` holistic / `+0.75` compact and Grok `+0.75` / `0.00`.

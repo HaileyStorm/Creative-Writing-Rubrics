@@ -331,3 +331,28 @@ native receipt or recoverable completed result. The run is quarantined,
 with 233 requests unstarted and no cap, alignment result, subset metrics or
 automatic resend. The structured failure does not establish a quota, billing
 or timeout cause.
+
+The subsequent [fixed-batch-eight baseline](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/72b18f0afdfc515a5b492c9afcb314bcd0af20b6/evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/baseline-measurement-v1.json)
+retains all 236 TRAIN/DEV stories and 178 criteria: 5,428 logical requests per
+endpoint. Eight is an operating setting, not a qualified empirical batch cap.
+As of 2026-09-07, Grok has 50 settled requests and an ambiguous terminal request
+51. The separately approved one-attempt recovery preserves the original failure
+and accepted prefix; its implementation and offline replay passed, but fresh
+post-revocation allowance evidence is still required before a new contact.
+
+Sol collection stopped at 120 requests and 930 judgments after review found
+that it began before Grok TRAIN/DEV selection, contrary to the inherited
+comparison sequence. Those records retain local-lifecycle evidence, but are
+not eligible for comparison under the original ordering rule. The
+[unapproved sequencing amendment](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/e367e2ea7a26aafb848a8f26471240db070a0b74/evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/sol-sequencing-amendment-proposal-v1.md)
+binds the preserved cutoff and requests an explicit decision about carrying
+it forward. It grants no automatic continuation or resend authority.
+
+Recovery-aware Grok TRAIN/DEV analysis and the original-sequence Sol comparison
+are [implemented and locally tested](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/72b18f0afdfc515a5b492c9afcb314bcd0af20b6/evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/README.md).
+The latter replays complete native evidence and the frozen Grok choice, then
+checks Sol authorization times against the producer's Grok selection timestamp.
+This uses trusted local-clock chronology, not external timestamp attestation.
+The 34 synthetic workflow tests establish implementation behavior; no complete
+Dryad baseline, fitted improvement, Sol validation result, or release claim is
+established by them.
