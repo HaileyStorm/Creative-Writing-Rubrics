@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "decision": "owner_authorized_wpb_recovery",
+  "date": "2026-09-07",
+  "authorization_source": "explicit_user_reply",
+  "authorization_record_sha256": "699fbb473ee3b781607a12af388b57538f2ca973c60abb775ed56adfeed08cfd",
+  "original_successful_cells": 89,
+  "original_terminal_cell": "wpb-pair-wpb-en-0834",
+  "original_unstarted_cells": 39,
+  "planned_cells": 129,
+  "implementation_scope": "Preserve all original evidence and successes, record one separate replacement attempt for the failed cell, then continue the unstarted cells under reviewed native gates.",
+  "rewrite_original_failure": false,
+  "automatic_retry_or_resend": false,
+  "duplicate_logical_votes": false,
+  "billing_changes": false,
+  "paid_fallback": false,
+  "implementation_status": "pending_recovery_mapping_and_review",
+  "metric_eligibility": "requires_complete_recovered_native_campaign"
+}
