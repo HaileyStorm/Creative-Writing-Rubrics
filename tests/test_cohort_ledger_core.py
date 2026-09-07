@@ -40,6 +40,25 @@ def stamp(value: datetime) -> str:
     return value.isoformat().replace("+00:00", "Z")
 
 
+@pytest.mark.parametrize("minutes", [15, 120])
+def test_review_window_can_cover_a_complete_cohort(minutes):
+    core = load()
+    value = {"schema_version": 1, "reviewer_task": "reviewer", "decision": "approved_cohort",
+             "prepared_sha256": "a" * 64, "reviewed_at": stamp(BASE_TIME),
+             "expires_at": stamp(BASE_TIME + timedelta(minutes=minutes))}
+    _, start, end = core._review(raw(value), "a" * 64, "reviewer")
+    assert end - start == timedelta(minutes=minutes)
+
+
+def test_review_window_remains_bounded():
+    core = load()
+    value = {"schema_version": 1, "reviewer_task": "reviewer", "decision": "approved_cohort",
+             "prepared_sha256": "a" * 64, "reviewed_at": stamp(BASE_TIME),
+             "expires_at": stamp(BASE_TIME + timedelta(hours=2, seconds=1))}
+    with pytest.raises(ValueError, match="Review window"):
+        core._review(raw(value), "a" * 64, "reviewer")
+
+
 def write(root: Path, relative: str, value: object) -> bytes:
     path = root / relative
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -599,7 +618,8 @@ def test_core_rejects_a_renewal_after_the_final_cohort(tmp_path: Path) -> None:
         verify_operational_ledger(fixture)
 
 
-def test_precontact_recovery_moves_only_an_empty_cohort_to_the_current_source(tmp_path: Path) -> None:
+@pytest.mark.parametrize("renew_after", [2, 3])
+def test_precontact_recovery_moves_only_an_empty_cohort_to_the_current_source(tmp_path: Path, renew_after: int) -> None:
     core, revisions, manifest = operational_core(tmp_path)
     root, reviewer = tmp_path / "precontact", "synthetic-reviewer"
     routes = [renewal_route("1" * 64, "2" * 64, BASE_TIME), renewal_route("3" * 64, "4" * 64, BASE_TIME + timedelta(minutes=3))]
@@ -610,9 +630,9 @@ def test_precontact_recovery_moves_only_an_empty_cohort_to_the_current_source(tm
     (root / "runner-normalized-verdicts.jsonl").write_bytes(aggregate)
     (root / "runs/sample").mkdir(parents=True)
     (root / "runs/sample/verdicts.jsonl").write_bytes(aggregate)
-    geometry = core.LedgerGeometry("a" * 64, {ordinal: {"ordinal": ordinal, "pass_id": "pass-1", "prompt_sha256": f"{ordinal:064x}", "schema_sha256": "c" * 64} for ordinal in (1, 2, 3, 4)}, {"pass-1": {"pass_id": "pass-1", "logical_sample_id": "sample-1", "source_sha256": "b" * 64}}, ((1,), (2, 3), (4,)))
+    geometry = core.LedgerGeometry("a" * 64, {ordinal: {"ordinal": ordinal, "pass_id": "pass-1", "prompt_sha256": f"{ordinal:064x}", "schema_sha256": "c" * 64} for ordinal in (1, 2, 3, 4, 5)}, {"pass-1": {"pass_id": "pass-1", "logical_sample_id": "sample-1", "source_sha256": "b" * 64}}, ((1,), (2, 3), (4,), (5,)))
     first = write_closed_cohort(root, core, cohort=1, ordinal=1, route=routes[0], source=sources[0], previous_settlement=core.GENESIS_SETTLEMENT_SHA256, reviewer=reviewer, reviewed_at=BASE_TIME)
-    renewal = write_operational_renewal(root, cohort=1, initialization_sha256=sha(initialization), previous=core.GENESIS_RENEWAL_SHA256, settlement=first, old_route=routes[0], new_route=routes[1], old_manifest=manifests[0], new_manifest=manifests[1], remaining=[2, 3, 4], aggregate=aggregate, reviewed_at=BASE_TIME + timedelta(minutes=3))
+    renewal = write_operational_renewal(root, cohort=1, initialization_sha256=sha(initialization), previous=core.GENESIS_RENEWAL_SHA256, settlement=first, old_route=routes[0], new_route=routes[1], old_manifest=manifests[0], new_manifest=manifests[1], remaining=[2, 3, 4, 5], aggregate=aggregate, reviewed_at=BASE_TIME + timedelta(minutes=3))
     prepared = {"schema_version": 2, "cohort_number": 2, "plan_sha256": "a" * 64, "previous_settlement_sha256": first, "request_ordinals": [2, 3], "route_sha256": sha(routes[1]), "execution_source_sha256": sources[1], "operational_renewal_sha256": renewal}
     prepared_raw = write(root, "cohorts/0002/prepared.json", prepared)
     original_review = {"schema_version": 1, "reviewer_task": reviewer, "decision": "approved_cohort", "prepared_sha256": sha(prepared_raw), "reviewed_at": stamp(BASE_TIME + timedelta(minutes=4)).replace("Z", "+00:00"), "expires_at": stamp(BASE_TIME + timedelta(minutes=14)).replace("Z", "+00:00")}
@@ -636,8 +656,13 @@ def test_precontact_recovery_moves_only_an_empty_cohort_to_the_current_source(tm
     settlement = {"schema_version": 3, "cohort_number": 2, "plan_sha256": "a" * 64, "prepared_sha256": sha(prepared_raw), "review_sha256": sha(original_raw), "route_sha256": sha(routes[1]), "previous_settlement_sha256": first, "settled_at": stamp(recovery_at + timedelta(minutes=13)), "contacts": [summary, summary3], "authorization_chain": [{"authorization_sha256": sha(original_raw), "execution_source_sha256": sources[1], "ordinals": []}, {"authorization_sha256": sha(recovery_raw), "execution_source_sha256": sources[2], "ordinals": [2]}, {"authorization_sha256": sha(continuation_raw), "execution_source_sha256": sources[2], "ordinals": [3]}]}
     second = sha(write(root, "cohorts/0002/settlement.json", settlement))
     routes.append(renewal_route("5" * 64, "6" * 64, recovery_at + timedelta(minutes=14)))
-    renewal2 = write_operational_renewal(root, cohort=2, initialization_sha256=sha(initialization), previous=renewal, settlement=second, old_route=routes[1], new_route=routes[2], old_manifest=manifests[2], new_manifest=manifests[2], remaining=[4], aggregate=aggregate, reviewed_at=recovery_at + timedelta(minutes=14))
-    third = write_closed_cohort(root, core, cohort=3, ordinal=4, route=routes[2], source=sources[2], previous_settlement=second, reviewer=reviewer, reviewed_at=recovery_at + timedelta(minutes=22), renewal_sha256=renewal2)
-    verified = core.verify_prefix(root, geometry, third, 3, expected_route_sha256=sha(routes[0]), expected_execution_source_sha256=sources[0], reviewer_task=reviewer)
+    if renew_after == 2:
+        renewal2 = write_operational_renewal(root, cohort=2, initialization_sha256=sha(initialization), previous=renewal, settlement=second, old_route=routes[1], new_route=routes[2], old_manifest=manifests[2], new_manifest=manifests[2], remaining=[4, 5], aggregate=aggregate, reviewed_at=recovery_at + timedelta(minutes=14))
+        third = write_closed_cohort(root, core, cohort=3, ordinal=4, route=routes[2], source=sources[2], previous_settlement=second, reviewer=reviewer, reviewed_at=recovery_at + timedelta(minutes=22), renewal_sha256=renewal2)
+    else:
+        third = write_closed_cohort(root, core, cohort=3, ordinal=4, route=routes[1], source=sources[2], previous_settlement=second, reviewer=reviewer, reviewed_at=recovery_at + timedelta(minutes=22), renewal_sha256=renewal)
+        renewal2 = write_operational_renewal(root, cohort=3, initialization_sha256=sha(initialization), previous=renewal, settlement=third, old_route=routes[1], new_route=routes[2], old_manifest=manifests[2], new_manifest=manifests[2], remaining=[5], aggregate=aggregate, reviewed_at=recovery_at + timedelta(minutes=24))
+    fourth = write_closed_cohort(root, core, cohort=4, ordinal=5, route=routes[2], source=sources[2], previous_settlement=third, reviewer=reviewer, reviewed_at=recovery_at + timedelta(minutes=25), renewal_sha256=renewal2)
+    verified = core.verify_prefix(root, geometry, fourth, 4, expected_route_sha256=sha(routes[0]), expected_execution_source_sha256=sources[0], reviewer_task=reviewer)
     assert verified["epochs"][2]["execution_source_sha256"] == sources[2]
     assert verified["contacts"][2]["authorization_sha256"] == sha(recovery_raw)

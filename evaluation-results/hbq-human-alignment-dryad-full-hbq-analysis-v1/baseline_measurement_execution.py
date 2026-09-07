@@ -28,10 +28,10 @@ TERMINAL_IDENTITIES = ROOT / "terminal-identities-v2.json"
 PLAN_SHA256 = "edeadb93c485ba227153329b5ae420de1c9d08d95e920bac0635d197fd3dbd7f"
 SOURCE_PINS = {
     PLAN_SOURCE: "33193aa1a394c04c14b4f9ab81871116dbac11f933f22a9e45f252b2d279fdc8",
-    LEDGER_SOURCE: "77f43bf30117819cbff8b61ad63ffb3257c6afb9832cc93b7803b27ac6321eae",
+    LEDGER_SOURCE: "67f3df2b48708e7eec2f9362d4441b6c7a7cddbf978d8edb10a7f4fbadb4b4c1",
     RUNTIME_SOURCE: "5130bc037e0700f8d498c40ca790aaf248e986189818ae059934ee6488bbfbcd",
     NATIVE_SOURCE: "22ccfe3299bab0e04045a7ec01ab4799929818a3a84aecc8549bb6cb3032a1ec",
-    ADMISSION_SOURCE: "ed39ebe55256df3fd06a6167f9ac29ff2997ce05875189ba1b1b8dd3e40e7deb",
+    ADMISSION_SOURCE: "062a7b3f4e5783a62d3c269ecb01884bc089d3671fec28f5cb52489acda612e2",
     TERMINAL_IDENTITIES: "82cc80c2692fc0c0f47024d4db04cdbf5dd1c34c2d5deea40916a0e8ea45ca63",
 }
 _HASH = re.compile(r"[0-9a-f]{64}\Z")
@@ -492,7 +492,7 @@ def _continuations(execution_root: Path, number: int, prepared_sha256: str, revi
             _require(set(value) == required | recovery and value.get("execution_source_sha256") != prior_source,
                      "Continuation binding differs")
         reviewed_at, expires_at = _time(value.get("reviewed_at"), "Continuation review time"), _time(value.get("expires_at"), "Continuation expiry")
-        _require(reviewed_at < expires_at <= reviewed_at + timedelta(minutes=15), "Continuation review window differs")
+        _require(reviewed_at < expires_at <= reviewed_at + timedelta(hours=2), "Continuation review window differs")
         prefix = value.get("completed_prefix")
         _require(isinstance(prefix, Mapping) and set(prefix) == {"ordinals", "contacts", "run_files", "run_tree_sha256"}
                  and isinstance(prefix["ordinals"], list) and (version in {2, 3} or prefix["ordinals"])
@@ -543,7 +543,7 @@ def _cohort_state(public_inputs_raw: bytes, plan_raw: bytes, execution_root: Pat
              and review.get("decision") == "approved_cohort" and review.get("prepared_sha256") == expected_prepared_sha256,
              "Cohort review differs")
     review_start, review_end = _time(review.get("reviewed_at"), "Review time"), _time(review.get("expires_at"), "Review expiry")
-    _require(review_start < review_end <= review_start + timedelta(minutes=15), "Review window differs")
+    _require(review_start < review_end <= review_start + timedelta(hours=2), "Review window differs")
     if expected_previous_settlement_sha256 != "0" * 64:
         previous_raw = _relative(execution_root, f"cohorts/{number - 1:04d}/settlement.json", directory=False).read_bytes()
         _require(_hash(previous_raw) == expected_previous_settlement_sha256, "Previous baseline settlement differs")

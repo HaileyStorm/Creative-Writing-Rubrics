@@ -1003,6 +1003,16 @@ def test_timeout_feasibility_pauses_before_contact(actual_ledger_case: SimpleNam
     assert not (case.execution_root / "cohorts/0001/settlement.json").exists()
 
 
+def test_complete_cohort_can_run_after_fifteen_minutes(actual_ledger_case: SimpleNamespace) -> None:
+    case = actual_ledger_case
+    _prepare_genesis_actual_ledger(case)
+    start = case.state["clock"]
+    review_sha256 = _review(case, start=start, end=start + timedelta(hours=2))
+    case.state["clock"] = start + timedelta(minutes=30)
+    settled = _run(case, review_sha256)
+    assert settled["status"] == "settled" and settled["provider_calls"] == 10
+
+
 def test_same_story_prior_cohort_aggregate_grows_from_native_checkpoint_replay(case: SimpleNamespace) -> None:
     previous_settlement_sha256, renewal_sha256, now = _operational_boundary(case)
     review_sha256 = _review(case, start=now, end=now + timedelta(minutes=1))

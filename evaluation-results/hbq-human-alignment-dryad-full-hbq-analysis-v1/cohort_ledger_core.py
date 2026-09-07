@@ -323,7 +323,7 @@ def _pending_precontact_recovery(root: Path, snapshot: Mapping[str, str], *, coh
     )
     _require(candidate == expected, "Precontact recovery binding differs")
     start, end = _utc(value["reviewed_at"], "Precontact recovery review time"), _utc(value["expires_at"], "Precontact recovery expiry")
-    _require(start < end <= start + timedelta(minutes=15), "Precontact recovery review window differs")
+    _require(start < end <= start + timedelta(hours=2), "Precontact recovery review window differs")
     return {"sha256": digest(raw), "value": value, "source_sha256": value["execution_source_sha256"],
             "reviewed_at": start, "expires_at": end}
 
@@ -337,6 +337,7 @@ def _renewals(root: Path, snapshot: Mapping[str, str], geometry: LedgerGeometry,
     prior_hash = GENESIS_RENEWAL_SHA256
     prior_route_sha256: str | None = None
     prior_manifest: dict[str, Any] | None = None
+    prior_cohort = 0
     result: list[dict[str, Any]] = []
     for number, relative in found:
         raw = _read(root, relative, snapshot); value = _json(raw, "Operational renewal")
@@ -374,20 +375,27 @@ def _renewals(root: Path, snapshot: Mapping[str, str], geometry: LedgerGeometry,
         else:
             _require(value["old_route_sha256"] == prior_route_sha256, "Operational renewal chain differs")
             if old_manifest != prior_manifest:
-                recovery_path = f"cohorts/{number:04d}/review-continuations/0001.json"
-                recovery = _json(_read(root, recovery_path, snapshot), "Precontact recovery")
-                _require(recovery.get("schema_version") == 3
-                         and recovery.get("decision") == "approved_precontact_recovery"
-                         and recovery.get("route_sha256") == prior_route_sha256
-                         and _source_manifest(recovery.get("old_operational_source_manifest"), "Recovery old operational", require_current=False) == prior_manifest
-                         and _source_manifest(recovery.get("new_operational_source_manifest"), "Recovery new operational", require_current=False) == old_manifest,
-                         "Operational renewal recovery chain differs")
+                recovered_manifest = prior_manifest
+                for recovery_cohort in range(prior_cohort + 1, number + 1):
+                    recovery_path = f"cohorts/{recovery_cohort:04d}/review-continuations/0001.json"
+                    if recovery_path not in snapshot:
+                        continue
+                    recovery = _json(_read(root, recovery_path, snapshot), "Precontact recovery")
+                    if recovery.get("schema_version") != 3:
+                        continue
+                    _require(recovery.get("decision") == "approved_precontact_recovery"
+                             and recovery.get("route_sha256") == prior_route_sha256
+                             and _source_manifest(recovery.get("old_operational_source_manifest"), "Recovery old operational", require_current=False) == recovered_manifest,
+                             "Operational renewal recovery chain differs")
+                    recovered_manifest = _source_manifest(recovery.get("new_operational_source_manifest"), "Recovery new operational", require_current=False)
+                _require(recovered_manifest == old_manifest, "Operational renewal recovery chain differs")
         _require(old_route["subscription_receipt_hash"] == value["old_receipt_sha256"]
                  and new_route["subscription_receipt_hash"] == value["new_receipt_sha256"]
                  and _utc(value["reviewed_at"], "Operational renewal review time") is not None,
                  "Operational renewal evidence differs")
         manifest = _prefix_manifest(value["preserved_prefix"])
         prior_hash = digest(raw)
+        prior_cohort = number
         prior_route_sha256, prior_manifest = value["new_route_sha256"], new_manifest
         result.append({"sha256": prior_hash, "value": value, "cohort_number": number,
                        "old_source": old_manifest, "new_source": new_manifest,
@@ -432,7 +440,7 @@ def _review(raw: bytes, prepared_sha256: str, reviewer_task: str) -> tuple[dict[
     _keys(value, {"schema_version", "reviewer_task", "decision", "prepared_sha256", "reviewed_at", "expires_at"}, "Review record", version=1)
     _require(value["reviewer_task"] == reviewer_task and value["decision"] == "approved_cohort" and value["prepared_sha256"] == prepared_sha256, "Review approval differs")
     start, end = _utc(value["reviewed_at"], "Review time"), _utc(value["expires_at"], "Review expiry")
-    _require(start < end <= start + timedelta(minutes=15), "Review window differs")
+    _require(start < end <= start + timedelta(hours=2), "Review window differs")
     return value, start, end
 
 
@@ -510,12 +518,12 @@ def validate_candidate_cohort(geometry: LedgerGeometry, *, cohort_number: int, o
         raise ValueError("Settlement schema version differs")
     settled_at = _utc(settlement["settled_at"], "Settlement time")
     _require(settlement["cohort_number"] == cohort_number and settlement["plan_sha256"] == geometry.plan_sha256 and settlement["prepared_sha256"] == prepared_sha256 and settlement["review_sha256"] == review_sha256 and settlement["route_sha256"] == route_sha256 and settlement["previous_settlement_sha256"] == previous_settlement_sha256 and isinstance(settlement["contacts"], list) and [item.get("ordinal") if isinstance(item, dict) else None for item in settlement["contacts"]] == list(ordinals), "Settlement binding differs")
-    _require(review_start < review_end <= review_start + timedelta(minutes=15), "Review window differs")
+    _require(review_start < review_end <= review_start + timedelta(hours=2), "Review window differs")
     prior_reviewed_at = review_start
     for item in continuations:
         _require(isinstance(item, Mapping) and _hash(item.get("sha256")) and _hash(item.get("source_sha256"))
                  and item.get("version") in {1, 2, 3} and isinstance(item.get("start"), datetime)
-                 and isinstance(item.get("end"), datetime) and item["start"] < item["end"] <= item["start"] + timedelta(minutes=15)
+                 and isinstance(item.get("end"), datetime) and item["start"] < item["end"] <= item["start"] + timedelta(hours=2)
                  and item["start"] >= prior_reviewed_at, "Continuation review order differs")
         prior_reviewed_at = item["start"]
     authorization = [(review_sha256, expected_execution_source_sha256, review_start, review_end), *[(item["sha256"], item["source_sha256"], item["start"], item["end"]) for item in continuations]]
