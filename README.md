@@ -62,8 +62,9 @@ The live release-facing work is narrower than the historical experiment log:
   automatic resends.
 - [Dryad source and full-HBQ preparation](docs/RESULTS.md#dryad-source-and-full-hbq-preparation)
   adds an audited independent corpus and a frozen 176 TRAIN / 60 DEV / 57
-  confirmation split. The separate fixed-batch-eight baseline has 50 settled
-  Grok requests and a terminal request 51 awaiting its reviewed recovery gate.
+  confirmation split. The separate fixed-batch-eight baseline has 51 admitted
+  Grok requests, including one separately authorized replacement whose native
+  replay passed while preserving the original failed attempt.
   Sol stopped at 120 requests because collection preceded the protocol's Grok
   selection stage; those records are not comparison-eligible under the original
   sequence. The owner approved carrying that prefix forward under an explicit

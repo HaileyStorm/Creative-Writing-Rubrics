@@ -339,13 +339,14 @@ or timeout cause.
 The subsequent [fixed-batch-eight baseline](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/72b18f0afdfc515a5b492c9afcb314bcd0af20b6/evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/baseline-measurement-v1.json)
 retains all 236 TRAIN/DEV stories and 178 criteria: 5,428 logical requests per
 endpoint. Eight is an operating setting, not a qualified empirical batch cap.
-As of 2026-09-07, Grok has 50 settled requests and an ambiguous terminal request
-51. The separately approved one-attempt recovery preserves the original failure
-and accepted prefix; its implementation and offline replay passed. The owner
-subsequently attested remaining included credit and no charge risk and
-authorized renewal. The shared route was rearmed with its accepted controls;
-the separate study renewal is under independent review before a new contact.
-This is owner-attested allowance evidence, with no Settings observation.
+As of 2026-09-07, Grok has 51 admitted requests and 396 judgments after the
+[one-attempt recovery](../evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/baseline-contact-51-recovery-v1.json)
+passed independent native replay. All 676 original files, including the failed
+attempt and accepted prefix, remain preserved. The new request/session identities
+differ from the original attempt and every accepted predecessor. Collection
+stopped before request 52 for independent continuation review. The renewed route
+retained its accepted controls and used owner-attested remaining included credit
+and no charge risk, with no Settings observation.
 
 Sol collection stopped at 120 requests and 930 judgments after review found
 that it began before Grok TRAIN/DEV selection, contrary to the inherited
