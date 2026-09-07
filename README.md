@@ -67,7 +67,7 @@ The live release-facing work is narrower than the historical experiment log:
   confirmation split. The separate fixed-batch-eight baseline has 60 admitted
   Grok requests, including one separately authorized replacement whose native
   replay passed while preserving the original failed attempt.
-  Sol has 160 independently admitted requests under the approved sequencing amendment. Its
+  Sol has 170 independently admitted requests under the approved sequencing amendment. Its
   preserved first 120 requests preceded the protocol's Grok selection stage
   and remain ineligible under the original sequence. The amended continuation
   and its native prefix have passed independent review. Analysis code
