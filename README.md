@@ -57,14 +57,17 @@ The live release-facing work is narrower than the historical experiment log:
   is a standalone Sol TRAIN result. Grok quota exhaustion left its paired run
   incomplete. The later [WPB collection](docs/RESULTS.md#wpb-terminal-collection)
   stopped after 89 successful cells and one ambiguous terminal cell; 39 were
-  unstarted. Neither incomplete collection permits subset metrics or resends.
+  unstarted. WPB recovery is now separately authorized, pending its reviewed
+  implementation; neither incomplete collection permits subset metrics or
+  automatic resends.
 - [Dryad source and full-HBQ preparation](docs/RESULTS.md#dryad-source-and-full-hbq-preparation)
   adds an audited independent corpus and a frozen 176 TRAIN / 60 DEV / 57
   confirmation split. The separate fixed-batch-eight baseline has 50 settled
   Grok requests and a terminal request 51 awaiting its reviewed recovery gate.
   Sol stopped at 120 requests because collection preceded the protocol's Grok
   selection stage; those records are not comparison-eligible under the original
-  sequence. The explicit sequencing amendment remains unapproved. Analysis code
+  sequence. The owner approved carrying that prefix forward under an explicit
+  sequencing amendment; its execution binding has passed review. Analysis code
   is implemented, but complete native measurement and alignment results remain
   pending, and qualification remains unsatisfied.
 - [CWR-guided revision gain](evaluation-results/cwr-guided-revision-gain-v6-heldout-result-v1/)

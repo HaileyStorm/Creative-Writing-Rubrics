@@ -296,9 +296,13 @@ The later [WPB Grok settlement](https://github.com/HaileyStorm/Creative-Writing-
 records 89 successful cells, one ambiguous terminal cell, and 39 unstarted
 cells out of 129 planned. The failure is `unclassified_after_launch`; the
 retained evidence does not establish quota exhaustion, HTTP 402, or a specific
-validation cause. The campaign remains terminal: no automatic resend,
-successor batch, subset alignment metrics, or fit is permitted. This coarse
-family comparison is not a full-HBQ alignment result.
+validation cause. The original campaign remains terminal. The owner separately
+[authorized recovery](../evaluation-results/hbq-human-alignment-wpb-compact-family-native-v1/recovery-authorization-v1.json)
+on 2026-09-07: preserve the original evidence, record one replacement attempt
+for the failed cell, then complete the 39 unstarted cells under a reviewed
+helper. No new attempt has occurred. Automatic resends, subset alignment
+metrics, and incomplete-campaign fits remain prohibited. This coarse family
+comparison is not a full-HBQ alignment result.
 
 ## Dryad source and full-HBQ preparation
 
@@ -337,16 +341,23 @@ retains all 236 TRAIN/DEV stories and 178 criteria: 5,428 logical requests per
 endpoint. Eight is an operating setting, not a qualified empirical batch cap.
 As of 2026-09-07, Grok has 50 settled requests and an ambiguous terminal request
 51. The separately approved one-attempt recovery preserves the original failure
-and accepted prefix; its implementation and offline replay passed, but fresh
-post-revocation allowance evidence is still required before a new contact.
+and accepted prefix; its implementation and offline replay passed. The owner
+subsequently attested remaining included credit and no charge risk and
+authorized renewal. The shared route was rearmed with its accepted controls;
+the separate study renewal is under independent review before a new contact.
+This is owner-attested allowance evidence, with no Settings observation.
 
 Sol collection stopped at 120 requests and 930 judgments after review found
 that it began before Grok TRAIN/DEV selection, contrary to the inherited
 comparison sequence. Those records retain local-lifecycle evidence, but are
 not eligible for comparison under the original ordering rule. The
-[unapproved sequencing amendment](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/e367e2ea7a26aafb848a8f26471240db070a0b74/evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/sol-sequencing-amendment-proposal-v1.md)
-binds the preserved cutoff and requests an explicit decision about carrying
-it forward. It grants no automatic continuation or resend authority.
+[sequencing amendment](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/e367e2ea7a26aafb848a8f26471240db070a0b74/evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/sol-sequencing-amendment-proposal-v1.md)
+was [approved by the owner](../evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/sol-sequencing-amendment-v1.json)
+on 2026-09-07. It permits carrying the exact prefix forward and collecting in
+parallel, while requiring the Grok TRAIN winner and DEV freeze before
+comparative analysis. The resulting evidence must be labeled sequencing-amended
+after partial Sol observation. Its execution binding has passed review; no
+request 121 or automatic resend has occurred.
 
 Recovery-aware Grok TRAIN/DEV analysis and the original-sequence Sol comparison
 are [implemented and locally tested](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/72b18f0afdfc515a5b492c9afcb314bcd0af20b6/evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/README.md).

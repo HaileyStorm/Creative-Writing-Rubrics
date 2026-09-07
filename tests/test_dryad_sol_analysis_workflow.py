@@ -267,3 +267,35 @@ def test_chronology_requires_all_ordinals_and_authorization_after_or_at_boundary
     with pytest.raises(ValueError, match="precedes"): subject._chronology(sol, plan, execution, datetime(2026, 9, 7, tzinfo=timezone.utc))
     raw_by_path[first] = _canonical({"provider": {"dryad_sol": {"ordinal": 9, "authorized_at": "2026-09-07T00:00:00Z"}}})
     with pytest.raises(ValueError, match="ordinal"): subject._chronology(sol, plan, execution, datetime(2026, 9, 7, tzinfo=timezone.utc))
+
+
+def test_amended_comparison_uses_shared_replay_and_labels_bound_provenance(synthetic, monkeypatch):
+    manifest = {
+        "approval_sha256": "a" * 64, "proposal_sha256": "b" * 64, "cutoff_sha256": "c" * 64,
+        "approval_recorded_at": "2026-09-07T14:37:32.080521+00:00",
+        "source_bindings": {"amendment_guard_sha256": "d" * 64},
+    }
+    amendment = {
+        "manifest": manifest, "manifest_sha256": "e" * 64, "bindings_root": synthetic.root / "bindings",
+        "captured": {}, "prefix_ordinal": 120,
+        "approval_recorded_at": datetime(2026, 9, 7, 14, 37, 32, 80521, tzinfo=timezone.utc),
+    }
+    monkeypatch.setattr(synthetic.subject, "_amendment_context", lambda *_args, **_kwargs: (amendment, {}))
+    monkeypatch.setattr(synthetic.subject, "_chronology", lambda *_args: {
+        "checkpoint_count": 5428, "first_authorized_at": "2026-09-06T00:00:00Z",
+        "last_authorized_at": "2026-09-07T01:00:00Z", "ordered_checkpoint_commitment": "0" * 64})
+    result = synthetic.subject.compare_amended_sequence_sol(
+        synthetic.public, synthetic.plan, synthetic.grok_execution, synthetic.sol_execution, synthetic.runtime,
+        synthetic.target, synthetic.train_target, synthetic.dev_target, synthetic.fit, synthetic.train_freeze,
+        synthetic.grok_comparison, synthetic.grok_freeze, synthetic.root / "amended-output",
+        expected_grok_dev_freeze_sha256=_sha(synthetic.grok_freeze.read_bytes()),
+        expected_wrapper_sha256=_sha(SOURCE.read_bytes()),
+        expected_sol_admission_sha256=_sha((synthetic.root / "sol_pass_admission.py").read_bytes()),
+        expected_sol_source_bindings={"source.py": "a" * 64}, expected_sol_reviews={"b" * 64},
+        amendment_manifest_path=synthetic.root / "unused-manifest.json", cohort_bindings_root=synthetic.root / "bindings",
+        approval_path=synthetic.root / "unused-approval.json", cutoff_path=synthetic.root / "unused-cutoff.json",
+        native_root=synthetic.sol_execution)
+    assert result["freeze"]["evidence_class"] == "sequencing_amended_after_partial_sol_observation"
+    assert result["freeze"]["sequencing_amendment"]["manifest_sha256"] == "e" * 64
+    assert result["freeze"]["sequencing_amendment"]["deviation_label"] == "sequencing_amended_after_partial_sol_observation"
+    assert result["freeze"]["sequencing_amendment"]["approval_recorded_at"] == "2026-09-07T14:37:32.080521+00:00"

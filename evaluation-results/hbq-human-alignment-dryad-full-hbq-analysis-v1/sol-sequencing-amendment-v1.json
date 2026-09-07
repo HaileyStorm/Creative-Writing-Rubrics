@@ -20,5 +20,12 @@
   "billing_changes": false,
   "paid_fallback": false,
   "confirmation_authority": false,
-  "implementation_status": "pending_reviewed_binding"
+  "implementation_status": "reviewed_binding_ready",
+  "implementation": {
+    "guard_sha256": "bde05d5fe3fdfa99ab619d62184275e9b4d2d18ed045a28fa630a4e636553b3f",
+    "analysis_sha256": "c76d013ac425e1063c069ace3849ceecc8e7a026df744e43b270d628bcf6b961",
+    "focused_test_count": 18,
+    "independent_review": "passed_after_approval_time_and_review_renewal_corrections",
+    "empirical_comparison_complete": false
+  }
 }

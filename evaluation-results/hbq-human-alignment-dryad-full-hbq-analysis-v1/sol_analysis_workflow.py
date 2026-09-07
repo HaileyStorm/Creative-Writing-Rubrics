@@ -16,6 +16,7 @@ ROOT = Path(__file__).resolve().parent
 REPOSITORY = ROOT.parents[1]
 BASELINE_WORKFLOW_PATH = ROOT / "baseline_analysis_workflow.py"
 SOL_ADMISSION_PATH = ROOT / "sol_pass_admission.py"
+AMENDMENT_PATH = ROOT / "sol_amended_execution.py"
 DEV_COUNT = 60
 ADMITTED_COUNT = 236
 REQUEST_COUNT = 5428
@@ -159,7 +160,7 @@ def _grok_admission(baseline: ModuleType, admission_module: ModuleType, finalize
 
 
 def _chronology(sol: ModuleType, plan_root: Path | str, execution_root: Path | str,
-                selection_frozen_at: datetime) -> dict[str, Any]:
+                selection_frozen_at: datetime, amendment: Mapping[str, Any] | None = None) -> dict[str, Any]:
     plan_raw = (Path(plan_root).resolve() / "plan.json").read_bytes()
     if _sha(plan_raw) != sol.PLAN_SHA256:
         raise ValueError("Frozen Sol campaign plan differs")
@@ -176,6 +177,7 @@ def _chronology(sol: ModuleType, plan_root: Path | str, execution_root: Path | s
         raise ValueError("Sol chronology pass cardinality differs")
     ordered: list[dict[str, Any]] = []
     times: list[datetime] = []
+    bindings: dict[tuple[int, str], Mapping[str, Any]] = {}
     for ordinal, request in enumerate(requests, start=1):
         if (not isinstance(request, Mapping) or request.get("ordinal") != ordinal
                 or request.get("pass_id") not in by_id or type(request.get("batch_number")) is not int):
@@ -189,8 +191,34 @@ def _chronology(sol: ModuleType, plan_root: Path | str, execution_root: Path | s
         if not isinstance(metadata, Mapping) or metadata.get("ordinal") != ordinal:
             raise ValueError("Sol chronology checkpoint ordinal differs")
         authorized = sol._time(metadata.get("authorized_at"), "Sol authorization")
-        if authorized < selection_frozen_at:
+        if amendment is None and authorized < selection_frozen_at:
             raise ValueError("Sol authorization precedes frozen Grok selection")
+        if amendment is not None:
+            if ordinal <= amendment["prefix_ordinal"]:
+                descriptor = amendment["cutoff"]["files"].get(checkpoint.relative_to(Path(execution_root).resolve()).as_posix())
+                if (not isinstance(descriptor, Mapping) or len(raw) != descriptor.get("bytes")
+                        or _sha(raw) != descriptor.get("sha256")):
+                    raise ValueError("Sol preserved checkpoint differs")
+            else:
+                cohort = metadata.get("cohort_number")
+                review_sha = metadata.get("review_sha256")
+                if type(cohort) is not int or type(review_sha) is not str:
+                    raise ValueError("Sol amended checkpoint provenance differs")
+                if authorized < amendment["approval_recorded_at"]:
+                    raise ValueError("Sol amended authorization predates owner approval")
+                key = (cohort, review_sha)
+                binding = bindings.get(key)
+                if binding is None:
+                    review = (Path(execution_root).resolve() / "cohorts" / f"{cohort:04d}" / "reviews" / f"{review_sha}.json")
+                    _, _, binding = amendment["helper"].verify_amended_cohort_binding(
+                        amendment["bindings_root"] / amendment["helper"].cohort_binding_filename(cohort, review_sha),
+                        envelope_path=amendment["manifest_path"], review_path=review,
+                        expected_review_sha256=review_sha, approval_path=amendment["approval_path"],
+                        cutoff_path=amendment["cutoff_path"], native_root=amendment["native_root"])
+                    bindings[key] = binding
+                if (ordinal not in binding["ordinals"] or binding["review_sha256"] != review_sha
+                        or binding["amendment_manifest_sha256"] != amendment["manifest_sha256"]):
+                    raise ValueError("Sol amended cohort provenance differs")
         times.append(authorized)
         ordered.append({"ordinal": ordinal, "checkpoint_sha256": _sha(raw),
                         "authorized_at": metadata["authorized_at"]})
@@ -202,6 +230,36 @@ def _chronology(sol: ModuleType, plan_root: Path | str, execution_root: Path | s
         "last_authorized_at": max(times).isoformat().replace("+00:00", "Z"),
         "ordered_checkpoint_commitment": _sha(_canonical(ordered)),
     }
+
+
+def _amendment_context(
+    amendment_manifest_path: Path | str, cohort_bindings_root: Path | str, *, approval_path: Path | str,
+    cutoff_path: Path | str, native_root: Path | str,
+) -> tuple[dict[str, Any], dict[Path, bytes]]:
+    raw = AMENDMENT_PATH.read_bytes()
+    name = f"_dryad_sol_amendment_analysis_{uuid.uuid4().hex}"
+    spec = importlib.util.spec_from_file_location(name, AMENDMENT_PATH)
+    if spec is None or spec.loader is None:
+        raise ValueError("Sol amendment guard cannot load")
+    helper = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(helper)
+    helper.verify_cutoff_preservation(cutoff_path, native_root)
+    manifest_path, manifest_raw, manifest = helper.verify_amendment_envelope(
+        amendment_manifest_path, approval_path=approval_path, cutoff_path=cutoff_path, native_root=native_root)
+    cutoff_checked, cutoff_raw = _read_pinned(cutoff_path, helper.CUTOFF_SHA256, "Sol amended cutoff")
+    approval_checked, approval_raw = _read_pinned(approval_path, helper.APPROVAL_SHA256, "Sol amended approval")
+    bindings_root = Path(cohort_bindings_root).resolve()
+    if bindings_root.is_relative_to(Path(native_root).resolve()):
+        raise ValueError("Sol amended cohort bindings must remain external")
+    return {
+        "helper": helper, "manifest_path": manifest_path, "manifest_sha256": _sha(manifest_raw),
+        "manifest": manifest, "bindings_root": bindings_root, "approval_path": approval_checked,
+        "cutoff_path": cutoff_checked, "native_root": Path(native_root).resolve(),
+        "cutoff": _json(cutoff_raw, "Sol amended cutoff"), "prefix_ordinal": helper.PREFIX_ORDINAL,
+        "approval_recorded_at": helper._utc(manifest["approval_recorded_at"], "Sol amendment approval timestamp"),
+        "captured": {AMENDMENT_PATH: raw, manifest_path: manifest_raw, cutoff_checked: cutoff_raw,
+                     approval_checked: approval_raw},
+    }, {AMENDMENT_PATH: raw, manifest_path: manifest_raw, cutoff_checked: cutoff_raw, approval_checked: approval_raw}
 
 
 def _capture_sol_sources(sol: ModuleType, expected: Mapping[str, str]) -> dict[Path, bytes]:
@@ -249,7 +307,7 @@ def _sol_rows(baseline: ModuleType, campaign: Mapping[str, Any], partitions: Map
     }
 
 
-def compare_original_sequence_sol(
+def _compare_sol_sequence(
     public_inputs_path: Path | str, shared_plan_root: Path | str, grok_execution_root: Path | str,
     sol_execution_root: Path | str, runtime_manifest_path: Path | str, target_freeze_path: Path | str,
     train_targets_path: Path | str, dev_targets_path: Path | str, frozen_fit_path: Path | str,
@@ -257,9 +315,9 @@ def compare_original_sequence_sol(
     grok_dev_freeze_path: Path | str, output_root: Path | str, *,
     expected_grok_dev_freeze_sha256: str, expected_wrapper_sha256: str,
     expected_sol_admission_sha256: str, expected_sol_source_bindings: Mapping[str, str],
-    expected_sol_reviews: set[str],
+    expected_sol_reviews: set[str], amendment: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
-    """Rescore full Sol DEV leaves after, and only after, the frozen Grok selection."""
+    """Replay the shared Grok/Sol composition with one explicit sequencing mode."""
     own_path, own_raw = _read_pinned(Path(__file__), expected_wrapper_sha256, "Sol analysis workflow")
     freeze_path, freeze_raw = _read_pinned(grok_dev_freeze_path, expected_grok_dev_freeze_sha256, "Grok DEV freeze")
     sol_path, sol_raw = _read_pinned(SOL_ADMISSION_PATH, expected_sol_admission_sha256, "Sol admission")
@@ -280,6 +338,8 @@ def compare_original_sequence_sol(
         runtime_manifest_path, freeze["runtime_manifest"]["sha256"], recovery,
     )
     captured.update({own_path: own_raw, sol_path: sol_raw, freeze_path: freeze_raw})
+    if amendment is not None:
+        captured.update(amendment["captured"])
     target_freeze_checked, target_freeze_raw, target_freeze = baseline._target_freeze(target_freeze_path)
     captured[target_freeze_checked] = target_freeze_raw
     admission = _grok_admission(
@@ -349,7 +409,8 @@ def compare_original_sequence_sol(
         Path(shared_plan_root), Path(sol_execution_root), expected_plan_sha256=sol.PLAN_SHA256,
         expected_source_bindings=expected_sol_source_bindings, expected_reviews=expected_sol_reviews,
     )
-    chronology = _chronology(sol, shared_plan_root, sol_execution_root, selection_frozen_at)
+    chronology = (_chronology(sol, shared_plan_root, sol_execution_root, selection_frozen_at)
+                  if amendment is None else _chronology(sol, shared_plan_root, sol_execution_root, selection_frozen_at, amendment))
     projected_sol, sol_binding = _sol_rows(baseline, campaign, partitions)
     baseline._unchanged(captured)
     sol_result = comparison.evaluate_dev(
@@ -363,12 +424,15 @@ def compare_original_sequence_sol(
         raise ValueError("Inner Sol DEV comparison must retain its source-verified unadmitted class")
     baseline._inner_commitments(sol_result, projected_sol["DEV"], dev_targets, baseline.DEV_TARGETS_SHA256)
     sol_result_raw = baseline._canonical(sol_result)
-    if _chronology(sol, shared_plan_root, sol_execution_root, selection_frozen_at) != chronology:
+    replayed_chronology = (_chronology(sol, shared_plan_root, sol_execution_root, selection_frozen_at)
+                            if amendment is None else _chronology(sol, shared_plan_root, sol_execution_root, selection_frozen_at, amendment))
+    if replayed_chronology != chronology:
         raise ValueError("Sol checkpoint chronology changed during analysis")
     baseline._unchanged(captured)
     outer = {
         "schema_version": 1,
-        "evidence_class": "original_sequence_sol_dev_outer_freeze",
+        "evidence_class": ("original_sequence_sol_dev_outer_freeze" if amendment is None
+                           else "sequencing_amended_after_partial_sol_observation"),
         "workflow": {"sha256": expected_wrapper_sha256},
         "stage": "DEV",
         "provider_calls": 0,
@@ -414,5 +478,66 @@ def compare_original_sequence_sol(
             "native_endpoint_contact_cardinality": "unproven",
         },
     }
+    if amendment is not None:
+        outer["sequencing_amendment"] = {
+            "approval_sha256": amendment["manifest"]["approval_sha256"],
+            "approval_recorded_at": amendment["manifest"]["approval_recorded_at"],
+            "proposal_sha256": amendment["manifest"]["proposal_sha256"],
+            "cutoff_sha256": amendment["manifest"]["cutoff_sha256"],
+            "guard_sha256": amendment["manifest"]["source_bindings"]["amendment_guard_sha256"],
+            "manifest_sha256": amendment["manifest_sha256"],
+            "deviation_label": "sequencing_amended_after_partial_sol_observation",
+            "review_binding_root": str(amendment["bindings_root"]),
+        }
     artifacts = {"sol-dev-comparison-unadmitted.json": sol_result_raw, "sol-dev-freeze.json": _canonical(outer)}
     return {"artifacts": baseline._write(output, artifacts), "freeze": outer}
+
+
+def compare_original_sequence_sol(
+    public_inputs_path: Path | str, shared_plan_root: Path | str, grok_execution_root: Path | str,
+    sol_execution_root: Path | str, runtime_manifest_path: Path | str, target_freeze_path: Path | str,
+    train_targets_path: Path | str, dev_targets_path: Path | str, frozen_fit_path: Path | str,
+    train_freeze_path: Path | str, grok_dev_comparison_path: Path | str,
+    grok_dev_freeze_path: Path | str, output_root: Path | str, *,
+    expected_grok_dev_freeze_sha256: str, expected_wrapper_sha256: str,
+    expected_sol_admission_sha256: str, expected_sol_source_bindings: Mapping[str, str],
+    expected_sol_reviews: set[str],
+) -> dict[str, Any]:
+    """Rescore full Sol DEV leaves only after the frozen Grok selection."""
+    return _compare_sol_sequence(
+        public_inputs_path, shared_plan_root, grok_execution_root, sol_execution_root, runtime_manifest_path,
+        target_freeze_path, train_targets_path, dev_targets_path, frozen_fit_path, train_freeze_path,
+        grok_dev_comparison_path, grok_dev_freeze_path, output_root,
+        expected_grok_dev_freeze_sha256=expected_grok_dev_freeze_sha256,
+        expected_wrapper_sha256=expected_wrapper_sha256,
+        expected_sol_admission_sha256=expected_sol_admission_sha256,
+        expected_sol_source_bindings=expected_sol_source_bindings, expected_sol_reviews=expected_sol_reviews)
+
+
+def compare_amended_sequence_sol(
+    public_inputs_path: Path | str, shared_plan_root: Path | str, grok_execution_root: Path | str,
+    sol_execution_root: Path | str, runtime_manifest_path: Path | str, target_freeze_path: Path | str,
+    train_targets_path: Path | str, dev_targets_path: Path | str, frozen_fit_path: Path | str,
+    train_freeze_path: Path | str, grok_dev_comparison_path: Path | str,
+    grok_dev_freeze_path: Path | str, output_root: Path | str, *,
+    expected_grok_dev_freeze_sha256: str, expected_wrapper_sha256: str,
+    expected_sol_admission_sha256: str, expected_sol_source_bindings: Mapping[str, str],
+    expected_sol_reviews: set[str], amendment_manifest_path: Path | str,
+    cohort_bindings_root: Path | str, approval_path: Path | str, cutoff_path: Path | str,
+    native_root: Path | str,
+) -> dict[str, Any]:
+    """Replay an approved observed-prefix continuation after the frozen Grok selection."""
+    if Path(sol_execution_root).resolve() != Path(native_root).resolve():
+        raise ValueError("Sol amended analysis must use the preserved native root")
+    amendment, _ = _amendment_context(
+        amendment_manifest_path, cohort_bindings_root, approval_path=approval_path,
+        cutoff_path=cutoff_path, native_root=native_root)
+    return _compare_sol_sequence(
+        public_inputs_path, shared_plan_root, grok_execution_root, sol_execution_root, runtime_manifest_path,
+        target_freeze_path, train_targets_path, dev_targets_path, frozen_fit_path, train_freeze_path,
+        grok_dev_comparison_path, grok_dev_freeze_path, output_root,
+        expected_grok_dev_freeze_sha256=expected_grok_dev_freeze_sha256,
+        expected_wrapper_sha256=expected_wrapper_sha256,
+        expected_sol_admission_sha256=expected_sol_admission_sha256,
+        expected_sol_source_bindings=expected_sol_source_bindings, expected_sol_reviews=expected_sol_reviews,
+        amendment=amendment)
