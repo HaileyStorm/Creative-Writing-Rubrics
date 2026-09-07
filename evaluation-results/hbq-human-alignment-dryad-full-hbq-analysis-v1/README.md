@@ -1,5 +1,7 @@
 # Dryad full-HBQ analysis preregistration
 
+Grok collection is stopped for [request-51 reconciliation](baseline-contact-51-incident-v1.json). The broker reported `unclassified_after_launch` / `GrokBuildWrapperFailure`, returned no completed native result, and revoked the Grok host gate. Provider completion is unknown; this does not establish HTTP 402 or quota exhaustion. The 50 settled requests remain intact. Request 51 is terminal and cannot be automatically resent; no successor Grok cohort is authorized while reconciliation is pending. The separately planned Sol validation continues under its own route and evidence.
+
 The [Grok cohort-5 checkpoint](baseline-cohort-5-v1.json) settled on 2026-09-07 with 50 cumulative requests. Independent ledger and native replay confirmed 50 distinct request IDs and 50 distinct session IDs, two complete 178-leaf story passes, and 32 leaves for the third story. Earlier approvals and settlements remain in the immutable chain. Full-study admission, alignment results, and an empirical batch cap remain unavailable.
 
 The [first complete Sol baseline pass](sol-baseline-first-pass-v1.json) passed independent native admission on 2026-09-07: all 178 leaves across 23 batches, observed score `53.7836`, and coverage `0.9789`. This is one of 236 planned story passes. The score was recomputed from retained judgments; it is not a human-alignment statistic, a fitted weight result, or a complete campaign. Native identity retains the requested-only limits described below.
