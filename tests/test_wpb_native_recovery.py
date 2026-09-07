@@ -291,6 +291,16 @@ def test_report_rejects_summary_when_its_raw_evidence_is_missing(tmp_path: Path)
         value.report(recovery_root=tmp_path, expected_plan_sha256=plan_hash, profile={"core": 1.0})
 
 
+def test_broker_and_frozen_analyzer_serializers_have_explicit_boundaries() -> None:
+    value = load()
+    legacy = value._load_legacy()
+    core = legacy._core()
+    response = {"A": {"score": 1}}
+    assert value.canonical(response) == b'{"A":{"score":1}}'
+    assert core.canonical(response) == b'{"A":{"score":1}}\n'
+    assert value.sha256(response) != core.sha256(core.canonical(response))
+
+
 def test_canonical_broker_accepts_a_derived_control_projection_provider_free() -> None:
     tools_root = BROKER_TEST.parent.parent
     prior_modules = set(sys.modules)
@@ -314,6 +324,85 @@ def test_canonical_broker_accepts_a_derived_control_projection_provider_free() -
             projection = fixture._canonical({"control": {"version": 1, "state": "completed"}, "result": outcome.result})
             replayed = case.broker._parse_grok_exec_envelope(projection, route, request, expected_session_id=session_id)
             assert replayed.state == "completed" and replayed.result == outcome.result
+        finally:
+            case.tearDown()
+    finally:
+        if case is not None:
+            case.doCleanups()
+        sys.path.remove(str(tools_root))
+        for name in set(sys.modules) - prior_modules:
+            sys.modules.pop(name, None)
+
+
+def test_helper_admits_a_real_canonical_broker_fixture_provider_free(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    value = load()
+    tools_root = BROKER_TEST.parent.parent
+    prior_modules = set(sys.modules)
+    sys.path.insert(0, str(tools_root))
+    case = None
+    try:
+        spec = importlib.util.spec_from_file_location("wpb_helper_canonical_grok_fixture", BROKER_TEST)
+        assert spec and spec.loader
+        fixture = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(fixture)
+        case = fixture.GrokAdapterTests("runTest")
+        case.setUp()
+        try:
+            synthetic = fixture.FAKE.replace('"form": "not_assessable"', '"form": "assessed"')
+            assert synthetic != fixture.FAKE and synthetic.count('"form": "assessed"') == fixture.FAKE.count('"form": "assessed"') + 1
+            case.fake.write_text(synthetic, encoding="utf-8")
+            legacy = value._load_legacy()
+            freeze = Path(r"C:\Users\Haile\Documents\cwr-wpb-pilot-source-freeze-20260904-r3")
+            resolution, known_rows = value._rows(legacy, freeze)
+            cell_id = next(iter(known_rows))
+            payload = resolution["payloads"][cell_id]
+            schema = json.loads(fixture.WPB_SCHEMA_PATH.read_bytes())
+            schema_raw = value.canonical(schema)
+            route = case.route("wpb_schema", output_schema=schema)
+            outcome = case.broker._run_grok_exec(route, {"prompt": payload.decode("utf-8")})
+            assert outcome.state == "completed" and isinstance(outcome.result, dict)
+            result = outcome.result
+            envelope = case.broker.read_grok_native_envelope(result["native_envelope_artifact"])
+            root = tmp_path / "recovery"
+            root.mkdir()
+            schema_path = root / "frozen-schema.json"
+            schema_path.write_bytes(schema_raw)
+            record = {
+                "format_version": 1, "kind": "wpb_native_recovery_plan", "study_id": value.STUDY_ID,
+                "authorization": {"record_sha256": "a" * 64}, "origin": {"root": str(tmp_path / "origin"), "reserved_identity_hashes": []},
+                "freeze_root": str(freeze), "schedule_sha256": resolution["schedule_sha256"],
+                "response_schema": {"path": str(schema_path), "sha256": value.sha256(schema_raw)},
+                "cells": [{"cell_id": cell_id, "kind": "single_replacement", "payload_sha256": known_rows[cell_id]["payload_sha256"]}],
+            }
+            plan_raw = value.canonical(record)
+            (root / value.PLAN_NAME).write_bytes(plan_raw)
+            cell_root = root / "cells" / cell_id
+            value._write_new(cell_root / "prepared.json", record["cells"][0])
+            broker_path = BROKER_TEST.parent / "broker.py"
+            runtime_path = BROKER_TEST.parent / "adapters" / "grok_exec.py"
+            attempt = {
+                "cell_id": cell_id, "plan_sha256": value.sha256(plan_raw), "payload_sha256": value.sha256(payload),
+                "schema_sha256": value.sha256(schema_raw), "route_sha256": value.sha256(route), "broker_path": str(broker_path),
+                "broker_sha256": value.sha256(broker_path.read_bytes()), "runtime_source_path": str(runtime_path),
+                "runtime_source_sha256": value.sha256(runtime_path.read_bytes()), "helper_source_path": str(SOURCE),
+                "helper_source_sha256": value.sha256(SOURCE.read_bytes()), "queue_root": str(case.broker.root),
+                "session_id": json.loads(envelope)["sessionId"], "session_id_hash": result["runtime"]["session_id_hash"],
+                "requested_model": route["model"], "requested_reasoning_effort": route["reasoning_effort"],
+            }
+            value._write_new(cell_root / "attempt.json", attempt)
+            value._write_new(cell_root / "route.json", route)
+            value._write_new(cell_root / "request.json", {"prompt": payload.decode("utf-8")})
+            value._write_new(cell_root / "response-schema.json", schema)
+            value._write_new(cell_root / "outcome.json", {"state": "completed", "result": result, "failure": None})
+            value._write_new(cell_root / "result.json", result)
+            (cell_root / "native-envelope.json").write_bytes(envelope)
+            monkeypatch.setattr(value, "QUEUE_ROOT", case.broker.root)
+            admitted = value.admit(recovery_root=root, expected_plan_sha256=value.sha256(plan_raw), cell_id=cell_id)
+            assert admitted["status"] == "admitted"
+            route_path = cell_root / "route.json"
+            route_path.write_bytes(value.canonical({**route, "name": "tampered"}))
+            with pytest.raises(ValueError, match="commitment drifted"):
+                value._verify_admission(value._read_plan(root, value.sha256(plan_raw)), root, record["cells"][0])
         finally:
             case.tearDown()
     finally:

@@ -32,7 +32,7 @@ _HEX = set("0123456789abcdef")
 
 
 def canonical(value: Any) -> bytes:
-    return (json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":"), allow_nan=False) + "\n").encode("utf-8")
+    return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")
 
 
 def sha256(value: bytes | Any) -> str:
@@ -231,7 +231,13 @@ def prepare(*, origin_root: Path, recovery_root: Path, freeze_root: Path, author
     reserved_requests, reserved_sessions = _origin_identity_components(origin, completed)
     schema_path = origin / "batches" / "0009" / "execution" / ORIGINAL_TERMINAL_CELL / "response-schema.json"
     _require(schema_path.is_file(), "original response schema is absent")
-    schema_raw = schema_path.read_bytes()
+    schema_source_raw = schema_path.read_bytes()
+    try:
+        schema = json.loads(schema_source_raw.decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError) as error:
+        raise ValueError("original response schema is invalid") from error
+    _require(isinstance(schema, dict), "original response schema must be an object")
+    schema_raw = canonical(schema)
     cells = [{"cell_id": ORIGINAL_TERMINAL_CELL, "kind": "single_replacement", "payload_sha256": rows[ORIGINAL_TERMINAL_CELL]["payload_sha256"]}]
     cells.extend({"cell_id": cell_id, "kind": "unstarted", "payload_sha256": rows[cell_id]["payload_sha256"]} for cell_id in unstarted)
     value = {
@@ -243,12 +249,15 @@ def prepare(*, origin_root: Path, recovery_root: Path, freeze_root: Path, author
                    "reserved_request_id_hashes": sorted(reserved_requests), "reserved_session_id_hashes": sorted(reserved_sessions)},
         "authorization": {"path": str(authorization), "metadata_sha256": sha256(authorization_raw), "record_sha256": AUTHORIZATION_RECORD_SHA256},
         "legacy_executor": {"path": str(LEGACY_EXECUTOR), "sha256": LEGACY_EXECUTOR_SHA256},
-        "response_schema": {"path": str(schema_path), "sha256": sha256(schema_raw)},
+        "response_schema": {"path": str(recovery / "response-schema.json"), "sha256": sha256(schema_raw),
+                            "source_path": str(schema_path), "source_sha256": sha256(schema_source_raw)},
         "freeze_root": str(Path(freeze_root).resolve()), "schedule_sha256": resolution["schedule_sha256"], "cells": cells,
         "dispatch_policy": {"maximum_new_attempts": RECOVERY_COUNT, "automatic_retry_or_resend": False, "stop_on_ambiguity": True,
                             "required_runtime": {"adapter_version": 4, "execution_policy": "bounded_nonvisual_deny_wins_attested", "tools": "deny_wins_none_attested"}},
     }
     recovery.mkdir(parents=True)
+    with (recovery / "response-schema.json").open("xb") as handle:
+        handle.write(schema_raw)
     raw = _write_new(_plan_path(recovery), value)
     for item in cells:
         _write_new(recovery / "cells" / item["cell_id"] / "prepared.json", item)
@@ -495,13 +504,13 @@ def _legacy_prefix(*, plan: Mapping[str, Any]) -> tuple[list[dict[str, Any]], se
     legacy = _load_legacy()
     resolution, _rows_value = _rows(legacy, Path(plan["freeze_root"]))
     origin = Path(plan["origin"]["root"])
-    campaign, _raw = legacy._campaign(origin, resolution, "222647de0beecb6f860ade8d63bf6b212562cfc400602aac8184c5af59ddf322")
+    _campaign, campaign_sha256 = legacy._campaign(origin, resolution, "222647de0beecb6f860ade8d63bf6b212562cfc400602aac8184c5af59ddf322")
     completed: dict[str, tuple[dict[str, Any], dict[str, Any], Path]] = {}
     with legacy._grok_bound(resolution) as (lifecycle, _base, v9, _v11, v13, _v15):
-        legacy._historical_cell_states(origin, sha256(campaign), resolution, "222647de0beecb6f860ade8d63bf6b212562cfc400602aac8184c5af59ddf322", lifecycle, v9)
+        legacy._historical_cell_states(origin, campaign_sha256, resolution, "222647de0beecb6f860ade8d63bf6b212562cfc400602aac8184c5af59ddf322", lifecycle, v9)
         for number in legacy._batch_numbers(origin):
-            batch_plan, batch_hash = legacy._batch_plan(origin, number, sha256(campaign))
-            settlement, _settlement_hash = legacy._settlement(origin, number, batch_hash, sha256(campaign))
+            batch_plan, batch_hash = legacy._batch_plan(origin, number, campaign_sha256)
+            settlement, _settlement_hash = legacy._settlement(origin, number, batch_hash, campaign_sha256)
             rows = {str(row["cell_id"]): row for row in legacy._grok_plan_rows(resolution, batch_plan)}
             for entry in settlement["cells"]:
                 if entry.get("state") == "completed":
@@ -516,7 +525,7 @@ def _legacy_prefix(*, plan: Mapping[str, Any]) -> tuple[list[dict[str, Any]], se
                 first = completed[str(subset[0]["cell_id"])]
                 admitted.update(legacy._grok_admit_rows(resolution, lifecycle=lifecycle, v13=v13, execution=first[2], rows=subset, plan=first[1], acknowledgement="222647de0beecb6f860ade8d63bf6b212562cfc400602aac8184c5af59ddf322"))
     measurements = [{"endpoint": "grok", "cell_id": cell_id, "payload_sha256": completed[cell_id][0]["payload_sha256"],
-                     "measurement_provenance": {"endpoint": "grok", "cell_id": cell_id, "payload_sha256": completed[cell_id][0]["payload_sha256"], "parsed_response_sha256": sha256(admitted[cell_id]["answer"])},
+                     "measurement_provenance": {"endpoint": "grok", "cell_id": cell_id, "payload_sha256": completed[cell_id][0]["payload_sha256"], "parsed_response_sha256": resolution["core"].sha256(resolution["core"].canonical(admitted[cell_id]["answer"]))},
                      "response": admitted[cell_id]["answer"]} for cell_id in sorted(completed)]
     return measurements, {str(item["cell_id"]) for item in measurements}
 
@@ -541,7 +550,7 @@ def report(*, recovery_root: Path, expected_plan_sha256: str, profile: Mapping[s
     legacy = _load_legacy()
     resolution, rows = _rows(legacy, Path(plan["freeze_root"]))
     recovered_measurements = [{"endpoint": "grok", "cell_id": item["cell_id"], "payload_sha256": item["payload_sha256"],
-                               "measurement_provenance": {"endpoint": "grok", "cell_id": item["cell_id"], "payload_sha256": item["payload_sha256"], "parsed_response_sha256": sha256(item["response"])}, "response": item["response"]}
+                               "measurement_provenance": {"endpoint": "grok", "cell_id": item["cell_id"], "payload_sha256": item["payload_sha256"], "parsed_response_sha256": resolution["core"].sha256(resolution["core"].canonical(item["response"]))}, "response": item["response"]}
                               for item in recoveries]
     all_measurements = legacy_measurements + recovered_measurements
     _require(set(rows) == {str(item["cell_id"]) for item in all_measurements} and len(all_measurements) == 129, "recovery report remains incomplete")

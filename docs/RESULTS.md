@@ -357,8 +357,11 @@ was [approved by the owner](../evaluation-results/hbq-human-alignment-dryad-full
 on 2026-09-07. It permits carrying the exact prefix forward and collecting in
 parallel, while requiring the Grok TRAIN winner and DEV freeze before
 comparative analysis. The resulting evidence must be labeled sequencing-amended
-after partial Sol observation. Its execution binding has passed review; no
-request 121 or automatic resend has occurred.
+after partial Sol observation. The [first amended cohort](../evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/sol-amended-cohort-13-v1.json)
+then passed independent native replay, bringing the total to 130 requests and
+1,010 judgments. All 130 local thread identities are distinct; every new
+authorization follows adoption, and the original cutoff remains preserved.
+Collection stopped before 131 for refreshed receipts. No automatic resend occurred.
 
 Recovery-aware Grok TRAIN/DEV analysis and the original-sequence Sol comparison
 are [implemented and locally tested](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/72b18f0afdfc515a5b492c9afcb314bcd0af20b6/evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/README.md).

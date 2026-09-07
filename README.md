@@ -65,10 +65,10 @@ The live release-facing work is narrower than the historical experiment log:
   confirmation split. The separate fixed-batch-eight baseline has 51 admitted
   Grok requests, including one separately authorized replacement whose native
   replay passed while preserving the original failed attempt.
-  Sol stopped at 120 requests because collection preceded the protocol's Grok
-  selection stage; those records are not comparison-eligible under the original
-  sequence. The owner approved carrying that prefix forward under an explicit
-  sequencing amendment; its execution binding has passed review. Analysis code
+  Sol has 130 admitted requests under the approved sequencing amendment. Its
+  preserved first 120 requests preceded the protocol's Grok selection stage
+  and remain ineligible under the original sequence. The amended continuation
+  and its native prefix have passed independent review. Analysis code
   is implemented, but complete native measurement and alignment results remain
   pending, and qualification remains unsatisfied.
 - [CWR-guided revision gain](evaluation-results/cwr-guided-revision-gain-v6-heldout-result-v1/)
