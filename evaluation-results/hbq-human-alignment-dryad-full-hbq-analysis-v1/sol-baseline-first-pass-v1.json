@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "evidence_class": "complete_sol_local_lifecycle_pass_admission",
+  "source_commit": "26caf13c8c2450ad4ffa02320172394997350437",
+  "execution_source_sha256": "b2ed2aa567bbeab3a933a33cf35ccfad81cb2eb47ec0479a57e52962a3a34a40",
+  "admission_source_sha256": "cd8364c18cbd8a07bc18a9b4d3d0bc1102518cfbed465b9c4f4586245b8eb65d",
+  "plan_sha256": "edeadb93c485ba227153329b5ae420de1c9d08d95e920bac0635d197fd3dbd7f",
+  "admission_record_sha256": "2533981d13a2456401bb2d5f688f4f43e5ea3e4a8ff50cf75e8e253697c0d8a9",
+  "checkpoint_head_sha256": "28d7565553e0cb561f121dc6c798e361953a557f2f066048dab0b6001e125b6a",
+  "review_sha256": [
+    "48a9568e6affb228698ec3a3acef284dd4b3f685850fc2ad7600ebd312890ec4",
+    "4fd6594dd87bd467f13f4a386b868802aac519ed65160a7316d73557c959d330",
+    "f4bff73b3efe4f2a8b073ff57efd9791e631e8e0da59b83ac150c4f3d1366273"
+  ],
+  "pass_ordinal": 1,
+  "partition": "TRAIN",
+  "admitted_batches": 23,
+  "distinct_native_local_threads": 23,
+  "canonical_verdict_leaves": 178,
+  "complete_story_passes": 1,
+  "planned_story_passes": 236,
+  "score": 53.7836,
+  "coverage": 0.9789,
+  "identity_evidence": "requested_only",
+  "native_endpoint_contact_cardinality": "unproven",
+  "provider_attested": false,
+  "empirical_batch_cap": null,
+  "full_baseline_admitted": false,
+  "human_alignment_result": false,
+  "replay_inputs_machine_local": true
+}
