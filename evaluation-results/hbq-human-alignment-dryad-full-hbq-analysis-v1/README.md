@@ -1,10 +1,10 @@
 # Dryad full-HBQ analysis preregistration
 
+The [Grok cohort-5 checkpoint](baseline-cohort-5-v1.json) settled on 2026-09-07 with 50 cumulative requests. Independent ledger and native replay confirmed 50 distinct request IDs and 50 distinct session IDs, two complete 178-leaf story passes, and 32 leaves for the third story. Earlier approvals and settlements remain in the immutable chain. Full-study admission, alignment results, and an empirical batch cap remain unavailable.
+
 The [first complete Sol baseline pass](sol-baseline-first-pass-v1.json) passed independent native admission on 2026-09-07: all 178 leaves across 23 batches, observed score `53.7836`, and coverage `0.9789`. This is one of 236 planned story passes. The score was recomputed from retained judgments; it is not a human-alignment statistic, a fitted weight result, or a complete campaign. Native identity retains the requested-only limits described below.
 
 The historical [first Sol baseline cohort](sol-baseline-cohort-1-v1.json) completed ten frozen requests on 2026-09-07. Native replay admitted 80 leaf judgments and ten distinct local CLI thread records through the existing runner and V3 lifecycle. Prompts and schemas match the frozen Grok/Sol plan byte-for-byte. At that boundary, the partial story had no score or coverage result. Model and reasoning identity remain requested-only, and native endpoint contact cardinality remains unproven; the record preserves collection progress, not a complete baseline or human-alignment result.
-
-Earlier published Grok checkpoint: cohort 3 settled on 2026-09-07 with 30 cumulative requests, one complete 178-leaf story pass and 56 leaves for the second story. Its settlement SHA-256 is `b0d50ec55d9274452aacd5081172d24d93b6f96a35cb6193183360038dd82d16`. The original unused approval and reviewed recovery remain in the immutable authorization chain. Full-study admission, alignment results and an empirical batch cap remain unavailable. Historical checkpoint records below describe their original boundaries.
 
 Operational review windows may cover up to two hours so a ten-request cohort can finish without repeated fifteen-minute interruptions. Each contact still checks the current route, receipt expiry, source bindings, remaining timeout and no-resend records. Earlier approvals retain their exact original windows. This changes execution cadence only; payloads, batch size, data partitions and analysis gates remain frozen.
 
