@@ -56,16 +56,18 @@ The live release-facing work is narrower than the historical experiment log:
   The latest [rank replication](docs/RESULTS.md#v17-standalone-sol-replication)
   is a standalone Sol TRAIN result. Grok quota exhaustion left its paired run
   incomplete. The later [WPB collection](docs/RESULTS.md#wpb-terminal-collection)
-  stopped after 89 successful cells and one ambiguous terminal cell; 39 were
-  unstarted. WPB recovery is now separately authorized, pending its reviewed
-  implementation; neither incomplete collection permits subset metrics or
-  automatic resends.
+  originally stopped after 89 successful cells and one ambiguous terminal cell.
+  Authorized recovery admitted the replacement, bringing the total to 90/129,
+  then stopped on a structured-output failure; 38 cells remain untouched.
+  The [local schema-recovery proposal](evaluation-results/hbq-human-alignment-wpb-compact-family-native-v1/schema-recovery-proposal-v1.md)
+  awaits owner adoption. Neither incomplete collection permits subset metrics
+  or automatic resends.
 - [Dryad source and full-HBQ preparation](docs/RESULTS.md#dryad-source-and-full-hbq-preparation)
   adds an audited independent corpus and a frozen 176 TRAIN / 60 DEV / 57
-  confirmation split. The separate fixed-batch-eight baseline has 51 admitted
+  confirmation split. The separate fixed-batch-eight baseline has 60 admitted
   Grok requests, including one separately authorized replacement whose native
   replay passed while preserving the original failed attempt.
-  Sol has 130 admitted requests under the approved sequencing amendment. Its
+  Sol has 140 independently admitted requests under the approved sequencing amendment. Its
   preserved first 120 requests preceded the protocol's Grok selection stage
   and remain ineligible under the original sequence. The amended continuation
   and its native prefix have passed independent review. Analysis code
