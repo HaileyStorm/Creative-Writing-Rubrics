@@ -13,6 +13,7 @@ import json
 import os
 import uuid
 from collections.abc import Mapping
+from datetime import datetime, timezone
 from pathlib import Path
 from types import ModuleType
 from typing import Any
@@ -501,6 +502,7 @@ def compare_admitted_dev(
                           expected_workflow_sha256, expected_admission_sha256,
                           expected_comparison_sha256, "comparison", result_raw, result, captured[SOURCE_PATH])
     outer["train_freeze"] = {"sha256": expected_train_freeze_sha256, "fit_sha256": expected_fit_sha256}
+    outer["selection_frozen_at"] = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
     freeze_raw = _canonical(outer)
     artifacts = {"dev-comparison-unadmitted.json": result_raw, "dev-freeze.json": freeze_raw}
     return {"artifacts": _write(output, artifacts), "freeze": outer}

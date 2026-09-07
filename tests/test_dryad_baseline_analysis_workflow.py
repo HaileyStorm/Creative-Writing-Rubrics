@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import importlib.util
 import json
+from datetime import datetime, timezone
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -72,7 +73,8 @@ def workflow(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
     admission_kwargs: list[dict[str, object]] = []
     finalizer_kwargs: list[dict[str, object]] = []
     state = {"fit_commitment_mismatch": False, "fit_error": None, "fit_mutation": None,
-             "compare_mutation": None, "finalizer_reviewer_task": "synthetic-reviewer"}
+             "compare_mutation": None, "compare_error": None,
+             "finalizer_reviewer_task": "synthetic-reviewer"}
     rows = [
         {"opaque_story_id": story, "verdicts": [{"question_id": "q", "verdict": "YES"}],
          "coverage": 1.0, "source_sha256": _sha(story.encode())}
@@ -120,6 +122,8 @@ def workflow(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
         assert {row["opaque_story_id"] for row in verdicts} == dev_ids
         assert {row["opaque_story_id"] for row in targets} == dev_ids
         assert json.loads(fit_raw)["evidence_class"] == "baseline_source_verified_fit_unadmitted"
+        if state["compare_error"] is not None:
+            raise state["compare_error"]
         if state["compare_mutation"] is not None:
             state["compare_mutation"]()
         return {
@@ -525,6 +529,40 @@ def test_dev_comparison_uses_dev_only_after_train_freeze(workflow):
     assert result["freeze"]["stage"] == "DEV"
     assert result["freeze"]["inner"]["evidence_class"] == "baseline_source_verified_dev_comparison_unadmitted"
     assert (workflow.tmp_path / "dev-output" / "dev-comparison-unadmitted.json").is_file()
+
+
+def test_dev_freeze_records_producer_utc_selection_time_after_comparison(
+    workflow: SimpleNamespace, monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    train_output = workflow.tmp_path / "train-output"
+    train = _fit(workflow, train_output)
+    observed: list[tuple[object, list[str]]] = []
+
+    def now(zone: object) -> datetime:
+        observed.append((zone, list(workflow.calls)))
+        return datetime(2026, 9, 7, 7, 12, 3, tzinfo=timezone.utc)
+
+    monkeypatch.setattr(workflow.subject, "datetime", SimpleNamespace(now=now))
+    dev = _compare(workflow, train_output)
+    assert "selection_frozen_at" not in train["freeze"]
+    assert dev["freeze"]["selection_frozen_at"] == "2026-09-07T07:12:03Z"
+    assert observed == [(timezone.utc, ["admit", "fit", "admit", "compare"])]
+    stored = json.loads((workflow.tmp_path / "dev-output" / "dev-freeze.json").read_bytes())
+    assert stored["selection_frozen_at"] == "2026-09-07T07:12:03Z"
+
+
+def test_dev_failure_does_not_emit_selection_time(
+    workflow: SimpleNamespace, monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    train_output = workflow.tmp_path / "train-output"
+    train = _fit(workflow, train_output)
+    workflow.state["compare_error"] = RuntimeError("synthetic comparison failure")
+    clock = SimpleNamespace(now=lambda _zone: pytest.fail("selection time emitted"))
+    monkeypatch.setattr(workflow.subject, "datetime", clock)
+    output = workflow.tmp_path / "failed-dev-output"
+    with pytest.raises(RuntimeError, match="synthetic comparison failure"):
+        _compare(workflow, train_output, output)
+    assert "selection_frozen_at" not in train["freeze"] and not output.exists()
 
 
 def test_partial_kwargs_are_rejected_by_the_public_api(workflow):
