@@ -366,8 +366,8 @@ parallel, while requiring the Grok TRAIN winner and DEV freeze before
 comparative analysis. The resulting evidence must be labeled sequencing-amended
 after partial Sol observation. The [first amended cohort](../evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/sol-amended-cohort-13-v1.json)
 then passed independent native replay, bringing the total to 130 requests and
-1,010 judgments. Two further cohorts passed, reaching 150 requests and
-1,164 judgments. All 150 local thread identities are distinct; every new
+1,010 judgments. Three further cohorts passed, reaching 160 requests and
+1,244 judgments. All 160 local thread identities are distinct; every new
 authorization follows adoption, and the original cutoff remains preserved.
 Collection continued under refreshed receipts. No automatic resend occurred.
 
