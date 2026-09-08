@@ -235,3 +235,41 @@ def test_partial_candidate_builder_validates_unused_continuation_and_current_com
         support.partial_source_amendment_ledger(tmp_path, candidate_builder=build, late_renewal=True)
     finally:
         sys.modules.pop(spec.name, None)
+
+
+def test_wrapper_requires_external_study_recovery_binding_for_mixed_settlement(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    spec = importlib.util.spec_from_file_location("study_core_test_support", ROOT / "tests/test_cohort_ledger_core.py")
+    assert spec and spec.loader
+    support = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = support
+    try:
+        spec.loader.exec_module(support)
+        state = support.study_recovery_ledger(tmp_path)
+    finally:
+        sys.modules.pop(spec.name, None)
+    subject = load()
+    core_path = Path(state["core"].__file__)
+    monkeypatch.setattr(subject, "CORE", core_path)
+    monkeypatch.setattr(subject, "CORE_SHA256", support.sha(core_path.read_bytes()))
+    monkeypatch.setattr(subject, "_geometry", lambda *_: state["geometry"])
+    original_core = subject._core
+
+    def pinned_core():
+        core, raw = original_core()
+        core.HISTORICAL_OPERATIONAL_REVISION = state["core"].HISTORICAL_OPERATIONAL_REVISION
+        return core, raw
+
+    monkeypatch.setattr(subject, "_core", pinned_core)
+    contacts, _ = subject.validate_candidate_cohort(b"synthetic-inputs", b"synthetic-plan", "a" * 64, **state["candidate"])
+    assert sum("request_id_hash" in contact for contact in contacts.values()) == 9
+    common = {"expected_route_sha256": support.sha(state["routes"][0]),
+              "expected_execution_source_sha256": state["sources"][0], "expected_reviewer_task": state["reviewer"],
+              "expected_study_recovery": state["binding"]}
+    subject.verify_prefix(state["root"], b"synthetic-inputs", b"synthetic-plan", "a" * 64, state["head"], 6,
+                          allowed_pending_paths=state["pending"], **common)
+    head = support.sha(support.write(state["root"], "cohorts/0007/settlement.json", state["candidate"]["settlement"]))
+    verified = subject.verify_prefix(state["root"], b"synthetic-inputs", b"synthetic-plan", "a" * 64, head, 7, **common)
+    assert (verified["native_contact_count"], verified["study_recovered_contact_count"]) == (69, 1)
+    with pytest.raises(ValueError, match="Study recovered settlement"):
+        subject.verify_prefix(state["root"], b"synthetic-inputs", b"synthetic-plan", "a" * 64, head, 7,
+                              **{**common, "expected_study_recovery": None})

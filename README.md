@@ -67,10 +67,12 @@ The live release-facing work is narrower than the historical experiment log:
   confirmation split. The separate fixed-batch-eight baseline has 69 replay-verified
   Grok requests, including one separately authorized replacement whose native
   replay passed while preserving the original failed attempt.
-  Request 70 failed structured-output validation and remains unresolved.
-  Sol has 220 independently admitted requests under the approved sequencing amendment;
-  requests 221–230 are consumed but unadmitted after a recovered-transport anomaly.
-  A separately tested recovery interpreter awaits owner adoption. Its
+  Request 70 failed structured-output validation; its
+  [exact quote repair was adopted](evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/grok70-quote-repair-adoption-v1.json),
+  while recovery settlement and continuation remain pending.
+  Sol has 250 independently admitted requests under the approved sequencing amendment.
+  The owner [adopted the exact request-221 transport recovery](evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/sol-recovered-transport-adoption-v1.json),
+  and subsequent collection passed independent replay. Its
   preserved first 120 requests preceded the protocol's Grok selection stage
   and remain ineligible under the original sequence. The amended continuation
   and its native prefix have passed independent review. Analysis code

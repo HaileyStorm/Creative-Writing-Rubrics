@@ -871,3 +871,181 @@ def test_pending_partial_source_amendment_rejects_invalid_history(tmp_path: Path
                 (root / "contacts/request-0003.json").unlink()
 
     partial_source_amendment_ledger(tmp_path, check_pending=check)
+
+
+def study_recovery_ledger(tmp_path: Path):
+    core, revisions, manifest = operational_core(tmp_path)
+    root, reviewer = tmp_path / "study-recovery", "synthetic-reviewer"
+    manifests = [manifest(revision) for revision in revisions]
+    sources = [item["files"][core._OPERATIONAL_FILES[-1]] for item in manifests]
+    routes = [renewal_route("1" * 64, "2" * 64, BASE_TIME),
+              renewal_route("3" * 64, "4" * 64, BASE_TIME + timedelta(minutes=243)),
+              renewal_route("5" * 64, "6" * 64, BASE_TIME + timedelta(minutes=313))]
+    initialization = write(root, "initialization.json", {"route_sha256": sha(routes[0]), "execution_source_sha256": sources[0]})
+    aggregate = b'{"synthetic":"preserved"}\n'
+    (root / "runner-normalized-verdicts.jsonl").write_bytes(aggregate)
+    (root / "runs/sample").mkdir(parents=True)
+    (root / "runs/sample/verdicts.jsonl").write_bytes(aggregate)
+    groups = tuple(tuple(range(start, start + 10)) for start in range(1, 81, 10))
+    geometry = core.LedgerGeometry("a" * 64, {
+        ordinal: {"ordinal": ordinal, "pass_id": "pass-1", "prompt_sha256": f"{ordinal:064x}", "schema_sha256": "c" * 64}
+        for ordinal in range(1, 81)
+    }, {"pass-1": {"pass_id": "pass-1", "logical_sample_id": "sample-1", "source_sha256": "b" * 64}}, groups)
+
+    def cohort(number, previous, epoch, renewal=None):
+        ordinals = groups[number - 1]
+        begin = BASE_TIME + timedelta(minutes=number * 40)
+        prepared = {"schema_version": 2 if renewal else 1, "cohort_number": number, "plan_sha256": geometry.plan_sha256,
+                    "previous_settlement_sha256": previous, "request_ordinals": list(ordinals),
+                    "route_sha256": sha(routes[epoch]), "execution_source_sha256": sources[epoch]}
+        if renewal:
+            prepared["operational_renewal_sha256"] = renewal
+        prepared_raw = write(root, f"cohorts/{number:04d}/prepared.json", prepared)
+        review_raw = write(root, f"cohorts/{number:04d}/review.json", {
+            "schema_version": 1, "reviewer_task": reviewer, "decision": "approved_cohort",
+            "prepared_sha256": sha(prepared_raw), "reviewed_at": stamp(begin), "expires_at": stamp(begin + timedelta(minutes=9))})
+        write(root, f"cohorts/{number:04d}/route.json", routes[epoch])
+        records, summaries = {}, []
+        for index, ordinal in enumerate(ordinals, start=1):
+            records[ordinal] = write(root, f"contacts/request-{ordinal:04d}.json", {
+                "schema_version": 1, "cohort_number": number, "ordinal": ordinal, "plan_sha256": geometry.plan_sha256,
+                "prepared_sha256": sha(prepared_raw), "review_sha256": sha(review_raw), "route_sha256": sha(routes[epoch]),
+                "prompt_sha256": f"{ordinal:064x}", "schema_sha256": "c" * 64,
+                "admitted_at": stamp(begin + timedelta(seconds=index * 10))})
+            summaries.append({"ordinal": ordinal, "contact_sha256": sha(records[ordinal]),
+                              "checkpoint_sha256": f"{ordinal + 100:064x}", "request_id_hash": f"{ordinal + 200:064x}",
+                              "session_id_hash": f"{ordinal + 300:064x}"})
+        settlement = {"schema_version": 1, "cohort_number": number, "plan_sha256": geometry.plan_sha256,
+                      "prepared_sha256": sha(prepared_raw), "review_sha256": sha(review_raw), "route_sha256": sha(routes[epoch]),
+                      "previous_settlement_sha256": previous, "settled_at": stamp(begin + timedelta(minutes=2)), "contacts": summaries}
+        return {"cohort_number": number, "ordinals": ordinals, "prepared_sha256": sha(prepared_raw),
+                "review_sha256": sha(review_raw), "route_sha256": sha(routes[epoch]), "previous_settlement_sha256": previous,
+                "review_start": begin, "review_end": begin + timedelta(minutes=9), "continuations": [],
+                "settlement": settlement, "contact_records": records, "expected_execution_source_sha256": sources[epoch]}
+
+    head = core.GENESIS_SETTLEMENT_SHA256
+    for number in range(1, 7):
+        candidate = cohort(number, head, 0)
+        head = sha(write(root, f"cohorts/{number:04d}/settlement.json", candidate["settlement"]))
+    renewal = write_operational_renewal(root, cohort=6, initialization_sha256=sha(initialization),
+                                        previous=core.GENESIS_RENEWAL_SHA256, settlement=head, old_route=routes[0], new_route=routes[1],
+                                        old_manifest=manifests[0], new_manifest=manifests[1], remaining=list(range(61, 81)),
+                                        aggregate=aggregate, reviewed_at=BASE_TIME + timedelta(minutes=243))
+    candidate = cohort(7, head, 1, renewal)
+    recovered = {"ordinal": 70, "evidence_kind": "study_recovered", "contact_sha256": sha(candidate["contact_records"][70]),
+                 "adoption_sha256": "7" * 64, "amendment_sha256": "8" * 64, "derivative_sha256": "9" * 64,
+                 "study_accepted_at": stamp(BASE_TIME + timedelta(minutes=310))}
+    binding = {"adoption_sha256": recovered["adoption_sha256"], "amendment_sha256": recovered["amendment_sha256"],
+               "summary": recovered, "recovery_operational_source_manifest": manifests[2]}
+    candidate["settlement"].update(schema_version=4, settled_at=stamp(BASE_TIME + timedelta(minutes=311)),
+                                    authorization_chain=[{"authorization_sha256": candidate["review_sha256"],
+                                                          "execution_source_sha256": sources[1], "ordinals": list(range(61, 71))}])
+    candidate["settlement"]["contacts"][-1] = recovered
+    candidate["expected_study_recovery"] = binding
+    pending = frozenset({f"cohorts/0007/{name}" for name in ("prepared.json", "review.json", "route.json")}
+                        | {f"contacts/request-{ordinal:04d}.json" for ordinal in range(61, 71)})
+    return locals()
+
+
+def test_study_recovered_candidate_preserves_authorization_without_native_identity(tmp_path: Path) -> None:
+    state = study_recovery_ledger(tmp_path)
+    request_ids, session_ids = set(), set()
+    contacts, authorizations = state["core"].validate_candidate_cohort(
+        state["geometry"], **state["candidate"], request_ids=request_ids, session_ids=session_ids)
+    assert len(contacts) == 10 and len(request_ids) == len(session_ids) == 9
+    assert contacts[70]["authorization_sha256"] == state["candidate"]["review_sha256"]
+    assert contacts[70]["execution_source_sha256"] == state["sources"][1]
+    assert contacts[70]["study_accepted_at"] == state["recovered"]["study_accepted_at"]
+    assert not {"request_id_hash", "session_id_hash", "checkpoint_sha256"} & contacts[70].keys()
+    assert state["core"]._utc(contacts[70]["study_accepted_at"], "Study time") > authorizations[contacts[70]["authorization_sha256"]][2]
+    assert (state["root"] / "contacts/request-0070.json").read_bytes() == state["candidate"]["contact_records"][70]
+
+
+def test_study_recovered_candidate_rejects_unbound_or_relabelled_evidence(tmp_path: Path) -> None:
+    state = study_recovery_ledger(tmp_path)
+    for case in ("missing_binding", "adoption", "amendment", "derivative", "native_id", "checkpoint", "acceptance_time", "contact_time", "ordinal", "legacy_schema"):
+        candidate = {**state["candidate"], "settlement": json.loads(raw(state["candidate"]["settlement"])),
+                     "expected_study_recovery": json.loads(raw(state["binding"])),
+                     "contact_records": dict(state["candidate"]["contact_records"])}
+        summary = candidate["settlement"]["contacts"][-1]
+        binding = candidate["expected_study_recovery"]
+        if case == "missing_binding":
+            candidate.pop("expected_study_recovery")
+        elif case in {"adoption", "amendment"}:
+            binding[f"{case}_sha256"] = "f" * 64
+        elif case == "derivative":
+            summary["derivative_sha256"] = "f" * 64
+        elif case == "native_id":
+            summary["request_id_hash"] = "f" * 64
+        elif case == "checkpoint":
+            summary["checkpoint_sha256"] = "f" * 64
+        elif case == "acceptance_time":
+            summary["study_accepted_at"] = binding["summary"]["study_accepted_at"] = stamp(BASE_TIME + timedelta(minutes=280))
+        elif case == "contact_time":
+            contact = json.loads(candidate["contact_records"][70])
+            contact["admitted_at"] = stamp(BASE_TIME + timedelta(minutes=300))
+            candidate["contact_records"][70] = raw(contact)
+            summary["contact_sha256"] = binding["summary"]["contact_sha256"] = sha(raw(contact))
+        elif case == "ordinal":
+            summary["ordinal"] = 69
+        else:
+            candidate["settlement"]["schema_version"] = 3
+        with pytest.raises(ValueError, match="Study|Contact|Settlement"):
+            state["core"].validate_candidate_cohort(state["geometry"], **candidate)
+
+
+def test_study_recovery_source_bridge_is_limited_to_settlement_seven_then_renewal(tmp_path: Path) -> None:
+    state = study_recovery_ledger(tmp_path)
+    root, core = state["root"], state["core"]
+    common = {"expected_route_sha256": sha(state["routes"][0]), "expected_execution_source_sha256": state["sources"][0],
+              "reviewer_task": state["reviewer"], "expected_study_recovery": state["binding"]}
+    prior = core.verify_prefix(root, state["geometry"], state["head"], 6, allowed_pending_paths=state["pending"], **common)
+    assert len(prior["contacts"]) == 60 and "study_recovered_contact_count" not in prior
+    original_contact = (root / "contacts/request-0070.json").read_bytes()
+    (root / "contacts/request-0070.json").unlink()
+    try:
+        with pytest.raises(ValueError, match="Study recovery source bridge pending prefix"):
+            core.verify_prefix(root, state["geometry"], state["head"], 6,
+                               allowed_pending_paths=state["pending"] - {"contacts/request-0070.json"}, **common)
+    finally:
+        (root / "contacts/request-0070.json").write_bytes(original_contact)
+    with pytest.raises(ValueError, match="Latest operational"):
+        core.verify_prefix(root, state["geometry"], state["head"], 6, allowed_pending_paths=state["pending"],
+                           **{**common, "expected_study_recovery": None})
+    wrong_binding = {**state["binding"], "recovery_operational_source_manifest": state["manifests"][1]}
+    with pytest.raises(ValueError, match="Study recovery operational"):
+        core.verify_prefix(root, state["geometry"], state["head"], 6, allowed_pending_paths=state["pending"],
+                           **{**common, "expected_study_recovery": wrong_binding})
+    wrong_contact = {**state["binding"], "summary": {**state["recovered"], "contact_sha256": "f" * 64}}
+    with pytest.raises(ValueError, match="Study recovery source bridge binding"):
+        core.verify_prefix(root, state["geometry"], state["head"], 6, allowed_pending_paths=state["pending"],
+                           **{**common, "expected_study_recovery": wrong_contact})
+    seven = sha(write(root, "cohorts/0007/settlement.json", state["candidate"]["settlement"]))
+    settled = core.verify_prefix(root, state["geometry"], seven, 7, **common)
+    assert (settled["native_contact_count"], settled["study_recovered_contact_count"]) == (69, 1)
+    assert settled["study_recovered_ordinals"] == [70]
+    assert settled["epochs"][7]["execution_source_sha256"] == state["sources"][1]
+    assert settled["contacts"][70]["authorization_sha256"] == state["candidate"]["review_sha256"]
+    write(root, "cohorts/0008/prepared.json", {"synthetic": "must-renew-first"})
+    with pytest.raises(ValueError, match="operational renewal before cohort 8"):
+        core.verify_prefix(root, state["geometry"], seven, 7,
+                           allowed_pending_paths=frozenset({"cohorts/0008/prepared.json"}), **common)
+    (root / "cohorts/0008/prepared.json").unlink()
+    (root / "cohorts/0008").rmdir()
+    unrenewed_eight = state["cohort"](8, seven, 1, state["renewal"])
+    unrenewed_head = sha(write(root, "cohorts/0008/settlement.json", unrenewed_eight["settlement"]))
+    with pytest.raises(ValueError, match="operational renewal before cohort 8"):
+        core.verify_prefix(root, state["geometry"], unrenewed_head, 8, **common)
+    renewal = write_operational_renewal(root, cohort=7, initialization_sha256=sha(state["initialization"]),
+                                        previous=state["renewal"], settlement=seven,
+                                        old_route=state["routes"][1], new_route=state["routes"][2],
+                                        old_manifest=state["manifests"][1], new_manifest=state["manifests"][2],
+                                        remaining=list(range(71, 81)), aggregate=state["aggregate"],
+                                        reviewed_at=BASE_TIME + timedelta(minutes=313))
+    eight_candidate = state["cohort"](8, seven, 2, renewal)
+    eight = sha(write(root, "cohorts/0008/settlement.json", eight_candidate["settlement"]))
+    final = core.verify_prefix(root, state["geometry"], eight, 8, **common)
+    assert (final["native_contact_count"], final["study_recovered_contact_count"]) == (79, 1)
+    assert final["epochs"][8]["execution_source_sha256"] == state["sources"][2]
+    assert final["contacts"][70]["execution_source_sha256"] == state["sources"][1]
+    assert (root / "contacts/request-0070.json").read_bytes() == state["candidate"]["contact_records"][70]

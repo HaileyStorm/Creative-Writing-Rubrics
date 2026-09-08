@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "decision": "owner_adopted_exact_grok70_quote_repair",
+  "date": "2026-09-08",
+  "owner_record_sha256": "ff3e1a1f4038e48c13341c290e20c1b50285593cf9c8c76d476e4dcca014b8ca",
+  "proposal_sha256": "f75e707c2f61d3bb5b232ef0f49eeff013cc78fc8ce148b574859e61a58d87e4",
+  "candidate_review_sha256": "b3405047a394ff877a31633f685965fe0fcc3a83c0209874883bef432004d7f8",
+  "ordinal": 70,
+  "field": "verdicts[3].evidence[0].exact_quote",
+  "transformation": "retain_the_first_500_unicode_codepoints_of_the_543_codepoint_quote",
+  "all_other_parsed_values_unchanged": true,
+  "original_message_sha256": "7dce95e4db97a186d73a04ce3e2b66dcdd9aa62ef7b505da191320522b298892",
+  "derivative_message_sha256": "13520bff27cef8d0db1e395b5063fa79e665d648b82e939e8726e072562f2526",
+  "native_cli_envelope_request_id_binding": "missing",
+  "ordinary_native_admission": false,
+  "original_failure_preserved": true,
+  "resend_authority": false,
+  "settlement_status": "pending_reviewed_recovery_integration",
+  "future_continuation_requires_reviewed_source_renewal_and_host_gate": true,
+  "post_recovery_source_transitions": "operational_renewals_at_settled_cohort_boundaries",
+  "follow_up": {
+    "id": "CWR-DRYAD-MIXED-PARTIAL-SOURCE-AMENDMENT",
+    "owner": "CWR",
+    "status": "deferred_until_needed",
+    "trigger": "A later mixed-evidence cohort requires a source change before settlement",
+    "closure": "Forward and verify the study binding through partial-source candidate preparation with an integrated regression before enabling that combination"
+  },
+  "complete_campaign_admitted": false
+}

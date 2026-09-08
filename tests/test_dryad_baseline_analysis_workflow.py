@@ -81,10 +81,20 @@ def workflow(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
         for story in sorted(train_ids | dev_ids)
     ]
 
+    def study_result(result, kwargs):
+        if "study_recovery_manifest_path" in kwargs:
+            result = {**result,
+                      "evidence_class": result["evidence_class"].replace("complete_native_", "complete_mixed_"),
+                      "native_logical_requests": 5427,
+                      "study_recovered_logical_requests": state.get("study_count", 1),
+                      "study_recovered_ordinals": [70],
+                      "study_recovery": {"manifest_sha256": kwargs["expected_study_recovery_manifest_sha256"]}}
+        return result
+
     def admission(**_kwargs):
         calls.append("admit")
         admission_kwargs.append(_kwargs)
-        return {
+        return study_result({
             "schema_version": 2,
             "evidence_class": "complete_native_baseline_measurement_admission",
             "execution_authority": False,
@@ -94,7 +104,7 @@ def workflow(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
             "original_initialization": {"execution_source_sha256": "a" * 64, "route_sha256": "b" * 64},
             "cohort_epochs": {number: {"route_sha256": "b" * 64} for number in range(1, 13)},
             "endpoint_grok_rows": rows,
-        }
+        }, _kwargs)
 
     def fit(verdicts, targets, **kwargs):
         calls.append("fit")
@@ -140,7 +150,7 @@ def workflow(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
         calls.append("finalize")
         finalizer_kwargs.append(kwargs)
         manifest = json.loads(Path(kwargs["recovery_manifest_path"]).read_bytes())
-        return {
+        return study_result({
             "schema_version": 2,
             "evidence_class": "complete_native_baseline_measurement_admission_with_grok51_recovery_provenance",
             "execution_authority": False,
@@ -156,7 +166,7 @@ def workflow(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
                 "origin_root": manifest["origin_root"],
                 "derivative_root": manifest["derivative_root"],
             },
-        }
+        }, kwargs)
 
     def load(path, raw, _label):
         if path == admission_path:
@@ -270,6 +280,47 @@ def test_train_admits_before_reading_targets_and_retains_v2_evidence(workflow, m
     }
     assert result["freeze"]["inner"]["evidence_class"] == "baseline_source_verified_fit_unadmitted"
     assert result["freeze"]["source_provenance"]["current_source_verify_ran"] is False
+
+
+@pytest.mark.parametrize("with_grok51", [False, True])
+def test_mixed_recovery_survives_train_dev_and_rejects_duplicate_count(workflow, monkeypatch, with_grok51):
+    case = workflow
+    study_root = case.tmp_path / "study-recovery"
+    study_root.mkdir()
+    manifest = study_root / "recovered-study.json"
+    manifest.write_bytes(_json({"synthetic": "adopted exact ordinal 70"}))
+    kwargs = {"study_recovery_manifest_path": manifest,
+              "expected_study_recovery_manifest_sha256": _sha(manifest.read_bytes())}
+    if with_grok51:
+        kwargs.update(_recovery(case, monkeypatch))
+        kwargs["expected_route_sha256"] = "b" * 64
+    train_output = case.tmp_path.parent / (case.tmp_path.name + "-mixed-train")
+    trained = _fit(case, train_output, **kwargs)
+    compared = _compare(case, train_output, case.tmp_path.parent / (case.tmp_path.name + "-mixed-dev"), **kwargs)
+    for result in (trained, compared):
+        admission = result["freeze"]["admission"]
+        assert admission["evidence_class"].startswith("complete_mixed_baseline_measurement_admission")
+        assert admission["native_logical_requests"] == 5427
+        assert admission["study_recovered_logical_requests"] == 1
+        assert admission["study_recovered_ordinals"] == [70]
+        assert admission["study_recovery"]["manifest_sha256"] == kwargs["expected_study_recovery_manifest_sha256"]
+    forwarded = case.finalizer_kwargs if with_grok51 else case.admission_kwargs
+    assert all(call["study_recovery_manifest_path"] == manifest for call in forwarded)
+    case.state["study_count"] = 2
+    with pytest.raises(ValueError, match="Study recovery evidence classification"):
+        _fit(case, case.tmp_path.parent / (case.tmp_path.name + "-duplicate-study"), **kwargs)
+
+
+def test_study_recovery_pair_and_output_root_are_checked_before_admission(workflow):
+    manifest = workflow.tmp_path / "protected-study" / "recovered-study.json"
+    manifest.parent.mkdir()
+    manifest.write_bytes(b"{}")
+    with pytest.raises(ValueError, match="Paired study recovery"):
+        _fit(workflow, study_recovery_manifest_path=manifest)
+    with pytest.raises(ValueError, match="fresh external"):
+        _fit(workflow, manifest.parent / "output", study_recovery_manifest_path=manifest,
+             expected_study_recovery_manifest_sha256=_sha(manifest.read_bytes()))
+    assert workflow.calls == []
 
 
 def test_stored_admission_commitment_recomputes_after_json_reload(workflow):

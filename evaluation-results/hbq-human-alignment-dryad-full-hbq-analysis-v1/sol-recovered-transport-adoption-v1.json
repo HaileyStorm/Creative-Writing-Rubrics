@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "decision": "owner_adopted_exact_recovered_transport_interpretation",
+  "date": "2026-09-08",
+  "owner_adoption_sha256": "c433b9af64124076a6ef652186cb5dce4d14e8112751357d3695d3a3509953a6",
+  "proposal_sha256": "fece81ca25260c830fbe62d21a1ba30543e316905a70a773276090ca02b38507",
+  "incident_sha256": "43209a6cbf35bb1297ce25431e6fddea19df0cf1e1b5c3eaf0da9f13e72cbbe5",
+  "candidate_sha256": "e10eaf19fbac0ef835ba9d3bb717cb4b83a53a1b8003f29b5f0d64a1aaf6587e",
+  "candidate_review_sha256": "1171252a585616966aff9cdc672d5901e39c8aba88291ddabe6b316523b9c235",
+  "interpreter_sha256": "f13452e7ff878f2368f64159060362f6ecf6320e74e45a9e7d7f93362b964930",
+  "recovered_ordinals": [221],
+  "first_adopted_prefix": {
+    "requests": 230,
+    "verdicts": 1780,
+    "unique_local_threads": 230,
+    "independent_admission_sha256": "076a31020650e9074fcb3e62d07fd8413d71cbed8d9d72a4ec56bc373b726472"
+  },
+  "append_only_record_correction": "The corrected prefix review removes an unsupported Grok-specific limitation and binds the actual through-220 predecessor; the original incident and review remain preserved.",
+  "launch_evidence": "accepted_checkpoint_and_pinned_single_launch_runtime",
+  "independent_process_exit_receipt": false,
+  "internal_retry_cardinality": "unproven",
+  "native_endpoint_contact_cardinality": "unproven",
+  "identity_evidence": "requested_only",
+  "provider_attested": false,
+  "new_caller_retry_or_resend": false,
+  "full_study_admission": false,
+  "execution_authority": false,
+  "provider_calls": 0
+}

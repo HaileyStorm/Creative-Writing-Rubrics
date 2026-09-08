@@ -21,7 +21,7 @@ PREPARATION = ROOT / "baseline-preparation-v1.json"
 CORE = ROOT / "cohort_ledger_core.py"
 PLAN_SOURCE_SHA256 = "33193aa1a394c04c14b4f9ab81871116dbac11f933f22a9e45f252b2d279fdc8"
 CONTRACT_SHA256 = "6ae404e31ecafbeac0ef69814127c5222ac8da5fd24c2700f185ca2f8af5cf37"
-CORE_SHA256 = "cd3c5697f201b01f20704986e7d8c906e816ebec6f74595de15dbced309057b0"
+CORE_SHA256 = "59d7a27b613b699b501c03054081371825e8789e1c4d4de3ec35ed3a8ddf51a8"
 PREPARATION_SHA256 = "64d8deb56082ecc9ca899b264cab6a3b50f91333a8ada5bc0bb9573bfbf1924a"
 PUBLIC_INPUTS_SHA256 = "6254f58d3366667c9578e2661a1ca0d105a603a0f8affe2d925a767957937c42"
 PLAN_SHA256 = "edeadb93c485ba227153329b5ae420de1c9d08d95e920bac0635d197fd3dbd7f"
@@ -141,11 +141,11 @@ def cohort_groups(plan: Mapping[str, Any]) -> list[tuple[int, ...]]:
     return [tuple(range(start, min(start + 10, 5429))) for start in range(1, 5429, 10)]
 
 
-def verify_prefix(execution_root: Path, public_inputs_raw: bytes, plan_raw: bytes, expected_plan_sha256: str, expected_settlement_sha256: str, through_cohort: int, *, expected_route_sha256: str, expected_execution_source_sha256: str, expected_reviewer_task: str, allowed_pending_paths: frozenset[str] = frozenset(), pending_precontact_recovery: Mapping[str, Any] | None = None, pending_partial_source_amendment: Mapping[str, Any] | None = None) -> dict[str, Any]:
+def verify_prefix(execution_root: Path, public_inputs_raw: bytes, plan_raw: bytes, expected_plan_sha256: str, expected_settlement_sha256: str, through_cohort: int, *, expected_route_sha256: str, expected_execution_source_sha256: str, expected_reviewer_task: str, allowed_pending_paths: frozenset[str] = frozenset(), pending_precontact_recovery: Mapping[str, Any] | None = None, pending_partial_source_amendment: Mapping[str, Any] | None = None, expected_study_recovery: Mapping[str, Any] | None = None) -> dict[str, Any]:
     """Verify a provider-free contiguous baseline ledger prefix."""
     core, core_raw = _core()
     geometry = _geometry(public_inputs_raw, plan_raw, expected_plan_sha256, core)
-    result = core.verify_prefix(execution_root, geometry, expected_settlement_sha256, through_cohort, expected_route_sha256=expected_route_sha256, expected_execution_source_sha256=expected_execution_source_sha256, reviewer_task=expected_reviewer_task, allowed_pending_paths=allowed_pending_paths, pending_precontact_recovery=pending_precontact_recovery, pending_partial_source_amendment=pending_partial_source_amendment)
+    result = core.verify_prefix(execution_root, geometry, expected_settlement_sha256, through_cohort, expected_route_sha256=expected_route_sha256, expected_execution_source_sha256=expected_execution_source_sha256, reviewer_task=expected_reviewer_task, allowed_pending_paths=allowed_pending_paths, pending_precontact_recovery=pending_precontact_recovery, pending_partial_source_amendment=pending_partial_source_amendment, expected_study_recovery=expected_study_recovery)
     require(_source(CORE, CORE_SHA256, "Ledger core") == core_raw, "Baseline ledger source changed during verification")
     for path, expected in ((PLAN_SOURCE, PLAN_SOURCE_SHA256), (CONTRACT, CONTRACT_SHA256), (PREPARATION, PREPARATION_SHA256)):
         _source(path, expected, "Baseline dependency")
@@ -288,6 +288,6 @@ def prepare_partial_source_amendment_candidate(execution_root: Path, public_inpu
     return candidate
 
 
-def verify_ledger(execution_root: Path, public_inputs_raw: bytes, plan_raw: bytes, expected_plan_sha256: str, expected_final_settlement_sha256: str, *, expected_route_sha256: str, expected_execution_source_sha256: str, expected_reviewer_task: str) -> dict[str, Any]:
+def verify_ledger(execution_root: Path, public_inputs_raw: bytes, plan_raw: bytes, expected_plan_sha256: str, expected_final_settlement_sha256: str, *, expected_route_sha256: str, expected_execution_source_sha256: str, expected_reviewer_task: str, expected_study_recovery: Mapping[str, Any] | None = None) -> dict[str, Any]:
     """Verify all 543 settled cohorts with no pending files or provider contact."""
-    return verify_prefix(execution_root, public_inputs_raw, plan_raw, expected_plan_sha256, expected_final_settlement_sha256, 543, expected_route_sha256=expected_route_sha256, expected_execution_source_sha256=expected_execution_source_sha256, expected_reviewer_task=expected_reviewer_task)
+    return verify_prefix(execution_root, public_inputs_raw, plan_raw, expected_plan_sha256, expected_final_settlement_sha256, 543, expected_route_sha256=expected_route_sha256, expected_execution_source_sha256=expected_execution_source_sha256, expected_reviewer_task=expected_reviewer_task, expected_study_recovery=expected_study_recovery)

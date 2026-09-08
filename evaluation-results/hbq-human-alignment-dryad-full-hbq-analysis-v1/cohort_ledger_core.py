@@ -647,14 +647,39 @@ def _validate_pending_continuations(root: Path, snapshot: Mapping[str, str], geo
     _validate_authorization_prefixes(ordinals, continuations, authorization, used, summaries, contact_times)
 
 
+def _study_recovery_summary(expected: Mapping[str, Any] | None) -> dict[str, Any] | None:
+    if expected is None:
+        return None
+    _require(isinstance(expected, Mapping), "Expected study recovery differs")
+    _keys(expected, {"adoption_sha256", "amendment_sha256", "summary", "recovery_operational_source_manifest"},
+          "Expected study recovery")
+    _require(_hash(expected["adoption_sha256"]) and _hash(expected["amendment_sha256"])
+             and isinstance(expected["summary"], Mapping)
+             and isinstance(expected["recovery_operational_source_manifest"], Mapping),
+             "Expected study recovery differs")
+    summary = expected["summary"]
+    _keys(summary, {"ordinal", "evidence_kind", "contact_sha256", "adoption_sha256", "amendment_sha256",
+                    "derivative_sha256", "study_accepted_at"}, "Study recovered summary")
+    _require(type(summary["ordinal"]) is int and summary["ordinal"] == 70
+             and summary["evidence_kind"] == "study_recovered"
+             and summary["adoption_sha256"] == expected["adoption_sha256"]
+             and summary["amendment_sha256"] == expected["amendment_sha256"]
+             and _hash(summary["contact_sha256"]) and _hash(summary["derivative_sha256"]),
+             "Study recovered binding differs")
+    _utc(summary["study_accepted_at"], "Study acceptance time")
+    return dict(summary)
+
+
 def validate_candidate_cohort(geometry: LedgerGeometry, *, cohort_number: int, ordinals: tuple[int, ...],
                               prepared_sha256: str, review_sha256: str, route_sha256: str,
                               previous_settlement_sha256: str, review_start: datetime, review_end: datetime,
                               continuations: list[dict[str, Any]], settlement: Mapping[str, Any],
                               contact_records: Mapping[int, bytes], expected_execution_source_sha256: str,
-                              request_ids: set[str] | None = None, session_ids: set[str] | None = None) -> tuple[dict[int, dict[str, Any]], dict[str, tuple[str, datetime, datetime]]]:
+                              request_ids: set[str] | None = None, session_ids: set[str] | None = None,
+                              expected_study_recovery: Mapping[str, Any] | None = None) -> tuple[dict[int, dict[str, Any]], dict[str, tuple[str, datetime, datetime]]]:
     """Validate one complete candidate before its immutable settlement is written."""
     fields = {"schema_version", "cohort_number", "plan_sha256", "prepared_sha256", "review_sha256", "route_sha256", "previous_settlement_sha256", "settled_at", "contacts"}
+    expected_recovered_summary = _study_recovery_summary(expected_study_recovery)
     version = _integer(settlement.get("schema_version"), "Settlement schema version")
     if version == 1:
         _keys(settlement, fields, "Settlement record", version=1)
@@ -662,11 +687,16 @@ def validate_candidate_cohort(geometry: LedgerGeometry, *, cohort_number: int, o
     elif version == 2:
         _keys(settlement, fields | {"authorization_chain"}, "Settlement record", version=2)
         _require(all(item["version"] == 1 for item in continuations), "Settlement continuation schema differs")
-    elif version == 3:
-        _keys(settlement, fields | {"authorization_chain"}, "Settlement record", version=3)
+    elif version in {3, 4}:
+        _keys(settlement, fields | {"authorization_chain"}, "Settlement record", version=version)
         _require(all(item["version"] in {2, 3, 4} for item in continuations), "Settlement continuation schema differs")
     else:
         raise ValueError("Settlement schema version differs")
+    if version == 4:
+        _require(cohort_number == 7 and ordinals == tuple(range(61, 71)) and expected_recovered_summary is not None,
+                 "Study recovered settlement differs")
+    if expected_recovered_summary is not None and 70 in ordinals:
+        _require(version == 4, "Study recovered settlement differs")
     settled_at = _utc(settlement["settled_at"], "Settlement time")
     _require(settlement["cohort_number"] == cohort_number and settlement["plan_sha256"] == geometry.plan_sha256 and settlement["prepared_sha256"] == prepared_sha256 and settlement["review_sha256"] == review_sha256 and settlement["route_sha256"] == route_sha256 and settlement["previous_settlement_sha256"] == previous_settlement_sha256 and isinstance(settlement["contacts"], list) and [item.get("ordinal") if isinstance(item, dict) else None for item in settlement["contacts"]] == list(ordinals), "Settlement binding differs")
     _require(review_start < review_end <= review_start + timedelta(hours=2), "Review window differs")
@@ -685,9 +715,15 @@ def validate_candidate_cohort(geometry: LedgerGeometry, *, cohort_number: int, o
     local_session_ids: set[str] = set()
     contacts: dict[int, dict[str, Any]] = {}
     contact_times: dict[int, datetime] = {}
+    recovered_ordinals: list[int] = []
     for ordinal, summary in zip(ordinals, settlement["contacts"], strict=True):
-        _keys(summary, {"ordinal", "contact_sha256", "checkpoint_sha256", "request_id_hash", "session_id_hash"}, "Settlement contact")
-        _require(all(_hash(summary[field]) for field in ("contact_sha256", "checkpoint_sha256", "request_id_hash", "session_id_hash")) and summary["request_id_hash"] not in local_request_ids and summary["session_id_hash"] not in local_session_ids and (request_ids is None or summary["request_id_hash"] not in request_ids) and (session_ids is None or summary["session_id_hash"] not in session_ids), "Native identity is duplicated")
+        recovered = isinstance(summary, Mapping) and summary.get("evidence_kind") == "study_recovered"
+        if recovered:
+            _require(version == 4 and ordinal == 70 and dict(summary) == expected_recovered_summary,
+                     "Study recovered summary differs")
+        else:
+            _keys(summary, {"ordinal", "contact_sha256", "checkpoint_sha256", "request_id_hash", "session_id_hash"}, "Settlement contact")
+            _require(all(_hash(summary[field]) for field in ("contact_sha256", "checkpoint_sha256", "request_id_hash", "session_id_hash")) and summary["request_id_hash"] not in local_request_ids and summary["session_id_hash"] not in local_session_ids and (request_ids is None or summary["request_id_hash"] not in request_ids) and (session_ids is None or summary["session_id_hash"] not in session_ids), "Native identity is duplicated")
         raw = contact_records.get(ordinal)
         _require(isinstance(raw, bytes), "Contact record is missing")
         contact = _json(raw, "Contact record")
@@ -698,11 +734,20 @@ def validate_candidate_cohort(geometry: LedgerGeometry, *, cohort_number: int, o
         admitted_at = _utc(contact["admitted_at"], "Contact admission time")
         source, start, end = authorization_by_hash[contact["review_sha256"]]
         _require(start <= admitted_at <= end and admitted_at <= settled_at, "Contact is outside its authorization window")
-        local_request_ids.add(summary["request_id_hash"])
-        local_session_ids.add(summary["session_id_hash"])
+        if recovered:
+            _require(admitted_at < _utc(summary["study_accepted_at"], "Study acceptance time") <= settled_at,
+                     "Study acceptance chronology differs")
+            recovered_ordinals.append(ordinal)
+        else:
+            local_request_ids.add(summary["request_id_hash"])
+            local_session_ids.add(summary["session_id_hash"])
         used[contact["review_sha256"]].append(ordinal)
         contact_times[ordinal] = admitted_at
         contacts[ordinal] = {"ordinal": ordinal, "pass_id": request["pass_id"], "logical_sample_id": passed["logical_sample_id"], "source_sha256": passed["source_sha256"], "prompt_sha256": request["prompt_sha256"], "schema_sha256": request["schema_sha256"], "route_sha256": route_sha256, "execution_source_sha256": source, "authorization_sha256": contact["review_sha256"], **summary}
+    _require(recovered_ordinals == ([70] if version == 4 else []), "Study recovered settlement differs")
+    if version == 4:
+        _source_manifest(expected_study_recovery["recovery_operational_source_manifest"],
+                         "Study recovery operational", require_current=False)
     if version in {2, 3, 4}:
         chain = settlement["authorization_chain"]
         _require(isinstance(chain, list) and len(chain) == len(authorization) and [ordinal for key, _, _, _ in authorization for ordinal in used[key]] == list(ordinals), "Settlement authorization order differs")
@@ -720,9 +765,10 @@ def validate_candidate_cohort(geometry: LedgerGeometry, *, cohort_number: int, o
     return contacts, authorization_by_hash
 
 
-def verify_prefix(execution_root: Path, geometry: LedgerGeometry, expected_settlement_sha256: str, through_cohort: int, *, expected_route_sha256: str, expected_execution_source_sha256: str, reviewer_task: str, allowed_pending_paths: frozenset[str] = frozenset(), pending_precontact_recovery: Mapping[str, Any] | None = None, pending_partial_source_amendment: Mapping[str, Any] | None = None, _candidate_partial_source_manifest: Mapping[str, Any] | None = None) -> dict[str, Any]:
+def verify_prefix(execution_root: Path, geometry: LedgerGeometry, expected_settlement_sha256: str, through_cohort: int, *, expected_route_sha256: str, expected_execution_source_sha256: str, reviewer_task: str, allowed_pending_paths: frozenset[str] = frozenset(), pending_precontact_recovery: Mapping[str, Any] | None = None, pending_partial_source_amendment: Mapping[str, Any] | None = None, _candidate_partial_source_manifest: Mapping[str, Any] | None = None, expected_study_recovery: Mapping[str, Any] | None = None) -> dict[str, Any]:
     """Verify a closed contiguous prefix; this function never contacts a provider."""
     geometry.validate()
+    expected_recovered_summary = _study_recovery_summary(expected_study_recovery)
     _require(all(_hash(value) for value in (expected_settlement_sha256, expected_route_sha256, expected_execution_source_sha256)) and isinstance(reviewer_task, str) and reviewer_task, "Expected ledger anchors differ")
     _require(type(through_cohort) is int and 0 <= through_cohort <= len(geometry.groups), "Prefix cohort differs")
     pending = _pending(allowed_pending_paths); root = Path(execution_root); files, directories = _snapshot(root)
@@ -799,6 +845,7 @@ def verify_prefix(execution_root: Path, geometry: LedgerGeometry, expected_settl
             review_start=reviewed_at, review_end=expires_at, continuations=continuations, settlement=settlement,
             contact_records=contact_records, expected_execution_source_sha256=current_source_sha256,
             request_ids=request_ids, session_ids=session_ids,
+            expected_study_recovery=expected_study_recovery,
         )
         for authorization_sha, (source_sha, start, end) in authorization.items():
             _require(authorization_sha not in authorizations, "Authorization reused across cohorts")
@@ -828,9 +875,17 @@ def verify_prefix(execution_root: Path, geometry: LedgerGeometry, expected_settl
         else:
             current_source_sha256 = effective_source_sha256
         previous_settlement, previous_settled = digest(settlement_raw), settled_at
-    _require(previous_settlement == expected_settlement_sha256 and len(contacts) == sum(map(len, geometry.groups[:through_cohort])) and len(request_ids) == len(session_ids) == len(contacts), "Ledger closing settlement differs")
+    recovered_ordinals = [ordinal for ordinal, contact in contacts.items() if contact.get("evidence_kind") == "study_recovered"]
+    _require(recovered_ordinals in ([], [70])
+             and previous_settlement == expected_settlement_sha256
+             and len(contacts) == sum(map(len, geometry.groups[:through_cohort]))
+             and len(request_ids) == len(session_ids) == len(contacts) - len(recovered_ordinals),
+             "Ledger closing settlement differs")
+    if recovered_ordinals and through_cohort > 7:
+        _require(7 in renewals_by_cohort, "Study recovery requires operational renewal before cohort 8")
     pending_recovery: dict[str, Any] | None = None
     pending_amendment: dict[str, Any] | None = None
+    pending_continuations: list[str] = []
     if renewals and through_cohort < len(geometry.groups):
         effective_operational = {"sha256": current_renewal_sha256, "new_source": current_source_manifest}
         next_cohort = through_cohort + 1
@@ -897,7 +952,40 @@ def verify_prefix(execution_root: Path, geometry: LedgerGeometry, expected_settl
              "Partial source amendment candidate differs")
     _require(_candidate_partial_source_manifest is None or pending_amendment is None,
              "Partial source amendment candidate differs")
-    if _candidate_partial_source_manifest is not None:
+    recovery_source_bridge = expected_recovered_summary is not None and through_cohort in {6, 7} and 7 not in renewals_by_cohort
+    if recovery_source_bridge:
+        # The independently reviewed reader amendment covers preparation and reading
+        # of settlement 7. It does not change any contact's operational source epoch.
+        _require(_candidate_partial_source_manifest is None and pending_precontact_recovery is None
+                 and pending_partial_source_amendment is None, "Study recovery source bridge differs")
+        if through_cohort == 6:
+            _require(len(geometry.groups) >= 7 and geometry.groups[6] == tuple(range(61, 71)),
+                     "Study recovery source bridge cohort differs")
+            expected_pending = {f"cohorts/0007/{name}" for name in ("prepared.json", "review.json", "route.json")}
+            expected_pending.update(f"contacts/request-{ordinal:04d}.json" for ordinal in range(61, 71))
+            expected_pending.update(path for path in files if path.startswith("cohorts/0007/review-continuations/"))
+            _require(set(pending) == expected_pending, "Study recovery source bridge pending prefix differs")
+            prepared_raw = _read(root, "cohorts/0007/prepared.json", files)
+            prepared = _json(prepared_raw, "Prepared record")
+            review_raw = _read(root, "cohorts/0007/review.json", files)
+            _require(prepared.get("cohort_number") == 7 and prepared.get("plan_sha256") == geometry.plan_sha256
+                     and prepared.get("previous_settlement_sha256") == expected_settlement_sha256
+                     and prepared.get("request_ordinals") == list(range(61, 71))
+                     and prepared.get("route_sha256") == current_route_sha256
+                     and prepared.get("execution_source_sha256") == current_source_sha256
+                     and digest(_read(root, "contacts/request-0070.json", files)) == expected_recovered_summary["contact_sha256"],
+                     "Study recovery source bridge binding differs")
+            if not pending_continuations:
+                _validate_pending_continuations(root, files, geometry, cohort_number=7,
+                                                prepared_sha256=digest(prepared_raw), route_sha256=current_route_sha256,
+                                                review_raw=review_raw, source_sha256=current_source_sha256,
+                                                reviewer_task=reviewer_task, continuations=[])
+        else:
+            _require(not pending and recovered_ordinals == [70],
+                     "Study recovery requires operational renewal before cohort 8")
+        _source_manifest(expected_study_recovery["recovery_operational_source_manifest"],
+                         "Study recovery operational", require_current=True)
+    elif _candidate_partial_source_manifest is not None:
         _source_manifest(_candidate_partial_source_manifest, "Pending partial source amendment", require_current=True)
     elif renewals and pending_recovery is None and pending_amendment is None:
         _source_manifest(current_source_manifest or renewals[-1]["value"]["new_operational_source_manifest"],
@@ -912,6 +1000,9 @@ def verify_prefix(execution_root: Path, geometry: LedgerGeometry, expected_settl
               "settlement_sha256": previous_settlement}}
     if renewals:
         result.update({"epochs": epochs, "renewals": renewals})
+    if recovered_ordinals:
+        result.update({"native_contact_count": len(request_ids), "study_recovered_contact_count": len(recovered_ordinals),
+                       "study_recovered_ordinals": recovered_ordinals})
     if _candidate_partial_source_manifest is not None:
         result.update({"effective_operational_source_manifest": current_source_manifest,
                        "effective_operational_renewal_sha256": current_renewal_sha256})

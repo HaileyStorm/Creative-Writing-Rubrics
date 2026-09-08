@@ -21,9 +21,10 @@ LEDGER_SOURCE = ROOT / "baseline_measurement_ledger.py"
 RUNTIME_SOURCE = ROOT / "baseline_native_runtime.py"
 NATIVE_SOURCE = ROOT / "native_admission.py"
 TERMINAL_IDENTITIES = ROOT / "terminal-identities-v2.json"
+STUDY_SOURCE = ROOT / "baseline_recovered_study.py"
 SOURCE_PINS = {
     PLAN_SOURCE: "33193aa1a394c04c14b4f9ab81871116dbac11f933f22a9e45f252b2d279fdc8",
-    LEDGER_SOURCE: "6894ddb01c4992f4c8f7b247b9673e79ec4eda6c6c4e7221c406baadc806b90e",
+    LEDGER_SOURCE: "0a27288e31310c8ef18952e32d37543bd10a271f0440cc9e4e66a77c2403702b",
     RUNTIME_SOURCE: "5130bc037e0700f8d498c40ca790aaf248e986189818ae059934ee6488bbfbcd",
     NATIVE_SOURCE: "22ccfe3299bab0e04045a7ec01ab4799929818a3a84aecc8549bb6cb3032a1ec",
     TERMINAL_IDENTITIES: "82cc80c2692fc0c0f47024d4db04cdbf5dd1c34c2d5deea40916a0e8ea45ca63",
@@ -308,9 +309,45 @@ def _execution_inventory(execution_root: Path, pass_by_id: Mapping[str, Mapping[
     return files, directories
 
 
+def _study_context(manifest_path: Path | None, expected_sha256: str | None, *,
+                   plan: Mapping[str, Any], plan_root: Path, execution_root: Path,
+                   runtime: Any, captured: dict[Path, bytes]) -> dict[str, Any] | None:
+    if manifest_path is None and expected_sha256 is None:
+        return None
+    _require(manifest_path is not None and isinstance(expected_sha256, str)
+             and _HASH.fullmatch(expected_sha256) is not None, "Paired study recovery anchors are required")
+    path = _plain(Path(manifest_path), directory=False)
+    raw = path.read_bytes()
+    _require(_digest(raw) == expected_sha256 and path.name == "recovered-study.json",
+             "Study recovery manifest anchor differs")
+    manifest = _json(raw, "Study recovery manifest")
+    source_path = _plain(STUDY_SOURCE, directory=False)
+    source_raw = source_path.read_bytes()
+    _require(_digest(source_raw) == manifest.get("materializer_sha256"),
+             "Reviewed study recovery interpreter differs")
+    module = _load_module(source_path, source_raw, "_dryad_study_admission_")
+    target = next((record for record in plan["passes"] if record["pass_id"] == module.TARGET_PASS_ID), None)
+    _require(target is not None, "Study recovery pass is not planned")
+    anchors = {
+        "expected_recovered_manifest_sha256": expected_sha256,
+        "expected_adoption_sha256": manifest["reader_inputs"]["expected_adoption_sha256"],
+        "expected_amendment_sha256": manifest["amendment_sha256"],
+    }
+    context = module.load_recovered_study(path.parent, source=_source(target, plan_root), runtime=runtime, **anchors)
+    original = _relative(execution_root, target["run_path"], "Original recovered run", directory=True)
+    descendant = _plain(Path(context["descendant_run_root"]), directory=True)
+    _require(_plain(Path(context["original_run_root"]), directory=True) == original
+             and descendant == path.parent and not descendant.is_relative_to(execution_root)
+             and not descendant.is_relative_to(plan_root), "Study recovery roots differ")
+    captured[path], captured[source_path] = raw, source_raw
+    return {**context, "module": module, "anchors": anchors, "descendant": descendant,
+            "inventory": _tree(descendant, "Study recovery descendant")}
+
+
 def _ledger(ledger_module: ModuleType, execution_root: Path, public_inputs_raw: bytes, plan_raw: bytes,
             expected_plan_sha256: str, expected_final_settlement_sha256: str, expected_route_sha256: str,
-            expected_execution_source_sha256: str, expected_reviewer_task: str) -> dict[str, Any]:
+            expected_execution_source_sha256: str, expected_reviewer_task: str,
+            expected_study_recovery: Mapping[str, Any] | None = None) -> dict[str, Any]:
     result = ledger_module.verify_ledger(
         execution_root,
         public_inputs_raw,
@@ -320,7 +357,9 @@ def _ledger(ledger_module: ModuleType, execution_root: Path, public_inputs_raw: 
         expected_route_sha256=expected_route_sha256,
         expected_execution_source_sha256=expected_execution_source_sha256,
         expected_reviewer_task=expected_reviewer_task,
+        **({"expected_study_recovery": expected_study_recovery} if expected_study_recovery is not None else {}),
     )
+    _require(isinstance(result, dict), "Baseline ledger return shape differs")
     if set(result) == {"evidence_class", "native_admission", "execution_authority", "contacts", "routes", "authorizations", "head"}:
         plan = _json(plan_raw, "Baseline plan")
         groups = ledger_module.cohort_groups(plan)
@@ -335,9 +374,15 @@ def _ledger(ledger_module: ModuleType, execution_root: Path, public_inputs_raw: 
         result = {**result, "contacts": {
             ordinal: {**item, "cohort_number": ordinal_cohorts[ordinal]}
             for ordinal, item in result["contacts"].items()}}
-    _require(isinstance(result, dict) and set(result) == {
+    fields = {
         "evidence_class", "native_admission", "execution_authority", "contacts", "routes", "authorizations", "epochs", "renewals", "head",
-    } and result["evidence_class"] == "provider_free_baseline_ledger_consistency"
+    }
+    if expected_study_recovery is not None:
+        fields |= {"native_contact_count", "study_recovered_contact_count", "study_recovered_ordinals"}
+        _require(result.get("native_contact_count") == 5427 and result.get("study_recovered_contact_count") == 1
+                 and result.get("study_recovered_ordinals") == [70], "Mixed ledger cardinality differs")
+    _require(isinstance(result, dict) and set(result) == fields
+             and result["evidence_class"] == "provider_free_baseline_ledger_consistency"
              and result["native_admission"] is False and result["execution_authority"] is False,
              "Baseline ledger return shape differs")
     contacts, routes, authorizations, epochs, head = result["contacts"], result["routes"], result["authorizations"], result["epochs"], result["head"]
@@ -364,6 +409,8 @@ def admit_baseline(
     expected_admission_sha256: str,
     expected_reviewer_task: str,
     expected_initialization_sha256: str,
+    study_recovery_manifest_path: Path | None = None,
+    expected_study_recovery_manifest_sha256: str | None = None,
 ) -> dict[str, Any]:
     """Replay all 236 fixed baseline passes without contacting a provider."""
     required_hashes = (
@@ -421,6 +468,10 @@ def admit_baseline(
     runtime_question_ids = _question_ids(runtime)
     pass_by_id, by_pass, _ = _rows(plan, plan_root, execution_root, runtime_question_ids)
     trusted_request_ids, trusted_session_ids = _trusted_identities(terminal_raw)
+    study = _study_context(study_recovery_manifest_path, expected_study_recovery_manifest_sha256,
+                           plan=plan, plan_root=plan_root, execution_root=execution_root,
+                           runtime=runtime, captured=captured)
+    study_binding = study["expected_study_recovery"] if study is not None else None
     ledger = _ledger(
         ledger_module,
         execution_root,
@@ -431,6 +482,7 @@ def admit_baseline(
         expected_route_sha256,
         expected_execution_source_sha256,
         expected_reviewer_task,
+        study_binding,
     )
     execution_before = _execution_inventory(execution_root, pass_by_id)
     _require(execution_before[0].get("initialization.json") == _digest(initialization_raw),
@@ -440,28 +492,53 @@ def admit_baseline(
     request_ids: set[str] = set()
     session_ids: set[str] = set()
     grok_rows: list[dict[str, Any]] = []
+    recovered_ordinals: list[int] = []
     for pass_record in plan["passes"]:
         source = _source(pass_record, plan_root)
         _require(source["opaque_story_id"] == pass_record["logical_sample_id"]
                  and source["source_opaque_story_id"] == pass_record["opaque_story_id"],
                  "Baseline logical/native source identity differs")
         run_root = _relative(execution_root, pass_record["run_path"], "Baseline execution run", directory=True)
-        admitted = native_module.admit_pass(
+        mixed = study is not None and pass_record["pass_id"] == study["target_pass_id"]
+        if mixed:
+            run_root = study["descendant"]
+        replayer = study["module"] if mixed else native_module
+        admitted = replayer.admit_pass(
             run_root,
             source=source,
             batch_size=8,
             approved_routes=routes,
             runtime=runtime,
+            **(study["anchors"] if mixed else {}),
         )
         _require(isinstance(admitted, Mapping) and set(admitted) >= {
             "verdicts", "score", "coverage", "native_identities", "run_manifest_sha256", "checkpoint_head_sha256", "evidence_class",
-        } and admitted["evidence_class"] == "native_record_replay_only"
+        } and admitted["evidence_class"] == (
+            "mixed_native_and_study_recovered_record_replay" if mixed else "native_record_replay_only")
                  and isinstance(admitted["verdicts"], list) and len(admitted["verdicts"]) == 178
-                 and isinstance(admitted["native_identities"], list) and len(admitted["native_identities"]) == 23,
+                 and isinstance(admitted["native_identities"], list) and len(admitted["native_identities"]) == (22 if mixed else 23),
                  "Baseline native replay result differs")
         planned = by_pass[pass_record["pass_id"]]
         _require(len(planned) == 23, "Baseline pass request count differs")
-        for request, identity in zip(planned, admitted["native_identities"], strict=True):
+        native_planned = planned
+        if mixed:
+            summary = study_binding["summary"]
+            _require(admitted.get("study_recovered") == [summary]
+                     and admitted.get("expected_study_recovery") == study_binding
+                     and admitted.get("native_record_count") == 22
+                     and admitted.get("study_recovered_record_count") == 1
+                     and planned[0]["ordinal"] == 70 and planned[0]["batch_number"] == 1,
+                     "Exact study recovery replay differs")
+            contact = contacts[70]
+            _require(all(contact.get(key) == value for key, value in summary.items())
+                     and contact.get("prompt_sha256") == planned[0]["prompt_sha256"]
+                     and contact.get("schema_sha256") == planned[0]["schema_sha256"]
+                     and _run_artifact_hash(run_root, 1, "responses/batch-0001.prompt.txt.gz", "Study replay prompt") == planned[0]["prompt_sha256"]
+                     and _run_artifact_hash(run_root, 1, "responses/schemas/batch-0001.json", "Study replay schema") == planned[0]["schema_sha256"],
+                     "Study recovery contact or planned payload differs")
+            recovered_ordinals.append(70)
+            native_planned = planned[1:]
+        for request, identity in zip(native_planned, admitted["native_identities"], strict=True):
             _require(isinstance(identity, Mapping), "Baseline native identity differs")
             ordinal = request["ordinal"]
             contact = contacts[ordinal]
@@ -510,7 +587,8 @@ def admit_baseline(
             "run_manifest_sha256": admitted["run_manifest_sha256"],
             "checkpoint_head_sha256": admitted["checkpoint_head_sha256"],
         })
-    _require(len(grok_rows) == 236 and len(request_ids) == len(session_ids) == 5428
+    _require(recovered_ordinals == ([70] if study is not None else []), "Study recovery count differs")
+    _require(len(grok_rows) == 236 and len(request_ids) == len(session_ids) == 5428 - len(recovered_ordinals)
              and request_ids.isdisjoint(session_ids)
              and request_ids.isdisjoint(trusted_request_ids | trusted_session_ids)
              and session_ids.isdisjoint(trusted_request_ids | trusted_session_ids),
@@ -530,13 +608,24 @@ def admit_baseline(
         expected_route_sha256,
         expected_execution_source_sha256,
         expected_reviewer_task,
+        study_binding,
     ) == ledger, "Baseline ledger changed during admission")
     _require(_execution_inventory(execution_root, pass_by_id) == execution_before,
              "Baseline execution evidence changed during admission")
+    if study is not None:
+        _require(_tree(study["descendant"], "Study recovery descendant") == study["inventory"],
+                 "Study recovery descendant changed during admission")
     _unchanged(captured)
     return {
         "schema_version": 2,
-        "evidence_class": "complete_native_baseline_measurement_admission",
+        "evidence_class": ("complete_mixed_baseline_measurement_admission" if study is not None
+                           else "complete_native_baseline_measurement_admission"),
+        **({"native_logical_requests": 5427, "study_recovered_logical_requests": 1,
+            "study_recovered_ordinals": [70], "study_recovery": {
+                "manifest_sha256": expected_study_recovery_manifest_sha256,
+                **study_binding,
+                "native_cli_envelope_request_id_binding": "missing",
+            }} if study is not None else {}),
         "execution_authority": False,
         "provider_calls": 0,
         "empirical_batch_cap": None,

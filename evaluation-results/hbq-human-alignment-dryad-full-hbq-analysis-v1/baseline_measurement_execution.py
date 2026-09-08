@@ -26,16 +26,20 @@ NATIVE_SOURCE = ROOT / "native_admission.py"
 ADMISSION_SOURCE = ROOT / "baseline_measurement_admission.py"
 TERMINAL_IDENTITIES = ROOT / "terminal-identities-v2.json"
 RECOVERY_SOURCE = ROOT / "baseline_recovery.py"
+RECOVERED_STUDY_SOURCE = ROOT / "baseline_recovered_study.py"
 RECOVERY_MANIFEST = "recovery-manifest.json"
+RECOVERED_STUDY_MANIFEST = "recovered-study.json"
+STUDY_RECOVERY_ADOPTION_SHA256 = "ff3e1a1f4038e48c13341c290e20c1b50285593cf9c8c76d476e4dcca014b8ca"
 PLAN_SHA256 = "edeadb93c485ba227153329b5ae420de1c9d08d95e920bac0635d197fd3dbd7f"
 SOURCE_PINS = {
     PLAN_SOURCE: "33193aa1a394c04c14b4f9ab81871116dbac11f933f22a9e45f252b2d279fdc8",
-    LEDGER_SOURCE: "6894ddb01c4992f4c8f7b247b9673e79ec4eda6c6c4e7221c406baadc806b90e",
+    LEDGER_SOURCE: "0a27288e31310c8ef18952e32d37543bd10a271f0440cc9e4e66a77c2403702b",
     RUNTIME_SOURCE: "5130bc037e0700f8d498c40ca790aaf248e986189818ae059934ee6488bbfbcd",
     NATIVE_SOURCE: "22ccfe3299bab0e04045a7ec01ab4799929818a3a84aecc8549bb6cb3032a1ec",
-    ADMISSION_SOURCE: "3e896927406ea29a5ac566196f0c33076ede98265ddebd2e1b980d0392cf4331",
+    ADMISSION_SOURCE: "a889c0f4eb6b19c6731d9da201a31b47521bfec96e65259e275b452433c28bef",
     TERMINAL_IDENTITIES: "82cc80c2692fc0c0f47024d4db04cdbf5dd1c34c2d5deea40916a0e8ea45ca63",
     RECOVERY_SOURCE: "8b4c82af9d73d8fd6c0647436b4c3b394388802ac282314aaee65dd6a168545e",
+    RECOVERED_STUDY_SOURCE: "573fbd9b05659aff80c7db4dfae9cf7c7c549b7e28d99260c50a98aa458bb8b3",
 }
 _HASH = re.compile(r"[0-9a-f]{64}\Z")
 REVIEWER_TASK = "baseline-human-review"
@@ -167,6 +171,55 @@ def _recovery_context(captured: dict[Path, bytes], execution_root: Path, plan_ro
                  "Recovery projection bindings differ")
         captured[path] = raw
     return {"manifest": manifest, "manifest_sha256": expected_recovery_manifest_sha256}
+
+
+def _study_recovery_context(captured: dict[Path, bytes], execution_root: Path, plan_root: Path,
+                            passes: Mapping[str, Mapping[str, Any]], runtime: Any, *,
+                            study_recovery_manifest_path: Path | None,
+                            expected_study_recovery_manifest_sha256: str | None) -> dict[str, Any] | None:
+    if study_recovery_manifest_path is None and expected_study_recovery_manifest_sha256 is None:
+        return None
+    _require(study_recovery_manifest_path is not None
+             and isinstance(expected_study_recovery_manifest_sha256, str)
+             and _HASH.fullmatch(expected_study_recovery_manifest_sha256) is not None,
+             "Study recovery manifest arguments are required")
+    manifest_path = _plain(study_recovery_manifest_path, directory=False)
+    _require(manifest_path.name == RECOVERED_STUDY_MANIFEST
+             and not manifest_path.is_relative_to(execution_root)
+             and not manifest_path.is_relative_to(plan_root),
+             "Study recovery manifest locator differs")
+    manifest_raw = manifest_path.read_bytes()
+    _require(_hash(manifest_raw) == expected_study_recovery_manifest_sha256,
+             "Study recovery manifest changed")
+    manifest = _json(manifest_raw, "Study recovery manifest")
+    amendment_sha256 = manifest.get("amendment_sha256")
+    _require(isinstance(amendment_sha256, str) and _HASH.fullmatch(amendment_sha256) is not None,
+             "Study recovery amendment anchor differs")
+    recovered = _load(RECOVERED_STUDY_SOURCE, captured[RECOVERED_STUDY_SOURCE], "_dryad_recovered_study_")
+    target_pass = next((record for record in passes.values()
+                        if record.get("pass_id") == getattr(recovered, "TARGET_PASS_ID", None)), None)
+    _require(isinstance(target_pass, Mapping), "Study recovery target pass differs")
+    original_root = _relative(execution_root, target_pass["run_path"], directory=True)
+    target_root = _plain(manifest_path.parent, directory=True)
+    _require(not target_root.is_relative_to(execution_root) and not target_root.is_relative_to(plan_root),
+             "Study recovery descendant differs")
+    source_path, source_raw = _source(target_pass, plan_root)
+    value = recovered.load_recovered_study(
+        target_root, expected_recovered_manifest_sha256=expected_study_recovery_manifest_sha256,
+        expected_adoption_sha256=STUDY_RECOVERY_ADOPTION_SHA256, expected_amendment_sha256=amendment_sha256,
+        source={"opaque_story_id": target_pass["logical_sample_id"], "story_text": source_raw.decode("utf-8"),
+                "artifact_path": str(source_path), "source_opaque_story_id": target_pass["opaque_story_id"]},
+        runtime=runtime)
+    required = {"expected_study_recovery", "original_run_root", "descendant_run_root", "target_pass_id",
+                "manifest_sha256", "checkpoint_head_sha256"}
+    _require(isinstance(value, Mapping) and set(value) == required
+             and value["original_run_root"] == str(original_root)
+             and value["descendant_run_root"] == str(target_root)
+             and value["target_pass_id"] == target_pass["pass_id"]
+             and value["manifest_sha256"] == expected_study_recovery_manifest_sha256
+             and isinstance(value["expected_study_recovery"], Mapping), "Study recovery projection differs")
+    captured[manifest_path] = manifest_raw
+    return {**value, "descendant_root": target_root}
 
 
 def _require_recovery_cohort(recovery: Mapping[str, Any] | None, cohort_number: int,
@@ -415,7 +468,9 @@ def prepare_cohort(public_inputs_path: Path, plan_root: Path, execution_root: Pa
                     expected_previous_settlement_sha256: str,
                     expected_operational_renewal_sha256: str | None = None,
                     recovery_manifest_path: Path | None = None,
-                    expected_recovery_manifest_sha256: str | None = None) -> dict[str, str]:
+                    expected_recovery_manifest_sha256: str | None = None,
+                    study_recovery_manifest_path: Path | None = None,
+                    expected_study_recovery_manifest_sha256: str | None = None) -> dict[str, str]:
     """Provider-free creation of one exact reviewed-cohort preparation record."""
     _require(expected_plan_sha256 == PLAN_SHA256 and all(_HASH.fullmatch(value) is not None for value in
              (expected_initialization_sha256, expected_previous_settlement_sha256)), "Preparation anchors differ")
@@ -444,6 +499,10 @@ def prepare_cohort(public_inputs_path: Path, plan_root: Path, execution_root: Pa
     _require_recovery_cohort(recovery, cohort_number, ordinals, expected_previous_settlement_sha256)
     passes, requests = _rows(plan, plan_root, ordinals)
     _frozen_payloads(plan_root, requests, passes, ordinals)
+    study_recovery = _study_recovery_context(
+        captured, execution_root, plan_root, all_passes, runtime,
+        study_recovery_manifest_path=study_recovery_manifest_path,
+        expected_study_recovery_manifest_sha256=expected_study_recovery_manifest_sha256)
     route = dict(route)
     lock, token = _lock(execution_root)
     try:
@@ -453,13 +512,18 @@ def prepare_cohort(public_inputs_path: Path, plan_root: Path, execution_root: Pa
                                      expected_previous_settlement_sha256, cohort_number - 1,
                                      expected_route_sha256=initialization["route_sha256"],
                                      expected_execution_source_sha256=initialization["execution_source_sha256"],
-                                     expected_reviewer_task=REVIEWER_TASK)
+                                     expected_reviewer_task=REVIEWER_TASK,
+                                     expected_study_recovery=(None if study_recovery is None
+                                                              else study_recovery["expected_study_recovery"]))
         _require(prior["head"]["settlement_sha256"] == expected_previous_settlement_sha256,
                  "Previous baseline settlement differs")
         renewals = prior.get("renewals", [])
+        if study_recovery is not None and cohort_number == 8:
+            _require(renewals and renewals[-1]["cohort_number"] == 7,
+                     "Study recovery requires operational renewal before cohort 8")
         if renewals and renewals[-1]["cohort_number"] == cohort_number - 1:
             _verify_new_renewal_boundary(execution_root, plan_root, prior, renewals[-1], all_passes, all_requests,
-                                         runtime, native)
+                                         runtime, native, captured, study_recovery)
         epoch = _epoch(initialization, prior, expected_operational_renewal_sha256)
         _require(_hash(captured[own]) == epoch["execution_source_sha256"]
                  and _route_hash(route) == epoch["route_sha256"]
@@ -586,7 +650,8 @@ def _continuations(execution_root: Path, number: int, prepared_sha256: str, revi
 def _cohort_state(public_inputs_raw: bytes, plan_raw: bytes, execution_root: Path, initialization: Mapping[str, Any],
                   ledger: ModuleType, number: int, ordinals: tuple[int, ...], expected_previous_settlement_sha256: str,
                   expected_prepared_sha256: str, expected_review_sha256: str, *,
-                  pending_partial_source_manifest: Mapping[str, Any] | None = None) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any], list[dict[str, Any]], dict[str, Any], dict[str, Any]]:
+                  pending_partial_source_manifest: Mapping[str, Any] | None = None,
+                  expected_study_recovery: Mapping[str, Any] | None = None) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any], list[dict[str, Any]], dict[str, Any], dict[str, Any]]:
     route_raw = _relative(execution_root, f"cohorts/{number:04d}/route.json", directory=False).read_bytes()
     route = _json(route_raw, "Cohort route")
     files = {f"cohorts/{number:04d}/prepared.json", f"cohorts/{number:04d}/route.json", f"cohorts/{number:04d}/review.json"}
@@ -600,8 +665,10 @@ def _cohort_state(public_inputs_raw: bytes, plan_raw: bytes, execution_root: Pat
     verification = ledger._verify_prefix_for_partial_source_candidate if pending_partial_source_manifest is not None else ledger.verify_prefix
     verification_kwargs = {"expected_route_sha256": initialization["route_sha256"],
                            "expected_execution_source_sha256": initialization["execution_source_sha256"],
-                           "expected_reviewer_task": REVIEWER_TASK, "allowed_pending_paths": frozenset(files)}
+                           "expected_reviewer_task": REVIEWER_TASK, "allowed_pending_paths": frozenset(files),
+                           "expected_study_recovery": expected_study_recovery}
     if pending_partial_source_manifest is not None:
+        verification_kwargs.pop("expected_study_recovery")
         verification_kwargs["new_source_manifest"] = pending_partial_source_manifest
     prior = verification(execution_root, public_inputs_raw, plan_raw, initialization["plan_sha256"],
                          expected_previous_settlement_sha256, number - 1, **verification_kwargs)
@@ -765,11 +832,20 @@ def _validate_latest_continuation_evidence(continuations: list[dict[str, Any]], 
         _require(prefix["run_files"] == files, "Continuation completed evidence differs")
 
 
+def _pass_run_root(execution_root: Path, record: Mapping[str, Any],
+                   study_recovery: Mapping[str, Any] | None, *, require_existing: bool = True) -> Path:
+    if study_recovery is not None and record["pass_id"] == study_recovery["target_pass_id"]:
+        return _plain(Path(study_recovery["descendant_root"]), directory=True)
+    return _relative(execution_root, record["run_path"], directory=True if require_existing else None)
+
+
 def _normalized_verdicts(run_root: Path, source_raw: bytes, runtime: Any, admitted: Mapping[str, Any]) -> list[dict[str, Any]]:
     verdicts, count, head = runtime.runner._load_checkpoints(
         run_root, artifact_text=source_raw.decode("utf-8"), context_texts=[], batch_attempts=1)
     projected = [{"question_id": verdict["question_id"], "verdict": verdict["verdict"]} for verdict in verdicts]
-    _require(projected == admitted["verdicts"] and count == len(admitted["native_identities"])
+    recovered = admitted.get("study_recovered", [])
+    _require(isinstance(recovered, list)
+             and projected == admitted["verdicts"] and count == len(admitted["native_identities"]) + len(recovered)
              and head == admitted["checkpoint_head_sha256"]
              and ("accepted_count" not in admitted or admitted["accepted_count"] == len(verdicts)),
              "Native normalized verdict binding differs")
@@ -781,10 +857,16 @@ def _replay_completed_prefix(execution_root: Path, plan_root: Path, ordinals: li
                              all_requests: Mapping[int, Mapping[str, Any]],
                              runtime: Any, native: ModuleType, admission: ModuleType,
                              captured: Mapping[Path, bytes], prior: Mapping[str, Any], route: Mapping[str, Any],
-                             route_sha256: str) -> tuple[list[dict[str, Any]], dict[str, str], dict[str, bytes]]:
+                             route_sha256: str, study_recovery: Mapping[str, Any] | None = None) -> tuple[list[dict[str, Any]], dict[str, str], dict[str, bytes]]:
     trusted_requests, trusted_sessions = _trusted_identities(admission, captured)
     seen_requests, seen_sessions = set(trusted_requests), set(trusted_sessions)
-    for contact in prior["contacts"].values():
+    for ordinal, contact in prior["contacts"].items():
+        if study_recovery is not None and ordinal == 70:
+            summary = study_recovery["expected_study_recovery"]["summary"]
+            _require(all(contact.get(key) == value for key, value in summary.items())
+                     and "request_id_hash" not in contact and "session_id_hash" not in contact,
+                     "Prior study recovery identity differs")
+            continue
         seen_requests.add(contact["request_id_hash"])
         seen_sessions.add(contact["session_id_hash"])
     replayed: dict[str, Any] = {}
@@ -792,37 +874,64 @@ def _replay_completed_prefix(execution_root: Path, plan_root: Path, ordinals: li
     contacts: list[dict[str, Any]] = []
     for ordinal in ordinals:
         request, record = requests[ordinal], passes[requests[ordinal]["pass_id"]]
+        mixed = study_recovery is not None and record["pass_id"] == study_recovery["target_pass_id"]
+        run_root = _pass_run_root(execution_root, record, study_recovery)
         admitted = replayed.get(record["pass_id"])
         if admitted is None:
             endpoint = max(item for item in ordinals if requests[item]["pass_id"] == record["pass_id"])
             source_path, source_raw = _source(record, plan_root)
-            response_root = _relative(execution_root, record["run_path"], directory=True) / "responses"
+            response_root = run_root / "responses"
             actual_batches = len(list(response_root.glob("batch-*.json")))
             _require(actual_batches >= requests[endpoint]["batch_number"], "Native checkpoint prefix differs")
-            admitted = native.admit_prefix(
-                _relative(execution_root, record["run_path"], directory=True),
-                source={"opaque_story_id": record["logical_sample_id"], "story_text": source_raw.decode("utf-8"),
-                        "artifact_path": str(source_path), "source_opaque_story_id": record["opaque_story_id"]},
-                batch_size=8, expected_batches=actual_batches,
-                approved_routes={**prior["routes"], route_sha256: route}, runtime=runtime)
+            source = {"opaque_story_id": record["logical_sample_id"], "story_text": source_raw.decode("utf-8"),
+                      "artifact_path": str(source_path), "source_opaque_story_id": record["opaque_story_id"]}
+            if mixed:
+                recovered = _load(RECOVERED_STUDY_SOURCE, captured[RECOVERED_STUDY_SOURCE], "_dryad_recovered_study_")
+                expected = study_recovery["expected_study_recovery"]
+                admitted = recovered.admit_prefix(
+                    run_root, source=source, batch_size=8,
+                    expected_batches=actual_batches, approved_routes={**prior["routes"], route_sha256: route},
+                    expected_recovered_manifest_sha256=study_recovery["manifest_sha256"],
+                    expected_adoption_sha256=STUDY_RECOVERY_ADOPTION_SHA256,
+                    expected_amendment_sha256=expected["amendment_sha256"], runtime=runtime)
+                _require(admitted.get("expected_study_recovery") == expected
+                         and admitted.get("recovered_manifest_sha256") == study_recovery["manifest_sha256"],
+                         "Study recovery replay differs")
+            else:
+                admitted = native.admit_prefix(
+                    run_root, source=source,
+                    batch_size=8, expected_batches=actual_batches,
+                    approved_routes={**prior["routes"], route_sha256: route}, runtime=runtime)
             replayed[record["pass_id"]] = admitted
             aggregate_path = f"{record['run_path']}/verdicts.jsonl"
             normalized = _normalized_verdicts(
-                _relative(execution_root, record["run_path"], directory=True), source_raw, runtime, admitted)
+                run_root, source_raw, runtime, admitted)
             complete = runtime.runner._verdicts_bytes(normalized)
-            _require(_relative(execution_root, aggregate_path, directory=False).read_bytes() == complete,
+            aggregate_root = run_root if mixed else execution_root
+            _require(_relative(aggregate_root, "verdicts.jsonl" if mixed else aggregate_path, directory=False).read_bytes() == complete,
                      "Native verdict aggregate differs")
             prefix_size = sum(len(item["question_ids"]) for item in all_requests.values()
                               if item["pass_id"] == record["pass_id"]
                               and item["batch_number"] <= requests[endpoint]["batch_number"])
-            aggregates[aggregate_path] = runtime.runner._verdicts_bytes(normalized[:prefix_size])
-        identity = admitted["native_identities"][request["batch_number"] - 1]
+            if not mixed:
+                aggregates[aggregate_path] = runtime.runner._verdicts_bytes(normalized[:prefix_size])
+        if study_recovery is not None and record["pass_id"] == study_recovery["target_pass_id"] and request["batch_number"] == 1:
+            summary = study_recovery["expected_study_recovery"]["summary"]
+            _require(admitted.get("study_recovered") == [summary]
+                     and admitted.get("study_recovered_ordinals") == [70]
+                     and request["ordinal"] == 70, "Study recovery ordinal differs")
+            contact_raw = _relative(execution_root, f"contacts/request-{request['ordinal']:04d}.json", directory=False).read_bytes()
+            _require(_hash(contact_raw) == summary["contact_sha256"], "Study recovery contact differs")
+            contacts.append(dict(summary))
+            continue
+        identity_index = request["batch_number"] - 2 if study_recovery is not None and record["pass_id"] == study_recovery["target_pass_id"] else request["batch_number"] - 1
+        identity = admitted["native_identities"][identity_index]
         _require(identity["request_id_hash"] not in seen_requests and identity["session_id_hash"] not in seen_sessions,
                  "Native identity collides with trusted or settled evidence")
         seen_requests.add(identity["request_id_hash"])
         seen_sessions.add(identity["session_id_hash"])
         contact_raw = _relative(execution_root, f"contacts/request-{ordinal:04d}.json", directory=False).read_bytes()
-        checkpoint = _relative(execution_root / record["run_path"], f"responses/batch-{request['batch_number']:04d}.json", directory=False).read_bytes()
+        checkpoint = _relative(run_root, f"responses/batch-{request['batch_number']:04d}.json", directory=False).read_bytes()
         contacts.append({"ordinal": ordinal, "contact_sha256": _hash(contact_raw), "checkpoint_sha256": _hash(checkpoint),
                          "request_id_hash": identity["request_id_hash"], "session_id_hash": identity["session_id_hash"]})
     return contacts, _run_files(execution_root), aggregates
@@ -830,36 +939,52 @@ def _replay_completed_prefix(execution_root: Path, plan_root: Path, ordinals: li
 
 def _reconstruct_aggregate_prefixes(execution_root: Path, plan_root: Path, ordinals: list[int],
                                     passes: Mapping[str, Mapping[str, Any]], requests: Mapping[int, Mapping[str, Any]],
-                                    runtime: Any, native: ModuleType, routes: Mapping[str, Mapping[str, Any]]) -> dict[str, bytes]:
+                                    runtime: Any, native: ModuleType, routes: Mapping[str, Mapping[str, Any]],
+                                    captured: Mapping[Path, bytes], study_recovery: Mapping[str, Any] | None = None) -> dict[str, bytes]:
     result: dict[str, bytes] = {}
     selected = {ordinal: requests[ordinal] for ordinal in ordinals}
     for pass_id in dict.fromkeys(request["pass_id"] for request in selected.values()):
         record = passes[pass_id]
         endpoint = max(request["batch_number"] for request in selected.values() if request["pass_id"] == pass_id)
         source_path, source_raw = _source(record, plan_root)
-        response_root = _relative(execution_root, record["run_path"], directory=True) / "responses"
+        mixed = study_recovery is not None and record["pass_id"] == study_recovery["target_pass_id"]
+        run_root = _pass_run_root(execution_root, record, study_recovery)
+        response_root = run_root / "responses"
         actual_batches = len(list(response_root.glob("batch-*.json")))
         _require(actual_batches >= endpoint, "Native checkpoint prefix differs")
-        admitted = native.admit_prefix(
-            _relative(execution_root, record["run_path"], directory=True),
-            source={"opaque_story_id": record["logical_sample_id"], "story_text": source_raw.decode("utf-8"),
-                    "artifact_path": str(source_path), "source_opaque_story_id": record["opaque_story_id"]},
-            batch_size=8, expected_batches=actual_batches, approved_routes=routes, runtime=runtime)
+        source = {"opaque_story_id": record["logical_sample_id"], "story_text": source_raw.decode("utf-8"),
+                  "artifact_path": str(source_path), "source_opaque_story_id": record["opaque_story_id"]}
+        if mixed:
+            recovered = _load(RECOVERED_STUDY_SOURCE, captured[RECOVERED_STUDY_SOURCE], "_dryad_recovered_study_")
+            expected = study_recovery["expected_study_recovery"]
+            admitted = recovered.admit_prefix(
+                run_root, source=source, batch_size=8,
+                expected_batches=actual_batches, approved_routes=routes,
+                expected_recovered_manifest_sha256=study_recovery["manifest_sha256"],
+                expected_adoption_sha256=STUDY_RECOVERY_ADOPTION_SHA256,
+                expected_amendment_sha256=expected["amendment_sha256"], runtime=runtime)
+        else:
+            admitted = native.admit_prefix(
+                run_root, source=source,
+                batch_size=8, expected_batches=actual_batches, approved_routes=routes, runtime=runtime)
         aggregate_path = f"{record['run_path']}/verdicts.jsonl"
         normalized = _normalized_verdicts(
-            _relative(execution_root, record["run_path"], directory=True), source_raw, runtime, admitted)
+            run_root, source_raw, runtime, admitted)
         complete = runtime.runner._verdicts_bytes(normalized)
-        _require(_relative(execution_root, aggregate_path, directory=False).read_bytes() == complete,
+        aggregate_root = run_root if mixed else execution_root
+        _require(_relative(aggregate_root, "verdicts.jsonl" if mixed else aggregate_path, directory=False).read_bytes() == complete,
                  "Native verdict aggregate differs")
         prefix_size = sum(len(request["question_ids"]) for request in requests.values()
                           if request["pass_id"] == pass_id and request["batch_number"] <= endpoint)
-        result[aggregate_path] = runtime.runner._verdicts_bytes(normalized[:prefix_size])
+        if not mixed:
+            result[aggregate_path] = runtime.runner._verdicts_bytes(normalized[:prefix_size])
     return result
 
 
 def _verify_new_renewal_boundary(execution_root: Path, plan_root: Path, prior: Mapping[str, Any],
                                  renewal: Mapping[str, Any], passes: Mapping[str, Mapping[str, Any]],
-                                 requests: Mapping[int, Mapping[str, Any]], runtime: Any, native: ModuleType) -> None:
+                                 requests: Mapping[int, Mapping[str, Any]], runtime: Any, native: ModuleType,
+                                 captured: Mapping[Path, bytes], study_recovery: Mapping[str, Any] | None = None) -> None:
     files, _ = _execution_snapshot(execution_root)
     record_path = f"cohorts/{renewal['cohort_number']:04d}/operational-renewals/0001.json"
     _require(record_path in files, "Operational renewal record is missing")
@@ -870,7 +995,8 @@ def _verify_new_renewal_boundary(execution_root: Path, plan_root: Path, prior: M
              and all(files[path] == sha256 for path, sha256 in immutable.items()),
              "Operational renewal immutable prefix differs")
     reconstructed = _reconstruct_aggregate_prefixes(
-        execution_root, plan_root, sorted(prior["contacts"]), passes, requests, runtime, native, prior["routes"])
+        execution_root, plan_root, sorted(prior["contacts"]), passes, requests, runtime, native, prior["routes"],
+        captured, study_recovery)
     _require(set(aggregates) == set(reconstructed), "Operational renewal aggregate prefix differs")
     for path, value in aggregates.items():
         aggregate = reconstructed[path]
@@ -886,7 +1012,9 @@ def _prepare_continuation_unlocked(public_inputs_path: Path, plan_root: Path, ex
                           expected_precontact_recovery_sha256: str | None = None,
                           pending_partial_source_manifest: Mapping[str, Any] | None = None,
                           recovery_manifest_path: Path | None = None,
-                          expected_recovery_manifest_sha256: str | None = None) -> dict[str, Any]:
+                          expected_recovery_manifest_sha256: str | None = None,
+                          study_recovery_manifest_path: Path | None = None,
+                          expected_study_recovery_manifest_sha256: str | None = None) -> dict[str, Any]:
     """Build a provider-free candidate for an independent continuation review."""
     _require(expected_plan_sha256 == PLAN_SHA256 and all(_HASH.fullmatch(value) is not None for value in
              (expected_initialization_sha256, expected_previous_settlement_sha256, expected_prepared_sha256,
@@ -919,12 +1047,20 @@ def _prepare_continuation_unlocked(public_inputs_path: Path, plan_root: Path, ex
     all_passes = {row["pass_id"]: row for row in plan["passes"]
                   if isinstance(row, Mapping) and isinstance(row.get("pass_id"), str)}
     _require(len(all_passes) == len(plan["passes"]), "Full baseline pass inventory differs")
+    runtime = runtime_loader.load_runtime(
+        ROOT / "baseline-runtime-v1.json", expected_manifest_sha256=initialization["runtime_manifest_sha256"])
+    runtime.verify()
+    study_recovery = _study_recovery_context(
+        captured, execution_root, plan_root, all_passes, runtime,
+        study_recovery_manifest_path=study_recovery_manifest_path,
+        expected_study_recovery_manifest_sha256=expected_study_recovery_manifest_sha256)
     ordinals = _groups(ledger, plan, cohort_number)
     _require_recovery_cohort(recovery, cohort_number, ordinals, expected_previous_settlement_sha256)
     prepared, route, _review, continuations, prior, epoch = _cohort_state(
         public_inputs_path.read_bytes(), plan_raw, execution_root, initialization, ledger, cohort_number, ordinals,
         expected_previous_settlement_sha256, expected_prepared_sha256, expected_review_sha256,
         pending_partial_source_manifest=pending_partial_source_manifest,
+        expected_study_recovery=None if study_recovery is None else study_recovery["expected_study_recovery"],
     )
     _require(epoch["execution_source_sha256"] == expected_source_sha256
              and prepared.get("operational_renewal_sha256") == expected_operational_renewal_sha256
@@ -933,19 +1069,16 @@ def _prepare_continuation_unlocked(public_inputs_path: Path, plan_root: Path, ex
     completed = _contact_prefix(execution_root, ordinals)
     _validate_approval_chronology(execution_root, ordinals, expected_review_sha256, _review, continuations)
     _require(len(completed) < len(ordinals), "Continuation requires an incomplete cohort")
-    runtime = runtime_loader.load_runtime(
-        ROOT / "baseline-runtime-v1.json", expected_manifest_sha256=initialization["runtime_manifest_sha256"])
-    runtime.verify()
     passes, requests = _rows(plan, plan_root, ordinals)
     _frozen_payloads(plan_root, requests, passes, ordinals)
     contacts, files, aggregates = _replay_completed_prefix(execution_root, plan_root, completed, passes, requests, all_requests, runtime, native,
-                                                            admission, captured, prior, route, prepared["route_sha256"])
+                                                            admission, captured, prior, route, prepared["route_sha256"], study_recovery)
     prefix_aggregates: dict[str, bytes] = {}
     if continuations:
         prefix_ordinals = sorted({*prior["contacts"], *continuations[-1]["value"]["completed_prefix"]["ordinals"]})
         prefix_aggregates = _reconstruct_aggregate_prefixes(
             execution_root, plan_root, prefix_ordinals, all_passes, all_requests, runtime, native,
-            {**prior["routes"], prepared["route_sha256"]: route})
+            {**prior["routes"], prepared["route_sha256"]: route}, captured, study_recovery)
     _validate_latest_continuation_evidence(continuations, completed, contacts, files, aggregates, prefix_aggregates)
     prior_authorization = continuations[-1]["sha256"] if continuations else expected_review_sha256
     candidate = {"schema_version": 2, "reviewer_task": REVIEWER_TASK, "decision": "approved_continuation",
@@ -969,7 +1102,9 @@ def prepare_continuation(public_inputs_path: Path, plan_root: Path, execution_ro
                           expected_operational_renewal_sha256: str | None = None,
                           expected_precontact_recovery_sha256: str | None = None,
                           recovery_manifest_path: Path | None = None,
-                          expected_recovery_manifest_sha256: str | None = None) -> dict[str, Any]:
+                          expected_recovery_manifest_sha256: str | None = None,
+                          study_recovery_manifest_path: Path | None = None,
+                          expected_study_recovery_manifest_sha256: str | None = None) -> dict[str, Any]:
     root = _plain(execution_root, directory=True)
     lock, token = _lock(root)
     before = _execution_snapshot(root)
@@ -983,7 +1118,9 @@ def prepare_continuation(public_inputs_path: Path, plan_root: Path, execution_ro
             expected_operational_renewal_sha256=expected_operational_renewal_sha256,
             expected_precontact_recovery_sha256=expected_precontact_recovery_sha256,
             recovery_manifest_path=recovery_manifest_path,
-            expected_recovery_manifest_sha256=expected_recovery_manifest_sha256)
+            expected_recovery_manifest_sha256=expected_recovery_manifest_sha256,
+            study_recovery_manifest_path=study_recovery_manifest_path,
+            expected_study_recovery_manifest_sha256=expected_study_recovery_manifest_sha256)
         _require(_execution_snapshot(root) == before, "Execution evidence changed during continuation preparation")
         _require(lock.is_file() and lock.read_bytes() == token, "Continuation lock ownership changed")
         return result
@@ -999,8 +1136,12 @@ def prepare_partial_source_amendment(public_inputs_path: Path, plan_root: Path, 
                                      expected_operational_renewal_sha256: str,
                                      expected_precontact_recovery_sha256: str | None = None,
                                      recovery_manifest_path: Path | None = None,
-                                     expected_recovery_manifest_sha256: str | None = None) -> dict[str, Any]:
+                                     expected_recovery_manifest_sha256: str | None = None,
+                                     study_recovery_manifest_path: Path | None = None,
+                                     expected_study_recovery_manifest_sha256: str | None = None) -> dict[str, Any]:
     """Build the reviewed partial-source candidate; this path cannot dispatch."""
+    _require(study_recovery_manifest_path is None and expected_study_recovery_manifest_sha256 is None,
+             "Partial source amendments do not support study recovery; use a settled-cohort operational renewal")
     root = _plain(execution_root, directory=True)
     lock, token = _lock(root)
     before = _execution_snapshot(root)
@@ -1016,7 +1157,9 @@ def prepare_partial_source_amendment(public_inputs_path: Path, plan_root: Path, 
             expected_operational_renewal_sha256=expected_operational_renewal_sha256,
             expected_precontact_recovery_sha256=expected_precontact_recovery_sha256,
             pending_partial_source_manifest=new_manifest, recovery_manifest_path=recovery_manifest_path,
-            expected_recovery_manifest_sha256=expected_recovery_manifest_sha256)
+            expected_recovery_manifest_sha256=expected_recovery_manifest_sha256,
+            study_recovery_manifest_path=study_recovery_manifest_path,
+            expected_study_recovery_manifest_sha256=expected_study_recovery_manifest_sha256)
         plan_raw = _relative(_plain(plan_root, directory=True), "plan.json", directory=False).read_bytes()
         route = _json(_relative(root, f"cohorts/{cohort_number:04d}/route.json", directory=False).read_bytes(), "Cohort route")
         result = ledger.prepare_partial_source_amendment_candidate(
@@ -1051,14 +1194,15 @@ def _settle_completed_cohort(execution_root: Path, plan_root: Path, public_input
                              continuations: list[dict[str, Any]], prior: Mapping[str, Any], passes: Mapping[str, Mapping[str, Any]],
                              requests: Mapping[int, Mapping[str, Any]], runtime: Any, native: ModuleType,
                              admission: ModuleType, captured: Mapping[Path, bytes], ledger: ModuleType,
-                             provider_calls: int, lock_owned: Any) -> dict[str, Any]:
+                             provider_calls: int, lock_owned: Any,
+                             study_recovery: Mapping[str, Any] | None = None) -> dict[str, Any]:
     """Replay a fully contacted cohort and settle it without another provider contact."""
     lock_owned()
     all_requests = {row["ordinal"]: row for row in _json(plan_raw, "Baseline plan")["requests"]
                     if isinstance(row, Mapping) and type(row.get("ordinal")) is int}
     _require(set(all_requests) == set(range(1, len(all_requests) + 1)), "Full baseline request inventory differs")
     contacts, _, _ = _replay_completed_prefix(execution_root, plan_root, list(ordinals), passes, requests, all_requests, runtime, native,
-                                               admission, captured, prior, route, route_sha256)
+                                               admission, captured, prior, route, route_sha256, study_recovery)
     original_source_sha256 = continuations[0]["value"]["previous_execution_source_sha256"] if continuations else expected_source_sha256
     authorizations = [{"authorization_sha256": expected_review_sha256, "execution_source_sha256": original_source_sha256, "ordinals": []},
                       *[{"authorization_sha256": item["sha256"], "execution_source_sha256": item["source_sha256"], "ordinals": []}
@@ -1069,7 +1213,8 @@ def _settle_completed_cohort(execution_root: Path, plan_root: Path, public_input
         authorization = contact.get("review_sha256")
         _require(authorization in by_authorization, "Completed contact authorization differs")
         by_authorization[authorization]["ordinals"].append(summary["ordinal"])
-    settlement = {"schema_version": 3, "cohort_number": cohort_number, "plan_sha256": expected_plan_sha256,
+    settlement = {"schema_version": 4 if study_recovery is not None and 70 in ordinals else 3,
+                   "cohort_number": cohort_number, "plan_sha256": expected_plan_sha256,
                    "prepared_sha256": expected_prepared_sha256, "review_sha256": expected_review_sha256,
                    "route_sha256": route_sha256,
                    "previous_settlement_sha256": expected_previous_settlement_sha256,
@@ -1084,13 +1229,16 @@ def _settle_completed_cohort(execution_root: Path, plan_root: Path, public_input
         review_start=review["_window"][0], review_end=review["_window"][1], continuations=continuations,
         settlement=settlement, contact_records=contact_records,
         expected_execution_source_sha256=original_source_sha256,
+        expected_study_recovery=None if study_recovery is None else study_recovery["expected_study_recovery"],
     )
     lock_owned()
     _write_new(execution_root / "cohorts" / f"{cohort_number:04d}" / "settlement.json", _canonical(settlement))
     settlement_sha256 = _hash((execution_root / "cohorts" / f"{cohort_number:04d}" / "settlement.json").read_bytes())
     ledger.verify_prefix(execution_root, public_inputs_raw, plan_raw, expected_plan_sha256, settlement_sha256, cohort_number,
                          expected_route_sha256=initialization["route_sha256"],
-                         expected_execution_source_sha256=initialization["execution_source_sha256"], expected_reviewer_task=REVIEWER_TASK)
+                         expected_execution_source_sha256=initialization["execution_source_sha256"],
+                         expected_reviewer_task=REVIEWER_TASK,
+                         expected_study_recovery=None if study_recovery is None else study_recovery["expected_study_recovery"])
     runtime.verify()
     _unchanged(captured)
     lock_owned()
@@ -1106,7 +1254,9 @@ def run_cohort(public_inputs_path: Path, plan_root: Path, execution_root: Path, 
                 expected_operational_renewal_sha256: str | None = None,
                 expected_precontact_recovery_sha256: str | None = None,
                 recovery_manifest_path: Path | None = None,
-                expected_recovery_manifest_sha256: str | None = None) -> dict[str, Any]:
+                expected_recovery_manifest_sha256: str | None = None,
+                study_recovery_manifest_path: Path | None = None,
+                expected_study_recovery_manifest_sha256: str | None = None) -> dict[str, Any]:
     """Contact Grok only under an externally reviewed, still-live cohort authorization."""
     anchors = (expected_initialization_sha256, expected_previous_settlement_sha256, expected_prepared_sha256,
                expected_review_sha256, expected_source_sha256)
@@ -1139,15 +1289,30 @@ def run_cohort(public_inputs_path: Path, plan_root: Path, execution_root: Path, 
         plan, plan_raw = _plan(plan_root, expected_plan_sha256)
         ordinals = _groups(ledger, plan, cohort_number)
         _require_recovery_cohort(recovery, cohort_number, ordinals, expected_previous_settlement_sha256)
+        runtime = runtime_loader.load_runtime(ROOT / "baseline-runtime-v1.json",
+                                              expected_manifest_sha256=initialization["runtime_manifest_sha256"])
+        runtime.verify()
+        all_passes = {row["pass_id"]: row for row in plan["passes"]
+                      if isinstance(row, Mapping) and isinstance(row.get("pass_id"), str)}
+        _require(len(all_passes) == len(plan["passes"]), "Full baseline pass inventory differs")
+        study_recovery = _study_recovery_context(
+            captured, execution_root, plan_root, all_passes, runtime,
+            study_recovery_manifest_path=study_recovery_manifest_path,
+            expected_study_recovery_manifest_sha256=expected_study_recovery_manifest_sha256)
         _prepared, route, review, continuations, prior, epoch = _cohort_state(
             public_inputs_path.read_bytes(), plan_raw, execution_root, initialization, ledger, cohort_number, ordinals,
             expected_previous_settlement_sha256, expected_prepared_sha256, expected_review_sha256,
+            expected_study_recovery=None if study_recovery is None else study_recovery["expected_study_recovery"],
         )
-        _require(epoch["execution_source_sha256"] == expected_source_sha256
+        completed = _contact_prefix(execution_root, ordinals)
+        offline_study_settlement = (study_recovery is not None and cohort_number == 7
+                                    and completed == list(ordinals) and 70 in completed)
+        # A reviewed recovery reader may settle historical contacts without becoming
+        # their execution source. This branch reaches settlement before broker creation.
+        _require((epoch["execution_source_sha256"] == expected_source_sha256 or offline_study_settlement)
                  and _prepared.get("operational_renewal_sha256") == expected_operational_renewal_sha256
                  and epoch.get("precontact_recovery_sha256") == expected_precontact_recovery_sha256,
                  "Prepared operational epoch differs")
-        completed = _contact_prefix(execution_root, ordinals)
         if recovery is not None and cohort_number == 6:
             _require((not completed and expected_continuation_sha256 is None)
                      or (completed and completed[0] == 51),
@@ -1188,34 +1353,28 @@ def run_cohort(public_inputs_path: Path, plan_root: Path, execution_root: Path, 
             lock_owned()
             return {"cohort_number": cohort_number, "completed_ordinals": completed,
                     "status": "paused_for_review_expiry", "provider_calls": 0}
-        runtime = runtime_loader.load_runtime(ROOT / "baseline-runtime-v1.json",
-                                              expected_manifest_sha256=initialization["runtime_manifest_sha256"])
-        runtime.verify()
         passes, requests = _rows(plan, plan_root, ordinals)
         all_requests = {row["ordinal"]: row for row in plan["requests"]
                         if isinstance(row, Mapping) and type(row.get("ordinal")) is int}
         _require(set(all_requests) == set(range(1, 5429)), "Full baseline request inventory differs")
-        all_passes = {row["pass_id"]: row for row in plan["passes"]
-                      if isinstance(row, Mapping) and isinstance(row.get("pass_id"), str)}
-        _require(len(all_passes) == len(plan["passes"]), "Full baseline pass inventory differs")
         payloads = _frozen_payloads(plan_root, requests, passes, ordinals)
         replayed_contacts, replayed_files, replayed_aggregates = _replay_completed_prefix(
             execution_root, plan_root, completed, passes, requests, all_requests, runtime, native, admission, captured, prior,
-            route, _prepared["route_sha256"])
+            route, _prepared["route_sha256"], study_recovery)
         _validate_approval_chronology(execution_root, ordinals, expected_review_sha256, review, continuations,
                                       replayed_contacts=replayed_contacts)
         if len(completed) == len(ordinals):
             return _settle_completed_cohort(
                 execution_root, plan_root, public_inputs_path.read_bytes(), plan_raw, cohort_number, ordinals, initialization,
                 expected_plan_sha256, expected_previous_settlement_sha256, expected_prepared_sha256, expected_review_sha256,
-                expected_source_sha256, route, _prepared["route_sha256"], review, continuations, prior, passes, requests, runtime, native, admission,
-                captured, ledger, 0, lock_owned)
+                epoch["execution_source_sha256"], route, _prepared["route_sha256"], review, continuations, prior, passes, requests, runtime, native, admission,
+                captured, ledger, 0, lock_owned, study_recovery)
         prefix_aggregates: dict[str, bytes] = {}
         if continuations:
             prefix_ordinals = sorted({*prior["contacts"], *continuations[-1]["value"]["completed_prefix"]["ordinals"]})
             prefix_aggregates = _reconstruct_aggregate_prefixes(
                 execution_root, plan_root, prefix_ordinals, all_passes, all_requests, runtime, native,
-                {**prior["routes"], _prepared["route_sha256"]: route})
+                {**prior["routes"], _prepared["route_sha256"]: route}, captured, study_recovery)
         _validate_latest_continuation_evidence(continuations, completed, replayed_contacts, replayed_files,
                                                replayed_aggregates, prefix_aggregates)
         factory = broker_factory or (lambda root, cls: cls(root))
@@ -1225,6 +1384,8 @@ def run_cohort(public_inputs_path: Path, plan_root: Path, execution_root: Path, 
                  "Broker runtime class or queue root differs")
         _fresh_route(broker, route)
         current = set(ordinals[len(completed):])
+        if study_recovery is not None:
+            current.discard(70)
         immutable_contacts = {ordinal: _relative(execution_root, f"contacts/request-{ordinal:04d}.json", directory=False).read_bytes()
                               for ordinal in completed}
         phase = {"value": "before_contact"}
@@ -1251,7 +1412,9 @@ def run_cohort(public_inputs_path: Path, plan_root: Path, execution_root: Path, 
                                           expected_previous_settlement_sha256, cohort_number - 1,
                                           expected_route_sha256=initialization["route_sha256"],
                                           expected_execution_source_sha256=initialization["execution_source_sha256"],
-                                          expected_reviewer_task=REVIEWER_TASK, allowed_pending_paths=pending_paths()) == prior,
+                                          expected_reviewer_task=REVIEWER_TASK, allowed_pending_paths=pending_paths(),
+                                          expected_study_recovery=(None if study_recovery is None
+                                                                   else study_recovery["expected_study_recovery"])) == prior,
                      "Settled ledger prefix changed")
             runtime.verify()
             _fresh_route(broker, route)
@@ -1263,6 +1426,8 @@ def run_cohort(public_inputs_path: Path, plan_root: Path, execution_root: Path, 
             output = Path(context.get("output_dir", "")).resolve()
             pass_id = next((key for key, value in passes.items()
                             if (execution_root / value["run_path"]).resolve() == output), None)
+            if study_recovery is not None and output == study_recovery["descendant_root"]:
+                pass_id = study_recovery["target_pass_id"]
             _require(pass_id is not None, "Runner output path differs")
             planned = next((value for value in all_requests.values()
                             if value.get("pass_id") == pass_id and value.get("batch_number") == batch["number"]), None)
@@ -1318,7 +1483,7 @@ def run_cohort(public_inputs_path: Path, plan_root: Path, execution_root: Path, 
         for pass_id in dict.fromkeys(requests[ordinal]["pass_id"] for ordinal in ordinals):
             record = passes[pass_id]
             source_path, _ = _source(record, plan_root)
-            destination = execution_root / record["run_path"]
+            destination = _pass_run_root(execution_root, record, study_recovery, require_existing=False)
             try:
                 runtime.runner.run_judge(
                     artifact_path=source_path, bundle_id="prose.short_story", provider="grok", model="grok-4.6",
@@ -1342,7 +1507,7 @@ def run_cohort(public_inputs_path: Path, plan_root: Path, execution_root: Path, 
             execution_root, plan_root, public_inputs_path.read_bytes(), plan_raw, cohort_number, ordinals, initialization,
             expected_plan_sha256, expected_previous_settlement_sha256, expected_prepared_sha256, expected_review_sha256,
             expected_source_sha256, route, _prepared["route_sha256"], review, continuations, prior, passes, requests, runtime, native, admission,
-            captured, ledger, len(current), lock_owned)
+            captured, ledger, len(current), lock_owned, study_recovery)
     finally:
         if lock.is_file() and lock.read_bytes() == token:
             lock.unlink()
@@ -1353,13 +1518,15 @@ def finalize(public_inputs_path: Path, plan_root: Path, execution_root: Path, ru
              expected_final_settlement_sha256: str, expected_execution_source_sha256: str,
              expected_runtime_manifest_sha256: str, expected_admission_sha256: str,
              recovery_manifest_path: Path | None = None,
-             expected_recovery_manifest_sha256: str | None = None) -> dict[str, Any]:
+             expected_recovery_manifest_sha256: str | None = None,
+             study_recovery_manifest_path: Path | None = None,
+             expected_study_recovery_manifest_sha256: str | None = None) -> dict[str, Any]:
     """Read-only final native admission after the 543rd cohort has released its lock."""
     anchors = (expected_initialization_sha256, expected_final_settlement_sha256, expected_execution_source_sha256,
                expected_runtime_manifest_sha256, expected_admission_sha256)
     _require(expected_plan_sha256 == PLAN_SHA256 and all(_HASH.fullmatch(value) is not None for value in anchors),
              "Final admission anchors differ")
-    captured, (planner, ledger, _, _, admission) = _sources()
+    captured, (planner, ledger, runtime_loader, _, admission) = _sources()
     own = _plain(Path(__file__), directory=False)
     public_inputs_path = _plain(public_inputs_path, directory=False)
     plan_root = _plain(plan_root, directory=True)
@@ -1379,14 +1546,28 @@ def finalize(public_inputs_path: Path, plan_root: Path, execution_root: Path, ru
              and verified.get("plan.json") == expected_plan_sha256
              and _hash(_canonical(verified)) == initialization["plan_inventory_sha256"],
              "Final full plan inventory differs")
-    _plan_value, plan_raw = _plan(plan_root, expected_plan_sha256)
+    plan_value, plan_raw = _plan(plan_root, expected_plan_sha256)
+    all_passes = {row["pass_id"]: row for row in plan_value["passes"]
+                  if isinstance(row, Mapping) and isinstance(row.get("pass_id"), str)}
+    runtime = runtime_loader.load_runtime(runtime_manifest_path, expected_manifest_sha256=expected_runtime_manifest_sha256)
+    runtime.verify()
+    study_recovery = _study_recovery_context(
+        captured, execution_root, plan_root, all_passes, runtime,
+        study_recovery_manifest_path=study_recovery_manifest_path,
+        expected_study_recovery_manifest_sha256=expected_study_recovery_manifest_sha256)
     ledger_result = ledger.verify_ledger(execution_root, public_inputs_path.read_bytes(), plan_raw, expected_plan_sha256,
                                          expected_final_settlement_sha256, expected_route_sha256=initialization["route_sha256"],
                                          expected_execution_source_sha256=expected_execution_source_sha256,
-                                         expected_reviewer_task=REVIEWER_TASK)
+                                         expected_reviewer_task=REVIEWER_TASK,
+                                         expected_study_recovery=(None if study_recovery is None
+                                                                  else study_recovery["expected_study_recovery"]))
     final_source = ledger_result.get("epochs", {}).get(543, {}).get("execution_source_sha256", expected_execution_source_sha256) if isinstance(ledger_result, Mapping) else None
     _require(_hash(captured[own]) == final_source,
              "Final reviewed execution source differs")
+    study_args = {} if study_recovery is None else {
+        "study_recovery_manifest_path": study_recovery_manifest_path,
+        "expected_study_recovery_manifest_sha256": expected_study_recovery_manifest_sha256,
+    }
     result = admission.admit_baseline(
         public_inputs_path, plan_root, execution_root, runtime_manifest_path,
         expected_plan_sha256=expected_plan_sha256,
@@ -1397,15 +1578,21 @@ def finalize(public_inputs_path: Path, plan_root: Path, execution_root: Path, ru
         expected_runtime_manifest_sha256=expected_runtime_manifest_sha256,
         expected_admission_sha256=expected_admission_sha256,
         expected_reviewer_task=REVIEWER_TASK,
+        **study_args,
     )
-    _require(isinstance(result, Mapping) and result.get("evidence_class") == "complete_native_baseline_measurement_admission"
-             and result.get("admitted_passes") == 236 and result.get("logical_requests") == 5428,
+    expected_evidence = ("complete_mixed_baseline_measurement_admission" if study_recovery is not None
+                         else "complete_native_baseline_measurement_admission")
+    _require(isinstance(result, Mapping) and result.get("evidence_class") == expected_evidence
+             and result.get("admitted_passes") == 236 and result.get("logical_requests") == 5428
+             and (study_recovery is None or (result.get("native_logical_requests") == 5427
+                                             and result.get("study_recovered_logical_requests") == 1
+                                             and result.get("study_recovered_ordinals") == [70])),
              "Final native admission result differs")
     _unchanged(captured)
     projected = dict(result)
     if recovery is not None:
         manifest = recovery["manifest"]
-        projected["evidence_class"] = "complete_native_baseline_measurement_admission_with_grok51_recovery_provenance"
+        projected["evidence_class"] = projected["evidence_class"] + "_with_grok51_recovery_provenance"
         projected["recovery_provenance"] = {
             "manifest_sha256": recovery["manifest_sha256"],
             "replacement_ordinal": manifest["replacement_ordinal"],
@@ -1457,6 +1644,8 @@ def main() -> int:
         if name in {"prepare", "prepare-continuation", "prepare-partial-source-amendment", "run", "finalize"}:
             command.add_argument("--recovery-manifest", type=Path)
             command.add_argument("--recovery-manifest-sha256")
+            command.add_argument("--study-recovery-manifest", type=Path)
+            command.add_argument("--study-recovery-manifest-sha256")
     args = parser.parse_args()
     if args.action == "initialize":
         result = initialize(args.public_inputs, args.plan_root, args.execution_root, args.runtime_manifest, args.route_json,
@@ -1471,7 +1660,9 @@ def main() -> int:
                                 expected_previous_settlement_sha256=args.previous_settlement_sha256,
                                 expected_operational_renewal_sha256=args.operational_renewal_sha256,
                                 recovery_manifest_path=args.recovery_manifest,
-                                expected_recovery_manifest_sha256=args.recovery_manifest_sha256)
+                                expected_recovery_manifest_sha256=args.recovery_manifest_sha256,
+                                study_recovery_manifest_path=args.study_recovery_manifest,
+                                expected_study_recovery_manifest_sha256=args.study_recovery_manifest_sha256)
     elif args.action == "prepare-precontact-recovery":
         result = prepare_precontact_recovery(
             args.public_inputs, args.plan_root, args.execution_root, args.cohort,
@@ -1490,7 +1681,9 @@ def main() -> int:
                                        expected_operational_renewal_sha256=args.operational_renewal_sha256,
                                        expected_precontact_recovery_sha256=args.precontact_recovery_sha256,
                                        recovery_manifest_path=args.recovery_manifest,
-                                       expected_recovery_manifest_sha256=args.recovery_manifest_sha256)
+                                       expected_recovery_manifest_sha256=args.recovery_manifest_sha256,
+                                       study_recovery_manifest_path=args.study_recovery_manifest,
+                                       expected_study_recovery_manifest_sha256=args.study_recovery_manifest_sha256)
     elif args.action == "prepare-partial-source-amendment":
         result = prepare_partial_source_amendment(
             args.public_inputs, args.plan_root, args.execution_root, args.cohort,
@@ -1499,9 +1692,11 @@ def main() -> int:
             expected_prepared_sha256=args.prepared_sha256, expected_review_sha256=args.review_sha256,
             expected_source_sha256=args.source_sha256,
             expected_operational_renewal_sha256=args.operational_renewal_sha256,
-            expected_precontact_recovery_sha256=args.precontact_recovery_sha256,
-            recovery_manifest_path=args.recovery_manifest,
-            expected_recovery_manifest_sha256=args.recovery_manifest_sha256)
+                                       expected_precontact_recovery_sha256=args.precontact_recovery_sha256,
+                                       recovery_manifest_path=args.recovery_manifest,
+                                       expected_recovery_manifest_sha256=args.recovery_manifest_sha256,
+                                       study_recovery_manifest_path=args.study_recovery_manifest,
+                                       expected_study_recovery_manifest_sha256=args.study_recovery_manifest_sha256)
     elif args.action == "run":
         result = run_cohort(args.public_inputs, args.plan_root, args.execution_root, args.cohort, args.queue_root,
                             expected_plan_sha256=args.plan_sha256, expected_initialization_sha256=args.initialization_sha256,
@@ -1512,7 +1707,9 @@ def main() -> int:
                             expected_operational_renewal_sha256=args.operational_renewal_sha256,
                             expected_precontact_recovery_sha256=args.precontact_recovery_sha256,
                             recovery_manifest_path=args.recovery_manifest,
-                            expected_recovery_manifest_sha256=args.recovery_manifest_sha256)
+                            expected_recovery_manifest_sha256=args.recovery_manifest_sha256,
+                            study_recovery_manifest_path=args.study_recovery_manifest,
+                            expected_study_recovery_manifest_sha256=args.study_recovery_manifest_sha256)
     else:
         result = finalize(args.public_inputs, args.plan_root, args.execution_root, args.runtime_manifest,
                           expected_plan_sha256=args.plan_sha256, expected_initialization_sha256=args.initialization_sha256,
@@ -1521,7 +1718,9 @@ def main() -> int:
                           expected_runtime_manifest_sha256=args.runtime_manifest_sha256,
                           expected_admission_sha256=args.admission_sha256,
                           recovery_manifest_path=args.recovery_manifest,
-                          expected_recovery_manifest_sha256=args.recovery_manifest_sha256)
+                          expected_recovery_manifest_sha256=args.recovery_manifest_sha256,
+                          study_recovery_manifest_path=args.study_recovery_manifest,
+                          expected_study_recovery_manifest_sha256=args.study_recovery_manifest_sha256)
     print(_canonical(result).decode("utf-8"))
     return 0
 

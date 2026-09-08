@@ -373,7 +373,7 @@ def baseline(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
     )
 
 
-def _admit(state):
+def _admit(state, **kwargs):
     return subject.admit_baseline(
         state.public_inputs,
         state.plan_root,
@@ -387,7 +387,86 @@ def _admit(state):
         expected_admission_sha256=_hash(Path(subject.__file__).read_bytes()),
         expected_reviewer_task="synthetic-review",
         expected_initialization_sha256=_hash(state.initialization.read_bytes()),
+        **kwargs,
     )
+
+
+def test_complete_mixed_composition_excludes_recovered_identity_and_preserves_rows(baseline, monkeypatch, tmp_path):
+    baseline.state["operational_epoch"] = True
+    captured, modules, terminal_raw = subject._sources()
+    plan_module, ledger_module, runtime_module, native_module = modules
+    original_ledger = ledger_module.verify_ledger
+    target = baseline.plan["passes"][3]
+    original_run = baseline.execution_root / target["run_path"]
+    descendant = tmp_path / "study-descendant"
+    descendant.mkdir()
+    binding = {
+        "adoption_sha256": "a" * 64, "amendment_sha256": "b" * 64,
+        "recovery_operational_source_manifest": {"fixture": "synthetic"},
+        "summary": {"ordinal": 70, "evidence_kind": "study_recovered", "contact_sha256": "c" * 64,
+                    "adoption_sha256": "a" * 64, "amendment_sha256": "b" * 64,
+                    "derivative_sha256": "d" * 64, "study_accepted_at": "2026-09-08T05:00:00Z"},
+    }
+    baseline.contacts[70].update(binding["summary"])
+    baseline.contacts[70].pop("request_id_hash")
+    baseline.contacts[70].pop("session_id_hash")
+
+    def ledger(*args, expected_study_recovery=None, **kwargs):
+        assert expected_study_recovery == binding
+        result = original_ledger(*args, **kwargs)
+        return result | {"native_contact_count": 5427, "study_recovered_contact_count": 1,
+                         "study_recovered_ordinals": [70]}
+
+    expected_manifest = "e" * 64
+    summary_override = []
+
+    def mixed_pass(run_root, **kwargs):
+        assert run_root == descendant
+        assert kwargs["expected_recovered_manifest_sha256"] == expected_manifest
+        runtime = kwargs["runtime"]
+        identities = [
+            {key: baseline.contacts[request["ordinal"]][key] for key in ("request_id_hash", "session_id_hash")}
+            for request in baseline.by_pass[target["pass_id"]][1:]
+        ]
+        return {
+            "evidence_class": "mixed_native_and_study_recovered_record_replay",
+            "verdicts": [{"question_id": q["question"]["id"], "verdict": "YES"} for q in runtime.questions],
+            "score": 1, "coverage": 1, "native_identities": identities,
+            "run_manifest_sha256": _hash(target["pass_id"].encode()),
+            "checkpoint_head_sha256": _hash((target["pass_id"] + "-head").encode()),
+            "study_recovered": summary_override or [binding["summary"]],
+            "expected_study_recovery": binding, "native_record_count": 22, "study_recovered_record_count": 1,
+        }
+
+    monkeypatch.setattr(subject, "_sources", lambda: (
+        captured, (plan_module, SimpleNamespace(verify_ledger=ledger, cohort_groups=ledger_module.cohort_groups),
+                   runtime_module, native_module), terminal_raw))
+    monkeypatch.setattr(subject, "_study_context", lambda *args, **kwargs: {
+        "expected_study_recovery": binding, "target_pass_id": target["pass_id"],
+        "descendant": descendant, "module": SimpleNamespace(admit_pass=mixed_pass),
+        "anchors": {"expected_recovered_manifest_sha256": expected_manifest},
+        "inventory": ({}, frozenset()),
+    })
+    old_tree = subject._tree
+    monkeypatch.setattr(subject, "_tree", lambda root, label: ({}, frozenset()) if root == descendant else old_tree(root, label))
+    old_checkpoint, old_route, old_artifact = subject._checkpoint_hash, subject._receipt_route_hash, subject._run_artifact_hash
+    monkeypatch.setattr(subject, "_checkpoint_hash", lambda root, batch: old_checkpoint(original_run if root == descendant else root, batch))
+    monkeypatch.setattr(subject, "_receipt_route_hash", lambda root, batch: old_route(original_run if root == descendant else root, batch))
+    monkeypatch.setattr(subject, "_run_artifact_hash", lambda root, batch, relative, label: old_artifact(
+        original_run if root == descendant else root, batch, relative,
+        "Baseline replay prompt" if relative.endswith(".gz") else "Baseline replay schema"))
+    args = {"study_recovery_manifest_path": descendant / "recovered-study.json",
+            "expected_study_recovery_manifest_sha256": expected_manifest}
+    result = _admit(baseline, **args)
+    assert result["evidence_class"] == "complete_mixed_baseline_measurement_admission"
+    assert result["logical_requests"] == 5428 and result["native_logical_requests"] == 5427
+    assert result["study_recovered_logical_requests"] == 1 and result["study_recovered_ordinals"] == [70]
+    assert baseline.state["native_calls"] == 235
+    assert all(row["score"] == 1 and row["coverage"] == 1 for row in result["endpoint_grok_rows"])
+    assert result["study_recovery"]["summary"] == binding["summary"]
+    summary_override.extend([binding["summary"], binding["summary"]])
+    with pytest.raises(ValueError, match="Exact study recovery replay differs"):
+        _admit(baseline, **args)
 
 
 def test_complete_synthetic_composition_has_no_native_or_provider_authority(baseline):

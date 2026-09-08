@@ -170,13 +170,26 @@ def _partition_ids(path: Path | str) -> tuple[Path, bytes, dict[str, set[str]]]:
     return checked, raw, result
 
 
+def _study_recovery_context(path: Path | str | None, expected: str | None) -> dict[str, Any] | None:
+    if path is None and expected is None:
+        return None
+    if path is None or expected is None:
+        raise ValueError("Paired study recovery manifest anchors are required")
+    checked, raw = _read_pinned(path, expected, "Study recovery manifest")
+    return {"manifest_path": checked, "manifest_raw": raw, "manifest_sha256": expected}
+
+
 def _admit(module: ModuleType, finalizer: ModuleType | None, recovery: Mapping[str, Any] | None,
            public_inputs_path: Path | str, plan_root: Path | str, execution_root: Path | str,
            runtime_manifest_path: Path | str, *,
            expected_plan_sha256: str, expected_final_settlement_sha256: str,
            expected_execution_source_sha256: str, expected_route_sha256: str,
            expected_runtime_manifest_sha256: str, expected_admission_sha256: str,
-           expected_reviewer_task: str, expected_initialization_sha256: str) -> dict[str, Any]:
+           expected_reviewer_task: str, expected_initialization_sha256: str,
+           study_recovery: Mapping[str, Any] | None = None) -> dict[str, Any]:
+    study_args = ({"study_recovery_manifest_path": study_recovery["manifest_path"],
+                   "expected_study_recovery_manifest_sha256": study_recovery["manifest_sha256"]}
+                  if study_recovery is not None else {})
     if recovery is None:
         result = module.admit_baseline(
             Path(public_inputs_path), Path(plan_root), Path(execution_root), Path(runtime_manifest_path),
@@ -188,8 +201,10 @@ def _admit(module: ModuleType, finalizer: ModuleType | None, recovery: Mapping[s
             expected_admission_sha256=expected_admission_sha256,
             expected_reviewer_task=expected_reviewer_task,
             expected_initialization_sha256=expected_initialization_sha256,
+            **study_args,
         )
-        expected_evidence_class = "complete_native_baseline_measurement_admission"
+        expected_evidence_class = ("complete_mixed_baseline_measurement_admission" if study_recovery is not None
+                                   else "complete_native_baseline_measurement_admission")
     else:
         if finalizer is None or getattr(finalizer, "REVIEWER_TASK", None) != expected_reviewer_task:
             raise ValueError("Recovery finalizer reviewer task differs")
@@ -203,10 +218,22 @@ def _admit(module: ModuleType, finalizer: ModuleType | None, recovery: Mapping[s
             expected_admission_sha256=expected_admission_sha256,
             recovery_manifest_path=recovery["manifest_path"],
             expected_recovery_manifest_sha256=recovery["manifest_sha256"],
+            **study_args,
         )
-        expected_evidence_class = "complete_native_baseline_measurement_admission_with_grok51_recovery_provenance"
+        expected_evidence_class = ("complete_mixed_baseline_measurement_admission_with_grok51_recovery_provenance"
+                                   if study_recovery is not None else
+                                   "complete_native_baseline_measurement_admission_with_grok51_recovery_provenance")
     if not isinstance(result, dict) or result.get("evidence_class") != expected_evidence_class or result.get("execution_authority") is not False or result.get("provider_calls") != 0 or result.get("admitted_passes") != ADMITTED_COUNT or result.get("logical_requests") != REQUEST_COUNT:
-        raise ValueError("Complete native baseline admission is required")
+        raise ValueError("Complete native baseline admission is required" if study_recovery is None
+                         else "Complete mixed baseline admission is required")
+    if study_recovery is not None:
+        provenance = result.get("study_recovery")
+        if (result.get("native_logical_requests") != REQUEST_COUNT - 1
+                or result.get("study_recovered_logical_requests") != 1
+                or result.get("study_recovered_ordinals") != [70]
+                or not isinstance(provenance, Mapping)
+                or provenance.get("manifest_sha256") != study_recovery["manifest_sha256"]):
+            raise ValueError("Study recovery evidence classification or manifest differs")
     if recovery is not None:
         original = result.get("original_initialization")
         manifest = _json(recovery["manifest_raw"], "Recovery manifest")
@@ -362,8 +389,11 @@ def fit_admitted_train(
     recovery_manifest_path: Path | str | None = None,
     expected_recovery_manifest_sha256: str | None = None,
     expected_recovery_execution_sha256: str | None = None,
+    study_recovery_manifest_path: Path | str | None = None,
+    expected_study_recovery_manifest_sha256: str | None = None,
 ) -> dict[str, Any]:
-    """Admit all native rows, fit the frozen TRAIN 176, then write a fresh freeze."""
+    """Admit every planned row, fit the frozen TRAIN 176, then write a fresh freeze."""
+    study = _study_recovery_context(study_recovery_manifest_path, expected_study_recovery_manifest_sha256)
     recovery = _recovery_context(
         execution_root, recovery_manifest_path=recovery_manifest_path,
         expected_recovery_manifest_sha256=expected_recovery_manifest_sha256,
@@ -371,13 +401,16 @@ def fit_admitted_train(
     )
     output = _output_preflight(output_root, public_inputs_path, plan_root, execution_root,
                                 runtime_manifest_path, target_freeze_path, train_targets_path,
-                                *((recovery["manifest_path"],) if recovery is not None else ()))
+                                *((recovery["manifest_path"],) if recovery is not None else ()),
+                                *((study["manifest_path"].parent,) if study is not None else ()))
     captured, admission_module, optimizer, finalizer = _capture(
         expected_workflow_sha256, expected_admission_sha256, expected_optimizer_sha256,
         OPTIMIZER_PATH, "Optimizer", runtime_manifest_path, expected_runtime_manifest_sha256, recovery,
     )
     freeze_path, freeze_raw, freeze = _target_freeze(target_freeze_path)
     captured[freeze_path] = freeze_raw
+    if study is not None:
+        captured[study["manifest_path"]] = study["manifest_raw"]
     admission = _admit(
         admission_module, finalizer, recovery, public_inputs_path, plan_root, execution_root, runtime_manifest_path,
         expected_plan_sha256=expected_plan_sha256,
@@ -388,6 +421,7 @@ def fit_admitted_train(
         expected_admission_sha256=expected_admission_sha256,
         expected_reviewer_task=expected_reviewer_task,
         expected_initialization_sha256=expected_initialization_sha256,
+        study_recovery=study,
     )
     inputs_path, inputs_raw, partitions = _partition_ids(public_inputs_path)
     captured[inputs_path] = inputs_raw
@@ -445,8 +479,11 @@ def compare_admitted_dev(
     recovery_manifest_path: Path | str | None = None,
     expected_recovery_manifest_sha256: str | None = None,
     expected_recovery_execution_sha256: str | None = None,
+    study_recovery_manifest_path: Path | str | None = None,
+    expected_study_recovery_manifest_sha256: str | None = None,
 ) -> dict[str, Any]:
     """Re-admit rows and compare DEV only after the exact TRAIN freeze binds."""
+    study = _study_recovery_context(study_recovery_manifest_path, expected_study_recovery_manifest_sha256)
     recovery = _recovery_context(
         execution_root, recovery_manifest_path=recovery_manifest_path,
         expected_recovery_manifest_sha256=expected_recovery_manifest_sha256,
@@ -455,13 +492,16 @@ def compare_admitted_dev(
     output = _output_preflight(output_root, public_inputs_path, plan_root, execution_root,
                                 runtime_manifest_path, target_freeze_path, dev_targets_path,
                                 fit_path, train_freeze_path,
-                                *((recovery["manifest_path"],) if recovery is not None else ()))
+                                *((recovery["manifest_path"],) if recovery is not None else ()),
+                                *((study["manifest_path"].parent,) if study is not None else ()))
     captured, admission_module, comparison, finalizer = _capture(
         expected_workflow_sha256, expected_admission_sha256, expected_comparison_sha256,
         COMPARISON_PATH, "Comparison", runtime_manifest_path, expected_runtime_manifest_sha256, recovery,
     )
     freeze_path, freeze_raw, freeze = _target_freeze(target_freeze_path)
     captured[freeze_path] = freeze_raw
+    if study is not None:
+        captured[study["manifest_path"]] = study["manifest_raw"]
     admission = _admit(
         admission_module, finalizer, recovery, public_inputs_path, plan_root, execution_root, runtime_manifest_path,
         expected_plan_sha256=expected_plan_sha256,
@@ -472,6 +512,7 @@ def compare_admitted_dev(
         expected_admission_sha256=expected_admission_sha256,
         expected_reviewer_task=expected_reviewer_task,
         expected_initialization_sha256=expected_initialization_sha256,
+        study_recovery=study,
     )
     inputs_path, inputs_raw, partitions = _partition_ids(public_inputs_path)
     captured[inputs_path] = inputs_raw

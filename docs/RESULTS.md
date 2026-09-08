@@ -360,7 +360,10 @@ continued through request 68 after independent continuation review. Cohort 6
 is settled through 60. A reviewed source amendment corrected a local guard
 that incorrectly applied a cohort-6 restriction to cohort 7; request 69 then
 passed independent native replay. Request 70 failed structured-output validation
-and remains consumed and unresolved. Cohort 7 is unsettled and request 71 has
+because one exact source quote exceeded the 500-character limit. The owner
+[adopted its exact local quote repair](../evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/grok70-quote-repair-adoption-v1.json)
+on 2026-09-08, including the missing native CLI-envelope/request-ID limitation.
+Recovery integration remains pending. Cohort 7 is unsettled and request 71 has
 not been authorized. The renewed route
 retained its accepted controls and used owner-attested remaining included credit
 and no charge risk, with no Settings observation.
@@ -379,16 +382,22 @@ then passed independent native replay, bringing the total to 130 requests and
 1,010 judgments. Nine further cohorts passed, reaching 220 requests and
 1,706 judgments. All 220 local thread identities are distinct; every new
 authorization follows adoption, and the original cutoff remains preserved.
-Collection continued under refreshed receipts through request 230, but requests
-221–230 remain unadmitted: request 221 emitted a recovered retryable-transport
+Collection continued under refreshed receipts through request 230, where request
+221 emitted a recovered retryable-transport
 error before a valid terminal response, which the frozen strict replay rejects.
 A separate, hash-bound recovery interpreter and its analysis integration passed
 local tests and independent source review. Independent real-record replay
-reproduced the candidate byte-for-byte; owner adoption remains required. Its evidence
+reproduced the candidate byte-for-byte. The owner
+[adopted this exact interpretation](../evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/sol-recovered-transport-adoption-v1.json)
+on 2026-09-08; independent replay then admitted the complete 230-request prefix.
+Two further cohorts passed, reaching 250 requests, 1,940 judgments and 250
+distinct local thread identities. Only ordinal 221 uses the recovered class.
+Its evidence
 is limited to source-bound launcher control flow; independent process exit,
 internal retry count, contact cardinality, and provider identity attestation
 remain unproven. The original strict interpreter and evidence stay unchanged.
-No automatic resend occurred, and request 231 has not been authorized.
+No automatic resend occurred. These are incomplete collection counts, not
+alignment metrics or complete-study admission.
 
 Recovery-aware Grok TRAIN/DEV analysis and the original-sequence Sol comparison
 are [implemented and locally tested](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/72b18f0afdfc515a5b492c9afcb314bcd0af20b6/evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/README.md).

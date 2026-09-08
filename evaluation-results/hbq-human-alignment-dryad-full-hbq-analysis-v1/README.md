@@ -123,6 +123,23 @@ Both mathematical APIs share the same runtime selector. The baseline path requir
 
 ## First native baseline cohort and next boundary
 
+### Adopted Grok quote repair
+
+The owner [adopted the exact ordinal-70 quote repair](grok70-quote-repair-adoption-v1.json)
+on 2026-09-08. Its reader preserves the original response and changes only the
+overlength quote. The recovery helper creates a separately identified study
+descendant; it supplies no missing native envelope or request identity. Complete
+mixed admission requires 5,427 native records and exactly one recovered record,
+with that classification retained in TRAIN/DEV analysis.
+
+The helper and the settlement-to-renewal integration passed local tests and
+independent review; real materialization and settlement remain pending. Source
+transitions after recovery use reviewed operational renewals at settled cohort
+boundaries. Partial source amendment preparation with study recovery is explicitly
+disabled. Follow-up `CWR-DRYAD-MIXED-PARTIAL-SOURCE-AMENDMENT` records its trigger
+and completion gate in the adoption record; ordinary pre-recovery partial
+amendments retain their existing behavior.
+
 ### Recovered Sol transport interpretation
 
 `sol_recovered_transport_admission.py` provides a separate, opt-in interpretation
@@ -139,8 +156,11 @@ not independently observed process exit, internal retry count, native contact
 cardinality, or provider identity attestation. It grants no resend authority.
 The recovery and unchanged strict regressions passed 78 tests; analysis
 integration passed 23 tests and independent source review. Independent real-record
-review reproduced the candidate byte-for-byte; owner adoption remains pending.
-Requests 221–230 are therefore still unadmitted.
+review reproduced the candidate byte-for-byte. The owner
+[adopted the exact interpretation](sol-recovered-transport-adoption-v1.json) on
+2026-09-08, and independent replay admitted the preserved 230-request prefix.
+Subsequent strict cohorts reached 250 requests and 1,940 verdicts; only ordinal
+221 uses the recovered class. Full measurement and comparison remain incomplete.
 
 [baseline-cohort-1-v1.json](baseline-cohort-1-v1.json) records ten settled native requests from `49f662f`, independently replayed against the ledger and 33 predecessor exclusions. The 145-file execution prefix has a verified byte-exact local snapshot. Four approvals account for 3/3/3/1 contacts; no completed request was resent. These ten requests cover only 80 of the first story's 178 criteria. Score and coverage remain null, and neither a full story pass nor the complete baseline is admitted.
 
