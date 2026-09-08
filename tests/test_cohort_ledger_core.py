@@ -650,6 +650,19 @@ def test_precontact_recovery_moves_only_an_empty_cohort_to_the_current_source(tm
     summary = {"ordinal": 2, "contact_sha256": sha(contact_raw), "checkpoint_sha256": f"{22:064x}", "request_id_hash": f"{32:064x}", "session_id_hash": f"{42:064x}"}
     continuation = {"schema_version": 2, "reviewer_task": reviewer, "decision": "approved_continuation", "prepared_sha256": sha(prepared_raw), "route_sha256": sha(routes[1]), "prior_authorization_sha256": sha(recovery_raw), "previous_execution_source_sha256": sources[2], "execution_source_sha256": sources[2], "completed_prefix": {"ordinals": [2], "contacts": [summary], "run_files": core._run_files(root), "run_tree_sha256": sha(core.canonical(core._run_files(root)))}, "reviewed_at": stamp(recovery_at + timedelta(minutes=11)), "expires_at": stamp(recovery_at + timedelta(minutes=21))}
     continuation_raw = write(root, "cohorts/0002/review-continuations/0002.json", continuation)
+    pending |= {"cohorts/0002/review-continuations/0002.json", "contacts/request-0002.json"}
+    prior = core.verify_prefix(root, geometry, first, 1, expected_route_sha256=sha(routes[0]),
+                               expected_execution_source_sha256=sources[0], reviewer_task=reviewer,
+                               allowed_pending_paths=pending)
+    assert prior["precontact_recovery"]["sha256"] == sha(recovery_raw)
+    assert prior["precontact_recovery"]["source_sha256"] == sources[2]
+    write(root, "cohorts/0002/review-continuations/0002.json",
+          {**continuation, "reviewed_at": stamp(recovery_at + timedelta(seconds=30))})
+    with pytest.raises(ValueError, match="Continuation review precedes completed prefix"):
+        core.verify_prefix(root, geometry, first, 1, expected_route_sha256=sha(routes[0]),
+                           expected_execution_source_sha256=sources[0], reviewer_task=reviewer,
+                           allowed_pending_paths=pending)
+    (root / "cohorts/0002/review-continuations/0002.json").write_bytes(continuation_raw)
     contact3 = {**contact, "ordinal": 3, "review_sha256": sha(continuation_raw), "prompt_sha256": f"{3:064x}", "admitted_at": stamp(recovery_at + timedelta(minutes=12))}
     contact3_raw = write(root, "contacts/request-0003.json", contact3)
     summary3 = {"ordinal": 3, "contact_sha256": sha(contact3_raw), "checkpoint_sha256": f"{23:064x}", "request_id_hash": f"{33:064x}", "session_id_hash": f"{43:064x}"}
@@ -666,3 +679,195 @@ def test_precontact_recovery_moves_only_an_empty_cohort_to_the_current_source(tm
     verified = core.verify_prefix(root, geometry, fourth, 4, expected_route_sha256=sha(routes[0]), expected_execution_source_sha256=sources[0], reviewer_task=reviewer)
     assert verified["epochs"][2]["execution_source_sha256"] == sources[2]
     assert verified["contacts"][2]["authorization_sha256"] == sha(recovery_raw)
+
+
+def partial_source_amendment_ledger(tmp_path: Path, *, candidate_builder=None, check_pending=None,
+                                    late_renewal: bool = False) -> None:
+    core, revisions, manifest = operational_core(tmp_path)
+    root, reviewer = tmp_path / "partial-source", "synthetic-reviewer"
+    manifests = [manifest(revision) for revision in revisions]
+    sources = [item["files"][core._OPERATIONAL_FILES[-1]] for item in manifests]
+    routes = [renewal_route("1" * 64, "2" * 64, BASE_TIME),
+              renewal_route("3" * 64, "4" * 64, BASE_TIME + timedelta(minutes=3)),
+              renewal_route("5" * 64, "6" * 64, BASE_TIME + timedelta(minutes=8))]
+    initialization = write(root, "initialization.json", {"route_sha256": sha(routes[0]), "execution_source_sha256": sources[0]})
+    aggregate = b'{"ordinal":1}\n'
+    (root / "runner-normalized-verdicts.jsonl").write_bytes(aggregate)
+    (root / "runs/sample").mkdir(parents=True)
+    (root / "runs/sample/verdicts.jsonl").write_bytes(aggregate)
+    geometry = core.LedgerGeometry("a" * 64, {
+        ordinal: {"ordinal": ordinal, "pass_id": "pass-1", "prompt_sha256": f"{ordinal:064x}", "schema_sha256": "c" * 64}
+        for ordinal in (1, 2, 3, 4, 5)
+    }, {"pass-1": {"pass_id": "pass-1", "logical_sample_id": "sample-1", "source_sha256": "b" * 64}}, ((1,), (2, 3), (4,), (5,)))
+    first = write_closed_cohort(root, core, cohort=1, ordinal=1, route=routes[0], source=sources[0],
+                                previous_settlement=core.GENESIS_SETTLEMENT_SHA256, reviewer=reviewer, reviewed_at=BASE_TIME)
+    renewal_one = write_operational_renewal(root, cohort=1, initialization_sha256=sha(initialization),
+                                            previous=core.GENESIS_RENEWAL_SHA256, settlement=first,
+                                            old_route=routes[0], new_route=routes[1], old_manifest=manifests[0],
+                                            new_manifest=manifests[1], remaining=[2, 3, 4, 5], aggregate=aggregate,
+                                            reviewed_at=BASE_TIME + timedelta(minutes=3))
+    aggregate += b'{"ordinal":2}\n'
+    (root / "runner-normalized-verdicts.jsonl").write_bytes(aggregate)
+    prepared = {"schema_version": 2, "cohort_number": 2, "plan_sha256": "a" * 64,
+                "previous_settlement_sha256": first, "request_ordinals": [2, 3], "route_sha256": sha(routes[1]),
+                "execution_source_sha256": sources[1], "operational_renewal_sha256": renewal_one}
+    prepared_raw = write(root, "cohorts/0002/prepared.json", prepared)
+    review = {"schema_version": 1, "reviewer_task": reviewer, "decision": "approved_cohort",
+              "prepared_sha256": sha(prepared_raw), "reviewed_at": stamp(BASE_TIME + timedelta(minutes=4)),
+              "expires_at": stamp(BASE_TIME + timedelta(minutes=5))}
+    review_raw = write(root, "cohorts/0002/review.json", review)
+    write(root, "cohorts/0002/route.json", routes[1])
+    contact = {"schema_version": 1, "cohort_number": 2, "ordinal": 2, "plan_sha256": "a" * 64,
+               "prepared_sha256": sha(prepared_raw), "review_sha256": sha(review_raw), "route_sha256": sha(routes[1]),
+               "prompt_sha256": f"{2:064x}", "schema_sha256": "c" * 64,
+               "admitted_at": stamp(BASE_TIME + timedelta(minutes=4, seconds=30))}
+    contact_raw = write(root, "contacts/request-0002.json", contact)
+    summary = {"ordinal": 2, "contact_sha256": sha(contact_raw), "checkpoint_sha256": f"{22:064x}",
+               "request_id_hash": f"{32:064x}", "session_id_hash": f"{42:064x}"}
+    prefix = {"ordinals": [2], "contacts": [summary], "run_files": core._run_files(root),
+              "run_tree_sha256": sha(core.canonical(core._run_files(root)))}
+    unused = {"schema_version": 2, "reviewer_task": reviewer, "decision": "approved_continuation",
+              "prepared_sha256": sha(prepared_raw), "route_sha256": sha(routes[1]),
+              "prior_authorization_sha256": sha(review_raw), "previous_execution_source_sha256": sources[1],
+              "execution_source_sha256": sources[1], "completed_prefix": prefix,
+              "reviewed_at": stamp(BASE_TIME + timedelta(minutes=6)), "expires_at": stamp(BASE_TIME + timedelta(minutes=7))}
+    unused_raw = write(root, "cohorts/0002/review-continuations/0001.json", unused)
+    candidate = core.partial_source_amendment_candidate(
+        root, cohort_number=2, ordinals=(2, 3), initialization_sha256=sha(initialization),
+        previous_settlement_sha256=first, operational_renewal={"sha256": renewal_one, "new_source": manifests[1]},
+        prepared_sha256=sha(prepared_raw), review_sha256=sha(review_raw), route_sha256=sha(routes[1]),
+        reviewer_task=reviewer, prior_authorization_sha256=sha(unused_raw), old_source_sha256=sources[1],
+        completed_prefix=prefix, new_source_manifest=manifests[2])
+    if candidate_builder is not None:
+        assert candidate_builder(locals()) == candidate
+    with pytest.raises(ValueError, match="Partial source amendment prefix"):
+        core.partial_source_amendment_candidate(
+            root, cohort_number=2, ordinals=(2, 3), initialization_sha256=sha(initialization),
+            previous_settlement_sha256=first, operational_renewal={"sha256": renewal_one, "new_source": manifests[1]},
+            prepared_sha256=sha(prepared_raw), review_sha256=sha(review_raw), route_sha256=sha(routes[1]),
+            reviewer_task=reviewer, prior_authorization_sha256=sha(unused_raw), old_source_sha256=sources[1],
+            completed_prefix={**prefix, "ordinals": [3]}, new_source_manifest=manifests[2])
+    unexpected = {**contact, "ordinal": 3, "prompt_sha256": f"{3:064x}"}
+    write(root, "contacts/request-0003.json", unexpected)
+    with pytest.raises(ValueError, match="unresolved suffix"):
+        core.partial_source_amendment_candidate(
+            root, cohort_number=2, ordinals=(2, 3), initialization_sha256=sha(initialization),
+            previous_settlement_sha256=first, operational_renewal={"sha256": renewal_one, "new_source": manifests[1]},
+            prepared_sha256=sha(prepared_raw), review_sha256=sha(review_raw), route_sha256=sha(routes[1]),
+            reviewer_task=reviewer, prior_authorization_sha256=sha(unused_raw), old_source_sha256=sources[1],
+            completed_prefix=prefix, new_source_manifest=manifests[2])
+    (root / "contacts/request-0003.json").unlink()
+    amendment_at = BASE_TIME + timedelta(minutes=7)
+    amendment_raw = write(root, "cohorts/0002/review-continuations/0002.json", {
+        **candidate, "reviewed_at": stamp(amendment_at), "expires_at": stamp(amendment_at + timedelta(minutes=1))})
+    pending = frozenset({"cohorts/0002/prepared.json", "cohorts/0002/review.json", "cohorts/0002/route.json",
+                         "cohorts/0002/review-continuations/0001.json", "cohorts/0002/review-continuations/0002.json",
+                         "contacts/request-0002.json"})
+    prior = core.verify_prefix(root, geometry, first, 1, expected_route_sha256=sha(routes[0]),
+                               expected_execution_source_sha256=sources[0], reviewer_task=reviewer,
+                               allowed_pending_paths=pending)
+    assert prior["partial_source_amendment"]["sha256"] == sha(amendment_raw)
+    if check_pending is not None:
+        check_pending(locals())
+    contact_three = {**contact, "ordinal": 3, "review_sha256": sha(amendment_raw), "prompt_sha256": f"{3:064x}",
+                     "admitted_at": stamp(amendment_at + timedelta(seconds=30))}
+    contact_three_raw = write(root, "contacts/request-0003.json", contact_three)
+    summary_three = {"ordinal": 3, "contact_sha256": sha(contact_three_raw), "checkpoint_sha256": f"{23:064x}",
+                     "request_id_hash": f"{33:064x}", "session_id_hash": f"{43:064x}"}
+    settlement = {"schema_version": 3, "cohort_number": 2, "plan_sha256": "a" * 64,
+                  "prepared_sha256": sha(prepared_raw), "review_sha256": sha(review_raw), "route_sha256": sha(routes[1]),
+                  "previous_settlement_sha256": first, "settled_at": stamp(amendment_at + timedelta(minutes=1)),
+                  "contacts": [summary, summary_three], "authorization_chain": [
+                      {"authorization_sha256": sha(review_raw), "execution_source_sha256": sources[1], "ordinals": [2]},
+                      {"authorization_sha256": sha(unused_raw), "execution_source_sha256": sources[1], "ordinals": []},
+                      {"authorization_sha256": sha(amendment_raw), "execution_source_sha256": sources[2], "ordinals": [3]},
+                  ]}
+    second = sha(write(root, "cohorts/0002/settlement.json", settlement))
+    if late_renewal:
+        third = write_closed_cohort(root, core, cohort=3, ordinal=4, route=routes[1], source=sources[2],
+                                   previous_settlement=second, reviewer=reviewer,
+                                   reviewed_at=amendment_at + timedelta(minutes=1), renewal_sha256=renewal_one)
+        third_prepared = (root / "cohorts/0003/prepared.json").read_bytes()
+        third_review = (root / "cohorts/0003/review.json").read_bytes()
+        normal = {**unused, "prepared_sha256": sha(third_prepared), "prior_authorization_sha256": sha(third_review),
+                  "previous_execution_source_sha256": sources[2], "execution_source_sha256": sources[2],
+                  "completed_prefix": {"ordinals": [], "contacts": [], "run_files": {}, "run_tree_sha256": sha({})},
+                  "reviewed_at": stamp(amendment_at + timedelta(minutes=20)),
+                  "expires_at": stamp(amendment_at + timedelta(minutes=21))}
+        normal_raw = write(root, "cohorts/0003/review-continuations/0001.json", normal)
+        third_contact = json.loads((root / "contacts/request-0004.json").read_bytes())
+        third_contact.update(review_sha256=sha(normal_raw), admitted_at=stamp(amendment_at + timedelta(minutes=20, seconds=30)))
+        third_contact_raw = write(root, "contacts/request-0004.json", third_contact)
+        third_settlement = json.loads((root / "cohorts/0003/settlement.json").read_bytes())
+        third_settlement.update(schema_version=3, settled_at=stamp(amendment_at + timedelta(minutes=21)), authorization_chain=[
+            {"authorization_sha256": sha(third_review), "execution_source_sha256": sources[2], "ordinals": []},
+            {"authorization_sha256": sha(normal_raw), "execution_source_sha256": sources[2], "ordinals": [4]}])
+        third_settlement["contacts"][0]["contact_sha256"] = sha(third_contact_raw)
+        (root / "cohorts/0003/settlement.json").unlink()
+        third_pending = frozenset({"cohorts/0003/prepared.json", "cohorts/0003/review.json", "cohorts/0003/route.json",
+                                   "cohorts/0003/review-continuations/0001.json", "contacts/request-0004.json"})
+        core.verify_prefix(root, geometry, second, 2, expected_route_sha256=sha(routes[0]),
+                           expected_execution_source_sha256=sources[0], reviewer_task=reviewer,
+                           allowed_pending_paths=third_pending)
+        third = sha(write(root, "cohorts/0003/settlement.json", third_settlement))
+    renewal_two = write_operational_renewal(root, cohort=3 if late_renewal else 2,
+                                            initialization_sha256=sha(initialization), previous=renewal_one,
+                                            settlement=third if late_renewal else second, old_route=routes[1], new_route=routes[2],
+                                            old_manifest=manifests[2], new_manifest=manifests[2], remaining=[5] if late_renewal else [4, 5],
+                                            aggregate=aggregate, reviewed_at=amendment_at + timedelta(minutes=22))
+    aggregate += b'{"ordinal":4}\n'
+    (root / "runner-normalized-verdicts.jsonl").write_bytes(aggregate)
+    if not late_renewal:
+        third = write_closed_cohort(root, core, cohort=3, ordinal=4, route=routes[2], source=sources[2],
+                                   previous_settlement=second, reviewer=reviewer,
+                                   reviewed_at=amendment_at + timedelta(minutes=23), renewal_sha256=renewal_two)
+    head = write_closed_cohort(root, core, cohort=4, ordinal=5, route=routes[2], source=sources[2],
+                               previous_settlement=third, reviewer=reviewer,
+                               reviewed_at=amendment_at + timedelta(minutes=26), renewal_sha256=renewal_two)
+    verified = core.verify_prefix(root, geometry, head, 4, expected_route_sha256=sha(routes[0]),
+                                  expected_execution_source_sha256=sources[0], reviewer_task=reviewer)
+    assert verified["contacts"][2]["execution_source_sha256"] == sources[1]
+    assert verified["contacts"][3]["execution_source_sha256"] == sources[2]
+    assert verified["epochs"][3]["execution_source_sha256"] == sources[2]
+
+
+@pytest.mark.parametrize("late_renewal", [False, True])
+def test_partial_source_amendment_follows_unused_continuation_and_renews_next_epoch(tmp_path: Path, late_renewal: bool) -> None:
+    partial_source_amendment_ledger(tmp_path, late_renewal=late_renewal)
+
+
+@pytest.mark.parametrize("corruption", ["premature", "wrong_prefix", "wrong_contact", "claimed_suffix"])
+def test_pending_partial_source_amendment_rejects_invalid_history(tmp_path: Path, corruption: str) -> None:
+    def check(state):
+        root, core = state["root"], state["core"]
+        path = root / "cohorts/0002/review-continuations/0002.json"
+        original = path.read_bytes()
+        value = json.loads(original)
+        pending = state["pending"]
+        if corruption == "premature":
+            value["reviewed_at"] = stamp(BASE_TIME + timedelta(minutes=6, seconds=30))
+            expected = "Unused authorization renewal"
+        elif corruption == "wrong_prefix":
+            value["completed_prefix"]["ordinals"] = [3]
+            value["completed_prefix"]["contacts"][0]["ordinal"] = 3
+            expected = "Continuation prefix"
+        elif corruption == "wrong_contact":
+            value["completed_prefix"]["contacts"][0]["contact_sha256"] = "f" * 64
+            expected = "Continuation prefix"
+        else:
+            write(root, "contacts/request-0003.json", {**state["contact"], "ordinal": 3, "prompt_sha256": f"{3:064x}"})
+            pending |= {"contacts/request-0003.json"}
+            expected = "Continuation prefix"
+        write(root, "cohorts/0002/review-continuations/0002.json", value)
+        try:
+            with pytest.raises(ValueError, match=expected):
+                core.verify_prefix(root, state["geometry"], state["first"], 1,
+                                   expected_route_sha256=sha(state["routes"][0]),
+                                   expected_execution_source_sha256=state["sources"][0],
+                                   reviewer_task=state["reviewer"], allowed_pending_paths=frozenset(pending))
+        finally:
+            path.write_bytes(original)
+            if corruption == "claimed_suffix":
+                (root / "contacts/request-0003.json").unlink()
+
+    partial_source_amendment_ledger(tmp_path, check_pending=check)

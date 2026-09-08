@@ -30,10 +30,10 @@ RECOVERY_MANIFEST = "recovery-manifest.json"
 PLAN_SHA256 = "edeadb93c485ba227153329b5ae420de1c9d08d95e920bac0635d197fd3dbd7f"
 SOURCE_PINS = {
     PLAN_SOURCE: "33193aa1a394c04c14b4f9ab81871116dbac11f933f22a9e45f252b2d279fdc8",
-    LEDGER_SOURCE: "67f3df2b48708e7eec2f9362d4441b6c7a7cddbf978d8edb10a7f4fbadb4b4c1",
+    LEDGER_SOURCE: "6894ddb01c4992f4c8f7b247b9673e79ec4eda6c6c4e7221c406baadc806b90e",
     RUNTIME_SOURCE: "5130bc037e0700f8d498c40ca790aaf248e986189818ae059934ee6488bbfbcd",
     NATIVE_SOURCE: "22ccfe3299bab0e04045a7ec01ab4799929818a3a84aecc8549bb6cb3032a1ec",
-    ADMISSION_SOURCE: "062a7b3f4e5783a62d3c269ecb01884bc089d3671fec28f5cb52489acda612e2",
+    ADMISSION_SOURCE: "3e896927406ea29a5ac566196f0c33076ede98265ddebd2e1b980d0392cf4331",
     TERMINAL_IDENTITIES: "82cc80c2692fc0c0f47024d4db04cdbf5dd1c34c2d5deea40916a0e8ea45ca63",
     RECOVERY_SOURCE: "8b4c82af9d73d8fd6c0647436b4c3b394388802ac282314aaee65dd6a168545e",
 }
@@ -342,7 +342,7 @@ def initialize(public_inputs_path: Path, plan_root: Path, execution_root: Path, 
 
 def _epoch(initialization: Mapping[str, Any], prior: Mapping[str, Any],
            expected_operational_renewal_sha256: str | None = None, *,
-           apply_precontact_recovery: bool = True) -> dict[str, Any]:
+           apply_pending_source_changes: bool = True) -> dict[str, Any]:
     renewals = prior.get("renewals", [])
     _require(isinstance(renewals, list), "Operational renewal inventory differs")
     if not renewals:
@@ -366,7 +366,7 @@ def _epoch(initialization: Mapping[str, Any], prior: Mapping[str, Any],
         _require(isinstance(resolved, str) and _HASH.fullmatch(resolved) is not None,
                  "Resolved operational epoch differs")
         source_sha256 = resolved
-    recovery = prior.get("precontact_recovery") if apply_precontact_recovery else None
+    recovery = prior.get("precontact_recovery") if apply_pending_source_changes else None
     if recovery is not None:
         _require(isinstance(recovery, Mapping) and isinstance(recovery.get("sha256"), str)
                  and _HASH.fullmatch(recovery["sha256"]) is not None
@@ -374,9 +374,18 @@ def _epoch(initialization: Mapping[str, Any], prior: Mapping[str, Any],
                  and _HASH.fullmatch(recovery["source_sha256"]) is not None,
                  "Precontact recovery differs")
         source_sha256 = recovery["source_sha256"]
+    amendment = prior.get("partial_source_amendment") if apply_pending_source_changes else None
+    if amendment is not None:
+        _require(isinstance(amendment, Mapping) and isinstance(amendment.get("sha256"), str)
+                 and _HASH.fullmatch(amendment["sha256"]) is not None
+                 and isinstance(amendment.get("source_sha256"), str)
+                 and _HASH.fullmatch(amendment["source_sha256"]) is not None,
+                 "Partial source amendment differs")
+        source_sha256 = amendment["source_sha256"]
     return {"route": dict(latest["value"]["new_route"]), "route_sha256": latest["value"]["new_route_sha256"],
             "execution_source_sha256": source_sha256, "operational_renewal_sha256": latest["sha256"],
-            "precontact_recovery_sha256": recovery["sha256"] if recovery is not None else None}
+            "precontact_recovery_sha256": recovery["sha256"] if recovery is not None else None,
+            "partial_source_amendment_sha256": amendment["sha256"] if amendment is not None else None}
 
 
 def _prepared(execution_root: Path, number: int, expected_sha256: str, initialization: Mapping[str, Any],
@@ -536,21 +545,27 @@ def _continuations(execution_root: Path, number: int, prepared_sha256: str, revi
                     "prior_authorization_sha256", "previous_execution_source_sha256", "execution_source_sha256",
                     "completed_prefix", "reviewed_at", "expires_at"}
         version = value.get("schema_version")
-        _require(set(value) >= required and type(version) is int and version in {1, 2, 3}
+        _require(set(value) >= required and type(version) is int and version in {1, 2, 3, 4}
                  and value.get("reviewer_task") == REVIEWER_TASK
                  and value.get("prepared_sha256") == prepared_sha256 and value.get("route_sha256") == route_sha256
                  and value.get("prior_authorization_sha256") == prior_authorization
                  and value.get("previous_execution_source_sha256") == prior_source
                  and (value.get("decision") == "approved_continuation" if version in {1, 2}
-                      else not result and value.get("decision") == "approved_precontact_recovery"
-                      and value.get("incident_type") == "utc_review_encoding_mismatch"), "Continuation binding differs")
+                      else (not result and value.get("decision") == "approved_precontact_recovery"
+                            and value.get("incident_type") == "utc_review_encoding_mismatch") if version == 3
+                      else value.get("decision") == "approved_partial_source_amendment"), "Continuation binding differs")
         if version in {1, 2}:
             _require(set(value) == required and value.get("execution_source_sha256") == prior_source,
                      "Continuation binding differs")
-        else:
+        elif version == 3:
             recovery = {"incident_type", "original_initialization_sha256", "previous_settlement_sha256",
                         "operational_renewal_sha256", "old_operational_source_manifest", "new_operational_source_manifest"}
             _require(set(value) == required | recovery and value.get("execution_source_sha256") != prior_source,
+                     "Continuation binding differs")
+        else:
+            amendment = {"original_initialization_sha256", "previous_settlement_sha256",
+                         "operational_renewal_sha256", "old_operational_source_manifest", "new_operational_source_manifest"}
+            _require(set(value) == required | amendment and value.get("execution_source_sha256") != prior_source,
                      "Continuation binding differs")
         reviewed_at, expires_at = _time(value.get("reviewed_at"), "Continuation review time"), _time(value.get("expires_at"), "Continuation expiry")
         _require(reviewed_at < expires_at <= reviewed_at + timedelta(hours=2), "Continuation review window differs")
@@ -570,7 +585,8 @@ def _continuations(execution_root: Path, number: int, prepared_sha256: str, revi
 
 def _cohort_state(public_inputs_raw: bytes, plan_raw: bytes, execution_root: Path, initialization: Mapping[str, Any],
                   ledger: ModuleType, number: int, ordinals: tuple[int, ...], expected_previous_settlement_sha256: str,
-                  expected_prepared_sha256: str, expected_review_sha256: str) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any], list[dict[str, Any]], dict[str, Any], dict[str, Any]]:
+                  expected_prepared_sha256: str, expected_review_sha256: str, *,
+                  pending_partial_source_manifest: Mapping[str, Any] | None = None) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any], list[dict[str, Any]], dict[str, Any], dict[str, Any]]:
     route_raw = _relative(execution_root, f"cohorts/{number:04d}/route.json", directory=False).read_bytes()
     route = _json(route_raw, "Cohort route")
     files = {f"cohorts/{number:04d}/prepared.json", f"cohorts/{number:04d}/route.json", f"cohorts/{number:04d}/review.json"}
@@ -581,15 +597,18 @@ def _cohort_state(public_inputs_raw: bytes, plan_raw: bytes, execution_root: Pat
     continuation_root = execution_root / "cohorts" / f"{number:04d}" / "review-continuations"
     if continuation_root.exists():
         files.update(f"cohorts/{number:04d}/review-continuations/{path.name}" for path in continuation_root.glob("*.json"))
-    prior = ledger.verify_prefix(execution_root, public_inputs_raw, plan_raw, initialization["plan_sha256"],
-                                 expected_previous_settlement_sha256, number - 1,
-                                 expected_route_sha256=initialization["route_sha256"],
-                                 expected_execution_source_sha256=initialization["execution_source_sha256"],
-                                 expected_reviewer_task=REVIEWER_TASK, allowed_pending_paths=frozenset(files))
+    verification = ledger._verify_prefix_for_partial_source_candidate if pending_partial_source_manifest is not None else ledger.verify_prefix
+    verification_kwargs = {"expected_route_sha256": initialization["route_sha256"],
+                           "expected_execution_source_sha256": initialization["execution_source_sha256"],
+                           "expected_reviewer_task": REVIEWER_TASK, "allowed_pending_paths": frozenset(files)}
+    if pending_partial_source_manifest is not None:
+        verification_kwargs["new_source_manifest"] = pending_partial_source_manifest
+    prior = verification(execution_root, public_inputs_raw, plan_raw, initialization["plan_sha256"],
+                         expected_previous_settlement_sha256, number - 1, **verification_kwargs)
     prepared_candidate = _json(_relative(execution_root, f"cohorts/{number:04d}/prepared.json", directory=False).read_bytes(),
                                "Prepared cohort")
     prepared_epoch = _epoch(initialization, prior, prepared_candidate.get("operational_renewal_sha256"),
-                            apply_precontact_recovery=False)
+                            apply_pending_source_changes=False)
     epoch = _epoch(initialization, prior, prepared_candidate.get("operational_renewal_sha256"))
     _require(_route_hash(route) == prepared_epoch["route_sha256"]
              and (prepared_epoch["route"] is None or _canonical(route) == _canonical(prepared_epoch["route"])),
@@ -865,6 +884,7 @@ def _prepare_continuation_unlocked(public_inputs_path: Path, plan_root: Path, ex
                           expected_review_sha256: str, expected_source_sha256: str,
                           expected_operational_renewal_sha256: str | None = None,
                           expected_precontact_recovery_sha256: str | None = None,
+                          pending_partial_source_manifest: Mapping[str, Any] | None = None,
                           recovery_manifest_path: Path | None = None,
                           expected_recovery_manifest_sha256: str | None = None) -> dict[str, Any]:
     """Build a provider-free candidate for an independent continuation review."""
@@ -877,7 +897,12 @@ def _prepare_continuation_unlocked(public_inputs_path: Path, plan_root: Path, ex
              "Continuation precontact recovery anchor differs")
     captured, (_, ledger, runtime_loader, native, admission) = _sources()
     own = _plain(Path(__file__), directory=False)
-    _require(_hash(captured[own]) == expected_source_sha256, "Reviewed execution source differs")
+    if pending_partial_source_manifest is None:
+        _require(_hash(captured[own]) == expected_source_sha256, "Reviewed execution source differs")
+    else:
+        _require(isinstance(pending_partial_source_manifest.get("files"), Mapping)
+                 and pending_partial_source_manifest["files"].get(EXECUTION_SOURCE_RELATIVE) == _hash(captured[own]),
+                 "Partial source amendment current execution source differs")
     public_inputs_path = _plain(public_inputs_path, directory=False)
     plan_root = _plain(plan_root, directory=True)
     execution_root = _plain(execution_root, directory=True)
@@ -899,6 +924,7 @@ def _prepare_continuation_unlocked(public_inputs_path: Path, plan_root: Path, ex
     prepared, route, _review, continuations, prior, epoch = _cohort_state(
         public_inputs_path.read_bytes(), plan_raw, execution_root, initialization, ledger, cohort_number, ordinals,
         expected_previous_settlement_sha256, expected_prepared_sha256, expected_review_sha256,
+        pending_partial_source_manifest=pending_partial_source_manifest,
     )
     _require(epoch["execution_source_sha256"] == expected_source_sha256
              and prepared.get("operational_renewal_sha256") == expected_operational_renewal_sha256
@@ -960,6 +986,51 @@ def prepare_continuation(public_inputs_path: Path, plan_root: Path, execution_ro
             expected_recovery_manifest_sha256=expected_recovery_manifest_sha256)
         _require(_execution_snapshot(root) == before, "Execution evidence changed during continuation preparation")
         _require(lock.is_file() and lock.read_bytes() == token, "Continuation lock ownership changed")
+        return result
+    finally:
+        if lock.is_file() and lock.read_bytes() == token:
+            lock.unlink()
+
+
+def prepare_partial_source_amendment(public_inputs_path: Path, plan_root: Path, execution_root: Path, cohort_number: int, *,
+                                     expected_plan_sha256: str, expected_initialization_sha256: str,
+                                     expected_previous_settlement_sha256: str, expected_prepared_sha256: str,
+                                     expected_review_sha256: str, expected_source_sha256: str,
+                                     expected_operational_renewal_sha256: str,
+                                     expected_precontact_recovery_sha256: str | None = None,
+                                     recovery_manifest_path: Path | None = None,
+                                     expected_recovery_manifest_sha256: str | None = None) -> dict[str, Any]:
+    """Build the reviewed partial-source candidate; this path cannot dispatch."""
+    root = _plain(execution_root, directory=True)
+    lock, token = _lock(root)
+    before = _execution_snapshot(root)
+    try:
+        captured, (_, ledger, _, _, _) = _sources()
+        new_manifest = ledger.current_operational_source_manifest()
+        candidate = _prepare_continuation_unlocked(
+            public_inputs_path, plan_root, root, cohort_number, expected_plan_sha256=expected_plan_sha256,
+            expected_initialization_sha256=expected_initialization_sha256,
+            expected_previous_settlement_sha256=expected_previous_settlement_sha256,
+            expected_prepared_sha256=expected_prepared_sha256, expected_review_sha256=expected_review_sha256,
+            expected_source_sha256=expected_source_sha256,
+            expected_operational_renewal_sha256=expected_operational_renewal_sha256,
+            expected_precontact_recovery_sha256=expected_precontact_recovery_sha256,
+            pending_partial_source_manifest=new_manifest, recovery_manifest_path=recovery_manifest_path,
+            expected_recovery_manifest_sha256=expected_recovery_manifest_sha256)
+        plan_raw = _relative(_plain(plan_root, directory=True), "plan.json", directory=False).read_bytes()
+        route = _json(_relative(root, f"cohorts/{cohort_number:04d}/route.json", directory=False).read_bytes(), "Cohort route")
+        result = ledger.prepare_partial_source_amendment_candidate(
+            root, _plain(public_inputs_path, directory=False).read_bytes(), plan_raw,
+            expected_plan_sha256=expected_plan_sha256, expected_initialization_sha256=expected_initialization_sha256,
+            expected_previous_settlement_sha256=expected_previous_settlement_sha256, cohort_number=cohort_number,
+            expected_prepared_sha256=expected_prepared_sha256, expected_review_sha256=expected_review_sha256,
+            expected_operational_renewal_sha256=expected_operational_renewal_sha256,
+            expected_route_sha256=_route_hash(route), expected_execution_source_sha256=expected_source_sha256,
+            expected_prior_authorization_sha256=candidate["prior_authorization_sha256"],
+            completed_prefix=candidate["completed_prefix"], expected_reviewer_task=REVIEWER_TASK)
+        _require(lock.is_file() and lock.read_bytes() == token and _execution_snapshot(root) == before,
+                 "Partial source amendment preparation changed execution evidence")
+        _unchanged(captured)
         return result
     finally:
         if lock.is_file() and lock.read_bytes() == token:
@@ -1077,7 +1148,7 @@ def run_cohort(public_inputs_path: Path, plan_root: Path, execution_root: Path, 
                  and epoch.get("precontact_recovery_sha256") == expected_precontact_recovery_sha256,
                  "Prepared operational epoch differs")
         completed = _contact_prefix(execution_root, ordinals)
-        if recovery is not None:
+        if recovery is not None and cohort_number == 6:
             _require((not completed and expected_continuation_sha256 is None)
                      or (completed and completed[0] == 51),
                      "Recovery continuation binding differs")
@@ -1347,7 +1418,7 @@ def finalize(public_inputs_path: Path, plan_root: Path, execution_root: Path, ru
 def main() -> int:
     parser = argparse.ArgumentParser(description="Governed fixed-baseline Dryad cohort collection.")
     commands = parser.add_subparsers(dest="action", required=True)
-    for name in ("initialize", "prepare", "prepare-precontact-recovery", "prepare-continuation", "run", "finalize"):
+    for name in ("initialize", "prepare", "prepare-precontact-recovery", "prepare-continuation", "prepare-partial-source-amendment", "run", "finalize"):
         command = commands.add_parser(name)
         command.add_argument("--public-inputs", type=Path, required=True)
         command.add_argument("--plan-root", type=Path, required=True)
@@ -1375,15 +1446,15 @@ def main() -> int:
                 command.add_argument("--prepared-sha256", required=True)
                 command.add_argument("--review-sha256", required=True)
                 command.add_argument("--source-sha256", required=True)
-                if name in {"prepare-precontact-recovery", "prepare-continuation"}:
-                    command.add_argument("--operational-renewal-sha256", required=name == "prepare-precontact-recovery")
+                if name in {"prepare-precontact-recovery", "prepare-continuation", "prepare-partial-source-amendment"}:
+                    command.add_argument("--operational-renewal-sha256", required=name in {"prepare-precontact-recovery", "prepare-partial-source-amendment"})
                 if name == "run":
                     command.add_argument("--queue-root", type=Path, required=True)
                     command.add_argument("--continuation-sha256")
                     command.add_argument("--operational-renewal-sha256")
-                if name in {"prepare-continuation", "run"}:
+                if name in {"prepare-continuation", "prepare-partial-source-amendment", "run"}:
                     command.add_argument("--precontact-recovery-sha256")
-        if name in {"prepare", "prepare-continuation", "run", "finalize"}:
+        if name in {"prepare", "prepare-continuation", "prepare-partial-source-amendment", "run", "finalize"}:
             command.add_argument("--recovery-manifest", type=Path)
             command.add_argument("--recovery-manifest-sha256")
     args = parser.parse_args()
@@ -1420,6 +1491,17 @@ def main() -> int:
                                        expected_precontact_recovery_sha256=args.precontact_recovery_sha256,
                                        recovery_manifest_path=args.recovery_manifest,
                                        expected_recovery_manifest_sha256=args.recovery_manifest_sha256)
+    elif args.action == "prepare-partial-source-amendment":
+        result = prepare_partial_source_amendment(
+            args.public_inputs, args.plan_root, args.execution_root, args.cohort,
+            expected_plan_sha256=args.plan_sha256, expected_initialization_sha256=args.initialization_sha256,
+            expected_previous_settlement_sha256=args.previous_settlement_sha256,
+            expected_prepared_sha256=args.prepared_sha256, expected_review_sha256=args.review_sha256,
+            expected_source_sha256=args.source_sha256,
+            expected_operational_renewal_sha256=args.operational_renewal_sha256,
+            expected_precontact_recovery_sha256=args.precontact_recovery_sha256,
+            recovery_manifest_path=args.recovery_manifest,
+            expected_recovery_manifest_sha256=args.recovery_manifest_sha256)
     elif args.action == "run":
         result = run_cohort(args.public_inputs, args.plan_root, args.execution_root, args.cohort, args.queue_root,
                             expected_plan_sha256=args.plan_sha256, expected_initialization_sha256=args.initialization_sha256,

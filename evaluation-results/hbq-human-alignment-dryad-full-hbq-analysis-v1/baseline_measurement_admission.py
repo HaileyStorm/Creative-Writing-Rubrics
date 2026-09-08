@@ -23,7 +23,7 @@ NATIVE_SOURCE = ROOT / "native_admission.py"
 TERMINAL_IDENTITIES = ROOT / "terminal-identities-v2.json"
 SOURCE_PINS = {
     PLAN_SOURCE: "33193aa1a394c04c14b4f9ab81871116dbac11f933f22a9e45f252b2d279fdc8",
-    LEDGER_SOURCE: "67f3df2b48708e7eec2f9362d4441b6c7a7cddbf978d8edb10a7f4fbadb4b4c1",
+    LEDGER_SOURCE: "6894ddb01c4992f4c8f7b247b9673e79ec4eda6c6c4e7221c406baadc806b90e",
     RUNTIME_SOURCE: "5130bc037e0700f8d498c40ca790aaf248e986189818ae059934ee6488bbfbcd",
     NATIVE_SOURCE: "22ccfe3299bab0e04045a7ec01ab4799929818a3a84aecc8549bb6cb3032a1ec",
     TERMINAL_IDENTITIES: "82cc80c2692fc0c0f47024d4db04cdbf5dd1c34c2d5deea40916a0e8ea45ca63",
@@ -465,6 +465,8 @@ def admit_baseline(
             _require(isinstance(identity, Mapping), "Baseline native identity differs")
             ordinal = request["ordinal"]
             contact = contacts[ordinal]
+            authorization = (ledger["authorizations"].get(contact.get("authorization_sha256"))
+                             if isinstance(contact, Mapping) else None)
             _require(isinstance(contact, Mapping)
                      and contact.get("pass_id") == pass_record["pass_id"]
                      and contact.get("logical_sample_id") == pass_record["logical_sample_id"]
@@ -473,7 +475,9 @@ def admit_baseline(
                      and contact.get("schema_sha256") == request["schema_sha256"]
                      and isinstance(contact.get("cohort_number"), int)
                      and contact["cohort_number"] in ledger["epochs"]
-                     and contact.get("execution_source_sha256") == ledger["epochs"][contact["cohort_number"]]["execution_source_sha256"],
+                     and isinstance(authorization, Mapping)
+                     and authorization.get("cohort_number") == contact["cohort_number"]
+                     and contact.get("execution_source_sha256") == authorization.get("execution_source_sha256"),
                      "Baseline ledger source, prompt, schema, or executor binding differs")
             _require(_checkpoint_hash(run_root, request["batch_number"]) == contact.get("checkpoint_sha256")
                      and _run_artifact_hash(run_root, request["batch_number"], "responses/batch-{batch_number:04d}.prompt.txt.gz", "Baseline replay prompt") == request["prompt_sha256"]

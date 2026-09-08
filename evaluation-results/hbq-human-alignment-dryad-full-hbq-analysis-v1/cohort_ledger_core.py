@@ -15,6 +15,7 @@ import subprocess
 from collections.abc import Mapping
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
+from itertools import pairwise
 from pathlib import Path, PurePosixPath
 from typing import Any
 
@@ -290,6 +291,72 @@ def precontact_recovery_candidate(root: Path, *, cohort_number: int, ordinals: t
             "new_operational_source_manifest": new_manifest}
 
 
+def partial_source_amendment_candidate(root: Path, *, cohort_number: int, ordinals: tuple[int, ...],
+                                       initialization_sha256: str, previous_settlement_sha256: str,
+                                       operational_renewal: Mapping[str, Any], prepared_sha256: str,
+                                       review_sha256: str, route_sha256: str, reviewer_task: str,
+                                       prior_authorization_sha256: str, old_source_sha256: str,
+                                       completed_prefix: Mapping[str, Any],
+                                       new_source_manifest: Mapping[str, Any]) -> dict[str, Any]:
+    """Build a provider-free partial-cohort source amendment for independent review."""
+    _require(type(cohort_number) is int and cohort_number > 1 and ordinals
+             and all(_hash(value) for value in (initialization_sha256, previous_settlement_sha256,
+                                                 prepared_sha256, review_sha256, route_sha256,
+                                                 prior_authorization_sha256, old_source_sha256))
+             and isinstance(reviewer_task, str) and reviewer_task,
+             "Partial source amendment anchors differ")
+    _require(isinstance(operational_renewal, Mapping) and _hash(operational_renewal.get("sha256"))
+             and isinstance(operational_renewal.get("new_source"), Mapping),
+             "Partial source amendment renewal differs")
+    snapshot, _ = _snapshot(root)
+    prepared_raw = _read(root, f"cohorts/{cohort_number:04d}/prepared.json", snapshot)
+    review_raw = _read(root, f"cohorts/{cohort_number:04d}/review.json", snapshot)
+    route_raw = _read(root, f"cohorts/{cohort_number:04d}/route.json", snapshot)
+    prepared, route = _json(prepared_raw, "Prepared record"), _json(route_raw, "Route snapshot")
+    _review(review_raw, prepared_sha256, reviewer_task)
+    _require(digest(prepared_raw) == prepared_sha256 and digest(review_raw) == review_sha256
+             and _route_hash(route) == route_sha256 and prepared.get("cohort_number") == cohort_number
+             and prepared.get("previous_settlement_sha256") == previous_settlement_sha256
+             and prepared.get("route_sha256") == route_sha256 and prepared.get("execution_source_sha256") == old_source_sha256
+             and prepared.get("operational_renewal_sha256") == operational_renewal["sha256"],
+             "Partial source amendment prepared evidence differs")
+    old_manifest = _source_manifest(operational_renewal["new_source"], "Partial source old operational", require_current=False)
+    new_manifest = _source_manifest(new_source_manifest, "Partial source new operational", require_current=True)
+    _require(old_manifest["files"][_OPERATIONAL_FILES[-1]] == old_source_sha256
+             and new_manifest["files"][_OPERATIONAL_FILES[-1]] != old_source_sha256,
+             "Partial source amendment manifest differs")
+    prefix = dict(completed_prefix) if isinstance(completed_prefix, Mapping) else None
+    _require(isinstance(prefix, dict) and set(prefix) == {"ordinals", "contacts", "run_files", "run_tree_sha256"}
+             and isinstance(prefix["ordinals"], list) and 0 < len(prefix["ordinals"]) < len(ordinals)
+             and prefix["ordinals"] == list(ordinals[:len(prefix["ordinals"])])
+             and isinstance(prefix["contacts"], list) and len(prefix["contacts"]) == len(prefix["ordinals"])
+             and isinstance(prefix["run_files"], Mapping) and prefix["run_files"]
+             and all(isinstance(path, str) and _hash(value) for path, value in prefix["run_files"].items())
+             and _hash(prefix["run_tree_sha256"])
+             and digest(canonical(prefix["run_files"])) == prefix["run_tree_sha256"],
+             "Partial source amendment prefix differs")
+    for ordinal, contact in zip(prefix["ordinals"], prefix["contacts"], strict=True):
+        _require(isinstance(contact, Mapping) and set(contact) == {"ordinal", "contact_sha256", "checkpoint_sha256", "request_id_hash", "session_id_hash"}
+                 and contact.get("ordinal") == ordinal and all(_hash(contact.get(field)) for field in ("contact_sha256", "checkpoint_sha256", "request_id_hash", "session_id_hash")),
+                 "Partial source amendment prefix differs")
+        raw = _read(root, f"contacts/request-{ordinal:04d}.json", snapshot)
+        parsed = _json(raw, "Partial source contact")
+        _require(digest(raw) == contact["contact_sha256"] and parsed.get("cohort_number") == cohort_number
+                 and parsed.get("ordinal") == ordinal, "Partial source amendment prefix differs")
+    _require(not any(f"contacts/request-{ordinal:04d}.json" in snapshot for ordinal in ordinals[len(prefix["ordinals"]):]),
+             "Partial source amendment unresolved suffix differs")
+    return {"schema_version": 4, "reviewer_task": reviewer_task, "decision": "approved_partial_source_amendment",
+            "prepared_sha256": prepared_sha256, "route_sha256": route_sha256,
+            "prior_authorization_sha256": prior_authorization_sha256,
+            "previous_execution_source_sha256": old_source_sha256,
+            "execution_source_sha256": new_manifest["files"][_OPERATIONAL_FILES[-1]],
+            "completed_prefix": prefix, "original_initialization_sha256": initialization_sha256,
+            "previous_settlement_sha256": previous_settlement_sha256,
+            "operational_renewal_sha256": operational_renewal["sha256"],
+            "old_operational_source_manifest": old_manifest,
+            "new_operational_source_manifest": new_manifest}
+
+
 def _pending_precontact_recovery(root: Path, snapshot: Mapping[str, str], *, cohort_number: int,
                                  ordinals: tuple[int, ...], initialization_sha256: str,
                                  previous_settlement_sha256: str, operational_renewal: Mapping[str, Any],
@@ -377,17 +444,16 @@ def _renewals(root: Path, snapshot: Mapping[str, str], geometry: LedgerGeometry,
             if old_manifest != prior_manifest:
                 recovered_manifest = prior_manifest
                 for recovery_cohort in range(prior_cohort + 1, number + 1):
-                    recovery_path = f"cohorts/{recovery_cohort:04d}/review-continuations/0001.json"
-                    if recovery_path not in snapshot:
-                        continue
-                    recovery = _json(_read(root, recovery_path, snapshot), "Precontact recovery")
-                    if recovery.get("schema_version") != 3:
-                        continue
-                    _require(recovery.get("decision") == "approved_precontact_recovery"
-                             and recovery.get("route_sha256") == prior_route_sha256
-                             and _source_manifest(recovery.get("old_operational_source_manifest"), "Recovery old operational", require_current=False) == recovered_manifest,
-                             "Operational renewal recovery chain differs")
-                    recovered_manifest = _source_manifest(recovery.get("new_operational_source_manifest"), "Recovery new operational", require_current=False)
+                    pattern = re.compile(rf"cohorts/{recovery_cohort:04d}/review-continuations/\d{{4}}\.json\Z")
+                    for recovery_path in sorted(path for path in snapshot if pattern.fullmatch(path)):
+                        recovery = _json(_read(root, recovery_path, snapshot), "Source amendment")
+                        if recovery.get("schema_version") not in {3, 4}:
+                            continue
+                        _require(recovery.get("decision") in {"approved_precontact_recovery", "approved_partial_source_amendment"}
+                                 and recovery.get("route_sha256") == prior_route_sha256
+                                 and _source_manifest(recovery.get("old_operational_source_manifest"), "Recovery old operational", require_current=False) == recovered_manifest,
+                                 "Operational renewal recovery chain differs")
+                        recovered_manifest = _source_manifest(recovery.get("new_operational_source_manifest"), "Recovery new operational", require_current=False)
                 _require(recovered_manifest == old_manifest, "Operational renewal recovery chain differs")
         _require(old_route["subscription_receipt_hash"] == value["old_receipt_sha256"]
                  and new_route["subscription_receipt_hash"] == value["new_receipt_sha256"]
@@ -453,18 +519,19 @@ def _continuations(root: Path, prefix: str, snapshot: Mapping[str, str], prepare
     found = sorted((int(match.group(1)), relative) for relative in snapshot if (match := pattern.fullmatch(relative)))
     _require([number for number, _ in found] == list(range(1, len(found) + 1)), "Continuation inventory differs")
     prior_hash, prior_source = review_sha256, source_sha256
+    prior_manifest = dict(operational_source_manifest) if isinstance(operational_source_manifest, Mapping) else None
     result: list[dict[str, Any]] = []
     for _, relative in found:
         raw = _read(root, relative, snapshot); value = _json(raw, "Continuation record")
         fields = {"schema_version", "reviewer_task", "decision", "prepared_sha256", "route_sha256", "prior_authorization_sha256", "previous_execution_source_sha256", "execution_source_sha256", "completed_prefix", "reviewed_at", "expires_at"}
         version = _integer(value.get("schema_version"), "Continuation schema version")
-        _require(version in {1, 2, 3}, "Continuation schema version differs")
+        _require(version in {1, 2, 3, 4}, "Continuation schema version differs")
         if version == 3:
             recovery_fields = fields | {"incident_type", "original_initialization_sha256", "previous_settlement_sha256",
                                         "operational_renewal_sha256", "old_operational_source_manifest",
                                         "new_operational_source_manifest"}
             _keys(value, recovery_fields, "Precontact recovery", version=3)
-            _require(not result and operational_renewal_sha256 is not None and isinstance(operational_source_manifest, Mapping)
+            _require(not result and operational_renewal_sha256 is not None and isinstance(prior_manifest, Mapping)
                      and value["reviewer_task"] == reviewer_task and value["decision"] == "approved_precontact_recovery"
                      and value["incident_type"] == "utc_review_encoding_mismatch"
                      and value["prepared_sha256"] == prepared_sha256 and value["route_sha256"] == route_sha256
@@ -475,10 +542,30 @@ def _continuations(root: Path, prefix: str, snapshot: Mapping[str, str], prepare
                      "Precontact recovery binding differs")
             old_manifest = _source_manifest(value["old_operational_source_manifest"], "Precontact old operational", require_current=False)
             new_manifest = _source_manifest(value["new_operational_source_manifest"], "Precontact new operational", require_current=False)
-            _require(old_manifest == dict(operational_source_manifest)
+            _require(old_manifest == prior_manifest
                      and old_manifest["files"][_OPERATIONAL_FILES[-1]] == prior_source
                      and new_manifest["files"][_OPERATIONAL_FILES[-1]] == value["execution_source_sha256"],
                      "Precontact recovery source manifest differs")
+        elif version == 4:
+            amendment_fields = fields | {"original_initialization_sha256", "previous_settlement_sha256",
+                                         "operational_renewal_sha256", "old_operational_source_manifest",
+                                         "new_operational_source_manifest"}
+            _keys(value, amendment_fields, "Partial source amendment", version=4)
+            _require(operational_renewal_sha256 is not None and isinstance(prior_manifest, Mapping)
+                     and value["reviewer_task"] == reviewer_task and value["decision"] == "approved_partial_source_amendment"
+                     and value["prepared_sha256"] == prepared_sha256 and value["route_sha256"] == route_sha256
+                     and value["prior_authorization_sha256"] == prior_hash and value["previous_execution_source_sha256"] == prior_source
+                     and value["original_initialization_sha256"] == initialization_sha256
+                     and value["previous_settlement_sha256"] == previous_settlement_sha256
+                     and value["operational_renewal_sha256"] == operational_renewal_sha256,
+                     "Partial source amendment binding differs")
+            old_manifest = _source_manifest(value["old_operational_source_manifest"], "Partial source old operational", require_current=False)
+            new_manifest = _source_manifest(value["new_operational_source_manifest"], "Partial source new operational", require_current=False)
+            _require(old_manifest == prior_manifest
+                     and old_manifest["files"][_OPERATIONAL_FILES[-1]] == prior_source
+                     and new_manifest["files"][_OPERATIONAL_FILES[-1]] == value["execution_source_sha256"]
+                     and value["execution_source_sha256"] != prior_source,
+                     "Partial source amendment manifest differs")
         else:
             _keys(value, fields, "Continuation record", version=version)
             _require(value["reviewer_task"] == reviewer_task and value["decision"] == "approved_continuation"
@@ -491,9 +578,73 @@ def _continuations(root: Path, prefix: str, snapshot: Mapping[str, str], prepare
         _require(isinstance(prefix_value, Mapping) and set(prefix_value) == {"ordinals", "contacts", "run_files", "run_tree_sha256"} and isinstance(prefix_value["ordinals"], list) and (version in {2, 3} or prefix_value["ordinals"]) and all(type(item) is int for item in prefix_value["ordinals"]) and (not prefix_value["ordinals"] or prefix_value["ordinals"] == list(range(prefix_value["ordinals"][0], prefix_value["ordinals"][0] + len(prefix_value["ordinals"])))) and isinstance(prefix_value["contacts"], list) and len(prefix_value["contacts"]) == len(prefix_value["ordinals"]) and isinstance(prefix_value["run_files"], dict) and (version == 2 or prefix_value["run_files"]) and all(isinstance(path, str) and _hash(value) for path, value in prefix_value["run_files"].items()) and _hash(prefix_value["run_tree_sha256"]) and digest(canonical(prefix_value["run_files"])) == prefix_value["run_tree_sha256"] and (version != 3 or not prefix_value["ordinals"] and not prefix_value["contacts"]), "Continuation prefix differs")
         for ordinal, contact in zip(prefix_value["ordinals"], prefix_value["contacts"], strict=True):
             _require(isinstance(contact, Mapping) and set(contact) == {"ordinal", "contact_sha256", "checkpoint_sha256", "request_id_hash", "session_id_hash"} and contact.get("ordinal") == ordinal and all(_hash(contact.get(field)) for field in ("contact_sha256", "checkpoint_sha256", "request_id_hash", "session_id_hash")), "Continuation prefix contact differs")
+        if version in {3, 4}:
+            prior_manifest = _source_manifest(value["new_operational_source_manifest"], "Continuation new operational", require_current=False)
         prior_hash, prior_source = digest(raw), value["execution_source_sha256"]
         result.append({"sha256": prior_hash, "source_sha256": prior_source, "value": value, "start": start, "end": end, "version": version})
     return result
+
+
+def _validate_authorization_prefixes(ordinals: tuple[int, ...], continuations: list[dict[str, Any]],
+                                    authorization: list[tuple[str, str, datetime, datetime]],
+                                    used: Mapping[str, list[int]], summaries: Mapping[int, Mapping[str, Any]],
+                                    contact_times: Mapping[int, datetime], *, legacy: bool = False) -> None:
+    for previous, following in pairwise(authorization):
+        _require(following[2] >= previous[2], "Continuation review order differs")
+        if not legacy and not used[previous[0]]:
+            _require(following[2] >= previous[3], "Unused authorization renewal differs")
+    completed = 0
+    for index, continuation in enumerate(continuations):
+        completed += len(used[authorization[index][0]])
+        prefix = continuation["value"]["completed_prefix"]
+        _require(prefix["ordinals"] == list(ordinals[:completed]) and completed < len(ordinals)
+                 and prefix["contacts"] == [summaries.get(ordinal) for ordinal in ordinals[:completed]],
+                 "Continuation prefix differs")
+        if completed:
+            _require(continuation["start"] >= max(contact_times[item] for item in prefix["ordinals"]),
+                     "Continuation review precedes completed prefix")
+
+
+def _validate_pending_continuations(root: Path, snapshot: Mapping[str, str], geometry: LedgerGeometry, *,
+                                    cohort_number: int, prepared_sha256: str, route_sha256: str,
+                                    review_raw: bytes, source_sha256: str, reviewer_task: str,
+                                    continuations: list[dict[str, Any]]) -> None:
+    _, start, end = _review(review_raw, prepared_sha256, reviewer_task)
+    authorization = [(digest(review_raw), source_sha256, start, end),
+                     *[(item["sha256"], item["source_sha256"], item["start"], item["end"]) for item in continuations]]
+    by_hash = {key: (source, begin, finish) for key, source, begin, finish in authorization}
+    used: dict[str, list[int]] = {key: [] for key in by_hash}
+    summaries: dict[int, Mapping[str, Any]] = {}
+    for item in continuations:
+        for summary in item["value"]["completed_prefix"]["contacts"]:
+            ordinal = summary["ordinal"]
+            _require(ordinal not in summaries or summaries[ordinal] == summary, "Continuation prefix differs")
+            summaries[ordinal] = summary
+    ordinals = geometry.groups[cohort_number - 1]
+    contact_times: dict[int, datetime] = {}
+    for ordinal in ordinals:
+        relative = f"contacts/request-{ordinal:04d}.json"
+        if relative not in snapshot:
+            continue
+        raw = _read(root, relative, snapshot)
+        contact = _json(raw, "Contact record")
+        request = geometry.requests[ordinal]
+        key = contact.get("review_sha256")
+        _require(contact.get("cohort_number") == cohort_number and contact.get("ordinal") == ordinal
+                 and contact.get("plan_sha256") == geometry.plan_sha256
+                 and contact.get("prepared_sha256") == prepared_sha256 and contact.get("route_sha256") == route_sha256
+                 and contact.get("prompt_sha256") == request["prompt_sha256"]
+                 and contact.get("schema_sha256") == request["schema_sha256"] and key in by_hash,
+                 "Contact binding differs")
+        admitted = _utc(contact["admitted_at"], "Contact admission time")
+        _require(by_hash[key][1] <= admitted <= by_hash[key][2], "Contact is outside its authorization window")
+        if ordinal in summaries:
+            _require(summaries[ordinal]["contact_sha256"] == digest(raw), "Continuation prefix contact differs")
+        used[key].append(ordinal)
+        contact_times[ordinal] = admitted
+    present = [ordinal for key, _, _, _ in authorization for ordinal in used[key]]
+    _require(present == list(ordinals[:len(present)]), "Settlement authorization order differs")
+    _validate_authorization_prefixes(ordinals, continuations, authorization, used, summaries, contact_times)
 
 
 def validate_candidate_cohort(geometry: LedgerGeometry, *, cohort_number: int, ordinals: tuple[int, ...],
@@ -513,7 +664,7 @@ def validate_candidate_cohort(geometry: LedgerGeometry, *, cohort_number: int, o
         _require(all(item["version"] == 1 for item in continuations), "Settlement continuation schema differs")
     elif version == 3:
         _keys(settlement, fields | {"authorization_chain"}, "Settlement record", version=3)
-        _require(all(item["version"] in {2, 3} for item in continuations), "Settlement continuation schema differs")
+        _require(all(item["version"] in {2, 3, 4} for item in continuations), "Settlement continuation schema differs")
     else:
         raise ValueError("Settlement schema version differs")
     settled_at = _utc(settlement["settled_at"], "Settlement time")
@@ -522,7 +673,7 @@ def validate_candidate_cohort(geometry: LedgerGeometry, *, cohort_number: int, o
     prior_reviewed_at = review_start
     for item in continuations:
         _require(isinstance(item, Mapping) and _hash(item.get("sha256")) and _hash(item.get("source_sha256"))
-                 and item.get("version") in {1, 2, 3} and isinstance(item.get("start"), datetime)
+                 and item.get("version") in {1, 2, 3, 4} and isinstance(item.get("start"), datetime)
                  and isinstance(item.get("end"), datetime) and item["start"] < item["end"] <= item["start"] + timedelta(hours=2)
                  and item["start"] >= prior_reviewed_at, "Continuation review order differs")
         prior_reviewed_at = item["start"]
@@ -552,24 +703,16 @@ def validate_candidate_cohort(geometry: LedgerGeometry, *, cohort_number: int, o
         used[contact["review_sha256"]].append(ordinal)
         contact_times[ordinal] = admitted_at
         contacts[ordinal] = {"ordinal": ordinal, "pass_id": request["pass_id"], "logical_sample_id": passed["logical_sample_id"], "source_sha256": passed["source_sha256"], "prompt_sha256": request["prompt_sha256"], "schema_sha256": request["schema_sha256"], "route_sha256": route_sha256, "execution_source_sha256": source, "authorization_sha256": contact["review_sha256"], **summary}
-    if version in {2, 3}:
+    if version in {2, 3, 4}:
         chain = settlement["authorization_chain"]
         _require(isinstance(chain, list) and len(chain) == len(authorization) and [ordinal for key, _, _, _ in authorization for ordinal in used[key]] == list(ordinals), "Settlement authorization order differs")
         for (expected_sha, source, _, _), record in zip(authorization, chain, strict=True):
             _require(isinstance(record, Mapping) and set(record) == {"authorization_sha256", "execution_source_sha256", "ordinals"} and record.get("authorization_sha256") == expected_sha and record.get("execution_source_sha256") == source and record.get("ordinals") == used[expected_sha], "Settlement authorization differs")
         if version == 2:
             _require(all(used[key] for key, _, _, _ in authorization), "Settlement authorization order differs")
-        else:
-            for index, (key, _, _, expires_at) in enumerate(authorization[:-1]):
-                if not used[key]:
-                    _require(authorization[index + 1][2] >= expires_at, "Unused authorization renewal differs")
-        completed = 0
-        for index, continuation in enumerate(continuations):
-            completed += len(used[authorization[index][0]])
-            prefix = continuation["value"]["completed_prefix"]
-            _require(prefix["ordinals"] == list(ordinals[:completed]) and completed < len(ordinals) and prefix["contacts"] == settlement["contacts"][:completed], "Continuation prefix differs")
-            if completed:
-                _require(continuation["start"] >= max(contact_times[item] for item in prefix["ordinals"]), "Continuation review precedes completed prefix")
+        _validate_authorization_prefixes(ordinals, continuations, authorization, used,
+                                         {item["ordinal"]: item for item in settlement["contacts"]},
+                                         contact_times, legacy=version == 2)
     if request_ids is not None:
         request_ids.update(local_request_ids)
     if session_ids is not None:
@@ -577,7 +720,7 @@ def validate_candidate_cohort(geometry: LedgerGeometry, *, cohort_number: int, o
     return contacts, authorization_by_hash
 
 
-def verify_prefix(execution_root: Path, geometry: LedgerGeometry, expected_settlement_sha256: str, through_cohort: int, *, expected_route_sha256: str, expected_execution_source_sha256: str, reviewer_task: str, allowed_pending_paths: frozenset[str] = frozenset(), pending_precontact_recovery: Mapping[str, Any] | None = None) -> dict[str, Any]:
+def verify_prefix(execution_root: Path, geometry: LedgerGeometry, expected_settlement_sha256: str, through_cohort: int, *, expected_route_sha256: str, expected_execution_source_sha256: str, reviewer_task: str, allowed_pending_paths: frozenset[str] = frozenset(), pending_precontact_recovery: Mapping[str, Any] | None = None, pending_partial_source_amendment: Mapping[str, Any] | None = None, _candidate_partial_source_manifest: Mapping[str, Any] | None = None) -> dict[str, Any]:
     """Verify a closed contiguous prefix; this function never contacts a provider."""
     geometry.validate()
     _require(all(_hash(value) for value in (expected_settlement_sha256, expected_route_sha256, expected_execution_source_sha256)) and isinstance(reviewer_task, str) and reviewer_task, "Expected ledger anchors differ")
@@ -614,35 +757,9 @@ def verify_prefix(execution_root: Path, geometry: LedgerGeometry, expected_settl
                  and all(item["value"]["original_initialization_sha256"] == initialization_sha256 for item in renewals),
                  "Operational renewal initialization differs")
     renewals_by_cohort = {item["cohort_number"]: item for item in renewals}
-    pending_recovery: dict[str, Any] | None = None
-    if renewals and through_cohort < len(geometry.groups):
-        next_cohort = through_cohort + 1
-        recovery_path = f"cohorts/{next_cohort:04d}/review-continuations/0001.json"
-        if recovery_path in files:
-            _require(recovery_path in pending, "Precontact recovery inventory differs")
-            pending_recovery = _pending_precontact_recovery(
-                root, files, cohort_number=next_cohort, ordinals=geometry.groups[next_cohort - 1],
-                initialization_sha256=initialization_sha256, previous_settlement_sha256=expected_settlement_sha256,
-                operational_renewal=renewals[-1], reviewer_task=reviewer_task,
-            )
-        if pending_precontact_recovery is not None:
-            _require(recovery_path not in files, "Precontact recovery already exists")
-            candidate = precontact_recovery_candidate(
-                root, cohort_number=next_cohort, ordinals=geometry.groups[next_cohort - 1],
-                initialization_sha256=initialization_sha256, previous_settlement_sha256=expected_settlement_sha256,
-                operational_renewal=renewals[-1], prepared_sha256=pending_precontact_recovery.get("prepared_sha256"),
-                review_sha256=pending_precontact_recovery.get("prior_authorization_sha256"),
-                route_sha256=pending_precontact_recovery.get("route_sha256"),
-                reviewer_task=reviewer_task, old_source_sha256=pending_precontact_recovery.get("previous_execution_source_sha256"),
-                new_source_manifest=pending_precontact_recovery.get("new_operational_source_manifest"),
-            )
-            _require(dict(pending_precontact_recovery) == candidate, "Precontact recovery candidate differs")
-            pending_recovery = {"value": candidate, "source_sha256": candidate["execution_source_sha256"]}
-    _require(pending_precontact_recovery is None or pending_recovery is not None, "Precontact recovery candidate differs")
     previous_settlement, previous_settled = GENESIS_SETTLEMENT_SHA256, None
     current_route_sha256, current_source_sha256 = expected_route_sha256, expected_execution_source_sha256
     current_renewal_sha256: str | None = None
-    current_operational_manifest: Mapping[str, Any] | None = None
     current_source_manifest: Mapping[str, Any] | None = None
     contacts: dict[int, dict[str, Any]] = {}; request_ids: set[str] = set(); session_ids: set[str] = set(); routes: dict[str, dict[str, Any]] = {}
     authorizations: dict[str, dict[str, Any]] = {}
@@ -673,7 +790,7 @@ def verify_prefix(execution_root: Path, geometry: LedgerGeometry, expected_settl
             root, prefix, files, prepared_sha, route_sha, review_sha, current_source_sha256, reviewer_task,
             initialization_sha256=initialization_sha256,
             previous_settlement_sha256=previous_settlement, operational_renewal_sha256=current_renewal_sha256,
-            operational_source_manifest=current_operational_manifest,
+            operational_source_manifest=current_source_manifest,
         )
         contact_records = {ordinal: _read(root, f"contacts/request-{ordinal:04d}.json", files) for ordinal in ordinals}
         cohort_contacts, authorization = validate_candidate_cohort(
@@ -688,10 +805,11 @@ def verify_prefix(execution_root: Path, geometry: LedgerGeometry, expected_settl
             authorizations[authorization_sha] = {"execution_source_sha256": source_sha, "reviewed_at": start.isoformat(), "expires_at": end.isoformat(), "cohort_number": number}
         contacts.update(cohort_contacts)
         effective_source_sha256 = continuations[-1]["source_sha256"] if continuations else current_source_sha256
-        recovery_continuation = next((item for item in continuations if item["version"] == 3), None)
+        source_changing = [item for item in continuations if item["version"] in {3, 4}]
+        recovery_continuation = source_changing[-1] if source_changing else None
         if recovery_continuation is not None:
             current_source_manifest = _source_manifest(
-                recovery_continuation["value"]["new_operational_source_manifest"], "Precontact new operational", require_current=False)
+                recovery_continuation["value"]["new_operational_source_manifest"], "Continuation new operational", require_current=False)
         epochs[number] = {"route_sha256": current_route_sha256, "execution_source_sha256": effective_source_sha256,
                           "operational_renewal_sha256": current_renewal_sha256}
         settled_at = _utc(settlement["settled_at"], "Settlement time")
@@ -706,15 +824,87 @@ def verify_prefix(execution_root: Path, geometry: LedgerGeometry, expected_settl
             current_route_sha256 = value["new_route_sha256"]
             current_source_sha256 = renewal["new_source"]["files"][_OPERATIONAL_FILES[-1]]
             current_renewal_sha256 = renewal["sha256"]
-            current_operational_manifest = renewal["new_source"]
             current_source_manifest = renewal["new_source"]
         else:
             current_source_sha256 = effective_source_sha256
         previous_settlement, previous_settled = digest(settlement_raw), settled_at
     _require(previous_settlement == expected_settlement_sha256 and len(contacts) == sum(map(len, geometry.groups[:through_cohort])) and len(request_ids) == len(session_ids) == len(contacts), "Ledger closing settlement differs")
-    if renewals and pending_recovery is None:
+    pending_recovery: dict[str, Any] | None = None
+    pending_amendment: dict[str, Any] | None = None
+    if renewals and through_cohort < len(geometry.groups):
+        effective_operational = {"sha256": current_renewal_sha256, "new_source": current_source_manifest}
+        next_cohort = through_cohort + 1
+        recovery_path = f"cohorts/{next_cohort:04d}/review-continuations/0001.json"
+        pending_continuations = sorted(relative for relative in files
+                                       if relative.startswith(f"cohorts/{next_cohort:04d}/review-continuations/"))
+        if pending_continuations:
+            _require(all(relative in pending for relative in pending_continuations), "Continuation inventory differs")
+            prepared_raw = _read(root, f"cohorts/{next_cohort:04d}/prepared.json", files)
+            review_raw = _read(root, f"cohorts/{next_cohort:04d}/review.json", files)
+            route = _json(_read(root, f"cohorts/{next_cohort:04d}/route.json", files), "Route snapshot")
+            prepared = _json(prepared_raw, "Prepared record")
+            chain = _continuations(
+                root, f"cohorts/{next_cohort:04d}", files, digest(prepared_raw), _route_hash(route),
+                digest(review_raw), current_source_sha256, reviewer_task,
+                initialization_sha256=initialization_sha256, previous_settlement_sha256=expected_settlement_sha256,
+                operational_renewal_sha256=renewals[-1]["sha256"], operational_source_manifest=current_source_manifest)
+            _validate_pending_continuations(
+                root, files, geometry, cohort_number=next_cohort, prepared_sha256=digest(prepared_raw),
+                route_sha256=_route_hash(route), review_raw=review_raw, source_sha256=current_source_sha256,
+                reviewer_task=reviewer_task, continuations=chain)
+            amendments = [item for item in chain if item["version"] == 4]
+            if amendments:
+                pending_amendment = amendments[-1]
+            elif any(item["version"] == 3 for item in chain):
+                pending_recovery = _pending_precontact_recovery(
+                    root, files, cohort_number=next_cohort, ordinals=geometry.groups[next_cohort - 1],
+                    initialization_sha256=initialization_sha256, previous_settlement_sha256=expected_settlement_sha256,
+                    operational_renewal=effective_operational, reviewer_task=reviewer_task)
+        if pending_precontact_recovery is not None:
+            _require(recovery_path not in files, "Precontact recovery already exists")
+            candidate = precontact_recovery_candidate(
+                root, cohort_number=next_cohort, ordinals=geometry.groups[next_cohort - 1],
+                initialization_sha256=initialization_sha256, previous_settlement_sha256=expected_settlement_sha256,
+                operational_renewal=effective_operational, prepared_sha256=pending_precontact_recovery.get("prepared_sha256"),
+                review_sha256=pending_precontact_recovery.get("prior_authorization_sha256"),
+                route_sha256=pending_precontact_recovery.get("route_sha256"),
+                reviewer_task=reviewer_task, old_source_sha256=pending_precontact_recovery.get("previous_execution_source_sha256"),
+                new_source_manifest=pending_precontact_recovery.get("new_operational_source_manifest"),
+            )
+            _require(dict(pending_precontact_recovery) == candidate, "Precontact recovery candidate differs")
+            pending_recovery = {"value": candidate, "source_sha256": candidate["execution_source_sha256"]}
+        if pending_partial_source_amendment is not None:
+            _require(pending_amendment is None and pending_recovery is None and pending_precontact_recovery is None,
+                     "Partial source amendment already exists")
+            expected_prior = chain[-1]["sha256"] if pending_continuations else digest(_read(root, f"cohorts/{next_cohort:04d}/review.json", files))
+            _require(pending_partial_source_amendment.get("prior_authorization_sha256") == expected_prior,
+                     "Partial source amendment prior authorization differs")
+            candidate = partial_source_amendment_candidate(
+                root, cohort_number=next_cohort, ordinals=geometry.groups[next_cohort - 1],
+                initialization_sha256=initialization_sha256, previous_settlement_sha256=expected_settlement_sha256,
+                operational_renewal=effective_operational, prepared_sha256=pending_partial_source_amendment.get("prepared_sha256"),
+                review_sha256=digest(_read(root, f"cohorts/{next_cohort:04d}/review.json", files)),
+                route_sha256=pending_partial_source_amendment.get("route_sha256"), reviewer_task=reviewer_task,
+                prior_authorization_sha256=pending_partial_source_amendment.get("prior_authorization_sha256"),
+                old_source_sha256=pending_partial_source_amendment.get("previous_execution_source_sha256"),
+                completed_prefix=pending_partial_source_amendment.get("completed_prefix"),
+                new_source_manifest=pending_partial_source_amendment.get("new_operational_source_manifest"),
+            )
+            _require(dict(pending_partial_source_amendment) == candidate, "Partial source amendment candidate differs")
+            pending_amendment = {"value": candidate, "source_sha256": candidate["execution_source_sha256"]}
+    _require(pending_precontact_recovery is None or pending_recovery is not None, "Precontact recovery candidate differs")
+    _require(pending_partial_source_amendment is None or pending_amendment is not None,
+             "Partial source amendment candidate differs")
+    _require(_candidate_partial_source_manifest is None or pending_amendment is None,
+             "Partial source amendment candidate differs")
+    if _candidate_partial_source_manifest is not None:
+        _source_manifest(_candidate_partial_source_manifest, "Pending partial source amendment", require_current=True)
+    elif renewals and pending_recovery is None and pending_amendment is None:
         _source_manifest(current_source_manifest or renewals[-1]["value"]["new_operational_source_manifest"],
                          "Latest operational", require_current=True)
+    elif pending_amendment is not None:
+        _source_manifest(pending_amendment["value"]["new_operational_source_manifest"],
+                         "Pending partial source amendment", require_current=True)
     after_files, after_directories = _snapshot(root); _require(files == after_files and directories == after_directories, "Ledger changed during verification")
     result = {"evidence_class": "provider_free_baseline_ledger_consistency", "native_admission": False,
               "execution_authority": False, "contacts": contacts, "routes": routes,
@@ -722,6 +912,11 @@ def verify_prefix(execution_root: Path, geometry: LedgerGeometry, expected_settl
               "settlement_sha256": previous_settlement}}
     if renewals:
         result.update({"epochs": epochs, "renewals": renewals})
+    if _candidate_partial_source_manifest is not None:
+        result.update({"effective_operational_source_manifest": current_source_manifest,
+                       "effective_operational_renewal_sha256": current_renewal_sha256})
     if pending_recovery is not None:
         result["precontact_recovery"] = pending_recovery
+    if pending_amendment is not None:
+        result["partial_source_amendment"] = pending_amendment
     return result

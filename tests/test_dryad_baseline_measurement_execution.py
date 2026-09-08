@@ -140,6 +140,7 @@ def case(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> SimpleNamespace:
         "runtime_checks": 0,
         "stub_contacts": [],
         "pause_after": None,
+        "paused_for_review": False,
         "advance_clock_on_pause": None,
         "prefix_drift": False,
         "drift_on_runner": False,
@@ -188,7 +189,11 @@ def case(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> SimpleNamespace:
         def run_judge(self, **kwargs: Any) -> None:
             output = Path(kwargs["output_dir"])
             transport = kwargs["grok_transport"]
-            selected = [item for item in requests if item["ordinal"] in state["runner_ordinals"]]
+            if state["paused_for_review"]:
+                raise RetryDisclosurePause("synthetic pause")
+            selected = [item for item in requests if item["ordinal"] in state["runner_ordinals"]
+                        and next(record["run_path"] for record in passes if record["pass_id"] == item["pass_id"])
+                        == output.relative_to(execution_root).as_posix()]
             for request in selected:
                 contact = execution_root / "contacts" / f"request-{request['ordinal']:04d}.json"
                 if contact.exists():
@@ -218,6 +223,7 @@ def case(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> SimpleNamespace:
                 (output / "verdicts.jsonl").write_bytes(self._verdicts_bytes(verdicts))
                 if state["pause_after"] == len(state["stub_contacts"]):
                     state["pause_after"] = None
+                    state["paused_for_review"] = True
                     if state["advance_clock_on_pause"] is not None:
                         state["clock"] = state["advance_clock_on_pause"]
                     raise RetryDisclosurePause("synthetic pause")
@@ -511,6 +517,7 @@ def _run(
     expected_recovery_manifest_sha256: str | None = None,
 ) -> dict[str, Any]:
     value = case.value
+    case.state["paused_for_review"] = False
     previous_settlement_sha256 = previous_settlement_sha256 or (
         "0" * 64 if case.cohort == 1 else case.previous_settlement_sha256
     )
@@ -674,10 +681,39 @@ def test_recovery_marker_preserves_future_cohorts_after_cohort_6(case: SimpleNam
     assert prepared["prepared_sha256"]
     review_sha256 = _review(case, start=case.state["clock"] - timedelta(seconds=30),
                             end=case.state["clock"] + timedelta(minutes=10))
-    case.state["pause_after"] = 1
+    case.state["pause_after"] = 8
     result = _run(case, review_sha256, previous_settlement_sha256=post_recovery_settlement,
                   recovery_manifest_path=marker, expected_recovery_manifest_sha256=expected)
-    assert result["completed_ordinals"] == [61] and case.state["stub_contacts"] == [61]
+    assert result["completed_ordinals"] == list(range(61, 69))
+    preserved = {ordinal: (case.execution_root / "contacts" / f"request-{ordinal:04d}.json").read_bytes()
+                 for ordinal in range(61, 69)}
+    def replay_prefix(execution_root: Path, _plan_root: Path, ordinals: list[int], *_: Any) -> tuple[list[dict[str, Any]], dict[str, str], dict[str, bytes]]:
+        return ([{"ordinal": ordinal,
+                  "contact_sha256": _hash((execution_root / "contacts" / f"request-{ordinal:04d}.json").read_bytes()),
+                  "checkpoint_sha256": _hash(f"checkpoint-{ordinal}".encode()),
+                  "request_id_hash": _hash(f"request-{ordinal}".encode()),
+                  "session_id_hash": _hash(f"session-{ordinal}".encode())}
+                 for ordinal in ordinals], {}, {})
+
+    monkeypatch.setattr(case.value, "_replay_completed_prefix", replay_prefix)
+    monkeypatch.setattr(case.value, "_reconstruct_aggregate_prefixes", lambda *_: {})
+    continuation = case.value.prepare_continuation(
+        case.public_inputs, case.plan_root, case.execution_root, 7,
+        expected_plan_sha256=case.value.PLAN_SHA256,
+        expected_initialization_sha256=case.initialization["initialization_sha256"],
+        expected_previous_settlement_sha256=post_recovery_settlement,
+        expected_prepared_sha256=case.prepared["prepared_sha256"], expected_review_sha256=review_sha256,
+        expected_source_sha256=case.initialization_source_sha256,
+        recovery_manifest_path=marker, expected_recovery_manifest_sha256=expected)
+    continuation_sha256 = _write_continuation(case, continuation)
+    case.state["pause_after"] = None
+    case.state["paused_for_review"] = False
+    resumed = _run(case, review_sha256, continuation_sha256=continuation_sha256,
+                   previous_settlement_sha256=post_recovery_settlement,
+                   recovery_manifest_path=marker, expected_recovery_manifest_sha256=expected)
+    assert resumed["status"] == "settled" and case.state["stub_contacts"] == list(range(61, 71))
+    assert all((case.execution_root / "contacts" / f"request-{ordinal:04d}.json").read_bytes() == raw
+               for ordinal, raw in preserved.items())
     with pytest.raises(ValueError, match="Recovery cohort binding differs"):
         _prepare(case, 5, case.previous_settlement_sha256,
                  recovery_manifest_path=marker, expected_recovery_manifest_sha256=expected)
@@ -885,43 +921,36 @@ def test_actual_ledger_accepts_zero_contact_multiple_renewals(actual_ledger_case
     assert [item["ordinals"] for item in settlement["authorization_chain"]] == [[], [], list(range(1, 11))]
 
 
+@pytest.mark.parametrize("schema_version", [3, 4], ids=["precontact-v3", "partial-source-v4"])
 def test_collector_precontact_recovery_runs_settles_and_prepares_next_cohort(
     actual_ledger_case: SimpleNamespace, monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+    schema_version: int,
 ) -> None:
     case = actual_ledger_case
     value = case.value
     captured, modules = value._sources()
     ledger, runtime = modules[1], modules[2].load_runtime(
         case.runtime_manifest, expected_manifest_sha256=_hash(case.runtime_manifest.read_bytes()))
-    core, core_raw = ledger._core()
+    _, core_raw = ledger._core()
+    spec = importlib.util.spec_from_file_location("collector_source_fixture", ROOT / "tests/test_cohort_ledger_core.py")
+    assert spec and spec.loader
+    support = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(support)
+    core, revisions, manifest = support.operational_core(tmp_path)
     monkeypatch.setattr(ledger, "_core", lambda: (core, core_raw))
-
-    # Git provenance has a separate real-repository test; this fixture varies only
-    # the committed source identities and leaves collector/ledger validation real.
-    current_raw = case.source_path.read_bytes()
-    previous_raw = current_raw + b"\n# synthetic predecessor source epoch\n"
-    source_copy = tmp_path / "synthetic-collector.py"
-    source_copy.write_bytes(current_raw)
+    repository = Path(core.__file__).resolve().parents[2]
+    source_copy = repository / value.EXECUTION_SOURCE_RELATIVE
+    current_raw = source_copy.read_bytes()
+    previous_raw = support.subprocess.run(
+        ("git", "-C", str(repository), "show", f"{revisions[1]}:{value.EXECUTION_SOURCE_RELATIVE}"),
+        check=True, capture_output=True).stdout
+    initial_raw = case.source_path.read_bytes()
+    source_copy.write_bytes(initial_raw)
     captured.pop(case.source_path)
-    captured[source_copy] = current_raw
+    captured[source_copy] = initial_raw
     monkeypatch.setattr(value, "__file__", str(source_copy))
-    files = {relative: _hash((ROOT / relative).read_bytes()) for relative in core._OPERATIONAL_FILES}
     old_source, new_source = _hash(previous_raw), _hash(current_raw)
-    manifests = [
-        {"revision": core.HISTORICAL_OPERATIONAL_REVISION, "files": dict(files)},
-        {"revision": "1" * 40, "files": {**files, value.EXECUTION_SOURCE_RELATIVE: old_source}},
-        {"revision": "2" * 40, "files": dict(files)},
-    ]
-
-    def checked_manifest(manifest: Any, label: str, *, require_current: bool) -> dict[str, Any]:
-        assert manifest in manifests, label
-        if require_current:
-            assert manifest["files"][value.EXECUTION_SOURCE_RELATIVE] == _hash(source_copy.read_bytes())
-        return json.loads(_canonical(manifest))
-
-    monkeypatch.setattr(core, "_source_manifest", checked_manifest)
-    monkeypatch.setattr(core, "current_operational_source_manifest", lambda: checked_manifest(
-        manifests[2], "synthetic current manifest", require_current=True))
+    manifests = [manifest(revision) for revision in revisions]
     now = case.state["clock"]
     case.route.update({
         "subscription_receipt_hash": "a" * 64,
@@ -975,8 +1004,6 @@ def test_collector_precontact_recovery_runs_settles_and_prepares_next_cohort(
     review_path = case.execution_root / "cohorts/0002/review.json"
     review_path.write_bytes(review_raw)
     immutable_before, _ = value._execution_snapshot(case.execution_root)
-    source_copy.write_bytes(current_raw)
-    captured[source_copy] = current_raw
     common = {
         "expected_plan_sha256": value.PLAN_SHA256,
         "expected_initialization_sha256": case.initialization["initialization_sha256"],
@@ -985,33 +1012,70 @@ def test_collector_precontact_recovery_runs_settles_and_prepares_next_cohort(
         "expected_review_sha256": _hash(review_raw),
         "expected_operational_renewal_sha256": renewal_sha,
     }
-    candidate = value.prepare_precontact_recovery(
-        case.public_inputs, case.plan_root, case.execution_root, 2,
-        expected_source_sha256=old_source, **common)
-    assert value._execution_snapshot(case.execution_root)[0] == immutable_before
-    assert candidate["schema_version"] == 3 and candidate["completed_prefix"]["ordinals"] == []
-    case.state["clock"] = now + timedelta(minutes=2)
-    recovery_sha = _write_continuation(case, candidate)
-
-    def run(continuation: str | None = None, recovery: str | None = recovery_sha) -> dict[str, Any]:
+    def run(continuation: str | None = None, recovery: str | None = None,
+            source: str = new_source) -> dict[str, Any]:
+        case.state["paused_for_review"] = False
         return value.run_cohort(
             case.public_inputs, case.plan_root, case.execution_root, 2, case.queue_root,
-            expected_source_sha256=new_source, expected_continuation_sha256=continuation,
+            expected_source_sha256=source, expected_continuation_sha256=continuation,
             expected_precontact_recovery_sha256=recovery, **common)
 
-    brokers_before = case.state["broker_constructions"]
-    with pytest.raises(ValueError):
-        run(recovery=None)
-    assert case.state["broker_constructions"] == brokers_before
     case.state["runner_ordinals"] = list(range(11, 21))
-    case.state["pause_after"] = 11
-    assert run()["completed_ordinals"] == [11]
-    followup = value.prepare_continuation(
-        case.public_inputs, case.plan_root, case.execution_root, 2,
-        expected_source_sha256=new_source, expected_precontact_recovery_sha256=recovery_sha, **common)
-    assert followup["schema_version"] == 2 and followup["completed_prefix"]["ordinals"] == [11]
-    followup_sha = _write_continuation(case, followup)
+    recovery_sha = None
+    if schema_version == 3:
+        source_copy.write_bytes(current_raw)
+        captured[source_copy] = current_raw
+        candidate = value.prepare_precontact_recovery(
+            case.public_inputs, case.plan_root, case.execution_root, 2,
+            expected_source_sha256=old_source, **common)
+        assert value._execution_snapshot(case.execution_root)[0] == immutable_before
+        assert candidate["schema_version"] == 3 and candidate["completed_prefix"]["ordinals"] == []
+        case.state["clock"] = now + timedelta(minutes=2)
+        recovery_sha = _write_continuation(case, candidate)
+        brokers_before = case.state["broker_constructions"]
+        with pytest.raises(ValueError):
+            run()
+        assert case.state["broker_constructions"] == brokers_before
+        case.state["pause_after"] = 11
+        assert run(recovery=recovery_sha)["completed_ordinals"] == [11]
+        followup = value.prepare_continuation(
+            case.public_inputs, case.plan_root, case.execution_root, 2,
+            expected_source_sha256=new_source, expected_precontact_recovery_sha256=recovery_sha, **common)
+        assert followup["schema_version"] == 2 and followup["completed_prefix"]["ordinals"] == [11]
+        followup_sha = _write_continuation(case, followup)
+        expected_sources = [old_source, new_source, new_source]
+        expected_ordinals = [[], [11], list(range(12, 21))]
+    else:
+        case.state["pause_after"] = 18
+        assert run(source=old_source)["completed_ordinals"] == list(range(11, 19))
+        unused = value.prepare_continuation(
+            case.public_inputs, case.plan_root, case.execution_root, 2,
+            expected_source_sha256=old_source, **common)
+        assert unused["schema_version"] == 2
+        unused_sha = _write_continuation(case, unused, reviewed_at=now + timedelta(minutes=2),
+                                          expires_at=now + timedelta(minutes=3))
+        immutable_before, _ = value._execution_snapshot(case.execution_root)
+        source_copy.write_bytes(current_raw)
+        captured[source_copy] = current_raw
+        case.state["clock"] = now + timedelta(minutes=4)
+        brokers_before = case.state["broker_constructions"]
+        candidate = value.prepare_partial_source_amendment(
+            case.public_inputs, case.plan_root, case.execution_root, 2,
+            expected_source_sha256=old_source, **common)
+        assert value._execution_snapshot(case.execution_root)[0] == immutable_before
+        assert case.state["broker_constructions"] == brokers_before
+        assert candidate["schema_version"] == 4
+        assert candidate["completed_prefix"]["ordinals"] == list(range(11, 19))
+        assert candidate["prior_authorization_sha256"] == unused_sha
+        assert candidate["old_operational_source_manifest"] == manifests[1]
+        assert candidate["new_operational_source_manifest"] == manifests[2]
+        assert not (case.execution_root / "contacts/request-0019.json").exists()
+        followup_sha = _write_continuation(case, candidate)
+        assert _hash((case.execution_root / "cohorts/0002/review-continuations/0002.json").read_bytes()) == followup_sha
+        expected_sources = [old_source, old_source, new_source]
+        expected_ordinals = [list(range(11, 19)), [], [19, 20]]
 
+    accepted_aggregate_prefix = (case.execution_root / aggregate_path).read_bytes()
     candidate_checks: list[str] = []
     validate = ledger.validate_candidate_cohort
     write_new = value._write_new
@@ -1026,14 +1090,16 @@ def test_collector_precontact_recovery_runs_settles_and_prepares_next_cohort(
         if path == case.execution_root / "cohorts/0002/settlement.json":
             assert candidate_checks == ["validated"]
             chain = json.loads(raw)["authorization_chain"]
-            assert [item["execution_source_sha256"] for item in chain] == [old_source, new_source, new_source]
-            assert [item["ordinals"] for item in chain] == [[], [11], list(range(12, 21))]
+            assert [item["execution_source_sha256"] for item in chain] == expected_sources
+            assert [item["ordinals"] for item in chain] == expected_ordinals
         write_new(path, raw)
 
     monkeypatch.setattr(ledger, "validate_candidate_cohort", checked_candidate)
     monkeypatch.setattr(value, "_write_new", checked_write)
-    settled = run(followup_sha)
+    settled = run(followup_sha, recovery_sha)
     assert settled["status"] == "settled" and case.state["stub_contacts"] == list(range(1, 21))
+    assert settled["provider_calls"] == (9 if schema_version == 3 else 2)
+    assert (case.execution_root / aggregate_path).read_bytes().startswith(accepted_aggregate_prefix)
     second_head = _hash((case.execution_root / "cohorts/0002/settlement.json").read_bytes())
     verified = ledger.verify_prefix(
         case.execution_root, case.public_inputs.read_bytes(), (case.plan_root / "plan.json").read_bytes(),
@@ -1041,19 +1107,21 @@ def test_collector_precontact_recovery_runs_settles_and_prepares_next_cohort(
         expected_execution_source_sha256=case.initialization_source_sha256,
         expected_reviewer_task=value.REVIEWER_TASK)
     assert verified["epochs"][2]["execution_source_sha256"] == new_source
+    if schema_version == 4:
+        assert [verified["contacts"][ordinal]["execution_source_sha256"] for ordinal in range(11, 21)] == [old_source] * 8 + [new_source] * 2
     next_prepared = _prepare(case, 3, second_head, renewal_sha)
     assert next_prepared["prepared_sha256"] == _hash((case.execution_root / "cohorts/0003/prepared.json").read_bytes())
     assert json.loads((case.execution_root / "cohorts/0003/prepared.json").read_bytes())["execution_source_sha256"] == new_source
     case.prepared = next_prepared
-    next_review = _review(case, start=now + timedelta(minutes=2), end=now + timedelta(minutes=3))
-    case.state["clock"] = now + timedelta(minutes=4)
+    next_review = _review(case, start=now + timedelta(minutes=5), end=now + timedelta(minutes=6))
+    case.state["clock"] = now + timedelta(minutes=7)
     next_common = {**common, "expected_previous_settlement_sha256": second_head,
                    "expected_prepared_sha256": next_prepared["prepared_sha256"],
                    "expected_review_sha256": next_review, "expected_source_sha256": new_source}
     ordinary = value.prepare_continuation(case.public_inputs, case.plan_root, case.execution_root, 3, **next_common)
     assert ordinary["schema_version"] == 2
     _write_continuation(case, ordinary)
-    case.state["clock"] = now + timedelta(minutes=15)
+    case.state["clock"] = now + timedelta(minutes=18)
     successor = value.prepare_continuation(case.public_inputs, case.plan_root, case.execution_root, 3, **next_common)
     assert successor["execution_source_sha256"] == successor["previous_execution_source_sha256"] == new_source
     assert review_path.read_bytes() == review_raw

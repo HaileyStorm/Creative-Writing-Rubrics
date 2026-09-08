@@ -189,3 +189,49 @@ def test_wrapper_reads_renewal_epochs_through_its_pinned_core(tmp_path: Path, mo
             fixture["root"], b"synthetic-public-inputs", b"synthetic-plan", "a" * 64, fixture["head"], 3,
             **{**kwargs, "expected_route_sha256": "0" * 64},
         )
+
+
+def test_partial_candidate_builder_validates_unused_continuation_and_current_committed_source(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    spec = importlib.util.spec_from_file_location("partial_core_test_support", ROOT / "tests/test_cohort_ledger_core.py")
+    assert spec and spec.loader
+    support = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = support
+    try:
+        spec.loader.exec_module(support)
+        subject = load()
+        original_core = subject._core
+
+        def build(state):
+            core_path = Path(state["core"].__file__)
+            monkeypatch.setattr(subject, "CORE", core_path)
+            monkeypatch.setattr(subject, "CORE_SHA256", support.sha(core_path.read_bytes()))
+            monkeypatch.setattr(subject, "_geometry", lambda *_: state["geometry"])
+
+            def pinned_core():
+                core, raw = original_core()
+                core.HISTORICAL_OPERATIONAL_REVISION = state["core"].HISTORICAL_OPERATIONAL_REVISION
+                return core, raw
+
+            monkeypatch.setattr(subject, "_core", pinned_core)
+            pending = frozenset({"cohorts/0002/prepared.json", "cohorts/0002/review.json", "cohorts/0002/route.json",
+                                 "cohorts/0002/review-continuations/0001.json", "contacts/request-0002.json"})
+            with pytest.raises(ValueError, match="current|Latest operational"):
+                subject.verify_prefix(state["root"], b"synthetic-inputs", b"synthetic-plan", "a" * 64,
+                                      state["first"], 1, expected_route_sha256=support.sha(state["routes"][0]),
+                                      expected_execution_source_sha256=state["sources"][0],
+                                      expected_reviewer_task=state["reviewer"], allowed_pending_paths=pending)
+            return subject.prepare_partial_source_amendment_candidate(
+                state["root"], b"synthetic-inputs", b"synthetic-plan", expected_plan_sha256="a" * 64,
+                expected_initialization_sha256=support.sha(state["initialization"]),
+                expected_previous_settlement_sha256=state["first"], cohort_number=2,
+                expected_prepared_sha256=support.sha(state["prepared_raw"]),
+                expected_review_sha256=support.sha(state["review_raw"]),
+                expected_operational_renewal_sha256=state["renewal_one"],
+                expected_route_sha256=support.sha(state["routes"][1]),
+                expected_execution_source_sha256=state["sources"][1],
+                expected_prior_authorization_sha256=support.sha(state["unused_raw"]),
+                completed_prefix=state["prefix"], expected_reviewer_task=state["reviewer"])
+
+        support.partial_source_amendment_ledger(tmp_path, candidate_builder=build, late_renewal=True)
+    finally:
+        sys.modules.pop(spec.name, None)

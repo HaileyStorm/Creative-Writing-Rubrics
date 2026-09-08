@@ -137,6 +137,7 @@ def baseline(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
                 "prompt_sha256": request["prompt_sha256"],
                 "schema_sha256": request["schema_sha256"],
                 "execution_source_sha256": executor,
+                "authorization_sha256": _hash(f"authorization-{(ordinal - 1) // 10 + 1}".encode()),
                 "checkpoint_sha256": _hash(f"checkpoint-{ordinal}".encode()),
                 "route_sha256": route,
                 "request_id_hash": _hash(f"request-{ordinal}".encode()),
@@ -180,6 +181,23 @@ def baseline(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
         "wrong_epoch_receipt": False,
     }
 
+    def authorizations_for(rows):
+        result = {
+            item["authorization_sha256"]: {
+                "execution_source_sha256": item["execution_source_sha256"],
+                "cohort_number": (ordinal - 1) // 10 + 1,
+            }
+            for ordinal, item in rows.items()
+        }
+        mismatch = state.get("authorization_mismatch")
+        if mismatch:
+            key = _hash(b"cohort-2-old-source")
+            if mismatch == "missing":
+                del result[key]
+            else:
+                result[key][mismatch] = 1 if mismatch == "cohort_number" else renewed_executor
+        return result
+
     def verify_ledger(root, inputs, raw, expected_plan, expected_settlement, **kwargs):
         assert root == execution_root and inputs == public_inputs.read_bytes() and raw == plan_raw
         assert expected_plan == subject.PLAN_SHA256 and expected_settlement == settlement
@@ -207,13 +225,19 @@ def baseline(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
                 }
                 for ordinal, contact in contacts.items()
             }
+            if state.get("mixed_source_epoch"):
+                for ordinal in range(11, 19):
+                    epoch_contacts[ordinal].update({
+                        "execution_source_sha256": executor,
+                        "authorization_sha256": _hash(b"cohort-2-old-source"),
+                    })
             return {
                 "evidence_class": "provider_free_baseline_ledger_consistency",
                 "native_admission": False,
                 "execution_authority": False,
                 "contacts": epoch_contacts,
                 "routes": {route: {"kind": "synthetic"}, renewed_route: {"kind": "synthetic"}},
-                "authorizations": {"synthetic": {"reviewed": True}},
+                "authorizations": authorizations_for(epoch_contacts),
                 "epochs": epochs,
                 "renewals": [],
                 "head": {"cohort_number": 543, "settlement_sha256": settlement},
@@ -224,7 +248,7 @@ def baseline(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
             "execution_authority": False,
             "contacts": contacts,
             "routes": {route: {"kind": "synthetic"}},
-            "authorizations": {"synthetic": {"reviewed": True}},
+            "authorizations": authorizations_for(contacts),
             "head": {"cohort_number": 543, "settlement_sha256": settlement},
         }
 
@@ -474,5 +498,21 @@ def test_admission_rejects_receipt_from_another_epoch_even_when_route_is_known(b
     baseline.state["operational_epoch"] = True
     baseline.state["wrong_epoch_receipt"] = True
     with pytest.raises(ValueError, match="Baseline route binding differs"):
+        _admit(baseline)
+    assert baseline.state["native_calls"] == 1
+
+
+def test_admission_accepts_old_prefix_and_new_suffix_in_one_cohort(baseline):
+    baseline.state.update(operational_epoch=True, mixed_source_epoch=True)
+    result = _admit(baseline)
+    assert result["logical_requests"] == 5428
+    assert result["cohort_epochs"][2]["execution_source_sha256"] == baseline.renewed_executor
+    assert baseline.state["native_calls"] == 236
+
+
+@pytest.mark.parametrize("mismatch", ["execution_source_sha256", "cohort_number", "missing"])
+def test_admission_rejects_unbound_mixed_source_authorization(baseline, mismatch):
+    baseline.state.update(operational_epoch=True, mixed_source_epoch=True, authorization_mismatch=mismatch)
+    with pytest.raises(ValueError, match="executor binding differs"):
         _admit(baseline)
     assert baseline.state["native_calls"] == 1

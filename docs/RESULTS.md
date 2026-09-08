@@ -346,12 +346,16 @@ or timeout cause.
 The subsequent [fixed-batch-eight baseline](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/72b18f0afdfc515a5b492c9afcb314bcd0af20b6/evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/baseline-measurement-v1.json)
 retains all 236 TRAIN/DEV stories and 178 criteria: 5,428 logical requests per
 endpoint. Eight is an operating setting, not a qualified empirical batch cap.
-As of 2026-09-07, Grok has 60 admitted requests and 468 judgments after the
+As of 2026-09-07, Grok has 68 admitted requests and 532 judgments after the
 [one-attempt recovery](../evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/baseline-contact-51-recovery-v1.json)
 passed independent native replay. All 676 original files, including the failed
 attempt and accepted prefix, remain preserved. The new request/session identities
 differ from the original attempt and every accepted predecessor. Collection
-continued through request 60 after independent continuation review. The renewed route
+continued through request 68 after independent continuation review. Cohort 6
+is settled through 60; cohort 7's eight-request prefix passed independent replay.
+Its continuation stopped before request 69 because a local recovery guard
+incorrectly applied a cohort-6 restriction to cohort 7. Requests 69–70 remain
+unsent pending a reviewed source amendment. The renewed route
 retained its accepted controls and used owner-attested remaining included credit
 and no charge risk, with no Settings observation.
 
@@ -366,8 +370,8 @@ parallel, while requiring the Grok TRAIN winner and DEV freeze before
 comparative analysis. The resulting evidence must be labeled sequencing-amended
 after partial Sol observation. The [first amended cohort](../evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/sol-amended-cohort-13-v1.json)
 then passed independent native replay, bringing the total to 130 requests and
-1,010 judgments. Four further cohorts passed, reaching 170 requests and
-1,318 judgments. All 170 local thread identities are distinct; every new
+1,010 judgments. Nine further cohorts passed, reaching 220 requests and
+1,706 judgments. All 220 local thread identities are distinct; every new
 authorization follows adoption, and the original cutoff remains preserved.
 Collection continued under refreshed receipts. No automatic resend occurred.
 
