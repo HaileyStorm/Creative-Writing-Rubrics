@@ -346,16 +346,17 @@ or timeout cause.
 The subsequent [fixed-batch-eight baseline](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/72b18f0afdfc515a5b492c9afcb314bcd0af20b6/evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/baseline-measurement-v1.json)
 retains all 236 TRAIN/DEV stories and 178 criteria: 5,428 logical requests per
 endpoint. Eight is an operating setting, not a qualified empirical batch cap.
-As of 2026-09-07, Grok has 68 admitted requests and 532 judgments after the
+As of 2026-09-08 UTC, Grok has 69 replay-verified requests and 534 judgments after the
 [one-attempt recovery](../evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/baseline-contact-51-recovery-v1.json)
 passed independent native replay. All 676 original files, including the failed
 attempt and accepted prefix, remain preserved. The new request/session identities
 differ from the original attempt and every accepted predecessor. Collection
 continued through request 68 after independent continuation review. Cohort 6
-is settled through 60; cohort 7's eight-request prefix passed independent replay.
-Its continuation stopped before request 69 because a local recovery guard
-incorrectly applied a cohort-6 restriction to cohort 7. Requests 69–70 remain
-unsent pending a reviewed source amendment. The renewed route
+is settled through 60. A reviewed source amendment corrected a local guard
+that incorrectly applied a cohort-6 restriction to cohort 7; request 69 then
+passed independent native replay. Request 70 failed structured-output validation
+and remains consumed and unresolved. Cohort 7 is unsettled and request 71 has
+not been authorized. The renewed route
 retained its accepted controls and used owner-attested remaining included credit
 and no charge risk, with no Settings observation.
 
@@ -373,7 +374,16 @@ then passed independent native replay, bringing the total to 130 requests and
 1,010 judgments. Nine further cohorts passed, reaching 220 requests and
 1,706 judgments. All 220 local thread identities are distinct; every new
 authorization follows adoption, and the original cutoff remains preserved.
-Collection continued under refreshed receipts. No automatic resend occurred.
+Collection continued under refreshed receipts through request 230, but requests
+221–230 remain unadmitted: request 221 emitted a recovered retryable-transport
+error before a valid terminal response, which the frozen strict replay rejects.
+A separate, hash-bound recovery interpreter and its analysis integration passed
+local tests and independent source review. Independent real-record replay
+reproduced the candidate byte-for-byte; owner adoption remains required. Its evidence
+is limited to source-bound launcher control flow; independent process exit,
+internal retry count, contact cardinality, and provider identity attestation
+remain unproven. The original strict interpreter and evidence stay unchanged.
+No automatic resend occurred, and request 231 has not been authorized.
 
 Recovery-aware Grok TRAIN/DEV analysis and the original-sequence Sol comparison
 are [implemented and locally tested](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/72b18f0afdfc515a5b492c9afcb314bcd0af20b6/evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/README.md).

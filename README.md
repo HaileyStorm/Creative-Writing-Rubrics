@@ -64,10 +64,13 @@ The live release-facing work is narrower than the historical experiment log:
   or automatic resends.
 - [Dryad source and full-HBQ preparation](docs/RESULTS.md#dryad-source-and-full-hbq-preparation)
   adds an audited independent corpus and a frozen 176 TRAIN / 60 DEV / 57
-  confirmation split. The separate fixed-batch-eight baseline has 68 admitted
+  confirmation split. The separate fixed-batch-eight baseline has 69 replay-verified
   Grok requests, including one separately authorized replacement whose native
   replay passed while preserving the original failed attempt.
-  Sol has 220 independently admitted requests under the approved sequencing amendment. Its
+  Request 70 failed structured-output validation and remains unresolved.
+  Sol has 220 independently admitted requests under the approved sequencing amendment;
+  requests 221–230 are consumed but unadmitted after a recovered-transport anomaly.
+  A separately tested recovery interpreter awaits owner adoption. Its
   preserved first 120 requests preceded the protocol's Grok selection stage
   and remain ineligible under the original sequence. The amended continuation
   and its native prefix have passed independent review. Analysis code

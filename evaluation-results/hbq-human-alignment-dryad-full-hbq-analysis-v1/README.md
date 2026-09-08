@@ -123,6 +123,25 @@ Both mathematical APIs share the same runtime selector. The baseline path requir
 
 ## First native baseline cohort and next boundary
 
+### Recovered Sol transport interpretation
+
+`sol_recovered_transport_admission.py` provides a separate, opt-in interpretation
+of the exact ordinal-221 recovered-transport incident. `verify_candidate` replays
+the preserved pass and returns commitments only, with execution and study
+admission authority false. Admission requires an explicit owner adoption record
+bound to the proposal, incident, reviewed interpreter, tests, candidate, and
+independent record review. `sol_analysis_workflow.py` accepts that same adoption
+and propagates its recovery provenance only through this explicit path.
+
+The existing strict interpreter remains necessary for ordinary replay and frozen
+historical evidence. The recovery records source-bound launcher control flow,
+not independently observed process exit, internal retry count, native contact
+cardinality, or provider identity attestation. It grants no resend authority.
+The recovery and unchanged strict regressions passed 78 tests; analysis
+integration passed 23 tests and independent source review. Independent real-record
+review reproduced the candidate byte-for-byte; owner adoption remains pending.
+Requests 221–230 are therefore still unadmitted.
+
 [baseline-cohort-1-v1.json](baseline-cohort-1-v1.json) records ten settled native requests from `49f662f`, independently replayed against the ledger and 33 predecessor exclusions. The 145-file execution prefix has a verified byte-exact local snapshot. Four approvals account for 3/3/3/1 contacts; no completed request was resent. These ten requests cover only 80 of the first story's 178 criteria. Score and coverage remain null, and neither a full story pass nor the complete baseline is admitted.
 
 Real resume exposed `CWR-BASELINE-VERDICT-AGGREGATE-GROWTH-20260906`: the candidate helper treats the checkpoint-derived `verdicts.jsonl` aggregate as an unchanged whole file, although the runner regenerates it as accepted checkpoints accumulate. Independently reviewed manual preparation under the existing approval schema verified the actual complete native prefixes, reconstructed each older aggregate byte-for-byte from its checkpoints, and proved those bytes remained literal prefixes of the new aggregate. Separate immutable local proofs retain the failed-helper explanation and all commitments; no execution or host gate was disabled. This temporary method was limited to cohort 1 and expired when it settled.

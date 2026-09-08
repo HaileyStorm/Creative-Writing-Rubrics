@@ -16,6 +16,7 @@ ROOT = Path(__file__).resolve().parent
 REPOSITORY = ROOT.parents[1]
 BASELINE_WORKFLOW_PATH = ROOT / "baseline_analysis_workflow.py"
 SOL_ADMISSION_PATH = ROOT / "sol_pass_admission.py"
+RECOVERED_SOL_ADMISSION_PATH = ROOT / "sol_recovered_transport_admission.py"
 AMENDMENT_PATH = ROOT / "sol_amended_execution.py"
 DEV_COUNT = 60
 ADMITTED_COUNT = 236
@@ -290,6 +291,79 @@ def _capture_sol_sources(sol: ModuleType, expected: Mapping[str, str]) -> dict[P
     return captured
 
 
+def _transport_adoption_context(
+    *, transport_adoption_path: Path | str | None,
+    expected_transport_adoption_sha256: str | None,
+    transport_incident_path: Path | str | None,
+    expected_recovered_interpreter_sha256: str | None,
+    expected_sol_admission_sha256: str,
+) -> dict[str, Any] | None:
+    options = (
+        transport_adoption_path, expected_transport_adoption_sha256,
+        transport_incident_path, expected_recovered_interpreter_sha256,
+    )
+    if all(option is None for option in options):
+        return None
+    if any(option is None for option in options):
+        raise ValueError("Recovered transport adoption arguments must be supplied together")
+    helper_path, helper_raw = _read_pinned(
+        RECOVERED_SOL_ADMISSION_PATH, expected_recovered_interpreter_sha256,
+        "Recovered Sol transport interpreter",
+    )
+    adoption_path, adoption_raw = _read_pinned(
+        transport_adoption_path, expected_transport_adoption_sha256,
+        "Recovered Sol transport adoption",
+    )
+    incident_path = Path(transport_incident_path).resolve()
+    incident_raw = incident_path.read_bytes()
+    helper = _load(helper_path, helper_raw, "recovered_sol_transport_admission")
+    provenance = helper.verify_adoption(
+        adoption_path, expected_adoption_sha256=expected_transport_adoption_sha256,
+        incident_path=incident_path,
+    )
+    required = {
+        "schema_version", "evidence_class", "adoption_sha256", "proposal_sha256", "incident_sha256",
+        "interpreter_sha256", "strict_admission_sha256", "executor_sha256", "shared_parser_sha256",
+        "allowlist", "candidate_verification_sha256", "execution_authority", "provider_calls",
+        "internal_retry_cardinality", "native_endpoint_contact_cardinality", "identity_evidence",
+        "provider_attested", "observed_external_launch_count", "observed_process_exit_code",
+        "independent_process_exit_receipt",
+    }
+    if (not isinstance(provenance, Mapping) or set(provenance) != required
+            or provenance.get("schema_version") != 1
+            or provenance.get("evidence_class") != "recovered_transport_exact_ordinal_221_v1"
+            or provenance.get("adoption_sha256") != expected_transport_adoption_sha256
+            or provenance.get("incident_sha256") != _sha(incident_raw)
+            or provenance.get("interpreter_sha256") != expected_recovered_interpreter_sha256
+            or provenance.get("strict_admission_sha256") != expected_sol_admission_sha256
+            or provenance.get("execution_authority") is not False
+            or provenance.get("provider_calls") != 0
+            or provenance.get("internal_retry_cardinality") != "unproven"
+            or provenance.get("native_endpoint_contact_cardinality") != "unproven"
+            or provenance.get("identity_evidence") != "requested_only"
+            or provenance.get("provider_attested") is not False
+            or provenance.get("observed_external_launch_count") is not None
+            or provenance.get("observed_process_exit_code") is not None
+            or provenance.get("independent_process_exit_receipt") is not False):
+        raise ValueError("Recovered Sol transport provenance differs")
+    for key in (
+        "proposal_sha256", "incident_sha256", "interpreter_sha256", "strict_admission_sha256",
+        "executor_sha256", "shared_parser_sha256", "candidate_verification_sha256",
+    ):
+        _hash(provenance[key], f"Recovered Sol transport {key}")
+    allowlist = provenance.get("allowlist")
+    helper_allowlist = getattr(helper, "ALLOWLIST", None)
+    if (not isinstance(allowlist, Mapping) or not isinstance(helper_allowlist, Mapping)
+            or _canonical(allowlist) != _canonical(helper_allowlist)
+            or allowlist.get("ordinal") != 221):
+        raise ValueError("Recovered Sol transport allowlist differs")
+    return {
+        "helper": helper,
+        "provenance": dict(provenance),
+        "captured": {helper_path: helper_raw, adoption_path: adoption_raw, incident_path: incident_raw},
+    }
+
+
 def _sol_rows(baseline: ModuleType, campaign: Mapping[str, Any], partitions: Mapping[str, set[str]]) -> tuple[dict[str, list[dict[str, Any]]], dict[str, Any]]:
     if (campaign.get("evidence_class") != "complete_sol_local_lifecycle_campaign_admission"
             or campaign.get("execution_authority") is not False or campaign.get("provider_calls") != 0
@@ -316,8 +390,19 @@ def _compare_sol_sequence(
     expected_grok_dev_freeze_sha256: str, expected_wrapper_sha256: str,
     expected_sol_admission_sha256: str, expected_sol_source_bindings: Mapping[str, str],
     expected_sol_reviews: set[str], amendment: Mapping[str, Any] | None = None,
+    transport_adoption_path: Path | str | None = None,
+    expected_transport_adoption_sha256: str | None = None,
+    transport_incident_path: Path | str | None = None,
+    expected_recovered_interpreter_sha256: str | None = None,
 ) -> dict[str, Any]:
     """Replay the shared Grok/Sol composition with one explicit sequencing mode."""
+    transport = _transport_adoption_context(
+        transport_adoption_path=transport_adoption_path,
+        expected_transport_adoption_sha256=expected_transport_adoption_sha256,
+        transport_incident_path=transport_incident_path,
+        expected_recovered_interpreter_sha256=expected_recovered_interpreter_sha256,
+        expected_sol_admission_sha256=expected_sol_admission_sha256,
+    )
     own_path, own_raw = _read_pinned(Path(__file__), expected_wrapper_sha256, "Sol analysis workflow")
     freeze_path, freeze_raw = _read_pinned(grok_dev_freeze_path, expected_grok_dev_freeze_sha256, "Grok DEV freeze")
     sol_path, sol_raw = _read_pinned(SOL_ADMISSION_PATH, expected_sol_admission_sha256, "Sol admission")
@@ -331,6 +416,7 @@ def _compare_sol_sequence(
         runtime_manifest_path, target_freeze_path, train_targets_path, dev_targets_path, frozen_fit_path,
         train_freeze_path, grok_dev_comparison_path, grok_dev_freeze_path,
         *((recovery["manifest_path"],) if recovery is not None else ()),
+        *(tuple(transport["captured"]) if transport is not None else ()),
     )
     captured, admission_module, comparison, finalizer = baseline._capture(
         freeze["workflow"]["sha256"], freeze["sources"]["admission_sha256"],
@@ -340,6 +426,8 @@ def _compare_sol_sequence(
     captured.update({own_path: own_raw, sol_path: sol_raw, freeze_path: freeze_raw})
     if amendment is not None:
         captured.update(amendment["captured"])
+    if transport is not None:
+        captured.update(transport["captured"])
     target_freeze_checked, target_freeze_raw, target_freeze = baseline._target_freeze(target_freeze_path)
     captured[target_freeze_checked] = target_freeze_raw
     admission = _grok_admission(
@@ -405,10 +493,22 @@ def _compare_sol_sequence(
         raise ValueError("Frozen Sol campaign plan differs")
     captured[plan_path] = plan_raw
     captured.update(_capture_sol_sources(sol, expected_sol_source_bindings))
-    campaign = sol.admit_campaign(
-        Path(shared_plan_root), Path(sol_execution_root), expected_plan_sha256=sol.PLAN_SHA256,
-        expected_source_bindings=expected_sol_source_bindings, expected_reviews=expected_sol_reviews,
-    )
+    if transport is None:
+        campaign = sol.admit_campaign(
+            Path(shared_plan_root), Path(sol_execution_root), expected_plan_sha256=sol.PLAN_SHA256,
+            expected_source_bindings=expected_sol_source_bindings, expected_reviews=expected_sol_reviews,
+        )
+    else:
+        campaign = transport["helper"].admit_campaign(
+            Path(shared_plan_root), Path(sol_execution_root), expected_plan_sha256=sol.PLAN_SHA256,
+            expected_source_bindings=expected_sol_source_bindings, expected_reviews=expected_sol_reviews,
+            adoption_path=transport_adoption_path,
+            expected_adoption_sha256=expected_transport_adoption_sha256,
+            incident_path=transport_incident_path,
+        )
+        if (not isinstance(campaign, Mapping)
+                or _canonical(campaign.get("transport_recovery")) != _canonical(transport["provenance"])):
+            raise ValueError("Recovered Sol transport campaign provenance differs")
     chronology = (_chronology(sol, shared_plan_root, sol_execution_root, selection_frozen_at)
                   if amendment is None else _chronology(sol, shared_plan_root, sol_execution_root, selection_frozen_at, amendment))
     projected_sol, sol_binding = _sol_rows(baseline, campaign, partitions)
@@ -489,6 +589,8 @@ def _compare_sol_sequence(
             "deviation_label": "sequencing_amended_after_partial_sol_observation",
             "review_binding_root": str(amendment["bindings_root"]),
         }
+    if transport is not None:
+        outer["sol_admission"]["transport_recovery"] = transport["provenance"]
     artifacts = {"sol-dev-comparison-unadmitted.json": sol_result_raw, "sol-dev-freeze.json": _canonical(outer)}
     return {"artifacts": baseline._write(output, artifacts), "freeze": outer}
 
@@ -502,6 +604,10 @@ def compare_original_sequence_sol(
     expected_grok_dev_freeze_sha256: str, expected_wrapper_sha256: str,
     expected_sol_admission_sha256: str, expected_sol_source_bindings: Mapping[str, str],
     expected_sol_reviews: set[str],
+    transport_adoption_path: Path | str | None = None,
+    expected_transport_adoption_sha256: str | None = None,
+    transport_incident_path: Path | str | None = None,
+    expected_recovered_interpreter_sha256: str | None = None,
 ) -> dict[str, Any]:
     """Rescore full Sol DEV leaves only after the frozen Grok selection."""
     return _compare_sol_sequence(
@@ -511,7 +617,11 @@ def compare_original_sequence_sol(
         expected_grok_dev_freeze_sha256=expected_grok_dev_freeze_sha256,
         expected_wrapper_sha256=expected_wrapper_sha256,
         expected_sol_admission_sha256=expected_sol_admission_sha256,
-        expected_sol_source_bindings=expected_sol_source_bindings, expected_sol_reviews=expected_sol_reviews)
+        expected_sol_source_bindings=expected_sol_source_bindings, expected_sol_reviews=expected_sol_reviews,
+        transport_adoption_path=transport_adoption_path,
+        expected_transport_adoption_sha256=expected_transport_adoption_sha256,
+        transport_incident_path=transport_incident_path,
+        expected_recovered_interpreter_sha256=expected_recovered_interpreter_sha256)
 
 
 def compare_amended_sequence_sol(
@@ -525,6 +635,10 @@ def compare_amended_sequence_sol(
     expected_sol_reviews: set[str], amendment_manifest_path: Path | str,
     cohort_bindings_root: Path | str, approval_path: Path | str, cutoff_path: Path | str,
     native_root: Path | str,
+    transport_adoption_path: Path | str | None = None,
+    expected_transport_adoption_sha256: str | None = None,
+    transport_incident_path: Path | str | None = None,
+    expected_recovered_interpreter_sha256: str | None = None,
 ) -> dict[str, Any]:
     """Replay an approved observed-prefix continuation after the frozen Grok selection."""
     if Path(sol_execution_root).resolve() != Path(native_root).resolve():
@@ -540,4 +654,7 @@ def compare_amended_sequence_sol(
         expected_wrapper_sha256=expected_wrapper_sha256,
         expected_sol_admission_sha256=expected_sol_admission_sha256,
         expected_sol_source_bindings=expected_sol_source_bindings, expected_sol_reviews=expected_sol_reviews,
-        amendment=amendment)
+        amendment=amendment, transport_adoption_path=transport_adoption_path,
+        expected_transport_adoption_sha256=expected_transport_adoption_sha256,
+        transport_incident_path=transport_incident_path,
+        expected_recovered_interpreter_sha256=expected_recovered_interpreter_sha256)

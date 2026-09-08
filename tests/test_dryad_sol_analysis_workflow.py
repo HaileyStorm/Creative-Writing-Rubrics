@@ -14,6 +14,8 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/sol_analysis_workflow.py"
+RECOVERED_SOURCE = ROOT / "evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/sol_recovered_transport_admission.py"
+RECOVERED_INTERPRETER_SHA256 = "f13452e7ff878f2368f64159060362f6ecf6320e74e45a9e7d7f93362b964930"
 
 
 def _sha(raw: bytes) -> str:
@@ -26,6 +28,15 @@ def _canonical(value: object) -> bytes:
 
 def _module():
     spec = importlib.util.spec_from_file_location("dryad_sol_analysis_workflow_test", SOURCE)
+    module = importlib.util.module_from_spec(spec)
+    assert spec.loader is not None
+    spec.loader.exec_module(module)
+    return module
+
+
+def _recovered_module():
+    assert _sha(RECOVERED_SOURCE.read_bytes()) == RECOVERED_INTERPRETER_SHA256
+    spec = importlib.util.spec_from_file_location("dryad_sol_recovered_transport_test", RECOVERED_SOURCE)
     module = importlib.util.module_from_spec(spec)
     assert spec.loader is not None
     spec.loader.exec_module(module)
@@ -130,6 +141,41 @@ def synthetic(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
     sol = SimpleNamespace(PLAN_SHA256=_sha(plan_raw), _time=_utc,
                           admit_campaign=lambda *_args, **_kwargs: copy.deepcopy(campaign),
                           _json=lambda raw, label: subject._json(raw, label))
+    transport_source = root / "sol_recovered_transport_admission.py"; transport_source.write_bytes(b"transport")
+    adoption = root / "transport-adoption.json"; adoption.write_bytes(b"adoption")
+    incident = root / "transport-incident.json"; incident.write_bytes(b"incident")
+    allowlist = copy.deepcopy(_recovered_module().ALLOWLIST)
+    transport_recovery = {
+        "schema_version": 1, "evidence_class": "recovered_transport_exact_ordinal_221_v1",
+        "adoption_sha256": _sha(adoption.read_bytes()), "proposal_sha256": "7" * 64,
+        "incident_sha256": _sha(incident.read_bytes()), "interpreter_sha256": _sha(transport_source.read_bytes()),
+        "strict_admission_sha256": _sha(b"sol"), "executor_sha256": "8" * 64,
+        "shared_parser_sha256": "9" * 64, "allowlist": allowlist,
+        "candidate_verification_sha256": "a" * 64, "execution_authority": False,
+        "provider_calls": 0, "internal_retry_cardinality": "unproven",
+        "native_endpoint_contact_cardinality": "unproven", "identity_evidence": "requested_only",
+        "provider_attested": False, "observed_external_launch_count": None,
+        "observed_process_exit_code": None, "independent_process_exit_receipt": False,
+    }
+
+    def verify_adoption(path, *, expected_adoption_sha256, incident_path):
+        if _sha(Path(path).read_bytes()) != expected_adoption_sha256:
+            raise ValueError("Recovery adoption bytes differ")
+        if _sha(Path(incident_path).read_bytes()) != transport_recovery["incident_sha256"]:
+            raise ValueError("Recovery incident differs")
+        return copy.deepcopy(transport_recovery)
+
+    def admit_recovered_campaign(*_args, **kwargs):
+        verified = verify_adoption(
+            kwargs["adoption_path"], expected_adoption_sha256=kwargs["expected_adoption_sha256"],
+            incident_path=kwargs["incident_path"],
+        )
+        return {**copy.deepcopy(campaign), "transport_recovery": verified}
+
+    transport = SimpleNamespace(
+        ALLOWLIST=copy.deepcopy(allowlist), verify_adoption=verify_adoption,
+        admit_campaign=admit_recovered_campaign,
+    )
     comparison_raw = _canonical(compare(project({"endpoint_grok_rows": rows}, partitions)[0]["DEV"], [{"opaque_story_id": item, "partition": "DEV"} for item in sorted(dev_ids)], fit_raw))
     workflow_sha = _sha(b"baseline")
     freeze = {
@@ -150,10 +196,15 @@ def synthetic(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
     freeze_raw = _canonical(freeze); grok_freeze = root / "grok-dev-freeze.json"; grok_freeze.write_bytes(freeze_raw)
     grok_comparison = root / "grok-comparison.json"; grok_comparison.write_bytes(comparison_raw)
     def loader(path, raw, _label):
-        return baseline if Path(path).name == "baseline_analysis_workflow.py" else sol
+        if Path(path).name == "baseline_analysis_workflow.py":
+            return baseline
+        if Path(path).name == "sol_recovered_transport_admission.py":
+            return transport
+        return sol
     monkeypatch.setattr(subject, "_load", loader)
     monkeypatch.setattr(subject, "BASELINE_WORKFLOW_PATH", root / "baseline_analysis_workflow.py")
     monkeypatch.setattr(subject, "SOL_ADMISSION_PATH", root / "sol_pass_admission.py")
+    monkeypatch.setattr(subject, "RECOVERED_SOL_ADMISSION_PATH", transport_source)
     (root / "baseline_analysis_workflow.py").write_bytes(b"baseline")
     (root / "sol_pass_admission.py").write_bytes(b"sol")
     monkeypatch.setattr(subject, "_capture_sol_sources", lambda *_args: {})
@@ -162,7 +213,8 @@ def synthetic(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
                            sol_execution=sol_execution, runtime=runtime, target=target, train_target=train_target,
                            dev_target=dev_target, fit=fit, train_freeze=train_freeze, grok_comparison=grok_comparison,
                            grok_freeze=grok_freeze, freeze=freeze, baseline=baseline, campaign=campaign,
-                           grok_admission=admission)
+                           grok_admission=admission, transport_source=transport_source, adoption=adoption,
+                           incident=incident, transport_recovery=transport_recovery, transport=transport)
 
 
 def _write(path: Path, artifacts: dict[str, bytes]) -> dict[str, str]:
@@ -171,15 +223,24 @@ def _write(path: Path, artifacts: dict[str, bytes]) -> dict[str, str]:
     return {name: _sha(raw) for name, raw in artifacts.items()}
 
 
-def _run(case, output: Path | None = None):
+def _run(case, output: Path | None = None, **kwargs):
     return case.subject.compare_original_sequence_sol(
         case.public, case.plan, case.grok_execution, case.sol_execution, case.runtime, case.target,
         case.train_target, case.dev_target, case.fit, case.train_freeze, case.grok_comparison,
         case.grok_freeze, output or (case.root / "external-output"),
         expected_grok_dev_freeze_sha256=_sha(case.grok_freeze.read_bytes()),
         expected_wrapper_sha256=_sha(SOURCE.read_bytes()), expected_sol_admission_sha256=_sha((case.root / "sol_pass_admission.py").read_bytes()),
-        expected_sol_source_bindings={"source.py": "a" * 64}, expected_sol_reviews={"b" * 64},
+        expected_sol_source_bindings={"source.py": "a" * 64}, expected_sol_reviews={"b" * 64}, **kwargs,
     )
+
+
+def _transport_options(case) -> dict[str, object]:
+    return {
+        "transport_adoption_path": case.adoption,
+        "expected_transport_adoption_sha256": _sha(case.adoption.read_bytes()),
+        "transport_incident_path": case.incident,
+        "expected_recovered_interpreter_sha256": _sha(case.transport_source.read_bytes()),
+    }
 
 
 def test_full_shaped_provider_free_composition_is_original_sequence_only(synthetic):
@@ -190,7 +251,65 @@ def test_full_shaped_provider_free_composition_is_original_sequence_only(synthet
     assert result["freeze"]["workflow"] == {"sha256": _sha(SOURCE.read_bytes())}
     assert result["freeze"]["sol_admission"]["chronology"]["checkpoint_count"] == 5428
     assert set(result["freeze"]["sol_admission"]["row_binding"]) == {"endpoint_sol_rows_sha256", "projected_rows_sha256"}
+    assert "transport_recovery" not in result["freeze"]["sol_admission"]
     assert (synthetic.root / "external-output" / "sol-dev-comparison-unadmitted.json").is_file()
+
+
+@pytest.mark.parametrize("missing", [
+    "transport_adoption_path", "expected_transport_adoption_sha256",
+    "transport_incident_path", "expected_recovered_interpreter_sha256",
+])
+def test_rejects_partial_recovered_transport_adoption_before_replay(synthetic, monkeypatch, missing):
+    monkeypatch.setattr(
+        synthetic.baseline, "_output_preflight",
+        lambda *_args: (_ for _ in ()).throw(AssertionError("replay should not begin")),
+    )
+    options = _transport_options(synthetic)
+    options.pop(missing)
+    with pytest.raises(ValueError, match="arguments must be supplied together"):
+        _run(synthetic, **options)
+
+
+@pytest.mark.parametrize("kind", ["interpreter", "adoption", "incident", "strict_source"])
+def test_rejects_recovered_transport_hash_or_source_drift(synthetic, kind):
+    options = _transport_options(synthetic)
+    if kind == "interpreter":
+        options["expected_recovered_interpreter_sha256"] = "0" * 64
+    elif kind == "adoption":
+        options["expected_transport_adoption_sha256"] = "0" * 64
+    elif kind == "incident":
+        synthetic.incident.write_bytes(b"changed")
+    else:
+        synthetic.transport_recovery["strict_admission_sha256"] = "0" * 64
+    with pytest.raises(ValueError):
+        _run(synthetic, **options)
+
+
+@pytest.mark.parametrize("fault", ["omitted", "mismatched"])
+def test_rejects_missing_or_mismatched_recovered_transport_campaign_provenance(synthetic, monkeypatch, fault):
+    def malformed_campaign(*_args, **_kwargs):
+        result = copy.deepcopy(synthetic.campaign)
+        if fault == "mismatched":
+            result["transport_recovery"] = {**synthetic.transport_recovery, "adoption_sha256": "0" * 64}
+        return result
+
+    monkeypatch.setattr(synthetic.transport, "admit_campaign", malformed_campaign)
+    with pytest.raises(ValueError, match="campaign provenance"):
+        _run(synthetic, **_transport_options(synthetic))
+
+
+def test_recovered_transport_opt_in_carries_ordinal_221_without_changing_comparison(synthetic):
+    pinned_interpreter = _recovered_module()
+    strict = _run(synthetic, synthetic.root / "strict-output")
+    recovered = _run(synthetic, synthetic.root / "recovered-output", **_transport_options(synthetic))
+    provenance = recovered["freeze"]["sol_admission"]["transport_recovery"]
+    assert provenance == synthetic.transport_recovery
+    assert provenance["allowlist"] == pinned_interpreter.ALLOWLIST
+    assert provenance["allowlist"]["ordinal"] == 221
+    assert provenance["internal_retry_cardinality"] == "unproven"
+    assert provenance["native_endpoint_contact_cardinality"] == "unproven"
+    assert recovered["freeze"]["inner"] == strict["freeze"]["inner"]
+    assert recovered["artifacts"]["sol-dev-comparison-unadmitted.json"] == strict["artifacts"]["sol-dev-comparison-unadmitted.json"]
 
 
 @pytest.mark.parametrize("stamp", [None, "2026-09-07T00:00:00-07:00", "9999-01-01T00:00:00Z"])
