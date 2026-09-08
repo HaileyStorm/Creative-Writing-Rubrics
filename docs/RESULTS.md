@@ -364,12 +364,13 @@ The [sequencing amendment](https://github.com/HaileyStorm/Creative-Writing-Rubri
 was [approved by the owner](../evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/sol-sequencing-amendment-v1.json)
 after partial Sol observation. It preserves the first 120 requests, which remain
 ineligible under the original ordering rule, and requires a Grok TRAIN winner and
-DEV freeze before comparative analysis. As of 2026-09-08 UTC, Sol has 330 requests,
-2,556 verdicts, and 330 unique threads. Only ordinal 221 uses the
+DEV freeze before comparative analysis. As of 2026-09-08 UTC, Sol has 400 requests,
+3,098 verdicts, and 400 unique threads. Only ordinal 221 uses the
 [owner-adopted recovered transport](../evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/sol-recovered-transport-adoption-v1.json);
 native endpoint contact cardinality and internal retry cardinality remain unproven.
-No request 331 has started. These are incomplete collection counts, not alignment
-metrics or complete-study admission.
+Independent admission covers requests 1–400; later collection is outside this
+checkpoint. These are incomplete collection counts, not alignment metrics or
+complete-study admission.
 
 Recovery-aware Grok TRAIN/DEV analysis and the original-sequence Sol comparison
 are [implemented and locally tested](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/72b18f0afdfc515a5b492c9afcb314bcd0af20b6/evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/README.md).

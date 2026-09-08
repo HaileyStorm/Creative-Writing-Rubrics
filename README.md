@@ -74,12 +74,13 @@ The live release-facing work is narrower than the historical experiment log:
   is settled, while the recovered request lacks native CLI-envelope/request-ID
   binding; the original 51/70 attempts and prior 69 commitments remain
   preserved as historical evidence. No request 81 has started.
-  Sol has 330 independently admitted requests and 2,556 verdicts under the
+  Sol has 400 independently admitted requests and 3,098 verdicts under the
   sequencing amendment adopted after partial Sol observation.
   The owner [adopted the exact request-221 transport recovery](evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/sol-recovered-transport-adoption-v1.json),
   and subsequent collection passed independent replay. Its sole recovered
   transport is request 221; native endpoint and internal-retry cardinality remain
-  unproven, and no request 331 has started. Its
+  unproven. Independent admission covers requests 1–400; later collection is
+  outside this checkpoint. Its
   preserved first 120 requests preceded the protocol's Grok selection stage
   and remain ineligible under the original sequence. The amended continuation
   has passed independent review. Complete native
