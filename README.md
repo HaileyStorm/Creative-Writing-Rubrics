@@ -57,27 +57,34 @@ The live release-facing work is narrower than the historical experiment log:
   is a standalone Sol TRAIN result. Grok quota exhaustion left its paired run
   incomplete. The later [WPB collection](docs/RESULTS.md#wpb-terminal-collection)
   originally stopped after 89 successful cells and one ambiguous terminal cell.
-  Authorized recovery admitted the replacement, bringing the total to 90/129,
-  then stopped on a structured-output failure; 38 cells remain untouched.
+  As of 2026-09-08 UTC, independent recovery admits 101 native cells plus one
+  owner-adopted local-session schema recovery: 102/129. Eleven new native
+  admissions followed the UUID precontact fix. Cell `0918` was definitely not
+  contacted because its frozen prompt exceeded the broker's history guard; 26 later cells are
+  prepared only, leaving 27 cells without collection.
   The [exact local schema repair was adopted](evaluation-results/hbq-human-alignment-wpb-compact-family-native-v1/schema-recovery-adoption-v1.json);
-  its continuation still requires reviewed dispatch. Neither incomplete collection permits subset metrics
-  or automatic resends.
+  the shared repair is staged but uninstalled, and native overlimit support is
+  unproven. This incomplete collection permits neither subset metrics nor fitting
+  nor automatic resends.
 - [Dryad source and full-HBQ preparation](docs/RESULTS.md#dryad-source-and-full-hbq-preparation)
   adds an audited independent corpus and a frozen 176 TRAIN / 60 DEV / 57
-  confirmation split. The separate fixed-batch-eight baseline has 69 replay-verified
-  Grok requests, including one separately authorized replacement whose native
-  replay passed while preserving the original failed attempt.
-  Request 70 failed structured-output validation; its
-  [exact quote repair was adopted](evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/grok70-quote-repair-adoption-v1.json),
-  while recovery settlement and continuation remain pending.
-  Sol has 250 independently admitted requests under the approved sequencing amendment.
+  confirmation split. As of 2026-09-08 UTC, the separate fixed-batch-eight baseline
+  has 80 requests and 622 verdicts: 79 admitted native requests plus one
+  owner-adopted [study recovery for request 70](evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/grok70-quote-repair-adoption-v1.json). Cohort eight
+  is settled, while the recovered request lacks native CLI-envelope/request-ID
+  binding; the original 51/70 attempts and prior 69 commitments remain
+  preserved as historical evidence. No request 81 has started.
+  Sol has 330 independently admitted requests and 2,556 verdicts under the
+  sequencing amendment adopted after partial Sol observation.
   The owner [adopted the exact request-221 transport recovery](evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/sol-recovered-transport-adoption-v1.json),
-  and subsequent collection passed independent replay. Its
+  and subsequent collection passed independent replay. Its sole recovered
+  transport is request 221; native endpoint and internal-retry cardinality remain
+  unproven, and no request 331 has started. Its
   preserved first 120 requests preceded the protocol's Grok selection stage
   and remain ineligible under the original sequence. The amended continuation
-  and its native prefix have passed independent review. Analysis code
-  is implemented, but complete native measurement and alignment results remain
-  pending, and qualification remains unsatisfied.
+  has passed independent review. Complete native
+  measurement, alignment, selection, promotion, and release claims remain
+  unestablished.
 - [CWR-guided revision gain](evaluation-results/cwr-guided-revision-gain-v6-heldout-result-v1/)
   now includes a four-item held-back comparison. Guided-minus-generic means
   were Sol `+1.00` holistic / `+0.75` compact and Grok `+0.75` / `0.00`.

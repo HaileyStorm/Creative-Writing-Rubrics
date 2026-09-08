@@ -32,10 +32,12 @@ product test succeeded; `Negative` means a proposed claim or treatment failed;
 ## Current development checkpoints — descriptive readouts, no promotion
 
 Latest: [V17 standalone Sol replication](#v17-standalone-sol-replication)
-is complete; its paired Grok run is incomplete after quota exhaustion. The
-later [WPB collection](#wpb-terminal-collection) has 90/129 admitted cells after
-authorized recovery, one new terminal structured-output failure, and 38
-untouched cells; it permits no subset metrics or automatic resend.
+is complete; its paired Grok run is incomplete after quota exhaustion. As of
+2026-09-08 UTC, the later [WPB collection](#wpb-terminal-collection) admits
+101 native cells plus one owner-adopted local-session schema recovery: 102/129.
+The next cell was definitely not contacted and 26 later cells are prepared only,
+leaving 27 without collection; it permits no subset metrics, fitting, or
+automatic resend.
 [Dryad preparation](#dryad-source-and-full-hbq-preparation)
 is implemented. Its first live qualification attempt stopped after six contacts:
 five accepted checkpoints and one semantically rejected response. It yields no
@@ -294,27 +296,23 @@ confirmation, generalization, canonical full-HBQ, or runtime-promotion claim.
 ## WPB terminal collection
 
 The later [WPB Grok settlement](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/87ae86b1cde49177b43d5791483421888f2d5ec6/evaluation-results/hbq-human-alignment-wpb-compact-family-native-v1/grok-incomplete.json)
-records 89 successful cells, one ambiguous terminal cell, and 39 unstarted
-cells out of 129 planned. The failure is `unclassified_after_launch`; the
-retained evidence does not establish quota exhaustion, HTTP 402, or a specific
-validation cause. The original campaign remains terminal. The owner separately
-[authorized recovery](../evaluation-results/hbq-human-alignment-wpb-compact-family-native-v1/recovery-authorization-v1.json)
-on 2026-09-07: preserve the original evidence, record one replacement attempt
-for the failed cell, then complete the 39 unstarted cells under a reviewed
-helper. The replacement passed independent admission, bringing the total to
-90/129. The next cell, `0843`, then failed structured-output validation because
-two evidence strings exceeded the schema's 180-character limit. Collection
-stopped with 38 untouched cells. The [local schema-recovery proposal](../evaluation-results/hbq-human-alignment-wpb-compact-family-native-v1/schema-recovery-proposal-v1.md)
-truncates only those two strings, preserving all scores. The owner
-[adopted that exact projection](../evaluation-results/hbq-human-alignment-wpb-compact-family-native-v1/schema-recovery-adoption-v1.json)
-on 2026-09-08, including its missing native CLI-envelope binding. The opt-in
-materializer and Grok selection-freeze integration passed independent review,
-13 focused tests and six downstream Sol tests. Complete analysis must retain
-128 ordinary native cells plus one local-session schema-recovered cell;
-the remaining 38 still require reviewed continuation.
-The original evidence remains preserved. Automatic resends, subset alignment
-metrics, and incomplete-campaign fits remain prohibited. This coarse family
-comparison is not a full-HBQ alignment result.
+records the historical 89 successful cells, one ambiguous terminal cell, and 39
+unstarted cells. The original campaign remains terminal, and the owner
+separately [authorized recovery](../evaluation-results/hbq-human-alignment-wpb-compact-family-native-v1/recovery-authorization-v1.json)
+while preserving that evidence. As of 2026-09-08 UTC, independent reconciliation
+admits 101 native cells plus one owner-adopted local-session schema recovery:
+102/129. Eleven new native admissions followed the UUID precontact fix. Cell
+`0918` was definitely not contacted because its frozen prompt exceeded the
+broker's 65,536-byte history guard; 26 later cells are prepared only, leaving
+27 without collection.
+The [local schema-recovery proposal](../evaluation-results/hbq-human-alignment-wpb-compact-family-native-v1/schema-recovery-proposal-v1.md)
+and [adopted projection](../evaluation-results/hbq-human-alignment-wpb-compact-family-native-v1/schema-recovery-adoption-v1.json)
+account for recovered cell `0843`, whose native CLI-envelope binding remains
+missing. Complete analysis must retain 128 native cells plus this one recovered
+cell. The shared repair is staged but uninstalled, and native overlimit support
+is unproven. The original evidence remains preserved. Automatic
+resends, subset alignment metrics, and incomplete-campaign fits remain prohibited.
+This coarse family comparison is not a full-HBQ alignment result.
 
 ## Dryad source and full-HBQ preparation
 
@@ -351,59 +349,29 @@ or timeout cause.
 The subsequent [fixed-batch-eight baseline](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/72b18f0afdfc515a5b492c9afcb314bcd0af20b6/evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/baseline-measurement-v1.json)
 retains all 236 TRAIN/DEV stories and 178 criteria: 5,428 logical requests per
 endpoint. Eight is an operating setting, not a qualified empirical batch cap.
-As of 2026-09-08 UTC, Grok has 69 replay-verified requests and 534 judgments after the
-[one-attempt recovery](../evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/baseline-contact-51-recovery-v1.json)
-passed independent native replay. All 676 original files, including the failed
-attempt and accepted prefix, remain preserved. The new request/session identities
-differ from the original attempt and every accepted predecessor. Collection
-continued through request 68 after independent continuation review. Cohort 6
-is settled through 60. A reviewed source amendment corrected a local guard
-that incorrectly applied a cohort-6 restriction to cohort 7; request 69 then
-passed independent native replay. Request 70 failed structured-output validation
-because one exact source quote exceeded the 500-character limit. The owner
-[adopted its exact local quote repair](../evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/grok70-quote-repair-adoption-v1.json)
-on 2026-09-08, including the missing native CLI-envelope/request-ID limitation.
-Recovery integration remains pending. Cohort 7 is unsettled and request 71 has
-not been authorized. The renewed route
-retained its accepted controls and used owner-attested remaining included credit
-and no charge risk, with no Settings observation.
+As of 2026-09-08 UTC, independent prefix verification admits 80 requests and
+622 verdicts: 79 admitted native requests plus one owner-adopted [study recovery
+for request 70](../evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/grok70-quote-repair-adoption-v1.json).
+Cohort eight is settled. Its recovered request lacks native CLI-envelope/request-ID
+binding. The [contact-51 recovery](../evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/baseline-contact-51-recovery-v1.json),
+request-70 adoption, original 51/70 attempts, and prior 69 commitments remain
+preserved as historical evidence. The full baseline is incomplete; the owner's
+standing continuation authority remains, but this admission record does not
+authorize a next cohort by itself. No request 81 has started, and terminal
+contacted records are not automatically resent.
 
-Sol collection stopped at 120 requests and 930 judgments after review found
-that it began before Grok TRAIN/DEV selection, contrary to the inherited
-comparison sequence. Those records retain local-lifecycle evidence, but are
-not eligible for comparison under the original ordering rule. The
-[sequencing amendment](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/e367e2ea7a26aafb848a8f26471240db070a0b74/evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/sol-sequencing-amendment-proposal-v1.md)
+The [sequencing amendment](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/e367e2ea7a26aafb848a8f26471240db070a0b74/evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/sol-sequencing-amendment-proposal-v1.md)
 was [approved by the owner](../evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/sol-sequencing-amendment-v1.json)
-on 2026-09-07. It permits carrying the exact prefix forward and collecting in
-parallel, while requiring the Grok TRAIN winner and DEV freeze before
-comparative analysis. The resulting evidence must be labeled sequencing-amended
-after partial Sol observation. The [first amended cohort](../evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/sol-amended-cohort-13-v1.json)
-then passed independent native replay, bringing the total to 130 requests and
-1,010 judgments. Nine further cohorts passed, reaching 220 requests and
-1,706 judgments. All 220 local thread identities are distinct; every new
-authorization follows adoption, and the original cutoff remains preserved.
-Collection continued under refreshed receipts through request 230, where request
-221 emitted a recovered retryable-transport
-error before a valid terminal response, which the frozen strict replay rejects.
-A separate, hash-bound recovery interpreter and its analysis integration passed
-local tests and independent source review. Independent real-record replay
-reproduced the candidate byte-for-byte. The owner
-[adopted this exact interpretation](../evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/sol-recovered-transport-adoption-v1.json)
-on 2026-09-08; independent replay then admitted the complete 230-request prefix.
-Two further cohorts passed, reaching 250 requests, 1,940 judgments and 250
-distinct local thread identities. Only ordinal 221 uses the recovered class.
-Its evidence
-is limited to source-bound launcher control flow; independent process exit,
-internal retry count, contact cardinality, and provider identity attestation
-remain unproven. The original strict interpreter and evidence stay unchanged.
-No automatic resend occurred. These are incomplete collection counts, not
-alignment metrics or complete-study admission.
+after partial Sol observation. It preserves the first 120 requests, which remain
+ineligible under the original ordering rule, and requires a Grok TRAIN winner and
+DEV freeze before comparative analysis. As of 2026-09-08 UTC, Sol has 330 requests,
+2,556 verdicts, and 330 unique threads. Only ordinal 221 uses the
+[owner-adopted recovered transport](../evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/sol-recovered-transport-adoption-v1.json);
+native endpoint contact cardinality and internal retry cardinality remain unproven.
+No request 331 has started. These are incomplete collection counts, not alignment
+metrics or complete-study admission.
 
 Recovery-aware Grok TRAIN/DEV analysis and the original-sequence Sol comparison
 are [implemented and locally tested](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/72b18f0afdfc515a5b492c9afcb314bcd0af20b6/evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/README.md).
-The latter replays complete native evidence and the frozen Grok choice, then
-checks Sol authorization times against the producer's Grok selection timestamp.
-This uses trusted local-clock chronology, not external timestamp attestation.
-The 34 synthetic workflow tests establish implementation behavior; no complete
-Dryad baseline, fitted improvement, Sol validation result, or release claim is
-established by them.
+They do not establish a complete Dryad baseline, fitted improvement, Sol
+validation, alignment, selection, promotion, or release claim.
