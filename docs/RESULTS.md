@@ -305,8 +305,13 @@ helper. The replacement passed independent admission, bringing the total to
 90/129. The next cell, `0843`, then failed structured-output validation because
 two evidence strings exceeded the schema's 180-character limit. Collection
 stopped with 38 untouched cells. The [local schema-recovery proposal](../evaluation-results/hbq-human-alignment-wpb-compact-family-native-v1/schema-recovery-proposal-v1.md)
-would truncate only those two strings, preserving all scores, but lacks the
-ordinary native CLI-envelope binding and awaits explicit owner adoption.
+truncates only those two strings, preserving all scores. The owner
+[adopted that exact projection](../evaluation-results/hbq-human-alignment-wpb-compact-family-native-v1/schema-recovery-adoption-v1.json)
+on 2026-09-08, including its missing native CLI-envelope binding. The opt-in
+materializer and Grok selection-freeze integration passed independent review,
+13 focused tests and six downstream Sol tests. Complete analysis must retain
+128 ordinary native cells plus one local-session schema-recovered cell;
+the remaining 38 still require reviewed continuation.
 The original evidence remains preserved. Automatic resends, subset alignment
 metrics, and incomplete-campaign fits remain prohibited. This coarse family
 comparison is not a full-HBQ alignment result.

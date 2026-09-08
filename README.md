@@ -59,8 +59,8 @@ The live release-facing work is narrower than the historical experiment log:
   originally stopped after 89 successful cells and one ambiguous terminal cell.
   Authorized recovery admitted the replacement, bringing the total to 90/129,
   then stopped on a structured-output failure; 38 cells remain untouched.
-  The [local schema-recovery proposal](evaluation-results/hbq-human-alignment-wpb-compact-family-native-v1/schema-recovery-proposal-v1.md)
-  awaits owner adoption. Neither incomplete collection permits subset metrics
+  The [exact local schema repair was adopted](evaluation-results/hbq-human-alignment-wpb-compact-family-native-v1/schema-recovery-adoption-v1.json);
+  its continuation still requires reviewed dispatch. Neither incomplete collection permits subset metrics
   or automatic resends.
 - [Dryad source and full-HBQ preparation](docs/RESULTS.md#dryad-source-and-full-hbq-preparation)
   adds an audited independent corpus and a frozen 176 TRAIN / 60 DEV / 57

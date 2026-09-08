@@ -18,6 +18,8 @@ CORE_CONTRACT = HERE.parent / "hbq-human-alignment-wpb-compact-family-v1" / "exp
 CORE_CONTRACT_SHA256 = "dd1638d917b32c5de2423ab58aba9d952fbca906722807b8079c1fbb72967e96"
 RECOVERY_HELPER = HERE / "recovery.py"
 RECOVERY_HELPER_SHA256 = "3bd13df9f27f71563e3a0bf444b22e5bdc3741ca5b3ef278a2254227a155f5ec"
+SCHEMA_RECOVERY_HELPER = HERE / "schema_recovery.py"
+SCHEMA_RECOVERY_CELL = "wpb-pair-wpb-en-0843"
 STUDY_ID = "hbq-human-alignment-wpb-compact-family-v1"
 RECOVERY_CELLS = 40
 LEGACY_CELLS = 89
@@ -62,6 +64,64 @@ def _pinned_recovery() -> ModuleType:
     return _module(RECOVERY_HELPER, "wpb_grok_selection_recovery")
 
 
+def _schema_options(*, schema_adoption_path: Path | str | None,
+                    expected_schema_adoption_sha256: str | None,
+                    schema_proposal_root: Path | str | None,
+                    schema_source_cell_root: Path | str | None,
+                    expected_schema_recovery_sha256: str | None) -> dict[str, Any] | None:
+    options = (schema_adoption_path, expected_schema_adoption_sha256, schema_proposal_root,
+               schema_source_cell_root, expected_schema_recovery_sha256)
+    if all(item is None for item in options):
+        return None
+    if any(item is None for item in options):
+        raise ValueError("0843 schema recovery arguments must be supplied together")
+    return {
+        "adoption_path": Path(schema_adoption_path).resolve(),
+        "adoption_sha256": _hex(expected_schema_adoption_sha256, "0843 owner adoption hash"),
+        "proposal_root": Path(schema_proposal_root).resolve(),
+        "source_cell_root": Path(schema_source_cell_root).resolve(),
+        "helper_sha256": _hex(expected_schema_recovery_sha256, "0843 schema helper hash"),
+    }
+
+
+def _schema_context(options: Mapping[str, Any] | None, plan: Mapping[str, Any]) -> dict[str, Any] | None:
+    if options is None:
+        return None
+    cells = plan.get("cells")
+    _require(isinstance(cells, list), "recovery plan cells are malformed")
+    item = next((value for value in cells if isinstance(value, Mapping) and value.get("cell_id") == SCHEMA_RECOVERY_CELL), None)
+    _require(isinstance(item, Mapping) and isinstance(item.get("payload_sha256"), str), "0843 recovery cell is unavailable")
+    raw = SCHEMA_RECOVERY_HELPER.read_bytes()
+    _require(_sha256(raw) == options["helper_sha256"], "0843 schema helper source drifted")
+    helper = _module(SCHEMA_RECOVERY_HELPER, "wpb_grok_schema_recovery")
+    materialize = getattr(helper, "materialize_adopted_projection", None)
+    _require(callable(materialize), "0843 schema helper materializer is unavailable")
+    value = materialize(
+        adoption_path=options["adoption_path"], expected_adoption_sha256=options["adoption_sha256"],
+        proposal_root=options["proposal_root"], source_cell_root=options["source_cell_root"],
+        expected_payload_sha256=item["payload_sha256"],
+    )
+    _require(isinstance(value, Mapping), "0843 schema materializer result is malformed")
+    measurement, provenance = value.get("measurement"), value.get("provenance")
+    _require(isinstance(measurement, Mapping) and isinstance(provenance, Mapping)
+             and measurement.get("cell_id") == SCHEMA_RECOVERY_CELL
+             and measurement.get("payload_sha256") == item["payload_sha256"]
+             and provenance.get("classification") == "local_session_schema_recovered"
+             and provenance.get("helper_sha256") == options["helper_sha256"]
+             and provenance.get("adoption_sha256") == options["adoption_sha256"]
+             and provenance.get("native_admission_permitted") is False
+             and provenance.get("provider_calls_made") == 0
+             and provenance.get("result_promotion_permitted") is False,
+             "0843 schema materializer provenance differs")
+    _require(SCHEMA_RECOVERY_HELPER.read_bytes() == raw, "0843 schema helper changed during materialization")
+    return {
+        "helper": {"path": str(SCHEMA_RECOVERY_HELPER.resolve()), "sha256": options["helper_sha256"]},
+        "adoption": {"path": str(options["adoption_path"]), "sha256": options["adoption_sha256"]},
+        "proposal_root": str(options["proposal_root"]), "source_cell_root": str(options["source_cell_root"]),
+        "measurement": dict(measurement), "provenance": dict(provenance),
+    }
+
+
 def _canonical(core: ModuleType, value: Any) -> bytes:
     raw = core.canonical(value)
     _require(isinstance(raw, bytes) and raw.endswith(b"\n"), "frozen core canonical JSON must use LF termination")
@@ -84,18 +144,30 @@ def _write_new(path: Path, raw: bytes) -> str:
     return _sha256(raw)
 
 
-def _source_bindings(core: ModuleType, recovery: ModuleType, recovery_root: Path, plan: Mapping[str, Any], plan_raw: bytes) -> dict[str, Any]:
+def _source_bindings(core: ModuleType, recovery: ModuleType, recovery_root: Path, plan: Mapping[str, Any],
+                     plan_raw: bytes, schema: Mapping[str, Any] | None = None) -> dict[str, Any]:
     freeze_root = Path(str(plan.get("freeze_root", ""))).resolve()
     _require(freeze_root.is_dir(), "recovery plan freeze root is unavailable")
     _require(plan.get("study_id") == STUDY_ID and getattr(core, "STUDY_ID", None) == STUDY_ID and getattr(recovery, "STUDY_ID", None) == STUDY_ID, "study identity drifted")
     _hex(plan.get("schedule_sha256"), "recovery schedule hash")
-    return {
+    bindings = {
         "core_study": {"path": str(CORE_STUDY.resolve()), "sha256": CORE_STUDY_SHA256},
         "core_contract": {"path": str(CORE_CONTRACT.resolve()), "sha256": CORE_CONTRACT_SHA256},
         "recovery_helper": {"path": str(RECOVERY_HELPER.resolve()), "sha256": RECOVERY_HELPER_SHA256},
         "recovery_plan": {"path": str((recovery_root / recovery.PLAN_NAME).resolve()), "sha256": _sha256(plan_raw)},
         "freeze_root": str(freeze_root),
         "legacy_executor": dict(plan.get("legacy_executor", {})),
+    }
+    if schema is not None:
+        bindings["schema_recovery"] = _schema_binding(schema)
+    return bindings
+
+
+def _schema_binding(schema: Mapping[str, Any]) -> dict[str, Any]:
+    return {
+        "helper": dict(schema["helper"]), "adoption": dict(schema["adoption"]),
+        "proposal_root": schema["proposal_root"], "source_cell_root": schema["source_cell_root"],
+        "provenance": dict(schema["provenance"]),
     }
 
 
@@ -118,13 +190,16 @@ def _legacy_measurements(core: ModuleType, recovery: ModuleType, plan: Mapping[s
     return [dict(item) for item in measurements], set(identifiers)
 
 
-def _recovery_measurements(core: ModuleType, recovery: ModuleType, plan: Mapping[str, Any], recovery_root: Path, resolution: Mapping[str, Any]) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+def _recovery_measurements(core: ModuleType, recovery: ModuleType, plan: Mapping[str, Any], recovery_root: Path,
+                           resolution: Mapping[str, Any], schema: Mapping[str, Any] | None = None) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     cells = plan.get("cells")
     _require(isinstance(cells, list) and len(cells) == RECOVERY_CELLS, "recovery plan must contain exactly 40 replacement cells")
     plan_cells = [dict(item) for item in cells if isinstance(item, Mapping)]
     _require(len(plan_cells) == RECOVERY_CELLS and len({str(item.get("cell_id")) for item in plan_cells}) == RECOVERY_CELLS, "recovery plan has duplicate or malformed cells")
-    admissions = [recovery._verify_admission(plan, recovery_root, item) for item in plan_cells]
-    _require(len(admissions) == RECOVERY_CELLS, "recovery native admissions are incomplete")
+    ordinary_cells = plan_cells if schema is None else [item for item in plan_cells if item["cell_id"] != SCHEMA_RECOVERY_CELL]
+    admissions = [recovery._verify_admission(plan, recovery_root, item) for item in ordinary_cells]
+    expected = RECOVERY_CELLS if schema is None else RECOVERY_CELLS - 1
+    _require(len(admissions) == expected, "recovery native admissions are incomplete")
     normalized = []
     for item in admissions:
         cell_id, payload_sha, response = item.get("cell_id"), item.get("payload_sha256"), item.get("response")
@@ -143,6 +218,8 @@ def _recovery_measurements(core: ModuleType, recovery: ModuleType, plan: Mapping
                 "response": dict(response),
             }
         )
+    if schema is not None:
+        normalized.append(dict(schema["measurement"]))
     return normalized, admissions
 
 
@@ -162,24 +239,29 @@ def _validate_measurements(core: ModuleType, freeze_root: Path, schedule_sha256:
     return [by_cell[cell_id] for cell_id in sorted(by_cell)]
 
 
-def _native_inputs(core: ModuleType, recovery: ModuleType, recovery_root: Path, expected_plan_sha256: str) -> tuple[dict[str, Any], bytes, dict[str, Any], list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]]]:
+def _native_inputs(core: ModuleType, recovery: ModuleType, recovery_root: Path, expected_plan_sha256: str,
+                   schema_options: Mapping[str, Any] | None = None) -> tuple[dict[str, Any], bytes, dict[str, Any], list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]]]:
     root = Path(recovery_root).resolve()
     plan = recovery._read_plan(root, _hex(expected_plan_sha256, "expected recovery plan hash"))
     plan_value, plan_raw = _json(root / recovery.PLAN_NAME, "recovery plan")
     _require(plan == plan_value and _sha256(plan_raw) == expected_plan_sha256, "recovery plan reader and immutable bytes disagree")
     recovery._verify_origin(plan)
+    schema = _schema_context(schema_options, plan)
     resolution, rows, _tasks = _schedule(core, recovery, plan)
     legacy, legacy_ids = _legacy_measurements(core, recovery, plan)
-    recovered, admissions = _recovery_measurements(core, recovery, plan, root, resolution)
+    recovered, admissions = _recovery_measurements(core, recovery, plan, root, resolution, schema)
     recovered_ids = {str(item["cell_id"]) for item in recovered}
     _require(len(recovered_ids) == RECOVERY_CELLS and not (legacy_ids & recovered_ids), "replacement cells overlap historical Grok votes")
-    _require(len({str(item.get("request_id_sha256")) for item in admissions}) == RECOVERY_CELLS and len({str(item.get("session_id_sha256")) for item in admissions}) == RECOVERY_CELLS, "recovery native identities are not unique")
+    expected_native = RECOVERY_CELLS if schema is None else RECOVERY_CELLS - 1
+    _require(len({str(item.get("request_id_sha256")) for item in admissions}) == expected_native and len({str(item.get("session_id_sha256")) for item in admissions}) == expected_native, "recovery native identities are not unique")
     measurements = _validate_measurements(core, Path(str(plan["freeze_root"])), str(plan["schedule_sha256"]), rows, legacy + recovered)
-    return plan, plan_raw, _source_bindings(core, recovery, root, plan, plan_raw), measurements, admissions, legacy
+    bindings = (_source_bindings(core, recovery, root, plan, plan_raw)
+                if schema is None else _source_bindings(core, recovery, root, plan, plan_raw, schema))
+    return plan, plan_raw, bindings, measurements, admissions, legacy
 
 
 def _normalized_document(source_bindings: Mapping[str, Any], schedule_sha256: str, measurements: Sequence[Mapping[str, Any]], admissions: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
-    return {
+    document = {
         "format_version": 1,
         "kind": "wpb_grok_normalized_native_measurements",
         "study_id": STUDY_ID,
@@ -196,6 +278,21 @@ def _normalized_document(source_bindings: Mapping[str, Any], schedule_sha256: st
         ],
         "measurements": [dict(item) for item in measurements],
     }
+    schema = source_bindings.get("schema_recovery")
+    if schema is not None:
+        _require(isinstance(schema, Mapping), "0843 schema recovery binding is malformed")
+        classification = {
+            "ordinary_measurements": 128, "local_session_schema_recovered_measurements": 1,
+            "recovered_cell_id": SCHEMA_RECOVERY_CELL,
+        }
+        document.pop("native_measurement_count")
+        document.pop("native_measurement_classification")
+        document["measurement_count"] = NATIVE_MEASUREMENT_COUNT
+        document["native_measurement_count"] = NATIVE_MEASUREMENT_COUNT - 1
+        document["local_session_schema_recovered_measurement_count"] = 1
+        document["measurement_evidence_classification"] = classification
+        document["schema_recovery"] = dict(schema)
+    return document
 
 
 def _evidence_descriptor(path: Path, raw: bytes) -> dict[str, Any]:
@@ -205,7 +302,7 @@ def _evidence_descriptor(path: Path, raw: bytes) -> dict[str, Any]:
 def _freeze_document(*, source_bindings: Mapping[str, Any], schedule_sha256: str, normalized: Path, normalized_raw: bytes, fit: Path, fit_raw: bytes, fit_result: Mapping[str, Any], selection_frozen_at: str, plan: Mapping[str, Any]) -> dict[str, Any]:
     selected = fit_result.get("selected_profile")
     _require(isinstance(selected, Mapping), "core fit did not select a profile")
-    return {
+    document = {
         "format_version": 1,
         "kind": "wpb_grok_train_dev_selection_freeze",
         "study_id": STUDY_ID,
@@ -231,20 +328,49 @@ def _freeze_document(*, source_bindings: Mapping[str, Any], schedule_sha256: str
         "release_or_promotion_authority": "none",
         "mae": "not_applicable_pairwise_preference_target",
     }
+    if "schema_recovery" in source_bindings:
+        classification = {
+            "ordinary_measurements": 128, "local_session_schema_recovered_measurements": 1,
+            "recovered_cell_id": SCHEMA_RECOVERY_CELL,
+        }
+        document.pop("native_measurement_count")
+        document.pop("native_measurement_classification")
+        document["measurement_count"] = NATIVE_MEASUREMENT_COUNT
+        document["native_measurement_count"] = NATIVE_MEASUREMENT_COUNT - 1
+        document["local_session_schema_recovered_measurement_count"] = 1
+        document["measurement_evidence_classification"] = classification
+        document["schema_recovery"] = dict(source_bindings["schema_recovery"])
+    return document
 
 
-def create_freeze(recovery_root: Path | str, expected_plan_sha256: str, output_root: Path | str) -> dict[str, Any]:
+def create_freeze(recovery_root: Path | str, expected_plan_sha256: str, output_root: Path | str, *,
+                  schema_adoption_path: Path | str | None = None,
+                  expected_schema_adoption_sha256: str | None = None,
+                  schema_proposal_root: Path | str | None = None,
+                  schema_source_cell_root: Path | str | None = None,
+                  expected_schema_recovery_sha256: str | None = None) -> dict[str, Any]:
     """Create a fresh immutable selection freeze after all native evidence validates."""
     core, recovery = _pinned_core(), _pinned_recovery()
+    schema_options = _schema_options(
+        schema_adoption_path=schema_adoption_path,
+        expected_schema_adoption_sha256=expected_schema_adoption_sha256,
+        schema_proposal_root=schema_proposal_root,
+        schema_source_cell_root=schema_source_cell_root,
+        expected_schema_recovery_sha256=expected_schema_recovery_sha256,
+    )
     output = Path(output_root).resolve()
     _require(not output.exists(), "selection freeze output root already exists")
-    plan, plan_raw, bindings, measurements, admissions, _legacy = _native_inputs(core, recovery, Path(recovery_root), expected_plan_sha256)
+    plan, plan_raw, bindings, measurements, admissions, _legacy = _native_inputs(
+        core, recovery, Path(recovery_root), expected_plan_sha256, schema_options,
+    )
     normalized_value = _normalized_document(bindings, str(plan["schedule_sha256"]), measurements, admissions)
     normalized_raw = _canonical(core, normalized_value)
     fit_result = core.fit_train_select_dev(Path(str(plan["freeze_root"])), measurements, trials=128)
     _require(isinstance(fit_result, Mapping) and fit_result.get("study_id") == STUDY_ID and fit_result.get("optuna") == {"version": "4.9.0", "seed": 20260904, "trials": 128}, "frozen core fit contract drifted")
     fit_raw = _canonical(core, dict(fit_result))
-    post_plan, post_plan_raw, post_bindings, post_measurements, post_admissions, _post_legacy = _native_inputs(core, recovery, Path(recovery_root), expected_plan_sha256)
+    post_plan, post_plan_raw, post_bindings, post_measurements, post_admissions, _post_legacy = _native_inputs(
+        core, recovery, Path(recovery_root), expected_plan_sha256, schema_options,
+    )
     _require(plan_raw == post_plan_raw and bindings == post_bindings and normalized_raw == _canonical(core, _normalized_document(post_bindings, str(post_plan["schedule_sha256"]), post_measurements, post_admissions)), "native inputs drifted during TRAIN/DEV selection")
     output.mkdir(parents=True, exist_ok=False)
     normalized_path, fit_path, freeze_path = output / NORMALIZED_NAME, output / FIT_NAME, output / FREEZE_NAME
@@ -259,7 +385,7 @@ def create_freeze(recovery_root: Path | str, expected_plan_sha256: str, output_r
 def _verify_static(core: ModuleType, recovery: ModuleType, freeze_path: Path, expected_sha256: str) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any], dict[str, Any], bytes, bytes]:
     freeze, freeze_raw = _json(freeze_path, "selection freeze")
     _require(_sha256(freeze_raw) == _hex(expected_sha256, "expected selection freeze hash") and freeze_raw == _canonical(core, freeze), "selection freeze bytes drifted")
-    _require(freeze.get("kind") == "wpb_grok_train_dev_selection_freeze" and freeze.get("native_measurement_count") == NATIVE_MEASUREMENT_COUNT and freeze.get("inner_core_native_admission") == "not_claimed", "selection freeze contract is malformed")
+    _require(freeze.get("kind") == "wpb_grok_train_dev_selection_freeze" and freeze.get("inner_core_native_admission") == "not_claimed", "selection freeze contract is malformed")
     evidence = freeze.get("evidence_files")
     _require(isinstance(evidence, Mapping) and set(evidence) == {NORMALIZED_NAME, FIT_NAME}, "selection freeze evidence inventory is malformed")
     normalized_path, fit_path = freeze_path.parent / NORMALIZED_NAME, freeze_path.parent / FIT_NAME
@@ -271,6 +397,29 @@ def _verify_static(core: ModuleType, recovery: ModuleType, freeze_path: Path, ex
         _require(isinstance(descriptor, Mapping) and descriptor == _evidence_descriptor(path, raw), "selection evidence commitment drifted")
     bindings = freeze.get("source_bindings")
     _require(isinstance(bindings, Mapping), "selection source bindings are malformed")
+    schema = bindings.get("schema_recovery")
+    classification = {
+        "ordinary_measurements": 128, "local_session_schema_recovered_measurements": 1,
+        "recovered_cell_id": SCHEMA_RECOVERY_CELL,
+    }
+    if schema is None:
+        _require(freeze.get("native_measurement_count") == NATIVE_MEASUREMENT_COUNT
+                 and normalized.get("native_measurement_count") == NATIVE_MEASUREMENT_COUNT
+                 and "schema_recovery" not in freeze and "measurement_evidence_classification" not in freeze
+                 and "schema_recovery" not in normalized and "measurement_evidence_classification" not in normalized,
+                 "strict selection freeze unexpectedly contains 0843 schema recovery")
+    else:
+        _require(isinstance(schema, Mapping) and freeze.get("schema_recovery") == schema
+                 and normalized.get("schema_recovery") == schema
+                 and freeze.get("measurement_count") == NATIVE_MEASUREMENT_COUNT
+                 and normalized.get("measurement_count") == NATIVE_MEASUREMENT_COUNT
+                 and freeze.get("native_measurement_count") == NATIVE_MEASUREMENT_COUNT - 1
+                 and normalized.get("native_measurement_count") == NATIVE_MEASUREMENT_COUNT - 1
+                 and freeze.get("local_session_schema_recovered_measurement_count") == 1
+                 and normalized.get("local_session_schema_recovered_measurement_count") == 1
+                 and freeze.get("measurement_evidence_classification") == classification
+                 and normalized.get("measurement_evidence_classification") == classification,
+                 "0843 schema recovery freeze provenance differs")
     return freeze, normalized, fit, dict(bindings), normalized_raw, fit_raw
 
 
@@ -290,6 +439,26 @@ def _verify_bindings(core: ModuleType, recovery: ModuleType, bindings: Mapping[s
     return plan, plan_raw
 
 
+def _schema_options_from_binding(bindings: Mapping[str, Any]) -> dict[str, Any] | None:
+    schema = bindings.get("schema_recovery")
+    if schema is None:
+        return None
+    _require(isinstance(schema, Mapping) and set(schema) == {
+        "helper", "adoption", "proposal_root", "source_cell_root", "provenance",
+    }, "0843 schema recovery binding is malformed")
+    helper, adoption = schema.get("helper"), schema.get("adoption")
+    _require(isinstance(helper, Mapping) and isinstance(adoption, Mapping)
+             and set(helper) == {"path", "sha256"} and set(adoption) == {"path", "sha256"}
+             and helper.get("path") == str(SCHEMA_RECOVERY_HELPER.resolve())
+             and isinstance(schema.get("proposal_root"), str) and isinstance(schema.get("source_cell_root"), str)
+             and isinstance(schema.get("provenance"), Mapping), "0843 schema recovery descriptors differ")
+    return _schema_options(
+        schema_adoption_path=adoption["path"], expected_schema_adoption_sha256=adoption["sha256"],
+        schema_proposal_root=schema["proposal_root"], schema_source_cell_root=schema["source_cell_root"],
+        expected_schema_recovery_sha256=helper["sha256"],
+    )
+
+
 def verify_freeze(freeze_path: Path | str, expected_sha256: str, replay_native: bool = True) -> dict[str, Any]:
     """Verify immutable freeze bindings; replay native evidence and core fit when requested."""
     _require(type(replay_native) is bool, "replay_native must be boolean")
@@ -297,7 +466,12 @@ def verify_freeze(freeze_path: Path | str, expected_sha256: str, replay_native: 
     path = Path(freeze_path).resolve()
     freeze, normalized, fit, bindings, _normalized_raw, fit_raw = _verify_static(core, recovery, path, expected_sha256)
     plan, plan_raw = _verify_bindings(core, recovery, bindings, str(freeze.get("schedule_sha256")))
-    _require(normalized.get("source_bindings") == bindings and normalized.get("schedule_sha256") == freeze.get("schedule_sha256") and normalized.get("endpoint") == "grok" and normalized.get("native_measurement_count") == NATIVE_MEASUREMENT_COUNT, "normalized export binding drifted")
+    schema_options = _schema_options_from_binding(bindings)
+    if schema_options is not None:
+        replayed_schema = _schema_context(schema_options, plan)
+        _require(replayed_schema is not None and bindings.get("schema_recovery") == _schema_binding(replayed_schema),
+                 "0843 schema recovery replay differs from frozen binding")
+    _require(normalized.get("source_bindings") == bindings and normalized.get("schedule_sha256") == freeze.get("schedule_sha256") and normalized.get("endpoint") == "grok", "normalized export binding drifted")
     measurements = normalized.get("measurements")
     _require(isinstance(measurements, list), "normalized export lacks measurements")
     _resolution, rows, _tasks = _schedule(core, recovery, plan)
@@ -305,10 +479,23 @@ def verify_freeze(freeze_path: Path | str, expected_sha256: str, replay_native: 
     _require(measurements == validated_measurements, "normalized measurement order drifted")
     if replay_native:
         recovery_root = Path(str(bindings["recovery_plan"]["path"])).parent
-        _plan, _raw, actual_bindings, actual_measurements, _admissions, _legacy = _native_inputs(core, recovery, recovery_root, str(bindings["recovery_plan"]["sha256"]))
+        _plan, _raw, actual_bindings, actual_measurements, _admissions, _legacy = _native_inputs(
+            core, recovery, recovery_root, str(bindings["recovery_plan"]["sha256"]), schema_options,
+        )
         _require(_raw == plan_raw and actual_bindings == bindings and _canonical(core, normalized) == _canonical(core, _normalized_document(actual_bindings, str(plan["schedule_sha256"]), actual_measurements, _admissions)), "selection native replay differs from frozen export")
         replayed_fit = core.fit_train_select_dev(Path(str(plan["freeze_root"])), actual_measurements, trials=128)
         _require(_canonical(core, dict(replayed_fit)) == fit_raw, "selection core TRAIN/DEV fit replay differs from frozen result")
     selected = freeze.get("selected_profile")
     _require(isinstance(selected, Mapping) and fit.get("selected_profile") == selected and fit.get("selected_profile_name") == freeze.get("selected_profile_name"), "selection profile binding drifted")
-    return {"freeze_sha256": expected_sha256, "selection_frozen_at": freeze.get("selection_frozen_at"), "selected_profile": dict(selected), "schedule_sha256": freeze.get("schedule_sha256"), "source_bindings": dict(bindings), "evidence_files": dict(freeze["evidence_files"]), "native_measurement_count": NATIVE_MEASUREMENT_COUNT}
+    result = {
+        "freeze_sha256": expected_sha256, "selection_frozen_at": freeze.get("selection_frozen_at"),
+        "selected_profile": dict(selected), "schedule_sha256": freeze.get("schedule_sha256"),
+        "source_bindings": dict(bindings), "evidence_files": dict(freeze["evidence_files"]),
+    }
+    if schema_options is None:
+        result["native_measurement_count"] = NATIVE_MEASUREMENT_COUNT
+    else:
+        result["measurement_count"] = NATIVE_MEASUREMENT_COUNT
+        result["native_measurement_count"] = NATIVE_MEASUREMENT_COUNT - 1
+        result["local_session_schema_recovered_measurement_count"] = 1
+    return result

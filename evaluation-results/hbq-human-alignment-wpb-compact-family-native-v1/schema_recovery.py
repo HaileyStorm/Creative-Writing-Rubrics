@@ -35,6 +35,7 @@ OUTCOME_SHA256 = "ca63efa971bf358cd35e544dd7fafc4283d42d20e309cdded00e3572cee465
 ATTEMPT_SHA256 = "97a39a56d7b7267fbaa397d76951dbdd8ba391fb6cdbc012b1753fa5dc377064"
 SESSION_ATTESTATION_SHA256 = "59aa037ef6363e897a9102932b639287eaec11a0b7cc27e31a100e3ebfef004a"
 VERIFIED_CANDIDATE_SHA256 = "cee5a61d89bbbc38ab3f678b85c0dc72d88a4ebe0bdec55edf5ac5c239832577"
+HISTORICAL_PROPOSAL_VERIFIER_SHA256 = "830ae3eae946064d53df4fd95c88f3db402322fa939ff306d61fc59080c3fbd8"
 INCIDENT_KEY = "4322dbf3a7a11295b8357d8d2cc19c05f400991ef51e0d06e870341e4c54dc04"
 INCIDENT_REVOKED_AT_UTC = "2026-09-07T16:41:54Z"
 _HEX = set("0123456789abcdef")
@@ -175,6 +176,13 @@ def _validate_frozen_core(projected: Mapping[str, Any]) -> dict[str, Any]:
     _require(isinstance(base_masses, Mapping), "frozen WPB core has no family masses")
     core._outcome(projected, {"core": 1.0, "craft": 1.0, "form": 1.0}, base_masses)
     return {"commit": CORE_COMMIT, "sha256": CORE_SHA256, "response_valid": True}
+
+
+def _frozen_response_sha256(response: Mapping[str, Any]) -> str:
+    core = _load_frozen_core()
+    raw = core.canonical(dict(response))
+    _require(isinstance(raw, bytes) and raw.endswith(b"\n"), "frozen WPB core canonical JSON differs")
+    return sha256(raw)
 
 
 def verify_candidate(*, proposal_root: Path, source_cell_root: Path) -> dict[str, Any]:
@@ -359,3 +367,83 @@ def validate_adoption(*, adoption: Mapping[str, Any], candidate: Mapping[str, An
         "result_promotion_permitted": False,
         "preserved_original_outcome": "ambiguous_validation_structured_output_error",
     }
+
+
+def materialize_adopted_projection(*, adoption_path: Path | str, expected_adoption_sha256: str,
+                                   proposal_root: Path | str, source_cell_root: Path | str,
+                                   expected_payload_sha256: str) -> dict[str, Any]:
+    """Return the adopted local-session projection without making a native-result claim."""
+    adoption, adoption_raw = _json(Path(adoption_path), "0843 owner adoption")
+    _require(sha256(adoption_raw) == _hex(expected_adoption_sha256, "0843 owner adoption hash"), "0843 owner adoption hash drifted")
+    proposal, source = Path(proposal_root).resolve(), Path(source_cell_root).resolve()
+    verified = verify_candidate(proposal_root=proposal, source_cell_root=source)
+    candidate = prepare_adoption_candidate(verified=verified)
+    validation = validate_adoption(adoption=adoption, candidate=candidate)
+    projected, _projected_raw = _read_exact_json(
+        proposal / "projected-agent-message.json", "projected agent message",
+        PROJECTED_MESSAGE_SHA256, PROJECTED_MESSAGE_BYTES,
+    )
+    prepared, _prepared_raw = _json(source / "prepared.json", "0843 prepared cell")
+    _require(
+        prepared == {"cell_id": CELL_ID, "kind": "unstarted", "payload_sha256": expected_payload_sha256},
+        "0843 prepared-cell payload binding drifted",
+    )
+    _require(validation == {
+        "format_version": 1,
+        "kind": "wpb0843_local_session_schema_projection_adoption_validation",
+        "cell_id": CELL_ID,
+        "status": "accepted_local_projection_not_native_result",
+        "adoption_sha256": sha256(adoption_raw),
+        "candidate_sha256": sha256(candidate),
+        "provider_calls_made": 0,
+        "native_admission_permitted": False,
+        "result_promotion_permitted": False,
+        "preserved_original_outcome": "ambiguous_validation_structured_output_error",
+    }, "0843 adoption validation drifted")
+    response = dict(projected)
+    provenance = {
+        "classification": "local_session_schema_recovered",
+        "adoption_sha256": sha256(adoption_raw), "candidate_sha256": sha256(candidate),
+        "helper_sha256": sha256(Path(__file__).read_bytes()),
+        "bindings": dict(candidate["bindings"]),
+        "validation_status": validation["status"],
+        "native_admission_permitted": False, "provider_calls_made": 0,
+        "result_promotion_permitted": False,
+    }
+    marker = {
+        "format_version": 1, "kind": "wpb0843_local_session_schema_recovery_marker",
+        "cell_id": CELL_ID, "payload_sha256": expected_payload_sha256,
+        "classification": provenance["classification"], "adoption_sha256": provenance["adoption_sha256"],
+        "candidate_sha256": provenance["candidate_sha256"], "helper_sha256": provenance["helper_sha256"],
+        "bindings": dict(provenance["bindings"]), "provider_calls_made": 0,
+        "native_admission_permitted": False, "result_promotion_permitted": False,
+    }
+    return {
+        "measurement": {
+            "endpoint": "grok", "cell_id": CELL_ID, "payload_sha256": expected_payload_sha256,
+            "measurement_provenance": {
+                "endpoint": "grok", "cell_id": CELL_ID, "payload_sha256": expected_payload_sha256,
+                "parsed_response_sha256": _frozen_response_sha256(response),
+            },
+            "response": response,
+        },
+        "provenance": provenance,
+        "marker": marker,
+    }
+
+
+def verify_adopted_projection_marker(*, marker_path: Path | str, expected_marker_sha256: str,
+                                     adoption_path: Path | str, expected_adoption_sha256: str,
+                                     proposal_root: Path | str, source_cell_root: Path | str,
+                                     expected_payload_sha256: str) -> dict[str, Any]:
+    """Validate a separately written non-native continuation marker."""
+    materialized = materialize_adopted_projection(
+        adoption_path=adoption_path, expected_adoption_sha256=expected_adoption_sha256,
+        proposal_root=proposal_root, source_cell_root=source_cell_root,
+        expected_payload_sha256=expected_payload_sha256,
+    )
+    marker, raw = _json(Path(marker_path), "0843 local-session schema marker")
+    _require(sha256(raw) == _hex(expected_marker_sha256, "0843 local-session schema marker hash")
+             and raw == canonical(marker) and marker == materialized["marker"],
+             "0843 local-session schema marker drifted")
+    return materialized

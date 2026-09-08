@@ -169,14 +169,23 @@ def fixture(value, tmp_path: Path, count: int = 40):
     recovery = SyntheticRecovery(plan, recovery_root)
     value._pinned_core = lambda: SyntheticCore()
     value._pinned_recovery = lambda: recovery
-    value._source_bindings = lambda _core, _recovery, root, _plan, raw: {
-        "core_study": {"path": str(value.CORE_STUDY.resolve()), "sha256": value.CORE_STUDY_SHA256},
-        "core_contract": {"path": str(value.CORE_CONTRACT.resolve()), "sha256": value.CORE_CONTRACT_SHA256},
-        "recovery_helper": {"path": str(value.RECOVERY_HELPER.resolve()), "sha256": value.RECOVERY_HELPER_SHA256},
-        "recovery_plan": {"path": str((root / "recovery-plan.json").resolve()), "sha256": digest(raw)},
-        "freeze_root": str(freeze_root.resolve()),
-        "legacy_executor": plan["legacy_executor"],
-    }
+    def bindings(_core, _recovery, root, _plan, raw, schema=None):
+        result = {
+            "core_study": {"path": str(value.CORE_STUDY.resolve()), "sha256": value.CORE_STUDY_SHA256},
+            "core_contract": {"path": str(value.CORE_CONTRACT.resolve()), "sha256": value.CORE_CONTRACT_SHA256},
+            "recovery_helper": {"path": str(value.RECOVERY_HELPER.resolve()), "sha256": value.RECOVERY_HELPER_SHA256},
+            "recovery_plan": {"path": str((root / "recovery-plan.json").resolve()), "sha256": digest(raw)},
+            "freeze_root": str(freeze_root.resolve()),
+            "legacy_executor": plan["legacy_executor"],
+        }
+        if schema is not None:
+            result["schema_recovery"] = {
+                "helper": dict(schema["helper"]), "adoption": dict(schema["adoption"]),
+                "proposal_root": schema["proposal_root"], "source_cell_root": schema["source_cell_root"],
+                "provenance": dict(schema["provenance"]),
+            }
+        return result
+    value._source_bindings = bindings
     return recovery_root, digest(plan_raw)
 
 
@@ -185,6 +194,14 @@ def test_create_refuses_incomplete_campaign_before_any_fit(tmp_path: Path) -> No
     recovery_root, plan_hash = fixture(value, tmp_path, count=39)
     with pytest.raises(ValueError, match="exactly 40"):
         value.create_freeze(recovery_root, plan_hash, tmp_path / "output")
+    assert not (tmp_path / "output").exists()
+
+
+def test_schema_recovery_rejects_partial_adoption_context_before_freeze_creation(tmp_path: Path) -> None:
+    value = load()
+    recovery_root, plan_hash = fixture(value, tmp_path)
+    with pytest.raises(ValueError, match="arguments must be supplied together"):
+        value.create_freeze(recovery_root, plan_hash, tmp_path / "output", schema_adoption_path=tmp_path / "adoption.json")
     assert not (tmp_path / "output").exists()
 
 
@@ -231,3 +248,44 @@ def test_fit_receipt_is_synthetic_and_explicitly_development_only(tmp_path: Path
     assert fit["optuna"] == {"version": "4.9.0", "seed": 20260904, "trials": 128}
     assert freeze["authority"] == "development_only_no_runtime_or_confirmation_authority"
     assert freeze["mae"] == "not_applicable_pairwise_preference_target"
+
+
+def test_opt_in_schema_recovery_uses_128_ordinary_and_one_local_session_measurement(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    value = load()
+    recovery_root, plan_hash = fixture(value, tmp_path)
+    monkeypatch.setattr(value, "SCHEMA_RECOVERY_CELL", "cell-089")
+    adoption = tmp_path / "adoption.json"; adoption.write_bytes(b"adoption")
+    recovered_measurement = measurement(89)
+    recovered_measurement["measurement_provenance"]["parsed_response_sha256"] = digest(canonical(response(89)))
+    schema = {
+        "helper": {"path": str(value.SCHEMA_RECOVERY_HELPER.resolve()), "sha256": "a" * 64},
+        "adoption": {"path": str(adoption.resolve()), "sha256": digest(adoption.read_bytes())},
+        "proposal_root": str((tmp_path / "proposal").resolve()),
+        "source_cell_root": str((tmp_path / "source").resolve()),
+        "measurement": recovered_measurement,
+        "provenance": {
+            "classification": "local_session_schema_recovered", "helper_sha256": "a" * 64,
+            "adoption_sha256": digest(adoption.read_bytes()), "candidate_sha256": "b" * 64,
+            "bindings": {"synthetic": "only"}, "validation_status": "accepted_local_projection_not_native_result",
+            "native_admission_permitted": False, "provider_calls_made": 0,
+            "result_promotion_permitted": False,
+        },
+    }
+    monkeypatch.setattr(value, "_schema_context", lambda _options, _plan: schema)
+    result = value.create_freeze(
+        recovery_root, plan_hash, tmp_path / "output", schema_adoption_path=adoption,
+        expected_schema_adoption_sha256=digest(adoption.read_bytes()), schema_proposal_root=tmp_path / "proposal",
+        schema_source_cell_root=tmp_path / "source", expected_schema_recovery_sha256="a" * 64,
+    )
+    freeze = json.loads(Path(result["freeze_path"]).read_bytes())
+    normalized = json.loads((Path(result["freeze_path"]).parent / value.NORMALIZED_NAME).read_bytes())
+    expected = {"ordinary_measurements": 128, "local_session_schema_recovered_measurements": 1,
+                "recovered_cell_id": "cell-089"}
+    assert freeze["measurement_evidence_classification"] == normalized["measurement_evidence_classification"] == expected
+    assert freeze["measurement_count"] == normalized["measurement_count"] == 129
+    assert freeze["native_measurement_count"] == normalized["native_measurement_count"] == 128
+    assert freeze["local_session_schema_recovered_measurement_count"] == normalized["local_session_schema_recovered_measurement_count"] == 1
+    assert len(normalized["recovery_admission_commitments"]) == 39
+    assert value.verify_freeze(result["freeze_path"], result["freeze_sha256"], replay_native=True)["measurement_count"] == 129

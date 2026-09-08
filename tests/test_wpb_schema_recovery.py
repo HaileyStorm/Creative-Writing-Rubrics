@@ -9,12 +9,21 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "evaluation-results/hbq-human-alignment-wpb-compact-family-native-v1/schema_recovery.py"
+FREEZE_SOURCE = ROOT / "evaluation-results/hbq-human-alignment-wpb-compact-family-native-v1/grok_selection_freeze.py"
 LOCAL_PROPOSAL = Path(r"C:\Users\Haile\Documents\cwr-wpb-0843-schema-recovery-proposal-20260907-r1")
 LOCAL_SOURCE_CELL = Path(r"C:\Users\Haile\Documents\cwr-wpb-grok-recovery-20260907-r3\cells\wpb-pair-wpb-en-0843")
 
 
 def load():
     spec = importlib.util.spec_from_file_location("wpb_schema_recovery", SOURCE)
+    assert spec and spec.loader
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def load_freeze():
+    spec = importlib.util.spec_from_file_location("wpb_grok_selection_freeze_materializer_test", FREEZE_SOURCE)
     assert spec and spec.loader
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
@@ -66,6 +75,7 @@ def synthetic_roots(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
     }
     attempt = {"cell_id": value.CELL_ID, "schema_sha256": value.sha256(schema_raw), "session_id_hash": "fc8b280d0d33e520f656dad0c0a674bf0cb6a4ca05ce313a10ce3caaee9c3ac7"}
     outcome_raw, attempt_raw = write_json(source / "outcome.json", outcome), write_json(source / "attempt.json", attempt)
+    write_json(source / "prepared.json", {"cell_id": value.CELL_ID, "kind": "unstarted", "payload_sha256": "a" * 64})
     monkeypatch.setattr(value, "ORIGINAL_MESSAGE_SHA256", value.sha256(original_raw))
     monkeypatch.setattr(value, "PROJECTED_MESSAGE_SHA256", value.sha256(projected_raw))
     monkeypatch.setattr(value, "ORIGINAL_MESSAGE_BYTES", len(original_raw))
@@ -127,6 +137,72 @@ def test_synthetic_adoption_rejects_prior_rearm_or_any_authority_expansion(tmp_p
     invalid = owner_adoption(value, old_rearm)
     with pytest.raises(ValueError, match="candidate"):
         value.validate_adoption(adoption=invalid, candidate=old_rearm)
+
+
+def test_materializer_and_marker_retain_the_local_session_ceiling(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    value, proposal, source = synthetic_roots(tmp_path, monkeypatch)
+    verified = value.verify_candidate(proposal_root=proposal, source_cell_root=source)
+    monkeypatch.setattr(value, "VERIFIED_CANDIDATE_SHA256", value.sha256(verified))
+    candidate = value.prepare_adoption_candidate(verified=verified)
+    adoption_path = tmp_path / "adoption.json"
+    adoption_raw = write_json(adoption_path, owner_adoption(value, candidate))
+    materialized = value.materialize_adopted_projection(
+        adoption_path=adoption_path, expected_adoption_sha256=value.sha256(adoption_raw),
+        proposal_root=proposal, source_cell_root=source, expected_payload_sha256="a" * 64,
+    )
+    core = value._load_frozen_core()
+    assert materialized["measurement"]["measurement_provenance"] == {
+        "endpoint": "grok", "cell_id": value.CELL_ID, "payload_sha256": "a" * 64,
+        "parsed_response_sha256": value.sha256(core.canonical(materialized["measurement"]["response"])),
+    }
+    assert materialized["provenance"]["classification"] == "local_session_schema_recovered"
+    assert materialized["marker"]["native_admission_permitted"] is False
+    marker_path = tmp_path / "marker.json"
+    marker_raw = write_json(marker_path, materialized["marker"])
+    assert value.verify_adopted_projection_marker(
+        marker_path=marker_path, expected_marker_sha256=value.sha256(marker_raw),
+        adoption_path=adoption_path, expected_adoption_sha256=value.sha256(adoption_raw),
+        proposal_root=proposal, source_cell_root=source, expected_payload_sha256="a" * 64,
+    ) == materialized
+
+
+def test_materializer_measurement_passes_the_freeze_validator(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    value, proposal, source = synthetic_roots(tmp_path, monkeypatch)
+    verified = value.verify_candidate(proposal_root=proposal, source_cell_root=source)
+    monkeypatch.setattr(value, "VERIFIED_CANDIDATE_SHA256", value.sha256(verified))
+    adoption_path = tmp_path / "adoption.json"
+    adoption_raw = write_json(adoption_path, owner_adoption(value, value.prepare_adoption_candidate(verified=verified)))
+    materialized = value.materialize_adopted_projection(
+        adoption_path=adoption_path, expected_adoption_sha256=value.sha256(adoption_raw),
+        proposal_root=proposal, source_cell_root=source, expected_payload_sha256="a" * 64,
+    )
+    freeze, core = load_freeze(), value._load_frozen_core()
+    identifiers = [f"cell-{number:03d}" for number in range(128)] + [value.CELL_ID]
+    payloads = {cell_id: ("a" * 64 if cell_id == value.CELL_ID else f"{number:064x}")
+                for number, cell_id in enumerate(identifiers)}
+    response = materialized["measurement"]["response"]
+    measurements = [
+        (materialized["measurement"] if cell_id == value.CELL_ID else {
+            "endpoint": "grok", "cell_id": cell_id, "payload_sha256": payloads[cell_id],
+            "measurement_provenance": {
+                "endpoint": "grok", "cell_id": cell_id, "payload_sha256": payloads[cell_id],
+                "parsed_response_sha256": value.sha256(core.canonical(response)),
+            },
+            "response": response,
+        })
+        for cell_id in identifiers
+    ]
+    rows = {cell_id: {"payload_sha256": payloads[cell_id]} for cell_id in identifiers}
+
+    def analyze(_root, items, _profile):
+        by_cell = {item["cell_id"]: item for item in items}
+        ordered = [{key: by_cell[cell_id][key] for key in ("endpoint", "cell_id", "payload_sha256", "measurement_provenance")}
+                   for cell_id in sorted(by_cell)]
+        return {"native_admission": "not_claimed", "mae": "not_applicable_pairwise_preference_target",
+                "ordered_measurement_commitment_sha256": core.sha256(ordered)}
+
+    monkeypatch.setattr(core, "analyze", analyze)
+    assert freeze._validate_measurements(core, tmp_path, "s" * 64, rows, measurements)[-1] == materialized["measurement"]
 
 
 @pytest.mark.skipif(not LOCAL_PROPOSAL.is_dir() or not LOCAL_SOURCE_CELL.is_dir(), reason="local 0843 evidence roots are not available")
