@@ -5,6 +5,7 @@ import importlib.util
 import json
 import shutil
 import sys
+import uuid
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
@@ -16,6 +17,12 @@ RECOVERY_ROOT = Path(r"C:\Users\Haile\Documents\cwr-wpb-grok-recovery-20260907-r
 ADOPTION = Path(r"C:\Users\Haile\Documents\cwr-wpb-0843-schema-owner-adoption-20260908-r1.json")
 PROPOSAL = Path(r"C:\Users\Haile\Documents\cwr-wpb-0843-schema-recovery-proposal-20260907-r1")
 BROKER_TEST = Path(r"C:\Users\Haile\.codex\tools\model_work_queue\test_grok_adapter.py")
+UNCONTACTED_0847 = {
+    "attempt.json": "ffc751cee160cfb75d8392f36950c4ae94b86b91e950d9b467e943ebc0d3dd1e",
+    "request.json": "69efa7c8f107142f26eeb1c366bff085a96cf3d62f17cdf5e210308e388a4636",
+    "response-schema.json": "3e7ff15aa844dd6f6b3c8c091cae5335eb1b290ca5eeddabb0eab6c29afc6b0e",
+    "route.json": "2c332e2b92d5143471493fbcc723662cfa7f5f32c7de00bd93936ec170bc2aeb",
+}
 
 
 def load():
@@ -42,6 +49,10 @@ def case(tmp_path: Path):
     value = load()
     root = tmp_path / "recovery"
     shutil.copytree(RECOVERY_ROOT, root)
+    source_attempt = RECOVERY_ROOT / "cells" / "wpb-pair-wpb-en-0847"
+    for name, expected_hash in UNCONTACTED_0847.items():
+        assert digest((source_attempt / name).read_bytes()) == expected_hash
+        (root / "cells" / "wpb-pair-wpb-en-0847" / name).unlink()
     source_cell = RECOVERY_ROOT / "cells" / value.SCHEMA_CELL
     schema = importlib.util.spec_from_file_location("wpb_schema_marker_fixture", value.SCHEMA_PATH)
     assert schema and schema.loader
@@ -57,10 +68,11 @@ def case(tmp_path: Path):
     trace = tmp_path / "broker-contacted"
     broker = tmp_path / "broker.py"
     broker.write_text(
-        "from pathlib import Path\n"
+        "from pathlib import Path\nfrom uuid import UUID\n"
         "class Broker:\n"
         " def __init__(self, root): self.root = root\n"
         " def run_grok_native_request(self, *args, before_contact, **kwargs):\n"
+        "  assert str(UUID(kwargs['session_id'])) == kwargs['session_id']\n"
         "  before_contact()\n"
         f"  Path(r'{trace}').write_text('contacted', encoding='utf-8')\n"
         "  return {'state':'terminal','result':None,'failure':{'code':'synthetic'}}\n"
@@ -228,10 +240,11 @@ def test_provider_free_continuation_gates_and_intervening_drift(case) -> None:
     assert not trace.exists()
 
     broker.write_text(
-        "from pathlib import Path\n"
+        "from pathlib import Path\nfrom uuid import UUID\n"
         "class Broker:\n"
         " def __init__(self, root): self.root = root\n"
         " def run_grok_native_request(self, *args, before_contact, **kwargs):\n"
+        "  assert str(UUID(kwargs['session_id'])) == kwargs['session_id']\n"
         f"  Path(r'{marker}').write_bytes(b'{{}}')\n"
         "  before_contact()\n"
         f"  Path(r'{trace}').write_text('contacted', encoding='utf-8')\n"
@@ -268,6 +281,8 @@ def test_terminal_attempt_consumes_one_ordinary_cell_and_cannot_resend(case) -> 
     review_path, review_hash = review()
     result = value.dispatch_one(**arguments(case, review_path, review_hash))
     assert result["status"] == "terminal_no_resend" and result["provider_calls_made"] == 1 and trace.read_text(encoding="utf-8") == "contacted"
+    compact = uuid.uuid4().hex
+    assert str(uuid.UUID(compact)) != compact
     with pytest.raises(ValueError, match="already consumed"):
         value.dispatch_one(**arguments(case, review_path, review_hash))
     assert (root / "cells" / "wpb-pair-wpb-en-0847" / "admission.json").exists() is False

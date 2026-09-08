@@ -250,7 +250,7 @@ def dispatch_one(*, recovery_root: Path | str, expected_plan_sha256: str, cell_i
     schema = recovery._frozen_schema(plan)
     _module, broker_type = recovery._load_broker(broker_path)
     _require(isinstance(route.get("name"), str) and route["name"], "continuation route has no name")
-    session_id = uuid.uuid4().hex
+    session_id = str(uuid.uuid4())
     cell_root = root / "cells" / cell_id
     attempt = {
         "format_version": 1, "cell_id": cell_id, "plan_sha256": expected_plan_sha256, "review_sha256": expected_review_sha256,
