@@ -321,7 +321,12 @@ This coarse family comparison is not a full-HBQ alignment result.
 The [Dryad source audit](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/87ae86b1cde49177b43d5791483421888f2d5ec6/evaluation-results/hbq-human-alignment-dryad-source-audit-v1/README.md)
 reconciles 293 stories and 3,519 blinded evaluations from 600 evaluators. The
 [frozen analysis protocol and implementation](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/87ae86b1cde49177b43d5791483421888f2d5ec6/evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/README.md)
-use 176 TRAIN and 60 DEV stories; 57 confirmation stories remain closed.
+originally used 176 TRAIN and 60 DEV stories; 57 confirmation stories remain closed.
+The [100-story budget amendment](../evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/baseline-budget-amendment-100-v1.json)
+selects the first 70 TRAIN and 30 DEV stories in that frozen order, retaining all
+178 criteria and identical endpoint payloads. It requires 2,300 baseline requests
+per endpoint and preserves earlier evidence classes. The amendment followed
+partial model observation; it does not retroactively satisfy the original study.
 Source-defined novelty and usefulness are separate co-primary targets, with
 all twelve raw axes also reported separately. There is no invented twelve-axis
 human composite or sampled-leaf substitute for the full 178-question rubric.

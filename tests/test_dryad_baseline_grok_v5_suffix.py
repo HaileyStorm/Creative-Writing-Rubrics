@@ -15,6 +15,7 @@ import pytest
 ROOT = Path(__file__).resolve().parents[1]
 PACKAGE = ROOT / "evaluation-results" / "hbq-human-alignment-dryad-full-hbq-analysis-v1"
 SOURCE = PACKAGE / "baseline_grok_v5_suffix.py"
+SCHEDULE_SOURCE = PACKAGE / "baseline_selected_schedule.py"
 
 
 def digest(raw: bytes) -> str:
@@ -34,6 +35,14 @@ def old_prefix_identities() -> list[dict[str, object]]:
 
 def load():
     spec = importlib.util.spec_from_file_location("dryad_grok_v5_suffix_test", SOURCE)
+    assert spec and spec.loader
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def load_schedule():
+    spec = importlib.util.spec_from_file_location("dryad_selected_schedule_test", SCHEDULE_SOURCE)
     assert spec and spec.loader
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
@@ -69,7 +78,7 @@ def build_layout(tmp_path: Path):
     for index in range(1, 237):
         pass_id = f"baseline8-v1/train/{index:04d}/synthetic-{index:03d}"
         passes.append({
-            "pass_id": pass_id,
+            "pass_id": pass_id, "partition": "TRAIN" if index <= 176 else "DEV",
             "logical_sample_id": f"logical-{index:03d}",
             "opaque_story_id": f"opaque-{index:03d}",
             "input_path": "inputs/story.txt",
@@ -96,6 +105,15 @@ def build_layout(tmp_path: Path):
     plan_raw = canonical(plan)
     (plan_root / "plan.json").write_bytes(plan_raw)
     subject.PLAN_SHA256 = digest(plan_raw)
+    schedule_module = load_schedule()
+    selected_train = [item["pass_id"] for item in passes[:70]]
+    selected_dev = [item["pass_id"] for item in passes[176:206]]
+    selected_schedule = schedule_module.build_selected_schedule(
+        plan_root=plan_root, expected_plan_sha256=subject.PLAN_SHA256,
+        selected_train_ids=selected_train, selected_dev_ids=selected_dev,
+    )
+    schedule_path = tmp_path / "selected-schedule.json"
+    schedule_path.write_bytes(canonical(selected_schedule))
     prefix_manifest = tmp_path / "prefix.json"
     prefix_review = tmp_path / "prefix-review.json"
     prefix_manifest.write_bytes(canonical({
@@ -133,7 +151,7 @@ def build_layout(tmp_path: Path):
         old_runtime_manifest=PACKAGE / "baseline-runtime-v1.json",
         old_runtime_loader=PACKAGE / "baseline_native_runtime.py",
         v3=ROOT / "src/hbqrs/grok_broker_transport_v3.py", recovered_source=PACKAGE / "baseline_recovered_study.py",
-        executor=SOURCE, plan=plan,
+        executor=SOURCE, schedule_path=schedule_path, schedule_source=SCHEDULE_SOURCE, plan=plan,
     )
 
 
@@ -166,6 +184,10 @@ def prepare(layout) -> str:
         expected_v3_sha256=digest(layout.v3.read_bytes()),
         expected_recovered_study_sha256=digest(layout.recovered_source.read_bytes()),
         expected_executor_sha256=digest(layout.executor.read_bytes()),
+        selected_schedule_path=layout.schedule_path,
+        expected_selected_schedule_sha256=digest(layout.schedule_path.read_bytes()),
+        selected_schedule_source_path=layout.schedule_source,
+        expected_selected_schedule_source_sha256=digest(layout.schedule_source.read_bytes()),
     )
     assert result["provider_calls_made"] == 0 and result["execution_authority"] is False
     return result["epoch_sha256"]
@@ -203,7 +225,9 @@ def reviewed(layout, epoch_sha256: str) -> tuple[Path, str, dict[str, object]]:
         "old_execution_inventory_sha256": epoch_value["old_execution_inventory_sha256"],
         "old_prefix_run_inventory_sha256": epoch_value["old_prefix_run_inventory_sha256"],
         "execution_mode": "ten_concurrent_grok_v5_waves",
-        "suffix_ordinals": [81, 5428],
+        "selected_schedule_sha256": epoch_value["selected_schedule"]["sha256"],
+        "selected_request_ordinals_sha256": digest(canonical(epoch_value["selected_request_ordinals"])),
+        "suffix_ordinals": [81, epoch_value["last_ordinal"]],
         "route": route, "route_sha256": digest(canonical(route)), "gate": {"state": "synthetic-healthy"},
         "gate_sha256": digest(canonical({"state": "synthetic-healthy"})),
         "reviewed_at": now.isoformat().replace("+00:00", "Z"),
@@ -428,7 +452,8 @@ def test_prepare_is_provider_free_and_rejects_plan_or_prefix_drift(layout) -> No
     before = {path: path.read_bytes() for path in (layout.old_execution / "immutable.txt", layout.old_prefix / "immutable.txt")}
     epoch_sha256 = prepare(layout)
     epoch = json.loads((layout.suffix / "suffix-epoch.json").read_bytes())
-    assert epoch["first_ordinal"] == 81 and epoch["last_ordinal"] == 5428
+    assert epoch["first_ordinal"] == 81 and epoch["last_ordinal"] == 4738
+    assert len(epoch["selected_request_ordinals"]) == 2300 and len(epoch["remaining_request_ordinals"]) == 2220
     assert epoch["provider_calls_made"] == 0 and epoch["execution_authority"] is False
     assert {path: path.read_bytes() for path in before} == before
     assert isinstance(epoch_sha256, str) and len(epoch_sha256) == 64
@@ -685,6 +710,59 @@ def test_cross_pass_wave_settles_by_ordinal_after_out_of_order_completion(epoch,
     assert len(admitted["native_identities"]) == 10
 
 
+def test_selected_schedule_rejects_skips_and_admits_train_to_dev_jump(epoch, monkeypatch: pytest.MonkeyPatch) -> None:
+    layout, epoch_sha256 = epoch
+    subject = layout.subject
+    review_path, review_sha256, review_value = reviewed(layout, epoch_sha256)
+    queue = layout.suffix.parent / "queue"
+    queue.mkdir()
+    _runtime, _runner, transport = install_synthetic_runtime(layout, monkeypatch)
+    with pytest.raises(ValueError, match="exact next"):
+        subject.dispatch_wave(
+            suffix_root=layout.suffix, expected_epoch_sha256=epoch_sha256, start_ordinal=82, wave_size=1,
+            reviewed_path=review_path, expected_review_sha256=review_sha256, queue_root=queue,
+        )
+    assert transport.bound == []
+    monkeypatch.setattr(subject, "_next_ordinal", lambda *_args: 1609)
+    result = subject.dispatch_wave(
+        suffix_root=layout.suffix, expected_epoch_sha256=epoch_sha256, start_ordinal=1609, wave_size=3,
+        reviewed_path=review_path, expected_review_sha256=review_sha256, queue_root=queue,
+    )
+    assert [item["ordinal"] for item in result["rows"]] == [1609, 1610, 4049]
+    wave = json.loads(subject._wave_path(layout.suffix, 1609, 3, "start").read_bytes())
+    assert wave["ordinals"] == [1609, 1610, 4049]
+    admitted = subject.admit_wave(
+        suffix_root=layout.suffix, expected_epoch_sha256=epoch_sha256, start_ordinal=1609, wave_size=3,
+        approved_v5_routes={review_value["route_sha256"]: review_value["route"]},
+        protected_native_identities=old_prefix_identities(),
+    )
+    assert len(admitted["native_identities"]) == 3
+    for start_ordinal, wave_size in ((4050, 10), (4060, 10), (4070, 2)):
+        monkeypatch.setattr(subject, "_next_ordinal", lambda *_args, start_ordinal=start_ordinal: start_ordinal)
+        subject.dispatch_wave(
+            suffix_root=layout.suffix, expected_epoch_sha256=epoch_sha256, start_ordinal=start_ordinal, wave_size=wave_size,
+            reviewed_path=review_path, expected_review_sha256=review_sha256, queue_root=queue,
+        )
+    runtime = _runtime
+    runtime.core = SimpleNamespace(score_bundle=lambda *_args, **_kwargs: {"final_score": {"observed": 50.0}, "coverage": 1.0})
+    monkeypatch.setattr(subject, "_old_runtime_from_epoch", lambda _epoch: SimpleNamespace(questions=runtime.questions, verify=lambda: None))
+    recovered = SimpleNamespace(admit_prefix=lambda *_args, **_kwargs: {
+        "evidence_class": "mixed_native_and_study_recovered_record_replay", "native_record_count": 10,
+        "study_recovered_record_count": 1, "study_recovered_ordinals": [70],
+        "verdicts": [{"question_id": f"q{index:03d}", "verdict": "YES"} for index in range(88)],
+        "native_identities": old_prefix_identities()[-10:],
+    })
+    original_load = subject._load_module
+    monkeypatch.setattr(subject, "_load_module", lambda path, expected, prefix:
+                        recovered if prefix == "_dryad_v5_recovered_" else original_load(path, expected, prefix))
+    monkeypatch.setattr(subject, "_old_prefix_native_identities", lambda **_kwargs: old_prefix_identities())
+    result = subject.admit_pass(
+        suffix_root=layout.suffix, expected_epoch_sha256=epoch_sha256, pass_id=layout.plan["passes"][176]["pass_id"],
+        approved_v4_routes={}, approved_v5_routes={review_value["route_sha256"]: review_value["route"]},
+    )
+    assert result["evidence_class"] == "v5_native_full_pass_replay" and result["new_v5_native_records"] == 23
+
+
 def test_dispatches_later_pass_batch_one_and_final_batch_5428(epoch, monkeypatch: pytest.MonkeyPatch) -> None:
     layout, epoch_sha256 = epoch
     subject = layout.subject
@@ -706,13 +784,14 @@ def test_dispatches_later_pass_batch_one_and_final_batch_5428(epoch, monkeypatch
     final_queue = final_layout.suffix.parent / "queue"
     final_queue.mkdir()
     _runtime, final_runner, _transport = install_synthetic_runtime(final_layout, monkeypatch)
-    monkeypatch.setattr(final_layout.subject, "_next_ordinal", lambda *_args: 5428)
+    last_selected = json.loads((final_layout.suffix / "suffix-epoch.json").read_bytes())["last_ordinal"]
+    monkeypatch.setattr(final_layout.subject, "_next_ordinal", lambda *_args: last_selected)
     final_layout.subject.dispatch_one(
-        suffix_root=final_layout.suffix, expected_epoch_sha256=final_epoch, ordinal=5428,
+        suffix_root=final_layout.suffix, expected_epoch_sha256=final_epoch, ordinal=last_selected,
         reviewed_path=final_review, expected_review_sha256=final_review_sha, queue_root=final_queue,
     )
     assert final_runner.contexts[-1]["batch"]["number"] == 23
-    assert json.loads(final_layout.subject._attempt_path(final_layout.suffix, 5428, "attempt-start.json").read_bytes())["pass_id"].endswith("synthetic-236")
+    assert json.loads(final_layout.subject._attempt_path(final_layout.suffix, last_selected, "attempt-start.json").read_bytes())["pass_id"].endswith("synthetic-206")
 
 
 def test_dispatch_rejects_wrong_broker_type_or_root(epoch, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -824,7 +903,9 @@ def test_mixed_old11_new12_replay_requires_canonical_order_unique_identities_and
             "native_identities": [{"request_id_hash": f"{index + 1:064x}", "session_id_hash": f"{index + 31:064x}"} for index in range(10)],
         }
 
-    monkeypatch.setattr(subject, "_load_module", lambda *_args: SimpleNamespace(admit_prefix=admit_prefix))
+    original_load = subject._load_module
+    monkeypatch.setattr(subject, "_load_module", lambda path, expected, prefix:
+                        SimpleNamespace(admit_prefix=admit_prefix) if prefix == "_dryad_v5_recovered_" else original_load(path, expected, prefix))
     monkeypatch.setattr(subject, "_old_prefix_native_identities", lambda **_kwargs: old_prefix_identities())
     for start_ordinal, wave_size in ((81, 10), (91, 2)):
         subject.dispatch_wave(
@@ -867,12 +948,15 @@ def test_mixed_replay_rejects_missing_order_or_identity_collision(epoch, monkeyp
     runtime, _runner, _transport = install_synthetic_runtime(layout, monkeypatch)
     runtime.core = SimpleNamespace(score_bundle=lambda *_args, **_kwargs: {"final_score": {"observed": 1.0}, "coverage": 1.0})
     monkeypatch.setattr(subject, "_old_runtime_from_epoch", lambda _epoch: SimpleNamespace(questions=runtime.questions, verify=lambda: None))
-    monkeypatch.setattr(subject, "_load_module", lambda *_args: SimpleNamespace(admit_prefix=lambda *_args, **_kwargs: {
+    original_load = subject._load_module
+    recovered_module = SimpleNamespace(admit_prefix=lambda *_args, **_kwargs: {
         "evidence_class": "mixed_native_and_study_recovered_record_replay", "native_record_count": 10,
         "study_recovered_record_count": 1, "study_recovered_ordinals": [70],
         "verdicts": [{"question_id": f"q{index:03d}", "verdict": "YES"} for index in range(88)],
         "native_identities": [{"request_id_hash": f"{index + 1:064x}", "session_id_hash": f"{index + 31:064x}"} for index in range(10)],
-    }))
+    })
+    monkeypatch.setattr(subject, "_load_module", lambda path, expected, prefix:
+                        recovered_module if prefix == "_dryad_v5_recovered_" else original_load(path, expected, prefix))
 
     def replay(**kwargs):
         row = kwargs["row"]
@@ -907,12 +991,15 @@ def test_every_pass_rejects_collisions_with_all_79_old_native_identities(epoch, 
     runtime, _runner, _transport = install_synthetic_runtime(layout, monkeypatch)
     runtime.core = SimpleNamespace(score_bundle=lambda *_args, **_kwargs: {"final_score": {"observed": 1.0}, "coverage": 1.0})
     monkeypatch.setattr(subject, "_old_runtime_from_epoch", lambda _epoch: SimpleNamespace(questions=runtime.questions, verify=lambda: None))
-    monkeypatch.setattr(subject, "_load_module", lambda *_args: SimpleNamespace(admit_prefix=lambda *_args, **_kwargs: {
+    original_load = subject._load_module
+    recovered_module = SimpleNamespace(admit_prefix=lambda *_args, **_kwargs: {
         "evidence_class": "mixed_native_and_study_recovered_record_replay", "native_record_count": 10,
         "study_recovered_record_count": 1, "study_recovered_ordinals": [70],
         "verdicts": [{"question_id": f"q{index:03d}", "verdict": "YES"} for index in range(88)],
         "native_identities": old_prefix_identities()[-10:],
-    }))
+    })
+    monkeypatch.setattr(subject, "_load_module", lambda path, expected, prefix:
+                        recovered_module if prefix == "_dryad_v5_recovered_" else original_load(path, expected, prefix))
     monkeypatch.setattr(subject, "_old_prefix_native_identities", lambda **_kwargs: old_prefix_identities())
     rows, mixed = subject._pass_requests(layout.plan, pass_id)
 

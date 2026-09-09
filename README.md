@@ -70,7 +70,10 @@ The live release-facing work is narrower than the historical experiment log:
   nor automatic resends.
 - [Dryad source and full-HBQ preparation](docs/RESULTS.md#dryad-source-and-full-hbq-preparation)
   adds an audited independent corpus and a frozen 176 TRAIN / 60 DEV / 57
-  confirmation split. As of 2026-09-09 UTC, the separate fixed-batch-eight baseline
+  confirmation split. The [owner-adopted 100-story amendment](evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/baseline-budget-amendment-100-v1.json)
+  now selects 70 TRAIN and 30 DEV stories, with all 178 criteria retained and
+  2,300 baseline requests per model. It preserves the original plan and follows
+  partial model observation. As of 2026-09-09 UTC, the fixed-batch-eight baseline
   has 80 requests and 622 verdicts: 79 admitted native requests plus one
   owner-adopted [study recovery for request 70](evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/grok70-quote-repair-adoption-v1.json). Cohort eight
   is settled, while the recovered request lacks native CLI-envelope/request-ID

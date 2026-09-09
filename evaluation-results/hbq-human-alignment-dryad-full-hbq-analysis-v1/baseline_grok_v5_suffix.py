@@ -2,8 +2,8 @@
 
 This module deliberately does not resume the v4 runner.  It starts a distinct,
 hash-bound epoch at ordinal 81, retains the mixed v4/recovered prefix as
-read-only evidence, and sends at most one explicitly selected v5 request per
-call.  Loading or preparing an epoch has no provider authority.
+read-only evidence, and sends bounded selected v5 waves of at most ten requests.
+Loading or preparing an epoch has no provider authority.
 """
 
 from __future__ import annotations
@@ -217,18 +217,24 @@ def _load_epoch(root: Path, expected: str) -> tuple[dict[str, Any], bytes]:
         "old_prefix_run_inventory_sha256", "old_prefix_run_inventory",
         "recovered_study_manifest", "recovery_adoption_sha256", "recovery_amendment_sha256",
         "runtime_manifest", "runtime_package", "runtime_loader", "v3_source", "recovered_study_source",
-        "old_runtime_manifest", "old_runtime_loader", "executor_source", "first_ordinal", "last_ordinal",
+        "old_runtime_manifest", "old_runtime_loader", "executor_source", "selected_schedule", "selected_schedule_source",
+        "selected_request_ordinals", "remaining_request_ordinals", "first_ordinal", "last_ordinal",
         "prefix_batches", "full_pass_batches", "dispatch_batch_size", "max_concurrency", "execution_mode",
         "provider_calls_made", "execution_authority",
     }
     _require(
-        set(epoch) == required and epoch.get("schema_version") == 1
-        and epoch.get("evidence_class") == "dryad_grok_v5_suffix_epoch_provider_free"
+        set(epoch) == required and epoch.get("schema_version") == 2
+        and epoch.get("evidence_class") == "dryad_grok_v5_selected_suffix_epoch_provider_free"
         and epoch.get("plan_sha256") == PLAN_SHA256
-        and epoch.get("first_ordinal") == FIRST_SUFFIX_ORDINAL and epoch.get("last_ordinal") == LAST_ORDINAL
+        and epoch.get("first_ordinal") == FIRST_SUFFIX_ORDINAL
         and epoch.get("prefix_batches") == PREFIX_BATCHES and epoch.get("full_pass_batches") == FULL_PASS_BATCHES
         and epoch.get("dispatch_batch_size") == DISPATCH_BATCH_SIZE
         and epoch.get("max_concurrency") == MAX_WAVE_SIZE and epoch.get("execution_mode") == WAVE_EXECUTION_MODE
+        and isinstance(epoch.get("selected_request_ordinals"), list) and len(epoch["selected_request_ordinals"]) == 2300
+        and isinstance(epoch.get("remaining_request_ordinals"), list) and len(epoch["remaining_request_ordinals"]) == 2220
+        and epoch["selected_request_ordinals"][:80] == list(range(1, 81))
+        and epoch["remaining_request_ordinals"][0] == FIRST_SUFFIX_ORDINAL
+        and epoch.get("last_ordinal") == epoch["remaining_request_ordinals"][-1]
         and epoch.get("provider_calls_made") == 0 and epoch.get("execution_authority") is False,
         "Suffix epoch schema differs",
     )
@@ -368,6 +374,10 @@ def prepare_suffix_epoch(
     expected_v3_sha256: str,
     expected_recovered_study_sha256: str,
     expected_executor_sha256: str,
+    selected_schedule_path: Path | str,
+    expected_selected_schedule_sha256: str,
+    selected_schedule_source_path: Path | str,
+    expected_selected_schedule_source_sha256: str,
     max_concurrency: int = MAX_WAVE_SIZE,
     execution_mode: str = WAVE_EXECUTION_MODE,
 ) -> dict[str, Any]:
@@ -387,6 +397,8 @@ def prepare_suffix_epoch(
     runtime_loader_path = _plain(runtime_loader_path, directory=False)
     old_runtime_manifest_path = _plain(old_runtime_manifest_path, directory=False)
     old_runtime_loader_path = _plain(old_runtime_loader_path, directory=False)
+    selected_schedule_path = _plain(selected_schedule_path, directory=False)
+    selected_schedule_source_path = _plain(selected_schedule_source_path, directory=False)
     _disjoint(plan_root, old_execution_root, old_prefix_run_root, suffix_root, package_root)
     _require(not _epoch_path(suffix_root).exists() and not any(suffix_root.iterdir()), "Suffix root must be empty")
     _plan(plan_root, expected_plan_sha256)
@@ -413,10 +425,15 @@ def prepare_suffix_epoch(
     _read(runtime_loader_path, expected_runtime_loader_sha256, "Runtime loader")
     _read(old_runtime_manifest_path, expected_old_runtime_manifest_sha256, "Old runtime manifest")
     _read(old_runtime_loader_path, expected_old_runtime_loader_sha256, "Old runtime loader")
+    selected_schedule_source = _load_module(selected_schedule_source_path, expected_selected_schedule_source_sha256, "_dryad_schedule_")
+    selected_schedule_raw = _read(selected_schedule_path, expected_selected_schedule_sha256, "Selected schedule")
+    selected_schedule = selected_schedule_source.verify_selected_schedule(
+        descriptor=_json(selected_schedule_raw, "Selected schedule"), plan_root=plan_root, expected_plan_sha256=expected_plan_sha256,
+    )
     old_inventory, prefix_inventory = _inventory(old_execution_root), _inventory(old_prefix_run_root)
     epoch = {
-        "schema_version": 1,
-        "evidence_class": "dryad_grok_v5_suffix_epoch_provider_free",
+        "schema_version": 2,
+        "evidence_class": "dryad_grok_v5_selected_suffix_epoch_provider_free",
         "plan_sha256": expected_plan_sha256,
         "plan_root": str(plan_root),
         "old_execution_root": str(old_execution_root),
@@ -438,8 +455,12 @@ def prepare_suffix_epoch(
         "old_runtime_manifest": _source_descriptor(old_runtime_manifest_path, expected_old_runtime_manifest_sha256, "Old runtime manifest"),
         "old_runtime_loader": _source_descriptor(old_runtime_loader_path, expected_old_runtime_loader_sha256, "Old runtime loader"),
         "executor_source": _source_descriptor(own, expected_executor_sha256, "Suffix executor"),
+        "selected_schedule": _descriptor(selected_schedule_path, expected_selected_schedule_sha256, "Selected schedule"),
+        "selected_schedule_source": _source_descriptor(selected_schedule_source_path, expected_selected_schedule_source_sha256, "Selected schedule source"),
+        "selected_request_ordinals": selected_schedule["selected_request_ordinals"],
+        "remaining_request_ordinals": selected_schedule["grok_remaining_request_ordinals"],
         "first_ordinal": FIRST_SUFFIX_ORDINAL,
-        "last_ordinal": LAST_ORDINAL,
+        "last_ordinal": selected_schedule["grok_remaining_request_ordinals"][-1],
         "prefix_batches": PREFIX_BATCHES,
         "full_pass_batches": FULL_PASS_BATCHES,
         "dispatch_batch_size": DISPATCH_BATCH_SIZE,
@@ -480,11 +501,21 @@ def _epoch_integrity(root: Path, epoch: Mapping[str, Any]) -> tuple[Path, Path, 
         and _hash(_canonical(epoch["old_prefix_run_inventory"])) == epoch["old_prefix_run_inventory_sha256"],
         "Old prefix evidence changed",
     )
-    for name in ("runtime_manifest", "runtime_loader", "v3_source", "recovered_study_source", "old_runtime_manifest", "old_runtime_loader", "executor_source"):
+    for name in ("runtime_manifest", "runtime_loader", "v3_source", "recovered_study_source", "old_runtime_manifest", "old_runtime_loader", "executor_source", "selected_schedule_source"):
         record = epoch[name]
         _require(isinstance(record, Mapping), "Suffix epoch source binding differs")
         _read(_plain(record.get("path"), directory=False), record.get("sha256"), "Suffix epoch source")
     _read(_plain(package.get("root"), directory=True) / "candidate-manifest.json", package.get("manifest_sha256"), "Runtime package manifest")
+    schedule_record = epoch["selected_schedule"]
+    _require(isinstance(schedule_record, Mapping), "Selected schedule epoch binding differs")
+    schedule_source = _load_module(_plain(epoch["selected_schedule_source"]["path"], directory=False),
+                                   epoch["selected_schedule_source"]["sha256"], "_dryad_schedule_")
+    schedule = schedule_source.verify_selected_schedule(
+        descriptor=_json(_read(_plain(schedule_record["path"], directory=False), schedule_record["sha256"], "Selected schedule"), "Selected schedule"),
+        plan_root=plan_root, expected_plan_sha256=epoch["plan_sha256"],
+    )
+    _require(schedule["selected_request_ordinals"] == epoch["selected_request_ordinals"]
+             and schedule["grok_remaining_request_ordinals"] == epoch["remaining_request_ordinals"], "Selected schedule order differs")
     return plan_root, old_root, prefix_root, _request_index(_plan(plan_root, epoch["plan_sha256"])[0])
 
 
@@ -502,7 +533,7 @@ def _review(
         "schema_version", "decision", "epoch_sha256", "plan_sha256", "executor_sha256", "runtime_manifest_sha256",
         "runtime_package_manifest_sha256", "v3_sha256", "old_prefix_manifest_sha256", "old_prefix_review_sha256",
         "candidate_package_root", "old_execution_inventory_sha256", "old_prefix_run_inventory_sha256", "suffix_ordinals",
-        "execution_mode",
+        "execution_mode", "selected_schedule_sha256", "selected_request_ordinals_sha256",
         "route", "route_sha256", "gate", "gate_sha256", "reviewed_at", "expires_at",
     }
     _require(
@@ -518,8 +549,10 @@ def _review(
         and value.get("candidate_package_root") == epoch["runtime_package"]["root"]
         and value.get("old_execution_inventory_sha256") == epoch["old_execution_inventory_sha256"]
         and value.get("old_prefix_run_inventory_sha256") == epoch["old_prefix_run_inventory_sha256"]
-        and value.get("suffix_ordinals") == [FIRST_SUFFIX_ORDINAL, LAST_ORDINAL]
+        and value.get("suffix_ordinals") == [epoch["first_ordinal"], epoch["last_ordinal"]]
         and value.get("execution_mode") == epoch["execution_mode"]
+        and value.get("selected_schedule_sha256") == epoch["selected_schedule"]["sha256"]
+        and value.get("selected_request_ordinals_sha256") == _hash(_canonical(epoch["selected_request_ordinals"]))
         and isinstance(value.get("route"), Mapping) and isinstance(value.get("gate"), Mapping)
         and value.get("route_sha256") == _hash(_canonical(dict(value["route"])))
         and value.get("gate_sha256") == _hash(_canonical(dict(value["gate"]))),
@@ -571,18 +604,19 @@ def _attempts(root: Path, epoch_sha256: str) -> dict[int, tuple[dict[str, Any], 
     return result
 
 
-def _next_ordinal(root: Path, epoch_sha256: str) -> int:
+def _next_ordinal(root: Path, epoch_sha256: str, epoch: Mapping[str, Any]) -> int:
     records = _attempts(root, epoch_sha256)
-    for ordinal in range(FIRST_SUFFIX_ORDINAL, LAST_ORDINAL + 1):
+    scheduled = epoch["remaining_request_ordinals"]
+    _require(set(records) <= set(scheduled), "A suffix attempt is outside the selected schedule")
+    for index, ordinal in enumerate(scheduled):
         pair = records.get(ordinal)
         if pair is None:
             _require(
-                all(records[number][1] is not None and records[number][1].get("status") == "completed"
-                    for number in range(FIRST_SUFFIX_ORDINAL, ordinal))
-                and not any(number > ordinal for number in records),
+                all(records[number][1] is not None and records[number][1].get("status") == "completed" for number in scheduled[:index])
+                and not any(number in records for number in scheduled[index + 1:]),
                 "A suffix attempt requires reconciliation",
             )
-            for prior in range(FIRST_SUFFIX_ORDINAL, ordinal):
+            for prior in scheduled[:index]:
                 _require_wave_settlement(root, epoch_sha256=epoch_sha256, ordinal=prior)
             return ordinal
         _require(pair[1] is not None and pair[1].get("status") == "completed",
@@ -724,14 +758,14 @@ def _broker(runtime: Any, queue_root: Path, broker_factory: Any | None) -> Any:
 def _wave_path(root: Path, start_ordinal: int, wave_size: int, suffix: str) -> Path:
     _require(type(start_ordinal) is int and type(wave_size) is int and 1 <= wave_size <= MAX_WAVE_SIZE,
              "Suffix wave geometry differs")
-    last_ordinal = start_ordinal + wave_size - 1
-    _require(FIRST_SUFFIX_ORDINAL <= start_ordinal <= last_ordinal <= LAST_ORDINAL, "Suffix wave ordinal differs")
-    return root / "waves" / f"wave-{start_ordinal:04d}-{last_ordinal:04d}-{suffix}.json"
+    _require(FIRST_SUFFIX_ORDINAL <= start_ordinal <= LAST_ORDINAL, "Suffix wave ordinal differs")
+    return root / "waves" / f"wave-{start_ordinal:04d}-slots-{wave_size:02d}-{suffix}.json"
 
 
 def _prepare_wave_cell(
     *, root: Path, epoch_sha256: str, epoch: Mapping[str, Any], plan_root: Path, requests: Mapping[int, Any],
-    review_path: Path, review_sha256: str, review: Mapping[str, Any], ordinal: int, wave_size: int, slot_index: int,
+    review_path: Path, review_sha256: str, review: Mapping[str, Any], ordinal: int, wave_start_ordinal: int,
+    wave_ordinals: Sequence[int], slot_index: int,
 ) -> dict[str, Any]:
     runtime = _runtime_from_epoch(epoch)
     row = dict(requests[ordinal])
@@ -754,7 +788,9 @@ def _prepare_wave_cell(
         "runtime_manifest_sha256": epoch["runtime_manifest"]["sha256"],
         "runtime_package_manifest_sha256": epoch["runtime_package"]["manifest_sha256"],
         "v3_sha256": epoch["v3_source"]["sha256"], "executor_sha256": epoch["executor_source"]["sha256"],
-        "wave": {"start_ordinal": ordinal - slot_index, "wave_size": wave_size, "slot_index": slot_index},
+        "selected_schedule_sha256": epoch["selected_schedule"]["sha256"],
+        "wave": {"start_ordinal": wave_start_ordinal, "wave_size": len(wave_ordinals), "slot_index": slot_index,
+                 "ordinals": list(wave_ordinals)},
         "context": context, "context_sha256": _hash(_canonical(context)),
         "run_root": str(_attempt_run_root(root, row["pass_id"], ordinal)),
     }
@@ -831,9 +867,9 @@ def _contact_prepared_cell(
         raise
 
 
-def _wave_settlement(root: Path, *, epoch_sha256: str, start_ordinal: int, wave_size: int, wave_start_sha256: str) -> dict[str, Any]:
+def _wave_settlement(root: Path, *, epoch_sha256: str, start_ordinal: int, wave_ordinals: Sequence[int], wave_start_sha256: str) -> dict[str, Any]:
     rows: list[dict[str, Any]] = []
-    for ordinal in range(start_ordinal, start_ordinal + wave_size):
+    for ordinal in wave_ordinals:
         terminal_path = _attempt_path(root, ordinal, "terminal.json")
         terminal = _json(terminal_path.read_bytes(), "Suffix terminal") if terminal_path.is_file() else None
         row: dict[str, Any] = {"ordinal": ordinal, "terminal_sha256": _hash(terminal_path.read_bytes()) if terminal else None,
@@ -852,7 +888,7 @@ def _wave_settlement(root: Path, *, epoch_sha256: str, start_ordinal: int, wave_
              and len(request_ids) == len(set(request_ids)) and len(session_ids) == len(set(session_ids)),
              "Wave native identity collision")
     return {"format_version": 1, "epoch_sha256": epoch_sha256, "start_ordinal": start_ordinal,
-            "wave_size": wave_size, "wave_start_sha256": wave_start_sha256, "rows": rows}
+            "wave_size": len(wave_ordinals), "ordinals": list(wave_ordinals), "wave_start_sha256": wave_start_sha256, "rows": rows}
 
 
 def dispatch_wave(
@@ -863,30 +899,34 @@ def dispatch_wave(
     root = _plain(suffix_root, directory=True)
     epoch_sha256 = _sha(expected_epoch_sha256, "Suffix epoch")
     epoch, epoch_raw = _load_epoch(root, epoch_sha256)
-    _require(type(start_ordinal) is int and start_ordinal == _next_ordinal(root, epoch_sha256),
+    _require(type(start_ordinal) is int and start_ordinal == _next_ordinal(root, epoch_sha256, epoch),
              "Suffix wave is not the exact next cell")
-    _require(type(wave_size) is int and 1 <= wave_size <= epoch["max_concurrency"] and start_ordinal + wave_size - 1 <= LAST_ORDINAL,
+    scheduled = epoch["remaining_request_ordinals"]
+    _require(type(wave_size) is int and 1 <= wave_size <= epoch["max_concurrency"] and start_ordinal in scheduled,
              "Suffix wave size differs")
+    start_index = scheduled.index(start_ordinal)
+    wave_ordinals = scheduled[start_index:start_index + wave_size]
+    _require(len(wave_ordinals) == wave_size, "Suffix wave exceeds selected schedule")
     review_path, queue_root = _plain(reviewed_path, directory=False), _plain(queue_root, directory=True)
     plan_root, old_root, prefix_root, requests = _epoch_integrity(root, epoch)
     _disjoint(root, queue_root, old_root, prefix_root, plan_root)
     review_sha256 = _sha(expected_review_sha256, "Suffix review")
     review = _review(review_path, review_sha256, epoch_sha256=epoch_sha256, epoch=epoch, live=True)
-    starts = [_attempt_path(root, ordinal, "attempt-start.json") for ordinal in range(start_ordinal, start_ordinal + wave_size)]
+    starts = [_attempt_path(root, ordinal, "attempt-start.json") for ordinal in wave_ordinals]
     _require(not any(path.exists() for path in starts), "Suffix wave already has a reserved attempt")
     prepared = [_prepare_wave_cell(root=root, epoch_sha256=epoch_sha256, epoch=epoch, plan_root=plan_root, requests=requests,
                                    review_path=review_path, review_sha256=review_sha256, review=review, ordinal=ordinal,
-                                   wave_size=wave_size, slot_index=ordinal - start_ordinal)
-                for ordinal in range(start_ordinal, start_ordinal + wave_size)]
+                                   wave_start_ordinal=start_ordinal, wave_ordinals=wave_ordinals, slot_index=index)
+                for index, ordinal in enumerate(wave_ordinals)]
     for item in prepared:
         _write_new(item["start_path"], _canonical(item["start"]))
     wave_start = {"format_version": 1, "epoch_sha256": epoch_sha256, "epoch_source_sha256": _hash(epoch_raw),
                   "execution_mode": epoch["execution_mode"], "max_concurrency": epoch["max_concurrency"],
-                  "start_ordinal": start_ordinal, "wave_size": wave_size,
+                  "start_ordinal": start_ordinal, "wave_size": wave_size, "ordinals": wave_ordinals,
                   "review": {"path": str(review_path), "sha256": review_sha256}, "route_sha256": review["route_sha256"],
                   "gate_sha256": review["gate_sha256"], "runtime_manifest_sha256": epoch["runtime_manifest"]["sha256"],
                   "runtime_package_manifest_sha256": epoch["runtime_package"]["manifest_sha256"],
-                  "v3_sha256": epoch["v3_source"]["sha256"],
+                  "v3_sha256": epoch["v3_source"]["sha256"], "selected_schedule_sha256": epoch["selected_schedule"]["sha256"],
                   "rows": [{"ordinal": item["row"]["ordinal"], "slot_index": index,
                             "pass_id": item["row"]["pass_id"], "source_sha256": item["source"]["sha256"],
                             "context_sha256": item["start"]["context_sha256"], "attempt_start_sha256": _hash(_canonical(item["start"]))}
@@ -928,7 +968,7 @@ def dispatch_wave(
                 except Exception as error:  # noqa: BLE001 - every worker failure must stop peers before re-raising.
                     stop_event.set()
                     errors.append(error)
-    settlement = _wave_settlement(root, epoch_sha256=epoch_sha256, start_ordinal=start_ordinal, wave_size=wave_size,
+    settlement = _wave_settlement(root, epoch_sha256=epoch_sha256, start_ordinal=start_ordinal, wave_ordinals=wave_ordinals,
                                   wave_start_sha256=wave_start_sha256)
     _write_new(_wave_path(root, start_ordinal, wave_size, "settlement"), _canonical(settlement))
     if errors:
@@ -936,7 +976,7 @@ def dispatch_wave(
     return {"start_ordinal": start_ordinal, "wave_size": wave_size, "execution_mode": epoch["execution_mode"],
             "max_concurrency": epoch["max_concurrency"], "wave_start_sha256": wave_start_sha256,
             "settlement_sha256": _hash(_wave_path(root, start_ordinal, wave_size, "settlement").read_bytes()),
-            "rows": [results[ordinal] for ordinal in range(start_ordinal, start_ordinal + wave_size)],
+            "rows": [results[ordinal] for ordinal in wave_ordinals],
             "provider_calls_made": wave_size}
 
 
@@ -1074,7 +1114,8 @@ def _replay_suffix_terminal(
         start.get("runtime_manifest_sha256") == epoch["runtime_manifest"]["sha256"]
         and start.get("runtime_package_manifest_sha256") == epoch["runtime_package"]["manifest_sha256"]
         and start.get("v3_sha256") == epoch["v3_source"]["sha256"]
-        and start.get("executor_sha256") == epoch["executor_source"]["sha256"],
+        and start.get("executor_sha256") == epoch["executor_source"]["sha256"]
+        and start.get("selected_schedule_sha256") == epoch["selected_schedule"]["sha256"],
         "Suffix terminal epoch binding differs",
     )
     prompt, schema_path, question_ids = _request_payload(plan_root, row)
@@ -1217,17 +1258,18 @@ def _wave_start(root: Path, *, epoch_sha256: str, start_ordinal: int, wave_size:
     value = _json(raw, "Suffix wave start")
     required = {"format_version", "epoch_sha256", "epoch_source_sha256", "execution_mode", "max_concurrency",
                 "start_ordinal", "wave_size", "review", "route_sha256", "gate_sha256", "runtime_manifest_sha256",
-                "runtime_package_manifest_sha256", "v3_sha256", "rows"}
+                "runtime_package_manifest_sha256", "v3_sha256", "selected_schedule_sha256", "ordinals", "rows"}
     _require(
         set(value) == required and value.get("format_version") == 1 and value.get("epoch_sha256") == epoch_sha256
         and value.get("start_ordinal") == start_ordinal and value.get("wave_size") == wave_size
         and value.get("execution_mode") == WAVE_EXECUTION_MODE and value.get("max_concurrency") == MAX_WAVE_SIZE
-        and isinstance(value.get("rows"), list) and len(value["rows"]) == wave_size,
+        and isinstance(value.get("ordinals"), list) and isinstance(value.get("rows"), list) and len(value["rows"]) == wave_size,
         "Suffix wave start binding differs",
     )
     slots = [item.get("slot_index") for item in value["rows"] if isinstance(item, Mapping)]
     ordinals = [item.get("ordinal") for item in value["rows"] if isinstance(item, Mapping)]
-    _require(slots == list(range(wave_size)) and ordinals == list(range(start_ordinal, start_ordinal + wave_size)),
+    _require(slots == list(range(wave_size)) and ordinals == value["ordinals"] and value["ordinals"][0] == start_ordinal
+             and len(set(ordinals)) == wave_size,
              "Suffix wave slot inventory differs")
     return value, raw
 
@@ -1235,22 +1277,26 @@ def _wave_start(root: Path, *, epoch_sha256: str, start_ordinal: int, wave_size:
 def _require_wave_settlement(root: Path, *, epoch_sha256: str, ordinal: int) -> None:
     start = _json(_attempt_path(root, ordinal, "attempt-start.json").read_bytes(), "Suffix attempt start")
     binding = start.get("wave")
-    _require(isinstance(binding, Mapping) and set(binding) == {"start_ordinal", "wave_size", "slot_index"}
+    _require(isinstance(binding, Mapping) and set(binding) == {"start_ordinal", "wave_size", "slot_index", "ordinals"}
              and type(binding.get("start_ordinal")) is int and type(binding.get("wave_size")) is int
-             and type(binding.get("slot_index")) is int and binding["start_ordinal"] + binding["slot_index"] == ordinal,
+             and type(binding.get("slot_index")) is int and isinstance(binding.get("ordinals"), list)
+             and binding["wave_size"] == len(binding["ordinals"])
+             and 0 <= binding["slot_index"] < binding["wave_size"]
+             and binding["ordinals"][binding["slot_index"]] == ordinal,
              "Suffix attempt wave ownership differs")
     wave, raw = _wave_start(root, epoch_sha256=epoch_sha256, start_ordinal=binding["start_ordinal"], wave_size=binding["wave_size"])
     row = wave["rows"][binding["slot_index"]]
-    _require(row.get("ordinal") == ordinal and row.get("attempt_start_sha256") == _hash(_attempt_path(root, ordinal, "attempt-start.json").read_bytes())
+    _require(wave["ordinals"] == binding["ordinals"] and row.get("ordinal") == ordinal
+             and row.get("attempt_start_sha256") == _hash(_attempt_path(root, ordinal, "attempt-start.json").read_bytes())
              and row.get("context_sha256") == start.get("context_sha256"), "Suffix wave row ownership differs")
     settlement_path = _wave_path(root, binding["start_ordinal"], binding["wave_size"], "settlement")
     _require(settlement_path.is_file(), "Suffix wave settlement is absent")
     settlement = _json(settlement_path.read_bytes(), "Suffix wave settlement")
     _require(settlement.get("epoch_sha256") == epoch_sha256 and settlement.get("wave_start_sha256") == _hash(raw)
+             and settlement.get("ordinals") == wave["ordinals"]
              and isinstance(settlement.get("rows"), list) and len(settlement["rows"]) == binding["wave_size"],
              "Suffix wave settlement binding differs")
-    for offset, settled in enumerate(settlement["rows"]):
-        expected_ordinal = binding["start_ordinal"] + offset
+    for expected_ordinal, settled in zip(wave["ordinals"], settlement["rows"], strict=True):
         terminal_path = _attempt_path(root, expected_ordinal, "terminal.json")
         _require(isinstance(settled, Mapping) and settled.get("ordinal") == expected_ordinal
                  and settled.get("status") == "completed" and terminal_path.is_file()
@@ -1273,7 +1319,8 @@ def admit_wave(
              and wave.get("max_concurrency") == epoch["max_concurrency"]
              and wave.get("runtime_manifest_sha256") == epoch["runtime_manifest"]["sha256"]
              and wave.get("runtime_package_manifest_sha256") == epoch["runtime_package"]["manifest_sha256"]
-             and wave.get("v3_sha256") == epoch["v3_source"]["sha256"], "Suffix wave epoch binding differs")
+             and wave.get("v3_sha256") == epoch["v3_source"]["sha256"]
+             and wave.get("selected_schedule_sha256") == epoch["selected_schedule"]["sha256"], "Suffix wave epoch binding differs")
     review_record = wave.get("review")
     _require(isinstance(review_record, Mapping) and set(review_record) == {"path", "sha256"}, "Suffix wave review differs")
     review = _review(_plain(review_record["path"], directory=False), _sha(review_record["sha256"], "Suffix wave review"),
@@ -1282,8 +1329,13 @@ def admit_wave(
              "Suffix wave route binding differs")
     settlement_path = _wave_path(root, start_ordinal, wave_size, "settlement")
     settlement = _json(settlement_path.read_bytes(), "Suffix wave settlement")
+    scheduled = epoch["remaining_request_ordinals"]
+    _require(start_ordinal in scheduled, "Requested wave is outside the selected schedule")
+    wave_ordinals = scheduled[scheduled.index(start_ordinal):scheduled.index(start_ordinal) + wave_size]
+    _require(len(wave_ordinals) == wave_size, "Requested wave exceeds the selected schedule")
     _require(settlement.get("epoch_sha256") == epoch_sha256 and settlement.get("wave_start_sha256") == _hash(wave_raw)
-             and settlement.get("start_ordinal") == start_ordinal and settlement.get("wave_size") == wave_size
+            and settlement.get("start_ordinal") == start_ordinal and settlement.get("wave_size") == wave_size
+             and settlement.get("ordinals") == wave_ordinals and wave.get("ordinals") == wave_ordinals
              and isinstance(settlement.get("rows"), list) and len(settlement["rows"]) == wave_size,
              "Suffix wave settlement binding differs")
     runtime, plan = _runtime_from_epoch(epoch), _plan(plan_root, epoch["plan_sha256"])[0]
@@ -1294,14 +1346,14 @@ def admit_wave(
     _require(all(isinstance(value, str) and _HASH.fullmatch(value) for value in protected_requests + protected_sessions)
              and len(protected_requests) == len(set(protected_requests)) and len(protected_sessions) == len(set(protected_sessions)),
              "Protected native identity boundary differs")
-    for expected, wave_row in zip(range(start_ordinal, start_ordinal + wave_size), wave["rows"], strict=True):
+    for expected, wave_row in zip(wave_ordinals, wave["rows"], strict=True):
         row = requests[expected]
         start_path, terminal_path = _attempt_path(root, expected, "attempt-start.json"), _attempt_path(root, expected, "terminal.json")
         _require(wave_row.get("attempt_start_sha256") == _hash(start_path.read_bytes())
                  and wave_row.get("context_sha256") == _json(start_path.read_bytes(), "Suffix attempt start").get("context_sha256")
                  and wave_row.get("source_sha256") == _source_for_pass(plan_root, passes[row["pass_id"]])["sha256"],
                  "Suffix wave row binding differs")
-        settled = settlement["rows"][expected - start_ordinal]
+        settled = settlement["rows"][wave_ordinals.index(expected)]
         _require(settled.get("ordinal") == expected and settled.get("status") == "completed"
                  and settled.get("terminal_sha256") == _hash(terminal_path.read_bytes()), "Suffix wave is not fully settled")
         _verdicts, identity = _replay_suffix_terminal(root=root, epoch_sha256=epoch_sha256, epoch=epoch, runtime=runtime,
