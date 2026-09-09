@@ -23,6 +23,26 @@ V5_COUNT = 27
 _HEX = set("0123456789abcdef")
 
 
+class _OperationContext:
+    def __init__(self, recovery_root: Path, expected_plan_sha256: str) -> None:
+        self.root = recovery_root
+        self.plan_sha256 = expected_plan_sha256
+        self.frozen = _frozen()
+        self.plan = self.frozen._read_plan(self.root, self.plan_sha256)
+        self.frozen._verify_origin(self.plan)
+        self.suffix = _suffix(self.plan)
+        self.legacy = self.frozen._load_legacy()
+        self.resolution, self.rows = self.frozen._rows(self.legacy, Path(self.plan["freeze_root"]))
+        _require(self.resolution.get("schedule_sha256") == self.plan.get("schedule_sha256"), "v5 schedule drifted")
+        self.schema = json.loads(_canonical(self.frozen._frozen_schema(self.plan)).decode("utf-8"))
+        self.prefix: tuple[set[str], set[str], set[str]] | None = None
+        self.before_contact_origin_checked = False
+
+
+def _operation(recovery_root: Path | str, expected_plan_sha256: str) -> _OperationContext:
+    return _OperationContext(Path(recovery_root).resolve(), _hex(expected_plan_sha256, "expected recovery plan hash"))
+
+
 def _require(value: bool, message: str) -> None:
     if not value:
         raise ValueError(message)
@@ -126,7 +146,8 @@ def _disjoint(left: Path, right: Path) -> None:
     _require(not left.is_relative_to(right) and not right.is_relative_to(left), "v5 suffix root must be disjoint from the old recovery root")
 
 
-def _old_0918(*, frozen: ModuleType, plan: Mapping[str, Any], root: Path, review: Mapping[str, Any], suffix: list[dict[str, Any]]) -> None:
+def _old_0918(*, context: _OperationContext, review: Mapping[str, Any]) -> None:
+    root, suffix = context.root, context.suffix
     cell = root / "cells" / FIRST_V5_CELL
     binding = review.get("0918_original")
     _require(isinstance(binding, Mapping) and binding.get("cell_id") == FIRST_V5_CELL, "0918 original evidence binding is absent")
@@ -134,7 +155,7 @@ def _old_0918(*, frozen: ModuleType, plan: Mapping[str, Any], root: Path, review
     _require(descriptors == {name: {"path": str((cell / f"{name}.json").resolve()), "sha256": _hash((cell / f"{name}.json").read_bytes())} for name in descriptors}, "0918 original evidence path drifted")
     outcome, _outcome_raw = _json(cell / "outcome.json", "0918 original outcome")
     prepared, _prepared_raw = _json(cell / "prepared.json", "0918 original prepared")
-    row, payload = _payload(frozen, plan, FIRST_V5_CELL)
+    row, payload = _payload(context, FIRST_V5_CELL)
     _require(outcome.get("state") == "definitely_not_contacted" and outcome.get("result") is None
              and prepared == {"cell_id": FIRST_V5_CELL, "kind": "unstarted", "payload_sha256": row["payload_sha256"]}
              and _json(cell / "request.json", "0918 original request")[0] == {"prompt": payload.decode("utf-8")}, "0918 original DNC or payload binding drifted")
@@ -144,14 +165,17 @@ def _old_0918(*, frozen: ModuleType, plan: Mapping[str, Any], root: Path, review
 
 
 def _authority(*, recovery_root: Path | str, suffix_root: Path | str, expected_plan_sha256: str, reviewed_path: Path | str,
-               expected_review_sha256: str, candidate: Mapping[str, Any], require_live: bool) -> tuple[dict[str, Any], dict[str, Any], ModuleType, list[dict[str, Any]]]:
-    frozen = _frozen()
+               expected_review_sha256: str, candidate: Mapping[str, Any], require_live: bool, context: _OperationContext | None = None,
+               recheck_origin: bool = False) -> tuple[dict[str, Any], dict[str, Any], ModuleType, list[dict[str, Any]]]:
     root = Path(recovery_root).resolve()
     target = Path(suffix_root).resolve()
     _disjoint(root, target)
-    plan = frozen._read_plan(root, _hex(expected_plan_sha256, "expected recovery plan hash"))
-    frozen._verify_origin(plan)
-    suffix = _suffix(plan)
+    current = context or _operation(root, expected_plan_sha256)
+    _require(current.root == root and current.plan_sha256 == _hex(expected_plan_sha256, "expected recovery plan hash"), "v5 operation context drifted")
+    frozen, plan, suffix = current.frozen, current.plan, current.suffix
+    if recheck_origin and not current.before_contact_origin_checked:
+        frozen._verify_origin(plan)
+        current.before_contact_origin_checked = True
     review, raw = _json(Path(reviewed_path).resolve(), "v5 suffix review")
     _require(_hash(raw) == _hex(expected_review_sha256, "expected v5 suffix review hash"), "v5 suffix review hash drifted")
     route, gate = review.get("route"), review.get("gate")
@@ -162,7 +186,7 @@ def _authority(*, recovery_root: Path | str, suffix_root: Path | str, expected_p
     _require(route.get("timeout_seconds") == 300 and route.get("max_concurrency") == 1 and route.get("nonvisual_max_turns") == 1, "v5 route must remain 300/1/1")
     helper = {"path": str(HELPER_PATH), "sha256": _hash(HELPER_PATH.read_bytes())}
     _require(review.get("helper") == helper, "v5 helper source binding drifted")
-    _old_0918(frozen=frozen, plan=plan, root=root, review=review, suffix=suffix)
+    _old_0918(context=current, review=review)
     bound = _candidate(candidate, frozen)
     _require(review.get("candidate") == bound, "v5 candidate binding drifted")
     reviewed = _timestamp(review.get("reviewed_at"), "v5 review reviewed_at")
@@ -183,13 +207,11 @@ def verify_authority(*, recovery_root: Path | str, suffix_root: Path | str, expe
             "candidate": authority["candidate"]}
 
 
-def _payload(frozen: ModuleType, plan: Mapping[str, Any], cell_id: str) -> tuple[dict[str, Any], bytes]:
-    legacy = frozen._load_legacy()
-    resolution, rows = frozen._rows(legacy, Path(plan["freeze_root"]))
-    item = rows.get(cell_id)
-    _require(isinstance(item, Mapping) and resolution.get("schedule_sha256") == plan.get("schedule_sha256"), "v5 payload or schedule drifted")
-    payload = resolution["payloads"][cell_id]
-    _require(frozen.sha256(payload) == item.get("payload_sha256"), "v5 payload bytes drifted")
+def _payload(context: _OperationContext, cell_id: str) -> tuple[dict[str, Any], bytes]:
+    item = context.rows.get(cell_id)
+    _require(isinstance(item, Mapping), "v5 payload is absent")
+    payload = bytes(context.resolution["payloads"][cell_id])
+    _require(context.frozen.sha256(payload) == item.get("payload_sha256"), "v5 payload bytes drifted")
     return dict(item), payload
 
 
@@ -231,14 +253,14 @@ def _attempt(*, cell_id: str, plan_sha256: str, review_sha256: str, item: Mappin
 
 def _guard_inflight(*, recovery_root: Path | str, expected_plan_sha256: str, cell_id: str, reviewed_path: Path | str,
                     expected_review_sha256: str, candidate: Mapping[str, Any], suffix_root: Path, attempt: Mapping[str, Any],
-                    gate_observation: Mapping[str, Any]) -> tuple[dict[str, Any], dict[str, Any], ModuleType]:
+                    gate_observation: Mapping[str, Any], context: _OperationContext) -> tuple[dict[str, Any], dict[str, Any], ModuleType]:
     plan, authority, frozen, suffix = _authority(recovery_root=recovery_root, suffix_root=suffix_root, expected_plan_sha256=expected_plan_sha256,
                                                   reviewed_path=reviewed_path, expected_review_sha256=expected_review_sha256,
-                                                  candidate=candidate, require_live=True)
+                                                  candidate=candidate, require_live=True, context=context, recheck_origin=True)
     _require(cell_id in {item["cell_id"] for item in suffix}, "cell is not in v5 suffix")
     _require((suffix_root / "cells" / cell_id / "v5-attempt.json").is_file() and not (suffix_root / "cells" / cell_id / "outcome.json").exists(), "v5 in-flight attempt is not exclusive")
-    row, payload = _payload(frozen, plan, cell_id)
-    schema = frozen._frozen_schema(plan)
+    row, payload = _payload(context, cell_id)
+    schema = context.schema
     expected = _attempt(cell_id=cell_id, plan_sha256=expected_plan_sha256, review_sha256=expected_review_sha256, item=row,
                         payload=payload, schema=schema, authority=authority, session_id=str(attempt.get("session_id", "")), gate_observation=gate_observation)
     _require(dict(attempt) == expected, "v5 in-flight attempt binding drifted")
@@ -250,18 +272,19 @@ def dispatch(*, recovery_root: Path | str, suffix_root: Path | str, expected_pla
     """Make one reviewed v5 request; every broker outcome permanently consumes its suffix cell."""
     source, target = Path(recovery_root).resolve(), Path(suffix_root).resolve()
     _require(source != target, "v5 suffix evidence must not write the old recovery root")
-    plan, authority, frozen, suffix = _authority(recovery_root=source, suffix_root=target, expected_plan_sha256=expected_plan_sha256,
+    context = _operation(source, expected_plan_sha256)
+    _plan, authority, frozen, suffix = _authority(recovery_root=source, suffix_root=target, expected_plan_sha256=expected_plan_sha256,
                                                   reviewed_path=reviewed_path, expected_review_sha256=expected_review_sha256,
-                                                  candidate=candidate, require_live=True)
+                                                  candidate=candidate, require_live=True, context=context)
     cell_ids = [item["cell_id"] for item in suffix]
     _require(cell_id in cell_ids, "cell is not in v5 suffix")
     cell = target / "cells" / cell_id
     _require(not (cell / "v5-attempt.json").exists() and not (cell / "outcome.json").exists() and not (cell / "v5-admission.json").exists(), "v5 cell is already consumed; no resend")
     for prior in cell_ids[:cell_ids.index(cell_id)]:
         _verify_admission(recovery_root=source, suffix_root=target, expected_plan_sha256=expected_plan_sha256, cell_id=prior,
-                          reviewed_path=reviewed_path, expected_review_sha256=expected_review_sha256, candidate=candidate)
-    row, payload = _payload(frozen, plan, cell_id)
-    schema = frozen._frozen_schema(plan)
+                          reviewed_path=reviewed_path, expected_review_sha256=expected_review_sha256, candidate=candidate, context=context)
+    row, payload = _payload(context, cell_id)
+    schema = context.schema
     _require(isinstance(authority["route"].get("name"), str) and authority["route"]["name"], "v5 route has no name")
     broker_type = _candidate_broker(frozen, authority["candidate"])
     broker = broker_type(Path(authority["candidate"]["isolated_queue_root"]))
@@ -278,7 +301,7 @@ def dispatch(*, recovery_root: Path | str, suffix_root: Path | str, expected_pla
     def before_contact() -> None:
         _guard_inflight(recovery_root=source, expected_plan_sha256=expected_plan_sha256, cell_id=cell_id,
                         reviewed_path=reviewed_path, expected_review_sha256=expected_review_sha256, candidate=candidate,
-                        suffix_root=target, attempt=attempt, gate_observation=gate_observation)
+                        suffix_root=target, attempt=attempt, gate_observation=gate_observation, context=context)
         observed = _observe_gate(broker, authority["route"], authority["gate"], initial=False)
         _require(observed == gate_observation, "v5 reviewed gate row drifted")
         frozen._write_new(cell / "gate-observation-before-contact.json", observed)
@@ -303,16 +326,17 @@ def dispatch(*, recovery_root: Path | str, suffix_root: Path | str, expected_pla
             "envelope_sha256": _hash(envelope), "provider_calls_made": 1}
 
 
-def _validate_provider_evidence(*, frozen: ModuleType, plan: Mapping[str, Any], cell: Path, attempt: Mapping[str, Any],
+def _validate_provider_evidence(*, context: _OperationContext, cell: Path, attempt: Mapping[str, Any],
                                 result: Mapping[str, Any], envelope_raw: bytes, authority: Mapping[str, Any]) -> tuple[str, str]:
+    frozen = context.frozen
     route, _route_raw = _json(cell / "route.json", "v5 route")
     gate, _gate_raw = _json(cell / "gate.json", "v5 gate")
     request, _request_raw = _json(cell / "request.json", "v5 request")
     schema, schema_raw = _json(cell / "response-schema.json", "v5 response schema")
     _require(route == authority["route"] and gate == authority["gate"] and _hash(route) == attempt.get("route_sha256")
              and _hash(gate) == attempt.get("gate_sha256") and schema_raw == _canonical(schema)
-             and _hash(schema_raw) == attempt.get("schema_sha256") and schema == frozen._frozen_schema(plan), "v5 route, gate, or schema commitment drifted")
-    row, payload = _payload(frozen, plan, cell.name)
+             and _hash(schema_raw) == attempt.get("schema_sha256") and schema == context.schema, "v5 route, gate, or schema commitment drifted")
+    row, payload = _payload(context, cell.name)
     _require(attempt.get("payload_sha256") == row["payload_sha256"] and request == {"prompt": payload.decode("utf-8")}
              and attempt.get("request_sha256") == _hash(request), "v5 request payload drifted")
     _require(attempt.get("candidate") == authority["candidate"], "v5 candidate source commitment drifted")
@@ -336,10 +360,12 @@ def _validate_provider_evidence(*, frozen: ModuleType, plan: Mapping[str, Any], 
 
 
 def _admission_evidence(*, recovery_root: Path | str, suffix_root: Path | str, expected_plan_sha256: str, cell_id: str,
-                        reviewed_path: Path | str, expected_review_sha256: str, candidate: Mapping[str, Any]) -> tuple[dict[str, Any], dict[str, Any], ModuleType, Path, dict[str, Any], dict[str, Any], bytes, str, str, str]:
+                        reviewed_path: Path | str, expected_review_sha256: str, candidate: Mapping[str, Any],
+                        context: _OperationContext | None = None) -> tuple[dict[str, Any], dict[str, Any], ModuleType, Path, dict[str, Any], dict[str, Any], bytes, str, str, str]:
+    current = context or _operation(recovery_root, expected_plan_sha256)
     plan, authority, frozen, suffix = _authority(recovery_root=recovery_root, suffix_root=suffix_root, expected_plan_sha256=expected_plan_sha256,
                                                   reviewed_path=reviewed_path, expected_review_sha256=expected_review_sha256,
-                                                  candidate=candidate, require_live=False)
+                                                  candidate=candidate, require_live=False, context=current)
     _require(cell_id in {item["cell_id"] for item in suffix}, "cell is not in v5 suffix")
     cell = Path(suffix_root).resolve() / "cells" / cell_id
     _require(all((cell / name).is_file() for name in ("v5-attempt.json", "outcome.json", "result.json", "native-envelope.json", "route.json", "gate.json", "gate-observation-initial.json", "gate-observation-before-contact.json", "request.json", "response-schema.json")), "v5 raw evidence is missing")
@@ -350,12 +376,12 @@ def _admission_evidence(*, recovery_root: Path | str, suffix_root: Path | str, e
     callback_observed, _callback_raw = _json(cell / "gate-observation-before-contact.json", "v5 callback gate observation")
     envelope_raw = (cell / "native-envelope.json").read_bytes()
     _require(outcome.get("state") == "completed" and outcome.get("failure") is None and outcome.get("result") == result, "v5 cell has no completed native result")
-    row, payload = _payload(frozen, plan, cell_id)
+    row, payload = _payload(current, cell_id)
     expected_attempt = _attempt(cell_id=cell_id, plan_sha256=expected_plan_sha256, review_sha256=expected_review_sha256, item=row,
-                                payload=payload, schema=frozen._frozen_schema(plan), authority=authority, session_id=str(attempt.get("session_id", "")), gate_observation=observed)
+                                payload=payload, schema=current.schema, authority=authority, session_id=str(attempt.get("session_id", "")), gate_observation=observed)
     _require(attempt == expected_attempt, "v5 attempt binding drifted")
     _require(callback_observed == observed, "v5 callback gate observation drifted")
-    request_id, session_id = _validate_provider_evidence(frozen=frozen, plan=plan, cell=cell, attempt=attempt, result=result,
+    request_id, session_id = _validate_provider_evidence(context=current, cell=cell, attempt=attempt, result=result,
                                                           envelope_raw=envelope_raw, authority=authority)
     descriptor, runtime = result.get("native_envelope_artifact"), result.get("runtime")
     _require(set(result) == {"schema_version", "request_hash", "output", "output_hash", "runtime", "native_envelope_artifact"}
@@ -381,7 +407,10 @@ def _admission_evidence(*, recovery_root: Path | str, suffix_root: Path | str, e
     return plan, authority, frozen, cell, result, dict(runtime), envelope_raw, request_id, session_id, _hash(result_raw)
 
 
-def _prefix_identities(frozen: ModuleType, plan: Mapping[str, Any], recovery_root: Path) -> tuple[set[str], set[str], set[str]]:
+def _prefix_identities(context: _OperationContext) -> tuple[set[str], set[str], set[str]]:
+    if context.prefix is not None:
+        return tuple(set(values) for values in context.prefix)  # type: ignore[return-value]
+    frozen, plan, recovery_root = context.frozen, context.plan, context.root
     cells = [dict(item) for item in plan.get("cells", []) if isinstance(item, Mapping)]
     first = next((index for index, item in enumerate(cells) if item.get("cell_id") == FIRST_V5_CELL), None)
     _require(first == 13 and cells[1].get("cell_id") == "wpb-pair-wpb-en-0843", "v5 predecessor geometry drifted")
@@ -392,15 +421,17 @@ def _prefix_identities(frozen: ModuleType, plan: Mapping[str, Any], recovery_roo
     sessions = {item.get("session_id_sha256") for item in admitted}
     _require(all(isinstance(item, str) and len(item) == 64 for item in identities | requests | sessions)
              and len(identities) == len(requests) == len(sessions) == 12, "native-v4 predecessor identity inventory drifted")
-    return set(identities), set(requests), set(sessions)
+    context.prefix = (set(identities), set(requests), set(sessions))
+    return tuple(set(values) for values in context.prefix)  # type: ignore[return-value]
 
 
-def _admission(*, plan: Mapping[str, Any], frozen: ModuleType, recovery_root: Path, cell: Path, result: Mapping[str, Any], runtime: Mapping[str, Any],
+def _admission(*, context: _OperationContext, cell: Path, result: Mapping[str, Any], runtime: Mapping[str, Any],
                envelope_raw: bytes, request_id: str, session_id: str, result_sha256: str, expected_plan_sha256: str,
                expected_review_sha256: str) -> dict[str, Any]:
-    row, _payload_value = _payload(frozen, plan, cell.name)
+    plan = context.plan
+    row, _payload_value = _payload(context, cell.name)
     identity, request_hash, session_hash = _hash({"request_id": request_id, "session_id": session_id}), _hash(request_id.encode("utf-8")), _hash(session_id.encode("utf-8"))
-    prefix_identities, prefix_requests, prefix_sessions = _prefix_identities(frozen, plan, recovery_root)
+    prefix_identities, prefix_requests, prefix_sessions = _prefix_identities(context)
     _require(identity not in set(plan["origin"]["reserved_identity_hashes"]) and identity not in prefix_identities
              and request_hash not in set(plan["origin"].get("reserved_request_id_hashes", []))
              and request_hash not in prefix_requests and session_hash not in set(plan["origin"].get("reserved_session_id_hashes", []))
@@ -410,9 +441,7 @@ def _admission(*, plan: Mapping[str, Any], frozen: ModuleType, recovery_root: Pa
             continue
         prior, _raw = _json(path, "prior v5 admission")
         _require(prior.get("identity_sha256") != identity and prior.get("request_id_sha256") != request_hash and prior.get("session_id_sha256") != session_hash, "v5 identity overlaps another suffix cell")
-    legacy = frozen._load_legacy()
-    resolution, _rows = frozen._rows(legacy, Path(plan["freeze_root"]))
-    answer = legacy._valid_response(resolution["core"], result["output"])
+    answer = context.legacy._valid_response(context.resolution["core"], result["output"])
     return {"format_version": 1, "cell_id": cell.name, "plan_sha256": expected_plan_sha256, "review_sha256": expected_review_sha256,
             "result_sha256": result_sha256, "envelope_sha256": _hash(envelope_raw), "identity_sha256": identity,
             "request_id_sha256": request_hash, "session_id_sha256": session_hash, "payload_sha256": row["payload_sha256"],
@@ -420,17 +449,19 @@ def _admission(*, plan: Mapping[str, Any], frozen: ModuleType, recovery_root: Pa
 
 
 def _verify_admission(*, recovery_root: Path | str, suffix_root: Path | str, expected_plan_sha256: str, cell_id: str,
-                      reviewed_path: Path | str, expected_review_sha256: str, candidate: Mapping[str, Any]) -> dict[str, Any]:
+                      reviewed_path: Path | str, expected_review_sha256: str, candidate: Mapping[str, Any],
+                      context: _OperationContext | None = None) -> dict[str, Any]:
     cell = Path(suffix_root).resolve() / "cells" / cell_id
     _require((cell / "v5-attempt.json").is_file(), "v5 raw evidence is missing")
     attempt, _attempt_raw = _json(cell / "v5-attempt.json", "v5 attempt")
     review = attempt.get("review")
     _require(isinstance(review, Mapping) and isinstance(review.get("path"), str) and isinstance(review.get("sha256"), str), "v5 recorded review binding is malformed")
+    current = context or _operation(recovery_root, expected_plan_sha256)
     data = _admission_evidence(recovery_root=recovery_root, suffix_root=suffix_root, expected_plan_sha256=expected_plan_sha256,
-                               cell_id=cell_id, reviewed_path=review["path"], expected_review_sha256=review["sha256"], candidate=candidate)
-    plan, _authority_value, frozen, cell, result, runtime, envelope_raw, request_id, session_id, result_sha256 = data
+                               cell_id=cell_id, reviewed_path=review["path"], expected_review_sha256=review["sha256"], candidate=candidate, context=current)
+    _plan, _authority_value, _frozen, cell, result, runtime, envelope_raw, request_id, session_id, result_sha256 = data
     admission, _raw = _json(cell / "v5-admission.json", "v5 admission")
-    _require(admission == _admission(plan=plan, frozen=frozen, recovery_root=Path(recovery_root).resolve(), cell=cell, result=result, runtime=runtime, envelope_raw=envelope_raw,
+    _require(admission == _admission(context=current, cell=cell, result=result, runtime=runtime, envelope_raw=envelope_raw,
                                      request_id=request_id, session_id=session_id, result_sha256=result_sha256,
                                      expected_plan_sha256=expected_plan_sha256, expected_review_sha256=review["sha256"]), "v5 admission commitment drifted")
     return admission
@@ -441,20 +472,21 @@ def admit(*, recovery_root: Path | str, suffix_root: Path | str, expected_plan_s
     """Admit one completed v5 suffix result after replaying all retained evidence."""
     target = Path(suffix_root).resolve()
     _require(Path(recovery_root).resolve() != target, "v5 suffix evidence must not write the old recovery root")
-    plan, _authority_value, frozen, suffix = _authority(recovery_root=recovery_root, suffix_root=target, expected_plan_sha256=expected_plan_sha256,
+    context = _operation(recovery_root, expected_plan_sha256)
+    _plan, _authority_value, frozen, suffix = _authority(recovery_root=recovery_root, suffix_root=target, expected_plan_sha256=expected_plan_sha256,
                                                   reviewed_path=reviewed_path, expected_review_sha256=expected_review_sha256,
-                                                  candidate=candidate, require_live=False)
+                                                  candidate=candidate, require_live=False, context=context)
     cell_ids = [item["cell_id"] for item in suffix]
     _require(cell_id in cell_ids, "cell is not in v5 suffix")
     cell = target / "cells" / cell_id
     _require(not (cell / "v5-admission.json").exists(), "v5 cell already admitted")
     for prior in cell_ids[:cell_ids.index(cell_id)]:
         _verify_admission(recovery_root=recovery_root, suffix_root=target, expected_plan_sha256=expected_plan_sha256, cell_id=prior,
-                          reviewed_path=reviewed_path, expected_review_sha256=expected_review_sha256, candidate=candidate)
+                          reviewed_path=reviewed_path, expected_review_sha256=expected_review_sha256, candidate=candidate, context=context)
     data = _admission_evidence(recovery_root=recovery_root, suffix_root=target, expected_plan_sha256=expected_plan_sha256,
-                               cell_id=cell_id, reviewed_path=reviewed_path, expected_review_sha256=expected_review_sha256, candidate=candidate)
-    plan, _authority_value, frozen, evidence_cell, result, runtime, envelope_raw, request_id, session_id, result_sha256 = data
-    admission = _admission(plan=plan, frozen=frozen, recovery_root=Path(recovery_root).resolve(), cell=evidence_cell, result=result, runtime=runtime, envelope_raw=envelope_raw,
+                               cell_id=cell_id, reviewed_path=reviewed_path, expected_review_sha256=expected_review_sha256, candidate=candidate, context=context)
+    _plan, _authority_value, _frozen, evidence_cell, result, runtime, envelope_raw, request_id, session_id, result_sha256 = data
+    admission = _admission(context=context, cell=evidence_cell, result=result, runtime=runtime, envelope_raw=envelope_raw,
                            request_id=request_id, session_id=session_id, result_sha256=result_sha256,
                            expected_plan_sha256=expected_plan_sha256, expected_review_sha256=expected_review_sha256)
     raw = frozen._write_new(cell / "v5-admission.json", admission)

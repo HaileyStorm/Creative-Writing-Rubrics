@@ -46,6 +46,7 @@ def test_authority_rejects_canonical_queue_and_preserves_dnc_binding(tmp_path: P
     canonical_queue.mkdir(); isolated_queue.mkdir()
     frozen = SimpleNamespace(QUEUE_ROOT=canonical_queue, _read_plan=lambda _root, expected: plan if expected == plan_hash else None, _verify_origin=lambda _plan: None, _load_legacy=lambda: None, _rows=lambda _legacy, _root: ({"schedule_sha256": None, "payloads": {}}, {}), sha256=lambda raw: hashlib.sha256(raw).hexdigest())
     monkeypatch.setattr(value, "_frozen", lambda: frozen)
+    monkeypatch.setattr(value, "_operation", lambda root, expected: SimpleNamespace(root=Path(root).resolve(), plan_sha256=expected, frozen=frozen, plan=plan, suffix=value._suffix(plan)))
     package_root = tmp_path / "package"
     broker, adapter = package_root / "model_work_queue/broker.py", package_root / "model_work_queue/adapters/grok_exec.py"
     broker.parent.mkdir(parents=True); adapter.parent.mkdir(parents=True)
@@ -156,13 +157,14 @@ def test_old_0918_rejects_wrong_dnc_or_touched_later_cell(tmp_path: Path) -> Non
     frozen = SimpleNamespace(_load_legacy=lambda: None, _rows=lambda _legacy, _root: ({"schedule_sha256": "schedule", "payloads": {value.FIRST_V5_CELL: payload}}, {value.FIRST_V5_CELL: row}), sha256=lambda raw: hashlib.sha256(raw).hexdigest())
     plan = {"freeze_root": str(root), "schedule_sha256": "schedule"}
     binding = {name: {"path": str((cell / f"{name}.json").resolve()), "sha256": hashlib.sha256((cell / f"{name}.json").read_bytes()).hexdigest()} for name in ("attempt", "outcome", "request", "prepared")}
-    value._old_0918(frozen=frozen, plan=plan, root=root, review={"0918_original": {"cell_id": value.FIRST_V5_CELL, **binding}}, suffix=[row, {"cell_id": "later-0", "kind": "unstarted"}])
+    context = SimpleNamespace(frozen=frozen, plan=plan, root=root, suffix=[row, {"cell_id": "later-0", "kind": "unstarted"}], rows={value.FIRST_V5_CELL: row}, resolution={"payloads": {value.FIRST_V5_CELL: payload}})
+    value._old_0918(context=context, review={"0918_original": {"cell_id": value.FIRST_V5_CELL, **binding}})
     binding["outcome"] = {"path": str((cell / "attempt.json").resolve()), "sha256": binding["attempt"]["sha256"]}
     with pytest.raises(ValueError, match="path drifted"):
-        value._old_0918(frozen=frozen, plan=plan, root=root, review={"0918_original": {"cell_id": value.FIRST_V5_CELL, **binding}}, suffix=[row, {"cell_id": "later-0", "kind": "unstarted"}])
+        value._old_0918(context=context, review={"0918_original": {"cell_id": value.FIRST_V5_CELL, **binding}})
     write(later / "attempt.json", {"touched": True})
     with pytest.raises(ValueError, match="touched"):
-        value._old_0918(frozen=frozen, plan=plan, root=root, review={"0918_original": {"cell_id": value.FIRST_V5_CELL, **{name: {"path": str((cell / f"{name}.json").resolve()), "sha256": hashlib.sha256((cell / f"{name}.json").read_bytes()).hexdigest()} for name in ("attempt", "outcome", "request", "prepared")}}}, suffix=[row, {"cell_id": "later-0", "kind": "unstarted"}])
+        value._old_0918(context=context, review={"0918_original": {"cell_id": value.FIRST_V5_CELL, **{name: {"path": str((cell / f"{name}.json").resolve()), "sha256": hashlib.sha256((cell / f"{name}.json").read_bytes()).hexdigest()} for name in ("attempt", "outcome", "request", "prepared")}}})
 
 
 @pytest.mark.parametrize("expires_in, helper_hash, message", [(299, None, "route timeout"), (600, "0" * 64, "helper")])
@@ -173,6 +175,7 @@ def test_authority_requires_live_window_and_helper(tmp_path: Path, monkeypatch: 
     plan = {"cells": cells}
     frozen = SimpleNamespace(_read_plan=lambda _root, _hash: plan, _verify_origin=lambda _plan: None)
     monkeypatch.setattr(value, "_frozen", lambda: frozen)
+    monkeypatch.setattr(value, "_operation", lambda root, expected: SimpleNamespace(root=Path(root).resolve(), plan_sha256=expected, frozen=frozen, plan=plan, suffix=value._suffix(plan)))
     monkeypatch.setattr(value, "_old_0918", lambda **_kwargs: None)
     monkeypatch.setattr(value, "_candidate", lambda candidate, _frozen: candidate)
     now = __import__("datetime").datetime.now(__import__("datetime").timezone.utc)
@@ -191,6 +194,7 @@ def test_prior_admission_replays_recorded_review_not_renewal(tmp_path: Path, mon
     write(cell / "v5-attempt.json", attempt); admission = {"admitted": True}; write(cell / "v5-admission.json", admission)
     before = {(cell / name).name: (cell / name).read_bytes() for name in ("v5-attempt.json", "v5-admission.json")}
     captured: dict[str, Any] = {}
+    monkeypatch.setattr(value, "_operation", lambda *_args: SimpleNamespace())
     monkeypatch.setattr(value, "_admission_evidence", lambda **kwargs: (captured.update(kwargs) or ({}, {}, SimpleNamespace(), cell, {}, {}, b"", "request", "session", "result")))
     monkeypatch.setattr(value, "_admission", lambda **_kwargs: admission)
     assert value._verify_admission(recovery_root=tmp_path / "old", suffix_root=tmp_path / "suffix", expected_plan_sha256="p" * 64, cell_id="first", reviewed_path=new_review, expected_review_sha256="b" * 64, candidate={}) == admission
@@ -204,7 +208,36 @@ def test_v4_prefix_identity_collision_rejects_new_admission(tmp_path: Path) -> N
     plan = {"cells": prefix + [{"cell_id": value.FIRST_V5_CELL}], "freeze_root": str(tmp_path), "origin": {"reserved_identity_hashes": [], "reserved_request_id_hashes": [], "reserved_session_id_hashes": []}}
     frozen = SimpleNamespace(_load_legacy=lambda: SimpleNamespace(_valid_response=lambda _core, output: output), _rows=lambda _legacy, _root: ({"payloads": {value.FIRST_V5_CELL: payload}, "schedule_sha256": None, "core": object()}, {value.FIRST_V5_CELL: row}), sha256=lambda raw: hashlib.sha256(raw).hexdigest(), _verify_admission=lambda _plan, _root, item: {"identity_sha256": value._hash({"request_id": "v4-0", "session_id": "s"}) if item["cell_id"] == "v4-0" else value._hash(str(item["cell_id"])), "request_id_sha256": value._hash(("r" + str(item["cell_id"])).encode()), "session_id_sha256": value._hash(("s" + str(item["cell_id"])).encode())})
     with pytest.raises(ValueError, match="native-v4"):
-        value._admission(plan=plan, frozen=frozen, recovery_root=tmp_path, cell=tmp_path / value.FIRST_V5_CELL, result={"output": {}}, runtime={"tool_policy_attestation_hash": "t" * 64}, envelope_raw=b"{}", request_id="v4-0", session_id="s", result_sha256="r", expected_plan_sha256="p" * 64, expected_review_sha256="q" * 64)
+        value._admission(context=SimpleNamespace(plan=plan, frozen=frozen, root=tmp_path, rows={value.FIRST_V5_CELL: row}, resolution={"payloads": {value.FIRST_V5_CELL: payload}, "core": object()}, legacy=SimpleNamespace(_valid_response=lambda _core, output: output), prefix=None), cell=tmp_path / value.FIRST_V5_CELL, result={"output": {}}, runtime={"tool_policy_attestation_hash": "t" * 64}, envelope_raw=b"{}", request_id="v4-0", session_id="s", result_sha256="r", expected_plan_sha256="p" * 64, expected_review_sha256="q" * 64)
+
+
+def test_operation_context_reuses_common_prefix_and_payload_resolution(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    value = load(); payload = b"prompt"; counts = {"origin": 0, "legacy": 0, "rows": 0, "prefix": 0}
+    prefix = [{"cell_id": f"v4-{number}", "kind": "unstarted"} for number in range(12)]; prefix.insert(1, {"cell_id": "wpb-pair-wpb-en-0843", "kind": "unstarted"})
+    cells = prefix + [{"cell_id": value.FIRST_V5_CELL, "kind": "unstarted"}] + [{"cell_id": f"later-{number}", "kind": "unstarted"} for number in range(26)]
+    rows = {item["cell_id"]: {"cell_id": item["cell_id"], "payload_sha256": hashlib.sha256(payload).hexdigest()} for item in cells}
+    plan = {"cells": cells, "freeze_root": str(tmp_path), "schedule_sha256": "schedule"}
+    legacy = SimpleNamespace()
+    frozen = SimpleNamespace(_read_plan=lambda _root, _hash: plan, _verify_origin=lambda _plan: counts.__setitem__("origin", counts["origin"] + 1), _load_legacy=lambda: (counts.__setitem__("legacy", counts["legacy"] + 1) or legacy), _rows=lambda _legacy, _root: (counts.__setitem__("rows", counts["rows"] + 1) or ({"schedule_sha256": "schedule", "payloads": {item["cell_id"]: payload for item in cells}}, rows)), _frozen_schema=lambda _plan: {"type": "object"}, sha256=lambda raw: hashlib.sha256(raw).hexdigest(), _verify_admission=lambda _plan, _root, item: (counts.__setitem__("prefix", counts["prefix"] + 1) or {"identity_sha256": value._hash(str(item["cell_id"])), "request_id_sha256": value._hash(("r" + str(item["cell_id"])).encode()), "session_id_sha256": value._hash(("s" + str(item["cell_id"])).encode())}))
+    monkeypatch.setattr(value, "_frozen", lambda: frozen)
+    context = value._operation(tmp_path / "old", "c" * 64)
+    value._payload(context, value.FIRST_V5_CELL); value._payload(context, "later-0")
+    value._prefix_identities(context); value._prefix_identities(context)
+    assert counts == {"origin": 1, "legacy": 1, "rows": 1, "prefix": 12}
+
+
+def test_new_public_operation_rechecks_mutated_origin(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    value = load(); state = {"valid": True}; payload = b"prompt"
+    prefix = [{"cell_id": f"v4-{number}", "kind": "unstarted"} for number in range(12)]; prefix.insert(1, {"cell_id": "wpb-pair-wpb-en-0843", "kind": "unstarted"})
+    cells = prefix + [{"cell_id": value.FIRST_V5_CELL, "kind": "unstarted"}] + [{"cell_id": f"later-{number}", "kind": "unstarted"} for number in range(26)]
+    rows = {item["cell_id"]: {"payload_sha256": hashlib.sha256(payload).hexdigest()} for item in cells}
+    plan = {"cells": cells, "freeze_root": str(tmp_path), "schedule_sha256": "schedule"}
+    frozen = SimpleNamespace(_read_plan=lambda _root, _hash: plan, _verify_origin=lambda _plan: value._require(state["valid"], "original WPB evidence changed"), _load_legacy=lambda: SimpleNamespace(), _rows=lambda _legacy, _root: ({"schedule_sha256": "schedule", "payloads": {item["cell_id"]: payload for item in cells}}, rows), _frozen_schema=lambda _plan: {"type": "object"})
+    monkeypatch.setattr(value, "_frozen", lambda: frozen)
+    value._operation(tmp_path / "old", "c" * 64)
+    state["valid"] = False
+    with pytest.raises(ValueError, match="original WPB evidence changed"):
+        value._operation(tmp_path / "old", "c" * 64)
 
 
 @pytest.mark.parametrize("mutation, message", [("schema", "schema commitment"), ("replay", "envelope replay")])
@@ -272,11 +305,15 @@ def _harness(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, *, terminal: bool 
         return raw
 
     legacy = SimpleNamespace(_valid_response=lambda _core, output: output)
-    frozen = SimpleNamespace(_frozen_schema=lambda _plan: schema, _load_legacy=lambda: legacy, _rows=lambda _legacy, _root: ({"schedule_sha256": "schedule", "payloads": {cell_id: payload, later_id: payload}, "core": object()}, {cell_id: row, later_id: {"cell_id": later_id, "payload_sha256": row["payload_sha256"]}}), sha256=lambda raw: hashlib.sha256(raw).hexdigest(), _write_new=write_new, _load_broker=lambda _path: (None, Broker), _verify_admission=lambda _plan, _root, item: {"identity_sha256": value._hash(str(item["cell_id"])), "request_id_sha256": value._hash(("request-" + str(item["cell_id"])).encode()), "session_id_sha256": value._hash(("session-" + str(item["cell_id"])).encode())})
+    resolution = {"schedule_sha256": "schedule", "payloads": {cell_id: payload, later_id: payload}, "core": object()}
+    rows = {cell_id: row, later_id: {"cell_id": later_id, "payload_sha256": row["payload_sha256"]}}
+    frozen = SimpleNamespace(_frozen_schema=lambda _plan: schema, _load_legacy=lambda: legacy, _rows=lambda _legacy, _root: (resolution, rows), sha256=lambda raw: hashlib.sha256(raw).hexdigest(), _write_new=write_new, _load_broker=lambda _path: (None, Broker), _verify_admission=lambda _plan, _root, item: {"identity_sha256": value._hash(str(item["cell_id"])), "request_id_sha256": value._hash(("request-" + str(item["cell_id"])).encode()), "session_id_sha256": value._hash(("session-" + str(item["cell_id"])).encode())})
     review_path = tmp_path / "review.json"; review_hash = "r" * 64; write(review_path, {"review": "mock"})
     authority = {"route": route, "gate": gate, "candidate": candidate, "review": {"path": str(review_path), "sha256": review_hash}, "helper": {"path": str(value.HELPER_PATH), "sha256": value._hash(value.HELPER_PATH.read_bytes())}}
     suffix = [{"cell_id": cell_id, "kind": "unstarted"}, {"cell_id": later_id, "kind": "unstarted"}]
     monkeypatch.setattr(value, "_authority", lambda **_kwargs: (plan, authority, frozen, suffix))
+    context = SimpleNamespace(root=old_root, plan_sha256="p" * 64, frozen=frozen, plan=plan, suffix=suffix, legacy=legacy, resolution=resolution, rows=rows, schema=schema, prefix=None, before_contact_origin_checked=False)
+    monkeypatch.setattr(value, "_operation", lambda *_args: context)
     observations = [{"path": "gate", "row": {"state": "healthy"}}, {"path": "gate", "row": {"state": "revoked"}}] if gate_drift else [{"path": "gate", "row": {"state": "healthy"}}]
     monkeypatch.setattr(value, "_observe_gate", lambda *_args, **_kwargs: observations[min(len(observations) - 1, _kwargs.get("initial", False) is False)])
     arguments = {"recovery_root": old_root, "suffix_root": suffix_root, "expected_plan_sha256": "p" * 64, "cell_id": cell_id, "reviewed_path": review_path, "expected_review_sha256": review_hash, "candidate": candidate}
