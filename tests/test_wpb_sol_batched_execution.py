@@ -62,10 +62,15 @@ def mixed_context(value: Any) -> dict[str, Any]:
         "schedule_sha256": value._frozen()._resolution(freeze_root=FREEZE_ROOT)["schedule_sha256"],
         "source_bindings": {"fixture": "mixed-synthetic-only"},
         value.MIXED_V5_SELECTION_CONTEXT: {
-            "legacy_measurement_count": 89, "v4_native_measurement_count": 12, "v5_native_measurement_count": 27,
-            "local_session_schema_recovered_measurement_count": 1, "native_measurement_count": 128,
+            "legacy_measurement_count": 89, "v4_native_measurement_count": 12, "v5_native_measurement_count": 26,
+            "local_session_schema_recovered_measurement_count": 2, "native_measurement_count": 127,
             "measurement_count": 129, "v4_cell_ids": [f"v4-{number}" for number in range(12)],
-            "v5_cell_ids": [f"v5-{number}" for number in range(27)], "recovered_cell_id": "wpb-pair-wpb-en-0843",
+            "v5_native_cell_ids": [f"v5-{number}" for number in range(26)],
+            "recovered_cell_ids": ["wpb-pair-wpb-en-0843", "wpb-pair-wpb-en-1088"],
+            "recovery_bindings": {
+                "wpb-pair-wpb-en-0843": {"classification": "local_session_schema_recovered"},
+                "wpb-pair-wpb-en-1088": {"classification": "local_session_schema_recovered"},
+            },
             "authority": "development_only_no_runtime_or_confirmation_authority", "release_or_promotion_authority": "none",
         },
     }
@@ -75,7 +80,12 @@ def mixed_verifier(tmp_path: Path, frozen: dict[str, Any]) -> tuple[Path, str]:
     path = tmp_path / "reviewed-mixed-verifier.py"
     path.write_text(
         "def verify_freeze_context(freeze_path, expected_sha256, replay_native=True):\n"
-        f"    return {frozen!r}\n",
+        f"    return {frozen!r}\n"
+        "def validate_mixed_context(context):\n"
+        "    if (context.get('native_measurement_count') != 127 or context.get('measurement_count') != 129\n"
+        "            or context.get('recovered_cell_ids') != ['wpb-pair-wpb-en-0843', 'wpb-pair-wpb-en-1088']):\n"
+        "        raise ValueError('mixed v5 selection geometry differs')\n"
+        "    return dict(context)\n",
         encoding="utf-8",
     )
     return path, __import__("hashlib").sha256(path.read_bytes()).hexdigest()
@@ -346,7 +356,7 @@ def test_mixed_freeze_binds_reviewed_verifier_and_source_context_through_prepare
 @pytest.mark.parametrize(("field", "replacement"), [
     ("native_measurement_count", 129),
     ("measurement_count", 128),
-    ("recovered_cell_id", ""),
+    ("recovered_cell_ids", ["wpb-pair-wpb-en-0843", "wpb-pair-wpb-en-0843"]),
 ])
 def test_mixed_freeze_rejects_incorrect_geometry_before_campaign(field: str, replacement: Any, tmp_path: Path) -> None:
     value = subject(); frozen = mixed_context(value)

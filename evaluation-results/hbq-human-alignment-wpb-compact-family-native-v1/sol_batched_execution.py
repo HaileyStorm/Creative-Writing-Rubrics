@@ -107,26 +107,6 @@ def _freeze_module(path: Path, expected_sha256: str) -> ModuleType:
     return _load_exact(path, expected_sha256, "_wpb_grok_selection_freeze")
 
 
-def _mixed_v5_context(value: Any) -> dict[str, Any]:
-    _require(isinstance(value, Mapping), "mixed v5 selection context is malformed")
-    required = {"legacy_measurement_count", "v4_native_measurement_count", "v5_native_measurement_count",
-                "local_session_schema_recovered_measurement_count", "native_measurement_count", "measurement_count",
-                "v4_cell_ids", "v5_cell_ids", "recovered_cell_id", "authority", "release_or_promotion_authority"}
-    _require(set(value) == required and value["legacy_measurement_count"] == 89
-             and value["v4_native_measurement_count"] == 12 and value["v5_native_measurement_count"] == 27
-             and value["local_session_schema_recovered_measurement_count"] == 1
-             and value["native_measurement_count"] == 128 and value["measurement_count"] == 129
-             and value["recovered_cell_id"] == "wpb-pair-wpb-en-0843"
-             and value["authority"] == "development_only_no_runtime_or_confirmation_authority"
-             and value["release_or_promotion_authority"] == "none", "mixed v5 selection geometry differs")
-    v4, v5 = value["v4_cell_ids"], value["v5_cell_ids"]
-    _require(isinstance(v4, list) and isinstance(v5, list) and len(v4) == 12 and len(v5) == 27
-             and all(isinstance(cell_id, str) for cell_id in v4 + v5)
-             and len(set(v4)) == 12 and len(set(v5)) == 27 and not (set(v4) & set(v5))
-             and value["recovered_cell_id"] not in set(v4) | set(v5), "mixed v5 cell inventory differs")
-    return dict(value)
-
-
 def _freeze_contract(context: Mapping[str, Any], *, verifier_path: Path, mixed_v5_freeze: bool) -> dict[str, Any]:
     if not mixed_v5_freeze:
         return {}
@@ -156,7 +136,10 @@ def _full_freeze(freeze_path: Path, expected_sha256: str, expected_verifier_sha2
              and isinstance(value["selected_profile"], Mapping) and isinstance(value["source_bindings"], Mapping),
              "WPB Grok selection freeze differs")
     if mixed_v5_freeze:
-        _mixed_v5_context(value[MIXED_V5_SELECTION_CONTEXT])
+        validate_context = getattr(module, "validate_mixed_context", None)
+        _require(callable(validate_context), "WPB mixed Grok freeze context validator is unavailable")
+        _require(validate_context(value[MIXED_V5_SELECTION_CONTEXT]) == value[MIXED_V5_SELECTION_CONTEXT],
+                 "WPB mixed Grok freeze context differs")
     else:
         _require(value["native_measurement_count"] == 129 and isinstance(value["evidence_files"], Mapping),
                  "WPB Grok selection freeze differs")
