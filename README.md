@@ -57,14 +57,15 @@ The live release-facing work is narrower than the historical experiment log:
   is a standalone Sol TRAIN result. Grok quota exhaustion left its paired run
   incomplete. The later [WPB collection](docs/RESULTS.md#wpb-terminal-collection)
   originally stopped after 89 successful cells and one ambiguous terminal cell.
-  As of 2026-09-08 UTC, independent recovery admits 101 native cells plus one
-  owner-adopted local-session schema recovery: 102/129. Eleven new native
-  admissions followed the UUID precontact fix. Cell `0918` was definitely not
-  contacted because its frozen prompt exceeded the broker's history guard; 26 later cells are
-  prepared only, leaving 27 cells without collection.
+  The [2026-09-09 snapshot](evaluation-results/hbq-human-alignment-wpb-compact-family-native-v1/collection-progress-20260909-v1.json)
+  recognizes 102 native cells plus one owner-adopted local-session schema
+  recovery: 103/129. Cell `0918` subsequently completed through the v5 runtime;
+  independent replay passed with a documented source-equivalent generated-cache
+  exception. Its earlier uncontacted attempt and the cache-deviation evidence remain
+  preserved. The 26 later cells are still uncontacted; next is `0925`.
   The [exact local schema repair was adopted](evaluation-results/hbq-human-alignment-wpb-compact-family-native-v1/schema-recovery-adoption-v1.json);
-  the shared repair is staged but uninstalled, and native overlimit support is
-  unproven. This incomplete collection permits neither subset metrics nor fitting
+  the v5 runtime has bounded native evidence, while its prepared `-B` route
+  remains unactivated at this snapshot. This incomplete collection permits neither subset metrics nor fitting
   nor automatic resends.
 - [Dryad source and full-HBQ preparation](docs/RESULTS.md#dryad-source-and-full-hbq-preparation)
   adds an audited independent corpus and a frozen 176 TRAIN / 60 DEV / 57
@@ -74,8 +75,8 @@ The live release-facing work is narrower than the historical experiment log:
   is settled, while the recovered request lacks native CLI-envelope/request-ID
   binding; the original 51/70 attempts and prior 69 commitments remain
   preserved as historical evidence. No request 81 has started.
-  The [2026-09-09 snapshot through request 782](evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/collection-progress-20260909-v4.json)
-  reconciles 782 Sol requests and 6,052 logical verdicts under the sequencing
+  The [2026-09-09 snapshot through request 838](evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/collection-progress-20260909-v5.json)
+  reconciles 838 Sol requests and 6,488 logical verdicts under the sequencing
   amendment adopted after partial Sol observation. Two cumulative metadata
   additions overcounted final two-question batches; the append-only correction
   preserves the original summaries and all native data. Pass 19 remains provisional:
@@ -83,7 +84,9 @@ The live release-facing work is narrower than the historical experiment log:
   Completing later collection cannot clear that full-study admission rejection.
   A subsequent Windows update interrupted collection after 772 completed requests.
   The owner-approved [request-773 replacement completed](evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/sol773-replacement-result-v1.json),
-  followed by nine verified continuation requests that completed the interrupted story.
+  followed by sequential continuation through 828 and a verified ten-request
+  parallel canary through 838. All ten local adapter calls overlapped and completed
+  in a 65.4-second span; the remaining collector now uses up to ten concurrent lanes.
   The original 773 outcome remains unknown. The replacement used the owner's
   explicit allowance assumption; the continuation preserves both earlier evidence roots.
   The owner [adopted the exact request-221 transport recovery](evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/sol-recovered-transport-adoption-v1.json),
