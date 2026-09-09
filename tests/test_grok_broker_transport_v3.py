@@ -197,6 +197,16 @@ def test_v5_result_persists_five_artifacts_and_exact_contract_without_resend(tmp
     assert broker.calls == 1
 
 
+def test_v5_route_accepts_truthful_ten_way_concurrency(tmp_path: Path) -> None:
+    route = {**ROUTE, "max_concurrency": 10}
+    broker = StubBroker()
+    result = execute(tmp_path, broker, route=route)
+    assert result["verdicts"] == 178 and broker.calls == 1
+    assert broker.expected_route_sha256 == bridge._sha256(bridge._canonical(route))
+    frozen, route_sha256 = bridge._route_freeze(route)
+    assert frozen["max_concurrency"] == 10 and route_sha256 == broker.expected_route_sha256
+
+
 @pytest.mark.parametrize("field,value", [
     ("timeout_seconds", 30),
     ("max_concurrency", 2),

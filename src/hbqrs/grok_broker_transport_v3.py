@@ -53,7 +53,7 @@ def _route_freeze(route: Mapping[str, Any]) -> tuple[dict[str, Any], str]:
         type(frozen["timeout_seconds"]) is not int
         or frozen["timeout_seconds"] != 300
         or type(frozen.get("max_concurrency")) is not int
-        or frozen["max_concurrency"] != 1
+        or frozen["max_concurrency"] not in {1, 10}
         or type(frozen.get("nonvisual_max_turns")) is not int
         or frozen["nonvisual_max_turns"] != 1
         or type(frozen.get("capabilities")) is not list

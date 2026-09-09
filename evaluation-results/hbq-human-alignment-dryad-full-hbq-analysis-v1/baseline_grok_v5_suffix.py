@@ -15,8 +15,10 @@ import os
 import re
 import stat
 import sys
+import threading
 import uuid
 from collections.abc import Mapping, Sequence
+from concurrent.futures import FIRST_COMPLETED, Future, ThreadPoolExecutor, wait
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from types import ModuleType
@@ -31,6 +33,8 @@ PREFIX_BATCHES = 11
 FULL_PASS_BATCHES = 23
 DISPATCH_BATCH_SIZE = 8
 REVIEW_TIMEOUT_SECONDS = 300
+MAX_WAVE_SIZE = 10
+WAVE_EXECUTION_MODE = "ten_concurrent_grok_v5_waves"
 OLD_PREFIX_NATIVE_IDENTITY_COMMITMENT_SHA256 = "9b72bae7125e6125976bf2ce37f38ad5be536c6363ed8b3d9a249d95b10d32d0"
 _HASH = re.compile(r"[0-9a-f]{64}\Z")
 
@@ -191,6 +195,7 @@ def _source_for_pass(plan_root: Path, record: Mapping[str, Any]) -> dict[str, An
         "source_opaque_story_id": record.get("opaque_story_id"),
         "story_text": raw.decode("utf-8"),
         "artifact_path": str(path),
+        "sha256": _hash(raw),
     }
 
 
@@ -213,7 +218,8 @@ def _load_epoch(root: Path, expected: str) -> tuple[dict[str, Any], bytes]:
         "recovered_study_manifest", "recovery_adoption_sha256", "recovery_amendment_sha256",
         "runtime_manifest", "runtime_package", "runtime_loader", "v3_source", "recovered_study_source",
         "old_runtime_manifest", "old_runtime_loader", "executor_source", "first_ordinal", "last_ordinal",
-        "prefix_batches", "full_pass_batches", "dispatch_batch_size", "provider_calls_made", "execution_authority",
+        "prefix_batches", "full_pass_batches", "dispatch_batch_size", "max_concurrency", "execution_mode",
+        "provider_calls_made", "execution_authority",
     }
     _require(
         set(epoch) == required and epoch.get("schema_version") == 1
@@ -222,6 +228,7 @@ def _load_epoch(root: Path, expected: str) -> tuple[dict[str, Any], bytes]:
         and epoch.get("first_ordinal") == FIRST_SUFFIX_ORDINAL and epoch.get("last_ordinal") == LAST_ORDINAL
         and epoch.get("prefix_batches") == PREFIX_BATCHES and epoch.get("full_pass_batches") == FULL_PASS_BATCHES
         and epoch.get("dispatch_batch_size") == DISPATCH_BATCH_SIZE
+        and epoch.get("max_concurrency") == MAX_WAVE_SIZE and epoch.get("execution_mode") == WAVE_EXECUTION_MODE
         and epoch.get("provider_calls_made") == 0 and epoch.get("execution_authority") is False,
         "Suffix epoch schema differs",
     )
@@ -361,9 +368,13 @@ def prepare_suffix_epoch(
     expected_v3_sha256: str,
     expected_recovered_study_sha256: str,
     expected_executor_sha256: str,
+    max_concurrency: int = MAX_WAVE_SIZE,
+    execution_mode: str = WAVE_EXECUTION_MODE,
 ) -> dict[str, Any]:
     """Write one provider-free descendant epoch; this never creates a broker."""
     _require(expected_plan_sha256 == PLAN_SHA256, "Frozen baseline plan anchor differs")
+    _require(type(max_concurrency) is int and max_concurrency == MAX_WAVE_SIZE, "Suffix wave concurrency differs")
+    _require(execution_mode == WAVE_EXECUTION_MODE, "Suffix execution mode differs")
     plan_root = _plain(plan_root, directory=True)
     old_execution_root = _plain(old_execution_root, directory=True)
     old_prefix_run_root = _plain(old_prefix_run_root, directory=True)
@@ -432,6 +443,8 @@ def prepare_suffix_epoch(
         "prefix_batches": PREFIX_BATCHES,
         "full_pass_batches": FULL_PASS_BATCHES,
         "dispatch_batch_size": DISPATCH_BATCH_SIZE,
+        "max_concurrency": max_concurrency,
+        "execution_mode": execution_mode,
         "provider_calls_made": 0,
         "execution_authority": False,
     }
@@ -489,6 +502,7 @@ def _review(
         "schema_version", "decision", "epoch_sha256", "plan_sha256", "executor_sha256", "runtime_manifest_sha256",
         "runtime_package_manifest_sha256", "v3_sha256", "old_prefix_manifest_sha256", "old_prefix_review_sha256",
         "candidate_package_root", "old_execution_inventory_sha256", "old_prefix_run_inventory_sha256", "suffix_ordinals",
+        "execution_mode",
         "route", "route_sha256", "gate", "gate_sha256", "reviewed_at", "expires_at",
     }
     _require(
@@ -505,6 +519,7 @@ def _review(
         and value.get("old_execution_inventory_sha256") == epoch["old_execution_inventory_sha256"]
         and value.get("old_prefix_run_inventory_sha256") == epoch["old_prefix_run_inventory_sha256"]
         and value.get("suffix_ordinals") == [FIRST_SUFFIX_ORDINAL, LAST_ORDINAL]
+        and value.get("execution_mode") == epoch["execution_mode"]
         and isinstance(value.get("route"), Mapping) and isinstance(value.get("gate"), Mapping)
         and value.get("route_sha256") == _hash(_canonical(dict(value["route"])))
         and value.get("gate_sha256") == _hash(_canonical(dict(value["gate"]))),
@@ -513,14 +528,14 @@ def _review(
     route = value["route"]
     _require(
         type(route.get("timeout_seconds")) is int and route["timeout_seconds"] == REVIEW_TIMEOUT_SECONDS
-        and type(route.get("max_concurrency")) is int and route["max_concurrency"] == 1
+        and type(route.get("max_concurrency")) is int and route["max_concurrency"] == epoch["max_concurrency"]
         and type(route.get("nonvisual_max_turns")) is int and route["nonvisual_max_turns"] == 1
         and route.get("provider") == "xai_grok_build" and route.get("adapter") == "grok_exec"
         and route.get("model") == "grok-4.6" and route.get("reasoning_effort") == "high"
         and isinstance(route.get("capabilities"), list) and "grok_nonvisual_history_v5" in route["capabilities"]
         and route.get("nonvisual_transport_contract") == "grok_nonvisual_history_v5"
         and isinstance(route.get("name"), str) and route["name"],
-        "Suffix review route must remain 300/1/1 v5 Grok",
+        "Suffix review route must remain 300/10/1 v5 Grok wave mode",
     )
     reviewed, expires = _time(value["reviewed_at"], "Review time"), _time(value["expires_at"], "Review expiry")
     if live:
@@ -562,12 +577,17 @@ def _next_ordinal(root: Path, epoch_sha256: str) -> int:
         pair = records.get(ordinal)
         if pair is None:
             _require(
-                all(records[number][1] is not None for number in range(FIRST_SUFFIX_ORDINAL, ordinal))
+                all(records[number][1] is not None and records[number][1].get("status") == "completed"
+                    for number in range(FIRST_SUFFIX_ORDINAL, ordinal))
                 and not any(number > ordinal for number in records),
                 "A suffix attempt requires reconciliation",
             )
+            for prior in range(FIRST_SUFFIX_ORDINAL, ordinal):
+                _require_wave_settlement(root, epoch_sha256=epoch_sha256, ordinal=prior)
             return ordinal
-        _require(pair[1] is not None, "A suffix attempt has no terminal status; reconcile before another request")
+        _require(pair[1] is not None and pair[1].get("status") == "completed",
+                 "A suffix attempt is ambiguous or has no terminal status; reconcile before another request")
+        _require_wave_settlement(root, epoch_sha256=epoch_sha256, ordinal=ordinal)
     raise ValueError("Frozen suffix has no remaining ordinal")
 
 
@@ -595,6 +615,12 @@ def _run_root(root: Path, pass_id: str) -> Path:
     return path
 
 
+def _attempt_run_root(root: Path, pass_id: str, ordinal: int) -> Path:
+    path = _run_root(root, pass_id) / "requests" / f"request-{ordinal:04d}"
+    _require(path.is_relative_to(root), "Suffix attempt output path escapes root")
+    return path
+
+
 def _context(
     *,
     runtime: Any,
@@ -607,7 +633,7 @@ def _context(
 ) -> dict[str, Any]:
     pass_id = row.get("pass_id")
     _require(isinstance(pass_id, str), "Suffix request pass differs")
-    destination = _run_root(root, pass_id)
+    destination = _attempt_run_root(root, pass_id, row["ordinal"])
     config_sha256 = _hash(_canonical({"epoch_sha256": epoch_sha256, "pass_id": pass_id, "v3_sha256": runtime.transport_sha256}))
     value = runtime.runner._before_provider_attempt_context(
         destination=destination,
@@ -695,76 +721,68 @@ def _broker(runtime: Any, queue_root: Path, broker_factory: Any | None) -> Any:
     return broker
 
 
-def dispatch_one(
-    *,
-    suffix_root: Path | str,
-    expected_epoch_sha256: str,
-    ordinal: int,
-    reviewed_path: Path | str,
-    expected_review_sha256: str,
-    queue_root: Path | str,
-    broker_factory: Any | None = None,
-) -> dict[str, Any]:
-    """Dispatch exactly one new v5 ordinal through the direct v3 callback.
+def _wave_path(root: Path, start_ordinal: int, wave_size: int, suffix: str) -> Path:
+    _require(type(start_ordinal) is int and type(wave_size) is int and 1 <= wave_size <= MAX_WAVE_SIZE,
+             "Suffix wave geometry differs")
+    last_ordinal = start_ordinal + wave_size - 1
+    _require(FIRST_SUFFIX_ORDINAL <= start_ordinal <= last_ordinal <= LAST_ORDINAL, "Suffix wave ordinal differs")
+    return root / "waves" / f"wave-{start_ordinal:04d}-{last_ordinal:04d}-{suffix}.json"
 
-    An attempt start is written before a broker is constructed.  Any exception
-    thereafter gets an immutable ambiguous terminal if this process survives;
-    a start with no terminal remains a reconciliation-required no-resend cell.
-    """
-    root = _plain(suffix_root, directory=True)
-    epoch_sha256 = _sha(expected_epoch_sha256, "Suffix epoch")
-    epoch, epoch_raw = _load_epoch(root, epoch_sha256)
-    _require(type(ordinal) is int and ordinal == _next_ordinal(root, epoch_sha256), "Suffix ordinal is not the exact next cell")
-    review_path = _plain(reviewed_path, directory=False)
-    queue_root = _plain(queue_root, directory=True)
-    plan_root, old_root, prefix_root, requests = _epoch_integrity(root, epoch)
-    _disjoint(root, queue_root, old_root, prefix_root, plan_root)
-    review = _review(review_path, _sha(expected_review_sha256, "Suffix review"), epoch_sha256=epoch_sha256, epoch=epoch, live=True)
+
+def _prepare_wave_cell(
+    *, root: Path, epoch_sha256: str, epoch: Mapping[str, Any], plan_root: Path, requests: Mapping[int, Any],
+    review_path: Path, review_sha256: str, review: Mapping[str, Any], ordinal: int, wave_size: int, slot_index: int,
+) -> dict[str, Any]:
     runtime = _runtime_from_epoch(epoch)
-    row = requests[ordinal]
-    passes = _pass_index(_plan(plan_root, epoch["plan_sha256"])[0])
-    passed = passes.get(row.get("pass_id"))
-    _require(passed is not None and row.get("logical_sample_id") == passed.get("logical_sample_id"), "Suffix request/pass binding differs")
-    pass_rows, mixed_prefix = _pass_requests(_plan(plan_root, epoch["plan_sha256"])[0], row["pass_id"])
+    row = dict(requests[ordinal])
+    plan, _ = _plan(plan_root, epoch["plan_sha256"])
+    passed = _pass_index(plan).get(row.get("pass_id"))
+    _require(isinstance(passed, Mapping) and row.get("logical_sample_id") == passed.get("logical_sample_id"),
+             "Suffix request/pass binding differs")
+    pass_rows, mixed_prefix = _pass_requests(plan, row["pass_id"])
     _require(row in pass_rows and row.get("batch_number") >= (12 if mixed_prefix else 1), "Suffix request/pass boundary differs")
     prompt, schema_path, question_ids = _request_payload(plan_root, row)
     source = _source_for_pass(plan_root, passed)
     context = _context(runtime=runtime, epoch_sha256=epoch_sha256, root=root, row=row, prompt=prompt,
                        schema_path=schema_path, question_ids=question_ids)
-    run_root = _run_root(root, row["pass_id"])
     start = {
-        "format_version": 1,
-        "ordinal": ordinal,
-        "epoch_sha256": epoch_sha256,
-        "plan_sha256": epoch["plan_sha256"],
-        "pass_id": row["pass_id"],
-        "batch_number": row["batch_number"],
-        "question_ids": question_ids,
-        "prompt_sha256": row["prompt_sha256"],
-        "schema_sha256": row["schema_sha256"],
-        "review": {"path": str(review_path), "sha256": expected_review_sha256},
-        "route_sha256": review["route_sha256"],
-        "gate_sha256": review["gate_sha256"],
+        "format_version": 1, "ordinal": ordinal, "epoch_sha256": epoch_sha256, "plan_sha256": epoch["plan_sha256"],
+        "pass_id": row["pass_id"], "batch_number": row["batch_number"], "question_ids": question_ids,
+        "prompt_sha256": row["prompt_sha256"], "schema_sha256": row["schema_sha256"],
+        "review": {"path": str(review_path), "sha256": review_sha256},
+        "route_sha256": review["route_sha256"], "gate_sha256": review["gate_sha256"],
         "runtime_manifest_sha256": epoch["runtime_manifest"]["sha256"],
         "runtime_package_manifest_sha256": epoch["runtime_package"]["manifest_sha256"],
-        "v3_sha256": epoch["v3_source"]["sha256"],
-        "executor_sha256": epoch["executor_source"]["sha256"],
-        "context": context,
-        "context_sha256": _hash(_canonical(context)),
-        "run_root": str(run_root),
+        "v3_sha256": epoch["v3_source"]["sha256"], "executor_sha256": epoch["executor_source"]["sha256"],
+        "wave": {"start_ordinal": ordinal - slot_index, "wave_size": wave_size, "slot_index": slot_index},
+        "context": context, "context_sha256": _hash(_canonical(context)),
+        "run_root": str(_attempt_run_root(root, row["pass_id"], ordinal)),
     }
-    start_path = _attempt_path(root, ordinal, "attempt-start.json")
-    _write_new(start_path, _canonical(start))
+    return {"runtime": runtime, "row": row, "passed": dict(passed), "prompt": prompt, "schema_path": schema_path,
+            "question_ids": question_ids, "source": source, "context": context, "start": start,
+            "start_path": _attempt_path(root, ordinal, "attempt-start.json"),
+            "run_root": _attempt_run_root(root, row["pass_id"], ordinal)}
+
+
+def _contact_prepared_cell(
+    *, prepared: Mapping[str, Any], root: Path, epoch_sha256: str, epoch: Mapping[str, Any], epoch_raw: bytes,
+    plan_root: Path, old_root: Path, prefix_root: Path, requests: Mapping[int, Any], review_path: Path,
+    review_sha256: str, review: Mapping[str, Any], queue_root: Path, broker_factory: Any | None,
+    stop_event: threading.Event,
+) -> dict[str, Any]:
+    runtime, row, passed = prepared["runtime"], prepared["row"], prepared["passed"]
+    ordinal, start, start_path = row["ordinal"], prepared["start"], prepared["start_path"]
+    context, source, run_root = prepared["context"], prepared["source"], prepared["run_root"]
     content: str | None = None
     metadata: Mapping[str, Any] | None = None
     admitted = False
     try:
+        _require(not stop_event.is_set(), "Wave stopped before native contact")
         broker = _broker(runtime, queue_root, broker_factory)
 
         def before_contact(callback_context: Mapping[str, Any]) -> None:
             nonlocal admitted
-            # The v3 broker invokes this after its own route/gate preparation and
-            # immediately before it performs the native contact.
+            _require(not stop_event.is_set(), "Wave stopped before native contact")
             _require(_epoch_path(root).read_bytes() == epoch_raw, "Suffix epoch changed before contact")
             current_epoch, _ = _load_epoch(root, epoch_sha256)
             current_plan, current_old, current_prefix, current_requests = _epoch_integrity(root, current_epoch)
@@ -773,21 +791,16 @@ def dispatch_one(
                 and current_requests[ordinal] == row and _hash(_canonical(dict(callback_context))) == start["context_sha256"],
                 "Frozen suffix context changed before contact",
             )
-            _review(review_path, expected_review_sha256, epoch_sha256=epoch_sha256, epoch=current_epoch, live=True)
+            _review(review_path, review_sha256, epoch_sha256=epoch_sha256, epoch=current_epoch, live=True)
             runtime.verify()
             _require(_source_for_pass(plan_root, passed) == source, "Frozen suffix source changed before contact")
+            _require(not stop_event.is_set(), "Wave stopped before native contact")
             _write_new(
                 _attempt_path(root, ordinal, "contact-admission.json"),
-                _canonical({
-                    "format_version": 1,
-                    "ordinal": ordinal,
-                    "epoch_sha256": epoch_sha256,
-                    "attempt_start_sha256": _hash(start_path.read_bytes()),
-                    "context_sha256": start["context_sha256"],
-                    "route_sha256": review["route_sha256"],
-                    "gate_sha256": review["gate_sha256"],
-                    "admitted_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
-                }),
+                _canonical({"format_version": 1, "ordinal": ordinal, "epoch_sha256": epoch_sha256,
+                            "attempt_start_sha256": _hash(start_path.read_bytes()), "context_sha256": start["context_sha256"],
+                            "route_sha256": review["route_sha256"], "gate_sha256": review["gate_sha256"],
+                            "admitted_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")} ),
             )
             admitted = True
 
@@ -797,40 +810,141 @@ def dispatch_one(
         content, metadata = transport(context)
         _require(isinstance(content, str) and isinstance(metadata, Mapping), "v3 transport result differs")
         runtime.runner._validate_grok_transport_evidence(run_root, metadata)
-        parsed = runtime.runner._parse_model_json(content)
         normalized = runtime.runner._normalize_batch(
-            parsed,
-            expected_ids=question_ids,
-            artifact_id=source["opaque_story_id"],
-            bundle_id="prose.short_story",
-            judge_id="grok:grok-4.6",
-            run_id=context["run"]["run_id"],
-            artifact_text=source["story_text"],
-            context_texts=[],
-            normalization_policy=runtime.runner.EVIDENCE_NORMALIZATION_POLICY,
-            repair_audit=[],
+            runtime.runner._parse_model_json(content), expected_ids=prepared["question_ids"],
+            artifact_id=source["opaque_story_id"], bundle_id="prose.short_story", judge_id="grok:grok-4.6",
+            run_id=context["run"]["run_id"], artifact_text=source["story_text"], context_texts=[],
+            normalization_policy=runtime.runner.EVIDENCE_NORMALIZATION_POLICY, repair_audit=[],
         )
         _require(admitted, "v3 transport returned before contact admission")
         runtime.verify()
         _epoch_integrity(root, epoch)
-        terminal = _terminal(
-            root=root, ordinal=ordinal, epoch_sha256=epoch_sha256, start_path=start_path, status="completed",
-            run_root=run_root, contact_admitted=admitted, context=context, content=content, metadata=metadata, verdicts=normalized,
-        )
-        return {
-            "ordinal": ordinal,
-            "status": "completed_pending_replay",
-            "terminal_sha256": _hash(_attempt_path(root, ordinal, "terminal.json").read_bytes()),
-            "contact_admitted": terminal["contact_admitted"],
-            "provider_calls_made": 1,
-        }
+        terminal = _terminal(root=root, ordinal=ordinal, epoch_sha256=epoch_sha256, start_path=start_path, status="completed",
+                             run_root=run_root, contact_admitted=True, context=context, content=content, metadata=metadata, verdicts=normalized)
+        return {"ordinal": ordinal, "status": "completed_pending_replay",
+                "terminal_sha256": _hash(_attempt_path(root, ordinal, "terminal.json").read_bytes()),
+                "contact_admitted": terminal["contact_admitted"], "provider_calls_made": 1}
     except Exception:
         if not _attempt_path(root, ordinal, "terminal.json").exists():
-            _terminal(
-                root=root, ordinal=ordinal, epoch_sha256=epoch_sha256, start_path=start_path, status="ambiguous",
-                run_root=run_root, contact_admitted=admitted, context=context, content=content, metadata=metadata,
-            )
+            _terminal(root=root, ordinal=ordinal, epoch_sha256=epoch_sha256, start_path=start_path, status="ambiguous",
+                      run_root=run_root, contact_admitted=admitted, context=context, content=content, metadata=metadata)
         raise
+
+
+def _wave_settlement(root: Path, *, epoch_sha256: str, start_ordinal: int, wave_size: int, wave_start_sha256: str) -> dict[str, Any]:
+    rows: list[dict[str, Any]] = []
+    for ordinal in range(start_ordinal, start_ordinal + wave_size):
+        terminal_path = _attempt_path(root, ordinal, "terminal.json")
+        terminal = _json(terminal_path.read_bytes(), "Suffix terminal") if terminal_path.is_file() else None
+        row: dict[str, Any] = {"ordinal": ordinal, "terminal_sha256": _hash(terminal_path.read_bytes()) if terminal else None,
+                               "status": terminal.get("status") if terminal else "unsettled",
+                               "contact_admitted": terminal.get("contact_admitted") if terminal else False}
+        if terminal and terminal.get("status") == "completed":
+            metadata = terminal.get("provider_metadata")
+            _require(isinstance(metadata, Mapping), "Completed wave identity differs")
+            row["native_identity"] = {"request_id_hash": metadata.get("request_id_sha256"),
+                                      "session_id_hash": metadata.get("session_id_sha256")}
+        rows.append(row)
+    completed = [item["native_identity"] for item in rows if "native_identity" in item]
+    request_ids = [item["request_id_hash"] for item in completed]
+    session_ids = [item["session_id_hash"] for item in completed]
+    _require(all(isinstance(value, str) and _HASH.fullmatch(value) for value in request_ids + session_ids)
+             and len(request_ids) == len(set(request_ids)) and len(session_ids) == len(set(session_ids)),
+             "Wave native identity collision")
+    return {"format_version": 1, "epoch_sha256": epoch_sha256, "start_ordinal": start_ordinal,
+            "wave_size": wave_size, "wave_start_sha256": wave_start_sha256, "rows": rows}
+
+
+def dispatch_wave(
+    *, suffix_root: Path | str, expected_epoch_sha256: str, start_ordinal: int, wave_size: int,
+    reviewed_path: Path | str, expected_review_sha256: str, queue_root: Path | str, broker_factory: Any | None = None,
+) -> dict[str, Any]:
+    """Reserve, dispatch, and settle one contiguous, bounded Grok v5 wave."""
+    root = _plain(suffix_root, directory=True)
+    epoch_sha256 = _sha(expected_epoch_sha256, "Suffix epoch")
+    epoch, epoch_raw = _load_epoch(root, epoch_sha256)
+    _require(type(start_ordinal) is int and start_ordinal == _next_ordinal(root, epoch_sha256),
+             "Suffix wave is not the exact next cell")
+    _require(type(wave_size) is int and 1 <= wave_size <= epoch["max_concurrency"] and start_ordinal + wave_size - 1 <= LAST_ORDINAL,
+             "Suffix wave size differs")
+    review_path, queue_root = _plain(reviewed_path, directory=False), _plain(queue_root, directory=True)
+    plan_root, old_root, prefix_root, requests = _epoch_integrity(root, epoch)
+    _disjoint(root, queue_root, old_root, prefix_root, plan_root)
+    review_sha256 = _sha(expected_review_sha256, "Suffix review")
+    review = _review(review_path, review_sha256, epoch_sha256=epoch_sha256, epoch=epoch, live=True)
+    starts = [_attempt_path(root, ordinal, "attempt-start.json") for ordinal in range(start_ordinal, start_ordinal + wave_size)]
+    _require(not any(path.exists() for path in starts), "Suffix wave already has a reserved attempt")
+    prepared = [_prepare_wave_cell(root=root, epoch_sha256=epoch_sha256, epoch=epoch, plan_root=plan_root, requests=requests,
+                                   review_path=review_path, review_sha256=review_sha256, review=review, ordinal=ordinal,
+                                   wave_size=wave_size, slot_index=ordinal - start_ordinal)
+                for ordinal in range(start_ordinal, start_ordinal + wave_size)]
+    for item in prepared:
+        _write_new(item["start_path"], _canonical(item["start"]))
+    wave_start = {"format_version": 1, "epoch_sha256": epoch_sha256, "epoch_source_sha256": _hash(epoch_raw),
+                  "execution_mode": epoch["execution_mode"], "max_concurrency": epoch["max_concurrency"],
+                  "start_ordinal": start_ordinal, "wave_size": wave_size,
+                  "review": {"path": str(review_path), "sha256": review_sha256}, "route_sha256": review["route_sha256"],
+                  "gate_sha256": review["gate_sha256"], "runtime_manifest_sha256": epoch["runtime_manifest"]["sha256"],
+                  "runtime_package_manifest_sha256": epoch["runtime_package"]["manifest_sha256"],
+                  "v3_sha256": epoch["v3_source"]["sha256"],
+                  "rows": [{"ordinal": item["row"]["ordinal"], "slot_index": index,
+                            "pass_id": item["row"]["pass_id"], "source_sha256": item["source"]["sha256"],
+                            "context_sha256": item["start"]["context_sha256"], "attempt_start_sha256": _hash(_canonical(item["start"]))}
+                           for index, item in enumerate(prepared)]}
+    wave_start_path = _wave_path(root, start_ordinal, wave_size, "start")
+    _write_new(wave_start_path, _canonical(wave_start))
+    wave_start_sha256 = _hash(wave_start_path.read_bytes())
+    stop_event, errors, results = threading.Event(), [], {}
+
+    def run_cell(item: Mapping[str, Any], cell_queue: Path) -> dict[str, Any]:
+        try:
+            return _contact_prepared_cell(prepared=item, root=root, epoch_sha256=epoch_sha256, epoch=epoch,
+                                          epoch_raw=epoch_raw, plan_root=plan_root, old_root=old_root,
+                                          prefix_root=prefix_root, requests=requests, review_path=review_path,
+                                          review_sha256=review_sha256, review=review, queue_root=cell_queue,
+                                          broker_factory=broker_factory, stop_event=stop_event)
+        except Exception:
+            stop_event.set()
+            raise
+
+    with ThreadPoolExecutor(max_workers=wave_size, thread_name_prefix="dryad-grok-v5") as executor:
+        futures: dict[Future[dict[str, Any]], int] = {}
+        pending = iter(prepared)
+        while True:
+            while not stop_event.is_set() and len(futures) < wave_size:
+                try:
+                    item = next(pending)
+                except StopIteration:
+                    break
+                future = executor.submit(run_cell, item, queue_root)
+                futures[future] = item["row"]["ordinal"]
+            if not futures:
+                break
+            done, _ = wait(tuple(futures), return_when=FIRST_COMPLETED)
+            for future in done:
+                ordinal = futures.pop(future)
+                try:
+                    results[ordinal] = future.result()
+                except Exception as error:  # noqa: BLE001 - every worker failure must stop peers before re-raising.
+                    stop_event.set()
+                    errors.append(error)
+    settlement = _wave_settlement(root, epoch_sha256=epoch_sha256, start_ordinal=start_ordinal, wave_size=wave_size,
+                                  wave_start_sha256=wave_start_sha256)
+    _write_new(_wave_path(root, start_ordinal, wave_size, "settlement"), _canonical(settlement))
+    if errors:
+        raise errors[0]
+    return {"start_ordinal": start_ordinal, "wave_size": wave_size, "execution_mode": epoch["execution_mode"],
+            "max_concurrency": epoch["max_concurrency"], "wave_start_sha256": wave_start_sha256,
+            "settlement_sha256": _hash(_wave_path(root, start_ordinal, wave_size, "settlement").read_bytes()),
+            "rows": [results[ordinal] for ordinal in range(start_ordinal, start_ordinal + wave_size)],
+            "provider_calls_made": wave_size}
+
+
+def dispatch_one(**kwargs: Any) -> dict[str, Any]:
+    """Run the common wave executor as a one-cell canary wrapper."""
+    ordinal = kwargs.pop("ordinal")
+    result = dispatch_wave(start_ordinal=ordinal, wave_size=1, **kwargs)
+    return result["rows"][0]
 
 
 def _approved_route(routes: Mapping[str, Any], route_sha256: Any, label: str) -> dict[str, Any]:
@@ -973,7 +1087,7 @@ def _replay_suffix_terminal(
         and terminal.get("context_sha256") == start["context_sha256"],
         "Suffix terminal callback context differs",
     )
-    run_root = _run_root(root, row["pass_id"])
+    run_root = _attempt_run_root(root, row["pass_id"], ordinal)
     recorded_inventory = terminal.get("provider_evidence_inventory")
     current_inventory = _terminal_evidence(root, run_root)
     _require(
@@ -993,7 +1107,7 @@ def _replay_suffix_terminal(
     route = _approved_route(approved_v5_routes, start["route_sha256"], "v5")
     _require(
         route == recorded_review["route"] and route.get("provider") == "xai_grok_build" and route.get("adapter") == "grok_exec"
-        and route.get("timeout_seconds") == REVIEW_TIMEOUT_SECONDS and route.get("max_concurrency") == 1
+        and route.get("timeout_seconds") == REVIEW_TIMEOUT_SECONDS and route.get("max_concurrency") == epoch["max_concurrency"]
         and route.get("nonvisual_max_turns") == 1 and route.get("nonvisual_transport_contract") == "grok_nonvisual_history_v5"
         and isinstance(route.get("capabilities"), list) and "grok_nonvisual_history_v5" in route["capabilities"],
         "v5 approved route differs",
@@ -1095,6 +1209,118 @@ def _completed_v5_identities(root: Path, epoch_sha256: str) -> list[dict[str, st
     session_ids = [item["session_id_hash"] for item in result]
     _require(len(request_ids) == len(set(request_ids)) and len(session_ids) == len(set(session_ids)), "Global v5 native identity collision")
     return result
+
+
+def _wave_start(root: Path, *, epoch_sha256: str, start_ordinal: int, wave_size: int) -> tuple[dict[str, Any], bytes]:
+    path = _wave_path(root, start_ordinal, wave_size, "start")
+    raw = path.read_bytes()
+    value = _json(raw, "Suffix wave start")
+    required = {"format_version", "epoch_sha256", "epoch_source_sha256", "execution_mode", "max_concurrency",
+                "start_ordinal", "wave_size", "review", "route_sha256", "gate_sha256", "runtime_manifest_sha256",
+                "runtime_package_manifest_sha256", "v3_sha256", "rows"}
+    _require(
+        set(value) == required and value.get("format_version") == 1 and value.get("epoch_sha256") == epoch_sha256
+        and value.get("start_ordinal") == start_ordinal and value.get("wave_size") == wave_size
+        and value.get("execution_mode") == WAVE_EXECUTION_MODE and value.get("max_concurrency") == MAX_WAVE_SIZE
+        and isinstance(value.get("rows"), list) and len(value["rows"]) == wave_size,
+        "Suffix wave start binding differs",
+    )
+    slots = [item.get("slot_index") for item in value["rows"] if isinstance(item, Mapping)]
+    ordinals = [item.get("ordinal") for item in value["rows"] if isinstance(item, Mapping)]
+    _require(slots == list(range(wave_size)) and ordinals == list(range(start_ordinal, start_ordinal + wave_size)),
+             "Suffix wave slot inventory differs")
+    return value, raw
+
+
+def _require_wave_settlement(root: Path, *, epoch_sha256: str, ordinal: int) -> None:
+    start = _json(_attempt_path(root, ordinal, "attempt-start.json").read_bytes(), "Suffix attempt start")
+    binding = start.get("wave")
+    _require(isinstance(binding, Mapping) and set(binding) == {"start_ordinal", "wave_size", "slot_index"}
+             and type(binding.get("start_ordinal")) is int and type(binding.get("wave_size")) is int
+             and type(binding.get("slot_index")) is int and binding["start_ordinal"] + binding["slot_index"] == ordinal,
+             "Suffix attempt wave ownership differs")
+    wave, raw = _wave_start(root, epoch_sha256=epoch_sha256, start_ordinal=binding["start_ordinal"], wave_size=binding["wave_size"])
+    row = wave["rows"][binding["slot_index"]]
+    _require(row.get("ordinal") == ordinal and row.get("attempt_start_sha256") == _hash(_attempt_path(root, ordinal, "attempt-start.json").read_bytes())
+             and row.get("context_sha256") == start.get("context_sha256"), "Suffix wave row ownership differs")
+    settlement_path = _wave_path(root, binding["start_ordinal"], binding["wave_size"], "settlement")
+    _require(settlement_path.is_file(), "Suffix wave settlement is absent")
+    settlement = _json(settlement_path.read_bytes(), "Suffix wave settlement")
+    _require(settlement.get("epoch_sha256") == epoch_sha256 and settlement.get("wave_start_sha256") == _hash(raw)
+             and isinstance(settlement.get("rows"), list) and len(settlement["rows"]) == binding["wave_size"],
+             "Suffix wave settlement binding differs")
+    for offset, settled in enumerate(settlement["rows"]):
+        expected_ordinal = binding["start_ordinal"] + offset
+        terminal_path = _attempt_path(root, expected_ordinal, "terminal.json")
+        _require(isinstance(settled, Mapping) and settled.get("ordinal") == expected_ordinal
+                 and settled.get("status") == "completed" and terminal_path.is_file()
+                 and settled.get("terminal_sha256") == _hash(terminal_path.read_bytes()),
+                 "Suffix wave is not fully settled")
+
+
+def admit_wave(
+    *, suffix_root: Path | str, expected_epoch_sha256: str, start_ordinal: int, wave_size: int,
+    approved_v5_routes: Mapping[str, Any], protected_native_identities: Sequence[Mapping[str, Any]],
+) -> dict[str, Any]:
+    """Read-only strict replay of one settled wave and its protected identity boundary."""
+    root = _plain(suffix_root, directory=True)
+    epoch_sha256 = _sha(expected_epoch_sha256, "Suffix epoch")
+    epoch, before_epoch = _load_epoch(root, epoch_sha256)
+    plan_root, old_root, prefix_root, requests = _epoch_integrity(root, epoch)
+    before_root, before_old, before_prefix = _inventory(root), _inventory(old_root), _inventory(prefix_root)
+    wave, wave_raw = _wave_start(root, epoch_sha256=epoch_sha256, start_ordinal=start_ordinal, wave_size=wave_size)
+    _require(wave.get("epoch_source_sha256") == _hash(before_epoch) and wave.get("execution_mode") == epoch["execution_mode"]
+             and wave.get("max_concurrency") == epoch["max_concurrency"]
+             and wave.get("runtime_manifest_sha256") == epoch["runtime_manifest"]["sha256"]
+             and wave.get("runtime_package_manifest_sha256") == epoch["runtime_package"]["manifest_sha256"]
+             and wave.get("v3_sha256") == epoch["v3_source"]["sha256"], "Suffix wave epoch binding differs")
+    review_record = wave.get("review")
+    _require(isinstance(review_record, Mapping) and set(review_record) == {"path", "sha256"}, "Suffix wave review differs")
+    review = _review(_plain(review_record["path"], directory=False), _sha(review_record["sha256"], "Suffix wave review"),
+                     epoch_sha256=epoch_sha256, epoch=epoch, live=False)
+    _require(review["route_sha256"] == wave.get("route_sha256") and review["gate_sha256"] == wave.get("gate_sha256"),
+             "Suffix wave route binding differs")
+    settlement_path = _wave_path(root, start_ordinal, wave_size, "settlement")
+    settlement = _json(settlement_path.read_bytes(), "Suffix wave settlement")
+    _require(settlement.get("epoch_sha256") == epoch_sha256 and settlement.get("wave_start_sha256") == _hash(wave_raw)
+             and settlement.get("start_ordinal") == start_ordinal and settlement.get("wave_size") == wave_size
+             and isinstance(settlement.get("rows"), list) and len(settlement["rows"]) == wave_size,
+             "Suffix wave settlement binding differs")
+    runtime, plan = _runtime_from_epoch(epoch), _plan(plan_root, epoch["plan_sha256"])[0]
+    passes, identities = _pass_index(plan), []
+    protected = [dict(item) for item in protected_native_identities]
+    protected_requests = [item.get("request_id_hash") for item in protected]
+    protected_sessions = [item.get("session_id_hash") for item in protected]
+    _require(all(isinstance(value, str) and _HASH.fullmatch(value) for value in protected_requests + protected_sessions)
+             and len(protected_requests) == len(set(protected_requests)) and len(protected_sessions) == len(set(protected_sessions)),
+             "Protected native identity boundary differs")
+    for expected, wave_row in zip(range(start_ordinal, start_ordinal + wave_size), wave["rows"], strict=True):
+        row = requests[expected]
+        start_path, terminal_path = _attempt_path(root, expected, "attempt-start.json"), _attempt_path(root, expected, "terminal.json")
+        _require(wave_row.get("attempt_start_sha256") == _hash(start_path.read_bytes())
+                 and wave_row.get("context_sha256") == _json(start_path.read_bytes(), "Suffix attempt start").get("context_sha256")
+                 and wave_row.get("source_sha256") == _source_for_pass(plan_root, passes[row["pass_id"]])["sha256"],
+                 "Suffix wave row binding differs")
+        settled = settlement["rows"][expected - start_ordinal]
+        _require(settled.get("ordinal") == expected and settled.get("status") == "completed"
+                 and settled.get("terminal_sha256") == _hash(terminal_path.read_bytes()), "Suffix wave is not fully settled")
+        _verdicts, identity = _replay_suffix_terminal(root=root, epoch_sha256=epoch_sha256, epoch=epoch, runtime=runtime,
+                                                     plan_root=plan_root, passed=passes[row["pass_id"]], row=row,
+                                                     approved_v5_routes=approved_v5_routes)
+        _require(settled.get("native_identity") == identity, "Suffix wave settlement identity differs")
+        identities.append(identity)
+    all_request_ids = protected_requests + [item["request_id_hash"] for item in identities]
+    all_session_ids = protected_sessions + [item["session_id_hash"] for item in identities]
+    _require(len(all_request_ids) == len(set(all_request_ids)) and len(all_session_ids) == len(set(all_session_ids)),
+             "Wave overlaps protected native identities")
+    _completed_v5_identities(root, epoch_sha256)
+    runtime.verify()
+    _epoch_integrity(root, epoch)
+    _require(_epoch_path(root).read_bytes() == before_epoch and _inventory(root) == before_root
+             and _inventory(old_root) == before_old and _inventory(prefix_root) == before_prefix,
+             "Read-only wave admission changed evidence")
+    return {"start_ordinal": start_ordinal, "wave_size": wave_size, "native_identities": identities,
+            "provider_calls_made": 0}
 
 
 def _old_prefix_native_identities(
@@ -1236,6 +1462,7 @@ def admit_pass(
     suffix_verdicts: list[dict[str, Any]] = []
     suffix_identities: list[dict[str, str]] = []
     for row in rows[PREFIX_BATCHES if mixed_prefix else 0:]:
+        _require_wave_settlement(root, epoch_sha256=epoch_sha256, ordinal=row["ordinal"])
         verdicts, identity = _replay_suffix_terminal(
             root=root, epoch_sha256=epoch_sha256, epoch=epoch, runtime=runtime, plan_root=plan_root,
             passed=passed, row=row, approved_v5_routes=approved_v5_routes,

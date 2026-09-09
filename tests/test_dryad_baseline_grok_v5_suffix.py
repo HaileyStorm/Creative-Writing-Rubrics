@@ -5,6 +5,8 @@ from __future__ import annotations
 import hashlib
 import importlib.util
 import json
+import threading
+import time
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -184,7 +186,7 @@ def reviewed(layout, epoch_sha256: str) -> tuple[Path, str, dict[str, object]]:
     route = {
         "name": "synthetic-v5-route", "provider": "xai_grok_build", "adapter": "grok_exec",
         "model": "grok-4.6", "reasoning_effort": "high", "timeout_seconds": 300,
-        "max_concurrency": 1, "nonvisual_max_turns": 1,
+        "max_concurrency": 10, "nonvisual_max_turns": 1,
         "capabilities": ["public_synthetic", "grok_nonvisual_history_v5"],
         "nonvisual_transport_contract": "grok_nonvisual_history_v5",
     }
@@ -200,6 +202,7 @@ def reviewed(layout, epoch_sha256: str) -> tuple[Path, str, dict[str, object]]:
         "candidate_package_root": epoch_value["runtime_package"]["root"],
         "old_execution_inventory_sha256": epoch_value["old_execution_inventory_sha256"],
         "old_prefix_run_inventory_sha256": epoch_value["old_prefix_run_inventory_sha256"],
+        "execution_mode": "ten_concurrent_grok_v5_waves",
         "suffix_ordinals": [81, 5428],
         "route": route, "route_sha256": digest(canonical(route)), "gate": {"state": "synthetic-healthy"},
         "gate_sha256": digest(canonical({"state": "synthetic-healthy"})),
@@ -275,10 +278,27 @@ class SyntheticBroker:
         return SimpleNamespace(state="completed", result=result)
 
 
+class RegistryBroker(SyntheticBroker):
+    def __init__(self, root: Path) -> None:
+        super().__init__(root)
+        try:
+            self.routes = json.loads((self.root / "routes.json").read_bytes())
+        except FileNotFoundError as error:
+            raise AssertionError("governed routes registry is required") from error
+
+
 class SyntheticTransport:
-    def __init__(self, *, fail: bool = False) -> None:
+    def __init__(self, *, fail: bool = False, fail_batch: int | None = None) -> None:
         self.fail = fail
+        self.fail_batch = fail_batch
         self.bound: list[dict[str, object]] = []
+        self.contact_barrier: threading.Barrier | None = None
+        self.defer_nonfailed: threading.Event | None = None
+        self._active_lock = threading.Lock()
+        self.active_contacts = 0
+        self.max_active_contacts = 0
+        self.delays: dict[int, float] = {}
+        self.completed_batches: list[int] = []
         self._V5_NONVISUAL_TRANSPORT_CONTRACT = {
             "schema_version": 1, "name": "grok_nonvisual_history_v5", "prompt_utf8_bytes": 73_728,
         }
@@ -289,9 +309,22 @@ class SyntheticTransport:
 
         def invoke(context):
             runtime_check()
+            batch = context["batch"]["number"]
+            if self.defer_nonfailed is not None and batch != self.fail_batch:
+                self.defer_nonfailed.wait(timeout=1)
             before_contact(context)
-            if self.fail:
+            if self.fail or batch == self.fail_batch:
                 raise RuntimeError("synthetic post-admission failure")
+            with self._active_lock:
+                self.active_contacts += 1
+                self.max_active_contacts = max(self.max_active_contacts, self.active_contacts)
+            try:
+                if self.contact_barrier is not None:
+                    self.contact_barrier.wait(timeout=3)
+                time.sleep(self.delays.get(batch, 0.01))
+            finally:
+                with self._active_lock:
+                    self.active_contacts -= 1
             destination = Path(context["output_dir"])
             evidence_root = destination / "responses" / "grok-broker" / f"batch-{context['batch']['number']:04d}-attempt-0001"
             evidence_root.mkdir(parents=True, exist_ok=True)
@@ -323,6 +356,8 @@ class SyntheticTransport:
             }
             for name, raw in payloads.items():
                 (evidence_root / f"{name}.json").write_bytes(raw)
+            with self._active_lock:
+                self.completed_batches.append(batch)
             receipt = {
                 "schema_version": 1, "source_sha256": self.source_sha256, "route_sha256": digest(canonical(route)),
                 "request_sha256": digest(payloads["request"]), "context_sha256": digest(payloads["context"]),
@@ -359,10 +394,18 @@ class SyntheticTransport:
         return prompt, schema, Path(context["output_dir"]), context["batch"]["number"], 1, bindings
 
 
-def install_synthetic_runtime(layout, monkeypatch: pytest.MonkeyPatch, *, fail: bool = False):
+class RegistryTransport(SyntheticTransport):
+    def bind_grok_broker_transport(self, *, broker, route, before_contact, runtime_check):
+        assert broker.routes == {"routes": [dict(route)]}
+        return super().bind_grok_broker_transport(
+            broker=broker, route=route, before_contact=before_contact, runtime_check=runtime_check,
+        )
+
+
+def install_synthetic_runtime(layout, monkeypatch: pytest.MonkeyPatch, *, fail: bool = False, fail_batch: int | None = None):
     subject = layout.subject
     runner = SyntheticRunner()
-    transport = SyntheticTransport(fail=fail)
+    transport = SyntheticTransport(fail=fail, fail_batch=fail_batch)
     transport.source_sha256 = digest(layout.v3.read_bytes())
     ids = [f"q{index:03d}" for index in range(178)]
     runtime = SimpleNamespace(
@@ -484,6 +527,164 @@ def test_direct_callback_binds_exact_frozen_prompt_schema_ids_and_v3_hash(epoch,
     assert terminal["status"] == "completed" and terminal["contact_admitted"] is True
 
 
+def test_ten_cell_wave_reserves_contiguous_slots_binds_sources_and_runs_concurrently(epoch, monkeypatch: pytest.MonkeyPatch) -> None:
+    layout, epoch_sha256 = epoch
+    subject = layout.subject
+    review_path, review_sha256, review_value = reviewed(layout, epoch_sha256)
+    queue = layout.suffix.parent / "queue"
+    queue.mkdir()
+    _runtime, _runner, transport = install_synthetic_runtime(layout, monkeypatch)
+    transport.contact_barrier = threading.Barrier(10)
+
+    result = subject.dispatch_wave(
+        suffix_root=layout.suffix, expected_epoch_sha256=epoch_sha256, start_ordinal=81, wave_size=10,
+        reviewed_path=review_path, expected_review_sha256=review_sha256, queue_root=queue,
+    )
+
+    assert result["provider_calls_made"] == 10 and result["max_concurrency"] == 10
+    assert transport.max_active_contacts == 10
+    starts = [json.loads(subject._attempt_path(layout.suffix, ordinal, "attempt-start.json").read_bytes())
+              for ordinal in range(81, 91)]
+    assert [item["wave"]["slot_index"] for item in starts] == list(range(10))
+    assert len({item["run_root"] for item in starts}) == 10
+    wave = json.loads(subject._wave_path(layout.suffix, 81, 10, "start").read_bytes())
+    assert wave["execution_mode"] == "ten_concurrent_grok_v5_waves"
+    assert wave["route_sha256"] == review_value["route_sha256"]
+    assert [item["ordinal"] for item in wave["rows"]] == list(range(81, 91))
+    assert len({item["attempt_start_sha256"] for item in wave["rows"]}) == 10
+    assert all(item["source_sha256"] == digest((layout.plan_root / "inputs/story.txt").read_bytes()) for item in wave["rows"])
+    before = {path: path.read_bytes() for path in layout.suffix.rglob("*") if path.is_file()}
+    admitted = subject.admit_wave(
+        suffix_root=layout.suffix, expected_epoch_sha256=epoch_sha256, start_ordinal=81, wave_size=10,
+        approved_v5_routes={review_value["route_sha256"]: review_value["route"]},
+        protected_native_identities=old_prefix_identities(),
+    )
+    assert admitted["provider_calls_made"] == 0 and len(admitted["native_identities"]) == 10
+    assert {path: path.read_bytes() for path in layout.suffix.rglob("*") if path.is_file()} == before
+
+
+def test_wave_uses_one_governed_queue_registry_for_every_broker(epoch, monkeypatch: pytest.MonkeyPatch) -> None:
+    layout, epoch_sha256 = epoch
+    subject = layout.subject
+    review_path, review_sha256, review_value = reviewed(layout, epoch_sha256)
+    queue = layout.suffix.parent / "queue"
+    queue.mkdir()
+    queue.joinpath("routes.json").write_bytes(canonical({"routes": [review_value["route"]]}))
+    runtime, _runner, _transport = install_synthetic_runtime(layout, monkeypatch)
+    transport = RegistryTransport()
+    transport.source_sha256 = digest(layout.v3.read_bytes())
+    runtime.broker = SimpleNamespace(Broker=RegistryBroker)
+    runtime.transport = transport
+
+    subject.dispatch_wave(
+        suffix_root=layout.suffix, expected_epoch_sha256=epoch_sha256, start_ordinal=81, wave_size=2,
+        reviewed_path=review_path, expected_review_sha256=review_sha256, queue_root=queue,
+    )
+    assert len(transport.bound) == 2 and {item["broker"].root for item in transport.bound} == {queue}
+
+    missing = build_layout(layout.suffix.parent / "missing-registry")
+    missing_epoch = prepare(missing)
+    missing_review, missing_review_sha, _value = reviewed(missing, missing_epoch)
+    missing_queue = missing.suffix.parent / "queue"
+    missing_queue.mkdir()
+    missing_runtime, _runner, _transport = install_synthetic_runtime(missing, monkeypatch)
+    missing_transport = RegistryTransport()
+    missing_transport.source_sha256 = digest(missing.v3.read_bytes())
+    missing_runtime.broker = SimpleNamespace(Broker=RegistryBroker)
+    missing_runtime.transport = missing_transport
+    with pytest.raises(AssertionError, match="governed routes registry"):
+        missing.subject.dispatch_wave(
+            suffix_root=missing.suffix, expected_epoch_sha256=missing_epoch, start_ordinal=81, wave_size=2,
+            reviewed_path=missing_review, expected_review_sha256=missing_review_sha, queue_root=missing_queue,
+        )
+    assert missing_transport.bound == []
+
+
+@pytest.mark.parametrize("corruption", ["missing", "reordered"])
+def test_unsettled_or_tampered_prior_wave_blocks_next_contact(epoch, monkeypatch: pytest.MonkeyPatch, corruption: str) -> None:
+    layout, epoch_sha256 = epoch
+    subject = layout.subject
+    review_path, review_sha256, _review = reviewed(layout, epoch_sha256)
+    queue = layout.suffix.parent / "queue"
+    queue.mkdir()
+    _runtime, _runner, transport = install_synthetic_runtime(layout, monkeypatch)
+    subject.dispatch_wave(
+        suffix_root=layout.suffix, expected_epoch_sha256=epoch_sha256, start_ordinal=81, wave_size=2,
+        reviewed_path=review_path, expected_review_sha256=review_sha256, queue_root=queue,
+    )
+    settlement_path = subject._wave_path(layout.suffix, 81, 2, "settlement")
+    if corruption == "missing":
+        settlement_path.unlink()
+    else:
+        settlement = json.loads(settlement_path.read_bytes())
+        settlement["rows"].reverse()
+        settlement_path.write_bytes(canonical(settlement))
+    before = list(transport.bound)
+    with pytest.raises(ValueError, match="settlement|fully settled"):
+        subject.dispatch_one(
+            suffix_root=layout.suffix, expected_epoch_sha256=epoch_sha256, ordinal=83,
+            reviewed_path=review_path, expected_review_sha256=review_sha256, queue_root=queue,
+        )
+    assert transport.bound == before
+
+
+def test_wave_failure_stops_uncontacted_rows_and_blocks_resume(epoch, monkeypatch: pytest.MonkeyPatch) -> None:
+    layout, epoch_sha256 = epoch
+    subject = layout.subject
+    review_path, review_sha256, _review = reviewed(layout, epoch_sha256)
+    queue = layout.suffix.parent / "queue"
+    queue.mkdir()
+    _runtime, _runner, transport = install_synthetic_runtime(layout, monkeypatch, fail_batch=12)
+    transport.defer_nonfailed = threading.Event()
+
+    with pytest.raises(RuntimeError, match="post-admission"):
+        subject.dispatch_wave(
+            suffix_root=layout.suffix, expected_epoch_sha256=epoch_sha256, start_ordinal=81, wave_size=4,
+            reviewed_path=review_path, expected_review_sha256=review_sha256, queue_root=queue,
+        )
+
+    admissions = [subject._attempt_path(layout.suffix, ordinal, "contact-admission.json").exists() for ordinal in range(81, 85)]
+    assert admissions == [True, False, False, False]
+    terminals = [json.loads(subject._attempt_path(layout.suffix, ordinal, "terminal.json").read_bytes()) for ordinal in range(81, 85)]
+    assert terminals[0]["status"] == "ambiguous" and terminals[0]["contact_admitted"] is True
+    assert all(item["status"] == "ambiguous" and item["contact_admitted"] is False for item in terminals[1:])
+    bound_before = list(transport.bound)
+    with pytest.raises(ValueError, match="reconcile"):
+        subject.dispatch_one(
+            suffix_root=layout.suffix, expected_epoch_sha256=epoch_sha256, ordinal=82,
+            reviewed_path=review_path, expected_review_sha256=review_sha256, queue_root=queue,
+        )
+    assert transport.bound == bound_before
+
+
+def test_cross_pass_wave_settles_by_ordinal_after_out_of_order_completion(epoch, monkeypatch: pytest.MonkeyPatch) -> None:
+    layout, epoch_sha256 = epoch
+    subject = layout.subject
+    review_path, review_sha256, review_value = reviewed(layout, epoch_sha256)
+    queue = layout.suffix.parent / "queue"
+    queue.mkdir()
+    _runtime, _runner, transport = install_synthetic_runtime(layout, monkeypatch)
+    subject.dispatch_wave(
+        suffix_root=layout.suffix, expected_epoch_sha256=epoch_sha256, start_ordinal=81, wave_size=10,
+        reviewed_path=review_path, expected_review_sha256=review_sha256, queue_root=queue,
+    )
+    transport.delays.update({22: 0.5, 23: 0.4, 1: 0.0})
+    transport.completed_batches.clear()
+    subject.dispatch_wave(
+        suffix_root=layout.suffix, expected_epoch_sha256=epoch_sha256, start_ordinal=91, wave_size=10,
+        reviewed_path=review_path, expected_review_sha256=review_sha256, queue_root=queue,
+    )
+    assert transport.completed_batches.index(1) < transport.completed_batches.index(22)
+    settlement = json.loads(subject._wave_path(layout.suffix, 91, 10, "settlement").read_bytes())
+    assert [item["ordinal"] for item in settlement["rows"]] == list(range(91, 101))
+    admitted = subject.admit_wave(
+        suffix_root=layout.suffix, expected_epoch_sha256=epoch_sha256, start_ordinal=91, wave_size=10,
+        approved_v5_routes={review_value["route_sha256"]: review_value["route"]},
+        protected_native_identities=old_prefix_identities(),
+    )
+    assert len(admitted["native_identities"]) == 10
+
+
 def test_dispatches_later_pass_batch_one_and_final_batch_5428(epoch, monkeypatch: pytest.MonkeyPatch) -> None:
     layout, epoch_sha256 = epoch
     subject = layout.subject
@@ -565,7 +766,7 @@ def test_failure_and_crash_consume_ordinal_and_missing_terminal_requires_reconci
         )
     terminal = json.loads(subject._attempt_path(layout.suffix, 81, "terminal.json").read_bytes())
     assert terminal["status"] == "ambiguous" and terminal["contact_admitted"] is True
-    with pytest.raises(ValueError, match="exact next"):
+    with pytest.raises(ValueError, match="reconcile"):
         subject.dispatch_one(
             suffix_root=layout.suffix, expected_epoch_sha256=epoch_sha256, ordinal=81,
             reviewed_path=review_path, expected_review_sha256=review_sha256, queue_root=queue,
@@ -625,9 +826,9 @@ def test_mixed_old11_new12_replay_requires_canonical_order_unique_identities_and
 
     monkeypatch.setattr(subject, "_load_module", lambda *_args: SimpleNamespace(admit_prefix=admit_prefix))
     monkeypatch.setattr(subject, "_old_prefix_native_identities", lambda **_kwargs: old_prefix_identities())
-    for ordinal in range(81, 93):
-        subject.dispatch_one(
-            suffix_root=layout.suffix, expected_epoch_sha256=epoch_sha256, ordinal=ordinal,
+    for start_ordinal, wave_size in ((81, 10), (91, 2)):
+        subject.dispatch_wave(
+            suffix_root=layout.suffix, expected_epoch_sha256=epoch_sha256, start_ordinal=start_ordinal, wave_size=wave_size,
             reviewed_path=review_path, expected_review_sha256=review_sha256, queue_root=queue,
         )
     old_before = {path: path.read_bytes() for path in layout.old_prefix.rglob("*") if path.is_file()}
@@ -643,9 +844,9 @@ def test_mixed_old11_new12_replay_requires_canonical_order_unique_identities_and
     assert len(score_inputs) == 1 and len(score_inputs[0]) == 178
     assert {path: path.read_bytes() for path in layout.old_prefix.rglob("*") if path.is_file()} == old_before
 
-    for ordinal in range(93, 116):
-        subject.dispatch_one(
-            suffix_root=layout.suffix, expected_epoch_sha256=epoch_sha256, ordinal=ordinal,
+    for start_ordinal, wave_size in ((93, 10), (103, 10), (113, 3)):
+        subject.dispatch_wave(
+            suffix_root=layout.suffix, expected_epoch_sha256=epoch_sha256, start_ordinal=start_ordinal, wave_size=wave_size,
             reviewed_path=review_path, expected_review_sha256=review_sha256, queue_root=queue,
         )
     next_pass = subject.admit_pass(
@@ -688,6 +889,7 @@ def test_mixed_replay_rejects_missing_order_or_identity_collision(epoch, monkeyp
 
     monkeypatch.setattr(subject, "_replay_suffix_terminal", replay)
     monkeypatch.setattr(subject, "_old_prefix_native_identities", lambda **_kwargs: old_prefix_identities())
+    monkeypatch.setattr(subject, "_require_wave_settlement", lambda *_args, **_kwargs: None)
     before = {path: path.read_bytes() for path in layout.old_prefix.rglob("*") if path.is_file()}
     with pytest.raises(ValueError):
         subject.admit_pass(
@@ -722,6 +924,7 @@ def test_every_pass_rejects_collisions_with_all_79_old_native_identities(epoch, 
 
     monkeypatch.setattr(subject, "_replay_suffix_terminal", replay)
     monkeypatch.setattr(subject, "_completed_v5_identities", lambda *_args: [old_prefix_identities()[old_index]])
+    monkeypatch.setattr(subject, "_require_wave_settlement", lambda *_args, **_kwargs: None)
     with pytest.raises(ValueError, match="overlaps old"):
         subject.admit_pass(
             suffix_root=layout.suffix, expected_epoch_sha256=epoch_sha256, pass_id=pass_id,
@@ -784,7 +987,7 @@ def test_v3_replay_rejects_each_retained_artifact_binding(epoch, monkeypatch: py
     case = _semantic_terminal(epoch, monkeypatch)
     terminal = json.loads(case.terminal_path.read_bytes())
     descriptor = terminal["provider_metadata"]["provider_artifacts"][artifact]
-    path = case.layout.suffix / "passes" / case.row["pass_id"] / descriptor["path"]
+    path = case.subject._attempt_run_root(case.layout.suffix, case.row["pass_id"], case.row["ordinal"]) / descriptor["path"]
     path.write_bytes(path.read_bytes() + b" ")
     with pytest.raises(ValueError):
         _replay_semantic(case)
@@ -793,7 +996,7 @@ def test_v3_replay_rejects_each_retained_artifact_binding(epoch, monkeypatch: py
 def test_v3_replay_rejects_semantic_runtime_drift_after_rebinding_hashes(epoch, monkeypatch: pytest.MonkeyPatch) -> None:
     case = _semantic_terminal(epoch, monkeypatch)
     terminal = json.loads(case.terminal_path.read_bytes())
-    run_root = case.layout.suffix / "passes" / case.row["pass_id"]
+    run_root = case.subject._attempt_run_root(case.layout.suffix, case.row["pass_id"], case.row["ordinal"])
     artifacts = terminal["provider_metadata"]["provider_artifacts"]
     outcome_path = run_root / artifacts["outcome"]["path"]
     outcome = json.loads(outcome_path.read_bytes())
