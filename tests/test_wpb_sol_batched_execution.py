@@ -49,17 +49,44 @@ def install_freeze(monkeypatch: pytest.MonkeyPatch, value: Any, frozen: dict[str
     def verify(path: Path, expected: str, *, replay_native: bool) -> dict[str, Any]:
         assert path.name == "grok-selection-freeze.json" and expected == frozen["freeze_sha256"]
         return dict(frozen)
-    monkeypatch.setattr(value, "_freeze_module", lambda expected: SimpleNamespace(verify_freeze=verify))
+    monkeypatch.setattr(value, "_freeze_module", lambda _path, _expected: SimpleNamespace(verify_freeze=verify))
+
+
+def mixed_context(value: Any) -> dict[str, Any]:
+    return {
+        "freeze_sha256": "f" * 64,
+        "selection_frozen_at": "2026-09-07T00:00:00Z",
+        "selected_profile": {"core": 1.0, "craft": 1.0, "form": 1.0},
+        "schedule_sha256": value._frozen()._resolution(freeze_root=FREEZE_ROOT)["schedule_sha256"],
+        "source_bindings": {"fixture": "mixed-synthetic-only"},
+        value.MIXED_V5_SELECTION_CONTEXT: {
+            "legacy_measurement_count": 89, "v4_native_measurement_count": 12, "v5_native_measurement_count": 27,
+            "local_session_schema_recovered_measurement_count": 1, "native_measurement_count": 128,
+            "measurement_count": 129, "v4_cell_ids": [f"v4-{number}" for number in range(12)],
+            "v5_cell_ids": [f"v5-{number}" for number in range(27)], "recovered_cell_id": "wpb-pair-wpb-en-0843",
+            "authority": "development_only_no_runtime_or_confirmation_authority", "release_or_promotion_authority": "none",
+        },
+    }
+
+
+def mixed_verifier(tmp_path: Path, frozen: dict[str, Any]) -> tuple[Path, str]:
+    path = tmp_path / "reviewed-mixed-verifier.py"
+    path.write_text(
+        "def verify_freeze_context(freeze_path, expected_sha256, replay_native=True):\n"
+        f"    return {frozen!r}\n",
+        encoding="utf-8",
+    )
+    return path, __import__("hashlib").sha256(path.read_bytes()).hexdigest()
 
 
 def review(value: Any, root: Path, *, campaign_sha256: str, batch_number: int, cell_ids: list[str],
-           freeze_sha256: str, route_sha256: str) -> tuple[Path, str]:
+           freeze_sha256: str, route_sha256: str, freeze_contract: dict[str, Any] | None = None) -> tuple[Path, str]:
     now = datetime.now(timezone.utc)
     path = root / f"review-{batch_number:04d}.json"
     record = {"format_version": 1, "kind": "approved_wpb_sol_batched_dispatch", "decision": "approved_wpb_sol_batched_dispatch", "campaign_sha256": campaign_sha256,
               "batch_number": batch_number, "cell_ids": cell_ids, "freeze_sha256": freeze_sha256,
               "route_sha256": route_sha256, "reviewed_at": now.strftime("%Y-%m-%dT%H:%M:%SZ"),
-              "expires_at": (now + timedelta(hours=2)).strftime("%Y-%m-%dT%H:%M:%SZ")}
+              "expires_at": (now + timedelta(hours=2)).strftime("%Y-%m-%dT%H:%M:%SZ"), **(freeze_contract or {})}
     path.write_bytes(value.canonical(record))
     return path, value.sha256(path.read_bytes())
 
@@ -70,11 +97,13 @@ def fresh_route(route: dict[str, Any]) -> dict[str, Any]:
     return route
 
 
-def freeze_review(value: Any, root: Path, freeze_sha256: str) -> tuple[Path, str]:
+def freeze_review(value: Any, root: Path, freeze_sha256: str, freeze_contract: dict[str, Any] | None = None,
+                  freeze_verifier_sha256: str = VERIFIER_SHA256) -> tuple[Path, str]:
     path = root / "freeze-review.json"
     path.write_bytes(value.canonical({"format_version": 1, "kind": "wpb_grok_selection_freeze_independent_review",
-                                      "freeze_sha256": freeze_sha256, "freeze_verifier_sha256": VERIFIER_SHA256,
-                                      "decision": "approved_wpb_grok_selection_freeze", "reviewed_at": "2026-09-07T00:00:00Z"}))
+                                       "freeze_sha256": freeze_sha256, "freeze_verifier_sha256": freeze_verifier_sha256,
+                                       "decision": "approved_wpb_grok_selection_freeze", "reviewed_at": "2026-09-07T00:00:00Z",
+                                       **(freeze_contract or {})}))
     return path, value.sha256(path.read_bytes())
 
 
@@ -100,6 +129,9 @@ def test_preparation_is_lazy_bounded_and_replays_freeze_before_route(tmp_path: P
     binding_value = __import__("json").loads(binding.read_bytes())
     assert binding.is_file() and len(binding_value["prepared_sha256s"]) == 10
     assert binding_value["freeze_verifier_sha256"] == VERIFIER_SHA256
+    campaign = __import__("json").loads((root / "campaign.json").read_bytes())
+    plan = __import__("json").loads((root / "batches/0001/plan.json").read_bytes())
+    assert "freeze_verifier_path" not in campaign and "freeze_verifier_path" not in plan
 
 
 def test_expiring_route_cannot_create_a_batch(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -210,3 +242,58 @@ def test_batched_synthetic_fixture_uses_frozen_parser_and_closes_before_all_epoc
                           freeze_path=tmp_path / "grok-selection-freeze.json", expected_freeze_sha256=frozen["freeze_sha256"], expected_freeze_verifier_sha256=VERIFIER_SHA256)
     assert report == {"status": "closed_incomplete", "authority": "development_screening_only", "completed_batches": 1, "metrics": None}
     assert len(contacts.calls) == len(set(contacts.calls)) == 10
+
+
+def test_mixed_freeze_binds_reviewed_verifier_and_source_context_through_prepare(tmp_path: Path) -> None:
+    value, helpers = subject(), support()
+    frozen = mixed_context(value); verifier, verifier_sha256 = mixed_verifier(tmp_path, frozen)
+    contract = value._freeze_contract(frozen, verifier_path=verifier.resolve(), mixed_v5_freeze=True)
+    freeze_review_contract = contract | value._campaign_freeze_binding(frozen, mixed_v5_freeze=True)
+    review_contract = {"freeze_verifier_sha256": verifier_sha256, **freeze_review_contract}
+    root, queue = tmp_path / "external-campaign", tmp_path / "queue"; queue.mkdir()
+    approval, approval_sha = freeze_review(value, tmp_path, frozen["freeze_sha256"], freeze_review_contract, verifier_sha256)
+    created = value.create_campaign(campaign_root=root, queue_root=queue, freeze_root=FREEZE_ROOT,
+                                    freeze_path=tmp_path / "mixed-freeze.json", expected_freeze_sha256=frozen["freeze_sha256"],
+                                    expected_freeze_verifier_sha256=verifier_sha256, independent_review_path=approval,
+                                    expected_independent_review_sha256=approval_sha, freeze_verifier_path=verifier,
+                                    mixed_v5_freeze=True)
+    campaign = __import__("json").loads((root / "campaign.json").read_bytes())
+    assert {key: campaign[key] for key in review_contract} == review_contract
+    route, _evidence = helpers.load(helpers.V12_TEST, "wpb_sol_batched_mixed_route_support").sol_route(); route = fresh_route(route)
+    ids = [row["cell_id"] for row in value._frozen()._resolution(freeze_root=FREEZE_ROOT)["rows"][:10]]
+    dispatch_review, dispatch_review_sha = review(value, tmp_path, campaign_sha256=created["campaign_sha256"],
+                                                   batch_number=1, cell_ids=ids, freeze_sha256=frozen["freeze_sha256"],
+                                                   route_sha256=value.sha256(route), freeze_contract=review_contract)
+    prepared = value.prepare_next_batch(campaign_root=root, queue_root=queue, freeze_root=FREEZE_ROOT,
+                                        freeze_path=tmp_path / "mixed-freeze.json", expected_freeze_sha256=frozen["freeze_sha256"],
+                                        expected_freeze_verifier_sha256=verifier_sha256, review_path=dispatch_review,
+                                        expected_review_sha256=dispatch_review_sha, authorization_acknowledgement_sha256="a" * 64,
+                                        broker_factory=lambda _root: helpers.load(helpers.V12_TEST, "wpb_sol_batched_mixed_broker_support").Broker(route),
+                                        freeze_verifier_path=verifier, mixed_v5_freeze=True)
+    plan = __import__("json").loads((root / "batches/0001/plan.json").read_bytes())
+    bindings = __import__("json").loads((root / "batches/0001/prepared-source-bindings.json").read_bytes())
+    assert prepared["provider_calls_made"] == prepared["process_launches"] == 0
+    assert {key: plan[key] for key in review_contract} == review_contract
+    assert {key: bindings[key] for key in review_contract} == review_contract
+    assert "freeze_evidence_files_sha256" not in plan
+
+
+@pytest.mark.parametrize(("field", "replacement"), [
+    ("native_measurement_count", 129),
+    ("measurement_count", 128),
+    ("recovered_cell_id", ""),
+])
+def test_mixed_freeze_rejects_incorrect_geometry_before_campaign(field: str, replacement: Any, tmp_path: Path) -> None:
+    value = subject(); frozen = mixed_context(value)
+    frozen[value.MIXED_V5_SELECTION_CONTEXT][field] = replacement
+    verifier, verifier_sha256 = mixed_verifier(tmp_path, frozen)
+    with pytest.raises(ValueError, match="mixed v5 selection geometry differs"):
+        value._full_freeze(tmp_path / "mixed-freeze.json", frozen["freeze_sha256"], verifier_sha256,
+                           verifier_path=verifier.resolve(), mixed_v5_freeze=True, replay_native=False)
+
+
+def test_mixed_freeze_rejects_verifier_hash_drift(tmp_path: Path) -> None:
+    value = subject(); frozen = mixed_context(value); verifier, _verifier_sha256 = mixed_verifier(tmp_path, frozen)
+    with pytest.raises(ValueError, match="source drifted"):
+        value._full_freeze(tmp_path / "mixed-freeze.json", frozen["freeze_sha256"], "0" * 64,
+                           verifier_path=verifier.resolve(), mixed_v5_freeze=True, replay_native=False)

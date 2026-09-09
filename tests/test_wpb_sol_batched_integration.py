@@ -41,7 +41,10 @@ def _install_context(monkeypatch: pytest.MonkeyPatch, value: Any, context: dict[
     def verify(path: Path, expected: str, *, replay_native: bool) -> dict[str, Any]:
         assert path.name == "grok-selection-freeze.json" and expected == context["freeze_sha256"]
         return dict(context)
-    monkeypatch.setattr(value, "_freeze_module", lambda expected: SimpleNamespace(verify_freeze=verify))
+    def freeze_module(path: Path, expected: str) -> SimpleNamespace:
+        assert path == value.FREEZE.resolve() and expected == VERIFIER_SHA256
+        return SimpleNamespace(verify_freeze=verify)
+    monkeypatch.setattr(value, "_freeze_module", freeze_module)
 
 
 def _review(value: Any, path: Path, payload: dict[str, Any]) -> tuple[Path, str]:
