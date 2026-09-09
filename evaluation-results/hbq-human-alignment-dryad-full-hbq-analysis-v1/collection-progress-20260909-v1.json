@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "evidence_class": "incomplete_collection_progress_snapshot",
+  "snapshot_date": "2026-09-09",
+  "planned_requests_per_endpoint": 5428,
+  "frozen_plan_sha256": "edeadb93c485ba227153329b5ae420de1c9d08d95e920bac0635d197fd3dbd7f",
+  "grok": {
+    "reconciled_logical_requests": 80,
+    "native_measurements": 79,
+    "study_recovered_measurements": 1,
+    "study_recovered_ordinals": [70],
+    "logical_verdicts": 622,
+    "unique_native_request_ids": 79,
+    "unique_native_session_ids": 79,
+    "independent_prefix_reconciliation_sha256": "2e68b6558c72deaf9ab31792a1d69d4cadb6fd580d840e41c663ef99291bb74b",
+    "native_identity_commitment_sha256": "9b72bae7125e6125976bf2ce37f38ad5be536c6363ed8b3d9a249d95b10d32d0",
+    "recovered70_native_envelope_and_request_identity": "missing",
+    "request81_contacted": false
+  },
+  "sol": {
+    "reconciled_logical_requests": 500,
+    "logical_verdicts": 3874,
+    "unique_local_thread_ids": 500,
+    "independent_corrected_reconciliation_sha256": "cea2e21c89587d79568ca33cedfd9280e82437f7f14b0b94757032f3c838c5dc",
+    "thread_identity_commitment_sha256": "94d4dd7feed5881a81e1dad42739e53d437bbbedfdce1b8b73e1b03ac1ce83f2",
+    "recovered_transport_ordinal": 221,
+    "identity_evidence": "requested_only",
+    "native_endpoint_contact_cardinality": "unproven",
+    "internal_retry_cardinality": "unproven",
+    "provisional_pass_number": 19,
+    "provisional_pass_remains_unadmitted": true
+  },
+  "count_metadata_correction": {
+    "proposal_sha256": "e4d0926c712139d0da423910e9eacf0ca5a2985cf92123362f6fa1f1d06f47ed",
+    "accepted_adjudication_sha256": "bd09fe1d0b9b156dcd0f311f038a2acac33d5b633191c5e1787226be7e501895",
+    "original_500_reconciliation_sha256": "cd288eef8a1c79af7a1bd7b40fa5be8e34e1cc532fc0be53e19d319a6fd51bd4",
+    "cause": "Cohorts 44 and 46 each counted a final two-question batch as eight in cumulative metadata.",
+    "incorrect_reported_total_through500": 3886,
+    "corrected_logical_total_through500": 3874,
+    "all22_native_verdict_prefixes_match_frozen_question_ids": true,
+    "duplicate_logical_verdicts": 0,
+    "original_records_and_native_data_unchanged": true,
+    "future_count_rule": "Sum frozen request question-ID cardinalities and require normalized native per-pass ID parity."
+  },
+  "v5_suffix_static_payload_check": {
+    "record_sha256": "d662d861edce2b483cf8f0b7a9a06618e266fc77bfbfd5bb3d154da446f051e9",
+    "first_ordinal": 81,
+    "last_ordinal": 5428,
+    "request_count": 5348,
+    "maximum_prompt_bytes": 9924,
+    "maximum_request_stdin_bytes": 10436,
+    "maximum_conservative_prompt_history_bytes": 10558,
+    "static_size_failures": 0,
+    "native_execution_proven": false
+  },
+  "comparison_sequence": "sequencing_amended_after_partial_sol_observation",
+  "grok_train_winner_and_dev_freeze_required_before_sol_comparison": true,
+  "full_study_admission": false,
+  "alignment_result": null,
+  "execution_authority": false,
+  "resend_authority": false
+}

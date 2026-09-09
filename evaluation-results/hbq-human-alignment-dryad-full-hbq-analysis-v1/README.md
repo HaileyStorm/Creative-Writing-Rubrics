@@ -1,6 +1,12 @@
 # Dryad full-HBQ analysis preregistration
 
-Latest independently admitted collection is 68 Grok requests / 532 judgments and 220 Sol requests / 1,706 judgments. Grok cohort 6 settled under SHA-256 `473ef8b26d2377fac612af9dddd555299e5b4c176dcfbe2ed12e6ca4159bcd80`; cohort 7's eight-request partial admission is `8f3ad008a51cb1b40decf42df84dd4c701b0203c0c02eebb929cd2cdea08183d`. Sol cohort 22's independent admission is `cb55189a506af1c8c431196fe296c24b93765de2e136df24e640119aaedace41`, with 220 distinct local threads, nine complete passes and thirteen batches of the tenth. Grok's continuation stopped before request 69 because a local guard applied a cohort-6 recovery restriction to cohort 7; 69–70 remain unsent pending a reviewed source amendment. Sol requests 221–230 are collecting under the next independent review. Each endpoint requires 5,428 requests; these prefixes remain incomplete, and earlier checkpoints below retain their historical counts.
+The [2026-09-09 collection snapshot](collection-progress-20260909-v1.json) independently reconciles **80 Grok requests / 622 judgments** and **500 Sol requests / 3,874 judgments**. Grok includes 79 native measurements and the explicitly adopted, non-native ordinal-70 recovery. Sol has 500 distinct local thread identities, retains the ordinal-221 transport-recovery limitation, and keeps pass 19 provisional. Each endpoint requires 5,428 requests; these incomplete prefixes establish no full-study admission or alignment result. The Grok TRAIN winner and DEV freeze remain prerequisites to comparative Sol analysis under the adopted sequencing amendment.
+
+The Sol cumulative summaries contained a metadata-only overcount: cohorts 44 and 46 each counted a final two-question batch as eight. Append-only correction and independent reconciliation establish 3,874 logical verdicts through request 500, rather than the previously reported 3,886. Independent review and a separate controller check compared the normalized question-ID sequences with the frozen plan; all 22 retained run prefixes match, with no duplicate logical verdicts. Original records and native data remain unchanged, and the snapshot binds the correction and predecessor hashes.
+
+Grok remains stopped before request 81. Its continuation requires a separately reviewed v5 execution epoch that preserves the original 80-request prefix. The pinned v5 bridge and explicit-package runtime loader have passed local tests and independent review; this source validation does not authorize activation or collection. A provider-free check verified all 5,348 remaining frozen prompt/schema pairs and found no static prompt, stdin, or conservative history-size failures. Native output/update limits and the new mixed-prefix executor still require their own checks.
+
+The checkpoints below describe earlier recorded states and retain their historical counts.
 
 The operational repair scopes the replacement-51 restriction to cohort 6 and adds schema-4 partial-source continuations. A provider-free candidate binds the original preparation, accepted prefix, prior authorization, and committed old/new operational manifests; an independently reviewed record extends the numbered chain after the existing chronology gates. Settlement and final admission retain each contact's own source authorization, and later cohorts inherit the effective source manifest. Historical v1/v2/v3 meanings, immutable native records, route controls, scoring inputs, and no-resend rules remain unchanged. Git-backed collector regressions cover both v3 recovery and v4 suffix-only continuation; this implementation evidence does not authorize the pending native amendment or establish an alignment result.
 
@@ -133,7 +139,8 @@ mixed admission requires 5,427 native records and exactly one recovered record,
 with that classification retained in TRAIN/DEV analysis.
 
 The helper and the settlement-to-renewal integration passed local tests and
-independent review; real materialization and settlement remain pending. Source
+independent review. Real materialization, settlement, and cohort-8 prefix replay
+now establish the 80-request mixed prefix bound by the current collection snapshot. Source
 transitions after recovery use reviewed operational renewals at settled cohort
 boundaries. Partial source amendment preparation with study recovery is explicitly
 disabled. Follow-up `CWR-DRYAD-MIXED-PARTIAL-SOURCE-AMENDMENT` records its trigger
