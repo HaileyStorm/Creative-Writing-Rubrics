@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "evidence_class": "preserved_sol_coverage_rejection_under_unchanged_protocol",
+  "pass_id": "baseline8-v1/train/0019/dryad-1a5dadb99544f78c318135a5",
+  "partition": "TRAIN",
+  "score_artifact_sha256": "a4f49d4c96a3cdf47675d06cb63f1633878eeb6863d14ab6b6fad2b703a9755b",
+  "recorded_coverage": 0.8607,
+  "minimum_required_coverage": 0.88,
+  "qualification_result": "rejected_under_unchanged_complete_study_rules",
+  "later_collection_can_clear_this_rejection": false,
+  "source_bindings": {
+    "protocol.json": "a0e2412be904a2fa89b200dbe734cdd42508c6ec40edf621a02f1c1cbd02272d",
+    "baseline-measurement-v1.json": "6ae404e31ecafbeac0ef69814127c5222ac8da5fd24c2700f185ca2f8af5cf37",
+    "sol_pass_admission.py": "cd8364c18cbd8a07bc18a9b4d3d0bc1102518cfbed465b9c4f4586245b8eb65d",
+    "sol_recovered_transport_admission.py": "f13452e7ff878f2368f64159060362f6ecf6320e74e45a9e7d7f93362b964930"
+  },
+  "reason": "The fixed measurement contract requires all 236 passes and coverage at least 0.88, with no filtering or subset alignment metrics. Full Sol admission checks every pass. Matching the preserved pass-19 score fails coverage; a different replayed score fails the required byte equality.",
+  "existing_recovery_scope": "The ordinal-221 transport recovery concerns pass 10 and retains the coverage gate. The adopted early-collection sequencing amendment preserves the fixed measurement contract and does not waive this gate.",
+  "required_decision": "Any different analysis contract requires a separate explicit protocol decision. It cannot relabel this preserved result as satisfying the original gate.",
+  "review_evidence_class": "independent_read_only_source_and_score_metadata_audit",
+  "audit_limits": "No new native replay, target access, fitting, or comparison was performed. The audit identifies a coverage rejection, not a newly observed ambiguous or invalid batch attempt; it does not independently cancel authorized collection.",
+  "original_score_and_protocol_unchanged": true,
+  "coverage_gate_changed": false,
+  "full_study_admission": false,
+  "alignment_result": null,
+  "provider_calls": 0,
+  "execution_authority": false,
+  "resend_authority": false
+}
