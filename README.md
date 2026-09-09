@@ -74,8 +74,8 @@ The live release-facing work is narrower than the historical experiment log:
   is settled, while the recovered request lacks native CLI-envelope/request-ID
   binding; the original 51/70 attempts and prior 69 commitments remain
   preserved as historical evidence. No request 81 has started.
-  The [2026-09-09 snapshot through request 600](evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/collection-progress-20260909-v2.json)
-  reconciles 600 Sol requests and 4,644 logical verdicts under the sequencing
+  The [2026-09-09 snapshot through request 700](evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/collection-progress-20260909-v3.json)
+  reconciles 700 Sol requests and 5,420 logical verdicts under the sequencing
   amendment adopted after partial Sol observation. Two cumulative metadata
   additions overcounted final two-question batches; the append-only correction
   preserves the original summaries and all native data. Pass 19 remains provisional:
