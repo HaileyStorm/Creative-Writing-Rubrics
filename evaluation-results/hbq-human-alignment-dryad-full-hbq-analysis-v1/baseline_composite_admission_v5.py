@@ -276,12 +276,13 @@ def _measurement_source(plan_root: Path, record: Mapping[str, Any]) -> dict[str,
     }
 
 
-def _old_inventory_descriptor(context: Any, descriptor: Mapping[str, Any], label: str) -> bytes:
+def _old_inventory_descriptor(context: Any, descriptor: Mapping[str, Any], label: str, expected_relative: str) -> bytes:
     root = _plain(context.old_root, directory=True)
     path = _plain(descriptor["path"], directory=False)
     _require(path.is_relative_to(root), f"{label} is outside the actual old execution root")
     inventory = context.epoch.get("old_execution_inventory")
-    _require(isinstance(inventory, Mapping) and inventory.get(path.relative_to(root).as_posix()) == descriptor["sha256"],
+    relative = path.relative_to(root).as_posix()
+    _require(relative == expected_relative and isinstance(inventory, Mapping) and inventory.get(relative) == descriptor["sha256"],
              f"{label} differs from the frozen old execution inventory")
     return _read(path, descriptor["sha256"], label)
 
@@ -289,7 +290,9 @@ def _old_inventory_descriptor(context: Any, descriptor: Mapping[str, Any], label
 def _predecessor_bindings(
     context: Any, predecessor: Mapping[str, Any], *, expected_plan_sha256: str, expected_public_inputs_sha256: str,
 ) -> tuple[dict[str, Any], dict[str, str], dict[str, Any]]:
-    initialization_raw = _old_inventory_descriptor(context, predecessor["initialization"], "Predecessor initialization")
+    initialization_raw = _old_inventory_descriptor(
+        context, predecessor["initialization"], "Predecessor initialization", "initialization.json",
+    )
     initialization = _json(initialization_raw, "Predecessor initialization")
     fields = {
         "schema_version", "evidence_class", "plan_sha256", "plan_inventory_sha256", "plan_files",
@@ -311,7 +314,9 @@ def _predecessor_bindings(
     if "route_snapshot_sha256" in initialization:
         _require(isinstance(initialization["route_snapshot_sha256"], str) and _HASH.fullmatch(initialization["route_snapshot_sha256"]),
                  "Actual predecessor route snapshot differs")
-    settlement_raw = _old_inventory_descriptor(context, predecessor["ledger_head"], "Predecessor cohort settlement")
+    settlement_raw = _old_inventory_descriptor(
+        context, predecessor["ledger_head"], "Predecessor cohort settlement", "cohorts/0008/settlement.json",
+    )
     settlement = _json(settlement_raw, "Predecessor cohort settlement")
     settlement_fields = {
         "schema_version", "cohort_number", "plan_sha256", "prepared_sha256", "review_sha256", "route_sha256",
