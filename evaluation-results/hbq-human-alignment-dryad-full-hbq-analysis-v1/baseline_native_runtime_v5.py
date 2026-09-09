@@ -180,10 +180,14 @@ def _package_inventory(helper: ModuleType, root: Path) -> dict[str, Path]:
 def _package_manifest(raw: bytes) -> dict[str, dict[str, Any]]:
     value = _object(raw, "Candidate runtime package manifest")
     require(
-        set(value) == {"schema_version", "kind", "explicit_exclusion", "files"}
+        set(value) == {
+            "schema_version", "kind", "explicit_exclusion", "baseline_manifest_sha256", "files",
+        }
         and value["schema_version"] == 7
         and value["kind"] == "complete_candidate_runtime_probe_set"
         and value["explicit_exclusion"] == ["candidate-manifest.json"]
+        and isinstance(value["baseline_manifest_sha256"], str)
+        and _HASH.fullmatch(value["baseline_manifest_sha256"]) is not None
         and isinstance(value["files"], list) and len(value["files"]) == 30,
         "Candidate runtime package manifest schema differs",
     )

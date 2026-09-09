@@ -16,6 +16,7 @@ import pytest
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/baseline_native_runtime_v5.py"
 SHARED = Path.home() / ".codex" / "tools" / "model_work_queue"
+ACTUAL_BASELINE_MANIFEST_SHA256 = "e01a771ca5daf1256e76787d5616fbeede96e5e178eb040544e79553628bcbbe"
 
 
 def load():
@@ -41,6 +42,7 @@ def package_descriptor(root: Path) -> dict[str, object]:
         "schema_version": 7,
         "kind": "complete_candidate_runtime_probe_set",
         "explicit_exclusion": ["candidate-manifest.json"],
+        "baseline_manifest_sha256": ACTUAL_BASELINE_MANIFEST_SHA256,
         "files": files,
     }
 
@@ -135,6 +137,28 @@ def runtime(subject, fixture: dict[str, Path | bytes]):
         runtime_package_root=fixture["root"],
         expected_package_manifest_sha256=digest(fixture["package_raw"]),
     )
+
+
+@pytest.mark.parametrize(
+    "mutate",
+    [
+        lambda package: package.pop("baseline_manifest_sha256"),
+        lambda package: package.__setitem__("baseline_manifest_sha256", "not-a-sha256"),
+        lambda package: package.__setitem__("unexpected", True),
+    ],
+    ids=["missing-baseline-hash", "malformed-baseline-hash", "unexpected-key"],
+)
+def test_package_manifest_rejects_shape_drift(
+    mutate, synthetic_package: dict[str, Path | bytes],
+) -> None:
+    subject = load()
+    package_raw = synthetic_package["package_raw"]
+    assert isinstance(package_raw, bytes)
+    package = json.loads(package_raw)
+    mutate(package)
+
+    with pytest.raises(ValueError, match="package manifest schema"):
+        subject._package_manifest(json.dumps(package, sort_keys=True).encode("utf-8"))
 
 
 def test_synthetic_package_loads_private_and_six_shared_modules_without_provider_access(
