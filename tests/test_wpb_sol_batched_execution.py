@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+import hashlib
 import importlib.util
+import json
 import subprocess
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -154,25 +156,88 @@ def test_expiring_route_cannot_create_a_batch(tmp_path: Path, monkeypatch: pytes
     assert not (root / "batches").exists()
 
 
-def test_private_wpb_wrapper_keeps_frozen_artifact_paths_and_disables_code_mode(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    value = subject(); runtime = value._frozen()._sol_runtime(value._frozen()._resolution(freeze_root=FREEZE_ROOT))[1]
+@pytest.mark.parametrize(
+    ("stderr", "error"),
+    [
+        (b"", None),
+        (b"ERROR: native fixture failure\n", "contains an error marker"),
+        (b"model: another-model\n", "identity label conflicts"),
+        (b"\xff", "not valid UTF-8"),
+    ],
+)
+def test_private_wpb_wrapper_captures_completed_process_before_stderr_rejection(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    stderr: bytes,
+    error: str | None,
+) -> None:
+    value = subject()
+    runtime = value._frozen()._sol_runtime(value._frozen()._resolution(freeze_root=FREEZE_ROOT))[1]
     calls: list[list[str]] = []
+
     def fake_run(command: list[str], **_kwargs: Any) -> subprocess.CompletedProcess[bytes]:
         calls.append(command)
         message = Path(command[command.index("--output-last-message") + 1])
-        message.parent.mkdir(parents=True, exist_ok=True); message.write_text("{}", encoding="utf-8")
-        return subprocess.CompletedProcess(command, 0, stdout=b'{"type":"thread.started","thread_id":"fixture"}\n', stderr=b"")
+        message.parent.mkdir(parents=True, exist_ok=True)
+        message.write_text("{}", encoding="utf-8")
+        return subprocess.CompletedProcess(
+            command,
+            0,
+            stdout=b'{"type":"thread.started","thread_id":"fixture"}\n',
+            stderr=stderr,
+        )
+
     monkeypatch.setattr(subprocess, "run", fake_run)
-    invoke = value._current_call_codex(runtime)
+    receipt_root = tmp_path / "process-capture"
+    invoke = value._current_call_codex(runtime, receipt_root=receipt_root)
     root, schema, gated = tmp_path / "cell", tmp_path / "schema.json", []
-    root.mkdir(); schema.write_text("{}", encoding="utf-8")
-    content, record = invoke(executable="fixture-codex", model="gpt-5.6-sol", reasoning="high", prompt="{}", output_dir=root,
-                             response_schema=schema, batch_number=1, timeout=1, before_provider_attempt=lambda: gated.append(True),
-                             capture_jsonl_events=True)
-    assert content == "{}" and gated == [True] and calls[0][-1] == "-"
+    root.mkdir()
+    schema.write_text("{}", encoding="utf-8")
+
+    if error is None:
+        content, record = invoke(
+            executable="fixture-codex",
+            model="gpt-5.6-sol",
+            reasoning="high",
+            prompt="{}",
+            output_dir=root,
+            response_schema=schema,
+            batch_number=1,
+            timeout=1,
+            before_provider_attempt=lambda: gated.append(True),
+            capture_jsonl_events=True,
+        )
+        assert content == "{}"
+        assert calls[0] == [*record["command"][:-1], "-"]
+        assert record["command"][record["command"].index("--output-last-message") + 1] == str(
+            root / "responses/batch-0001.attempt-0001.message.json"
+        )
+    else:
+        with pytest.raises(ValueError, match=error):
+            invoke(
+                executable="fixture-codex",
+                model="gpt-5.6-sol",
+                reasoning="high",
+                prompt="{}",
+                output_dir=root,
+                response_schema=schema,
+                batch_number=1,
+                timeout=1,
+                before_provider_attempt=lambda: gated.append(True),
+                capture_jsonl_events=True,
+            )
+
+    receipt = json.loads((receipt_root / "cell.json").read_bytes())
+    message = root / "responses/batch-0001.attempt-0001.message.json"
+    assert receipt["state"] == "completed" and receipt["exit_code"] == 0
+    assert receipt["final_message"] == {
+        "exists": True,
+        "bytes": len(message.read_bytes()),
+        "sha256": hashlib.sha256(message.read_bytes()).hexdigest(),
+    }
+    assert gated == [True] and calls[0][-1] == "-"
     assert calls[0][calls[0].index("code_mode") - 1:calls[0].index("code_mode") + 1] == ["--disable", "code_mode"]
-    assert record["command"][record["command"].index("--output-last-message") + 1] == str(root / "responses/batch-0001.attempt-0001.message.json")
-    assert calls[0] == [*record["command"][:-1], "-"]
+    assert calls[0][calls[0].index("--output-last-message") + 1] == str(message)
     assert (root / "raw-codex-stderr.bin").is_file() and (root / "responses/batch-0001.attempt-0001.events.jsonl").is_file()
 
 

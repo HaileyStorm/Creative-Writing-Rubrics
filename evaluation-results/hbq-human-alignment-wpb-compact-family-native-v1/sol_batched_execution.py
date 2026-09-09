@@ -21,6 +21,8 @@ CURRENT_RUNTIME = REPOSITORY / "evaluation-results/hbq-human-alignment-optimizer
 CURRENT_RUNTIME_SHA256 = "cea177b5185a84b682bd5271ae7384cd7742add872d31b45227433d72c7f7e90"
 CURRENT_RUNNER = REPOSITORY / "src/hbqrs/runner.py"
 CURRENT_RUNNER_SHA256 = "3af6dd86088fddb91c2979ed6ddef00efb3da767e959972f8ee1ee0c1ab034f6"
+PROCESS_CAPTURE = REPOSITORY / "src/hbqrs/sol_process_capture.py"
+PROCESS_CAPTURE_SHA256 = "d93a24580b1b492ea116514ba768bb7f7dc5a8e386c925720b434ce94c4d9cb7"
 FREEZE = HERE / "grok_selection_freeze.py"
 MIXED_V5_SELECTION_CONTEXT = "mixed_v5_selection_context"
 MAX_BATCH_SIZE = 10
@@ -186,6 +188,7 @@ def _campaign(root: Path, resolution: Mapping[str, Any], freeze: Mapping[str, An
     expected_cells = [{"cell_id": str(row["cell_id"]), "payload_sha256": row["payload_sha256"], "partition": row["partition"]} for row in resolution["rows"]]
     expected = {"format_version": 1, "kind": "wpb_sol_batched_campaign", "study_id": STUDY_ID,
                 "frozen_executor_sha256": FROZEN_SHA256, "current_runtime_sha256": CURRENT_RUNTIME_SHA256,
+                "process_capture_sha256": PROCESS_CAPTURE_SHA256,
                 "current_runner_sha256": CURRENT_RUNNER_SHA256, "freeze_sha256": expected_freeze_sha256,
                 "freeze_verifier_sha256": expected_freeze_verifier_sha256,
                 "independent_freeze_review_sha256": value.get("independent_freeze_review_sha256"),
@@ -229,6 +232,7 @@ def create_campaign(*, campaign_root: Path, queue_root: Path, freeze_root: Path,
     cells = [{"cell_id": str(row["cell_id"]), "payload_sha256": row["payload_sha256"], "partition": row["partition"]} for row in resolution["rows"]]
     record = {"format_version": 1, "kind": "wpb_sol_batched_campaign", "study_id": STUDY_ID,
               "frozen_executor_sha256": FROZEN_SHA256, "current_runtime_sha256": CURRENT_RUNTIME_SHA256,
+              "process_capture_sha256": PROCESS_CAPTURE_SHA256,
               "current_runner_sha256": CURRENT_RUNNER_SHA256, "freeze_sha256": expected_freeze_sha256,
               "freeze_verifier_sha256": expected_freeze_verifier_sha256,
               "independent_freeze_review_sha256": review_sha256,
@@ -284,10 +288,19 @@ def _route(lifecycle: ModuleType, runtime: ModuleType, queue_root: Path, broker_
     return dict(frozen_route), dict(frozen_evidence)
 
 
+def _process_receipts(batch: Path, cell_ids: list[str]) -> dict[str, str]:
+    receipts = batch / "sol-process-receipts"
+    return {cell_id: sha256(path.read_bytes()) for cell_id in cell_ids
+            if (path := receipts / f"{cell_id}.json").is_file()}
+
+
 def _settlement(root: Path, number: int, campaign_sha256: str) -> tuple[dict[str, Any], str]:
     path = _batch_root(root, number) / "settlement.json"
     value, raw = _read(path, "WPB Sol batch settlement")
     _require(value.get("campaign_sha256") == campaign_sha256 and value.get("batch_number") == number, "WPB Sol settlement binding drifted")
+    _require(value.get("process_completion_receipts") == _process_receipts(
+        _batch_root(root, number), [str(cell["cell_id"]) for cell in value["cells"]]),
+        "WPB Sol process completion receipts drifted")
     return value, sha256(raw)
 
 
@@ -334,6 +347,7 @@ def _prepared_bindings(batch_root: Path, rows: tuple[Mapping[str, Any], ...], *,
              "freeze_sha256": freeze_sha256, "freeze_verifier_sha256": freeze_verifier_sha256,
              "frozen_executor_sha256": FROZEN_SHA256,
              "current_runtime_sha256": CURRENT_RUNTIME_SHA256, "current_runner_sha256": CURRENT_RUNNER_SHA256,
+             "process_capture_sha256": PROCESS_CAPTURE_SHA256,
              "route_sha256": sha256(route), "route_evidence_sha256": sha256(evidence), "prepared_sha256s": files,
              **dict(freeze_contract or {})}
     return sha256(_write_new(batch_root / "prepared-source-bindings.json", value))
@@ -345,6 +359,7 @@ def _verify_prepared_bindings(batch_root: Path, rows: tuple[Mapping[str, Any], .
                 "freeze_sha256": plan["freeze_sha256"], "freeze_verifier_sha256": plan["freeze_verifier_sha256"],
                 "frozen_executor_sha256": FROZEN_SHA256,
                 "current_runtime_sha256": CURRENT_RUNTIME_SHA256, "current_runner_sha256": CURRENT_RUNNER_SHA256,
+                "process_capture_sha256": PROCESS_CAPTURE_SHA256,
                 "route_sha256": plan["route_sha256"], "route_evidence_sha256": plan["route_evidence_sha256"],
                 "prepared_sha256s": {str(row["cell_id"]): sha256((batch_root / "execution" / str(row["cell_id"]) / "prepared.json").read_bytes()) for row in rows},
                 **_plan_freeze_contract(plan)}
@@ -468,14 +483,15 @@ def _cheap_freeze(plan: Mapping[str, Any], freeze_path: Path, expected_freeze_sh
                  "WPB Sol frozen Grok binding drifted")
     _require(_time(context["selection_frozen_at"], "selection_frozen_at") <= datetime.now(timezone.utc), "Sol contact predates Grok selection freeze")
     _require(sha256(FROZEN.read_bytes()) == FROZEN_SHA256 and sha256(CURRENT_RUNNER.read_bytes()) == CURRENT_RUNNER_SHA256
-             and sha256(CURRENT_RUNTIME.read_bytes()) == CURRENT_RUNTIME_SHA256, "WPB Sol source binding drifted")
+             and sha256(CURRENT_RUNTIME.read_bytes()) == CURRENT_RUNTIME_SHA256 and sha256(PROCESS_CAPTURE.read_bytes()) == PROCESS_CAPTURE_SHA256, "WPB Sol source binding drifted")
     return context
 
 
-def _current_call_codex(runtime: ModuleType) -> Callable[..., tuple[str, dict[str, Any]]]:
+def _current_call_codex(runtime: ModuleType, *, receipt_root: Path) -> Callable[..., tuple[str, dict[str, Any]]]:
     """Patch the exact V3 command builder shared by WPB launch and validation."""
     _require(sha256(CURRENT_RUNTIME.read_bytes()) == CURRENT_RUNTIME_SHA256
-             and sha256(CURRENT_RUNNER.read_bytes()) == CURRENT_RUNNER_SHA256, "current WPB Sol runtime drifted")
+             and sha256(CURRENT_RUNNER.read_bytes()) == CURRENT_RUNNER_SHA256
+             and sha256(PROCESS_CAPTURE.read_bytes()) == PROCESS_CAPTURE_SHA256, "current WPB Sol runtime drifted")
     original_loader = runtime._load_v3
 
     def configured_v3() -> ModuleType:
@@ -495,6 +511,8 @@ def _current_call_codex(runtime: ModuleType) -> Callable[..., tuple[str, dict[st
             return value
 
         v3._expected_codex_command = command
+        v3.subprocess = _load_exact(PROCESS_CAPTURE, PROCESS_CAPTURE_SHA256, "sol_process_capture").facade(
+            v3.subprocess, receipt_root=receipt_root)
         v3._wpb_code_mode_disabled = True
         return v3
 
@@ -537,7 +555,7 @@ def dispatch_batch(*, campaign_root: Path, queue_root: Path, freeze_root: Path, 
     if (batch / "settlement.json").exists():
         raise ValueError("settled WPB Sol batch cannot dispatch again")
     locks = lifecycle._locks(execution)
-    original = call_codex or _current_call_codex(runtime)
+    original = call_codex or _current_call_codex(runtime, receipt_root=batch / "sol-process-receipts")
 
     def invoke(**kwargs: Any) -> tuple[str, dict[str, Any]]:
         before = kwargs.get("before_provider_attempt")
@@ -596,7 +614,9 @@ def settle_batch(*, campaign_root: Path, freeze_root: Path, freeze_path: Path, e
             complete = False; cells.append({"cell_id": cell_id, "state": "terminal_or_ambiguous", "error_type": type(error).__name__})
     settlement = {"format_version": 1, "kind": "wpb_sol_batched_settlement", "study_id": STUDY_ID,
                   "campaign_sha256": campaign_sha256, "batch_number": batch_number, "plan_sha256": plan_sha256,
-                  "freeze_sha256": expected_freeze_sha256, "cells": cells, "status": "completed" if complete else "terminal_or_ambiguous"}
+                  "freeze_sha256": expected_freeze_sha256, "cells": cells,
+                  "process_completion_receipts": _process_receipts(batch, [str(row["cell_id"]) for row in rows]),
+                  "status": "completed" if complete else "terminal_or_ambiguous"}
     raw = _write_new(batch / "settlement.json", settlement)
     if not complete:
         _write_new(root / "stopped.json", {"format_version": 1, "kind": "wpb_sol_batched_campaign_stopped", "campaign_sha256": campaign_sha256,

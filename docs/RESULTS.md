@@ -299,18 +299,20 @@ The later [WPB Grok settlement](https://github.com/HaileyStorm/Creative-Writing-
 records the historical 89 successful cells, one ambiguous terminal cell, and 39
 unstarted cells. The original campaign remains terminal, and the owner
 separately [authorized recovery](../evaluation-results/hbq-human-alignment-wpb-compact-family-native-v1/recovery-authorization-v1.json)
-while preserving that evidence. As of 2026-09-08 UTC, independent reconciliation
-admits 101 native cells plus one owner-adopted local-session schema recovery:
-102/129. Eleven new native admissions followed the UUID precontact fix. Cell
-`0918` was definitely not contacted because its frozen prompt exceeded the
-broker's 65,536-byte history guard; 26 later cells are prepared only, leaving
-27 without collection.
+while preserving that evidence. The [2026-09-09 checkpoint](../evaluation-results/hbq-human-alignment-wpb-compact-family-native-v1/collection-progress-20260909-v2.json)
+recognizes 116 native cells plus one owner-adopted local-session recovery:
+117/129. The v5 runtime resolved the earlier precontact size failure and collected
+15 native results. Cell `0918` retains a documented source-equivalent generated-cache
+provenance exception; later `-B` launches preserved the clean source package.
 The [local schema-recovery proposal](../evaluation-results/hbq-human-alignment-wpb-compact-family-native-v1/schema-recovery-proposal-v1.md)
 and [adopted projection](../evaluation-results/hbq-human-alignment-wpb-compact-family-native-v1/schema-recovery-adoption-v1.json)
 account for recovered cell `0843`, whose native CLI-envelope binding remains
-missing. Complete analysis must retain 128 native cells plus this one recovered
-cell. The shared repair is staged but uninstalled, and native overlimit support
-is unproven. The original evidence remains preserved. Automatic
+missing. Collection subsequently stopped at `1088` on a structured-output
+validation failure. Its retained answer exceeds one evidence-note length limit
+by one character. A separately reviewed projection preserves every score,
+winner and coverage value; adoption is pending and it remains excluded from
+the recognized count. Eleven later cells are uncontacted. There is no confirmed
+billing/quota failure. The original evidence remains preserved. Automatic
 resends, subset alignment metrics, and incomplete-campaign fits remain prohibited.
 This coarse family comparison is not a full-HBQ alignment result.
 

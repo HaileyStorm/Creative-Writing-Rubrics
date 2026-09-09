@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import subprocess
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from types import SimpleNamespace
@@ -12,6 +13,7 @@ import pytest
 ROOT = Path(__file__).resolve().parents[1]
 HELPER = ROOT / "evaluation-results/hbq-human-alignment-wpb-compact-family-native-v1/sol_batched_execution.py"
 SUPPORT = Path(__file__).with_name("test_hbq_human_alignment_wpb_compact_native_v1.py")
+PROCESS_CAPTURE = ROOT / "src" / "hbqrs" / "sol_process_capture.py"
 FREEZE_ROOT = Path(r"C:\Users\Haile\Documents\cwr-wpb-pilot-source-freeze-20260904-r3")
 VERIFIER_SHA256 = "e" * 64
 
@@ -62,6 +64,30 @@ def _route(route_support: Any, epoch: int) -> dict[str, Any]:
     return route
 
 
+def _captured_runner(runner: Any) -> Any:
+    capture = load(PROCESS_CAPTURE, "wpb_sol_batched_integration_process_capture")
+
+    def invoke(**kwargs: Any) -> tuple[str, dict[str, Any]]:
+        content, record = runner(**kwargs)
+        root = Path(kwargs["output_dir"])
+        events = (root / "responses" / "batch-0001.attempt-0001.events.jsonl").read_bytes()
+        stderr = (root / "raw-codex-stderr.bin").read_bytes()
+
+        class SyntheticCompletedProcess:
+            TimeoutExpired = subprocess.TimeoutExpired
+
+            def run(self, *_args: Any, **_kwargs: Any) -> SimpleNamespace:
+                return SimpleNamespace(returncode=0, stdout=events, stderr=stderr)
+
+        capture.facade(
+            SyntheticCompletedProcess(),
+            receipt_root=root.parent.parent / "sol-process-receipts",
+        ).run(record["command"])
+        return content, record
+
+    return invoke
+
+
 def test_full_batched_aggregation_uses_real_frozen_sol_admission(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     value = load(HELPER, "wpb_sol_batched_full_integration")
     support = load(SUPPORT, "wpb_sol_batched_full_integration_support")
@@ -78,7 +104,7 @@ def test_full_batched_aggregation_uses_real_frozen_sol_admission(tmp_path: Path,
     route_support = support.load(support.V12_TEST, "wpb_sol_batched_integration_route_support")
     resolution = value._frozen()._resolution(freeze_root=FREEZE_ROOT)
     contacts = support.Contacts()
-    runner = support.sol_runner(value._frozen(), resolution["rows"], contacts)
+    runner = _captured_runner(support.sol_runner(value._frozen(), resolution["rows"], contacts))
     completed: set[str] = set()
     route_hashes: list[str] = []
     for epoch in range(1, 14):
@@ -109,6 +135,8 @@ def test_full_batched_aggregation_uses_real_frozen_sol_admission(tmp_path: Path,
                                      expected_freeze_verifier_sha256=VERIFIER_SHA256,
                                      batch_number=epoch)
         assert settled["status"] == "completed" and settled["completed_cells"] == cell_ids
+        receipts = campaign / "batches" / f"{epoch:04d}" / "sol-process-receipts"
+        assert {path.name for path in receipts.iterdir()} == {f"{cell_id}.json" for cell_id in cell_ids}
         completed.update(cell_ids); route_hashes.append(value.sha256(route))
     report = value.report(campaign_root=campaign, freeze_root=FREEZE_ROOT,
                           freeze_path=tmp_path / "grok-selection-freeze.json", expected_freeze_sha256=frozen["freeze_sha256"],
@@ -118,6 +146,11 @@ def test_full_batched_aggregation_uses_real_frozen_sol_admission(tmp_path: Path,
     assert len(set(route_hashes)) == len({epoch["route_sha256"] for epoch in report["route_epochs"]}) == 13
     assert report["measurement_count"] == len(report["native_receipt_bindings"]) == 129
     assert report["analysis"]["profile"]["multipliers"] == frozen["selected_profile"]
+    first_cell = str(resolution["rows"][0]["cell_id"])
+    sidecar = campaign / "batches" / "0001" / "sol-process-receipts" / f"{first_cell}.json"
+    sidecar.write_bytes(sidecar.read_bytes() + b"\n")
+    with pytest.raises(ValueError, match="process completion receipts drifted"):
+        value._settlement(campaign, 1, created["campaign_sha256"])
     final = campaign / "batches" / "0013"; missing = campaign / "batches" / "0013-missing"
     final.rename(missing)
     try:

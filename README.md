@@ -57,15 +57,16 @@ The live release-facing work is narrower than the historical experiment log:
   is a standalone Sol TRAIN result. Grok quota exhaustion left its paired run
   incomplete. The later [WPB collection](docs/RESULTS.md#wpb-terminal-collection)
   originally stopped after 89 successful cells and one ambiguous terminal cell.
-  The [2026-09-09 snapshot](evaluation-results/hbq-human-alignment-wpb-compact-family-native-v1/collection-progress-20260909-v1.json)
-  recognizes 102 native cells plus one owner-adopted local-session schema
-  recovery: 103/129. Cell `0918` subsequently completed through the v5 runtime;
+  The [2026-09-09 snapshot](evaluation-results/hbq-human-alignment-wpb-compact-family-native-v1/collection-progress-20260909-v2.json)
+  recognizes 116 native cells plus one owner-adopted local-session schema
+  recovery: 117/129. Cell `0918` completed through the v5 runtime;
   independent replay passed with a documented source-equivalent generated-cache
   exception. Its earlier uncontacted attempt and the cache-deviation evidence remain
-  preserved. The 26 later cells are still uncontacted; next is `0925`.
-  The [exact local schema repair was adopted](evaluation-results/hbq-human-alignment-wpb-compact-family-native-v1/schema-recovery-adoption-v1.json);
-  the v5 runtime has bounded native evidence, while its prepared `-B` route
-  remains unactivated at this snapshot. This incomplete collection permits neither subset metrics nor fitting
+  preserved. The activated `-B` route collected fourteen further native results,
+  then stopped on a schema failure at `1088`; eleven later cells remain uncontacted.
+  The [local schema repair for `0843` was adopted](evaluation-results/hbq-human-alignment-wpb-compact-family-native-v1/schema-recovery-adoption-v1.json);
+  cell `1088` has a separately reviewed one-character evidence-note correction
+  awaiting adoption. This incomplete collection permits neither subset metrics nor fitting
   nor automatic resends.
 - [Dryad source and full-HBQ preparation](docs/RESULTS.md#dryad-source-and-full-hbq-preparation)
   adds an audited independent corpus and a frozen 176 TRAIN / 60 DEV / 57
