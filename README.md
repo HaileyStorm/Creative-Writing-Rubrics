@@ -74,8 +74,8 @@ The live release-facing work is narrower than the historical experiment log:
   is settled, while the recovered request lacks native CLI-envelope/request-ID
   binding; the original 51/70 attempts and prior 69 commitments remain
   preserved as historical evidence. No request 81 has started.
-  The [corrected 2026-09-09 snapshot](evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/collection-progress-20260909-v1.json)
-  reconciles 500 Sol requests and 3,874 logical verdicts under the sequencing
+  The [2026-09-09 snapshot through request 600](evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/collection-progress-20260909-v2.json)
+  reconciles 600 Sol requests and 4,644 logical verdicts under the sequencing
   amendment adopted after partial Sol observation. Two cumulative metadata
   additions overcounted final two-question batches; the append-only correction
   preserves the original summaries and all native data. Pass 19 remains provisional:
@@ -84,9 +84,7 @@ The live release-facing work is narrower than the historical experiment log:
   The owner [adopted the exact request-221 transport recovery](evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/sol-recovered-transport-adoption-v1.json),
   and subsequent collection passed independent replay. Its sole recovered
   transport is request 221; native endpoint and internal-retry cardinality remain
-  unproven. The dated snapshot covers requests 1–500 and grants no full-study
-  admission; later collection is outside that checkpoint. Its
-  preserved first 120 requests preceded the protocol's Grok selection stage
+  unproven. The preserved first 120 requests preceded the protocol's Grok selection stage
   and remain ineligible under the original sequence. The amended continuation
   has passed independent review. Complete native
   measurement, alignment, selection, promotion, and release claims remain
