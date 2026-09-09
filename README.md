@@ -68,19 +68,22 @@ The live release-facing work is narrower than the historical experiment log:
   nor automatic resends.
 - [Dryad source and full-HBQ preparation](docs/RESULTS.md#dryad-source-and-full-hbq-preparation)
   adds an audited independent corpus and a frozen 176 TRAIN / 60 DEV / 57
-  confirmation split. As of 2026-09-08 UTC, the separate fixed-batch-eight baseline
+  confirmation split. As of 2026-09-09 UTC, the separate fixed-batch-eight baseline
   has 80 requests and 622 verdicts: 79 admitted native requests plus one
   owner-adopted [study recovery for request 70](evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/grok70-quote-repair-adoption-v1.json). Cohort eight
   is settled, while the recovered request lacks native CLI-envelope/request-ID
   binding; the original 51/70 attempts and prior 69 commitments remain
   preserved as historical evidence. No request 81 has started.
-  Sol has 400 independently admitted requests and 3,098 verdicts under the
-  sequencing amendment adopted after partial Sol observation.
+  The [corrected 2026-09-09 snapshot](evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/collection-progress-20260909-v1.json)
+  reconciles 500 Sol requests and 3,874 logical verdicts under the sequencing
+  amendment adopted after partial Sol observation. Two cumulative metadata
+  additions overcounted final two-question batches; the append-only correction
+  preserves the original summaries and all native data. Pass 19 remains provisional.
   The owner [adopted the exact request-221 transport recovery](evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/sol-recovered-transport-adoption-v1.json),
   and subsequent collection passed independent replay. Its sole recovered
   transport is request 221; native endpoint and internal-retry cardinality remain
-  unproven. Independent admission covers requests 1–400; later collection is
-  outside this checkpoint. Its
+  unproven. The dated snapshot covers requests 1–500 and grants no full-study
+  admission; later collection is outside that checkpoint. Its
   preserved first 120 requests preceded the protocol's Grok selection stage
   and remain ineligible under the original sequence. The amended continuation
   has passed independent review. Complete native
