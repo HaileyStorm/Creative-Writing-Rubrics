@@ -81,9 +81,11 @@ The live release-facing work is narrower than the historical experiment log:
   preserves the original summaries and all native data. Pass 19 remains provisional:
   its [coverage of 0.8607 fails the unchanged 0.88 gate](evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/sol-pass19-coverage-admission-blocker-v1.json).
   Completing later collection cannot clear that full-study admission rejection.
-  A subsequent Windows update interrupted collection after 772 completed requests
-  and 5,978 judgments. Request 773 has an unknown outcome; collection is stopped
-  pending a [separate replacement decision](evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/sol773-reboot-replacement-proposal-v1.md).
+  A subsequent Windows update interrupted collection after 772 completed requests.
+  The owner-approved [request-773 replacement completed](evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/sol773-replacement-result-v1.json),
+  bringing the separate combined collection to 773 logical requests and 5,986 judgments.
+  The original 773 outcome remains unknown. The replacement used the owner's
+  explicit allowance assumption; later collection has not resumed.
   The owner [adopted the exact request-221 transport recovery](evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/sol-recovered-transport-adoption-v1.json),
   and subsequent collection passed independent replay. Its sole recovered
   transport is request 221; native endpoint and internal-retry cardinality remain
