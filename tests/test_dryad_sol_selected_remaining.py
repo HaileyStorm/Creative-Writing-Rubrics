@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import importlib.util
+import inspect
 import json
 from pathlib import Path
 from types import SimpleNamespace
@@ -36,6 +37,15 @@ def test_reconciliation_hash_drift_rejects_before_collection() -> None:
         value._reconciliation(path, "0" * 64)
 
 
+def test_precontact_recovery_binds_the_immutable_r2_inventory() -> None:
+    value = load()
+    recovery = value._precontact_failure()
+
+    assert len(recovery["files"]) == 78
+    assert recovery["provider_contacts"] == 0
+    assert recovery["model_request_resend"] is False
+
+
 def test_frozen_completion_validator_is_owned_by_selected_collector() -> None:
     recovery = load()
     selected_spec = importlib.util.spec_from_file_location("test_frozen_selected", ROOT / "evaluation-results" / "hbq-human-alignment-dryad-full-hbq-analysis-v1" / "sol_selected_successor_execution.py")
@@ -49,10 +59,12 @@ def test_frozen_completion_validator_is_owned_by_selected_collector() -> None:
 def test_unknown_exit_facade_recognizes_only_validator_approved_valueerror(tmp_path: Path) -> None:
     value = load(); slot = tmp_path / "request"; (slot / "native-output").mkdir(parents=True)
     (slot / "route.json").write_text("{}", encoding="utf-8"); (slot / "source-bindings.json").write_text("{}", encoding="utf-8")
+    seen: dict[str, Any] = {}
 
     class FailingRuntime:
         @staticmethod
-        def call_codex(**_kwargs: Any) -> tuple[str, dict[str, Any]]:
+        def call_codex(**kwargs: Any) -> tuple[str, dict[str, Any]]:
+            seen.update(kwargs)
             raise ValueError("unknown exit")
 
     validator = SimpleNamespace(validate_completed_unknown_exit=lambda **_kwargs: ("retained", "thread-1", {"completion_class": "completed_with_unknown_exit", "process_success_proven": False}))
@@ -60,6 +72,7 @@ def test_unknown_exit_facade_recognizes_only_validator_approved_valueerror(tmp_p
     content, record = runtime.call_codex(output_dir=slot / "native-output", request={"ordinal": 1})
 
     assert content == "retained" and record["completion_class"] == "completed_with_unknown_exit"
+    assert "request" not in seen
 
 
 def test_unknown_exit_facade_propagates_when_validator_rejects(tmp_path: Path) -> None:
@@ -75,6 +88,30 @@ def test_unknown_exit_facade_propagates_when_validator_rejects(tmp_path: Path) -
     runtime = value.CompletionAwareRuntime(FailingRuntime(), object(), validator)
     with pytest.raises(ValueError, match="invalid retained completion"):
         runtime.call_codex(output_dir=slot / "native-output", request={"ordinal": 1})
+
+
+def test_facade_does_not_forward_request_to_the_real_frozen_invoker_signature(tmp_path: Path) -> None:
+    value = load()
+    runtime_spec = importlib.util.spec_from_file_location("test_frozen_runtime", value.RUNTIME)
+    assert runtime_spec and runtime_spec.loader
+    frozen = importlib.util.module_from_spec(runtime_spec); runtime_spec.loader.exec_module(frozen)
+    signature = inspect.signature(frozen._base()._load_call_codex())
+    seen: dict[str, Any] = {}
+
+    class StrictChild:
+        @staticmethod
+        def call_codex(**kwargs: Any) -> tuple[str, dict[str, Any]]:
+            signature.bind(**kwargs)
+            seen.update(kwargs)
+            return "ordinary", {"completion_class": "completed", "native_thread_id": "thread-1"}
+
+    facade = value.CompletionAwareRuntime(StrictChild(), frozen, object())
+    content, _record = facade.call_codex(executable="fixture", model="gpt-5.6-sol", reasoning="high", prompt="{}",
+                                         output_dir=tmp_path, response_schema=tmp_path / "schema.json", batch_number=1,
+                                         timeout=300, attempt_number=1, before_provider_attempt=lambda: None,
+                                         capture_jsonl_events=True, request={"ordinal": 1})
+
+    assert content == "ordinary" and "request" not in seen
 
 
 def test_incomplete_resume_is_never_resubmitted(tmp_path: Path) -> None:
@@ -113,7 +150,7 @@ def test_dispatch_counts_only_newly_accepted_remaining_slots(tmp_path: Path, mon
         @staticmethod
         def call_codex(**kwargs: Any) -> tuple[str, dict[str, Any]]:
             kwargs["before_provider_attempt"]()
-            ordinal = kwargs["request"]["ordinal"]
+            ordinal = 4506 + kwargs["batch_number"]
             return "{}", {"completion_class": "completed", "native_thread_id": f"new-{ordinal}"}
 
     controller_hash = value._sha(Path(value.__file__).read_bytes())
@@ -125,9 +162,13 @@ def test_dispatch_counts_only_newly_accepted_remaining_slots(tmp_path: Path, mon
                 "reconciliation_sha256": value._sha(b"reconciliation"), "parent_manifest_sha256": value._sha(b"parent-manifest"),
                 "parent_collection_result_sha256": value._sha(b"parent-result"), "selected_schedule_sha256": value._sha(descriptor),
                 "recognized_prefix_thread_ids_sha256": value._sha(value._canonical(["prefix"])), "plan_root": str(plan),
-                "original_plan_sha256": value._sha(b"plan"), "old_route_identity": {}, "attempt_policy": {"cumulative_attempts": 1, "resend": False}}
-    (root / "campaign-manifest.json").write_bytes(value._canonical(manifest)); (tmp_path / "reconciliation.json").write_bytes(b"reconciliation")
+                "original_plan_sha256": value._sha(b"plan"), "old_route_identity": {}, "attempt_policy": {"cumulative_attempts": 1, "resend": False},
+                "precontact_recovery_path": str(tmp_path / "precontact.json"), "precontact_recovery_sha256": value._sha(b"precontact"),
+                "precontact_recovery_inventory_sha256": value._sha(value._canonical({})), "prior_precontact_failure_root": str(value.R2_ROOT),
+                "prior_precontact_failure_manifest_sha256": value.R2_MANIFEST_SHA256, "prior_precontact_failure_result_sha256": value.R2_RESULT_SHA256}
+    (root / "campaign-manifest.json").write_bytes(value._canonical(manifest)); (tmp_path / "reconciliation.json").write_bytes(b"reconciliation"); (tmp_path / "precontact.json").write_bytes(b"precontact")
     monkeypatch.setattr(value, "_parent_context", lambda **_kwargs: (parent, Runtime(), object(), {}, {}, {"prefix"}))
+    monkeypatch.setattr(value, "_precontact_failure", lambda *_args: {"files": {}})
 
     result = value.dispatch(campaign_root=root, queue_root=tmp_path, adapter_override=Runtime())
 

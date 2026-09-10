@@ -30,6 +30,12 @@ REMAINING = tuple(range(4507, 4739))
 PARENT_ROOT = Path(r"C:\Users\Haile\Documents\cwr-dryad-sol-selected100-recovery-20260910-r1")
 RECONCILIATION = Path(r"C:\Users\Haile\Documents\cwr-dryad-sol-completed-message-recovery-4486-4492-20260910-r1\reconciliation.json")
 RECONCILIATION_SHA256 = "8a0860386ee148d22cf09c85b07fabf54b58a6c762ada72b166e932e1628c317"
+PRECONTACT_RECOVERY = Path(r"C:\Users\Haile\Documents\cwr-dryad-sol-selected100-precontact-recovery-20260910-r1\reconciliation.json")
+PRECONTACT_RECOVERY_SHA256 = "9e9e8fd23c00c4c7e4b1cf66e435543ff9a8a8fdfc2552b045510e12165f9345"
+R2_ROOT = Path(r"C:\Users\Haile\Documents\cwr-dryad-sol-selected100-remaining-20260910-r2")
+R2_CONTROLLER_SHA256 = "9d80c94fec1dba4f38207884a78e969d651911f6e63e4930ae64947ec6d5ec8f"
+R2_MANIFEST_SHA256 = "e3343fa19ab6ec570bc65b42bdad1f6fe1a0215c1be103211e11e0b80663e9de"
+R2_RESULT_SHA256 = "e6eda1c4212cf5b81e35303116eb8da9c37b2437dadbccf2a434123dbc1fc4eb"
 
 
 def _sha(raw: bytes) -> str:
@@ -99,6 +105,32 @@ def _hash_inventory(slot: Path, files: Mapping[str, Any], label: str) -> None:
     _require(files and all(isinstance(relative, str) and relative and not Path(relative).is_absolute() and ".." not in Path(relative).parts and type(expected) is str and len(expected) == 64
                            and _sha((slot / relative).read_bytes()) == expected for relative, expected in files.items()),
              f"{label} artifact inventory differs")
+
+
+def _precontact_failure(path: Path = PRECONTACT_RECOVERY, expected_sha256: str = PRECONTACT_RECOVERY_SHA256) -> dict[str, Any]:
+    raw = Path(path).read_bytes()
+    _require(_sha(raw) == expected_sha256, "precontact recovery differs")
+    value = _json(Path(path), "precontact recovery")
+    inventory = ["authorization.json", "native-output/payload/prompt.txt", "native-output/payload/schema.json", "route.json", "source-bindings.json", "start.json", "terminal.json"]
+    root_files = {"campaign-manifest.json", "collection-result.json", "independent-review.json", "launch-receipt.json", "preparation-receipt.json", "run-remaining232.py", "selected-schedule.json", "source-at-precontact-failure-provenance-only.py"}
+    expected_files = root_files | {f"requests/{ordinal:04d}/{name}" for ordinal in range(4507, 4517) for name in inventory}
+    files = value.get("files")
+    _require(value.get("schema_version") == 1 and value.get("evidence_class") == "deterministically_uncontacted_argument_binding_failure"
+             and value.get("prior_root") == str(R2_ROOT) and value.get("prior_controller_sha256") == R2_CONTROLLER_SHA256
+             and value.get("prior_manifest_sha256") == R2_MANIFEST_SHA256 and value.get("prior_result_sha256") == R2_RESULT_SHA256
+             and value.get("frozen_runtime_sha256") == RUNTIME_SHA256 and value.get("recognized_prefix") == RECONCILED_PREFIX_COUNT
+             and value.get("affected_ordinals") == list(range(4507, 4517)) and value.get("slot_file_inventory") == inventory
+             and value.get("rejected_keyword") == "request" and value.get("signature_binding_rejects_before_function_body") is True
+             and value.get("provider_contacts") == 0 and value.get("model_request_resend") is False and value.get("old_attempts_preserved") is True
+             and value.get("full_study_admitted") is False and isinstance(files, Mapping) and set(files) == expected_files,
+             "precontact recovery summary differs")
+    _require(all(isinstance(relative, str) and not Path(relative).is_absolute() and ".." not in Path(relative).parts
+                     and type(expected) is str and len(expected) == 64 and _sha((R2_ROOT / relative).read_bytes()) == expected
+                     for relative, expected in files.items()), "precontact recovery inventory differs")
+    actual_files = {item.relative_to(R2_ROOT).as_posix() for item in R2_ROOT.rglob("*") if item.is_file()}
+    _require(actual_files == expected_files, "precontact recovery file set differs")
+    _require(not (R2_ROOT / ".collect.lock").exists(), "precontact recovery lock exists")
+    return value
 
 
 def _parent_context(*, parent_root: Path, reconciliation_path: Path, expected_reconciliation_sha256: str,
@@ -171,6 +203,7 @@ def _parent_context(*, parent_root: Path, reconciliation_path: Path, expected_re
 def prepare_campaign(*, campaign_root: Path, parent_campaign_root: Path = PARENT_ROOT, reconciliation_path: Path = RECONCILIATION,
                      expected_reconciliation_sha256: str = RECONCILIATION_SHA256,
                      expected_parent_manifest_sha256: str = PARENT_MANIFEST_SHA256) -> dict[str, Any]:
+    precontact = _precontact_failure()
     _parent, _runtime, _completion, parent_manifest, _reconciliation_value, threads = _parent_context(
         parent_root=parent_campaign_root, reconciliation_path=reconciliation_path,
         expected_reconciliation_sha256=expected_reconciliation_sha256,
@@ -190,6 +223,10 @@ def prepare_campaign(*, campaign_root: Path, parent_campaign_root: Path = PARENT
         "plan_root": parent_manifest["plan_root"], "original_plan_sha256": parent_manifest["original_plan_sha256"],
         "selected_schedule_sha256": _sha(descriptor), "old_route_identity": parent_manifest["old_route_identity"],
         "reconciliation_path": str(Path(reconciliation_path).resolve()), "reconciliation_sha256": expected_reconciliation_sha256,
+        "precontact_recovery_path": str(PRECONTACT_RECOVERY.resolve()), "precontact_recovery_sha256": PRECONTACT_RECOVERY_SHA256,
+        "precontact_recovery_inventory_sha256": _sha(_canonical(precontact["files"])),
+        "prior_precontact_failure_root": str(R2_ROOT), "prior_precontact_failure_manifest_sha256": R2_MANIFEST_SHA256,
+        "prior_precontact_failure_result_sha256": R2_RESULT_SHA256,
         "recognized_prefix_thread_ids_sha256": _sha(_canonical(sorted(threads))),
         "remaining_original_ordinals": list(REMAINING),
         "counts": {"recognized_prefix": RECONCILED_PREFIX_COUNT, "recognized_unknown_exit": len(RETAINED_UNKNOWN),
@@ -213,13 +250,16 @@ class CompletionAwareRuntime:
         self._child_runtime, self._frozen_runtime, self._validator = child_runtime, frozen_runtime, validator
 
     def call_codex(self, **kwargs: Any) -> tuple[str, dict[str, Any]]:
+        values = dict(kwargs)
+        request = values.pop("request", None)
+        _require(isinstance(request, Mapping), "remaining runtime request differs")
         try:
-            return self._child_runtime.call_codex(**kwargs)
+            return self._child_runtime.call_codex(**values)
         except ValueError:
-            native = Path(kwargs["output_dir"]).resolve()
+            native = Path(values["output_dir"]).resolve()
             slot = native.parent
             content, _thread_id, record = self._validator.validate_completed_unknown_exit(
-                slot=slot, request=kwargs["request"], frozen_runtime=self._frozen_runtime,
+                slot=slot, request=request, frozen_runtime=self._frozen_runtime,
                 route=_json(slot / "route.json", "remaining route"),
                 source=_json(slot / "source-bindings.json", "remaining source bindings"))
             return content, record
@@ -270,6 +310,12 @@ def _dispatch_locked(*, campaign_root: Path, queue_root: Path, adapter_override:
              and manifest.get("frozen_runtime_sha256") == RUNTIME_SHA256 and manifest.get("remaining_original_ordinals") == list(REMAINING)
              and manifest.get("counts") == expected_counts and manifest.get("full_study_admitted") is False,
              "remaining manifest differs")
+    precontact = _precontact_failure(Path(manifest.get("precontact_recovery_path", "")), manifest.get("precontact_recovery_sha256", ""))
+    _require(manifest.get("precontact_recovery_inventory_sha256") == _sha(_canonical(precontact["files"]))
+             and manifest.get("prior_precontact_failure_root") == str(R2_ROOT)
+             and manifest.get("prior_precontact_failure_manifest_sha256") == R2_MANIFEST_SHA256
+             and manifest.get("prior_precontact_failure_result_sha256") == R2_RESULT_SHA256,
+             "remaining precontact recovery binding differs")
     parent, frozen_runtime, validator, _parent_manifest, _reconciliation_value, threads = _parent_context(
         parent_root=Path(manifest["parent_campaign_root"]), reconciliation_path=Path(manifest["reconciliation_path"]),
         expected_reconciliation_sha256=manifest["reconciliation_sha256"], expected_parent_manifest_sha256=manifest["parent_manifest_sha256"])
@@ -320,6 +366,9 @@ def _dispatch_locked(*, campaign_root: Path, queue_root: Path, adapter_override:
                      and _sha((parent_root / "campaign-manifest.json").read_bytes()) == manifest["parent_manifest_sha256"]
                      and _sha((parent_root / "collection-result.json").read_bytes()) == manifest["parent_collection_result_sha256"]
                      and _sha(Path(manifest["reconciliation_path"]).read_bytes()) == manifest["reconciliation_sha256"]
+                     and _sha(Path(manifest["precontact_recovery_path"]).read_bytes()) == manifest["precontact_recovery_sha256"]
+                     and _sha((R2_ROOT / "campaign-manifest.json").read_bytes()) == manifest["prior_precontact_failure_manifest_sha256"]
+                     and _sha((R2_ROOT / "collection-result.json").read_bytes()) == manifest["prior_precontact_failure_result_sha256"]
                      and _sha((plan_root / "plan.json").read_bytes()) == manifest["original_plan_sha256"]
                      and (slot / "start.json").read_bytes() == start_raw and (slot / "route.json").read_bytes() == route_raw
                      and (slot / "source-bindings.json").read_bytes() == source_raw and (slot / "authorization.json").read_bytes() == authorization_raw
