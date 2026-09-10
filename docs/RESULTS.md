@@ -345,6 +345,13 @@ adding 74 verdicts and establishing at least 1,867 recognized requests and 14,45
 verdicts. Collection then entered the 433 previously untouched requests. The
 original failures and their uncertainty remain preserved.
 
+The [subsequent stopped-and-reconciled snapshot](../evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/collection-progress-20260910-v2.json)
+recognizes 2,068 requests and 16,010 verdicts, leaving 232 requests untouched.
+Seven complete, unchanged final messages passed native evidence checks without
+new model calls. Their process exits remain unknown, bringing that separately
+classified collection category to 17 answers. Neither these recoveries nor
+the remaining collection can clear the preserved story-level coverage failures.
+
 The provider-free qualification plan covers 18 passes and 261 requests.
 Governed cohort execution, complete native replay, the fixed 128-trial TRAIN
 optimizer, and conditional DEV comparison are implemented and locally tested.
