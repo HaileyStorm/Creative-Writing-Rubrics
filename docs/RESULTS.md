@@ -395,6 +395,18 @@ identities. Its eight verdicts bring the recognized prefix to 81 requests and
 ten-request waves have started for the selected 100-story schedule. This is
 collection evidence; no full-study admission or alignment result is claimed.
 
+The [next checkpoint](../evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/collection-progress-20260910-v3.json)
+records the first wave's stop at request 88, an unknown post-launch wrapper
+failure with no retained complete answer. Nine completed peers passed individual
+native replay, bringing recognized Grok collection to 90 requests and 702
+verdicts; the full wave is not admitted. The gate is revoked, 88 remains
+unaccepted, and no replacement is authorized. Sol collection separately reached
+all 100 selected stories, 2,300 requests and 17,800 verdicts and passed complete
+collection replay. It preserves 26 unknown-process-exit completions and all
+earlier transport/replacement deviations. Stories 19 and 42 still fail the
+unchanged coverage floor; full-study admission and comparative analysis remain
+blocked.
+
 The [sequencing amendment](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/e367e2ea7a26aafb848a8f26471240db070a0b74/evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/sol-sequencing-amendment-proposal-v1.md)
 was [approved by the owner](../evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/sol-sequencing-amendment-v1.json)
 after partial Sol observation. It preserves the first 120 requests, which remain
