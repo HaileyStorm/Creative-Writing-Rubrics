@@ -92,7 +92,9 @@ The live release-facing work is narrower than the historical experiment log:
   parallel canary through 838. All ten local adapter calls overlapped and completed
   in a 65.4-second span. The ten-lane collector later stopped on wrapper rejections;
   ten retained final messages were recovered without new calls, preserving their
-  failed terminals and unknown process-exit status. Collection is stopped.
+  failed terminals and unknown process-exit status. The [100-story continuation has resumed](evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/selected100-native-checkpoint-v1.json)
+  with ten concurrent local request groups. Independent replay of its first ten
+  new results establishes at least 1,352 recognized requests and 10,468 verdicts.
   The original 773 outcome remains unknown. The replacement used the owner's
   explicit allowance assumption; the continuation preserves both earlier evidence roots.
   The owner [adopted the exact request-221 transport recovery](evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/sol-recovered-transport-adoption-v1.json),
