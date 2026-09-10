@@ -1,8 +1,8 @@
-"""TRAIN/DEV analysis over the successor's complete composite Dryad admission.
+"""TRAIN/DEV analysis over the selected 100-story composite Dryad admission.
 
 This adapter is provider-free.  It composes a fully revalidated v4/recovered/v5
 admission before reading either target partition, then delegates unchanged
-TRAIN fitting and DEV comparison to the pinned v1 scoring engines.
+TRAIN fitting and DEV comparison to an explicitly amended, source-pinned runtime.
 """
 
 from __future__ import annotations
@@ -22,12 +22,12 @@ ROOT = Path(__file__).resolve().parent
 REPOSITORY = ROOT.parents[1]
 COMPOSER_PATH = ROOT / "baseline_composite_admission_v5.py"
 WORKFLOW_PATH = ROOT / "baseline_analysis_workflow.py"
-OPTIMIZER_PATH = ROOT / "optimizer.py"
-COMPARISON_PATH = ROOT / "dev_comparison.py"
+SELECTED_ENGINE_PATH = ROOT / "baseline_selected_analysis_runtime.py"
 RUNTIME_V1_PATH = ROOT / "baseline_native_runtime.py"
 RUNTIME_V5_PATH = ROOT / "baseline_native_runtime_v5.py"
-TRAIN_COUNT = 176
-DEV_COUNT = 60
+TRAIN_COUNT = 70
+DEV_COUNT = 30
+ORIGINAL_COUNTS = {"TRAIN": 176, "DEV": 60}
 QUESTION_COUNT = 178
 CANONICAL_VERDICTS = ("YES", "NO", "NOT_APPLICABLE", "CANNOT_ASSESS")
 
@@ -86,13 +86,13 @@ def _unchanged(captured: Mapping[Path, bytes]) -> None:
         raise ValueError("Pinned composite analysis source changed during execution")
 
 
-def _partitions(path: Path | str, expected: str) -> tuple[Path, bytes, dict[str, set[str]]]:
+def _partitions(path: Path | str, expected: str, admission: Mapping[str, Any]) -> tuple[Path, bytes, dict[str, set[str]]]:
     checked, raw = _read_pinned(path, expected, "Public inputs")
     value = _strict_json(raw, "Public inputs")
     if not isinstance(value, dict) or set(value) != {"TRAIN", "DEV"}:
         raise ValueError("Public input partition schema differs")
     result: dict[str, set[str]] = {}
-    for partition, count in (("TRAIN", TRAIN_COUNT), ("DEV", DEV_COUNT)):
+    for partition, count in ORIGINAL_COUNTS.items():
         rows = value[partition]
         if not isinstance(rows, list) or len(rows) != count:
             raise ValueError("Public input partition count differs")
@@ -102,7 +102,55 @@ def _partitions(path: Path | str, expected: str) -> tuple[Path, bytes, dict[str,
         result[partition] = ids
     if result["TRAIN"] & result["DEV"]:
         raise ValueError("Public input partitions overlap")
-    return checked, raw, result
+    selection = admission.get("selection")
+    rows = admission.get("endpoint_grok_rows")
+    if not isinstance(selection, Mapping) or not isinstance(rows, list) or len(rows) != TRAIN_COUNT + DEV_COUNT:
+        raise ValueError("Selected admission partition binding differs")
+    by_pass = {row.get("pass_id"): row.get("opaque_story_id") for row in rows if isinstance(row, Mapping)}
+    if len(by_pass) != len(rows) or any(type(key) is not str or type(value) is not str for key, value in by_pass.items()):
+        raise ValueError("Selected pass identity mapping differs")
+    selected: dict[str, set[str]] = {}
+    for partition, count in (("TRAIN", TRAIN_COUNT), ("DEV", DEV_COUNT)):
+        pass_ids = selection.get(partition.lower() + "_pass_ids")
+        if not isinstance(pass_ids, list) or len(pass_ids) != count or len(set(pass_ids)) != count:
+            raise ValueError("Selected partition pass inventory differs")
+        ids = {by_pass.get(pass_id) for pass_id in pass_ids}
+        if len(ids) != count or not ids <= result[partition]:
+            raise ValueError("Selected partition differs from original public inputs")
+        selected[partition] = ids
+    if selected["TRAIN"] & selected["DEV"] or set(by_pass.values()) != selected["TRAIN"] | selected["DEV"]:
+        raise ValueError("Selected partition coverage differs")
+    return checked, raw, selected
+
+
+def _project_rows(admission: Mapping[str, Any], partitions: Mapping[str, set[str]]) -> tuple[dict[str, list[dict[str, Any]]], dict[str, Any]]:
+    rows = admission["endpoint_grok_rows"]
+    projected = {name: sorted(({"opaque_story_id": row["opaque_story_id"], "verdicts": row["verdicts"]}
+                              for row in rows if row["opaque_story_id"] in ids), key=lambda row: row["opaque_story_id"])
+                 for name, ids in partitions.items()}
+    if any(len(projected[name]) != len(ids) or {row["opaque_story_id"] for row in projected[name]} != ids
+           for name, ids in partitions.items()):
+        raise ValueError("Selected verdict projection is not exhaustive")
+    return projected, {"selected_schedule_sha256": admission["selection"]["schedule"]["sha256"],
+                       "projected_rows_sha256": {name: _sha(_canonical(values)) for name, values in projected.items()}}
+
+
+def _selected_targets(pure: ModuleType, path: Path | str, expected: str, partition: str,
+                      ids: set[str], public_raw: bytes) -> tuple[Path, bytes, list[dict[str, Any]], dict[str, Any]]:
+    original_ids = {row["opaque_story_id"] for row in _strict_json(public_raw, "Public inputs")[partition]}
+    checked, raw, original = pure._targets(path, expected, partition, original_ids)
+    selected = sorted((row for row in original if row["opaque_story_id"] in ids), key=lambda row: row["opaque_story_id"])
+    if len(selected) != len(ids) or {row["opaque_story_id"] for row in selected} != ids:
+        raise ValueError("Selected targets do not cover the admitted partition")
+    projection = {"original_target_sha256": expected, "original_count": len(original),
+                  "selected_target_sha256": _sha(_canonical(selected)), "selected_count": len(selected)}
+    return checked, raw, selected, projection
+
+
+def _engine_binding(admission: Mapping[str, Any], partitions: Mapping[str, set[str]]) -> dict[str, Any]:
+    return {"schema_version": 1, "selected_schedule_sha256": admission["selection"]["schedule"]["sha256"],
+            "selected_schedule_source_sha256": admission["selection"]["source"]["sha256"],
+            "TRAIN": sorted(partitions["TRAIN"]), "DEV": sorted(partitions["DEV"])}
 
 
 def _output_preflight(path: Path | str, *protected: Path | str) -> Path:
@@ -138,6 +186,7 @@ def _composite_admission(
     suffix_root: Path | str, expected_plan_sha256: str, expected_public_inputs_sha256: str,
     expected_predecessor_sha256: str, expected_suffix_epoch_sha256: str,
     expected_suffix_source_sha256: str, expected_composer_sha256: str,
+    expected_selected_schedule_sha256: str, expected_selected_schedule_source_sha256: str,
     approved_v4_routes: Mapping[str, Any], approved_v5_routes: Mapping[str, Any],
 ) -> tuple[dict[str, Any], str]:
     result = composer.admit_composite_baseline(
@@ -149,6 +198,8 @@ def _composite_admission(
         expected_suffix_source_sha256=expected_suffix_source_sha256,
         expected_composer_sha256=expected_composer_sha256, approved_v4_routes=dict(approved_v4_routes),
         approved_v5_routes=dict(approved_v5_routes),
+        expected_selected_schedule_sha256=expected_selected_schedule_sha256,
+        expected_selected_schedule_source_sha256=expected_selected_schedule_source_sha256,
     )
     if not isinstance(result, dict) or set(result) != {"composite_admission", "composite_admission_sha256", "provider_calls_made", "execution_authority"}:
         raise ValueError("Composite admission result schema differs")
@@ -156,7 +207,11 @@ def _composite_admission(
     if (not isinstance(admission, dict) or result["provider_calls_made"] != 0 or result["execution_authority"] is not False
             or admission.get("provider_calls_made") != 0 or admission.get("execution_authority") is not False
             or admission.get("promotion_authority") is not False or admission.get("confirmation_authority") is not False
-            or admission.get("counts") != {"passes": 236, "logical": 5428, "native": 5427, "recovered": 1}
+            or admission.get("schema_version") != 2
+            or admission.get("evidence_class") != "composite_v4_recovered70_v5_selected_baseline_admission"
+            or admission.get("counts") != {"passes": 100, "logical": 2300, "native": 2299, "recovered": 1}
+            or admission.get("selection", {}).get("schedule", {}).get("sha256") != expected_selected_schedule_sha256
+            or admission.get("selection", {}).get("source", {}).get("sha256") != expected_selected_schedule_source_sha256
             or admission.get("recovered_ordinals") != [70]
             or admission.get("composer_source_sha256") != expected_composer_sha256
             or _sha(composer._canonical(admission)) != _hash(admission_hash, "Composite admission")):
@@ -275,7 +330,7 @@ def _capture(
         (Path(__file__).resolve(), expected_analysis_sha256, "Composite analysis"),
         (COMPOSER_PATH, expected_composer_sha256, "Composite admission"),
         (WORKFLOW_PATH, expected_workflow_sha256, "Workflow pure helpers"),
-        (OPTIMIZER_PATH if engine_label == "Optimizer" else COMPARISON_PATH, expected_engine_sha256, engine_label),
+        (SELECTED_ENGINE_PATH, expected_engine_sha256, engine_label),
         (RUNTIME_V1_PATH, expected_scoring_runtime_loader_sha256, "v1 scoring runtime loader"),
         (RUNTIME_V5_PATH, expected_v5_runtime_loader_sha256, "v5 scoring runtime loader"),
     )
@@ -324,7 +379,7 @@ def _outer_freeze(
     target_raw: bytes, target_sha256: str, inner_raw: bytes, inner: Mapping[str, Any],
     source_hashes: Mapping[str, str], scoring: Mapping[str, Any],
 ) -> dict[str, Any]:
-    return {"schema_version": 1, "evidence_class": f"composite_{stage.lower()}_outer_freeze_v5", "stage": stage,
+    return {"schema_version": 2, "evidence_class": f"selected100_composite_{stage.lower()}_outer_freeze_v5", "stage": stage,
             "provider_calls": 0, "execution_authority": False, "promotion_authority": False,
             "confirmation_authority": False, "sol_validation": False, "sources": dict(source_hashes),
             "scoring": dict(scoring), "public_partitions": {name: sorted(ids) for name, ids in partitions.items()},
@@ -336,16 +391,34 @@ def _outer_freeze(
 
 def _train_freeze(
     path: Path | str, expected: str, fit_raw: bytes, admission_binding: Mapping[str, Any],
-    scoring_commitment_sha256: str,
+    scoring_commitment_sha256: str, *, expected_train_target_sha256: str,
 ) -> tuple[Path, bytes, dict[str, Any]]:
     checked, raw = _read_pinned(path, expected, "Composite TRAIN freeze")
     value = _strict_json(raw, "Composite TRAIN freeze")
     if (not isinstance(value, dict) or value.get("stage") != "TRAIN"
-            or value.get("evidence_class") != "composite_train_outer_freeze_v5"
+            or value.get("evidence_class") != "selected100_composite_train_outer_freeze_v5"
             or value.get("inner", {}).get("sha256") != _sha(fit_raw)
             or value.get("admission_binding") != admission_binding
             or value.get("scoring", {}).get("commitment_sha256") != scoring_commitment_sha256):
         raise ValueError("Composite TRAIN freeze binding differs")
+    fit = _strict_json(fit_raw, "Frozen selected TRAIN fit")
+    commitments = fit.get("input_commitments") if isinstance(fit, Mapping) else None
+    if (not isinstance(commitments, Mapping)
+            or commitments.get("verdict_rows_sha256") != admission_binding["projected_rows_sha256"]["TRAIN"]):
+        raise ValueError("Composite TRAIN verdict commitment differs from admitted rows")
+    target = value.get("target")
+    projection = value.get("target_projection")
+    if (not isinstance(commitments, Mapping) or not isinstance(target, Mapping)
+            or set(target) != {"partition", "sha256", "bytes"} or target.get("partition") != "TRAIN"
+            or target.get("sha256") != commitments.get("target_rows_sha256")
+            or type(target.get("bytes")) is not int or target["bytes"] <= 0
+            or not isinstance(projection, Mapping)
+            or dict(projection) != {"original_target_sha256": expected_train_target_sha256,
+                                    "original_count": ORIGINAL_COUNTS["TRAIN"],
+                                    "selected_target_sha256": commitments.get("target_rows_sha256"),
+                                    "selected_count": TRAIN_COUNT}):
+        raise ValueError("Composite TRAIN target projection differs from the fitted targets")
+    _hash(target["sha256"], "Frozen selected TRAIN targets")
     return checked, raw, value
 
 
@@ -355,7 +428,8 @@ def fit_composite_train(
     v5_runtime_package_root: Path | str, train_targets_path: Path | str, output_root: Path | str, *,
     expected_plan_sha256: str, expected_public_inputs_sha256: str, expected_predecessor_sha256: str,
     expected_suffix_epoch_sha256: str, expected_suffix_source_sha256: str, expected_analysis_sha256: str,
-    expected_composer_sha256: str, expected_workflow_sha256: str, expected_optimizer_sha256: str,
+    expected_composer_sha256: str, expected_workflow_sha256: str, expected_selected_engine_sha256: str,
+    expected_selected_schedule_sha256: str, expected_selected_schedule_source_sha256: str,
     expected_scoring_runtime_loader_sha256: str,
     expected_v5_runtime_loader_sha256: str, expected_scoring_manifest_sha256: str,
     expected_v5_runtime_manifest_sha256: str, expected_v5_runtime_package_manifest_sha256: str,
@@ -367,7 +441,7 @@ def fit_composite_train(
                                 train_targets_path)
     captured, composer, pure, optimizer, v1_loader, v5_loader = _capture(
         expected_analysis_sha256=expected_analysis_sha256, expected_composer_sha256=expected_composer_sha256,
-        expected_workflow_sha256=expected_workflow_sha256, expected_engine_sha256=expected_optimizer_sha256,
+        expected_workflow_sha256=expected_workflow_sha256, expected_engine_sha256=expected_selected_engine_sha256,
         engine_label="Optimizer",
         expected_scoring_runtime_loader_sha256=expected_scoring_runtime_loader_sha256,
         expected_v5_runtime_loader_sha256=expected_v5_runtime_loader_sha256)
@@ -377,10 +451,12 @@ def fit_composite_train(
         expected_public_inputs_sha256=expected_public_inputs_sha256, expected_predecessor_sha256=expected_predecessor_sha256,
         expected_suffix_epoch_sha256=expected_suffix_epoch_sha256, expected_suffix_source_sha256=expected_suffix_source_sha256,
         expected_composer_sha256=expected_composer_sha256, approved_v4_routes=approved_v4_routes,
-        approved_v5_routes=approved_v5_routes)
-    inputs_path, inputs_raw, partitions = _partitions(public_inputs_path, expected_public_inputs_sha256)
+        approved_v5_routes=approved_v5_routes,
+        expected_selected_schedule_sha256=expected_selected_schedule_sha256,
+        expected_selected_schedule_source_sha256=expected_selected_schedule_source_sha256)
+    inputs_path, inputs_raw, partitions = _partitions(public_inputs_path, expected_public_inputs_sha256, admission)
     captured[inputs_path] = inputs_raw
-    projected, projected_binding = pure._project_rows(admission, partitions)
+    projected, projected_binding = _project_rows(admission, partitions)
     admission_binding = _admission_binding(admission, admission_sha256, projected, projected_binding)
     scoring, scoring_captured = _runtime_parity(
         v1_loader, v5_loader, scoring_manifest_path=scoring_manifest_path,
@@ -391,25 +467,28 @@ def fit_composite_train(
         expected_v5_runtime_package_manifest_sha256=expected_v5_runtime_package_manifest_sha256)
     captured.update(scoring_captured)
     _unchanged(captured)
-    targets_path, target_raw, targets = pure._targets(train_targets_path, pure.TRAIN_TARGETS_SHA256, "TRAIN", partitions["TRAIN"])
+    targets_path, target_raw, targets, target_projection = _selected_targets(
+        pure, train_targets_path, pure.TRAIN_TARGETS_SHA256, "TRAIN", partitions["TRAIN"], inputs_raw)
     captured[targets_path] = target_raw
     _unchanged(captured)
-    fit = optimizer.fit_train(projected["TRAIN"], targets, expected_optimizer_sha256=expected_optimizer_sha256,
+    fit = optimizer.fit_train(projected["TRAIN"], targets, expected_successor_sha256=expected_selected_engine_sha256,
+                              selection_binding=_engine_binding(admission, partitions),
                               baseline_manifest_path=scoring_manifest_path,
                               baseline_manifest_sha256=expected_scoring_manifest_sha256)
-    if not isinstance(fit, dict) or fit.get("evidence_class") != "baseline_source_verified_fit_unadmitted":
-        raise ValueError("Inner TRAIN fit must retain its source-verified unadmitted class")
-    pure._inner_commitments(fit, projected["TRAIN"], targets, pure.TRAIN_TARGETS_SHA256)
+    if not isinstance(fit, dict) or fit.get("evidence_class") != "selected100_amended_fit_unadmitted":
+        raise ValueError("Inner TRAIN fit must retain its selected100 amended unadmitted class")
+    pure._inner_commitments(fit, projected["TRAIN"], targets, target_projection["selected_target_sha256"])
     fit_raw = _canonical(fit)
     _unchanged(captured)
     sources = {"analysis_sha256": expected_analysis_sha256, "composer_sha256": expected_composer_sha256,
-               "workflow_sha256": expected_workflow_sha256, "optimizer_sha256": expected_optimizer_sha256,
+               "workflow_sha256": expected_workflow_sha256, "selected_engine_sha256": expected_selected_engine_sha256,
                "suffix_sha256": expected_suffix_source_sha256,
                "v1_scoring_runtime_loader_sha256": expected_scoring_runtime_loader_sha256,
                "v5_scoring_runtime_loader_sha256": expected_v5_runtime_loader_sha256}
-    freeze = _outer_freeze("TRAIN", admission, admission_binding, partitions=partitions, target_raw=target_raw,
-                           target_sha256=pure.TRAIN_TARGETS_SHA256, inner_raw=fit_raw, inner=fit,
+    freeze = _outer_freeze("TRAIN", admission, admission_binding, partitions=partitions, target_raw=_canonical(targets),
+                           target_sha256=target_projection["selected_target_sha256"], inner_raw=fit_raw, inner=fit,
                            source_hashes=sources, scoring=scoring)
+    freeze["target_projection"] = target_projection
     freeze_raw = _canonical(freeze)
     return {"artifacts": _write(output, {"fit-unadmitted.json": fit_raw, "train-composite-freeze.json": freeze_raw}),
             "freeze": freeze}
@@ -423,7 +502,8 @@ def _compute_composite_dev(
     expected_public_inputs_sha256: str, expected_predecessor_sha256: str,
     expected_suffix_epoch_sha256: str, expected_suffix_source_sha256: str,
     expected_analysis_sha256: str, expected_composer_sha256: str, expected_workflow_sha256: str,
-    expected_comparison_sha256: str,
+    expected_selected_engine_sha256: str,
+    expected_selected_schedule_sha256: str, expected_selected_schedule_source_sha256: str,
     expected_scoring_runtime_loader_sha256: str, expected_v5_runtime_loader_sha256: str,
     expected_scoring_manifest_sha256: str, expected_v5_runtime_manifest_sha256: str,
     expected_v5_runtime_package_manifest_sha256: str, expected_fit_sha256: str,
@@ -433,7 +513,7 @@ def _compute_composite_dev(
     """Compute the source-bound DEV result without writing a stage artifact."""
     captured, composer, pure, comparison, v1_loader, v5_loader = _capture(
         expected_analysis_sha256=expected_analysis_sha256, expected_composer_sha256=expected_composer_sha256,
-        expected_workflow_sha256=expected_workflow_sha256, expected_engine_sha256=expected_comparison_sha256,
+        expected_workflow_sha256=expected_workflow_sha256, expected_engine_sha256=expected_selected_engine_sha256,
         engine_label="Comparison",
         expected_scoring_runtime_loader_sha256=expected_scoring_runtime_loader_sha256,
         expected_v5_runtime_loader_sha256=expected_v5_runtime_loader_sha256)
@@ -443,10 +523,12 @@ def _compute_composite_dev(
         expected_public_inputs_sha256=expected_public_inputs_sha256, expected_predecessor_sha256=expected_predecessor_sha256,
         expected_suffix_epoch_sha256=expected_suffix_epoch_sha256, expected_suffix_source_sha256=expected_suffix_source_sha256,
         expected_composer_sha256=expected_composer_sha256, approved_v4_routes=approved_v4_routes,
-        approved_v5_routes=approved_v5_routes)
-    inputs_path, inputs_raw, partitions = _partitions(public_inputs_path, expected_public_inputs_sha256)
+        approved_v5_routes=approved_v5_routes,
+        expected_selected_schedule_sha256=expected_selected_schedule_sha256,
+        expected_selected_schedule_source_sha256=expected_selected_schedule_source_sha256)
+    inputs_path, inputs_raw, partitions = _partitions(public_inputs_path, expected_public_inputs_sha256, admission)
     captured[inputs_path] = inputs_raw
-    projected, projected_binding = pure._project_rows(admission, partitions)
+    projected, projected_binding = _project_rows(admission, partitions)
     admission_binding = _admission_binding(admission, admission_sha256, projected, projected_binding)
     scoring, scoring_captured = _runtime_parity(
         v1_loader, v5_loader, scoring_manifest_path=scoring_manifest_path,
@@ -459,29 +541,38 @@ def _compute_composite_dev(
     fit_checked, fit_raw = _read_pinned(fit_path, expected_fit_sha256, "Frozen composite TRAIN fit")
     captured[fit_checked] = fit_raw
     train_checked, train_raw, _train = _train_freeze(
-        train_freeze_path, expected_train_freeze_sha256, fit_raw, admission_binding, scoring["commitment_sha256"])
+        train_freeze_path, expected_train_freeze_sha256, fit_raw, admission_binding, scoring["commitment_sha256"],
+        expected_train_target_sha256=pure.TRAIN_TARGETS_SHA256)
     captured[train_checked] = train_raw
     _unchanged(captured)
-    dev_path, dev_raw, targets = pure._targets(dev_targets_path, pure.DEV_TARGETS_SHA256, "DEV", partitions["DEV"])
+    comparison.validate_frozen_fit(
+        fit_raw, expected_fit_sha256=expected_fit_sha256,
+        selection_binding=_engine_binding(admission, partitions), expected_successor_sha256=expected_selected_engine_sha256,
+        baseline_manifest_path=scoring_manifest_path, baseline_manifest_sha256=expected_scoring_manifest_sha256)
+    _unchanged(captured)
+    dev_path, dev_raw, targets, target_projection = _selected_targets(
+        pure, dev_targets_path, pure.DEV_TARGETS_SHA256, "DEV", partitions["DEV"], inputs_raw)
     captured[dev_path] = dev_raw
     _unchanged(captured)
     result = comparison.evaluate_dev(projected["DEV"], targets, fit_raw, expected_fit_sha256=expected_fit_sha256,
-                                     expected_comparison_sha256=expected_comparison_sha256,
+                                     expected_successor_sha256=expected_selected_engine_sha256,
+                                     selection_binding=_engine_binding(admission, partitions),
                                      baseline_manifest_path=scoring_manifest_path,
                                      baseline_manifest_sha256=expected_scoring_manifest_sha256)
-    if not isinstance(result, dict) or result.get("evidence_class") != "baseline_source_verified_dev_comparison_unadmitted":
-        raise ValueError("Inner DEV comparison must retain its source-verified unadmitted class")
-    pure._inner_commitments(result, projected["DEV"], targets, pure.DEV_TARGETS_SHA256)
+    if not isinstance(result, dict) or result.get("evidence_class") != "selected100_amended_dev_comparison_unadmitted":
+        raise ValueError("Inner DEV comparison must retain its selected100 amended unadmitted class")
+    pure._inner_commitments(result, projected["DEV"], targets, target_projection["selected_target_sha256"])
     result_raw = _canonical(result)
     _unchanged(captured)
     sources = {"analysis_sha256": expected_analysis_sha256, "composer_sha256": expected_composer_sha256,
-               "workflow_sha256": expected_workflow_sha256, "comparison_sha256": expected_comparison_sha256,
+               "workflow_sha256": expected_workflow_sha256, "selected_engine_sha256": expected_selected_engine_sha256,
                "suffix_sha256": expected_suffix_source_sha256,
                "v1_scoring_runtime_loader_sha256": expected_scoring_runtime_loader_sha256,
                "v5_scoring_runtime_loader_sha256": expected_v5_runtime_loader_sha256}
-    freeze = _outer_freeze("DEV", admission, admission_binding, partitions=partitions, target_raw=dev_raw,
-                           target_sha256=pure.DEV_TARGETS_SHA256, inner_raw=result_raw, inner=result,
+    freeze = _outer_freeze("DEV", admission, admission_binding, partitions=partitions, target_raw=_canonical(targets),
+                           target_sha256=target_projection["selected_target_sha256"], inner_raw=result_raw, inner=result,
                            source_hashes=sources, scoring=scoring)
+    freeze["target_projection"] = target_projection
     freeze["train"] = {"fit_sha256": expected_fit_sha256, "freeze_sha256": expected_train_freeze_sha256}
     return {"comparison": result, "comparison_raw": result_raw, "freeze": freeze, "captured": captured}
 
@@ -494,7 +585,8 @@ def compare_composite_dev(
     expected_public_inputs_sha256: str, expected_predecessor_sha256: str,
     expected_suffix_epoch_sha256: str, expected_suffix_source_sha256: str,
     expected_analysis_sha256: str, expected_composer_sha256: str, expected_workflow_sha256: str,
-    expected_comparison_sha256: str, expected_scoring_runtime_loader_sha256: str,
+    expected_selected_engine_sha256: str, expected_scoring_runtime_loader_sha256: str,
+    expected_selected_schedule_sha256: str, expected_selected_schedule_source_sha256: str,
     expected_v5_runtime_loader_sha256: str, expected_scoring_manifest_sha256: str,
     expected_v5_runtime_manifest_sha256: str, expected_v5_runtime_package_manifest_sha256: str,
     expected_fit_sha256: str, expected_train_freeze_sha256: str, approved_v4_routes: Mapping[str, Any],
@@ -511,7 +603,9 @@ def compare_composite_dev(
         expected_predecessor_sha256=expected_predecessor_sha256, expected_suffix_epoch_sha256=expected_suffix_epoch_sha256,
         expected_suffix_source_sha256=expected_suffix_source_sha256, expected_analysis_sha256=expected_analysis_sha256,
         expected_composer_sha256=expected_composer_sha256, expected_workflow_sha256=expected_workflow_sha256,
-        expected_comparison_sha256=expected_comparison_sha256,
+        expected_selected_engine_sha256=expected_selected_engine_sha256,
+        expected_selected_schedule_sha256=expected_selected_schedule_sha256,
+        expected_selected_schedule_source_sha256=expected_selected_schedule_source_sha256,
         expected_scoring_runtime_loader_sha256=expected_scoring_runtime_loader_sha256,
         expected_v5_runtime_loader_sha256=expected_v5_runtime_loader_sha256,
         expected_scoring_manifest_sha256=expected_scoring_manifest_sha256,
@@ -534,7 +628,8 @@ def replay_composite_dev(
     expected_plan_sha256: str, expected_public_inputs_sha256: str, expected_predecessor_sha256: str,
     expected_suffix_epoch_sha256: str, expected_suffix_source_sha256: str,
     expected_analysis_sha256: str, expected_composer_sha256: str, expected_workflow_sha256: str,
-    expected_comparison_sha256: str, expected_scoring_runtime_loader_sha256: str,
+    expected_selected_engine_sha256: str, expected_scoring_runtime_loader_sha256: str,
+    expected_selected_schedule_sha256: str, expected_selected_schedule_source_sha256: str,
     expected_v5_runtime_loader_sha256: str, expected_scoring_manifest_sha256: str,
     expected_v5_runtime_manifest_sha256: str, expected_v5_runtime_package_manifest_sha256: str,
     expected_fit_sha256: str, expected_train_freeze_sha256: str,
@@ -561,7 +656,9 @@ def replay_composite_dev(
         expected_predecessor_sha256=expected_predecessor_sha256, expected_suffix_epoch_sha256=expected_suffix_epoch_sha256,
         expected_suffix_source_sha256=expected_suffix_source_sha256, expected_analysis_sha256=expected_analysis_sha256,
         expected_composer_sha256=expected_composer_sha256, expected_workflow_sha256=expected_workflow_sha256,
-        expected_comparison_sha256=expected_comparison_sha256,
+        expected_selected_engine_sha256=expected_selected_engine_sha256,
+        expected_selected_schedule_sha256=expected_selected_schedule_sha256,
+        expected_selected_schedule_source_sha256=expected_selected_schedule_source_sha256,
         expected_scoring_runtime_loader_sha256=expected_scoring_runtime_loader_sha256,
         expected_v5_runtime_loader_sha256=expected_v5_runtime_loader_sha256,
         expected_scoring_manifest_sha256=expected_scoring_manifest_sha256,

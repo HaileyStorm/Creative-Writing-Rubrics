@@ -14,6 +14,7 @@ import pytest
 ROOT = Path(__file__).resolve().parents[1]
 PACKAGE = ROOT / "evaluation-results" / "hbq-human-alignment-dryad-full-hbq-analysis-v1"
 SOURCE = PACKAGE / "baseline_composite_admission_v5.py"
+SCHEDULE_SOURCE = PACKAGE / "baseline_selected_schedule.py"
 
 
 def digest(raw: bytes) -> str:
@@ -26,6 +27,14 @@ def canonical(value: object) -> bytes:
 
 def load():
     spec = importlib.util.spec_from_file_location("dryad_composite_admission_v5_test", SOURCE)
+    assert spec and spec.loader
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def load_schedule(path: Path):
+    spec = importlib.util.spec_from_file_location("dryad_selected_schedule_composite_test", path)
     assert spec and spec.loader
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
@@ -96,14 +105,37 @@ def build_case(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
     question_ids = [f"criterion-{index:03d}" for index in range(178)]
     passes, requests = [], []
     for number in range(1, 237):
-        pass_id = f"baseline8-v1/train/{number:04d}/synthetic-{number:03d}"
+        partition = "TRAIN" if number <= 176 else "DEV"
+        pass_id = f"baseline8-v1/{partition.lower()}/{number:04d}/synthetic-{number:03d}"
         passes.append({
-            "pass_id": pass_id, "logical_sample_id": f"logical-{number:03d}", "opaque_story_id": f"opaque-{number:03d}",
+            "pass_id": pass_id, "partition": partition, "logical_sample_id": f"logical-{number:03d}",
+            "opaque_story_id": f"opaque-{number:03d}",
             "input_path": "inputs/story.txt", "source_sha256": digest(source_raw), "source_bytes": len(source_raw),
         })
-        requests.extend({"ordinal": (number - 1) * 23 + batch, "pass_id": pass_id, "batch_number": batch} for batch in range(1, 24))
+        for batch in range(1, 24):
+            start = (batch - 1) * 8
+            requests.append({
+                "ordinal": (number - 1) * 23 + batch, "pass_id": pass_id, "batch_number": batch,
+                "question_ids": question_ids[start:start + (8 if batch < 23 else 2)],
+            })
     plan_path = plan_root / "plan.json"
-    plan_path.write_bytes(canonical({"passes": passes, "requests": requests, "runtime": {"question_ids": question_ids}}))
+    plan_path.write_bytes(canonical({
+        "dispatch_batch_size": 8, "empirical_batch_cap": None, "passes": passes, "requests": requests,
+        "runtime": {"question_ids": question_ids},
+    }))
+    schedule_source = evidence_root / "selected-schedule-source.py"
+    schedule_source.write_bytes(SCHEDULE_SOURCE.read_bytes())
+    schedule = load_schedule(schedule_source).build_selected_schedule(
+        plan_root=plan_root, expected_plan_sha256=digest(plan_path.read_bytes()),
+        selected_train_ids=[record["pass_id"] for record in passes[:70]],
+        selected_dev_ids=[record["pass_id"] for record in passes[176:206]],
+    )
+    schedule_path = evidence_root / "selected-schedule.json"
+    schedule_path.write_bytes(canonical(schedule))
+    schedule_descriptor = {
+        "path": str(schedule_path), "sha256": digest(schedule_path.read_bytes()), "bytes": len(schedule_path.read_bytes()),
+    }
+    schedule_source_descriptor = {"path": str(schedule_source), "sha256": digest(schedule_source.read_bytes())}
     public = evidence_root / "public-inputs.json"
     public.write_bytes(canonical({"synthetic": "public-inputs"}))
     old_root = evidence_root / "old-execution"
@@ -153,6 +185,10 @@ def build_case(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
             "runtime_manifest": descriptor(evidence_root, "runtime.json", {"kind": "runtime"}),
             "runtime_package": {"root": str(evidence_root), "manifest_sha256": digest(b"package")},
             "old_runtime_manifest": {"path": str(evidence_root / "old-runtime.json"), "sha256": old_runtime_sha},
+            "selected_schedule": schedule_descriptor,
+            "selected_schedule_source": schedule_source_descriptor,
+            "selected_request_ordinals": schedule["selected_request_ordinals"],
+            "remaining_request_ordinals": schedule["grok_remaining_request_ordinals"],
             "old_execution_inventory": {
                 "initialization.json": initialization["sha256"], "cohorts/0008/settlement.json": cohort_settlement["sha256"],
             },
@@ -167,29 +203,41 @@ def build_case(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
     case = SimpleNamespace(
         subject=subject, plan_root=plan_root, suffix_root=suffix_root, public=public, predecessor=predecessor_path,
         predecessor_value=predecessor, passes=passes, question_ids=question_ids, context=context,
-        suffix_source_sha=suffix_source_sha,
+        suffix_source_sha=suffix_source_sha, schedule=schedule, schedule_path=schedule_path,
+        schedule_source=schedule_source,
     )
     case.old_admit, case.suffix_admit = default_old(case), default_suffix(case)
     terminals = [{"ordinal": ordinal, "attempt_start_sha256": digest(f"start-{ordinal}".encode()),
                   "terminal_sha256": digest(f"terminal-{ordinal}".encode()), "review_sha256": digest(b"review")}
-                 for ordinal in range(81, 5429)]
+                 for ordinal in schedule["grok_remaining_request_ordinals"]]
+
+    def terminal_commitments(*_args, **kwargs):
+        assert kwargs["ordinals"] == schedule["grok_remaining_request_ordinals"]
+        return terminals, digest(canonical(terminals)), [{"path": "review", "sha256": digest(b"review"), "bytes": 6}]
+
     monkeypatch.setattr(subject, "_actual_replay_context", lambda **_kwargs: context)
     monkeypatch.setattr(subject, "_actual_old_admit",
                         lambda _context, **kwargs: case.old_admit(pass_record=kwargs["pass_record"]))
     monkeypatch.setattr(subject, "_actual_suffix_admit",
                         lambda _context, **kwargs: case.suffix_admit(pass_id=kwargs["pass_id"]))
-    monkeypatch.setattr(subject, "_terminal_commitments",
-                        lambda *_args, **_kwargs: (terminals, digest(canonical(terminals)), [{"path": "review", "sha256": digest(b"review"), "bytes": 6}]))
+    monkeypatch.setattr(subject, "_terminal_commitments", terminal_commitments)
     return case
 
 
-def compose(case, *, expected_public_inputs_sha256: str | None = None, expected_predecessor_sha256: str | None = None):
+def compose(
+    case, *, expected_public_inputs_sha256: str | None = None, expected_predecessor_sha256: str | None = None,
+    expected_selected_schedule_sha256: str | None = None, expected_selected_schedule_source_sha256: str | None = None,
+):
     return case.subject.admit_composite_baseline(
         plan_root=case.plan_root, public_inputs_path=case.public, predecessor_path=case.predecessor,
         suffix_root=case.suffix_root, expected_plan_sha256=digest((case.plan_root / "plan.json").read_bytes()),
         expected_public_inputs_sha256=expected_public_inputs_sha256 or digest(case.public.read_bytes()),
         expected_predecessor_sha256=expected_predecessor_sha256 or digest(case.predecessor.read_bytes()),
         expected_suffix_epoch_sha256=digest(b"synthetic epoch"), expected_suffix_source_sha256=case.suffix_source_sha,
+        expected_selected_schedule_sha256=expected_selected_schedule_sha256 or digest(case.schedule_path.read_bytes()),
+        expected_selected_schedule_source_sha256=(
+            expected_selected_schedule_source_sha256 or digest(case.schedule_source.read_bytes())
+        ),
         expected_composer_sha256=digest(SOURCE.read_bytes()), approved_v4_routes={"v4": {}}, approved_v5_routes={"v5": {}},
     )
 
@@ -205,17 +253,28 @@ def test_composes_actual_opaque_rows_from_private_pinned_replay_seams(case) -> N
     assert result["provider_calls_made"] == 0 and result["execution_authority"] is False
     assert result["composite_admission_sha256"] == digest(canonical(record))
     assert "composite_admission_sha256" not in record
-    assert record["counts"] == {"passes": 236, "logical": 5428, "native": 5427, "recovered": 1}
+    assert record["schema_version"] == 2
+    assert record["evidence_class"] == "composite_v4_recovered70_v5_selected_baseline_admission"
+    assert record["counts"] == {"passes": 100, "logical": 2300, "native": 2299, "recovered": 1}
     assert record["recovered_ordinals"] == [70]
-    assert len(record["endpoint_grok_rows"]) == len(record["per_pass_replay_commitments"]) == 236
+    selected = [*case.passes[:70], *case.passes[176:206]]
+    assert len(record["endpoint_grok_rows"]) == len(record["per_pass_replay_commitments"]) == 100
     assert [item["opaque_story_id"] for item in record["endpoint_grok_rows"]] == [
-        item["opaque_story_id"] for item in case.passes
+        item["opaque_story_id"] for item in selected
     ]
-    assert all(row["opaque_story_id"] != case.passes[index]["logical_sample_id"]
+    assert all(row["opaque_story_id"] != selected[index]["logical_sample_id"]
                for index, row in enumerate(record["endpoint_grok_rows"]))
-    assert len(record["suffix"]["ordered_terminals"]) == 5348
+    assert len(record["suffix"]["ordered_terminals"]) == 2220
     assert record["suffix"]["ordered_terminals"][0]["ordinal"] == 81
-    assert record["suffix"]["ordered_terminals"][-1]["ordinal"] == 5428
+    assert record["suffix"]["ordered_terminals"][-1]["ordinal"] == 4738
+    assert record["suffix"]["covered_ordinals"] == case.schedule["grok_remaining_request_ordinals"]
+    assert record["suffix"]["covered_ordinals"][record["suffix"]["covered_ordinals"].index(1610) + 1] == 4049
+    assert record["selection"] == {
+        "schedule": {**case.context.epoch["selected_schedule"], "bytes": len(case.schedule_path.read_bytes())},
+        "source": {**case.context.epoch["selected_schedule_source"], "bytes": len(case.schedule_source.read_bytes())},
+        "train_pass_ids": case.schedule["selected_train_ids"], "dev_pass_ids": case.schedule["selected_dev_ids"],
+        "request_ordinals": case.schedule["selected_request_ordinals"],
+    }
     assert record["predecessor"]["prefix_manifest"] == case.context.prefix_manifest
     assert set(record["predecessor"]["original_initialization"]) == {"execution_source_sha256", "route_sha256"}
     assert record["predecessor"]["ledger_head"]["cohort_number"] == 8
@@ -223,10 +282,86 @@ def test_composes_actual_opaque_rows_from_private_pinned_replay_seams(case) -> N
     assert Path(case.predecessor_value["ledger_head"]["path"]).name == "settlement.json"
 
 
+def test_preserves_original_full_plan_geometry_while_admitting_selected_schedule(case) -> None:
+    _plan, _raw, passes, _by_id, questions = case.subject._plan(
+        case.plan_root, digest((case.plan_root / "plan.json").read_bytes()),
+    )
+    assert len(passes) == 236 and len(_plan["requests"]) == 5428 and len(questions) == 178
+    assert compose(case)["composite_admission"]["counts"]["passes"] == 100
+
+
+def test_replays_only_schedule_selected_passes(case) -> None:
+    observed: list[str] = []
+    original = case.suffix_admit
+
+    def tracked(*, pass_id):
+        observed.append(pass_id)
+        return original(pass_id=pass_id)
+
+    case.suffix_admit = tracked
+    compose(case)
+    selected = [item["pass_id"] for item in [*case.passes[:70], *case.passes[176:206]]]
+    assert observed == selected[3:]
+    assert case.passes[70]["pass_id"] not in observed
+    assert case.passes[206]["pass_id"] not in observed
+
+
 def test_public_admission_does_not_accept_replay_callbacks(case) -> None:
     parameters = inspect.signature(case.subject.admit_composite_baseline).parameters
     assert "old_admit_pass" not in parameters
     assert "suffix_admit_pass" not in parameters
+    assert "expected_selected_schedule_sha256" in parameters
+    assert "expected_selected_schedule_source_sha256" in parameters
+
+
+def _replace_schedule(case, value: object) -> str:
+    case.schedule_path.write_bytes(canonical(value))
+    schedule_sha = digest(case.schedule_path.read_bytes())
+    case.context.epoch["selected_schedule"] = {
+        "path": str(case.schedule_path), "sha256": schedule_sha, "bytes": len(case.schedule_path.read_bytes()),
+    }
+    return schedule_sha
+
+
+@pytest.mark.parametrize("kind", ["expected_schedule", "expected_source", "schedule_drift", "source_drift", "missing"])
+def test_rejects_selected_schedule_descriptor_and_source_binding_drift(case, kind: str) -> None:
+    if kind == "expected_schedule":
+        with pytest.raises(ValueError, match="Selected schedule epoch binding"):
+            compose(case, expected_selected_schedule_sha256="0" * 64)
+    elif kind == "expected_source":
+        with pytest.raises(ValueError, match="Selected schedule epoch binding"):
+            compose(case, expected_selected_schedule_source_sha256="0" * 64)
+    elif kind == "schedule_drift":
+        case.schedule_path.write_bytes(case.schedule_path.read_bytes() + b" ")
+        with pytest.raises(ValueError, match="Selected schedule drift"):
+            compose(case)
+    elif kind == "source_drift":
+        case.schedule_source.write_bytes(case.schedule_source.read_bytes() + b"\n")
+        with pytest.raises(ValueError, match="Selected schedule source drift"):
+            compose(case)
+    else:
+        del case.context.epoch["selected_schedule"]
+        with pytest.raises(ValueError, match="Selected schedule descriptor differs"):
+            compose(case)
+
+
+def test_rejects_selected_schedule_descriptor_byte_drift(case) -> None:
+    case.context.epoch["selected_schedule"]["bytes"] += 1
+    with pytest.raises(ValueError, match="Selected schedule bytes differ"):
+        compose(case)
+
+
+@pytest.mark.parametrize("fault", ["duplicate", "order"])
+def test_rejects_duplicate_or_reordered_selected_schedule_ordinals(case, fault: str) -> None:
+    value = json.loads(case.schedule_path.read_bytes())
+    ordinals = value["selected_request_ordinals"]
+    if fault == "duplicate":
+        ordinals[100] = ordinals[99]
+    else:
+        ordinals[100], ordinals[101] = ordinals[101], ordinals[100]
+    schedule_sha = _replace_schedule(case, value)
+    with pytest.raises(ValueError, match="Selected schedule descriptor differs"):
+        compose(case, expected_selected_schedule_sha256=schedule_sha)
 
 
 def test_actual_old_wrapper_forwards_exact_native_result_and_logical_source(case) -> None:
@@ -254,7 +389,7 @@ def test_actual_old_wrapper_forwards_exact_native_result_and_logical_source(case
     )
 
 
-@pytest.mark.parametrize("terminals", [[], [{"ordinal": 81}] * 5348])
+@pytest.mark.parametrize("terminals", [[], [{"ordinal": 81}] * 2220])
 def test_rejects_missing_or_duplicate_suffix_terminal_commitments(case, monkeypatch, terminals) -> None:
     monkeypatch.setattr(
         case.subject,
@@ -265,7 +400,22 @@ def test_rejects_missing_or_duplicate_suffix_terminal_commitments(case, monkeypa
         compose(case)
 
 
-@pytest.mark.parametrize("fault", ["missing", "order", "prefix", "collision", "provisional", "coverage"])
+def test_rejects_selected_train_dev_terminal_boundary_gap(case, monkeypatch) -> None:
+    terminals = [
+        {"ordinal": ordinal, "attempt_start_sha256": digest(f"start-{ordinal}".encode()),
+         "terminal_sha256": digest(f"terminal-{ordinal}".encode()), "review_sha256": digest(b"review")}
+        for ordinal in case.schedule["grok_remaining_request_ordinals"] if ordinal != 4049
+    ]
+    monkeypatch.setattr(
+        case.subject,
+        "_terminal_commitments",
+        lambda *_args, **_kwargs: (terminals, digest(canonical(terminals)), [{"path": "review", "sha256": digest(b"review")}]),
+    )
+    with pytest.raises(ValueError, match="Composite endpoint"):
+        compose(case)
+
+
+@pytest.mark.parametrize("fault", ["missing", "order", "prefix", "collision", "provisional", "coverage", "recovery"])
 def test_rejects_incomplete_ordered_or_unqualified_suffix_replay(case, fault: str) -> None:
     base = default_suffix(case)
 
@@ -283,6 +433,8 @@ def test_rejects_incomplete_ordered_or_unqualified_suffix_replay(case, fault: st
             value["provisional"] = True
         elif fault == "coverage" and pass_id == case.passes[4]["pass_id"]:
             value["coverage"] = 0.5
+        elif fault == "recovery" and pass_id == case.passes[3]["pass_id"]:
+            value["old_recovered70_records"] = 0
         return value
 
     case.suffix_admit = broken

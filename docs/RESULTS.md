@@ -331,6 +331,15 @@ Source-defined novelty and usefulness are separate co-primary targets, with
 all twelve raw axes also reported separately. There is no invented twelve-axis
 human composite or sampled-leaf substitute for the full 178-question rubric.
 
+The [selected-100 collection snapshot](../evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/collection-progress-20260910-v1.json)
+independently replays 1,857 Sol requests and 14,376 verdicts. Ten connection-failed
+requests have no saved answer; one replacement attempt per failed request is
+owner-authorized, with 433 further requests untouched at that snapshot. The
+selected 70/30 analysis path passed 53 focused tests and independent source
+review, including complete synthetic optimization and comparison. No empirical
+alignment fit or comparison has been produced, and the preserved coverage
+rejections remain in force.
+
 The provider-free qualification plan covers 18 passes and 261 requests.
 Governed cohort execution, complete native replay, the fixed 128-trial TRAIN
 optimizer, and conditional DEV comparison are implemented and locally tested.

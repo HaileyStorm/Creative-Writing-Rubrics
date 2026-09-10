@@ -49,29 +49,30 @@ def case(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
     train_target.write_bytes(canonical([{"opaque_story_id": item, "partition": "TRAIN"} for item in sorted(train_ids)]))
     dev_target.write_bytes(canonical([{"opaque_story_id": item, "partition": "DEV"} for item in sorted(dev_ids)]))
     calls: list[str] = []
-    state = {"complete": True, "fit_drift": False, "parity": "parity", "compare_error": None}
-    rows = [{"opaque_story_id": item, "verdicts": [{"question_id": "q", "verdict": "YES"}]}
-            for item in sorted(train_ids | dev_ids)]
+    state = {"complete": True, "fit_drift": False, "parity": "parity", "compare_error": None,
+             "fit_evidence": "selected100_amended_fit_unadmitted",
+             "compare_evidence": "selected100_amended_dev_comparison_unadmitted", "preflight_error": None}
+    selected_train = sorted(train_ids)[:70]
+    selected_dev = sorted(dev_ids)[:30]
+    rows = [{"pass_id": "pass-" + item, "opaque_story_id": item,
+             "verdicts": [{"question_id": "q", "verdict": "YES"}]}
+            for item in selected_train + selected_dev]
 
     def admit_composite_baseline(**kwargs):
         calls.append("admit")
         if not state["complete"]:
             raise ValueError("incomplete composite admission")
         record = {"composer_source_sha256": kwargs["expected_composer_sha256"],
-                  "counts": {"passes": 236, "logical": 5428, "native": 5427, "recovered": 1},
+                  "schema_version": 2, "evidence_class": "composite_v4_recovered70_v5_selected_baseline_admission",
+                  "counts": {"passes": 100, "logical": 2300, "native": 2299, "recovered": 1},
+                  "selection": {"schedule": {"sha256": kwargs["expected_selected_schedule_sha256"]},
+                                "source": {"sha256": kwargs["expected_selected_schedule_source_sha256"]},
+                                "train_pass_ids": ["pass-" + item for item in selected_train],
+                                "dev_pass_ids": ["pass-" + item for item in selected_dev]},
                   "recovered_ordinals": [70], "endpoint_grok_rows": rows, "provider_calls_made": 0,
                   "execution_authority": False, "promotion_authority": False, "confirmation_authority": False}
         return {"composite_admission": record, "composite_admission_sha256": digest(composer_canonical(record)),
                 "provider_calls_made": 0, "execution_authority": False}
-
-    def project(admission, partitions):
-        found = {row["opaque_story_id"] for row in admission["endpoint_grok_rows"]}
-        assert found == partitions["TRAIN"] | partitions["DEV"]
-        projected = {name: sorted(({"opaque_story_id": row["opaque_story_id"], "verdicts": row["verdicts"]}
-                                   for row in admission["endpoint_grok_rows"] if row["opaque_story_id"] in ids),
-                                  key=lambda row: row["opaque_story_id"])
-                     for name, ids in partitions.items()}
-        return projected, {"projected": "synthetic"}
 
     def targets(path, _expected, partition, ids):
         calls.append("targets-" + partition)
@@ -84,36 +85,48 @@ def case(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
                     "target_rows_sha256": digest(subject._canonical(sorted(targets, key=lambda row: row["opaque_story_id"]))) }
         assert inner["input_commitments"] == expected
 
-    pure = SimpleNamespace(_project_rows=project, _targets=targets, _inner_commitments=commitments,
+    pure = SimpleNamespace(_targets=targets, _inner_commitments=commitments,
                            TRAIN_TARGETS_SHA256="a" * 64, DEV_TARGETS_SHA256="b" * 64)
 
     def fit(verdicts, targets, **kwargs):
         calls.append("fit")
-        assert len(verdicts) == len(targets) == 176 and kwargs["expected_optimizer_sha256"] == "3" * 64
+        assert len(verdicts) == len(targets) == 70 and kwargs["expected_successor_sha256"] == "3" * 64
+        assert kwargs["selection_binding"]["TRAIN"] == selected_train
+        assert kwargs["selection_binding"]["DEV"] == selected_dev
         payload = {"verdict_rows_sha256": digest(subject._canonical(verdicts)),
                    "target_rows_sha256": digest(subject._canonical(sorted(targets, key=lambda row: row["opaque_story_id"]))) }
         if state["fit_drift"]:
             payload["verdict_rows_sha256"] = "0" * 64
-        return {"evidence_class": "baseline_source_verified_fit_unadmitted", "input_commitments": payload,
+        return {"evidence_class": state["fit_evidence"], "input_commitments": payload,
                 "trial_count": 128, "trial_records": [], "winner": {}}
 
     def compare(verdicts, targets, fit_raw, **kwargs):
         calls.append("compare")
-        assert len(verdicts) == len(targets) == 60 and json.loads(fit_raw)["trial_count"] == 128
+        assert len(verdicts) == len(targets) == 30 and json.loads(fit_raw)["trial_count"] == 128
+        assert kwargs["selection_binding"]["TRAIN"] == selected_train
+        assert kwargs["selection_binding"]["DEV"] == selected_dev
         if state["compare_error"]:
             raise state["compare_error"]
-        return {"evidence_class": "baseline_source_verified_dev_comparison_unadmitted",
+        return {"evidence_class": state["compare_evidence"],
                 "input_commitments": {"verdict_rows_sha256": digest(subject._canonical(verdicts)),
                                       "target_rows_sha256": digest(subject._canonical(sorted(targets, key=lambda row: row["opaque_story_id"])))}}
 
+    def preflight(fit_raw, **kwargs):
+        calls.append("fit-preflight")
+        assert json.loads(fit_raw)["trial_count"] == 128
+        assert kwargs["selection_binding"]["TRAIN"] == selected_train
+        if state["preflight_error"]:
+            raise state["preflight_error"]
+
     def capture(**kwargs):
-        engine = SimpleNamespace(fit_train=fit) if kwargs["engine_label"] == "Optimizer" else SimpleNamespace(evaluate_dev=compare)
+        engine = (SimpleNamespace(fit_train=fit) if kwargs["engine_label"] == "Optimizer"
+                  else SimpleNamespace(evaluate_dev=compare, validate_frozen_fit=preflight))
         return {}, SimpleNamespace(admit_composite_baseline=admit_composite_baseline, _canonical=composer_canonical), pure, engine, SimpleNamespace(), SimpleNamespace()
 
     monkeypatch.setattr(subject, "_capture", capture)
     monkeypatch.setattr(subject, "_runtime_parity", lambda *_args, **_kwargs: ({"commitment_sha256": state["parity"], "parity": {}}, {}))
     return SimpleNamespace(subject=subject, tmp_path=tmp_path, public=public, train_target=train_target,
-                           dev_target=dev_target, calls=calls, state=state)
+                           dev_target=dev_target, calls=calls, state=state, rows=rows)
 
 
 def kwargs(case, *, comparison: bool = False) -> dict[str, object]:
@@ -122,12 +135,13 @@ def kwargs(case, *, comparison: bool = False) -> dict[str, object]:
         "expected_predecessor_sha256": "2" * 64, "expected_suffix_epoch_sha256": "3" * 64,
         "expected_suffix_source_sha256": "4" * 64, "expected_analysis_sha256": digest(SOURCE.read_bytes()),
         "expected_composer_sha256": "5" * 64, "expected_workflow_sha256": "6" * 64,
+        "expected_selected_engine_sha256": "3" * 64,
+        "expected_selected_schedule_sha256": "e" * 64, "expected_selected_schedule_source_sha256": "f" * 64,
         "expected_scoring_runtime_loader_sha256": "8" * 64,
         "expected_v5_runtime_loader_sha256": "9" * 64, "expected_scoring_manifest_sha256": "a" * 64,
         "expected_v5_runtime_manifest_sha256": "b" * 64, "expected_v5_runtime_package_manifest_sha256": "c" * 64,
         "approved_v4_routes": {}, "approved_v5_routes": {},
     }
-    values["expected_comparison_sha256" if comparison else "expected_optimizer_sha256"] = "d" * 64 if comparison else "3" * 64
     return values
 
 
@@ -171,6 +185,39 @@ def test_train_projects_complete_composite_before_targets_and_binds_provenance(c
     assert set(freeze["admission_binding"]["projected_rows_sha256"]) == {"TRAIN", "DEV"}
     assert freeze["scoring"]["commitment_sha256"] == "parity"
     assert set(result["artifacts"]) == {"fit-unadmitted.json", "train-composite-freeze.json"}
+    assert freeze["target_projection"]["original_count"] == 176
+    assert freeze["target_projection"]["selected_count"] == 70
+    assert freeze["target_projection"]["original_target_sha256"] == "a" * 64
+    assert freeze["target_projection"]["selected_target_sha256"] == freeze["target"]["sha256"]
+    assert len(freeze["public_partitions"]["TRAIN"]) == 70
+    assert len(freeze["public_partitions"]["DEV"]) == 30
+
+
+@pytest.mark.parametrize("fault", ["cross_partition", "duplicate_story", "missing_pass"])
+def test_selected_identity_faults_stop_before_targets(case, fault) -> None:
+    if fault == "cross_partition":
+        case.rows[0]["opaque_story_id"] = "dev-059"
+    elif fault == "duplicate_story":
+        case.rows[0]["opaque_story_id"] = case.rows[1]["opaque_story_id"]
+    else:
+        case.rows[0]["pass_id"] = "outside-selected-schedule"
+    with pytest.raises(ValueError, match="Selected"):
+        fit(case)
+    assert case.calls == ["admit"]
+
+
+def test_rejects_legacy_inner_fit_class(case) -> None:
+    case.state["fit_evidence"] = "baseline_source_verified_fit_unadmitted"
+    with pytest.raises(ValueError, match="selected100 amended"):
+        fit(case)
+
+
+def test_rejects_legacy_inner_dev_class(case) -> None:
+    train = case.tmp_path.parent / (case.tmp_path.name + "-train")
+    fit(case, train)
+    case.state["compare_evidence"] = "baseline_source_verified_dev_comparison_unadmitted"
+    with pytest.raises(ValueError, match="selected100 amended"):
+        compare(case, train)
 
 
 def test_train_rejects_inner_commitment_drift_without_output(case) -> None:
@@ -202,6 +249,49 @@ def test_dev_rejects_fit_byte_drift_before_reading_dev_targets(case) -> None:
     assert case.calls == ["admit", "targets-TRAIN", "fit", "admit"]
 
 
+@pytest.mark.parametrize("field", ["target", "target_projection", "original_target"])
+def test_dev_rejects_train_target_projection_drift_before_dev_targets(case, field) -> None:
+    train = case.tmp_path.parent / (case.tmp_path.name + "-train")
+    fit(case, train)
+    path = train / "train-composite-freeze.json"
+    value = json.loads(path.read_bytes())
+    if field == "target":
+        value["target"]["sha256"] = "0" * 64
+    elif field == "target_projection":
+        value["target_projection"]["selected_target_sha256"] = "1" * 64
+    else:
+        value["target_projection"]["original_target_sha256"] = "2" * 64
+    path.write_bytes(canonical(value))
+    with pytest.raises(ValueError, match="TRAIN target projection"):
+        compare(case, train)
+    assert case.calls == ["admit", "targets-TRAIN", "fit", "admit"]
+
+
+def test_dev_rejects_fit_from_other_verdict_payloads_before_dev_targets(case) -> None:
+    train = case.tmp_path.parent / (case.tmp_path.name + "-train")
+    fit(case, train)
+    fit_path = train / "fit-unadmitted.json"
+    value = json.loads(fit_path.read_bytes())
+    value["input_commitments"]["verdict_rows_sha256"] = "0" * 64
+    fit_path.write_bytes(canonical(value))
+    freeze_path = train / "train-composite-freeze.json"
+    freeze = json.loads(freeze_path.read_bytes())
+    freeze["inner"]["sha256"] = digest(fit_path.read_bytes())
+    freeze_path.write_bytes(canonical(freeze))
+    with pytest.raises(ValueError, match="verdict commitment"):
+        compare(case, train)
+    assert case.calls == ["admit", "targets-TRAIN", "fit", "admit"]
+
+
+def test_semantic_train_fit_preflight_failure_keeps_dev_targets_closed(case) -> None:
+    train = case.tmp_path.parent / (case.tmp_path.name + "-train")
+    fit(case, train)
+    case.state["preflight_error"] = ValueError("frozen trial inventory differs")
+    with pytest.raises(ValueError, match="frozen trial inventory"):
+        compare(case, train)
+    assert case.calls == ["admit", "targets-TRAIN", "fit", "admit", "fit-preflight"]
+
+
 def test_dev_freeze_is_deterministically_bound_and_selects_only_after_compare(case, monkeypatch) -> None:
     train = case.tmp_path.parent / (case.tmp_path.name + "-train")
     fit(case, train)
@@ -209,8 +299,10 @@ def test_dev_freeze_is_deterministically_bound_and_selects_only_after_compare(ca
         now=lambda zone: __import__("datetime").datetime(2026, 9, 9, 6, 1, 2, tzinfo=zone),
     ))
     result = compare(case, train)
-    assert case.calls == ["admit", "targets-TRAIN", "fit", "admit", "targets-DEV", "compare"]
+    assert case.calls == ["admit", "targets-TRAIN", "fit", "admit", "fit-preflight", "targets-DEV", "compare"]
     assert result["freeze"]["selection_frozen_at"] == "2026-09-09T06:01:02Z"
+    assert result["freeze"]["target_projection"]["original_count"] == 60
+    assert result["freeze"]["target_projection"]["selected_count"] == 30
     assert result["freeze"]["train"] == {"fit_sha256": digest((train / "fit-unadmitted.json").read_bytes()),
                                          "freeze_sha256": digest((train / "train-composite-freeze.json").read_bytes())}
     dev_freeze = case.tmp_path.parent / (case.tmp_path.name + "-dev") / "dev-composite-freeze.json"
@@ -237,8 +329,8 @@ def test_replay_reconstructs_existing_dev_bytes_without_writing_or_new_selection
     )
     assert replay["comparison_raw"] == comparison.read_bytes()
     assert replay["freeze_raw"] == freeze.read_bytes()
-    assert case.calls == ["admit", "targets-TRAIN", "fit", "admit", "targets-DEV", "compare",
-                          "admit", "targets-DEV", "compare"]
+    assert case.calls == ["admit", "targets-TRAIN", "fit", "admit", "fit-preflight", "targets-DEV", "compare",
+                          "admit", "fit-preflight", "targets-DEV", "compare"]
 
 
 class _ParityCore:

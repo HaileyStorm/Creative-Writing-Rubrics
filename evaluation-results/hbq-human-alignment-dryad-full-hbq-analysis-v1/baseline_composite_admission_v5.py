@@ -21,10 +21,13 @@ LAST_ORDINAL = 5428
 PASS_COUNT = 236
 QUESTION_COUNT = 178
 LOGICAL_REQUEST_COUNT = 5428
-NATIVE_REQUEST_COUNT = 5427
 RECOVERED_ORDINAL = 70
 PREFIX_NATIVE_COUNT = 79
 HISTORICAL_EXCLUSION_COUNT = 33
+SELECTED_PASS_COUNT = 100
+SELECTED_LOGICAL_REQUEST_COUNT = 2300
+SELECTED_NATIVE_REQUEST_COUNT = 2299
+SELECTED_REMAINING_REQUEST_COUNT = 2220
 _HASH = re.compile(r"[0-9a-f]{64}\Z")
 
 
@@ -114,6 +117,15 @@ def _descriptor(value: Any, label: str) -> dict[str, Any]:
     path = _plain(value.get("path"), directory=False)
     expected = _digest(value.get("sha256"), label)
     raw = _read(path, expected, label)
+    return {"path": str(path), "sha256": expected, "bytes": len(raw)}
+
+
+def _descriptor_with_bytes(value: Any, label: str) -> dict[str, Any]:
+    _require(isinstance(value, Mapping) and set(value) == {"path", "sha256", "bytes"}, f"{label} descriptor differs")
+    path = _plain(value.get("path"), directory=False)
+    expected = _digest(value.get("sha256"), label)
+    raw = _read(path, expected, label)
+    _require(type(value.get("bytes")) is int and value["bytes"] == len(raw), f"{label} bytes differ")
     return {"path": str(path), "sha256": expected, "bytes": len(raw)}
 
 
@@ -407,10 +419,12 @@ def _actual_suffix_admit(context: Any, *, suffix_root: Path, expected_epoch_sha2
     )
 
 
-def _terminal_commitments(context: Any, *, suffix_root: Path, expected_epoch_sha256: str) -> tuple[list[dict[str, Any]], str, list[dict[str, Any]]]:
+def _terminal_commitments(
+    context: Any, *, suffix_root: Path, expected_epoch_sha256: str, ordinals: Sequence[int],
+) -> tuple[list[dict[str, Any]], str, list[dict[str, Any]]]:
     entries: list[dict[str, Any]] = []
     reviews: dict[str, dict[str, Any]] = {}
-    for ordinal in range(FIRST_SUFFIX_ORDINAL, LAST_ORDINAL + 1):
+    for ordinal in ordinals:
         start_path = context.suffix._attempt_path(suffix_root, ordinal, "attempt-start.json")
         terminal_path = context.suffix._attempt_path(suffix_root, ordinal, "terminal.json")
         start_raw = start_path.read_bytes()
@@ -443,6 +457,8 @@ def admit_composite_baseline(
     expected_predecessor_sha256: str,
     expected_suffix_epoch_sha256: str,
     expected_suffix_source_sha256: str,
+    expected_selected_schedule_sha256: str,
+    expected_selected_schedule_source_sha256: str,
     expected_composer_sha256: str,
     approved_v4_routes: Mapping[str, Any],
     approved_v5_routes: Mapping[str, Any],
@@ -459,6 +475,10 @@ def admit_composite_baseline(
     _predecessor_raw, predecessor = _predecessor(predecessor_path, expected_predecessor_sha256)
     expected_suffix_epoch_sha256 = _digest(expected_suffix_epoch_sha256, "Suffix epoch")
     expected_suffix_source_sha256 = _digest(expected_suffix_source_sha256, "Suffix source")
+    expected_selected_schedule_sha256 = _digest(expected_selected_schedule_sha256, "Selected schedule")
+    expected_selected_schedule_source_sha256 = _digest(
+        expected_selected_schedule_source_sha256, "Selected schedule source",
+    )
     context = _actual_replay_context(
         suffix_root=suffix_root, plan_root=plan_root, expected_epoch_sha256=expected_suffix_epoch_sha256,
         expected_suffix_source_sha256=expected_suffix_source_sha256, predecessor=predecessor,
@@ -470,6 +490,38 @@ def admit_composite_baseline(
         and context.prefix_manifest["sha256"] == epoch["old_prefix_manifest"]["sha256"],
         "Actual suffix replay provenance differs",
     )
+    schedule_descriptor = _descriptor_with_bytes(epoch.get("selected_schedule"), "Selected schedule")
+    schedule_source_descriptor = _descriptor(epoch.get("selected_schedule_source"), "Selected schedule source")
+    _require(
+        schedule_descriptor["sha256"] == expected_selected_schedule_sha256
+        and schedule_source_descriptor["sha256"] == expected_selected_schedule_source_sha256,
+        "Selected schedule epoch binding differs",
+    )
+    schedule_module = _load_module(
+        Path(schedule_source_descriptor["path"]), expected_selected_schedule_source_sha256, "Selected schedule source",
+    )
+    verified_selection = schedule_module.verify_selected_schedule(
+        descriptor=_json(_read(Path(schedule_descriptor["path"]), expected_selected_schedule_sha256, "Selected schedule"), "Selected schedule"),
+        plan_root=plan_root,
+        expected_plan_sha256=expected_plan_sha256,
+    )
+    selected_pass_ids = [*verified_selection["selected_train_ids"], *verified_selection["selected_dev_ids"]]
+    selected_records = [_pass_by_id.get(pass_id) for pass_id in selected_pass_ids]
+    selected_request_ordinals = verified_selection["selected_request_ordinals"]
+    remaining_ordinals = verified_selection["grok_remaining_request_ordinals"]
+    _require(
+        len(selected_records) == SELECTED_PASS_COUNT and all(isinstance(item, Mapping) for item in selected_records)
+        and len(set(selected_pass_ids)) == SELECTED_PASS_COUNT
+        and verified_selection["question_ids"] == question_ids
+        and epoch.get("selected_request_ordinals") == selected_request_ordinals
+        and epoch.get("remaining_request_ordinals") == remaining_ordinals
+        and len(selected_request_ordinals) == SELECTED_LOGICAL_REQUEST_COUNT
+        and len(remaining_ordinals) == SELECTED_REMAINING_REQUEST_COUNT
+        and remaining_ordinals[0] == FIRST_SUFFIX_ORDINAL
+        and selected_request_ordinals[:PREFIX_NATIVE_COUNT + 1] == list(range(1, PREFIX_NATIVE_COUNT + 2)),
+        "Selected baseline inventory differs",
+    )
+    selected_records = [dict(item) for item in selected_records]
     initialization, original_initialization, ledger_head = _predecessor_bindings(
         context, predecessor, expected_plan_sha256=expected_plan_sha256,
         expected_public_inputs_sha256=expected_public_inputs_sha256,
@@ -477,6 +529,7 @@ def admit_composite_baseline(
     historical_requests, historical_sessions = _identity_exclusions(predecessor["identity_exclusion"])
     old_specs = context.old_passes
     _require([item["pass_id"] for item in old_specs] == [item["pass_id"] for item in passes[:3]], "Old pass order differs")
+    _require([item["pass_id"] for item in old_specs] == [item["pass_id"] for item in selected_records[:3]], "Selected old pass order differs")
     endpoint_rows: list[dict[str, Any]] = []
     commitments: list[dict[str, Any]] = []
     first_three_native: list[dict[str, str]] = []
@@ -497,7 +550,7 @@ def admit_composite_baseline(
     prefix_context: list[dict[str, str]] | None = None
     new_native: list[dict[str, str]] = []
     recovered_count = 0
-    for index, record in enumerate(passes[3:], start=4):
+    for index, record in enumerate(selected_records[3:], start=4):
         mixed = index == 4
         replay = _actual_suffix_admit(
             context, suffix_root=suffix_root, expected_epoch_sha256=expected_suffix_epoch_sha256, pass_id=record["pass_id"],
@@ -517,33 +570,42 @@ def admit_composite_baseline(
                             "native_records": len(fresh), "recovered_records": 1 if mixed else 0,
                             "provenance": "mixed_v4_recovered70_v5" if mixed else "v5_native"})
     _require(prefix_context is not None and len(prefix_context) == PREFIX_NATIVE_COUNT and len(first_three_native) == 69
-             and len(endpoint_rows) == PASS_COUNT and len(commitments) == PASS_COUNT, "Composite pass replay inventory differs")
+             and len(endpoint_rows) == SELECTED_PASS_COUNT and len(commitments) == SELECTED_PASS_COUNT,
+             "Composite pass replay inventory differs")
     all_native = prefix_context + new_native
-    _require(len(new_native) == NATIVE_REQUEST_COUNT - PREFIX_NATIVE_COUNT and len(all_native) == NATIVE_REQUEST_COUNT
+    _require(len(new_native) == SELECTED_NATIVE_REQUEST_COUNT - PREFIX_NATIVE_COUNT and len(all_native) == SELECTED_NATIVE_REQUEST_COUNT
              and recovered_count == 1, "Composite native/recovered cardinality differs")
     _identity_sets(all_native, historical_requests, historical_sessions)
     terminals, terminal_commitment, reviews = _terminal_commitments(
-        context, suffix_root=suffix_root, expected_epoch_sha256=expected_suffix_epoch_sha256,
+        context, suffix_root=suffix_root, expected_epoch_sha256=expected_suffix_epoch_sha256, ordinals=remaining_ordinals,
     )
     _require(
-        len(terminals) == LAST_ORDINAL - FIRST_SUFFIX_ORDINAL + 1
-        and [item.get("ordinal") for item in terminals] == list(range(FIRST_SUFFIX_ORDINAL, LAST_ORDINAL + 1))
+        len(terminals) == SELECTED_REMAINING_REQUEST_COUNT
+        and [item.get("ordinal") for item in terminals] == remaining_ordinals
         and isinstance(reviews, list) and reviews
         and all(isinstance(item, Mapping) and _HASH.fullmatch(item.get("sha256", "")) for item in reviews)
-        and [row["pass_id"] for row in endpoint_rows] == [record["pass_id"] for record in passes]
-        and [row["opaque_story_id"] for row in endpoint_rows] == [record["opaque_story_id"] for record in passes]
-        and len({row["opaque_story_id"] for row in endpoint_rows}) == PASS_COUNT
+        and [row["pass_id"] for row in endpoint_rows] == [record["pass_id"] for record in selected_records]
+        and [row["opaque_story_id"] for row in endpoint_rows] == [record["opaque_story_id"] for record in selected_records]
+        and len({row["opaque_story_id"] for row in endpoint_rows}) == SELECTED_PASS_COUNT
         and all([item["question_id"] for item in row["verdicts"]] == question_ids for row in endpoint_rows),
         "Composite endpoint rows differ",
     )
     record = {
-        "schema_version": 1,
-        "evidence_class": "composite_v4_recovered70_v5_full_baseline_admission",
+        "schema_version": 2,
+        "evidence_class": "composite_v4_recovered70_v5_selected_baseline_admission",
         "composer_source_sha256": expected_composer_sha256,
         "plan_sha256": expected_plan_sha256,
         "public_inputs_sha256": expected_public_inputs_sha256,
-        "counts": {"passes": PASS_COUNT, "logical": LOGICAL_REQUEST_COUNT, "native": NATIVE_REQUEST_COUNT, "recovered": 1},
+        "counts": {"passes": SELECTED_PASS_COUNT, "logical": SELECTED_LOGICAL_REQUEST_COUNT,
+                   "native": SELECTED_NATIVE_REQUEST_COUNT, "recovered": 1},
         "recovered_ordinals": [RECOVERED_ORDINAL],
+        "selection": {
+            "schedule": schedule_descriptor,
+            "source": schedule_source_descriptor,
+            "train_pass_ids": verified_selection["selected_train_ids"],
+            "dev_pass_ids": verified_selection["selected_dev_ids"],
+            "request_ordinals": selected_request_ordinals,
+        },
         "predecessor": {
             "initialization_sha256": predecessor["initialization"]["sha256"], "initialization": predecessor["initialization"],
             "initialization_record": initialization,
@@ -558,7 +620,7 @@ def admit_composite_baseline(
             "epoch_sha256": expected_suffix_epoch_sha256, "source_sha256": epoch["executor_source"]["sha256"],
             "runtime_manifest_sha256": epoch["runtime_manifest"]["sha256"],
             "runtime_package_manifest_sha256": epoch["runtime_package"]["manifest_sha256"],
-            "covered_ordinals": [FIRST_SUFFIX_ORDINAL, LAST_ORDINAL],
+            "covered_ordinals": remaining_ordinals,
             "ordered_terminal_commitment_sha256": terminal_commitment,
             "ordered_terminals": terminals, "review_bindings": reviews,
         },
