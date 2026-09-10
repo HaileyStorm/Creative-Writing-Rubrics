@@ -1,0 +1,43 @@
+{
+  "schema_version": 2,
+  "snapshot_date": "2026-09-10",
+  "evidence_class": "selected100_collection_delta_with_verified_local_quote_recovery",
+  "predecessor_snapshot": {
+    "file": "collection-progress-20260910-v8.json",
+    "sha256": "506e2335b4728da24843ff5954ba00aa8f339959b0fb768b91aad25aae67357f"
+  },
+  "sol_collection_unchanged_from_predecessor": true,
+  "grok": {
+    "state_at_checkpoint": "local_recovery_verified_continuation_inert_pending_host_gate",
+    "recognized_logical_requests": 261,
+    "recognized_verdicts": 2022,
+    "recognized_native_identities": 259,
+    "non_native_recovery_ordinals": [70, 254],
+    "newly_verified_local_ordinal": 254,
+    "newly_verified_local_verdicts": 8,
+    "local_projection_identity_sha256": "4a6da3744b21f0f0228c08fee6757788d502dbda2a4ad451096fb6a7b1c5a32e",
+    "local_verification_sha256": "b9c83d2339e3274f9454c52b0d03cb3c1fa5f078634c19006997f01b5804a69e",
+    "continuation_controller_sha256": "e33e5c9276cdcdcdf22f4182787fae97d3a9f6315b6ff1dbac66f29148731e7a",
+    "continuation_manifest_sha256": "6cfa8f31d5f99bdcbc47fef96f569594433ccb236b162ad313edf13a7da88a68",
+    "local_recovery_adoption_sha256": "62eb162e148df15dd992e71952cd05a702c018163ec6759cb4ff508743ce1e8c",
+    "independent_actual_local_replay": "passed",
+    "independent_review_record_sha256": "225aad9ea349d3fe3ad2dbc85cef7ae505f91f2828d7aef5740e9bbe25c9b4b2",
+    "original_failed_wave_admitted": false,
+    "new_attempts_authorized_for_254": 0,
+    "next_untouched_ordinal": 262,
+    "untouched_selected_requests": 2039,
+    "full_collection_analysis_integration": "pending_independent_review",
+    "future_complete_collection_accounting": {
+      "logical_requests": 2300,
+      "native_results": 2298,
+      "local_recovery_ordinals": [70, 254]
+    }
+  },
+  "provider_calls_during_local_preparation_and_verification": 0,
+  "coverage_floor": 0.88,
+  "known_sol_coverage_failures_preserved": [19, 42],
+  "coverage_waiver": false,
+  "full_study_admitted": false,
+  "alignment_result": false,
+  "confirmation_opened": false
+}
