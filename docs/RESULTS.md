@@ -340,6 +340,11 @@ review, including complete synthetic optimization and comparison. No empirical
 alignment fit or comparison has been produced, and the preserved coverage
 rejections remain in force.
 
+All [ten authorized replacements subsequently passed independent replay](../evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/selected100-recovery-native-checkpoint-v1.json),
+adding 74 verdicts and establishing at least 1,867 recognized requests and 14,450
+verdicts. Collection then entered the 433 previously untouched requests. The
+original failures and their uncertainty remain preserved.
+
 The provider-free qualification plan covers 18 passes and 261 requests.
 Governed cohort execution, complete native replay, the fixed 128-trial TRAIN
 optimizer, and conditional DEV comparison are implemented and locally tested.
