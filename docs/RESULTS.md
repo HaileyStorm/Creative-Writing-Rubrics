@@ -299,9 +299,9 @@ The later [WPB Grok settlement](https://github.com/HaileyStorm/Creative-Writing-
 records the historical 89 successful cells, one ambiguous terminal cell, and 39
 unstarted cells. The original campaign remains terminal, and the owner
 separately [authorized recovery](../evaluation-results/hbq-human-alignment-wpb-compact-family-native-v1/recovery-authorization-v1.json)
-while preserving that evidence. The [2026-09-09 checkpoint](../evaluation-results/hbq-human-alignment-wpb-compact-family-native-v1/collection-progress-20260909-v2.json)
-recognizes 116 native cells plus one owner-adopted local-session recovery:
-117/129. The v5 runtime resolved the earlier precontact size failure and collected
+while preserving that evidence. The [2026-09-10 checkpoint](../evaluation-results/hbq-human-alignment-wpb-compact-family-native-v1/collection-progress-20260910-v1.json)
+recognizes 116 native cells plus two owner-adopted local-session recoveries:
+118/129. The v5 runtime resolved the earlier precontact size failure and collected
 15 native results. Cell `0918` retains a documented source-equivalent generated-cache
 provenance exception; later `-B` launches preserved the clean source package.
 The [local schema-recovery proposal](../evaluation-results/hbq-human-alignment-wpb-compact-family-native-v1/schema-recovery-proposal-v1.md)
@@ -310,8 +310,8 @@ account for recovered cell `0843`, whose native CLI-envelope binding remains
 missing. Collection subsequently stopped at `1088` on a structured-output
 validation failure. Its retained answer exceeds one evidence-note length limit
 by one character. A separately reviewed projection preserves every score,
-winner and coverage value; adoption is pending and it remains excluded from
-the recognized count. Eleven later cells are uncontacted. There is no confirmed
+winner and coverage value; the owner has [adopted that projection](../evaluation-results/hbq-human-alignment-wpb-compact-family-native-v1/schema-recovery-1088-adoption-v1.json)
+without another model call. Eleven later cells are uncontacted. There is no confirmed
 billing/quota failure. The original evidence remains preserved. Automatic
 resends, subset alignment metrics, and incomplete-campaign fits remain prohibited.
 This coarse family comparison is not a full-HBQ alignment result.
@@ -399,8 +399,9 @@ The [next checkpoint](../evaluation-results/hbq-human-alignment-dryad-full-hbq-a
 records the first wave's stop at request 88, an unknown post-launch wrapper
 failure with no retained complete answer. Nine completed peers passed individual
 native replay, bringing recognized Grok collection to 90 requests and 702
-verdicts; the full wave is not admitted. The gate is revoked, 88 remains
-unaccepted, and no replacement is authorized. Sol collection separately reached
+verdicts; the full wave is not admitted. The owner subsequently
+[approved one unchanged-payload replacement for 88](../evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/grok88-replacement-adoption-v1.json);
+its original unknown outcome remains preserved. Sol collection separately reached
 all 100 selected stories, 2,300 requests and 17,800 verdicts and passed complete
 collection replay. It preserves 26 unknown-process-exit completions and all
 earlier transport/replacement deviations. Stories 19 and 42 still fail the

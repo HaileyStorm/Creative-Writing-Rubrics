@@ -57,17 +57,17 @@ The live release-facing work is narrower than the historical experiment log:
   is a standalone Sol TRAIN result. Grok quota exhaustion left its paired run
   incomplete. The later [WPB collection](docs/RESULTS.md#wpb-terminal-collection)
   originally stopped after 89 successful cells and one ambiguous terminal cell.
-  The [2026-09-09 snapshot](evaluation-results/hbq-human-alignment-wpb-compact-family-native-v1/collection-progress-20260909-v2.json)
-  recognizes 116 native cells plus one owner-adopted local-session schema
-  recovery: 117/129. Cell `0918` completed through the v5 runtime;
+  The [2026-09-10 snapshot](evaluation-results/hbq-human-alignment-wpb-compact-family-native-v1/collection-progress-20260910-v1.json)
+  recognizes 116 native cells plus two owner-adopted local-session schema
+  recoveries: 118/129. Cell `0918` completed through the v5 runtime;
   independent replay passed with a documented source-equivalent generated-cache
   exception. Its earlier uncontacted attempt and the cache-deviation evidence remain
   preserved. The activated `-B` route collected fourteen further native results,
   then stopped on a schema failure at `1088`; eleven later cells remain uncontacted.
   The [local schema repair for `0843` was adopted](evaluation-results/hbq-human-alignment-wpb-compact-family-native-v1/schema-recovery-adoption-v1.json);
-  cell `1088` has a separately reviewed one-character evidence-note correction
-  awaiting adoption. This incomplete collection permits neither subset metrics nor fitting
-  nor automatic resends.
+  the [one-character correction for `1088` is also adopted](evaluation-results/hbq-human-alignment-wpb-compact-family-native-v1/schema-recovery-1088-adoption-v1.json).
+  Its scores, winner and coverage remain unchanged, and no new model call was made.
+  This incomplete collection permits neither subset metrics nor fitting.
 - [Dryad source and full-HBQ preparation](docs/RESULTS.md#dryad-source-and-full-hbq-preparation)
   adds an audited independent corpus and a frozen 176 TRAIN / 60 DEV / 57
   confirmation split. The [owner-adopted 100-story amendment](evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/baseline-budget-amendment-100-v1.json)
@@ -83,8 +83,9 @@ The live release-facing work is narrower than the historical experiment log:
   adopted [non-native recovery for request 70](evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/grok70-quote-repair-adoption-v1.json).
   Request 88 stopped the first ten-request v5 wave after launch, with no retained
   complete answer or trusted provider status. Its nine completed peers passed
-  individual replay, but the failed wave is not admitted. The gate is revoked,
-  2,209 later requests remain untouched, and no replacement is authorized.
+  individual replay, but the failed wave is not admitted. The owner has
+  [approved one replacement for 88](evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/grok88-replacement-adoption-v1.json);
+  2,209 later requests remain untouched pending its successful native replay.
   The [detailed collection history](evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/README.md)
   preserves original failures, authorized replacements, earlier snapshots and
   sequencing amendments. In particular, request 221's transport recovery still
