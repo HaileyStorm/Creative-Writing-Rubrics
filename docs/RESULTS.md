@@ -324,6 +324,10 @@ The selected profile agrees with the preferred answer on 70/105 TRAIN pairs
 multipliers won 9/24 DEV pairs (37.5%). DEV selected between these two profiles,
 so the one-pair difference does not establish independent generalization.
 Sol validation using the frozen multipliers remains pending; confirmation stays closed.
+Its provider-free campaign was created successfully. Live route preflight then
+stopped before any Sol call because the frozen runtime pins an older shared
+Broker source. A separately reviewed compatibility bridge is being implemented;
+the frozen selection and measurement evidence remain unchanged.
 This coarse family comparison is not a full-HBQ alignment result.
 
 ## Dryad source and full-HBQ preparation
@@ -432,6 +436,15 @@ identities plus the separate request-70 recovery. The remaining 2,139 requests
 are outside this completed prefix; later in-flight work is not counted. The
 checkpoint retains every wave replay hash and the renewed route/controller
 bindings. Full collection, coverage admission and analysis remain open.
+
+The [next stopped-and-reconciled checkpoint](../evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/collection-progress-20260910-v6.json)
+records 208 recognized requests, 1,610 verdicts and 207 distinct native identities
+plus request 70. Eleven full waves after WPB passed replay. In wave 202–211,
+seven peers passed individual replay; requests 203, 205 and 211 ended with unknown
+wrapper failures, no retained complete answer and no trusted provider status.
+The shared gate revoked and the supervisor stopped without resending. That
+failed wave is not admitted. The three preserved failures and 2,089 untouched
+requests await the new source-bound continuation; no billing/quota cause is established.
 
 The [sequencing amendment](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/e367e2ea7a26aafb848a8f26471240db070a0b74/evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/sol-sequencing-amendment-proposal-v1.md)
 was [approved by the owner](../evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/sol-sequencing-amendment-v1.json)
