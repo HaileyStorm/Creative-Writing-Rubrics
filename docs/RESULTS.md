@@ -385,8 +385,15 @@ binding. The [contact-51 recovery](../evaluation-results/hbq-human-alignment-dry
 request-70 adoption, original 51/70 attempts, and prior 69 commitments remain
 preserved as historical evidence. The full baseline is incomplete; the owner's
 standing continuation authority remains, but this admission record does not
-authorize a next cohort by itself. No request 81 has started, and terminal
-contacted records are not automatically resent.
+authorize a next cohort by itself. At that snapshot, request 81 had not started;
+terminal contacted records are not automatically resent.
+
+The [subsequent v5 canary](../evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/selected100-grok-v5-canary-v1.json)
+completed request 81 and passed native replay against all 79 protected native
+identities. Its eight verdicts bring the recognized prefix to 81 requests and
+630 verdicts, with adopted request 70 still separately classified. Reviewed
+ten-request waves have started for the selected 100-story schedule. This is
+collection evidence; no full-study admission or alignment result is claimed.
 
 The [sequencing amendment](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/e367e2ea7a26aafb848a8f26471240db070a0b74/evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/sol-sequencing-amendment-proposal-v1.md)
 was [approved by the owner](../evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/sol-sequencing-amendment-v1.json)
