@@ -57,17 +57,19 @@ The live release-facing work is narrower than the historical experiment log:
   is a standalone Sol TRAIN result. Grok quota exhaustion left its paired run
   incomplete. The later [WPB collection](docs/RESULTS.md#wpb-terminal-collection)
   originally stopped after 89 successful cells and one ambiguous terminal cell.
-  The [2026-09-10 snapshot](evaluation-results/hbq-human-alignment-wpb-compact-family-native-v1/collection-progress-20260910-v1.json)
-  recognizes 116 native cells plus two owner-adopted local-session schema
-  recoveries: 118/129. Cell `0918` completed through the v5 runtime;
+  The [2026-09-10 snapshot](evaluation-results/hbq-human-alignment-wpb-compact-family-native-v1/collection-progress-20260910-v2.json)
+  recognizes 127 native cells plus two owner-adopted local-session schema
+  recoveries: **129/129**. Cell `0918` completed through the v5 runtime;
   independent replay passed with a documented source-equivalent generated-cache
   exception. Its earlier uncontacted attempt and the cache-deviation evidence remain
   preserved. The activated `-B` route collected fourteen further native results,
-  then stopped on a schema failure at `1088`; eleven later cells remain uncontacted.
+  then stopped on a schema failure at `1088`; the eleven later cells have now
+  completed native admission and replay.
   The [local schema repair for `0843` was adopted](evaluation-results/hbq-human-alignment-wpb-compact-family-native-v1/schema-recovery-adoption-v1.json);
   the [one-character correction for `1088` is also adopted](evaluation-results/hbq-human-alignment-wpb-compact-family-native-v1/schema-recovery-1088-adoption-v1.json).
   Its scores, winner and coverage remain unchanged, and no new model call was made.
-  This incomplete collection permits neither subset metrics nor fitting.
+  The complete mixed collection is undergoing full replay and selection freezing;
+  subsequent Sol validation remains pending.
 - [Dryad source and full-HBQ preparation](docs/RESULTS.md#dryad-source-and-full-hbq-preparation)
   adds an audited independent corpus and a frozen 176 TRAIN / 60 DEV / 57
   confirmation split. The [owner-adopted 100-story amendment](evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/baseline-budget-amendment-100-v1.json)

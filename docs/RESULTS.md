@@ -299,10 +299,10 @@ The later [WPB Grok settlement](https://github.com/HaileyStorm/Creative-Writing-
 records the historical 89 successful cells, one ambiguous terminal cell, and 39
 unstarted cells. The original campaign remains terminal, and the owner
 separately [authorized recovery](../evaluation-results/hbq-human-alignment-wpb-compact-family-native-v1/recovery-authorization-v1.json)
-while preserving that evidence. The [2026-09-10 checkpoint](../evaluation-results/hbq-human-alignment-wpb-compact-family-native-v1/collection-progress-20260910-v1.json)
-recognizes 116 native cells plus two owner-adopted local-session recoveries:
-118/129. The v5 runtime resolved the earlier precontact size failure and collected
-15 native results. Cell `0918` retains a documented source-equivalent generated-cache
+while preserving that evidence. The [2026-09-10 checkpoint](../evaluation-results/hbq-human-alignment-wpb-compact-family-native-v1/collection-progress-20260910-v2.json)
+recognizes 127 native cells plus two owner-adopted local-session recoveries:
+**129/129**. The v5 runtime resolved the earlier precontact size failure and collected
+26 native results. Cell `0918` retains a documented source-equivalent generated-cache
 provenance exception; later `-B` launches preserved the clean source package.
 The [local schema-recovery proposal](../evaluation-results/hbq-human-alignment-wpb-compact-family-native-v1/schema-recovery-proposal-v1.md)
 and [adopted projection](../evaluation-results/hbq-human-alignment-wpb-compact-family-native-v1/schema-recovery-adoption-v1.json)
@@ -311,9 +311,11 @@ missing. Collection subsequently stopped at `1088` on a structured-output
 validation failure. Its retained answer exceeds one evidence-note length limit
 by one character. A separately reviewed projection preserves every score,
 winner and coverage value; the owner has [adopted that projection](../evaluation-results/hbq-human-alignment-wpb-compact-family-native-v1/schema-recovery-1088-adoption-v1.json)
-without another model call. Eleven later cells are uncontacted. There is no confirmed
+without another model call. All eleven later cells completed native admission and
+replay. There is no confirmed
 billing/quota failure. The original evidence remains preserved. Automatic
 resends, subset alignment metrics, and incomplete-campaign fits remain prohibited.
+Full combined replay and selection freezing are in progress; Sol validation remains pending.
 This coarse family comparison is not a full-HBQ alignment result.
 
 ## Dryad source and full-HBQ preparation
