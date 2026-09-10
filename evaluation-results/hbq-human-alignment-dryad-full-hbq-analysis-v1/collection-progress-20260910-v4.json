@@ -1,0 +1,107 @@
+{
+  "schema_version": 1,
+  "snapshot_date": "2026-09-10",
+  "evidence_class": "selected100_collection_progress_with_preserved_failures",
+  "selected_request_target_per_endpoint": 2300,
+  "selected_verdict_target_per_endpoint": 17800,
+  "sol": {
+    "state_at_checkpoint": "complete_collection_replayed",
+    "recognized_requests": 2300,
+    "recognized_verdicts": 17800,
+    "distinct_local_thread_identities": 2300,
+    "selected_stories": 100,
+    "selected_train_stories": 70,
+    "selected_dev_stories": 30,
+    "complete_collection_replay_sha256": "fc70eb43be0608e787eeb877b0d42bb81cc08efe47646c8759f69c5f3c57613f",
+    "collection_result_sha256": "bbc48b02e2ed17977bd3c8b2900aa58656484dbd5503a3116c8f96905383d140",
+    "composer_sha256": "e3430d8808f3b6a36f9d421efc40db1d550a40fb34e7666c2b5fb020becbe715",
+    "first_ten_replayed_ordinals": [
+      4507,
+      4508,
+      4509,
+      4510,
+      4511,
+      4512,
+      4513,
+      4514,
+      4515,
+      4516
+    ],
+    "first_ten_replayed_verdicts": 74,
+    "inherited_unknown_exit_messages": 17,
+    "new_unknown_exit_ordinals": [
+      4525,
+      4527,
+      4528,
+      4529,
+      4530,
+      4531,
+      4532,
+      4533,
+      4534
+    ],
+    "total_unknown_exit_messages": 26,
+    "unknown_exit_process_success_proven": false,
+    "stories_meeting_coverage_floor": 98,
+    "stories_below_coverage_floor": 2,
+    "first_ten_native_replay_sha256": "0cd35c3d6fb24a7cc181e312733ca47e7a0a7aae33cf0c93a2ed943f3c03ea9d",
+    "campaign_manifest_sha256": "66d4f52f7b8ed19fd7ce805cb937eec4f30ff887be8cf7d32624fad0a190f5f6",
+    "controller_sha256": "244c8b02e313b19bad75de3dc26156af8c9af1eab14cd1af5679c6f13273c155",
+    "precontact_failure_reconciliation_sha256": "9e9e8fd23c00c4c7e4b1cf66e435543ff9a8a8fdfc2552b045510e12165f9345",
+    "prior_ten_setup_failures_had_model_contacts": false,
+    "prior_setup_records_preserved": true,
+    "failed_model_requests_automatically_resent": false,
+    "focused_collector_and_composer_tests_passed": 27
+  },
+  "grok": {
+    "state_at_checkpoint": "replacement88_replayed_before_untouched_continuation",
+    "recognized_requests": 91,
+    "recognized_verdicts": 710,
+    "recognized_native_identities": 90,
+    "adopted_non_native_recovery_ordinals": [
+      70
+    ],
+    "partial_wave_replay_sha256": "ace8d594f0faf58e6557e0f49e923e3a24252818c3f2b96943f4d1ea5a71723e",
+    "original_failed_wave_admitted": false,
+    "original_failed_88": {
+      "category": "unknown",
+      "code": "unclassified_after_launch",
+      "type": "GrokBuildWrapperFailure",
+      "trusted_provider_status": null,
+      "retained_complete_answer": false,
+      "terminal_sha256": "de49fd9eca7a03d2f254e53573c00354d2b3e40a503dce2080095837ded7f765"
+    },
+    "replacement88": {
+      "attempt_count": 1,
+      "unchanged_prompt_and_schema": true,
+      "native_replay": "PASS",
+      "native_identity": {
+        "request_id_hash": "26d1ecac946e716c591554460d45e367dd1ba057c0196ea0bc431d736ff7150d",
+        "session_id_hash": "d60f5265d9e383b5af25027d6832956c41b2e72aa9a0b203657340d23b781a90"
+      },
+      "dispatch_result_sha256": "77fa185ca7aa3ba5a771c252685eb03fdcc3b1ae6890ec52cd2b64698a23f87a",
+      "replay_sha256": "6077ff775f506380ec98a6947edc14f8adfa639c197c35097c48ad60256a3a86",
+      "terminal_sha256": "19109f0882a34c5cf672900ad023f9dc27d21ab04316663a1fe71c909902029b",
+      "controller_authorization_sha256": "2253279dbfe92dce465dfe4a97a1b3a88337d8e1ab8aaf762a115aa81d684da5",
+      "adoption_sha256": "7161849332a0c466cdc40c4ce60f36753300c8cae41dceb0636e671ff89c5993",
+      "recovery_manifest_sha256": "4318e41151a3939a56d5bdec52fa8a6445f93d6ed00aaf80148c4edc7fc06782",
+      "controller_sha256": "687a60bcdd26227b3bcb6ae5081f3357bceb84b4b29312653617ef3d36887399"
+    },
+    "remaining_logical_requests": 2209,
+    "untouched_requests": 2209,
+    "next_untouched_original_ordinal": 92
+  },
+  "provider_calls_during_replays": 0,
+  "coverage_floor": 0.88,
+  "known_sol_coverage_failures_preserved": [
+    19,
+    42
+  ],
+  "full_study_admitted": false,
+  "alignment_result": false,
+  "confirmation_opened": false,
+  "wpb1088_adoption_decision_pending": false,
+  "wpb1088_resent": false,
+  "predecessor_snapshot_sha256": "bbabb886b6e60982fc0007efae6a346d1708b5a1e8da4a165bb8c35dfff275c7",
+  "wpb1088_adoption_sha256": "94fd6977227bd6ed14d48c6d12539d65fe9df576b0f4ec3c478a283683a51b1a"
+}

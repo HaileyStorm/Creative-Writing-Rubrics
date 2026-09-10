@@ -74,18 +74,19 @@ The live release-facing work is narrower than the historical experiment log:
   now selects 70 TRAIN and 30 DEV stories, with all 178 criteria retained and
   2,300 baseline requests per model. It preserves the original plan and follows
   partial model observation; the 57 confirmation stories remain closed.
-  The [2026-09-10 collection checkpoint](evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/collection-progress-20260910-v3.json)
+  The [2026-09-10 collection checkpoint](evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/collection-progress-20260910-v4.json)
   records complete Sol collection replay: 100 stories, 2,300 requests and 17,800
   verdicts, retaining 26 complete messages with unknown process exits. Stories
   19 and 42 have coverage 0.8607 and 0.8648, below the unchanged 0.88 floor;
   no stories were filtered out, and full-study admission remains blocked.
-  Grok recognizes 90 requests and 702 verdicts: 89 native identities plus the
+  Grok recognizes 91 requests and 710 verdicts: 90 native identities plus the
   adopted [non-native recovery for request 70](evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/grok70-quote-repair-adoption-v1.json).
   Request 88 stopped the first ten-request v5 wave after launch, with no retained
   complete answer or trusted provider status. Its nine completed peers passed
-  individual replay, but the failed wave is not admitted. The owner has
-  [approved one replacement for 88](evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/grok88-replacement-adoption-v1.json);
-  2,209 later requests remain untouched pending its successful native replay.
+  individual replay, but the failed wave is not admitted. The
+  [approved replacement for 88](evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/grok88-replacement-adoption-v1.json)
+  completed on one new attempt and passed native replay with unchanged prompt
+  and schema. Its original failure remains preserved; 2,209 requests remain untouched.
   The [detailed collection history](evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/README.md)
   preserves original failures, authorized replacements, earlier snapshots and
   sequencing amendments. In particular, request 221's transport recovery still

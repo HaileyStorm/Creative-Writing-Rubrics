@@ -408,6 +408,13 @@ earlier transport/replacement deviations. Stories 19 and 42 still fail the
 unchanged coverage floor; full-study admission and comparative analysis remain
 blocked.
 
+The [replacement checkpoint](../evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/collection-progress-20260910-v4.json)
+records one new request-88 attempt with its exact original prompt and schema.
+It passed native replay, bringing Grok to 91 recognized requests, 710 verdicts
+and 90 native identities plus the separate request-70 recovery. The original
+failed attempt remains unchanged. The remaining 2,209 requests begin at 92;
+this checkpoint grants no full-study admission or alignment result.
+
 The [sequencing amendment](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/e367e2ea7a26aafb848a8f26471240db070a0b74/evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/sol-sequencing-amendment-proposal-v1.md)
 was [approved by the owner](../evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/sol-sequencing-amendment-v1.json)
 after partial Sol observation. It preserves the first 120 requests, which remain
