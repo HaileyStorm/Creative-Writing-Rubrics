@@ -272,4 +272,5 @@ def read_selected_collection(
                                   "recovery_manifest_sha256": expected_recovery_manifest_sha256,
                                   "recovery_inner_epoch_sha256": manifest["inner_epoch"]["sha256"]},
             "coverage_failures": coverage_failures, "full_study_admitted": False, "provider_calls_made": 0,
+            "native_identities": all_identities,
             "native_identity_commitment_sha256": _sha(_canonical(all_identities)), "rows": rows}

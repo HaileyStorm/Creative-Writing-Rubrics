@@ -200,6 +200,8 @@ def test_full_synthetic_orchestration_routes_cross_root_collection(monkeypatch: 
     assert result["counts"] == {"stories": 100, "logical_requests": 2300, "native_requests": 2299,
                                 "study_recovered_requests": 1, "criterion_verdicts": 17800}
     assert len(result["rows"]) == 100 and result["coverage_failures"] == [row["pass_id"] for row in result["rows"]]
+    assert result["native_identities"] == [identity(ordinal) for ordinal in range(1, 1611) if ordinal != 70] + [identity(ordinal) for ordinal in range(4049, 4739)]
+    assert result["native_identity_commitment_sha256"] == sha(value._canonical(result["native_identities"]))
     assert result["full_study_admitted"] is False and result["provider_calls_made"] == 0
     roots = dict(calls)
     assert roots[81] == old_root and roots[88] == new_root and roots[92] == new_root
