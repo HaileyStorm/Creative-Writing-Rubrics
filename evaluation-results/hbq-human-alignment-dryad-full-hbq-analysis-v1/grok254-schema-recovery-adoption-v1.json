@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "kind": "dryad254_local_session_quote_projection_adoption",
+  "decision": "adopt_exact_independently_reviewed_local_schema_projection",
+  "ordinal": 254,
+  "proposal_sha256": "a00f74e15c7acf2904e3b5ce859b086dd9d3bf254051f576b99261ff1393c650",
+  "independent_projection_review_sha256": "516e3d197bdaa6b65b62e26726eaa7b91af2f669b66b45792e0251c43640d221",
+  "standing_authority_provenance_sha256": "58c76458cac9285e5be9c766ba62ea393198687ac660bf963c58a9cdcdf11e9e",
+  "authority_basis": "Applies the owner's 2026-09-10 standing instruction for analogous bounded recovery; no new direct user decision is claimed.",
+  "original_message_sha256": "f1c8357431193805c0e54e3ec7b2c19dab707871d32e093e89b5e79a718f10ff",
+  "projected_message_sha256": "0ae9213b33a51315f082f9091fe40601f21efbdc32475d8010956d9cd8ee716b",
+  "projection": "Retain the first 500 characters of verdicts[3].evidence[0].exact_quote, originally 579 characters; preserve every other value.",
+  "original_quote_equals_frozen_source": true,
+  "all_eight_verdicts_and_question_ids_unchanged": true,
+  "original_failed_attempt_preserved": true,
+  "evidence_class": "owner_adopted_local_session_schema_recovery",
+  "ordinary_native_admission": false,
+  "new_provider_attempts_authorized": 0,
+  "full_collection_accounting": {
+    "logical_requests": 2300,
+    "native_results": 2298,
+    "local_recovery_ordinals": [70, 254]
+  },
+  "coverage_floor": 0.88,
+  "coverage_waiver": false,
+  "full_original_study_admitted": false
+}

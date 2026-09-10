@@ -1,0 +1,52 @@
+{
+  "schema_version": 2,
+  "snapshot_date": "2026-09-10",
+  "evidence_class": "selected100_collection_delta_with_adopted_local_quote_recovery",
+  "predecessor_snapshot": {
+    "file": "collection-progress-20260910-v7.json",
+    "sha256": "db8c1c3ee534a5533057f2171022d2ecc9902445feb5a4958f3be2619298c8d3"
+  },
+  "sol_collection_unchanged_from_predecessor": true,
+  "grok": {
+    "state_at_checkpoint": "stopped_after_retained_schema_failure_254",
+    "recognized_requests_before_254_materialization": 260,
+    "recognized_verdicts_before_254_materialization": 2014,
+    "recognized_native_identities": 259,
+    "previously_admitted_non_native_recovery_ordinals": [70],
+    "newly_adopted_local_schema_recovery_ordinal": 254,
+    "new_local_recovery_integration_complete": false,
+    "failed_wave_ordinals": [252, 253, 254, 255, 256, 257, 258, 259, 260, 261],
+    "successful_peers_individually_replayed": [252, 253, 255, 256, 257, 258, 259, 260, 261],
+    "failed_wave_admitted": false,
+    "partial_peer_replay_sha256": "889429a738d3b7724abc7652518d5fab46041b5db4db1c4fb3ae9db85752a1e2",
+    "supervisor_result_sha256": "58db603b054fdd49b5578eec1502ab6560ae5073163af92ba05768b22898f624",
+    "failed_terminal_sha256": "2809b0b47d96ff8c01c99b8895b13aceec872a0c73fc9c0ed8700da672b1268a",
+    "failure": {
+      "category": "validation_error",
+      "code": "validation_structured_output_error",
+      "type": "GrokBuildValidationFailure",
+      "trusted_provider_status": null,
+      "retained_local_answer": true,
+      "retained_native_cli_envelope": false,
+      "process_exit_code": null
+    },
+    "local_recovery_proposal_sha256": "a00f74e15c7acf2904e3b5ce859b086dd9d3bf254051f576b99261ff1393c650",
+    "local_recovery_adoption_sha256": "62eb162e148df15dd992e71952cd05a702c018163ec6759cb4ff508743ce1e8c",
+    "projection": "Shorten one exact quotation from 579 to its first 500 characters; preserve all eight verdicts and every other value.",
+    "new_attempts_authorized_for_254": 0,
+    "next_untouched_ordinal": 262,
+    "untouched_selected_requests": 2039,
+    "future_complete_collection_accounting": {
+      "logical_requests": 2300,
+      "native_results": 2298,
+      "local_recovery_ordinals": [70, 254]
+    }
+  },
+  "provider_calls_during_reconciliation": 0,
+  "coverage_floor": 0.88,
+  "known_sol_coverage_failures_preserved": [19, 42],
+  "coverage_waiver": false,
+  "full_study_admitted": false,
+  "alignment_result": false,
+  "confirmation_opened": false
+}
