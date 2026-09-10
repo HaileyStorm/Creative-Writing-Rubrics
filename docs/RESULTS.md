@@ -315,7 +315,15 @@ without another model call. All eleven later cells completed native admission an
 replay. There is no confirmed
 billing/quota failure. The original evidence remains preserved. Automatic
 resends, subset alignment metrics, and incomplete-campaign fits remain prohibited.
-Full combined replay and selection freezing are in progress; Sol validation remains pending.
+The [complete mixed selection freeze](../evaluation-results/hbq-human-alignment-wpb-compact-family-native-v1/grok-selection-summary-v1.json)
+was recorded at `2026-09-10T16:45:43Z`, after full input replay, the fixed 128-trial
+TRAIN fit, and a second input-stability check. Independent replay reproduced the
+same measurements and complete fit.
+The selected profile agrees with the preferred answer on 70/105 TRAIN pairs
+(66.7%) and 10/24 DEV pairs (41.7%). DEV had 13 losses and one tie. Equal
+multipliers won 9/24 DEV pairs (37.5%). DEV selected between these two profiles,
+so the one-pair difference does not establish independent generalization.
+Sol validation using the frozen multipliers remains pending; confirmation stays closed.
 This coarse family comparison is not a full-HBQ alignment result.
 
 ## Dryad source and full-HBQ preparation
@@ -416,6 +424,14 @@ It passed native replay, bringing Grok to 91 recognized requests, 710 verdicts
 and 90 native identities plus the separate request-70 recovery. The original
 failed attempt remains unchanged. The remaining 2,209 requests begin at 92;
 this checkpoint grants no full-study admission or alignment result.
+
+The [post-WPB continuation checkpoint](../evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/collection-progress-20260910-v5.json)
+adds seven native ten-request waves, each followed by source-bound replay. Grok
+has 161 recognized requests, 1,246 criterion verdicts and 160 distinct native
+identities plus the separate request-70 recovery. The remaining 2,139 requests
+are outside this completed prefix; later in-flight work is not counted. The
+checkpoint retains every wave replay hash and the renewed route/controller
+bindings. Full collection, coverage admission and analysis remain open.
 
 The [sequencing amendment](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/e367e2ea7a26aafb848a8f26471240db070a0b74/evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/sol-sequencing-amendment-proposal-v1.md)
 was [approved by the owner](../evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/sol-sequencing-amendment-v1.json)

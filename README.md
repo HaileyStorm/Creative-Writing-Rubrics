@@ -68,27 +68,30 @@ The live release-facing work is narrower than the historical experiment log:
   The [local schema repair for `0843` was adopted](evaluation-results/hbq-human-alignment-wpb-compact-family-native-v1/schema-recovery-adoption-v1.json);
   the [one-character correction for `1088` is also adopted](evaluation-results/hbq-human-alignment-wpb-compact-family-native-v1/schema-recovery-1088-adoption-v1.json).
   Its scores, winner and coverage remain unchanged, and no new model call was made.
-  The complete mixed collection is undergoing full replay and selection freezing;
-  subsequent Sol validation remains pending.
+  The [complete mixed collection has a frozen selection](evaluation-results/hbq-human-alignment-wpb-compact-family-native-v1/grok-selection-summary-v1.json).
+  Its trained profile wins 10/24 DEV pairs (41.7%), versus 9/24 (37.5%) with
+  equal multipliers. DEV selected the profile; it is not independent confirmation.
+  Independent replay passed; subsequent Sol validation remains pending.
 - [Dryad source and full-HBQ preparation](docs/RESULTS.md#dryad-source-and-full-hbq-preparation)
   adds an audited independent corpus and a frozen 176 TRAIN / 60 DEV / 57
   confirmation split. The [owner-adopted 100-story amendment](evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/baseline-budget-amendment-100-v1.json)
   now selects 70 TRAIN and 30 DEV stories, with all 178 criteria retained and
   2,300 baseline requests per model. It preserves the original plan and follows
   partial model observation; the 57 confirmation stories remain closed.
-  The [2026-09-10 collection checkpoint](evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/collection-progress-20260910-v4.json)
+  The [2026-09-10 collection checkpoint](evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/collection-progress-20260910-v5.json)
   records complete Sol collection replay: 100 stories, 2,300 requests and 17,800
   verdicts, retaining 26 complete messages with unknown process exits. Stories
   19 and 42 have coverage 0.8607 and 0.8648, below the unchanged 0.88 floor;
   no stories were filtered out, and full-study admission remains blocked.
-  Grok recognizes 91 requests and 710 verdicts: 90 native identities plus the
+  Grok recognizes 161 requests and 1,246 verdicts: 160 native identities plus the
   adopted [non-native recovery for request 70](evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/grok70-quote-repair-adoption-v1.json).
   Request 88 stopped the first ten-request v5 wave after launch, with no retained
   complete answer or trusted provider status. Its nine completed peers passed
   individual replay, but the failed wave is not admitted. The
   [approved replacement for 88](evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/grok88-replacement-adoption-v1.json)
   completed on one new attempt and passed native replay with unchanged prompt
-  and schema. Its original failure remains preserved; 2,209 requests remain untouched.
+  and schema. Its original failure remains preserved. Seven subsequent ten-request
+  waves passed replay; 2,139 requests remain outside this completed prefix.
   The [detailed collection history](evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/README.md)
   preserves original failures, authorized replacements, earlier snapshots and
   sequencing amendments. In particular, request 221's transport recovery still

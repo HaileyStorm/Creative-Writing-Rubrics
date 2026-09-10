@@ -1,0 +1,225 @@
+{
+  "schema_version": 1,
+  "snapshot_date": "2026-09-10",
+  "evidence_class": "selected100_collection_progress_with_preserved_failures",
+  "selected_request_target_per_endpoint": 2300,
+  "selected_verdict_target_per_endpoint": 17800,
+  "sol": {
+    "state_at_checkpoint": "complete_collection_replayed",
+    "recognized_requests": 2300,
+    "recognized_verdicts": 17800,
+    "distinct_local_thread_identities": 2300,
+    "selected_stories": 100,
+    "selected_train_stories": 70,
+    "selected_dev_stories": 30,
+    "complete_collection_replay_sha256": "fc70eb43be0608e787eeb877b0d42bb81cc08efe47646c8759f69c5f3c57613f",
+    "collection_result_sha256": "bbc48b02e2ed17977bd3c8b2900aa58656484dbd5503a3116c8f96905383d140",
+    "composer_sha256": "e3430d8808f3b6a36f9d421efc40db1d550a40fb34e7666c2b5fb020becbe715",
+    "first_ten_replayed_ordinals": [
+      4507,
+      4508,
+      4509,
+      4510,
+      4511,
+      4512,
+      4513,
+      4514,
+      4515,
+      4516
+    ],
+    "first_ten_replayed_verdicts": 74,
+    "inherited_unknown_exit_messages": 17,
+    "new_unknown_exit_ordinals": [
+      4525,
+      4527,
+      4528,
+      4529,
+      4530,
+      4531,
+      4532,
+      4533,
+      4534
+    ],
+    "total_unknown_exit_messages": 26,
+    "unknown_exit_process_success_proven": false,
+    "stories_meeting_coverage_floor": 98,
+    "stories_below_coverage_floor": 2,
+    "first_ten_native_replay_sha256": "0cd35c3d6fb24a7cc181e312733ca47e7a0a7aae33cf0c93a2ed943f3c03ea9d",
+    "campaign_manifest_sha256": "66d4f52f7b8ed19fd7ce805cb937eec4f30ff887be8cf7d32624fad0a190f5f6",
+    "controller_sha256": "244c8b02e313b19bad75de3dc26156af8c9af1eab14cd1af5679c6f13273c155",
+    "precontact_failure_reconciliation_sha256": "9e9e8fd23c00c4c7e4b1cf66e435543ff9a8a8fdfc2552b045510e12165f9345",
+    "prior_ten_setup_failures_had_model_contacts": false,
+    "prior_setup_records_preserved": true,
+    "failed_model_requests_automatically_resent": false,
+    "focused_collector_and_composer_tests_passed": 27
+  },
+  "grok": {
+    "state_at_checkpoint": "partial_post_wpb_native_continuation_replayed",
+    "recognized_requests": 161,
+    "recognized_verdicts": 1246,
+    "recognized_native_identities": 160,
+    "adopted_non_native_recovery_ordinals": [
+      70
+    ],
+    "partial_wave_replay_sha256": "ace8d594f0faf58e6557e0f49e923e3a24252818c3f2b96943f4d1ea5a71723e",
+    "original_failed_wave_admitted": false,
+    "original_failed_88": {
+      "category": "unknown",
+      "code": "unclassified_after_launch",
+      "type": "GrokBuildWrapperFailure",
+      "trusted_provider_status": null,
+      "retained_complete_answer": false,
+      "terminal_sha256": "de49fd9eca7a03d2f254e53573c00354d2b3e40a503dce2080095837ded7f765"
+    },
+    "replacement88": {
+      "attempt_count": 1,
+      "unchanged_prompt_and_schema": true,
+      "native_replay": "PASS",
+      "native_identity": {
+        "request_id_hash": "26d1ecac946e716c591554460d45e367dd1ba057c0196ea0bc431d736ff7150d",
+        "session_id_hash": "d60f5265d9e383b5af25027d6832956c41b2e72aa9a0b203657340d23b781a90"
+      },
+      "dispatch_result_sha256": "77fa185ca7aa3ba5a771c252685eb03fdcc3b1ae6890ec52cd2b64698a23f87a",
+      "replay_sha256": "6077ff775f506380ec98a6947edc14f8adfa639c197c35097c48ad60256a3a86",
+      "terminal_sha256": "19109f0882a34c5cf672900ad023f9dc27d21ab04316663a1fe71c909902029b",
+      "controller_authorization_sha256": "2253279dbfe92dce465dfe4a97a1b3a88337d8e1ab8aaf762a115aa81d684da5",
+      "adoption_sha256": "7161849332a0c466cdc40c4ce60f36753300c8cae41dceb0636e671ff89c5993",
+      "recovery_manifest_sha256": "4318e41151a3939a56d5bdec52fa8a6445f93d6ed00aaf80148c4edc7fc06782",
+      "controller_sha256": "687a60bcdd26227b3bcb6ae5081f3357bceb84b4b29312653617ef3d36887399"
+    },
+    "remaining_logical_requests": 2139,
+    "next_original_ordinal_not_in_this_replay_prefix": 162,
+    "post_wpb_continuation": {
+      "completed_waves": 7,
+      "native_requests_replayed": 70,
+      "criterion_verdicts_replayed": 536,
+      "last_replayed_original_ordinal": 161,
+      "progress_prefix_sha256": "166cebf9d807ebad7418ba8ffb32d24ff6e65babf66d5108c8f5407b0ca67a7e",
+      "native_identity_commitment_sha256": "42bed8c2b89db91b7a82a1863f697835b463016c0c507435a710bf7f6289e630",
+      "parent_review_sha256": "662cb9440843b26257c7b5925cba99cfae3d8db83fa36779e296ba64a66779b9",
+      "controller_review_sha256": "0fc9731dcb8096c59c4042820de5c0c699133189e6bf584d7d8add0388bab5bd",
+      "route_sha256": "a0659d81d4868c4f8ecb0b1d16343a01ab14dac6a9ba0cae57a0e1def996533d",
+      "replays": [
+        {
+          "ordinals": [
+            92,
+            93,
+            94,
+            95,
+            96,
+            97,
+            98,
+            99,
+            100,
+            101
+          ],
+          "replay_sha256": "848b268b120a5e2dd082a5d2887462cb944e1b1e0b233181d20ff05d4800e2e0"
+        },
+        {
+          "ordinals": [
+            102,
+            103,
+            104,
+            105,
+            106,
+            107,
+            108,
+            109,
+            110,
+            111
+          ],
+          "replay_sha256": "9ed94c8896c1744b935f42addfc0e50d0721fe31c8f47687cc6d587a78e27940"
+        },
+        {
+          "ordinals": [
+            112,
+            113,
+            114,
+            115,
+            116,
+            117,
+            118,
+            119,
+            120,
+            121
+          ],
+          "replay_sha256": "d870d13734efa04246f4e169f42b7e5d2539befed3e17631bbc72e1fdbaf656a"
+        },
+        {
+          "ordinals": [
+            122,
+            123,
+            124,
+            125,
+            126,
+            127,
+            128,
+            129,
+            130,
+            131
+          ],
+          "replay_sha256": "7bbabe161d9db8c095c03168e41d24fc44d0d6aad30ef7edcd9283caa9183fc4"
+        },
+        {
+          "ordinals": [
+            132,
+            133,
+            134,
+            135,
+            136,
+            137,
+            138,
+            139,
+            140,
+            141
+          ],
+          "replay_sha256": "730419062b9d96ae3b3754dae01c8a2939073f7557decbcc9fc4720d73689e9a"
+        },
+        {
+          "ordinals": [
+            142,
+            143,
+            144,
+            145,
+            146,
+            147,
+            148,
+            149,
+            150,
+            151
+          ],
+          "replay_sha256": "4f278de3950bccb218e4ec97a9c698b8c6b03ac8b64f4225feeba62e07d75ef4"
+        },
+        {
+          "ordinals": [
+            152,
+            153,
+            154,
+            155,
+            156,
+            157,
+            158,
+            159,
+            160,
+            161
+          ],
+          "replay_sha256": "21399f07899a6bce63ed6a915b21677b80cbec1af9b452a76c93657a09a3dfd6"
+        }
+      ]
+    }
+  },
+  "provider_calls_during_replays": 0,
+  "coverage_floor": 0.88,
+  "known_sol_coverage_failures_preserved": [
+    19,
+    42
+  ],
+  "full_study_admitted": false,
+  "alignment_result": false,
+  "confirmation_opened": false,
+  "wpb1088_adoption_decision_pending": false,
+  "wpb1088_resent": false,
+  "predecessor_snapshot_sha256": "886e1d306ec37337b18df36a836652d9e5b3c16774be2cfeca9bf4cbf9715872",
+  "wpb1088_adoption_sha256": "94fd6977227bd6ed14d48c6d12539d65fe9df576b0f4ec3c478a283683a51b1a",
+  "captured_at": "2026-09-10T17:04:57.753549+00:00"
+}

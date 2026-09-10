@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "study_id": "hbq-human-alignment-wpb-compact-family-v1",
+  "evidence_class": "wpb_mixed_grok_train_fit_dev_selection",
+  "authority": "development_screening_only",
+  "full_hbq": false,
+  "confirmation": "closed",
+  "release_or_promotion_authority": "none",
+  "selection_frozen_at": "2026-09-10T16:45:43Z",
+  "freeze_sha256": "3728ab40a311fcf9cc89c7adb218cc16f1adac7b81ffd970de6318e109fa1eac",
+  "freeze_verifier_sha256": "217885d7d8d291a55e7042811765e90fa343759c4bbacd813b67444067c6f37e",
+  "fit_result_sha256": "05d94980ddb7656031577dbdebc41f84231d6fa404ebc73cdced6ad52126be0a",
+  "normalized_measurements_sha256": "2f669b8c0d1112097585643c11406fb6bfb104dce0c0b4f5faffae2a63f1da6e",
+  "independent_replay": "PASS",
+  "independent_review_sha256": "bc685bb8b84a25d515d44dd5783f056dd89e30828554bd77a3604b08488a1a40",
+  "review_binding_correction_sha256": "6242c89f7902f383dedddaae690cfa8d1e887e74465e7e3b3097af6be1ea1334",
+  "measurement_count": 129,
+  "native_measurement_count": 127,
+  "local_session_schema_recovered_measurement_count": 2,
+  "recovered_cell_ids": ["wpb-pair-wpb-en-0843", "wpb-pair-wpb-en-1088"],
+  "identity_evidence": "requested_only",
+  "reasoning_attested": false,
+  "0918_provenance_exception": "source_equivalent_generated_cache_artifact",
+  "historical_cache_absence_proven": false,
+  "historical_loaded_code_independently_observed": false,
+  "optuna": {"version": "4.9.0", "seed": 20260904, "trials": 128},
+  "selected_profile_name": "train_fit",
+  "selected_profile": {
+    "core": 0.7107837517001484,
+    "craft": 1.3642701252219738,
+    "form": 1.004900403838783
+  },
+  "dev_candidate_macro_accuracy": {
+    "all_one": 0.375,
+    "train_fit": 0.41666666666666663
+  },
+  "partition_metrics": [
+    {
+      "partition": "train",
+      "pairs": 105,
+      "categories": 35,
+      "win": 70,
+      "loss": 29,
+      "tie": 6,
+      "macro_chosen_over_rejected_accuracy": 0.6666666666666666
+    },
+    {
+      "partition": "dev",
+      "pairs": 24,
+      "categories": 8,
+      "win": 10,
+      "loss": 13,
+      "tie": 1,
+      "macro_chosen_over_rejected_accuracy": 0.41666666666666663
+    }
+  ],
+  "tie_threshold": 0.15,
+  "observed_winner_disagreement_count": 12,
+  "mae": "not_applicable_pairwise_preference_target",
+  "dev_used_for_profile_selection": true,
+  "independent_generalization_established": false,
+  "sol_validation_completed": false,
+  "collection_checkpoint_sha256": "40e745cce28cf61fb2ed01089870f60d5dbd1acfdab256202244c0979482cc30"
+}
