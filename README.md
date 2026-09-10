@@ -73,40 +73,25 @@ The live release-facing work is narrower than the historical experiment log:
   confirmation split. The [owner-adopted 100-story amendment](evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/baseline-budget-amendment-100-v1.json)
   now selects 70 TRAIN and 30 DEV stories, with all 178 criteria retained and
   2,300 baseline requests per model. It preserves the original plan and follows
-  partial model observation. As of 2026-09-09 UTC, the fixed-batch-eight baseline
-  has 80 requests and 622 verdicts: 79 admitted native requests plus one
-  owner-adopted [study recovery for request 70](evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/grok70-quote-repair-adoption-v1.json). Cohort eight
-  is settled, while the recovered request lacks native CLI-envelope/request-ID
-  binding; the original 51/70 attempts and prior 69 commitments remain
-  preserved as historical evidence. No request 81 has started.
-  The [2026-09-09 snapshot through request 1342](evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/collection-progress-20260909-v6.json)
-  recognizes 1,342 Sol requests and 10,388 logical verdicts under the sequencing
-  amendment adopted after partial Sol observation. Two cumulative metadata
-  additions overcounted final two-question batches; the append-only correction
-  preserves the original summaries and all native data. Pass 19 remains provisional:
-  its [coverage of 0.8607 fails the unchanged 0.88 gate](evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/sol-pass19-coverage-admission-blocker-v1.json).
-  Completing later collection cannot clear that full-study admission rejection.
-  A subsequent Windows update interrupted collection after 772 completed requests.
-  The owner-approved [request-773 replacement completed](evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/sol773-replacement-result-v1.json),
-  followed by sequential continuation through 828 and a verified ten-request
-  parallel canary through 838. All ten local adapter calls overlapped and completed
-  in a 65.4-second span. The ten-lane collector later stopped on wrapper rejections;
-  ten retained final messages were recovered without new calls, preserving their
-  failed terminals and unknown process-exit status. After a later connection stop,
-  all [ten owner-authorized replacements completed](evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/selected100-recovery-native-checkpoint-v1.json).
-  Independent replay establishes at least 1,867 recognized requests and 14,450
-  verdicts. The collector has moved into the 433 previously untouched requests;
-  the original connection-failed attempts remain preserved.
-  The original 773 outcome remains unknown. The replacement used the owner's
-  explicit allowance assumption; the continuation preserves both earlier evidence roots.
-  The owner [adopted the exact request-221 transport recovery](evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/sol-recovered-transport-adoption-v1.json),
-  and subsequent collection passed independent replay. That earlier transport
-  recovery remains distinct from the new completed-message recoveries; native endpoint and internal-retry cardinality remain
-  unproven. The preserved first 120 requests preceded the protocol's Grok selection stage
-  and remain ineligible under the original sequence. The amended continuation
-  has passed independent review. Complete native
-  measurement, alignment, selection, promotion, and release claims remain
-  unestablished.
+  partial model observation; the 57 confirmation stories remain closed.
+  The [2026-09-10 collection checkpoint](evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/collection-progress-20260910-v3.json)
+  records complete Sol collection replay: 100 stories, 2,300 requests and 17,800
+  verdicts, retaining 26 complete messages with unknown process exits. Stories
+  19 and 42 have coverage 0.8607 and 0.8648, below the unchanged 0.88 floor;
+  no stories were filtered out, and full-study admission remains blocked.
+  Grok recognizes 90 requests and 702 verdicts: 89 native identities plus the
+  adopted [non-native recovery for request 70](evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/grok70-quote-repair-adoption-v1.json).
+  Request 88 stopped the first ten-request v5 wave after launch, with no retained
+  complete answer or trusted provider status. Its nine completed peers passed
+  individual replay, but the failed wave is not admitted. The gate is revoked,
+  2,209 later requests remain untouched, and no replacement is authorized.
+  The [detailed collection history](evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/README.md)
+  preserves original failures, authorized replacements, earlier snapshots and
+  sequencing amendments. In particular, request 221's transport recovery still
+  lacks native endpoint/internal-retry proof, the original 773 outcome remains
+  unknown, and early Sol requests remain ineligible under the original sequence.
+  Allowance assumptions are explicit. Alignment, selection, promotion and
+  release claims remain unestablished.
 - [CWR-guided revision gain](evaluation-results/cwr-guided-revision-gain-v6-heldout-result-v1/)
   now includes a four-item held-back comparison. Guided-minus-generic means
   were Sol `+1.00` holistic / `+0.75` compact and Grok `+0.75` / `0.00`.
