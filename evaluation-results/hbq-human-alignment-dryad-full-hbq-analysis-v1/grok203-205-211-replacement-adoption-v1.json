@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "decision": "approved_exactly_one_selected_successor_replacements",
+  "proposal_sha256": "8eb4ec4e8d8cb7dcc0a4ca817ca123312ae01cf7b08ed66a72cffb5a8f75b1d0",
+  "replacement_ordinals": [
+    203,
+    205,
+    211
+  ],
+  "maximum_new_attempts_per_ordinal": 1,
+  "failed_attempts": [
+    {
+      "attempt_start_sha256": "6288ed46e690e2e35f874be2f39071755a9040d65bd660bf9f1fb003178f1fd6",
+      "contact_admission_sha256": "a69b699d6c3de6b6521c92844795d1ef0e1c024da045b880a9d5fd15baff5c97",
+      "ordinal": 203,
+      "prompt_sha256": "be67b443862893352b22ea8cb35184c5b828f1f5bc19cd8d1605d35ebbe1303e",
+      "question_ids": [
+        "penalty.purple_prose.proportion",
+        "penalty.purple_prose.specificity",
+        "penalty.purple_prose.tone",
+        "penalty.purple_prose.metaphor",
+        "penalty.purple_prose.attention",
+        "penalty.purple_prose.fatigue",
+        "penalty.repetition.lexical",
+        "penalty.repetition.syntax"
+      ],
+      "retained_complete_answer": false,
+      "schema_sha256": "479af68d8b03fa680de2ac941c534672ef6d4e00a295219a5289bf4569bd53c8",
+      "terminal_sha256": "87e55aa0cbce64e27f7314fb1d1e8889b98305201d0629a20b65d2bcee13f99a"
+    },
+    {
+      "attempt_start_sha256": "dd7b63a781575ca0cccfeaa111bc6b3a60acbf17a938acd75c79b2b783ad36f4",
+      "contact_admission_sha256": "c4f01a83c02e2bfb2dd7b7a2d57dd7daa2ef6625e2d1c35fc30e489134f399fa",
+      "ordinal": 205,
+      "prompt_sha256": "ab895665b65a77c11dd905b077be808172f1c8f5758cce14b33e2cb13d939881",
+      "question_ids": [
+        "penalty.unflagged_incomplete.truncation",
+        "core.task_and_brief_fidelity.operation",
+        "core.task_and_brief_fidelity.sources",
+        "core.task_and_brief_fidelity.inclusions",
+        "core.task_and_brief_fidelity.exclusions",
+        "core.task_and_brief_fidelity.pov",
+        "core.task_and_brief_fidelity.tense",
+        "core.task_and_brief_fidelity.structure"
+      ],
+      "retained_complete_answer": false,
+      "schema_sha256": "aead3f8406d1cbb75954460d679e1d14ea1028cbb756015aabdb0cfb6cae6a2d",
+      "terminal_sha256": "396defc4fa6d37813d38d881ef059c70ba294319d293101381017ff41f7d910b"
+    },
+    {
+      "attempt_start_sha256": "5b2bd255bf206393e7490d2c57c316acaa0f0a1a333da746666cd1daf87dd4d3",
+      "contact_admission_sha256": "157e44daf8b34d5f3e5640cba08bd45781103bbc2693871857449c09ed68b4e6",
+      "ordinal": 211,
+      "prompt_sha256": "11930e18bced8e05a9872b4351dd98cb615b07345afe2026b8d7075255cbf287",
+      "question_ids": [
+        "form.prose.short_story.ending",
+        "form.prose.short_story.no_novel_fragment",
+        "craft.narrative.characterization.dimensionality",
+        "craft.narrative.characterization.behavior",
+        "craft.narrative.characterization.motives",
+        "craft.narrative.characterization.contradiction",
+        "craft.narrative.characterization.agency",
+        "craft.narrative.characterization.distinction"
+      ],
+      "retained_complete_answer": false,
+      "schema_sha256": "5425b78858676c7bdbb848d37e64c22e94224da43d7d736978d2b82745ab4310",
+      "terminal_sha256": "a05c5db5de37d225cfdf9e09005bbadb0da3becb7aa9ba5654fed471424e4bb1"
+    }
+  ],
+  "execution_authority": true
+}
