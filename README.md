@@ -71,8 +71,10 @@ The live release-facing work is narrower than the historical experiment log:
   The [complete mixed collection has a frozen selection](evaluation-results/hbq-human-alignment-wpb-compact-family-native-v1/grok-selection-summary-v1.json).
   Its trained profile wins 10/24 DEV pairs (41.7%), versus 9/24 (37.5%) with
   equal multipliers. DEV selected the profile; it is not independent confirmation.
-  Independent replay passed; Sol validation awaits a reviewed bridge to the
-  current shared broker.
+  Independent replay passed. The [September 12 Sol checkpoint](evaluation-results/hbq-human-alignment-wpb-compact-family-native-v1/sol-partial-checkpoint-20260912-v1.json)
+  verifies two local CLI results, `0052` and `0068`, each with recorded exit code 0.
+  Local execution failures remain preserved; 127 cells remain and full Sol
+  validation is incomplete. Completed cells are excluded from future contact.
 - [Dryad source and full-HBQ preparation](docs/RESULTS.md#dryad-source-and-full-hbq-preparation)
   adds an audited independent corpus and a frozen 176 TRAIN / 60 DEV / 57
   confirmation split. The [owner-adopted 100-story amendment](evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/baseline-budget-amendment-100-v1.json)
@@ -84,18 +86,12 @@ The live release-facing work is narrower than the historical experiment log:
   verdicts, retaining 26 complete messages with unknown process exits. Stories
   19 and 42 have coverage 0.8607 and 0.8648, below the unchanged 0.88 floor;
   no stories were filtered out, and full-study admission remains blocked.
-  Grok recognizes 208 requests and 1,610 verdicts: 207 native identities plus the
-  adopted [non-native recovery for request 70](evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/grok70-quote-repair-adoption-v1.json).
-  Request 88 stopped the first ten-request v5 wave after launch, with no retained
-  complete answer or trusted provider status. Its nine completed peers passed
-  individual replay, but the failed wave is not admitted. The
-  [approved replacement for 88](evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/grok88-replacement-adoption-v1.json)
-  completed on one new attempt and passed native replay with unchanged prompt
-  and schema. Its original failure remains preserved. Eleven subsequent ten-request
-  waves passed replay, followed by seven completed peers in a stopped wave.
-  Requests 203, 205 and 211 have unknown wrapper failures with no retained complete
-  answer or trusted provider status. Their source-bound recovery is being prepared;
-  2,089 later requests remain untouched.
+  The [September 12 Grok checkpoint](evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/standing-v6-partial-checkpoint-20260912-v1.json)
+  recognizes **270 requests and 2,094 verdicts**: 268 native results plus the
+  adopted local recoveries for 70 and 254. Nine new native peers passed semantic
+  replay; request 266 stopped at the local host gate before provider contact.
+  Its failed terminal remains preserved. Exactly 2,030 requests remain, with
+  no automatic resend or complete-wave admission for that partial wave.
   The [detailed collection history](evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/README.md)
   preserves original failures, authorized replacements, earlier snapshots and
   sequencing amendments. In particular, request 221's transport recovery still

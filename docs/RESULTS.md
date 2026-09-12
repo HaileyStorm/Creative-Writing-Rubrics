@@ -31,17 +31,16 @@ product test succeeded; `Negative` means a proposed claim or treatment failed;
 
 ## Current development checkpoints — descriptive readouts, no promotion
 
-Latest: [V17 standalone Sol replication](#v17-standalone-sol-replication)
-is complete; its paired Grok run is incomplete after quota exhaustion. As of
-2026-09-08 UTC, the later [WPB collection](#wpb-terminal-collection) admits
-101 native cells plus one owner-adopted local-session schema recovery: 102/129.
-The next cell was definitely not contacted and 26 later cells are prepared only,
-leaving 27 without collection; it permits no subset metrics, fitting, or
-automatic resend.
-[Dryad preparation](#dryad-source-and-full-hbq-preparation)
-is implemented. Its first live qualification attempt stopped after six contacts:
-five accepted checkpoints and one semantically rejected response. It yields no
-batch cap or alignment result and permits no automatic resend.
+The [V17 standalone Sol replication](#v17-standalone-sol-replication)
+is complete; its paired Grok run remains incomplete after quota exhaustion.
+As of September 12, the later [WPB collection](#wpb-terminal-collection) has all
+129 Grok measurements and a reproduced frozen selection, while Sol has two
+verified local CLI results and 127 cells remaining. The
+[selected Dryad baseline](#dryad-source-and-full-hbq-preparation) has 270/2,300
+Grok requests and complete Sol collection. Sol stories 19 and 42 still fail the
+unchanged coverage floor; complete collection does not establish full-study
+admission. Neither study permits automatic resends or an incomplete-campaign
+alignment claim.
 
 The [full-tree family-weight diagnostic](https://github.com/HaileyStorm/Creative-Writing-Rubrics/tree/b4ba4c5d2963040ffc6f26010de089e21331a0b4/evaluation-results/hbq-human-alignment-family-weighting-v1)
 completed 3,072 provider-free Optuna trials over 48 TRAIN stories across 24
@@ -323,11 +322,16 @@ The selected profile agrees with the preferred answer on 70/105 TRAIN pairs
 (66.7%) and 10/24 DEV pairs (41.7%). DEV had 13 losses and one tie. Equal
 multipliers won 9/24 DEV pairs (37.5%). DEV selected between these two profiles,
 so the one-pair difference does not establish independent generalization.
-Sol validation using the frozen multipliers remains pending; confirmation stays closed.
-Its provider-free campaign was created successfully. Live route preflight then
-stopped before any Sol call because the frozen runtime pins an older shared
-Broker source. A separately reviewed compatibility bridge is being implemented;
-the frozen selection and measurement evidence remain unchanged.
+Sol validation using the frozen multipliers remains incomplete; confirmation stays closed.
+The current broker companion and strict-schema successor passed their bounded
+reviews. The [September 12 partial checkpoint](../evaluation-results/hbq-human-alignment-wpb-compact-family-native-v1/sol-partial-checkpoint-20260912-v1.json)
+independently admits `0052` and `0068` through their original campaign roots,
+with saved exit codes of 0 and exact strict-command/native lifecycle checks.
+The latest batch stopped on a local `ValueError`; its first worker's inner
+failure was not retained. Nine peers have no launch or receipt evidence.
+Both completed results are preserved without resend, leaving 126 first contacts
+and the still-unused authorized `0082` replacement. Provider contact cardinality
+and provider-side model/reasoning attestation remain unproven.
 This coarse family comparison is not a full-HBQ alignment result.
 
 ## Dryad source and full-HBQ preparation
@@ -345,7 +349,18 @@ Source-defined novelty and usefulness are separate co-primary targets, with
 all twelve raw axes also reported separately. There is no invented twelve-axis
 human composite or sampled-leaf substitute for the full 178-question rubric.
 
-The [selected-100 collection snapshot](../evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/collection-progress-20260910-v1.json)
+The [September 12 Grok checkpoint](../evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/standing-v6-partial-checkpoint-20260912-v1.json)
+verifies 270 logical requests and 2,094 verdicts: 268 native results plus the
+local recoveries for 70 and 254. Its nine latest native results passed individual
+semantic replay. Request 266 stopped before provider contact on a local host-gate
+database error, so the partial wave is not admitted as complete. Exactly 2,030
+requests remain. The [complete Sol collection](../evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/collection-progress-20260910-v3.json)
+contains all 2,300 requests and 17,800 verdicts, including 26 complete messages
+with unknown process exits. Stories 19 and 42 remain below the fixed 0.88 coverage
+floor (0.8607 and 0.8648); no story filtering or coverage waiver was applied.
+Grok fitting and comparison remain incomplete.
+
+The earlier [selected-100 collection snapshot](../evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/collection-progress-20260910-v1.json)
 independently replays 1,857 Sol requests and 14,376 verdicts. Ten connection-failed
 requests have no saved answer; one replacement attempt per failed request is
 owner-authorized, with 433 further requests untouched at that snapshot. The
