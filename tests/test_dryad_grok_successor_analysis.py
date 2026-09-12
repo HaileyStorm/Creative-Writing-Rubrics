@@ -122,9 +122,23 @@ def test_public_admission_rejects_historical_prototype_before_reader_access(monk
     _data, _selection, pins, inputs = collection(subject)
     inputs.update({"plan_root": tmp_path, "predecessor_path": tmp_path / "predecessor.json", "old_suffix_root": tmp_path,
                    "recovery_root": tmp_path, "expected_public_inputs_sha256": "a" * 64,
-                   "approved_v4_routes": {}, "approved_v5_routes": {}, "local_continuation": None})
+                   "approved_v4_routes": {}, "approved_v5_routes": {}, "local_continuation": None,
+                   "candidate_native_continuation": None})
     monkeypatch.setattr(subject, "_capture", lambda _pins: pytest.fail("reader capture must remain closed"))
     with pytest.raises(ValueError, match="local continuation is required"):
+        subject.admit_selected_successor(reader_inputs=inputs, source_pins=pins)
+
+
+def test_public_admission_rejects_missing_candidate_before_reader_access(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    subject = load()
+    _data, _selection, pins, inputs = collection(subject)
+    inputs.update({"plan_root": tmp_path, "predecessor_path": tmp_path / "predecessor.json", "old_suffix_root": tmp_path,
+                   "recovery_root": tmp_path, "expected_public_inputs_sha256": "a" * 64,
+                   "approved_v4_routes": {}, "approved_v5_routes": {},
+                   "local_continuation": {"root": str(tmp_path / "local"), "manifest_sha256": "a" * 64, "controller_sha256": "b" * 64},
+                   "candidate_native_continuation": None})
+    monkeypatch.setattr(subject, "_capture", lambda _pins: pytest.fail("reader capture must remain closed"))
+    with pytest.raises(ValueError, match="Standing v6 candidate continuation is required"):
         subject.admit_selected_successor(reader_inputs=inputs, source_pins=pins)
 
 
@@ -190,6 +204,7 @@ def test_admission_binds_local254_projection_without_native_identity(tmp_path: P
 def test_reader_local_fixture_admits_partial_peers_and_local254(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     subject, reader_test = load(), load_reader_fixture()
     reader, inputs, _calls = reader_test._local_fixture(monkeypatch, tmp_path)
+    inputs["allow_legacy_local_v2_fixture"] = True
     local = reader._module(reader.LOCAL_CONTINUATION).verify_local_continuation()
     for name, descriptor in local["protected_paths"].items():
         key = "inventory_sha256" if name in {"continuation_root", "successor_root"} else "sha256"
@@ -216,6 +231,39 @@ def test_reader_local_fixture_admits_partial_peers_and_local254(monkeypatch: pyt
     owners = admitted.record["collection_record"]["root_chain_ordinal_owners"]
     assert all(owners[str(ordinal)]["kind"] == "partial_predecessor_peer" for ordinal in [252, 253, 255, 256, 257, 258, 259, 260, 261])
     assert owners["254"]["kind"] == "local_schema_recovery"
+
+
+def test_reader_candidate_fixture_admits_full_standing_v6_ownership(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    subject, reader_test = load(), load_reader_fixture()
+    reader, inputs, _calls = reader_test._candidate_fixture(monkeypatch, tmp_path)
+    local = reader._module(reader.LOCAL_CONTINUATION).verify_local_continuation()
+    for name, descriptor in local["protected_paths"].items():
+        key = "inventory_sha256" if name in {"continuation_root", "successor_root"} else "sha256"
+        if any(character not in "0123456789abcdef" for character in descriptor[key]):
+            descriptor[key] = digest(name.encode())
+    data = reader.read_selected_successor_collection(**inputs)
+    rows = data["rows"]
+    selection = {"schedule": {"sha256": data["input_commitments"]["selected_schedule_sha256"]},
+                 "source": {"sha256": data["input_commitments"]["selected_schedule_source_sha256"]},
+                 "verified": {"selected_train_ids": [row["pass_id"] for row in rows[:70]],
+                              "selected_dev_ids": [row["pass_id"] for row in rows[70:]],
+                              "selected_request_ordinals": [ordinal for row in rows for ordinal in row["ordinals"]],
+                              "question_ids": [item["question_id"] for item in rows[0]["verdict_rows"]]}}
+    candidate = data["standing_v6_candidate_commitment"]
+    pins = {key: "0" * 64 for key in subject.PIN_KEYS}
+    pins.update({"analysis": digest(SOURCE.read_bytes()), "reader": data["input_commitments"]["reader_sha256"],
+                 "successor_controller": data["input_commitments"]["successor_controller_sha256"],
+                 "local_controller": inputs["local_continuation"]["controller_sha256"],
+                 "local_proposal": data["local_recovery_provenance"]["proposal_sha256"],
+                 "local_adoption": data["local_recovery_provenance"]["adoption_sha256"],
+                 "standing_v6_controller": inputs["candidate_native_continuation"]["controller_sha256"],
+                 "standing_v6_candidate": candidate["candidate"]["manifest_sha256"],
+                 "standing_v6_packet": candidate["packet"]["sha256"], "standing_v6_source": candidate["standing_source"]["sha256"],
+                 "old_helper_closure": subject.OLD_HELPER_SHA256, "composite": digest(COMPOSITE.read_bytes())})
+    admitted = subject._admit_collection(data, reader, source_pins=pins, reader_inputs=inputs, selection=selection, predecessor={},
+        exclusions={"requests": {item["request_id_hash"] for item in data["historical_excluded_native_identities"]},
+                    "sessions": {item["session_id_hash"] for item in data["historical_excluded_native_identities"]}})
+    assert admitted.record["local_recovery"]["candidate"]["commitment"]["replay_ordinals"] == [*range(262, 1611), *range(4049, 4739)]
 
 
 @pytest.mark.parametrize("fault", ["missing_chain", "coverage", "question_order", "native_count"])
@@ -374,7 +422,7 @@ def test_train_dev_and_replay_preserve_admission_target_order_without_real_targe
     engine = SimpleNamespace(fit_train=fit, validate_frozen_fit=preflight, evaluate_dev=compare)
     monkeypatch.setattr(subject, "admit_selected_successor", lambda **_kwargs: (calls.append("admit") or admission))
     monkeypatch.setattr(subject, "_capture", lambda _pins: ({}, SimpleNamespace(), SimpleNamespace(), old,
-        SimpleNamespace(), analysis, engine, SimpleNamespace()))
+        SimpleNamespace(), analysis, engine, SimpleNamespace(), SimpleNamespace()))
     monkeypatch.setattr(subject, "_runtime", lambda *_args, **_kwargs: {"commitment_sha256": "3" * 64})
     monkeypatch.setattr(subject, "_load", lambda _path, _raw, _label: pure if _label == "workflow" else analysis)
     monkeypatch.setattr(subject, "_read", lambda path, _expected, _label: (Path(path), Path(path).read_bytes())

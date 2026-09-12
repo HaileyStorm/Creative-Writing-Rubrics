@@ -17,6 +17,7 @@ REPOSITORY = ROOT.parents[1]
 READER_PATH = ROOT / "baseline_grok_successor_collection_replay.py"
 CONTROLLER_PATH = ROOT / "baseline_grok_selected_successor.py"
 LOCAL_CONTROLLER_PATH = ROOT / "baseline_grok_selected_local_continuation.py"
+STANDING_V6_CONTROLLER_PATH = ROOT / "baseline_grok_standing_v6_continuation.py"
 OLD_HELPER_PATH = ROOT / "baseline_grok_recovery_analysis.py"
 COMPOSITE_PATH = ROOT / "baseline_composite_admission_v5.py"
 ANALYSIS_PATH = ROOT / "baseline_composite_analysis_v5.py"
@@ -26,6 +27,7 @@ PIN_KEYS = frozenset({
     "analysis", "reader", "successor_controller", "old_helper_closure", "composite",
     "composite_analysis", "selected_engine", "workflow", "v1_runtime_loader", "v5_runtime_loader",
     "local_controller", "local_proposal", "local_adoption",
+    "standing_v6_controller", "standing_v6_candidate", "standing_v6_packet", "standing_v6_source",
 })
 EXPECTED_COUNTS = {"stories": 100, "logical_requests": 2300, "native_requests": 2299,
                    "study_recovered_requests": 1, "criterion_verdicts": 17800}
@@ -93,13 +95,14 @@ def _pins(value: Mapping[str, Any]) -> dict[str, str]:
     return result
 
 
-def _capture(source_pins: Mapping[str, Any]) -> tuple[dict[Path, bytes], ModuleType, ModuleType, ModuleType, ModuleType, ModuleType, ModuleType, ModuleType]:
+def _capture(source_pins: Mapping[str, Any]) -> tuple[dict[Path, bytes], ModuleType, ModuleType, ModuleType, ModuleType, ModuleType, ModuleType, ModuleType, ModuleType]:
     pins = _pins(source_pins)
     paths = (
         (Path(__file__).resolve(), pins["analysis"], "analysis"),
         (READER_PATH, pins["reader"], "reader"),
         (CONTROLLER_PATH, pins["successor_controller"], "successor_controller"),
         (LOCAL_CONTROLLER_PATH, pins["local_controller"], "local_controller"),
+        (STANDING_V6_CONTROLLER_PATH, pins["standing_v6_controller"], "standing_v6_controller"),
         (OLD_HELPER_PATH, pins["old_helper_closure"], "old_helper_closure"),
         (COMPOSITE_PATH, pins["composite"], "composite"),
         (ANALYSIS_PATH, pins["composite_analysis"], "composite_analysis"),
@@ -114,7 +117,7 @@ def _capture(source_pins: Mapping[str, Any]) -> tuple[dict[Path, bytes], ModuleT
     if getattr(loaded["reader"], "SUCCESSOR_SHA256", None) != pins["successor_controller"]:
         raise ValueError("Successor reader controller source pin differs")
     return (captured, loaded["reader"], loaded["successor_controller"], loaded["old_helper_closure"],
-            loaded["composite"], loaded["composite_analysis"], loaded["selected_engine"], loaded["local_controller"])
+            loaded["composite"], loaded["composite_analysis"], loaded["selected_engine"], loaded["local_controller"], loaded["standing_v6_controller"])
 
 
 def _unchanged(captured: Mapping[Path, bytes]) -> None:
@@ -179,15 +182,18 @@ def _admit_collection(collection: Mapping[str, Any], reader: ModuleType, *, sour
                       reader_inputs: Mapping[str, Any], selection: Mapping[str, Any], predecessor: Mapping[str, Any],
                       exclusions: Mapping[str, set[str]]) -> SelectedSuccessorAdmission:
     local_descriptor = _local_descriptor(reader_inputs.get("local_continuation"))
+    candidate_descriptor = _local_descriptor(reader_inputs.get("candidate_native_continuation"))
     expected_schema, expected_evidence, expected_counts, expected_recovered = (
-        (2, "selected100_grok_successor_local_schema_recovery_replay_only_v2", LOCAL_EXPECTED_COUNTS, [70, 254])
-        if local_descriptor is not None else (1, "selected100_grok_successor_collection_replay_only_v1", EXPECTED_COUNTS, [70]))
+        (3, "selected100_grok_successor_standing_v6_candidate_replay_only_v3", LOCAL_EXPECTED_COUNTS, [70, 254])
+        if candidate_descriptor is not None else ((2, "selected100_grok_successor_local_schema_recovery_replay_only_v2", LOCAL_EXPECTED_COUNTS, [70, 254])
+        if local_descriptor is not None else (1, "selected100_grok_successor_collection_replay_only_v1", EXPECTED_COUNTS, [70])) )
+    historical_prototype = local_descriptor is None or (candidate_descriptor is None and reader_inputs.get("allow_legacy_local_v2_fixture") is True)
     if (not isinstance(collection, Mapping) or collection.get("schema_version") != expected_schema
             or collection.get("evidence_class") != expected_evidence
             or collection.get("counts") != expected_counts or collection.get("recovered_ordinals") != expected_recovered
             or collection.get("coverage_failures") != [] or collection.get("full_study_admitted") is not False
             or collection.get("authority") is not False or collection.get("provider_calls_made") != 0
-            or collection.get("historical_prototype_only") is not (local_descriptor is None)):
+            or collection.get("historical_prototype_only") is not historical_prototype):
         raise ValueError("Complete selected successor collection replay is required")
     commitments = collection.get("input_commitments")
     if not isinstance(commitments, Mapping) or commitments.get("reader_sha256") != source_pins["reader"]:
@@ -269,6 +275,33 @@ def _admit_collection(collection: Mapping[str, Any], reader: ModuleType, *, sour
         local_record = {"descriptor": local_descriptor, "commitment": dict(local_commitment),
                         "identity": dict(local_identity), "provenance": dict(local_provenance),
                         "protected_paths": {name: dict(item) for name, item in protected_paths.items()}}
+    if candidate_descriptor is not None:
+        candidate = collection.get("standing_v6_candidate_commitment")
+        protected = collection.get("standing_v6_candidate_protected_paths")
+        candidate_owner_ordinals = candidate.get("replay_ordinals") if isinstance(candidate, Mapping) else None
+        candidate_identity_hash = candidate.get("native_identity_commitment_sha256") if isinstance(candidate, Mapping) else None
+        candidate_expected = {"standing_v6_continuation_manifest_sha256": candidate_descriptor["manifest_sha256"],
+                              "standing_v6_continuation_controller_sha256": candidate_descriptor["controller_sha256"],
+                              "standing_v6_continuation_descriptor_sha256": reader._sha(reader._canonical(candidate_descriptor)),
+                              "standing_v6_candidate_native_identity_commitment_sha256": candidate_identity_hash}
+        if (local_descriptor is None or candidate_descriptor["controller_sha256"] != source_pins["standing_v6_controller"]
+                or collection.get("candidate_native_continuation") != candidate_descriptor or not isinstance(candidate, Mapping)
+                or candidate.get("root") != candidate_descriptor["root"] or candidate.get("manifest_sha256") != candidate_descriptor["manifest_sha256"]
+                or candidate.get("controller_sha256") != candidate_descriptor["controller_sha256"]
+                or candidate.get("candidate", {}).get("manifest_sha256") != source_pins["standing_v6_candidate"]
+                or candidate.get("packet", {}).get("sha256") != source_pins["standing_v6_packet"]
+                or candidate.get("standing_source", {}).get("sha256") != source_pins["standing_v6_source"]
+                or not isinstance(candidate_owner_ordinals, list) or any(type(item) is not int for item in candidate_owner_ordinals)
+                or candidate_owner_ordinals != [*range(262, 1611), *range(4049, 4739)]
+                or not isinstance(protected, Mapping) or not protected
+                or any(commitments.get(key) != value for key, value in candidate_expected.items())
+                or any(not isinstance(owners.get(ordinal), Mapping) or owners[ordinal].get("kind") != "standing_v6_candidate_native"
+                       for ordinal in candidate_owner_ordinals)):
+            raise ValueError("Standing v6 candidate continuation binding differs")
+        root_owned.extend(candidate_owner_ordinals)
+        local_record = {**(local_record or {}), "candidate": {"descriptor": candidate_descriptor, "commitment": dict(candidate),
+                        "protected_paths": {name: dict(item) for name, item in protected.items()}}
+        }
     if (len(root_owned) != len(set(root_owned)) or set(owners) != set(root_owned) or 70 in owners):
         raise ValueError("Selected successor root ownership coverage differs")
     rows, identities = collection.get("rows"), collection.get("native_identities")
@@ -344,16 +377,19 @@ def admit_selected_successor(*, reader_inputs: Mapping[str, Any], source_pins: M
     required = {"plan_root", "predecessor_path", "old_suffix_root", "recovery_root", "expected_plan_sha256",
                 "expected_predecessor_sha256", "expected_old_epoch_sha256", "expected_suffix_source_sha256",
                 "expected_recovery_controller_sha256", "expected_recovery_manifest_sha256", "expected_public_inputs_sha256", "approved_v4_routes",
-                "approved_v5_routes", "successor_roots", "local_continuation"}
+                "approved_v5_routes", "successor_roots", "local_continuation", "candidate_native_continuation"}
     if not isinstance(reader_inputs, Mapping) or set(reader_inputs) != required:
         raise ValueError("Selected successor reader inputs differ")
     if _local_descriptor(reader_inputs["local_continuation"]) is None:
         raise ValueError("Selected successor local continuation is required")
-    captured, reader, _controller, old, composite, _analysis, _engine, _local = _capture(pins)
+    if _local_descriptor(reader_inputs["candidate_native_continuation"]) is None:
+        raise ValueError("Standing v6 candidate continuation is required")
+    captured, reader, _controller, old, composite, _analysis, _engine, _local, _standing = _capture(pins)
     inputs = dict(reader_inputs)
-    reader_call = {key: value for key, value in inputs.items() if key not in {"expected_public_inputs_sha256", "successor_roots", "local_continuation"}}
+    reader_call = {key: value for key, value in inputs.items() if key not in {"expected_public_inputs_sha256", "successor_roots", "local_continuation", "candidate_native_continuation"}}
     collection = reader.read_selected_successor_collection(successor_roots=inputs["successor_roots"],
-                                                           local_continuation=inputs["local_continuation"], **reader_call)
+                                                           local_continuation=inputs["local_continuation"],
+                                                           candidate_native_continuation=inputs["candidate_native_continuation"], **reader_call)
     selection, predecessor, exclusions = old._selection(
         composite, plan_root=Path(inputs["plan_root"]).resolve(), predecessor_path=inputs["predecessor_path"],
         suffix_root=inputs["old_suffix_root"], expected_plan_sha256=inputs["expected_plan_sha256"],
@@ -393,6 +429,7 @@ def _protected_inputs(reader_inputs: Mapping[str, Any], scoring_inputs: Mapping[
                    for item in roots)):
         raise ValueError("Selected successor roots differ")
     descriptor = _local_descriptor(reader_inputs.get("local_continuation"))
+    candidate_descriptor = _local_descriptor(reader_inputs.get("candidate_native_continuation"))
     local_paths: tuple[Any, ...] = ()
     if local_recovery is not None:
         protected = local_recovery.get("protected_paths")
@@ -401,9 +438,18 @@ def _protected_inputs(reader_inputs: Mapping[str, Any], scoring_inputs: Mapping[
         local_paths = tuple(value.get("path") for value in protected.values() if isinstance(value, Mapping))
         if len(local_paths) != len(protected) or any(type(path) is not str or not path for path in local_paths):
             raise ValueError("Selected local continuation protected paths differ")
+        candidate = local_recovery.get("candidate")
+        if candidate is not None:
+            candidate_paths = candidate.get("protected_paths") if isinstance(candidate, Mapping) else None
+            if not isinstance(candidate_paths, Mapping) or not candidate_paths:
+                raise ValueError("Standing v6 candidate protected paths differ")
+            values = tuple(item.get("path", item.get("root")) for item in candidate_paths.values() if isinstance(item, Mapping))
+            if len(values) != len(candidate_paths) or any(type(path) is not str or not path for path in values):
+                raise ValueError("Standing v6 candidate protected paths differ")
+            local_paths += values
     return (reader_inputs["plan_root"], reader_inputs["predecessor_path"], reader_inputs["old_suffix_root"],
             reader_inputs["recovery_root"], *(item["root"] for item in roots),
-            *(() if descriptor is None else (descriptor["root"],)), *local_paths,
+            *(() if descriptor is None else (descriptor["root"],)), *(() if candidate_descriptor is None else (candidate_descriptor["root"],)), *local_paths,
             scoring_inputs["scoring_manifest_path"], scoring_inputs["v5_runtime_manifest_path"],
             scoring_inputs["v5_runtime_package_root"])
 
@@ -434,7 +480,7 @@ def fit_selected_successor_train(*, reader_inputs: Mapping[str, Any], public_inp
                                  source_pins: Mapping[str, Any], scoring_inputs: Mapping[str, Any]) -> dict[str, Any]:
     pins = _pins(source_pins); _reader_public(reader_inputs, expected_public_inputs_sha256)
     admission = admit_selected_successor(reader_inputs=reader_inputs, source_pins=pins)
-    captured, _reader, _controller, old, _composite, analysis, engine, _local = _capture(pins)
+    captured, _reader, _controller, old, _composite, analysis, engine, _local, _standing = _capture(pins)
     output = analysis._output_preflight(output_root, *_protected_inputs(reader_inputs, scoring_inputs, admission.record.get("local_recovery")), public_inputs_path, train_targets_path)
     partitions, projected, projection, binding = _stage(old, admission, analysis, public_inputs_path=public_inputs_path,
                                                           expected_public_inputs_sha256=expected_public_inputs_sha256)
@@ -492,7 +538,7 @@ def _compute_dev(*, reader_inputs: Mapping[str, Any], public_inputs_path: Path |
                  scoring_inputs: Mapping[str, Any]) -> tuple[dict[str, Any], bytes, dict[str, Any], dict[Path, bytes]]:
     pins = _pins(source_pins); _reader_public(reader_inputs, expected_public_inputs_sha256)
     admission = admit_selected_successor(reader_inputs=reader_inputs, source_pins=pins)
-    captured, _reader, _controller, old, _composite, analysis, engine, _local = _capture(pins)
+    captured, _reader, _controller, old, _composite, analysis, engine, _local, _standing = _capture(pins)
     partitions, projected, projection, binding = _stage(old, admission, analysis, public_inputs_path=public_inputs_path,
                                                           expected_public_inputs_sha256=expected_public_inputs_sha256)
     scoring = _runtime(old, analysis, source_pins=pins, scoring_inputs=scoring_inputs, captured=captured)

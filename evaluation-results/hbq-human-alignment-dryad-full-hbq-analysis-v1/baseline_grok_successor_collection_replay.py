@@ -17,6 +17,7 @@ SUFFIX = ROOT / "baseline_grok_v5_suffix.py"
 RECOVERY = ROOT / "baseline_grok_selected_recovery.py"
 SUCCESSOR = ROOT / "baseline_grok_selected_successor.py"
 LOCAL_CONTINUATION = ROOT / "baseline_grok_selected_local_continuation.py"
+STANDING_V6_CONTINUATION = ROOT / "baseline_grok_standing_v6_continuation.py"
 COMPOSITE_SHA256 = "efd33ba0fcce7ae8c64a9aea280830998cb974c0250a411d657304a2fd0c50f6"
 SUFFIX_SHA256 = "eab249cbdaa43cdb7f89364b97079000eda7b71717693711cda1de3de66a2b75"
 RECOVERY_SHA256 = "687a60bcdd26227b3bcb6ae5081f3357bceb84b4b29312653617ef3d36887399"
@@ -155,13 +156,13 @@ def _terminal_commitment(parent: Any, owner: Mapping[str, Any], ordinal: int) ->
 
 
 def _local_continuation(*, descriptor: Mapping[str, Any], approved_v5_routes: Mapping[str, Any],
-                        successor_root: Path, successor_manifest_sha256: str) -> tuple[dict[str, Any], dict[int, dict[str, Any]], list[dict[str, str]], dict[str, Any]]:
+                        successor_root: Path, successor_manifest_sha256: str, include_untouched: bool) -> tuple[dict[str, Any], dict[int, dict[str, Any]], list[dict[str, str]], dict[str, Any]]:
     root, manifest_sha256, controller_sha256 = _local_descriptor(descriptor)
     controller = _module(LOCAL_CONTINUATION, controller_sha256, "local continuation controller")
     local = controller.verify_local_continuation(continuation_root=root, expected_manifest_sha256=manifest_sha256,
                                                  expected_controller_sha256=controller_sha256)
     native = controller.verify_untouched_replay_chain(continuation_root=root, expected_manifest_sha256=manifest_sha256,
-                                                       expected_controller_sha256=controller_sha256, approved_v5_routes=approved_v5_routes)
+                                                       expected_controller_sha256=controller_sha256, approved_v5_routes=approved_v5_routes) if include_untouched else None
     local_required = {"ordinal", "evidence_class", "verdicts", "local_identity", "local_provenance", "ownership", "source",
                       "protected_paths", "partial_peer_records", "partial_peer_source", "provider_calls_made", "full_original_study_admitted",
                       "review_decision", "standing_authority_kind"}
@@ -210,12 +211,14 @@ def _local_continuation(*, descriptor: Mapping[str, Any], approved_v5_routes: Ma
               "local continuation partial peer differs")
         peer_identities.append(_identity(record["native_identity"], "local continuation partial peer"))
     peer_identities = _unique(peer_identities)
-    _need(isinstance(native, Mapping) and set(native) == native_required and native.get("provider_calls_made") == 0
-          and native.get("protected_native_identity_count") == 259, "local continuation native replay differs")
-    ordinals, identities, terminals = native["untouched_replay_ordinals"], _unique(native["untouched_native_identities"]), native["untouched_terminals"]
-    expected = [*range(262, 1611), *range(4049, 4739)]
-    _need(ordinals == expected and len(identities) == len(expected) and isinstance(terminals, list) and len(terminals) == len(expected),
-          "local continuation untouched schedule differs")
+    ordinals: list[int] = []; identities: list[dict[str, str]] = []; terminals: list[Mapping[str, Any]] = []
+    if include_untouched:
+        _need(isinstance(native, Mapping) and set(native) == native_required and native.get("provider_calls_made") == 0
+              and native.get("protected_native_identity_count") == 259, "local continuation native replay differs")
+        ordinals, identities, terminals = native["untouched_replay_ordinals"], _unique(native["untouched_native_identities"]), native["untouched_terminals"]
+        expected = [*range(262, 1611), *range(4049, 4739)]
+        _need(ordinals == expected and len(identities) == len(expected) and isinstance(terminals, list) and len(terminals) == len(expected),
+              "local continuation untouched schedule differs")
     terminal_by_ordinal: dict[int, dict[str, Any]] = {}
     for ordinal, terminal in zip(ordinals, terminals, strict=True):
         _need(isinstance(terminal, Mapping) and set(terminal) == {"ordinal", "terminal_sha256", "controller_authorization_sha256"}
@@ -242,6 +245,49 @@ def _local_continuation(*, descriptor: Mapping[str, Any], approved_v5_routes: Ma
                   "partial_peer_ordinals": expected_peer_ordinals,
                   "untouched_replay_ordinals": list(ordinals), "untouched_native_identity_commitment_sha256": _sha(_canonical(identities))}
     return dict(local), owners, _unique([*peer_identities, *identities]), commitment
+
+
+def _candidate_native_continuation(*, descriptor: Mapping[str, Any], local_descriptor: Mapping[str, Any]) -> tuple[dict[int, dict[str, Any]], list[dict[str, str]], dict[int, list[dict[str, Any]]], dict[str, Any]]:
+    root, manifest_sha256, controller_sha256 = _local_descriptor(descriptor)
+    controller = _module(STANDING_V6_CONTINUATION, controller_sha256, "standing v6 continuation controller")
+    verified = controller.verify_standing_v6_continuation(continuation_root=root, expected_manifest_sha256=manifest_sha256,
+                                                          expected_controller_sha256=controller_sha256)
+    replay = controller.verify_standing_v6_replay_chain(continuation_root=root, expected_manifest_sha256=manifest_sha256,
+                                                         expected_controller_sha256=controller_sha256)
+    expected = [*range(262, 1611), *range(4049, 4739)]
+    _need(isinstance(verified, Mapping) and verified.get("pending_ordinals") == expected and verified.get("provider_calls_made") == 0
+          and verified.get("prefix", {}).get("source", {}).get("root") == local_descriptor["root"]
+          and isinstance(verified.get("protected_paths"), Mapping), "standing v6 continuation binding differs")
+    required = {"candidate_native_replay_ordinals", "candidate_native_identities", "candidate_native_terminals", "candidate_native_verdicts",
+                "candidate", "packet", "standing_source", "queue", "provider_calls_made"}
+    _need(isinstance(replay, Mapping) and set(replay) == required and replay.get("candidate_native_replay_ordinals") == expected
+          and replay.get("provider_calls_made") == 0, "standing v6 candidate replay differs")
+    identities = _unique(replay["candidate_native_identities"])
+    terminals = replay["candidate_native_terminals"]
+    verdict_batches = replay["candidate_native_verdicts"]
+    _need(len(identities) == len(expected) and isinstance(terminals, list) and len(terminals) == len(expected)
+          and isinstance(verdict_batches, Mapping) and {int(key) for key in verdict_batches} == set(expected), "standing v6 candidate cardinality differs")
+    owners: dict[int, dict[str, Any]] = {}
+    batches: dict[int, list[dict[str, Any]]] = {}
+    for ordinal, terminal, identity in zip(expected, terminals, identities, strict=True):
+        _need(isinstance(terminal, Mapping) and terminal.get("ordinal") == ordinal and terminal.get("native_identity") == identity and isinstance(terminal.get("terminal_sha256"), str)
+              and _HASH.fullmatch(terminal["terminal_sha256"]) is not None, "standing v6 candidate terminal differs")
+        batch = verdict_batches.get(ordinal, verdict_batches.get(str(ordinal)))
+        _need(isinstance(batch, Mapping) and batch.get("terminal_sha256") == terminal["terminal_sha256"]
+              and isinstance(batch.get("question_ids"), list) and isinstance(batch.get("verdicts"), list)
+              and [item.get("question_id") for item in batch["verdicts"] if isinstance(item, Mapping)] == batch["question_ids"],
+              "standing v6 candidate verdict binding differs")
+        batches[ordinal] = [dict(item) for item in batch["verdicts"]]
+        owners[ordinal] = {"kind": "standing_v6_candidate_native", "root": str(root), "manifest_sha256": manifest_sha256,
+                           "controller_sha256": controller_sha256, "terminal_sha256": terminal["terminal_sha256"],
+                           "native_identity": dict(identity),
+                           "candidate": dict(replay["candidate"]), "packet": dict(replay["packet"]),
+                           "standing_source": dict(replay["standing_source"]), "replay_receipt": "standing_v6_candidate"}
+    commitment = {"root": str(root), "manifest_sha256": manifest_sha256, "controller_sha256": controller_sha256,
+                  "candidate": dict(replay["candidate"]), "packet": dict(replay["packet"]), "standing_source": dict(replay["standing_source"]),
+                  "protected_paths": dict(verified["protected_paths"]), "queue": dict(replay["queue"]),
+                  "replay_ordinals": expected, "native_identity_commitment_sha256": _sha(_canonical(identities))}
+    return owners, identities, batches, commitment
 
 
 def _historical_exclusions(predecessor: Mapping[str, Any]) -> list[dict[str, str]]:
@@ -354,6 +400,7 @@ def read_selected_successor_collection(
     expected_suffix_source_sha256: str, expected_recovery_controller_sha256: str,
     expected_recovery_manifest_sha256: str, approved_v4_routes: Mapping[str, Any], approved_v5_routes: Mapping[str, Any],
     successor_roots: Sequence[Mapping[str, Any]], local_continuation: Mapping[str, Any] | None = None,
+    candidate_native_continuation: Mapping[str, Any] | None = None, allow_legacy_local_v2_fixture: bool = False,
 ) -> dict[str, Any]:
     """Reconstruct all selected stories from validated historic and successor terminals without dispatch."""
     reader_raw = Path(__file__).read_bytes()
@@ -378,17 +425,26 @@ def read_selected_successor_collection(
         recovery_epoch=recovery_epoch, recovery_plan_root=recovery_plan_root)
     local, local_owners, local_identities, local_commitment = (None, {}, [], None)
     if local_continuation is not None:
+        _need(candidate_native_continuation is not None or allow_legacy_local_v2_fixture is True,
+              "standing v6 candidate continuation is required")
         last_root, last_manifest_sha256 = _descriptor(successor_roots[-1])
         local, local_owners, local_identities, local_commitment = _local_continuation(
             descriptor=local_continuation, approved_v5_routes=approved_v5_routes, successor_root=last_root,
-            successor_manifest_sha256=last_manifest_sha256)
+            successor_manifest_sha256=last_manifest_sha256, include_untouched=candidate_native_continuation is None)
+    candidate_owners, candidate_identities, candidate_batches, candidate_commitment = ({}, [], {}, None)
+    if candidate_native_continuation is not None:
+        _need(local_continuation is not None, "standing v6 continuation requires local prefix")
+        candidate_owners, candidate_identities, candidate_batches, candidate_commitment = _candidate_native_continuation(
+            descriptor=candidate_native_continuation, local_descriptor=local_continuation)
     owners = {**recovery_owners}
     _need(not (set(owners) & set(successor_owners)), "root-chain ordinal ownership collision")
     owners.update(successor_owners)
     _need(not (set(owners) & set(local_owners)), "local continuation ordinal ownership collision")
     owners.update(local_owners)
+    _need(not (set(owners) & set(candidate_owners)), "standing v6 continuation ordinal ownership collision")
+    owners.update(candidate_owners)
     _need(set(owners) == set(SUCCESSOR_SCHEDULE), "successor chain is incomplete")
-    receipt_identities = _unique([*recovery_identities, *successor_identities, *local_identities])
+    receipt_identities = _unique([*recovery_identities, *successor_identities, *local_identities, *candidate_identities])
     expected_replayed_native = len(owners) - int(local is not None)
     _need(len(receipt_identities) == expected_replayed_native, "successor replay identity cardinality differs")
     plan, _plan_raw, passes, pass_index, question_ids = composite._plan(plan_root, expected_plan_sha256)
@@ -453,6 +509,14 @@ def read_selected_successor_collection(
                 verdicts.extend(local["verdicts"])
                 terminals.append({"ordinal": ordinal, "owner": owner, "local_identity": local["local_identity"]})
                 continue
+            if owner["kind"] == "standing_v6_candidate_native":
+                batch = candidate_batches.get(ordinal)
+                _need(isinstance(batch, list) and [item.get("question_id") for item in batch] == request["question_ids"],
+                      "standing v6 candidate request binding differs")
+                verdicts.extend(batch)
+                identities.append(_identity(owner["native_identity"], "standing v6 candidate"))
+                terminals.append({"ordinal": ordinal, "owner": owner, "terminal_sha256": owner["terminal_sha256"]})
+                continue
             batch, identity = suffix._replay_suffix_terminal(root=Path(owner["root"]), epoch_sha256=owner["epoch_sha256"], epoch=recovery_epoch,
                 runtime=successor_runtime, plan_root=plan_root, passed=pass_index[record["pass_id"]], row=request, approved_v5_routes=approved_v5_routes)
             verdicts.extend(batch)
@@ -478,8 +542,9 @@ def read_selected_successor_collection(
     _need(Path(__file__).read_bytes() == reader_raw, "collection reader source drifted")
     root_descriptors = [{"root": str(_descriptor(item)[0]), "manifest_sha256": _descriptor(item)[1]} for item in successor_roots]
     coverage_failures = [row["pass_id"] for row in rows if row["coverage"] < 0.88]
-    result = {"schema_version": 1 if local is None else 2,
-            "evidence_class": "selected100_grok_successor_collection_replay_only_v1" if local is None else "selected100_grok_successor_local_schema_recovery_replay_only_v2",
+    result = {"schema_version": 1 if local is None else (3 if candidate_commitment is not None else 2),
+            "evidence_class": "selected100_grok_successor_collection_replay_only_v1" if local is None else (
+                "selected100_grok_successor_standing_v6_candidate_replay_only_v3" if candidate_commitment is not None else "selected100_grok_successor_local_schema_recovery_replay_only_v2"),
             "counts": {"stories": STORY_COUNT, "logical_requests": LOGICAL_COUNT, "native_requests": expected_native_count,
                        "study_recovered_requests": 1, "criterion_verdicts": VERDICT_COUNT},
             "input_commitments": {"reader_sha256": _sha(reader_raw), "plan_sha256": expected_plan_sha256,
@@ -496,7 +561,7 @@ def read_selected_successor_collection(
             "native_identity_commitment_sha256": _sha(_canonical(all_identities)), "rows": rows,
             "normalized_verdict_rows": normalized_verdict_rows, "coverage_failures": coverage_failures,
             "full_study_admitted": False, "authority": False, "provider_calls_made": 0,
-            "historical_prototype_only": local is None}
+            "historical_prototype_only": local is None or candidate_commitment is None}
     if local is not None:
         _need(local_continuation is not None and local_commitment is not None, "local continuation result differs")
         result["counts"]["local_recovered_requests"] = 1
@@ -509,4 +574,13 @@ def read_selected_successor_collection(
         result["local_recovery_identity"] = dict(local["local_identity"])
         result["local_recovery_provenance"] = dict(local["local_provenance"])
         result["local_recovery_protected_paths"] = dict(local_commitment["protected_paths"])
+    if candidate_commitment is not None:
+        _need(candidate_native_continuation is not None, "standing v6 continuation descriptor differs")
+        result["input_commitments"].update({"standing_v6_continuation_manifest_sha256": candidate_commitment["manifest_sha256"],
+                                             "standing_v6_continuation_controller_sha256": candidate_commitment["controller_sha256"],
+                                             "standing_v6_continuation_descriptor_sha256": _sha(_canonical(dict(candidate_native_continuation))),
+                                             "standing_v6_candidate_native_identity_commitment_sha256": candidate_commitment["native_identity_commitment_sha256"]})
+        result["candidate_native_continuation"] = dict(candidate_native_continuation)
+        result["standing_v6_candidate_commitment"] = candidate_commitment
+        result["standing_v6_candidate_protected_paths"] = dict(candidate_commitment["protected_paths"])
     return result
