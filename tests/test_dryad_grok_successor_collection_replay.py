@@ -328,31 +328,43 @@ def test_local_continuation_owns_254_without_a_native_identity(monkeypatch: pyte
     assert result["rows"][11]["verdict_rows"][:8] == [{"question_id": f"q-{number:03d}", "verdict": "YES"} for number in range(8)]
 
 
-def _candidate_fixture(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> tuple[Any, dict[str, Any], list[tuple[int, Path]]]:
+def _candidate_fixture(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, *, missing_266: bool = False) -> tuple[Any, dict[str, Any], list[tuple[int, Path]]]:
     value, inputs, calls = _local_fixture(monkeypatch, tmp_path)
     inputs.pop("allow_legacy_local_v2_fixture")
     root = tmp_path / "standing-v6"; root.mkdir()
     manifest_hash, controller_hash = "b" * 64, "c" * 64
     expected = [*range(262, 1611), *range(4049, 4739)]
-    local_root = inputs["local_continuation"]["root"]
-
+    peers = [262, 263, 264, 265, 267, 268, 269, 270, 271]
+    future = [266, *range(272, 1611), *range(4049, 4739)]
+    replay_ordinals = [ordinal for ordinal in expected if not (missing_266 and ordinal == 266)]
     def questions(ordinal: int) -> list[str]:
         batch = (ordinal - 1) % 23
         return [f"q-{number:03d}" for number in range(batch * 8, batch * 8 + (8 if batch < 22 else 2))]
 
     candidate_root = tmp_path / "candidate"; candidate_root.mkdir()
+    peer_root = tmp_path / "r3"; peer_root.mkdir()
     candidate = {"root": str(candidate_root), "manifest_sha256": "d" * 64}
     packet, standing = {"path": "packet", "sha256": "e" * 64}, {"path": "standing", "sha256": "f" * 64}
-    verified = {"evidence_class": "dryad_grok_standing_v6_prospective_continuation_v1", "pending_ordinals": expected,
-                "prefix": {"source": {"root": local_root}}, "candidate": candidate, "packet": packet,
-                "standing_source": standing, "protected_paths": {"controller": {"path": "controller", "sha256": controller_hash},
-                                                                      "candidate": candidate}, "provider_calls_made": 0}
-    replay = {"candidate_native_replay_ordinals": expected, "candidate_native_identities": [identity(ordinal) for ordinal in expected],
-              "candidate_native_terminals": [{"ordinal": ordinal, "terminal_sha256": sha(f"candidate-{ordinal}".encode()), "native_identity": identity(ordinal)} for ordinal in expected],
+    peer_roots = {str(ordinal): {"root": str(peer_root),
+                                 "terminal": {"path": f"terminal-{ordinal}", "sha256": sha(f"candidate-{ordinal}".encode())},
+                                 "authorization": {"path": f"authorization-{ordinal}", "sha256": sha(f"authorization-{ordinal}".encode())}}
+                  for ordinal in peers}
+    peer_batches = {ordinal: {"terminal_sha256": sha(f"candidate-{ordinal}".encode()), "question_ids": questions(ordinal),
+                              "verdicts": [{"question_id": question, "verdict": "YES"} for question in questions(ordinal)]}
+                    for ordinal in peers}
+    verified = {"evidence_class": "dryad_grok_standing_v6_partial_successor_v1", "pending_ordinals": future,
+                "peer_native_replay_ordinals": peers, "peer_native_verdicts": peer_batches, "terminal_source_roots": peer_roots,
+                "candidate": candidate, "packet": packet, "standing_source": standing,
+                "protected_paths": {"continuation_manifest": {"path": str(root / "standing-v6-partial-successor-manifest.json"), "sha256": manifest_hash},
+                                    "controller": {"path": "controller", "sha256": controller_hash}, "candidate": candidate}, "provider_calls_made": 0}
+    replay = {"candidate_native_replay_ordinals": replay_ordinals, "candidate_native_identities": [identity(ordinal) for ordinal in replay_ordinals],
+              "candidate_native_terminals": [{"ordinal": ordinal, "terminal_sha256": sha(f"candidate-{ordinal}".encode()), "native_identity": identity(ordinal)} for ordinal in replay_ordinals],
               "candidate_native_verdicts": {ordinal: {"terminal_sha256": sha(f"candidate-{ordinal}".encode()), "question_ids": questions(ordinal),
-                                                   "verdicts": [{"question_id": question, "verdict": "YES"} for question in questions(ordinal)]} for ordinal in expected},
+                                                   "verdicts": [{"question_id": question, "verdict": "YES"} for question in questions(ordinal)]} for ordinal in replay_ordinals},
               "candidate": candidate, "packet": packet, "standing_source": standing,
-              "queue": {"path": "queue", "root_hash": "a" * 64, "path_sha256": "a" * 64}, "provider_calls_made": 0}
+              "queue": {"path": "queue", "root_hash": "a" * 64, "path_sha256": "a" * 64},
+              "terminal_source_roots": peer_roots, "owner_root_extension": {"root": str(root), "manifest_sha256": manifest_hash},
+              "provider_calls_made": 0}
     controller = SimpleNamespace(verify_standing_v6_continuation=lambda **_kwargs: verified,
                                  verify_standing_v6_replay_chain=lambda **_kwargs: replay)
     prior_loader = value._module
@@ -367,10 +379,17 @@ def test_candidate_v6_replay_replaces_obsolete_v2_native_suffix(monkeypatch: pyt
     assert result["schema_version"] == 3 and result["historical_prototype_only"] is False
     assert result["evidence_class"] == "selected100_grok_successor_standing_v6_candidate_replay_only_v3"
     assert result["counts"]["native_requests"] == 2298 and len(result["native_identities"]) == 2298
-    assert result["root_chain_ordinal_owners"][262]["kind"] == "standing_v6_candidate_native"
-    assert result["standing_v6_candidate_protected_paths"] == {"controller": {"path": "controller", "sha256": "c" * 64},
-                                                                 "candidate": {"root": str(tmp_path / "candidate"), "manifest_sha256": "d" * 64}}
-    assert 254 not in dict(calls) and 262 not in dict(calls)
+    assert result["root_chain_ordinal_owners"][262]["kind"] == "standing_v6_partial_peer_native"
+    assert result["root_chain_ordinal_owners"][266]["kind"] == "standing_v6_partial_successor_native"
+    assert result["root_chain_ordinal_owners"][262]["root"] == str(tmp_path / "r3")
+    assert result["standing_v6_candidate_protected_paths"]["candidate"] == {"root": str(tmp_path / "candidate"), "manifest_sha256": "d" * 64}
+    assert 254 not in dict(calls) and 262 not in dict(calls) and 266 not in dict(calls)
+
+
+def test_partial_successor_rejects_missing_native_266(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    value, inputs, _calls = _candidate_fixture(monkeypatch, tmp_path, missing_266=True)
+    with pytest.raises(ValueError, match="partial successor replay"):
+        value.read_selected_successor_collection(**inputs)
 
 
 def test_local_v2_requires_candidate_unless_explicitly_private(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:

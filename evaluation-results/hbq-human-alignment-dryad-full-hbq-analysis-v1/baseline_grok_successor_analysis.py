@@ -17,7 +17,7 @@ REPOSITORY = ROOT.parents[1]
 READER_PATH = ROOT / "baseline_grok_successor_collection_replay.py"
 CONTROLLER_PATH = ROOT / "baseline_grok_selected_successor.py"
 LOCAL_CONTROLLER_PATH = ROOT / "baseline_grok_selected_local_continuation.py"
-STANDING_V6_CONTROLLER_PATH = ROOT / "baseline_grok_standing_v6_serialized_continuation.py"
+STANDING_V6_CONTROLLER_PATH = ROOT / "baseline_grok_standing_v6_partial_successor.py"
 OLD_HELPER_PATH = ROOT / "baseline_grok_recovery_analysis.py"
 COMPOSITE_PATH = ROOT / "baseline_composite_admission_v5.py"
 ANALYSIS_PATH = ROOT / "baseline_composite_analysis_v5.py"
@@ -280,6 +280,9 @@ def _admit_collection(collection: Mapping[str, Any], reader: ModuleType, *, sour
         protected = collection.get("standing_v6_candidate_protected_paths")
         candidate_owner_ordinals = candidate.get("replay_ordinals") if isinstance(candidate, Mapping) else None
         candidate_identity_hash = candidate.get("native_identity_commitment_sha256") if isinstance(candidate, Mapping) else None
+        peer_ordinals = [262, 263, 264, 265, 267, 268, 269, 270, 271]
+        future_ordinals = [266, *range(272, 1611), *range(4049, 4739)]
+        terminal_roots = candidate.get("terminal_source_roots") if isinstance(candidate, Mapping) else None
         candidate_expected = {"standing_v6_continuation_manifest_sha256": candidate_descriptor["manifest_sha256"],
                               "standing_v6_continuation_controller_sha256": candidate_descriptor["controller_sha256"],
                               "standing_v6_continuation_descriptor_sha256": reader._sha(reader._canonical(candidate_descriptor)),
@@ -293,11 +296,15 @@ def _admit_collection(collection: Mapping[str, Any], reader: ModuleType, *, sour
                 or candidate.get("standing_source", {}).get("sha256") != source_pins["standing_v6_source"]
                 or not isinstance(candidate_owner_ordinals, list) or any(type(item) is not int for item in candidate_owner_ordinals)
                 or candidate_owner_ordinals != [*range(262, 1611), *range(4049, 4739)]
+                or candidate.get("peer_replay_ordinals") != peer_ordinals or candidate.get("future_replay_ordinals") != future_ordinals
+                or not isinstance(terminal_roots, Mapping) or {int(key) for key in terminal_roots} != set(peer_ordinals)
                 or not isinstance(protected, Mapping) or not protected
                 or any(commitments.get(key) != value for key, value in candidate_expected.items())
-                or any(not isinstance(owners.get(ordinal), Mapping) or owners[ordinal].get("kind") != "standing_v6_candidate_native"
+                or any(not isinstance(owners.get(ordinal), Mapping)
+                       or owners[ordinal].get("kind") != ("standing_v6_partial_peer_native" if ordinal in peer_ordinals else "standing_v6_partial_successor_native")
+                       or (ordinal in peer_ordinals and owners[ordinal].get("terminal_source_root") != terminal_roots.get(str(ordinal)))
                        for ordinal in candidate_owner_ordinals)):
-            raise ValueError("Standing v6 candidate continuation binding differs")
+            raise ValueError("Standing v6 partial successor binding differs")
         root_owned.extend(candidate_owner_ordinals)
         local_record = {**(local_record or {}), "candidate": {"descriptor": candidate_descriptor, "commitment": dict(candidate),
                         "protected_paths": {name: dict(item) for name, item in protected.items()}}
@@ -458,6 +465,14 @@ def _protected_inputs(reader_inputs: Mapping[str, Any], scoring_inputs: Mapping[
                 if type(path) is not str or not path:
                     raise ValueError("Standing v6 candidate protected paths differ")
                 candidate_values.append(path)
+            commitment = candidate.get("commitment") if isinstance(candidate, Mapping) else None
+            terminal_roots = commitment.get("terminal_source_roots") if isinstance(commitment, Mapping) else None
+            if not isinstance(terminal_roots, Mapping) or not terminal_roots:
+                raise ValueError("Standing v6 candidate terminal source roots differ")
+            for item in terminal_roots.values():
+                if not isinstance(item, Mapping) or type(item.get("root")) is not str or not item["root"]:
+                    raise ValueError("Standing v6 candidate terminal source roots differ")
+                candidate_values.append(item["root"])
             local_paths += tuple(candidate_values)
     return (reader_inputs["plan_root"], reader_inputs["predecessor_path"], reader_inputs["old_suffix_root"],
             reader_inputs["recovery_root"], *(item["root"] for item in roots),

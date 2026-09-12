@@ -17,7 +17,7 @@ SUFFIX = ROOT / "baseline_grok_v5_suffix.py"
 RECOVERY = ROOT / "baseline_grok_selected_recovery.py"
 SUCCESSOR = ROOT / "baseline_grok_selected_successor.py"
 LOCAL_CONTINUATION = ROOT / "baseline_grok_selected_local_continuation.py"
-STANDING_V6_CONTINUATION = ROOT / "baseline_grok_standing_v6_serialized_continuation.py"
+STANDING_V6_CONTINUATION = ROOT / "baseline_grok_standing_v6_partial_successor.py"
 COMPOSITE_SHA256 = "efd33ba0fcce7ae8c64a9aea280830998cb974c0250a411d657304a2fd0c50f6"
 SUFFIX_SHA256 = "eab249cbdaa43cdb7f89364b97079000eda7b71717693711cda1de3de66a2b75"
 RECOVERY_SHA256 = "687a60bcdd26227b3bcb6ae5081f3357bceb84b4b29312653617ef3d36887399"
@@ -254,14 +254,23 @@ def _candidate_native_continuation(*, descriptor: Mapping[str, Any], local_descr
                                                           expected_controller_sha256=controller_sha256)
     replay = controller.verify_standing_v6_replay_chain(continuation_root=root, expected_manifest_sha256=manifest_sha256,
                                                          expected_controller_sha256=controller_sha256)
+    peers = [262, 263, 264, 265, 267, 268, 269, 270, 271]
+    future = [266, *range(272, 1611), *range(4049, 4739)]
     expected = [*range(262, 1611), *range(4049, 4739)]
-    _need(isinstance(verified, Mapping) and verified.get("pending_ordinals") == expected and verified.get("provider_calls_made") == 0
-          and verified.get("prefix", {}).get("source", {}).get("root") == local_descriptor["root"]
-          and isinstance(verified.get("protected_paths"), Mapping), "standing v6 continuation binding differs")
+    _need(isinstance(verified, Mapping) and verified.get("pending_ordinals") == future
+          and verified.get("peer_native_replay_ordinals") == peers and verified.get("provider_calls_made") == 0
+          and isinstance(verified.get("peer_native_verdicts"), Mapping)
+          and isinstance(verified.get("terminal_source_roots"), Mapping)
+          and isinstance(verified.get("protected_paths"), Mapping), "standing v6 partial successor binding differs")
     required = {"candidate_native_replay_ordinals", "candidate_native_identities", "candidate_native_terminals", "candidate_native_verdicts",
-                "candidate", "packet", "standing_source", "queue", "provider_calls_made"}
+                "candidate", "packet", "standing_source", "queue", "terminal_source_roots", "owner_root_extension", "provider_calls_made"}
     _need(isinstance(replay, Mapping) and set(replay) == required and replay.get("candidate_native_replay_ordinals") == expected
-          and replay.get("provider_calls_made") == 0, "standing v6 candidate replay differs")
+          and replay.get("terminal_source_roots") == verified["terminal_source_roots"]
+          and isinstance(replay.get("owner_root_extension"), Mapping)
+          and replay.get("provider_calls_made") == 0, "standing v6 partial successor replay differs")
+    peer_batches, peer_roots = verified["peer_native_verdicts"], verified["terminal_source_roots"]
+    _need({int(key) for key in peer_batches} == set(peers) and {int(key) for key in peer_roots} == set(peers),
+          "standing v6 partial peer ownership differs")
     identities = _unique(replay["candidate_native_identities"])
     terminals = replay["candidate_native_terminals"]
     verdict_batches = replay["candidate_native_verdicts"]
@@ -277,16 +286,30 @@ def _candidate_native_continuation(*, descriptor: Mapping[str, Any], local_descr
               and isinstance(batch.get("question_ids"), list) and isinstance(batch.get("verdicts"), list)
               and [item.get("question_id") for item in batch["verdicts"] if isinstance(item, Mapping)] == batch["question_ids"],
               "standing v6 candidate verdict binding differs")
+        if ordinal in peers:
+            peer = peer_roots.get(ordinal, peer_roots.get(str(ordinal)))
+            verified_batch = peer_batches.get(ordinal, peer_batches.get(str(ordinal)))
+            _need(isinstance(peer, Mapping) and type(peer.get("root")) is str and peer["root"]
+                  and isinstance(peer.get("terminal"), Mapping) and peer["terminal"].get("sha256") == terminal["terminal_sha256"]
+                  and isinstance(peer.get("authorization"), Mapping) and verified_batch == batch,
+                  "standing v6 partial peer source binding differs")
+            owner = {"kind": "standing_v6_partial_peer_native", "root": peer["root"],
+                     "terminal_source_root": dict(peer), "replay_receipt": "standing_v6_partial_peer"}
+        else:
+            owner = {"kind": "standing_v6_partial_successor_native", "root": str(root),
+                     "replay_receipt": "standing_v6_partial_successor"}
         batches[ordinal] = [dict(item) for item in batch["verdicts"]]
-        owners[ordinal] = {"kind": "standing_v6_candidate_native", "root": str(root), "manifest_sha256": manifest_sha256,
-                           "controller_sha256": controller_sha256, "terminal_sha256": terminal["terminal_sha256"],
+        owners[ordinal] = {**owner, "manifest_sha256": manifest_sha256, "controller_sha256": controller_sha256,
+                           "terminal_sha256": terminal["terminal_sha256"],
                            "native_identity": dict(identity),
                            "candidate": dict(replay["candidate"]), "packet": dict(replay["packet"]),
-                           "standing_source": dict(replay["standing_source"]), "replay_receipt": "standing_v6_candidate"}
+                           "standing_source": dict(replay["standing_source"])}
     commitment = {"root": str(root), "manifest_sha256": manifest_sha256, "controller_sha256": controller_sha256,
                   "candidate": dict(replay["candidate"]), "packet": dict(replay["packet"]), "standing_source": dict(replay["standing_source"]),
                   "protected_paths": dict(verified["protected_paths"]), "queue": dict(replay["queue"]),
-                  "replay_ordinals": expected, "native_identity_commitment_sha256": _sha(_canonical(identities))}
+                  "terminal_source_roots": {str(key): dict(value) for key, value in peer_roots.items()},
+                  "peer_replay_ordinals": peers, "future_replay_ordinals": future, "replay_ordinals": expected,
+                  "native_identity_commitment_sha256": _sha(_canonical(identities))}
     return owners, identities, batches, commitment
 
 
@@ -509,12 +532,12 @@ def read_selected_successor_collection(
                 verdicts.extend(local["verdicts"])
                 terminals.append({"ordinal": ordinal, "owner": owner, "local_identity": local["local_identity"]})
                 continue
-            if owner["kind"] == "standing_v6_candidate_native":
+            if owner["kind"] in {"standing_v6_partial_peer_native", "standing_v6_partial_successor_native"}:
                 batch = candidate_batches.get(ordinal)
                 _need(isinstance(batch, list) and [item.get("question_id") for item in batch] == request["question_ids"],
-                      "standing v6 candidate request binding differs")
+                      "standing v6 partial successor request binding differs")
                 verdicts.extend(batch)
-                identities.append(_identity(owner["native_identity"], "standing v6 candidate"))
+                identities.append(_identity(owner["native_identity"], "standing v6 partial successor"))
                 terminals.append({"ordinal": ordinal, "owner": owner, "terminal_sha256": owner["terminal_sha256"]})
                 continue
             batch, identity = suffix._replay_suffix_terminal(root=Path(owner["root"]), epoch_sha256=owner["epoch_sha256"], epoch=recovery_epoch,

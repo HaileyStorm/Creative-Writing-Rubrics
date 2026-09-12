@@ -106,11 +106,23 @@ def collection(subject: Any) -> tuple[dict[str, Any], dict[str, Any], dict[str, 
 
 def test_standing_v6_loader_routes_only_to_serialized_replacement() -> None:
     subject = load()
-    replacement = "baseline_grok_standing_v6_serialized_continuation.py"
-    predecessor = "baseline_grok_standing_v6_continuation.py"
+    replacement = "baseline_grok_standing_v6_partial_successor.py"
+    predecessor = "baseline_grok_standing_v6_serialized_continuation.py"
     assert subject.STANDING_V6_CONTROLLER_PATH.name == replacement
     assert predecessor not in SOURCE.read_text(encoding="utf-8")
     assert predecessor not in subject.READER_PATH.read_text(encoding="utf-8")
+
+
+def test_capture_binds_the_partial_successor_controller_source() -> None:
+    subject = load()
+    pins = {key: "0" * 64 for key in subject.PIN_KEYS}
+    paths = {"analysis": SOURCE, "reader": subject.READER_PATH, "successor_controller": subject.CONTROLLER_PATH,
+             "local_controller": subject.LOCAL_CONTROLLER_PATH, "standing_v6_controller": subject.STANDING_V6_CONTROLLER_PATH,
+             "old_helper_closure": subject.OLD_HELPER_PATH, "composite": subject.COMPOSITE_PATH,
+             "composite_analysis": subject.ANALYSIS_PATH, "selected_engine": subject.ENGINE_PATH}
+    pins.update({key: digest(path.read_bytes()) for key, path in paths.items()})
+    _captured, _reader, _controller, _old, _composite, _analysis, _engine, _local, standing = subject._capture(pins)
+    assert Path(standing.__file__).resolve() == subject.STANDING_V6_CONTROLLER_PATH
 
 
 def test_admission_binds_complete_successor_chain_and_preserves_local70() -> None:
@@ -401,12 +413,14 @@ def test_candidate_descriptor_is_protected_after_admission_before_fit(tmp_path: 
                "v5_runtime_package_root": tmp_path / "package"}
     protected = subject._protected_inputs(inputs, scoring, admission.record["local_recovery"])
     candidate_root = data["standing_v6_candidate_protected_paths"]["candidate"]["root"]
-    assert candidate_root in protected
+    partial_root = inputs["candidate_native_continuation"]["root"]
+    peer_root = candidate["terminal_source_roots"]["262"]["root"]
+    assert candidate_root in protected and partial_root in protected and peer_root in protected
     module_spec = importlib.util.spec_from_file_location("candidate_preflight_math", subject.ANALYSIS_PATH)
     assert module_spec and module_spec.loader
     math = importlib.util.module_from_spec(module_spec); module_spec.loader.exec_module(math)
     with pytest.raises(ValueError, match="fresh external"):
-        math._output_preflight(Path(candidate_root) / "fit", *protected)
+        math._output_preflight(Path(partial_root) / "fit", *protected)
 
 
 def test_train_dev_and_replay_preserve_admission_target_order_without_real_targets(
