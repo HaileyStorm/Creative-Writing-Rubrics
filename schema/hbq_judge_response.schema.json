@@ -37,39 +37,64 @@
             "type": "array",
             "minItems": 1,
             "items": {
-              "type": "object",
-              "required": [
-                "kind",
-                "reference",
-                "exact_quote",
-                "summary"
-              ],
-              "properties": {
-                "kind": {
-                  "enum": [
+              "anyOf": [
+                {
+                  "type": "object",
+                  "required": [
+                    "kind",
+                    "reference",
                     "exact_quote",
                     "summary"
-                  ]
-                },
-                "reference": {
-                  "type": "string"
-                },
-                "exact_quote": {
-                  "type": [
-                    "string",
-                    "null"
                   ],
-                  "maxLength": 500
+                  "properties": {
+                    "kind": {
+                      "type": "string",
+                      "const": "exact_quote"
+                    },
+                    "reference": {
+                      "type": "string"
+                    },
+                    "exact_quote": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 500,
+                      "pattern": "\\S"
+                    },
+                    "summary": {
+                      "type": "null"
+                    }
+                  },
+                  "additionalProperties": false
                 },
-                "summary": {
-                  "type": [
-                    "string",
-                    "null"
+                {
+                  "type": "object",
+                  "required": [
+                    "kind",
+                    "reference",
+                    "exact_quote",
+                    "summary"
                   ],
-                  "maxLength": 500
+                  "properties": {
+                    "kind": {
+                      "type": "string",
+                      "const": "summary"
+                    },
+                    "reference": {
+                      "type": "string"
+                    },
+                    "exact_quote": {
+                      "type": "null"
+                    },
+                    "summary": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 500,
+                      "pattern": "\\S"
+                    }
+                  },
+                  "additionalProperties": false
                 }
-              },
-              "additionalProperties": false
+              ]
             }
           },
           "note": {
