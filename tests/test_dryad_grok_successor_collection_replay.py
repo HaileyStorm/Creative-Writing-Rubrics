@@ -340,11 +340,13 @@ def _candidate_fixture(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> tuple
         batch = (ordinal - 1) % 23
         return [f"q-{number:03d}" for number in range(batch * 8, batch * 8 + (8 if batch < 22 else 2))]
 
-    candidate = {"root": "candidate-root", "manifest_sha256": "d" * 64}
+    candidate_root = tmp_path / "candidate"; candidate_root.mkdir()
+    candidate = {"root": str(candidate_root), "manifest_sha256": "d" * 64}
     packet, standing = {"path": "packet", "sha256": "e" * 64}, {"path": "standing", "sha256": "f" * 64}
     verified = {"evidence_class": "dryad_grok_standing_v6_prospective_continuation_v1", "pending_ordinals": expected,
                 "prefix": {"source": {"root": local_root}}, "candidate": candidate, "packet": packet,
-                "standing_source": standing, "protected_paths": {"controller": {"path": "controller", "sha256": controller_hash}}, "provider_calls_made": 0}
+                "standing_source": standing, "protected_paths": {"controller": {"path": "controller", "sha256": controller_hash},
+                                                                      "candidate": candidate}, "provider_calls_made": 0}
     replay = {"candidate_native_replay_ordinals": expected, "candidate_native_identities": [identity(ordinal) for ordinal in expected],
               "candidate_native_terminals": [{"ordinal": ordinal, "terminal_sha256": sha(f"candidate-{ordinal}".encode()), "native_identity": identity(ordinal)} for ordinal in expected],
               "candidate_native_verdicts": {ordinal: {"terminal_sha256": sha(f"candidate-{ordinal}".encode()), "question_ids": questions(ordinal),
@@ -366,7 +368,8 @@ def test_candidate_v6_replay_replaces_obsolete_v2_native_suffix(monkeypatch: pyt
     assert result["evidence_class"] == "selected100_grok_successor_standing_v6_candidate_replay_only_v3"
     assert result["counts"]["native_requests"] == 2298 and len(result["native_identities"]) == 2298
     assert result["root_chain_ordinal_owners"][262]["kind"] == "standing_v6_candidate_native"
-    assert result["standing_v6_candidate_protected_paths"] == {"controller": {"path": "controller", "sha256": "c" * 64}}
+    assert result["standing_v6_candidate_protected_paths"] == {"controller": {"path": "controller", "sha256": "c" * 64},
+                                                                 "candidate": {"root": str(tmp_path / "candidate"), "manifest_sha256": "d" * 64}}
     assert 254 not in dict(calls) and 262 not in dict(calls)
 
 

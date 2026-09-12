@@ -104,6 +104,15 @@ def collection(subject: Any) -> tuple[dict[str, Any], dict[str, Any], dict[str, 
     return data, selection, pins, inputs | {"successor_roots": chain}
 
 
+def test_standing_v6_loader_routes_only_to_serialized_replacement() -> None:
+    subject = load()
+    replacement = "baseline_grok_standing_v6_serialized_continuation.py"
+    predecessor = "baseline_grok_standing_v6_continuation.py"
+    assert subject.STANDING_V6_CONTROLLER_PATH.name == replacement
+    assert predecessor not in SOURCE.read_text(encoding="utf-8")
+    assert predecessor not in subject.READER_PATH.read_text(encoding="utf-8")
+
+
 def test_admission_binds_complete_successor_chain_and_preserves_local70() -> None:
     subject = load()
     data, selection, pins, inputs = collection(subject)
@@ -356,6 +365,48 @@ def test_output_protection_includes_local_continuation_provenance_paths(tmp_path
     assert {item["path"] for item in protected.values()}.issubset(set(all_protected))
     with pytest.raises(ValueError, match="fresh external"):
         math._output_preflight(tmp_path / "proposal.json" / "analysis", *all_protected)
+
+
+def test_candidate_descriptor_is_protected_after_admission_before_fit(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    subject, reader_test = load(), load_reader_fixture()
+    reader, inputs, _calls = reader_test._candidate_fixture(monkeypatch, tmp_path)
+    local = reader._module(reader.LOCAL_CONTINUATION).verify_local_continuation()
+    for name, descriptor in local["protected_paths"].items():
+        key = "inventory_sha256" if name in {"continuation_root", "successor_root"} else "sha256"
+        if any(character not in "0123456789abcdef" for character in descriptor[key]):
+            descriptor[key] = digest(name.encode())
+    data = reader.read_selected_successor_collection(**inputs)
+    rows = data["rows"]
+    selection = {"schedule": {"sha256": data["input_commitments"]["selected_schedule_sha256"]},
+                 "source": {"sha256": data["input_commitments"]["selected_schedule_source_sha256"]},
+                 "verified": {"selected_train_ids": [row["pass_id"] for row in rows[:70]],
+                              "selected_dev_ids": [row["pass_id"] for row in rows[70:]],
+                              "selected_request_ordinals": [ordinal for row in rows for ordinal in row["ordinals"]],
+                              "question_ids": [item["question_id"] for item in rows[0]["verdict_rows"]]}}
+    candidate = data["standing_v6_candidate_commitment"]
+    pins = {key: "0" * 64 for key in subject.PIN_KEYS}
+    pins.update({"analysis": digest(SOURCE.read_bytes()), "reader": data["input_commitments"]["reader_sha256"],
+                 "successor_controller": data["input_commitments"]["successor_controller_sha256"],
+                 "local_controller": inputs["local_continuation"]["controller_sha256"],
+                 "local_proposal": data["local_recovery_provenance"]["proposal_sha256"],
+                 "local_adoption": data["local_recovery_provenance"]["adoption_sha256"],
+                 "standing_v6_controller": inputs["candidate_native_continuation"]["controller_sha256"],
+                 "standing_v6_candidate": candidate["candidate"]["manifest_sha256"],
+                 "standing_v6_packet": candidate["packet"]["sha256"], "standing_v6_source": candidate["standing_source"]["sha256"],
+                 "old_helper_closure": subject.OLD_HELPER_SHA256, "composite": digest(COMPOSITE.read_bytes())})
+    admission = subject._admit_collection(data, reader, source_pins=pins, reader_inputs=inputs, selection=selection, predecessor={},
+        exclusions={"requests": {item["request_id_hash"] for item in data["historical_excluded_native_identities"]},
+                    "sessions": {item["session_id_hash"] for item in data["historical_excluded_native_identities"]}})
+    scoring = {"scoring_manifest_path": tmp_path / "scoring.json", "v5_runtime_manifest_path": tmp_path / "runtime.json",
+               "v5_runtime_package_root": tmp_path / "package"}
+    protected = subject._protected_inputs(inputs, scoring, admission.record["local_recovery"])
+    candidate_root = data["standing_v6_candidate_protected_paths"]["candidate"]["root"]
+    assert candidate_root in protected
+    module_spec = importlib.util.spec_from_file_location("candidate_preflight_math", subject.ANALYSIS_PATH)
+    assert module_spec and module_spec.loader
+    math = importlib.util.module_from_spec(module_spec); module_spec.loader.exec_module(math)
+    with pytest.raises(ValueError, match="fresh external"):
+        math._output_preflight(Path(candidate_root) / "fit", *protected)
 
 
 def test_train_dev_and_replay_preserve_admission_target_order_without_real_targets(

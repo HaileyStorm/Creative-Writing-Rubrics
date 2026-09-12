@@ -17,7 +17,7 @@ REPOSITORY = ROOT.parents[1]
 READER_PATH = ROOT / "baseline_grok_successor_collection_replay.py"
 CONTROLLER_PATH = ROOT / "baseline_grok_selected_successor.py"
 LOCAL_CONTROLLER_PATH = ROOT / "baseline_grok_selected_local_continuation.py"
-STANDING_V6_CONTROLLER_PATH = ROOT / "baseline_grok_standing_v6_continuation.py"
+STANDING_V6_CONTROLLER_PATH = ROOT / "baseline_grok_standing_v6_serialized_continuation.py"
 OLD_HELPER_PATH = ROOT / "baseline_grok_recovery_analysis.py"
 COMPOSITE_PATH = ROOT / "baseline_composite_admission_v5.py"
 ANALYSIS_PATH = ROOT / "baseline_composite_analysis_v5.py"
@@ -443,10 +443,22 @@ def _protected_inputs(reader_inputs: Mapping[str, Any], scoring_inputs: Mapping[
             candidate_paths = candidate.get("protected_paths") if isinstance(candidate, Mapping) else None
             if not isinstance(candidate_paths, Mapping) or not candidate_paths:
                 raise ValueError("Standing v6 candidate protected paths differ")
-            values = tuple(item.get("path", item.get("root")) for item in candidate_paths.values() if isinstance(item, Mapping))
-            if len(values) != len(candidate_paths) or any(type(path) is not str or not path for path in values):
-                raise ValueError("Standing v6 candidate protected paths differ")
-            local_paths += values
+            candidate_values: list[str] = []
+            for item in candidate_paths.values():
+                if not isinstance(item, Mapping):
+                    raise ValueError("Standing v6 candidate protected paths differ")  # noqa: TRY004 - malformed evidence uses the established ValueError contract.
+                if set(item) == {"root", "manifest_sha256"}:
+                    root = item.get("root")
+                    if type(root) is not str or not root:
+                        raise ValueError("Standing v6 candidate protected paths differ")
+                    _hash(item.get("manifest_sha256"), "Standing v6 candidate protected manifest")
+                    candidate_values.append(root)
+                    continue
+                path = item.get("path")
+                if type(path) is not str or not path:
+                    raise ValueError("Standing v6 candidate protected paths differ")
+                candidate_values.append(path)
+            local_paths += tuple(candidate_values)
     return (reader_inputs["plan_root"], reader_inputs["predecessor_path"], reader_inputs["old_suffix_root"],
             reader_inputs["recovery_root"], *(item["root"] for item in roots),
             *(() if descriptor is None else (descriptor["root"],)), *(() if candidate_descriptor is None else (candidate_descriptor["root"],)), *local_paths,
