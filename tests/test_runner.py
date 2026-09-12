@@ -1066,7 +1066,7 @@ def test_strict_model_response_rejects_empty_exact_quote() -> None:
             }
         ]
     }
-    with pytest.raises(HBQError, match="nonblank exact_quote"):
+    with pytest.raises(HBQError, match="not valid under any of the given schemas"):
         _normalize_batch(
             payload,
             expected_ids=[QUESTION_ID],
@@ -1127,7 +1127,7 @@ def test_summary_evidence_is_preserved_without_quote_grounding() -> None:
                 "exact_quote": "A short test scene.",
                 "summary": "A summary cannot accompany an exact quote.",
             },
-            "one nonblank exact_quote and null summary",
+            "not valid under any of the given schemas",
         ),
     ],
 )
@@ -1157,6 +1157,79 @@ def test_evidence_wire_discriminator_enforces_one_nonblank_value(
             artifact_text="A short test scene.",
             context_texts=[],
         )
+
+
+@pytest.mark.parametrize(
+    ("evidence", "valid"),
+    [
+        (
+            {
+                "kind": "exact_quote",
+                "reference": "artifact",
+                "exact_quote": "A short test scene.",
+                "summary": None,
+            },
+            True,
+        ),
+        (
+            {
+                "kind": "summary",
+                "reference": "artifact",
+                "exact_quote": None,
+                "summary": "The scene is short.",
+            },
+            True,
+        ),
+        (
+            {
+                "kind": "summary",
+                "reference": "artifact",
+                "exact_quote": "A short test scene.",
+                "summary": None,
+            },
+            False,
+        ),
+        (
+            {
+                "kind": "exact_quote",
+                "reference": "artifact",
+                "exact_quote": None,
+                "summary": "The scene is short.",
+            },
+            False,
+        ),
+        (
+            {
+                "kind": "summary",
+                "reference": "artifact",
+                "exact_quote": None,
+                "summary": "   ",
+            },
+            False,
+        ),
+    ],
+)
+def test_response_schema_matches_native_evidence_discriminator(
+    evidence: dict[str, object], valid: bool
+) -> None:
+    schema = json.loads(
+        (book_root() / "schema" / "hbq_judge_response.schema.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    payload = {
+        "verdicts": [
+            {
+                "question_id": QUESTION_ID,
+                "verdict": "YES",
+                "confidence": 0.8,
+                "evidence": [evidence],
+                "note": "Public synthetic discriminator check.",
+            }
+        ]
+    }
+    errors = list(Draft202012Validator(schema).iter_errors(payload))
+    assert bool(errors) is not valid
 
 
 def test_normalized_verdict_schema_retains_legacy_quote_records() -> None:
@@ -1349,9 +1422,12 @@ def test_codex_backend_uses_schema_and_read_only_ephemeral_exec(tmp_path: Path, 
     verdict_schema = schema["properties"]["verdicts"]["items"]
     assert verdict_schema["additionalProperties"] is False
     evidence_schema = verdict_schema["properties"]["evidence"]["items"]
-    assert evidence_schema["additionalProperties"] is False
-    assert evidence_schema["required"] == ["kind", "reference", "exact_quote", "summary"]
-    assert not {"oneOf", "anyOf", "not"}.intersection(evidence_schema)
+    assert "anyOf" in evidence_schema
+    assert "oneOf" not in evidence_schema and "not" not in evidence_schema
+    assert len(evidence_schema["anyOf"]) == 2
+    for branch in evidence_schema["anyOf"]:
+        assert branch["additionalProperties"] is False
+        assert branch["required"] == ["kind", "reference", "exact_quote", "summary"]
     response = json.loads((tmp_path / "run" / "responses" / "batch-0001.json").read_text(encoding="utf-8"))
     assert "stderr_tail" not in response["provider"]
 
