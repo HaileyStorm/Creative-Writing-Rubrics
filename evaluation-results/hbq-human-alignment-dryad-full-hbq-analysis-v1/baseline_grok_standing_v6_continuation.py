@@ -25,8 +25,8 @@ PARENT = ROOT / "baseline_grok_v5_suffix.py"
 E33_SHA = "e33e5c9276cdcdcdf22f4182787fae97d3a9f6315b6ff1dbac66f29148731e7a"
 PARENT_SHA = "eab249cbdaa43cdb7f89364b97079000eda7b71717693711cda1de3de66a2b75"
 CANDIDATE_MANIFEST_SHA = "f366f37dcb5d22cddc23e38a3e89f66d4a2b49cdcbceb97363601c897739e896"
-PACKET_SHA = "585e9ce443cc9302b606f6c945a13b95b035a389fea89e701c20c15ba7793e2c"
-STANDING_SHA = "15a5abcbb7c9745a04be9c0c13c3066a484841c610288374868bdf82a4387eaa"
+PACKET_SHA = "1cd88cf4aa48ad89cd4c24906b00aab5bc08fd2bbd774115c83462ec6112f7a3"
+STANDING_SHA = "d939465b111f94a09a7f7fda946b67f49310c64beaf1144483dbe8480b06859b"
 MAX_WAVE = 10
 PENDING = [*range(262, 1611), *range(4049, 4739)]
 _HASH = re.compile(r"[0-9a-f]{64}")
@@ -99,10 +99,19 @@ def _candidate(root: Path, expected: str) -> tuple[Any, dict[str, Any]]:
 
 def _packet(path: Path, expected: str, standing_path: Path, standing_expected: str) -> dict[str, Any]:
     raw, value = path.read_bytes(), _json(path, "v6 final packet")
-    _need(_sha(raw) == expected == PACKET_SHA and set(value) == {"schema_version", "kind", "candidate_manifest", "files", "state", "activation_authority", "provider_contact_count"} and value.get("state") == "provider_free_sealed" and value.get("activation_authority") is False and value.get("provider_contact_count") == 0, "v6 final packet differs")
+    required = {"schema_version", "kind", "state", "candidate_manifest", "predecessor_packet", "renewed_source", "files", "manifest_conditions", "scope", "actions", "remaining_gate"}
+    _need(_sha(raw) == expected == PACKET_SHA and set(value) == required and value.get("kind") == "grok_standing_authority_v6_append_only_renewal_packet" and value.get("state") == "renewal_sealed_provider_free", "v6 final packet differs")
+    actions = value["actions"]
+    _need(actions.get("activation_authority") is False and actions.get("provider_contact_authority") is False and actions.get("provider_contact_count") == 0, "v6 packet is not inert")
     candidate = value["candidate_manifest"]; _need(candidate.get("sha256") == CANDIDATE_MANIFEST_SHA, "packet candidate differs")
     files = {item.get("path"): item.get("sha256") for item in value["files"] if isinstance(item, Mapping)}
-    _need(files.get("standing-source-evidence.json") == standing_expected and _sha(standing_path.read_bytes()) == standing_expected, "packet standing source differs")
+    _need(len(files) == len(value["files"]) == 8 and files.get("standing-source-evidence.json") == standing_expected and _sha(standing_path.read_bytes()) == standing_expected, "packet standing source differs")
+    for relative, digest in files.items():
+        _need(_sha((path.parent / relative).read_bytes()) == digest, "renewal packet evidence drift")
+    predecessor = value["predecessor_packet"]
+    _need(predecessor.get("sha256") == "585e9ce443cc9302b606f6c945a13b95b035a389fea89e701c20c15ba7793e2c" and _sha(Path(predecessor["path"]).read_bytes()) == predecessor["sha256"], "renewal predecessor differs")
+    renewed = value["renewed_source"]
+    _need(renewed.get("sha256") == standing_expected and renewed.get("fresh_allowance_observation") is False and renewed.get("new_owner_statement") is False and renewed.get("authority_at") == "2026-09-09T19:00:18.842739+00:00", "standing renewal authority differs")
     return value
 
 
