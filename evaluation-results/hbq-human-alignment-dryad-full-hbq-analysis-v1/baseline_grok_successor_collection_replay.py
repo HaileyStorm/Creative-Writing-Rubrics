@@ -17,7 +17,7 @@ SUFFIX = ROOT / "baseline_grok_v5_suffix.py"
 RECOVERY = ROOT / "baseline_grok_selected_recovery.py"
 SUCCESSOR = ROOT / "baseline_grok_selected_successor.py"
 LOCAL_CONTINUATION = ROOT / "baseline_grok_selected_local_continuation.py"
-STANDING_V6_CONTINUATION = ROOT / "baseline_grok_standing_v6_partial_successor.py"
+STANDING_V6_CONTINUATION = ROOT / "baseline_grok_runtime_data_successor.py"
 COMPOSITE_SHA256 = "efd33ba0fcce7ae8c64a9aea280830998cb974c0250a411d657304a2fd0c50f6"
 SUFFIX_SHA256 = "eab249cbdaa43cdb7f89364b97079000eda7b71717693711cda1de3de66a2b75"
 RECOVERY_SHA256 = "687a60bcdd26227b3bcb6ae5081f3357bceb84b4b29312653617ef3d36887399"
@@ -250,35 +250,57 @@ def _local_continuation(*, descriptor: Mapping[str, Any], approved_v5_routes: Ma
 def _candidate_native_continuation(*, descriptor: Mapping[str, Any], local_descriptor: Mapping[str, Any]) -> tuple[dict[int, dict[str, Any]], list[dict[str, str]], dict[int, list[dict[str, Any]]], dict[str, Any]]:
     root, manifest_sha256, controller_sha256 = _local_descriptor(descriptor)
     controller = _module(STANDING_V6_CONTINUATION, controller_sha256, "standing v6 continuation controller")
-    verified = controller.verify_standing_v6_continuation(continuation_root=root, expected_manifest_sha256=manifest_sha256,
-                                                          expected_controller_sha256=controller_sha256)
-    replay = controller.verify_standing_v6_replay_chain(continuation_root=root, expected_manifest_sha256=manifest_sha256,
+    state = controller.verify_runtime_data_successor(continuation_root=root, expected_manifest_sha256=manifest_sha256)
+    replay = controller.verify_runtime_data_replay_chain(continuation_root=root, expected_manifest_sha256=manifest_sha256,
                                                          expected_controller_sha256=controller_sha256)
-    peers = [262, 263, 264, 265, 267, 268, 269, 270, 271]
-    future = [266, *range(272, 1611), *range(4049, 4739)]
+    originals = list(range(262, 279))
+    future = [*range(280, 1611), *range(4049, 4739)]
     expected = [*range(262, 1611), *range(4049, 4739)]
-    _need(isinstance(verified, Mapping) and verified.get("pending_ordinals") == future
-          and verified.get("peer_native_replay_ordinals") == peers and verified.get("provider_calls_made") == 0
-          and isinstance(verified.get("peer_native_verdicts"), Mapping)
-          and isinstance(verified.get("terminal_source_roots"), Mapping)
-          and isinstance(verified.get("protected_paths"), Mapping), "standing v6 partial successor binding differs")
+    context = state.get("context") if isinstance(state, Mapping) else None
+    records = getattr(context, "records", None)
+    recovered = state.get("recovered") if isinstance(state, Mapping) else None
+    adoption = state.get("adoption") if isinstance(state, Mapping) else None
+    successor_manifest = state.get("manifest") if isinstance(state, Mapping) else None
+    _need(isinstance(state, Mapping) and isinstance(successor_manifest, Mapping) and successor_manifest.get("pending_ordinals") == future
+          and isinstance(records, list) and [item.get("ordinal") for item in records if isinstance(item, Mapping)] == originals
+          and isinstance(recovered, Mapping) and recovered.get("ordinal") == 279 and isinstance(adoption, Mapping)
+          and recovered.get("original_terminal_state") == "ambiguous" and state.get("provider_calls_made") == 0,
+          "runtime data successor binding differs")
     required = {"candidate_native_replay_ordinals", "candidate_native_identities", "candidate_native_terminals", "candidate_native_verdicts",
-                "candidate", "packet", "standing_source", "queue", "terminal_source_roots", "owner_root_extension", "provider_calls_made"}
-    _need(isinstance(replay, Mapping) and set(replay) == required and replay.get("candidate_native_replay_ordinals") == expected
-          and replay.get("terminal_source_roots") == verified["terminal_source_roots"]
-          and isinstance(replay.get("owner_root_extension"), Mapping)
-          and replay.get("provider_calls_made") == 0, "standing v6 partial successor replay differs")
-    peer_batches, peer_roots = verified["peer_native_verdicts"], verified["terminal_source_roots"]
-    _need({int(key) for key in peer_batches} == set(peers) and {int(key) for key in peer_roots} == set(peers),
-          "standing v6 partial peer ownership differs")
-    identities = _unique(replay["candidate_native_identities"])
+                "recovered_279", "adoption", "provider_calls_made"}
+    _need(isinstance(replay, Mapping) and set(replay) == required and replay.get("candidate_native_replay_ordinals") == future
+          and replay.get("recovered_279") == recovered and replay.get("adoption") == adoption and replay.get("provider_calls_made") == 0,
+          "runtime data successor replay differs")
+    record_by_ordinal = {item["ordinal"]: item for item in records if isinstance(item, Mapping)}
+    _need(set(record_by_ordinal) == set(originals) and all(isinstance(item.get("terminal"), Mapping)
+          and isinstance(item.get("native_identity"), Mapping) and isinstance(item.get("verdicts"), list) for item in record_by_ordinal.values()),
+          "runtime data original terminal binding differs")
+    terminal_source_roots = getattr(context, "manifest", {}).get("terminal_source_roots", {})
+    _need(isinstance(terminal_source_roots, Mapping), "runtime data original root bindings differ")
+    tail_identities = _unique([item.get("native_identity") for item in replay["candidate_native_terminals"] if isinstance(item, Mapping)])
+    identities = _unique([*(item["native_identity"] for item in records), recovered["native_identity"], *tail_identities])
     terminals = replay["candidate_native_terminals"]
     verdict_batches = replay["candidate_native_verdicts"]
-    _need(len(identities) == len(expected) and isinstance(terminals, list) and len(terminals) == len(expected)
-          and isinstance(verdict_batches, Mapping) and {int(key) for key in verdict_batches} == set(expected), "standing v6 candidate cardinality differs")
+    _need(len(identities) == len(expected) and isinstance(terminals, list) and len(terminals) == len(future)
+          and isinstance(verdict_batches, Mapping) and {int(key) for key in verdict_batches} == set(future), "runtime data successor cardinality differs")
     owners: dict[int, dict[str, Any]] = {}
     batches: dict[int, list[dict[str, Any]]] = {}
-    for ordinal, terminal, identity in zip(expected, terminals, identities, strict=True):
+    for ordinal in originals:
+        record = record_by_ordinal[ordinal]
+        batch = record["verdicts"]
+        descriptor = terminal_source_roots.get(str(ordinal), {"root": str(context.root), "terminal": record["terminal"]})
+        _need(isinstance(descriptor, Mapping) and type(descriptor.get("root")) is str and descriptor["root"]
+              and descriptor.get("terminal") == record["terminal"], "runtime data original root binding differs")
+        batches[ordinal] = [dict(item) for item in batch]
+        owners[ordinal] = {"kind": "standing_v6_runtime_data_original_native", "root": descriptor["root"],
+                           "terminal_source_root": dict(descriptor), "terminal_sha256": record["terminal"]["sha256"],
+                           "native_identity": dict(record["native_identity"]), "replay_receipt": "runtime_data_original"}
+    batches[279] = [dict(item) for item in recovered["verdicts"]]
+    owners[279] = {"kind": "standing_v6_runtime_data_recovered_native", "root": str(root),
+                   "original_terminal": dict(recovered["original_terminal"]), "recovery_adoption": dict(adoption),
+                   "terminal_sha256": recovered["original_terminal"]["sha256"], "native_identity": dict(recovered["native_identity"]),
+                   "replay_receipt": "runtime_data_recovery_adoption"}
+    for ordinal, terminal, identity in zip(future, terminals, tail_identities, strict=True):
         _need(isinstance(terminal, Mapping) and terminal.get("ordinal") == ordinal and terminal.get("native_identity") == identity and isinstance(terminal.get("terminal_sha256"), str)
               and _HASH.fullmatch(terminal["terminal_sha256"]) is not None, "standing v6 candidate terminal differs")
         batch = verdict_batches.get(ordinal, verdict_batches.get(str(ordinal)))
@@ -286,29 +308,24 @@ def _candidate_native_continuation(*, descriptor: Mapping[str, Any], local_descr
               and isinstance(batch.get("question_ids"), list) and isinstance(batch.get("verdicts"), list)
               and [item.get("question_id") for item in batch["verdicts"] if isinstance(item, Mapping)] == batch["question_ids"],
               "standing v6 candidate verdict binding differs")
-        if ordinal in peers:
-            peer = peer_roots.get(ordinal, peer_roots.get(str(ordinal)))
-            verified_batch = peer_batches.get(ordinal, peer_batches.get(str(ordinal)))
-            _need(isinstance(peer, Mapping) and type(peer.get("root")) is str and peer["root"]
-                  and isinstance(peer.get("terminal"), Mapping) and peer["terminal"].get("sha256") == terminal["terminal_sha256"]
-                  and isinstance(peer.get("authorization"), Mapping) and verified_batch == batch,
-                  "standing v6 partial peer source binding differs")
-            owner = {"kind": "standing_v6_partial_peer_native", "root": peer["root"],
-                     "terminal_source_root": dict(peer), "replay_receipt": "standing_v6_partial_peer"}
-        else:
-            owner = {"kind": "standing_v6_partial_successor_native", "root": str(root),
-                     "replay_receipt": "standing_v6_partial_successor"}
         batches[ordinal] = [dict(item) for item in batch["verdicts"]]
-        owners[ordinal] = {**owner, "manifest_sha256": manifest_sha256, "controller_sha256": controller_sha256,
+        owners[ordinal] = {"kind": "standing_v6_runtime_data_successor_native", "root": str(root),
+                           "manifest_sha256": manifest_sha256, "controller_sha256": controller_sha256,
                            "terminal_sha256": terminal["terminal_sha256"],
                            "native_identity": dict(identity),
-                           "candidate": dict(replay["candidate"]), "packet": dict(replay["packet"]),
-                           "standing_source": dict(replay["standing_source"])}
+                           "replay_receipt": "runtime_data_successor"}
     commitment = {"root": str(root), "manifest_sha256": manifest_sha256, "controller_sha256": controller_sha256,
-                  "candidate": dict(replay["candidate"]), "packet": dict(replay["packet"]), "standing_source": dict(replay["standing_source"]),
-                  "protected_paths": dict(verified["protected_paths"]), "queue": dict(replay["queue"]),
-                  "terminal_source_roots": {str(key): dict(value) for key, value in peer_roots.items()},
-                  "peer_replay_ordinals": peers, "future_replay_ordinals": future, "replay_ordinals": expected,
+                  "candidate": dict(context.manifest["candidate"]), "packet": dict(context.manifest["packet"]), "standing_source": dict(context.manifest["standing_source"]),
+                  "protected_paths": {"continuation_root": {"root": str(root), "manifest_sha256": manifest_sha256},
+                                      "original_root": {"root": str(context.root), "manifest_sha256": _sha(context.manifest_raw)},
+                                      "candidate": dict(context.manifest["candidate"]),
+                                      "snapshot_manifest": dict(successor_manifest["source_closure"]["snapshot_manifest"]),
+                                      "runtime_storage": dict(successor_manifest["source_closure"]["runtime_loader"]),
+                                      "recovery_record": dict(successor_manifest["source_closure"]["recovery_record"]),
+                                      "recovery_adoption": dict(successor_manifest["source_closure"]["recovery_adoption"]),
+                                      **{f"original_terminal_{ordinal}": dict(record_by_ordinal[ordinal]["terminal"]) for ordinal in originals}},
+                  "terminal_source_roots": {str(key): dict(value) for key, value in terminal_source_roots.items()},
+                  "original_replay_ordinals": originals, "recovered_replay_ordinals": [279], "future_replay_ordinals": future, "replay_ordinals": expected,
                   "native_identity_commitment_sha256": _sha(_canonical(identities))}
     return owners, identities, batches, commitment
 
@@ -532,12 +549,12 @@ def read_selected_successor_collection(
                 verdicts.extend(local["verdicts"])
                 terminals.append({"ordinal": ordinal, "owner": owner, "local_identity": local["local_identity"]})
                 continue
-            if owner["kind"] in {"standing_v6_partial_peer_native", "standing_v6_partial_successor_native"}:
+            if owner["kind"] in {"standing_v6_runtime_data_original_native", "standing_v6_runtime_data_recovered_native", "standing_v6_runtime_data_successor_native"}:
                 batch = candidate_batches.get(ordinal)
                 _need(isinstance(batch, list) and [item.get("question_id") for item in batch] == request["question_ids"],
-                      "standing v6 partial successor request binding differs")
+                      "runtime data successor request binding differs")
                 verdicts.extend(batch)
-                identities.append(_identity(owner["native_identity"], "standing v6 partial successor"))
+                identities.append(_identity(owner["native_identity"], "runtime data successor"))
                 terminals.append({"ordinal": ordinal, "owner": owner, "terminal_sha256": owner["terminal_sha256"]})
                 continue
             batch, identity = suffix._replay_suffix_terminal(root=Path(owner["root"]), epoch_sha256=owner["epoch_sha256"], epoch=recovery_epoch,

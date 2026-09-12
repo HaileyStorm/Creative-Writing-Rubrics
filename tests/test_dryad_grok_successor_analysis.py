@@ -106,8 +106,8 @@ def collection(subject: Any) -> tuple[dict[str, Any], dict[str, Any], dict[str, 
 
 def test_standing_v6_loader_routes_only_to_serialized_replacement() -> None:
     subject = load()
-    replacement = "baseline_grok_standing_v6_partial_successor.py"
-    predecessor = "baseline_grok_standing_v6_serialized_continuation.py"
+    replacement = "baseline_grok_runtime_data_successor.py"
+    predecessor = "baseline_grok_standing_v6_partial_successor.py"
     assert subject.STANDING_V6_CONTROLLER_PATH.name == replacement
     assert predecessor not in SOURCE.read_text(encoding="utf-8")
     assert predecessor not in subject.READER_PATH.read_text(encoding="utf-8")
