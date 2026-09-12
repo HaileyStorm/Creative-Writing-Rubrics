@@ -86,12 +86,13 @@ The live release-facing work is narrower than the historical experiment log:
   verdicts, retaining 26 complete messages with unknown process exits. Stories
   19 and 42 have coverage 0.8607 and 0.8648, below the unchanged 0.88 floor;
   no stories were filtered out, and full-study admission remains blocked.
-  The [September 12 Grok checkpoint](evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/standing-v6-partial-checkpoint-20260912-v1.json)
-  recognizes **270 requests and 2,094 verdicts**: 268 native results plus the
-  adopted local recoveries for 70 and 254. Nine new native peers passed semantic
-  replay; request 266 stopped at the local host gate before provider contact.
-  Its failed terminal remains preserved. Exactly 2,030 requests remain, with
-  no automatic resend or complete-wave admission for that partial wave.
+  The [September 12 Grok recovery checkpoint](evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/runtime-data-recovery-checkpoint-20260912-v1.json)
+  recognizes **279 requests and 2,160 verdicts**: 277 native results plus the
+  adopted local recoveries for 70 and 254. Request 266's separate first contact
+  passed replay. Request 279's retained native response passed offline recovery
+  after a historical schema-path mismatch, with zero new provider calls.
+  Original failed terminals remain preserved. Exactly 2,021 requests remain;
+  no automatic resend or full-study admission is implied.
   The [detailed collection history](evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/README.md)
   preserves original failures, authorized replacements, earlier snapshots and
   sequencing amendments. In particular, request 221's transport recovery still

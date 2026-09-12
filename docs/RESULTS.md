@@ -36,7 +36,7 @@ is complete; its paired Grok run remains incomplete after quota exhaustion.
 As of September 12, the later [WPB collection](#wpb-terminal-collection) has all
 129 Grok measurements and a reproduced frozen selection, while Sol has two
 verified local CLI results and 127 cells remaining. The
-[selected Dryad baseline](#dryad-source-and-full-hbq-preparation) has 270/2,300
+[selected Dryad baseline](#dryad-source-and-full-hbq-preparation) has 279/2,300
 Grok requests and complete Sol collection. Sol stories 19 and 42 still fail the
 unchanged coverage floor; complete collection does not establish full-study
 admission. Neither study permits automatic resends or an incomplete-campaign
@@ -349,12 +349,17 @@ Source-defined novelty and usefulness are separate co-primary targets, with
 all twelve raw axes also reported separately. There is no invented twelve-axis
 human composite or sampled-leaf substitute for the full 178-question rubric.
 
-The [September 12 Grok checkpoint](../evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/standing-v6-partial-checkpoint-20260912-v1.json)
-verifies 270 logical requests and 2,094 verdicts: 268 native results plus the
-local recoveries for 70 and 254. Its nine latest native results passed individual
-semantic replay. Request 266 stopped before provider contact on a local host-gate
-database error, so the partial wave is not admitted as complete. Exactly 2,030
-requests remain. The [complete Sol collection](../evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/collection-progress-20260910-v3.json)
+The [September 12 Grok recovery checkpoint](../evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/runtime-data-recovery-checkpoint-20260912-v1.json)
+verifies 279 logical requests and 2,160 verdicts: 277 native results plus the
+local recoveries for 70 and 254. Request 266's separately authorized first contact
+passed replay. Request 279 completed its provider contact before a historical
+schema-path mismatch interrupted normalization. Its retained native response
+passed independent offline recovery using the original schema bytes; no new
+contact or response edit occurred. The current schema and original ambiguous
+terminal remain preserved. This check replays 17 recent native results and
+verifies 259 earlier identity commitments; it does not claim a fresh full replay
+of that earlier prefix. Exactly 2,021 requests remain.
+The [complete Sol collection](../evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/collection-progress-20260910-v3.json)
 contains all 2,300 requests and 17,800 verdicts, including 26 complete messages
 with unknown process exits. Stories 19 and 42 remain below the fixed 0.88 coverage
 floor (0.8607 and 0.8648); no story filtering or coverage waiver was applied.
