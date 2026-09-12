@@ -1,4 +1,4 @@
-"""Source-only prospective runtime checks; no native provider proof."""
+"""Frozen manifest and current explicit-data constructor checks; no native proof."""
 
 from __future__ import annotations
 
@@ -47,7 +47,7 @@ def test_manifest_rejects_duplicate_and_nonfinite_fields():
         subject._manifest(b'{"schema_version":NaN}')
 
 
-def test_actual_sources_load_without_provider_or_state_access(tmp_path, monkeypatch):
+def test_snapshot_sources_load_without_provider_or_state_access(tmp_path, monkeypatch):
     subject = load()
     value = binding(subject)
     value["bridge_sha256"] = hashlib.sha256((ROOT / subject.BRIDGE).read_bytes()).hexdigest()
@@ -78,7 +78,19 @@ def test_actual_sources_load_without_provider_or_state_access(tmp_path, monkeypa
     monkeypatch.setattr(builtins, "__build_class__", guarded_class)
     monkeypatch.setattr(socket, "socket", NoNetworkSocket)
     monkeypatch.setattr(socket, "create_connection", lambda *args, **kwargs: pytest.fail("network contact"))
-    runtime = subject.load_runtime(path, expected_manifest_sha256=hashlib.sha256(raw).hexdigest())
+    adapter_path = SOURCE.with_name("baseline_runtime_data_snapshot_v4.py")
+    adapter_spec = importlib.util.spec_from_file_location("baseline_native_runtime_snapshot_test", adapter_path)
+    adapter = importlib.util.module_from_spec(adapter_spec)
+    adapter_spec.loader.exec_module(adapter)
+    epoch = {
+        "old_runtime_loader": {"path": str(SOURCE), "sha256": hashlib.sha256(SOURCE.read_bytes()).hexdigest()},
+        "old_runtime_manifest": {"path": str(path), "sha256": hashlib.sha256(raw).hexdigest()},
+    }
+    runtime = adapter.load_old_runtime_from_epoch(
+        epoch,
+        snapshot_manifest_path=Path("C:/Users/Haile/Documents/cwr-historical-schema-snapshot-20260912-r1/snapshot-manifest.json"),
+        expected_snapshot_manifest_sha256="b899f5cd789e840f134b95fec457ed02f4a3a7e9f448e7d0e3b635e90665fdd4",
+    )
     assert len(runtime.questions) == 178
     assert runtime.transport_sha256 == value["bridge_sha256"]
     assert runtime.provenance["provider_calls"] == 0
