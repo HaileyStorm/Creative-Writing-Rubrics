@@ -119,7 +119,8 @@ def test_capture_binds_the_partial_successor_controller_source() -> None:
     paths = {"analysis": SOURCE, "reader": subject.READER_PATH, "successor_controller": subject.CONTROLLER_PATH,
              "local_controller": subject.LOCAL_CONTROLLER_PATH, "standing_v6_controller": subject.STANDING_V6_CONTROLLER_PATH,
              "old_helper_closure": subject.OLD_HELPER_PATH, "composite": subject.COMPOSITE_PATH,
-             "composite_analysis": subject.ANALYSIS_PATH, "selected_engine": subject.ENGINE_PATH}
+             "composite_analysis": subject.ANALYSIS_PATH, "selected_engine": subject.ENGINE_PATH,
+             "runtime_data_scoring": subject.RUNTIME_DATA_SCORING_PATH}
     pins.update({key: digest(path.read_bytes()) for key, path in paths.items()})
     _captured, _reader, _controller, _old, _composite, _analysis, _engine, _local, standing = subject._capture(pins)
     assert Path(standing.__file__).resolve() == subject.STANDING_V6_CONTROLLER_PATH
@@ -161,6 +162,52 @@ def test_public_admission_rejects_missing_candidate_before_reader_access(monkeyp
     monkeypatch.setattr(subject, "_capture", lambda _pins: pytest.fail("reader capture must remain closed"))
     with pytest.raises(ValueError, match="Standing v6 candidate continuation is required"):
         subject.admit_selected_successor(reader_inputs=inputs, source_pins=pins)
+
+
+def test_public_admission_requires_explicit_runtime_data_before_reader_access(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    subject = load()
+    _data, _selection, pins, inputs = collection(subject)
+    descriptor = {"root": str(tmp_path), "manifest_sha256": "a" * 64, "controller_sha256": "b" * 64}
+    inputs.update({"plan_root": tmp_path, "predecessor_path": tmp_path / "predecessor.json", "old_suffix_root": tmp_path,
+                   "recovery_root": tmp_path, "expected_public_inputs_sha256": "a" * 64,
+                   "approved_v4_routes": {}, "approved_v5_routes": {}, "local_continuation": descriptor,
+                   "candidate_native_continuation": descriptor})
+    monkeypatch.setattr(subject, "_capture", lambda _pins: pytest.fail("reader capture must remain closed"))
+    with pytest.raises(ValueError, match="Explicit runtime data configuration is required"):
+        subject.admit_selected_successor(reader_inputs=inputs, source_pins=pins)
+
+
+def test_runtime_data_proof_is_captured_and_protected_during_fit(tmp_path: Path) -> None:
+    subject = load()
+    _data, _selection, _pins, inputs = collection(subject)
+    sources = {name: {"path": str(tmp_path / (name + ".py")), "sha256": digest(name.encode())}
+               for name in ("context_adapter", "snapshot_manifest", "prefix_adapter", "runtime_data_snapshot_v4",
+                            "runtime_data_snapshot_v5", "native_data_admission", "recovered_data_admission")}
+    for name, item in sources.items():
+        Path(item["path"]).write_bytes(name.encode())
+    config = {name: sources[name] for name in ("context_adapter", "snapshot_manifest", "prefix_adapter")}
+    config["source_bindings"] = {name: item for name, item in sources.items() if name not in config}
+    schema = tmp_path / "historical-schema.json"
+    schema.write_bytes(b"historical")
+    protected = {"historical_schema": {"path": str(schema), "sha256": digest(schema.read_bytes())}}
+    captured = {}
+    subject._capture_runtime_data(captured, subject._runtime_data_descriptors(config))
+    subject._capture_runtime_data(captured, protected)
+    inputs.update({"plan_root": tmp_path / "plan", "predecessor_path": tmp_path / "predecessor.json",
+                   "old_suffix_root": tmp_path / "old", "recovery_root": tmp_path / "recovery", "runtime_data": config})
+    scoring = {"scoring_manifest_path": tmp_path / "scoring.json", "v5_runtime_manifest_path": tmp_path / "runtime.json",
+               "v5_runtime_package_root": tmp_path / "package"}
+    paths = subject._protected_inputs(inputs, scoring, runtime_data_paths=protected)
+    assert {item["path"] for item in sources.values()} | {str(schema)} <= set(paths)
+    math_spec = importlib.util.spec_from_file_location("runtime_data_preflight_math", subject.ANALYSIS_PATH)
+    assert math_spec and math_spec.loader
+    math = importlib.util.module_from_spec(math_spec)
+    math_spec.loader.exec_module(math)
+    with pytest.raises(ValueError, match="fresh external"):
+        math._output_preflight(schema / "fit", *paths)
+    schema.write_bytes(b"changed")
+    with pytest.raises(ValueError, match="source changed"):
+        subject._unchanged(captured)
 
 
 def test_admission_accepts_reader_partial_predecessor_peer_ownership() -> None:

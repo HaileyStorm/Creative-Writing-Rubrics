@@ -22,12 +22,14 @@ OLD_HELPER_PATH = ROOT / "baseline_grok_recovery_analysis.py"
 COMPOSITE_PATH = ROOT / "baseline_composite_admission_v5.py"
 ANALYSIS_PATH = ROOT / "baseline_composite_analysis_v5.py"
 ENGINE_PATH = ROOT / "baseline_selected_analysis_runtime.py"
+RUNTIME_DATA_SCORING_PATH = ROOT / "baseline_runtime_data_scoring.py"
 OLD_HELPER_SHA256 = "ae10578a9d1bd12b3e2b02744d06c216974508f196d7ba865776c6b0b200c808"
 PIN_KEYS = frozenset({
     "analysis", "reader", "successor_controller", "old_helper_closure", "composite",
     "composite_analysis", "selected_engine", "workflow", "v1_runtime_loader", "v5_runtime_loader",
     "local_controller", "local_proposal", "local_adoption",
     "standing_v6_controller", "standing_v6_candidate", "standing_v6_packet", "standing_v6_source",
+    "runtime_data_scoring",
 })
 EXPECTED_COUNTS = {"stories": 100, "logical_requests": 2300, "native_requests": 2299,
                    "study_recovered_requests": 1, "criterion_verdicts": 17800}
@@ -107,6 +109,7 @@ def _capture(source_pins: Mapping[str, Any]) -> tuple[dict[Path, bytes], ModuleT
         (COMPOSITE_PATH, pins["composite"], "composite"),
         (ANALYSIS_PATH, pins["composite_analysis"], "composite_analysis"),
         (ENGINE_PATH, pins["selected_engine"], "selected_engine"),
+        (RUNTIME_DATA_SCORING_PATH, pins["runtime_data_scoring"], "runtime_data_scoring"),
     )
     captured: dict[Path, bytes] = {}
     loaded: dict[str, ModuleType] = {}
@@ -138,6 +141,33 @@ def _capture_local_closure(captured: dict[Path, bytes], admission: SelectedSucce
         if not isinstance(descriptor, Mapping):
             raise ValueError("Selected local continuation proof closure differs")  # noqa: TRY004
         path, raw = _read(descriptor.get("path"), pin, "Local " + name)
+        captured[path] = raw
+
+
+def _runtime_data_descriptors(config: Any) -> dict[str, Mapping[str, Any]]:
+    required = {"context_adapter", "snapshot_manifest", "prefix_adapter", "source_bindings"}
+    sources = {"runtime_data_snapshot_v4", "runtime_data_snapshot_v5", "native_data_admission", "recovered_data_admission"}
+    if (not isinstance(config, Mapping) or set(config) != required
+            or not isinstance(config["source_bindings"], Mapping) or set(config["source_bindings"]) != sources):
+        raise ValueError("Explicit runtime data configuration differs")
+    descriptors = {name: config[name] for name in required - {"source_bindings"}}
+    descriptors.update(config["source_bindings"])
+    for name, item in descriptors.items():
+        if (not isinstance(item, Mapping) or set(item) != {"path", "sha256"}
+                or type(item["path"]) is not str or not item["path"]):
+            raise ValueError("Runtime data descriptor differs")
+        _hash(item["sha256"], "Runtime data " + name)
+    return descriptors
+
+
+def _capture_runtime_data(captured: dict[Path, bytes], descriptors: Mapping[str, Any]) -> None:
+    for name, item in descriptors.items():
+        if (not isinstance(item, Mapping) or set(item) != {"path", "sha256"}
+                or type(item["path"]) is not str or not item["path"]):
+            raise ValueError("Runtime data protected descriptor differs")
+        path, raw = _read(item["path"], item["sha256"], "Runtime data " + name)
+        if path in captured and captured[path] != raw:
+            raise ValueError("Runtime data changed during admission")
         captured[path] = raw
 
 
@@ -376,7 +406,52 @@ def _admit_collection(collection: Mapping[str, Any], reader: ModuleType, *, sour
               "native_identity_commitment_sha256": collection["native_identity_commitment_sha256"]}
     if local_record is not None:
         record["local_recovery"] = local_record
+    if "runtime_data" in reader_inputs:
+        config = reader_inputs["runtime_data"]
+        _runtime_data_descriptors(config)
+        provenance = collection.get("runtime_data_provenance")
+        protected = collection.get("runtime_data_protected_paths")
+        if (not isinstance(provenance, Mapping) or provenance.get("config") != config
+                or commitments.get("runtime_data_config_sha256") != reader._sha(reader._canonical(config))
+                or not isinstance(protected, Mapping) or not protected):
+            raise ValueError("Collection runtime data binding differs")
+        record["runtime_data_provenance"] = dict(provenance)
+        record["runtime_data_protected_paths"] = dict(protected)
     return SelectedSuccessorAdmission(record=record, sha256=_sha(_canonical(record)))
+
+
+def _selection_with_runtime_data(composite: ModuleType, reader: ModuleType,
+                                 inputs: Mapping[str, Any]) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
+    plan_root = Path(inputs["plan_root"]).resolve()
+    _raw, predecessor = composite._predecessor(inputs["predecessor_path"], inputs["expected_predecessor_sha256"])
+    adapter, _prefix, config = reader._runtime_data(inputs["runtime_data"])
+    context = adapter.build_snapshot_replay_context(
+        suffix_root=Path(inputs["old_suffix_root"]).resolve(), plan_root=plan_root,
+        expected_epoch_sha256=inputs["expected_old_epoch_sha256"],
+        expected_suffix_source_sha256=inputs["expected_suffix_source_sha256"], predecessor=predecessor,
+        snapshot_manifest_path=Path(config["snapshot_manifest"]["path"]),
+        expected_snapshot_manifest_sha256=config["snapshot_manifest"]["sha256"], source_bindings=config["source_bindings"],
+    )
+    initialization, original, ledger = composite._predecessor_bindings(
+        context, predecessor, expected_plan_sha256=inputs["expected_plan_sha256"],
+        expected_public_inputs_sha256=inputs["expected_public_inputs_sha256"],
+    )
+    schedule = composite._descriptor_with_bytes(context.epoch["selected_schedule"], "Selected schedule")
+    source = composite._descriptor(context.epoch["selected_schedule_source"], "Selected schedule source")
+    verifier = composite._load_module(Path(source["path"]), source["sha256"], "Selected schedule source")
+    verified = verifier.verify_selected_schedule(
+        descriptor=composite._json(composite._read(Path(schedule["path"]), schedule["sha256"], "Selected schedule"), "Selected schedule"),
+        plan_root=plan_root, expected_plan_sha256=inputs["expected_plan_sha256"],
+    )
+    requests, sessions = composite._identity_exclusions(predecessor["identity_exclusion"])
+    context.old_runtime.verify()
+    context.suffix_runtime.verify()
+    reader._verify_runtime_data_sources(config)
+    return ({"schedule": schedule, "source": source, "verified": verified},
+            {"initialization": predecessor["initialization"], "initialization_record": initialization,
+             "ledger_head": predecessor["ledger_head"], "ledger_head_record": ledger,
+             "original_initialization": original, "recovery_manifest": predecessor["recovery_manifest"]},
+            {"requests": requests, "sessions": sessions})
 
 
 def admit_selected_successor(*, reader_inputs: Mapping[str, Any], source_pins: Mapping[str, Any]) -> SelectedSuccessorAdmission:
@@ -386,34 +461,57 @@ def admit_selected_successor(*, reader_inputs: Mapping[str, Any], source_pins: M
                 "expected_predecessor_sha256", "expected_old_epoch_sha256", "expected_suffix_source_sha256",
                 "expected_recovery_controller_sha256", "expected_recovery_manifest_sha256", "expected_public_inputs_sha256", "approved_v4_routes",
                 "approved_v5_routes", "successor_roots", "local_continuation", "candidate_native_continuation"}
-    if not isinstance(reader_inputs, Mapping) or set(reader_inputs) != required:
+    if not isinstance(reader_inputs, Mapping) or set(reader_inputs) not in (required, required | {"runtime_data"}):
         raise ValueError("Selected successor reader inputs differ")
     if _local_descriptor(reader_inputs["local_continuation"]) is None:
         raise ValueError("Selected successor local continuation is required")
     if _local_descriptor(reader_inputs["candidate_native_continuation"]) is None:
         raise ValueError("Standing v6 candidate continuation is required")
-    captured, reader, _controller, old, composite, _analysis, _engine, _local, _standing = _capture(pins)
+    if "runtime_data" not in reader_inputs:
+        raise ValueError("Explicit runtime data configuration is required")
+    data_descriptors = _runtime_data_descriptors(reader_inputs["runtime_data"])
+    captured, reader, _controller, _old, composite, _analysis, _engine, _local, _standing = _capture(pins)
+    _capture_runtime_data(captured, data_descriptors)
     inputs = dict(reader_inputs)
     reader_call = {key: value for key, value in inputs.items() if key not in {"expected_public_inputs_sha256", "successor_roots", "local_continuation", "candidate_native_continuation"}}
     collection = reader.read_selected_successor_collection(successor_roots=inputs["successor_roots"],
                                                            local_continuation=inputs["local_continuation"],
                                                            candidate_native_continuation=inputs["candidate_native_continuation"], **reader_call)
-    selection, predecessor, exclusions = old._selection(
-        composite, plan_root=Path(inputs["plan_root"]).resolve(), predecessor_path=inputs["predecessor_path"],
-        suffix_root=inputs["old_suffix_root"], expected_plan_sha256=inputs["expected_plan_sha256"],
-        expected_predecessor_sha256=inputs["expected_predecessor_sha256"],
-        expected_suffix_epoch_sha256=inputs["expected_old_epoch_sha256"],
-        expected_suffix_source_sha256=inputs["expected_suffix_source_sha256"],
-        expected_public_inputs_sha256=inputs["expected_public_inputs_sha256"])
+    selection, predecessor, exclusions = _selection_with_runtime_data(composite, reader, inputs)
     admitted = _admit_collection(collection, reader, source_pins=pins, reader_inputs=inputs, selection=selection,
                                  predecessor=predecessor, exclusions=exclusions)
     _capture_local_closure(captured, admitted, pins)
+    _capture_runtime_data(captured, admitted.record["runtime_data_protected_paths"])
     _unchanged(captured)
     return admitted
 
 
-def _runtime(old: ModuleType, analysis: ModuleType, *, source_pins: Mapping[str, str], scoring_inputs: Mapping[str, Any], captured: dict[Path, bytes]) -> dict[str, Any]:
-    return old._runtime(analysis, source_pins=source_pins, scoring_inputs=scoring_inputs, captured=captured)
+def _runtime(analysis: ModuleType, *, source_pins: Mapping[str, str], scoring_inputs: Mapping[str, Any],
+             captured: dict[Path, bytes], reader_inputs: Mapping[str, Any]) -> dict[str, Any]:
+    required = {"scoring_manifest_path", "v5_runtime_manifest_path", "v5_runtime_package_root",
+                "expected_scoring_manifest_sha256", "expected_v5_runtime_manifest_sha256", "expected_v5_runtime_package_manifest_sha256"}
+    if not isinstance(scoring_inputs, Mapping) or set(scoring_inputs) != required:
+        raise ValueError("Scoring inputs differ")
+    descriptors = _runtime_data_descriptors(reader_inputs.get("runtime_data"))
+    _captured, _composer, _pure, _engine, v1_loader, v5_loader = analysis._capture(
+        expected_analysis_sha256=source_pins["composite_analysis"], expected_composer_sha256=source_pins["composite"],
+        expected_workflow_sha256=source_pins["workflow"], expected_engine_sha256=source_pins["selected_engine"],
+        engine_label="Selected engine", expected_scoring_runtime_loader_sha256=source_pins["v1_runtime_loader"],
+        expected_v5_runtime_loader_sha256=source_pins["v5_runtime_loader"],
+    )
+    captured.update(_captured)
+    _capture_runtime_data(captured, descriptors)
+    path, raw = _read(RUNTIME_DATA_SCORING_PATH, source_pins["runtime_data_scoring"], "Runtime data scoring")
+    captured[path] = raw
+    adapter = _load(path, raw, "runtime_data_scoring")
+    snapshot = reader_inputs["runtime_data"]["snapshot_manifest"]
+    scoring, scoring_captured = adapter.runtime_parity_with_data(
+        v1_loader, v5_loader, **dict(scoring_inputs), snapshot_manifest_path=Path(snapshot["path"]),
+        expected_snapshot_manifest_sha256=snapshot["sha256"],
+    )
+    captured.update(scoring_captured)
+    _unchanged(captured)
+    return scoring
 
 
 def _stage(old: ModuleType, admission: SelectedSuccessorAdmission, analysis: ModuleType, *, public_inputs_path: Path | str,
@@ -428,7 +526,8 @@ def _reader_public(reader_inputs: Mapping[str, Any], expected_public_inputs_sha2
 
 
 def _protected_inputs(reader_inputs: Mapping[str, Any], scoring_inputs: Mapping[str, Any],
-                      local_recovery: Mapping[str, Any] | None = None) -> tuple[Any, ...]:
+                      local_recovery: Mapping[str, Any] | None = None,
+                      runtime_data_paths: Mapping[str, Any] | None = None) -> tuple[Any, ...]:
     roots = reader_inputs.get("successor_roots")
     if (not isinstance(roots, (list, tuple)) or not roots
             or any(not isinstance(item, Mapping) or set(item) != {"root", "manifest_sha256"}
@@ -475,9 +574,21 @@ def _protected_inputs(reader_inputs: Mapping[str, Any], scoring_inputs: Mapping[
                     raise ValueError("Standing v6 candidate terminal source roots differ")
                 candidate_values.append(item["root"])
             local_paths += tuple(candidate_values)
+    data_paths: list[str] = []
+    data_descriptors = {} if "runtime_data" not in reader_inputs else _runtime_data_descriptors(reader_inputs["runtime_data"])
+    if runtime_data_paths is not None:
+        if not isinstance(runtime_data_paths, Mapping):
+            raise ValueError("Runtime data protected paths differ")
+        data_descriptors = {**data_descriptors, **runtime_data_paths}
+    for item in data_descriptors.values():
+        if (not isinstance(item, Mapping) or set(item) != {"path", "sha256"}
+                or type(item["path"]) is not str or not item["path"]):
+            raise ValueError("Runtime data protected descriptor differs")
+        _hash(item["sha256"], "Runtime data protected hash")
+        data_paths.append(item["path"])
     return (reader_inputs["plan_root"], reader_inputs["predecessor_path"], reader_inputs["old_suffix_root"],
             reader_inputs["recovery_root"], *(item["root"] for item in roots),
-            *(() if descriptor is None else (descriptor["root"],)), *(() if candidate_descriptor is None else (candidate_descriptor["root"],)), *local_paths,
+            *(() if descriptor is None else (descriptor["root"],)), *(() if candidate_descriptor is None else (candidate_descriptor["root"],)), *local_paths, *data_paths,
             scoring_inputs["scoring_manifest_path"], scoring_inputs["v5_runtime_manifest_path"],
             scoring_inputs["v5_runtime_package_root"])
 
@@ -500,6 +611,8 @@ def _freeze(stage: str, admission: SelectedSuccessorAdmission, *, source_pins: M
         result["train"] = dict(train)
     if local is not None:
         result["local_recovery"] = local
+    if "runtime_data_provenance" in scoring:
+        result["scoring_runtime_data_provenance"] = dict(scoring["runtime_data_provenance"])
     return result
 
 
@@ -509,10 +622,11 @@ def fit_selected_successor_train(*, reader_inputs: Mapping[str, Any], public_inp
     pins = _pins(source_pins); _reader_public(reader_inputs, expected_public_inputs_sha256)
     admission = admit_selected_successor(reader_inputs=reader_inputs, source_pins=pins)
     captured, _reader, _controller, old, _composite, analysis, engine, _local, _standing = _capture(pins)
-    output = analysis._output_preflight(output_root, *_protected_inputs(reader_inputs, scoring_inputs, admission.record.get("local_recovery")), public_inputs_path, train_targets_path)
+    _capture_runtime_data(captured, admission.record.get("runtime_data_protected_paths", {}))
+    output = analysis._output_preflight(output_root, *_protected_inputs(reader_inputs, scoring_inputs, admission.record.get("local_recovery"), admission.record.get("runtime_data_protected_paths")), public_inputs_path, train_targets_path)
     partitions, projected, projection, binding = _stage(old, admission, analysis, public_inputs_path=public_inputs_path,
                                                           expected_public_inputs_sha256=expected_public_inputs_sha256)
-    scoring = _runtime(old, analysis, source_pins=pins, scoring_inputs=scoring_inputs, captured=captured)
+    scoring = _runtime(analysis, source_pins=pins, scoring_inputs=scoring_inputs, captured=captured, reader_inputs=reader_inputs)
     pure = _load(analysis.WORKFLOW_PATH, _read(analysis.WORKFLOW_PATH, pins["workflow"], "workflow")[1], "workflow")
     target_path, target_raw, targets, target_projection = analysis._selected_targets(
         pure, train_targets_path, pure.TRAIN_TARGETS_SHA256, "TRAIN", partitions["TRAIN"],
@@ -547,6 +661,7 @@ def _train_binding(fit_raw: bytes, freeze_raw: bytes, *, admission: SelectedSucc
             or freeze.get("successor_root_chain") != admission.record["successor_root_chain"]
             or (local is not None and freeze.get("local_recovery") != local)
             or freeze.get("source_pins") != dict(source_pins) or freeze.get("scoring_commitment_sha256") != scoring["commitment_sha256"]
+            or freeze.get("scoring_runtime_data_provenance") != scoring.get("runtime_data_provenance")
             or freeze.get("engine_binding") != dict(binding) or freeze.get("verdict_projection") != dict(projection)
             or freeze.get("inner", {}).get("sha256") != _sha(fit_raw)
             or fit.get("input_commitments", {}).get("verdict_rows_sha256") != projection["projected_rows_sha256"]["TRAIN"]):
@@ -567,9 +682,10 @@ def _compute_dev(*, reader_inputs: Mapping[str, Any], public_inputs_path: Path |
     pins = _pins(source_pins); _reader_public(reader_inputs, expected_public_inputs_sha256)
     admission = admit_selected_successor(reader_inputs=reader_inputs, source_pins=pins)
     captured, _reader, _controller, old, _composite, analysis, engine, _local, _standing = _capture(pins)
+    _capture_runtime_data(captured, admission.record.get("runtime_data_protected_paths", {}))
     partitions, projected, projection, binding = _stage(old, admission, analysis, public_inputs_path=public_inputs_path,
                                                           expected_public_inputs_sha256=expected_public_inputs_sha256)
-    scoring = _runtime(old, analysis, source_pins=pins, scoring_inputs=scoring_inputs, captured=captured)
+    scoring = _runtime(analysis, source_pins=pins, scoring_inputs=scoring_inputs, captured=captured, reader_inputs=reader_inputs)
     fit_checked, fit_raw = _read(fit_path, expected_fit_sha256, "Frozen selected successor TRAIN fit")
     freeze_checked, freeze_raw = _read(train_freeze_path, expected_train_freeze_sha256, "Frozen selected successor TRAIN freeze")
     captured[fit_checked], captured[freeze_checked] = fit_raw, freeze_raw
@@ -608,7 +724,7 @@ def compare_selected_successor_dev(*, reader_inputs: Mapping[str, Any], public_i
     pins = _pins(source_pins); _reader_public(reader_inputs, expected_public_inputs_sha256)
     admission = admit_selected_successor(reader_inputs=reader_inputs, source_pins=pins)
     analysis = _load(ANALYSIS_PATH, _read(ANALYSIS_PATH, pins["composite_analysis"], "composite analysis")[1], "output")
-    output = analysis._output_preflight(output_root, *_protected_inputs(reader_inputs, scoring_inputs, admission.record.get("local_recovery")), public_inputs_path,
+    output = analysis._output_preflight(output_root, *_protected_inputs(reader_inputs, scoring_inputs, admission.record.get("local_recovery"), admission.record.get("runtime_data_protected_paths")), public_inputs_path,
                                          dev_targets_path, fit_path, train_freeze_path)
     result, raw, freeze, _captured = _compute_dev(reader_inputs=reader_inputs, public_inputs_path=public_inputs_path,
         expected_public_inputs_sha256=expected_public_inputs_sha256, dev_targets_path=dev_targets_path, fit_path=fit_path,
