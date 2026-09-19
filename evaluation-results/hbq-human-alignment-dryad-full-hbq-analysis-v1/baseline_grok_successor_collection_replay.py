@@ -19,12 +19,16 @@ RECOVERY = ROOT / "baseline_grok_selected_recovery.py"
 SUCCESSOR = ROOT / "baseline_grok_selected_successor.py"
 LOCAL_CONTINUATION = ROOT / "baseline_grok_selected_local_continuation.py"
 STANDING_V6_CONTINUATION = ROOT / "baseline_grok_runtime_data_successor.py"
+RENEWED_CONTINUATION = ROOT / "baseline_grok_renewed_successor.py"
 CONTEXT_ADAPTER = ROOT / "baseline_runtime_data_collection_context.py"
 PREFIX_ADAPTER = ROOT / "baseline_runtime_data_prefix.py"
 COMPOSITE_SHA256 = "efd33ba0fcce7ae8c64a9aea280830998cb974c0250a411d657304a2fd0c50f6"
 SUFFIX_SHA256 = "eab249cbdaa43cdb7f89364b97079000eda7b71717693711cda1de3de66a2b75"
 RECOVERY_SHA256 = "687a60bcdd26227b3bcb6ae5081f3357bceb84b4b29312653617ef3d36887399"
 SUCCESSOR_SHA256 = "fc0dbe04b3699522271157a87fc2f5a5659ffc108bd7eb3a68d6bf393e49bac8"
+RENEWED_SUCCESSOR_SHA256 = (
+    "e476b47fa4fc88f13fde1752d691352892d80af415f2bb6425077e66facc1696"
+)
 LOCAL_PROJECTION_SHA256 = (
     "0ae9213b33a51315f082f9091fe40601f21efbdc32475d8010956d9cd8ee716b"
 )
@@ -996,6 +1000,440 @@ def _candidate_native_continuation(
     return owners, identities, batches, commitment
 
 
+def _renewed_native_continuation(
+    *, descriptor: Mapping[str, Any], plan_root: Path
+) -> tuple[
+    dict[int, dict[str, Any]],
+    list[dict[str, str]],
+    dict[int, list[dict[str, Any]]],
+    dict[str, Any],
+]:
+    root, manifest_sha256, controller_sha256 = _local_descriptor(descriptor)
+    _need(
+        controller_sha256 == RENEWED_SUCCESSOR_SHA256,
+        "renewed successor controller differs",
+    )
+    controller = _module(
+        RENEWED_CONTINUATION,
+        controller_sha256,
+        "renewed successor controller",
+    )
+    state = controller.verify(
+        continuation_root=root, expected_manifest_sha256=manifest_sha256
+    )
+    manifest = state.get("manifest") if isinstance(state, Mapping) else None
+    context = state.get("context") if isinstance(state, Mapping) else None
+    historical = state.get("historical") if isinstance(state, Mapping) else None
+    prefix = state.get("prefix") if isinstance(state, Mapping) else None
+    source_epoch = state.get("source_epoch") if isinstance(state, Mapping) else None
+    _need(
+        isinstance(manifest, Mapping)
+        and context is not None
+        and isinstance(historical, Mapping)
+        and isinstance(prefix, Mapping)
+        and source_epoch == getattr(controller, "SOURCE_EPOCH", None)
+        and Path(str(getattr(context, "plan_root", ""))).resolve() == plan_root,
+        "renewed successor source epoch differs",
+    )
+    controller._records(root)
+    replayed, _previous = controller._replayed(root, state)
+    pending = list(state.get("pending_ordinals", []))
+    _need(
+        pending
+        and replayed == set(pending)
+        and pending == list(getattr(controller, "PENDING", pending)),
+        "renewed successor replay boundary differs",
+    )
+    closure = manifest.get("source_closure")
+    historical_state = historical.get("state")
+    prior_identities = historical.get("prior_identities")
+    prefix_value = prefix.get("value")
+    prefix_identities = prefix.get("identities")
+    requests = getattr(context, "requests", None)
+    _need(
+        isinstance(closure, Mapping)
+        and isinstance(historical_state, Mapping)
+        and isinstance(prior_identities, list)
+        and len(prior_identities) == 277
+        and isinstance(prefix_value, Mapping)
+        and isinstance(prefix_identities, list)
+        and len(prefix_identities) == 58
+        and len(state.get("prior_identities", [])) == 335
+        and _unique(prior_identities + prefix_identities)
+        and isinstance(requests, Mapping),
+        "renewed historical identity boundary differs",
+    )
+
+    owners: dict[int, dict[str, Any]] = {}
+    identities: list[dict[str, str]] = []
+    batches: dict[int, list[dict[str, Any]]] = {}
+
+    def bind_historical(
+        *,
+        ordinal: int,
+        record: Mapping[str, Any],
+        kind: str,
+        receipt: str,
+        root_value: str,
+        manifest_value: str | None = None,
+        controller_value: str | None = None,
+        extra: Mapping[str, Any] | None = None,
+    ) -> None:
+        request = requests.get(ordinal)
+        _need(
+            isinstance(request, Mapping)
+            and record.get("ordinal") == ordinal
+            and isinstance(record.get("native_identity"), Mapping)
+            and isinstance(record.get("verdicts"), list),
+            "renewed historical record differs",
+        )
+        identity = _identity(record["native_identity"], "renewed historical")
+        terminal = record.get("terminal")
+        _need(
+            isinstance(terminal, Mapping)
+            and set(terminal) >= {"path", "sha256"},
+            "renewed historical terminal differs",
+        )
+        terminal_raw = _read(
+            Path(terminal["path"]), terminal["sha256"], "renewed historical terminal"
+        )
+        terminal_value = _json(terminal_raw, "renewed historical terminal")
+        _need(
+            isinstance(terminal_value, Mapping)
+            and terminal_value.get("ordinal") == ordinal
+            and terminal_value.get("state") == "completed"
+            and _identity(terminal_value.get("native_identity"), "renewed historical terminal")
+            == identity,
+            "renewed historical terminal differs",
+        )
+        verdicts = _verdicts(
+            record["verdicts"],
+            request.get("question_ids", []),
+            "renewed historical",
+        )
+        owner: dict[str, Any] = {
+            "kind": kind,
+            "root": root_value,
+            "terminal_sha256": terminal["sha256"],
+            "native_identity": dict(identity),
+            "replay_receipt": receipt,
+        }
+        if manifest_value is not None:
+            owner["manifest_sha256"] = manifest_value
+        if controller_value is not None:
+            owner["controller_sha256"] = controller_value
+        if isinstance(extra, Mapping):
+            owner.update(dict(extra))
+        _need(ordinal not in owners, "renewed historical ordinal ownership collision")
+        owners[ordinal] = owner
+        identities.append(identity)
+        batches[ordinal] = verdicts
+
+    historical_context = historical_state.get("context")
+    historical_records = getattr(historical_context, "records", None)
+    _need(
+        isinstance(historical_records, list)
+        and [item.get("ordinal") for item in historical_records if isinstance(item, Mapping)]
+        == list(range(262, 279)),
+        "renewed original historical records differ",
+    )
+    historical_manifest = closure.get("historical_continuation")
+    historical_controller = closure.get("historical_controller")
+    _need(
+        isinstance(historical_manifest, Mapping)
+        and isinstance(historical_controller, Mapping),
+        "renewed historical source descriptors differ",
+    )
+    terminal_source_roots = getattr(historical_context, "manifest", {}).get(
+        "terminal_source_roots", {}
+    )
+    _need(
+        isinstance(terminal_source_roots, Mapping),
+        "renewed original terminal roots differ",
+    )
+    historical_manifest_value = historical.get("manifest")
+    queue = (
+        historical_manifest_value.get("source_closure", {}).get("queue")
+        if isinstance(historical_manifest_value, Mapping)
+        else None
+    )
+    _need(
+        isinstance(queue, Mapping)
+        and type(queue.get("path")) is str
+        and bool(queue["path"]),
+        "renewed historical queue differs",
+    )
+    broker = historical_context.candidate.Broker(Path(queue["path"]))
+    for record in historical_records:
+        ordinal = record["ordinal"]
+        source_root = terminal_source_roots.get(str(ordinal))
+        if source_root is None:
+            source_root = {
+                "root": str(getattr(historical_context, "root", root)),
+                "terminal": dict(record["terminal"]),
+            }
+        _need(
+            isinstance(source_root, Mapping)
+            and type(source_root.get("root")) is str
+            and bool(source_root["root"])
+            and source_root.get("terminal") == record["terminal"],
+            "renewed original terminal root differs",
+        )
+        bind_historical(
+            ordinal=ordinal,
+            record=record,
+            kind="standing_v6_runtime_data_original_native",
+            receipt="runtime_data_original",
+            root_value=source_root["root"],
+            extra={"terminal_source_root": dict(source_root)},
+        )
+
+    recovered = historical_state.get("recovered")
+    request_279 = requests.get(279)
+    _need(
+        isinstance(recovered, Mapping)
+        and isinstance(request_279, Mapping)
+        and recovered.get("ordinal") == 279
+        and isinstance(recovered.get("native_identity"), Mapping)
+        and isinstance(recovered.get("verdicts"), list),
+        "renewed recovered historical record differs",
+    )
+    recovered_identity = _identity(
+        recovered["native_identity"], "renewed recovered historical"
+    )
+    recovered_verdicts = _verdicts(
+        recovered["verdicts"], request_279.get("question_ids", []), "renewed recovered"
+    )
+    recovered_terminal = recovered.get("original_terminal")
+    _need(
+        isinstance(recovered_terminal, Mapping)
+        and set(recovered_terminal) >= {"path", "sha256"},
+        "renewed recovered historical terminal differs",
+    )
+    owners[279] = {
+        "kind": "standing_v6_runtime_data_recovered_native",
+        "root": historical_manifest["root"],
+        "original_terminal": dict(recovered_terminal),
+        "recovery_adoption": dict(historical_state.get("adoption", {})),
+        "terminal_sha256": recovered_terminal["sha256"],
+        "native_identity": dict(recovered_identity),
+        "replay_receipt": "runtime_data_recovery_adoption",
+    }
+    identities.append(recovered_identity)
+    batches[279] = recovered_verdicts
+
+    prefix_records = prefix_value.get("current_records")
+    _need(
+        isinstance(prefix_records, list)
+        and [item.get("ordinal") for item in prefix_records if isinstance(item, Mapping)]
+        == list(range(280, 338)),
+        "renewed retained prefix records differ",
+    )
+    for record in prefix_records:
+        ordinal = record["ordinal"]
+        request = requests.get(ordinal)
+        _need(isinstance(request, Mapping), "renewed retained prefix request differs")
+        terminal = record.get("terminal")
+        replay = record.get("replay")
+        _need(
+            isinstance(terminal, Mapping)
+            and isinstance(replay, Mapping)
+            and set(terminal) >= {"path", "sha256"}
+            and set(replay) >= {"path", "sha256"},
+            "renewed retained prefix source differs",
+        )
+        terminal_raw = _read(
+            Path(terminal["path"]), terminal["sha256"], "renewed retained terminal"
+        )
+        terminal_value = _json(terminal_raw, "renewed retained terminal")
+        replay_raw = _read(
+            Path(replay["path"]), replay["sha256"], "renewed retained replay"
+        )
+        replay_value = _json(replay_raw, "renewed retained replay")
+        identity = _identity(record["native_identity"], "renewed retained identity")
+        _need(
+            terminal_value.get("ordinal") == ordinal
+            and terminal_value.get("state") == "completed"
+            and _identity(terminal_value.get("native_identity"), "renewed retained terminal")
+            == identity
+            and replay_value.get("ordinals") == [ordinal]
+            and replay_value.get("native_identities")
+            and _identity(replay_value["native_identities"][0], "renewed retained replay")
+            == identity,
+            "renewed retained prefix semantic binding differs",
+        )
+        semantic_identity, semantic_verdicts, semantic_descriptor = (
+            historical_context.base._semantic_replay_terminal(
+                candidate=historical_context.candidate,
+                broker=broker,
+                terminal=terminal_value,
+                terminal_path=Path(terminal["path"]),
+                parent=historical_context.parent,
+                runtime=historical_context.runtime,
+                plan_root=historical_context.plan_root,
+                passes=historical_context.passes,
+                requests=historical_context.requests,
+            )
+        )
+        _need(
+            _identity(semantic_identity, "renewed retained semantic identity") == identity
+            and semantic_verdicts == terminal_value.get("verdicts")
+            and isinstance(semantic_descriptor, Mapping)
+            and semantic_descriptor.get("sha256")
+            == replay_value.get("terminals", [{}])[0].get("native_envelope_sha256"),
+            "renewed retained semantic replay differs",
+        )
+        _need(ordinal not in owners, "renewed retained ordinal ownership collision")
+        owners[ordinal] = {
+            "kind": "standing_v6_runtime_data_successor_native",
+            "root": historical_manifest["root"],
+            "manifest_sha256": historical_manifest["manifest_sha256"],
+            "controller_sha256": historical_controller["sha256"],
+            "terminal_sha256": terminal["sha256"],
+            "native_identity": dict(identity),
+            "terminal_source": dict(terminal),
+            "replay_source": dict(replay),
+            "replay_receipt": "runtime_data_successor",
+        }
+        identities.append(identity)
+        batches[ordinal] = _verdicts(
+            semantic_verdicts,
+            request.get("question_ids", []),
+            "renewed retained prefix",
+        )
+
+    for ordinal in pending:
+        request = requests.get(ordinal)
+        terminal_path = controller._attempt(root, ordinal, "terminal.json")
+        replay_path = controller._replay(root, ordinal)
+        terminal_raw = terminal_path.read_bytes()
+        replay_raw = replay_path.read_bytes()
+        terminal = _json(terminal_raw, "renewed terminal")
+        replay = _json(replay_raw, "renewed replay")
+        _need(
+            isinstance(request, Mapping)
+            and isinstance(terminal, Mapping)
+            and isinstance(replay, Mapping)
+            and terminal.get("source_epoch") == source_epoch
+            and terminal.get("ordinal") == ordinal
+            and terminal.get("state") == "completed"
+            and replay.get("ordinals") == [ordinal]
+            and replay.get("native_identities")
+            and _identity(replay["native_identities"][0], "renewed replay identity")
+            == _identity(terminal.get("native_identity"), "renewed terminal identity"),
+            "renewed successor terminal binding differs",
+        )
+        identity = _identity(terminal["native_identity"], "renewed successor")
+        _need(ordinal not in owners, "renewed successor ordinal ownership collision")
+        replay_terminals = replay.get("terminals")
+        _need(
+            isinstance(replay_terminals, list)
+            and len(replay_terminals) == 1
+            and replay_terminals[0].get("ordinal") == ordinal
+            and replay_terminals[0].get("terminal_sha256") == _sha(terminal_raw)
+            and isinstance(replay_terminals[0].get("native_envelope_sha256"), str)
+            and _HASH.fullmatch(replay_terminals[0]["native_envelope_sha256"]),
+            "renewed successor replay descriptor differs",
+        )
+        semantic_identity, semantic_verdicts, semantic_descriptor = (
+            controller._semantic_replay_terminal(
+                candidate=historical_context.candidate,
+                broker=broker,
+                terminal=terminal,
+                terminal_path=terminal_path,
+                parent=historical_context.parent,
+                runtime=historical_context.runtime,
+                plan_root=historical_context.plan_root,
+                passes=historical_context.passes,
+                requests=historical_context.requests,
+            )
+        )
+        _need(
+            _identity(semantic_identity, "renewed semantic identity") == identity
+            and semantic_verdicts == terminal.get("verdicts")
+            and isinstance(semantic_descriptor, Mapping)
+            and semantic_descriptor.get("sha256")
+            == replay_terminals[0].get("native_envelope_sha256"),
+            "renewed semantic replay differs",
+        )
+        owners[ordinal] = {
+            "kind": "standing_v6_renewed_successor_native",
+            "root": str(root),
+            "manifest_sha256": manifest_sha256,
+            "controller_sha256": controller_sha256,
+            "source_epoch": source_epoch,
+            "terminal_sha256": _sha(terminal_raw),
+            "native_envelope_sha256": replay_terminals[0]["native_envelope_sha256"],
+            "native_identity": dict(identity),
+            "replay_receipt": "renewed_successor",
+        }
+        identities.append(identity)
+        batches[ordinal] = _verdicts(
+            semantic_verdicts,
+            request.get("question_ids", []),
+            "renewed successor",
+        )
+
+    expected_ordinals = [*range(262, 338), *pending]
+    _need(
+        sorted(owners) == expected_ordinals
+        and len(identities) == len(expected_ordinals)
+        and len(_unique(identities)) == len(expected_ordinals),
+        "renewed successor ownership cardinality differs",
+    )
+    source_epoch_descriptor = {
+        "source_epoch": source_epoch,
+        "manifest_sha256": manifest_sha256,
+        "controller_sha256": controller_sha256,
+        "source_closure_sha256": manifest["source_closure_sha256"],
+        "historical_manifest_sha256": historical_manifest["manifest_sha256"],
+        "retained_prefix_sha256": closure["retained_prefix"]["sha256"],
+    }
+    manifest_path = root / "grok-renewed-successor-manifest.json"
+    protected_paths = {
+        "renewed_root": {"root": str(root), "manifest_sha256": manifest_sha256},
+        "renewed_manifest": {"path": str(manifest_path), "sha256": manifest_sha256},
+        "historical_controller": dict(historical_controller),
+        "historical_manifest": {
+            "path": historical_manifest["manifest_path"],
+            "sha256": historical_manifest["manifest_sha256"],
+        },
+        "retained_prefix": dict(closure["retained_prefix"]),
+        **{
+            name: dict(closure[name])
+            for name in ("gate", "standing_source", "packet")
+        },
+    }
+    protected_roots = list(
+        dict.fromkeys(
+            [
+                historical_manifest["root"],
+                *(
+                    item["root"]
+                    for item in terminal_source_roots.values()
+                    if isinstance(item, Mapping) and isinstance(item.get("root"), str)
+                ),
+            ]
+        )
+    )
+    commitment = {
+        "root": str(root),
+        "manifest_sha256": manifest_sha256,
+        "controller_sha256": controller_sha256,
+        "source_epoch": dict(source_epoch_descriptor),
+        "historical_identity_count": 335,
+        "historical_identity_commitment_sha256": _sha(
+            _canonical(state["prior_identities"])
+        ),
+        "retained_prefix_ordinals": list(range(280, 338)),
+        "replay_ordinals": expected_ordinals,
+        "native_identity_commitment_sha256": _sha(_canonical(identities)),
+        "protected_roots": protected_roots,
+        "protected_paths": protected_paths,
+    }
+    return owners, identities, batches, commitment
+
+
 def _historical_exclusions(predecessor: Mapping[str, Any]) -> list[dict[str, str]]:
     descriptor = predecessor.get("identity_exclusion")
     _need(
@@ -1269,6 +1707,7 @@ def read_selected_successor_collection(
     successor_roots: Sequence[Mapping[str, Any]],
     local_continuation: Mapping[str, Any] | None = None,
     candidate_native_continuation: Mapping[str, Any] | None = None,
+    renewed_continuation: Mapping[str, Any] | None = None,
     allow_legacy_local_v2_fixture: bool = False,
     runtime_data: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
@@ -1278,6 +1717,10 @@ def read_selected_successor_collection(
         expected_suffix_source_sha256 == SUFFIX_SHA256
         and expected_recovery_controller_sha256 == RECOVERY_SHA256,
         "frozen collection helper binding differs",
+    )
+    _need(
+        not (candidate_native_continuation is not None and renewed_continuation is not None),
+        "candidate and renewed continuations cannot be combined",
     )
     composite = _module(COMPOSITE, COMPOSITE_SHA256, "composite helper")
     suffix = _module(SUFFIX, expected_suffix_source_sha256, "suffix helper")
@@ -1362,6 +1805,7 @@ def read_selected_successor_collection(
     if local_continuation is not None:
         _need(
             candidate_native_continuation is not None
+            or renewed_continuation is not None
             or allow_legacy_local_v2_fixture is True,
             "standing v6 candidate continuation is required",
         )
@@ -1373,7 +1817,10 @@ def read_selected_successor_collection(
             approved_v5_routes=approved_v5_routes,
             successor_root=last_root,
             successor_manifest_sha256=last_manifest_sha256,
-            include_untouched=candidate_native_continuation is None,
+            include_untouched=(
+                candidate_native_continuation is None
+                and renewed_continuation is None
+            ),
             runtime=successor_runtime if runtime_config is not None else None,
             prefix_adapter=prefix_adapter,
         )
@@ -1399,6 +1846,26 @@ def read_selected_successor_collection(
             descriptor=candidate_native_continuation,
             local_descriptor=local_continuation,
         )
+    renewed_owners, renewed_identities, renewed_batches, renewed_commitment = (
+        {},
+        [],
+        {},
+        None,
+    )
+    if renewed_continuation is not None:
+        _need(
+            local_continuation is not None,
+            "renewed continuation requires local prefix",
+        )
+        (
+            renewed_owners,
+            renewed_identities,
+            renewed_batches,
+            renewed_commitment,
+        ) = _renewed_native_continuation(
+            descriptor=renewed_continuation,
+            plan_root=plan_root,
+        )
     owners = {**recovery_owners}
     _need(
         not (set(owners) & set(successor_owners)),
@@ -1415,6 +1882,11 @@ def read_selected_successor_collection(
         "standing v6 continuation ordinal ownership collision",
     )
     owners.update(candidate_owners)
+    _need(
+        not (set(owners) & set(renewed_owners)),
+        "renewed continuation ordinal ownership collision",
+    )
+    owners.update(renewed_owners)
     _need(set(owners) == set(SUCCESSOR_SCHEDULE), "successor chain is incomplete")
     receipt_identities = _unique(
         [
@@ -1422,6 +1894,7 @@ def read_selected_successor_collection(
             *successor_identities,
             *local_identities,
             *candidate_identities,
+            *renewed_identities,
         ]
     )
     expected_replayed_native = len(owners) - int(local is not None)
@@ -1610,6 +2083,7 @@ def read_selected_successor_collection(
             },
         )
     )
+    native_batches = {**candidate_batches, **renewed_batches}
     for record in selected[4:]:
         verdicts: list[dict[str, Any]] = []
         terminals = []
@@ -1645,13 +2119,14 @@ def read_selected_successor_collection(
                 "standing_v6_runtime_data_original_native",
                 "standing_v6_runtime_data_recovered_native",
                 "standing_v6_runtime_data_successor_native",
+                "standing_v6_renewed_successor_native",
             }:
-                batch = candidate_batches.get(ordinal)
+                batch = native_batches.get(ordinal)
                 _need(
                     isinstance(batch, list)
                     and [item.get("question_id") for item in batch]
                     == request["question_ids"],
-                    "runtime data successor request binding differs",
+                    "successor native request binding differs",
                 )
                 verdicts.extend(batch)
                 identities.append(
@@ -1764,13 +2239,21 @@ def read_selected_successor_collection(
     result = {
         "schema_version": 1
         if local is None
-        else (3 if candidate_commitment is not None else 2),
+        else (
+            4
+            if renewed_commitment is not None
+            else (3 if candidate_commitment is not None else 2)
+        ),
         "evidence_class": "selected100_grok_successor_collection_replay_only_v1"
         if local is None
         else (
-            "selected100_grok_successor_standing_v6_candidate_replay_only_v3"
-            if candidate_commitment is not None
-            else "selected100_grok_successor_local_schema_recovery_replay_only_v2"
+            "selected100_grok_successor_renewed_replay_only_v4"
+            if renewed_commitment is not None
+            else (
+                "selected100_grok_successor_standing_v6_candidate_replay_only_v3"
+                if candidate_commitment is not None
+                else "selected100_grok_successor_local_schema_recovery_replay_only_v2"
+            )
         ),
         "counts": {
             "stories": STORY_COUNT,
@@ -1811,7 +2294,8 @@ def read_selected_successor_collection(
         "full_study_admitted": False,
         "authority": False,
         "provider_calls_made": 0,
-        "historical_prototype_only": local is None or candidate_commitment is None,
+        "historical_prototype_only": local is None
+        or (candidate_commitment is None and renewed_commitment is None),
     }
     if runtime_provenance is not None:
         result["runtime_data_provenance"] = runtime_provenance
@@ -1874,4 +2358,35 @@ def read_selected_successor_collection(
         result["standing_v6_candidate_protected_paths"] = dict(
             candidate_commitment["protected_paths"]
         )
+    if renewed_commitment is not None:
+        _need(
+            renewed_continuation is not None,
+            "renewed continuation descriptor differs",
+        )
+        renewed_descriptor = dict(renewed_commitment["source_epoch"])
+        renewed_commitment_sha256 = _sha(_canonical(renewed_commitment))
+        result["input_commitments"].update(
+            {
+                "renewed_continuation_manifest_sha256": renewed_commitment[
+                    "manifest_sha256"
+                ],
+                "renewed_continuation_controller_sha256": renewed_commitment[
+                    "controller_sha256"
+                ],
+                "renewed_continuation_descriptor_sha256": _sha(
+                    _canonical(dict(renewed_continuation))
+                ),
+                "renewed_source_epoch": renewed_descriptor,
+                "renewed_successor_commitment_sha256": renewed_commitment_sha256,
+            }
+        )
+        result["renewed_continuation"] = dict(renewed_continuation)
+        result["renewed_source_epoch"] = renewed_descriptor
+        result["renewed_successor_commitment"] = dict(renewed_commitment)
+        result["renewed_successor_protected_paths"] = dict(
+            renewed_commitment["protected_paths"]
+        )
+        result.setdefault("source_commitments", {})[
+            "renewed_successor_commitment_sha256"
+        ] = renewed_commitment_sha256
     return result

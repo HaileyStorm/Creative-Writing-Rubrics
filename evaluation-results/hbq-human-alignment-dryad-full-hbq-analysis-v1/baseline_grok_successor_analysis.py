@@ -18,6 +18,7 @@ READER_PATH = ROOT / "baseline_grok_successor_collection_replay.py"
 CONTROLLER_PATH = ROOT / "baseline_grok_selected_successor.py"
 LOCAL_CONTROLLER_PATH = ROOT / "baseline_grok_selected_local_continuation.py"
 STANDING_V6_CONTROLLER_PATH = ROOT / "baseline_grok_runtime_data_successor.py"
+RENEWED_CONTROLLER_PATH = ROOT / "baseline_grok_renewed_successor.py"
 OLD_HELPER_PATH = ROOT / "baseline_grok_recovery_analysis.py"
 COMPOSITE_PATH = ROOT / "baseline_composite_admission_v5.py"
 ANALYSIS_PATH = ROOT / "baseline_composite_analysis_v5.py"
@@ -29,7 +30,7 @@ PIN_KEYS = frozenset({
     "composite_analysis", "selected_engine", "workflow", "v1_runtime_loader", "v5_runtime_loader",
     "local_controller", "local_proposal", "local_adoption",
     "standing_v6_controller", "standing_v6_candidate", "standing_v6_packet", "standing_v6_source",
-    "runtime_data_scoring",
+    "runtime_data_scoring", "renewed_controller",
 })
 EXPECTED_COUNTS = {"stories": 100, "logical_requests": 2300, "native_requests": 2299,
                    "study_recovered_requests": 1, "criterion_verdicts": 17800}
@@ -105,6 +106,7 @@ def _capture(source_pins: Mapping[str, Any]) -> tuple[dict[Path, bytes], ModuleT
         (CONTROLLER_PATH, pins["successor_controller"], "successor_controller"),
         (LOCAL_CONTROLLER_PATH, pins["local_controller"], "local_controller"),
         (STANDING_V6_CONTROLLER_PATH, pins["standing_v6_controller"], "standing_v6_controller"),
+        (RENEWED_CONTROLLER_PATH, pins["renewed_controller"], "renewed_controller"),
         (OLD_HELPER_PATH, pins["old_helper_closure"], "old_helper_closure"),
         (COMPOSITE_PATH, pins["composite"], "composite"),
         (ANALYSIS_PATH, pins["composite_analysis"], "composite_analysis"),
@@ -119,6 +121,8 @@ def _capture(source_pins: Mapping[str, Any]) -> tuple[dict[Path, bytes], ModuleT
         loaded[label] = _load(checked, raw, label)
     if getattr(loaded["reader"], "SUCCESSOR_SHA256", None) != pins["successor_controller"]:
         raise ValueError("Successor reader controller source pin differs")
+    if getattr(loaded["reader"], "RENEWED_SUCCESSOR_SHA256", None) != pins["renewed_controller"]:
+        raise ValueError("Successor reader renewed controller source pin differs")
     return (captured, loaded["reader"], loaded["successor_controller"], loaded["old_helper_closure"],
             loaded["composite"], loaded["composite_analysis"], loaded["selected_engine"], loaded["local_controller"], loaded["standing_v6_controller"])
 
@@ -213,11 +217,20 @@ def _admit_collection(collection: Mapping[str, Any], reader: ModuleType, *, sour
                       exclusions: Mapping[str, set[str]]) -> SelectedSuccessorAdmission:
     local_descriptor = _local_descriptor(reader_inputs.get("local_continuation"))
     candidate_descriptor = _local_descriptor(reader_inputs.get("candidate_native_continuation"))
+    renewed_descriptor = _local_descriptor(reader_inputs.get("renewed_continuation"))
+    if candidate_descriptor is not None and renewed_descriptor is not None:
+        raise ValueError("Selected successor continuations cannot be combined")
     expected_schema, expected_evidence, expected_counts, expected_recovered = (
-        (3, "selected100_grok_successor_standing_v6_candidate_replay_only_v3", LOCAL_EXPECTED_COUNTS, [70, 254])
+        (4, "selected100_grok_successor_renewed_replay_only_v4", LOCAL_EXPECTED_COUNTS, [70, 254])
+        if renewed_descriptor is not None
+        else ((3, "selected100_grok_successor_standing_v6_candidate_replay_only_v3", LOCAL_EXPECTED_COUNTS, [70, 254])
         if candidate_descriptor is not None else ((2, "selected100_grok_successor_local_schema_recovery_replay_only_v2", LOCAL_EXPECTED_COUNTS, [70, 254])
-        if local_descriptor is not None else (1, "selected100_grok_successor_collection_replay_only_v1", EXPECTED_COUNTS, [70])) )
-    historical_prototype = local_descriptor is None or (candidate_descriptor is None and reader_inputs.get("allow_legacy_local_v2_fixture") is True)
+        if local_descriptor is not None else (1, "selected100_grok_successor_collection_replay_only_v1", EXPECTED_COUNTS, [70])) ))
+    historical_prototype = local_descriptor is None or (
+        candidate_descriptor is None
+        and renewed_descriptor is None
+        and reader_inputs.get("allow_legacy_local_v2_fixture") is True
+    )
     if (not isinstance(collection, Mapping) or collection.get("schema_version") != expected_schema
             or collection.get("evidence_class") != expected_evidence
             or collection.get("counts") != expected_counts or collection.get("recovered_ordinals") != expected_recovered
@@ -230,6 +243,30 @@ def _admit_collection(collection: Mapping[str, Any], reader: ModuleType, *, sour
         raise ValueError("Selected successor collection reader binding differs")
     if commitments.get("successor_controller_sha256") != source_pins["successor_controller"]:
         raise ValueError("Selected successor controller binding differs")
+    if renewed_descriptor is not None:
+        renewed_commitment = collection.get("renewed_successor_commitment")
+        renewed_epoch = collection.get("renewed_source_epoch")
+        if (
+            collection.get("renewed_continuation") != renewed_descriptor
+            or not isinstance(renewed_commitment, Mapping)
+            or renewed_commitment.get("manifest_sha256") != renewed_descriptor["manifest_sha256"]
+            or renewed_commitment.get("controller_sha256") != source_pins["renewed_controller"]
+            or renewed_commitment.get("source_epoch") != renewed_epoch
+            or renewed_commitment.get("historical_identity_count") != 335
+            or renewed_commitment.get("retained_prefix_ordinals") != list(range(280, 338))
+            or renewed_commitment.get("replay_ordinals") != [*range(262, 1611), *range(4049, 4739)]
+            or commitments.get("renewed_continuation_manifest_sha256") != renewed_descriptor["manifest_sha256"]
+            or commitments.get("renewed_continuation_controller_sha256") != source_pins["renewed_controller"]
+            or commitments.get("renewed_continuation_descriptor_sha256")
+            != reader._sha(reader._canonical(renewed_descriptor))
+            or commitments.get("renewed_source_epoch") != renewed_epoch
+            or commitments.get("renewed_successor_commitment_sha256")
+            != reader._sha(reader._canonical(renewed_commitment))
+            or not isinstance(collection.get("renewed_successor_protected_paths"), Mapping)
+            or collection.get("renewed_successor_protected_paths")
+            != renewed_commitment.get("protected_paths")
+        ):
+            raise ValueError("Renewed successor binding differs")
     expected_commitments = {
         "plan_sha256": reader_inputs["expected_plan_sha256"],
         "predecessor_sha256": reader_inputs["expected_predecessor_sha256"],
@@ -339,6 +376,75 @@ def _admit_collection(collection: Mapping[str, Any], reader: ModuleType, *, sour
         root_owned.extend(candidate_owner_ordinals)
         local_record = {**(local_record or {}), "candidate": {"descriptor": candidate_descriptor, "commitment": dict(candidate),
                         "protected_paths": {name: dict(item) for name, item in protected.items()}}
+        }
+    if renewed_descriptor is not None:
+        renewed = collection["renewed_successor_commitment"]
+        protected = collection["renewed_successor_protected_paths"]
+        renewed_owner_ordinals = renewed["replay_ordinals"]
+        renewed_expected = [*range(262, 1611), *range(4049, 4739)]
+        def _valid_renewed_path(item: Any) -> bool:
+            if not isinstance(item, Mapping):
+                return False
+            if set(item) == {"root", "manifest_sha256"}:
+                return (
+                    type(item.get("root")) is str
+                    and bool(item["root"])
+                    and _hash(item.get("manifest_sha256"), "Renewed protected manifest")
+                    == item["manifest_sha256"]
+                )
+            if set(item) == {"path", "sha256"}:
+                return (
+                    type(item.get("path")) is str
+                    and bool(item["path"])
+                    and _hash(item.get("sha256"), "Renewed protected path")
+                    == item["sha256"]
+                )
+            return False
+
+        renewed_expected_hash = reader._sha(
+            reader._canonical(
+                [owners[ordinal]["native_identity"] for ordinal in renewed_expected]
+            )
+        )
+        renewed_protected_roots = renewed.get("protected_roots")
+        if (
+            renewed_owner_ordinals != renewed_expected
+            or renewed.get("native_identity_commitment_sha256") != renewed_expected_hash
+            or not isinstance(renewed_protected_roots, list)
+            or not renewed_protected_roots
+            or any(type(item) is not str or not item for item in renewed_protected_roots)
+            or len(renewed_protected_roots) != len(set(renewed_protected_roots))
+            or not isinstance(protected, Mapping)
+            or not protected
+            or any(not _valid_renewed_path(item) for item in protected.values())
+            or any(
+                not isinstance(owners.get(ordinal), Mapping)
+                or owners[ordinal].get("kind")
+                != (
+                    "standing_v6_runtime_data_original_native"
+                    if ordinal < 279
+                    else (
+                        "standing_v6_runtime_data_recovered_native"
+                        if ordinal == 279
+                        else (
+                            "standing_v6_runtime_data_successor_native"
+                            if ordinal < 338
+                            else "standing_v6_renewed_successor_native"
+                        )
+                    )
+                )
+                for ordinal in renewed_expected
+            )
+        ):
+            raise ValueError("Renewed successor ownership differs")
+        root_owned.extend(renewed_owner_ordinals)
+        local_record = {
+            **(local_record or {}),
+            "renewed": {
+                "descriptor": renewed_descriptor,
+                "commitment": dict(renewed),
+                "protected_paths": {name: dict(item) for name, item in protected.items()},
+            },
         }
     if (len(root_owned) != len(set(root_owned)) or set(owners) != set(root_owned) or 70 in owners):
         raise ValueError("Selected successor root ownership coverage differs")
@@ -457,26 +563,49 @@ def _selection_with_runtime_data(composite: ModuleType, reader: ModuleType,
 def admit_selected_successor(*, reader_inputs: Mapping[str, Any], source_pins: Mapping[str, Any]) -> SelectedSuccessorAdmission:
     """Re-admit every complete successor root before opening either target partition."""
     pins = _pins(source_pins)
-    required = {"plan_root", "predecessor_path", "old_suffix_root", "recovery_root", "expected_plan_sha256",
+    base_required = {"plan_root", "predecessor_path", "old_suffix_root", "recovery_root", "expected_plan_sha256",
                 "expected_predecessor_sha256", "expected_old_epoch_sha256", "expected_suffix_source_sha256",
                 "expected_recovery_controller_sha256", "expected_recovery_manifest_sha256", "expected_public_inputs_sha256", "approved_v4_routes",
-                "approved_v5_routes", "successor_roots", "local_continuation", "candidate_native_continuation"}
-    if not isinstance(reader_inputs, Mapping) or set(reader_inputs) not in (required, required | {"runtime_data"}):
+                "approved_v5_routes", "successor_roots", "local_continuation"}
+    legacy_required = base_required | {"candidate_native_continuation"}
+    renewed_required = base_required | {"renewed_continuation"}
+    allowed = (
+        legacy_required,
+        legacy_required | {"runtime_data"},
+        renewed_required,
+        renewed_required | {"runtime_data"},
+    )
+    if not isinstance(reader_inputs, Mapping) or set(reader_inputs) not in allowed:
         raise ValueError("Selected successor reader inputs differ")
     if _local_descriptor(reader_inputs["local_continuation"]) is None:
         raise ValueError("Selected successor local continuation is required")
-    if _local_descriptor(reader_inputs["candidate_native_continuation"]) is None:
-        raise ValueError("Standing v6 candidate continuation is required")
+    if set(reader_inputs) in (legacy_required, legacy_required | {"runtime_data"}):
+        if _local_descriptor(reader_inputs["candidate_native_continuation"]) is None:
+            raise ValueError("Standing v6 candidate continuation is required")
+    elif _local_descriptor(reader_inputs["renewed_continuation"]) is None:
+        raise ValueError("Renewed successor continuation is required")
     if "runtime_data" not in reader_inputs:
         raise ValueError("Explicit runtime data configuration is required")
     data_descriptors = _runtime_data_descriptors(reader_inputs["runtime_data"])
     captured, reader, _controller, _old, composite, _analysis, _engine, _local, _standing = _capture(pins)
     _capture_runtime_data(captured, data_descriptors)
     inputs = dict(reader_inputs)
-    reader_call = {key: value for key, value in inputs.items() if key not in {"expected_public_inputs_sha256", "successor_roots", "local_continuation", "candidate_native_continuation"}}
+    reader_call = {
+        key: value
+        for key, value in inputs.items()
+        if key
+        not in {
+            "expected_public_inputs_sha256",
+            "successor_roots",
+            "local_continuation",
+            "candidate_native_continuation",
+            "renewed_continuation",
+        }
+    }
     collection = reader.read_selected_successor_collection(successor_roots=inputs["successor_roots"],
                                                            local_continuation=inputs["local_continuation"],
-                                                           candidate_native_continuation=inputs["candidate_native_continuation"], **reader_call)
+                                                           candidate_native_continuation=inputs.get("candidate_native_continuation"),
+                                                           renewed_continuation=inputs.get("renewed_continuation"), **reader_call)
     selection, predecessor, exclusions = _selection_with_runtime_data(composite, reader, inputs)
     admitted = _admit_collection(collection, reader, source_pins=pins, reader_inputs=inputs, selection=selection,
                                  predecessor=predecessor, exclusions=exclusions)
@@ -537,6 +666,7 @@ def _protected_inputs(reader_inputs: Mapping[str, Any], scoring_inputs: Mapping[
         raise ValueError("Selected successor roots differ")
     descriptor = _local_descriptor(reader_inputs.get("local_continuation"))
     candidate_descriptor = _local_descriptor(reader_inputs.get("candidate_native_continuation"))
+    renewed_descriptor = _local_descriptor(reader_inputs.get("renewed_continuation"))
     local_paths: tuple[Any, ...] = ()
     if local_recovery is not None:
         protected = local_recovery.get("protected_paths")
@@ -574,6 +704,33 @@ def _protected_inputs(reader_inputs: Mapping[str, Any], scoring_inputs: Mapping[
                     raise ValueError("Standing v6 candidate terminal source roots differ")
                 candidate_values.append(item["root"])
             local_paths += tuple(candidate_values)
+        renewed = local_recovery.get("renewed")
+        if renewed is not None:
+            renewed_paths = renewed.get("protected_paths") if isinstance(renewed, Mapping) else None
+            if not isinstance(renewed_paths, Mapping) or not renewed_paths:
+                raise ValueError("Renewed successor protected paths differ")
+            renewed_values: list[str] = []
+            for item in renewed_paths.values():
+                if not isinstance(item, Mapping):
+                    raise ValueError("Renewed successor protected paths differ")  # noqa: TRY004 - preserve schema-error contract
+                if set(item) == {"root", "manifest_sha256"}:
+                    root = item.get("root")
+                    if type(root) is not str or not root:
+                        raise ValueError("Renewed successor protected paths differ")
+                    _hash(item.get("manifest_sha256"), "Renewed protected manifest")
+                    renewed_values.append(root)
+                    continue
+                path = item.get("path")
+                if type(path) is not str or not path:
+                    raise ValueError("Renewed successor protected paths differ")
+                _hash(item.get("sha256"), "Renewed protected path")
+                renewed_values.append(path)
+            renewed_commitment = renewed.get("commitment") if isinstance(renewed, Mapping) else None
+            protected_roots = renewed_commitment.get("protected_roots") if isinstance(renewed_commitment, Mapping) else None
+            if not isinstance(protected_roots, list) or any(type(root) is not str or not root for root in protected_roots):
+                raise ValueError("Renewed successor protected roots differ")
+            renewed_values.extend(protected_roots)
+            local_paths += tuple(renewed_values)
     data_paths: list[str] = []
     data_descriptors = {} if "runtime_data" not in reader_inputs else _runtime_data_descriptors(reader_inputs["runtime_data"])
     if runtime_data_paths is not None:
@@ -588,7 +745,10 @@ def _protected_inputs(reader_inputs: Mapping[str, Any], scoring_inputs: Mapping[
         data_paths.append(item["path"])
     return (reader_inputs["plan_root"], reader_inputs["predecessor_path"], reader_inputs["old_suffix_root"],
             reader_inputs["recovery_root"], *(item["root"] for item in roots),
-            *(() if descriptor is None else (descriptor["root"],)), *(() if candidate_descriptor is None else (candidate_descriptor["root"],)), *local_paths, *data_paths,
+            *(() if descriptor is None else (descriptor["root"],)),
+            *(() if candidate_descriptor is None else (candidate_descriptor["root"],)),
+            *(() if renewed_descriptor is None else (renewed_descriptor["root"],)),
+            *local_paths, *data_paths,
             scoring_inputs["scoring_manifest_path"], scoring_inputs["v5_runtime_manifest_path"],
             scoring_inputs["v5_runtime_package_root"])
 

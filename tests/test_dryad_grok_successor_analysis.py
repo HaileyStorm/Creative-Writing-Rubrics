@@ -118,6 +118,7 @@ def test_capture_binds_the_partial_successor_controller_source() -> None:
     pins = {key: "0" * 64 for key in subject.PIN_KEYS}
     paths = {"analysis": SOURCE, "reader": subject.READER_PATH, "successor_controller": subject.CONTROLLER_PATH,
              "local_controller": subject.LOCAL_CONTROLLER_PATH, "standing_v6_controller": subject.STANDING_V6_CONTROLLER_PATH,
+             "renewed_controller": subject.RENEWED_CONTROLLER_PATH,
              "old_helper_closure": subject.OLD_HELPER_PATH, "composite": subject.COMPOSITE_PATH,
              "composite_analysis": subject.ANALYSIS_PATH, "selected_engine": subject.ENGINE_PATH,
              "runtime_data_scoring": subject.RUNTIME_DATA_SCORING_PATH}
@@ -332,6 +333,123 @@ def test_reader_candidate_fixture_admits_full_standing_v6_ownership(monkeypatch:
         exclusions={"requests": {item["request_id_hash"] for item in data["historical_excluded_native_identities"]},
                     "sessions": {item["session_id_hash"] for item in data["historical_excluded_native_identities"]}})
     assert admitted.record["local_recovery"]["candidate"]["commitment"]["replay_ordinals"] == [*range(262, 1611), *range(4049, 4739)]
+
+
+def test_reader_renewed_fixture_admits_distinct_source_epoch(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    subject, reader_test = load(), load_reader_fixture()
+    reader, inputs, _calls = reader_test._candidate_fixture(monkeypatch, tmp_path)
+    local = reader._module(reader.LOCAL_CONTINUATION).verify_local_continuation()
+    for name, descriptor in local["protected_paths"].items():
+        key = "inventory_sha256" if name in {"continuation_root", "successor_root"} else "sha256"
+        if any(character not in "0123456789abcdef" for character in descriptor[key]):
+            descriptor[key] = digest(name.encode())
+    data = reader.read_selected_successor_collection(**inputs)
+    inputs.pop("candidate_native_continuation")
+    renewed_descriptor = {
+        "root": str(tmp_path / "renewed"),
+        "manifest_sha256": "1" * 64,
+        "controller_sha256": digest(subject.RENEWED_CONTROLLER_PATH.read_bytes()),
+    }
+    inputs["renewed_continuation"] = renewed_descriptor
+    data["schema_version"] = 4
+    data["evidence_class"] = "selected100_grok_successor_renewed_replay_only_v4"
+    data["historical_prototype_only"] = False
+    data["local_continuation_commitment"]["untouched_replay_ordinals"] = []
+    owners = data["root_chain_ordinal_owners"]
+    renewed_ordinals = [*range(262, 1611), *range(4049, 4739)]
+    for ordinal in range(338, 1611):
+        owners[ordinal]["kind"] = "standing_v6_renewed_successor_native"
+    for ordinal in range(4049, 4739):
+        owners[ordinal]["kind"] = "standing_v6_renewed_successor_native"
+    renewed_epoch = {
+        "source_epoch": "grok_runtime_data_renewal_20260914_r1",
+        "manifest_sha256": renewed_descriptor["manifest_sha256"],
+        "controller_sha256": renewed_descriptor["controller_sha256"],
+        "source_closure_sha256": "2" * 64,
+        "historical_manifest_sha256": "3" * 64,
+        "retained_prefix_sha256": "4" * 64,
+    }
+    renewed_commitment = {
+        "root": renewed_descriptor["root"],
+        "manifest_sha256": renewed_descriptor["manifest_sha256"],
+        "controller_sha256": renewed_descriptor["controller_sha256"],
+        "source_epoch": renewed_epoch,
+        "historical_identity_count": 335,
+        "historical_identity_commitment_sha256": "5" * 64,
+        "retained_prefix_ordinals": list(range(280, 338)),
+        "replay_ordinals": renewed_ordinals,
+        "native_identity_commitment_sha256": reader._sha(
+            reader._canonical([owners[ordinal]["native_identity"] for ordinal in renewed_ordinals])
+        ),
+        "protected_roots": [str(tmp_path / "historical-root"), str(tmp_path / "original-peer-root")],
+        "protected_paths": {
+            "renewed_root": {"root": renewed_descriptor["root"], "manifest_sha256": renewed_descriptor["manifest_sha256"]},
+            "renewed_manifest": {"path": str(tmp_path / "renewed-manifest.json"), "sha256": "6" * 64},
+        },
+    }
+    data["renewed_continuation"] = renewed_descriptor
+    data["renewed_source_epoch"] = renewed_epoch
+    data["renewed_successor_commitment"] = renewed_commitment
+    data["renewed_successor_protected_paths"] = renewed_commitment["protected_paths"]
+    data["input_commitments"].update(
+        {
+            "renewed_continuation_manifest_sha256": renewed_descriptor["manifest_sha256"],
+            "renewed_continuation_controller_sha256": renewed_descriptor["controller_sha256"],
+            "renewed_continuation_descriptor_sha256": reader._sha(reader._canonical(renewed_descriptor)),
+            "renewed_source_epoch": renewed_epoch,
+            "renewed_successor_commitment_sha256": reader._sha(reader._canonical(renewed_commitment)),
+        }
+    )
+    selection = {
+        "schedule": {"sha256": data["input_commitments"]["selected_schedule_sha256"]},
+        "source": {"sha256": data["input_commitments"]["selected_schedule_source_sha256"]},
+        "verified": {
+            "selected_train_ids": [row["pass_id"] for row in data["rows"][:70]],
+            "selected_dev_ids": [row["pass_id"] for row in data["rows"][70:]],
+            "selected_request_ordinals": [ordinal for row in data["rows"] for ordinal in row["ordinals"]],
+            "question_ids": [item["question_id"] for item in data["rows"][0]["verdict_rows"]],
+        },
+    }
+    pins = {key: "0" * 64 for key in subject.PIN_KEYS}
+    pins.update(
+        {
+            "analysis": digest(SOURCE.read_bytes()),
+            "reader": data["input_commitments"]["reader_sha256"],
+            "successor_controller": data["input_commitments"]["successor_controller_sha256"],
+            "renewed_controller": renewed_descriptor["controller_sha256"],
+            "local_controller": inputs["local_continuation"]["controller_sha256"],
+            "local_proposal": data["local_recovery_provenance"]["proposal_sha256"],
+            "local_adoption": data["local_recovery_provenance"]["adoption_sha256"],
+            "old_helper_closure": subject.OLD_HELPER_SHA256,
+            "composite": digest(COMPOSITE.read_bytes()),
+        }
+    )
+    admitted = subject._admit_collection(
+        data,
+        reader,
+        source_pins=pins,
+        reader_inputs=inputs,
+        selection=selection,
+        predecessor={},
+        exclusions={
+            "requests": {item["request_id_hash"] for item in data["historical_excluded_native_identities"]},
+            "sessions": {item["session_id_hash"] for item in data["historical_excluded_native_identities"]},
+        },
+    )
+    assert admitted.record["local_recovery"]["renewed"]["commitment"]["source_epoch"] == renewed_epoch
+    protected = subject._protected_inputs(
+        inputs,
+        {
+            "scoring_manifest_path": "scoring",
+            "v5_runtime_manifest_path": "runtime-manifest",
+            "v5_runtime_package_root": "runtime-package",
+            "expected_scoring_manifest_sha256": "7" * 64,
+            "expected_v5_runtime_manifest_sha256": "8" * 64,
+            "expected_v5_runtime_package_manifest_sha256": "9" * 64,
+        },
+        admitted.record["local_recovery"],
+    )
+    assert str(tmp_path / "original-peer-root") in protected
 
 
 @pytest.mark.parametrize("fault", ["missing_chain", "coverage", "question_order", "native_count"])

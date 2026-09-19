@@ -1108,3 +1108,252 @@ def test_local_continuation_rejects_projection_source_and_native_identity_drift(
     value, inputs, _calls = _local_fixture(monkeypatch, tmp_path, fault=fault)
     with pytest.raises(ValueError, match=message):
         value.read_selected_successor_collection(**inputs)
+
+
+def test_renewed_reader_binds_historical_335_and_new_source_epoch(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    value = load()
+    root = tmp_path / "renewed"
+    root.mkdir()
+    plan_root = tmp_path / "plan"
+    plan_root.mkdir()
+    historical_root = tmp_path / "historical"
+    historical_root.mkdir()
+    prefix_path = tmp_path / "prefix.json"
+    prefix_path.write_bytes(b"prefix")
+    source_epoch = "fixture-renewal"
+    question_ids = [f"q-{number:03d}" for number in range(value.QUESTION_COUNT)]
+    requests = {
+        ordinal: {"question_ids": question_ids}
+        for ordinal in [*range(262, 279), 279, *range(280, 338), 338]
+    }
+
+    def native(ordinal: int) -> dict[str, Any]:
+        return {
+            "request_id_hash": value._sha(f"request-{ordinal}".encode()),
+            "session_id_hash": value._sha(f"session-{ordinal}".encode()),
+            "observed_turns": 1,
+        }
+
+    def verdicts() -> list[dict[str, str]]:
+        return [{"question_id": item, "verdict": "YES"} for item in question_ids]
+
+    def write_json(path: Path, payload: Any) -> dict[str, str]:
+        raw = value._canonical(payload)
+        path.write_bytes(raw)
+        return {"path": str(path), "sha256": value._sha(raw)}
+
+    original_records: list[dict[str, Any]] = []
+    for ordinal in range(262, 279):
+        terminal = write_json(
+            historical_root / f"terminal-{ordinal}.json",
+            {"ordinal": ordinal, "state": "completed", "native_identity": native(ordinal)},
+        )
+        original_records.append(
+            {
+                "ordinal": ordinal,
+                "terminal": terminal,
+                "native_identity": native(ordinal),
+                "verdicts": verdicts(),
+            }
+        )
+    recovered_terminal = write_json(
+        historical_root / "terminal-279.json",
+        {"ordinal": 279, "state": "ambiguous"},
+    )
+    recovered = {
+        "ordinal": 279,
+        "original_terminal": recovered_terminal,
+        "native_identity": native(279),
+        "verdicts": verdicts(),
+    }
+    prefix_records: list[dict[str, Any]] = []
+    for ordinal in range(280, 338):
+        terminal = write_json(
+            historical_root / f"terminal-{ordinal}.json",
+            {
+                "ordinal": ordinal,
+                "state": "completed",
+                "native_identity": native(ordinal),
+                "verdicts": verdicts(),
+            },
+        )
+        replay = write_json(
+            historical_root / f"replay-{ordinal}.json",
+            {
+                "ordinals": [ordinal],
+                "native_identities": [native(ordinal)],
+                "terminals": [{"native_envelope_sha256": "a" * 64}],
+            },
+        )
+        prefix_records.append(
+            {
+                "ordinal": ordinal,
+                "terminal": terminal,
+                "replay": replay,
+                "native_identity": native(ordinal),
+            }
+        )
+    pending_terminal = write_json(
+        root / "attempt-338-terminal.json",
+        {
+            "ordinal": 338,
+            "state": "completed",
+            "source_epoch": source_epoch,
+            "native_identity": native(338),
+            "verdicts": verdicts(),
+        },
+    )
+    pending_replay = write_json(
+        root / "replay-338.json",
+        {
+            "ordinals": [338],
+            "native_identities": [native(338)],
+            "terminals": [
+                {
+                    "ordinal": 338,
+                    "terminal_sha256": pending_terminal["sha256"],
+                    "native_envelope_sha256": "a" * 64,
+                }
+            ],
+        },
+    )
+    closure = {
+        "historical_controller": {
+            "path": str(tmp_path / "historical-controller.py"),
+            "sha256": "b" * 64,
+        },
+        "historical_continuation": {
+            "root": str(historical_root),
+            "manifest_path": str(tmp_path / "historical-manifest.json"),
+            "manifest_sha256": "c" * 64,
+        },
+        "retained_prefix": {"path": str(prefix_path), "sha256": value._sha(prefix_path.read_bytes())},
+        "route": {"name": "fixture", "sha256": "d" * 64},
+        "gate": {"path": str(tmp_path / "gate.json"), "sha256": "e" * 64},
+        "standing_source": {"path": str(tmp_path / "standing.json"), "sha256": "f" * 64},
+        "packet": {"path": str(tmp_path / "packet.json"), "sha256": "1" * 64},
+    }
+    historical_context = SimpleNamespace(
+        root=historical_root,
+        plan_root=plan_root,
+        records=original_records,
+        requests=requests,
+        manifest={
+            "terminal_source_roots": {
+                "262": {
+                    "root": str(tmp_path / "original-peer-root"),
+                    "terminal": dict(original_records[0]["terminal"]),
+                }
+            }
+        },
+    )
+
+    class Broker:
+        def __init__(self, _queue: Path) -> None:
+            pass
+
+    def semantic(**kwargs: Any) -> tuple[Any, Any, Any]:
+        terminal = kwargs["terminal"]
+        return (
+            terminal["native_identity"],
+            terminal["verdicts"],
+            {"sha256": "a" * 64},
+        )
+
+    historical_context.candidate = SimpleNamespace(Broker=Broker)
+    historical_context.base = SimpleNamespace(_semantic_replay_terminal=semantic)
+    historical_context.parent = SimpleNamespace()
+    historical_context.runtime = SimpleNamespace()
+    historical_context.passes = {}
+    prior = [native(ordinal) for ordinal in range(1000, 1277)]
+    prefix_identities = [native(ordinal) for ordinal in range(2000, 2058)]
+    state = {
+        "manifest": {"source_closure": closure, "source_closure_sha256": "2" * 64},
+        "context": historical_context,
+        "historical": {
+            "manifest": {"source_closure": {"queue": {"path": str(tmp_path / "queue")}}},
+            "state": {"context": historical_context, "recovered": recovered, "adoption": {}},
+            "prior_identities": prior,
+        },
+        "prefix": {"value": {"current_records": prefix_records}, "identities": prefix_identities},
+        "prior_identities": [*prior, *prefix_identities],
+        "pending_ordinals": [338],
+        "source_epoch": source_epoch,
+    }
+
+    class RenewedController:
+        SOURCE_EPOCH = source_epoch
+        PENDING = (338,)
+
+        @staticmethod
+        def verify(**_kwargs: Any) -> dict[str, Any]:
+            calls.append("verify")
+            return state
+
+        @staticmethod
+        def _records(_root: Path) -> dict[int, dict[str, Any]]:
+            return {338: json.loads(Path(pending_terminal["path"]).read_bytes())}
+
+        @staticmethod
+        def _replayed(_root: Path, _state: Mapping[str, Any]) -> tuple[set[int], list[dict[str, Any]]]:
+            calls.append("replayed")
+            return {338}, [native(338)]
+
+        @staticmethod
+        def _attempt(_root: Path, _ordinal: int, _name: str) -> Path:
+            return Path(pending_terminal["path"])
+
+        @staticmethod
+        def _replay(_root: Path, _ordinal: int) -> Path:
+            return Path(pending_replay["path"])
+
+        @staticmethod
+        def _semantic_replay_terminal(**kwargs: Any) -> tuple[Any, Any, Any]:
+            return semantic(**kwargs)
+
+    calls: list[str] = []
+    original_module = value._module
+    monkeypatch.setattr(
+        value,
+        "_module",
+        lambda path, *args: RenewedController
+        if path == value.RENEWED_CONTINUATION
+        else original_module(path, *args),
+    )
+    owners, identities, batches, commitment = value._renewed_native_continuation(
+        descriptor={
+            "root": str(root),
+            "manifest_sha256": "3" * 64,
+            "controller_sha256": value.RENEWED_SUCCESSOR_SHA256,
+        },
+        plan_root=plan_root,
+    )
+    assert calls == ["verify", "replayed"]
+    assert owners[262]["kind"] == "standing_v6_runtime_data_original_native"
+    assert owners[337]["kind"] == "standing_v6_runtime_data_successor_native"
+    assert owners[338]["kind"] == "standing_v6_renewed_successor_native"
+    assert owners[262]["root"] != owners[337]["root"]
+    assert len(identities) == 77 and len(batches[338]) == value.QUESTION_COUNT
+    assert commitment["source_epoch"]["source_epoch"] == source_epoch
+    assert commitment["historical_identity_count"] == 335
+    assert str(tmp_path / "original-peer-root") in commitment["protected_roots"]
+
+    def reject_semantic(**_kwargs: Any) -> tuple[Any, Any, Any]:
+        raise ValueError("semantic envelope mismatch")
+
+    monkeypatch.setattr(
+        RenewedController,
+        "_semantic_replay_terminal",
+        staticmethod(reject_semantic),
+    )
+    with pytest.raises(ValueError, match="semantic envelope mismatch"):
+        value._renewed_native_continuation(
+            descriptor={
+                "root": str(root),
+                "manifest_sha256": "3" * 64,
+                "controller_sha256": value.RENEWED_SUCCESSOR_SHA256,
+            },
+            plan_root=plan_root,
+        )
