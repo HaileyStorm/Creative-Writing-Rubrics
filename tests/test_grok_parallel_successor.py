@@ -291,8 +291,9 @@ def test_v9_rejects_legacy_transition_labels(tmp_path: Path, key: str, legacy_ki
 
 
 @pytest.mark.parametrize("wave_size", [2, 10])
-def test_dispatch_wave_uses_actual_rendezvous_and_unique_intents(tmp_path: Path, wave_size: int) -> None:
-    root, closure, expected = fixture(tmp_path)
+@pytest.mark.parametrize("candidate_version", [8, 9])
+def test_dispatch_wave_uses_actual_rendezvous_and_unique_intents(tmp_path: Path, wave_size: int, candidate_version: int) -> None:
+    root, closure, expected = fixture(tmp_path, candidate_version=candidate_version)
     created = m.create(continuation_root=root, source_closure=closure)
     factory = BrokerFactory(barrier=threading.Barrier(wave_size))
     result = m.dispatch_wave(continuation_root=root, expected_manifest_sha256=created["manifest_sha256"], start_ordinal=expected["pending"][0], wave_size=wave_size, broker_factory=factory)

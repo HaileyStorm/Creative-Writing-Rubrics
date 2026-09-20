@@ -1440,7 +1440,7 @@ def _fresh_source_checks(
     _need(_sha(Path(continuation["manifest_path"]).read_bytes()) == continuation["manifest_sha256"], "prior continuation changed before contact")
     _bound(_closure_value(closure, "stopped_prefix"), "stopped prefix")
     candidate = _candidate_binding(closure)
-    _source_semantics(closure, candidate_manifest_sha256=candidate["manifest_sha256"])
+    _source_semantics(closure, candidate_manifest_sha256=candidate["manifest_sha256"], candidate_schema_version=candidate["manifest"]["schema_version"])
     _queue_binding(_closure_value(closure, "queue"))
     if wave_raw is not None:
         _need(
