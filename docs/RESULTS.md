@@ -33,14 +33,19 @@ product test succeeded; `Negative` means a proposed claim or treatment failed;
 
 The [V17 standalone Sol replication](#v17-standalone-sol-replication)
 is complete; its paired Grok run remains incomplete after quota exhaustion.
-As of September 12, the later [WPB collection](#wpb-terminal-collection) has all
-129 Grok measurements and a reproduced frozen selection, while Sol has two
-verified local CLI results and 127 cells remaining. The
-[selected Dryad baseline](#dryad-source-and-full-hbq-preparation) has 279/2,300
-Grok requests and complete Sol collection. Sol stories 19 and 42 still fail the
-unchanged coverage floor; complete collection does not establish full-study
-admission. Neither study permits automatic resends or an incomplete-campaign
-alignment claim.
+The later [WPB collection](#wpb-terminal-collection) has all 129 Grok
+measurements and a reproduced frozen selection. The bounded [matched Sol
+completion](../evaluation-results/hbq-human-alignment-wpb-sol-completed-result-v1/README.md)
+now settles all 129 Sol cells (125 new and four preserved) against that
+unchanged selection. Its Sol macro chosen-over-rejected accuracy is `0.580952`
+on 105 TRAIN pairs and `0.458333` on 24 DEV pairs. This remains
+development-screening evidence: confirmation is closed, the result is not full
+HBQ, native admission is not claimed, and provider contact cardinality remains
+unproven. The published September 12 [selected Dryad checkpoint](#dryad-source-and-full-hbq-preparation)
+records 279/2,300 Grok requests and complete Sol collection; Sol stories 19 and
+42 fail the unchanged coverage floor. Later recovery work preserves original
+attempts and completed results. An incomplete campaign does not establish an
+alignment result.
 
 The [full-tree family-weight diagnostic](https://github.com/HaileyStorm/Creative-Writing-Rubrics/tree/b4ba4c5d2963040ffc6f26010de089e21331a0b4/evaluation-results/hbq-human-alignment-family-weighting-v1)
 completed 3,072 provider-free Optuna trials over 48 TRAIN stories across 24
@@ -321,18 +326,23 @@ same measurements and complete fit.
 The selected profile agrees with the preferred answer on 70/105 TRAIN pairs
 (66.7%) and 10/24 DEV pairs (41.7%). DEV had 13 losses and one tie. Equal
 multipliers won 9/24 DEV pairs (37.5%). DEV selected between these two profiles,
-so the one-pair difference does not establish independent generalization.
-Sol validation using the frozen multipliers remains incomplete; confirmation stays closed.
+so the one-pair difference does not establish independent generalization. The
+historical summary retains `sol_validation_completed: false`; its predecessor
+status and all earlier stopped attempts remain immutable. The later [matched Sol
+completion](../evaluation-results/hbq-human-alignment-wpb-sol-completed-result-v1/README.md)
+settles the full 129-cell Sol stage: 125 new measurements plus the four
+preserved completions, with the frozen Grok choice unchanged. Sol records 61
+wins/39 losses/5 ties over 105 TRAIN pairs and 11 wins/10 losses/3 ties over 24
+DEV pairs. The report is development-screening-only, keeps confirmation closed,
+and makes no native-admission, promotion, full-HBQ, identity, reasoning, or
+provider-contact-cardinality claim. Its `provider_calls_made: 0` value applies
+only to offline report replay; it is not a collection contact count.
+
 The current broker companion and strict-schema successor passed their bounded
 reviews. The [September 12 partial checkpoint](../evaluation-results/hbq-human-alignment-wpb-compact-family-native-v1/sol-partial-checkpoint-20260912-v1.json)
-independently admits `0052` and `0068` through their original campaign roots,
-with saved exit codes of 0 and exact strict-command/native lifecycle checks.
-The latest batch stopped on a local `ValueError`; its first worker's inner
-failure was not retained. Nine peers have no launch or receipt evidence.
-Both completed results are preserved without resend, leaving 126 first contacts
-and the still-unused authorized `0082` replacement. Provider contact cardinality
-and provider-side model/reasoning attestation remain unproven.
-This coarse family comparison is not a full-HBQ alignment result.
+and both preserved local results remain predecessor provenance; no contacted
+cell was resent. This coarse family comparison is not a full-HBQ alignment
+result.
 
 ## Dryad source and full-HBQ preparation
 

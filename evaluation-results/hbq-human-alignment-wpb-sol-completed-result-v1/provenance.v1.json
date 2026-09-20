@@ -1,0 +1,48 @@
+{
+  "format_version": 1,
+  "kind": "wpb_public_result_provenance_v1",
+  "study_id": "hbq-human-alignment-wpb-compact-family-v1",
+  "result_artifact": "aggregate.v1.json",
+  "source_artifacts": {
+    "predecessor_grok_selection_summary": {
+      "repository_artifact": "../hbq-human-alignment-wpb-compact-family-native-v1/grok-selection-summary-v1.json",
+      "sha256": "1e22ccb5a84a4d3c85e8ba70d2a00da49158e00d40fa2c0e6d1595f07754589a"
+    },
+    "wpb_final_report": {
+      "control_artifact": "wpb-final-report/report.json",
+      "sha256": "aac14add193a8fc9479dfb630a21ef9ce39c2b020deb4c5b6c47c0eaf7ad7c78",
+      "status": "complete_batched_sol_campaign",
+      "measurement_count": 129,
+      "new_measurement_count": 125
+    },
+    "wpb_final_completion": {
+      "control_artifact": "wpb-final-report/completion.json",
+      "sha256": "c39d57ecf2fe948b4ad26acdde87b88ac2f6009d9b01ac807ca1c9447bae0ac3",
+      "state": "full_129_cell_report_completed"
+    }
+  },
+  "report_generation": {
+    "provider_calls_made": 0,
+    "scope": "offline_report_replay_only",
+    "collection_contact_cardinality": "unproven"
+  },
+  "selection_bindings": {
+    "freeze_sha256": "3728ab40a311fcf9cc89c7adb218cc16f1adac7b81ffd970de6318e109fa1eac",
+    "freeze_verifier_sha256": "217885d7d8d291a55e7042811765e90fa343759c4bbacd813b67444067c6f37e",
+    "selected_trial": 126,
+    "selected_profile_name": "train_fit",
+    "selection_unchanged_for_sol": true
+  },
+  "public_safety": {
+    "status": "public_safe_aggregate_only",
+    "excluded": [
+      "absolute_filesystem_paths",
+      "story_or_prompt_prose",
+      "native_session_dumps",
+      "provider_credentials",
+      "provider_request_or_session_identifiers",
+      "per_cell_receipts",
+      "private_study_contract"
+    ]
+  }
+}

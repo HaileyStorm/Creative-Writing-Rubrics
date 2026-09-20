@@ -1,0 +1,100 @@
+{
+  "format_version": 1,
+  "kind": "wpb_completed_matched_sol_public_result_v1",
+  "study_id": "hbq-human-alignment-wpb-compact-family-v1",
+  "authority": "development_screening_only",
+  "confirmation": "closed",
+  "full_hbq": false,
+  "native_admission": "not_claimed",
+  "release_or_promotion_authority": "none",
+  "frozen_grok_choice": {
+    "selection_summary_sha256": "1e22ccb5a84a4d3c85e8ba70d2a00da49158e00d40fa2c0e6d1595f07754589a",
+    "freeze_sha256": "3728ab40a311fcf9cc89c7adb218cc16f1adac7b81ffd970de6318e109fa1eac",
+    "freeze_verifier_sha256": "217885d7d8d291a55e7042811765e90fa343759c4bbacd813b67444067c6f37e",
+    "selection_frozen_at": "2026-09-10T16:45:43Z",
+    "optuna": {
+      "version": "4.9.0",
+      "seed": 20260904,
+      "trials": 128
+    },
+    "selected_trial": 126,
+    "selected_profile_name": "train_fit",
+    "selected_profile": {
+      "core": 0.7107837517001484,
+      "craft": 1.3642701252219738,
+      "form": 1.004900403838783
+    },
+    "measurement_count": 129,
+    "native_measurement_count": 127,
+    "local_session_schema_recovered_measurement_count": 2,
+    "identity_evidence": "requested_only",
+    "reasoning_attested": false,
+    "independent_generalization_established": false,
+    "predecessor_sol_validation_completed": false,
+    "partition_metrics": {
+      "train": {"pairs": 105, "categories": 35, "wins": 70, "losses": 29, "ties": 6, "macro_chosen_over_rejected_accuracy": 0.6666666666666666},
+      "dev": {"pairs": 24, "categories": 8, "wins": 10, "losses": 13, "ties": 1, "macro_chosen_over_rejected_accuracy": 0.41666666666666663}
+    }
+  },
+  "matched_sol": {
+    "requested_model": "gpt-5.6-sol",
+    "requested_reasoning_effort": "high",
+    "identity_evidence": "requested_only",
+    "reasoning_attested": false,
+    "native_endpoint_contact_cardinality": "unproven",
+    "logical_measurement_count": 129,
+    "new_measurement_count": 125,
+    "preserved_measurement_count": 4,
+    "status": "complete_batched_sol_campaign",
+    "full_selection_verification": "native_replay",
+    "profile_matches_frozen_grok_choice": true,
+    "observed_winner_disagreement_count": 10,
+    "partition_metrics": {
+      "train": {
+        "pairs": 105,
+        "categories": 35,
+        "wins": 61,
+        "losses": 39,
+        "ties": 5,
+        "macro_chosen_over_rejected_accuracy": 0.5809523809523809
+      },
+      "dev": {
+        "pairs": 24,
+        "categories": 8,
+        "wins": 11,
+        "losses": 10,
+        "ties": 3,
+        "macro_chosen_over_rejected_accuracy": 0.4583333333333333
+      }
+    }
+  },
+  "report_generation": {
+    "report_sha256": "aac14add193a8fc9479dfb630a21ef9ce39c2b020deb4c5b6c47c0eaf7ad7c78",
+    "completion_sha256": "c39d57ecf2fe948b4ad26acdde87b88ac2f6009d9b01ac807ca1c9447bae0ac3",
+    "provider_calls_made": 0,
+    "provider_calls_scope": "offline_report_replay_only",
+    "frozen_grok_choice_refitted": false,
+    "construction_counts": {
+      "codex_event_parser": 1,
+      "sol_runtime": 1,
+      "v3_runtime": 1
+    }
+  },
+  "source_commitments": {
+    "successor_manifest_sha256": "b73912a21a10a1ab3359bb3bff42d04105b6287becc26ff3bf96f40e847b13ee",
+    "import_serialized_reconciliation_sha256": "5518610a95663a9e196bd46963d8c66e025d0ffb954e87b21c560ee2813f34f2",
+    "ordered_measurement_commitment_sha256": "dc8c6fa436a829bfd68b57a232f4fdc802a17be553ec8099c5a2af4eb4811b41",
+    "ordered_target_commitment_sha256": "e4809e60cf29fed03639d6fd169552e2886c13094ece75cbb2d36bad02feb2cc",
+    "ordered_task_commitment_sha256": "fcc8ab0d90ca2bfa249d4e9866fefb0a7a47c7650acdca95456fd1d444b95566"
+  },
+  "limitations": [
+    "development_screening_only",
+    "confirmation_closed",
+    "full_hbq_false",
+    "native_admission_not_claimed",
+    "identity_and_reasoning_limits_requested_only",
+    "reasoning_attestation_false",
+    "collection_contact_cardinality_unproven",
+    "no_promotion_or_runtime_authority"
+  ]
+}
