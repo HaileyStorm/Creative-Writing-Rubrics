@@ -113,16 +113,31 @@ def test_standing_v6_loader_routes_only_to_serialized_replacement() -> None:
     assert predecessor not in subject.READER_PATH.read_text(encoding="utf-8")
 
 
-def test_capture_binds_the_partial_successor_controller_source() -> None:
+def test_capture_binds_the_partial_successor_controller_source(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
     subject = load()
+    parallel_fixture = tmp_path / "parallel-controller-fixture.py"
+    parallel_fixture.write_text("VALUE = 1\n", encoding="utf-8")
+    monkeypatch.setattr(subject, "PARALLEL_CONTROLLER_PATH", parallel_fixture)
     pins = {key: "0" * 64 for key in subject.PIN_KEYS}
     paths = {"analysis": SOURCE, "reader": subject.READER_PATH, "successor_controller": subject.CONTROLLER_PATH,
              "local_controller": subject.LOCAL_CONTROLLER_PATH, "standing_v6_controller": subject.STANDING_V6_CONTROLLER_PATH,
              "renewed_controller": subject.RENEWED_CONTROLLER_PATH,
+             "parallel_controller": parallel_fixture,
              "old_helper_closure": subject.OLD_HELPER_PATH, "composite": subject.COMPOSITE_PATH,
              "composite_analysis": subject.ANALYSIS_PATH, "selected_engine": subject.ENGINE_PATH,
              "runtime_data_scoring": subject.RUNTIME_DATA_SCORING_PATH}
     pins.update({key: digest(path.read_bytes()) for key, path in paths.items()})
+    original_load = subject._load
+
+    def load_module(path: Path, raw: bytes, label: str) -> Any:
+        module = original_load(path, raw, label)
+        if label == "reader":
+            module.PARALLEL_SUCCESSOR_SHA256 = pins["parallel_controller"]
+        return module
+
+    monkeypatch.setattr(subject, "_load", load_module)
     _captured, _reader, _controller, _old, _composite, _analysis, _engine, _local, standing = subject._capture(pins)
     assert Path(standing.__file__).resolve() == subject.STANDING_V6_CONTROLLER_PATH
 

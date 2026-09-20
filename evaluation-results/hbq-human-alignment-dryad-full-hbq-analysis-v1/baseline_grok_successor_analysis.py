@@ -19,6 +19,7 @@ CONTROLLER_PATH = ROOT / "baseline_grok_selected_successor.py"
 LOCAL_CONTROLLER_PATH = ROOT / "baseline_grok_selected_local_continuation.py"
 STANDING_V6_CONTROLLER_PATH = ROOT / "baseline_grok_runtime_data_successor.py"
 RENEWED_CONTROLLER_PATH = ROOT / "baseline_grok_renewed_successor.py"
+PARALLEL_CONTROLLER_PATH = ROOT / "baseline_grok_parallel_successor.py"
 OLD_HELPER_PATH = ROOT / "baseline_grok_recovery_analysis.py"
 COMPOSITE_PATH = ROOT / "baseline_composite_admission_v5.py"
 ANALYSIS_PATH = ROOT / "baseline_composite_analysis_v5.py"
@@ -30,7 +31,7 @@ PIN_KEYS = frozenset({
     "composite_analysis", "selected_engine", "workflow", "v1_runtime_loader", "v5_runtime_loader",
     "local_controller", "local_proposal", "local_adoption",
     "standing_v6_controller", "standing_v6_candidate", "standing_v6_packet", "standing_v6_source",
-    "runtime_data_scoring", "renewed_controller",
+    "runtime_data_scoring", "renewed_controller", "parallel_controller",
 })
 EXPECTED_COUNTS = {"stories": 100, "logical_requests": 2300, "native_requests": 2299,
                    "study_recovered_requests": 1, "criterion_verdicts": 17800}
@@ -112,6 +113,7 @@ def _capture(source_pins: Mapping[str, Any]) -> tuple[dict[Path, bytes], ModuleT
         (ANALYSIS_PATH, pins["composite_analysis"], "composite_analysis"),
         (ENGINE_PATH, pins["selected_engine"], "selected_engine"),
         (RUNTIME_DATA_SCORING_PATH, pins["runtime_data_scoring"], "runtime_data_scoring"),
+        (PARALLEL_CONTROLLER_PATH, pins["parallel_controller"], "parallel_controller"),
     )
     captured: dict[Path, bytes] = {}
     loaded: dict[str, ModuleType] = {}
@@ -123,6 +125,8 @@ def _capture(source_pins: Mapping[str, Any]) -> tuple[dict[Path, bytes], ModuleT
         raise ValueError("Successor reader controller source pin differs")
     if getattr(loaded["reader"], "RENEWED_SUCCESSOR_SHA256", None) != pins["renewed_controller"]:
         raise ValueError("Successor reader renewed controller source pin differs")
+    if getattr(loaded["reader"], "PARALLEL_SUCCESSOR_SHA256", None) != pins["parallel_controller"]:
+        raise ValueError("Successor reader parallel controller source pin differs")
     return (captured, loaded["reader"], loaded["successor_controller"], loaded["old_helper_closure"],
             loaded["composite"], loaded["composite_analysis"], loaded["selected_engine"], loaded["local_controller"], loaded["standing_v6_controller"])
 
@@ -218,17 +222,21 @@ def _admit_collection(collection: Mapping[str, Any], reader: ModuleType, *, sour
     local_descriptor = _local_descriptor(reader_inputs.get("local_continuation"))
     candidate_descriptor = _local_descriptor(reader_inputs.get("candidate_native_continuation"))
     renewed_descriptor = _local_descriptor(reader_inputs.get("renewed_continuation"))
-    if candidate_descriptor is not None and renewed_descriptor is not None:
+    parallel_descriptor = _local_descriptor(reader_inputs.get("parallel_continuation"))
+    if sum(item is not None for item in (candidate_descriptor, renewed_descriptor, parallel_descriptor)) > 1:
         raise ValueError("Selected successor continuations cannot be combined")
     expected_schema, expected_evidence, expected_counts, expected_recovered = (
-        (4, "selected100_grok_successor_renewed_replay_only_v4", LOCAL_EXPECTED_COUNTS, [70, 254])
+        (5, "selected100_grok_successor_parallel_replay_only_v5", LOCAL_EXPECTED_COUNTS, [70, 254])
+        if parallel_descriptor is not None
+        else ((4, "selected100_grok_successor_renewed_replay_only_v4", LOCAL_EXPECTED_COUNTS, [70, 254])
         if renewed_descriptor is not None
         else ((3, "selected100_grok_successor_standing_v6_candidate_replay_only_v3", LOCAL_EXPECTED_COUNTS, [70, 254])
         if candidate_descriptor is not None else ((2, "selected100_grok_successor_local_schema_recovery_replay_only_v2", LOCAL_EXPECTED_COUNTS, [70, 254])
-        if local_descriptor is not None else (1, "selected100_grok_successor_collection_replay_only_v1", EXPECTED_COUNTS, [70])) ))
+        if local_descriptor is not None else (1, "selected100_grok_successor_collection_replay_only_v1", EXPECTED_COUNTS, [70])) )))
     historical_prototype = local_descriptor is None or (
         candidate_descriptor is None
         and renewed_descriptor is None
+        and parallel_descriptor is None
         and reader_inputs.get("allow_legacy_local_v2_fixture") is True
     )
     if (not isinstance(collection, Mapping) or collection.get("schema_version") != expected_schema
@@ -267,6 +275,45 @@ def _admit_collection(collection: Mapping[str, Any], reader: ModuleType, *, sour
             != renewed_commitment.get("protected_paths")
         ):
             raise ValueError("Renewed successor binding differs")
+    if parallel_descriptor is not None:
+        parallel_commitment = collection.get("parallel_successor_commitment")
+        parallel_epoch = collection.get("parallel_source_epoch")
+        prior_completed = parallel_commitment.get("prior_completed_ordinals") if isinstance(parallel_commitment, Mapping) else None
+        completed = parallel_commitment.get("completed_ordinals") if isinstance(parallel_commitment, Mapping) else None
+        expected_parallel_ordinals = [
+            *range(262, 338),
+            *(prior_completed or []),
+            *(completed or []),
+        ]
+        parallel_overlap = bool(
+            prior_completed
+            and isinstance(completed, list)
+            and any(item <= prior_completed[-1] for item in completed)
+        )
+        if (
+            collection.get("parallel_continuation") != parallel_descriptor
+            or not isinstance(parallel_commitment, Mapping)
+            or parallel_commitment.get("manifest_sha256") != parallel_descriptor["manifest_sha256"]
+            or parallel_commitment.get("controller_sha256") != source_pins["parallel_controller"]
+            or parallel_commitment.get("source_epoch") != parallel_epoch
+            or parallel_commitment.get("replay_ordinals") != expected_parallel_ordinals
+            or not isinstance(prior_completed, list)
+            or prior_completed
+            != [*range(338, 1611), *range(4049, 4739)][: len(prior_completed)]
+            or not isinstance(completed, list)
+            or len(completed) != len(set(completed))
+            or parallel_overlap
+            or commitments.get("parallel_continuation_manifest_sha256") != parallel_descriptor["manifest_sha256"]
+            or commitments.get("parallel_continuation_controller_sha256") != source_pins["parallel_controller"]
+            or commitments.get("parallel_continuation_descriptor_sha256")
+            != reader._sha(reader._canonical(parallel_descriptor))
+            or commitments.get("parallel_source_epoch") != parallel_epoch
+            or commitments.get("parallel_successor_commitment_sha256")
+            != reader._sha(reader._canonical(parallel_commitment))
+            or collection.get("parallel_successor_protected_paths")
+            != parallel_commitment.get("protected_paths")
+        ):
+            raise ValueError("Parallel successor binding differs")
     expected_commitments = {
         "plan_sha256": reader_inputs["expected_plan_sha256"],
         "predecessor_sha256": reader_inputs["expected_predecessor_sha256"],
@@ -446,6 +493,78 @@ def _admit_collection(collection: Mapping[str, Any], reader: ModuleType, *, sour
                 "protected_paths": {name: dict(item) for name, item in protected.items()},
             },
         }
+    if parallel_descriptor is not None:
+        parallel = collection["parallel_successor_commitment"]
+        protected = collection["parallel_successor_protected_paths"]
+        parallel_expected = parallel.get("replay_ordinals")
+        prior_completed = parallel.get("prior_completed_ordinals")
+        completed = parallel.get("completed_ordinals")
+        prior_completed_set = set(prior_completed or [])
+        expected_parallel = [
+            *range(262, 338),
+            *(prior_completed or []),
+            *(completed or []),
+        ]
+        parallel_ids_hash = reader._sha(
+            reader._canonical(
+                [owners[ordinal]["native_identity"] for ordinal in expected_parallel]
+            )
+        ) if all(ordinal in owners for ordinal in expected_parallel) else None
+
+        def _valid_parallel_path(item: Any) -> bool:
+            if not isinstance(item, Mapping):
+                return False
+            if set(item) == {"root", "manifest_sha256"}:
+                return type(item.get("root")) is str and bool(item["root"]) and _hash(
+                    item.get("manifest_sha256"), "Parallel protected manifest"
+                ) == item["manifest_sha256"]
+            if set(item) == {"path", "sha256"}:
+                return type(item.get("path")) is str and bool(item["path"]) and _hash(
+                    item.get("sha256"), "Parallel protected path"
+                ) == item["sha256"]
+            return False
+
+        if (
+            parallel_expected != expected_parallel
+            or parallel.get("native_identity_commitment_sha256") != parallel_ids_hash
+            or not isinstance(parallel.get("protected_roots"), list)
+            or any(type(item) is not str or not item for item in parallel["protected_roots"])
+            or not isinstance(protected, Mapping)
+            or not protected
+            or any(not _valid_parallel_path(item) for item in protected.values())
+            or any(
+                not isinstance(owners.get(ordinal), Mapping)
+                or owners[ordinal].get("kind")
+                != (
+                    "standing_v6_runtime_data_original_native"
+                    if ordinal < 279
+                    else (
+                        "standing_v6_runtime_data_recovered_native"
+                        if ordinal == 279
+                        else (
+                            "standing_v6_runtime_data_successor_native"
+                            if ordinal < 338
+                            else (
+                                "standing_v6_renewed_successor_native"
+                                if ordinal in prior_completed_set
+                                else "parallel_renewal_native"
+                            )
+                        )
+                    )
+                )
+                for ordinal in expected_parallel
+            )
+        ):
+            raise ValueError("Parallel successor ownership differs")
+        root_owned.extend(parallel_expected)
+        local_record = {
+            **(local_record or {}),
+            "parallel": {
+                "descriptor": parallel_descriptor,
+                "commitment": dict(parallel),
+                "protected_paths": {name: dict(item) for name, item in protected.items()},
+            },
+        }
     if (len(root_owned) != len(set(root_owned)) or set(owners) != set(root_owned) or 70 in owners):
         raise ValueError("Selected successor root ownership coverage differs")
     rows, identities = collection.get("rows"), collection.get("native_identities")
@@ -569,11 +688,14 @@ def admit_selected_successor(*, reader_inputs: Mapping[str, Any], source_pins: M
                 "approved_v5_routes", "successor_roots", "local_continuation"}
     legacy_required = base_required | {"candidate_native_continuation"}
     renewed_required = base_required | {"renewed_continuation"}
+    parallel_required = base_required | {"parallel_continuation"}
     allowed = (
         legacy_required,
         legacy_required | {"runtime_data"},
         renewed_required,
         renewed_required | {"runtime_data"},
+        parallel_required,
+        parallel_required | {"runtime_data"},
     )
     if not isinstance(reader_inputs, Mapping) or set(reader_inputs) not in allowed:
         raise ValueError("Selected successor reader inputs differ")
@@ -582,8 +704,11 @@ def admit_selected_successor(*, reader_inputs: Mapping[str, Any], source_pins: M
     if set(reader_inputs) in (legacy_required, legacy_required | {"runtime_data"}):
         if _local_descriptor(reader_inputs["candidate_native_continuation"]) is None:
             raise ValueError("Standing v6 candidate continuation is required")
-    elif _local_descriptor(reader_inputs["renewed_continuation"]) is None:
-        raise ValueError("Renewed successor continuation is required")
+    elif set(reader_inputs) in (renewed_required, renewed_required | {"runtime_data"}):
+        if _local_descriptor(reader_inputs["renewed_continuation"]) is None:
+            raise ValueError("Renewed successor continuation is required")
+    elif _local_descriptor(reader_inputs["parallel_continuation"]) is None:
+        raise ValueError("Parallel successor continuation is required")
     if "runtime_data" not in reader_inputs:
         raise ValueError("Explicit runtime data configuration is required")
     data_descriptors = _runtime_data_descriptors(reader_inputs["runtime_data"])
@@ -600,12 +725,14 @@ def admit_selected_successor(*, reader_inputs: Mapping[str, Any], source_pins: M
             "local_continuation",
             "candidate_native_continuation",
             "renewed_continuation",
+            "parallel_continuation",
         }
     }
     collection = reader.read_selected_successor_collection(successor_roots=inputs["successor_roots"],
                                                            local_continuation=inputs["local_continuation"],
                                                            candidate_native_continuation=inputs.get("candidate_native_continuation"),
-                                                           renewed_continuation=inputs.get("renewed_continuation"), **reader_call)
+                                                           renewed_continuation=inputs.get("renewed_continuation"),
+                                                           parallel_continuation=inputs.get("parallel_continuation"), **reader_call)
     selection, predecessor, exclusions = _selection_with_runtime_data(composite, reader, inputs)
     admitted = _admit_collection(collection, reader, source_pins=pins, reader_inputs=inputs, selection=selection,
                                  predecessor=predecessor, exclusions=exclusions)
@@ -667,6 +794,7 @@ def _protected_inputs(reader_inputs: Mapping[str, Any], scoring_inputs: Mapping[
     descriptor = _local_descriptor(reader_inputs.get("local_continuation"))
     candidate_descriptor = _local_descriptor(reader_inputs.get("candidate_native_continuation"))
     renewed_descriptor = _local_descriptor(reader_inputs.get("renewed_continuation"))
+    parallel_descriptor = _local_descriptor(reader_inputs.get("parallel_continuation"))
     local_paths: tuple[Any, ...] = ()
     if local_recovery is not None:
         protected = local_recovery.get("protected_paths")
@@ -731,6 +859,33 @@ def _protected_inputs(reader_inputs: Mapping[str, Any], scoring_inputs: Mapping[
                 raise ValueError("Renewed successor protected roots differ")
             renewed_values.extend(protected_roots)
             local_paths += tuple(renewed_values)
+        parallel = local_recovery.get("parallel")
+        if parallel is not None:
+            parallel_paths = parallel.get("protected_paths") if isinstance(parallel, Mapping) else None
+            if not isinstance(parallel_paths, Mapping) or not parallel_paths:
+                raise ValueError("Parallel successor protected paths differ")
+            parallel_values: list[str] = []
+            for item in parallel_paths.values():
+                if not isinstance(item, Mapping):
+                    raise ValueError("Parallel successor protected paths differ")  # noqa: TRY004 - admission contract uses ValueError
+                if set(item) == {"root", "manifest_sha256"}:
+                    root = item.get("root")
+                    if type(root) is not str or not root:
+                        raise ValueError("Parallel successor protected paths differ")
+                    _hash(item.get("manifest_sha256"), "Parallel protected manifest")
+                    parallel_values.append(root)
+                    continue
+                path = item.get("path")
+                if type(path) is not str or not path:
+                    raise ValueError("Parallel successor protected paths differ")
+                _hash(item.get("sha256"), "Parallel protected path")
+                parallel_values.append(path)
+            parallel_commitment = parallel.get("commitment") if isinstance(parallel, Mapping) else None
+            protected_roots = parallel_commitment.get("protected_roots") if isinstance(parallel_commitment, Mapping) else None
+            if not isinstance(protected_roots, list) or any(type(root) is not str or not root for root in protected_roots):
+                raise ValueError("Parallel successor protected roots differ")
+            parallel_values.extend(protected_roots)
+            local_paths += tuple(parallel_values)
     data_paths: list[str] = []
     data_descriptors = {} if "runtime_data" not in reader_inputs else _runtime_data_descriptors(reader_inputs["runtime_data"])
     if runtime_data_paths is not None:
@@ -748,6 +903,7 @@ def _protected_inputs(reader_inputs: Mapping[str, Any], scoring_inputs: Mapping[
             *(() if descriptor is None else (descriptor["root"],)),
             *(() if candidate_descriptor is None else (candidate_descriptor["root"],)),
             *(() if renewed_descriptor is None else (renewed_descriptor["root"],)),
+            *(() if parallel_descriptor is None else (parallel_descriptor["root"],)),
             *local_paths, *data_paths,
             scoring_inputs["scoring_manifest_path"], scoring_inputs["v5_runtime_manifest_path"],
             scoring_inputs["v5_runtime_package_root"])

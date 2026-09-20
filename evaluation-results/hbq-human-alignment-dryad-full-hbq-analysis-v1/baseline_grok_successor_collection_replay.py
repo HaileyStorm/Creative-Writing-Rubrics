@@ -20,6 +20,7 @@ SUCCESSOR = ROOT / "baseline_grok_selected_successor.py"
 LOCAL_CONTINUATION = ROOT / "baseline_grok_selected_local_continuation.py"
 STANDING_V6_CONTINUATION = ROOT / "baseline_grok_runtime_data_successor.py"
 RENEWED_CONTINUATION = ROOT / "baseline_grok_renewed_successor.py"
+PARALLEL_CONTINUATION = ROOT / "baseline_grok_parallel_successor.py"
 CONTEXT_ADAPTER = ROOT / "baseline_runtime_data_collection_context.py"
 PREFIX_ADAPTER = ROOT / "baseline_runtime_data_prefix.py"
 COMPOSITE_SHA256 = "efd33ba0fcce7ae8c64a9aea280830998cb974c0250a411d657304a2fd0c50f6"
@@ -29,6 +30,7 @@ SUCCESSOR_SHA256 = "fc0dbe04b3699522271157a87fc2f5a5659ffc108bd7eb3a68d6bf393e49
 RENEWED_SUCCESSOR_SHA256 = (
     "e476b47fa4fc88f13fde1752d691352892d80af415f2bb6425077e66facc1696"
 )
+PARALLEL_SUCCESSOR_SHA256 = "1b8392884b0ec2a4ba6868fc34a5d0f0c9c4f8875e505444e4c68a6cc6261ffb"
 LOCAL_PROJECTION_SHA256 = (
     "0ae9213b33a51315f082f9091fe40601f21efbdc32475d8010956d9cd8ee716b"
 )
@@ -1001,7 +1003,10 @@ def _candidate_native_continuation(
 
 
 def _renewed_native_continuation(
-    *, descriptor: Mapping[str, Any], plan_root: Path
+    *,
+    descriptor: Mapping[str, Any],
+    plan_root: Path,
+    _expected_prefix_ordinals: Sequence[int] | None = None,
 ) -> tuple[
     dict[int, dict[str, Any]],
     list[dict[str, str]],
@@ -1038,12 +1043,23 @@ def _renewed_native_continuation(
     controller._records(root)
     replayed, _previous = controller._replayed(root, state)
     pending = list(state.get("pending_ordinals", []))
-    _need(
-        pending
-        and replayed == set(pending)
-        and pending == list(getattr(controller, "PENDING", pending)),
-        "renewed successor replay boundary differs",
-    )
+    controller_pending = list(getattr(controller, "PENDING", pending))
+    if _expected_prefix_ordinals is None:
+        _need(
+            pending
+            and replayed == set(pending)
+            and pending == controller_pending,
+            "renewed successor replay boundary differs",
+        )
+    else:
+        expected_prefix = list(_expected_prefix_ordinals)
+        _need(
+            expected_prefix
+            and expected_prefix == controller_pending[: len(expected_prefix)]
+            and replayed == set(expected_prefix),
+            "renewed successor replay prefix differs",
+        )
+        pending = expected_prefix
     closure = manifest.get("source_closure")
     historical_state = historical.get("state")
     prior_identities = historical.get("prior_identities")
@@ -1434,6 +1450,174 @@ def _renewed_native_continuation(
     return owners, identities, batches, commitment
 
 
+def _parallel_native_continuation(
+    *, descriptor: Mapping[str, Any], plan_root: Path
+) -> tuple[
+    dict[int, dict[str, Any]],
+    list[dict[str, str]],
+    dict[int, list[dict[str, Any]]],
+    dict[str, Any],
+]:
+    root, manifest_sha256, controller_sha256 = _local_descriptor(descriptor)
+    controller = _module(
+        PARALLEL_CONTINUATION,
+        controller_sha256,
+        "parallel successor controller",
+    )
+    result = controller.replay_collection(
+        continuation_root=root,
+        expected_manifest_sha256=manifest_sha256,
+        require_complete=True,
+    )
+    _need(isinstance(result, Mapping), "parallel successor replay differs")
+    source_epoch = result.get("source_epoch")
+    manifest = result.get("manifest")
+    prior = result.get("prior_continuation")
+    prior_completed = result.get("prior_completed_ordinals")
+    pending = result.get("pending_ordinals")
+    completed = result.get("completed_ordinals")
+    records = result.get("records")
+    protected_paths = result.get("protected_paths")
+    _need(
+        isinstance(source_epoch, str)
+        and isinstance(manifest, Mapping)
+        and result.get("manifest_sha256") == manifest_sha256
+        and isinstance(prior, Mapping)
+        and set(prior) == {"root", "manifest_sha256", "controller_sha256"}
+        and isinstance(prior_completed, list)
+        and isinstance(pending, list)
+        and isinstance(completed, list)
+        and isinstance(records, list)
+        and isinstance(protected_paths, Mapping)
+        and result.get("provider_calls_made") == 0,
+        "parallel successor replay boundary differs",
+    )
+    _need(
+        all(type(item) is int for item in prior_completed + pending + completed)
+        and len(prior_completed) == len(set(prior_completed))
+        and len(pending) == len(set(pending))
+        and len(completed) == len(set(completed)),
+        "parallel successor ordinal inventory differs",
+    )
+    _need(
+        prior_completed
+        == [*range(338, 1611), *range(4049, 4739)][: len(prior_completed)]
+        and completed == [record.get("ordinal") for record in records]
+        and completed == sorted(completed)
+        and not set(prior_completed) & set(completed),
+        "parallel successor ordinal boundary differs",
+    )
+    _need(
+        all(
+            type(item) is str and item
+            for item in [
+                result.get("plan_root"),
+                prior.get("root"),
+                prior.get("manifest_sha256"),
+                prior.get("controller_sha256"),
+            ]
+        ),
+        "parallel successor source descriptors differ",
+    )
+    _need(
+        Path(str(result["plan_root"])).resolve() == plan_root,
+        "parallel successor plan root differs",
+    )
+    serial_owners, serial_identities, serial_batches, serial_commitment = (
+        _renewed_native_continuation(
+            descriptor=prior,
+            plan_root=plan_root,
+            _expected_prefix_ordinals=prior_completed,
+        )
+    )
+    owners = dict(serial_owners)
+    identities = list(serial_identities)
+    batches = dict(serial_batches)
+    parallel_ordinals: list[int] = []
+    for record in records:
+        _need(
+            isinstance(record, Mapping)
+            and type(record.get("ordinal")) is int
+            and record["ordinal"] in completed
+            and record["ordinal"] not in owners
+            and isinstance(record.get("native_identity"), Mapping)
+            and isinstance(record.get("terminal"), Mapping)
+            and set(record["terminal"]) >= {"path", "sha256"}
+            and record.get("source_epoch") == source_epoch
+            and record.get("root") == str(root)
+            and record.get("manifest_sha256") == manifest_sha256
+            and record.get("controller_sha256") == controller_sha256
+            and isinstance(record.get("native_envelope_sha256"), str)
+            and _HASH.fullmatch(record["native_envelope_sha256"]),
+            "parallel successor record differs",
+        )
+        ordinal = record["ordinal"]
+        terminal = record["terminal"]
+        _read(Path(terminal["path"]), terminal["sha256"], "parallel successor terminal")
+        identity = _identity(record["native_identity"], "parallel successor identity")
+        verdict_rows = record.get("verdicts")
+        _need(
+            isinstance(verdict_rows, list)
+            and len(verdict_rows) == QUESTION_COUNT,
+            "parallel successor verdicts differ",
+        )
+        question_ids = [item.get("question_id") for item in verdict_rows if isinstance(item, Mapping)]
+        batch = _verdicts(verdict_rows, question_ids, "parallel successor")
+        owners[ordinal] = {
+            "kind": "parallel_renewal_native",
+            "root": str(root),
+            "manifest_sha256": manifest_sha256,
+            "controller_sha256": controller_sha256,
+            "source_epoch": source_epoch,
+            "terminal_sha256": terminal["sha256"],
+            "native_envelope_sha256": record["native_envelope_sha256"],
+            "native_identity": dict(identity),
+            "replay_receipt": "parallel_successor",
+        }
+        identities.append(identity)
+        batches[ordinal] = batch
+        parallel_ordinals.append(ordinal)
+    _need(
+        parallel_ordinals == completed
+        and len(_unique(identities)) == len(identities)
+        and all(ordinal not in serial_owners for ordinal in parallel_ordinals),
+        "parallel successor identity or ownership collision",
+    )
+    source_epoch_descriptor = {
+        "source_epoch": source_epoch,
+        "manifest_sha256": manifest_sha256,
+        "controller_sha256": controller_sha256,
+        "prior_continuation": dict(prior),
+    }
+    protected_roots = list(serial_commitment.get("protected_roots", []))
+    protected_roots.append(str(root))
+    merged_protected_paths = {
+        **{
+            f"serial_{name}": dict(item)
+            for name, item in serial_commitment.get("protected_paths", {}).items()
+        },
+        **{
+            f"parallel_{name}": dict(item)
+            for name, item in protected_paths.items()
+        },
+    }
+    commitment = {
+        "root": str(root),
+        "manifest_sha256": manifest_sha256,
+        "controller_sha256": controller_sha256,
+        "source_epoch": source_epoch_descriptor,
+        "prior_continuation": dict(prior),
+        "prior_completed_ordinals": list(prior_completed),
+        "pending_ordinals": list(pending),
+        "completed_ordinals": list(completed),
+        "replay_ordinals": [*sorted(serial_owners), *parallel_ordinals],
+        "native_identity_commitment_sha256": _sha(_canonical(identities)),
+        "protected_roots": list(dict.fromkeys(protected_roots)),
+        "protected_paths": merged_protected_paths,
+    }
+    return owners, identities, batches, commitment
+
+
 def _historical_exclusions(predecessor: Mapping[str, Any]) -> list[dict[str, str]]:
     descriptor = predecessor.get("identity_exclusion")
     _need(
@@ -1708,6 +1892,7 @@ def read_selected_successor_collection(
     local_continuation: Mapping[str, Any] | None = None,
     candidate_native_continuation: Mapping[str, Any] | None = None,
     renewed_continuation: Mapping[str, Any] | None = None,
+    parallel_continuation: Mapping[str, Any] | None = None,
     allow_legacy_local_v2_fixture: bool = False,
     runtime_data: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
@@ -1719,7 +1904,15 @@ def read_selected_successor_collection(
         "frozen collection helper binding differs",
     )
     _need(
-        not (candidate_native_continuation is not None and renewed_continuation is not None),
+        sum(
+            item is not None
+            for item in (
+                candidate_native_continuation,
+                renewed_continuation,
+                parallel_continuation,
+            )
+        )
+        <= 1,
         "candidate and renewed continuations cannot be combined",
     )
     composite = _module(COMPOSITE, COMPOSITE_SHA256, "composite helper")
@@ -1806,6 +1999,7 @@ def read_selected_successor_collection(
         _need(
             candidate_native_continuation is not None
             or renewed_continuation is not None
+            or parallel_continuation is not None
             or allow_legacy_local_v2_fixture is True,
             "standing v6 candidate continuation is required",
         )
@@ -1820,6 +2014,7 @@ def read_selected_successor_collection(
             include_untouched=(
                 candidate_native_continuation is None
                 and renewed_continuation is None
+                and parallel_continuation is None
             ),
             runtime=successor_runtime if runtime_config is not None else None,
             prefix_adapter=prefix_adapter,
@@ -1866,6 +2061,26 @@ def read_selected_successor_collection(
             descriptor=renewed_continuation,
             plan_root=plan_root,
         )
+    parallel_owners, parallel_identities, parallel_batches, parallel_commitment = (
+        {},
+        [],
+        {},
+        None,
+    )
+    if parallel_continuation is not None:
+        _need(
+            local_continuation is not None,
+            "parallel continuation requires local prefix",
+        )
+        (
+            parallel_owners,
+            parallel_identities,
+            parallel_batches,
+            parallel_commitment,
+        ) = _parallel_native_continuation(
+            descriptor=parallel_continuation,
+            plan_root=plan_root,
+        )
     owners = {**recovery_owners}
     _need(
         not (set(owners) & set(successor_owners)),
@@ -1887,6 +2102,11 @@ def read_selected_successor_collection(
         "renewed continuation ordinal ownership collision",
     )
     owners.update(renewed_owners)
+    _need(
+        not (set(owners) & set(parallel_owners)),
+        "parallel continuation ordinal ownership collision",
+    )
+    owners.update(parallel_owners)
     _need(set(owners) == set(SUCCESSOR_SCHEDULE), "successor chain is incomplete")
     receipt_identities = _unique(
         [
@@ -1895,6 +2115,7 @@ def read_selected_successor_collection(
             *local_identities,
             *candidate_identities,
             *renewed_identities,
+            *parallel_identities,
         ]
     )
     expected_replayed_native = len(owners) - int(local is not None)
@@ -2083,7 +2304,7 @@ def read_selected_successor_collection(
             },
         )
     )
-    native_batches = {**candidate_batches, **renewed_batches}
+    native_batches = {**candidate_batches, **renewed_batches, **parallel_batches}
     for record in selected[4:]:
         verdicts: list[dict[str, Any]] = []
         terminals = []
@@ -2120,6 +2341,7 @@ def read_selected_successor_collection(
                 "standing_v6_runtime_data_recovered_native",
                 "standing_v6_runtime_data_successor_native",
                 "standing_v6_renewed_successor_native",
+                "parallel_renewal_native",
             }:
                 batch = native_batches.get(ordinal)
                 _need(
@@ -2242,7 +2464,11 @@ def read_selected_successor_collection(
         else (
             4
             if renewed_commitment is not None
-            else (3 if candidate_commitment is not None else 2)
+            else (
+                5
+                if parallel_commitment is not None
+                else (3 if candidate_commitment is not None else 2)
+            )
         ),
         "evidence_class": "selected100_grok_successor_collection_replay_only_v1"
         if local is None
@@ -2250,9 +2476,13 @@ def read_selected_successor_collection(
             "selected100_grok_successor_renewed_replay_only_v4"
             if renewed_commitment is not None
             else (
-                "selected100_grok_successor_standing_v6_candidate_replay_only_v3"
-                if candidate_commitment is not None
-                else "selected100_grok_successor_local_schema_recovery_replay_only_v2"
+                "selected100_grok_successor_parallel_replay_only_v5"
+                if parallel_commitment is not None
+                else (
+                    "selected100_grok_successor_standing_v6_candidate_replay_only_v3"
+                    if candidate_commitment is not None
+                    else "selected100_grok_successor_local_schema_recovery_replay_only_v2"
+                )
             )
         ),
         "counts": {
@@ -2295,7 +2525,11 @@ def read_selected_successor_collection(
         "authority": False,
         "provider_calls_made": 0,
         "historical_prototype_only": local is None
-        or (candidate_commitment is None and renewed_commitment is None),
+        or (
+            candidate_commitment is None
+            and renewed_commitment is None
+            and parallel_commitment is None
+        ),
     }
     if runtime_provenance is not None:
         result["runtime_data_provenance"] = runtime_provenance
@@ -2389,4 +2623,35 @@ def read_selected_successor_collection(
         result.setdefault("source_commitments", {})[
             "renewed_successor_commitment_sha256"
         ] = renewed_commitment_sha256
+    if parallel_commitment is not None:
+        _need(
+            parallel_continuation is not None,
+            "parallel continuation descriptor differs",
+        )
+        parallel_epoch = dict(parallel_commitment["source_epoch"])
+        parallel_commitment_sha256 = _sha(_canonical(parallel_commitment))
+        result["input_commitments"].update(
+            {
+                "parallel_continuation_manifest_sha256": parallel_commitment[
+                    "manifest_sha256"
+                ],
+                "parallel_continuation_controller_sha256": parallel_commitment[
+                    "controller_sha256"
+                ],
+                "parallel_continuation_descriptor_sha256": _sha(
+                    _canonical(dict(parallel_continuation))
+                ),
+                "parallel_source_epoch": parallel_epoch,
+                "parallel_successor_commitment_sha256": parallel_commitment_sha256,
+            }
+        )
+        result["parallel_continuation"] = dict(parallel_continuation)
+        result["parallel_source_epoch"] = parallel_epoch
+        result["parallel_successor_commitment"] = dict(parallel_commitment)
+        result["parallel_successor_protected_paths"] = dict(
+            parallel_commitment["protected_paths"]
+        )
+        result.setdefault("source_commitments", {})[
+            "parallel_successor_commitment_sha256"
+        ] = parallel_commitment_sha256
     return result

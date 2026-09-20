@@ -1340,6 +1340,18 @@ def test_renewed_reader_binds_historical_335_and_new_source_epoch(
     assert commitment["historical_identity_count"] == 335
     assert str(tmp_path / "original-peer-root") in commitment["protected_roots"]
 
+    RenewedController.PENDING = [338, 339]
+    with pytest.raises(ValueError, match="replay boundary"):
+        value._renewed_native_continuation(
+            descriptor={
+                "root": str(root),
+                "manifest_sha256": "3" * 64,
+                "controller_sha256": value.RENEWED_SUCCESSOR_SHA256,
+            },
+            plan_root=plan_root,
+        )
+    RenewedController.PENDING = [338]
+
     def reject_semantic(**_kwargs: Any) -> tuple[Any, Any, Any]:
         raise ValueError("semantic envelope mismatch")
 
@@ -1357,3 +1369,150 @@ def test_renewed_reader_binds_historical_335_and_new_source_epoch(
             },
             plan_root=plan_root,
         )
+
+
+def _parallel_fixture(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+    *,
+    fault: str | None = None,
+) -> tuple[Any, Path, dict[str, str]]:
+    value = load()
+    root = tmp_path / "parallel"
+    root.mkdir()
+    plan_root = tmp_path / "plan"
+    plan_root.mkdir()
+    controller_sha = "b" * 64
+    manifest_sha = "c" * 64
+    prior_completed = list(range(338, 351))
+    tail = [351, 352]
+    if fault == "incomplete":
+        records_ordinals = [351]
+    elif fault == "overlap":
+        prior_completed = list(range(338, 351))
+        tail = [350]
+        records_ordinals = [350]
+    else:
+        records_ordinals = list(tail)
+    question_ids = [f"q-{number:03d}" for number in range(value.QUESTION_COUNT)]
+
+    def native(ordinal: int) -> dict[str, Any]:
+        return {
+            "request_id_hash": value._sha(f"parallel-request-{ordinal}".encode()),
+            "session_id_hash": value._sha(f"parallel-session-{ordinal}".encode()),
+            "observed_turns": 1,
+        }
+
+    serial_owners = {
+        ordinal: {
+            "kind": (
+                "standing_v6_runtime_data_original_native"
+                if ordinal < 279
+                else (
+                    "standing_v6_runtime_data_recovered_native"
+                    if ordinal == 279
+                    else (
+                        "standing_v6_runtime_data_successor_native"
+                        if ordinal < 338
+                        else "standing_v6_renewed_successor_native"
+                    )
+                )
+            ),
+            "native_identity": native(ordinal),
+        }
+        for ordinal in [*range(262, 338), *prior_completed]
+    }
+    serial_identities = [serial_owners[ordinal]["native_identity"] for ordinal in sorted(serial_owners)]
+    serial_batches = {
+        ordinal: [{"question_id": question, "verdict": "YES"} for question in question_ids]
+        for ordinal in serial_owners
+    }
+
+    records: list[dict[str, Any]] = []
+    for ordinal in records_ordinals:
+        terminal_path = root / f"terminal-{ordinal}.json"
+        terminal_path.write_bytes(f"terminal-{ordinal}".encode())
+        record_identity = native(ordinal)
+        if fault == "duplicate" and ordinal == 351:
+            record_identity = native(338)
+        records.append(
+            {
+                "ordinal": ordinal,
+                "verdicts": [{"question_id": question, "verdict": "YES"} for question in question_ids],
+                "native_identity": record_identity,
+                "terminal": {"path": str(terminal_path), "sha256": value._sha(terminal_path.read_bytes())},
+                "native_envelope_sha256": "d" * 64,
+                "source_epoch": "parallel-fixture",
+                "root": str(root),
+                "manifest_sha256": manifest_sha,
+                "controller_sha256": controller_sha,
+            }
+        )
+
+    class ParallelController:
+        @staticmethod
+        def replay_collection(**_kwargs: Any) -> dict[str, Any]:
+            return {
+                "source_epoch": "parallel-fixture",
+                "manifest": {"kind": "parallel-fixture"},
+                "manifest_sha256": manifest_sha,
+                "plan_root": str(plan_root),
+                "prior_continuation": {
+                    "root": str(tmp_path / "serial"),
+                    "manifest_sha256": "e" * 64,
+                    "controller_sha256": "f" * 64,
+                },
+                "prior_completed_ordinals": prior_completed,
+                "pending_ordinals": tail,
+                "completed_ordinals": tail,
+                "records": records,
+                "protected_paths": {
+                    "parallel_root": {"root": str(root), "manifest_sha256": manifest_sha},
+                },
+                "provider_calls_made": 0,
+            }
+
+    def serial_stub(**_kwargs: Any) -> tuple[Any, Any, Any, Any]:
+        return (
+            serial_owners,
+            serial_identities,
+            serial_batches,
+            {"protected_roots": ["old-root"]},
+        )
+
+    original_module = value._module
+    monkeypatch.setattr(
+        value,
+        "_module",
+        lambda path, *args: ParallelController
+        if path == value.PARALLEL_CONTINUATION
+        else original_module(path, *args),
+    )
+    monkeypatch.setattr(value, "_renewed_native_continuation", serial_stub)
+    return value, plan_root, {"root": str(root), "manifest_sha256": manifest_sha, "controller_sha256": controller_sha}
+
+
+def test_parallel_reader_merges_serial_prefix_and_parallel_tail(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    value, plan_root, descriptor = _parallel_fixture(monkeypatch, tmp_path)
+    owners, identities, batches, commitment = value._parallel_native_continuation(
+        descriptor=descriptor, plan_root=plan_root
+    )
+    assert owners[350]["kind"] == "standing_v6_renewed_successor_native"
+    assert owners[351]["kind"] == "parallel_renewal_native"
+    assert 351 in batches and len(identities) == len(owners)
+    assert commitment["source_epoch"]["source_epoch"] == "parallel-fixture"
+    assert "old-root" in commitment["protected_roots"]
+
+
+@pytest.mark.parametrize(
+    "fault, message",
+    [("incomplete", "ordinal"), ("overlap", "ordinal boundary"), ("duplicate", "identity")],
+)
+def test_parallel_reader_rejects_incomplete_overlap_and_duplicate_tail(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path, fault: str, message: str
+) -> None:
+    value, plan_root, descriptor = _parallel_fixture(monkeypatch, tmp_path, fault=fault)
+    with pytest.raises(ValueError, match=message):
+        value._parallel_native_continuation(descriptor=descriptor, plan_root=plan_root)
