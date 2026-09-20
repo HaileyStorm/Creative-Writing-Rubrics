@@ -138,7 +138,14 @@ def test_strict_judge_response_schema_is_public() -> None:
     Draft202012Validator.check_schema(schema)
     verdict = schema["properties"]["verdicts"]["items"]
     assert verdict["additionalProperties"] is False
-    assert verdict["properties"]["evidence"]["items"]["additionalProperties"] is False
+    evidence = Draft202012Validator(verdict["properties"]["evidence"]["items"])
+    for kind, quote, summary in (
+        ("exact_quote", "A line from the source.", None),
+        ("summary", None, "A source-grounded summary."),
+    ):
+        item = {"kind": kind, "reference": "source", "exact_quote": quote, "summary": summary}
+        assert evidence.is_valid(item)
+        assert not evidence.is_valid({**item, "unexpected": "field"})
 
 
 def test_published_long_form_evaluation_is_complete_and_sanitized() -> None:
