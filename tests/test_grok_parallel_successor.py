@@ -300,6 +300,32 @@ def test_candidate_v11_inventory_uses_separated_wrapper_deadline_kind(tmp_path: 
     assert binding["manifest"]["kind"] == "grok_v11_separated_wrapper_deadline_candidate"
 
 
+def test_v11_runtime_binding_validates_current_file_hashes(tmp_path: Path) -> None:
+    files = {
+        "wrapper_python_path": tmp_path / "wrapper.exe",
+        "runner_path": tmp_path / "runner.py",
+        "runner_interpreter_path": tmp_path / "interpreter.exe",
+        "reader_path": tmp_path / "reader.py",
+    }
+    for path in files.values():
+        path.write_bytes(b"runtime")
+    runtime = {
+        "candidate_manifest_sha256": "f" * 64,
+        "broker_sha256": "a" * 64,
+        "adapter_sha256": "b" * 64,
+        **{key: str(path.resolve()) for key, path in files.items()},
+        **{key.replace("_path", "_sha256"): sha(path.read_bytes()) for key, path in files.items()},
+        "controller_path": str(SOURCE.resolve()),
+        "controller_sha256": sha(SOURCE.read_bytes()),
+    }
+    descriptor = write(tmp_path / "runtime-binding.json", runtime)
+    binding = m._v11_runtime_binding({"runtime_binding": descriptor}, "f" * 64)
+    assert binding["runtime"]["candidate_manifest_sha256"] == "f" * 64
+    files["runner_path"].write_bytes(b"drift")
+    with pytest.raises(ValueError, match="V11 runtime runner_path"):
+        m._v11_runtime_binding({"runtime_binding": descriptor}, "f" * 64)
+
+
 def test_retry_authority_binds_origin_specific_failed_ordinal(tmp_path: Path) -> None:
     authority_path = tmp_path / "retry-authority.json"
     authority_descriptor = write(

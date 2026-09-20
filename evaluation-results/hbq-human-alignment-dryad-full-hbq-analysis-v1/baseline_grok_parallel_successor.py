@@ -835,6 +835,19 @@ def _source_semantics(closure: Mapping[str, Any], *, candidate_manifest_sha256: 
         and isinstance(packet.get("preimages"), Mapping)
         and packet["preimages"].get("route_contract_sha256") == closure.get("route_contract_hash")
     )
+    if candidate_schema_version == 11:
+        transition_packet = (
+            packet.get("schema_version") == 1
+            and packet.get("kind") == "grok_v11_incident_bound_route_recovery_packet"
+            and packet.get("state") == "recovered_no_dispatch"
+            and packet.get("dispatch_authority") is False
+            and packet.get("provider_calls_made") == 0
+            and packet.get("candidate_manifest_sha256") == candidate_manifest_sha256
+            and isinstance(packet.get("retry_ordinals"), list)
+            and packet.get("transition_receipt") == closure.get("transition_receipt")
+            and isinstance(packet.get("source_file_sha256"), str)
+            and isinstance(packet.get("source_canonical_artifact_sha256"), str)
+        )
     _need((candidate_schema_version == 8 and v6_packet) or transition_packet, "standing packet is not inert")
     packet_candidate = packet.get("candidate_manifest")
     if candidate_manifest_sha256 is not None and isinstance(packet_candidate, Mapping):
@@ -869,6 +882,47 @@ def _source_semantics(closure: Mapping[str, Any], *, candidate_manifest_sha256: 
     }
 
 
+def _v11_runtime_binding(closure: Mapping[str, Any], candidate_manifest_sha256: str | None) -> dict[str, Any]:
+    value = closure.get("runtime_binding")
+    _need(value is not None, "V11 runtime binding is missing")
+    runtime, _raw, descriptor = _json_descriptor(value, "V11 runtime binding")
+    required = {
+        "candidate_manifest_sha256",
+        "broker_sha256",
+        "adapter_sha256",
+        "wrapper_python_path",
+        "wrapper_python_sha256",
+        "runner_path",
+        "runner_sha256",
+        "runner_interpreter_path",
+        "runner_interpreter_sha256",
+        "controller_path",
+        "controller_sha256",
+        "reader_path",
+        "reader_sha256",
+    }
+    _need(set(runtime) == required, "V11 runtime binding differs")
+    _need(
+        candidate_manifest_sha256 is None or runtime["candidate_manifest_sha256"] == candidate_manifest_sha256,
+        "V11 runtime candidate differs",
+    )
+    for path_key, hash_key in (
+        ("wrapper_python_path", "wrapper_python_sha256"),
+        ("runner_path", "runner_sha256"),
+        ("runner_interpreter_path", "runner_interpreter_sha256"),
+        ("controller_path", "controller_sha256"),
+        ("reader_path", "reader_sha256"),
+    ):
+        path = Path(runtime[path_key]).resolve()
+        _need(path.is_file() and _sha(path.read_bytes()) == runtime[hash_key], f"V11 runtime {path_key} differs")
+    _need(
+        Path(runtime["controller_path"]).resolve() == Path(__file__).resolve()
+        and runtime["controller_sha256"] == _sha(Path(__file__).read_bytes()),
+        "V11 runtime controller differs",
+    )
+    return {"runtime_binding": descriptor, "runtime": runtime}
+
+
 def _transition_bindings(
     closure: Mapping[str, Any],
     *,
@@ -885,6 +939,7 @@ def _transition_bindings(
     registry_descriptor, _registry_raw, registry_path_descriptor = _json_descriptor(registry_value, "registry transition descriptor")
     gate_descriptor, _gate_raw, gate_path_descriptor = _json_descriptor(gate_value, "gate transition descriptor")
     transition, _transition_raw, transition_descriptor = _json_descriptor(transition_value, "transition receipt")
+    registry_path = Path(str(registry_descriptor.get("registry_path"))).resolve()
     _need(
         registry_descriptor.get("schema_version") == 1
         and (
@@ -934,6 +989,86 @@ def _transition_bindings(
         and gate_descriptor["required_storage_postcondition"].get("storage_schema_version") == 1,
         "gate transition descriptor differs",
     )
+    if candidate_schema_version == 11:
+        registry_path = Path(str(registry_descriptor.get("registry_path"))).resolve()
+        _need(
+            transition.get("schema_version") == 1
+            and transition.get("kind") == "grok_v11_incident_bound_route_recovery_transition"
+            and transition.get("state") == "complete_no_dispatch"
+            and transition.get("provider_calls_made") == 0
+            and transition.get("provider_probes_made") == 0
+            and transition.get("provider_resends_made") == 0
+            and transition.get("billing_changes_made") == 0
+            and transition.get("dispatch_authority") is False
+            and transition.get("candidate_manifest_sha256") == candidate_manifest_sha256
+            and isinstance(transition.get("post_queue"), Mapping)
+            and transition["post_queue"].get("active") == 0
+            and transition["post_queue"].get("unfinished_attempts") == 0
+            and transition.get("post_slots") == 0
+            and isinstance(transition.get("doctor"), Mapping)
+            and transition["doctor"].get("ok") is True
+            and transition["doctor"].get("pending_deliveries") == 0
+            and transition.get("post_registry_sha256") == registry_descriptor.get("target_registry_sha256")
+            and transition.get("post_route_sha256") == registry_descriptor.get("target_route_sha256")
+            and transition.get("pre_gate_row_sha256") == gate_descriptor.get("pre_row_sha256")
+            and transition.get("post_gate_row_sha256") == gate_descriptor.get("target_row_sha256")
+            and transition.get("source_canonical_artifact_sha256") == standing_source_sha256
+            and isinstance(transition.get("arm_summary"), Mapping)
+            and transition["arm_summary"].get("state") == "armed"
+            and transition["arm_summary"].get("max_concurrency") == WAVE_CAP
+            and transition["arm_summary"].get("timeout_seconds") == 600,
+            "V11 native transition receipt differs",
+        )
+        runtime_binding = _v11_runtime_binding(closure, candidate_manifest_sha256)
+        candidate_root_value = _closure_value(closure, "candidate")
+        candidate_root = Path(str(candidate_root_value["root"])).resolve()
+        broker_path = candidate_root / "model_work_queue" / "broker.py"
+        adapter_path = candidate_root / "model_work_queue" / "adapters" / "grok_exec.py"
+        _need(
+            broker_path.is_file()
+            and adapter_path.is_file()
+            and runtime_binding["runtime"]["broker_sha256"] == _sha(broker_path.read_bytes())
+            and runtime_binding["runtime"]["adapter_sha256"] == _sha(adapter_path.read_bytes()),
+            "V11 runtime candidate files differ",
+        )
+        stopped_value = _closure_value(closure, "stopped_prefix")
+        stopped_descriptor, _stopped_raw = _bound(stopped_value, "V11 stopped prefix")
+        stopped, _ = _json(Path(stopped_descriptor["path"]), "V11 stopped prefix")
+        completed_prefix = stopped.get("completed_ordinals")
+        remaining_prefix = stopped.get("remaining_ordinals")
+        _need(
+            isinstance(completed_prefix, list)
+            and isinstance(remaining_prefix, list)
+            and remaining_prefix
+            and all(type(item) is int for item in completed_prefix + remaining_prefix),
+            "V11 stopped prefix differs",
+        )
+        completed_through = 370 if closure.get("local_recovery") is not None else completed_prefix[-1]
+        prefix_receipt = {
+            "receipt_path": stopped_descriptor["path"],
+            "receipt_sha256": stopped_descriptor["sha256"],
+            "completed_through": completed_through,
+            "first_untouched_ordinal": remaining_prefix[0],
+            "automatic_resend": False,
+        }
+        _need(
+            registry_path.is_file()
+            and _sha(registry_path.read_bytes()) == registry_descriptor["target_registry_sha256"],
+            "V11 runtime registry source differs",
+        )
+        return {
+            "registry_path": registry_path,
+            "registry_descriptor": registry_path_descriptor,
+            "registry_target_sha256": registry_descriptor["target_registry_sha256"],
+            "route_target_sha256": registry_descriptor["target_route_sha256"],
+            "gate_path": gate_path,
+            "gate_descriptor": gate_path_descriptor,
+            "transition_descriptor": transition_descriptor,
+            "transition_receipt": transition,
+            "prefix_receipt": prefix_receipt,
+            "route_contract_hash": route_contract_hash,
+            **runtime_binding,
+        }
     actions = transition.get("actions")
     _need(
         transition.get("schema_version") == 1
@@ -1211,6 +1346,7 @@ def _protected_paths(closure: Mapping[str, Any], prior: Mapping[str, Any], candi
         "registry_descriptor",
         "gate_descriptor",
         "transition_receipt",
+        "runtime_binding",
     ):
         value = closure.get(name)
         if name == "packet" and value is None:
