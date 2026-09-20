@@ -30,12 +30,15 @@ SUCCESSOR_SHA256 = "fc0dbe04b3699522271157a87fc2f5a5659ffc108bd7eb3a68d6bf393e49
 RENEWED_SUCCESSOR_SHA256 = (
     "e476b47fa4fc88f13fde1752d691352892d80af415f2bb6425077e66facc1696"
 )
-PARALLEL_SUCCESSOR_SHA256 = "1b8392884b0ec2a4ba6868fc34a5d0f0c9c4f8875e505444e4c68a6cc6261ffb"
+PARALLEL_SUCCESSOR_SHA256 = "99875e9997a98057086f63fec04fea2f7a40dda472b8d5452b35c8005ae2236d"
 LOCAL_PROJECTION_SHA256 = (
     "0ae9213b33a51315f082f9091fe40601f21efbdc32475d8010956d9cd8ee716b"
 )
 LOCAL_ADOPTION_SHA256 = (
     "62eb162e148df15dd992e71952cd05a702c018163ec6759cb4ff508743ce1e8c"
+)
+LOCAL370_ADOPTION_SHA256 = (
+    "7cc7f154d58e07f239eabf5a18780e5ae255963dec310ec38f4244141efc6528"
 )
 CONTEXT_ADAPTER_SHA256 = (
     "bf765db7d3aced1cdda1059037eda84972d160a75aba32869165d74823fb22e9"
@@ -341,12 +344,12 @@ def _verdicts(
     value: Any, question_ids: Sequence[str], label: str
 ) -> list[dict[str, Any]]:
     _need(
-        isinstance(value, list) and len(value) == QUESTION_COUNT,
+        isinstance(value, list) and question_ids and len(value) == len(question_ids),
         f"{label} verdict count differs",
     )
     rows = [dict(item) for item in value if isinstance(item, Mapping)]
     _need(
-        len(rows) == QUESTION_COUNT
+        len(rows) == len(question_ids)
         and [item.get("question_id") for item in rows] == list(question_ids),
         f"{label} criterion order differs",
     )
@@ -1477,6 +1480,7 @@ def _parallel_native_continuation(
     pending = result.get("pending_ordinals")
     completed = result.get("completed_ordinals")
     records = result.get("records")
+    local_recoveries = result.get("local_recoveries", [])
     protected_paths = result.get("protected_paths")
     _need(
         isinstance(source_epoch, str)
@@ -1488,6 +1492,7 @@ def _parallel_native_continuation(
         and isinstance(pending, list)
         and isinstance(completed, list)
         and isinstance(records, list)
+        and isinstance(local_recoveries, list)
         and isinstance(protected_paths, Mapping)
         and result.get("provider_calls_made") == 0,
         "parallel successor replay boundary differs",
@@ -1533,6 +1538,102 @@ def _parallel_native_continuation(
     owners = dict(serial_owners)
     identities = list(serial_identities)
     batches = dict(serial_batches)
+    local_records: list[dict[str, Any]] = []
+    for local in local_recoveries:
+        _need(
+            isinstance(local, Mapping)
+            and local.get("ordinal") == 370
+            and local.get("ordinary_native_admission") is False
+            and isinstance(local.get("local_identity"), Mapping)
+            and local["local_identity"].get("ordinal") == 370
+            and isinstance(local["local_identity"].get("session_id"), str)
+            and bool(local["local_identity"]["session_id"])
+            and isinstance(local["local_identity"].get("answer_sha256"), str)
+            and _HASH.fullmatch(local["local_identity"]["answer_sha256"])
+            and isinstance(local.get("adoption"), Mapping)
+            and set(local["adoption"]) == {"path", "sha256"}
+            and local["adoption"]["sha256"] == LOCAL370_ADOPTION_SHA256
+            and isinstance(local.get("original_terminal"), Mapping)
+            and set(local["original_terminal"]) == {"path", "sha256"}
+            and isinstance(local.get("protected_paths"), Mapping)
+            and local["protected_paths"],
+            "parallel local recovery record differs",
+        )
+        _read(
+            local["adoption"]["path"],
+            local["adoption"]["sha256"],
+            "parallel local recovery adoption",
+        )
+        _read(
+            local["original_terminal"]["path"],
+            local["original_terminal"]["sha256"],
+            "parallel local recovery terminal",
+        )
+        for name, item in local["protected_paths"].items():
+            _need(
+                isinstance(name, str)
+                and isinstance(item, Mapping)
+                and set(item) == {"path", "sha256"}
+                and isinstance(item.get("path"), str)
+                and _HASH.fullmatch(item.get("sha256", "")),
+                "parallel local recovery protected path differs",
+            )
+            _read(item["path"], item["sha256"], "parallel local recovery protected path")
+        verdict_rows = local.get("verdicts")
+        question_ids = [
+            item.get("question_id")
+            for item in verdict_rows
+            if isinstance(item, Mapping)
+        ] if isinstance(verdict_rows, list) else []
+        _need(
+            isinstance(verdict_rows, list)
+            and question_ids
+            and len(question_ids) == len(set(question_ids))
+            and all(isinstance(item, str) and item for item in question_ids),
+            "parallel local recovery verdicts differ",
+        )
+        batch = _verdicts(verdict_rows, question_ids, "parallel local recovery")
+        _need(
+            all(item["verdict"] in {"YES", "NO", "NOT_APPLICABLE", "CANNOT_ASSESS"} for item in batch),
+            "parallel local recovery verdicts differ",
+        )
+        local_copy = dict(local)
+        local_copy["verdicts"] = batch
+        local_records.append(local_copy)
+    _need(
+        len(local_records) <= 1
+        and all(item["ordinal"] == 370 for item in local_records),
+        "parallel local recovery ordinal differs",
+    )
+    if "source_closure" in manifest:
+        closure = manifest.get("source_closure")
+        declared_local = isinstance(closure, Mapping) and isinstance(
+            closure.get("local_recovery"), Mapping
+        )
+        _need(
+            bool(local_records) == declared_local,
+            "parallel local recovery source declaration differs",
+        )
+    local_by_ordinal = {item["ordinal"]: item for item in local_records}
+    if local_by_ordinal:
+        local = local_by_ordinal[370]
+        source_root = str(Path(local["original_terminal"]["path"]).resolve().parents[2])
+        owners[370] = {
+            "kind": "parallel_local_recovery",
+            "root": source_root,
+            "source_epoch": source_epoch,
+            "manifest_sha256": manifest_sha256,
+            "controller_sha256": controller_sha256,
+            "local_identity": dict(local["local_identity"]),
+            "adoption": dict(local["adoption"]),
+            "original_terminal": dict(local["original_terminal"]),
+            "protected_paths": {
+                name: dict(item) for name, item in local["protected_paths"].items()
+            },
+            "ordinary_native_admission": False,
+            "replay_receipt": "parallel_local_recovery",
+        }
+        batches[370] = list(local["verdicts"])
     parallel_ordinals: list[int] = []
     for record in records:
         _need(
@@ -1556,12 +1657,14 @@ def _parallel_native_continuation(
         _read(Path(terminal["path"]), terminal["sha256"], "parallel successor terminal")
         identity = _identity(record["native_identity"], "parallel successor identity")
         verdict_rows = record.get("verdicts")
+        _need(isinstance(verdict_rows, list), "parallel successor verdicts differ")
+        question_ids = [item.get("question_id") for item in verdict_rows if isinstance(item, Mapping)]
         _need(
-            isinstance(verdict_rows, list)
-            and len(verdict_rows) == QUESTION_COUNT,
+            question_ids
+            and len(question_ids) == len(set(question_ids))
+            and all(isinstance(item, str) and item for item in question_ids),
             "parallel successor verdicts differ",
         )
-        question_ids = [item.get("question_id") for item in verdict_rows if isinstance(item, Mapping)]
         batch = _verdicts(verdict_rows, question_ids, "parallel successor")
         owners[ordinal] = {
             "kind": "parallel_renewal_native",
@@ -1591,6 +1694,10 @@ def _parallel_native_continuation(
     }
     protected_roots = list(serial_commitment.get("protected_roots", []))
     protected_roots.append(str(root))
+    if local_records:
+        protected_roots.append(
+            str(Path(local_records[0]["original_terminal"]["path"]).resolve().parents[2])
+        )
     merged_protected_paths = {
         **{
             f"serial_{name}": dict(item)
@@ -1615,6 +1722,23 @@ def _parallel_native_continuation(
         "protected_roots": list(dict.fromkeys(protected_roots)),
         "protected_paths": merged_protected_paths,
     }
+    if local_records:
+        commitment.update(
+            {
+                "owner_ordinals": [
+                    *sorted(serial_owners),
+                    *[item["ordinal"] for item in local_records],
+                    *parallel_ordinals,
+                ],
+                "local_recovery_ordinals": [item["ordinal"] for item in local_records],
+                "local_recoveries": local_records,
+                "local_recovery_adoption_sha256": (
+                    local_records[0]["adoption"]["sha256"]
+                    if len(local_records) == 1
+                    else [item["adoption"]["sha256"] for item in local_records]
+                ),
+            }
+        )
     return owners, identities, batches, commitment
 
 
@@ -2081,6 +2205,17 @@ def read_selected_successor_collection(
             descriptor=parallel_continuation,
             plan_root=plan_root,
         )
+    parallel_local_recoveries = (
+        list(parallel_commitment.get("local_recoveries", []))
+        if isinstance(parallel_commitment, Mapping)
+        else []
+    )
+    parallel_local_ordinals = [item.get("ordinal") for item in parallel_local_recoveries]
+    _need(
+        all(type(item) is int for item in parallel_local_ordinals)
+        and len(parallel_local_ordinals) == len(set(parallel_local_ordinals)),
+        "parallel local recovery inventory differs",
+    )
     owners = {**recovery_owners}
     _need(
         not (set(owners) & set(successor_owners)),
@@ -2118,7 +2253,7 @@ def read_selected_successor_collection(
             *parallel_identities,
         ]
     )
-    expected_replayed_native = len(owners) - int(local is not None)
+    expected_replayed_native = len(owners) - int(local is not None) - len(parallel_local_recoveries)
     _need(
         len(receipt_identities) == expected_replayed_native,
         "successor replay identity cardinality differs",
@@ -2305,6 +2440,9 @@ def read_selected_successor_collection(
         )
     )
     native_batches = {**candidate_batches, **renewed_batches, **parallel_batches}
+    parallel_local_by_ordinal = {
+        item["ordinal"]: item for item in parallel_local_recoveries
+    }
     for record in selected[4:]:
         verdicts: list[dict[str, Any]] = []
         terminals = []
@@ -2333,6 +2471,25 @@ def read_selected_successor_collection(
                         "ordinal": ordinal,
                         "owner": owner,
                         "local_identity": local["local_identity"],
+                    }
+                )
+                continue
+            if owner["kind"] == "parallel_local_recovery":
+                local370 = parallel_local_by_ordinal.get(ordinal)
+                _need(
+                    ordinal == 370
+                    and isinstance(local370, Mapping)
+                    and local370.get("ordinary_native_admission") is False
+                    and [item.get("question_id") for item in local370.get("verdicts", [])]
+                    == request["question_ids"],
+                    "parallel local recovery request binding differs",
+                )
+                verdicts.extend(local370["verdicts"])
+                terminals.append(
+                    {
+                        "ordinal": ordinal,
+                        "owner": owner,
+                        "local_identity": local370["local_identity"],
                     }
                 )
                 continue
@@ -2390,7 +2547,9 @@ def read_selected_successor_collection(
         )
     all_identities = _unique(identities)
     _need(len(rows) == STORY_COUNT, "collection story cardinality differs")
-    expected_native_count = NATIVE_COUNT - int(local is not None)
+    expected_native_count = (
+        NATIVE_COUNT - int(local is not None) - len(parallel_local_recoveries)
+    )
     _need(
         len(all_identities) == expected_native_count,
         "collection native identity cardinality differs",
@@ -2459,15 +2618,21 @@ def read_selected_successor_collection(
     ]
     coverage_failures = [row["pass_id"] for row in rows if row["coverage"] < 0.88]
     result = {
-        "schema_version": 1
-        if local is None
-        else (
-            4
-            if renewed_commitment is not None
+        "schema_version": (
+            6
+            if parallel_local_recoveries
             else (
-                5
-                if parallel_commitment is not None
-                else (3 if candidate_commitment is not None else 2)
+                1
+                if local is None
+                else (
+                    4
+                    if renewed_commitment is not None
+                    else (
+                        5
+                        if parallel_commitment is not None
+                        else (3 if candidate_commitment is not None else 2)
+                    )
+                )
             )
         ),
         "evidence_class": "selected100_grok_successor_collection_replay_only_v1"
@@ -2476,12 +2641,16 @@ def read_selected_successor_collection(
             "selected100_grok_successor_renewed_replay_only_v4"
             if renewed_commitment is not None
             else (
-                "selected100_grok_successor_parallel_replay_only_v5"
-                if parallel_commitment is not None
+                "selected100_grok_successor_parallel_local_replay_only_v6"
+                if parallel_local_recoveries
                 else (
-                    "selected100_grok_successor_standing_v6_candidate_replay_only_v3"
-                    if candidate_commitment is not None
-                    else "selected100_grok_successor_local_schema_recovery_replay_only_v2"
+                    "selected100_grok_successor_parallel_replay_only_v5"
+                    if parallel_commitment is not None
+                    else (
+                        "selected100_grok_successor_standing_v6_candidate_replay_only_v3"
+                        if candidate_commitment is not None
+                        else "selected100_grok_successor_local_schema_recovery_replay_only_v2"
+                    )
                 )
             )
         ),
@@ -2510,9 +2679,11 @@ def read_selected_successor_collection(
             "root_chain": [recovery_commitment, *successor_commitments],
         },
         "successor_root_chain": root_descriptors,
-        "recovered_ordinals": [RECOVERED_ORDINAL]
-        if local is None
-        else [RECOVERED_ORDINAL, 254],
+        "recovered_ordinals": [
+            RECOVERED_ORDINAL,
+            *([254] if local is not None else []),
+            *parallel_local_ordinals,
+        ],
         "root_chain_ordinal_owners": dict(sorted(owners.items())),
         "root_chain_native_identities": receipt_identities,
         "historical_excluded_native_identities": historical_exclusions,
@@ -2654,4 +2825,30 @@ def read_selected_successor_collection(
         result.setdefault("source_commitments", {})[
             "parallel_successor_commitment_sha256"
         ] = parallel_commitment_sha256
+        if parallel_local_recoveries:
+            local_recovery_sha256 = _sha(_canonical(parallel_local_recoveries))
+            result["counts"]["local_recovered_requests"] = (
+                result["counts"].get("local_recovered_requests", 0)
+                + len(parallel_local_recoveries)
+            )
+            result["counts"]["parallel_local_recovered_requests"] = len(
+                parallel_local_recoveries
+            )
+            result["parallel_local_recoveries"] = [
+                dict(item) for item in parallel_local_recoveries
+            ]
+            result["input_commitments"].update(
+                {
+                    "parallel_local_recovery_ordinals": list(parallel_local_ordinals),
+                    "parallel_local_recoveries_sha256": local_recovery_sha256,
+                    "parallel_local_recovery_adoption_sha256": parallel_local_recoveries[0][
+                        "adoption"
+                    ]["sha256"]
+                    if len(parallel_local_recoveries) == 1
+                    else [item["adoption"]["sha256"] for item in parallel_local_recoveries],
+                }
+            )
+            result.setdefault("source_commitments", {})[
+                "parallel_local_recoveries_sha256"
+            ] = local_recovery_sha256
     return result

@@ -559,6 +559,59 @@ def test_output_protection_includes_local_continuation_provenance_paths(tmp_path
         math._output_preflight(tmp_path / "proposal.json" / "analysis", *all_protected)
 
 
+def test_output_protection_includes_parallel_local370_source_root(tmp_path: Path) -> None:
+    subject = load()
+    _data, _selection, _pins, inputs = collection(subject)
+    parallel_root = tmp_path / "parallel"
+    original_root = tmp_path / "serial-original"
+    inputs.update({
+        "plan_root": tmp_path / "plan",
+        "predecessor_path": tmp_path / "predecessor.json",
+        "old_suffix_root": tmp_path / "old-suffix",
+        "recovery_root": tmp_path / "recovery",
+        "parallel_continuation": {
+            "root": str(parallel_root),
+            "manifest_sha256": "a" * 64,
+            "controller_sha256": "b" * 64,
+        },
+    })
+    descriptor = lambda name: {"path": str(tmp_path / f"{name}.json"), "sha256": "c" * 64}
+    local = {
+        "ordinal": 370,
+        "ordinary_native_admission": False,
+        "adoption": {"path": "adoption", "sha256": subject.LOCAL370_ADOPTION_SHA256},
+        "original_terminal": {"path": str(original_root / "attempts/request-0370/terminal.json"), "sha256": "d" * 64},
+        "protected_paths": {name: descriptor(name) for name in (
+            "capture", "original_message", "original_terminal", "projected_message",
+            "proposal", "response_schema", "source_artifact", "independent_review")},
+    }
+    local_recovery = {
+        "protected_paths": {
+            "continuation_root": {"path": str(tmp_path / "local-continuation"), "inventory_sha256": "f" * 64},
+        },
+        "parallel": {
+            "protected_paths": {
+                "parallel_root": {"root": str(parallel_root), "manifest_sha256": "a" * 64},
+                "original_root": {"root": str(original_root), "manifest_sha256": "e" * 64},
+                **local["protected_paths"],
+            },
+            "commitment": {
+                "protected_roots": [str(original_root)],
+                "local_recoveries": [local],
+            },
+            "local_recoveries": [local],
+        }
+    }
+    scoring = {
+        "scoring_manifest_path": "scoring",
+        "v5_runtime_manifest_path": "runtime-manifest",
+        "v5_runtime_package_root": "runtime-package",
+    }
+    protected = subject._protected_inputs(inputs, scoring, local_recovery)
+    assert str(original_root) in protected
+    assert {item["path"] for item in local["protected_paths"].values()}.issubset(set(protected))
+
+
 def test_candidate_descriptor_is_protected_after_admission_before_fit(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     subject, reader_test = load(), load_reader_fixture()
     reader, inputs, _calls = reader_test._candidate_fixture(monkeypatch, tmp_path)

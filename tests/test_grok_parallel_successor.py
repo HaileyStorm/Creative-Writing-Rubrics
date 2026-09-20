@@ -310,6 +310,39 @@ def test_semantic_replay_rejection_preserves_terminals_and_blocks_advance(tmp_pa
         m.dispatch_wave(continuation_root=root, expected_manifest_sha256=created["manifest_sha256"], start_ordinal=expected["pending"][0], wave_size=1, broker_factory=BrokerFactory())
 
 
+def test_local_stopped_prefix_binds_actual_integer_owner_session(tmp_path: Path) -> None:
+    _root, closure, _expected = fixture(tmp_path)
+    prior_continuation = closure["prior_continuation"]
+    prefix = json.loads(Path(closure["stopped_prefix"]["path"]).read_bytes())
+    prefix["completed_ordinals"] = list(range(338, 370))
+    prefix["remaining_ordinals"] = [371]
+    prefix["owned_exit"] = {"exit_code": 1, "session_id": 18262}
+    prefix["local_recovery"] = write(tmp_path / "local-recovery.json", {"kind": "completed_native_local_replay_recovery"})
+    descriptor = write(tmp_path / "stopped-prefix-local.json", prefix)
+    result = m._read_prefix_descriptor(
+        descriptor,
+        list(range(338, 372)),
+        prior_continuation["manifest_sha256"],
+        Path(prior_continuation["root"]),
+        closure["prior_controller"]["sha256"],
+        allow_local_exit=True,
+    )
+    assert result["completed_ordinals"] == list(range(338, 370))
+    assert result["remaining_ordinals"] == [371]
+
+    prefix["owned_exit"] = {"exit_code": 1, "session_id": "18262"}
+    wrong_descriptor = write(tmp_path / "stopped-prefix-local-wrong-session.json", prefix)
+    with pytest.raises(ValueError, match="stopped prefix exit differs"):
+        m._read_prefix_descriptor(
+            wrong_descriptor,
+            list(range(338, 372)),
+            prior_continuation["manifest_sha256"],
+            Path(prior_continuation["root"]),
+            closure["prior_controller"]["sha256"],
+            allow_local_exit=True,
+        )
+
+
 def test_replay_collection_public_default_rejects_partial_coverage(tmp_path: Path) -> None:
     root, closure, expected = fixture(tmp_path)
     created = m.create(continuation_root=root, source_closure=closure)
@@ -357,3 +390,70 @@ def test_transition_runtime_path_hash_drift_is_rejected(tmp_path: Path) -> None:
     runtime_path.write_bytes(b"drifted-runtime")
     with pytest.raises(ValueError, match="transition runtime runner_path"):
         m.verify(continuation_root=root, expected_manifest_sha256=created["manifest_sha256"])
+
+
+def test_local370_adoption_is_classified_without_native_identity_and_blocks_resend_or_verdict_drift(
+    tmp_path: Path,
+) -> None:
+    adoption_path = Path(r"C:\Users\Haile\Documents\cwr-resume-control-20260919-r1\grok370-forensic-recovery\adoption.json")
+    if not adoption_path.is_file():
+        pytest.skip("local370 adoption packet is unavailable")
+    adoption = json.loads(adoption_path.read_bytes())
+    source_path = Path(adoption["source_artifact"]["path"])
+    source_sha = sha(source_path.read_bytes())
+
+    class Runner:
+        EVIDENCE_NORMALIZATION_POLICY = "fixture"
+
+        @staticmethod
+        def _normalize_batch(output: Any, **_kwargs: Any) -> list[dict[str, Any]]:
+            return output["verdicts"]
+
+    context = SimpleNamespace(
+        plan_root=tmp_path,
+        requests={
+            370: {
+                "ordinal": 370,
+                "prompt": "fixture prompt",
+                "question_ids": [
+                    "core.length_and_scope_fit.no_padding",
+                    "core.length_and_scope_fit.no_underbuild",
+                    "core.audience_and_purpose_fit.complexity",
+                    "core.audience_and_purpose_fit.tone",
+                    "core.audience_and_purpose_fit.explanation",
+                    "core.audience_and_purpose_fit.intensity",
+                    "core.audience_and_purpose_fit.vocabulary",
+                    "core.audience_and_purpose_fit.length",
+                ],
+                "schema": {"type": "object"},
+                "source": {"opaque_story_id": "story-370", "artifact_path": str(source_path), "sha256": source_sha, "story_text": source_path.read_text(encoding="utf-8")},
+            }
+        },
+        parent=None,
+        passes={},
+        runtime=SimpleNamespace(runner=Runner()),
+    )
+    prior_root = Path(r"C:\Users\Haile\Documents\cwr-dryad-grok-renewed-successor-global-20260919-r1")
+    prior = {"root": prior_root, "context": context, "plan_root": tmp_path}
+    descriptor = {"path": str(adoption_path), "sha256": sha(adoption_path.read_bytes())}
+    value = m._local_recovery_binding({"local_recovery": descriptor}, prior)
+    assert value and value["ordinal"] == 370 and value["ordinary_native_admission"] is False
+    assert len(value["verdicts"]) == 8 and "request_id_hash" not in value["local_identity"]
+
+    resend = dict(adoption)
+    resend["automatic_resend_authorized"] = True
+    resend_path = tmp_path / "resend-adoption.json"
+    resend_path.write_bytes(canon(resend))
+    with pytest.raises(ValueError, match="adoption differs"):
+        m._local_recovery_binding({"local_recovery": {"path": str(resend_path), "sha256": sha(resend_path.read_bytes())}}, prior)
+
+    projected = json.loads(Path(adoption["projected_message"]["path"]).read_bytes())
+    projected["verdicts"][0]["verdict"] = "NO"
+    projected_path = tmp_path / "changed-projection.json"
+    projected_path.write_bytes(canon(projected))
+    changed = dict(adoption)
+    changed["projected_message"] = {"path": str(projected_path), "sha256": sha(projected_path.read_bytes())}
+    changed_path = tmp_path / "changed-adoption.json"
+    changed_path.write_bytes(canon(changed))
+    with pytest.raises(ValueError, match="answer hashes|changed more"):
+        m._local_recovery_binding({"local_recovery": {"path": str(changed_path), "sha256": sha(changed_path.read_bytes())}}, prior)

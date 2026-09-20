@@ -1376,6 +1376,7 @@ def _parallel_fixture(
     tmp_path: Path,
     *,
     fault: str | None = None,
+    local: bool = False,
 ) -> tuple[Any, Path, dict[str, str]]:
     value = load()
     root = tmp_path / "parallel"
@@ -1449,12 +1450,46 @@ def _parallel_fixture(
             }
         )
 
+    local_recoveries: list[dict[str, Any]] = []
+    if local:
+        adoption_path = tmp_path / "local370-adoption.json"
+        adoption_path.write_bytes(b"local370-adoption")
+        adoption_sha = value._sha(adoption_path.read_bytes())
+        monkeypatch.setattr(value, "LOCAL370_ADOPTION_SHA256", adoption_sha)
+        protected_paths = {}
+        for name in ("capture", "original_message", "original_terminal", "projected_message",
+                     "proposal", "response_schema", "source_artifact", "independent_review"):
+            path = tmp_path / f"local370-{name}.json"
+            path.write_bytes(name.encode())
+            protected_paths[name] = {"path": str(path), "sha256": value._sha(path.read_bytes())}
+        local_recoveries.append(
+            {
+                "ordinal": 370,
+                "verdicts": [
+                    {"question_id": f"q-{number:03d}", "verdict": "YES"}
+                    for number in range(8)
+                ],
+                "local_identity": {
+                    "ordinal": 370,
+                    "session_id": "local370-session",
+                    "answer_sha256": value._sha(b"projected"),
+                },
+                "adoption": {"path": str(adoption_path), "sha256": adoption_sha},
+                "original_terminal": dict(protected_paths["original_terminal"]),
+                "ordinary_native_admission": False,
+                "protected_paths": protected_paths,
+            }
+        )
+
     class ParallelController:
         @staticmethod
         def replay_collection(**_kwargs: Any) -> dict[str, Any]:
             return {
                 "source_epoch": "parallel-fixture",
-                "manifest": {"kind": "parallel-fixture"},
+                "manifest": {
+                    "kind": "parallel-fixture",
+                    "source_closure": {"local_recovery": {}} if local else {},
+                },
                 "manifest_sha256": manifest_sha,
                 "plan_root": str(plan_root),
                 "prior_continuation": {
@@ -1469,6 +1504,7 @@ def _parallel_fixture(
                 "protected_paths": {
                     "parallel_root": {"root": str(root), "manifest_sha256": manifest_sha},
                 },
+                "local_recoveries": local_recoveries,
                 "provider_calls_made": 0,
             }
 
@@ -1504,6 +1540,21 @@ def test_parallel_reader_merges_serial_prefix_and_parallel_tail(
     assert 351 in batches and len(identities) == len(owners)
     assert commitment["source_epoch"]["source_epoch"] == "parallel-fixture"
     assert "old-root" in commitment["protected_roots"]
+
+
+def test_parallel_reader_classifies_local370_without_native_identity(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    value, plan_root, descriptor = _parallel_fixture(monkeypatch, tmp_path, local=True)
+    owners, identities, batches, commitment = value._parallel_native_continuation(
+        descriptor=descriptor, plan_root=plan_root
+    )
+    assert owners[370]["kind"] == "parallel_local_recovery"
+    assert 370 in batches and len(batches[370]) == 8
+    assert 370 not in commitment["replay_ordinals"]
+    assert commitment["local_recovery_ordinals"] == [370]
+    assert 370 in commitment["owner_ordinals"]
+    assert all(identity.get("ordinal") != 370 for identity in identities)
 
 
 @pytest.mark.parametrize(

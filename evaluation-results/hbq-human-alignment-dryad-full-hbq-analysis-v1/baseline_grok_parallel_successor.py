@@ -186,6 +186,7 @@ def _read_prefix_descriptor(
     prior_manifest_sha: str,
     prior_root: Path,
     prior_controller_sha: str,
+    allow_local_exit: bool = False,
 ) -> dict[str, Any]:
     descriptor, raw = _bound(value, "stopped prefix")
     prefix, _ = _json(Path(descriptor["path"]), "stopped prefix")
@@ -211,19 +212,33 @@ def _read_prefix_descriptor(
     _need(isinstance(completed_value, list) and all(type(item) is int for item in completed_value), "stopped prefix ordinals differ")
     completed = list(completed_value)
     _need(completed == list(prior_pending[: len(completed)]), "stopped prefix is not the exact prior prefix")
-    _need(prefix["remaining_ordinals"] == list(prior_pending[len(completed) :]), "stopped prefix remainder differs")
+    expected_remaining = list(prior_pending[len(completed) :])
+    if allow_local_exit:
+        expected_remaining = [ordinal for ordinal in expected_remaining if ordinal != 370]
+    _need(prefix["remaining_ordinals"] == expected_remaining, "stopped prefix remainder differs")
     owned_exit = prefix["owned_exit"]
+    local_exit = (
+        allow_local_exit
+        and isinstance(owned_exit, Mapping)
+        and "local_recovery" in prefix
+        and owned_exit.get("exit_code") == 1
+    )
     _need(
         isinstance(owned_exit, Mapping)
         and set(owned_exit) == {"exit_code", "session_id"}
         and owned_exit.get("exit_code") in (0, 1)
-        and isinstance(owned_exit.get("session_id"), str)
-        and owned_exit.get("session_id"),
+        and (
+            (type(owned_exit.get("session_id")) is int and owned_exit.get("session_id") == 18262)
+            if local_exit
+            else (isinstance(owned_exit.get("session_id"), str) and owned_exit.get("session_id"))
+        ),
         "stopped prefix exit differs",
     )
     loop_result, _loop_raw = _bound(prefix["loop_result"], "stopped prefix loop result")
     if owned_exit["exit_code"] == 0:
         _need(set(prefix) == base_keys, "stopped prefix schema differs")
+    elif allow_local_exit and "local_recovery" in prefix:
+        _need(set(prefix) == base_keys | {"local_recovery"}, "stopped prefix local recovery schema differs")
     else:
         _need(set(prefix) == base_keys | {"replay_only_recovery"}, "stopped prefix recovery schema differs")
         recovery_descriptor, _recovery_raw = _bound(prefix["replay_only_recovery"], "stopped prefix replay recovery")
@@ -272,13 +287,20 @@ def _read_prefix_descriptor(
         "raw": raw,
         "value": prefix,
         "completed_ordinals": completed,
-        "remaining_ordinals": list(prior_pending[len(completed) :]),
+        "remaining_ordinals": expected_remaining,
         "loop_result": loop_result,
         "recovery": prefix.get("replay_only_recovery"),
+        "local_recovery": prefix.get("local_recovery"),
     }
 
 
-def _prior_records(module: ModuleType, root: Path, state: Mapping[str, Any]) -> tuple[list[int], list[dict[str, Any]]]:
+def _prior_records(
+    module: ModuleType,
+    root: Path,
+    state: Mapping[str, Any],
+    *,
+    allowed_unreplayed: set[int] | None = None,
+) -> tuple[list[int], list[dict[str, Any]]]:
     pending_value = state.get("pending_ordinals")
     if not isinstance(pending_value, list):
         pending_value = getattr(module, "PENDING", None)
@@ -299,6 +321,7 @@ def _prior_records(module: ModuleType, root: Path, state: Mapping[str, Any]) -> 
     _need(replayed_set == set(pending[:prefix_len]), "prior replay is not contiguous")
     records_fn = getattr(module, "_records", None)
     if callable(records_fn):
+        allowed_unreplayed = allowed_unreplayed or set()
         records = records_fn(root)
         _need(isinstance(records, Mapping), "prior attempt inventory differs")
         for ordinal, terminal in records.items():
@@ -306,6 +329,8 @@ def _prior_records(module: ModuleType, root: Path, state: Mapping[str, Any]) -> 
                 _need(isinstance(terminal, Mapping) and terminal.get("state") == "completed", "prior prefix has incomplete attempt")
             elif terminal is None:
                 raise ValueError("prior continuation has an incomplete attempt")
+            elif ordinal not in allowed_unreplayed:
+                raise ValueError("prior continuation has an unreplayed terminal attempt")
     prior_ids = state.get("prior_identities")
     _need(isinstance(prior_ids, list) and len(prior_ids) == 335 and _identities_unique(prior_ids), "prior baseline identities differ")
     replay_ids = [_native_identity(item, "prior replay identity") for item in identities]
@@ -736,7 +761,16 @@ def _context_plan_root(context: Any, closure: Mapping[str, Any]) -> Path:
 def _prior_state(closure: Mapping[str, Any], *, semantic: bool = True) -> dict[str, Any]:
     controller, prior_root, prior_manifest_path = _prior_binding(closure)
     continuation = _closure_value(closure, "prior_continuation", "historical_continuation")
-    key = _sha(_canon({"controller": controller, "continuation": continuation, "stopped": _closure_value(closure, "stopped_prefix")}))
+    key = _sha(
+        _canon(
+            {
+                "controller": controller,
+                "continuation": continuation,
+                "stopped": _closure_value(closure, "stopped_prefix"),
+                "local_recovery": closure.get("local_recovery"),
+            }
+        )
+    )
     with _CACHE_LOCK:
         cached = _PRIOR_CACHE.get(key)
     if cached is not None:
@@ -750,28 +784,43 @@ def _prior_state(closure: Mapping[str, Any], *, semantic: bool = True) -> dict[s
     if not isinstance(prior_pending, list):
         prior_pending = getattr(module, "PENDING", None)
     _need(isinstance(prior_pending, list), "prior pending ordinals differ")
-    prior_completed, identities = _prior_records(module, prior_root, state)
+    local_allowed = isinstance(closure.get("local_recovery"), Mapping)
+    prior_completed, identities = _prior_records(
+        module,
+        prior_root,
+        state,
+        allowed_unreplayed={370} if local_allowed else set(),
+    )
     prefix = _read_prefix_descriptor(
         _closure_value(closure, "stopped_prefix"),
         prior_pending,
         continuation["manifest_sha256"],
         prior_root,
         controller["sha256"],
+        allow_local_exit=local_allowed,
     )
     _need(prefix["completed_ordinals"] == prior_completed, "stopped prefix does not bind prior replay")
+    if local_allowed:
+        _need(
+            isinstance(prefix.get("local_recovery"), Mapping)
+            and dict(prefix["local_recovery"]) == dict(closure["local_recovery"]),
+            "stopped prefix local recovery binding differs",
+        )
     if semantic:
         _semantic_prior(module, state, prior_root, prior_completed)
     context = state.get("context")
     plan_root = _context_plan_root(context, closure)
+    pending = [ordinal for ordinal in prior_pending if not (local_allowed and ordinal == 370)]
     result = {
         "module": module,
         "state": dict(state),
         "root": prior_root,
         "manifest_path": prior_manifest_path,
         "manifest_sha256": continuation["manifest_sha256"],
-        "pending": list(prior_pending),
+        "pending": pending,
         "completed": list(prior_completed),
         "prefix": prefix,
+        "local_recovery_descriptor": dict(closure["local_recovery"]) if local_allowed else None,
         "identities": identities,
         "context": context,
         "plan_root": plan_root,
@@ -858,6 +907,7 @@ def create(*, continuation_root: Path | str, source_closure: Mapping[str, Any]) 
     prior = _prior_state(source_closure)
     candidate = _candidate_binding(source_closure)
     source = _source_semantics(source_closure, candidate_manifest_sha256=candidate["manifest_sha256"])
+    local_recovery = _local_recovery_binding(source_closure, prior)
     _queue_binding(_closure_value(source_closure, "queue"))
     _need(not _under(root, prior["root"]) and not _under(prior["root"], root), "parallel root overlaps prior root")
     _need(not _under(root, candidate["candidate_root"]) and not _under(candidate["candidate_root"], root), "parallel root overlaps candidate root")
@@ -881,6 +931,8 @@ def create(*, continuation_root: Path | str, source_closure: Mapping[str, Any]) 
             },
         }
     )
+    if local_recovery is not None:
+        protected_paths.update(local_recovery["protected_paths"])
     value = {
         "schema_version": 1,
         "evidence_class": "dryad_grok_parallel_successor_v1",
@@ -921,10 +973,12 @@ def _state(root: Path, expected: str, *, semantic_prior: bool = True) -> dict[st
     _need(manifest["pending_ordinals"] == prior["pending"][len(prior["completed"]) :], "parallel pending suffix differs")
     candidate = _candidate_binding(closure)
     source = _source_semantics(closure, candidate_manifest_sha256=candidate["manifest_sha256"])
+    local_recovery = _local_recovery_binding(closure, prior)
     prefix_receipt = source["prefix_receipt"]
     _need(
         prefix_receipt.get("first_untouched_ordinal") == manifest["pending_ordinals"][0]
-        and prefix_receipt.get("completed_through") == prior["completed"][-1],
+        and prefix_receipt.get("completed_through")
+        == (370 if local_recovery is not None else prior["completed"][-1]),
         "transition receipt prefix boundary differs",
     )
     queue = _queue_binding(_closure_value(closure, "queue"))
@@ -936,6 +990,7 @@ def _state(root: Path, expected: str, *, semantic_prior: bool = True) -> dict[st
         "prior": prior,
         "candidate": candidate,
         "source": source,
+        "local_recovery": local_recovery,
         "queue": queue,
         "plan_root": plan_root,
         "root": root,
@@ -958,6 +1013,7 @@ def verify(*, continuation_root: Path | str, expected_manifest_sha256: str) -> d
         "context": {"plan_root": str(state["plan_root"])},
         "plan_root": str(state["plan_root"]),
         "protected_paths": state["manifest"]["protected_paths"],
+        "local_recoveries": [state["local_recovery"]] if state["local_recovery"] is not None else [],
         "provider_calls_made": 0,
         "state": state,
     }
@@ -1043,6 +1099,164 @@ def _row_for(state: Mapping[str, Any], ordinal: int) -> dict[str, Any]:
         "question_ids": list(ids),
         "source": source_dict,
         "source_sha256": source_sha,
+    }
+
+
+def _local_recovery_binding(closure: Mapping[str, Any], prior: Mapping[str, Any]) -> dict[str, Any] | None:
+    value = closure.get("local_recovery")
+    if value is None:
+        return None
+    adoption_descriptor, _adoption_raw = _bound(value, "local recovery adoption")
+    adoption, _ = _json(Path(adoption_descriptor["path"]), "local recovery adoption")
+    _need(
+        adoption.get("schema_version") == 1
+        and adoption.get("kind") == "dryad_local_session_quote_projection_adoption"
+        and adoption.get("ordinal") == 370
+        and adoption.get("decision") == "adopt_exact_independently_reviewed_local_schema_projection"
+        and adoption.get("evidence_class") == "owner_adopted_local_session_schema_recovery"
+        and adoption.get("automatic_resend_authorized") is False
+        and adoption.get("new_provider_attempts_authorized") == 0
+        and adoption.get("ordinary_native_admission") is False
+        and adoption.get("original_failed_attempt_preserved") is True
+        and adoption.get("coverage_waiver") is False
+        and adoption.get("new_direct_user_decision_claimed") is False,
+        "local recovery adoption differs",
+    )
+    accounting = adoption.get("full_collection_accounting")
+    _need(
+        isinstance(accounting, Mapping)
+        and accounting.get("logical_requests") == 2300
+        and accounting.get("native_results") == 2297
+        and accounting.get("criterion_verdicts") == 17800
+        and accounting.get("local_recovery_ordinals") == [70, 254, 370],
+        "local recovery accounting differs",
+    )
+    proposal_descriptor = adoption["proposal"]
+    proposal, _proposal_raw, _proposal_descriptor = _json_descriptor(proposal_descriptor, "local recovery proposal")
+    review, _review_raw, _review_descriptor = _json_descriptor(adoption["independent_review"], "local recovery review")
+    capture, _capture_raw, _capture_descriptor = _json_descriptor(adoption["capture"], "local recovery capture")
+    _need(
+        proposal.get("schema_version") == 1
+        and proposal.get("kind") == "grok370_local_quote_repair_proposal"
+        and proposal.get("ordinal") == 370
+        and proposal.get("state") == "not_adopted"
+        and proposal.get("operation") == "retain exact first 500 source-grounded characters"
+        and proposal.get("original_length") == 781
+        and proposal.get("proposed_length") == 500
+        and proposal.get("schema_valid") is True
+        and proposal.get("other_values_unchanged") is True
+        and proposal.get("provider_calls_made") == 0
+        and review.get("decision") == "GO_exact_local_quote_projection_only"
+        and review.get("schema_valid") is True
+        and review.get("all_eight_question_ids_and_verdicts_unchanged") is True
+        and review.get("all_other_values_unchanged") is True
+        and review.get("exact_one_value_change") is True
+        and review.get("ordinary_native_admission") is False
+        and review.get("original_failure_preserved") is True
+        and review.get("original_quote_equals_source") is True
+        and capture.get("kind") == "grok370_existing_response_forensic_capture"
+        and capture.get("ordinal") == 370
+        and capture.get("admission_performed") is False
+        and capture.get("answer_modified") is False
+        and capture.get("automatic_resend_authorized") is False,
+        "local recovery proposal or review differs",
+    )
+    for key in (
+        "attempt_start",
+        "original_message",
+        "original_terminal",
+        "projected_message",
+        "response_schema",
+        "session_events",
+        "session_summary",
+        "session_updates",
+        "source_artifact",
+        "standing_authority",
+    ):
+        _descriptor(adoption[key], f"local recovery {key}")
+        _bound(adoption[key], f"local recovery {key}")
+    prior_terminal_path = Path(adoption["original_terminal"]["path"]).resolve()
+    expected_terminal_path = prior["root"] / "attempts" / "request-0370" / "terminal.json"
+    _need(prior_terminal_path == expected_terminal_path.resolve(), "local recovery terminal path differs")
+    terminal, terminal_raw = _json(prior_terminal_path, "local recovery original terminal")
+    _need(
+        _sha(terminal_raw) == adoption["original_terminal"]["sha256"]
+        and terminal.get("ordinal") == 370
+        and terminal.get("state") == "ambiguous"
+        and terminal.get("contact_admitted") is True
+        and terminal.get("session_id") == adoption.get("session_id")
+        and terminal.get("native_identity") is None,
+        "local recovery original terminal differs",
+    )
+    attempt_start_path = prior["root"] / "attempts" / "request-0370" / "attempt-start.json"
+    _need(
+        Path(adoption["attempt_start"]["path"]).resolve() == attempt_start_path.resolve()
+        and _sha(attempt_start_path.read_bytes()) == adoption["attempt_start"]["sha256"],
+        "local recovery attempt binding differs",
+    )
+    attempt_start, _ = _json(attempt_start_path, "local recovery attempt start")
+    _schema_value, schema_raw = _json(Path(adoption["response_schema"]["path"]), "local recovery response schema")
+    _need(
+        _sha(schema_raw) == adoption["response_schema"]["sha256"]
+        and attempt_start.get("schema_sha256") == adoption["response_schema"]["sha256"],
+        "local recovery schema binding differs",
+    )
+    original_answer, original_answer_raw = _json(Path(adoption["original_message"]["path"]), "local recovery original answer")
+    projected_answer, projected_answer_raw = _json(Path(adoption["projected_message"]["path"]), "local recovery projected answer")
+    _need(
+        _sha(original_answer_raw) == adoption["original_message"]["sha256"] == proposal["original_answer_sha256"]
+        and _sha(projected_answer_raw) == adoption["projected_message"]["sha256"] == proposal["proposed_answer_sha256"]
+        and _sha(original_answer_raw) == review["original_answer_sha256"]
+        and _sha(projected_answer_raw) == review["projected_answer_sha256"],
+        "local recovery answer hashes differ",
+    )
+    original_verdicts = original_answer.get("verdicts")
+    projected_verdicts = projected_answer.get("verdicts")
+    _need(isinstance(original_verdicts, list) and isinstance(projected_verdicts, list) and len(original_verdicts) == len(projected_verdicts) == 8, "local recovery verdict count differs")
+    expected_projection = json.loads(json.dumps(original_answer))
+    expected_projection["verdicts"][7]["evidence"][0]["exact_quote"] = projected_verdicts[7]["evidence"][0]["exact_quote"]
+    _need(expected_projection == projected_answer, "local recovery changed more than the quote")
+    source_path = Path(adoption["source_artifact"]["path"]).resolve()
+    source_raw = source_path.read_bytes()
+    _need(_sha(source_raw) == adoption["source_artifact"]["sha256"] == proposal["source_sha256"], "local recovery source differs")
+    source_text = source_raw.decode("utf-8").rstrip()
+    original_quote = original_verdicts[7]["evidence"][0].get("exact_quote")
+    projected_quote = projected_verdicts[7]["evidence"][0].get("exact_quote")
+    _need(
+        isinstance(original_quote, str)
+        and isinstance(projected_quote, str)
+        and len(original_quote) == 781
+        and len(projected_quote) == 500
+        and original_quote == source_text
+        and projected_quote == source_text[:500],
+        "local recovery quote projection differs",
+    )
+    row = _row_for({"prior": prior, "plan_root": prior["plan_root"]}, 370)
+    normalized = _normalize({"prior": prior}, row, {"output": projected_answer}, 370)
+    _need([item.get("question_id") for item in normalized] == row["question_ids"], "local recovery normalized question IDs differ")
+    return {
+        "ordinal": 370,
+        "verdicts": normalized,
+        "local_identity": {"ordinal": 370, "session_id": adoption["session_id"], "answer_sha256": adoption["projected_message"]["sha256"]},
+        "adoption": dict(adoption_descriptor),
+        "original_terminal": dict(adoption["original_terminal"]),
+        "ordinary_native_admission": False,
+        "protected_paths": {
+            "adoption": dict(adoption_descriptor),
+            **{
+                key: dict(adoption[key])
+                for key in (
+                    "capture",
+                    "original_message",
+                    "original_terminal",
+                    "projected_message",
+                    "proposal",
+                    "response_schema",
+                    "source_artifact",
+                    "independent_review",
+                )
+            },
+        },
     }
 
 
@@ -1678,6 +1892,7 @@ def replay_collection(*, continuation_root: Path | str, expected_manifest_sha256
         "completed_ordinals": records["completed_ordinals"],
         "records": records["records"],
         "protected_paths": state["manifest"]["protected_paths"],
+        "local_recoveries": [state["local_recovery"]] if state["local_recovery"] is not None else [],
         "source_closure": state["manifest"]["source_closure"],
         "provider_calls_made": 0,
     }

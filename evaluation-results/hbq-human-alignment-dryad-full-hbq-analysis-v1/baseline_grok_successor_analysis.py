@@ -37,6 +37,10 @@ EXPECTED_COUNTS = {"stories": 100, "logical_requests": 2300, "native_requests": 
                    "study_recovered_requests": 1, "criterion_verdicts": 17800}
 LOCAL_EXPECTED_COUNTS = {"stories": 100, "logical_requests": 2300, "native_requests": 2298,
                          "study_recovered_requests": 1, "local_recovered_requests": 1, "criterion_verdicts": 17800}
+PARALLEL_LOCAL_EXPECTED_COUNTS = {"stories": 100, "logical_requests": 2300, "native_requests": 2297,
+                                  "study_recovered_requests": 1, "local_recovered_requests": 2,
+                                  "parallel_local_recovered_requests": 1, "criterion_verdicts": 17800}
+LOCAL370_ADOPTION_SHA256 = "7cc7f154d58e07f239eabf5a18780e5ae255963dec310ec38f4244141efc6528"
 TRAIN_COUNT, DEV_COUNT, QUESTION_COUNT = 70, 30, 178
 ORIGINAL_COUNTS = {"TRAIN": 176, "DEV": 60}
 CANONICAL_VERDICTS = frozenset({"YES", "NO", "NOT_APPLICABLE", "CANNOT_ASSESS"})
@@ -150,6 +154,28 @@ def _capture_local_closure(captured: dict[Path, bytes], admission: SelectedSucce
             raise ValueError("Selected local continuation proof closure differs")  # noqa: TRY004
         path, raw = _read(descriptor.get("path"), pin, "Local " + name)
         captured[path] = raw
+    parallel = local.get("parallel")
+    if not isinstance(parallel, Mapping):
+        return
+    recoveries = parallel.get("local_recoveries", [])
+    if not isinstance(recoveries, list):
+        raise ValueError("Parallel local recovery closure differs")  # noqa: TRY004 - malformed evidence follows the established ValueError contract.
+    for recovery in recoveries:
+        if not isinstance(recovery, Mapping):
+            raise ValueError("Parallel local recovery closure differs")  # noqa: TRY004 - malformed evidence follows the established ValueError contract.
+        adoption = recovery.get("adoption")
+        if not isinstance(adoption, Mapping) or adoption.get("sha256") != LOCAL370_ADOPTION_SHA256:
+            raise ValueError("Parallel local recovery adoption differs")
+        descriptors = [adoption, recovery.get("original_terminal"), *(recovery.get("protected_paths", {}).values()
+                                                                    if isinstance(recovery.get("protected_paths"), Mapping)
+                                                                    else [])]
+        for descriptor in descriptors:
+            if not isinstance(descriptor, Mapping) or set(descriptor) != {"path", "sha256"}:
+                raise ValueError("Parallel local recovery protected path differs")
+            path, raw = _read(descriptor["path"], descriptor["sha256"], "Parallel local recovery source")
+            if path in captured and captured[path] != raw:
+                raise ValueError("Parallel local recovery source changed during admission")
+            captured[path] = raw
 
 
 def _runtime_data_descriptors(config: Any) -> dict[str, Mapping[str, Any]]:
@@ -225,14 +251,22 @@ def _admit_collection(collection: Mapping[str, Any], reader: ModuleType, *, sour
     parallel_descriptor = _local_descriptor(reader_inputs.get("parallel_continuation"))
     if sum(item is not None for item in (candidate_descriptor, renewed_descriptor, parallel_descriptor)) > 1:
         raise ValueError("Selected successor continuations cannot be combined")
+    parallel_local_mode = (
+        parallel_descriptor is not None
+        and isinstance(collection, Mapping)
+        and isinstance(collection.get("parallel_local_recoveries"), list)
+        and bool(collection.get("parallel_local_recoveries"))
+    )
     expected_schema, expected_evidence, expected_counts, expected_recovered = (
-        (5, "selected100_grok_successor_parallel_replay_only_v5", LOCAL_EXPECTED_COUNTS, [70, 254])
+        (6, "selected100_grok_successor_parallel_local_replay_only_v6", PARALLEL_LOCAL_EXPECTED_COUNTS, [70, 254, 370])
+        if parallel_local_mode
+        else ((5, "selected100_grok_successor_parallel_replay_only_v5", LOCAL_EXPECTED_COUNTS, [70, 254])
         if parallel_descriptor is not None
         else ((4, "selected100_grok_successor_renewed_replay_only_v4", LOCAL_EXPECTED_COUNTS, [70, 254])
         if renewed_descriptor is not None
         else ((3, "selected100_grok_successor_standing_v6_candidate_replay_only_v3", LOCAL_EXPECTED_COUNTS, [70, 254])
         if candidate_descriptor is not None else ((2, "selected100_grok_successor_local_schema_recovery_replay_only_v2", LOCAL_EXPECTED_COUNTS, [70, 254])
-        if local_descriptor is not None else (1, "selected100_grok_successor_collection_replay_only_v1", EXPECTED_COUNTS, [70])) )))
+        if local_descriptor is not None else (1, "selected100_grok_successor_collection_replay_only_v1", EXPECTED_COUNTS, [70])) ))))
     historical_prototype = local_descriptor is None or (
         candidate_descriptor is None
         and renewed_descriptor is None
@@ -278,6 +312,12 @@ def _admit_collection(collection: Mapping[str, Any], reader: ModuleType, *, sour
     if parallel_descriptor is not None:
         parallel_commitment = collection.get("parallel_successor_commitment")
         parallel_epoch = collection.get("parallel_source_epoch")
+        collection_local_recoveries = collection.get("parallel_local_recoveries", [])
+        commitment_local_recoveries = (
+            parallel_commitment.get("local_recoveries", [])
+            if isinstance(parallel_commitment, Mapping)
+            else []
+        )
         prior_completed = parallel_commitment.get("prior_completed_ordinals") if isinstance(parallel_commitment, Mapping) else None
         completed = parallel_commitment.get("completed_ordinals") if isinstance(parallel_commitment, Mapping) else None
         expected_parallel_ordinals = [
@@ -312,6 +352,9 @@ def _admit_collection(collection: Mapping[str, Any], reader: ModuleType, *, sour
             != reader._sha(reader._canonical(parallel_commitment))
             or collection.get("parallel_successor_protected_paths")
             != parallel_commitment.get("protected_paths")
+            or (parallel_local_mode and collection_local_recoveries != commitment_local_recoveries)
+            or (not parallel_local_mode and commitment_local_recoveries not in ([], None))
+            or (parallel_local_mode and commitments.get("parallel_local_recovery_adoption_sha256") != LOCAL370_ADOPTION_SHA256)
         ):
             raise ValueError("Parallel successor binding differs")
     expected_commitments = {
@@ -524,6 +567,61 @@ def _admit_collection(collection: Mapping[str, Any], reader: ModuleType, *, sour
                 ) == item["sha256"]
             return False
 
+        local370 = None
+        if parallel_local_mode:
+            if not isinstance(collection_local_recoveries, list) or len(collection_local_recoveries) != 1:
+                raise ValueError("Parallel local recovery inventory differs")
+            local370 = collection_local_recoveries[0]
+            identity = local370.get("local_identity") if isinstance(local370, Mapping) else None
+            adoption = local370.get("adoption") if isinstance(local370, Mapping) else None
+            original_terminal = local370.get("original_terminal") if isinstance(local370, Mapping) else None
+            local_protected = local370.get("protected_paths") if isinstance(local370, Mapping) else None
+            local_verdicts = local370.get("verdicts") if isinstance(local370, Mapping) else None
+            if (
+                not isinstance(local370, Mapping)
+                or local370.get("ordinal") != 370
+                or local370.get("ordinary_native_admission") is not False
+                or not isinstance(identity, Mapping)
+                or identity.get("ordinal") != 370
+                or type(identity.get("session_id")) is not str
+                or not identity["session_id"]
+                or _hash(identity.get("answer_sha256"), "Parallel local recovery answer") != identity.get("answer_sha256")
+                or not isinstance(adoption, Mapping)
+                or set(adoption) != {"path", "sha256"}
+                or type(adoption.get("path")) is not str
+                or not adoption["path"]
+                or adoption.get("sha256") != LOCAL370_ADOPTION_SHA256
+                or not isinstance(original_terminal, Mapping)
+                or set(original_terminal) != {"path", "sha256"}
+                or type(original_terminal.get("path")) is not str
+                or not original_terminal["path"]
+                or _hash(original_terminal.get("sha256"), "Parallel local recovery terminal") != original_terminal.get("sha256")
+                or not isinstance(local_protected, Mapping)
+                or not local_protected
+                or any(not _valid_parallel_path(item) for item in local_protected.values())
+                or not isinstance(local_verdicts, list)
+                or len(local_verdicts) != 8
+                or [item.get("question_id") for item in local_verdicts if isinstance(item, Mapping)]
+                != [item.get("question_id") for item in local_verdicts]
+                or len({item.get("question_id") for item in local_verdicts if isinstance(item, Mapping)}) != 8
+                or any(item.get("verdict") not in CANONICAL_VERDICTS for item in local_verdicts if isinstance(item, Mapping))
+                or any(not isinstance(item, Mapping) for item in local_verdicts)
+                or any(not any(item == protected_item for protected_item in protected.values())
+                       for item in local_protected.values())
+            ):
+                raise ValueError("Parallel local recovery binding differs")
+            local_root = str(Path(original_terminal["path"]).resolve().parents[2])
+            if local_root not in parallel.get("protected_roots", []):
+                raise ValueError("Parallel local recovery source root differs")
+        local_recovery_ordinals = parallel.get("local_recovery_ordinals", [])
+        owner_ordinals = parallel.get("owner_ordinals", expected_parallel)
+        expected_owner_ordinals = [
+            *range(262, 338),
+            *(prior_completed or []),
+            *([370] if parallel_local_mode else []),
+            *(completed or []),
+        ]
+
         if (
             parallel_expected != expected_parallel
             or parallel.get("native_identity_commitment_sha256") != parallel_ids_hash
@@ -532,6 +630,10 @@ def _admit_collection(collection: Mapping[str, Any], reader: ModuleType, *, sour
             or not isinstance(protected, Mapping)
             or not protected
             or any(not _valid_parallel_path(item) for item in protected.values())
+            or local_recovery_ordinals != ([370] if parallel_local_mode else [])
+            or owner_ordinals != expected_owner_ordinals
+            or parallel.get("local_recovery_adoption_sha256")
+            != (LOCAL370_ADOPTION_SHA256 if parallel_local_mode else (None if "local_recovery_adoption_sha256" not in parallel else parallel.get("local_recovery_adoption_sha256")))
             or any(
                 not isinstance(owners.get(ordinal), Mapping)
                 or owners[ordinal].get("kind")
@@ -554,25 +656,37 @@ def _admit_collection(collection: Mapping[str, Any], reader: ModuleType, *, sour
                 )
                 for ordinal in expected_parallel
             )
+            or (parallel_local_mode and (
+                not isinstance(owners.get(370), Mapping)
+                or owners[370].get("kind") != "parallel_local_recovery"
+                or owners[370].get("ordinary_native_admission") is not False
+                or owners[370].get("local_identity") != local370["local_identity"]
+                or "native_identity" in owners[370]
+            ))
         ):
             raise ValueError("Parallel successor ownership differs")
-        root_owned.extend(parallel_expected)
+        root_owned.extend(owner_ordinals)
         local_record = {
             **(local_record or {}),
             "parallel": {
                 "descriptor": parallel_descriptor,
                 "commitment": dict(parallel),
                 "protected_paths": {name: dict(item) for name, item in protected.items()},
+                "local_recoveries": [dict(item) for item in collection_local_recoveries],
             },
         }
     if (len(root_owned) != len(set(root_owned)) or set(owners) != set(root_owned) or 70 in owners):
         raise ValueError("Selected successor root ownership coverage differs")
     rows, identities = collection.get("rows"), collection.get("native_identities")
-    expected_native = 2298 if local_descriptor is not None else 2299
+    expected_native = 2297 if parallel_local_mode else (2298 if local_descriptor is not None else 2299)
     if not isinstance(rows, list) or len(rows) != 100 or not isinstance(identities, list) or len(identities) != expected_native:
         raise ValueError("Selected successor collection cardinality differs")
     if collection.get("native_identity_commitment_sha256") != reader._sha(reader._canonical(identities)):
         raise ValueError("Selected successor identity commitment differs")
+    if parallel_local_mode:
+        local_identity = collection["parallel_local_recoveries"][0]["local_identity"]
+        if local_identity in identities:
+            raise ValueError("Parallel local recovery identity is native")
     historical = collection.get("historical_excluded_native_identities")
     if (not isinstance(historical, list) or len(historical) != 33
             or {item.get("request_id_hash") for item in historical if isinstance(item, Mapping)} != exclusions["requests"]
@@ -619,7 +733,16 @@ def _admit_collection(collection: Mapping[str, Any], reader: ModuleType, *, sour
         raise ValueError("Selected successor local ordinal 70 binding differs")
     collection_raw = reader._canonical(collection)
     collection_record = _strict_json(collection_raw, "Selected successor collection")
-    record = {"schema_version": expected_schema, "evidence_class": "selected100_dryad_grok_successor_admission_v1" if local_record is None else "selected100_dryad_grok_successor_local_schema_admission_v2",
+    record_evidence = (
+        "selected100_dryad_grok_successor_parallel_local_admission_v3"
+        if parallel_local_mode
+        else (
+            "selected100_dryad_grok_successor_admission_v1"
+            if local_record is None
+            else "selected100_dryad_grok_successor_local_schema_admission_v2"
+        )
+    )
+    record = {"schema_version": expected_schema, "evidence_class": record_evidence,
               "selected_successor_admitted": True, "original_full_study_admitted": False,
               "provider_calls_made": 0, "execution_authority": False, "promotion_authority": False,
               "confirmation_authority": False, "source_pins": dict(source_pins),
@@ -885,6 +1008,26 @@ def _protected_inputs(reader_inputs: Mapping[str, Any], scoring_inputs: Mapping[
             if not isinstance(protected_roots, list) or any(type(root) is not str or not root for root in protected_roots):
                 raise ValueError("Parallel successor protected roots differ")
             parallel_values.extend(protected_roots)
+            local_recoveries = parallel.get("local_recoveries", [])
+            if not isinstance(local_recoveries, list):
+                raise ValueError("Parallel local recovery protected paths differ")
+            for recovery in local_recoveries:
+                if not isinstance(recovery, Mapping) or recovery.get("ordinary_native_admission") is not False:
+                    raise ValueError("Parallel local recovery protected paths differ")
+                descriptors = [
+                    recovery.get("adoption"),
+                    recovery.get("original_terminal"),
+                    *(
+                        recovery.get("protected_paths", {}).values()
+                        if isinstance(recovery.get("protected_paths"), Mapping)
+                        else []
+                    ),
+                ]
+                for item in descriptors:
+                    if not isinstance(item, Mapping) or set(item) != {"path", "sha256"}:
+                        raise ValueError("Parallel local recovery protected paths differ")
+                    _hash(item.get("sha256"), "Parallel local recovery protected path")
+                    parallel_values.append(item["path"])
             local_paths += tuple(parallel_values)
     data_paths: list[str] = []
     data_descriptors = {} if "runtime_data" not in reader_inputs else _runtime_data_descriptors(reader_inputs["runtime_data"])
@@ -909,12 +1052,26 @@ def _protected_inputs(reader_inputs: Mapping[str, Any], scoring_inputs: Mapping[
             scoring_inputs["v5_runtime_package_root"])
 
 
+def _parallel_local_recoveries(admission: SelectedSuccessorAdmission) -> list[Mapping[str, Any]]:
+    local = admission.record.get("local_recovery")
+    parallel = local.get("parallel") if isinstance(local, Mapping) else None
+    recoveries = parallel.get("local_recoveries", []) if isinstance(parallel, Mapping) else []
+    if not isinstance(recoveries, list):
+        raise ValueError("Parallel local recovery admission differs")  # noqa: TRY004 - malformed admission follows the established ValueError contract.
+    return recoveries
+
+
 def _freeze(stage: str, admission: SelectedSuccessorAdmission, *, source_pins: Mapping[str, str], scoring: Mapping[str, Any],
             engine_binding: Mapping[str, Any], projection: Mapping[str, Any], target_projection: Mapping[str, Any],
             inner_raw: bytes, inner: Mapping[str, Any], train: Mapping[str, str] | None = None) -> dict[str, Any]:
     local = admission.record.get("local_recovery")
-    result = {"schema_version": 2 if local is not None else 1,
-              "evidence_class": f"selected100_dryad_grok_successor_{'local_schema_' if local is not None else ''}{stage.lower()}_freeze_v{'2' if local is not None else '1'}",
+    parallel_local = bool(_parallel_local_recoveries(admission))
+    result = {"schema_version": 3 if parallel_local else (2 if local is not None else 1),
+              "evidence_class": (
+                  f"selected100_dryad_grok_successor_parallel_local_{stage.lower()}_freeze_v3"
+                  if parallel_local
+                  else f"selected100_dryad_grok_successor_{'local_schema_' if local is not None else ''}{stage.lower()}_freeze_v{'2' if local is not None else '1'}"
+              ),
               "stage": stage, "provider_calls_made": 0, "execution_authority": False, "promotion_authority": False,
               "confirmation_authority": False, "admission": {"sha256": admission.sha256,
                                                                  "collection_sha256": admission.record["collection_sha256"],
@@ -969,7 +1126,13 @@ def _train_binding(fit_raw: bytes, freeze_raw: bytes, *, admission: SelectedSucc
     fit = _strict_json(fit_raw, "Frozen selected successor TRAIN fit")
     freeze = _strict_json(freeze_raw, "Frozen selected successor TRAIN freeze")
     local = admission.record.get("local_recovery")
-    expected_evidence = "selected100_dryad_grok_successor_local_schema_train_freeze_v2" if local is not None else "selected100_dryad_grok_successor_train_freeze_v1"
+    expected_evidence = (
+        "selected100_dryad_grok_successor_parallel_local_train_freeze_v3"
+        if _parallel_local_recoveries(admission)
+        else "selected100_dryad_grok_successor_local_schema_train_freeze_v2"
+        if local is not None
+        else "selected100_dryad_grok_successor_train_freeze_v1"
+    )
     if (not isinstance(fit, Mapping) or not isinstance(freeze, Mapping)
             or freeze.get("evidence_class") != expected_evidence
             or freeze.get("stage") != "TRAIN" or freeze.get("admission") != {"sha256": admission.sha256,
