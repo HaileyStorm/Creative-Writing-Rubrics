@@ -402,8 +402,10 @@ def _candidate_binding(closure: Mapping[str, Any]) -> dict[str, Any]:
     files = manifest.get("files")
     _need(
         isinstance(files, list)
-        and manifest.get("schema_version") == 8
-        and manifest.get("kind") == "grok_v8_contention_forwardport_candidate"
+        and (manifest.get("schema_version"), manifest.get("kind")) in (
+            (8, "grok_v8_contention_forwardport_candidate"),
+            (9, "grok_v9_dynamic_standing_authority_candidate"),
+        )
         and manifest.get("explicit_exclusion") == ["candidate-manifest.json"]
         and all(
             isinstance(item, Mapping)
@@ -510,7 +512,7 @@ def _json_descriptor(value: Any, label: str) -> tuple[dict[str, Any], bytes, dic
     return parsed, raw, descriptor
 
 
-def _source_semantics(closure: Mapping[str, Any], *, candidate_manifest_sha256: str | None = None) -> dict[str, Any]:
+def _source_semantics(closure: Mapping[str, Any], *, candidate_manifest_sha256: str | None = None, candidate_schema_version: int = 8) -> dict[str, Any]:
     route = _route_binding(_closure_value(closure, "route"))
     gate, _gate_raw, gate_desc = _json_descriptor(_closure_value(closure, "gate"), "gate")
     standing, _standing_raw, standing_desc = _json_descriptor(_closure_value(closure, "standing_source", "standing"), "standing source")
@@ -550,16 +552,19 @@ def _source_semantics(closure: Mapping[str, Any], *, candidate_manifest_sha256: 
         and actions.get("provider_contact_count") == 0
         and actions.get("request_1088_resend") is False
     )
-    v8_packet = (
+    transition_packet = (
         packet.get("schema_version") == 1
-        and packet.get("kind") == "grok_v8_source_transition_packet"
+        and packet.get("kind") == (
+            "grok370_incident_bound_v9_recovery_packet"
+            if candidate_schema_version == 9 else "grok_v8_source_transition_packet"
+        )
         and packet.get("state") == "sealed_provider_free_not_activated"
         and packet.get("live_mutations_made") == 0
         and packet.get("provider_calls_made") == 0
         and isinstance(packet.get("preimages"), Mapping)
         and packet["preimages"].get("route_contract_sha256") == closure.get("route_contract_hash")
     )
-    _need(v6_packet or v8_packet, "standing packet is not inert")
+    _need((candidate_schema_version == 8 and v6_packet) or transition_packet, "standing packet is not inert")
     packet_candidate = packet.get("candidate_manifest")
     if candidate_manifest_sha256 is not None and isinstance(packet_candidate, Mapping):
         _need(packet_candidate.get("sha256") == candidate_manifest_sha256, "standing packet candidate differs")
@@ -579,6 +584,7 @@ def _source_semantics(closure: Mapping[str, Any], *, candidate_manifest_sha256: 
         candidate_manifest_sha256=candidate_manifest_sha256,
         route_contract_hash=closure.get("route_contract_hash"),
         standing_source_sha256=standing_desc["sha256"],
+        candidate_schema_version=candidate_schema_version,
     )
     _need(route["route_sha256"] == transition["route_target_sha256"], "route transition target differs")
     return {
@@ -598,6 +604,7 @@ def _transition_bindings(
     candidate_manifest_sha256: str | None,
     route_contract_hash: Any,
     standing_source_sha256: str,
+    candidate_schema_version: int = 8,
 ) -> dict[str, Any]:
     """Validate immutable V8 registry, gate, and transition bindings."""
     registry_value = closure.get("registry_descriptor") or closure.get("runtime_registry")
@@ -609,7 +616,10 @@ def _transition_bindings(
     transition, _transition_raw, transition_descriptor = _json_descriptor(transition_value, "transition receipt")
     _need(
         registry_descriptor.get("schema_version") == 1
-        and registry_descriptor.get("kind") == "grok_v8_isolated_registry_transition_descriptor"
+        and registry_descriptor.get("kind") == (
+            "grok_v9_registry_transition_descriptor"
+            if candidate_schema_version == 9 else "grok_v8_isolated_registry_transition_descriptor"
+        )
         and isinstance(registry_descriptor.get("registry_path"), str)
         and _HASH.fullmatch(str(registry_descriptor.get("pre_registry_sha256")))
         and _HASH.fullmatch(str(registry_descriptor.get("target_registry_sha256")))
@@ -626,7 +636,10 @@ def _transition_bindings(
     gate_path = Path(str(gate_descriptor.get("path"))).resolve()
     _need(
         gate_descriptor.get("schema_version") == 1
-        and gate_descriptor.get("kind") == "grok_v8_gate_transition_descriptor"
+        and gate_descriptor.get("kind") == (
+            "grok_v9_gate_transition_descriptor"
+            if candidate_schema_version == 9 else "grok_v8_gate_transition_descriptor"
+        )
         and gate_path.is_file()
         and gate_descriptor.get("route_contract_sha256") == route_contract_hash
         and gate_descriptor.get("pre_row_sha256") == gate_descriptor.get("target_row_sha256")
@@ -638,7 +651,10 @@ def _transition_bindings(
     actions = transition.get("actions")
     _need(
         transition.get("schema_version") == 1
-        and transition.get("kind") == "grok_v8_quiescent_transition_receipt"
+        and transition.get("kind") == (
+            "grok370_incident_bound_v9_recovery_transition"
+            if candidate_schema_version == 9 else "grok_v8_quiescent_transition_receipt"
+        )
         and transition.get("state") == "complete"
         and isinstance(actions, Mapping)
         and actions.get("provider_calls_made") == 0
@@ -906,7 +922,7 @@ def create(*, continuation_root: Path | str, source_closure: Mapping[str, Any]) 
     _prior_binding(source_closure)
     prior = _prior_state(source_closure)
     candidate = _candidate_binding(source_closure)
-    source = _source_semantics(source_closure, candidate_manifest_sha256=candidate["manifest_sha256"])
+    source = _source_semantics(source_closure, candidate_manifest_sha256=candidate["manifest_sha256"], candidate_schema_version=candidate["manifest"]["schema_version"])
     local_recovery = _local_recovery_binding(source_closure, prior)
     _queue_binding(_closure_value(source_closure, "queue"))
     _need(not _under(root, prior["root"]) and not _under(prior["root"], root), "parallel root overlaps prior root")
@@ -972,7 +988,7 @@ def _state(root: Path, expected: str, *, semantic_prior: bool = True) -> dict[st
     _need(manifest["prior_completed_ordinals"] == prior["completed"], "parallel prior prefix differs")
     _need(manifest["pending_ordinals"] == prior["pending"][len(prior["completed"]) :], "parallel pending suffix differs")
     candidate = _candidate_binding(closure)
-    source = _source_semantics(closure, candidate_manifest_sha256=candidate["manifest_sha256"])
+    source = _source_semantics(closure, candidate_manifest_sha256=candidate["manifest_sha256"], candidate_schema_version=candidate["manifest"]["schema_version"])
     local_recovery = _local_recovery_binding(closure, prior)
     prefix_receipt = source["prefix_receipt"]
     _need(

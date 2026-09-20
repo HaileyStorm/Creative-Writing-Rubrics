@@ -34,7 +34,7 @@ def write(path: Path, value: Any, *, raw: bool = False) -> dict[str, str]:
     return {"path": str(path.resolve()), "sha256": sha(data)}
 
 
-def fixture(tmp_path: Path, *, prefix: list[int] | None = None) -> tuple[Path, dict[str, Any], dict[str, Any]]:
+def fixture(tmp_path: Path, *, prefix: list[int] | None = None, candidate_version: int = 8) -> tuple[Path, dict[str, Any], dict[str, Any]]:
     prefix = [100] if prefix is None else prefix
     prior_root = tmp_path / "prior"
     prior_root.mkdir()
@@ -42,7 +42,7 @@ def fixture(tmp_path: Path, *, prefix: list[int] | None = None) -> tuple[Path, d
     queue.mkdir()
     plan = tmp_path / "plan"
     plan.mkdir()
-    candidate_root = tmp_path / "candidate-v8"
+    candidate_root = tmp_path / f"candidate-v{candidate_version}"
     package_root = candidate_root / "model_work_queue"
     package_root.mkdir(parents=True)
     (package_root / "__init__.py").write_text("", encoding="utf-8")
@@ -53,8 +53,8 @@ def fixture(tmp_path: Path, *, prefix: list[int] | None = None) -> tuple[Path, d
     ]
     candidate_manifest_path = candidate_root / "candidate-manifest.json"
     candidate_manifest_value = {
-        "schema_version": 8,
-        "kind": "grok_v8_contention_forwardport_candidate",
+        "schema_version": candidate_version,
+        "kind": "grok_v8_contention_forwardport_candidate" if candidate_version == 8 else "grok_v9_dynamic_standing_authority_candidate",
         "explicit_exclusion": ["candidate-manifest.json"],
         "files": candidate_files,
     }
@@ -180,6 +180,17 @@ def fixture(tmp_path: Path, *, prefix: list[int] | None = None) -> tuple[Path, d
         "route_contract_hash": route_contract_hash,
         "queue": {"path": str(queue.resolve()), "root_hash": "queue-root"},
     }
+    if candidate_version == 9:
+        for key, kind in {
+            "packet": "grok370_incident_bound_v9_recovery_packet",
+            "registry_descriptor": "grok_v9_registry_transition_descriptor",
+            "gate_descriptor": "grok_v9_gate_transition_descriptor",
+            "transition_receipt": "grok370_incident_bound_v9_recovery_transition",
+        }.items():
+            path = Path(closure[key]["path"])
+            value = json.loads(path.read_bytes())
+            value["kind"] = kind
+            closure[key] = write(path, value)
     new_root = tmp_path / "parallel"
     return new_root, closure, {"rows": rows, "prefix": prefix, "pending": prior_pending[len(prefix) :]}
 
@@ -241,14 +252,42 @@ def strict_fixture_normalizer(monkeypatch: pytest.MonkeyPatch) -> None:
     )
 
 
-def test_create_derives_exact_next_from_frozen_prefix_and_excludes_prior_records(tmp_path: Path) -> None:
-    root, closure, expected = fixture(tmp_path, prefix=[100])
+@pytest.mark.parametrize("candidate_version", [8, 9])
+def test_create_derives_exact_next_from_frozen_prefix_and_excludes_prior_records(tmp_path: Path, candidate_version: int) -> None:
+    root, closure, expected = fixture(tmp_path, prefix=[100], candidate_version=candidate_version)
     result = m.create(continuation_root=root, source_closure=closure)
     assert result["next_ordinal"] == expected["pending"][0]
     manifest, _ = m._manifest(root, result["manifest_sha256"])
     assert manifest["prior_completed_ordinals"] == [100]
     assert manifest["pending_ordinals"] == expected["pending"]
     assert not (root / "attempts" / "request-0100").exists()
+
+
+def test_candidate_version_and_kind_must_match(tmp_path: Path) -> None:
+    _root, closure, _expected = fixture(tmp_path, candidate_version=9)
+    manifest_path = Path(closure["candidate"]["root"]) / "candidate-manifest.json"
+    manifest = json.loads(manifest_path.read_bytes())
+    manifest["schema_version"] = 8
+    descriptor = write(manifest_path, manifest)
+    closure["candidate"]["manifest_sha256"] = descriptor["sha256"]
+    with pytest.raises(ValueError, match="candidate file inventory differs"):
+        m._candidate_binding(closure)
+
+
+@pytest.mark.parametrize(("key", "legacy_kind"), [
+    ("packet", "grok_v8_source_transition_packet"),
+    ("registry_descriptor", "grok_v8_isolated_registry_transition_descriptor"),
+    ("gate_descriptor", "grok_v8_gate_transition_descriptor"),
+    ("transition_receipt", "grok_v8_quiescent_transition_receipt"),
+])
+def test_v9_rejects_legacy_transition_labels(tmp_path: Path, key: str, legacy_kind: str) -> None:
+    root, closure, _expected = fixture(tmp_path, candidate_version=9)
+    path = Path(closure[key]["path"])
+    value = json.loads(path.read_bytes())
+    value["kind"] = legacy_kind
+    closure[key] = write(path, value)
+    with pytest.raises(ValueError, match="standing packet|transition descriptor|transition receipt"):
+        m.create(continuation_root=root, source_closure=closure)
 
 
 @pytest.mark.parametrize("wave_size", [2, 10])
