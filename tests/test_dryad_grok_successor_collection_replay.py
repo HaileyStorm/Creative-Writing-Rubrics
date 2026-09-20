@@ -1378,6 +1378,7 @@ def _parallel_fixture(
     fault: str | None = None,
     local: bool = False,
     mixed: bool = False,
+    multi: bool = False,
 ) -> tuple[Any, Path, dict[str, str]]:
     value = load()
     root = tmp_path / "parallel"
@@ -1385,26 +1386,39 @@ def _parallel_fixture(
     plan_root = tmp_path / "plan"
     plan_root.mkdir()
     retained_root = tmp_path / "retained"
-    if mixed:
+    retained_root_b = tmp_path / "retained-b"
+    if mixed or multi:
         retained_root.mkdir()
+    if multi:
+        retained_root_b.mkdir()
     retained_manifest_path = retained_root / "retained-manifest.json"
     retained_controller_path = retained_root / "retained-controller.py"
     retained_replay_path = retained_root / "retained-replay.json"
+    retained_manifest_path_b = retained_root_b / "retained-manifest.json"
+    retained_controller_path_b = retained_root_b / "retained-controller.py"
+    retained_replay_path_b = retained_root_b / "retained-replay.json"
     retry_authority_path = tmp_path / "retry-authority.json"
     controller_sha = "b" * 64
     manifest_sha = "c" * 64
     retained_manifest_sha = value._sha(b"retained-manifest")
     retained_controller_sha = value._sha(b"retained-controller")
     retained_replay_sha = value._sha(b"retained-replay")
+    retained_manifest_sha_b = value._sha(b"retained-manifest-b")
+    retained_controller_sha_b = value._sha(b"retained-controller-b")
+    retained_replay_sha_b = value._sha(b"retained-replay-b")
     retry_authority_sha = value._sha(b"retry-authority")
     retained_epoch = "retained-parallel-fixture"
-    if mixed:
+    if mixed or multi:
         retained_manifest_path.write_bytes(b"retained-manifest")
         retained_controller_path.write_bytes(b"retained-controller")
         retained_replay_path.write_bytes(b"retained-replay")
         retry_authority_path.write_bytes(b"retry-authority")
+    if multi:
+        retained_manifest_path_b.write_bytes(b"retained-manifest-b")
+        retained_controller_path_b.write_bytes(b"retained-controller-b")
+        retained_replay_path_b.write_bytes(b"retained-replay-b")
     prior_completed = list(range(338, 351))
-    tail = [351, 352]
+    tail = [351, 352, 353] if multi else [351, 352]
     if fault == "incomplete":
         records_ordinals = [351]
     elif fault == "overlap":
@@ -1454,6 +1468,26 @@ def _parallel_fixture(
         record_identity = native(ordinal)
         if fault == "duplicate" and ordinal == 351:
             record_identity = native(338)
+        record_origin = {
+            "source_epoch": "parallel-fixture",
+            "root": str(root),
+            "manifest_sha256": manifest_sha,
+            "controller_sha256": controller_sha,
+        }
+        if (mixed or multi) and ordinal == 351:
+            record_origin = {
+                "source_epoch": retained_epoch,
+                "root": str(retained_root),
+                "manifest_sha256": retained_manifest_sha,
+                "controller_sha256": retained_controller_sha,
+            }
+        elif multi and ordinal == 352:
+            record_origin = {
+                "source_epoch": "retained-parallel-fixture-b",
+                "root": str(retained_root_b),
+                "manifest_sha256": retained_manifest_sha_b,
+                "controller_sha256": retained_controller_sha_b,
+            }
         records.append(
             {
                 "ordinal": ordinal,
@@ -1461,10 +1495,7 @@ def _parallel_fixture(
                 "native_identity": record_identity,
                 "terminal": {"path": str(terminal_path), "sha256": value._sha(terminal_path.read_bytes())},
                 "native_envelope_sha256": "d" * 64,
-                "source_epoch": retained_epoch if mixed and ordinal == 351 else "parallel-fixture",
-                "root": str(retained_root) if mixed and ordinal == 351 else str(root),
-                "manifest_sha256": retained_manifest_sha if mixed and ordinal == 351 else manifest_sha,
-                "controller_sha256": retained_controller_sha if mixed and ordinal == 351 else controller_sha,
+                **record_origin,
             }
         )
 
@@ -1525,7 +1556,46 @@ def _parallel_fixture(
                 "local_recoveries": local_recoveries,
                 "provider_calls_made": 0,
             }
-            if mixed:
+            retained_a = {
+                "root": str(retained_root),
+                "manifest_path": str(retained_manifest_path),
+                "manifest_sha256": retained_manifest_sha,
+                "controller_path": str(retained_controller_path),
+                "controller_sha256": retained_controller_sha,
+                "source_epoch": retained_epoch,
+                "completed_ordinals": [351],
+                "replay_receipt": {
+                    "path": str(retained_replay_path),
+                    "sha256": retained_replay_sha,
+                },
+            }
+            if multi:
+                result["retained_parallel_prefixes"] = [
+                    retained_a,
+                    {
+                        "root": str(retained_root_b),
+                        "manifest_path": str(retained_manifest_path_b),
+                        "manifest_sha256": retained_manifest_sha_b,
+                        "controller_path": str(retained_controller_path_b),
+                        "controller_sha256": retained_controller_sha_b,
+                        "source_epoch": "retained-parallel-fixture-b",
+                        "completed_ordinals": [352],
+                        "replay_receipt": {
+                            "path": str(retained_replay_path_b),
+                            "sha256": retained_replay_sha_b,
+                        },
+                    },
+                ]
+                result["retry_authority"] = {
+                    "path": str(retry_authority_path),
+                    "sha256": retry_authority_sha,
+                    "retry_ordinals": [353],
+                    "original_manifest_sha256": retained_manifest_sha_b,
+                    "original_controller_sha256": retained_controller_sha_b,
+                    "original_source_epoch": "retained-parallel-fixture-b",
+                }
+                result["new_completed_ordinals"] = [353]
+            elif mixed:
                 result["retained_parallel_prefix"] = {
                     "root": str(retained_root),
                     "manifest_path": str(retained_manifest_path),
@@ -1617,6 +1687,70 @@ def test_parallel_reader_preserves_mixed_origin_descriptor_and_retry_authority(
     assert commitment["new_completed_ordinals"] == [352]
     assert "parallel_retained_replay_receipt" in commitment["protected_paths"]
     assert "parallel_retry_authority" in commitment["protected_paths"]
+
+
+def test_parallel_reader_merges_multiple_retained_origins(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    value, plan_root, descriptor = _parallel_fixture(monkeypatch, tmp_path, multi=True)
+    owners, _identities, _batches, commitment = value._parallel_native_continuation(
+        descriptor=descriptor, plan_root=plan_root
+    )
+    assert owners[351]["root"] == str(tmp_path / "retained")
+    assert owners[352]["root"] == str(tmp_path / "retained-b")
+    assert owners[352]["source_epoch"] == "retained-parallel-fixture-b"
+    assert owners[353]["root"] == str(tmp_path / "parallel")
+    assert len(commitment["retained_parallel_prefixes"]) == 2
+    assert "retained_parallel_prefix" not in commitment
+    assert commitment["retry_authority"]["retry_ordinals"] == [353]
+    assert commitment["new_completed_ordinals"] == [353]
+    assert "parallel_retained_manifest_0" in commitment["protected_paths"]
+    assert "parallel_retained_manifest_1" in commitment["protected_paths"]
+    assert str(tmp_path / "retained-b") in commitment["protected_roots"]
+
+
+def test_parallel_reader_rejects_multiple_retained_origin_drift_and_overlap(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    value, plan_root, descriptor = _parallel_fixture(monkeypatch, tmp_path, multi=True)
+    installed_module = value._module
+    parallel_controller = installed_module(value.PARALLEL_CONTINUATION, "b" * 64, "parallel")
+
+    class IncorrectOrigin:
+        @staticmethod
+        def replay_collection(**kwargs: Any) -> dict[str, Any]:
+            result = parallel_controller.replay_collection(**kwargs)
+            result["records"][1]["source_epoch"] = "parallel-fixture"
+            return result
+
+    monkeypatch.setattr(
+        value,
+        "_module",
+        lambda path, *args: IncorrectOrigin
+        if path == value.PARALLEL_CONTINUATION
+        else installed_module(path, *args),
+    )
+    with pytest.raises(ValueError, match="parallel successor record"):
+        value._parallel_native_continuation(descriptor=descriptor, plan_root=plan_root)
+
+    monkeypatch.setattr(value, "_module", lambda path, *args: parallel_controller)
+
+    class OverlappingPrefixes:
+        @staticmethod
+        def replay_collection(**kwargs: Any) -> dict[str, Any]:
+            result = parallel_controller.replay_collection(**kwargs)
+            result["retained_parallel_prefixes"][1]["completed_ordinals"] = [351]
+            return result
+
+    monkeypatch.setattr(
+        value,
+        "_module",
+        lambda path, *args: OverlappingPrefixes
+        if path == value.PARALLEL_CONTINUATION
+        else installed_module(path, *args),
+    )
+    with pytest.raises(ValueError, match="ordinal overlap"):
+        value._parallel_native_continuation(descriptor=descriptor, plan_root=plan_root)
 
 
 def test_parallel_reader_rejects_incorrect_retained_origin(

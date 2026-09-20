@@ -30,7 +30,7 @@ SUCCESSOR_SHA256 = "fc0dbe04b3699522271157a87fc2f5a5659ffc108bd7eb3a68d6bf393e49
 RENEWED_SUCCESSOR_SHA256 = (
     "e476b47fa4fc88f13fde1752d691352892d80af415f2bb6425077e66facc1696"
 )
-PARALLEL_SUCCESSOR_SHA256 = "615562551f3959d6d232aef740688aa92588ea5d0518dcf728477d89286e5ad8"
+PARALLEL_SUCCESSOR_SHA256 = "a07c717a4c6ed38d8950d91567f2bb4c9186ae043c79799e5cbe960a1526f9ed"
 LOCAL_PROJECTION_SHA256 = (
     "0ae9213b33a51315f082f9091fe40601f21efbdc32475d8010956d9cd8ee716b"
 )
@@ -1482,7 +1482,8 @@ def _parallel_native_continuation(
     records = result.get("records")
     local_recoveries = result.get("local_recoveries", [])
     protected_paths = result.get("protected_paths")
-    retained_parallel_prefix = result.get("retained_parallel_prefix")
+    retained_parallel_prefix_singleton = result.get("retained_parallel_prefix")
+    retained_parallel_prefixes = result.get("retained_parallel_prefixes")
     retry_authority = result.get("retry_authority")
     _need(
         isinstance(source_epoch, str)
@@ -1499,8 +1500,27 @@ def _parallel_native_continuation(
         and result.get("provider_calls_made") == 0,
         "parallel successor replay boundary differs",
     )
+    _need(
+        not (
+            retained_parallel_prefix_singleton is not None
+            and retained_parallel_prefixes is not None
+        ),
+        "parallel retained prefix descriptors overlap",
+    )
+    legacy_retained_prefix = retained_parallel_prefix_singleton is not None
+    if retained_parallel_prefixes is not None:
+        _need(
+            isinstance(retained_parallel_prefixes, list)
+            and bool(retained_parallel_prefixes),
+            "parallel retained prefix descriptors differ",
+        )
+    elif retained_parallel_prefix_singleton is not None:
+        retained_parallel_prefixes = [retained_parallel_prefix_singleton]
+    else:
+        retained_parallel_prefixes = []
     retained_ordinals: set[int] = set()
-    if retained_parallel_prefix is not None:
+    retained_origin_by_ordinal: dict[int, Mapping[str, Any]] = {}
+    for retained_parallel_prefix in retained_parallel_prefixes:
         _need(
             isinstance(retained_parallel_prefix, Mapping)
             and set(retained_parallel_prefix)
@@ -1553,6 +1573,14 @@ def _parallel_native_continuation(
             retained_parallel_prefix["replay_receipt"]["sha256"],
             "retained parallel prefix replay receipt",
         )
+        for ordinal in retained_parallel_prefix["completed_ordinals"]:
+            _need(
+                ordinal not in retained_origin_by_ordinal,
+                "retained parallel prefix ordinal overlap",
+            )
+            retained_origin_by_ordinal[ordinal] = retained_parallel_prefix
+    retained_ordinals = set(retained_origin_by_ordinal)
+    if retained_parallel_prefixes:
         _need(
             isinstance(retry_authority, Mapping)
             and set(retry_authority)
@@ -1579,13 +1607,18 @@ def _parallel_native_continuation(
             and bool(retry_authority["original_source_epoch"]),
             "parallel retry authority differs",
         )
-        _need(
-            retry_authority["original_manifest_sha256"]
-            == retained_parallel_prefix["manifest_sha256"]
+        matching_retry_origins = [
+            retained
+            for retained in retained_parallel_prefixes
+            if retry_authority["original_manifest_sha256"]
+            == retained["manifest_sha256"]
             and retry_authority["original_controller_sha256"]
-            == retained_parallel_prefix["controller_sha256"]
+            == retained["controller_sha256"]
             and retry_authority["original_source_epoch"]
-            == retained_parallel_prefix["source_epoch"],
+            == retained["source_epoch"]
+        ]
+        _need(
+            len(matching_retry_origins) == 1,
             "parallel retry authority source differs",
         )
         _read(
@@ -1593,7 +1626,6 @@ def _parallel_native_continuation(
             retry_authority["sha256"],
             "parallel retry authority",
         )
-        retained_ordinals = set(retained_parallel_prefix["completed_ordinals"])
     else:
         _need(
             retry_authority is None,
@@ -1619,7 +1651,7 @@ def _parallel_native_continuation(
         and not retained_ordinals & set(prior_completed),
         "retained parallel prefix ordinal boundary differs",
     )
-    if retained_parallel_prefix is not None:
+    if retained_parallel_prefixes:
         _need(
             set(retry_authority["retry_ordinals"]) <= set(completed)
             and not set(retry_authority["retry_ordinals"]) & retained_ordinals,
@@ -1761,12 +1793,16 @@ def _parallel_native_continuation(
     for record in records:
         _need(isinstance(record, Mapping), "parallel successor record differs")
         ordinal = record.get("ordinal")
-        origin = retained_parallel_prefix if ordinal in retained_ordinals else {
-            "root": str(root),
-            "manifest_sha256": manifest_sha256,
-            "controller_sha256": controller_sha256,
-            "source_epoch": source_epoch,
-        }
+        _need(type(ordinal) is int, "parallel successor record differs")
+        origin = retained_origin_by_ordinal.get(
+            ordinal,
+            {
+                "root": str(root),
+                "manifest_sha256": manifest_sha256,
+                "controller_sha256": controller_sha256,
+                "source_epoch": source_epoch,
+            },
+        )
         _need(
             isinstance(record, Mapping)
             and type(record.get("ordinal")) is int
@@ -1823,15 +1859,21 @@ def _parallel_native_continuation(
         "controller_sha256": controller_sha256,
         "prior_continuation": dict(prior),
     }
-    if retained_parallel_prefix is not None:
-        source_epoch_descriptor["retained_parallel_prefix"] = dict(
-            retained_parallel_prefix
+    if retained_parallel_prefixes:
+        source_epoch_descriptor[
+            "retained_parallel_prefix"
+            if legacy_retained_prefix
+            else "retained_parallel_prefixes"
+        ] = (
+            dict(retained_parallel_prefix_singleton)
+            if legacy_retained_prefix
+            else [dict(item) for item in retained_parallel_prefixes]
         )
         source_epoch_descriptor["retry_authority"] = dict(retry_authority)
     protected_roots = list(serial_commitment.get("protected_roots", []))
     protected_roots.append(str(root))
-    if retained_parallel_prefix is not None:
-        protected_roots.append(retained_parallel_prefix["root"])
+    if retained_parallel_prefixes:
+        protected_roots.extend(item["root"] for item in retained_parallel_prefixes)
         protected_roots.append(
             str(Path(retry_authority["path"]).resolve().parent)
         )
@@ -1849,26 +1891,30 @@ def _parallel_native_continuation(
             for name, item in protected_paths.items()
         },
     }
-    if retained_parallel_prefix is not None:
-        merged_protected_paths.update(
-            {
-                "parallel_retained_manifest": {
-                    "path": retained_parallel_prefix["manifest_path"],
-                    "sha256": retained_parallel_prefix["manifest_sha256"],
-                },
-                "parallel_retained_controller": {
-                    "path": retained_parallel_prefix["controller_path"],
-                    "sha256": retained_parallel_prefix["controller_sha256"],
-                },
-                "parallel_retained_replay_receipt": dict(
-                    retained_parallel_prefix["replay_receipt"]
-                ),
-                "parallel_retry_authority": {
-                    "path": retry_authority["path"],
-                    "sha256": retry_authority["sha256"],
-                },
-            }
-        )
+    if retained_parallel_prefixes:
+        retained_path_descriptors: dict[str, dict[str, str]] = {}
+        for index, retained in enumerate(retained_parallel_prefixes):
+            suffix = "" if legacy_retained_prefix else f"_{index}"
+            retained_path_descriptors.update(
+                {
+                    f"parallel_retained_manifest{suffix}": {
+                        "path": retained["manifest_path"],
+                        "sha256": retained["manifest_sha256"],
+                    },
+                    f"parallel_retained_controller{suffix}": {
+                        "path": retained["controller_path"],
+                        "sha256": retained["controller_sha256"],
+                    },
+                    f"parallel_retained_replay_receipt{suffix}": dict(
+                        retained["replay_receipt"]
+                    ),
+                }
+            )
+        retained_path_descriptors["parallel_retry_authority"] = {
+            "path": retry_authority["path"],
+            "sha256": retry_authority["sha256"],
+        }
+        merged_protected_paths.update(retained_path_descriptors)
     commitment = {
         "root": str(root),
         "manifest_sha256": manifest_sha256,
@@ -1885,8 +1931,15 @@ def _parallel_native_continuation(
     }
     if new_completed is not None:
         commitment["new_completed_ordinals"] = list(new_completed)
-    if retained_parallel_prefix is not None:
-        commitment["retained_parallel_prefix"] = dict(retained_parallel_prefix)
+    if retained_parallel_prefixes:
+        if legacy_retained_prefix:
+            commitment["retained_parallel_prefix"] = dict(
+                retained_parallel_prefix_singleton
+            )
+        else:
+            commitment["retained_parallel_prefixes"] = [
+                dict(item) for item in retained_parallel_prefixes
+            ]
         commitment["retry_authority"] = dict(retry_authority)
     if local_records:
         commitment.update(

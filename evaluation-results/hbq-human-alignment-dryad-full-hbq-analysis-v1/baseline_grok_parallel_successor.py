@@ -410,7 +410,13 @@ def _retry_binding(closure: Mapping[str, Any], retained: Mapping[str, Any] | Non
         "retry authority is not affirmative",
     )
     retry_ordinals = descriptor.get("retry_ordinals")
-    _need(retry_ordinals == [398, 399], "retry authority ordinals differ")
+    _need(
+        isinstance(retry_ordinals, list)
+        and retry_ordinals
+        and all(type(item) is int and item >= 0 for item in retry_ordinals)
+        and retry_ordinals == sorted(set(retry_ordinals)),
+        "retry authority ordinals differ",
+    )
     _need(
         isinstance(descriptor.get("original_manifest_sha256"), str)
         and _HASH.fullmatch(descriptor["original_manifest_sha256"])
@@ -421,14 +427,18 @@ def _retry_binding(closure: Mapping[str, Any], retained: Mapping[str, Any] | Non
         "retry authority origin differs",
     )
     if retained is not None:
-        _need(
-            descriptor["original_manifest_sha256"] == retained["manifest_sha256"]
-            and descriptor["original_controller_sha256"] == retained["controller_sha256"]
-            and descriptor["original_source_epoch"] == retained["source_epoch"],
-            "retry authority origin differs",
-        )
+        origins = retained.get("origins") if isinstance(retained.get("origins"), list) else [retained]
+        matching = [
+            origin
+            for origin in origins
+            if descriptor["original_manifest_sha256"] == origin["manifest_sha256"]
+            and descriptor["original_controller_sha256"] == origin["controller_sha256"]
+            and descriptor["original_source_epoch"] == origin["source_epoch"]
+        ]
+        _need(len(matching) == 1, "retry authority origin differs")
+        origin = matching[0]
         _need(not set(retry_ordinals) & set(retained["completed_ordinals"]), "retry authority overlaps retained prefix")
-        retry_root = Path(retained["root"])
+        retry_root = Path(origin["root"])
         records = _records(retry_root)
         for ordinal in retry_ordinals:
             terminal = records.get(ordinal)
@@ -439,7 +449,7 @@ def _retry_binding(closure: Mapping[str, Any], retained: Mapping[str, Any] | Non
                 "retry authority original attempt differs",
             )
         _need(
-            set(records).issubset(set(retained["completed_ordinals"]) | set(retry_ordinals)),
+            set(records).issubset(set(origin["completed_ordinals"]) | set(retry_ordinals)),
             "retry authority found an unrelated terminal",
         )
     return {
@@ -452,6 +462,8 @@ def _retry_binding(closure: Mapping[str, Any], retained: Mapping[str, Any] | Non
 
 def _retained_parallel_binding(closure: Mapping[str, Any], *, semantic: bool = True) -> dict[str, Any] | None:
     """Bind and replay the immutable completed R2 peer prefix once per process."""
+    if "retained_parallel_prefixes" in closure:
+        return _retained_parallel_bindings(closure, semantic=semantic)
     value = closure.get("retained_parallel_prefix")
     if value is None:
         return None
@@ -488,9 +500,17 @@ def _retained_parallel_binding(closure: Mapping[str, Any], *, semantic: bool = T
     completed = retained.get("completed_ordinals")
     _need(
         isinstance(completed, list)
-        and completed == [*range(371, 398), 400, 401, 402]
+        and completed == sorted(set(completed))
+        and completed
         and all(type(item) is int for item in completed),
         "retained parallel prefix ordinals differ",
+    )
+    manifest_pending = retained_manifest.get("pending_ordinals")
+    _need(
+        isinstance(manifest_pending, list)
+        and all(type(item) is int for item in manifest_pending)
+        and set(completed).issubset(set(manifest_pending)),
+        "retained parallel prefix is outside its manifest schedule",
     )
     receipt_descriptor = _descriptor(retained["replay_receipt"], "retained parallel replay receipt")
     receipt, _receipt_raw = _json(Path(receipt_descriptor["path"]), "retained parallel replay receipt")
@@ -572,6 +592,38 @@ def _retained_parallel_binding(closure: Mapping[str, Any], *, semantic: bool = T
     return result
 
 
+def _retained_parallel_bindings(closure: Mapping[str, Any], *, semantic: bool = True) -> dict[str, Any]:
+    values = closure.get("retained_parallel_prefixes")
+    _need(isinstance(values, list) and values, "retained parallel prefixes differ")
+    origins: list[dict[str, Any]] = []
+    descriptors: list[dict[str, Any]] = []
+    for value in values:
+        child = dict(closure)
+        child.pop("retained_parallel_prefixes", None)
+        child.pop("retry_authority", None)
+        child["retained_parallel_prefix"] = value
+        origin = _retained_parallel_binding(child, semantic=semantic)
+        _need(origin is not None, "retained parallel origin differs")
+        origins.append(origin)
+        descriptors.append(dict(value))
+    completed = [ordinal for origin in origins for ordinal in origin["completed_ordinals"]]
+    _need(len(completed) == len(set(completed)), "retained parallel origins overlap")
+    completed.sort()
+    identities = [identity for origin in origins for identity in origin["identities"]]
+    _need(_identities_unique(identities), "retained parallel origin identity collision")
+    records = [record for origin in origins for record in origin["records"]]
+    records.sort(key=lambda item: item["ordinal"])
+    result = {
+        "origins": origins,
+        "descriptors": descriptors,
+        "records": records,
+        "identities": identities,
+        "completed_ordinals": completed,
+    }
+    result["retry_authority"] = _retry_binding(closure, result)
+    return result
+
+
 def _candidate_binding(closure: Mapping[str, Any]) -> dict[str, Any]:
     if "candidate_loader" in closure:
         _bound(closure["candidate_loader"], "candidate loader provenance")
@@ -590,6 +642,7 @@ def _candidate_binding(closure: Mapping[str, Any]) -> dict[str, Any]:
             (8, "grok_v8_contention_forwardport_candidate"),
             (9, "grok_v9_dynamic_standing_authority_candidate"),
             (10, "grok_v10_bounded_nonzero_session_attestation_candidate"),
+            (11, "grok_v11_separated_wrapper_deadline_candidate"),
         )
         and manifest.get("explicit_exclusion") == ["candidate-manifest.json"]
         and all(
@@ -715,7 +768,7 @@ def _source_semantics(closure: Mapping[str, Any], *, candidate_manifest_sha256: 
     scope = standing.get("authorization", {}).get("scope") if isinstance(standing.get("authorization"), Mapping) else standing.get("scope")
     if not isinstance(scope, Mapping):
         scope = standing
-    if candidate_schema_version == 10:
+    if candidate_schema_version >= 10:
         _need(
             standing.get("schema_version") == 2
             and standing.get("allowance_state") == "available"
@@ -757,19 +810,23 @@ def _source_semantics(closure: Mapping[str, Any], *, candidate_manifest_sha256: 
             if candidate_schema_version == 9
             else (
                 isinstance(packet.get("kind"), str)
-                and (packet["kind"].startswith("grok_v10_") or packet["kind"].startswith("grok398_399_"))
-                if candidate_schema_version == 10
+                and (
+                    packet["kind"].startswith("grok_v10_")
+                    or packet["kind"].startswith("grok398_399_")
+                    or packet["kind"] == "grok_v11_incident_bound_route_recovery_packet"
+                )
+                if candidate_schema_version >= 10
                 else packet.get("kind") == "grok_v8_source_transition_packet"
             )
         )
         and (
             packet.get("state") == "sealed_provider_free_not_activated"
-            if candidate_schema_version != 10
+            if candidate_schema_version < 10
             else packet.get("state") == "reconciled_complete_no_dispatch"
         )
         and (
             packet.get("live_mutations_made") == 0
-            if candidate_schema_version != 10
+            if candidate_schema_version < 10
             else packet.get("live_mutations_made") == 1
             and isinstance(packet.get("actions"), Mapping)
             and packet["actions"].get("route_transition_authority") is True
@@ -835,7 +892,7 @@ def _transition_bindings(
             if candidate_schema_version == 9
             else (
                 isinstance(registry_descriptor.get("kind"), str) and registry_descriptor["kind"].startswith("grok_v10_")
-                if candidate_schema_version == 10
+                if candidate_schema_version >= 10
                 else registry_descriptor.get("kind") == "grok_v8_isolated_registry_transition_descriptor"
             )
         )
@@ -860,7 +917,7 @@ def _transition_bindings(
             if candidate_schema_version == 9
             else (
                 isinstance(gate_descriptor.get("kind"), str) and gate_descriptor["kind"].startswith("grok_v10_")
-                if candidate_schema_version == 10
+                if candidate_schema_version >= 10
                 else gate_descriptor.get("kind") == "grok_v8_gate_transition_descriptor"
             )
         )
@@ -868,7 +925,7 @@ def _transition_bindings(
         and gate_descriptor.get("route_contract_sha256") == route_contract_hash
         and (
             gate_descriptor.get("pre_row_sha256") == gate_descriptor.get("target_row_sha256")
-            if candidate_schema_version != 10
+            if candidate_schema_version < 10
             else _HASH.fullmatch(str(gate_descriptor.get("pre_row_sha256"))) is not None
             and _HASH.fullmatch(str(gate_descriptor.get("target_row_sha256"))) is not None
         )
@@ -885,8 +942,12 @@ def _transition_bindings(
             if candidate_schema_version == 9
             else (
                 isinstance(transition.get("kind"), str)
-                and (transition["kind"].startswith("grok_v10_") or transition["kind"].startswith("grok398_399_"))
-                if candidate_schema_version == 10
+                and (
+                    transition["kind"].startswith("grok_v10_")
+                    or transition["kind"].startswith("grok398_399_")
+                    or transition["kind"] == "grok_v11_incident_bound_route_recovery_transition"
+                )
+                if candidate_schema_version >= 10
                 else transition.get("kind") == "grok_v8_quiescent_transition_receipt"
             )
         )
@@ -953,7 +1014,7 @@ def _transition_bindings(
         and isinstance(source_receipt, Mapping)
         and source_receipt.get("standing_source_sha256") == standing_source_sha256
         and (
-            candidate_schema_version != 10
+            candidate_schema_version < 10
             or (
                 _HASH.fullmatch(str(source_receipt.get("source_file_sha256"))) is not None
                 and _HASH.fullmatch(str(source_receipt.get("standing_source_sha256"))) is not None
@@ -1108,7 +1169,7 @@ def _manifest(root: Path, expected: str | None = None) -> tuple[dict[str, Any], 
         "prior_continuation", "stopped_prefix", "prior_completed_ordinals", "pending_ordinals", "completed_ordinals",
         "context", "protected_paths", "wave_cap", "provider_calls_made", "execution_authority",
     }
-    optional = {"retained_parallel_prefix", "retry_authority"}
+    optional = {"retained_parallel_prefix", "retained_parallel_prefixes", "retry_authority"}
     _need(
         (expected is None or _sha(raw) == expected)
         and set(value).issubset(required | optional)
@@ -1179,6 +1240,18 @@ def _protected_paths(closure: Mapping[str, Any], prior: Mapping[str, Any], candi
             "sha256": closure["retained_parallel_prefix"]["controller_sha256"],
         }
         result["retained_parallel_replay"] = dict(_descriptor(closure["retained_parallel_prefix"]["replay_receipt"], "retained parallel replay receipt"))
+    if isinstance(closure.get("retained_parallel_prefixes"), list):
+        for index, value in enumerate(closure["retained_parallel_prefixes"]):
+            _descriptor(value["replay_receipt"], f"retained parallel replay receipt {index}")
+            result[f"retained_parallel_origin_{index}"] = {
+                "root": value["root"],
+                "manifest_sha256": value["manifest_sha256"],
+            }
+            result[f"retained_parallel_origin_{index}_controller"] = {
+                "path": value["controller_path"],
+                "sha256": value["controller_sha256"],
+            }
+            result[f"retained_parallel_origin_{index}_replay"] = dict(value["replay_receipt"])
     if isinstance(closure.get("retry_authority"), Mapping):
         result["retry_authority"] = dict(_descriptor(closure["retry_authority"], "retry authority"))
     return result
@@ -1232,13 +1305,19 @@ def create(*, continuation_root: Path | str, source_closure: Mapping[str, Any]) 
     if local_recovery is not None:
         protected_paths.update(local_recovery["protected_paths"])
     if retained is not None:
-        protected_paths.update(
-            {
-                "retained_parallel_prefix": {"root": retained["root"].as_posix(), "manifest_sha256": retained["manifest_sha256"]},
-                "retained_parallel_controller": {"path": str(retained["controller_path"]), "sha256": retained["controller_sha256"]},
-                "retained_parallel_replay": dict(retained["replay_receipt"]),
-            }
-        )
+        if "root" in retained:
+            protected_paths.update(
+                {
+                    "retained_parallel_prefix": {"root": retained["root"].as_posix(), "manifest_sha256": retained["manifest_sha256"]},
+                    "retained_parallel_controller": {"path": str(retained["controller_path"]), "sha256": retained["controller_sha256"]},
+                    "retained_parallel_replay": dict(retained["replay_receipt"]),
+                }
+            )
+        else:
+            for index, origin in enumerate(retained["origins"]):
+                protected_paths[f"retained_parallel_origin_{index}"] = {"root": origin["root"].as_posix(), "manifest_sha256": origin["manifest_sha256"]}
+                protected_paths[f"retained_parallel_origin_{index}_controller"] = {"path": str(origin["controller_path"]), "sha256": origin["controller_sha256"]}
+                protected_paths[f"retained_parallel_origin_{index}_replay"] = dict(origin["replay_receipt"])
     if retry is not None:
         protected_paths["retry_authority"] = {"path": retry["descriptor"]["path"], "sha256": retry["descriptor"]["sha256"]}
     value = {
@@ -1260,7 +1339,10 @@ def create(*, continuation_root: Path | str, source_closure: Mapping[str, Any]) 
         "execution_authority": False,
     }
     if retained is not None:
-        value["retained_parallel_prefix"] = dict(retained["descriptor"])
+        if "descriptor" in retained:
+            value["retained_parallel_prefix"] = dict(retained["descriptor"])
+        else:
+            value["retained_parallel_prefixes"] = [dict(item) for item in retained["descriptors"]]
     if retry is not None:
         value["retry_authority"] = dict(retry["descriptor"])
     _new(_manifest_path(root), value)
@@ -1292,9 +1374,17 @@ def _state(root: Path, expected: str, *, semantic_prior: bool = True) -> dict[st
         "parallel retained completion differs",
     )
     if retained is not None:
-        _need(manifest.get("retained_parallel_prefix") == retained["descriptor"], "parallel retained prefix differs")
+        if "descriptor" in retained:
+            _need(manifest.get("retained_parallel_prefix") == retained["descriptor"], "parallel retained prefix differs")
+        else:
+            _need(manifest.get("retained_parallel_prefixes") == retained["descriptors"], "parallel retained prefixes differ")
     else:
-        _need("retained_parallel_prefix" not in manifest and "retry_authority" not in manifest, "parallel optional bindings differ")
+        _need(
+            "retained_parallel_prefix" not in manifest
+            and "retained_parallel_prefixes" not in manifest
+            and "retry_authority" not in manifest,
+            "parallel optional bindings differ",
+        )
     if retry is not None:
         _need(manifest.get("retry_authority") == retry["descriptor"], "parallel retry authority differs")
     candidate = _candidate_binding(closure)
@@ -2233,7 +2323,8 @@ def replay_collection(*, continuation_root: Path | str, expected_manifest_sha256
         "completed_ordinals": completed_union,
         "new_completed_ordinals": records["completed_ordinals"],
         "records": all_records,
-        "retained_parallel_prefix": dict(retained["descriptor"]) if retained is not None else None,
+        "retained_parallel_prefix": dict(retained["descriptor"]) if retained is not None and "descriptor" in retained else None,
+        "retained_parallel_prefixes": [dict(item) for item in retained["descriptors"]] if retained is not None and "descriptors" in retained else None,
         "retry_authority": dict(state["retry"]["descriptor"]) if state["retry"] is not None else None,
         "protected_paths": state["manifest"]["protected_paths"],
         "local_recoveries": [state["local_recovery"]] if state["local_recovery"] is not None else [],
