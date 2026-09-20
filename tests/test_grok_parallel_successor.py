@@ -274,6 +274,51 @@ def test_candidate_version_and_kind_must_match(tmp_path: Path) -> None:
         m._candidate_binding(closure)
 
 
+def test_candidate_v10_inventory_uses_bounded_attestation_kind(tmp_path: Path) -> None:
+    _root, closure, _expected = fixture(tmp_path, candidate_version=9)
+    manifest_path = Path(closure["candidate"]["root"]) / "candidate-manifest.json"
+    manifest = json.loads(manifest_path.read_bytes())
+    manifest["schema_version"] = 10
+    manifest["kind"] = "grok_v10_bounded_nonzero_session_attestation_candidate"
+    descriptor = write(manifest_path, manifest)
+    closure["candidate"]["manifest_sha256"] = descriptor["sha256"]
+    binding = m._candidate_binding(closure)
+    assert binding["manifest"]["schema_version"] == 10
+    assert binding["manifest"]["kind"] == "grok_v10_bounded_nonzero_session_attestation_candidate"
+
+
+def test_retry_authority_binds_exact_failed_ordinals_and_origin(tmp_path: Path) -> None:
+    authority_path = tmp_path / "retry-authority.json"
+    authority_descriptor = write(
+        authority_path,
+        {"grok_retry_authorized": True, "billing_changes_authorized": False},
+    )
+    retained = {
+        "manifest_sha256": "a" * 64,
+        "controller_sha256": "b" * 64,
+        "source_epoch": "grok_parallel_successor_20260919_r1",
+        "completed_ordinals": [*range(371, 398), 400, 401, 402],
+        "root": str(tmp_path),
+    }
+    for ordinal in (398, 399):
+        write(
+            tmp_path / "attempts" / f"request-{ordinal:04d}" / "terminal.json",
+            {"ordinal": ordinal, "state": "ambiguous", "contact_admitted": True},
+        )
+    descriptor = {
+        **authority_descriptor,
+        "retry_ordinals": [398, 399],
+        "original_manifest_sha256": retained["manifest_sha256"],
+        "original_controller_sha256": retained["controller_sha256"],
+        "original_source_epoch": retained["source_epoch"],
+    }
+    bound = m._retry_binding({"retry_authority": descriptor}, retained)
+    assert bound and bound["retry_ordinals"] == [398, 399]
+    wrong = dict(descriptor, retry_ordinals=[399, 400])
+    with pytest.raises(ValueError, match="retry authority ordinals"):
+        m._retry_binding({"retry_authority": wrong}, retained)
+
+
 @pytest.mark.parametrize(("key", "legacy_kind"), [
     ("packet", "grok_v8_source_transition_packet"),
     ("registry_descriptor", "grok_v8_isolated_registry_transition_descriptor"),

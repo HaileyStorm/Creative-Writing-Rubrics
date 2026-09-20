@@ -1377,14 +1377,32 @@ def _parallel_fixture(
     *,
     fault: str | None = None,
     local: bool = False,
+    mixed: bool = False,
 ) -> tuple[Any, Path, dict[str, str]]:
     value = load()
     root = tmp_path / "parallel"
     root.mkdir()
     plan_root = tmp_path / "plan"
     plan_root.mkdir()
+    retained_root = tmp_path / "retained"
+    if mixed:
+        retained_root.mkdir()
+    retained_manifest_path = retained_root / "retained-manifest.json"
+    retained_controller_path = retained_root / "retained-controller.py"
+    retained_replay_path = retained_root / "retained-replay.json"
+    retry_authority_path = tmp_path / "retry-authority.json"
     controller_sha = "b" * 64
     manifest_sha = "c" * 64
+    retained_manifest_sha = value._sha(b"retained-manifest")
+    retained_controller_sha = value._sha(b"retained-controller")
+    retained_replay_sha = value._sha(b"retained-replay")
+    retry_authority_sha = value._sha(b"retry-authority")
+    retained_epoch = "retained-parallel-fixture"
+    if mixed:
+        retained_manifest_path.write_bytes(b"retained-manifest")
+        retained_controller_path.write_bytes(b"retained-controller")
+        retained_replay_path.write_bytes(b"retained-replay")
+        retry_authority_path.write_bytes(b"retry-authority")
     prior_completed = list(range(338, 351))
     tail = [351, 352]
     if fault == "incomplete":
@@ -1443,10 +1461,10 @@ def _parallel_fixture(
                 "native_identity": record_identity,
                 "terminal": {"path": str(terminal_path), "sha256": value._sha(terminal_path.read_bytes())},
                 "native_envelope_sha256": "d" * 64,
-                "source_epoch": "parallel-fixture",
-                "root": str(root),
-                "manifest_sha256": manifest_sha,
-                "controller_sha256": controller_sha,
+                "source_epoch": retained_epoch if mixed and ordinal == 351 else "parallel-fixture",
+                "root": str(retained_root) if mixed and ordinal == 351 else str(root),
+                "manifest_sha256": retained_manifest_sha if mixed and ordinal == 351 else manifest_sha,
+                "controller_sha256": retained_controller_sha if mixed and ordinal == 351 else controller_sha,
             }
         )
 
@@ -1484,7 +1502,7 @@ def _parallel_fixture(
     class ParallelController:
         @staticmethod
         def replay_collection(**_kwargs: Any) -> dict[str, Any]:
-            return {
+            result = {
                 "source_epoch": "parallel-fixture",
                 "manifest": {
                     "kind": "parallel-fixture",
@@ -1507,6 +1525,30 @@ def _parallel_fixture(
                 "local_recoveries": local_recoveries,
                 "provider_calls_made": 0,
             }
+            if mixed:
+                result["retained_parallel_prefix"] = {
+                    "root": str(retained_root),
+                    "manifest_path": str(retained_manifest_path),
+                    "manifest_sha256": retained_manifest_sha,
+                    "controller_path": str(retained_controller_path),
+                    "controller_sha256": retained_controller_sha,
+                    "source_epoch": retained_epoch,
+                    "completed_ordinals": [351],
+                    "replay_receipt": {
+                        "path": str(retained_replay_path),
+                        "sha256": retained_replay_sha,
+                    },
+                }
+                result["retry_authority"] = {
+                    "path": str(retry_authority_path),
+                    "sha256": retry_authority_sha,
+                    "retry_ordinals": [352],
+                    "original_manifest_sha256": retained_manifest_sha,
+                    "original_controller_sha256": retained_controller_sha,
+                    "original_source_epoch": retained_epoch,
+                }
+                result["new_completed_ordinals"] = [352]
+            return result
 
     def serial_stub(**_kwargs: Any) -> tuple[Any, Any, Any, Any]:
         return (
@@ -1555,6 +1597,52 @@ def test_parallel_reader_classifies_local370_without_native_identity(
     assert commitment["local_recovery_ordinals"] == [370]
     assert 370 in commitment["owner_ordinals"]
     assert all(identity.get("ordinal") != 370 for identity in identities)
+
+
+def test_parallel_reader_preserves_mixed_origin_descriptor_and_retry_authority(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    value, plan_root, descriptor = _parallel_fixture(monkeypatch, tmp_path, mixed=True)
+    owners, _identities, _batches, commitment = value._parallel_native_continuation(
+        descriptor=descriptor, plan_root=plan_root
+    )
+    assert owners[351]["root"] == str(tmp_path / "retained")
+    assert owners[351]["manifest_sha256"] == value._sha(b"retained-manifest")
+    assert owners[351]["controller_sha256"] == value._sha(b"retained-controller")
+    assert owners[351]["source_epoch"] == "retained-parallel-fixture"
+    assert owners[352]["root"] == str(tmp_path / "parallel")
+    assert commitment["retained_parallel_prefix"]["completed_ordinals"] == [351]
+    assert commitment["retry_authority"]["retry_ordinals"] == [352]
+    assert str(tmp_path / "retained") in commitment["protected_roots"]
+    assert commitment["new_completed_ordinals"] == [352]
+    assert "parallel_retained_replay_receipt" in commitment["protected_paths"]
+    assert "parallel_retry_authority" in commitment["protected_paths"]
+
+
+def test_parallel_reader_rejects_incorrect_retained_origin(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    value, plan_root, descriptor = _parallel_fixture(monkeypatch, tmp_path, mixed=True)
+    installed_module = value._module
+    parallel_controller = installed_module(value.PARALLEL_CONTINUATION, "b" * 64, "parallel")
+    # The fixture controller is installed through _module; mutate the retained
+    # record returned by that controller without changing its descriptor.
+    class IncorrectOrigin:
+        @staticmethod
+        def replay_collection(**kwargs: Any) -> dict[str, Any]:
+            result = parallel_controller.replay_collection(**kwargs)
+            result["records"][0]["source_epoch"] = "parallel-fixture"
+            return result
+
+    monkeypatch.setattr(
+        value,
+        "_module",
+        lambda path, *args: IncorrectOrigin
+        if path == value.PARALLEL_CONTINUATION
+        else installed_module(path, *args),
+    )
+    with pytest.raises(ValueError, match="parallel successor record"):
+        value._parallel_native_continuation(descriptor=descriptor, plan_root=plan_root)
 
 
 @pytest.mark.parametrize(

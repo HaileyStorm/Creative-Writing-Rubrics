@@ -30,7 +30,7 @@ SUCCESSOR_SHA256 = "fc0dbe04b3699522271157a87fc2f5a5659ffc108bd7eb3a68d6bf393e49
 RENEWED_SUCCESSOR_SHA256 = (
     "e476b47fa4fc88f13fde1752d691352892d80af415f2bb6425077e66facc1696"
 )
-PARALLEL_SUCCESSOR_SHA256 = "4002c321d6d5d900eaa2eedd5db63856a910006f4321580273cbcd1ea84c44ca"
+PARALLEL_SUCCESSOR_SHA256 = "615562551f3959d6d232aef740688aa92588ea5d0518dcf728477d89286e5ad8"
 LOCAL_PROJECTION_SHA256 = (
     "0ae9213b33a51315f082f9091fe40601f21efbdc32475d8010956d9cd8ee716b"
 )
@@ -1482,6 +1482,8 @@ def _parallel_native_continuation(
     records = result.get("records")
     local_recoveries = result.get("local_recoveries", [])
     protected_paths = result.get("protected_paths")
+    retained_parallel_prefix = result.get("retained_parallel_prefix")
+    retry_authority = result.get("retry_authority")
     _need(
         isinstance(source_epoch, str)
         and isinstance(manifest, Mapping)
@@ -1497,6 +1499,106 @@ def _parallel_native_continuation(
         and result.get("provider_calls_made") == 0,
         "parallel successor replay boundary differs",
     )
+    retained_ordinals: set[int] = set()
+    if retained_parallel_prefix is not None:
+        _need(
+            isinstance(retained_parallel_prefix, Mapping)
+            and set(retained_parallel_prefix)
+            == {
+                "root",
+                "manifest_path",
+                "manifest_sha256",
+                "controller_path",
+                "controller_sha256",
+                "source_epoch",
+                "completed_ordinals",
+                "replay_receipt",
+            }
+            and type(retained_parallel_prefix["root"]) is str
+            and bool(retained_parallel_prefix["root"])
+            and type(retained_parallel_prefix["manifest_path"]) is str
+            and type(retained_parallel_prefix["controller_path"]) is str
+            and bool(retained_parallel_prefix["manifest_path"])
+            and bool(retained_parallel_prefix["controller_path"])
+            and _HASH.fullmatch(retained_parallel_prefix["manifest_sha256"])
+            and _HASH.fullmatch(retained_parallel_prefix["controller_sha256"])
+            and type(retained_parallel_prefix["source_epoch"]) is str
+            and bool(retained_parallel_prefix["source_epoch"])
+            and isinstance(retained_parallel_prefix["replay_receipt"], Mapping)
+            and set(retained_parallel_prefix["replay_receipt"]) == {"path", "sha256"}
+            and type(retained_parallel_prefix["replay_receipt"]["path"]) is str
+            and bool(retained_parallel_prefix["replay_receipt"]["path"])
+            and _HASH.fullmatch(retained_parallel_prefix["replay_receipt"]["sha256"])
+            and isinstance(retained_parallel_prefix["completed_ordinals"], list)
+            and all(type(item) is int for item in retained_parallel_prefix["completed_ordinals"])
+            and len(retained_parallel_prefix["completed_ordinals"])
+            == len(set(retained_parallel_prefix["completed_ordinals"]))
+            and retained_parallel_prefix["completed_ordinals"]
+            == sorted(retained_parallel_prefix["completed_ordinals"])
+            and Path(retained_parallel_prefix["root"]).is_dir(),
+            "retained parallel prefix descriptor differs",
+        )
+        _read(
+            retained_parallel_prefix["manifest_path"],
+            retained_parallel_prefix["manifest_sha256"],
+            "retained parallel prefix manifest",
+        )
+        _read(
+            retained_parallel_prefix["controller_path"],
+            retained_parallel_prefix["controller_sha256"],
+            "retained parallel prefix controller",
+        )
+        _read(
+            retained_parallel_prefix["replay_receipt"]["path"],
+            retained_parallel_prefix["replay_receipt"]["sha256"],
+            "retained parallel prefix replay receipt",
+        )
+        _need(
+            isinstance(retry_authority, Mapping)
+            and set(retry_authority)
+            == {
+                "path",
+                "sha256",
+                "retry_ordinals",
+                "original_manifest_sha256",
+                "original_controller_sha256",
+                "original_source_epoch",
+            }
+            and type(retry_authority["path"]) is str
+            and bool(retry_authority["path"])
+            and _HASH.fullmatch(retry_authority["sha256"])
+            and isinstance(retry_authority["retry_ordinals"], list)
+            and all(type(item) is int for item in retry_authority["retry_ordinals"])
+            and len(retry_authority["retry_ordinals"])
+            == len(set(retry_authority["retry_ordinals"]))
+            and retry_authority["retry_ordinals"]
+            == sorted(retry_authority["retry_ordinals"])
+            and _HASH.fullmatch(retry_authority["original_manifest_sha256"])
+            and _HASH.fullmatch(retry_authority["original_controller_sha256"])
+            and type(retry_authority["original_source_epoch"]) is str
+            and bool(retry_authority["original_source_epoch"]),
+            "parallel retry authority differs",
+        )
+        _need(
+            retry_authority["original_manifest_sha256"]
+            == retained_parallel_prefix["manifest_sha256"]
+            and retry_authority["original_controller_sha256"]
+            == retained_parallel_prefix["controller_sha256"]
+            and retry_authority["original_source_epoch"]
+            == retained_parallel_prefix["source_epoch"],
+            "parallel retry authority source differs",
+        )
+        _read(
+            retry_authority["path"],
+            retry_authority["sha256"],
+            "parallel retry authority",
+        )
+        retained_ordinals = set(retained_parallel_prefix["completed_ordinals"])
+    else:
+        _need(
+            retry_authority is None,
+            "parallel retry authority lacks retained prefix",
+        )
     _need(
         all(type(item) is int for item in prior_completed + pending + completed)
         and len(prior_completed) == len(set(prior_completed))
@@ -1512,6 +1614,27 @@ def _parallel_native_continuation(
         and not set(prior_completed) & set(completed),
         "parallel successor ordinal boundary differs",
     )
+    _need(
+        retained_ordinals <= set(completed)
+        and not retained_ordinals & set(prior_completed),
+        "retained parallel prefix ordinal boundary differs",
+    )
+    if retained_parallel_prefix is not None:
+        _need(
+            set(retry_authority["retry_ordinals"]) <= set(completed)
+            and not set(retry_authority["retry_ordinals"]) & retained_ordinals,
+            "parallel retry authority ordinal boundary differs",
+        )
+    new_completed = result.get("new_completed_ordinals")
+    if new_completed is not None:
+        _need(
+            isinstance(new_completed, list)
+            and all(type(item) is int for item in new_completed)
+            and len(new_completed) == len(set(new_completed))
+            and new_completed == sorted(new_completed)
+            and set(new_completed) == set(completed) - retained_ordinals,
+            "parallel successor new completion boundary differs",
+        )
     _need(
         all(
             type(item) is str and item
@@ -1636,6 +1759,14 @@ def _parallel_native_continuation(
         batches[370] = list(local["verdicts"])
     parallel_ordinals: list[int] = []
     for record in records:
+        _need(isinstance(record, Mapping), "parallel successor record differs")
+        ordinal = record.get("ordinal")
+        origin = retained_parallel_prefix if ordinal in retained_ordinals else {
+            "root": str(root),
+            "manifest_sha256": manifest_sha256,
+            "controller_sha256": controller_sha256,
+            "source_epoch": source_epoch,
+        }
         _need(
             isinstance(record, Mapping)
             and type(record.get("ordinal")) is int
@@ -1644,10 +1775,10 @@ def _parallel_native_continuation(
             and isinstance(record.get("native_identity"), Mapping)
             and isinstance(record.get("terminal"), Mapping)
             and set(record["terminal"]) >= {"path", "sha256"}
-            and record.get("source_epoch") == source_epoch
-            and record.get("root") == str(root)
-            and record.get("manifest_sha256") == manifest_sha256
-            and record.get("controller_sha256") == controller_sha256
+            and record.get("source_epoch") == origin["source_epoch"]
+            and record.get("root") == origin["root"]
+            and record.get("manifest_sha256") == origin["manifest_sha256"]
+            and record.get("controller_sha256") == origin["controller_sha256"]
             and isinstance(record.get("native_envelope_sha256"), str)
             and _HASH.fullmatch(record["native_envelope_sha256"]),
             "parallel successor record differs",
@@ -1668,10 +1799,10 @@ def _parallel_native_continuation(
         batch = _verdicts(verdict_rows, question_ids, "parallel successor")
         owners[ordinal] = {
             "kind": "parallel_renewal_native",
-            "root": str(root),
-            "manifest_sha256": manifest_sha256,
-            "controller_sha256": controller_sha256,
-            "source_epoch": source_epoch,
+            "root": origin["root"],
+            "manifest_sha256": origin["manifest_sha256"],
+            "controller_sha256": origin["controller_sha256"],
+            "source_epoch": origin["source_epoch"],
             "terminal_sha256": terminal["sha256"],
             "native_envelope_sha256": record["native_envelope_sha256"],
             "native_identity": dict(identity),
@@ -1692,8 +1823,18 @@ def _parallel_native_continuation(
         "controller_sha256": controller_sha256,
         "prior_continuation": dict(prior),
     }
+    if retained_parallel_prefix is not None:
+        source_epoch_descriptor["retained_parallel_prefix"] = dict(
+            retained_parallel_prefix
+        )
+        source_epoch_descriptor["retry_authority"] = dict(retry_authority)
     protected_roots = list(serial_commitment.get("protected_roots", []))
     protected_roots.append(str(root))
+    if retained_parallel_prefix is not None:
+        protected_roots.append(retained_parallel_prefix["root"])
+        protected_roots.append(
+            str(Path(retry_authority["path"]).resolve().parent)
+        )
     if local_records:
         protected_roots.append(
             str(Path(local_records[0]["original_terminal"]["path"]).resolve().parents[2])
@@ -1708,6 +1849,26 @@ def _parallel_native_continuation(
             for name, item in protected_paths.items()
         },
     }
+    if retained_parallel_prefix is not None:
+        merged_protected_paths.update(
+            {
+                "parallel_retained_manifest": {
+                    "path": retained_parallel_prefix["manifest_path"],
+                    "sha256": retained_parallel_prefix["manifest_sha256"],
+                },
+                "parallel_retained_controller": {
+                    "path": retained_parallel_prefix["controller_path"],
+                    "sha256": retained_parallel_prefix["controller_sha256"],
+                },
+                "parallel_retained_replay_receipt": dict(
+                    retained_parallel_prefix["replay_receipt"]
+                ),
+                "parallel_retry_authority": {
+                    "path": retry_authority["path"],
+                    "sha256": retry_authority["sha256"],
+                },
+            }
+        )
     commitment = {
         "root": str(root),
         "manifest_sha256": manifest_sha256,
@@ -1722,6 +1883,11 @@ def _parallel_native_continuation(
         "protected_roots": list(dict.fromkeys(protected_roots)),
         "protected_paths": merged_protected_paths,
     }
+    if new_completed is not None:
+        commitment["new_completed_ordinals"] = list(new_completed)
+    if retained_parallel_prefix is not None:
+        commitment["retained_parallel_prefix"] = dict(retained_parallel_prefix)
+        commitment["retry_authority"] = dict(retry_authority)
     if local_records:
         commitment.update(
             {
