@@ -638,7 +638,7 @@ def _grok_structured_output(
             "Grok Build CLI does not attest reasoning; pass --allow-unattested-reasoning",
             provider_record=record,
         )
-    approved_model = {"grok-4.6": "grok-4.6-build"}.get(model)
+    approved_model = {"grok-4.7": "grok-4.7-build"}.get(model)
     if reported_model != approved_model:
         raise _GrokEnvelopeFailure(
             "Grok CLI effective settings did not match the request: "

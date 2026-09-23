@@ -1554,7 +1554,7 @@ def test_grok_backend_uses_isolated_single_turn_schema_cli(tmp_path: Path, monke
 
     def fake_run(argv: list[str], **kwargs: object) -> subprocess.CompletedProcess[str]:
         calls.append(argv)
-        assert argv[argv.index("--model") + 1] == "grok-4.6"
+        assert argv[argv.index("--model") + 1] == "grok-4.7"
         assert argv[argv.index("--reasoning-effort") + 1] == "high"
         assert argv[argv.index("--output-format") + 1] == "json"
         assert json.loads(argv[argv.index("--json-schema") + 1]) == {"type": "object"}
@@ -1574,7 +1574,7 @@ def test_grok_backend_uses_isolated_single_turn_schema_cli(tmp_path: Path, monke
             stdout=json.dumps(
                 {
                     "structuredOutput": {"verdicts": []},
-                    "modelUsage": {"grok-4.6-build": {"input_tokens": 1}},
+                    "modelUsage": {"grok-4.7-build": {"input_tokens": 1}},
                     "sessionId": session_id,
                     "requestId": "fixture-request-id",
                     "stopReason": "end_turn",
@@ -1588,7 +1588,7 @@ def test_grok_backend_uses_isolated_single_turn_schema_cli(tmp_path: Path, monke
     monkeypatch.setattr("hbqrs.runner.subprocess.run", fake_run)
     content, record = _call_grok(
         executable="grok-fixture",
-        model="grok-4.6",
+        model="grok-4.7",
         reasoning="high",
         prompt="judge this",
         output_dir=tmp_path,
@@ -1600,10 +1600,10 @@ def test_grok_backend_uses_isolated_single_turn_schema_cli(tmp_path: Path, monke
     assert json.loads(content) == {"verdicts": []}
     assert len(calls) == 1
     assert record["cli_version"] == "Grok Build CLI 1.0.fixture"
-    assert record["requested"] == {"model": "grok-4.6", "reasoning_effort": "high"}
+    assert record["requested"] == {"model": "grok-4.7", "reasoning_effort": "high"}
     assert record["reported"] == {
         "provider": "grok",
-        "model": "grok-4.6-build",
+        "model": "grok-4.7-build",
     }
     assert session_ids[0] not in json.dumps(record)
     assert "fixture-request-id" not in json.dumps(record)
@@ -1623,7 +1623,7 @@ def test_grok_backend_rejects_unattested_output_envelope(tmp_path: Path, monkeyp
     with pytest.raises(HBQError, match="modelUsage entry"):
         _call_grok(
             executable="grok-fixture",
-            model="grok-4.6",
+            model="grok-4.7",
             reasoning="high",
             prompt="judge this",
             output_dir=tmp_path,
@@ -1643,7 +1643,7 @@ def test_grok_backend_requires_explicit_unattested_reasoning_opt_in(tmp_path: Pa
             0,
             stdout=json.dumps(
                 {
-                    "structuredOutput": {}, "modelUsage": {"grok-4.6-build": {}},
+                    "structuredOutput": {}, "modelUsage": {"grok-4.7-build": {}},
                     "sessionId": argv[argv.index("--session-id") + 1],
                     "requestId": "request",
                     "stopReason": "end_turn",
@@ -1655,7 +1655,7 @@ def test_grok_backend_requires_explicit_unattested_reasoning_opt_in(tmp_path: Pa
     monkeypatch.setattr("hbqrs.runner.subprocess.run", fake_run)
     with pytest.raises(HBQError, match="allow-unattested-reasoning"):
         _call_grok(
-            executable="grok-fixture", model="grok-4.6", reasoning="high", prompt="judge",
+            executable="grok-fixture", model="grok-4.7", reasoning="high", prompt="judge",
             output_dir=tmp_path, response_schema=schema, batch_number=1, timeout=10,
         )
 
@@ -1665,7 +1665,7 @@ def test_grok_schema_output_failure_retries_only_after_attested_envelope(tmp_pat
         "text": '{"verdicts": []}',
         "structuredOutput": None,
         "structuredOutputError": "model did not produce structured output",
-        "modelUsage": {"grok-4.6-build": {"input_tokens": 1}},
+        "modelUsage": {"grok-4.7-build": {"input_tokens": 1}},
         "requestId": "schema-failure-request",
         "stopReason": "end_turn",
         "num_turns": 1,
@@ -1689,7 +1689,7 @@ def test_grok_schema_output_failure_retries_only_after_attested_envelope(tmp_pat
                     }
                 ]
             },
-            "modelUsage": {"grok-4.6-build": {"input_tokens": 1}},
+            "modelUsage": {"grok-4.7-build": {"input_tokens": 1}},
             "requestId": "accepted-request",
             "stopReason": "end_turn",
             "num_turns": 1,
@@ -1716,7 +1716,7 @@ def test_grok_schema_output_failure_retries_only_after_attested_envelope(tmp_pat
     assert _run(
         tmp_path,
         provider="grok",
-        model="grok-4.6",
+        model="grok-4.7",
         grok_bin="grok-fixture",
         reasoning="high",
         allow_unattested_reasoning=True,
@@ -1760,7 +1760,7 @@ def test_grok_schema_output_failure_keeps_identity_and_envelope_gates_nonretryab
     envelope = {
         "structuredOutput": None,
         "structuredOutputError": "model did not produce structured output",
-        "modelUsage": {"grok-4.6-build": {"input_tokens": 1}},
+        "modelUsage": {"grok-4.7-build": {"input_tokens": 1}},
         "sessionId": "fixture-session-id",
         "requestId": "fixture-request-id",
         "stopReason": "end_turn",
@@ -1778,7 +1778,7 @@ def test_grok_schema_output_failure_keeps_identity_and_envelope_gates_nonretryab
     with pytest.raises(HBQError, match=expected) as exc_info:
         _call_grok(
             executable="grok-fixture",
-            model="grok-4.6",
+            model="grok-4.7",
             reasoning="high",
             prompt="judge this",
             output_dir=tmp_path,
@@ -1802,7 +1802,7 @@ def test_grok_malformed_envelope_is_nonretryable(tmp_path: Path, monkeypatch) ->
     with pytest.raises(HBQError, match="invalid JSON output") as exc_info:
         _call_grok(
             executable="grok-fixture",
-            model="grok-4.6",
+            model="grok-4.7",
             reasoning="high",
             prompt="judge this",
             output_dir=tmp_path,
@@ -1821,7 +1821,7 @@ def test_grok_schema_output_failure_requires_an_exact_integer_turn(tmp_path: Pat
     envelope = {
         "structuredOutput": None,
         "structuredOutputError": "model did not produce structured output",
-        "modelUsage": {"grok-4.6-build": {}},
+        "modelUsage": {"grok-4.7-build": {}},
         "requestId": "fixture-request-id",
         "stopReason": "end_turn",
         "num_turns": num_turns,
@@ -1835,7 +1835,7 @@ def test_grok_schema_output_failure_requires_an_exact_integer_turn(tmp_path: Pat
 
     with pytest.raises(HBQError, match="exactly one normal turn") as exc_info:
         _call_grok(
-            executable="grok-fixture", model="grok-4.6", reasoning="high", prompt="judge",
+            executable="grok-fixture", model="grok-4.7", reasoning="high", prompt="judge",
             output_dir=tmp_path, response_schema=schema, batch_number=1, timeout=10,
             allow_unattested_reasoning=True,
         )
@@ -1848,7 +1848,7 @@ def test_grok_rejects_contradictory_structured_output_and_error(tmp_path: Path, 
     envelope = {
         "structuredOutput": {"verdicts": []},
         "structuredOutputError": "model did not produce structured output",
-        "modelUsage": {"grok-4.6-build": {}},
+        "modelUsage": {"grok-4.7-build": {}},
         "requestId": "fixture-request-id",
         "stopReason": "end_turn",
         "num_turns": 1,
@@ -1862,7 +1862,7 @@ def test_grok_rejects_contradictory_structured_output_and_error(tmp_path: Path, 
 
     with pytest.raises(HBQError, match="contradicts its structured output") as exc_info:
         _call_grok(
-            executable="grok-fixture", model="grok-4.6", reasoning="high", prompt="judge",
+            executable="grok-fixture", model="grok-4.7", reasoning="high", prompt="judge",
             output_dir=tmp_path, response_schema=schema, batch_number=1, timeout=10,
             allow_unattested_reasoning=True,
         )
@@ -1876,7 +1876,7 @@ def test_grok_rejects_whitespace_identity_ids(tmp_path: Path, monkeypatch, ident
     envelope = {
         "structuredOutput": None,
         "structuredOutputError": "model did not produce structured output",
-        "modelUsage": {"grok-4.6-build": {}},
+        "modelUsage": {"grok-4.7-build": {}},
         "sessionId": "fixture-session-id",
         "requestId": "fixture-request-id",
         "stopReason": "end_turn",
@@ -1893,7 +1893,7 @@ def test_grok_rejects_whitespace_identity_ids(tmp_path: Path, monkeypatch, ident
 
     with pytest.raises(HBQError, match="accepted attested mapping") as exc_info:
         _call_grok(
-            executable="grok-fixture", model="grok-4.6", reasoning="high", prompt="judge",
+            executable="grok-fixture", model="grok-4.7", reasoning="high", prompt="judge",
             output_dir=tmp_path, response_schema=schema, batch_number=1, timeout=10,
             allow_unattested_reasoning=True,
         )
@@ -1907,7 +1907,7 @@ def test_grok_binds_response_session_to_the_fresh_request(tmp_path: Path, monkey
     requested_session: list[str] = []
     envelope = {
         "structuredOutput": {"verdicts": []},
-        "modelUsage": {"grok-4.6-build": {}},
+        "modelUsage": {"grok-4.7-build": {}},
         "requestId": "fixture-request-id",
         "stopReason": "end_turn",
         "num_turns": 1,
@@ -1924,14 +1924,14 @@ def test_grok_binds_response_session_to_the_fresh_request(tmp_path: Path, monkey
     if not matches_request:
         with pytest.raises(HBQError, match="sessionId does not match") as exc_info:
             _call_grok(
-                executable="grok-fixture", model="grok-4.6", reasoning="high", prompt="judge",
+                executable="grok-fixture", model="grok-4.7", reasoning="high", prompt="judge",
                 output_dir=tmp_path, response_schema=schema, batch_number=1, timeout=10,
                 allow_unattested_reasoning=True,
             )
         assert getattr(exc_info.value, "retryable") is False
         return
     _, record = _call_grok(
-        executable="grok-fixture", model="grok-4.6", reasoning="high", prompt="judge",
+        executable="grok-fixture", model="grok-4.7", reasoning="high", prompt="judge",
         output_dir=tmp_path, response_schema=schema, batch_number=1, timeout=10,
         allow_unattested_reasoning=True,
     )
@@ -1944,7 +1944,7 @@ def test_grok_schema_output_failure_cannot_expand_cumulative_resume_attempts(tmp
         {
             "structuredOutput": None,
             "structuredOutputError": "model did not produce structured output",
-            "modelUsage": {"grok-4.6-build": {"input_tokens": 1}},
+            "modelUsage": {"grok-4.7-build": {"input_tokens": 1}},
             "requestId": "schema-failure-request",
             "stopReason": "end_turn",
             "num_turns": 1,
@@ -1963,7 +1963,7 @@ def test_grok_schema_output_failure_cannot_expand_cumulative_resume_attempts(tmp
     monkeypatch.setattr("hbqrs.runner.subprocess.run", fake_run)
     arguments = {
         "provider": "grok",
-        "model": "grok-4.6",
+        "model": "grok-4.7",
         "grok_bin": "grok-fixture",
         "reasoning": "high",
         "allow_unattested_reasoning": True,
