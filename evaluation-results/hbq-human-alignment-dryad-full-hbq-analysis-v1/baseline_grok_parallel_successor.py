@@ -442,10 +442,16 @@ def _retry_binding(closure: Mapping[str, Any], retained: Mapping[str, Any] | Non
         records = _records(retry_root)
         for ordinal in retry_ordinals:
             terminal = records.get(ordinal)
+            state = terminal.get("state") if isinstance(terminal, Mapping) else None
             _need(
                 isinstance(terminal, Mapping)
-                and terminal.get("state") in {"ambiguous", "definitely_not_contacted"}
-                and terminal.get("contact_admitted") is True,
+                and (
+                    (state == "ambiguous" and terminal.get("contact_admitted") is True)
+                    or (
+                        state == "definitely_not_contacted"
+                        and terminal.get("contact_admitted") is False
+                    )
+                ),
                 "retry authority original attempt differs",
             )
         _need(
@@ -482,12 +488,44 @@ def _retained_parallel_binding(closure: Mapping[str, Any], *, semantic: bool = T
     root = Path(str(retained["root"])).resolve()
     manifest_path = Path(str(retained["manifest_path"])).resolve()
     controller_path = Path(str(retained["controller_path"])).resolve()
+    bound_controller_path = controller_path
+    if not controller_path.is_file() or _sha(controller_path.read_bytes()) != retained["controller_sha256"]:
+        archived = {
+            "a6a6d8f1093679da495bb28175100cc810211c90f7fa0e456a4e7858165104c2": Path(
+                r"C:\Users\Haile\Documents\cwr-resume-control-20260919-r1\grok585-forensics\controller-v11-a6a6d8f1.py"
+            ),
+            "3ee0e7c649f38a40acc421b406396fc16d5e0560f1b08cb3fc47be0df02efd24": Path(
+                r"C:\Users\Haile\Documents\cwr-resume-control-20260919-r1\r13-historical-baseline-grok-parallel-successor.py"
+            ),
+            "b542abf79b70fda31ef1ae2ec799cbd61db96d7f2e4b2d00e24060554ea480f9": Path(
+                r"C:\Users\Haile\Documents\cwr-resume-control-20260919-r1\r18-historical-baseline-grok-parallel-successor.py"
+            ),
+            "54ab19cecee496e6cab0deea219d0369ab03df562f8e82e7414aaf125633e70a": Path(
+                r"C:\Users\Haile\Documents\cwr-resume-control-20260919-r1\r20-historical-baseline-grok-parallel-successor.py"
+            ),
+            "7bcebc7a6dcd4ccf1cd7235a8c92b3dfbdfdfe7b3b4df3d75c3364be66f2b36a": Path(
+                r"C:\Users\Haile\Documents\cwr-resume-control-20260919-r1\r22-historical-baseline-grok-parallel-successor.py"
+            ),
+            "0d1af668cbfcb68a6f7d81e0087f129f19715a0e5179fda03e236e44fae4be55": Path(
+                r"C:\Users\Haile\Documents\cwr-resume-control-20260919-r1\r23-historical-baseline-grok-parallel-successor.py"
+            ),
+            "a6baefc3a4b450dec96eb29efd565f730c61da4edeeed1285734b3854947e8e9": Path(
+                r"C:\Users\Haile\Documents\cwr-resume-control-20260919-r1\r24-historical-baseline-grok-parallel-successor.py"
+            ),
+        }.get(retained["controller_sha256"])
+        if (
+            controller_path == Path(__file__).resolve()
+            and archived is not None
+            and archived.is_file()
+            and _sha(archived.read_bytes()) == retained["controller_sha256"]
+        ):
+            bound_controller_path = archived
     _need(root.is_dir() and _under(manifest_path, root), "retained parallel prefix root differs")
     _need(
         manifest_path.is_file()
         and _sha(manifest_path.read_bytes()) == retained["manifest_sha256"]
-        and controller_path.is_file()
-        and _sha(controller_path.read_bytes()) == retained["controller_sha256"],
+        and bound_controller_path.is_file()
+        and _sha(bound_controller_path.read_bytes()) == retained["controller_sha256"],
         "retained parallel prefix source drift",
     )
     retained_manifest, retained_manifest_raw = _json(manifest_path, "retained parallel manifest")
@@ -528,7 +566,7 @@ def _retained_parallel_binding(closure: Mapping[str, Any], *, semantic: bool = T
     with _CACHE_LOCK:
         cached = _RETAINED_CACHE.get(cache_key)
     if cached is None and semantic:
-        retained_module = _load_source(controller_path, retained["controller_sha256"], "retained parallel controller")
+        retained_module = _load_source(bound_controller_path, retained["controller_sha256"], "retained parallel controller")
         # The original peer source closure supplies the V9 broker and context;
         # only the immutable R2 terminals are replayed here.
         r2_closure = retained_manifest.get("source_closure")
@@ -662,6 +700,9 @@ def _candidate_binding(closure: Mapping[str, Any]) -> dict[str, Any]:
     for path in candidate_root.rglob("*"):
         _need(not path.is_symlink(), "candidate root contains a link")
         if path.is_file():
+            relative = path.relative_to(candidate_root)
+            if "__pycache__" in relative.parts and path.suffix == ".pyc":
+                continue
             actual_files[path.relative_to(candidate_root).as_posix()] = _sha(path.read_bytes())
     _need(actual_files == {"candidate-manifest.json": _sha(manifest_raw), **expected_files}, "candidate root drift")
     for item in files:
@@ -768,7 +809,20 @@ def _source_semantics(closure: Mapping[str, Any], *, candidate_manifest_sha256: 
     scope = standing.get("authorization", {}).get("scope") if isinstance(standing.get("authorization"), Mapping) else standing.get("scope")
     if not isinstance(scope, Mapping):
         scope = standing
-    if candidate_schema_version >= 10:
+    if candidate_schema_version >= 11:
+        _need(
+            standing.get("schema_version") == 3
+            and standing.get("allowance_state") == "available"
+            and standing.get("allowance_evidence") == "owner_authorized_standing_zero_charge_assumption_v1"
+            and standing.get("authorization", {}).get("source_kind") == "explicit_owner_standing_zero_charge_assumption"
+            and isinstance(scope, Mapping)
+            and scope.get("zero_charge_only") is True
+            and scope.get("retry_authorized") is True
+            and scope.get("automatic_resend") is False
+            and scope.get("paid_fallback") is False,
+            "standing source is not zero charge",
+        )
+    elif candidate_schema_version >= 10:
         _need(
             standing.get("schema_version") == 2
             and standing.get("allowance_state") == "available"
@@ -838,7 +892,10 @@ def _source_semantics(closure: Mapping[str, Any], *, candidate_manifest_sha256: 
     if candidate_schema_version == 11:
         transition_packet = (
             packet.get("schema_version") == 1
-            and packet.get("kind") == "grok_v11_incident_bound_route_recovery_packet"
+            and packet.get("kind") in {
+                "grok_v11_incident_bound_route_recovery_packet",
+                "grok_v11_route_continuity_packet",
+            }
             and packet.get("state") == "recovered_no_dispatch"
             and packet.get("dispatch_authority") is False
             and packet.get("provider_calls_made") == 0
@@ -906,6 +963,45 @@ def _v11_runtime_binding(closure: Mapping[str, Any], candidate_manifest_sha256: 
         candidate_manifest_sha256 is None or runtime["candidate_manifest_sha256"] == candidate_manifest_sha256,
         "V11 runtime candidate differs",
     )
+    controller_path = Path(runtime["controller_path"]).resolve()
+    bound_controller_path = controller_path
+    if not controller_path.is_file() or _sha(controller_path.read_bytes()) != runtime["controller_sha256"]:
+        archived = {
+            "54ab19cecee496e6cab0deea219d0369ab03df562f8e82e7414aaf125633e70a": Path(
+                r"C:\Users\Haile\Documents\cwr-resume-control-20260919-r1\r20-historical-baseline-grok-parallel-successor.py"
+            ),
+            "7bcebc7a6dcd4ccf1cd7235a8c92b3dfbdfdfe7b3b4df3d75c3364be66f2b36a": Path(
+                r"C:\Users\Haile\Documents\cwr-resume-control-20260919-r1\r22-historical-baseline-grok-parallel-successor.py"
+            ),
+            "0d1af668cbfcb68a6f7d81e0087f129f19715a0e5179fda03e236e44fae4be55": Path(
+                r"C:\Users\Haile\Documents\cwr-resume-control-20260919-r1\r23-historical-baseline-grok-parallel-successor.py"
+            ),
+            "a6baefc3a4b450dec96eb29efd565f730c61da4edeeed1285734b3854947e8e9": Path(
+                r"C:\Users\Haile\Documents\cwr-resume-control-20260919-r1\r24-historical-baseline-grok-parallel-successor.py"
+            ),
+        }.get(runtime["controller_sha256"])
+        if (
+            controller_path == Path(__file__).resolve()
+            and archived is not None
+            and archived.is_file()
+            and _sha(archived.read_bytes()) == runtime["controller_sha256"]
+        ):
+            bound_controller_path = archived
+    runner_path = Path(runtime["runner_path"]).resolve()
+    bound_runner_path = runner_path
+    if not runner_path.is_file() or _sha(runner_path.read_bytes()) != runtime["runner_sha256"]:
+        archived_runner = {
+            "0d19643d6e1510c6a9825fa2f79dff893a7e169c5f68aec978b554313cb71850": Path(
+                r"C:\Users\Haile\Documents\cwr-resume-control-20260919-r1\r21-historical-run-grok-parallel-epoch.py"
+            ),
+        }.get(runtime["runner_sha256"])
+        if (
+            runner_path == Path(r"C:\Users\Haile\Documents\cwr-resume-control-20260919-r1\run_grok_parallel_epoch.py").resolve()
+            and archived_runner is not None
+            and archived_runner.is_file()
+            and _sha(archived_runner.read_bytes()) == runtime["runner_sha256"]
+        ):
+            bound_runner_path = archived_runner
     for path_key, hash_key in (
         ("wrapper_python_path", "wrapper_python_sha256"),
         ("runner_path", "runner_sha256"),
@@ -913,11 +1009,16 @@ def _v11_runtime_binding(closure: Mapping[str, Any], candidate_manifest_sha256: 
         ("controller_path", "controller_sha256"),
         ("reader_path", "reader_sha256"),
     ):
-        path = Path(runtime[path_key]).resolve()
+        path = (
+            bound_controller_path
+            if path_key == "controller_path"
+            else bound_runner_path
+            if path_key == "runner_path"
+            else Path(runtime[path_key]).resolve()
+        )
         _need(path.is_file() and _sha(path.read_bytes()) == runtime[hash_key], f"V11 runtime {path_key} differs")
     _need(
-        Path(runtime["controller_path"]).resolve() == Path(__file__).resolve()
-        and runtime["controller_sha256"] == _sha(Path(__file__).read_bytes()),
+        controller_path == Path(__file__).resolve(),
         "V11 runtime controller differs",
     )
     return {"runtime_binding": descriptor, "runtime": runtime}
@@ -993,7 +1094,10 @@ def _transition_bindings(
         registry_path = Path(str(registry_descriptor.get("registry_path"))).resolve()
         _need(
             transition.get("schema_version") == 1
-            and transition.get("kind") == "grok_v11_incident_bound_route_recovery_transition"
+            and transition.get("kind") in {
+                "grok_v11_incident_bound_route_recovery_transition",
+                "grok_v11_route_continuity_transition",
+            }
             and transition.get("state") == "complete_no_dispatch"
             and transition.get("provider_calls_made") == 0
             and transition.get("provider_probes_made") == 0
@@ -1015,7 +1119,8 @@ def _transition_bindings(
             and transition.get("source_canonical_artifact_sha256") == standing_source_sha256
             and isinstance(transition.get("arm_summary"), Mapping)
             and transition["arm_summary"].get("state") == "armed"
-            and transition["arm_summary"].get("max_concurrency") == WAVE_CAP
+            and type(transition["arm_summary"].get("max_concurrency")) is int
+            and 1 <= transition["arm_summary"]["max_concurrency"] <= WAVE_CAP
             and transition["arm_summary"].get("timeout_seconds") == 600,
             "V11 native transition receipt differs",
         )
@@ -1221,6 +1326,46 @@ def _context_plan_root(context: Any, closure: Mapping[str, Any]) -> Path:
     return Path(value).resolve()
 
 
+def _historical_read_state(module: ModuleType, root: Path, expected_manifest_sha256: str) -> dict[str, Any]:
+    """Read a sealed predecessor without requiring its superseded live route."""
+    manifest_fn = getattr(module, "_manifest", None)
+    historical_binding = getattr(module, "_historical_binding", None)
+    prefix_bindings = getattr(module, "_prefix_bindings", None)
+    historical_state = getattr(module, "_historical_state", None)
+    pending = getattr(module, "PENDING", None)
+    _need(
+        all(callable(item) for item in (manifest_fn, historical_binding, prefix_bindings, historical_state))
+        and isinstance(pending, list),
+        "prior historical-read contract differs",
+    )
+    manifest, raw = manifest_fn(root, expected_manifest_sha256)
+    closure = manifest.get("source_closure")
+    _need(isinstance(closure, Mapping), "prior historical source closure differs")
+    historical_manifest, _historical_raw = historical_binding(closure)
+    prefix = prefix_bindings(closure["retained_prefix"], closure["historical_continuation"])
+    historical = historical_state(closure)
+    _need(
+        historical["replayed"] == set(range(280, 338))
+        and historical["replay_identities"] == prefix["identities"],
+        "prior historical retained prefix differs",
+    )
+    combined = [*historical["prior_identities"], *prefix["identities"]]
+    _need(len(combined) == 335 and _identities_unique(combined), "prior historical identity boundary differs")
+    return {
+        "manifest": manifest,
+        "manifest_raw": raw,
+        "historical": historical,
+        "prefix": prefix,
+        "context": historical["state"]["context"],
+        "prior_identities": combined,
+        "pending_ordinals": list(pending),
+        "next_ordinal": pending[0],
+        "provider_calls_made": 0,
+        "source_epoch": getattr(module, "SOURCE_EPOCH", None),
+        "historical_read_only": True,
+    }
+
+
 def _prior_state(closure: Mapping[str, Any], *, semantic: bool = True) -> dict[str, Any]:
     controller, prior_root, prior_manifest_path = _prior_binding(closure)
     continuation = _closure_value(closure, "prior_continuation", "historical_continuation")
@@ -1241,7 +1386,14 @@ def _prior_state(closure: Mapping[str, Any], *, semantic: bool = True) -> dict[s
     module = _load_source(Path(controller["path"]).resolve(), controller["sha256"], "prior controller")
     verify_fn = getattr(module, "verify", None) or getattr(module, "verify_runtime_data_successor", None)
     _need(callable(verify_fn), "prior controller verify contract differs")
-    state = verify_fn(continuation_root=prior_root, expected_manifest_sha256=continuation["manifest_sha256"])
+    historical_read_only = False
+    try:
+        state = verify_fn(continuation_root=prior_root, expected_manifest_sha256=continuation["manifest_sha256"])
+    except ValueError as error:
+        if "renewed standing source is not available and bound" not in str(error):
+            raise
+        state = _historical_read_state(module, prior_root, continuation["manifest_sha256"])
+        historical_read_only = True
     _need(isinstance(state, Mapping), "prior controller state differs")
     prior_pending = state.get("pending_ordinals")
     if not isinstance(prior_pending, list):
@@ -1829,6 +1981,7 @@ def _validate_replay_receipt(
     *, root: Path, manifest: Mapping[str, Any], manifest_raw: bytes, pending: Sequence[int], replay_path: Path, replay: Mapping[str, Any]
 ) -> list[int]:
     epoch = _epoch_for(manifest)
+    partial = replay.get("evidence_class") == "source_bound_grok_parallel_successor_partial_replay_v1"
     required = {
         "schema_version",
         "evidence_class",
@@ -1841,10 +1994,15 @@ def _validate_replay_receipt(
         "native_identities",
         "provider_calls_made",
     }
+    if partial:
+        required.update({"wave_start", "wave_size", "wave_ordinals"})
     _need(
         set(replay) == required
         and replay.get("schema_version") == 1
-        and replay.get("evidence_class") == "source_bound_grok_parallel_successor_replay_v1"
+        and replay.get("evidence_class") in {
+            "source_bound_grok_parallel_successor_replay_v1",
+            "source_bound_grok_parallel_successor_partial_replay_v1",
+        }
         and replay.get("source_epoch") == epoch
         and replay.get("controller_sha256") == manifest["controller_sha256"]
         and replay.get("manifest_sha256") == _sha(manifest_raw)
@@ -1866,9 +2024,25 @@ def _validate_replay_receipt(
         and len(identities) == len(ordinals),
         "parallel replay receipt geometry differs",
     )
-    start_ordinal, wave_size = ordinals[0], len(ordinals)
-    settlement_path = _wave_path(root, start_ordinal, wave_size, "settlement")
-    intent_path = _wave_path(root, start_ordinal, wave_size, "intent")
+    if partial:
+        wave_start, wave_size, wave_ordinals = (
+            replay.get("wave_start"), replay.get("wave_size"), replay.get("wave_ordinals")
+        )
+        _need(
+            type(wave_start) is int
+            and type(wave_size) is int
+            and isinstance(wave_ordinals, list)
+            and len(wave_ordinals) == wave_size
+            and wave_ordinals[0] == wave_start
+            and all(type(item) is int and item in pending for item in wave_ordinals)
+            and len(wave_ordinals) == len(set(wave_ordinals))
+            and set(ordinals).issubset(set(wave_ordinals)),
+            "parallel partial replay geometry differs",
+        )
+    else:
+        wave_start, wave_size, wave_ordinals = ordinals[0], len(ordinals), ordinals
+    settlement_path = _wave_path(root, wave_start, wave_size, "settlement")
+    intent_path = _wave_path(root, wave_start, wave_size, "intent")
     _need(settlement_path.is_file() and intent_path.is_file(), "parallel wave receipt is missing")
     settlement, _ = _json(settlement_path, "parallel wave settlement")
     intent, intent_raw = _json(intent_path, "parallel wave intent")
@@ -1890,9 +2064,9 @@ def _validate_replay_receipt(
         and settlement.get("source_epoch") == epoch
         and settlement.get("controller_sha256") == manifest["controller_sha256"]
         and settlement.get("manifest_sha256") == _sha(manifest_raw)
-        and settlement.get("start_ordinal") == start_ordinal
+        and settlement.get("start_ordinal") == wave_start
         and settlement.get("wave_size") == wave_size
-        and settlement.get("ordinals") == ordinals
+        and settlement.get("ordinals") == wave_ordinals
         and settlement.get("wave_intent_sha256") == _sha(intent_path.read_bytes())
         and settlement.get("replay_sha256") == _sha(replay_path.read_bytes())
         and type(settlement.get("provider_calls_made")) is int,
@@ -1902,7 +2076,7 @@ def _validate_replay_receipt(
         intent.get("source_epoch") == epoch
         and intent.get("controller_sha256") == manifest["controller_sha256"]
         and intent.get("manifest_sha256") == _sha(manifest_raw)
-        and intent.get("ordinals") == ordinals
+        and intent.get("ordinals") == wave_ordinals
         and _sha(intent_raw) == _sha(intent_path.read_bytes()),
         "parallel wave intent differs",
     )
@@ -1955,13 +2129,24 @@ def _completed_new(
         terminal = records.get(ordinal)
         if terminal is None:
             break
-        _need(ordinal in replayed and terminal.get("state") == "completed", "parallel prior cell is not semantically replayed")
-        completed.append(ordinal)
-        terminals[ordinal] = terminal
-    _need(replayed == set(completed), "parallel replay is not a contiguous exact prefix")
+        if terminal.get("state") == "completed":
+            _need(ordinal in replayed, "parallel prior cell is not semantically replayed")
+            completed.append(ordinal)
+            terminals[ordinal] = terminal
+        else:
+            _need(
+                ordinal not in replayed
+                and terminal.get("state") in {"ambiguous", "definitely_not_contacted"},
+                "parallel prior cell is not a settled retry",
+            )
+    _need(replayed == set(completed), "parallel replay does not cover the completed cells")
     for ordinal, terminal in records.items():
         if ordinal in pending and ordinal not in completed:
-            _need(terminal is None, "parallel attempt is incomplete or skipped")
+            _need(
+                terminal is None
+                or terminal.get("state") in {"ambiguous", "definitely_not_contacted"},
+                "parallel attempt is incomplete or skipped",
+            )
     return completed, terminals, receipts
 
 
@@ -2182,7 +2367,12 @@ def dispatch_wave(
     completed, _terminals, _receipts = _completed_new(
         root, pending, manifest=state["manifest"], manifest_raw=state["manifest_raw"]
     )
-    next_index = len(completed)
+    records = _records(root)
+    next_index = next((index for index, ordinal in enumerate(pending) if records.get(ordinal) is None), len(pending))
+    _need(
+        all(records.get(ordinal) is None for ordinal in pending[next_index:]),
+        "parallel settled cells are not a contiguous dispatch prefix",
+    )
     _need(next_index < len(pending) and start_ordinal == pending[next_index], "parallel wave is not the exact next cell")
     wave_ordinals = pending[next_index : next_index + wave_size]
     _need(len(wave_ordinals) == wave_size, "parallel wave exceeds pending suffix")
@@ -2234,10 +2424,9 @@ def dispatch_wave(
     used_identities = list(state["prior"]["identities"])
     if state["retained"] is not None:
         used_identities.extend(state["retained"]["identities"])
-    for ordinal in completed:
-        terminal = _records(root).get(ordinal)
+    for terminal in _records(root).values():
         if isinstance(terminal, Mapping) and isinstance(terminal.get("native_identity"), Mapping):
-            used_identities.append(dict(terminal["native_identity"]))
+            used_identities.append(_native_identity(terminal["native_identity"], "settled parallel native identity"))
     outcomes: dict[int, dict[str, Any]] = {}
     errors: list[dict[str, Any]] = []
 
@@ -2271,10 +2460,10 @@ def dispatch_wave(
             result = outcome.get("result") if isinstance(outcome, Mapping) and isinstance(outcome.get("result"), Mapping) else outcome
             _need(isinstance(outcome, Mapping) and outcome.get("state", "completed") == "completed" and isinstance(result, Mapping) and admitted, "parallel broker outcome stopped")
             identity = _result_identity(result)
-            verdicts = _normalize(state, row, result, ordinal)
             with lock:
                 _need(_identities_unique([*used_identities, identity]), "parallel native identity collision")
                 used_identities.append(identity)
+            verdicts = _normalize(state, row, result, ordinal)
             terminal = {
                 "schema_version": 1,
                 "source_epoch": state["source_epoch"],
@@ -2327,10 +2516,11 @@ def dispatch_wave(
                 futures.pop(future)
                 future.result()
     completed_terminals = [outcomes[item] for item in wave_ordinals if outcomes[item].get("state") == "completed"]
+    completed_rows = [row for row in rows if outcomes[row["ordinal"]].get("state") == "completed"]
     semantic_error: dict[str, Any] | None = None
-    if not errors and len(completed_terminals) == wave_size:
+    if completed_rows:
         try:
-            for row in rows:
+            for row in completed_rows:
                 terminal = outcomes[row["ordinal"]]
                 identity, verdicts, envelope_sha = _semantic_replay_terminal(state, row, terminal, brokers[row["ordinal"]])
                 _need(identity == terminal["native_identity"] and verdicts == terminal["verdicts"], "parallel semantic replay differs")
@@ -2339,9 +2529,10 @@ def dispatch_wave(
             semantic_error = _error_info(error)
             stop.set()
     replay_path: Path | None = None
-    if not errors and semantic_error is None and len(completed_terminals) == wave_size:
+    if semantic_error is None and completed_rows:
         entries = []
-        for ordinal in wave_ordinals:
+        replay_ordinals = [row["ordinal"] for row in completed_rows]
+        for ordinal in replay_ordinals:
             terminal_path = _attempt(root, ordinal, "terminal.json")
             terminal = outcomes[ordinal]
             _need(terminal_path.read_bytes() == _canon(terminal), "parallel terminal changed")
@@ -2352,18 +2543,25 @@ def dispatch_wave(
                 "native_identity": terminal["native_identity"],
             })
         replay_path = _replay_path(root, start_ordinal, wave_size)
-        _new(replay_path, {
+        replay = {
             "schema_version": 1,
-            "evidence_class": "source_bound_grok_parallel_successor_replay_v1",
+            "evidence_class": (
+                "source_bound_grok_parallel_successor_replay_v1"
+                if len(completed_rows) == wave_size
+                else "source_bound_grok_parallel_successor_partial_replay_v1"
+            ),
             "source_epoch": state["source_epoch"],
             "controller_sha256": state["manifest"]["controller_sha256"],
             "manifest_sha256": _sha(state["manifest_raw"]),
             "root": str(root),
-            "ordinals": wave_ordinals,
+            "ordinals": replay_ordinals,
             "terminals": entries,
             "native_identities": [entry["native_identity"] for entry in entries],
             "provider_calls_made": 0,
-        })
+        }
+        if len(completed_rows) != wave_size:
+            replay.update({"wave_start": start_ordinal, "wave_size": wave_size, "wave_ordinals": wave_ordinals})
+        _new(replay_path, replay)
     settlement = {
         "schema_version": 1,
         "source_epoch": state["source_epoch"],

@@ -420,16 +420,72 @@ def test_failure_stops_new_contact_and_preserves_completed_peer(tmp_path: Path) 
     terminals = m._records(root)
     assert terminals[expected["pending"][0]]["state"] == "completed"
     assert terminals[expected["pending"][1]]["state"] == "ambiguous"
-    assert not list((root / "replays").glob("*.json"))
+    partial = json.loads(Path(result["replay_path"]).read_bytes())
+    assert partial["evidence_class"] == "source_bound_grok_parallel_successor_partial_replay_v1"
+    assert partial["ordinals"] == expected["pending"][:1]
+    assert partial["wave_ordinals"] == expected["pending"][:2]
+    replay = m.replay_collection(continuation_root=root, expected_manifest_sha256=created["manifest_sha256"], require_complete=False)
+    assert replay["completed_ordinals"] == expected["pending"][:1]
+    next_ordinal = expected["pending"][2]
+    continued = m.dispatch_wave(continuation_root=root, expected_manifest_sha256=created["manifest_sha256"], start_ordinal=next_ordinal, wave_size=1, broker_factory=BrokerFactory())
+    assert continued["state"] == "completed_replayed"
+    assert terminals[expected["pending"][1]]["state"] == "ambiguous"
 
 
-def test_duplicate_native_identity_rejects_wave_without_replay(tmp_path: Path) -> None:
+def test_duplicate_native_identity_preserves_only_unique_completed_peer(tmp_path: Path) -> None:
     root, closure, expected = fixture(tmp_path)
     created = m.create(continuation_root=root, source_closure=closure)
     factory = BrokerFactory(behavior={expected["pending"][0]: "duplicate", expected["pending"][1]: "duplicate"})
     result = m.dispatch_wave(continuation_root=root, expected_manifest_sha256=created["manifest_sha256"], start_ordinal=expected["pending"][0], wave_size=2, broker_factory=factory)
     assert result["state"] == "stopped_no_retry"
+    terminals = m._records(root)
+    assert sorted(terminals[ordinal]["state"] for ordinal in expected["pending"][:2]) == ["ambiguous", "completed"]
+    partial = json.loads(Path(result["replay_path"]).read_bytes())
+    assert partial["evidence_class"] == "source_bound_grok_parallel_successor_partial_replay_v1"
+    assert partial["ordinals"] == result["completed_ordinals"]
+    assert len(partial["native_identities"]) == 1
+    replay = m.replay_collection(continuation_root=root, expected_manifest_sha256=created["manifest_sha256"], require_complete=False)
+    assert replay["completed_ordinals"] == result["completed_ordinals"]
+
+
+def test_ambiguous_known_identity_is_reserved_before_next_untouched_wave(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    root, closure, expected = fixture(tmp_path)
+    created = m.create(continuation_root=root, source_closure=closure)
+    first, second = expected["pending"][:2]
+    factory = BrokerFactory(behavior={first: "duplicate", second: "duplicate"})
+    normalizer = m._normalize
+    monkeypatch.setattr(m, "_normalize", lambda *_args: (_ for _ in ()).throw(ValueError("invalid verdict")))
+    failed = m.dispatch_wave(continuation_root=root, expected_manifest_sha256=created["manifest_sha256"], start_ordinal=first, wave_size=1, broker_factory=factory)
+    assert failed["state"] == "stopped_no_retry"
+    assert m._records(root)[first]["native_identity"] is not None
+    monkeypatch.setattr(m, "_normalize", normalizer)
+    duplicated = m.dispatch_wave(continuation_root=root, expected_manifest_sha256=created["manifest_sha256"], start_ordinal=second, wave_size=1, broker_factory=factory)
+    assert duplicated["state"] == "stopped_no_retry"
+    assert duplicated["completed_ordinals"] == []
+    assert m._records(root)[second]["state"] == "ambiguous"
     assert not list((root / "replays").glob("*.json"))
+
+
+def test_historical_read_still_semantically_replays_completed_prefix(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    prior_root, closure, _expected = fixture(tmp_path)
+    controller_path = Path(closure["prior_controller"]["path"]).resolve()
+    original_load = m._load_source
+
+    def expired_source(path: Path, expected_sha: str, label: str) -> Any:
+        module = original_load(path, expected_sha, label)
+        if Path(path).resolve() == controller_path:
+            verified = module.verify(
+                continuation_root=prior_root.parent / "prior",
+                expected_manifest_sha256=closure["prior_continuation"]["manifest_sha256"],
+            )
+            monkeypatch.setattr(m, "_historical_read_state", lambda *_args: verified)
+            module.verify = lambda **_kwargs: (_ for _ in ()).throw(ValueError("renewed standing source is not available and bound"))
+            module._semantic_replay_terminal = lambda **_kwargs: (_ for _ in ()).throw(ValueError("damaged native envelope"))
+        return module
+
+    monkeypatch.setattr(m, "_load_source", expired_source)
+    with pytest.raises(ValueError, match="damaged native envelope"):
+        m._prior_state(closure, semantic=True)
 
 
 def test_source_drift_before_contact_is_fail_closed(tmp_path: Path) -> None:
