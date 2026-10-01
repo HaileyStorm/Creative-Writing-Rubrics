@@ -1,0 +1,69 @@
+{
+  "schema_version": "cwr-dryad-selected82-development-aggregate-v1",
+  "evidence_class": "private-source-derived-redaction-audited-public-aggregate-not-release",
+  "publication_audit": {
+    "completed_on": "2026-10-01",
+    "source_report_hashes_verified": true,
+    "story_or_individual_rating_bytes_published": false,
+    "scope": "aggregate package only; no full-study admission or product release"
+  },
+  "source_reports_sha256": {
+    "grok_train": "059bf0959d6abfc74106fd07f9caaaf13ba9303ba8fdedd6f2e564c3c246945d",
+    "grok_dev": "b36b62a4438a80631b482e92c466d223a408078e60c0aeb86a978a7f97a37821",
+    "sol_validation": "f7ad92f19153ac241da8b1d6c9bdea680281c2e80c059b628623cbb33a8cdb29"
+  },
+  "study": {
+    "original_collected_stories": 100,
+    "train_stories": 70,
+    "dev_stories": 12,
+    "owner_excluded_low_coverage_dev_stories": 18,
+    "original_full_study_admitted": false,
+    "provider_calls_in_analysis": 0,
+    "sol_refitted": false,
+    "human_reference_population": "Dryad regular-reader panel, not publishing experts"
+  },
+  "comparison": {
+    "co_primary_targets": ["novelty", "usefulness"],
+    "grok": {
+      "baseline_spearman": {"novelty": 0.5244755244755245, "usefulness": 0.42657342657342656},
+      "candidate_spearman": {"novelty": 0.6223776223776224, "usefulness": 0.5524475524475524},
+      "co_primary_delta": {"novelty": 0.09790209790209792, "usefulness": 0.12587412587412583},
+      "bootstrap_2_5_percentile_mean_gain": 0.0,
+      "gain_gate_passed": false,
+      "candidate_retained": false
+    },
+    "sol": {
+      "baseline_spearman": {"novelty": 0.44755244755244755, "usefulness": 0.36363636363636365},
+      "candidate_spearman": {"novelty": 0.5664335664335665, "usefulness": 0.5804195804195804},
+      "co_primary_delta": {"novelty": 0.11888111888111891, "usefulness": 0.21678321678321677},
+      "bootstrap_2_5_percentile_mean_gain": 0.0,
+      "gain_gate_passed": false,
+      "candidate_retained": false
+    },
+    "paired_bootstrap_replicates": 2000,
+    "required_gain_lower_bound": "strictly greater than zero"
+  },
+  "descriptive_score_ranges": {
+    "extreme_thresholds": {"low_at_or_below": 10, "high_at_or_above": 90},
+    "baseline": {
+      "grok": {"min": 3.1122, "median": 28.647, "max": 82.3146, "low_count": 1, "high_count": 0},
+      "sol": {"min": 23.7457, "median": 51.6208, "max": 90.1097, "low_count": 0, "high_count": 1},
+      "mean_absolute_endpoint_gap": 20.384675,
+      "max_absolute_endpoint_gap": 30.6964
+    },
+    "candidate": {
+      "grok": {"min": 7.6767, "median": 35.4631, "max": 88.4758, "low_count": 1, "high_count": 0},
+      "sol": {"min": 32.2302, "median": 58.5234, "max": 93.9609, "low_count": 0, "high_count": 1},
+      "mean_absolute_endpoint_gap": 22.150216666666665,
+      "max_absolute_endpoint_gap": 26.7494
+    }
+  },
+  "claims_not_established": [
+    "full_100_story_admission",
+    "independent_confirmation",
+    "expert_alignment",
+    "within_endpoint_repeatability",
+    "candidate_retention_or_runtime_promotion",
+    "release"
+  ]
+}

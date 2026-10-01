@@ -492,3 +492,53 @@ Recovery-aware Grok TRAIN/DEV analysis and the original-sequence Sol comparison
 are [implemented and locally tested](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/72b18f0afdfc515a5b492c9afcb314bcd0af20b6/evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/README.md).
 They do not establish a complete Dryad baseline, fitted improvement, Sol
 validation, alignment, selection, promotion, or release claim.
+
+A later [selected-82 development aggregate](../evaluation-results/hbq-human-alignment-dryad-selected82-development-v1/)
+summarizes a private continuation that completed provider-free frozen
+70-TRAIN/12-DEV analysis and unchanged-fit Sol validation, retaining the
+original 100-story collection and exactly 18 owner-excluded low-coverage DEV
+stories. On the 12 selected DEV stories, the Grok novelty/usefulness Spearman
+values moved from `0.5245`/`0.4266` at baseline to `0.6224`/`0.5524` for the
+fitted candidate; Sol moved from `0.4476`/`0.3636` to `0.5664`/`0.5804`.
+However, each prespecified 2,000-replicate paired-bootstrap lower bound for
+mean co-primary gain was exactly `0`, below the strict-positive requirement.
+Neither endpoint retained the candidate. This is a filtered, private
+development analysis, not full-100 admission, independent confirmation,
+canonical weight promotion, or a release result. The local aggregate reports
+are SHA-256 `b36b62a4438a80631b482e92c466d223a408078e60c0aeb86a978a7f97a37821`
+(Grok DEV) and `f7ad92f19153ac241da8b1d6c9bdea680281c2e80c059b628623cbb33a8cdb29`
+(Sol validation).
+On those same 12 identities, descriptive score-range checks found one Grok
+score at or below `10` and none at or above `90` for either profile; Sol had
+none at or below `10` and one at or above `90` for either profile. Mean absolute
+Grok–Sol score difference moved from `20.38` at baseline to `22.15` for the
+candidate (maximum `30.70` to `26.75`). These are endpoint-comparison and
+extreme-score counts, not repeated-judgment reliability or evidence that the
+candidate generalizes. The public aggregate package was redaction-audited
+on 2026-10-01 against its three pinned private source-report hashes; no
+underlying story or individual reader ratings were added to this repo.
+One historical-runtime integration test remains red:
+`test_public_fit_binds_real_source_verified_runtime_before_inputs` expects
+`schema/hbq_judge_response.schema.json` SHA-256
+`49c7d824ba5dd957e67968ba3ae6ceb8a7ed9434dfb0dfc654836a76613c7854`
+from the frozen `protocol-v2.json`, while the unchanged tracked current file
+is `8896aabcd8f8a503f171d95d70117535da22ceff90400ff8698ee8b3f607edd8`.
+The selected-82 aggregate is not exact-current-revision runtime acceptance;
+the old pin and present schema must not be silently rewritten to make it green.
+
+## TTCW creative-writing expert comparison — baseline retained
+
+The [aggregate-only development result](../evaluation-results/hbq-human-alignment-ttcw-expert-v1/)
+uses the exact author-released TTCW annotations for 36 AI stories in twelve
+matched plot groups. Unlike Dryad's regular readers, these are
+creative-writing expert judgments. The baseline story-level expert-target
+Spearman was `0.7479` on Grok and `0.6956` on Sol; frozen trial-15 weights
+lowered them to `0.6904` and `0.6236`. Within-plot concordance was `0.8333`
+for both profiles on both endpoints. Both paired-bootstrap gain bounds were
+negative. The candidate failed its prespecified two-endpoint gate and is not
+retained. The source-admitted private comparison, independent saved-session
+replay, and pretarget prediction evidence remain outside this repository by
+exact hashes in the linked package. No individual ratings or story text are
+published here. Its private comparison and label-admission report hashes were
+verified on 2026-10-01; the redaction-audited aggregate is public, but no
+runtime change, rubric promotion, or product release follows from it.

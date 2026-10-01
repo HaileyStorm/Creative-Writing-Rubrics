@@ -91,8 +91,9 @@ The live release-facing work is narrower than the historical experiment log:
   adopted local recoveries for 70 and 254. Request 266's separate first contact
   passed replay. Request 279's retained native response passed offline recovery
   after a historical schema-path mismatch, with zero new provider calls.
-  Original failed terminals remain preserved. Exactly 2,021 requests remain;
-  no automatic resend or full-study admission is implied.
+  Original failed terminals remain preserved. At that checkpoint, exactly
+  2,021 requests remained; no automatic resend or full-study admission was
+  implied.
   The [detailed collection history](evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/README.md)
   preserves original failures, authorized replacements, earlier snapshots and
   sequencing amendments. In particular, request 221's transport recovery still
@@ -100,6 +101,36 @@ The live release-facing work is narrower than the historical experiment log:
   unknown, and early Sol requests remain ineligible under the original sequence.
   Allowance assumptions are explicit. Alignment, selection, promotion and
   release claims remain unestablished.
+  A subsequent private, provider-free selected-82 analysis completed the
+  70-TRAIN/12-DEV comparison after the owner-designated exclusion of 18
+  low-coverage DEV stories; it does not make the original 100-story study
+  admissible. Both endpoint comparisons had positive point-estimate gains for
+  novelty and usefulness, but the frozen paired-bootstrap gain gate failed on
+  both, so the fitted candidate was not retained or promoted. The full
+  [aggregate-only development package](evaluation-results/hbq-human-alignment-dryad-selected82-development-v1/)
+  was redaction-audited against its private source-report hashes for public
+  aggregate reporting; this is not product release or full-study admission.
+
+- The [TTCW expert-alignment aggregate](evaluation-results/hbq-human-alignment-ttcw-expert-v1/)
+  tests 36 AI stories against three expert judgments on each of 14 creativity
+  tests. The all-one HBQ-RS baseline had story-level Spearman `0.7479` on Grok
+  and `0.6956` on Sol; the pretarget-frozen trial-15 weights reduced both to
+  `0.6904` and `0.6236`, with no within-plot gain. The candidate failed the
+  frozen improvement gate and is not promoted. Five Grok responses were
+  recovered from saved native sessions without broker envelopes, and the
+  author file's eleven assessor index codes are not reconciled with the
+  paper's ten participants. The private targets remain private; only the
+  redaction-audited aggregate is public, and this is not a general
+  literary-validity claim.
+
+- The [dated empirical census and alignment scorecard](docs/RESEARCH_SYNTHESIS.md#empirical-evidence-census-2026-10-01)
+  separates expert, trained-annotator, and reader judgments from prose
+  samples and repeated model verdicts. It reports 94 usable LAMP triplets
+  among 108 frozen source triplets and a conservative 51,968 exact-current-leaf
+  verdict occurrences in three independently keyed native cohorts; neither
+  is a general alignment or release claim. Older versioned verdicts remain
+  preserved for potential exact-leaf reuse.
+
 - [CWR-guided revision gain](evaluation-results/cwr-guided-revision-gain-v6-heldout-result-v1/)
   now includes a four-item held-back comparison. Guided-minus-generic means
   were Sol `+1.00` holistic / `+0.75` compact and Grok `+0.75` / `0.00`.

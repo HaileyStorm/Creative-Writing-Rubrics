@@ -1,0 +1,106 @@
+{
+  "schema_version": "cwr-ttcw-expert-aggregate-v1",
+  "evidence_class": "private_source_derived_redaction_audited_public_aggregate_not_release",
+  "publication_status": "public_aggregate_only",
+  "publication_audit": {
+    "completed_on": "2026-10-01",
+    "source_report_hashes_verified": true,
+    "individual_targets_or_story_bytes_published": false,
+    "scope": "aggregate package only; no rubric promotion or product release"
+  },
+  "source": {
+    "author_repository_revision": "salesforce/creativity_eval@3d029879df6878f611363db88cc02d465699bc51",
+    "author_annotation_git_blob_sha1": "502de8d779d7fb38b8df569e64c2a6d0d4ae6e51",
+    "author_annotation_sha256": "f10b711378b80972ef80427d938aebea66b55e9d024d41815ec81ad67058d284",
+    "frozen_plan_sha256": "31e7a0fc06a52808ff0e0f3d20642c1ad65274603ebdaf6f0f43a474ff407180",
+    "comparison_freeze_sha256": "f90f1090846ef3ec11ed10f01960af3efb342e66556a0cbb8d1514eca70bf5b7",
+    "within_plot_amendment_sha256": "83f7b784fe132f23f87400bc5d1eb5338b8e158c2fc609fbe0e785343ba61158",
+    "grok_composite_replay_sha256": "43e4ad5e4fbfc98005bac134e10d6c53dce58557b82e36631b3fbde3ad1ed791",
+    "sol_native_replay_sha256": "5be7f0922aeb8aa21f342ef0f755d748800867df66c0d1b9b2681ae54f2c2bc7",
+    "independent_local_session_replay_sha256": "ca4a6c0b0e0df857d977579dfb1ad7c2601b594a2b6c80c421fad35c4a65b190",
+    "pretarget_predictions_sha256": "76553dadab79583751c584dc79ac32d16a15d61d6861ed31d05797f50bf76b4a",
+    "private_label_admission_sha256": "b6b533eb4305a5134ad98f94a33df18c4c83f2cf0880337c7e0063bd1e15703e",
+    "private_expert_comparison_sha256": "ba807ec1204135c80e8a9a9f4452295ccba9a6ec421a0e5ae2a387f75fc6399a"
+  },
+  "cohort": {
+    "ai_stories": 36,
+    "plot_groups": 12,
+    "tests_per_story": 14,
+    "independent_assessors_per_story": 3,
+    "selected_binary_judgments": 1512,
+    "distinct_expert_idx_codes_in_full_author_file": 11,
+    "author_paper_reported_participants": 10,
+    "index_person_mapping_resolved": false,
+    "unanimous_test_story_cells": 280,
+    "split_test_story_cells": 224,
+    "pairwise_agreement_fraction": 0.7037037037037037
+  },
+  "native_collection": {
+    "logical_requests_each_endpoint": 828,
+    "ordered_verdicts_each_endpoint": 6408,
+    "distinct_accepted_native_session_and_request_hashes_each_endpoint": 828,
+    "grok_original_broker_envelopes": 821,
+    "grok_second_attempt_broker_envelopes": 2,
+    "grok_saved_native_session_recoveries_without_broker_envelopes": 5,
+    "provider_contact_cardinality_proven": false,
+    "provider_calls_made_by_replay_and_analysis": 0,
+    "expert_targets_opened_only_after_pretarget_gate": true
+  },
+  "frozen_comparison": {
+    "baseline": "all-one observed HBQ-RS score",
+    "candidate": "pretarget-frozen Dryad trial-15 domain multipliers",
+    "primary_target": "expert YES fraction across fourteen tests and three assessors per story",
+    "primary_metric": "story-level Spearman rank correlation across 36 AI stories, endpoints separate",
+    "bootstrap": "2000 paired twelve-plot-group resamples; strict-positive 2.5-percentile gain lower bound required",
+    "grok": {
+      "baseline_rho": 0.7479059767517736,
+      "candidate_rho": 0.6903945861256889,
+      "candidate_minus_baseline_rho": -0.05751139062608468,
+      "pooled_gain_lower_bound": -0.13793874290998398,
+      "baseline_within_plot_concordance": 0.8333333333333334,
+      "candidate_within_plot_concordance": 0.8333333333333334,
+      "within_plot_gain_lower_bound": -0.1111111111111111,
+      "baseline_minimum_coverage": 0.9797,
+      "candidate_minimum_coverage": 0.9794,
+      "endpoint_gate_passed": false
+    },
+    "sol": {
+      "baseline_rho": 0.6955525583791494,
+      "candidate_rho": 0.6235988454433754,
+      "candidate_minus_baseline_rho": -0.07195371293577402,
+      "pooled_gain_lower_bound": -0.13482621542388468,
+      "baseline_within_plot_concordance": 0.8333333333333334,
+      "candidate_within_plot_concordance": 0.8333333333333334,
+      "within_plot_gain_lower_bound": 0.0,
+      "baseline_minimum_coverage": 0.9885,
+      "candidate_minimum_coverage": 0.9901,
+      "endpoint_gate_passed": false
+    },
+    "within_plot_informative_pairs": 36,
+    "overall_candidate_gain_gate_passed": false,
+    "candidate_retained": false
+  },
+  "descriptive": {
+    "baseline_mean_absolute_grok_sol_score_gap": 8.94683888888889,
+    "candidate_mean_absolute_grok_sol_score_gap": 8.478972222222222,
+    "baseline_max_absolute_grok_sol_score_gap": 20.903000000000006,
+    "candidate_max_absolute_grok_sol_score_gap": 19.3705,
+    "score_at_or_below_10_count_each_endpoint_profile": 0,
+    "score_at_or_above_90_count_each_endpoint_profile": 0,
+    "post_target_exploratory_blends_tested": 11,
+    "post_target_blends_improving_both_endpoints": 0,
+    "post_target_blends_confirmatory": false,
+    "post_target_word_count_rho": -0.4760437989077506
+  },
+  "claims_not_established": [
+    "candidate_expert_alignment_improvement",
+    "canonical_weight_promotion",
+    "provider_contact_cardinality",
+    "general_literary_validity",
+    "independent_confirmation_of_post_target_exploration",
+    "release"
+  ],
+  "raw_story_text_or_individual_expert_targets_in_this_package": false,
+  "promotion_authority": false,
+  "release_authority": false
+}
