@@ -1411,6 +1411,7 @@ def test_codex_backend_uses_schema_and_read_only_ephemeral_exec(tmp_path: Path, 
         environment = kwargs["env"]
         assert isinstance(environment, dict)
         assert environment["NO_COLOR"] == "1"
+        assert kwargs["creationflags"] == getattr(subprocess, "CREATE_NO_WINDOW", 0)
         assert all("API_KEY" not in key.upper() for key in environment)
         assert argv[argv.index("--sandbox") + 1] == "read-only"
         assert argv[argv.index("--model") + 1] == "gpt-5.6-sol"
@@ -1604,6 +1605,7 @@ def test_codex_capture_preserves_raw_events_and_tool_free_json_argv(
         assert 'approval_policy="never"' in argv
         assert argv[argv.index("--sandbox") + 1] == "read-only"
         assert kwargs["input"] == b"judge this"
+        assert kwargs["creationflags"] == getattr(subprocess, "CREATE_NO_WINDOW", 0)
         assert "text" not in kwargs
         message_path = Path(argv[argv.index("--output-last-message") + 1])
         message_path.parent.mkdir(parents=True, exist_ok=True)

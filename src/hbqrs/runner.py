@@ -646,6 +646,7 @@ def _call_codex(
                 timeout=timeout,
                 check=False,
                 env=environment,
+                creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0),
             )
         else:
             completed = subprocess.run(
@@ -657,6 +658,7 @@ def _call_codex(
                 timeout=timeout,
                 check=False,
                 env=_codex_environment(),
+                creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0),
             )
     except (OSError, subprocess.TimeoutExpired) as exc:
         if capture_jsonl_events:
