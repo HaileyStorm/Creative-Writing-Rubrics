@@ -37,6 +37,7 @@ from .core import (
 )
 from .paths import prompts_dir, schema_dir
 from .weights import materialize_weight_profile
+from . import codex_receipts
 
 
 MAX_RESPONSE_BYTES = 16 * 1024 * 1024
@@ -514,7 +515,16 @@ def _call_codex(
     attempt_number: int = 1,
     before_provider_attempt: Callable[[], None] | None = None,
     capture_jsonl_events: bool = False,
+    codex_receipt_policy: str | None = None,
 ) -> tuple[str, dict[str, Any]]:
+    if codex_receipt_policy not in {None, codex_receipts.POLICY}:
+        raise HBQError("Unknown Codex receipt policy")
+    native_receipt = codex_receipt_policy == codex_receipts.POLICY
+    if native_receipt:
+        if not os.environ.get("CODEX_HOME"):
+            raise HBQError("Native Codex receipt policy requires an explicit CODEX_HOME")
+        receipt_home = Path(os.environ["CODEX_HOME"]).resolve()
+        capture_jsonl_events = True
     message_path = output_dir / "responses" / f"batch-{batch_number:04d}.attempt-{attempt_number:04d}.message.json"
     if message_path.exists():
         raise HBQError(f"Codex attempt output path already exists: {message_path.name}")
@@ -590,6 +600,8 @@ def _call_codex(
         str(output_dir),
         "-",
     ]
+    if native_receipt:
+        arguments.remove("--ephemeral")
     if capture_jsonl_events:
         arguments.insert(1, "--json")
         try:
@@ -634,6 +646,7 @@ def _call_codex(
         release_event_reservation()
         raise
     launch_started = False
+    started_at = datetime.now(timezone.utc)
     try:
         if capture_jsonl_events:
             prompt_bytes = prompt.encode("utf-8")
@@ -670,7 +683,7 @@ def _call_codex(
         )
         raise _ProviderAttemptFailure(
             f"Codex CLI failed to run: {exc}",
-            retryable=isinstance(exc, subprocess.TimeoutExpired),
+            retryable=isinstance(exc, subprocess.TimeoutExpired) and not native_receipt,
             provider_record=failure_record,
         ) from exc
     except BaseException:
@@ -725,7 +738,7 @@ def _call_codex(
             failure_record["provider_artifacts"] = {"codex_events": events_artifact}
         raise _ProviderAttemptFailure(
             f"Codex CLI exited {completed.returncode}: {detail}",
-            retryable=not permanent,
+            retryable=not permanent and not native_receipt,
             content=content,
             provider_record=failure_record,
         )
@@ -737,9 +750,36 @@ def _call_codex(
         )
         raise _ProviderAttemptFailure(
             "Codex CLI completed without writing its final response",
-            retryable=True,
+            retryable=not native_receipt,
             provider_record=failure_record,
         )
+    if native_receipt:
+        try:
+            receipt, artifacts = codex_receipts.capture(
+                output_dir, f"batch-{batch_number:04d}.attempt-{attempt_number:04d}",
+                events_path=events_path, message_path=message_path, prompt=prompt,
+                model=model, reasoning=reasoning, codex_home=receipt_home,
+                started_at=started_at,
+            )
+        except (OSError, ValueError, KeyError, TypeError) as exc:
+            retained_artifacts = {"codex_events": events_artifact}
+            for name, path in (
+                ("codex_message", message_path),
+                ("codex_rollout", message_path.with_name(f"batch-{batch_number:04d}.attempt-{attempt_number:04d}.rollout.jsonl")),
+            ):
+                if path.is_file():
+                    retained_artifacts[name] = _provider_artifact(output_dir, path)
+            raise _ProviderAttemptFailure(
+                f"Codex native execution receipt was not admitted: {exc}", retryable=False,
+                content=message_path.read_text(encoding="utf-8"),
+                provider_record={"receipt_policy": codex_receipt_policy,
+                                 "provider_artifacts": retained_artifacts},
+            ) from exc
+        return message_path.read_text(encoding="utf-8"), {
+            "command": [executable, *arguments[:-1], "<prompt-via-stdin>"],
+            "receipt_policy": codex_receipt_policy, "reported": receipt["reported"],
+            "provider_artifacts": artifacts,
+        }
     reported = _codex_reported_settings(stderr)
     expected = {"model": model, "provider": "openai", "reasoning_effort": reasoning}
     mismatches = {
@@ -3179,6 +3219,9 @@ def _load_checkpoints(
     batch_attempts: int,
     normalization_policy: str | None = EVIDENCE_NORMALIZATION_POLICY,
     allow_legacy_rejection_records: bool = False,
+    codex_receipt_policy: str | None = None,
+    codex_model: str | None = None,
+    codex_reasoning: str | None = None,
 ) -> tuple[list[dict[str, Any]], int, str | None]:
     _validate_recorded_batch_schemas(output_dir)
     _validate_rejected_attempt_store(output_dir)
@@ -3346,6 +3389,15 @@ def _load_checkpoints(
                     or record.get("effective_prompt_sha256") != _sha256_bytes(effective_prompt.encode("utf-8"))
                 ):
                     raise HBQError(f"Response checkpoint {path.name} effective prompt is not bound")
+                if codex_receipt_policy is not None:
+                    try:
+                        codex_receipts.verify(
+                            output_dir, record.get("provider", {}), prompt=effective_prompt,
+                            model=str(codex_model), reasoning=str(codex_reasoning),
+                            final_raw=artifact_bytes,
+                        )
+                    except (OSError, ValueError, KeyError, TypeError) as exc:
+                        raise HBQError(f"Response checkpoint {path.name} native receipt cannot be replayed: {exc}") from exc
                 audit: list[dict[str, Any]] = []
                 try:
                     replayed = _normalize_batch(
@@ -3467,6 +3519,7 @@ def run_judge(
     grok_transport: Callable[[Mapping[str, Any]], tuple[str, dict[str, Any]]] | None = None,
     grok_transport_sha256: str | None = None,
     response_schema_mode: str | None = None,
+    codex_receipt_policy: str | None = None,
 ) -> dict[str, Any]:
     """Judge one artifact against one bundle, checkpointing every batch.
 
@@ -3480,10 +3533,26 @@ def run_judge(
     reasoning_attested boolean. tool_free must be True, and reasoning_attested
     must be True unless explicitly waived; the caller verifies that evidence.
     Optional provider_artifacts bind local evidence files for checkpoint replay.
+    codex_native_rollout_v1 instead admits one JSON-captured Codex turn from its
+    exact own persisted rollout under an explicit CODEX_HOME. It pins this
+    collector and receipt reader, preserves private evidence, and never resends
+    missing or conflicting receipts. These receipts attest native execution
+    settings; backend model identity and physical contacts remain unproven.
     """
 
     if provider not in {"openai", "codex", "grok", "nous"}:
         raise HBQError("provider must be 'openai', 'codex', 'grok', or 'nous'")
+    codex_binding = None
+    if codex_receipt_policy is not None:
+        if (codex_receipt_policy != codex_receipts.POLICY or provider != "codex"
+                or batch_attempts != 1 or attempt_lifecycle_policy != ATTEMPT_LIFECYCLE_POLICY
+                or response_schema_mode != "batch_question_ids_v1"):
+            raise HBQError("Native Codex receipt policy requires codex, one attempt, terminal_sidecar_v1 and batch_question_ids_v1")
+        if not os.environ.get("CODEX_HOME"):
+            raise HBQError("Native Codex receipt policy requires an explicit CODEX_HOME")
+        codex_binding = {**codex_receipts.binding(), "policy_sha256": _sha256_bytes(Path(__file__).read_bytes()),
+                         "codex_home_sha256": _sha256_bytes(
+            str(Path(os.environ["CODEX_HOME"]).resolve()).encode("utf-8"))}
     if response_schema_mode not in {None, "batch_question_ids_v1"}:
         raise HBQError("Unknown response_schema_mode")
     if not model.strip():
@@ -3685,6 +3754,8 @@ def run_judge(
     }
     if grok_transport_binding is not None:
         disclosure_inputs["grok_transport"] = dict(grok_transport_binding)
+    if codex_binding is not None:
+        disclosure_inputs["codex_receipt"] = dict(codex_binding)
     if response_schema_mode is not None:
         disclosure_inputs["response_schema_mode"] = response_schema_mode
         disclosure_inputs["batch_response_schemas"] = deepcopy(batch_schema_records)
@@ -3739,6 +3810,8 @@ def run_judge(
         configuration["nous_model_policy"] = {"requested_model": model, **NOUS_MODEL_POLICIES[model]}
     if attempt_lifecycle_policy is not None:
         configuration["attempt_lifecycle_policy"] = attempt_lifecycle_policy
+    if codex_binding is not None:
+        configuration["codex_receipt"] = dict(codex_binding)
     config_sha256 = _sha256_bytes(_json_bytes(configuration))
     legacy_prompt_configuration = {
         key: value for key, value in configuration.items()
@@ -3852,6 +3925,8 @@ def run_judge(
         batch_attempts=batch_attempts,
         normalization_policy=active_normalization_policy,
         allow_legacy_rejection_records=legacy_rejection_compat,
+        **({"codex_receipt_policy": codex_receipt_policy, "codex_model": model,
+            "codex_reasoning": reasoning} if codex_receipt_policy is not None else {}),
     )
     if attempt_lifecycle_policy == ATTEMPT_LIFECYCLE_POLICY:
         _validate_or_reconstruct_attempt_lifecycle(
@@ -4078,6 +4153,7 @@ def run_judge(
                         batch_number=batch_number,
                         timeout=timeout,
                         attempt_number=codex_message_attempt,
+                        **({"codex_receipt_policy": codex_receipt_policy} if codex_receipt_policy is not None else {}),
                     )
                 elif provider == "grok" and grok_transport is not None:
                     try:

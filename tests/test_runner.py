@@ -1560,9 +1560,134 @@ def test_codex_default_does_not_capture_raw_events(tmp_path: Path, monkeypatch: 
     )
 
     assert "--json" not in observed["argv"]
+    assert "--ephemeral" in observed["argv"]
     assert observed["input"] == "judge this"
     assert observed["text"] is True
     assert not list((tmp_path / "responses").glob("*.events.jsonl"))
+
+
+def _native_codex_process(monkeypatch: pytest.MonkeyPatch, home: Path, *, mismatch: bool = False) -> list[list[str]]:
+    from datetime import datetime, timezone
+    from test_codex_receipts import THREAD, native_fixture, raw
+
+    monkeypatch.setenv("CODEX_HOME", str(home))
+    calls: list[list[str]] = []
+
+    def completed(argv: list[str], **kwargs: object) -> subprocess.CompletedProcess[bytes]:
+        calls.append(argv)
+        assert "--json" in argv and "--ephemeral" not in argv
+        assert kwargs["env"]["CODEX_HOME"] == str(home)
+        assert kwargs["creationflags"] == getattr(subprocess, "CREATE_NO_WINDOW", 0)
+        prompt = kwargs["input"].decode("utf-8")
+        content = json.dumps({"verdicts": [{
+            "question_id": item["question_id"], "verdict": "YES", "confidence": 0.8,
+            "evidence": [{"kind": "exact_quote", "reference": "line:1", "exact_quote": "A short test scene.", "summary": None}],
+            "note": "The operation is assessable.",
+        } for item in _questions_from_prompt(prompt)]})
+        cwd = Path(argv[argv.index("--cd") + 1])
+        rollout, events, final = native_fixture(cwd, prompt=prompt, final=content)
+        if mismatch:
+            rollout[5]["payload"]["effort"] = "low"
+        folder = home / "sessions" / datetime.now(timezone.utc).strftime("%Y/%m/%d")
+        folder.mkdir(parents=True, exist_ok=True)
+        (folder / f"rollout-synthetic-{THREAD}.jsonl").write_bytes(raw(rollout))
+        Path(argv[argv.index("--output-last-message") + 1]).write_bytes(final)
+        return subprocess.CompletedProcess(argv, 0, stdout=raw(events), stderr=b"")
+
+    monkeypatch.setattr(runner_module.subprocess, "run", completed)
+    return calls
+
+
+def _native_run(tmp_path: Path, **overrides: object) -> dict[str, object]:
+    options = {"provider": "codex", "model": "gpt-6.1-sol", "reasoning": "high", "allow_remote": True,
+               "codex_bin": "codex-fixture", "batch_attempts": 1,
+               "attempt_lifecycle_policy": runner_module.ATTEMPT_LIFECYCLE_POLICY,
+               "response_schema_mode": "batch_question_ids_v1",
+               "codex_receipt_policy": runner_module.codex_receipts.POLICY}
+    options.update(overrides)
+    return _run(tmp_path, **options)
+
+
+def test_native_codex_receipt_admission_and_resume_bind_settings_without_home_logs(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    home = tmp_path / "native-home"
+    calls = _native_codex_process(monkeypatch, home)
+    assert _native_run(tmp_path)["verdicts"] == 1
+    manifest = json.loads((tmp_path / "run" / "run.json").read_text(encoding="utf-8"))
+    binding = manifest["configuration"]["codex_receipt"]
+    assert binding == {**runner_module.codex_receipts.binding(),
+        "policy_sha256": hashlib.sha256(Path(runner_module.__file__).read_bytes()).hexdigest(),
+        "codex_home_sha256": hashlib.sha256(str(home.resolve()).encode()).hexdigest()}
+    checkpoint = json.loads((tmp_path / "run" / "responses" / "batch-0001.json").read_text(encoding="utf-8"))
+    assert checkpoint["provider"]["reported"]["reasoning_effort"] == "high"
+    for path in home.rglob("*.jsonl"):
+        path.unlink()
+    assert _native_run(tmp_path, resume=True)["verdicts"] == 1
+    assert len(calls) == 1
+    monkeypatch.setenv("CODEX_HOME", str(tmp_path / "different-home"))
+    with pytest.raises(HBQError, match="provider settings changed"):
+        _native_run(tmp_path, resume=True)
+    monkeypatch.setenv("CODEX_HOME", str(home))
+    monkeypatch.setattr(runner_module.codex_receipts, "binding", lambda: {"policy": runner_module.codex_receipts.POLICY, "reader_sha256": "0" * 64})
+    with pytest.raises(HBQError, match="provider settings changed"):
+        _native_run(tmp_path, resume=True)
+    assert len(calls) == 1
+
+
+def test_native_codex_receipt_failure_is_unadmitted_and_never_resent(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    calls = _native_codex_process(monkeypatch, tmp_path / "native-home", mismatch=True)
+    with pytest.raises(HBQError, match="not retryable"):
+        _native_run(tmp_path)
+    assert list((tmp_path / "run" / "responses").glob("*.rollout.jsonl"))
+    rejected = json.loads((tmp_path / "run" / "responses" / "rejected" / "batch-0001" / "attempt-0001.json").read_text(encoding="utf-8"))
+    assert set(rejected["provider"]["provider_artifacts"]) == {"codex_events", "codex_message", "codex_rollout"}
+    assert not (tmp_path / "run" / "responses" / "batch-0001.json").exists()
+    with pytest.raises(HBQError, match="terminal nonretryable"):
+        _native_run(tmp_path, resume=True)
+    assert len(calls) == 1
+
+
+@pytest.mark.parametrize("overrides", [{"provider": "openai"}, {"batch_attempts": 2},
+    {"attempt_lifecycle_policy": None}, {"response_schema_mode": None}, {"codex_receipt_policy": "unknown"}])
+def test_native_codex_policy_requires_single_attempt_terminal_and_schema_contract(tmp_path: Path, overrides: dict, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("CODEX_HOME", str(tmp_path / "home"))
+    monkeypatch.setattr(runner_module.subprocess, "run", lambda *_args, **_kwargs: pytest.fail("invalid policy launched Codex"))
+    with pytest.raises(HBQError, match="Native Codex receipt policy requires"):
+        _native_run(tmp_path, **overrides)
+    assert not (tmp_path / "run").exists()
+
+
+def test_historical_json_capture_still_rejects_missing_settings_header(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    schema = tmp_path / "schema.json"
+    schema.write_text("{}", encoding="utf-8")
+
+    def completed(argv: list[str], **_kwargs: object) -> subprocess.CompletedProcess[bytes]:
+        assert "--ephemeral" in argv
+        Path(argv[argv.index("--output-last-message") + 1]).write_text("{}", encoding="utf-8")
+        return subprocess.CompletedProcess(argv, 0, stdout=b'{"type":"turn.completed"}\n', stderr=b"")
+
+    monkeypatch.setattr(runner_module.subprocess, "run", completed)
+    with pytest.raises(runner_module._ProviderAttemptFailure, match="effective settings") as failure:
+        _call_codex(executable="codex-fixture", model="gpt-6.1-sol", reasoning="high", prompt="judge this",
+                    output_dir=tmp_path, response_schema=schema, batch_number=1, timeout=10, capture_jsonl_events=True)
+    assert failure.value.retryable is False
+
+
+def test_native_codex_timeout_preserves_events_and_is_not_retryable(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("CODEX_HOME", str(tmp_path / "home"))
+    schema = tmp_path / "schema.json"
+    schema.write_text("{}", encoding="utf-8")
+    partial = b'{"type":"thread.started","thread_id":"01a10869-52f9-7c23-bc33-ffdffe60b927"}\n'
+
+    def timed_out(argv: list[str], **_kwargs: object) -> subprocess.CompletedProcess[bytes]:
+        raise subprocess.TimeoutExpired(argv, 10, output=partial)
+
+    monkeypatch.setattr(runner_module.subprocess, "run", timed_out)
+    with pytest.raises(runner_module._ProviderAttemptFailure) as failure:
+        _call_codex(executable="codex-fixture", model="gpt-6.1-sol", reasoning="high", prompt="judge this",
+                    output_dir=tmp_path, response_schema=schema, batch_number=1, timeout=10,
+                    codex_receipt_policy=runner_module.codex_receipts.POLICY)
+    assert failure.value.retryable is False
+    assert (tmp_path / "responses" / "batch-0001.attempt-0001.events.jsonl").read_bytes() == partial
 
 
 def test_codex_capture_preserves_raw_events_and_tool_free_json_argv(
