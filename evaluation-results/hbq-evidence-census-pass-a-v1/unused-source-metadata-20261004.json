@@ -1,0 +1,91 @@
+{
+  "schema_version": 1,
+  "evidence_class": "public_repository_tree_metadata_only",
+  "observed_date": "2026-10-04",
+  "timezone": "America/Denver",
+  "scope": "Unused MFA source discovery; preferences, rationales and excerpt bodies not fetched or opened",
+  "repositories": [
+    {
+      "repository": "tuhinjubcse/Author-Style-Personalization",
+      "revision": "d7e4925307ebe354a376ca7f38d8bd014775b6f2",
+      "tree_truncated": false,
+      "data_blob_count": 10,
+      "readme_url": "https://github.com/tuhinjubcse/Author-Style-Personalization",
+      "expert_blobs": [
+        [
+          "data/quality_fewshot_expert_anon.json",
+          "f529644fd72ee400f3bc326400247df228412ec3",
+          2043918
+        ],
+        [
+          "data/quality_finetuned_expert_anon.json",
+          "d6c0ff45544f24911f5beac98aff56bc67cfcc5b",
+          1216617
+        ],
+        [
+          "data/style_fewshot_expert_anon.json",
+          "120caa03e5f12ea75e1920fefbd6582ca7eec2f4",
+          2926158
+        ],
+        [
+          "data/style_finetuned_expert_anon.json",
+          "75b74c8e5392a4684f4090b5dc05e9943ae43f99",
+          1729941
+        ]
+      ]
+    },
+    {
+      "repository": "tuhinjubcse/GoodWritingBeGenerative",
+      "revision": "4cc907c25ff6955bdeeb224385bb9fe513215043",
+      "tree_truncated": false,
+      "data_blob_count": 10,
+      "readme_url": "https://github.com/tuhinjubcse/GoodWritingBeGenerative",
+      "expert_blobs": [
+        [
+          "data/quality_fewshot_expert_anon.json",
+          "f529644fd72ee400f3bc326400247df228412ec3",
+          2043918
+        ],
+        [
+          "data/quality_finetuned_expert_anon.json",
+          "eeac84f6d966827bc740f3ac6b9d42c9be51c0b1",
+          1216626
+        ],
+        [
+          "data/style_fewshot_expert_anon.json",
+          "120caa03e5f12ea75e1920fefbd6582ca7eec2f4",
+          2926158
+        ],
+        [
+          "data/style_finetuned_expert_anon.json",
+          "75b74c8e5392a4684f4090b5dc05e9943ae43f99",
+          1729941
+        ]
+      ]
+    }
+  ],
+  "blob_tuple_fields": [
+    "relative_path",
+    "git_blob_sha1",
+    "bytes"
+  ],
+  "findings": [
+    "Three of four expert JSON blobs have identical Git blob IDs across the pinned repositories, establishing byte-identical overlap for these blobs.",
+    "The fine-tuned quality expert blob differs by nine bytes; no row or semantic difference is inferred from file size.",
+    "All four lay outcome blob IDs differ between repositories. This does not establish independent participants or labels.",
+    "Human-AI and mediator blobs also share Git blob IDs across repositories. Related releases must not be counted as independent evidence."
+  ],
+  "terms": {
+    "source": "https://github.com/tuhinjubcse/Author-Style-Personalization#using-the-data-and-prompts",
+    "stated_scope": "non-commercial research because some passages are copyrighted",
+    "planned_use": "private research predictions/analysis; no redistribution of excerpts or raw outcomes"
+  },
+  "not_verified": [
+    "row counts or schema",
+    "author/writer/rater/pair overlap",
+    "target partition or target values",
+    "model pretraining exposure",
+    "independent confirmation admissibility"
+  ],
+  "next_action": "Fetch or create an authorized metadata-only projection that seals target/rationale fields before row/overlap audit; freeze candidate/comparator contracts before any confirmation target opening."
+}

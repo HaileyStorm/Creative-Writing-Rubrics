@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "scope": "census_pass_a_retained_metadata_only",
+  "sources": [
+    {"id": "ttcw-plan", "cohort": "ttcw", "kind": "plan", "path": "ttcw-expert-plan-r129/plan.json"},
+    {"id": "ttcw-grok", "cohort": "ttcw", "kind": "replay", "endpoint": "grok", "plan_id": "ttcw-plan", "path": "ttcw-expert-grok-replay-r145.json"},
+    {"id": "ttcw-sol", "cohort": "ttcw", "kind": "replay", "endpoint": "sol", "plan_id": "ttcw-plan", "path": "ttcw-expert-sol-replay-r137.json"},
+    {"id": "ttcw-prediction-code", "cohort": "ttcw", "kind": "code_pin", "path": "build_ttcw_predictions_r146.py"},
+    {"id": "pron-plan", "cohort": "pron", "kind": "plan", "path": "pron-expert-plan-r154/plan.json"},
+    {"id": "pron-grok", "cohort": "pron", "kind": "replay", "endpoint": "grok", "plan_id": "pron-plan", "path": "pron-expert-grok-composite-r195.json"},
+    {"id": "pron-sol", "cohort": "pron", "kind": "replay", "endpoint": "sol", "plan_id": "pron-plan", "path": "pron-expert-sol-composite-r186.json"},
+    {"id": "pron-prediction", "cohort": "pron", "kind": "derived_prediction", "path": "pron-expert-predictions-r221/predictions.json"},
+    {"id": "dryad-sol", "cohort": "dryad", "kind": "dryad", "endpoint": "sol", "path": "dryad-sol-validation-r28/sol.json"},
+    {"id": "dryad-grok", "cohort": "dryad", "kind": "dryad", "endpoint": "grok", "path": "dryad-final-analysis-r25/train.json"},
+    {"id": "lamp-source-b1", "cohort": "lamp", "kind": "lamp_source", "path": "lamp-source-r225/source-freeze.json"},
+    {"id": "lamp-source-b2", "cohort": "lamp", "kind": "lamp_source", "path": "lamp-evaluation-r227/batch2-source-r250/source-freeze.json"},
+    {"id": "lamp-source-b4", "cohort": "lamp", "kind": "lamp_source", "path": "lamp-evaluation-r227/lamp-holdout-source-r304/source-freeze.json"},
+    {"id": "lamp-source-b6", "cohort": "lamp", "kind": "lamp_source", "path": "lamp-evaluation-r227/lamp-holdout-source-r325/source-freeze.json"},
+    {"id": "lamp-source-b35", "cohort": "lamp", "kind": "lamp_source", "path": "lamp-evaluation-r227/lamp-holdout-source-r340/source-freeze.json"},
+    {"id": "lamp-development", "cohort": "lamp", "kind": "lamp_pass", "path": "lamp-evaluation-r227/admitted-predictions.json"},
+    {"id": "lamp-confirmation", "cohort": "lamp", "kind": "lamp_pass", "path": "lamp-evaluation-r227/confirmation-predictions-r242.json"},
+    {"id": "lamp-b2", "cohort": "lamp", "kind": "lamp_pass", "path": "lamp-evaluation-r227/batch2-predictions-r254.json"},
+    {"id": "lamp-b4", "cohort": "lamp", "kind": "lamp_pass", "path": "lamp-evaluation-r227/narrative-holdout-predictions-r314.json"},
+    {"id": "lamp-b6", "cohort": "lamp", "kind": "lamp_pass", "path": "lamp-evaluation-r227/batch6-scene-predictions-r332.json"},
+    {"id": "lamp-b35", "cohort": "lamp", "kind": "lamp_pass", "path": "lamp-evaluation-r227/batch35-scene-predictions-r347.json"},
+    {"id": "lamp-repeat", "cohort": "lamp", "kind": "lamp_repeat", "path": "lamp-evaluation-r227/batch35-repeatability-readout-r363.json"}
+  ],
+  "remaining_joins": [
+    "Partial census A: full Dryad Grok ancestor/attempt/recovery dispositions and Sol native verdict rows remain to join; consolidated Grok rows replace ancestor prefixes for vote totals.",
+    "Historical 51,968 and 53,990 floors need source-level reconciliation; projected row counts and retained declared totals have distinct denominators and are not all-time vote or contact counts.",
+    "TTCW/Pron matching question-payload pins prove matching leaves only. Prompt/model/sampler/context/activation/packet/scorer/full-contract compatibility is unresolved; no exact-current-compatible promotion.",
+    "LAMP source/pass/endpoint/native-leaf and independent-repeat joins remain unresolved. Retain declared missingness and ambiguous reservations; do not infer votes or contacts from pass counts.",
+    "Work/author/prompt/group/rater/derived-pair provenance, rights/form and overlap joins require allowlisted metadata-only descendants; unused confirmation preferences/rationales are excluded.",
+    "Pass B remains: full-book/QPC24, multisample, poetry, revision ledgers and other declared empirical roots need explicit accessible/absent dispositions.",
+    "R396 rescoring contributes zero new native votes and is excluded from this retained-source bank."
+  ]
+}
