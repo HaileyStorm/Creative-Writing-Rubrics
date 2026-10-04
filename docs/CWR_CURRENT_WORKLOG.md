@@ -21,7 +21,7 @@ Prefer owner-designated secondary account for Sol collection; exact identity/hel
 - Prior repo commits through `f4f5e33` pushed; clean upstream before this plan. No live model collector was retained by predecessor.
 - Full evidence brief and census published; exact-current-wording count is a lower bound, not all-time total. R395 disproved compact/canonical equivalence; R396 partial canonical result remains provisional and unpromoted.
 - Oct4 source/in-memory review reproduced A/B/C: missing evidence at permissive import (fresh runner rejects it); uncertainty-to-NO cumulative policy; positive coverage1 with unknown penalties/SCORED100 bounds82..100. These are reachability/policy witnesses, not observed human gains.
-- Isolated secondary Sol login home/helper prepared privately. Status check says not logged in; owner was given interactive login command. No default app credential changes or inference were made.
+- Isolated secondary Sol login home/helper prepared privately. Owner completed login; native metadata-only account/read on Oct4 verified the designated secondary ChatGPT account and clean probe exit. Collector integration/inference remains to verify; no default app credentials were changed by this work.
 
 ## Current scope and next action
 
@@ -32,7 +32,7 @@ First implementation: relevant existing scorer/import tests and versioned witnes
 ## Remaining risks
 
 - Exact Grok expiry time unknown; schedule uses October15 conservative target, no new contacts on/after October16 absent current eligibility.
-- Secondary account binding not authenticated yet; route selection must be verified, not inferred from a connector account or controller login.
+- Secondary login is authenticated; the collection wrapper must now use that isolated child environment and verify actual inference provenance rather than infer it from controller/connector identity.
 - Historical Dryad schema pin mismatch remains preserved; do not overwrite historical pin.
 - MFA source terms, row overlaps, author/writer/rater clusters and sealed targets need audit before confirmation selection.
 - Synthetic/agent targets cannot create new human alignment evidence; whole-work/poetry claims depend on existing suitable human targets, otherwise scope is robustness/repeatability only.
