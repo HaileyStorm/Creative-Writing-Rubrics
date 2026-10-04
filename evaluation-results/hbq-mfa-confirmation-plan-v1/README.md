@@ -18,6 +18,8 @@ Without `--dry-run`, an exclusively created fresh directory receives `private-me
 
 Focused provider-free checks:
 
+Published `partition-summary-001.json` retains the original incomplete-exposure design. `partition-summary-002.json` binds an append-only exposure input conservatively quarantining twelve published-example targets in development: ten direct identifier matches and two uncertain spelling aliases. The primary [Author-Style v4 supplement](https://arxiv.org/html/2510.13939v4#Sx7) and [related CHI v1 appendix](https://arxiv.org/html/2601.18353v1#A1) contain examples in captions/accessibility text and images. Exact complete-text hashes could not be recovered from those fragments; target-level quarantine avoids relying on that absence. All twelve observed target commitments match the sealed metadata. The actual partition preserves 20/30 targets and 12/18 fine targets, with zero crosspartition target/text/pair overlap. Earlier task exposure remains unjoined, so the audit stays incomplete and neither summary certifies fresh confirmation. Private source observations retain the two alias uncertainties and public asset commitments.
+
 ```powershell
 .venv\Scripts\python.exe -m pytest tests\test_mfa_confirmation_partition.py -q
 ```
