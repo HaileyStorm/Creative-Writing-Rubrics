@@ -1,0 +1,2607 @@
+{
+  "cohort": {
+    "expert_test_story_cells": 504,
+    "independent_works_added_by_repeats": 0,
+    "individual_expert_ballots": 1512,
+    "plot_clusters": 12,
+    "works": 36
+  },
+  "endpoints": {
+    "grok": {
+      "arms": {
+        "compact": {
+          "expected_story_scores": 36,
+          "initial_assessed_story_scores": 2,
+          "initial_states": {
+            "assessed": 2,
+            "not_admitted": 34
+          },
+          "repeatability": {
+            "complete_three_sample_works": 0,
+            "independent_work_count_added": 0,
+            "initial_vs_repeat_exact_score_agreement": {
+              "assessed_denominator": 0,
+              "expected_denominator": 18,
+              "fraction": null,
+              "full_denominator_bounds": [
+                0.0,
+                1.0
+              ],
+              "matches": 0,
+              "state": "inconclusive_missing_over_10_percent",
+              "unassessed": 18
+            },
+            "mean_absolute_score_change": null,
+            "rank_instability": {
+              "0_vs_1": {
+                "expected_works": 9,
+                "mean_absolute_rank_change": null,
+                "paired_works": 0,
+                "rho": null
+              },
+              "0_vs_2": {
+                "expected_works": 9,
+                "mean_absolute_rank_change": null,
+                "paired_works": 0,
+                "rho": null
+              },
+              "1_vs_2": {
+                "expected_works": 9,
+                "mean_absolute_rank_change": null,
+                "paired_works": 0,
+                "rho": null
+              }
+            },
+            "sentinel_works": 9
+          },
+          "request_coverage": {
+            "initial_native_admitted": 2,
+            "initial_scheduled": 36,
+            "initial_schema_accepted_any_abstention": 0,
+            "initial_unadmitted_or_missing": 34
+          },
+          "score_distribution": {
+            "ceiling_count": 0,
+            "distinct_scores": 1,
+            "floor_count": 0,
+            "items_in_ties": 2,
+            "maximum": 2,
+            "mean": 2,
+            "minimum": 2,
+            "n": 2,
+            "native_range": [
+              1,
+              5
+            ],
+            "tied_score_groups": 1,
+            "tied_unordered_pairs": 1
+          },
+          "story_score_association": {
+            "bootstrap": {
+              "reason": "Incomplete cohort; missing over ten percent",
+              "state": "not_estimated"
+            },
+            "expected_works": 36,
+            "missing_works": 34,
+            "rho": null,
+            "state": "inconclusive_missing_over_10_percent",
+            "undefined_reason": "Too few paired works or a constant rank vector",
+            "unobserved_outcome_bounds": [
+              -1,
+              1
+            ],
+            "works": 2
+          },
+          "within_plot_pair_agreement": {
+            "assessed_denominator": 0,
+            "bootstrap": {
+              "reason": "Incomplete informative pairs",
+              "state": "not_estimated"
+            },
+            "expected_denominator": 36,
+            "expert_ties_excluded": 0,
+            "fraction": null,
+            "full_denominator_bounds": [
+              0.0,
+              1.0
+            ],
+            "matches": 0.0,
+            "predicted_ties": 0,
+            "state": "inconclusive_missing_over_10_percent",
+            "unassessed": 36,
+            "unordered_pairs": 36
+          }
+        },
+        "hbq": {
+          "canonical_scope": {
+            "hard_gates": 0,
+            "packets": 23,
+            "partial_story_scoring": false,
+            "questions": 178,
+            "scoring_ready_stories": 0
+          },
+          "complete_native_mean_score_bounds": null,
+          "complete_native_weighted_coverage_range": null,
+          "expected_story_scores": 36,
+          "initial_assessed_story_scores": 0,
+          "initial_leaf_coverage": {
+            "applicable": 7,
+            "assessed_binary": 7,
+            "assessed_over_received_applicable": 1.0,
+            "expected_native_leaves": 6408,
+            "native_leaves": 8,
+            "native_states": {
+              "NO": 2,
+              "NOT_APPLICABLE": 1,
+              "YES": 5
+            },
+            "uncollected_native_leaves": 6400
+          },
+          "initial_states": {
+            "incomplete_native_packets_no_score": 36
+          },
+          "repeatability": {
+            "assessed_binary_agreement": {
+              "assessed_denominator": 0,
+              "expected_denominator": 3204,
+              "fraction": null,
+              "full_denominator_bounds": [
+                0.0,
+                1.0
+              ],
+              "matches": 0,
+              "state": "inconclusive_missing_over_10_percent",
+              "unassessed": 3204
+            },
+            "complete_three_sample_works": 0,
+            "independent_work_count_added": 0,
+            "initial_vs_repeat_exact_score_agreement": {
+              "assessed_denominator": 0,
+              "expected_denominator": 18,
+              "fraction": null,
+              "full_denominator_bounds": [
+                0.0,
+                1.0
+              ],
+              "matches": 0,
+              "state": "inconclusive_missing_over_10_percent",
+              "unassessed": 18
+            },
+            "mean_absolute_score_change": null,
+            "not_applicable_activation_flips": 0,
+            "rank_instability": {
+              "0_vs_1": {
+                "expected_works": 9,
+                "mean_absolute_rank_change": null,
+                "paired_works": 0,
+                "rho": null
+              },
+              "0_vs_2": {
+                "expected_works": 9,
+                "mean_absolute_rank_change": null,
+                "paired_works": 0,
+                "rho": null
+              },
+              "1_vs_2": {
+                "expected_works": 9,
+                "mean_absolute_rank_change": null,
+                "paired_works": 0,
+                "rho": null
+              }
+            },
+            "raw_state_agreement_includes_NA_CA": {
+              "assessed_denominator": 0,
+              "expected_denominator": 3204,
+              "fraction": null,
+              "full_denominator_bounds": [
+                0.0,
+                1.0
+              ],
+              "matches": 0,
+              "state": "inconclusive_missing_over_10_percent",
+              "unassessed": 3204
+            },
+            "sentinel_works": 9
+          },
+          "request_coverage": {
+            "initial_native_admitted": 1,
+            "initial_scheduled": 828,
+            "initial_schema_accepted_any_abstention": 0,
+            "initial_unadmitted_or_missing": 827
+          },
+          "score_distribution": {
+            "at_or_above_90": 0,
+            "at_or_below_10": 0,
+            "ceiling_count": 0,
+            "distinct_scores": 0,
+            "floor_count": 0,
+            "items_in_ties": 0,
+            "maximum": null,
+            "mean": null,
+            "minimum": null,
+            "n": 0,
+            "native_range": [
+              0,
+              100
+            ],
+            "tied_score_groups": 0,
+            "tied_unordered_pairs": 0
+          },
+          "scorer_issue_count": 0,
+          "scoring_provenance": {
+            "compiled_bundle_sha256": "f11f55e8263e3fcc8a2d4b9a00021cf34f0ba2acac843e530999d1ed845fe2f8",
+            "condition": "new_native_collection_sealed_core_v1_with_strict_import_v1",
+            "question_payload_sha256": "d66c9a9e8471bb57d9ad80c4780349126464c177663b8dca012f44ff2ce52c11",
+            "report_version": 1,
+            "role_counts": {
+              "domain": 143,
+              "penalty": 18,
+              "supplemental": 17
+            },
+            "source_sha256": {
+              "bundles/all_bundles.json": "012af060e8630b8980661465b368e129ddeec82dfa7b48e13e7a35a473eb95a8",
+              "registry/all_modules.json": "43a33ee015310097f79c8a04bb7c3a8782813e758d523b1db08ae2b14d51f66f",
+              "src/hbqrs/core.py": "70b4cd16bd536f2f6ddb8e066f801090a037a39605652b14d6c7f6ff312446cb",
+              "src/hbqrs/runner.py": "04a87edb728701afa6a43233a775c032473c82d0f189f209713051025d86f1f7",
+              "src/hbqrs/scoring_v2.py": "1305f444aaa45a0f47cc38cab207e847ae2ca04142637e6ee765edc3f06960d6"
+            }
+          },
+          "story_score_association": {
+            "bootstrap": {
+              "reason": "Incomplete cohort; missing over ten percent",
+              "state": "not_estimated"
+            },
+            "expected_works": 36,
+            "missing_works": 36,
+            "rho": null,
+            "state": "inconclusive_missing_over_10_percent",
+            "undefined_reason": "Too few paired works or a constant rank vector",
+            "unobserved_outcome_bounds": [
+              -1,
+              1
+            ],
+            "works": 0
+          },
+          "within_plot_pair_agreement": {
+            "assessed_denominator": 0,
+            "bootstrap": {
+              "reason": "Incomplete informative pairs",
+              "state": "not_estimated"
+            },
+            "expected_denominator": 36,
+            "expert_ties_excluded": 0,
+            "fraction": null,
+            "full_denominator_bounds": [
+              0.0,
+              1.0
+            ],
+            "matches": 0.0,
+            "predicted_ties": 0,
+            "state": "inconclusive_missing_over_10_percent",
+            "unassessed": 36,
+            "unordered_pairs": 36
+          }
+        },
+        "holistic": {
+          "expected_story_scores": 36,
+          "initial_assessed_story_scores": 0,
+          "initial_states": {
+            "not_admitted": 36
+          },
+          "repeatability": {
+            "complete_three_sample_works": 0,
+            "independent_work_count_added": 0,
+            "initial_vs_repeat_exact_score_agreement": {
+              "assessed_denominator": 0,
+              "expected_denominator": 18,
+              "fraction": null,
+              "full_denominator_bounds": [
+                0.0,
+                1.0
+              ],
+              "matches": 0,
+              "state": "inconclusive_missing_over_10_percent",
+              "unassessed": 18
+            },
+            "mean_absolute_score_change": null,
+            "rank_instability": {
+              "0_vs_1": {
+                "expected_works": 9,
+                "mean_absolute_rank_change": null,
+                "paired_works": 0,
+                "rho": null
+              },
+              "0_vs_2": {
+                "expected_works": 9,
+                "mean_absolute_rank_change": null,
+                "paired_works": 0,
+                "rho": null
+              },
+              "1_vs_2": {
+                "expected_works": 9,
+                "mean_absolute_rank_change": null,
+                "paired_works": 0,
+                "rho": null
+              }
+            },
+            "sentinel_works": 9
+          },
+          "request_coverage": {
+            "initial_native_admitted": 0,
+            "initial_scheduled": 36,
+            "initial_schema_accepted_any_abstention": 0,
+            "initial_unadmitted_or_missing": 36
+          },
+          "score_distribution": {
+            "ceiling_count": 0,
+            "distinct_scores": 0,
+            "floor_count": 0,
+            "items_in_ties": 0,
+            "maximum": null,
+            "mean": null,
+            "minimum": null,
+            "n": 0,
+            "native_range": [
+              1,
+              7
+            ],
+            "tied_score_groups": 0,
+            "tied_unordered_pairs": 0
+          },
+          "story_score_association": {
+            "bootstrap": {
+              "reason": "Incomplete cohort; missing over ten percent",
+              "state": "not_estimated"
+            },
+            "expected_works": 36,
+            "missing_works": 36,
+            "rho": null,
+            "state": "inconclusive_missing_over_10_percent",
+            "undefined_reason": "Too few paired works or a constant rank vector",
+            "unobserved_outcome_bounds": [
+              -1,
+              1
+            ],
+            "works": 0
+          },
+          "within_plot_pair_agreement": {
+            "assessed_denominator": 0,
+            "bootstrap": {
+              "reason": "Incomplete informative pairs",
+              "state": "not_estimated"
+            },
+            "expected_denominator": 36,
+            "expert_ties_excluded": 0,
+            "fraction": null,
+            "full_denominator_bounds": [
+              0.0,
+              1.0
+            ],
+            "matches": 0.0,
+            "predicted_ties": 0,
+            "state": "inconclusive_missing_over_10_percent",
+            "unassessed": 36,
+            "unordered_pairs": 36
+          }
+        },
+        "oregon": {
+          "expected_story_scores": 36,
+          "initial_assessed_story_scores": 1,
+          "initial_states": {
+            "assessed": 1,
+            "not_admitted": 35
+          },
+          "repeatability": {
+            "complete_three_sample_works": 0,
+            "independent_work_count_added": 0,
+            "initial_vs_repeat_exact_score_agreement": {
+              "assessed_denominator": 0,
+              "expected_denominator": 18,
+              "fraction": null,
+              "full_denominator_bounds": [
+                0.0,
+                1.0
+              ],
+              "matches": 0,
+              "state": "inconclusive_missing_over_10_percent",
+              "unassessed": 18
+            },
+            "mean_absolute_score_change": null,
+            "rank_instability": {
+              "0_vs_1": {
+                "expected_works": 9,
+                "mean_absolute_rank_change": null,
+                "paired_works": 0,
+                "rho": null
+              },
+              "0_vs_2": {
+                "expected_works": 9,
+                "mean_absolute_rank_change": null,
+                "paired_works": 0,
+                "rho": null
+              },
+              "1_vs_2": {
+                "expected_works": 9,
+                "mean_absolute_rank_change": null,
+                "paired_works": 0,
+                "rho": null
+              }
+            },
+            "sentinel_works": 9
+          },
+          "request_coverage": {
+            "initial_native_admitted": 1,
+            "initial_scheduled": 36,
+            "initial_schema_accepted_any_abstention": 0,
+            "initial_unadmitted_or_missing": 35
+          },
+          "score_distribution": {
+            "ceiling_count": 0,
+            "distinct_scores": 1,
+            "floor_count": 0,
+            "items_in_ties": 0,
+            "maximum": 21,
+            "mean": 21,
+            "minimum": 21,
+            "n": 1,
+            "native_range": [
+              6,
+              36
+            ],
+            "tied_score_groups": 0,
+            "tied_unordered_pairs": 0
+          },
+          "story_score_association": {
+            "bootstrap": {
+              "reason": "Incomplete cohort; missing over ten percent",
+              "state": "not_estimated"
+            },
+            "expected_works": 36,
+            "missing_works": 35,
+            "rho": null,
+            "state": "inconclusive_missing_over_10_percent",
+            "undefined_reason": "Too few paired works or a constant rank vector",
+            "unobserved_outcome_bounds": [
+              -1,
+              1
+            ],
+            "works": 1
+          },
+          "within_plot_pair_agreement": {
+            "assessed_denominator": 0,
+            "bootstrap": {
+              "reason": "Incomplete informative pairs",
+              "state": "not_estimated"
+            },
+            "expected_denominator": 36,
+            "expert_ties_excluded": 0,
+            "fraction": null,
+            "full_denominator_bounds": [
+              0.0,
+              1.0
+            ],
+            "matches": 0.0,
+            "predicted_ties": 0,
+            "state": "inconclusive_missing_over_10_percent",
+            "unassessed": 36,
+            "unordered_pairs": 36
+          }
+        },
+        "pairwise": {
+          "all_collection_explicit_abstentions": 0,
+          "each_order_against_expert": {
+            "assessed_denominator": 3,
+            "expected_denominator": 72,
+            "fraction": 1.0,
+            "full_denominator_bounds": [
+              0.041666666666666664,
+              1.0
+            ],
+            "matches": 3,
+            "state": "inconclusive_missing_over_10_percent",
+            "unassessed": 69
+          },
+          "global_rho": null,
+          "global_rho_reason": "Twelve disconnected three-story graphs; no global rank inference",
+          "initial_assessed_orders": 3,
+          "initial_expected_orders": 72,
+          "mean_absolute_canonical_order_gap": null,
+          "order_averaged_within_plot_agreement": {
+            "assessed_denominator": 0,
+            "bootstrap": {
+              "reason": "Incomplete informative pairs",
+              "state": "not_estimated"
+            },
+            "consensus_ties": 0,
+            "expected_denominator": 36,
+            "expert_ties_excluded": 0,
+            "fraction": null,
+            "full_denominator_bounds": [
+              0.0,
+              1.0
+            ],
+            "matches": 0.0,
+            "state": "inconclusive_missing_over_10_percent",
+            "unassessed": 36
+          },
+          "paired_order_complete_pairs": 0,
+          "paired_order_disagreements": 0,
+          "paired_order_opposite_direction_pairs": 0,
+          "repeat_same_order_agreement": {
+            "assessed_denominator": 0,
+            "expected_denominator": 24,
+            "fraction": null,
+            "full_denominator_bounds": [
+              0.0,
+              1.0
+            ],
+            "matches": 0,
+            "state": "inconclusive_missing_over_10_percent",
+            "unassessed": 24
+          },
+          "state": "inconclusive_missing_over_10_percent",
+          "unordered_pairs": 36
+        },
+        "ttcw14": {
+          "expected_story_scores": 36,
+          "expert_agreement": {
+            "by_test": {
+              "1": {
+                "individual_ballots": {
+                  "assessed_denominator": 0,
+                  "expected_denominator": 108,
+                  "fraction": null,
+                  "full_denominator_bounds": [
+                    0.0,
+                    1.0
+                  ],
+                  "matches": 0,
+                  "state": "inconclusive_missing_over_10_percent",
+                  "unassessed": 108
+                },
+                "majority": {
+                  "assessed_denominator": 0,
+                  "expected_denominator": 36,
+                  "fraction": null,
+                  "full_denominator_bounds": [
+                    0.0,
+                    1.0
+                  ],
+                  "matches": 0,
+                  "state": "inconclusive_missing_over_10_percent",
+                  "unassessed": 36
+                }
+              },
+              "10": {
+                "individual_ballots": {
+                  "assessed_denominator": 0,
+                  "expected_denominator": 108,
+                  "fraction": null,
+                  "full_denominator_bounds": [
+                    0.0,
+                    1.0
+                  ],
+                  "matches": 0,
+                  "state": "inconclusive_missing_over_10_percent",
+                  "unassessed": 108
+                },
+                "majority": {
+                  "assessed_denominator": 0,
+                  "expected_denominator": 36,
+                  "fraction": null,
+                  "full_denominator_bounds": [
+                    0.0,
+                    1.0
+                  ],
+                  "matches": 0,
+                  "state": "inconclusive_missing_over_10_percent",
+                  "unassessed": 36
+                }
+              },
+              "11": {
+                "individual_ballots": {
+                  "assessed_denominator": 0,
+                  "expected_denominator": 108,
+                  "fraction": null,
+                  "full_denominator_bounds": [
+                    0.0,
+                    1.0
+                  ],
+                  "matches": 0,
+                  "state": "inconclusive_missing_over_10_percent",
+                  "unassessed": 108
+                },
+                "majority": {
+                  "assessed_denominator": 0,
+                  "expected_denominator": 36,
+                  "fraction": null,
+                  "full_denominator_bounds": [
+                    0.0,
+                    1.0
+                  ],
+                  "matches": 0,
+                  "state": "inconclusive_missing_over_10_percent",
+                  "unassessed": 36
+                }
+              },
+              "12": {
+                "individual_ballots": {
+                  "assessed_denominator": 0,
+                  "expected_denominator": 108,
+                  "fraction": null,
+                  "full_denominator_bounds": [
+                    0.0,
+                    1.0
+                  ],
+                  "matches": 0,
+                  "state": "inconclusive_missing_over_10_percent",
+                  "unassessed": 108
+                },
+                "majority": {
+                  "assessed_denominator": 0,
+                  "expected_denominator": 36,
+                  "fraction": null,
+                  "full_denominator_bounds": [
+                    0.0,
+                    1.0
+                  ],
+                  "matches": 0,
+                  "state": "inconclusive_missing_over_10_percent",
+                  "unassessed": 36
+                }
+              },
+              "13": {
+                "individual_ballots": {
+                  "assessed_denominator": 0,
+                  "expected_denominator": 108,
+                  "fraction": null,
+                  "full_denominator_bounds": [
+                    0.0,
+                    1.0
+                  ],
+                  "matches": 0,
+                  "state": "inconclusive_missing_over_10_percent",
+                  "unassessed": 108
+                },
+                "majority": {
+                  "assessed_denominator": 0,
+                  "expected_denominator": 36,
+                  "fraction": null,
+                  "full_denominator_bounds": [
+                    0.0,
+                    1.0
+                  ],
+                  "matches": 0,
+                  "state": "inconclusive_missing_over_10_percent",
+                  "unassessed": 36
+                }
+              },
+              "14": {
+                "individual_ballots": {
+                  "assessed_denominator": 0,
+                  "expected_denominator": 108,
+                  "fraction": null,
+                  "full_denominator_bounds": [
+                    0.0,
+                    1.0
+                  ],
+                  "matches": 0,
+                  "state": "inconclusive_missing_over_10_percent",
+                  "unassessed": 108
+                },
+                "majority": {
+                  "assessed_denominator": 0,
+                  "expected_denominator": 36,
+                  "fraction": null,
+                  "full_denominator_bounds": [
+                    0.0,
+                    1.0
+                  ],
+                  "matches": 0,
+                  "state": "inconclusive_missing_over_10_percent",
+                  "unassessed": 36
+                }
+              },
+              "2": {
+                "individual_ballots": {
+                  "assessed_denominator": 0,
+                  "expected_denominator": 108,
+                  "fraction": null,
+                  "full_denominator_bounds": [
+                    0.0,
+                    1.0
+                  ],
+                  "matches": 0,
+                  "state": "inconclusive_missing_over_10_percent",
+                  "unassessed": 108
+                },
+                "majority": {
+                  "assessed_denominator": 0,
+                  "expected_denominator": 36,
+                  "fraction": null,
+                  "full_denominator_bounds": [
+                    0.0,
+                    1.0
+                  ],
+                  "matches": 0,
+                  "state": "inconclusive_missing_over_10_percent",
+                  "unassessed": 36
+                }
+              },
+              "3": {
+                "individual_ballots": {
+                  "assessed_denominator": 0,
+                  "expected_denominator": 108,
+                  "fraction": null,
+                  "full_denominator_bounds": [
+                    0.0,
+                    1.0
+                  ],
+                  "matches": 0,
+                  "state": "inconclusive_missing_over_10_percent",
+                  "unassessed": 108
+                },
+                "majority": {
+                  "assessed_denominator": 0,
+                  "expected_denominator": 36,
+                  "fraction": null,
+                  "full_denominator_bounds": [
+                    0.0,
+                    1.0
+                  ],
+                  "matches": 0,
+                  "state": "inconclusive_missing_over_10_percent",
+                  "unassessed": 36
+                }
+              },
+              "4": {
+                "individual_ballots": {
+                  "assessed_denominator": 0,
+                  "expected_denominator": 108,
+                  "fraction": null,
+                  "full_denominator_bounds": [
+                    0.0,
+                    1.0
+                  ],
+                  "matches": 0,
+                  "state": "inconclusive_missing_over_10_percent",
+                  "unassessed": 108
+                },
+                "majority": {
+                  "assessed_denominator": 0,
+                  "expected_denominator": 36,
+                  "fraction": null,
+                  "full_denominator_bounds": [
+                    0.0,
+                    1.0
+                  ],
+                  "matches": 0,
+                  "state": "inconclusive_missing_over_10_percent",
+                  "unassessed": 36
+                }
+              },
+              "5": {
+                "individual_ballots": {
+                  "assessed_denominator": 0,
+                  "expected_denominator": 108,
+                  "fraction": null,
+                  "full_denominator_bounds": [
+                    0.0,
+                    1.0
+                  ],
+                  "matches": 0,
+                  "state": "inconclusive_missing_over_10_percent",
+                  "unassessed": 108
+                },
+                "majority": {
+                  "assessed_denominator": 0,
+                  "expected_denominator": 36,
+                  "fraction": null,
+                  "full_denominator_bounds": [
+                    0.0,
+                    1.0
+                  ],
+                  "matches": 0,
+                  "state": "inconclusive_missing_over_10_percent",
+                  "unassessed": 36
+                }
+              },
+              "6": {
+                "individual_ballots": {
+                  "assessed_denominator": 0,
+                  "expected_denominator": 108,
+                  "fraction": null,
+                  "full_denominator_bounds": [
+                    0.0,
+                    1.0
+                  ],
+                  "matches": 0,
+                  "state": "inconclusive_missing_over_10_percent",
+                  "unassessed": 108
+                },
+                "majority": {
+                  "assessed_denominator": 0,
+                  "expected_denominator": 36,
+                  "fraction": null,
+                  "full_denominator_bounds": [
+                    0.0,
+                    1.0
+                  ],
+                  "matches": 0,
+                  "state": "inconclusive_missing_over_10_percent",
+                  "unassessed": 36
+                }
+              },
+              "7": {
+                "individual_ballots": {
+                  "assessed_denominator": 0,
+                  "expected_denominator": 108,
+                  "fraction": null,
+                  "full_denominator_bounds": [
+                    0.0,
+                    1.0
+                  ],
+                  "matches": 0,
+                  "state": "inconclusive_missing_over_10_percent",
+                  "unassessed": 108
+                },
+                "majority": {
+                  "assessed_denominator": 0,
+                  "expected_denominator": 36,
+                  "fraction": null,
+                  "full_denominator_bounds": [
+                    0.0,
+                    1.0
+                  ],
+                  "matches": 0,
+                  "state": "inconclusive_missing_over_10_percent",
+                  "unassessed": 36
+                }
+              },
+              "8": {
+                "individual_ballots": {
+                  "assessed_denominator": 0,
+                  "expected_denominator": 108,
+                  "fraction": null,
+                  "full_denominator_bounds": [
+                    0.0,
+                    1.0
+                  ],
+                  "matches": 0,
+                  "state": "inconclusive_missing_over_10_percent",
+                  "unassessed": 108
+                },
+                "majority": {
+                  "assessed_denominator": 0,
+                  "expected_denominator": 36,
+                  "fraction": null,
+                  "full_denominator_bounds": [
+                    0.0,
+                    1.0
+                  ],
+                  "matches": 0,
+                  "state": "inconclusive_missing_over_10_percent",
+                  "unassessed": 36
+                }
+              },
+              "9": {
+                "individual_ballots": {
+                  "assessed_denominator": 0,
+                  "expected_denominator": 108,
+                  "fraction": null,
+                  "full_denominator_bounds": [
+                    0.0,
+                    1.0
+                  ],
+                  "matches": 0,
+                  "state": "inconclusive_missing_over_10_percent",
+                  "unassessed": 108
+                },
+                "majority": {
+                  "assessed_denominator": 0,
+                  "expected_denominator": 36,
+                  "fraction": null,
+                  "full_denominator_bounds": [
+                    0.0,
+                    1.0
+                  ],
+                  "matches": 0,
+                  "state": "inconclusive_missing_over_10_percent",
+                  "unassessed": 36
+                }
+              }
+            },
+            "expert_majority": {
+              "assessed_denominator": 0,
+              "bootstrap": {
+                "reason": "Incomplete assessed test/story cells",
+                "state": "not_estimated"
+              },
+              "expected_denominator": 504,
+              "fraction": null,
+              "full_denominator_bounds": [
+                0.0,
+                1.0
+              ],
+              "matches": 0,
+              "state": "inconclusive_missing_over_10_percent",
+              "unassessed": 504
+            },
+            "individual_ballots": {
+              "assessed_denominator": 0,
+              "bootstrap": {
+                "reason": "Incomplete assessed test/story cells",
+                "state": "not_estimated"
+              },
+              "expected_denominator": 1512,
+              "fraction": null,
+              "full_denominator_bounds": [
+                0.0,
+                1.0
+              ],
+              "matches": 0,
+              "state": "inconclusive_missing_over_10_percent",
+              "unassessed": 1512
+            }
+          },
+          "initial_assessed_story_scores": 0,
+          "initial_states": {
+            "not_admitted": 36
+          },
+          "initial_test_coverage": {
+            "assessed": 0,
+            "expected": 504,
+            "fraction": 0.0,
+            "native_cannot_assess": 0,
+            "received_native_tests": 0,
+            "unassessed": 504,
+            "uncollected_test_positions": 504
+          },
+          "repeatability": {
+            "assessed_binary_agreement": {
+              "assessed_denominator": 0,
+              "expected_denominator": 252,
+              "fraction": null,
+              "full_denominator_bounds": [
+                0.0,
+                1.0
+              ],
+              "matches": 0,
+              "state": "inconclusive_missing_over_10_percent",
+              "unassessed": 252
+            },
+            "complete_three_sample_works": 0,
+            "independent_work_count_added": 0,
+            "initial_vs_repeat_exact_score_agreement": {
+              "assessed_denominator": 0,
+              "expected_denominator": 18,
+              "fraction": null,
+              "full_denominator_bounds": [
+                0.0,
+                1.0
+              ],
+              "matches": 0,
+              "state": "inconclusive_missing_over_10_percent",
+              "unassessed": 18
+            },
+            "mean_absolute_score_change": null,
+            "not_applicable_activation_flips": 0,
+            "rank_instability": {
+              "0_vs_1": {
+                "expected_works": 9,
+                "mean_absolute_rank_change": null,
+                "paired_works": 0,
+                "rho": null
+              },
+              "0_vs_2": {
+                "expected_works": 9,
+                "mean_absolute_rank_change": null,
+                "paired_works": 0,
+                "rho": null
+              },
+              "1_vs_2": {
+                "expected_works": 9,
+                "mean_absolute_rank_change": null,
+                "paired_works": 0,
+                "rho": null
+              }
+            },
+            "raw_state_agreement_includes_NA_CA": {
+              "assessed_denominator": 0,
+              "expected_denominator": 252,
+              "fraction": null,
+              "full_denominator_bounds": [
+                0.0,
+                1.0
+              ],
+              "matches": 0,
+              "state": "inconclusive_missing_over_10_percent",
+              "unassessed": 252
+            },
+            "sentinel_works": 9
+          },
+          "request_coverage": {
+            "initial_native_admitted": 0,
+            "initial_scheduled": 36,
+            "initial_schema_accepted_any_abstention": 0,
+            "initial_unadmitted_or_missing": 36
+          },
+          "score_distribution": {
+            "ceiling_count": 0,
+            "distinct_scores": 0,
+            "floor_count": 0,
+            "items_in_ties": 0,
+            "maximum": null,
+            "mean": null,
+            "minimum": null,
+            "n": 0,
+            "native_range": [
+              0,
+              1
+            ],
+            "tied_score_groups": 0,
+            "tied_unordered_pairs": 0
+          },
+          "story_score_association": {
+            "bootstrap": {
+              "reason": "Incomplete cohort; missing over ten percent",
+              "state": "not_estimated"
+            },
+            "expected_works": 36,
+            "missing_works": 36,
+            "rho": null,
+            "state": "inconclusive_missing_over_10_percent",
+            "undefined_reason": "Too few paired works or a constant rank vector",
+            "unobserved_outcome_bounds": [
+              -1,
+              1
+            ],
+            "works": 0
+          },
+          "within_plot_pair_agreement": {
+            "assessed_denominator": 0,
+            "bootstrap": {
+              "reason": "Incomplete informative pairs",
+              "state": "not_estimated"
+            },
+            "expected_denominator": 36,
+            "expert_ties_excluded": 0,
+            "fraction": null,
+            "full_denominator_bounds": [
+              0.0,
+              1.0
+            ],
+            "matches": 0.0,
+            "predicted_ties": 0,
+            "state": "inconclusive_missing_over_10_percent",
+            "unassessed": 36,
+            "unordered_pairs": 36
+          }
+        }
+      },
+      "paired_scalar_associations": {
+        "compact_minus_oregon": {
+          "bootstrap": {
+            "reason": "Incomplete shared denominator",
+            "state": "not_estimated"
+          },
+          "delta_rho": null,
+          "expected_works": 36,
+          "shared_works": 0,
+          "state": "inconclusive_missing_over_10_percent",
+          "unobserved_delta_bounds": [
+            -2,
+            2
+          ]
+        },
+        "hbq_minus_compact": {
+          "bootstrap": {
+            "reason": "Incomplete shared denominator",
+            "state": "not_estimated"
+          },
+          "delta_rho": null,
+          "expected_works": 36,
+          "shared_works": 0,
+          "state": "inconclusive_missing_over_10_percent",
+          "unobserved_delta_bounds": [
+            -2,
+            2
+          ]
+        },
+        "hbq_minus_holistic": {
+          "bootstrap": {
+            "reason": "Incomplete shared denominator",
+            "state": "not_estimated"
+          },
+          "delta_rho": null,
+          "expected_works": 36,
+          "shared_works": 0,
+          "state": "inconclusive_missing_over_10_percent",
+          "unobserved_delta_bounds": [
+            -2,
+            2
+          ]
+        },
+        "hbq_minus_oregon": {
+          "bootstrap": {
+            "reason": "Incomplete shared denominator",
+            "state": "not_estimated"
+          },
+          "delta_rho": null,
+          "expected_works": 36,
+          "shared_works": 0,
+          "state": "inconclusive_missing_over_10_percent",
+          "unobserved_delta_bounds": [
+            -2,
+            2
+          ]
+        },
+        "hbq_minus_ttcw14": {
+          "bootstrap": {
+            "reason": "Incomplete shared denominator",
+            "state": "not_estimated"
+          },
+          "delta_rho": null,
+          "expected_works": 36,
+          "shared_works": 0,
+          "state": "inconclusive_missing_over_10_percent",
+          "unobserved_delta_bounds": [
+            -2,
+            2
+          ]
+        },
+        "holistic_minus_compact": {
+          "bootstrap": {
+            "reason": "Incomplete shared denominator",
+            "state": "not_estimated"
+          },
+          "delta_rho": null,
+          "expected_works": 36,
+          "shared_works": 0,
+          "state": "inconclusive_missing_over_10_percent",
+          "unobserved_delta_bounds": [
+            -2,
+            2
+          ]
+        },
+        "holistic_minus_oregon": {
+          "bootstrap": {
+            "reason": "Incomplete shared denominator",
+            "state": "not_estimated"
+          },
+          "delta_rho": null,
+          "expected_works": 36,
+          "shared_works": 0,
+          "state": "inconclusive_missing_over_10_percent",
+          "unobserved_delta_bounds": [
+            -2,
+            2
+          ]
+        },
+        "ttcw14_minus_compact": {
+          "bootstrap": {
+            "reason": "Incomplete shared denominator",
+            "state": "not_estimated"
+          },
+          "delta_rho": null,
+          "expected_works": 36,
+          "shared_works": 0,
+          "state": "inconclusive_missing_over_10_percent",
+          "unobserved_delta_bounds": [
+            -2,
+            2
+          ]
+        },
+        "ttcw14_minus_holistic": {
+          "bootstrap": {
+            "reason": "Incomplete shared denominator",
+            "state": "not_estimated"
+          },
+          "delta_rho": null,
+          "expected_works": 36,
+          "shared_works": 0,
+          "state": "inconclusive_missing_over_10_percent",
+          "unobserved_delta_bounds": [
+            -2,
+            2
+          ]
+        },
+        "ttcw14_minus_oregon": {
+          "bootstrap": {
+            "reason": "Incomplete shared denominator",
+            "state": "not_estimated"
+          },
+          "delta_rho": null,
+          "expected_works": 36,
+          "shared_works": 0,
+          "state": "inconclusive_missing_over_10_percent",
+          "unobserved_delta_bounds": [
+            -2,
+            2
+          ]
+        }
+      }
+    },
+    "sol": {
+      "arms": {
+        "compact": {
+          "expected_story_scores": 36,
+          "initial_assessed_story_scores": 3,
+          "initial_states": {
+            "assessed": 3,
+            "not_admitted": 33
+          },
+          "repeatability": {
+            "complete_three_sample_works": 0,
+            "independent_work_count_added": 0,
+            "initial_vs_repeat_exact_score_agreement": {
+              "assessed_denominator": 0,
+              "expected_denominator": 18,
+              "fraction": null,
+              "full_denominator_bounds": [
+                0.0,
+                1.0
+              ],
+              "matches": 0,
+              "state": "inconclusive_missing_over_10_percent",
+              "unassessed": 18
+            },
+            "mean_absolute_score_change": null,
+            "rank_instability": {
+              "0_vs_1": {
+                "expected_works": 9,
+                "mean_absolute_rank_change": null,
+                "paired_works": 0,
+                "rho": null
+              },
+              "0_vs_2": {
+                "expected_works": 9,
+                "mean_absolute_rank_change": null,
+                "paired_works": 0,
+                "rho": null
+              },
+              "1_vs_2": {
+                "expected_works": 9,
+                "mean_absolute_rank_change": null,
+                "paired_works": 0,
+                "rho": null
+              }
+            },
+            "sentinel_works": 9
+          },
+          "request_coverage": {
+            "initial_native_admitted": 3,
+            "initial_scheduled": 36,
+            "initial_schema_accepted_any_abstention": 0,
+            "initial_unadmitted_or_missing": 33
+          },
+          "score_distribution": {
+            "ceiling_count": 0,
+            "distinct_scores": 1,
+            "floor_count": 0,
+            "items_in_ties": 3,
+            "maximum": 2,
+            "mean": 2,
+            "minimum": 2,
+            "n": 3,
+            "native_range": [
+              1,
+              5
+            ],
+            "tied_score_groups": 1,
+            "tied_unordered_pairs": 3
+          },
+          "story_score_association": {
+            "bootstrap": {
+              "reason": "Incomplete cohort; missing over ten percent",
+              "state": "not_estimated"
+            },
+            "expected_works": 36,
+            "missing_works": 33,
+            "rho": null,
+            "state": "inconclusive_missing_over_10_percent",
+            "undefined_reason": "Too few paired works or a constant rank vector",
+            "unobserved_outcome_bounds": [
+              -1,
+              1
+            ],
+            "works": 3
+          },
+          "within_plot_pair_agreement": {
+            "assessed_denominator": 0,
+            "bootstrap": {
+              "reason": "Incomplete informative pairs",
+              "state": "not_estimated"
+            },
+            "expected_denominator": 36,
+            "expert_ties_excluded": 0,
+            "fraction": null,
+            "full_denominator_bounds": [
+              0.0,
+              1.0
+            ],
+            "matches": 0.0,
+            "predicted_ties": 0,
+            "state": "inconclusive_missing_over_10_percent",
+            "unassessed": 36,
+            "unordered_pairs": 36
+          }
+        },
+        "hbq": {
+          "canonical_scope": {
+            "hard_gates": 0,
+            "packets": 23,
+            "partial_story_scoring": false,
+            "questions": 178,
+            "scoring_ready_stories": 1
+          },
+          "complete_native_mean_score_bounds": {
+            "lower": {
+              "mean": 36.8742,
+              "stories_with_bound": 1
+            },
+            "observed": {
+              "mean": 37.256,
+              "stories_with_bound": 1
+            },
+            "upper": {
+              "mean": 37.6014,
+              "stories_with_bound": 1
+            }
+          },
+          "complete_native_weighted_coverage_range": [
+            0.9927,
+            0.9927
+          ],
+          "expected_story_scores": 36,
+          "initial_assessed_story_scores": 1,
+          "initial_leaf_coverage": {
+            "applicable": 218,
+            "assessed_binary": 216,
+            "assessed_over_received_applicable": 0.9908256880733946,
+            "expected_native_leaves": 6408,
+            "native_leaves": 250,
+            "native_states": {
+              "CANNOT_ASSESS": 2,
+              "NO": 104,
+              "NOT_APPLICABLE": 32,
+              "YES": 112
+            },
+            "uncollected_native_leaves": 6158
+          },
+          "initial_states": {
+            "SCORED": 1,
+            "incomplete_native_packets_no_score": 35
+          },
+          "repeatability": {
+            "assessed_binary_agreement": {
+              "assessed_denominator": 0,
+              "expected_denominator": 3204,
+              "fraction": null,
+              "full_denominator_bounds": [
+                0.0,
+                1.0
+              ],
+              "matches": 0,
+              "state": "inconclusive_missing_over_10_percent",
+              "unassessed": 3204
+            },
+            "complete_three_sample_works": 0,
+            "independent_work_count_added": 0,
+            "initial_vs_repeat_exact_score_agreement": {
+              "assessed_denominator": 0,
+              "expected_denominator": 18,
+              "fraction": null,
+              "full_denominator_bounds": [
+                0.0,
+                1.0
+              ],
+              "matches": 0,
+              "state": "inconclusive_missing_over_10_percent",
+              "unassessed": 18
+            },
+            "mean_absolute_score_change": null,
+            "not_applicable_activation_flips": 0,
+            "rank_instability": {
+              "0_vs_1": {
+                "expected_works": 9,
+                "mean_absolute_rank_change": null,
+                "paired_works": 0,
+                "rho": null
+              },
+              "0_vs_2": {
+                "expected_works": 9,
+                "mean_absolute_rank_change": null,
+                "paired_works": 0,
+                "rho": null
+              },
+              "1_vs_2": {
+                "expected_works": 9,
+                "mean_absolute_rank_change": null,
+                "paired_works": 0,
+                "rho": null
+              }
+            },
+            "raw_state_agreement_includes_NA_CA": {
+              "assessed_denominator": 0,
+              "expected_denominator": 3204,
+              "fraction": null,
+              "full_denominator_bounds": [
+                0.0,
+                1.0
+              ],
+              "matches": 0,
+              "state": "inconclusive_missing_over_10_percent",
+              "unassessed": 3204
+            },
+            "sentinel_works": 9
+          },
+          "request_coverage": {
+            "initial_native_admitted": 32,
+            "initial_scheduled": 828,
+            "initial_schema_accepted_any_abstention": 1,
+            "initial_unadmitted_or_missing": 796
+          },
+          "score_distribution": {
+            "at_or_above_90": 0,
+            "at_or_below_10": 0,
+            "ceiling_count": 0,
+            "distinct_scores": 1,
+            "floor_count": 0,
+            "items_in_ties": 0,
+            "maximum": 37.256,
+            "mean": 37.256,
+            "minimum": 37.256,
+            "n": 1,
+            "native_range": [
+              0,
+              100
+            ],
+            "tied_score_groups": 0,
+            "tied_unordered_pairs": 0
+          },
+          "scorer_issue_count": 0,
+          "scoring_provenance": {
+            "compiled_bundle_sha256": "f11f55e8263e3fcc8a2d4b9a00021cf34f0ba2acac843e530999d1ed845fe2f8",
+            "condition": "new_native_collection_sealed_core_v1_with_strict_import_v1",
+            "question_payload_sha256": "d66c9a9e8471bb57d9ad80c4780349126464c177663b8dca012f44ff2ce52c11",
+            "report_version": 1,
+            "role_counts": {
+              "domain": 143,
+              "penalty": 18,
+              "supplemental": 17
+            },
+            "source_sha256": {
+              "bundles/all_bundles.json": "012af060e8630b8980661465b368e129ddeec82dfa7b48e13e7a35a473eb95a8",
+              "registry/all_modules.json": "43a33ee015310097f79c8a04bb7c3a8782813e758d523b1db08ae2b14d51f66f",
+              "src/hbqrs/core.py": "70b4cd16bd536f2f6ddb8e066f801090a037a39605652b14d6c7f6ff312446cb",
+              "src/hbqrs/runner.py": "04a87edb728701afa6a43233a775c032473c82d0f189f209713051025d86f1f7",
+              "src/hbqrs/scoring_v2.py": "1305f444aaa45a0f47cc38cab207e847ae2ca04142637e6ee765edc3f06960d6"
+            }
+          },
+          "story_score_association": {
+            "bootstrap": {
+              "reason": "Incomplete cohort; missing over ten percent",
+              "state": "not_estimated"
+            },
+            "expected_works": 36,
+            "missing_works": 35,
+            "rho": null,
+            "state": "inconclusive_missing_over_10_percent",
+            "undefined_reason": "Too few paired works or a constant rank vector",
+            "unobserved_outcome_bounds": [
+              -1,
+              1
+            ],
+            "works": 1
+          },
+          "within_plot_pair_agreement": {
+            "assessed_denominator": 0,
+            "bootstrap": {
+              "reason": "Incomplete informative pairs",
+              "state": "not_estimated"
+            },
+            "expected_denominator": 36,
+            "expert_ties_excluded": 0,
+            "fraction": null,
+            "full_denominator_bounds": [
+              0.0,
+              1.0
+            ],
+            "matches": 0.0,
+            "predicted_ties": 0,
+            "state": "inconclusive_missing_over_10_percent",
+            "unassessed": 36,
+            "unordered_pairs": 36
+          }
+        },
+        "holistic": {
+          "expected_story_scores": 36,
+          "initial_assessed_story_scores": 0,
+          "initial_states": {
+            "not_admitted": 36
+          },
+          "repeatability": {
+            "complete_three_sample_works": 0,
+            "independent_work_count_added": 0,
+            "initial_vs_repeat_exact_score_agreement": {
+              "assessed_denominator": 0,
+              "expected_denominator": 18,
+              "fraction": null,
+              "full_denominator_bounds": [
+                0.0,
+                1.0
+              ],
+              "matches": 0,
+              "state": "inconclusive_missing_over_10_percent",
+              "unassessed": 18
+            },
+            "mean_absolute_score_change": null,
+            "rank_instability": {
+              "0_vs_1": {
+                "expected_works": 9,
+                "mean_absolute_rank_change": null,
+                "paired_works": 0,
+                "rho": null
+              },
+              "0_vs_2": {
+                "expected_works": 9,
+                "mean_absolute_rank_change": null,
+                "paired_works": 0,
+                "rho": null
+              },
+              "1_vs_2": {
+                "expected_works": 9,
+                "mean_absolute_rank_change": null,
+                "paired_works": 0,
+                "rho": null
+              }
+            },
+            "sentinel_works": 9
+          },
+          "request_coverage": {
+            "initial_native_admitted": 0,
+            "initial_scheduled": 36,
+            "initial_schema_accepted_any_abstention": 0,
+            "initial_unadmitted_or_missing": 36
+          },
+          "score_distribution": {
+            "ceiling_count": 0,
+            "distinct_scores": 0,
+            "floor_count": 0,
+            "items_in_ties": 0,
+            "maximum": null,
+            "mean": null,
+            "minimum": null,
+            "n": 0,
+            "native_range": [
+              1,
+              7
+            ],
+            "tied_score_groups": 0,
+            "tied_unordered_pairs": 0
+          },
+          "story_score_association": {
+            "bootstrap": {
+              "reason": "Incomplete cohort; missing over ten percent",
+              "state": "not_estimated"
+            },
+            "expected_works": 36,
+            "missing_works": 36,
+            "rho": null,
+            "state": "inconclusive_missing_over_10_percent",
+            "undefined_reason": "Too few paired works or a constant rank vector",
+            "unobserved_outcome_bounds": [
+              -1,
+              1
+            ],
+            "works": 0
+          },
+          "within_plot_pair_agreement": {
+            "assessed_denominator": 0,
+            "bootstrap": {
+              "reason": "Incomplete informative pairs",
+              "state": "not_estimated"
+            },
+            "expected_denominator": 36,
+            "expert_ties_excluded": 0,
+            "fraction": null,
+            "full_denominator_bounds": [
+              0.0,
+              1.0
+            ],
+            "matches": 0.0,
+            "predicted_ties": 0,
+            "state": "inconclusive_missing_over_10_percent",
+            "unassessed": 36,
+            "unordered_pairs": 36
+          }
+        },
+        "oregon": {
+          "expected_story_scores": 36,
+          "initial_assessed_story_scores": 1,
+          "initial_states": {
+            "assessed": 1,
+            "not_admitted": 35
+          },
+          "repeatability": {
+            "complete_three_sample_works": 0,
+            "independent_work_count_added": 0,
+            "initial_vs_repeat_exact_score_agreement": {
+              "assessed_denominator": 0,
+              "expected_denominator": 18,
+              "fraction": null,
+              "full_denominator_bounds": [
+                0.0,
+                1.0
+              ],
+              "matches": 0,
+              "state": "inconclusive_missing_over_10_percent",
+              "unassessed": 18
+            },
+            "mean_absolute_score_change": null,
+            "rank_instability": {
+              "0_vs_1": {
+                "expected_works": 9,
+                "mean_absolute_rank_change": null,
+                "paired_works": 0,
+                "rho": null
+              },
+              "0_vs_2": {
+                "expected_works": 9,
+                "mean_absolute_rank_change": null,
+                "paired_works": 0,
+                "rho": null
+              },
+              "1_vs_2": {
+                "expected_works": 9,
+                "mean_absolute_rank_change": null,
+                "paired_works": 0,
+                "rho": null
+              }
+            },
+            "sentinel_works": 9
+          },
+          "request_coverage": {
+            "initial_native_admitted": 1,
+            "initial_scheduled": 36,
+            "initial_schema_accepted_any_abstention": 0,
+            "initial_unadmitted_or_missing": 35
+          },
+          "score_distribution": {
+            "ceiling_count": 0,
+            "distinct_scores": 1,
+            "floor_count": 0,
+            "items_in_ties": 0,
+            "maximum": 21,
+            "mean": 21,
+            "minimum": 21,
+            "n": 1,
+            "native_range": [
+              6,
+              36
+            ],
+            "tied_score_groups": 0,
+            "tied_unordered_pairs": 0
+          },
+          "story_score_association": {
+            "bootstrap": {
+              "reason": "Incomplete cohort; missing over ten percent",
+              "state": "not_estimated"
+            },
+            "expected_works": 36,
+            "missing_works": 35,
+            "rho": null,
+            "state": "inconclusive_missing_over_10_percent",
+            "undefined_reason": "Too few paired works or a constant rank vector",
+            "unobserved_outcome_bounds": [
+              -1,
+              1
+            ],
+            "works": 1
+          },
+          "within_plot_pair_agreement": {
+            "assessed_denominator": 0,
+            "bootstrap": {
+              "reason": "Incomplete informative pairs",
+              "state": "not_estimated"
+            },
+            "expected_denominator": 36,
+            "expert_ties_excluded": 0,
+            "fraction": null,
+            "full_denominator_bounds": [
+              0.0,
+              1.0
+            ],
+            "matches": 0.0,
+            "predicted_ties": 0,
+            "state": "inconclusive_missing_over_10_percent",
+            "unassessed": 36,
+            "unordered_pairs": 36
+          }
+        },
+        "pairwise": {
+          "all_collection_explicit_abstentions": 0,
+          "each_order_against_expert": {
+            "assessed_denominator": 4,
+            "expected_denominator": 72,
+            "fraction": 1.0,
+            "full_denominator_bounds": [
+              0.05555555555555555,
+              1.0
+            ],
+            "matches": 4,
+            "state": "inconclusive_missing_over_10_percent",
+            "unassessed": 68
+          },
+          "global_rho": null,
+          "global_rho_reason": "Twelve disconnected three-story graphs; no global rank inference",
+          "initial_assessed_orders": 4,
+          "initial_expected_orders": 72,
+          "mean_absolute_canonical_order_gap": null,
+          "order_averaged_within_plot_agreement": {
+            "assessed_denominator": 0,
+            "bootstrap": {
+              "reason": "Incomplete informative pairs",
+              "state": "not_estimated"
+            },
+            "consensus_ties": 0,
+            "expected_denominator": 36,
+            "expert_ties_excluded": 0,
+            "fraction": null,
+            "full_denominator_bounds": [
+              0.0,
+              1.0
+            ],
+            "matches": 0.0,
+            "state": "inconclusive_missing_over_10_percent",
+            "unassessed": 36
+          },
+          "paired_order_complete_pairs": 0,
+          "paired_order_disagreements": 0,
+          "paired_order_opposite_direction_pairs": 0,
+          "repeat_same_order_agreement": {
+            "assessed_denominator": 0,
+            "expected_denominator": 24,
+            "fraction": null,
+            "full_denominator_bounds": [
+              0.0,
+              1.0
+            ],
+            "matches": 0,
+            "state": "inconclusive_missing_over_10_percent",
+            "unassessed": 24
+          },
+          "state": "inconclusive_missing_over_10_percent",
+          "unordered_pairs": 36
+        },
+        "ttcw14": {
+          "expected_story_scores": 36,
+          "expert_agreement": {
+            "by_test": {
+              "1": {
+                "individual_ballots": {
+                  "assessed_denominator": 3,
+                  "expected_denominator": 108,
+                  "fraction": 1.0,
+                  "full_denominator_bounds": [
+                    0.027777777777777776,
+                    1.0
+                  ],
+                  "matches": 3,
+                  "state": "inconclusive_missing_over_10_percent",
+                  "unassessed": 105
+                },
+                "majority": {
+                  "assessed_denominator": 1,
+                  "expected_denominator": 36,
+                  "fraction": 1.0,
+                  "full_denominator_bounds": [
+                    0.027777777777777776,
+                    1.0
+                  ],
+                  "matches": 1,
+                  "state": "inconclusive_missing_over_10_percent",
+                  "unassessed": 35
+                }
+              },
+              "10": {
+                "individual_ballots": {
+                  "assessed_denominator": 3,
+                  "expected_denominator": 108,
+                  "fraction": 1.0,
+                  "full_denominator_bounds": [
+                    0.027777777777777776,
+                    1.0
+                  ],
+                  "matches": 3,
+                  "state": "inconclusive_missing_over_10_percent",
+                  "unassessed": 105
+                },
+                "majority": {
+                  "assessed_denominator": 1,
+                  "expected_denominator": 36,
+                  "fraction": 1.0,
+                  "full_denominator_bounds": [
+                    0.027777777777777776,
+                    1.0
+                  ],
+                  "matches": 1,
+                  "state": "inconclusive_missing_over_10_percent",
+                  "unassessed": 35
+                }
+              },
+              "11": {
+                "individual_ballots": {
+                  "assessed_denominator": 3,
+                  "expected_denominator": 108,
+                  "fraction": 1.0,
+                  "full_denominator_bounds": [
+                    0.027777777777777776,
+                    1.0
+                  ],
+                  "matches": 3,
+                  "state": "inconclusive_missing_over_10_percent",
+                  "unassessed": 105
+                },
+                "majority": {
+                  "assessed_denominator": 1,
+                  "expected_denominator": 36,
+                  "fraction": 1.0,
+                  "full_denominator_bounds": [
+                    0.027777777777777776,
+                    1.0
+                  ],
+                  "matches": 1,
+                  "state": "inconclusive_missing_over_10_percent",
+                  "unassessed": 35
+                }
+              },
+              "12": {
+                "individual_ballots": {
+                  "assessed_denominator": 3,
+                  "expected_denominator": 108,
+                  "fraction": 0.0,
+                  "full_denominator_bounds": [
+                    0.0,
+                    0.9722222222222222
+                  ],
+                  "matches": 0,
+                  "state": "inconclusive_missing_over_10_percent",
+                  "unassessed": 105
+                },
+                "majority": {
+                  "assessed_denominator": 1,
+                  "expected_denominator": 36,
+                  "fraction": 0.0,
+                  "full_denominator_bounds": [
+                    0.0,
+                    0.9722222222222222
+                  ],
+                  "matches": 0,
+                  "state": "inconclusive_missing_over_10_percent",
+                  "unassessed": 35
+                }
+              },
+              "13": {
+                "individual_ballots": {
+                  "assessed_denominator": 3,
+                  "expected_denominator": 108,
+                  "fraction": 0.3333333333333333,
+                  "full_denominator_bounds": [
+                    0.009259259259259259,
+                    0.9814814814814815
+                  ],
+                  "matches": 1,
+                  "state": "inconclusive_missing_over_10_percent",
+                  "unassessed": 105
+                },
+                "majority": {
+                  "assessed_denominator": 1,
+                  "expected_denominator": 36,
+                  "fraction": 0.0,
+                  "full_denominator_bounds": [
+                    0.0,
+                    0.9722222222222222
+                  ],
+                  "matches": 0,
+                  "state": "inconclusive_missing_over_10_percent",
+                  "unassessed": 35
+                }
+              },
+              "14": {
+                "individual_ballots": {
+                  "assessed_denominator": 3,
+                  "expected_denominator": 108,
+                  "fraction": 0.6666666666666666,
+                  "full_denominator_bounds": [
+                    0.018518518518518517,
+                    0.9907407407407407
+                  ],
+                  "matches": 2,
+                  "state": "inconclusive_missing_over_10_percent",
+                  "unassessed": 105
+                },
+                "majority": {
+                  "assessed_denominator": 1,
+                  "expected_denominator": 36,
+                  "fraction": 1.0,
+                  "full_denominator_bounds": [
+                    0.027777777777777776,
+                    1.0
+                  ],
+                  "matches": 1,
+                  "state": "inconclusive_missing_over_10_percent",
+                  "unassessed": 35
+                }
+              },
+              "2": {
+                "individual_ballots": {
+                  "assessed_denominator": 3,
+                  "expected_denominator": 108,
+                  "fraction": 1.0,
+                  "full_denominator_bounds": [
+                    0.027777777777777776,
+                    1.0
+                  ],
+                  "matches": 3,
+                  "state": "inconclusive_missing_over_10_percent",
+                  "unassessed": 105
+                },
+                "majority": {
+                  "assessed_denominator": 1,
+                  "expected_denominator": 36,
+                  "fraction": 1.0,
+                  "full_denominator_bounds": [
+                    0.027777777777777776,
+                    1.0
+                  ],
+                  "matches": 1,
+                  "state": "inconclusive_missing_over_10_percent",
+                  "unassessed": 35
+                }
+              },
+              "3": {
+                "individual_ballots": {
+                  "assessed_denominator": 3,
+                  "expected_denominator": 108,
+                  "fraction": 0.3333333333333333,
+                  "full_denominator_bounds": [
+                    0.009259259259259259,
+                    0.9814814814814815
+                  ],
+                  "matches": 1,
+                  "state": "inconclusive_missing_over_10_percent",
+                  "unassessed": 105
+                },
+                "majority": {
+                  "assessed_denominator": 1,
+                  "expected_denominator": 36,
+                  "fraction": 0.0,
+                  "full_denominator_bounds": [
+                    0.0,
+                    0.9722222222222222
+                  ],
+                  "matches": 0,
+                  "state": "inconclusive_missing_over_10_percent",
+                  "unassessed": 35
+                }
+              },
+              "4": {
+                "individual_ballots": {
+                  "assessed_denominator": 3,
+                  "expected_denominator": 108,
+                  "fraction": 0.3333333333333333,
+                  "full_denominator_bounds": [
+                    0.009259259259259259,
+                    0.9814814814814815
+                  ],
+                  "matches": 1,
+                  "state": "inconclusive_missing_over_10_percent",
+                  "unassessed": 105
+                },
+                "majority": {
+                  "assessed_denominator": 1,
+                  "expected_denominator": 36,
+                  "fraction": 0.0,
+                  "full_denominator_bounds": [
+                    0.0,
+                    0.9722222222222222
+                  ],
+                  "matches": 0,
+                  "state": "inconclusive_missing_over_10_percent",
+                  "unassessed": 35
+                }
+              },
+              "5": {
+                "individual_ballots": {
+                  "assessed_denominator": 3,
+                  "expected_denominator": 108,
+                  "fraction": 0.6666666666666666,
+                  "full_denominator_bounds": [
+                    0.018518518518518517,
+                    0.9907407407407407
+                  ],
+                  "matches": 2,
+                  "state": "inconclusive_missing_over_10_percent",
+                  "unassessed": 105
+                },
+                "majority": {
+                  "assessed_denominator": 1,
+                  "expected_denominator": 36,
+                  "fraction": 1.0,
+                  "full_denominator_bounds": [
+                    0.027777777777777776,
+                    1.0
+                  ],
+                  "matches": 1,
+                  "state": "inconclusive_missing_over_10_percent",
+                  "unassessed": 35
+                }
+              },
+              "6": {
+                "individual_ballots": {
+                  "assessed_denominator": 3,
+                  "expected_denominator": 108,
+                  "fraction": 0.3333333333333333,
+                  "full_denominator_bounds": [
+                    0.009259259259259259,
+                    0.9814814814814815
+                  ],
+                  "matches": 1,
+                  "state": "inconclusive_missing_over_10_percent",
+                  "unassessed": 105
+                },
+                "majority": {
+                  "assessed_denominator": 1,
+                  "expected_denominator": 36,
+                  "fraction": 0.0,
+                  "full_denominator_bounds": [
+                    0.0,
+                    0.9722222222222222
+                  ],
+                  "matches": 0,
+                  "state": "inconclusive_missing_over_10_percent",
+                  "unassessed": 35
+                }
+              },
+              "7": {
+                "individual_ballots": {
+                  "assessed_denominator": 3,
+                  "expected_denominator": 108,
+                  "fraction": 1.0,
+                  "full_denominator_bounds": [
+                    0.027777777777777776,
+                    1.0
+                  ],
+                  "matches": 3,
+                  "state": "inconclusive_missing_over_10_percent",
+                  "unassessed": 105
+                },
+                "majority": {
+                  "assessed_denominator": 1,
+                  "expected_denominator": 36,
+                  "fraction": 1.0,
+                  "full_denominator_bounds": [
+                    0.027777777777777776,
+                    1.0
+                  ],
+                  "matches": 1,
+                  "state": "inconclusive_missing_over_10_percent",
+                  "unassessed": 35
+                }
+              },
+              "8": {
+                "individual_ballots": {
+                  "assessed_denominator": 3,
+                  "expected_denominator": 108,
+                  "fraction": 0.3333333333333333,
+                  "full_denominator_bounds": [
+                    0.009259259259259259,
+                    0.9814814814814815
+                  ],
+                  "matches": 1,
+                  "state": "inconclusive_missing_over_10_percent",
+                  "unassessed": 105
+                },
+                "majority": {
+                  "assessed_denominator": 1,
+                  "expected_denominator": 36,
+                  "fraction": 0.0,
+                  "full_denominator_bounds": [
+                    0.0,
+                    0.9722222222222222
+                  ],
+                  "matches": 0,
+                  "state": "inconclusive_missing_over_10_percent",
+                  "unassessed": 35
+                }
+              },
+              "9": {
+                "individual_ballots": {
+                  "assessed_denominator": 3,
+                  "expected_denominator": 108,
+                  "fraction": 0.6666666666666666,
+                  "full_denominator_bounds": [
+                    0.018518518518518517,
+                    0.9907407407407407
+                  ],
+                  "matches": 2,
+                  "state": "inconclusive_missing_over_10_percent",
+                  "unassessed": 105
+                },
+                "majority": {
+                  "assessed_denominator": 1,
+                  "expected_denominator": 36,
+                  "fraction": 1.0,
+                  "full_denominator_bounds": [
+                    0.027777777777777776,
+                    1.0
+                  ],
+                  "matches": 1,
+                  "state": "inconclusive_missing_over_10_percent",
+                  "unassessed": 35
+                }
+              }
+            },
+            "expert_majority": {
+              "assessed_denominator": 14,
+              "bootstrap": {
+                "reason": "Incomplete assessed test/story cells",
+                "state": "not_estimated"
+              },
+              "expected_denominator": 504,
+              "fraction": 0.5714285714285714,
+              "full_denominator_bounds": [
+                0.015873015873015872,
+                0.9880952380952381
+              ],
+              "matches": 8,
+              "state": "inconclusive_missing_over_10_percent",
+              "unassessed": 490
+            },
+            "individual_ballots": {
+              "assessed_denominator": 42,
+              "bootstrap": {
+                "reason": "Incomplete assessed test/story cells",
+                "state": "not_estimated"
+              },
+              "expected_denominator": 1512,
+              "fraction": 0.6190476190476191,
+              "full_denominator_bounds": [
+                0.017195767195767195,
+                0.9894179894179894
+              ],
+              "matches": 26,
+              "state": "inconclusive_missing_over_10_percent",
+              "unassessed": 1470
+            }
+          },
+          "initial_assessed_story_scores": 1,
+          "initial_states": {
+            "assessed": 1,
+            "not_admitted": 35
+          },
+          "initial_test_coverage": {
+            "assessed": 14,
+            "expected": 504,
+            "fraction": 0.027777777777777776,
+            "native_cannot_assess": 0,
+            "received_native_tests": 14,
+            "unassessed": 490,
+            "uncollected_test_positions": 490
+          },
+          "repeatability": {
+            "assessed_binary_agreement": {
+              "assessed_denominator": 0,
+              "expected_denominator": 252,
+              "fraction": null,
+              "full_denominator_bounds": [
+                0.0,
+                1.0
+              ],
+              "matches": 0,
+              "state": "inconclusive_missing_over_10_percent",
+              "unassessed": 252
+            },
+            "complete_three_sample_works": 0,
+            "independent_work_count_added": 0,
+            "initial_vs_repeat_exact_score_agreement": {
+              "assessed_denominator": 0,
+              "expected_denominator": 18,
+              "fraction": null,
+              "full_denominator_bounds": [
+                0.0,
+                1.0
+              ],
+              "matches": 0,
+              "state": "inconclusive_missing_over_10_percent",
+              "unassessed": 18
+            },
+            "mean_absolute_score_change": null,
+            "not_applicable_activation_flips": 0,
+            "rank_instability": {
+              "0_vs_1": {
+                "expected_works": 9,
+                "mean_absolute_rank_change": null,
+                "paired_works": 0,
+                "rho": null
+              },
+              "0_vs_2": {
+                "expected_works": 9,
+                "mean_absolute_rank_change": null,
+                "paired_works": 0,
+                "rho": null
+              },
+              "1_vs_2": {
+                "expected_works": 9,
+                "mean_absolute_rank_change": null,
+                "paired_works": 0,
+                "rho": null
+              }
+            },
+            "raw_state_agreement_includes_NA_CA": {
+              "assessed_denominator": 0,
+              "expected_denominator": 252,
+              "fraction": null,
+              "full_denominator_bounds": [
+                0.0,
+                1.0
+              ],
+              "matches": 0,
+              "state": "inconclusive_missing_over_10_percent",
+              "unassessed": 252
+            },
+            "sentinel_works": 9
+          },
+          "request_coverage": {
+            "initial_native_admitted": 1,
+            "initial_scheduled": 36,
+            "initial_schema_accepted_any_abstention": 0,
+            "initial_unadmitted_or_missing": 35
+          },
+          "score_distribution": {
+            "ceiling_count": 0,
+            "distinct_scores": 1,
+            "floor_count": 0,
+            "items_in_ties": 0,
+            "maximum": 0.42857142857142855,
+            "mean": 0.42857142857142855,
+            "minimum": 0.42857142857142855,
+            "n": 1,
+            "native_range": [
+              0,
+              1
+            ],
+            "tied_score_groups": 0,
+            "tied_unordered_pairs": 0
+          },
+          "story_score_association": {
+            "bootstrap": {
+              "reason": "Incomplete cohort; missing over ten percent",
+              "state": "not_estimated"
+            },
+            "expected_works": 36,
+            "missing_works": 35,
+            "rho": null,
+            "state": "inconclusive_missing_over_10_percent",
+            "undefined_reason": "Too few paired works or a constant rank vector",
+            "unobserved_outcome_bounds": [
+              -1,
+              1
+            ],
+            "works": 1
+          },
+          "within_plot_pair_agreement": {
+            "assessed_denominator": 0,
+            "bootstrap": {
+              "reason": "Incomplete informative pairs",
+              "state": "not_estimated"
+            },
+            "expected_denominator": 36,
+            "expert_ties_excluded": 0,
+            "fraction": null,
+            "full_denominator_bounds": [
+              0.0,
+              1.0
+            ],
+            "matches": 0.0,
+            "predicted_ties": 0,
+            "state": "inconclusive_missing_over_10_percent",
+            "unassessed": 36,
+            "unordered_pairs": 36
+          }
+        }
+      },
+      "paired_scalar_associations": {
+        "compact_minus_oregon": {
+          "bootstrap": {
+            "reason": "Incomplete shared denominator",
+            "state": "not_estimated"
+          },
+          "delta_rho": null,
+          "expected_works": 36,
+          "shared_works": 0,
+          "state": "inconclusive_missing_over_10_percent",
+          "unobserved_delta_bounds": [
+            -2,
+            2
+          ]
+        },
+        "hbq_minus_compact": {
+          "bootstrap": {
+            "reason": "Incomplete shared denominator",
+            "state": "not_estimated"
+          },
+          "delta_rho": null,
+          "expected_works": 36,
+          "shared_works": 0,
+          "state": "inconclusive_missing_over_10_percent",
+          "unobserved_delta_bounds": [
+            -2,
+            2
+          ]
+        },
+        "hbq_minus_holistic": {
+          "bootstrap": {
+            "reason": "Incomplete shared denominator",
+            "state": "not_estimated"
+          },
+          "delta_rho": null,
+          "expected_works": 36,
+          "shared_works": 0,
+          "state": "inconclusive_missing_over_10_percent",
+          "unobserved_delta_bounds": [
+            -2,
+            2
+          ]
+        },
+        "hbq_minus_oregon": {
+          "bootstrap": {
+            "reason": "Incomplete shared denominator",
+            "state": "not_estimated"
+          },
+          "delta_rho": null,
+          "expected_works": 36,
+          "shared_works": 0,
+          "state": "inconclusive_missing_over_10_percent",
+          "unobserved_delta_bounds": [
+            -2,
+            2
+          ]
+        },
+        "hbq_minus_ttcw14": {
+          "bootstrap": {
+            "reason": "Incomplete shared denominator",
+            "state": "not_estimated"
+          },
+          "delta_rho": null,
+          "expected_works": 36,
+          "shared_works": 0,
+          "state": "inconclusive_missing_over_10_percent",
+          "unobserved_delta_bounds": [
+            -2,
+            2
+          ]
+        },
+        "holistic_minus_compact": {
+          "bootstrap": {
+            "reason": "Incomplete shared denominator",
+            "state": "not_estimated"
+          },
+          "delta_rho": null,
+          "expected_works": 36,
+          "shared_works": 0,
+          "state": "inconclusive_missing_over_10_percent",
+          "unobserved_delta_bounds": [
+            -2,
+            2
+          ]
+        },
+        "holistic_minus_oregon": {
+          "bootstrap": {
+            "reason": "Incomplete shared denominator",
+            "state": "not_estimated"
+          },
+          "delta_rho": null,
+          "expected_works": 36,
+          "shared_works": 0,
+          "state": "inconclusive_missing_over_10_percent",
+          "unobserved_delta_bounds": [
+            -2,
+            2
+          ]
+        },
+        "ttcw14_minus_compact": {
+          "bootstrap": {
+            "reason": "Incomplete shared denominator",
+            "state": "not_estimated"
+          },
+          "delta_rho": null,
+          "expected_works": 36,
+          "shared_works": 0,
+          "state": "inconclusive_missing_over_10_percent",
+          "unobserved_delta_bounds": [
+            -2,
+            2
+          ]
+        },
+        "ttcw14_minus_holistic": {
+          "bootstrap": {
+            "reason": "Incomplete shared denominator",
+            "state": "not_estimated"
+          },
+          "delta_rho": null,
+          "expected_works": 36,
+          "shared_works": 0,
+          "state": "inconclusive_missing_over_10_percent",
+          "unobserved_delta_bounds": [
+            -2,
+            2
+          ]
+        },
+        "ttcw14_minus_oregon": {
+          "bootstrap": {
+            "reason": "Incomplete shared denominator",
+            "state": "not_estimated"
+          },
+          "delta_rho": null,
+          "expected_works": 36,
+          "shared_works": 0,
+          "state": "inconclusive_missing_over_10_percent",
+          "unobserved_delta_bounds": [
+            -2,
+            2
+          ]
+        }
+      }
+    }
+  },
+  "evidence_class": "opened_development_baseline_comparator_analysis",
+  "limits": [
+    "Opened development evidence; no untouched confirmation or candidate promotion.",
+    "Individual ballots and repeats do not enlarge the work sample.",
+    "Missing, invalid and abstaining responses are unassessed, never NO or ties.",
+    "No global pairwise rho from disconnected plot graphs.",
+    "Public aggregate contains no story prose, per-story scores, individual labels or rater IDs."
+  ],
+  "native_inventory": {
+    "grok": {
+      "attempt_overlap_policy": "Reject duplicate actual attempts; no implicit ambiguity repair or vote replacement",
+      "jobs": [
+        {
+          "accepted_request_commitment_sha256": "ba9e3a47f372d861d7bf46066ca7c452d659f70b664d188c0657ac6ffe108d4f",
+          "binding": {
+            "automatic_retries": 0,
+            "collector_sha256": "36b900aeda7a33333d9f4fd1f9c240daac775e05d5ec975868fac7f2521cc665",
+            "destination": "xai_grok_build_subscription",
+            "endpoint": "grok",
+            "model": "grok-4.7",
+            "route_timeout_seconds": 300,
+            "sampler": "native defaults; requested high; temperature unsupported",
+            "validator_sha256": "a41915877b6f7e21a05f0b34d3c31c788f7f23070ab674ecfc514d93391e270e",
+            "workers": 2,
+            "zero_charge_only": true
+          },
+          "condition": "original",
+          "job_sha256": "a0824e36d8940e37820281dcfe0366e1a1005959add9217ffb8164b8ebd610b9",
+          "native_accepted_requests": 5,
+          "proof_scope": "Collector terminal hash bindings and frozen semantic replay; independent provider-native receipt re-audit is not performed",
+          "result_manifest_sha256": "b1868f8b6dee6daba3125b73628e6276b34f7049fad049f17262cbe3c859b7b7",
+          "scheduled": 1554,
+          "statuses": {
+            "accepted": 5,
+            "not_collected": 1548,
+            "terminal_unadmitted": 1
+          }
+        },
+        {
+          "accepted_request_commitment_sha256": "003e33ffac7b83619b0c6f8a360c506f447e326b351e40110863b7bdcd609b24",
+          "binding": {
+            "automatic_retries": 0,
+            "collector_sha256": "36b900aeda7a33333d9f4fd1f9c240daac775e05d5ec975868fac7f2521cc665",
+            "destination": "xai_grok_build_subscription",
+            "endpoint": "grok",
+            "model": "grok-4.7",
+            "route_timeout_seconds": 900,
+            "sampler": "native defaults; requested high; temperature unsupported",
+            "validator_sha256": "a41915877b6f7e21a05f0b34d3c31c788f7f23070ab674ecfc514d93391e270e",
+            "workers": 2,
+            "zero_charge_only": true
+          },
+          "condition": "exact-request continuation",
+          "job_sha256": "d7914c2555f659c6dab2c979a6a64b636f34dc896ea0958ce00dfa71847e78e0",
+          "native_accepted_requests": 2,
+          "proof_scope": "Collector terminal hash bindings and frozen semantic replay; independent provider-native receipt re-audit is not performed",
+          "result_manifest_sha256": "e5fc59a5baff54b08a9e1bc5f78a5d4647ac19006d13376ec190c1ab713c5a22",
+          "scheduled": 1548,
+          "statuses": {
+            "accepted": 2,
+            "in_progress_or_unresolved": 2,
+            "not_collected": 1544
+          }
+        }
+      ],
+      "native_accepted_requests": 7,
+      "scheduled": 1554,
+      "statuses": {
+        "accepted": 7,
+        "in_progress_or_unresolved": 2,
+        "not_collected": 1544,
+        "terminal_unadmitted": 1
+      }
+    },
+    "sol": {
+      "attempt_overlap_policy": "Reject duplicate actual attempts; no implicit ambiguity repair or vote replacement",
+      "jobs": [
+        {
+          "accepted_request_commitment_sha256": "236bc1695448239918ce3d8a3b2d37af8c9d0d26fec58559d127cdc14db0e1f5",
+          "binding": {
+            "automatic_retries": 0,
+            "collector_sha256": "36b900aeda7a33333d9f4fd1f9c240daac775e05d5ec975868fac7f2521cc665",
+            "destination": "OpenAI ChatGPT subscription via native Codex exec",
+            "endpoint": "sol",
+            "model": "gpt-6.1-sol",
+            "reasoning": "high",
+            "receipt_reader_sha256": "5d1c7af681e881a77201dee7cece4a14fa11cadc86d119714766492e547e1116",
+            "runner_sha256": "04a87edb728701afa6a43233a775c032473c82d0f189f209713051025d86f1f7",
+            "sampler": "native defaults; requested high; temperature unsupported",
+            "validator_sha256": "a41915877b6f7e21a05f0b34d3c31c788f7f23070ab674ecfc514d93391e270e",
+            "workers": 2,
+            "zero_charge_only": true
+          },
+          "condition": "original",
+          "job_sha256": "9c61d869eecc76c316d333409361c052e14719b81d9d44334f7d827908b44772",
+          "native_accepted_requests": 41,
+          "proof_scope": "Collector terminal hash bindings and frozen semantic replay; independent provider-native receipt re-audit is not performed",
+          "result_manifest_sha256": "b1868f8b6dee6daba3125b73628e6276b34f7049fad049f17262cbe3c859b7b7",
+          "scheduled": 1554,
+          "statuses": {
+            "accepted": 41,
+            "in_progress_or_unresolved": 2,
+            "not_collected": 1511
+          }
+        }
+      ],
+      "native_accepted_requests": 41,
+      "scheduled": 1554,
+      "statuses": {
+        "accepted": 41,
+        "in_progress_or_unresolved": 2,
+        "not_collected": 1511
+      }
+    }
+  },
+  "new_human_labels": 0,
+  "promotion_authority": false,
+  "provenance": {
+    "analysis_sha256": "c843cb8bfb54a3cc27955c911c1a8e5aa053d6a2f25a9f4dd3b67479fa22ae19",
+    "config": {
+      "bootstrap_reps": 2000,
+      "missing_over_10_percent": "inconclusive",
+      "pair_consensus": "mean of two assessed canonical-order decisions; threshold at0.5",
+      "score_samples": "initial only",
+      "seed": 20261004
+    },
+    "development_labels_sha256": "1916ec27eaa8810a8427ed7000e2aefa3535fd2a33b2ae1d372cccdab3fc6516",
+    "manifest_content_sha256": "00df72ef1103ae734b79eee4c2bb8589521fcef6bb50860f23c3a27c9c085466",
+    "manifest_sha256": "b1868f8b6dee6daba3125b73628e6276b34f7049fad049f17262cbe3c859b7b7",
+    "source_pins": {
+      "author": {
+        "path": "ttcw-expert-source-r125/author-stories.json",
+        "sha256": "5ff3138ead096c50ecafc86c7be88837c96fd2d6a0d903042c0fb3ed867c2bcf"
+      },
+      "plan": {
+        "path": "ttcw-expert-plan-r129/plan.json",
+        "sha256": "31e7a0fc06a52808ff0e0f3d20642c1ad65274603ebdaf6f0f43a474ff407180"
+      },
+      "tests": {
+        "path": "ttcw-expert-source-r125/author-tests.json",
+        "sha256": "1f305d408e3f89bb526023a0f04d58428b096aef66b5d748b81579036f3be5a8"
+      }
+    }
+  },
+  "provider_calls_made": 0,
+  "schema_version": 1,
+  "study_id": "matched-ttcw-20261004-v1"
+}

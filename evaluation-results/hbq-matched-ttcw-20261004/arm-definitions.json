@@ -1,0 +1,46 @@
+{
+  "study_id": "matched-ttcw-20261004-v1",
+  "arms": {
+    "hbq": {
+      "definition": "Retained canonical 178-question bank, twenty-three packets per story; user prompt bytes unchanged. Schema portability only, with retained and emitted hashes.",
+      "source": "CONTROL/ttcw-expert-plan-r129/plan.json",
+      "source_sha256": "31e7a0fc06a52808ff0e0f3d20642c1ad65274603ebdaf6f0f43a474ff407180",
+      "score": "Historical deterministic scoring snapshot bound by retained plan; candidate scoring is a separate analysis condition."
+    },
+    "ttcw14": {
+      "definition": "Fourteen literal source questions and interpretive definitions in one concise-evidence packet. Terminal reasoning/list-enumeration and binary-only output instructions replaced; no NOT_APPLICABLE; true CANNOT_ASSESS retained.",
+      "source": "CONTROL/ttcw-expert-source-r125/author-tests.json",
+      "source_sha256": "1f305d408e3f89bb526023a0f04d58428b096aef66b5d748b81579036f3be5a8",
+      "score": "YES fraction of assessed tests, with assessed/14 coverage; do not present partial totals as full fourteen-test scores."
+    },
+    "holistic": {
+      "definition": "Named adult-prose-fiction descendant, seven anchored levels, exact evidence, explicit abstention envelope.",
+      "source": "evaluation-results/the-part-that-arrives-first-repeatability/arms/holistic-anchored.prompt.md",
+      "source_sha256": "dd1fa203bdd82733b2bcc3d8f874e734db7ffd3b889f1a5424b5a7861676201b",
+      "source_schema_sha256": "dd7f3fc9c094cade70faa3763165de0d456d97482ade746e94e374d041e404fb",
+      "score": "Native overall 1-7."
+    },
+    "compact": {
+      "definition": "Named adult-prose-fiction descendant; six dimensions plus independent overall judgment. Technology-specific setting wording generalized; explicit abstention envelope.",
+      "source": "evaluation-results/the-part-that-arrives-first-repeatability/arms/compact-analytic.prompt.md",
+      "source_sha256": "b2982b60a5b59971040a632ad2c463e5b8b994801e4aaaf4c0263e2feab6e26e",
+      "source_schema_sha256": "89b16f68d51960572ef14ead993ef9abeee67b4490b1b8a307fa66ee04bf87fc",
+      "score": "Native independently judged overall 1-5; dimension mean is diagnostic only."
+    },
+    "oregon": {
+      "definition": "Named TTCW descendant of the existing six-trait Oregon 2017 research implementation, with explicit abstention envelope; educational/adult literary target mismatch disclosed.",
+      "source": "evaluation-results/the-part-that-arrives-first-repeatability/established-v2/arms/oregon-narrative-2017.prompt.md",
+      "source_sha256": "136e023df18f4f0ad3d7c7b71b133ff22c7d7ff8dfdd509659a8daaa83abc47a",
+      "source_schema_sha256": "6a761c896b9a9c707fa8df637eaf77f347495920acccdaddfabbbc6abb68f178",
+      "score": "Native exact sum of six integer 1-6 traits, range 6-36."
+    },
+    "pairwise": {
+      "definition": "Standalone independent editorial comparison; both orders; genuine ties distinct from cannot-assess; no HBQ report, gate outcome, source generator, title, or quality target included.",
+      "editorial_source": "CONTROL/lamp-evaluation-r227/prepare_comparative_pilot_r379.py",
+      "editorial_source_sha256": "f63fed6049d096764531a1bbc69c7301120e238cf20ac178de92cc73a0719728",
+      "decision_source": "evaluation-results/hbq-human-alignment-wpb-pilot-v1/source.py::_make_payload",
+      "decision_source_file_sha256": "aea28d9a28c9d08c9a22e5f9589dc7bdb62f58df5e45970e04ccbbef80dd9148",
+      "score": "Within-plot direction only; never create a global ranking from twelve disconnected graphs."
+    }
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "method",
+    "winner",
+    "tradeoff",
+    "evidence",
+    "abstention_reason"
+  ],
+  "properties": {
+    "method": {
+      "enum": [
+        "ttcw_independent_editorial_pairwise_v1"
+      ]
+    },
+    "winner": {
+      "enum": [
+        "A",
+        "B",
+        "TIE",
+        "CANNOT_ASSESS"
+      ]
+    },
+    "tradeoff": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1600
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "side",
+          "quote",
+          "explanation"
+        ],
+        "properties": {
+          "side": {
+            "enum": [
+              "A",
+              "B"
+            ]
+          },
+          "quote": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "explanation": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1600
+          }
+        }
+      }
+    },
+    "abstention_reason": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 1600
+    }
+  }
+}

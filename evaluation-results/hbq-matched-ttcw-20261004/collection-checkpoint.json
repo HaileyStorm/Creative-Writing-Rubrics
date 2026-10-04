@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-04",
+  "owner_task": "01a10839-a735-7bf2-a05a-68afadb52755",
+  "original_manifest_sha256": "b1868f8b6dee6daba3125b73628e6276b34f7049fad049f17262cbe3c859b7b7",
+  "planned_requests_per_endpoint": 1554,
+  "sol": {
+    "handle": "ttcw-phase1/sol/lifecycle/full-001/",
+    "workers": 2,
+    "state": "collecting_at_checkpoint",
+    "accepted_at_bounded_observation": 35,
+    "in_flight_at_bounded_observation": 2,
+    "account": "owner-designated secondary ChatGPT subscription",
+    "receipt_policy": "codex_native_rollout_v1"
+  },
+  "grok_original": {
+    "state": "terminal",
+    "reserved_prefix": [1, 2, 3, 4, 5, 6],
+    "accepted": 5,
+    "ambiguous": 1,
+    "timeout_seconds": 300,
+    "reconciliation": "Exact native session retained streaming reasoning without a final assistant answer; ambiguous slot remains unadmitted and is never resent",
+    "reconciliation_receipt_sha256": "30abd4ddf8c9a9fe5bfa32d613c09d67dc814369746b40e5582779e1197841e5"
+  },
+  "grok_continuation": {
+    "manifest_sha256": "e5fc59a5baff54b08a9e1bc5f78a5d4647ac19006d13376ec190c1ab713c5a22",
+    "manifest_content_sha256": "701ba0793d6088a0acf03a5e7ea34f0b4376dc750856505bc228908f5d74a270",
+    "selection": "All untouched original ordinals7..1554, independent of prefix outcomes",
+    "requests": 1548,
+    "handle": "ttcw-phase1/grok-suffix-001/lifecycle/full-001/",
+    "state": "launched",
+    "workers": 2,
+    "timeout_seconds": 900,
+    "route_receipt_expires_at": "2026-10-05T20:39:50Z",
+    "automatic_retries": 0,
+    "paid_fallback": false
+  },
+  "evidence_limits": [
+    "Checkpoint counts are observations, not final collection totals",
+    "Native settings and observed turns do not independently prove backend model identity or physical contact count",
+    "Estimated model cost does not establish billed cash; only saved-subscription zero-charge routes are authorized",
+    "Human alignment and repeatability conclusions require adequate admitted coverage; no candidate is promoted"
+  ]
+}

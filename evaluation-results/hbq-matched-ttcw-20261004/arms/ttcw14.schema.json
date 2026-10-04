@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "method",
+    "verdicts"
+  ],
+  "properties": {
+    "method": {
+      "enum": [
+        "ttcw14_concise_evidence_v1"
+      ]
+    },
+    "verdicts": {
+      "type": "array",
+      "minItems": 14,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "test_id",
+          "verdict",
+          "observation",
+          "evidence",
+          "abstention_reason"
+        ],
+        "properties": {
+          "test_id": {
+            "enum": [
+              "ttcw-01",
+              "ttcw-02",
+              "ttcw-03",
+              "ttcw-04",
+              "ttcw-05",
+              "ttcw-06",
+              "ttcw-07",
+              "ttcw-08",
+              "ttcw-09",
+              "ttcw-10",
+              "ttcw-11",
+              "ttcw-12",
+              "ttcw-13",
+              "ttcw-14"
+            ]
+          },
+          "verdict": {
+            "enum": [
+              "YES",
+              "NO",
+              "CANNOT_ASSESS"
+            ]
+          },
+          "observation": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1600
+          },
+          "evidence": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "quote",
+                "explanation"
+              ],
+              "properties": {
+                "quote": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                },
+                "explanation": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 1600
+                }
+              }
+            }
+          },
+          "abstention_reason": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 1600
+          }
+        }
+      }
+    }
+  }
+}

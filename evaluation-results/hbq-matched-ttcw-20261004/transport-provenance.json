@@ -1,0 +1,71 @@
+{
+  "version": 1,
+  "date": "2026-10-04",
+  "scope": "Windows canonical shared Grok metadata/quiet launch/v5 deployment repair and native transport canaries",
+  "shared_source_pins": [
+    {
+      "path": "prepare_grok_evidence.py",
+      "before_sha256": "20beb9631db15e92fb13df0d10259a57adced87a6476ab94814b39f3c5c82630",
+      "after_sha256": "ad6125e61a06059f3aa783a6f88d292385ff4fbe030d13e8bcb6196d4336a2e5"
+    },
+    {
+      "path": "adapters/grok_exec.py",
+      "before_sha256": "5ac8a932296471b49e388b1f21ecc0e773d8569f964dd9077a6857ee263fdcef",
+      "after_sha256": "4d510d6487b372025fc9c98550de51dc5d03afb72de630de962a2086a70a9b60"
+    },
+    {
+      "path": "broker.py",
+      "before_sha256": "0c6157c7a5da2a4fdf4ac4ada017ad867d210cc742e2012577c170d995fa5248",
+      "after_sha256": "0d3e8428e480145e51320cf1638d3955a2ca30dec87559f1b7df07c5cdc0f106"
+    }
+  ],
+  "restored_v5_source_sha256": "915510aaa5cb634eb2edba346db72013844b8eb6a3ad0dc92c22c337420ac850",
+  "restored_source_locator": "CODEX_HOME/state/nous-v41-broker-standing-20260919/merge-preview-lf/adapters__grok_exec.py.{ours,theirs}",
+  "changes": [
+    "CREATE_NO_WINDOW on metadata and adapter-owned child launches",
+    "Restore retained v5 parser, bounded stdin/history/update readers and runtime contract hashes",
+    "Preserve historical wrapper hash and name exact quiet/v5 descendants; current executable identity remains exact"
+  ],
+  "checks": {
+    "native_receipts": "70 focused checks passed; actual run_judge canary and forbidden-provider local resume passed",
+    "grok_v5": "8 passed",
+    "grok_legacy": "80 passed, 2 skipped; sole pin failure corrected and owning armer test passed",
+    "doctor": "passed after both route refreshes"
+  },
+  "private_canary_receipts": [
+    {
+      "handle": "sol-attempt-004",
+      "terminal_sha256": "f41152cbb1ed7ff68a748d6ca85a49fee2084b1cc04da45cfde039daebe96f8a",
+      "state": "native_process_completed_pending_local_receipt"
+    },
+    {
+      "handle": "sol-attempt-005",
+      "terminal_sha256": "032b26601b29d27db33a6f64dc99be8bc526e6f818200f9dd5f44eb9dac8561a",
+      "state": "accepted_integrated_transport_canary",
+      "replay_sha256": "23608475e062223c9c98940ef47fae56ebdafedaa6722d920cb765bb1b208af1"
+    },
+    {
+      "handle": "grok-attempt-001",
+      "terminal_sha256": "0b62fce6cac97906c38c7a3f6d96f44b0a200e41ba15b2e1bb353432895a7316",
+      "state": "definitely_not_contacted_schema_preflight_failed"
+    },
+    {
+      "handle": "grok-attempt-002",
+      "terminal_sha256": "76b702d2dbb8e49ee7d5953c61c030a00c8e794eb1b02dff1dd26e3c5e31885b",
+      "state": "ambiguous"
+    },
+    {
+      "handle": "grok-attempt-003",
+      "terminal_sha256": "3ff08dbd8969c0eff7906b3e59b3a7a5557bbe165564d8ccf841c4afdcbcc924",
+      "state": "accepted_transport_canary"
+    }
+  ],
+  "limitations": [
+    "Canaries establish finite native transport and receipt replay, not literary quality or human alignment",
+    "Grok requested model identity only; reasoning remains unattested",
+    "Native Sol settings do not establish backend identity or physical provider contact cardinality",
+    "Grok usage telemetry reports model cost estimates; it is not an owner billing receipt",
+    "Attempt002 stays ambiguous/no-resend; installing compatible v5 does not promote it",
+    "Shared maintenance patch is provenance, not an executable collection shim"
+  ]
+}

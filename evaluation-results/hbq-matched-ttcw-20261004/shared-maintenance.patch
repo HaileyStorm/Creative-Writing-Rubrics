@@ -1,0 +1,331 @@
+--- a/tools/model_work_queue/prepare_grok_evidence.py
++++ b/tools/model_work_queue/prepare_grok_evidence.py
+@@ -134,7 +134,8 @@
+ def _version(executable: Path) -> str:
+     try:
+         result = subprocess.run([str(executable), "--version"], stdin=subprocess.DEVNULL, stdout=subprocess.PIPE,
+-                                stderr=subprocess.PIPE, check=False, timeout=30, shell=False, env=_safe_env())
++                                stderr=subprocess.PIPE, check=False, timeout=30, shell=False, env=_safe_env(),
++                                creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
+     except (OSError, subprocess.TimeoutExpired) as exc:
+         raise EvidenceError(f"Grok Build version check did not complete: {exc}") from exc
+     if result.returncode != 0 or result.stderr:
+--- a/tools/model_work_queue/adapters/grok_exec.py
++++ b/tools/model_work_queue/adapters/grok_exec.py
+@@ -30,8 +30,22 @@
+ 
+ ADAPTER_VERSION = 3
+ NONVISUAL_ADAPTER_VERSION = 4
++NONVISUAL_V5_ADAPTER_VERSION = 5
+ MAX_OUTPUT_BYTES = 65_536
+ MAX_STDERR_BYTES = 65_536
++V5_NONVISUAL_TRANSPORT_CONTRACT = {
++    "schema_version": 1,
++    "name": "grok_nonvisual_history_v5",
++    "prompt_utf8_bytes": 73_728,
++    "request_stdin_bytes": 81_920,
++    "prompt_history_line_bytes": 81_920,
++    "first_user_message_chunk_line_bytes": 81_920,
++    "other_update_line_bytes": 65_536,
++    "updates_bytes": 262_144,
++    "summary_bytes": 65_536,
++    "stdout_bytes": 65_536,
++    "stderr_bytes": 65_536,
++}
+ MAX_SESSION_SUMMARY_BYTES = 65_536
+ MAX_SESSION_UPDATES_BYTES = 262_144
+ MAX_SESSION_UPDATE_LINES = 64
+@@ -149,8 +163,12 @@
+ 
+ def _read_canonical_request(raw: bytes) -> dict[str, Any]:
+     try:
+-        request = json.loads(raw.decode("utf-8"))
+-    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
++        request = json.loads(
++            raw.decode("utf-8"),
++            object_pairs_hook=_strict_json_pairs,
++            parse_constant=_reject_nonfinite_json,
++        )
++    except (UnicodeDecodeError, json.JSONDecodeError, ValueError) as exc:
+         raise ValueError("stdin must contain a UTF-8 JSON request") from exc
+     if not isinstance(request, dict) or not isinstance(request.get("prompt"), str):
+         raise ValueError("request must contain a string prompt")
+@@ -176,6 +194,29 @@
+     if _canonical(request) != raw:
+         raise ValueError("request stdin must be canonical JSON")
+     return request
++
++
++def _read_bounded_stdin(source: Any, maximum: int) -> bytes:
++    raw = source.read(maximum + 1)
++    if not isinstance(raw, bytes) or len(raw) > maximum:
++        raise ValueError("request stdin is out of bounds")
++    return raw
++
++
++def _parse_nonvisual_transport_contract(value: str | None) -> dict[str, Any] | None:
++    if value is None:
++        return None
++    try:
++        parsed = json.loads(
++            value,
++            object_pairs_hook=_strict_json_pairs,
++            parse_constant=_reject_nonfinite_json,
++        )
++    except (json.JSONDecodeError, ValueError) as exc:
++        raise ValueError("nonvisual transport contract is invalid") from exc
++    if _canonical(parsed).decode("utf-8") != value or parsed != V5_NONVISUAL_TRANSPORT_CONTRACT:
++        raise ValueError("nonvisual transport contract is unsupported")
++    return parsed
+ 
+ 
+ def _hash_file(path: Path) -> str:
+@@ -316,7 +357,8 @@
+ def _run_bounded(command: list[str], *, cwd: Path, env: dict[str, str], timeout: int, launch_state: list[bool]) -> tuple[int, bytes, bytes]:
+     try:
+         proc = subprocess.Popen(command, stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+-                                cwd=str(cwd), env=env, shell=False)
++                                cwd=str(cwd), env=env, shell=False,
++                                creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
+     except OSError as exc:
+         raise _LaunchFailure(str(exc)) from exc
+     launch_state[0] = True
+@@ -708,14 +750,29 @@
+         raise ValueError("session attestation file is invalid JSON") from exc
+ 
+ 
+-def _read_bounded_jsonl(path: Path) -> tuple[list[dict[str, Any]], str]:
+-    data, digest = _read_stable_bounded(path, MAX_SESSION_UPDATES_BYTES)
+-    lines = data.splitlines()
++def _read_bounded_jsonl(
++    path: Path, *, total_bytes: int = MAX_SESSION_UPDATES_BYTES,
++    line_bytes: int = MAX_SESSION_UPDATE_LINE_BYTES, first_line_bytes: int | None = None,
++    require_terminal_lf: bool = False,
++) -> tuple[list[dict[str, Any]], str]:
++    data, digest = _read_stable_bounded(path, total_bytes)
++    if require_terminal_lf:
++        if not data.endswith(b"\n"):
++            raise ValueError("session updates are invalid")
++        lines = []
++        for raw_line in data[:-1].split(b"\n"):
++            line = raw_line[:-1] if raw_line.endswith(b"\r") else raw_line
++            if b"\r" in line:
++                raise ValueError("session updates are invalid")
++            lines.append(line)
++    else:
++        lines = data.splitlines()
+     if not 1 <= len(lines) <= MAX_SESSION_UPDATE_LINES:
+         raise ValueError("session update count is invalid")
+     updates: list[dict[str, Any]] = []
+-    for line in lines:
+-        if not line or len(line) > MAX_SESSION_UPDATE_LINE_BYTES:
++    for index, line in enumerate(lines):
++        line_maximum = first_line_bytes if index == 0 and first_line_bytes is not None else line_bytes
++        if not line or len(line) > line_maximum:
+             raise ValueError("session update line is invalid")
+         try:
+             update = json.loads(
+@@ -723,12 +780,28 @@
+                 object_pairs_hook=_strict_json_pairs,
+                 parse_constant=_reject_nonfinite_json,
+             )
+-        except (UnicodeDecodeError, json.JSONDecodeError) as exc:
++        except (UnicodeDecodeError, json.JSONDecodeError, ValueError) as exc:
+             raise ValueError("session update line is invalid JSON") from exc
+         if not isinstance(update, dict) or len(update) > 16:
+             raise ValueError("session update line is invalid")
+         updates.append(update)
+     return updates, digest
++
++
++def _read_bounded_prompt_history(path: Path, *, maximum_line_bytes: int, require_terminal_lf: bool = False) -> tuple[list[dict[str, Any]], str]:
++    return _read_bounded_jsonl(
++        path, total_bytes=(maximum_line_bytes + 2 if require_terminal_lf else MAX_SESSION_UPDATES_BYTES),
++        line_bytes=maximum_line_bytes, require_terminal_lf=require_terminal_lf,
++    )
++
++
++def _read_bounded_updates(path: Path, *, transport_contract: dict[str, Any] | None) -> tuple[list[dict[str, Any]], str]:
++    return _read_bounded_jsonl(
++        path, total_bytes=(transport_contract["updates_bytes"] if transport_contract else MAX_SESSION_UPDATES_BYTES),
++        line_bytes=MAX_SESSION_UPDATE_LINE_BYTES,
++        first_line_bytes=(transport_contract["first_user_message_chunk_line_bytes"] if transport_contract else None),
++        require_terminal_lf=transport_contract is not None,
++    )
+ 
+ 
+ def _is_reparse(path: Path) -> bool:
+@@ -773,7 +846,9 @@
+     return sessions / encoded_cwd / session_id
+ 
+ 
+-def _nonvisual_prompt_history_fits(session_id: str, prompt: str) -> bool:
++def _nonvisual_prompt_history_fits(
++    session_id: str, prompt: str, transport_contract: dict[str, Any] | None = None
++) -> bool:
+     """Reject prompts that cannot fit the bounded observed history line before launch."""
+     try:
+         example = json.dumps(
+@@ -787,7 +862,11 @@
+         ).encode("utf-8")
+     except (TypeError, UnicodeError, ValueError):
+         return False
+-    return len(example) <= MAX_SESSION_UPDATE_LINE_BYTES
++    maximum = (
++        transport_contract["prompt_history_line_bytes"]
++        if transport_contract is not None else MAX_SESSION_UPDATE_LINE_BYTES
++    )
++    return len(example) <= maximum
+ 
+ 
+ def _nonvisual_session_attestation(
+@@ -800,6 +879,7 @@
+     expected_request_id_hash: str | None,
+     contact_started: dt.datetime,
+     contact_finished: dt.datetime,
++    transport_contract: dict[str, Any] | None = None,
+ ) -> str:
+     """Validate only the caller-selected session's bounded metadata/update files."""
+     try:
+@@ -812,12 +892,18 @@
+             if _is_reparse(path) or not path.is_dir():
+                 raise ValueError("session attestation path is invalid")
+         summary, summary_hash = _read_bounded_json(
+-            session_path / "summary.json", MAX_SESSION_SUMMARY_BYTES
++            session_path / "summary.json",
++            transport_contract["summary_bytes"] if transport_contract is not None else MAX_SESSION_SUMMARY_BYTES,
+         )
+-        prompt_history, prompt_history_hash = _read_bounded_jsonl(
+-            parent / "prompt_history.jsonl"
++        prompt_history, prompt_history_hash = _read_bounded_prompt_history(
++            parent / "prompt_history.jsonl",
++            maximum_line_bytes=(transport_contract["prompt_history_line_bytes"]
++                                if transport_contract is not None else MAX_SESSION_UPDATE_LINE_BYTES),
++            require_terminal_lf=transport_contract is not None,
+         )
+-        updates, updates_hash = _read_bounded_jsonl(session_path / "updates.jsonl")
++        updates, updates_hash = _read_bounded_updates(
++            session_path / "updates.jsonl", transport_contract=transport_contract
++        )
+         if not isinstance(summary, dict) or len(summary) > 32:
+             raise ValueError("session summary is invalid")
+         info = summary.get("info")
+@@ -912,7 +998,8 @@
+                         or set(content) != {"type", "text"}
+                         or content.get("type") != "text"
+                         or not isinstance(content.get("text"), str)
+-                        or len(content["text"]) > MAX_SESSION_UPDATE_LINE_BYTES
++                        or (len(content["text"].encode("utf-8")) > transport_contract["prompt_utf8_bytes"]
++                            if transport_contract is not None else len(content["text"]) > MAX_SESSION_UPDATE_LINE_BYTES)
+                         or not (
+                             content["text"] == prompt
+                             or (prompt.endswith("\n") and content["text"] == prompt[:-1])
+@@ -1031,13 +1118,20 @@
+     parser.add_argument("--broker-root", required=True)
+     parser.add_argument("--timeout-seconds", type=int, required=True)
+     parser.add_argument("--nonvisual-max-turns", type=int, required=True)
++    parser.add_argument("--nonvisual-transport-contract-json")
+     parser.add_argument("--session-id", required=True)
+     args = parser.parse_args(argv)
+     source = sys.stdin.buffer if stdin is None else stdin
+     sink = sys.stdout if stdout is None else stdout
+ 
+     try:
+-        request = _read_canonical_request(source.read())
++        transport_contract = _parse_nonvisual_transport_contract(
++            args.nonvisual_transport_contract_json
++        )
++        request = _read_canonical_request(
++            _read_bounded_stdin(source, transport_contract["request_stdin_bytes"])
++            if transport_contract is not None else source.read()
++        )
+         command = _parse_command(args.grok_command_json, "Grok")
+         identity = _parse_command_identity(args.expected_command_identity_json, command, "Grok")
+         version_command = _parse_command(args.cli_version_command_json, "Grok version")
+@@ -1078,6 +1172,9 @@
+                 references = "\n".join(f"@{path}" for path in staged_images)
+                 prompt = f"{prompt}\n\nRead each attached image before answering:\n{references}"
+             prompt_bytes = prompt.encode("utf-8")
++            if (not image_mode and transport_contract is not None
++                    and len(prompt_bytes) > transport_contract["prompt_utf8_bytes"]):
++                raise ValueError("nonvisual Grok prompt exceeds the bounded transport prompt")
+             prompt_path.write_bytes(prompt_bytes)
+             child_env = _safe_env()
+             session_id = args.session_id
+@@ -1086,7 +1183,10 @@
+             )
+             if session_path is not None and os.path.lexists(session_path.parent):
+                 raise ValueError("preselected Grok session group already exists")
+-            if not image_mode and not _nonvisual_prompt_history_fits(session_id, prompt):
++            if image_mode and transport_contract is not None:
++                raise ValueError("nonvisual transport contract cannot be used for image requests")
++            if not image_mode and not _nonvisual_prompt_history_fits(
++                    session_id, prompt, transport_contract):
+                 raise ValueError("nonvisual Grok prompt exceeds the bounded session-history line")
+             version_code, version_stdout, version_stderr = _run_bounded(
+                 version_command, cwd=isolated_path, env=child_env, timeout=args.timeout_seconds, launch_state=launch_state
+@@ -1158,6 +1258,7 @@
+                         expected_request_id_hash=None,
+                         contact_started=contact_started,
+                         contact_finished=contact_finished,
++                        transport_contract=transport_contract,
+                     )
+                 if image_mode:
+                     print(json.dumps(_control(
+@@ -1195,9 +1296,15 @@
+                 expected_request_id_hash=identifiers["request_id_hash"],
+                 contact_started=contact_started,
+                 contact_finished=contact_finished,
++                transport_contract=transport_contract,
+             )
+             native_envelope_artifact = _put_native_envelope_artifact(broker_root, raw)
+-            result_adapter_version = ADAPTER_VERSION if image_mode else NONVISUAL_ADAPTER_VERSION
++            result_adapter_version = (
++                ADAPTER_VERSION if image_mode else (
++                    NONVISUAL_V5_ADAPTER_VERSION
++                    if transport_contract is not None else NONVISUAL_ADAPTER_VERSION
++                )
++            )
+             result = {
+                 "schema_version": 2,
+                 "request_hash": _hash(_canonical(request)),
+@@ -1231,6 +1338,10 @@
+                         **({} if image_mode else {
+                             "staged_prompt_sha256": _hash(prompt_bytes),
+                             "staged_prompt_byte_length": len(prompt_bytes),
++                            **({} if transport_contract is None else {
++                                "nonvisual_transport_contract": transport_contract,
++                                "nonvisual_transport_contract_sha256": _hash(_canonical(transport_contract)),
++                            }),
+                         }),
+                     },
+                     "transport": {
+--- a/tools/model_work_queue/broker.py
++++ b/tools/model_work_queue/broker.py
+@@ -62,6 +62,12 @@
+ STANDING_OVERRIDE_WRAPPER_PYTHON_PATH_HASH = "65377c951de749b026d68831ad2de2ccc95750749e7fcd6da23476c8e33c1728"
+ STANDING_OVERRIDE_WRAPPER_PYTHON_SHA256 = "fda7026477256845afab371e354c4d512896665f1761939cb5887d0a9dec257a"
+ STANDING_OVERRIDE_WRAPPER_ADAPTER_SHA256 = "5ac8a932296471b49e388b1f21ecc0e773d8569f964dd9077a6857ee263fdcef"
++# October 4 quiet-launch descendant changes only Windows console suppression.
++# Retain the historical byte pin for immutable receipt validation; live command
++# identity checks still require the exact installed bytes before contact.
++STANDING_OVERRIDE_QUIET_WRAPPER_ADAPTER_SHA256 = "9f7d6c00922f2dd9aeb933cf36511f829918abe34cc8f2f72b0605f2afd9cd39"
++# Restored retained v5 contract, with the same quiet launch correction.
++STANDING_OVERRIDE_QUIET_V5_WRAPPER_ADAPTER_SHA256 = "4d510d6487b372025fc9c98550de51dc5d03afb72de630de962a2086a70a9b60"
+ STANDING_AUTHORITY_CAPABILITY = "standing_owner_authorization"
+ NOUS_DIRECT_MODEL = "nous/deepseek/deepseek-v4.1-flash"
+ NOUS_DIRECT_PROVIDER = "nous_codex_router"
+@@ -1438,7 +1444,11 @@
+             or wrapper_command[1] != "-B"
+             or wrapper_python_path_hash != STANDING_OVERRIDE_WRAPPER_PYTHON_PATH_HASH
+             or wrapper_python_sha256 != STANDING_OVERRIDE_WRAPPER_PYTHON_SHA256
+-            or wrapper_adapter_sha256 != STANDING_OVERRIDE_WRAPPER_ADAPTER_SHA256
++            or wrapper_adapter_sha256 not in {
++                STANDING_OVERRIDE_WRAPPER_ADAPTER_SHA256,
++                STANDING_OVERRIDE_QUIET_WRAPPER_ADAPTER_SHA256,
++                STANDING_OVERRIDE_QUIET_V5_WRAPPER_ADAPTER_SHA256,
++            }
+             or route.get("allowed_payload_classes") != STANDING_OVERRIDE_SCOPE["allowed_payload_classes"]
+             or route.get("capabilities") != STANDING_OVERRIDE_SCOPE["capabilities"]
+             or route.get("reasoning_effort") != STANDING_OVERRIDE_SCOPE["reasoning_effort"]
+
