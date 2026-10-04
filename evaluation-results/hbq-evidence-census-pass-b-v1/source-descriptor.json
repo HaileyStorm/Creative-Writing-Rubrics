@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "scope": "census_pass_b_dryad_sol_accepted_request_leaf_join_v1",
+  "inputs": {
+    "census_a": {"root": "control", "path": "successor-program-20261004/census-a/run-001/census.json", "sha256": "9e6717ab70bacfe9b3a0bcb41d17b427449fb3f5db2791bffbbf24ac1207776f"},
+    "validation": {"root": "control", "path": "dryad-sol-validation-r28/sol.json", "sha256": "f7ad92f19153ac241da8b1d6c9bdea680281c2e80c059b628623cbb33a8cdb29"},
+    "replay": {"root": "campaign", "path": "selected100-complete-collection-replay.json", "sha256": "fc70eb43be0608e787eeb877b0d42bb81cc08efe47646c8759f69c5f3c57613f"},
+    "manifest": {"root": "campaign", "path": "campaign-manifest.json", "sha256": "66d4f52f7b8ed19fd7ce805cb937eec4f30ff887be8cf7d32624fad0a190f5f6"},
+    "result": {"root": "campaign", "path": "collection-result.json", "sha256": "bbc48b02e2ed17977bd3c8b2900aa58656484dbd5503a3116c8f96905383d140"},
+    "schedule": {"root": "campaign", "path": "selected-schedule.json", "sha256": "2836a81d26836274440318338b395a04dad51a80f7d339ca0612f8135dc0e82f"},
+    "plan": {"root": "plan", "path": "plan.json", "sha256": "edeadb93c485ba227153329b5ae420de1c9d08d95e920bac0635d197fd3dbd7f"},
+    "replacement": {"root": "replacement", "path": "replacement-terminal.json", "sha256": "b4400854ad04ed8913f0cdccd775c215e5a3183af61dc6c28f5a8833c7fccdca"},
+    "recovery_1328": {"root": "recovery_1328", "path": "reconciliation.json", "sha256": "1e874165e154e3bf5e5159e4d4bea5b3e20abe4ce0b0bb1815925b8cbbe1a951"},
+    "recovery_4486": {"root": "recovery_4486", "path": "reconciliation.json", "sha256": "8a0860386ee148d22cf09c85b07fabf54b58a6c762ada72b166e932e1628c317"},
+    "validation_reader": {"root": "repository", "path": "evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/sol_selected_collection_replay_r28.py", "sha256": "cf097bedf41b52e9eeba47eb834241026f55b2c7bf0081b781572aab8c1e75d2", "kind": "code_pin"}
+  },
+  "peer_roots": {
+    "plan": "cwr-dryad-baseline8-plan-20260906-r1",
+    "original": "cwr-dryad-sol8-native-20260907-r1",
+    "replacement": "sol773-replacement-execution-v1",
+    "post773": "cwr-dryad-sol-post773-continuation-20260909-r1",
+    "parallel": "cwr-dryad-sol-parallel-20260909-r1",
+    "selected": "cwr-dryad-sol-selected100-20260909-r1",
+    "recovery": "cwr-dryad-sol-selected100-recovery-20260910-r1",
+    "recovery_1328": "cwr-dryad-sol-completed-message-recovery-1328-1342-20260909-r1",
+    "recovery_4486": "cwr-dryad-sol-completed-message-recovery-4486-4492-20260910-r1"
+  },
+  "retained_replay_composer_sha256": "e3430d8808f3b6a36f9d421efc40db1d550a40fb34e7666c2b5fb020becbe715",
+  "expected": {"passes": 100, "requests": 2300, "leaves": 17800, "unknown_exit": 26, "original_events": 772, "replacement": 1, "ordinary_terminal": 1510, "reconciliation": 17, "census_a_observed_leaves": 51968},
+  "unresolved": [
+    "Failed predecessor attempts and complete physical-contact dispositions remain unresolved; accepted request/native joins do not establish contact cardinality.",
+    "Historical model/provider/effort provenance retains its requested-only or unproven ceiling; this census does not establish modern execution attestation or full-contract compatibility.",
+    "LAMP native leaves/repeats, other empirical roots, source rights/form/overlap and human-rater/derived-pair joins remain outside this partial slice."
+  ]
+}
