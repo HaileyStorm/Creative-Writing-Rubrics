@@ -1,0 +1,39 @@
+{
+  "accepted_oracles": 0,
+  "brief_suitability_states": {
+    "not_supported": 5,
+    "supported": 16,
+    "uncertain": 3
+  },
+  "candidate": null,
+  "complete_role_blindness": false,
+  "criterion_states": {
+    "not_supported": 5,
+    "supported": 16,
+    "uncertain": 3
+  },
+  "descriptive_scoring_requires_separate_frozen_contract": true,
+  "exact_evidence_quotes_validated": 577,
+  "families": 8,
+  "human_validation": false,
+  "independent_agent": true,
+  "independent_model_evidence": false,
+  "limitations": [
+    "Missing or unsupported anchors and poetry/speculative intent uncertainties remain",
+    "Original packet retains residual role-bearing anchor clauses; corrected future preparer does not rewrite first review",
+    "No forced labels, intended-defect success rates or human alignment claim"
+  ],
+  "new_judge_calls": 0,
+  "oracle_admission_candidates": 0,
+  "owner_decision_sha256": "e99d799429a3de8925de61667ddfaf998b9b99e284d9306acdaa58b0549f7d35",
+  "policy": "descriptive_synthetic_stimuli_without_oracle_promotion_v1",
+  "quality_suitability_states": {
+    "not_supported": 1,
+    "supported": 18,
+    "uncertain": 5
+  },
+  "review_sha256": "a70bc70cd0634278b1dcb284ed109b6d6c868357d4503db36c6898c82101035b",
+  "unresolved_disagreements": 9,
+  "validation_sha256": "4418ea03ce1d8215241cf39b3a797f1d9c695397ce8cbe57253e1def6c7279fb",
+  "variants": 24
+}

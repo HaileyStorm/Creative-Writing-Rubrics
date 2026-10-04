@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "scope": "native_census_d_earliest_lamp_panel_batch2_fiction_v1",
+  "common_census_sha256": "42415af5418ae32303bfa7933712b2ad398c0ed66df32a7553a9e3d55f5de49b",
+  "metadata_schema_basis": [
+    ["lamp-evaluation-r227/admit_fiction_stopped_prefix_r295.py", "e4a0aacfef76a21911f05b91dc9592aa4c0915e984cd749acfab86e0ff5334f6", 14223]
+  ],
+  "assets": {
+    "panel_plan": ["lamp-evaluation-r227/panel-plan/plan.json", "34123b4f136848ed588beea72790830f5f15b6e9da9ed414dca69ecd064f8c46", 153909],
+    "panel_source": ["lamp-source-r225/source-freeze.json", "14d3ca8d339c5ba62e41e2eece972179bfe3ca221191ccd5c59bdb79b4a2f773", 35680],
+    "panel_schema_projection": ["lamp-evaluation-r227/grok-schema-r228/projection.json", "8943e7bd4e4d95c9e57d6babbcbf1b6774dccf655923bc5aa298a1b27dd90a38", 117006],
+    "panel_sol": ["lamp-evaluation-r227/sol-collection/manifest.json", "b80544bfdc8cdebe605c5bac7c2aeca9866d132297bdbdb095c8a7168aae85fb", 1039],
+    "panel_grok": ["lamp-evaluation-r227/grok-collection-r228/manifest.json", "f8f86945a12e072d46f4bb215f30396a7eae2a6452bcf32846e2dcf6c0b1ff21", 1015],
+    "panel_continuation": ["lamp-evaluation-r227/continuation-r230/manifest.json", "e6f9cb9b125cd0e7d15726fdb32fcfd5f2831c4b644430ef03c31d255d3c8c9e", 1510],
+    "panel_continuation_terminal": ["lamp-evaluation-r227/continuation-r230/terminal.json", "5abb36c3d144d4b960d9b6c15dbf3341ef1c816d1b5a9a37e70f66b6667f20bf", 251],
+    "batch2_plan": ["lamp-evaluation-r227/batch2-plan-r251/plan.json", "c93ce4c06aff98abb642ddef7756e955233163fa609cbe47f5adaebb6df3ccb7", 205440],
+    "batch2_source": ["lamp-evaluation-r227/batch2-source-r250/source-freeze.json", "5c6afc4e7e1d55d8228aa6da4ad898d12b4bcf7cd9f1dfe6ad633c9d07c4ee8d", 26849],
+    "batch2_selection": ["lamp-evaluation-r227/batch2-plan-r251/selection.json", "c4e4c0fb2c3dad50797cbb72eb0d10e71820b69ccbcfda1383ccd0a284c74f35", 708],
+    "batch2_manifest": ["lamp-evaluation-r227/batch2-collection-r253/manifest.json", "0b8792b8736468050e27423988d955d0c04101d571f7fefeee35f0fa43c354d9", 1166],
+    "batch2_terminal": ["lamp-evaluation-r227/batch2-collection-r253/terminal.json", "f7156a7d25f1f9151c8e4ce59004b158aa24e4ca30dacecb68cded0352619ea9", 263],
+    "fiction_plan": ["lamp-evaluation-r227/fiction-module-plan-r279/plan.json", "c0b81c4b8dab7e5c9066488a7817b6f773632717b44ebd65c1d6666f6d54af4d", 303373],
+    "fiction_source": ["lamp-evaluation-r227/scored-story-source-r268/source-freeze.json", "f03c3595a29f5b196aa1333e64c048eadcb82c383e0d268f8412ecd3d397454a", 24209],
+    "fiction_manifest": ["lamp-evaluation-r227/fiction-module-development-collection-r281/manifest.json", "9872de6b8e69f13319b988da51f5191341f0c9f75bd90a68f4240ab66942f609", 916],
+    "fiction_contact_disclosure": ["lamp-evaluation-r227/FICTION_MODULE_DISCLOSURE_R280.json", "0eec2ea12f3d77d3b0743cdcf2648279ca1ea00d0415bb60629a2ae314e67be0", 3589],
+    "fiction_suffix_disclosure": ["lamp-evaluation-r227/FICTION_MODULE_SUFFIX_DISCLOSURE_R288.json", "0cd3a37a070ed267d5edf1b813048762951cdf6a82bd5ab784559187edd99b75", 3117],
+    "fiction_terminal": ["lamp-evaluation-r227/fiction-module-development-collection-r281/terminal.json", "7d49f26e190793f6546dc90cce71d516356f61465ce5259fce75d5b1eeb57599", 347],
+    "fiction_suffix_manifest": ["lamp-evaluation-r227/fiction-module-development-suffix-r288/manifest.json", "15ac4b2ede7096816c899226c05d61a6909faab784d6a4d445a62bbc90126538", 1269],
+    "fiction_suffix_terminal": ["lamp-evaluation-r227/fiction-module-development-suffix-r288/terminal.json", "d7c6fa04b6b9eb09a20fb3a28fac8e6137709dc6f13503f6ba591cc147738118", 427]
+  },
+  "scopes": [
+    {"id": "panel", "plan": "panel_plan", "source": "panel_source", "schema_projection": "panel_schema_projection", "replaces_census_a": "lamp-development", "selected_ordinals": [1, 210], "lineages": [
+      {"endpoint": "sol", "manifest": "panel_sol", "wave_starts": [1, 151, 10], "wave_pattern": "waves/wave-{start:04d}", "attempt_pattern": "attempts/request-{ordinal:04d}", "wave_size": 10, "wave_end": 210, "reconciliations": [151, 160]},
+      {"endpoint": "sol", "manifest": "panel_sol", "wave_manifest": "panel_continuation", "wave_terminal": "panel_continuation_terminal", "wave_starts": [161, 201, 10], "wave_pattern": "waves/{endpoint}-wave-{start:04d}", "attempt_pattern": "attempts/request-{ordinal:04d}", "wave_size": 10, "wave_end": 210},
+      {"endpoint": "grok", "manifest": "panel_grok", "wave_starts": [1, 11, 10], "wave_pattern": "waves/wave-{start:04d}", "attempt_pattern": "attempts/request-{ordinal:04d}", "wave_size": 10, "wave_end": 210, "ambiguous": [13]},
+      {"endpoint": "grok", "manifest": "panel_grok", "wave_manifest": "panel_continuation", "wave_terminal": "panel_continuation_terminal", "wave_starts": [21, 201, 10], "wave_pattern": "waves/{endpoint}-wave-{start:04d}", "attempt_pattern": "attempts/request-{ordinal:04d}", "wave_size": 10, "wave_end": 210, "ambiguous": []}
+    ]},
+    {"id": "batch2", "plan": "batch2_plan", "source": "batch2_source", "selection": "batch2_selection", "replaces_census_a": "lamp-b2", "selected_ordinals": [1, 210], "lineages": [
+      {"endpoint": "sol", "manifest": "batch2_manifest", "root_terminal": "batch2_terminal", "wave_starts": [1, 209, 8], "wave_pattern": "waves/{endpoint}-wave-{start:04d}", "attempt_pattern": "{endpoint}/request-{ordinal:04d}", "wave_size": 8, "wave_end": 210},
+      {"endpoint": "grok", "manifest": "batch2_manifest", "root_terminal": "batch2_terminal", "wave_starts": [1, 209, 8], "wave_pattern": "waves/{endpoint}-wave-{start:04d}", "attempt_pattern": "{endpoint}/request-{ordinal:04d}", "wave_size": 8, "wave_end": 210}
+    ]},
+    {"id": "fiction-development", "plan": "fiction_plan", "source": "fiction_source", "replaces_census_a": null, "selected_ordinals": [1, 160], "declared_confirmation_not_attempted": 160, "lineages": [
+      {"endpoint": "grok", "manifest": "fiction_manifest", "root_terminal": "fiction_terminal", "wave_starts": [1, 25, 8], "wave_pattern": "waves/{endpoint}-wave-{start:04d}", "attempt_pattern": "{endpoint}/request-{ordinal:04d}", "wave_size": 8, "wave_end": 160},
+      {"endpoint": "grok", "manifest": "fiction_suffix_manifest", "root_terminal": "fiction_suffix_terminal", "predecessor_manifest": "fiction_manifest", "predecessor_terminal": "fiction_terminal", "contact_manifest": "fiction_manifest", "contact_disclosure": "fiction_contact_disclosure", "manifest_disclosure": "fiction_suffix_disclosure", "wave_starts": [33, 121, 8], "wave_pattern": "waves/{endpoint}-wave-{start:04d}", "attempt_pattern": "{endpoint}/request-{ordinal:04d}", "wave_size": 8, "wave_end": 160}
+    ]}
+  ],
+  "repository_metadata": [
+    ["evaluation-results/hbq-gray-blood-full-book-qpc24-rebaseline-v2/manifest.json", "12f98abfe93ea1b07be86b3b48d7bd0045884b6f32ab97a37fdbe6445162b15f", 2182, "qpc24_pending_freeze"],
+    ["evaluation-results/hbq-multisample-repeatability-v1-completed-result-v1/manifest.json", "38e6629930fb57654baa12bb9ba40a509c7bc1910aee66f31a39c9124be47751", 956, "multisample_native_join_pending"]
+  ]
+}

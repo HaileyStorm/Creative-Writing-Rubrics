@@ -16,6 +16,7 @@ prepare = generation.prepare
 canonical, digest, require = prepare.canonical, prepare.digest, prepare.require
 POLICY = 'blinded_independent_ai_fixture_intent_review_v1'
 STATES = ['supported', 'not_supported', 'uncertain']
+ROLE_MARKER = r'(?:target[ _-]+defect|legitimate[ _-]+style|target[ _-]+descendant)'
 BRIEF = ('Assess every variant independently against the supplied canonical criterion and neutral creative brief. '
          'Judge quality suitability within the declared form and supplied scope, brief suitability, and each proposed preservation anchor. '
          'The anchors are proposed review aids, not accepted facts; reject unsupported proposals. Role-bearing metadata sentences '
@@ -38,7 +39,7 @@ def blinded_packet(entries, source_manifest_sha256, total_families):
         for i, text in enumerate(answer['preservation_anchors']):
             anchor_id = 'anchor-' + digest(canonical([family_key, i, text]))[:20]
             sentences = re.split(r'(?<=[.!?])\s+', text)
-            removed = [sentence for sentence in sentences if re.search(r'\b(original|target[ _]defect|legitimate[ _]style)\b', sentence, re.IGNORECASE)
+            removed = [sentence for sentence in sentences if re.search(r'\b(?:original|' + ROLE_MARKER + r')\b', sentence, re.IGNORECASE)
                        or any(value in sentence for value in row['family']['variant_ids'].values())]
             proposal = ' '.join(sentence for sentence in sentences if sentence not in removed)
             anchors.append({'anchor_id': anchor_id, 'proposal': proposal, 'proposal_available': bool(proposal.strip()),
@@ -50,7 +51,7 @@ def blinded_packet(entries, source_manifest_sha256, total_families):
         variants, roles = [], {}
         for role in prepare.VARIANTS:
             text = answer['variants'][role]['text']
-            label = r'(?:original|target[ _]defect|legitimate[ _]style)(?:\s+variant)?'
+            label = r'(?:original|' + ROLE_MARKER + r')(?:\s+variant)?'
             require(not re.search(r'^\s*(?:#{1,6}\s*)?' + label + r'(?:\s*[:\-]|\s*$)', text, re.IGNORECASE | re.MULTILINE),
                     'Generation role label leaks into creative text')
             text_sha = digest(text.encode('utf-8'))
@@ -64,7 +65,7 @@ def blinded_packet(entries, source_manifest_sha256, total_families):
                   'proposed_preservation_anchors': anchors, 'canonical_target_semantics': semantics, 'variants': variants}
         visible = canonical(family).decode()
         require(all(value not in visible for value in row['family']['variant_ids'].values()), 'Generation role ID leaks into reviewer material')
-        require(not re.search(r'\b(target[ _]defect|legitimate[ _]style)\b', visible, re.IGNORECASE), 'Generation role marker leaks into reviewer material')
+        require(not re.search(r'\b' + ROLE_MARKER + r'\b', visible, re.IGNORECASE), 'Generation role marker leaks into reviewer material')
         families.append(family)
         mapping.append({'family_id': family_id, 'source_family_id': row['family']['family_id'],
                         'logical_sample_id': row['logical_sample_id'], 'ordinal': row['ordinal'],

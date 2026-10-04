@@ -202,8 +202,8 @@ def test_creative_role_heading_fails_without_changing_source(accepted_prefix):
     assert answer == snapshot
 
 
-@pytest.mark.parametrize('label', ['target defect', 'legitimate style'])
-def test_space_separated_role_labels_filter_metadata_and_reject_creative_leaks(accepted_prefix, label):
+@pytest.mark.parametrize('label', ['target defect', 'legitimate style', 'target-defect', 'legitimate-style', 'target descendant'])
+def test_role_label_spellings_filter_metadata_and_reject_creative_leaks(accepted_prefix, label):
     test = accepted_prefix
     row = test.manifest['requests'][0]
     sample = fixture_generation.collect.sample_path(test.output, row)
@@ -221,6 +221,36 @@ def test_space_separated_role_labels_filter_metadata_and_reject_creative_leaks(a
     with pytest.raises(ValueError, match='role marker'):
         reviewer.blinded_packet([(row, answer, semantics, {})], test.manifest_sha, 8)
     assert answer == snapshot
+
+
+@pytest.mark.parametrize('sentence', [
+    'Only the target-defect variant may violate this causal dependency.',
+    'This dependency is intentionally violated by the target-defect descendant.',
+    'The target descendant is designed to violate only this anchor.',
+])
+def test_witnessed_role_bearing_sentences_remain_private_without_assuming_anchor_coverage(accepted_prefix, sentence):
+    test = accepted_prefix
+    row = test.manifest['requests'][0]
+    sample = fixture_generation.collect.sample_path(test.output, row)
+    answer = json.loads((sample / 'response.json').read_bytes())
+    semantics = json.loads(test.files[row['semantics_path']])
+    for retained in ('A factual dependency remains available. ', ''):
+        source_anchor = retained + sentence
+        answer['preservation_anchors'][0] = source_anchor
+        snapshot = copy.deepcopy(answer)
+        packet, mapping = reviewer.blinded_packet([(row, answer, semantics, {})], test.manifest_sha, 8)
+        proposal = packet['families'][0]['proposed_preservation_anchors'][0]
+        lineage = mapping['families'][0]['anchor_metadata_lineage'][0]
+        assert proposal['proposal'] == retained.strip()
+        assert proposal['proposal_available'] is bool(retained)
+        assert lineage['source_anchor'] == source_anchor
+        assert lineage['source_anchor_utf8_sha256'] == reviewer.digest(source_anchor.encode())
+        assert lineage['removed_role_bearing_sentences'] == [sentence]
+        assert sentence not in reviewer.canonical(packet).decode()
+        assert answer == snapshot
+        if not retained:
+            result = reviewer.validate_review(packet, mapping, synthetic_review(packet, mapping), test.subset)
+            assert not result['families'][0]['oracle_admission_candidate']
 
 
 @pytest.mark.parametrize('assessment', ['criterion', 'local_issue'])

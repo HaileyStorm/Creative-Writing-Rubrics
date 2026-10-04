@@ -1,0 +1,97 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "status",
+    "result",
+    "abstention_reason"
+  ],
+  "properties": {
+    "status": {
+      "enum": [
+        "SCORED",
+        "CANNOT_ASSESS"
+      ]
+    },
+    "result": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "required": [
+        "method",
+        "score",
+        "rationale",
+        "strengths",
+        "limitations",
+        "evidence"
+      ],
+      "properties": {
+        "method": {
+          "enum": [
+            "mfa_excerpt_holistic_v1"
+          ]
+        },
+        "score": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "rationale": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1600
+        },
+        "strengths": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 800
+          }
+        },
+        "limitations": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 800
+          }
+        },
+        "evidence": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "quote",
+              "explanation"
+            ],
+            "properties": {
+              "quote": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 500
+              },
+              "explanation": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1600
+              }
+            }
+          }
+        }
+      }
+    },
+    "abstention_reason": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 1600
+    }
+  }
+}
