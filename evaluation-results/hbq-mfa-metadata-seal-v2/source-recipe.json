@@ -1,0 +1,38 @@
+{
+  "policy": "mfa_outcome_blind_metadata_v2",
+  "terms": "Private non-commercial research only; no redistribution of copyrighted prose or raw outcomes",
+  "releases": [
+    {
+      "release": "author-style",
+      "repository": "tuhinjubcse/Author-Style-Personalization",
+      "revision": "d7e4925307ebe354a376ca7f38d8bd014775b6f2",
+      "sources": [
+        ["data/quality_fewshot_expert_anon.json", "f529644fd72ee400f3bc326400247df228412ec3", 2043918, "outcomes"],
+        ["data/quality_finetuned_expert_anon.json", "d6c0ff45544f24911f5beac98aff56bc67cfcc5b", 1216617, "outcomes"],
+        ["data/style_fewshot_expert_anon.json", "120caa03e5f12ea75e1920fefbd6582ca7eec2f4", 2926158, "outcomes"],
+        ["data/style_finetuned_expert_anon.json", "75b74c8e5392a4684f4090b5dc05e9943ae43f99", 1729941, "outcomes"],
+        ["data/quality_fewshot_lay_anon.json", "6b0d594b39c850045a7b517009d96d0443dde3ec", 12892544, "outcomes"],
+        ["data/quality_finetuned_lay_anon.json", "f567134d9f32933d29261911b72494b640f5a8d7", 8403024, "outcomes"],
+        ["data/style_fewshot_lay_anon.json", "e50cee8d8d718120445bc7cf0b65587ecce118c3", 17354553, "outcomes"],
+        ["data/style_finetuned_lay_anon.json", "cd1f3feb93f1665797d1c8c3ce16c6bbe17ffb9e", 11370775, "outcomes"],
+        ["data/Human-AI-anon.json", "6a0e8a998402af5d43aa137d5d85c096ad6d907b", 820616, "references"]
+      ]
+    },
+    {
+      "release": "good-writing",
+      "repository": "tuhinjubcse/GoodWritingBeGenerative",
+      "revision": "4cc907c25ff6955bdeeb224385bb9fe513215043",
+      "sources": [
+        ["data/quality_fewshot_expert_anon.json", "f529644fd72ee400f3bc326400247df228412ec3", 2043918, "outcomes"],
+        ["data/quality_finetuned_expert_anon.json", "eeac84f6d966827bc740f3ac6b9d42c9be51c0b1", 1216626, "outcomes"],
+        ["data/style_fewshot_expert_anon.json", "120caa03e5f12ea75e1920fefbd6582ca7eec2f4", 2926158, "outcomes"],
+        ["data/style_finetuned_expert_anon.json", "75b74c8e5392a4684f4090b5dc05e9943ae43f99", 1729941, "outcomes"],
+        ["data/quality_fewshot_lay_anon.json", "b01af3e54382778b05e2562ddd6bbef71330452a", 3226205, "outcomes"],
+        ["data/quality_finetuned_lay_anon.json", "803572dce4eaff35876172b71b2a51fe4d097283", 1907758, "outcomes"],
+        ["data/style_fewshot_lay_anon.json", "b62ddd739653c8f3a4f2bf7955c588c7b977ea92", 4416392, "outcomes"],
+        ["data/style_finetuned_lay_anon.json", "2e9763d1434d2a08fd0e83dd51b97006deb30ca5", 2614714, "outcomes"],
+        ["data/Human-AI_anon.json", "6a0e8a998402af5d43aa137d5d85c096ad6d907b", 820616, "references"]
+      ]
+    }
+  ]
+}
