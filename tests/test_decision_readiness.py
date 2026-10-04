@@ -82,6 +82,43 @@ def test_missing_bundle_revision_cannot_establish_compatibility(report):
     assert result["reason"] == "report_scoring_context_incomplete"
 
 
+@pytest.mark.parametrize("change,reason", [
+    ("policy", "scoring_policy_differs"),
+    ("compiled", "scoring_context_commitments_differ"),
+    ("contract", "scoring_context_commitments_differ"),
+])
+def test_scoring_policy_and_context_commitments_precede_ordering(report, change, reason):
+    report["scoring_policy"] = "uncertainty_preserving_ladder_v1"
+    report["scoring_context"] = {"compiled_bundle_sha256": "a" * 64, "task_contract_sha256": None}
+    other = deepcopy(report)
+    other["final_score"] = {"observed": 0, "lower": 0, "upper": 0}
+    if change == "policy":
+        del other["scoring_policy"]
+        del other["scoring_context"]
+    elif change == "compiled":
+        other["scoring_context"]["compiled_bundle_sha256"] = "b" * 64
+    else:
+        other["scoring_context"]["task_contract_sha256"] = "c" * 64
+    result = interval_comparison(report, other, comparison_context_sha256="d" * 64)
+    assert result["relation"] == "INCOMPARABLE"
+    assert result["reason"] == reason
+
+
+def test_equal_scoring_commitments_still_allow_separated_order(report):
+    report["scoring_policy"] = "uncertainty_preserving_ladder_v1"
+    report["scoring_context"] = {"compiled_bundle_sha256": "a" * 64, "task_contract_sha256": None}
+    other = deepcopy(report)
+    other["final_score"] = {"observed": 0, "lower": 0, "upper": 0}
+    assert interval_comparison(report, other)["relation"] == "LEFT_ABOVE"
+
+
+def test_declared_successor_without_context_cannot_establish_compatibility(report):
+    report["scoring_policy"] = "uncertainty_preserving_ladder_v1"
+    result = interval_comparison(report, report)
+    assert result["relation"] == "INCOMPARABLE"
+    assert result["reason"] == "declared_scoring_policy_context_incomplete"
+
+
 @pytest.mark.parametrize("state,gate", [("NO", "INVALID"), ("CANNOT_ASSESS", "UNRESOLVED")])
 def test_actual_dynamic_hard_gates_override_scalar_readiness(modules, bundle_by_id, state, gate):
     bundle = bundle_by_id["prose.short_story"]

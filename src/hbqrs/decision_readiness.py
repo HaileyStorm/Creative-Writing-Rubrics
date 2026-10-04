@@ -198,6 +198,12 @@ def interval_comparison(
         result.update(relation="INELIGIBLE", reason="hard_gate_invalid_or_unresolved")
     elif any(not report.get("standard") or not report.get("bundle_version") for report in (left, right)):
         result.update(relation="INCOMPARABLE", reason="report_scoring_context_incomplete")
+    elif left.get("scoring_policy") != right.get("scoring_policy"):
+        result.update(relation="INCOMPARABLE", reason="scoring_policy_differs")
+    elif left.get("scoring_policy") is not None and any(not report.get("scoring_context") for report in (left, right)):
+        result.update(relation="INCOMPARABLE", reason="declared_scoring_policy_context_incomplete")
+    elif left.get("scoring_context") != right.get("scoring_context"):
+        result.update(relation="INCOMPARABLE", reason="scoring_context_commitments_differ")
     elif _structure(left) != _structure(right):
         result.update(relation="INCOMPARABLE", reason="report_scoring_context_differs")
     elif (left.get("task_contract") is not None or right.get("task_contract") is not None) and not comparison_context_sha256:
