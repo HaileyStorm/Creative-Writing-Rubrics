@@ -26,7 +26,7 @@ from .core import (
     walk_tree,
     write_data,
 )
-from .scoring_v2 import score_bundle as score_bundle_v2
+from .scoring_v2 import score_bundle as score_bundle_v2, validate_import_admission
 from .pack import pack_book
 from .paths import book_root, bundles_path, prompts_dir, registry_path, schema_dir
 from .runner_v2 import run_judge
@@ -261,13 +261,21 @@ def _cmd_score(args: argparse.Namespace) -> int:
         _load_weight_profile(args.weight_profile),
     )
     scorer = score_bundle_v1 if args.report_version == 1 else score_bundle_v2
+    verdicts = load_verdicts(args.verdicts)
+    task_contract = _load_task_contract(args.task_contract)
+    admission = validate_import_admission(
+        modules, bundle, verdicts, artifact_id=args.artifact_id,
+        task_contract=task_contract, admission_policy=args.admission_policy,
+    )
     report = scorer(
         modules,
         bundle,
-        load_verdicts(args.verdicts),
+        verdicts,
         artifact_id=args.artifact_id,
-        task_contract=_load_task_contract(args.task_contract),
+        task_contract=task_contract,
     )
+    if admission is not None:
+        report["import_admission"] = admission
     report["weight_profile"] = weight_audit
     write_data(args.output, report, fmt=args.format)
     return 0
@@ -620,6 +628,13 @@ def build_parser() -> argparse.ArgumentParser:
     score.add_argument("--artifact-id")
     score.add_argument("--task-contract", help="same frozen task contract used during judging")
     score.add_argument("--weight-profile", help="strict scoring-weight profile JSON/YAML")
+    score.add_argument(
+        "--admission-policy",
+        choices=("historical_permissive_v1", "strict_import_v1"),
+        default="historical_permissive_v1",
+        help="use strict_import_v1 for new normalized imports; checks structure and declared "
+        "evidence, not quotation grounding; default preserves historical replay",
+    )
     score.add_argument(
         "--report-version",
         type=int,

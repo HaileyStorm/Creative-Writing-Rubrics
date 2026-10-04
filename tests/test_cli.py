@@ -78,6 +78,39 @@ def test_score_can_reconstruct_the_unversioned_v1_parent_semantics(capsys) -> No
     assert "confidence_diagnostics" not in report
 
 
+@pytest.mark.parametrize("report_version", [1, 2])
+def test_score_strict_import_rejects_missing_evidence_before_output(
+    tmp_path: Path, capsys, report_version, modules, bundle_by_id
+) -> None:
+    from hbqrs import compile_bundle
+
+    bundle = bundle_by_id["prose.scene"]
+    qid = compile_bundle(modules, bundle)["domain_questions"][0]["question"]["id"]
+    record = {
+        "artifact_id": "import-test", "bundle_id": "prose.scene", "question_id": qid,
+        "verdict": "YES", "confidence": 1, "evidence": [],
+    }
+    source = tmp_path / "verdicts.json"
+    output = tmp_path / "score.json"
+    source.write_text(json.dumps([record]), encoding="utf-8")
+    original = source.read_bytes()
+    args = ["score", "prose.scene", str(source), "--report-version", str(report_version), "-o", str(output)]
+    with pytest.raises(SystemExit) as error:
+        main([*args, "--admission-policy", "strict_import_v1"])
+    assert error.value.code == 2
+    assert "requires 1 evidence references" in capsys.readouterr().err
+    assert not output.exists()
+    assert source.read_bytes() == original
+    assert main(args) == 0
+    assert "import_admission" not in json.loads(output.read_text(encoding="utf-8"))
+    record["evidence"] = [{"reference": "line:1", "summary": "Synthetic support."}]
+    source.write_text(json.dumps([record]), encoding="utf-8")
+    assert main([*args, "--admission-policy", "strict_import_v1"]) == 0
+    admitted = json.loads(output.read_text(encoding="utf-8"))
+    assert admitted["import_admission"]["policy"] == "strict_import_v1"
+    assert admitted["import_admission"]["omitted_questions"] > 0
+
+
 def test_render_judge(tmp_path: Path) -> None:
     dest = tmp_path / "judge.md"
     assert (

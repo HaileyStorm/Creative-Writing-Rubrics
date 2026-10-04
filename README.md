@@ -169,6 +169,17 @@ cwr show prose.scene
 cwr render-judge --bundle prose.scene --artifact examples/sample_scene.md
 ```
 
+For new normalized verdict imports, use
+`cwr score prose.scene verdicts.jsonl --admission-policy strict_import_v1`.
+This rejects malformed records, duplicate or mismatched identities, unsupported
+YES/NO evidence, untyped references, and N/A without an activation reason before
+writing a report. Omitted questions remain `CANNOT_ASSESS`. The report records
+`import_admission`; this validates structure and declared evidence, not quotation
+grounding or literary support. Historical imports keep the default
+`historical_permissive_v1` behavior and unchanged report semantics. The strict
+policy is available in the v2 Python `score_bundle` API and the CLI with either
+report version; the sealed v1 scorer and historical verdict schema are unchanged.
+
 For a real judge, bring a local OpenAI-compatible endpoint:
 
 ```bash

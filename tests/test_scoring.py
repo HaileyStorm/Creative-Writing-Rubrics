@@ -452,6 +452,128 @@ def test_confidence_diagnostics_mark_empty_and_unassessed_role_ratios_unobserved
         )
 
 
+def test_strict_import_preserves_scores_and_omitted_uncertainty(modules, bundle_by_id) -> None:
+    scorer = score_bundle
+    bundle = bundle_by_id["prose.scene"]
+    _, verdicts = _full_verdicts(modules, bundle)
+    for record in verdicts:
+        record["bundle_id"] = bundle["bundle_id"]
+        record["evidence"][0]["summary"] = record["evidence"][0].pop("quote")
+    for supplied in (verdicts, verdicts[1:]):
+        original = deepcopy(supplied)
+        historical = scorer(modules, bundle, supplied)
+        admitted = scorer(modules, bundle, supplied, admission_policy="strict_import_v1")
+        assert admitted.pop("import_admission") == {
+            "policy": "strict_import_v1",
+            "verdict_schema_sha256": hashlib.sha256((ROOT / "schema" / "hbq_verdict.schema.json").read_bytes()).hexdigest(),
+            "validation_scope": "structure_and_declared_evidence_only",
+            "supplied_questions": len(supplied),
+            "omitted_questions": len(verdicts) - len(supplied),
+        }
+        assert admitted == historical
+        assert supplied == original
+
+
+@pytest.mark.parametrize(
+    "change, message",
+    [
+        ({"evidence": []}, "requires 1 evidence"),
+        ({"evidence": [{"reference": "line:1"}]}, "requires typed"),
+        ({"evidence": [{"reference": "line:1", "quote": "Legacy."}]}, "requires typed"),
+        ({"evidence": [{"reference": " ", "summary": "Evidence."}]}, "verdict schema"),
+        ({"evidence": [{"reference": "line:1", "summary": "Evidence.", "exact_quote": "Other."}]}, "verdict schema"),
+        ({"evidence": "not an evidence list"}, "verdict schema"),
+        ({"verdict": "MAYBE"}, "verdict schema"),
+        ({"confidence": float("nan")}, "nonfinite confidence"),
+        ({"bundle_id": "prose.short_story"}, "bundle identity mismatch"),
+        ({"artifact_id": "another-artifact"}, "artifact identity mismatch"),
+        ({"question_id": "not.selected"}, "not selected"),
+        ({"verdict": "NOT_APPLICABLE", "evidence": [], "note": " "}, "activation-condition reason"),
+    ],
+)
+def test_strict_import_rejects_unsupported_records_without_mutation(modules, bundle_by_id, change, message) -> None:
+    bundle = bundle_by_id["prose.scene"]
+    compiled = compile_bundle(modules, bundle)
+    record = _verdict(compiled["domain_questions"][0]["question"]["id"])
+    record.update(bundle_id=bundle["bundle_id"], evidence=[{"reference": "line:1", "summary": "Evidence."}])
+    record.update(change)
+    original = json.dumps(record, sort_keys=True)
+    with pytest.raises(HBQError, match=message):
+        score_bundle(modules, bundle, [record], artifact_id="test-artifact", admission_policy="strict_import_v1")
+    assert json.dumps(record, sort_keys=True) == original
+
+
+def test_strict_import_rejects_duplicate_votes_and_unknown_policy(modules, bundle_by_id) -> None:
+    bundle = bundle_by_id["prose.scene"]
+    qid = compile_bundle(modules, bundle)["domain_questions"][0]["question"]["id"]
+    record = _verdict(qid, "CANNOT_ASSESS")
+    record["bundle_id"] = bundle["bundle_id"]
+    with pytest.raises(HBQError, match="duplicate verdict"):
+        score_bundle(modules, bundle, [record, deepcopy(record)], admission_policy="strict_import_v1")
+    with pytest.raises(HBQError, match="Unknown import admission policy"):
+        score_bundle(modules, bundle, [], admission_policy="future_typo")
+
+
+def test_historical_missing_evidence_vote_remains_scored(modules, bundle_by_id) -> None:
+    bundle = bundle_by_id["prose.scene"]
+    _, verdicts = _full_verdicts(modules, bundle)
+    baseline = score_bundle(modules, bundle, verdicts)
+    verdicts[0]["evidence"] = []
+    unsupported = score_bundle(modules, bundle, verdicts)
+    assert unsupported["final_score"] == baseline["final_score"]
+    assert any("evidence references" in issue for issue in unsupported["issues"])
+    assert "import_admission" not in unsupported
+
+
+def test_strict_import_hard_gate_admission_preserves_eligibility(modules, bundle_by_id) -> None:
+    bundle = bundle_by_id["prose.scene"]
+    contract = _task_contract()
+    contract["artifact_id"] = "test-artifact"
+    compiled, verdicts = _full_verdicts(modules, bundle, task_contract=contract)
+    for record in verdicts:
+        record["bundle_id"] = bundle["bundle_id"]
+        record["evidence"][0]["summary"] = record["evidence"][0].pop("quote")
+    gate_id = compiled["task_contract"]["binding_requirement_ids"][0]
+    gate = next(record for record in verdicts if record["question_id"] == gate_id)
+    gate["evidence"] = []
+    with pytest.raises(HBQError, match="requires 1 evidence references"):
+        score_bundle(modules, bundle, verdicts, task_contract=contract, admission_policy="strict_import_v1")
+    gate.update(verdict="NO", evidence=[{"reference": "line:1", "summary": "Required condition absent."}])
+    mismatched = deepcopy(verdicts)
+    for record in mismatched:
+        record["artifact_id"] = "other-artifact"
+    with pytest.raises(HBQError, match="artifact identity mismatch"):
+        score_bundle(modules, bundle, mismatched, task_contract=contract, admission_policy="strict_import_v1")
+    with pytest.raises(HBQError, match="disagrees with task contract"):
+        score_bundle(
+            modules, bundle, mismatched, artifact_id="other-artifact",
+            task_contract=contract, admission_policy="strict_import_v1",
+        )
+    invalid = score_bundle(modules, bundle, verdicts, task_contract=contract, admission_policy="strict_import_v1")
+    assert invalid["hard_gate_status"] == "INVALID"
+    assert invalid["status"] == "INELIGIBLE"
+    omitted = score_bundle(
+        modules, bundle, [record for record in verdicts if record["question_id"] != gate_id],
+        task_contract=contract, admission_policy="strict_import_v1",
+    )
+    assert omitted["hard_gate_status"] == "UNRESOLVED"
+    assert omitted["status"] == "UNRESOLVED"
+
+
+def test_historical_positive_coverage_with_unknown_penalties_keeps_bounds(modules, bundle_by_id) -> None:
+    bundle = bundle_by_id["prose.short_story"]
+    compiled, verdicts = _full_verdicts(modules, bundle)
+    penalties = {row["question"]["id"] for group in compiled["penalty_groups"] for row in group["questions"]}
+    for record in verdicts:
+        if record["question_id"] in penalties:
+            record.update(_verdict(record["question_id"], "CANNOT_ASSESS"))
+    report = score_bundle(modules, bundle, verdicts)
+    assert report["status"] == "SCORED"
+    assert report["coverage"] == 1
+    assert report["final_score"] == {"observed": 100.0, "lower": 82.0, "upper": 100.0}
+    assert all(group["coverage"] == 0 for group in report["penalties"])
+
+
 def test_score_report_schema_accepts_confidence_diagnostics_and_rejects_malformed_values(
     modules, bundle_by_id
 ) -> None:
@@ -601,7 +723,8 @@ def test_repetition_penalty_reaches_but_does_not_exceed_cap(modules, bundle_by_i
     assert report["final_score"]["observed"] == pytest.approx(95.0)
 
 
-def test_holistic_thresholds_are_cumulative(modules, bundle_by_id) -> None:
+@pytest.mark.parametrize("lower_state", ["NO", "CANNOT_ASSESS"])
+def test_holistic_thresholds_are_cumulative(modules, bundle_by_id, lower_state) -> None:
     compiled, verdicts = _full_verdicts(modules, bundle_by_id["prose.scene"])
     thresholds = [
         item["question"]["id"]
@@ -611,12 +734,13 @@ def test_holistic_thresholds_are_cumulative(modules, bundle_by_id) -> None:
     assert len(thresholds) == 4
     for item in verdicts:
         if item["question_id"] == thresholds[0]:
-            item.update(_verdict(item["question_id"], "NO"))
+            item.update(_verdict(item["question_id"], lower_state))
         elif item["question_id"] in thresholds[1:]:
             item.update(_verdict(item["question_id"], "YES"))
     report = score_bundle(modules, bundle_by_id["prose.scene"], verdicts)
     holistic = next(domain for domain in report["domains"] if domain["domain_id"] == "holistic")
     assert holistic["score"]["observed"] == pytest.approx(0.0)
+    assert holistic["score"]["upper"] == pytest.approx(2.0 if lower_state == "CANNOT_ASSESS" else 0.0)
     assert any("Subjective ladder" in issue for issue in report["issues"])
 
 

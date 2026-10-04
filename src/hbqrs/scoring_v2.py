@@ -3,6 +3,9 @@
 from __future__ import annotations
 
 from copy import deepcopy
+import hashlib
+import json
+import math
 from typing import Any, Mapping, Sequence
 
 from jsonschema import Draft202012Validator
@@ -12,6 +15,72 @@ from .paths import schema_dir
 
 
 V2_SCHEMA = "../schema/hbq_score_report.v2.schema.json"
+
+
+def validate_import_admission(
+    modules: Sequence[dict[str, Any]],
+    bundle: dict[str, Any],
+    verdicts: Sequence[dict[str, Any]],
+    *,
+    artifact_id: str | None = None,
+    task_contract: Mapping[str, Any] | None = None,
+    admission_policy: str = "strict_import_v1",
+) -> dict[str, Any] | None:
+    """Check new import structure/evidence declarations without rewriting votes.
+
+    References and quotations are not grounded against artifact text here.
+    Omitted questions stay unassessed; historical replay bypasses this policy.
+    """
+    if admission_policy == "historical_permissive_v1":
+        return None
+    if admission_policy != "strict_import_v1":
+        raise core.HBQError(f"Unknown import admission policy: {admission_policy}")
+    compiled = core.compile_bundle(modules, bundle, task_contract=task_contract)
+    schema_bytes = (schema_dir() / "hbq_verdict.schema.json").read_bytes()
+    validator = Draft202012Validator(json.loads(schema_bytes))
+    selected = {row["question"]["id"]: row["question"] for row in core.compiled_questions(compiled)}
+    seen: set[str] = set()
+    contract_artifact = task_contract.get("artifact_id") if task_contract else None
+    if artifact_id is not None and contract_artifact is not None and artifact_id != contract_artifact:
+        raise core.HBQError("strict_import_v1: artifact identity disagrees with task contract")
+    imported_artifact = artifact_id if artifact_id is not None else contract_artifact
+    for index, record in enumerate(verdicts):
+        error = next(validator.iter_errors(record), None)
+        if error is not None:
+            location = ".".join(map(str, error.path)) or "record"
+            raise core.HBQError(f"strict_import_v1: record {index} violates verdict schema at {location}")
+        qid = record["question_id"]
+        if qid not in selected:
+            raise core.HBQError(f"strict_import_v1: record {index} is not selected by this bundle")
+        if qid in seen:
+            raise core.HBQError(f"strict_import_v1: duplicate verdict for {qid}")
+        seen.add(qid)
+        if record["bundle_id"] != bundle["bundle_id"]:
+            raise core.HBQError(f"strict_import_v1: bundle identity mismatch for {qid}")
+        if not record["artifact_id"].strip():
+            raise core.HBQError(f"strict_import_v1: empty artifact identity for {qid}")
+        if imported_artifact is None:
+            imported_artifact = record["artifact_id"]
+        if record["artifact_id"] != imported_artifact:
+            raise core.HBQError(f"strict_import_v1: artifact identity mismatch for {qid}")
+        if not math.isfinite(record["confidence"]):
+            raise core.HBQError(f"strict_import_v1: nonfinite confidence for {qid}")
+        policy = selected[qid].get("evidence_policy", {})
+        required = int(policy.get("minimum_references", 0)) if policy.get("required") else 0
+        if record["verdict"] in {"YES", "NO"} and len(record["evidence"]) < required:
+            raise core.HBQError(f"strict_import_v1: {qid} requires {required} evidence references")
+        for evidence in record["evidence"]:
+            if "quote" in evidence or not ({"exact_quote", "summary"} & evidence.keys()):
+                raise core.HBQError(f"strict_import_v1: {qid} requires typed exact_quote or summary evidence")
+        if record["verdict"] == "NOT_APPLICABLE" and not record.get("note", "").strip():
+            raise core.HBQError(f"strict_import_v1: {qid} lacks an activation-condition reason")
+    return {
+        "policy": "strict_import_v1",
+        "verdict_schema_sha256": hashlib.sha256(schema_bytes).hexdigest(),
+        "validation_scope": "structure_and_declared_evidence_only",
+        "supplied_questions": len(seen),
+        "omitted_questions": len(selected) - len(seen),
+    }
 
 
 def _weighted_median(values: Sequence[tuple[float, float]]) -> float | None:
@@ -200,9 +269,14 @@ def score_bundle(
     *,
     artifact_id: str | None = None,
     task_contract: Mapping[str, Any] | None = None,
+    admission_policy: str = "historical_permissive_v1",
 ) -> dict[str, Any]:
     """Produce a v2 descendant while leaving v1 scoring and evidence unchanged."""
 
+    admission = validate_import_admission(
+        modules, bundle, verdicts, artifact_id=artifact_id,
+        task_contract=task_contract, admission_policy=admission_policy,
+    )
     report = deepcopy(
         core.score_bundle(
             modules,
@@ -214,6 +288,8 @@ def score_bundle(
     )
     report["$schema"] = V2_SCHEMA
     report["report_version"] = 2
+    if admission is not None:
+        report["import_admission"] = admission
     report["confidence_diagnostics"] = _confidence_diagnostics(
         modules,
         bundle,
