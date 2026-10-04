@@ -11,7 +11,7 @@ Prefer owner-designated secondary account for Sol collection; exact identity/hel
 ## Owner, checkout, and durable sources
 
 - App project: Palimpsest, local Windows; code checkout `Creative-Writing-Rubrics-fresh-verify`, branch `main`, base `f4f5e332a1e0a199da5903304ea97d5986097579`.
-- Predecessor: `01a0eb29-aad1-72f1-8f91-bbd604afdfc6`; preparing successor transfer. Do not infer ownership from this line—verify release and acquire fresh claims.
+- Successor created: `01a10839-a735-7bf2-a05a-68afadb52755`, “CWR alignment and repeatability execution,” GPT-6.1 Sol / High in this Palimpsest project. Predecessor: `01a0eb29-aad1-72f1-8f91-bbd604afdfc6`. Transfer is pending exact predecessor release; verify receipts and acquire fresh successor claims before writes.
 - External control root: `cwr-resume-control-20260919-r1`; private transfer record/helper under `successor-20261004/`.
 - Advisory attachment SHA-256: `6f65d664758870e1f8fdfac20d1e69a533be0ab89de10015729218f29bb15198` (owner Downloads; immutable input, recommendations adapted in plan).
 - Canonical umbrella: Palimpsest Beads `palimpsest-a17` OPEN. Oct4 activation audit: Beads1.3.1/embedded Dolt route OK; no CWR-local tracker.
@@ -25,7 +25,7 @@ Prefer owner-designated secondary account for Sol collection; exact identity/hel
 
 ## Current scope and next action
 
-Predecessor owns the two plan/worklog files plus exact pre-existing evaluation-tree/queue claims and private handoff/login-config preparation scopes until transfer. It will commit/push plan, create successor GPT-6.1 Sol High, release all its claims, then verify successor acquisition before archive. Successor updates this worklog with its task/claim IDs, plan revision, effective model/effort, tests, and next action.
+Plan is committed/pushed as `73fed13`; verified account checkpoint as `748fe81`. Predecessor owns the two plan/worklog files plus exact pre-existing evaluation-tree/queue claims and private handoff/login-config preparation scopes until transfer. It now releases all its claims and verifies successor acquisition before archive. Successor updates this worklog with its fresh claim IDs, effective model/effort, tests, and next action; it is authorized to begin P0 immediately after transfer.
 
 First implementation: relevant existing scorer/import tests and versioned witnesses, strict new-import admission or smallest justified readiness change, census pass A and metadata-only unused-source audit. Resolve Sol login independently; prioritize bounded Grok collection before cutoff. Complete historic census pass B alongside/after the urgent collector work.
 
