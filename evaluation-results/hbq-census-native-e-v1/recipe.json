@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "scope": "hbq-native-census-e-multisample-bounded-lineage-v1",
+  "source_path_prefix": "C:/Users/Haile/Documents",
+  "repository_root": "C:/Users/Haile/Documents/Creative-Writing-Rubrics-fresh-verify",
+  "original_root": "C:/Users/Haile/Documents/cwr-multisample-repeatability-v1-20260821-44518ab",
+  "reported_model": "gpt-5.6-sol",
+  "reported_reasoning": "high",
+  "common_census_sha256": "42415af5418ae32303bfa7933712b2ad398c0ed66df32a7553a9e3d55f5de49b",
+  "assets": {
+    "provenance": ["cwr-multisample-repeatability-v1-consolidated-330-b8bbca10-20260904-r1/consolidation-provenance.json", "cc7d765690f3d092b53a4d6d6272753c66d603e23afe26c5e3af4427da7f3eda", 319710],
+    "summary": ["cwr-multisample-repeatability-v1-consolidated-330-b8bbca10-20260904-r1/summary.json", "667d1af0d6886a235325eb017b67f902a172e9d30757f1e205d7499605581444", 168339],
+    "manifest": ["cwr-multisample-repeatability-v1-consolidated-330-b8bbca10-20260904-r1/manifest.json", "635684e3875456e76d6bff529b2971be40a606b2bbdad1c742cc6818f106ff0d", 380],
+    "frozen": ["cwr-multisample-repeatability-v1-20260821-44518ab/frozen-run-contract.json", "5fb06e5a4775ecfe1cee10132e52100733c7e765e8eae9865374bb23f1addddd", 123496],
+    "predecessor": ["cwr-multisample-repeatability-v1-successor-20260821-9422eff/predecessor-binding.json", "3a63744f2cef2748b17a31dd53e23ac62aa802283e12dd983cae813151ed939e", 14603],
+    "missing181_binding": ["cwr-multisample-missing181-dcae869-20260904-r2/completion-binding.json", "d23386e46cfb3e99563bd3c7926cf0adb8f93f48dd3074af2e6478d19526b5ea", 16729],
+    "missing181_receipt": ["cwr-multisample-missing181-dcae869-20260904-r2/normal-receipt.json", "2a7efbb82a485fdf898e3fc80e20b797116314a57bd82431b16f471ed66cd9cf", 1166],
+    "v3_claim": ["cwr-multisample-capacity-reset-v3-live-90f5769-20260822/active-epoch-claim.json", "b829f11750a3aab8813dc094ce70b19e8fb0a64b86998453f8ab8b90b5f14e39", 346],
+    "missing181_r1_claim": ["cwr-multisample-missing181-66ffd94-20260904-r1/exclusive-dispatch-claim.json", "8deee69239e66d84f67a20546eaec3e507c41bb33a9e6dafeff198d27369956d", 487]
+  },
+  "journal_assets": [
+    ["cwr-multisample-repeatability-v1-20260821-44518ab/schedule-journal.jsonl", "c8e568e14d60ccf8d2f538ab32c4c67f8484dc0d2094f94039b9582f0c8bda71", 55185],
+    ["cwr-multisample-repeatability-v1-successor-20260821-9422eff/successor-schedule-journal.jsonl", "df0e6eafc4f6f7c91a419e7e1cbc6b46e36fa1abba9dae24bb9393890246fcaa", 51417],
+    ["cwr-multisample-capacity-reset-v4-live-1c587bc-20260822/execution-journal.jsonl", "e1c3b88b94193906591a6566668688eb67b2592d19f8f7fe832dbc9941e0096a", 320],
+    ["cwr-multisample-capacity-reset-v6-live-unique/execution-journal.jsonl", "cb9215cb97f6b4317352e2f6d957007c96a22c9a7307ab535d11f99d9ec9e1c5", 2265],
+    ["cwr-multisample-capacity-reset-v7-live-1a2d48d/execution-journal.jsonl", "ee0bd17bb1c365018d564ac81e20aef25479fcde47595988c14c274d33b88654", 1464],
+    ["cwr-multisample-capacity-reset-v8-live-e50dd50/execution-journal.jsonl", "442ce6b5bf212200385dce61a4fedb98d1570b43442bfe5927bc678e4e740ff7", 112621],
+    ["cwr-multisample-capacity-reset-v3-live-90f5769-20260822/execution-journal.jsonl", "d4eb639cb0d41dad44f7be4f0b2f0cfcc604e2f06bf7e3b93f1f355a1735fee7", 320]
+  ],
+  "source_kind_counts": {"original_1_76": 76, "closed_successor_77_177": 101, "adopted_v4_178": 1, "admitted_v6_179_180": 2, "missing181_detached_completion": 1, "adopted_v7_182": 1, "v8_accepted_183_330": 148},
+  "rejected_sequences": [8, 61, 223, 244],
+  "physical_retry_sequences": [223, 244],
+  "failed_prefix_root": "cwr-multisample-repeatability-v1-20260821-44518ab/runs/hanna-225/cambridge_igcse_0500_p2_mj_2024/run-03",
+  "unresolved": [{"scope": "v3_sequence178", "asset": "v3_claim"}, {"scope": "missing181_r1", "asset": "missing181_r1_claim"}],
+  "expected_counts": {"accepted_logical_cells": 330, "accepted_units": 605, "hbq_passes": 55, "native_passes": 275, "native_leaf_rows": 9845, "rejected_attempts": 7, "failed_prefix_attempts": 3, "unique_observed_sessions_bounded_lineage": 612, "retry_physical_message_commitments": 4, "hbq_raw_order_differs_batches": 1, "hbq_quality_cohort_counts": {"original_1.0.0": 30, "v8_1.2.1": 25}},
+  "input_roots": [
+    "C:/Users/Haile/Documents/Creative-Writing-Rubrics-v8-runtime-e50dd50",
+    "C:/Users/Haile/Documents/cwr-multisample-repeatability-v1-consolidated-330-b8bbca10-20260904-r1",
+    "C:/Users/Haile/Documents/cwr-multisample-repeatability-v1-20260821-44518ab",
+    "C:/Users/Haile/Documents/cwr-multisample-repeatability-v1-successor-20260821-9422eff",
+    "C:/Users/Haile/Documents/cwr-multisample-capacity-reset-v3-live-90f5769-20260822",
+    "C:/Users/Haile/Documents/cwr-multisample-capacity-reset-v4-live-1c587bc-20260822",
+    "C:/Users/Haile/Documents/cwr-multisample-capacity-reset-v6-live-unique",
+    "C:/Users/Haile/Documents/cwr-multisample-capacity-reset-v7-live-1a2d48d",
+    "C:/Users/Haile/Documents/cwr-multisample-capacity-reset-v8-live-e50dd50",
+    "C:/Users/Haile/Documents/cwr-multisample-missing181-dcae869-20260904-r2",
+    "C:/Users/Haile/Documents/cwr-multisample-missing181-66ffd94-20260904-r1"
+  ]
+}

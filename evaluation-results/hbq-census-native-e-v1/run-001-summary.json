@@ -1,0 +1,37 @@
+{
+  "scope": "hbq-native-census-e-multisample-bounded-lineage-v1",
+  "status": "partial_program_census",
+  "report_sha256": "b2f87e196a702e4bf2af235ad33a902543af7809ee4a527a96f6105342529050",
+  "private_ledger_sha256": "0cba0f619217db1d2e0c72b188bb66232446ee7e9c6c98fb9ba316204acf132e",
+  "implementation_sha256": "40e7cd74a5bd33a208a7c8fc8019473e88fd0971ee1972f5b8f5700d1993f0bf",
+  "recipe_file_sha256": "17a06b1cdf5a77fd9566026f0145eaefb20a9b19db2b575e6c1aa6448b8d120e",
+  "observed": {
+    "accepted_logical_cells": 330,
+    "accepted_units": 605,
+    "native_leaf_rows": 9845,
+    "rejected_attempts": 7,
+    "failed_prefix_attempts": 3,
+    "unique_observed_sessions_bounded_lineage": 612,
+    "historical_analysis_sessions": 609,
+    "historical_analysis_artifact_commitments": 613,
+    "hbq_passes": 55,
+    "original_quality_cohort_passes": 30,
+    "v8_quality_cohort_passes": 25,
+    "raw_order_difference_batches": 1,
+    "historical_static_reference_matches": 8,
+    "historical_static_reference_changed": 1,
+    "verified_artifact_count": 2286,
+    "verified_artifact_bytes": 22456021,
+    "unresolved_controller_records": 2
+  },
+  "provider_calls_made": 0,
+  "new_provider_votes": 0,
+  "replaces_prior_multisample_declaration": true,
+  "limitations": [
+    "Bounded lineage only; adoption and replacement do not add independent studies.",
+    "Reported sessions are distinct from complete physical provider-contact counts.",
+    "V3 sequence178 and missing181-r1 remain unresolved; absent outputs or PIDs prove no contact conclusion.",
+    "Historical schema locator mismatch is retained; persisted native schema/state replay does not establish modern strict import or full-score replay.",
+    "Provider/model/runtime attestation and independent work count remain unverified."
+  ]
+}
