@@ -1,0 +1,2905 @@
+{
+  "schema_version": 2,
+  "policy": "historical_disposition_coverage_registry_v2",
+  "ancestor": {
+    "implementation": {
+      "root": "repository",
+      "locator": "evaluation-results/hbq-census-pass-b-dispositions-v1/census.py",
+      "sha256": "61f2dd53ea44662741dd7497de8371542ad2cc2e344bd5d4a1f6c137133701ab",
+      "bytes": 10296
+    },
+    "recipe": {
+      "root": "repository",
+      "locator": "evaluation-results/hbq-census-pass-b-dispositions-v1/recipe.json",
+      "sha256": "7159b3d9d5d70246a539345b57436bb41dc495095c90c594d70c07a22815144f",
+      "bytes": 52971
+    },
+    "report": {
+      "root": "control",
+      "locator": "successor-program-20261004/ttcw-phase1/census-pass-b-dispositions-001/census.json",
+      "sha256": "43af6a58236dfad83351d3d4d2add32961945d6572bab72fd95efdf6f10ece7b",
+      "bytes": 17700
+    }
+  },
+  "completed_censuses": [
+    {
+      "id": "fullbook",
+      "recipe": {
+        "root": "control",
+        "locator": "successor-program-20261004/ttcw-phase1/fullbook-historical-census-001/recipe.json",
+        "sha256": "1389bf2e5136d261f04c7148a5f2c98fb08f06b0e76478a8d9570c09e7fe32b5",
+        "bytes": 235456
+      },
+      "report": {
+        "root": "control",
+        "locator": "successor-program-20261004/ttcw-phase1/fullbook-historical-census-001/census.json",
+        "sha256": "9df782792b57a0ce14f80f11048c84250ab73f60a55ac889f5c44536d3f7f7c3",
+        "bytes": 3984
+      },
+      "receipt": {
+        "root": "control",
+        "locator": "successor-program-20261004/ttcw-phase1/fullbook-historical-census-001/terminal.json",
+        "sha256": "cc511f5b26c6b2d7f973693eb0ab839a5b348f9ffd4c8565db6d249d007e995a",
+        "bytes": 1097
+      },
+      "receipt_kind": "completed_terminal"
+    },
+    {
+      "id": "qpc24",
+      "recipe": {
+        "root": "control",
+        "locator": "successor-program-20261004/ttcw-phase1/qpc24-historical-census-001/recipe.json",
+        "sha256": "24851497ee206f6d2d7dc0f298cc582b1178b79d3714a86f51e995e3994d7ee4",
+        "bytes": 75001
+      },
+      "report": {
+        "root": "control",
+        "locator": "successor-program-20261004/ttcw-phase1/qpc24-historical-census-001/census.json",
+        "sha256": "efce8d088f5c9d581338c07b27bdc2e5746ca435e357eceac20c1ac076dfe7ac",
+        "bytes": 2325
+      },
+      "receipt": {
+        "root": "control",
+        "locator": "successor-program-20261004/ttcw-phase1/qpc24-historical-census-001/terminal.json",
+        "sha256": "c01d9c4e77b3f0c4625a02117980b3b97da0563e2be070ae9a6b8b28e9c08fbd",
+        "bytes": 1233
+      },
+      "receipt_kind": "completed_terminal"
+    },
+    {
+      "id": "poetryr3",
+      "recipe": {
+        "root": "control",
+        "locator": "successor-program-20261004/ttcw-phase1/poetry-v2-r3-historical-census-001/recipe.json",
+        "sha256": "3bbcde0a20f960bdb766c0e0665f2001696f6dd96262a654acdd7eb2bef9e618",
+        "bytes": 48926
+      },
+      "report": {
+        "root": "control",
+        "locator": "successor-program-20261004/ttcw-phase1/poetry-v2-r3-historical-census-001/census.json",
+        "sha256": "0007dbff277cb63e51542338a9db0cf743e001c8104691f0f1e50b256e2b8b16",
+        "bytes": 2452
+      },
+      "receipt": {
+        "root": "control",
+        "locator": "successor-program-20261004/ttcw-phase1/poetry-v2-r3-historical-census-001/terminal.json",
+        "sha256": "c16a95f0334dd531c8c72efd8b175aa81cbb5709a7a6daeb3ffd670ff4b78bfe",
+        "bytes": 1192
+      },
+      "receipt_kind": "completed_terminal"
+    },
+    {
+      "id": "revision",
+      "recipe": {
+        "root": "control",
+        "locator": "successor-program-20261004/ttcw-phase1/revision-ledger-census-001/recipe.json",
+        "sha256": "dcd91ab6acc1a563b8d8f08fc6d7b494651b3d37263b65672831cc4a4e765748",
+        "bytes": 352329
+      },
+      "report": {
+        "root": "control",
+        "locator": "successor-program-20261004/ttcw-phase1/revision-ledger-census-001/census.json",
+        "sha256": "38d042714448b40d9c1e27abae836e52d15e4a149d82eefcf17255e3e332b640",
+        "bytes": 3699
+      },
+      "receipt": {
+        "root": "control",
+        "locator": "successor-program-20261004/ttcw-phase1/revision-ledger-census-001/terminal.json",
+        "sha256": "0b6d565e2b5415c345a2f585a0c4ccc9d1b8111f3aca32b2090bd574c9129587",
+        "bytes": 1173
+      },
+      "receipt_kind": "completed_terminal"
+    },
+    {
+      "id": "figurative",
+      "recipe": {
+        "root": "control",
+        "locator": "successor-program-20261004/ttcw-phase1/figurative-scope-historical-census-001/recipe.json",
+        "sha256": "3967987034b7307d8a8a4e1948c8e0624babc3906c38f84c71dd69cd91ac441b",
+        "bytes": 287543
+      },
+      "report": {
+        "root": "control",
+        "locator": "successor-program-20261004/ttcw-phase1/figurative-scope-historical-census-001/census.json",
+        "sha256": "bb8891602b5bfd44eea2cd56d110ea17ebe5f2ffb6b6b61efb78037b87a14a00",
+        "bytes": 2500
+      },
+      "receipt": {
+        "root": "control",
+        "locator": "successor-program-20261004/ttcw-phase1/figurative-scope-historical-census-001/terminal.json",
+        "sha256": "e177e933f2e9bcf8586a142c2d9a6ec885a7126f625d53a8d3d5858d71daddc5",
+        "bytes": 1541
+      },
+      "receipt_kind": "completed_terminal"
+    },
+    {
+      "id": "architecture",
+      "recipe": {
+        "root": "control",
+        "locator": "successor-program-20261004/ttcw-phase1/poetry-architecture-historical-census-001/recipe.json",
+        "sha256": "b4b3215f45170b4cc4f97ee6c664b6b56237cb34f4832b6fafa581c971f06827",
+        "bytes": 71673
+      },
+      "report": {
+        "root": "control",
+        "locator": "successor-program-20261004/ttcw-phase1/poetry-architecture-historical-census-001/census.json",
+        "sha256": "5807ebc45a4db15aaff6fbbec071e1657fefbff1d7322234ca8c4570528c48d9",
+        "bytes": 2693
+      },
+      "receipt": {
+        "root": "control",
+        "locator": "successor-program-20261004/ttcw-phase1/poetry-architecture-historical-census-001/terminal.json",
+        "sha256": "93fdc2e26f310ae4f6716ab859207aad186897ce696c62ada2a4ca6baf0e5933",
+        "bytes": 1601
+      },
+      "receipt_kind": "completed_terminal"
+    },
+    {
+      "id": "disjoint",
+      "recipe": {
+        "root": "repository",
+        "locator": "evaluation-results/hbq-disjoint-disposition-historical-census-v1/recipe.json",
+        "sha256": "553ef4e604fdcdf98b1407f3d12dc26c0bd992074879b07a4767fcf5c9162589",
+        "bytes": 13361
+      },
+      "report": {
+        "root": "control",
+        "locator": "successor-program-20261004/ttcw-phase1/disjoint-disposition-historical-census-001/report.json",
+        "sha256": "da94c71b560ebb7a21297ec89f9f691b6a8d6c6b81ef8e5aace012705cc69787",
+        "bytes": 4338
+      },
+      "receipt": {
+        "root": "control",
+        "locator": "successor-program-20261004/ttcw-phase1/disjoint-disposition-historical-census-001/artifact-ledger.json",
+        "sha256": "d3df7884303b7e3cf216f4f41deaf0f9d37d5206e2019ff638524af82260e1ea",
+        "bytes": 43508
+      },
+      "receipt_kind": "artifact_inventory_without_terminal"
+    }
+  ],
+  "retained_sources": [
+    {
+      "id": "fullbook:1",
+      "root": "source",
+      "locator": "cwr-gray-blood-full-book-qpc24-run-author-v7-f406ba6-20260825",
+      "census": "fullbook",
+      "basis": "exact_saved_recipe_locator_only"
+    },
+    {
+      "id": "fullbook:2",
+      "root": "source",
+      "locator": "cwr-gray-blood-full-book-qpc24-run-rewrite-v7-f406ba6-20260825",
+      "census": "fullbook",
+      "basis": "exact_saved_recipe_locator_only"
+    },
+    {
+      "id": "qpc24:3",
+      "root": "source",
+      "locator": "cwr-qpc24-two-pass-live-work-v2-4ce1204-20260825",
+      "census": "qpc24",
+      "basis": "exact_saved_recipe_locator_only"
+    },
+    {
+      "id": "qpc24:4",
+      "root": "source",
+      "locator": "cwr-qpc24-two-pass-live-work-v3-4ce1204-20260825",
+      "census": "qpc24",
+      "basis": "exact_saved_recipe_locator_only"
+    },
+    {
+      "id": "qpc24:5",
+      "root": "source",
+      "locator": "cwr-qpc24-two-pass-live-work-v5-4ce1204-20260825",
+      "census": "qpc24",
+      "basis": "exact_saved_recipe_locator_only"
+    },
+    {
+      "id": "qpc24:6",
+      "root": "source",
+      "locator": "cwr-qpc24-exact-head-controller-4ce1204-20260825",
+      "census": "qpc24",
+      "basis": "exact_saved_recipe_locator_only"
+    },
+    {
+      "id": "poetryr3:7",
+      "root": "source",
+      "locator": "cwr-hbq-poetry-whole-poem-architecture-treatment-v2-execution-v1-4ce1204-20260825-lineage-r3-neutral-work",
+      "census": "poetryr3",
+      "basis": "exact_saved_recipe_locator_only"
+    },
+    {
+      "id": "figurative:8",
+      "root": "source",
+      "locator": "cwr-figurative-scope-treatment-execution-v1-20260823-v3",
+      "census": "figurative",
+      "basis": "exact_saved_recipe_locator_only"
+    },
+    {
+      "id": "architecture:9",
+      "root": "source",
+      "locator": "cwr-hbq-free-verse-necessity-scope-live-v1-4ce1204-20260825",
+      "census": "architecture",
+      "basis": "exact_saved_recipe_locator_only"
+    },
+    {
+      "id": "architecture:10",
+      "root": "source",
+      "locator": "cwr-hbq-poetry-whole-poem-architecture-dspy-compile-v6-4ce1204-20260825",
+      "census": "architecture",
+      "basis": "exact_saved_recipe_locator_only"
+    },
+    {
+      "id": "disjoint:11",
+      "root": "source",
+      "locator": "cwr-s2-disjoint-confirmation-v2-6ae9ee0-20260824/execution-v4-6ae9ee0",
+      "census": "disjoint",
+      "basis": "exact_saved_recipe_locator_only"
+    },
+    {
+      "id": "disjoint:12",
+      "root": "source",
+      "locator": "cwr-s1-four-state-disjoint-holdout-v2-execution-v1-6ae9ee0-20260825/execution-v1-preclaim",
+      "census": "disjoint",
+      "basis": "exact_saved_recipe_locator_only"
+    },
+    {
+      "id": "disjoint:13",
+      "root": "source",
+      "locator": "cwr-s1-four-state-applicability-treatment-v9-6ae9ee0-20260824/execution-v9-preexecution-freeze-v1",
+      "census": "disjoint",
+      "basis": "exact_saved_recipe_locator_only"
+    }
+  ],
+  "declaration_packages": [
+    {
+      "id": "cwr-exact-duplicate-repeatability-v1-public-result-v1",
+      "locator": "evaluation-results/cwr-exact-duplicate-repeatability-v1-public-result-v1",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/cwr-exact-duplicate-repeatability-v1-public-result-v1/aggregate.v1.json",
+          "sha256": "6e1e2dea8f93d95948b14de8c3ad1fc867cab4703ddf0d737823116238ebb010",
+          "bytes": 2009
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/cwr-exact-duplicate-repeatability-v1-public-result-v1/README.md",
+          "sha256": "221d29b9029780ccd1fde32f30f92abb47adf8c22f5fbe7334e4d0e15b927149",
+          "bytes": 2153
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/cwr-exact-duplicate-repeatability-v1-public-result-v1/verify_output.py",
+          "sha256": "fed45557809a0fc5175af0b385436791cb8445259457c8b7fe09287d10bfec4e",
+          "bytes": 7726
+        }
+      ]
+    },
+    {
+      "id": "cwr-guided-revision-gain-v2-live-exec-v8-crlf-replay-result-v1",
+      "locator": "evaluation-results/cwr-guided-revision-gain-v2-live-exec-v8-crlf-replay-result-v1",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/cwr-guided-revision-gain-v2-live-exec-v8-crlf-replay-result-v1/executor.py",
+          "sha256": "0d085a39d73d0a442f80a2b21bf328964be818c8347c8a359e1daa00b4ee0b8b",
+          "bytes": 8771
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/cwr-guided-revision-gain-v2-live-exec-v8-crlf-replay-result-v1/README.md",
+          "sha256": "39a012f1ca2d2994d824454c9d963aa9c042bae98da3d2fa60a27a3517153f10",
+          "bytes": 2119
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/cwr-guided-revision-gain-v2-live-exec-v8-crlf-replay-result-v1/result.json",
+          "sha256": "4f880f050cc9b4dd395ee47de9204ce6b036b9131a7b879d38b11c437b237774",
+          "bytes": 54706
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/cwr-guided-revision-gain-v2-live-exec-v8-crlf-replay-result-v1/study-contract.json",
+          "sha256": "601d9129133c417740ca9d88d3f87f01998a08d698bda5a1d32a25a2c90cb2f8",
+          "bytes": 671
+        }
+      ]
+    },
+    {
+      "id": "cwr-guided-revision-gain-v2-live-exec-v9-historical-input-replay-result-v1",
+      "locator": "evaluation-results/cwr-guided-revision-gain-v2-live-exec-v9-historical-input-replay-result-v1",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/cwr-guided-revision-gain-v2-live-exec-v9-historical-input-replay-result-v1/executor.py",
+          "sha256": "c6c98b2fa5d4f8faaec2ce66ccdf846ac613e0ed535e93bec266cd3d143911a2",
+          "bytes": 11715
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/cwr-guided-revision-gain-v2-live-exec-v9-historical-input-replay-result-v1/README.md",
+          "sha256": "c63053dcda668b6efe5f192f497b86a2216052914537baf443b561777bedae22",
+          "bytes": 1421
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/cwr-guided-revision-gain-v2-live-exec-v9-historical-input-replay-result-v1/result.json",
+          "sha256": "2111dd9166bff090ade3e27f518140f9295d265e5fce8b1be5df30921a4e22be",
+          "bytes": 55380
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/cwr-guided-revision-gain-v2-live-exec-v9-historical-input-replay-result-v1/study-contract.json",
+          "sha256": "932198afea31e95274539a95c8397c40dfc1d703459b85c812d39dee835987da",
+          "bytes": 1159
+        }
+      ]
+    },
+    {
+      "id": "cwr-guided-revision-gain-v6-heldout-result-v1",
+      "locator": "evaluation-results/cwr-guided-revision-gain-v6-heldout-result-v1",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/cwr-guided-revision-gain-v6-heldout-result-v1/README.md",
+          "sha256": "5c99365aba5a1e6249be106476ac8340745683f2c3692c204ac052e02944e4a7",
+          "bytes": 614
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/cwr-guided-revision-gain-v6-heldout-result-v1/result.json",
+          "sha256": "f7c9f1cc9c100aeda8d90e6566ad499c3f992c751a66c907bf787325fc554ddb",
+          "bytes": 1564
+        }
+      ]
+    },
+    {
+      "id": "hbq-figurative-dspy-boundary-search-successor-v1-public-result-v1",
+      "locator": "evaluation-results/hbq-figurative-dspy-boundary-search-successor-v1-public-result-v1",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-figurative-dspy-boundary-search-successor-v1-public-result-v1/public-result.json",
+          "sha256": "5dacb4d04d7203aa841aa950aa1f70c78b6e1a7d8e782a19630f243fc7d826af",
+          "bytes": 1549
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-figurative-dspy-boundary-search-successor-v1-public-result-v1/README.md",
+          "sha256": "2a580cf1064985b2d0c4e1c68ef0948f654b0127d92df960a22f0b619aea999d",
+          "bytes": 1093
+        }
+      ]
+    },
+    {
+      "id": "hbq-figurative-hinge-control-first-confirmation-v1-public-result-v1",
+      "locator": "evaluation-results/hbq-figurative-hinge-control-first-confirmation-v1-public-result-v1",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-figurative-hinge-control-first-confirmation-v1-public-result-v1/public-result.json",
+          "sha256": "9ede86bd0d5e3a4d7a3f1d7d8b17c42a197ed41d219301c7389ddf01b4a1000f",
+          "bytes": 1508
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-figurative-hinge-control-first-confirmation-v1-public-result-v1/README.md",
+          "sha256": "2fd6f05a0b274062748cef4c590644f659eb96392ef1525c02784ec4edd9f374",
+          "bytes": 973
+        }
+      ]
+    },
+    {
+      "id": "hbq-figurative-hinge-treatment-successor-v5-public-result-v1",
+      "locator": "evaluation-results/hbq-figurative-hinge-treatment-successor-v5-public-result-v1",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-figurative-hinge-treatment-successor-v5-public-result-v1/public-result.json",
+          "sha256": "f5ae4f7e2a68f2402ea5080dd16e922b3b79041eeb35ca2c665d7b13b3e3a68c",
+          "bytes": 1109
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-figurative-hinge-treatment-successor-v5-public-result-v1/README.md",
+          "sha256": "adb2027fe0ad4f7c85a84040c748566f08f6af9b02f9f4bed52e79934c9073c6",
+          "bytes": 885
+        }
+      ]
+    },
+    {
+      "id": "hbq-figurative-hinge-treatment-successor-v7-public-result-v1",
+      "locator": "evaluation-results/hbq-figurative-hinge-treatment-successor-v7-public-result-v1",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-figurative-hinge-treatment-successor-v7-public-result-v1/public-result.json",
+          "sha256": "0ab346a973cc96bbb4493a6d87f3e793037a2047cc3c78d590f7ab783491f44a",
+          "bytes": 1236
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-figurative-hinge-treatment-successor-v7-public-result-v1/README.md",
+          "sha256": "6b938c4f61259aafb51141046f18289ce7ea1083c3f72b0db6d3185e61a8f553",
+          "bytes": 975
+        }
+      ]
+    },
+    {
+      "id": "hbq-figurative-isolated-anchor-pilot-v1-execution-v1-public-result-v1",
+      "locator": "evaluation-results/hbq-figurative-isolated-anchor-pilot-v1-execution-v1-public-result-v1",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-figurative-isolated-anchor-pilot-v1-execution-v1-public-result-v1/aggregate.v1.json",
+          "sha256": "53eecd075c2e1d9e094676f242c2bd22d72fe851883ee423b892519dc2eb50a3",
+          "bytes": 1688
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-figurative-isolated-anchor-pilot-v1-execution-v1-public-result-v1/provenance.v1.json",
+          "sha256": "c7520e8b2c785eb1e16f909a04eac19afbcdb7514763d67809c0dd8265d56028",
+          "bytes": 1961
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-figurative-isolated-anchor-pilot-v1-execution-v1-public-result-v1/README.md",
+          "sha256": "467a6e89ddd610cf605787de83794ff2ea857b1fabc12f9689e3035b67b5d1fa",
+          "bytes": 1080
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-figurative-isolated-anchor-pilot-v1-execution-v1-public-result-v1/verify.py",
+          "sha256": "e5f72128c8fc813a74a7ce6f650a024fa419ade793093749db5fe45b6ca78a9d",
+          "bytes": 4520
+        }
+      ]
+    },
+    {
+      "id": "hbq-figurative-metaphor-checklist-successor-v1-execution-v1-public-result-v1",
+      "locator": "evaluation-results/hbq-figurative-metaphor-checklist-successor-v1-execution-v1-public-result-v1",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-figurative-metaphor-checklist-successor-v1-execution-v1-public-result-v1/public-result.json",
+          "sha256": "0cafab437d8395d12865d36444b93be57c6c0a6a07fd984e69327ff87dc7fdbc",
+          "bytes": 1673
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-figurative-metaphor-checklist-successor-v1-execution-v1-public-result-v1/README.md",
+          "sha256": "a051e9fde2cd0fe280b9c1d5b27035849a864c99c488ac40a5c33b29b231dccc",
+          "bytes": 1730
+        }
+      ]
+    },
+    {
+      "id": "hbq-figurative-scope-dspy-successor-v1",
+      "locator": "evaluation-results/hbq-figurative-scope-dspy-successor-v1",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-figurative-scope-dspy-successor-v1/public-confirmation-corpus.json",
+          "sha256": "c1de37964c516e49129b7ef57187e1908eb26111b98d3990dbbe9591b3960ee1",
+          "bytes": 5769
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-figurative-scope-dspy-successor-v1/public-result.json",
+          "sha256": "65199fbe4e8ec25ccba324ca9c310ad1235b2e81e4183611cfb591a010f37013",
+          "bytes": 1288
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-figurative-scope-dspy-successor-v1/README.md",
+          "sha256": "701767db979d4cadd2d7d5ca8075ba007e53038c745d69be19cefe6b1a07cf88",
+          "bytes": 2546
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-figurative-scope-dspy-successor-v1/run.py",
+          "sha256": "44296aa051379d266a50dfbc566b92cfa15f32f363f870cbc42b888624591f99",
+          "bytes": 3402
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-figurative-scope-dspy-successor-v1/study-contract.json",
+          "sha256": "b730b7b0f889c7b4895d1c4153ca0e872d07dad8f23e6cce6e287b5c0295882a",
+          "bytes": 1871
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-figurative-scope-dspy-successor-v1/study.py",
+          "sha256": "119a68d7899bbcfb2d8a148cdc4143f3e7fce5236331905cea1d36a0103acc82",
+          "bytes": 9915
+        }
+      ]
+    },
+    {
+      "id": "hbq-figurative-scope-dspy-successor-v2",
+      "locator": "evaluation-results/hbq-figurative-scope-dspy-successor-v2",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-figurative-scope-dspy-successor-v2/public-result.json",
+          "sha256": "f2128d0f9868d3608a739a6e10bbbb733f22f1117c479b87caf3115059603753",
+          "bytes": 1281
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-figurative-scope-dspy-successor-v2/README.md",
+          "sha256": "54f6a04724e89830e19428790d83635354e6315aca4b20d42634bfb610f7c691",
+          "bytes": 1724
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-figurative-scope-dspy-successor-v2/run.py",
+          "sha256": "76004e77e561458126d6960d634eedd2b28563f6d195422a477f2f0f56234ae2",
+          "bytes": 681
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-figurative-scope-dspy-successor-v2/study-contract.json",
+          "sha256": "5d7e76b47adc048cc799ab6cab962ccc08c8dd0cc5095785560562adbd39f105",
+          "bytes": 2651
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-figurative-scope-dspy-successor-v2/study.py",
+          "sha256": "02b761aa202edafca181cfd08470a01c537ded51d5787fae3541581ca2a4bd60",
+          "bytes": 7350
+        }
+      ]
+    },
+    {
+      "id": "hbq-figurative-scope-dspy-successor-v3",
+      "locator": "evaluation-results/hbq-figurative-scope-dspy-successor-v3",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-figurative-scope-dspy-successor-v3/public-result.json",
+          "sha256": "72e4b07aac6f5de926a2fda7c0800a4c56e2667182baa5828ccba8102fe205db",
+          "bytes": 949
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-figurative-scope-dspy-successor-v3/README.md",
+          "sha256": "479378806d98c84fab1b6dbb8685135228da38806c665b5f1b31867af4619d12",
+          "bytes": 1433
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-figurative-scope-dspy-successor-v3/run.py",
+          "sha256": "f4ec81e0e9e40980a34f7c165af2375de01b1f42620cb6500b57ceca8f2b001a",
+          "bytes": 2453
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-figurative-scope-dspy-successor-v3/study-contract.json",
+          "sha256": "5ad6e5bb70416ed8e7488f3688e9941e0510a24aab5804200d5941a8e1eb33ff",
+          "bytes": 2021
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-figurative-scope-dspy-successor-v3/study.py",
+          "sha256": "cd4f4fee09405fb1a8cf29dcd5b76905378c8302819bf1449fd886706640ff45",
+          "bytes": 7836
+        }
+      ]
+    },
+    {
+      "id": "hbq-figurative-scope-treatment-v1-execution-v1",
+      "locator": "evaluation-results/hbq-figurative-scope-treatment-v1-execution-v1",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-figurative-scope-treatment-v1-execution-v1/public-result.json",
+          "sha256": "1527cbf9299d9ca83c328101cd15e146e5f8e841c495d1b192a33f51e759534e",
+          "bytes": 1495
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-figurative-scope-treatment-v1-execution-v1/README.md",
+          "sha256": "7597b07b5be78177a1656e8bb34b086c1e5440873e5c9c9ac37308a664050e82",
+          "bytes": 3363
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-figurative-scope-treatment-v1-execution-v1/run.py",
+          "sha256": "ef3cda68cc26fbf2a5a284fc1077ff44a2481133574eb3ae39f86e92a732e4e2",
+          "bytes": 1406
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-figurative-scope-treatment-v1-execution-v1/study-contract.json",
+          "sha256": "f4d394287a5cd269f175181f0cb9a09986ed1aea6c42027d194415d449d234ca",
+          "bytes": 1572
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-figurative-scope-treatment-v1-execution-v1/study.py",
+          "sha256": "bdeb8ef979717e0d377630eb79b0b2cb870a9307aba92a54ce33351f5b3e29a7",
+          "bytes": 45513
+        }
+      ],
+      "source_binding": {
+        "locator": "evaluation-results/hbq-figurative-scope-treatment-v1-execution-v1/public-result.json",
+        "expected": {
+          "source_aggregate_sha256": "417cdd726711062ec3d1ad29924d605453fe17366e9602c927d8e9cf377304b8"
+        },
+        "basis": "exact_saved_figurative_recipe_public-aggregate.json_hash"
+      }
+    },
+    {
+      "id": "hbq-free-verse-necessity-scope-ablation-v1-public-result-v1",
+      "locator": "evaluation-results/hbq-free-verse-necessity-scope-ablation-v1-public-result-v1",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-free-verse-necessity-scope-ablation-v1-public-result-v1/aggregate.v1.json",
+          "sha256": "7b21d67529a86313f3b1d4a62c90b22960ac47ec4a57cbb9d49ac05b11c12911",
+          "bytes": 944
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-free-verse-necessity-scope-ablation-v1-public-result-v1/README.md",
+          "sha256": "c1e6604a0c7b79513966c454ad1849076b05f99d50ca071b13111b4048f23a84",
+          "bytes": 702
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-free-verse-necessity-scope-ablation-v1-public-result-v1/verify_output.py",
+          "sha256": "79cae8271db4f8345b423f2295a5f79f1b746ec59c1d412aeb2714ee105794bc",
+          "bytes": 2832
+        }
+      ]
+    },
+    {
+      "id": "hbq-gray-blood-full-book-qpc24-rebaseline-v9-public-result-v1",
+      "locator": "evaluation-results/hbq-gray-blood-full-book-qpc24-rebaseline-v9-public-result-v1",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-gray-blood-full-book-qpc24-rebaseline-v9-public-result-v1/aggregate.v1.json",
+          "sha256": "4aa31d84d0fb362b250414f26701cb03a8d66c55191709422099fccab58ede90",
+          "bytes": 2307
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-gray-blood-full-book-qpc24-rebaseline-v9-public-result-v1/README.md",
+          "sha256": "a882761bf99fcf0f746f14f0b81e85e41495987c113b81650a2ebce7a9466263",
+          "bytes": 1049
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-gray-blood-full-book-qpc24-rebaseline-v9-public-result-v1/verify_output.py",
+          "sha256": "9d396472b48318d6ac02d78b2c8a39048ea55f27893d64e30205338d0a6ac64d",
+          "bytes": 6279
+        }
+      ]
+    },
+    {
+      "id": "hbq-human-alignment-optimizer-v10-fresh96-confirmation-grok-result-v1",
+      "locator": "evaluation-results/hbq-human-alignment-optimizer-v10-fresh96-confirmation-grok-result-v1",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v10-fresh96-confirmation-grok-result-v1/README.md",
+          "sha256": "cfa9a4b33d05dbfd00d53ae4292bc421be6a3c9797d5fc2618343b1e6b2ab046",
+          "bytes": 511
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v10-fresh96-confirmation-grok-result-v1/result.json",
+          "sha256": "e94055aeb3993785a3bee1ba09f4a00ba8e6eeb0b48d065d5c983a7097b07c18",
+          "bytes": 1208
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v10-fresh96-confirmation-grok-result-v1/verify.py",
+          "sha256": "f08422dd99170daff6eb6555ff61d83cac53df4e3f58c0b86bb7c742f00a35b9",
+          "bytes": 3401
+        }
+      ]
+    },
+    {
+      "id": "hbq-human-alignment-optimizer-v10-fresh96-confirmation-sol-result-v1",
+      "locator": "evaluation-results/hbq-human-alignment-optimizer-v10-fresh96-confirmation-sol-result-v1",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v10-fresh96-confirmation-sol-result-v1/README.md",
+          "sha256": "70946f9826eab10635bdc5d0db2f7a9d770c6b2b21d6d29bd782c9dd7327f4d8",
+          "bytes": 851
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v10-fresh96-confirmation-sol-result-v1/result.json",
+          "sha256": "ecb42d5f1f18786602983a115269493afac8dedabf3d246023882c99adf355e5",
+          "bytes": 1856
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v10-fresh96-confirmation-sol-result-v1/verify.py",
+          "sha256": "8218e7e38b0b6fd0f753b13d704c8007ebdf5f3661c8a32387871e227bdb6457",
+          "bytes": 10694
+        }
+      ]
+    },
+    {
+      "id": "hbq-human-alignment-optimizer-v11-train-grok-result-v1",
+      "locator": "evaluation-results/hbq-human-alignment-optimizer-v11-train-grok-result-v1",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v11-train-grok-result-v1/README.md",
+          "sha256": "ac1910fd319b6a58da3c437f2abfc5c596764a484dfcbe459b6dc082e0c0a62b",
+          "bytes": 1320
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v11-train-grok-result-v1/result.json",
+          "sha256": "6366de64754c365c4d91a9117d8c174f771ad50062ef342f11996cddfa78c58e",
+          "bytes": 6603
+        }
+      ]
+    },
+    {
+      "id": "hbq-human-alignment-optimizer-v11-train-sol-result-v1",
+      "locator": "evaluation-results/hbq-human-alignment-optimizer-v11-train-sol-result-v1",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v11-train-sol-result-v1/README.md",
+          "sha256": "f80b471d6d92887be890be79a5e6372f69b3ea2b18260100a5d0379531910db8",
+          "bytes": 1519
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v11-train-sol-result-v1/result.json",
+          "sha256": "eef0c259a86a4a9fb5e465bfa03fa93bc4e862ad1bdd15abe0a71ebc2efaaa82",
+          "bytes": 9562
+        }
+      ]
+    },
+    {
+      "id": "hbq-human-alignment-optimizer-v12-development-grok-result-v1",
+      "locator": "evaluation-results/hbq-human-alignment-optimizer-v12-development-grok-result-v1",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v12-development-grok-result-v1/provenance.json",
+          "sha256": "85044506c420e4d63853233685a3e42f9e2364a84900d712829363b8b09f07bb",
+          "bytes": 1477
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v12-development-grok-result-v1/README.md",
+          "sha256": "bb5a02a0870af716ea481b5972dc3713922f53a66e9d3193a13b1394dd39eac4",
+          "bytes": 1884
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v12-development-grok-result-v1/result.json",
+          "sha256": "b9adbd9ed4f807221915f0eb522e1ac3768910f735e6d2dc81d2ed713541b650",
+          "bytes": 2549
+        }
+      ]
+    },
+    {
+      "id": "hbq-human-alignment-optimizer-v12-development-sol-result-v1",
+      "locator": "evaluation-results/hbq-human-alignment-optimizer-v12-development-sol-result-v1",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v12-development-sol-result-v1/provenance.json",
+          "sha256": "7e22aca4ccf429398da366172aa89bc2bf81859bba32810cdbf6c6b7bab1981d",
+          "bytes": 1548
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v12-development-sol-result-v1/README.md",
+          "sha256": "ae2e00eed8648c73a4782b80e2d7c11f6ac64ff703965e7c9bd71ce0e3233788",
+          "bytes": 1663
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v12-development-sol-result-v1/result.json",
+          "sha256": "b2d0831f603060e064f66118a67b51852353d80fc160a394cc7ad80f42e0e0a1",
+          "bytes": 2425
+        }
+      ]
+    },
+    {
+      "id": "hbq-human-alignment-optimizer-v13-train-expansion-result-v1",
+      "locator": "evaluation-results/hbq-human-alignment-optimizer-v13-train-expansion-result-v1",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v13-train-expansion-result-v1/provenance.json",
+          "sha256": "57f6028b8626115aa6d6668c929db054c3b13e107e7488204a378431ef470ef8",
+          "bytes": 1229
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v13-train-expansion-result-v1/README.md",
+          "sha256": "842aacfc778453486b1be5e51177aa6ef548a9d2cf3dc1fb7c55bf6041c3908f",
+          "bytes": 2024
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v13-train-expansion-result-v1/result.json",
+          "sha256": "94a5bc4213aca0d5eab8e5e369d4642b5039d85ba21a33076623b89071c73c96",
+          "bytes": 3498
+        }
+      ]
+    },
+    {
+      "id": "hbq-human-alignment-optimizer-v14-dspy-train-expansion-result-v1",
+      "locator": "evaluation-results/hbq-human-alignment-optimizer-v14-dspy-train-expansion-result-v1",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v14-dspy-train-expansion-result-v1/provenance.json",
+          "sha256": "37e1a25e8a5969a2406479fb92288ade43a5fcd1005caa94ab216d535afee2d3",
+          "bytes": 3052
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v14-dspy-train-expansion-result-v1/README.md",
+          "sha256": "6b9e7759326cd957a743fa28c62445576a9a4df51fd4d4fd733ddd9351301466",
+          "bytes": 2950
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v14-dspy-train-expansion-result-v1/result.json",
+          "sha256": "e9214d5b3755641b58b53ab71a6382da75dc54e034c13036d42ac881b458bde5",
+          "bytes": 5698
+        }
+      ]
+    },
+    {
+      "id": "hbq-human-alignment-optimizer-v14-dspy-train-pilot-result-v1",
+      "locator": "evaluation-results/hbq-human-alignment-optimizer-v14-dspy-train-pilot-result-v1",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v14-dspy-train-pilot-result-v1/provenance.json",
+          "sha256": "32520b497843840607c126194b3a373e62595760b0dd289c6a9f513fb23e1f9c",
+          "bytes": 2151
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v14-dspy-train-pilot-result-v1/README.md",
+          "sha256": "700c302fd0b0ea919f9061667885a3be1bdd04df57ef14858912413bdd7e56e3",
+          "bytes": 1802
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v14-dspy-train-pilot-result-v1/result.json",
+          "sha256": "3512354d5428cfe98e5215f1362a887cdc35aaebdef0121a584c37fa7c06f6f6",
+          "bytes": 4625
+        }
+      ]
+    },
+    {
+      "id": "hbq-human-alignment-optimizer-v4-balanced-dspy-heldout-exec-v1-public-result-v1",
+      "locator": "evaluation-results/hbq-human-alignment-optimizer-v4-balanced-dspy-heldout-exec-v1-public-result-v1",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v4-balanced-dspy-heldout-exec-v1-public-result-v1/endpoint-result.json",
+          "sha256": "2c9e6716e2419e420ee03a6d0bb64b1a2863df00bc44f666320b17732207d227",
+          "bytes": 14400
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v4-balanced-dspy-heldout-exec-v1-public-result-v1/feedback-result.json",
+          "sha256": "2ecaf697c8ff729e3545e7004113b0ac186428623d4116fa4e505df950bd1a25",
+          "bytes": 17419
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v4-balanced-dspy-heldout-exec-v1-public-result-v1/feedback-selection.json",
+          "sha256": "5b49688f85a530a7ab22cee382514bfd659eec4ef2d8bb68a9b223554aefb816",
+          "bytes": 12641
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v4-balanced-dspy-heldout-exec-v1-public-result-v1/grok-selection.json",
+          "sha256": "1cc2d24ae3e6793683d1e3ec1118b0358ef3861099e5dc00f3588bac3ac38eb3",
+          "bytes": 12057
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v4-balanced-dspy-heldout-exec-v1-public-result-v1/materialize.py",
+          "sha256": "f64809efdb248ea87408e6cdb49e8d9727dc13614cbfa823cc3d4d90fbde4919",
+          "bytes": 16232
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v4-balanced-dspy-heldout-exec-v1-public-result-v1/provenance.v1.json",
+          "sha256": "f3ec4adc9b07dac635b034a8ecbc3cdf81021d03f860d936c9fc1d30d9dbfd85",
+          "bytes": 2106
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v4-balanced-dspy-heldout-exec-v1-public-result-v1/public-result.json",
+          "sha256": "4bc51804857841b59d6ed5150993460f0dbb9767b22591526e37d14b88ea97b7",
+          "bytes": 1932
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v4-balanced-dspy-heldout-exec-v1-public-result-v1/README.md",
+          "sha256": "2162927bfd4945357d99d1034f9d1561b16747aeaa045ae71017b4c3882bc153",
+          "bytes": 1569
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v4-balanced-dspy-heldout-exec-v1-public-result-v1/result-schema.json",
+          "sha256": "b0f220be3bff0888fda12a87fc918d8d982eca1f4d0292638fae67c60629e2b1",
+          "bytes": 992
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v4-balanced-dspy-heldout-exec-v1-public-result-v1/selection-schema.json",
+          "sha256": "4e169f7d46fdcf62d73b73649f63c39d94cb191a09eb9ea6999a8f1a162fd48a",
+          "bytes": 565
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v4-balanced-dspy-heldout-exec-v1-public-result-v1/study-contract.json",
+          "sha256": "8022c4387718cd6491b7a6a83d6a64da7a42c85d7d640f18d42ee5d9eb70e4df",
+          "bytes": 1051
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v4-balanced-dspy-heldout-exec-v1-public-result-v1/verify.py",
+          "sha256": "9bc5c4d3e0f78052629150040f13e0eda5a06b5908e8d73528381ab77d0e2926",
+          "bytes": 14154
+        }
+      ]
+    },
+    {
+      "id": "hbq-human-alignment-optimizer-v4-lean-development-balanced-v1",
+      "locator": "evaluation-results/hbq-human-alignment-optimizer-v4-lean-development-balanced-v1",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v4-lean-development-balanced-v1/optimizer.py",
+          "sha256": "8355382a5e9e48b020607306412613b6217a14b7aa253596635d2186192fe4e1",
+          "bytes": 23717
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v4-lean-development-balanced-v1/public-result.json",
+          "sha256": "a07d81b09b0a3f2d2b4b29eae55a479be475b2bc81d23b8115dadb6d66733a2b",
+          "bytes": 2344
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v4-lean-development-balanced-v1/README.md",
+          "sha256": "c04866ca2902f8cb4e4acef15f24743581cd6917c7e676b3d124372ea8479eb6",
+          "bytes": 2430
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v4-lean-development-balanced-v1/study-contract.json",
+          "sha256": "c32b563822c6ffe0c48647cb49c1a32f9825b7ee4c64e1a967b3bedc2a8098ec",
+          "bytes": 1045
+        }
+      ]
+    },
+    {
+      "id": "hbq-human-alignment-optimizer-v5-balanced-dspy-mixed-provenance-live-result-v1",
+      "locator": "evaluation-results/hbq-human-alignment-optimizer-v5-balanced-dspy-mixed-provenance-live-result-v1",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v5-balanced-dspy-mixed-provenance-live-result-v1/README.md",
+          "sha256": "7da857cd3badafb9de607415f4e8896ebe5c9b373bdd5477154ae439ee9acd4a",
+          "bytes": 1645
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v5-balanced-dspy-mixed-provenance-live-result-v1/result.json",
+          "sha256": "870bc10bb4a491953d43c47dc6764faddb9f9b579eea8e90c655d46722e6c966",
+          "bytes": 4179
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v5-balanced-dspy-mixed-provenance-live-result-v1/study-contract.json",
+          "sha256": "b083f1a2171737f4afe3d3380e19bbbf622e33428b534eab205976effb3dcf12",
+          "bytes": 1360
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v5-balanced-dspy-mixed-provenance-live-result-v1/verify.py",
+          "sha256": "c2da57c104475b1b7f5f67778c7401d214ad97266c547354d7e2559c26f0d838",
+          "bytes": 4882
+        }
+      ]
+    },
+    {
+      "id": "hbq-human-alignment-optimizer-v5-f20-broader-development-grok-result-v1",
+      "locator": "evaluation-results/hbq-human-alignment-optimizer-v5-f20-broader-development-grok-result-v1",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v5-f20-broader-development-grok-result-v1/README.md",
+          "sha256": "52804951f6ede439b939b046cc2d938c56b639ee4c502f4dda6adbd5ee20fc6c",
+          "bytes": 761
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v5-f20-broader-development-grok-result-v1/study-contract.json",
+          "sha256": "546099fed9ea0808ec9790b57565117770ebf3f1f29f51ef2908926c4cc5fec8",
+          "bytes": 862
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v5-f20-broader-development-grok-result-v1/verify.py",
+          "sha256": "12eb81d5195b968d8a33a633ec6c86fa0beb822239aea1d4d912b5fede311b96",
+          "bytes": 17425
+        }
+      ]
+    },
+    {
+      "id": "hbq-human-alignment-optimizer-v5-f20-broader-development-grok-result-v2-v3-exec",
+      "locator": "evaluation-results/hbq-human-alignment-optimizer-v5-f20-broader-development-grok-result-v2-v3-exec",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v5-f20-broader-development-grok-result-v2-v3-exec/README.md",
+          "sha256": "f0f814d4389c1ef3b19ae80667e433682c80faf0c13d82305c2cc3e948fefeca",
+          "bytes": 537
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v5-f20-broader-development-grok-result-v2-v3-exec/result.json",
+          "sha256": "89d18aa68e8285dd9cbe8f996413672aec3c19b740c869b2bbca66c54ccd3a32",
+          "bytes": 4246
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v5-f20-broader-development-grok-result-v2-v3-exec/study-contract.json",
+          "sha256": "feca308b29b1a7eb4db1ac81c6e5e2eebba33273082a3a9c61c9da0799f86a06",
+          "bytes": 1666
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v5-f20-broader-development-grok-result-v2-v3-exec/verify.py",
+          "sha256": "4966a54961a19453ea407129303f8baba1f66d0506f4551552e7a28c5529d855",
+          "bytes": 17067
+        }
+      ]
+    },
+    {
+      "id": "hbq-human-alignment-optimizer-v5-f20-broader-development-sol-result-v1",
+      "locator": "evaluation-results/hbq-human-alignment-optimizer-v5-f20-broader-development-sol-result-v1",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v5-f20-broader-development-sol-result-v1/README.md",
+          "sha256": "00a4527783c55e7b64bdefff320358bb1c3a84c70dc90106bca0a75cffb363ba",
+          "bytes": 1049
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v5-f20-broader-development-sol-result-v1/result.json",
+          "sha256": "34441a265fbf4d654b2de4e89acfcc4b436029f0ff8c7cca47c9759ffc922fa3",
+          "bytes": 3655
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v5-f20-broader-development-sol-result-v1/study-contract.json",
+          "sha256": "1dc32c3ada722585e3038924d7da85107326a7d16ac60f25191018406a6527f4",
+          "bytes": 1774
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v5-f20-broader-development-sol-result-v1/verify.py",
+          "sha256": "21e209f0c9e72a2a0ad187306200ed33de57bdd4eccfa896b29d64157aedc938",
+          "bytes": 22580
+        }
+      ]
+    },
+    {
+      "id": "hbq-human-alignment-optimizer-v5-f20-nextwave-grok-score-result-v1",
+      "locator": "evaluation-results/hbq-human-alignment-optimizer-v5-f20-nextwave-grok-score-result-v1",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v5-f20-nextwave-grok-score-result-v1/README.md",
+          "sha256": "d142f44348f07aa587536faed832d592a6729733a17f3f764d7e195b91d6184c",
+          "bytes": 1432
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v5-f20-nextwave-grok-score-result-v1/result.json",
+          "sha256": "d0ceafc2abf45e8d8a8db9029bf8184ab3ca12f1d477ad50f0f5fb10e0c58c59",
+          "bytes": 5694
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v5-f20-nextwave-grok-score-result-v1/study-contract.json",
+          "sha256": "23ccc7926858d865b739726457212d8eee1f0acccdac293e37efc65d459bd295",
+          "bytes": 2388
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v5-f20-nextwave-grok-score-result-v1/verify.py",
+          "sha256": "c87cb22bf6c3e58ea5c0a3a2e9dd93e7fcfdf4c91e427d262d917fcccec2838c",
+          "bytes": 35653
+        }
+      ]
+    },
+    {
+      "id": "hbq-human-alignment-optimizer-v5-f20-nextwave-sol6-validation-result-v1",
+      "locator": "evaluation-results/hbq-human-alignment-optimizer-v5-f20-nextwave-sol6-validation-result-v1",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v5-f20-nextwave-sol6-validation-result-v1/README.md",
+          "sha256": "3a1cf43f850faf7446c1127bfa4f8951e21cf7320d7ede89d82169b8739cedef",
+          "bytes": 1111
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v5-f20-nextwave-sol6-validation-result-v1/result.json",
+          "sha256": "64f55220c65de475512e00b0b8400396e72ab49673948eb1e70f95992faa6937",
+          "bytes": 2132
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v5-f20-nextwave-sol6-validation-result-v1/study-contract.json",
+          "sha256": "113e2d42dbba32bffd3858ae1edf337dc52d7e17876e30e2796e6fd9be0470e0",
+          "bytes": 1662
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v5-f20-nextwave-sol6-validation-result-v1/verify.py",
+          "sha256": "629c5afd8b2bc367351eac56c88c5c2525b1a2a5e7c56af39af1aaaa14a5f77d",
+          "bytes": 22075
+        }
+      ]
+    },
+    {
+      "id": "hbq-human-alignment-optimizer-v5-grok-descriptive-sol-validation-result-v1",
+      "locator": "evaluation-results/hbq-human-alignment-optimizer-v5-grok-descriptive-sol-validation-result-v1",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v5-grok-descriptive-sol-validation-result-v1/README.md",
+          "sha256": "4df10c10b6d5011696929d2e8b2c2289374018765491f39467f33996c136de3e",
+          "bytes": 1101
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v5-grok-descriptive-sol-validation-result-v1/result.json",
+          "sha256": "26a610965a7a57741ec3fd126b959af5aaa05314dbd4ac505b218311ff14980b",
+          "bytes": 5322
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v5-grok-descriptive-sol-validation-result-v1/study-contract.json",
+          "sha256": "b44e9deef797ab65d25922528410a4811107ef79482ba820d9b8a6dfbacd440f",
+          "bytes": 1359
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v5-grok-descriptive-sol-validation-result-v1/verify.py",
+          "sha256": "68e0dec21a45c078f4dec7214f6f5721204b31137abf493485149cbf6eceb00c",
+          "bytes": 12914
+        }
+      ]
+    },
+    {
+      "id": "hbq-human-alignment-optimizer-v6-desc13-lower-step-grok-result-v1",
+      "locator": "evaluation-results/hbq-human-alignment-optimizer-v6-desc13-lower-step-grok-result-v1",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v6-desc13-lower-step-grok-result-v1/README.md",
+          "sha256": "adc79f8cc5190dc4f8e70f93e26423aaf01dc7198099dba315a10be3a1ad68ab",
+          "bytes": 499
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v6-desc13-lower-step-grok-result-v1/study-contract.json",
+          "sha256": "e097186128657b32251a5aad0e3d281e059111f15001508aa51ca6804b636681",
+          "bytes": 1269
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v6-desc13-lower-step-grok-result-v1/verify.py",
+          "sha256": "cf6d0a6bb2526191b5897275ae903ca8569f61d733cb0bfe136a41856447b587",
+          "bytes": 25166
+        }
+      ]
+    },
+    {
+      "id": "hbq-human-alignment-optimizer-v6-desc13-lower-step-grok-result-v2-v3-exec",
+      "locator": "evaluation-results/hbq-human-alignment-optimizer-v6-desc13-lower-step-grok-result-v2-v3-exec",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v6-desc13-lower-step-grok-result-v2-v3-exec/README.md",
+          "sha256": "13917bdbf5f07d1ab1d5896aa171d7e110ecef8aa8a6a26548ef5eb47a7a2b7e",
+          "bytes": 291
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v6-desc13-lower-step-grok-result-v2-v3-exec/study-contract.json",
+          "sha256": "abf2346599fd1221a2d58ce3b8ce80a0ae4c75c9b12cce132ef32e8eb147ca05",
+          "bytes": 1380
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v6-desc13-lower-step-grok-result-v2-v3-exec/verify.py",
+          "sha256": "a080cfe32f44e9cca4536445fddaca9c0c79cad724d6a6365dadbeeecdc39b86",
+          "bytes": 9768
+        }
+      ]
+    },
+    {
+      "id": "hbq-human-alignment-optimizer-v6-desc13-lower-step-sol-nonwinner-extension-result-v1",
+      "locator": "evaluation-results/hbq-human-alignment-optimizer-v6-desc13-lower-step-sol-nonwinner-extension-result-v1",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v6-desc13-lower-step-sol-nonwinner-extension-result-v1/README.md",
+          "sha256": "3ec27bbf8bf3adfffe853e0e4d9d06ea0653e04398f7b44795b9f4a53af65154",
+          "bytes": 800
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v6-desc13-lower-step-sol-nonwinner-extension-result-v1/result.json",
+          "sha256": "15da35133fa66b1a0b862338508267fc7c1e76d9f41e021687dcb4b3365cdadc",
+          "bytes": 1928
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v6-desc13-lower-step-sol-nonwinner-extension-result-v1/study-contract.json",
+          "sha256": "cd2058b010326d602b7eae17a04b7129828c46fbeb59bed2d1b89d70ab1e4bb7",
+          "bytes": 830
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v6-desc13-lower-step-sol-nonwinner-extension-result-v1/verify.py",
+          "sha256": "caeb0f8d9639c55bc13a23aa034ca5baaf9bda40aa69f4d65edc3213c2ca8205",
+          "bytes": 21141
+        }
+      ]
+    },
+    {
+      "id": "hbq-human-alignment-optimizer-v6-desc13-lower-step-sol-result-v1",
+      "locator": "evaluation-results/hbq-human-alignment-optimizer-v6-desc13-lower-step-sol-result-v1",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v6-desc13-lower-step-sol-result-v1/README.md",
+          "sha256": "87f11f34e259cf72c7ff6bc14b66a0d4591a007e2781dc304bf1e122c98a7fe5",
+          "bytes": 576
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v6-desc13-lower-step-sol-result-v1/result.json",
+          "sha256": "da575fc017c461ecfd0756a50265387b8a5b4145cdfaf3b21d32020410371047",
+          "bytes": 4546
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v6-desc13-lower-step-sol-result-v1/study-contract.json",
+          "sha256": "76fa20fe1a9c8c820aeadbcf8cf9391307ae5769f6ea7c71a29b50374edf19c8",
+          "bytes": 939
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v6-desc13-lower-step-sol-result-v1/verify.py",
+          "sha256": "b1a430e7ec3205bfb9f3185a7083e096f2988298a128d59cba228a7f014dd16b",
+          "bytes": 18496
+        }
+      ]
+    },
+    {
+      "id": "hbq-human-alignment-optimizer-v6-desc15-referent-grok-result-v1",
+      "locator": "evaluation-results/hbq-human-alignment-optimizer-v6-desc15-referent-grok-result-v1",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v6-desc15-referent-grok-result-v1/publication-manifest.json",
+          "sha256": "5091ad698cfb76f27c453857eff2e7a4724a464a76293898bd29a133bbc5bd33",
+          "bytes": 494
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v6-desc15-referent-grok-result-v1/README.md",
+          "sha256": "d12ea383616d00394fe05e0dfbda7bd68864f0225db80d33d4aec9e69ed9ab3b",
+          "bytes": 892
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v6-desc15-referent-grok-result-v1/result.json",
+          "sha256": "624e59737f31759f7c3b4f880a813e77b35fe48576d60c199655a5ceb180f74d",
+          "bytes": 2985
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v6-desc15-referent-grok-result-v1/study-contract.json",
+          "sha256": "e6de3fc0ac850ad143515b014fd7047f9333b31c887d3082f3badaf243c1b218",
+          "bytes": 1365
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v6-desc15-referent-grok-result-v1/verify.py",
+          "sha256": "bdab75c637f9fbb03cb5d521430e7ede15641b9db1cf0b553c2dee42bccdf32a",
+          "bytes": 14956
+        }
+      ]
+    },
+    {
+      "id": "hbq-human-alignment-optimizer-v6-desc15-referent-sol-veto-result-v1",
+      "locator": "evaluation-results/hbq-human-alignment-optimizer-v6-desc15-referent-sol-veto-result-v1",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v6-desc15-referent-sol-veto-result-v1/publication-manifest.json",
+          "sha256": "5d01032218bc578f3ccd254586077f7c80034748662ec9da3de35f0b66a114c1",
+          "bytes": 502
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v6-desc15-referent-sol-veto-result-v1/README.md",
+          "sha256": "f84f8806b5c4dfecac499bb22d12b08286b4c991a96245dd6a5f42b0bb7e9737",
+          "bytes": 867
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v6-desc15-referent-sol-veto-result-v1/result.json",
+          "sha256": "23988d59a94988b2604317786f2874fa59b0a411c9aafa677f9be28df32e2e71",
+          "bytes": 4164
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v6-desc15-referent-sol-veto-result-v1/study-contract.json",
+          "sha256": "12350958004eb9e0d3c48b92d5a728255bf5744bbefb6a9e9eff1b4e0cb01ff2",
+          "bytes": 1094
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v6-desc15-referent-sol-veto-result-v1/verify.py",
+          "sha256": "cc1a8c7789792b734aa4aca90466f03f711d959a40a9195182be1338cd05f7d6",
+          "bytes": 18451
+        }
+      ]
+    },
+    {
+      "id": "hbq-human-alignment-optimizer-v7-desc16-referent-evidence-grok-result-v1",
+      "locator": "evaluation-results/hbq-human-alignment-optimizer-v7-desc16-referent-evidence-grok-result-v1",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v7-desc16-referent-evidence-grok-result-v1/publication-manifest.json",
+          "sha256": "6ac5bfd783d3e71c59e4e11bdd9760af5e50621eeed00835095a7e9052bf8e20",
+          "bytes": 512
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v7-desc16-referent-evidence-grok-result-v1/README.md",
+          "sha256": "f342db71149175426fa0fd29daf86b5242c2fec3417a2de811d5c1a97beeb008",
+          "bytes": 952
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v7-desc16-referent-evidence-grok-result-v1/result.json",
+          "sha256": "424a90956d8b68e04bd79b57d3c893dc558b776a087c036057b0dd24a7cbb0fc",
+          "bytes": 3965
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v7-desc16-referent-evidence-grok-result-v1/study-contract.json",
+          "sha256": "edca78a314b5f0e0f7703f12ae93b3f7314dd3e0c564743526f49ba644fdf778",
+          "bytes": 1383
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v7-desc16-referent-evidence-grok-result-v1/verify.py",
+          "sha256": "cc7e9e93476d65d9947845f666974d361a035d0bdfda5daabb04a1e279a414a6",
+          "bytes": 16606
+        }
+      ]
+    },
+    {
+      "id": "hbq-human-alignment-optimizer-v7-desc16-referent-evidence-sol-veto-result-v1",
+      "locator": "evaluation-results/hbq-human-alignment-optimizer-v7-desc16-referent-evidence-sol-veto-result-v1",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v7-desc16-referent-evidence-sol-veto-result-v1/publication-manifest.json",
+          "sha256": "78bf696c41d3d4b9515a5c2547bc030a08f1a73367a1c32bd434f7dbc24cb806",
+          "bytes": 520
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v7-desc16-referent-evidence-sol-veto-result-v1/README.md",
+          "sha256": "48c20e68e71682b131f861eef7b8addc957385fb5d783fa446554d5e79c08b8c",
+          "bytes": 768
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v7-desc16-referent-evidence-sol-veto-result-v1/result.json",
+          "sha256": "1860b579c7983d9de4296a2f845006b6432a0b7efa682b9090c985028ba838ff",
+          "bytes": 4104
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v7-desc16-referent-evidence-sol-veto-result-v1/study-contract.json",
+          "sha256": "78113ec16e97177543336e7f52a63c2d2825d3d704231fd117b655ca975019e7",
+          "bytes": 1391
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v7-desc16-referent-evidence-sol-veto-result-v1/verify.py",
+          "sha256": "0049e834479309893538862342760c8bad0af8ff03f9265e817141e1e82e2bad",
+          "bytes": 16296
+        }
+      ]
+    },
+    {
+      "id": "hbq-human-alignment-optimizer-v8-desc17-generalization-grok-result-v1",
+      "locator": "evaluation-results/hbq-human-alignment-optimizer-v8-desc17-generalization-grok-result-v1",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v8-desc17-generalization-grok-result-v1/publication-manifest.json",
+          "sha256": "8f9a0043aa479209079ce802fb4fea91e5be0ee7618354b23a610ace6058f81f",
+          "bytes": 506
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v8-desc17-generalization-grok-result-v1/README.md",
+          "sha256": "18a4c0ebdfcee7f6f9870b7a0255bf139efbb0f095363f1b09d66bde82c67563",
+          "bytes": 940
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v8-desc17-generalization-grok-result-v1/result.json",
+          "sha256": "efe6d5a9a505784e0e5281014a212546fc68cacb786cc548d2b287138eff9260",
+          "bytes": 3907
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v8-desc17-generalization-grok-result-v1/study-contract.json",
+          "sha256": "8ddba3c7aab89730209eaf3819ffe30639e8d206fdd86bf047696d5af4850065",
+          "bytes": 1409
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v8-desc17-generalization-grok-result-v1/verify.py",
+          "sha256": "4c035ef658522ea575a6d55b443166308abf5b4e650bca69787b008acb452ca4",
+          "bytes": 14701
+        }
+      ]
+    },
+    {
+      "id": "hbq-human-alignment-optimizer-v8-desc17-input-fidelity-audit-v1",
+      "locator": "evaluation-results/hbq-human-alignment-optimizer-v8-desc17-input-fidelity-audit-v1",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v8-desc17-input-fidelity-audit-v1/audit.py",
+          "sha256": "40383ffc99631e9d6c6d4ef8b8a0369364a0adaa8849282f9d4161abd1cb48b6",
+          "bytes": 11250
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v8-desc17-input-fidelity-audit-v1/public-result.json",
+          "sha256": "915ffabdcc0abb01ac6b68bf752899dfe7d3bbd846c57df9502e61df0e19e1f5",
+          "bytes": 1458
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v8-desc17-input-fidelity-audit-v1/README.md",
+          "sha256": "f6b497745a9d355ebc7cf43f3f4153b1e5c11b22ec90b98e0237f7a01842f9a5",
+          "bytes": 711
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v8-desc17-input-fidelity-audit-v1/study-contract.json",
+          "sha256": "315b8626e0f37e2b859946e34f1ed388156bfd8b402cc2be89b00b6c050b8fe5",
+          "bytes": 965
+        }
+      ]
+    },
+    {
+      "id": "hbq-human-alignment-optimizer-v9-desc18-broad-replication-sol-veto-result-v1",
+      "locator": "evaluation-results/hbq-human-alignment-optimizer-v9-desc18-broad-replication-sol-veto-result-v1",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v9-desc18-broad-replication-sol-veto-result-v1/publication-manifest.json",
+          "sha256": "a53bdaab00009a1b7c123260555214d1c4d5f7f551a19ee2bdbd14268507c568",
+          "bytes": 576
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v9-desc18-broad-replication-sol-veto-result-v1/README.md",
+          "sha256": "07e0cb5de32837ffe49ff09161bdb76bc2c3fa5b914cf0a0b036d41e3b6dba25",
+          "bytes": 673
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v9-desc18-broad-replication-sol-veto-result-v1/result.json",
+          "sha256": "f74cd54bbe88bd549a86e42ed46dcca4a68252ea168c4cf116225c0a69e06a0f",
+          "bytes": 3944
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v9-desc18-broad-replication-sol-veto-result-v1/study-contract.json",
+          "sha256": "3ae522fd93a770759195001da46b083b2753e49ec42ff70d0ee6f055cb5c2368",
+          "bytes": 840
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-optimizer-v9-desc18-broad-replication-sol-veto-result-v1/verify.py",
+          "sha256": "fd149d2b350bbf7faa659806b22f8e1cf5a56907546f8bf8748dd81b734839ab",
+          "bytes": 14594
+        }
+      ]
+    },
+    {
+      "id": "hbq-human-alignment-wpb-sol-completed-result-v1",
+      "locator": "evaluation-results/hbq-human-alignment-wpb-sol-completed-result-v1",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-wpb-sol-completed-result-v1/aggregate.v1.json",
+          "sha256": "cc48b45dfd49c73230e57e47d7d39eef40b1baa170ee316497def8cfa52aadde",
+          "bytes": 3918
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-wpb-sol-completed-result-v1/provenance.v1.json",
+          "sha256": "631f0fb96c1140a5806f4c338efe88f2727f9526ef7907abe3aef15e307f8bc9",
+          "bytes": 1777
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-human-alignment-wpb-sol-completed-result-v1/README.md",
+          "sha256": "bbbceaf00d6ecef09c064a8c8fe03b5803c6dfe7b028cba89ec82f07e83d88bb",
+          "bytes": 2165
+        }
+      ]
+    },
+    {
+      "id": "hbq-l2-c03-visual-control-successor-v1-execution-v1-public-result-v1",
+      "locator": "evaluation-results/hbq-l2-c03-visual-control-successor-v1-execution-v1-public-result-v1",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-l2-c03-visual-control-successor-v1-execution-v1-public-result-v1/public-result.json",
+          "sha256": "3b13893b7bea1f7f95d9700e796619635cbc14a80170d22f511b8ad9721e75b3",
+          "bytes": 1060
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-l2-c03-visual-control-successor-v1-execution-v1-public-result-v1/README.md",
+          "sha256": "890b6b8217e512782d1deae957072a373db111ed72b624732ce82d014c880a1c",
+          "bytes": 729
+        }
+      ]
+    },
+    {
+      "id": "hbq-l2-construct-microgate-v2-execution-v2-public-result-v1",
+      "locator": "evaluation-results/hbq-l2-construct-microgate-v2-execution-v2-public-result-v1",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-l2-construct-microgate-v2-execution-v2-public-result-v1/public-result.json",
+          "sha256": "67df592ba43f842dc2338a29a82a19adb74358a7f294dbc22dd5ba9602727cf8",
+          "bytes": 898
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-l2-construct-microgate-v2-execution-v2-public-result-v1/README.md",
+          "sha256": "1a48ed680cbd8886a9f6233ba37794021123e4e9d88d245e671448a20d9d551b",
+          "bytes": 966
+        }
+      ]
+    },
+    {
+      "id": "hbq-l2-line-breaks-contextual-justification-treatment-v1-execution-v1-public-result-v1",
+      "locator": "evaluation-results/hbq-l2-line-breaks-contextual-justification-treatment-v1-execution-v1-public-result-v1",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-l2-line-breaks-contextual-justification-treatment-v1-execution-v1-public-result-v1/public-result.json",
+          "sha256": "6982ee64d76127d3c8a0610fd6ca09a29e42cb8d1dc8d3719ecaea2fd86be871",
+          "bytes": 1030
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-l2-line-breaks-contextual-justification-treatment-v1-execution-v1-public-result-v1/README.md",
+          "sha256": "d91d93091cb01985b724fde7eec5d7f8cab65e686cfcec7f43c90e6710d2d7a4",
+          "bytes": 1017
+        }
+      ]
+    },
+    {
+      "id": "hbq-l2-line-breaks-contextual-justification-treatment-v2-execution-v1-public-result-v1",
+      "locator": "evaluation-results/hbq-l2-line-breaks-contextual-justification-treatment-v2-execution-v1-public-result-v1",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-l2-line-breaks-contextual-justification-treatment-v2-execution-v1-public-result-v1/public-result.json",
+          "sha256": "cd20363eafe4a75df44c0c1355f1e0ec5d306c3a275c7ed62a7c9154d3c0b5aa",
+          "bytes": 1168
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-l2-line-breaks-contextual-justification-treatment-v2-execution-v1-public-result-v1/README.md",
+          "sha256": "29a20e11cf7de5f41ade79efffa2b04d173a7df7e35884b15a33dfb06a38f858",
+          "bytes": 926
+        }
+      ]
+    },
+    {
+      "id": "hbq-l2-line-breaks-text-holdout-v1-execution-v1-public-result-v1",
+      "locator": "evaluation-results/hbq-l2-line-breaks-text-holdout-v1-execution-v1-public-result-v1",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-l2-line-breaks-text-holdout-v1-execution-v1-public-result-v1/public-result.json",
+          "sha256": "4126e5e113d57a415565eae99e34cc1c48e7644d11f88e05a04afcc23fda43ab",
+          "bytes": 1113
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-l2-line-breaks-text-holdout-v1-execution-v1-public-result-v1/README.md",
+          "sha256": "65525b2d6f73dafff3e7c1ddc91196a58b96e45ccc97853370f8ce4c39b94758",
+          "bytes": 1024
+        }
+      ]
+    },
+    {
+      "id": "hbq-l2-material-context-disjoint-holdout-v1-execution-v1-public-result-v1",
+      "locator": "evaluation-results/hbq-l2-material-context-disjoint-holdout-v1-execution-v1-public-result-v1",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-l2-material-context-disjoint-holdout-v1-execution-v1-public-result-v1/public-result.json",
+          "sha256": "1dfc2846005dae16adbe879a4e48f769a6ec580f5730bf036840ba596a1bf291",
+          "bytes": 1153
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-l2-material-context-disjoint-holdout-v1-execution-v1-public-result-v1/README.md",
+          "sha256": "dff5e0f50404d53da50d695a82a1301ab8fd116ce18a071bfe7dbb6da1e99ead",
+          "bytes": 1048
+        }
+      ]
+    },
+    {
+      "id": "hbq-multisample-repeatability-v1-completed-result-v1",
+      "locator": "evaluation-results/hbq-multisample-repeatability-v1-completed-result-v1",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-multisample-repeatability-v1-completed-result-v1/manifest.json",
+          "sha256": "38e6629930fb57654baa12bb9ba40a509c7bc1910aee66f31a39c9124be47751",
+          "bytes": 956
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-multisample-repeatability-v1-completed-result-v1/README.md",
+          "sha256": "66e8c100ac32c73eeac1d7881d9aad844aa99667f8cc4945fc96e6916723ba46",
+          "bytes": 4164
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-multisample-repeatability-v1-completed-result-v1/repeatability-and-alignment.svg",
+          "sha256": "b1f1f171983f7eb6357cc6f9f06e2e1eea0c54b1123eaf1d2d2aba0b8de71414",
+          "bytes": 4998
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-multisample-repeatability-v1-completed-result-v1/result.json",
+          "sha256": "54ce84aa498b9d6867d9db54d8d8854d0735a2ad1171f634fffd62bb0d8d2ab6",
+          "bytes": 5894
+        }
+      ]
+    },
+    {
+      "id": "hbq-nonpoetry-scope-disjoint-confirmation-v2-public-result-v1",
+      "locator": "evaluation-results/hbq-nonpoetry-scope-disjoint-confirmation-v2-public-result-v1",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-nonpoetry-scope-disjoint-confirmation-v2-public-result-v1/public-result.json",
+          "sha256": "3a4ea6e9a2c81b58aa1c211903df8840df1e392d8a2e37da02be9521a75f9df3",
+          "bytes": 1621
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-nonpoetry-scope-disjoint-confirmation-v2-public-result-v1/README.md",
+          "sha256": "5b1639a514edbba9d18617f964caaa3d30e8e6bdbab41103a49fa4fc039b4b38",
+          "bytes": 988
+        }
+      ]
+    },
+    {
+      "id": "hbq-nonpoetry-scope-disjoint-holdout-v1-execution-v1-public-result-v1",
+      "locator": "evaluation-results/hbq-nonpoetry-scope-disjoint-holdout-v1-execution-v1-public-result-v1",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-nonpoetry-scope-disjoint-holdout-v1-execution-v1-public-result-v1/public-result.json",
+          "sha256": "50703b76ababa15bee4244e6b12dcce2f04b9e1ee4886c577184e7647a3c8ba8",
+          "bytes": 1324
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-nonpoetry-scope-disjoint-holdout-v1-execution-v1-public-result-v1/README.md",
+          "sha256": "35d9b8cbb8f64193bf05535435d61596a0abe89daadfac8e407119701ff1df04",
+          "bytes": 1730
+        }
+      ]
+    },
+    {
+      "id": "hbq-nonpoetry-scope-semantic-boundary-successor-v1-public-result-v1",
+      "locator": "evaluation-results/hbq-nonpoetry-scope-semantic-boundary-successor-v1-public-result-v1",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-nonpoetry-scope-semantic-boundary-successor-v1-public-result-v1/public-result.json",
+          "sha256": "0825719ae2f88a51844d0ae0c6531bb8bf9d7d331df42ae420ddc7e695735aaf",
+          "bytes": 1108
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-nonpoetry-scope-semantic-boundary-successor-v1-public-result-v1/README.md",
+          "sha256": "bbe283fc346dcb613c7a5ebfbab5937dd0d9fe067dd01c4dfac0087d36e4393f",
+          "bytes": 955
+        }
+      ]
+    },
+    {
+      "id": "hbq-nonpoetry-scope-sentinel-v1-result-v1",
+      "locator": "evaluation-results/hbq-nonpoetry-scope-sentinel-v1-result-v1",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-nonpoetry-scope-sentinel-v1-result-v1/README.md",
+          "sha256": "b3fd4191e1602fe5df3a63786e973ed800fb2e6ff38824f289fee060ffed2d46",
+          "bytes": 1991
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-nonpoetry-scope-sentinel-v1-result-v1/s2-public-aggregate.v1.json",
+          "sha256": "49d6ef3843062580bbbda0b362756634f993613600269d4176be0bb157c9d453",
+          "bytes": 2844
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-nonpoetry-scope-sentinel-v1-result-v1/verify_output.py",
+          "sha256": "e8e56be51eb86797944036f757cbf7c8ec262e40618ff96c84e6b3f090f9c63b",
+          "bytes": 7941
+        }
+      ]
+    },
+    {
+      "id": "hbq-nonpoetry-scope-treatment-v1-result-v1",
+      "locator": "evaluation-results/hbq-nonpoetry-scope-treatment-v1-result-v1",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-nonpoetry-scope-treatment-v1-result-v1/README.md",
+          "sha256": "d30d960af609cc5bb293df180a0fd9ff63181f0717aebde47cf6b716ba9bd1cd",
+          "bytes": 2148
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-nonpoetry-scope-treatment-v1-result-v1/s2-nonpoetry-scope-treatment-public-aggregate.v1.json",
+          "sha256": "9782f9565d995adaa61075d6b3fe3e98762455d486109566689f517a31951ca2",
+          "bytes": 2836
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-nonpoetry-scope-treatment-v1-result-v1/verify_output.py",
+          "sha256": "22852050919e78ccfdf8d3cf9c973f24d957b18e3ffb557f13c69b83761ccc18",
+          "bytes": 8453
+        }
+      ]
+    },
+    {
+      "id": "hbq-p1-discordance-audit-v7-public-result-v1",
+      "locator": "evaluation-results/hbq-p1-discordance-audit-v7-public-result-v1",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-p1-discordance-audit-v7-public-result-v1/public-result.json",
+          "sha256": "fbc20e8ed3dbbe95d3beeaf834ccad1f497be59343f416aee45b87353314eac5",
+          "bytes": 1923
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-p1-discordance-audit-v7-public-result-v1/README.md",
+          "sha256": "f54d734aaf7eaf6d1a989ef69177266d6857890083a069abc993d86c1e79a1d2",
+          "bytes": 1262
+        }
+      ]
+    },
+    {
+      "id": "hbq-poetry-free-verse-repetition-clean-na-successor-v1-execution-v1-public-result-v1",
+      "locator": "evaluation-results/hbq-poetry-free-verse-repetition-clean-na-successor-v1-execution-v1-public-result-v1",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-poetry-free-verse-repetition-clean-na-successor-v1-execution-v1-public-result-v1/public-result.json",
+          "sha256": "703f74baf1a7570af27ab9ba031874e3836ad83e107ff67ad277f52b3e99ea3b",
+          "bytes": 903
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-poetry-free-verse-repetition-clean-na-successor-v1-execution-v1-public-result-v1/README.md",
+          "sha256": "345d4860161bacaf1b69bb38be7bc65d6244ef910232f4cb0f9863f089c58b30",
+          "bytes": 883
+        }
+      ]
+    },
+    {
+      "id": "hbq-poetry-free-verse-repetition-four-state-applicability-treatment-v1-execution-v10-public-result-v1",
+      "locator": "evaluation-results/hbq-poetry-free-verse-repetition-four-state-applicability-treatment-v1-execution-v10-public-result-v1",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-poetry-free-verse-repetition-four-state-applicability-treatment-v1-execution-v10-public-result-v1/public-result.json",
+          "sha256": "9e88ca76b49cb8bede436805748db1ad3185a9a040afc30af2ad33341cd1d2ca",
+          "bytes": 1836
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-poetry-free-verse-repetition-four-state-applicability-treatment-v1-execution-v10-public-result-v1/README.md",
+          "sha256": "0174316751bcf2f95895e57c446fd79cca1de456ef49401f822ba78263d0165d",
+          "bytes": 838
+        }
+      ]
+    },
+    {
+      "id": "hbq-poetry-free-verse-repetition-four-state-applicability-treatment-v1-execution-v2-public-result-v1",
+      "locator": "evaluation-results/hbq-poetry-free-verse-repetition-four-state-applicability-treatment-v1-execution-v2-public-result-v1",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-poetry-free-verse-repetition-four-state-applicability-treatment-v1-execution-v2-public-result-v1/public-result.json",
+          "sha256": "93c8eb06fdbd8e55b69efcdfd7c803ff4137710bb5104b310380cb91400de7fc",
+          "bytes": 1593
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-poetry-free-verse-repetition-four-state-applicability-treatment-v1-execution-v2-public-result-v1/README.md",
+          "sha256": "c906885a97966b24cf2ad410b78464b0df581cee2945076647241afb5fcda5d7",
+          "bytes": 944
+        }
+      ]
+    },
+    {
+      "id": "hbq-poetry-free-verse-repetition-four-state-applicability-treatment-v1-execution-v6-public-result-v1",
+      "locator": "evaluation-results/hbq-poetry-free-verse-repetition-four-state-applicability-treatment-v1-execution-v6-public-result-v1",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-poetry-free-verse-repetition-four-state-applicability-treatment-v1-execution-v6-public-result-v1/public-result.json",
+          "sha256": "a08958d40320c218bbfe9b4628c2ac286c0fe39d371789ffc4300cea9b0f6fb0",
+          "bytes": 1465
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-poetry-free-verse-repetition-four-state-applicability-treatment-v1-execution-v6-public-result-v1/README.md",
+          "sha256": "6366bf93f9de01f38208026587188e54992300ab4a1b5ed4605c17a9e6f5bd3d",
+          "bytes": 1026
+        }
+      ]
+    },
+    {
+      "id": "hbq-poetry-free-verse-repetition-four-state-applicability-treatment-v1-execution-v9-public-result-v1",
+      "locator": "evaluation-results/hbq-poetry-free-verse-repetition-four-state-applicability-treatment-v1-execution-v9-public-result-v1",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-poetry-free-verse-repetition-four-state-applicability-treatment-v1-execution-v9-public-result-v1/public-result.json",
+          "sha256": "9c10b502e52e847d5e72ee742576f0c360b2ceb18bad53e87b9c9d79fc015f71",
+          "bytes": 1684
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-poetry-free-verse-repetition-four-state-applicability-treatment-v1-execution-v9-public-result-v1/README.md",
+          "sha256": "880c67c8afac9ae71b324b396f96589c6e78fadda45702cc40cb9aec25cc1c41",
+          "bytes": 1090
+        }
+      ]
+    },
+    {
+      "id": "hbq-poetry-free-verse-repetition-four-state-disjoint-holdout-v2-execution-v1-public-result-v1",
+      "locator": "evaluation-results/hbq-poetry-free-verse-repetition-four-state-disjoint-holdout-v2-execution-v1-public-result-v1",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-poetry-free-verse-repetition-four-state-disjoint-holdout-v2-execution-v1-public-result-v1/public-result.json",
+          "sha256": "3deb0b67efe888941231e8b4fc2bd3af80b01c03f196b1ca67ab52915072e977",
+          "bytes": 2202
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-poetry-free-verse-repetition-four-state-disjoint-holdout-v2-execution-v1-public-result-v1/README.md",
+          "sha256": "cf7f07e20fe2e4c58d92511bba541d6463eb954273cf14c14b73c8ad120a3d08",
+          "bytes": 1033
+        }
+      ]
+    },
+    {
+      "id": "hbq-poetry-free-verse-repetition-four-state-disjoint-holdout-v2-execution-v3-public-result-v1",
+      "locator": "evaluation-results/hbq-poetry-free-verse-repetition-four-state-disjoint-holdout-v2-execution-v3-public-result-v1",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-poetry-free-verse-repetition-four-state-disjoint-holdout-v2-execution-v3-public-result-v1/public-result.json",
+          "sha256": "215c27877123a173efda061dca15e748a292cb8c07283a9becc64f89ad2beda8",
+          "bytes": 1576
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-poetry-free-verse-repetition-four-state-disjoint-holdout-v2-execution-v3-public-result-v1/README.md",
+          "sha256": "3e4adb12e6dcc1741dae7e2bb5ab60174c503933b8e20675620f5e4173384f35",
+          "bytes": 1039
+        }
+      ]
+    },
+    {
+      "id": "hbq-poetry-free-verse-repetition-incidental-determiner-holdout-v2-execution-v2-public-result-v1",
+      "locator": "evaluation-results/hbq-poetry-free-verse-repetition-incidental-determiner-holdout-v2-execution-v2-public-result-v1",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-poetry-free-verse-repetition-incidental-determiner-holdout-v2-execution-v2-public-result-v1/public-result.json",
+          "sha256": "8fe7b6c9a1649cbd85de51056772660dd12a60a6fcc070b96480d5288ac7fc56",
+          "bytes": 1594
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-poetry-free-verse-repetition-incidental-determiner-holdout-v2-execution-v2-public-result-v1/README.md",
+          "sha256": "8f4b0aab2737c6a9be3bbe7d83994fe9b3fdf5efa63984b18c1e833e53748085",
+          "bytes": 1086
+        }
+      ]
+    },
+    {
+      "id": "hbq-poetry-free-verse-repetition-treatment-v1-execution-v1-public-result-v1",
+      "locator": "evaluation-results/hbq-poetry-free-verse-repetition-treatment-v1-execution-v1-public-result-v1",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-poetry-free-verse-repetition-treatment-v1-execution-v1-public-result-v1/public-result.json",
+          "sha256": "4d8acdd796678eba8457e230ae61a8b8472c43ca2176125f211614ce2db26b50",
+          "bytes": 1314
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-poetry-free-verse-repetition-treatment-v1-execution-v1-public-result-v1/README.md",
+          "sha256": "a4a90ccff646d82ad3645a052fa79801950e71f61d726620141d0adc92b3ab77",
+          "bytes": 1339
+        }
+      ]
+    },
+    {
+      "id": "hbq-poetry-whole-poem-architecture-dspy-v1-public-result-v1",
+      "locator": "evaluation-results/hbq-poetry-whole-poem-architecture-dspy-v1-public-result-v1",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-poetry-whole-poem-architecture-dspy-v1-public-result-v1/aggregate.v1.json",
+          "sha256": "125d3666ce5176636dec524a5d52ff9abff7458c068d171d50e4b1e6109f53fc",
+          "bytes": 1773
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-poetry-whole-poem-architecture-dspy-v1-public-result-v1/README.md",
+          "sha256": "3a791b0f8d77a210161bd980a1d6581dfc81200f16738d78181373dffd1ad8ee",
+          "bytes": 1363
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-poetry-whole-poem-architecture-dspy-v1-public-result-v1/verify.py",
+          "sha256": "7f489c96293681f37a80916cebfba316a6cd1d4b9cc981185421710715d71b96",
+          "bytes": 4066
+        }
+      ]
+    },
+    {
+      "id": "hbq-poetry-whole-poem-architecture-treatment-v1-public-result-v1",
+      "locator": "evaluation-results/hbq-poetry-whole-poem-architecture-treatment-v1-public-result-v1",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-poetry-whole-poem-architecture-treatment-v1-public-result-v1/aggregate.v1.json",
+          "sha256": "c89ce775c0cc97c0750d8eb4b09d34179b4a03bfe86546ad7773ff9d6ae21298",
+          "bytes": 1663
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-poetry-whole-poem-architecture-treatment-v1-public-result-v1/README.md",
+          "sha256": "169b2b6dca2e46588afd6d389fa546ed784fec77444a9c573d4ea66cd66dbd0f",
+          "bytes": 1204
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-poetry-whole-poem-architecture-treatment-v1-public-result-v1/verify_output.py",
+          "sha256": "0da78bd5e45b3b1352f3353594a5faea419d45bf2a1a9c9c4969a6a7239507f6",
+          "bytes": 3741
+        }
+      ]
+    },
+    {
+      "id": "hbq-poetry-whole-poem-architecture-treatment-v2-public-result-v1",
+      "locator": "evaluation-results/hbq-poetry-whole-poem-architecture-treatment-v2-public-result-v1",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-poetry-whole-poem-architecture-treatment-v2-public-result-v1/aggregate.v1.json",
+          "sha256": "f7ed8775a975d0f42630eba313d5e27c8596416988c9ed957c2fa43799b11afb",
+          "bytes": 1655
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-poetry-whole-poem-architecture-treatment-v2-public-result-v1/README.md",
+          "sha256": "31f98f3ab797917e3a426ec8f80feb219d1e4aec7dc80a3982635032c9f304cd",
+          "bytes": 1698
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-poetry-whole-poem-architecture-treatment-v2-public-result-v1/verify_output.py",
+          "sha256": "8b3e58e5163dd43d962332068c4ff78ffc920dff445517ce5752557aedcd94d0",
+          "bytes": 3749
+        }
+      ]
+    },
+    {
+      "id": "hbq-polarity-change-current-wording-v1-result-v1",
+      "locator": "evaluation-results/hbq-polarity-change-current-wording-v1-result-v1",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-polarity-change-current-wording-v1-result-v1/p1-public-aggregate.v1.json",
+          "sha256": "e85500c3d8dc02f51d503fbfc946b680d9de6711adcead5e9003613623d07070",
+          "bytes": 4232
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-polarity-change-current-wording-v1-result-v1/README.md",
+          "sha256": "190401d75aab1a19d28170231af87e33f2e849332dc5612a243b1c9b92eefaf4",
+          "bytes": 2100
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-polarity-change-current-wording-v1-result-v1/verify_output.py",
+          "sha256": "55bedf3ee96a82e4cc5eac55949d05f2c6170d7c82a10aab8c23c549d2d6aa06",
+          "bytes": 10037
+        }
+      ]
+    },
+    {
+      "id": "hbq-polarity-change-manual-treatment-holdout-v1-result-v1",
+      "locator": "evaluation-results/hbq-polarity-change-manual-treatment-holdout-v1-result-v1",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-polarity-change-manual-treatment-holdout-v1-result-v1/p1-manual-treatment-holdout-public-aggregate.v1.json",
+          "sha256": "b6e5169dd044675cbb4665c0e39ab13348ec1fea6268398fb05e714ec0d6feec",
+          "bytes": 3254
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-polarity-change-manual-treatment-holdout-v1-result-v1/README.md",
+          "sha256": "5d84f965645745c0242c6942f960d9b676f2aae4cb359b02c56560edecdb339e",
+          "bytes": 2223
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-polarity-change-manual-treatment-holdout-v1-result-v1/verify_output.py",
+          "sha256": "efa9627988388a80ef015965a767ad4d87c1cb78145c57c3a4b4ba36f9aded72",
+          "bytes": 9563
+        }
+      ]
+    },
+    {
+      "id": "hbq-polarity-change-manual-treatment-v1-result-v1",
+      "locator": "evaluation-results/hbq-polarity-change-manual-treatment-v1-result-v1",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-polarity-change-manual-treatment-v1-result-v1/p1-manual-treatment-public-aggregate.v1.json",
+          "sha256": "2fa3e3e598b813e562a139ca305bd1af8a22a58ca591539285044824137b2ca3",
+          "bytes": 4148
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-polarity-change-manual-treatment-v1-result-v1/README.md",
+          "sha256": "a57ee8f108a129a7fbc19f98f28575ba503e5f1f9a679339e1e5994a01c470a4",
+          "bytes": 2334
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-polarity-change-manual-treatment-v1-result-v1/verify_output.py",
+          "sha256": "68ae6f0e4f2caa858944549c3ae4f1c3f5bff51a51942ca04d309ea5af8a1f68",
+          "bytes": 10002
+        }
+      ]
+    },
+    {
+      "id": "hbq-premise-scale-ownership-v1-result-v1",
+      "locator": "evaluation-results/hbq-premise-scale-ownership-v1-result-v1",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-premise-scale-ownership-v1-result-v1/premise-scale-ownership-public-aggregate.v1.json",
+          "sha256": "bd2fd0f9cb6fcf7e30df54b1759548b48648a7643f361d118e8c72b0a479cc33",
+          "bytes": 2459
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-premise-scale-ownership-v1-result-v1/README.md",
+          "sha256": "0924a1415cca7bf5e17d5221a24b13a602b7f5e74965731b333ee19700812850",
+          "bytes": 1648
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-premise-scale-ownership-v1-result-v1/verify_output.py",
+          "sha256": "8a762890e08b1ca46de9b0318b3ec65194107fa722811ec25685bc394d2a5c1b",
+          "bytes": 8116
+        }
+      ]
+    },
+    {
+      "id": "hbq-qpc24-two-pass-product-confirmation-v5-public-result-v1",
+      "locator": "evaluation-results/hbq-qpc24-two-pass-product-confirmation-v5-public-result-v1",
+      "artifacts": [
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-qpc24-two-pass-product-confirmation-v5-public-result-v1/aggregate.v1.json",
+          "sha256": "189444cc0bd32a7bd90a7744a0a017e7ff71e266d0bf13bab455495f7dfd59da",
+          "bytes": 2625
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-qpc24-two-pass-product-confirmation-v5-public-result-v1/README.md",
+          "sha256": "e6e13a01b03d7e73cbab3f9117954ccd8a903e7b88505427682776db7c535cdd",
+          "bytes": 1330
+        },
+        {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-qpc24-two-pass-product-confirmation-v5-public-result-v1/verify_output.py",
+          "sha256": "96fce447d25f2dae86a091f1ee52aedfa85850fbd6d7014a36a662de99407785",
+          "bytes": 6063
+        }
+      ]
+    }
+  ],
+  "coverage_edges": [
+    {
+      "source_type": "original_record",
+      "source": "fullbook-v9",
+      "relationship": "joins_existing_positions",
+      "census": "fullbook"
+    },
+    {
+      "source_type": "retained_source",
+      "source": "fullbook:1",
+      "relationship": "joins_existing_positions",
+      "census": "fullbook"
+    },
+    {
+      "source_type": "retained_source",
+      "source": "fullbook:2",
+      "relationship": "joins_existing_positions",
+      "census": "fullbook"
+    },
+    {
+      "source_type": "original_record",
+      "source": "qpc24-v2",
+      "relationship": "joins_existing_positions",
+      "census": "qpc24"
+    },
+    {
+      "source_type": "retained_source",
+      "source": "qpc24:3",
+      "relationship": "joins_existing_positions",
+      "census": "qpc24"
+    },
+    {
+      "source_type": "original_record",
+      "source": "qpc24-v3",
+      "relationship": "joins_existing_positions",
+      "census": "qpc24"
+    },
+    {
+      "source_type": "retained_source",
+      "source": "qpc24:4",
+      "relationship": "joins_existing_positions",
+      "census": "qpc24"
+    },
+    {
+      "source_type": "original_record",
+      "source": "qpc24-v5",
+      "relationship": "joins_existing_positions",
+      "census": "qpc24"
+    },
+    {
+      "source_type": "retained_source",
+      "source": "qpc24:5",
+      "relationship": "joins_existing_positions",
+      "census": "qpc24"
+    },
+    {
+      "source_type": "retained_source",
+      "source": "qpc24:6",
+      "relationship": "joins_existing_positions",
+      "census": "qpc24"
+    },
+    {
+      "source_type": "original_record",
+      "source": "poetry-v2-r3",
+      "relationship": "joins_existing_positions",
+      "census": "poetryr3"
+    },
+    {
+      "source_type": "retained_source",
+      "source": "poetryr3:7",
+      "relationship": "joins_existing_positions",
+      "census": "poetryr3"
+    },
+    {
+      "source_type": "original_record",
+      "source": "revision-v2",
+      "relationship": "joins_existing_positions",
+      "census": "revision"
+    },
+    {
+      "source_type": "original_record",
+      "source": "revision-v3",
+      "relationship": "joins_existing_positions",
+      "census": "revision"
+    },
+    {
+      "source_type": "original_record",
+      "source": "revision-v5",
+      "relationship": "joins_existing_positions",
+      "census": "revision"
+    },
+    {
+      "source_type": "original_record",
+      "source": "revision-v6",
+      "relationship": "joins_existing_positions",
+      "census": "revision"
+    },
+    {
+      "source_type": "original_record",
+      "source": "revision-v7a",
+      "relationship": "joins_existing_positions",
+      "census": "revision"
+    },
+    {
+      "source_type": "original_record",
+      "source": "revision-v7b",
+      "relationship": "joins_existing_positions",
+      "census": "revision"
+    },
+    {
+      "source_type": "retained_source",
+      "source": "figurative:8",
+      "relationship": "joins_existing_positions",
+      "census": "figurative"
+    },
+    {
+      "source_type": "retained_source",
+      "source": "architecture:9",
+      "relationship": "joins_existing_positions",
+      "census": "architecture"
+    },
+    {
+      "source_type": "retained_source",
+      "source": "architecture:10",
+      "relationship": "joins_existing_positions",
+      "census": "architecture"
+    },
+    {
+      "source_type": "retained_source",
+      "source": "disjoint:11",
+      "relationship": "joins_existing_positions",
+      "census": "disjoint"
+    },
+    {
+      "source_type": "retained_source",
+      "source": "disjoint:12",
+      "relationship": "joins_existing_positions",
+      "census": "disjoint"
+    },
+    {
+      "source_type": "retained_source",
+      "source": "disjoint:13",
+      "relationship": "joins_existing_positions",
+      "census": "disjoint"
+    },
+    {
+      "source_type": "original_record",
+      "source": "fullbook-v2",
+      "relationship": "excluded_ancestor",
+      "census": "fullbook"
+    },
+    {
+      "source_type": "original_record",
+      "source": "fullbook-public-v9",
+      "relationship": "replaces_declaration",
+      "census": "fullbook"
+    },
+    {
+      "source_type": "original_record",
+      "source": "qpc24-v1",
+      "relationship": "excluded_ancestor",
+      "census": "qpc24"
+    },
+    {
+      "source_type": "original_record",
+      "source": "qpc24-v2",
+      "relationship": "excluded_ancestor",
+      "census": "qpc24"
+    },
+    {
+      "source_type": "original_record",
+      "source": "qpc24-v3",
+      "relationship": "excluded_ancestor",
+      "census": "qpc24"
+    },
+    {
+      "source_type": "original_record",
+      "source": "qpc24-v4",
+      "relationship": "excluded_ancestor",
+      "census": "qpc24"
+    },
+    {
+      "source_type": "original_record",
+      "source": "qpc24-control-r2-excluded",
+      "relationship": "excluded_ancestor",
+      "census": "qpc24"
+    },
+    {
+      "source_type": "original_record",
+      "source": "qpc24-public-v5",
+      "relationship": "replaces_declaration",
+      "census": "qpc24"
+    },
+    {
+      "source_type": "original_record",
+      "source": "poetry-v2-original",
+      "relationship": "excluded_ancestor",
+      "census": "poetryr3"
+    },
+    {
+      "source_type": "original_record",
+      "source": "poetry-v2-r2",
+      "relationship": "excluded_ancestor",
+      "census": "poetryr3"
+    },
+    {
+      "source_type": "original_record",
+      "source": "poetry-public-v2",
+      "relationship": "replaces_declaration",
+      "census": "poetryr3"
+    },
+    {
+      "source_type": "original_record",
+      "source": "revision-public-heldout",
+      "relationship": "replaces_declaration",
+      "census": "revision"
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "cwr-exact-duplicate-repeatability-v1-public-result-v1",
+      "relationship": "unresolved_locator",
+      "census": null
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "cwr-guided-revision-gain-v2-live-exec-v8-crlf-replay-result-v1",
+      "relationship": "unresolved_locator",
+      "census": null
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "cwr-guided-revision-gain-v2-live-exec-v9-historical-input-replay-result-v1",
+      "relationship": "unresolved_locator",
+      "census": null
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "cwr-guided-revision-gain-v6-heldout-result-v1",
+      "relationship": "replaces_declaration",
+      "census": "revision"
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-figurative-dspy-boundary-search-successor-v1-public-result-v1",
+      "relationship": "unresolved_locator",
+      "census": null
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-figurative-hinge-control-first-confirmation-v1-public-result-v1",
+      "relationship": "unresolved_locator",
+      "census": null
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-figurative-hinge-treatment-successor-v5-public-result-v1",
+      "relationship": "unresolved_locator",
+      "census": null
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-figurative-hinge-treatment-successor-v7-public-result-v1",
+      "relationship": "unresolved_locator",
+      "census": null
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-figurative-isolated-anchor-pilot-v1-execution-v1-public-result-v1",
+      "relationship": "unresolved_locator",
+      "census": null
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-figurative-metaphor-checklist-successor-v1-execution-v1-public-result-v1",
+      "relationship": "unresolved_locator",
+      "census": null
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-free-verse-necessity-scope-ablation-v1-public-result-v1",
+      "relationship": "replaces_declaration",
+      "census": "architecture"
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-gray-blood-full-book-qpc24-rebaseline-v9-public-result-v1",
+      "relationship": "replaces_declaration",
+      "census": "fullbook"
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-human-alignment-optimizer-v10-fresh96-confirmation-grok-result-v1",
+      "relationship": "unresolved_locator",
+      "census": null
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-human-alignment-optimizer-v10-fresh96-confirmation-sol-result-v1",
+      "relationship": "unresolved_locator",
+      "census": null
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-human-alignment-optimizer-v11-train-grok-result-v1",
+      "relationship": "unresolved_locator",
+      "census": null
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-human-alignment-optimizer-v11-train-sol-result-v1",
+      "relationship": "unresolved_locator",
+      "census": null
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-human-alignment-optimizer-v12-development-grok-result-v1",
+      "relationship": "unresolved_locator",
+      "census": null
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-human-alignment-optimizer-v12-development-sol-result-v1",
+      "relationship": "unresolved_locator",
+      "census": null
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-human-alignment-optimizer-v13-train-expansion-result-v1",
+      "relationship": "unresolved_locator",
+      "census": null
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-human-alignment-optimizer-v14-dspy-train-expansion-result-v1",
+      "relationship": "unresolved_locator",
+      "census": null
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-human-alignment-optimizer-v14-dspy-train-pilot-result-v1",
+      "relationship": "unresolved_locator",
+      "census": null
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-human-alignment-optimizer-v4-balanced-dspy-heldout-exec-v1-public-result-v1",
+      "relationship": "unresolved_locator",
+      "census": null
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-human-alignment-optimizer-v5-balanced-dspy-mixed-provenance-live-result-v1",
+      "relationship": "unresolved_locator",
+      "census": null
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-human-alignment-optimizer-v5-f20-broader-development-grok-result-v1",
+      "relationship": "unresolved_locator",
+      "census": null
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-human-alignment-optimizer-v5-f20-broader-development-grok-result-v2-v3-exec",
+      "relationship": "unresolved_locator",
+      "census": null
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-human-alignment-optimizer-v5-f20-broader-development-sol-result-v1",
+      "relationship": "unresolved_locator",
+      "census": null
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-human-alignment-optimizer-v5-f20-nextwave-grok-score-result-v1",
+      "relationship": "unresolved_locator",
+      "census": null
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-human-alignment-optimizer-v5-f20-nextwave-sol6-validation-result-v1",
+      "relationship": "unresolved_locator",
+      "census": null
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-human-alignment-optimizer-v5-grok-descriptive-sol-validation-result-v1",
+      "relationship": "unresolved_locator",
+      "census": null
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-human-alignment-optimizer-v6-desc13-lower-step-grok-result-v1",
+      "relationship": "unresolved_locator",
+      "census": null
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-human-alignment-optimizer-v6-desc13-lower-step-grok-result-v2-v3-exec",
+      "relationship": "unresolved_locator",
+      "census": null
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-human-alignment-optimizer-v6-desc13-lower-step-sol-nonwinner-extension-result-v1",
+      "relationship": "unresolved_locator",
+      "census": null
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-human-alignment-optimizer-v6-desc13-lower-step-sol-result-v1",
+      "relationship": "unresolved_locator",
+      "census": null
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-human-alignment-optimizer-v6-desc15-referent-grok-result-v1",
+      "relationship": "unresolved_locator",
+      "census": null
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-human-alignment-optimizer-v6-desc15-referent-sol-veto-result-v1",
+      "relationship": "unresolved_locator",
+      "census": null
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-human-alignment-optimizer-v7-desc16-referent-evidence-grok-result-v1",
+      "relationship": "unresolved_locator",
+      "census": null
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-human-alignment-optimizer-v7-desc16-referent-evidence-sol-veto-result-v1",
+      "relationship": "unresolved_locator",
+      "census": null
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-human-alignment-optimizer-v8-desc17-generalization-grok-result-v1",
+      "relationship": "unresolved_locator",
+      "census": null
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-human-alignment-optimizer-v9-desc18-broad-replication-sol-veto-result-v1",
+      "relationship": "unresolved_locator",
+      "census": null
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-human-alignment-wpb-sol-completed-result-v1",
+      "relationship": "unresolved_locator",
+      "census": null
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-l2-c03-visual-control-successor-v1-execution-v1-public-result-v1",
+      "relationship": "unresolved_locator",
+      "census": null
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-l2-construct-microgate-v2-execution-v2-public-result-v1",
+      "relationship": "unresolved_locator",
+      "census": null
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-l2-line-breaks-contextual-justification-treatment-v1-execution-v1-public-result-v1",
+      "relationship": "unresolved_locator",
+      "census": null
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-l2-line-breaks-contextual-justification-treatment-v2-execution-v1-public-result-v1",
+      "relationship": "unresolved_locator",
+      "census": null
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-l2-line-breaks-text-holdout-v1-execution-v1-public-result-v1",
+      "relationship": "unresolved_locator",
+      "census": null
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-l2-material-context-disjoint-holdout-v1-execution-v1-public-result-v1",
+      "relationship": "unresolved_locator",
+      "census": null
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-multisample-repeatability-v1-completed-result-v1",
+      "relationship": "unresolved_locator",
+      "census": null
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-nonpoetry-scope-disjoint-confirmation-v2-public-result-v1",
+      "relationship": "replaces_declaration",
+      "census": "disjoint"
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-nonpoetry-scope-disjoint-holdout-v1-execution-v1-public-result-v1",
+      "relationship": "unresolved_locator",
+      "census": null
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-nonpoetry-scope-semantic-boundary-successor-v1-public-result-v1",
+      "relationship": "unresolved_locator",
+      "census": null
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-nonpoetry-scope-sentinel-v1-result-v1",
+      "relationship": "unresolved_locator",
+      "census": null
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-nonpoetry-scope-treatment-v1-result-v1",
+      "relationship": "unresolved_locator",
+      "census": null
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-p1-discordance-audit-v7-public-result-v1",
+      "relationship": "unresolved_locator",
+      "census": null
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-poetry-free-verse-repetition-clean-na-successor-v1-execution-v1-public-result-v1",
+      "relationship": "unresolved_locator",
+      "census": null
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-poetry-free-verse-repetition-four-state-applicability-treatment-v1-execution-v10-public-result-v1",
+      "relationship": "unresolved_locator",
+      "census": null
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-poetry-free-verse-repetition-four-state-applicability-treatment-v1-execution-v2-public-result-v1",
+      "relationship": "unresolved_locator",
+      "census": null
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-poetry-free-verse-repetition-four-state-applicability-treatment-v1-execution-v6-public-result-v1",
+      "relationship": "unresolved_locator",
+      "census": null
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-poetry-free-verse-repetition-four-state-applicability-treatment-v1-execution-v9-public-result-v1",
+      "relationship": "replaces_declaration",
+      "census": "disjoint"
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-poetry-free-verse-repetition-four-state-applicability-treatment-v1-execution-v9-public-result-v1",
+      "relationship": "untouched",
+      "census": "disjoint"
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-poetry-free-verse-repetition-four-state-disjoint-holdout-v2-execution-v1-public-result-v1",
+      "relationship": "replaces_declaration",
+      "census": "disjoint"
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-poetry-free-verse-repetition-four-state-disjoint-holdout-v2-execution-v1-public-result-v1",
+      "relationship": "nonvoting_output",
+      "census": "disjoint"
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-poetry-free-verse-repetition-four-state-disjoint-holdout-v2-execution-v1-public-result-v1",
+      "relationship": "untouched",
+      "census": "disjoint"
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-poetry-free-verse-repetition-four-state-disjoint-holdout-v2-execution-v3-public-result-v1",
+      "relationship": "unresolved_locator",
+      "census": null
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-poetry-free-verse-repetition-incidental-determiner-holdout-v2-execution-v2-public-result-v1",
+      "relationship": "unresolved_locator",
+      "census": null
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-poetry-free-verse-repetition-treatment-v1-execution-v1-public-result-v1",
+      "relationship": "unresolved_locator",
+      "census": null
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-poetry-whole-poem-architecture-dspy-v1-public-result-v1",
+      "relationship": "replaces_declaration",
+      "census": "architecture"
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-poetry-whole-poem-architecture-treatment-v1-public-result-v1",
+      "relationship": "unresolved_locator",
+      "census": null
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-poetry-whole-poem-architecture-treatment-v2-public-result-v1",
+      "relationship": "replaces_declaration",
+      "census": "poetryr3"
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-polarity-change-current-wording-v1-result-v1",
+      "relationship": "unresolved_locator",
+      "census": null
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-polarity-change-manual-treatment-holdout-v1-result-v1",
+      "relationship": "unresolved_locator",
+      "census": null
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-polarity-change-manual-treatment-v1-result-v1",
+      "relationship": "unresolved_locator",
+      "census": null
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-premise-scale-ownership-v1-result-v1",
+      "relationship": "unresolved_locator",
+      "census": null
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-qpc24-two-pass-product-confirmation-v5-public-result-v1",
+      "relationship": "replaces_declaration",
+      "census": "qpc24"
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-figurative-scope-dspy-successor-v1",
+      "relationship": "unresolved_locator",
+      "census": null
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-figurative-scope-dspy-successor-v2",
+      "relationship": "unresolved_locator",
+      "census": null
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-figurative-scope-dspy-successor-v3",
+      "relationship": "unresolved_locator",
+      "census": null
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-figurative-scope-treatment-v1-execution-v1",
+      "relationship": "replaces_declaration",
+      "census": "figurative"
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-human-alignment-optimizer-v4-lean-development-balanced-v1",
+      "relationship": "unresolved_locator",
+      "census": null
+    },
+    {
+      "source_type": "declaration_package",
+      "source": "hbq-human-alignment-optimizer-v8-desc17-input-fidelity-audit-v1",
+      "relationship": "unresolved_locator",
+      "census": null
+    }
+  ],
+  "coverage_boundary": "Immediate accessible evaluation-results packages with public-result, result-v or heldout-result in their directory name, or an immediate public-result.json file; immediate files only. No private root is inferred for unmatched declarations.",
+  "relationship_semantics": {
+    "joins_existing_positions": "Source positions are already included in the named saved census; this edge adds no observations or votes.",
+    "excluded_ancestor": "The source is excluded as an independent additive population. QPC24 v2/v3 retain both edges because their accepted contributions are inherited by the saved join, while their ancestor populations are not added again. The incomplete control-r2 excluded attempt has no joined-position edge."
+  }
+}
