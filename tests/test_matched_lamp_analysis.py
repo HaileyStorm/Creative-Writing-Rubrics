@@ -296,4 +296,85 @@ class LampDecodeAdoptionTests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, 'binding differs'): a.load_decode_adoption(*args)
 
 
+class LampSavedPrefixV2AnalysisTests(unittest.TestCase):
+    def test_reserved122_join_once_suffix_and_sol_unique_and_full_gate_closed(self):
+        manifest = LampDecodeAdoptionTests.manifest(); grok = [row for row in manifest['requests'] if row['endpoint'] == 'grok']
+        entries, answers = [], {}
+        for row in grok[:122]:
+            state = 'accepted' if row['endpoint_ordinal'] <= 117 else 'semantic_rejected'
+            terminal = {'state': state, 'native_thread_id': 'grok-' + str(row['endpoint_ordinal'])}
+            entries.append({'ordinal': row['endpoint_ordinal'], 'request_sha256': row['request_sha256'],
+                            'logical_sample_id': row['logical_sample_id'], 'effective_terminal': terminal})
+            answers[row['request_sha256']] = (terminal, {'same_original': True} if state == 'accepted' else None)
+        adoption = {'kind': 'saved_prefix_v2', 'binding': {}, 'prefix': {'entries': entries},
+                    'prefix_answers': answers, 'module': SimpleNamespace(d=SimpleNamespace(receipt_path=lambda output, row: output/'unused'))}
+        calls = []
+        def replay(sample, row, *args):
+            calls.append((row['endpoint'], row['endpoint_ordinal']))
+            return {'state': 'accepted', 'native_thread_id': row['logical_sample_id']}, {'suffix_or_sol': True}
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory); outputs = {ep: root/ep for ep in ('sol', 'grok')}
+            for ep, n in (('sol', 1), ('grok', 123)):
+                sample = outputs[ep]/str(n); sample.mkdir(parents=True); (sample/'terminal.json').write_bytes(b'{}')
+            with patch.object(a.c, 'sample_path', side_effect=lambda output, row: output/str(row['endpoint_ordinal'])), \
+                 patch.object(a.c, 'verify_job_binding', return_value={}), patch.object(a.c, 'replay', side_effect=replay):
+                proof = []
+                records, states = a.collect_evidence(manifest, 'synthetic', root, root, outputs, None, None, None,
+                                                    adoption=adoption, proof=proof)
+                self.assertCountEqual(calls, [('sol', 1), ('grok', 123)])
+                self.assertEqual(len(records), 119); self.assertEqual(len(proof), 17808)
+                self.assertEqual(states['grok']['states'], {'accepted': 118, 'semantic_rejected': 5, 'untouched': 8781})
+                with patch.object(a.c, 'MANIFEST_SHA', a.c.digest(a.c.canonical(manifest))):
+                    self.assertFalse(a.effective_label_release_gate(manifest, proof, True)['human_release_eligible'])
+                invalid = copy.deepcopy(adoption); invalid['prefix_answers'][grok[0]['request_sha256']][0]['native_thread_id'] = 'sol-1'
+                with self.assertRaisesRegex(ValueError, 'identity reused'):
+                    a.collect_evidence(manifest, 'synthetic', root, root, outputs, None, None, None, adoption=invalid)
+                (outputs['grok']/'1').mkdir()
+                with self.assertRaisesRegex(ValueError, 'cannot also occupy'):
+                    a.collect_evidence(manifest, 'synthetic', root, root, outputs, None, None, None, adoption=adoption)
+
+    def test_fixed_bindings_and_both_true_outer_pins_precede_replay_and_rank_release(self):
+        program = Path('synthetic-program')
+        module = SimpleNamespace(PROGRAM=program, TARGET=program/'lamp-reference/judging-grok-saved-prefix-v2-001',
+                                 ROUTE_ROOT=Path('synthetic-route'))
+        outputs = {'grok': module.TARGET, 'sol': program/'lamp-reference/judging-sol-parallel-001'}
+        args = (module, outputs, program/'lamp-reference/saved-prefix-v2-001', a.SAVED_V2_PREFIX_SHA,
+                a.SAVED_V2_JOB_SHA, a.SOL_JOB_SHA, module.ROUTE_ROOT, 'a'*64)
+        self.assertFalse(a.saved_v2_metadata(*args)['native_jobs_or_projections_replayed'])
+        for index in (3, 4, 5):
+            invalid = list(args); invalid[index] = 'b'*64
+            with self.assertRaisesRegex(ValueError, 'bindings differ'): a.saved_v2_metadata(*invalid)
+        with patch.object(a, 'saved_v2_implementation', return_value=module), \
+             patch.object(a.c.p, 'checked', side_effect=AssertionError('Native job opened before both outer pins')):
+            with self.assertRaisesRegex(ValueError, 'both actual true outer'):
+                a.load_saved_v2_adoption({}, Path('unused'), Path('unused'), outputs, None, None, None,
+                    prefix_root=args[2], prefix_sha=args[3], job_sha=args[4], sol_job_sha=args[5],
+                    route_root=args[6], route_sha=args[7], outer_pins={'sol': (None, None), 'grok': (None, None)})
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory); output = root/'native'; lifecycle = root/'outer'; lifecycle.mkdir()
+            binding = {'workers': 2, 'collector_sha256': a.SAVED_V2_COLLECTOR_SHA, 'manifest_sha256': a.c.MANIFEST_SHA}
+            invocation = {'argv': ['collector', '--results-dir', str(output), '--workers', '2'],
+                          'collector_sha256': binding['collector_sha256'], 'manifest_sha256': binding['manifest_sha256']}
+            raw = a.c.canonical(invocation); (lifecycle/'invocation.json').write_bytes(raw)
+            handle = {'workers': 2, 'native_job': str(output/'job.json')}
+            (lifecycle/'handle.json').write_bytes(a.c.canonical(handle))
+            terminal_raw = a.c.canonical({'exit_code': 0, 'no_resend': True, 'time': '2026-10-05T23:00:00Z',
+                                         'invocation_sha256': a.c.digest(raw)})
+            terminal_path = lifecycle/'terminal.json'; terminal_path.write_bytes(terminal_raw)
+            self.assertEqual(a.outer_terminal_binding(output, 'grok', binding, terminal_path,
+                             a.c.digest(terminal_raw))['outer_exit_code'], 0)
+            handle['native_job'] = str(root/'foreign/job.json'); (lifecycle/'handle.json').write_bytes(a.c.canonical(handle))
+            with self.assertRaisesRegex(ValueError, 'does not bind'):
+                a.outer_terminal_binding(output, 'grok', binding, terminal_path, a.c.digest(terminal_raw))
+        manifest = LampDecodeAdoptionTests.manifest()
+        proof = [{'endpoint': row['endpoint'], 'endpoint_ordinal': row['endpoint_ordinal'],
+                  'descriptor_sha256': a.c.digest(a.c.canonical(row)), 'state': 'accepted',
+                  'native_thread_id': row['logical_sample_id'], 'replayed': True} for row in manifest['requests']]
+        with patch.object(a.c, 'MANIFEST_SHA', a.c.digest(a.c.canonical(manifest))), \
+             patch.object(a, 'load_human_orders', side_effect=AssertionError('Ranks opened without explicit release')):
+            self.assertFalse(a.effective_label_release_gate(manifest, proof, False)['human_release_eligible'])
+            self.assertFalse(a.human_alignment(manifest, Path('unused'), 'synthetic', Path('unused'), {}, None, None,
+                                             None, False, effective_proof=proof)['human_targets_opened'])
+
+
 if __name__ == '__main__': unittest.main()

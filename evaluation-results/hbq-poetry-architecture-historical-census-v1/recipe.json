@@ -1,0 +1,1674 @@
+{
+  "schema_version": 1,
+  "policy": "poetry_architecture_historical_metadata_join_v1",
+  "helper_pins": {
+    "common": "42415af5418ae32303bfa7933712b2ad398c0ed66df32a7553a9e3d55f5de49b",
+    "selective": "2d82e4959c3296ccaa6e6521adb46f85588427d429a544b36a2891ebaea8c7b0"
+  },
+  "roots": [
+    {
+      "locator": "cwr-hbq-free-verse-necessity-scope-live-v1-4ce1204-20260825",
+      "files": [
+        {
+          "locator": "controller-manifest.json",
+          "sha256": "ef313e6a7caa3f62039e3ad9ca87a56dfb55e4bac85f1a9dd1ca513e6b79dd90",
+          "bytes": 7797
+        },
+        {
+          "locator": "settlement-plan.v1.json",
+          "sha256": "dcd311b44290732e026d2a6e61a4274ae3879590ae96f867ceb8d8b2f456770d",
+          "bytes": 1321
+        },
+        {
+          "locator": "settlement.v1.json",
+          "sha256": "998f134b0cac608d02862f1417461c8e1a546ddf7a84b37fd2ae44671b53d6e3",
+          "bytes": 3255
+        },
+        {
+          "locator": "executor-dry/study-manifest.json",
+          "sha256": "ed38261215d82abee30c3becf24f2b569e91c33d84eeb48fff0a41e00756b033",
+          "bytes": 10448
+        },
+        {
+          "locator": "executor-dry/terminal-settlement-plan.v1.json",
+          "sha256": "7f64e67b4011304d31d952b6f67046f311dcd408f8e57911f077e3d45066e614",
+          "bytes": 1317
+        },
+        {
+          "locator": "claims/necessity-scope-exec-v1-001.json",
+          "sha256": "67436edc0516ace3b57e7cbe041abd4a13a3360ec81bd4329d80585cb0e28fef",
+          "bytes": 286
+        },
+        {
+          "locator": "terminals/necessity-scope-exec-v1-001.json",
+          "sha256": "f128904e1216094ecfdfe9b97f06639754ef71ffe9c6858ca1ddcb76ded84dfa",
+          "bytes": 1618
+        },
+        {
+          "locator": "attempts/necessity-scope-exec-v1-001/attempt-01/raw-response.bin",
+          "sha256": "f1de86cc050645e629a5d7cfc5e3272fa1e13fdfe2c84524ac5e674903b821f0",
+          "bytes": 714
+        },
+        {
+          "locator": "attempts/necessity-scope-exec-v1-001/attempt-01/route-attestation.bin",
+          "sha256": "61b1825b314498ce0c892c8648b303938252bcf1d832938f98d1ad03c1c1186c",
+          "bytes": 396
+        },
+        {
+          "locator": "adapter-attempts/necessity-scope-exec-v1-001/attempt-01/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "f1de86cc050645e629a5d7cfc5e3272fa1e13fdfe2c84524ac5e674903b821f0",
+          "bytes": 714
+        },
+        {
+          "locator": "executor-dry/rendered-prompts/necessity-scope-exec-v1-001.txt",
+          "sha256": "6179086b25d6f43ba1e8423ddce699f39fe58f504a42aae19b627426ede64ad2",
+          "bytes": 4635
+        },
+        {
+          "locator": "executor-dry/inputs/necessity-scope-exec-v1-001.txt",
+          "sha256": "e1a900b06487d302854b2db40510f18f4c9a4b6251ae2905f1cc9f62e3479388",
+          "bytes": 141
+        },
+        {
+          "locator": "claims/necessity-scope-exec-v1-002.json",
+          "sha256": "7d40554ee172be88b0cb5ced760890af8b92b406ff2107616142055973d898c2",
+          "bytes": 286
+        },
+        {
+          "locator": "terminals/necessity-scope-exec-v1-002.json",
+          "sha256": "175244b822413514a0a74cc11b7f02eb5deb64b8d1238c8dfb3222218dd9ece9",
+          "bytes": 1577
+        },
+        {
+          "locator": "attempts/necessity-scope-exec-v1-002/attempt-01/raw-response.bin",
+          "sha256": "57e6c65c0886124229b93834cf0a16afe35279addddb2109060a8289f78a563c",
+          "bytes": 673
+        },
+        {
+          "locator": "attempts/necessity-scope-exec-v1-002/attempt-01/route-attestation.bin",
+          "sha256": "0b8a9f8781d39811d961d9fe165269243fe5dd27734b2f508cb7ba5855fbd7bf",
+          "bytes": 396
+        },
+        {
+          "locator": "adapter-attempts/necessity-scope-exec-v1-002/attempt-01/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "57e6c65c0886124229b93834cf0a16afe35279addddb2109060a8289f78a563c",
+          "bytes": 673
+        },
+        {
+          "locator": "executor-dry/rendered-prompts/necessity-scope-exec-v1-002.txt",
+          "sha256": "6179086b25d6f43ba1e8423ddce699f39fe58f504a42aae19b627426ede64ad2",
+          "bytes": 4635
+        },
+        {
+          "locator": "executor-dry/inputs/necessity-scope-exec-v1-002.txt",
+          "sha256": "e1a900b06487d302854b2db40510f18f4c9a4b6251ae2905f1cc9f62e3479388",
+          "bytes": 141
+        },
+        {
+          "locator": "claims/necessity-scope-exec-v1-003.json",
+          "sha256": "5ffa94cab712206dc5b44f634a992dfcf1edacad654091d5d3e35dc651335f19",
+          "bytes": 286
+        },
+        {
+          "locator": "terminals/necessity-scope-exec-v1-003.json",
+          "sha256": "f9bd2e68fd752c6300f24f12b72ee36c08fe657bb9fd4df2116b709d87a0e3b9",
+          "bytes": 1677
+        },
+        {
+          "locator": "attempts/necessity-scope-exec-v1-003/attempt-01/raw-response.bin",
+          "sha256": "164add0586f951c01ca5d5929486dd77f9f201c95cc3194bd54d6131e58b396a",
+          "bytes": 773
+        },
+        {
+          "locator": "attempts/necessity-scope-exec-v1-003/attempt-01/route-attestation.bin",
+          "sha256": "9faf63b81285802f6e87aa3a3ee83a87eb2a69f8dd384decee49b0cc3ef9463a",
+          "bytes": 396
+        },
+        {
+          "locator": "adapter-attempts/necessity-scope-exec-v1-003/attempt-01/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "164add0586f951c01ca5d5929486dd77f9f201c95cc3194bd54d6131e58b396a",
+          "bytes": 773
+        },
+        {
+          "locator": "executor-dry/rendered-prompts/necessity-scope-exec-v1-003.txt",
+          "sha256": "6179086b25d6f43ba1e8423ddce699f39fe58f504a42aae19b627426ede64ad2",
+          "bytes": 4635
+        },
+        {
+          "locator": "executor-dry/inputs/necessity-scope-exec-v1-003.txt",
+          "sha256": "e1a900b06487d302854b2db40510f18f4c9a4b6251ae2905f1cc9f62e3479388",
+          "bytes": 141
+        },
+        {
+          "locator": "claims/necessity-scope-exec-v1-004.json",
+          "sha256": "880923d2c5918f761fc3740185de75efeb0faad7f19da2903236956e32a8622f",
+          "bytes": 286
+        },
+        {
+          "locator": "terminals/necessity-scope-exec-v1-004.json",
+          "sha256": "e4887b2840b6e4ff266fdf2e37762dd1c8903608f774d8d286f3c0d4e37e211c",
+          "bytes": 1624
+        },
+        {
+          "locator": "attempts/necessity-scope-exec-v1-004/attempt-01/raw-response.bin",
+          "sha256": "47b8ab2a5b28fc8ea626b37016972260ec64a62a2e8f6676849c4e2bbf95c840",
+          "bytes": 730
+        },
+        {
+          "locator": "attempts/necessity-scope-exec-v1-004/attempt-01/route-attestation.bin",
+          "sha256": "f98bd5db5fd87ea8de11c88e54abf0a87ed34b44b1f548585613b2c9ad8fc1c2",
+          "bytes": 396
+        },
+        {
+          "locator": "adapter-attempts/necessity-scope-exec-v1-004/attempt-01/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "47b8ab2a5b28fc8ea626b37016972260ec64a62a2e8f6676849c4e2bbf95c840",
+          "bytes": 730
+        },
+        {
+          "locator": "executor-dry/rendered-prompts/necessity-scope-exec-v1-004.txt",
+          "sha256": "0c24886814b74aa411a9506dc885516a056df430dc9935d9d00d85063c18a2da",
+          "bytes": 4614
+        },
+        {
+          "locator": "executor-dry/inputs/necessity-scope-exec-v1-004.txt",
+          "sha256": "e1a900b06487d302854b2db40510f18f4c9a4b6251ae2905f1cc9f62e3479388",
+          "bytes": 141
+        },
+        {
+          "locator": "claims/necessity-scope-exec-v1-005.json",
+          "sha256": "c349a17be20352c3586a640a64894d13395567018ba280d72bc8ae61317f947f",
+          "bytes": 286
+        },
+        {
+          "locator": "terminals/necessity-scope-exec-v1-005.json",
+          "sha256": "31fa03afc353a2b1a4ff852eb9f57e40158168bc44c10828374c332b900c572e",
+          "bytes": 1589
+        },
+        {
+          "locator": "attempts/necessity-scope-exec-v1-005/attempt-01/raw-response.bin",
+          "sha256": "585a27e22e2ce3e5d7ed67a94300f73d7bc625a515cdccb7f1260cb406e5a415",
+          "bytes": 695
+        },
+        {
+          "locator": "attempts/necessity-scope-exec-v1-005/attempt-01/route-attestation.bin",
+          "sha256": "53a1fc1d784b06cb0a10763652a663f8b74038a90b9dd7ed484c366fe5bcf62a",
+          "bytes": 396
+        },
+        {
+          "locator": "adapter-attempts/necessity-scope-exec-v1-005/attempt-01/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "585a27e22e2ce3e5d7ed67a94300f73d7bc625a515cdccb7f1260cb406e5a415",
+          "bytes": 695
+        },
+        {
+          "locator": "executor-dry/rendered-prompts/necessity-scope-exec-v1-005.txt",
+          "sha256": "0c24886814b74aa411a9506dc885516a056df430dc9935d9d00d85063c18a2da",
+          "bytes": 4614
+        },
+        {
+          "locator": "executor-dry/inputs/necessity-scope-exec-v1-005.txt",
+          "sha256": "e1a900b06487d302854b2db40510f18f4c9a4b6251ae2905f1cc9f62e3479388",
+          "bytes": 141
+        },
+        {
+          "locator": "claims/necessity-scope-exec-v1-006.json",
+          "sha256": "4e0681803987f5734a0316a41305a3c9779396a7de3f6c94c8be473f79e8ff01",
+          "bytes": 286
+        },
+        {
+          "locator": "terminals/necessity-scope-exec-v1-006.json",
+          "sha256": "e362d318624bbd749019975e7bd608e597027328492c6b0d7e211fa4f9047064",
+          "bytes": 1551
+        },
+        {
+          "locator": "attempts/necessity-scope-exec-v1-006/attempt-01/raw-response.bin",
+          "sha256": "a5d463353ae0b2bd720e9eb0aa65314d25f6998f5ad4f3b5810f44ac13d28f9d",
+          "bytes": 657
+        },
+        {
+          "locator": "attempts/necessity-scope-exec-v1-006/attempt-01/route-attestation.bin",
+          "sha256": "dc51baff15d5ae6128fdcb4d51684f3ba9be818ad7168be794aaa48c120a88f6",
+          "bytes": 396
+        },
+        {
+          "locator": "adapter-attempts/necessity-scope-exec-v1-006/attempt-01/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "a5d463353ae0b2bd720e9eb0aa65314d25f6998f5ad4f3b5810f44ac13d28f9d",
+          "bytes": 657
+        },
+        {
+          "locator": "executor-dry/rendered-prompts/necessity-scope-exec-v1-006.txt",
+          "sha256": "0c24886814b74aa411a9506dc885516a056df430dc9935d9d00d85063c18a2da",
+          "bytes": 4614
+        },
+        {
+          "locator": "executor-dry/inputs/necessity-scope-exec-v1-006.txt",
+          "sha256": "e1a900b06487d302854b2db40510f18f4c9a4b6251ae2905f1cc9f62e3479388",
+          "bytes": 141
+        },
+        {
+          "locator": "claims/necessity-scope-exec-v1-007.json",
+          "sha256": "b03a6fd6ba70c832784d1caadc26d0dfebf40a84b34d01fc792c043d8fab3453",
+          "bytes": 286
+        },
+        {
+          "locator": "terminals/necessity-scope-exec-v1-007.json",
+          "sha256": "90fc202fe7f9a982f2386b07b341400309f17a253d4818d2e89a3867d3224d06",
+          "bytes": 1652
+        },
+        {
+          "locator": "attempts/necessity-scope-exec-v1-007/attempt-01/raw-response.bin",
+          "sha256": "6ab617a62b8c0aa05aa8506e74b3e0896aa09cb8faec70c8c9c311516e3c0de5",
+          "bytes": 748
+        },
+        {
+          "locator": "attempts/necessity-scope-exec-v1-007/attempt-01/route-attestation.bin",
+          "sha256": "88633582f2dd56e6fb3a73d65e32ab8dbf83860a1cb29ca216afa4cced9c0042",
+          "bytes": 396
+        },
+        {
+          "locator": "adapter-attempts/necessity-scope-exec-v1-007/attempt-01/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "6ab617a62b8c0aa05aa8506e74b3e0896aa09cb8faec70c8c9c311516e3c0de5",
+          "bytes": 748
+        },
+        {
+          "locator": "executor-dry/rendered-prompts/necessity-scope-exec-v1-007.txt",
+          "sha256": "41e35f7e2e921480916d0e3d2e0817e4d3234f0fd14c183af10c00f043fadfec",
+          "bytes": 4681
+        },
+        {
+          "locator": "executor-dry/inputs/necessity-scope-exec-v1-007.txt",
+          "sha256": "eba845f6e00821e159f2ce42e9c158bdcc8953bd0b9f0ee15412ab5b9a2b44b9",
+          "bytes": 187
+        },
+        {
+          "locator": "claims/necessity-scope-exec-v1-008.json",
+          "sha256": "e5c8be172933147af0666b0f7e2c96519a42d9afcab25f939e3ba6dd252c1657",
+          "bytes": 286
+        },
+        {
+          "locator": "terminals/necessity-scope-exec-v1-008.json",
+          "sha256": "fbb7cb9710b8d856284da1eb15ec7070ee9cf84a80b4d9fd74ddc03533936adf",
+          "bytes": 1359
+        },
+        {
+          "locator": "attempts/necessity-scope-exec-v1-008/attempt-01/raw-response.bin",
+          "sha256": "3f75e0d93a92576e3df597556ee8a37167464f1fd93f33ac8b4e0c8581d51fba",
+          "bytes": 455
+        },
+        {
+          "locator": "attempts/necessity-scope-exec-v1-008/attempt-01/route-attestation.bin",
+          "sha256": "859f63ac25ee7f32933f9a20a3a87c2f70ed92cb987249bd504aed44be0770cb",
+          "bytes": 396
+        },
+        {
+          "locator": "adapter-attempts/necessity-scope-exec-v1-008/attempt-01/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "3f75e0d93a92576e3df597556ee8a37167464f1fd93f33ac8b4e0c8581d51fba",
+          "bytes": 455
+        },
+        {
+          "locator": "executor-dry/rendered-prompts/necessity-scope-exec-v1-008.txt",
+          "sha256": "41e35f7e2e921480916d0e3d2e0817e4d3234f0fd14c183af10c00f043fadfec",
+          "bytes": 4681
+        },
+        {
+          "locator": "executor-dry/inputs/necessity-scope-exec-v1-008.txt",
+          "sha256": "eba845f6e00821e159f2ce42e9c158bdcc8953bd0b9f0ee15412ab5b9a2b44b9",
+          "bytes": 187
+        },
+        {
+          "locator": "claims/necessity-scope-exec-v1-009.json",
+          "sha256": "c6579bc5d58da6f1e5ee42dd58a2f8fc1a7dd46714c2de751d005619007c5b4d",
+          "bytes": 286
+        },
+        {
+          "locator": "terminals/necessity-scope-exec-v1-009.json",
+          "sha256": "ebbfa7fab3f8d644f2589f513001140d501acc2ca5d5a210e9aba297f148119b",
+          "bytes": 1353
+        },
+        {
+          "locator": "attempts/necessity-scope-exec-v1-009/attempt-01/raw-response.bin",
+          "sha256": "add28d3951b5455856fc90923400c8e803eda5175adacb5d2076169514bf5758",
+          "bytes": 449
+        },
+        {
+          "locator": "attempts/necessity-scope-exec-v1-009/attempt-01/route-attestation.bin",
+          "sha256": "325529495127e2aac32761f74fca40974dafb93a245493f982dee17a87365ede",
+          "bytes": 396
+        },
+        {
+          "locator": "adapter-attempts/necessity-scope-exec-v1-009/attempt-01/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "add28d3951b5455856fc90923400c8e803eda5175adacb5d2076169514bf5758",
+          "bytes": 449
+        },
+        {
+          "locator": "executor-dry/rendered-prompts/necessity-scope-exec-v1-009.txt",
+          "sha256": "41e35f7e2e921480916d0e3d2e0817e4d3234f0fd14c183af10c00f043fadfec",
+          "bytes": 4681
+        },
+        {
+          "locator": "executor-dry/inputs/necessity-scope-exec-v1-009.txt",
+          "sha256": "eba845f6e00821e159f2ce42e9c158bdcc8953bd0b9f0ee15412ab5b9a2b44b9",
+          "bytes": 187
+        },
+        {
+          "locator": "claims/necessity-scope-exec-v1-010.json",
+          "sha256": "ab9de42cb8122cef00a4d5b1e286e973bf345e48cc34b1322482a1056a73936a",
+          "bytes": 286
+        },
+        {
+          "locator": "terminals/necessity-scope-exec-v1-010.json",
+          "sha256": "fa52c328df427136f173bcd6823314addbddd062125851e96427cdecabe17155",
+          "bytes": 1396
+        },
+        {
+          "locator": "attempts/necessity-scope-exec-v1-010/attempt-01/raw-response.bin",
+          "sha256": "d44cb548fe60831c6d99a85d5815313951fd711dbaf8cd31a29786fe2bba2da7",
+          "bytes": 502
+        },
+        {
+          "locator": "attempts/necessity-scope-exec-v1-010/attempt-01/route-attestation.bin",
+          "sha256": "a6c57d8e3489bc794a2b9d0c1e9afe48e112d9396c3fef315a0749bc9e3d9f12",
+          "bytes": 396
+        },
+        {
+          "locator": "adapter-attempts/necessity-scope-exec-v1-010/attempt-01/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "d44cb548fe60831c6d99a85d5815313951fd711dbaf8cd31a29786fe2bba2da7",
+          "bytes": 502
+        },
+        {
+          "locator": "executor-dry/rendered-prompts/necessity-scope-exec-v1-010.txt",
+          "sha256": "d68a433609f3945bf4cc64f261413b6907ef9e47bf20c1ccd6aaccad4e8bf551",
+          "bytes": 4660
+        },
+        {
+          "locator": "executor-dry/inputs/necessity-scope-exec-v1-010.txt",
+          "sha256": "eba845f6e00821e159f2ce42e9c158bdcc8953bd0b9f0ee15412ab5b9a2b44b9",
+          "bytes": 187
+        },
+        {
+          "locator": "claims/necessity-scope-exec-v1-011.json",
+          "sha256": "08f0febbaba317d8432f48c36898859abd0e5812c7d151956c1c0b4f6d14ca86",
+          "bytes": 286
+        },
+        {
+          "locator": "terminals/necessity-scope-exec-v1-011.json",
+          "sha256": "110e160baa6f8d4da8f4d3fce966985d485dc2e37515a58aca287991ab990172",
+          "bytes": 1300
+        },
+        {
+          "locator": "attempts/necessity-scope-exec-v1-011/attempt-01/raw-response.bin",
+          "sha256": "3be7bd678a489755ad63f9f6c573b2080cebadd69abfe1c67c5795ffd27583c7",
+          "bytes": 406
+        },
+        {
+          "locator": "attempts/necessity-scope-exec-v1-011/attempt-01/route-attestation.bin",
+          "sha256": "0da9491f561f213f799b20f13b2f7aa937831e070e7d28aca6169fceb9b97e79",
+          "bytes": 396
+        },
+        {
+          "locator": "adapter-attempts/necessity-scope-exec-v1-011/attempt-01/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "3be7bd678a489755ad63f9f6c573b2080cebadd69abfe1c67c5795ffd27583c7",
+          "bytes": 406
+        },
+        {
+          "locator": "executor-dry/rendered-prompts/necessity-scope-exec-v1-011.txt",
+          "sha256": "d68a433609f3945bf4cc64f261413b6907ef9e47bf20c1ccd6aaccad4e8bf551",
+          "bytes": 4660
+        },
+        {
+          "locator": "executor-dry/inputs/necessity-scope-exec-v1-011.txt",
+          "sha256": "eba845f6e00821e159f2ce42e9c158bdcc8953bd0b9f0ee15412ab5b9a2b44b9",
+          "bytes": 187
+        },
+        {
+          "locator": "claims/necessity-scope-exec-v1-012.json",
+          "sha256": "e4e7ea3590e541cd180e09b4d278e7a6c2c034710d557f34dcf1bc80576a547e",
+          "bytes": 286
+        },
+        {
+          "locator": "terminals/necessity-scope-exec-v1-012.json",
+          "sha256": "2da55e06c941caa8b892154790f743f521923bc92ec18acb2283a5d077658474",
+          "bytes": 1567
+        },
+        {
+          "locator": "attempts/necessity-scope-exec-v1-012/attempt-01/raw-response.bin",
+          "sha256": "f48c5e790f8868ce5d2b04378b8adad9a3f9309cd6626f4cb28e4e409ecacf06",
+          "bytes": 673
+        },
+        {
+          "locator": "attempts/necessity-scope-exec-v1-012/attempt-01/route-attestation.bin",
+          "sha256": "f28daa12e0dee44b67ed6d1b0b7d316b79ad2f8ce4d612a9d4247a6b0feebf55",
+          "bytes": 396
+        },
+        {
+          "locator": "adapter-attempts/necessity-scope-exec-v1-012/attempt-01/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "f48c5e790f8868ce5d2b04378b8adad9a3f9309cd6626f4cb28e4e409ecacf06",
+          "bytes": 673
+        },
+        {
+          "locator": "executor-dry/rendered-prompts/necessity-scope-exec-v1-012.txt",
+          "sha256": "d68a433609f3945bf4cc64f261413b6907ef9e47bf20c1ccd6aaccad4e8bf551",
+          "bytes": 4660
+        },
+        {
+          "locator": "executor-dry/inputs/necessity-scope-exec-v1-012.txt",
+          "sha256": "eba845f6e00821e159f2ce42e9c158bdcc8953bd0b9f0ee15412ab5b9a2b44b9",
+          "bytes": 187
+        },
+        {
+          "locator": "claims/necessity-scope-exec-v1-013.json",
+          "sha256": "306fe409f756ab560390366c89649edc091d8f6dec4b55911adc66e16df950fd",
+          "bytes": 286
+        },
+        {
+          "locator": "terminals/necessity-scope-exec-v1-013.json",
+          "sha256": "0c8e0e7ebdac41942e72911d4fc10c56daf6082a996e0b3a756e54c2830d4be7",
+          "bytes": 1610
+        },
+        {
+          "locator": "attempts/necessity-scope-exec-v1-013/attempt-01/raw-response.bin",
+          "sha256": "d9ce4f5c59f1d6648e55a85598b5bf3f59b928eacdd159327c717daff0ba2019",
+          "bytes": 710
+        },
+        {
+          "locator": "attempts/necessity-scope-exec-v1-013/attempt-01/route-attestation.bin",
+          "sha256": "02848db1bca5213f92f127d226be6b3294660cac37196e57e6e865cc909fa5b8",
+          "bytes": 396
+        },
+        {
+          "locator": "adapter-attempts/necessity-scope-exec-v1-013/attempt-01/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "d9ce4f5c59f1d6648e55a85598b5bf3f59b928eacdd159327c717daff0ba2019",
+          "bytes": 710
+        },
+        {
+          "locator": "executor-dry/rendered-prompts/necessity-scope-exec-v1-013.txt",
+          "sha256": "fddd5e83a2b02f0ae1a5860d83779da0762e117d4cfa10d820dc44571d1dcdba",
+          "bytes": 4593
+        },
+        {
+          "locator": "executor-dry/inputs/necessity-scope-exec-v1-013.txt",
+          "sha256": "26039987033322fad06809866841c6ae9088089083268bca2b08bb31bfbf3a58",
+          "bytes": 98
+        },
+        {
+          "locator": "claims/necessity-scope-exec-v1-014.json",
+          "sha256": "5c1a4221726efccd2bb96e372dc43f6fef5fad76c477e9589cbee1758c82eadf",
+          "bytes": 286
+        },
+        {
+          "locator": "terminals/necessity-scope-exec-v1-014.json",
+          "sha256": "9ea651f8b95b15ba6ad494d5d6ce65750edb085a329183c89651d4cd4e793f8c",
+          "bytes": 1487
+        },
+        {
+          "locator": "attempts/necessity-scope-exec-v1-014/attempt-01/raw-response.bin",
+          "sha256": "ba148aad9d5e4e61f4831be5e39825ac2b5bab45538ea0e97630adad44319966",
+          "bytes": 587
+        },
+        {
+          "locator": "attempts/necessity-scope-exec-v1-014/attempt-01/route-attestation.bin",
+          "sha256": "d68943e0e8343bf7d7d928a4d9445435908a1dd60b7f53d2e6a9bb4b721ca760",
+          "bytes": 396
+        },
+        {
+          "locator": "adapter-attempts/necessity-scope-exec-v1-014/attempt-01/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "ba148aad9d5e4e61f4831be5e39825ac2b5bab45538ea0e97630adad44319966",
+          "bytes": 587
+        },
+        {
+          "locator": "executor-dry/rendered-prompts/necessity-scope-exec-v1-014.txt",
+          "sha256": "fddd5e83a2b02f0ae1a5860d83779da0762e117d4cfa10d820dc44571d1dcdba",
+          "bytes": 4593
+        },
+        {
+          "locator": "executor-dry/inputs/necessity-scope-exec-v1-014.txt",
+          "sha256": "26039987033322fad06809866841c6ae9088089083268bca2b08bb31bfbf3a58",
+          "bytes": 98
+        },
+        {
+          "locator": "claims/necessity-scope-exec-v1-015.json",
+          "sha256": "f40010e9ecea47870f04af9a6f82939d42aa7e661cd45cdea0105a6eab645771",
+          "bytes": 286
+        },
+        {
+          "locator": "terminals/necessity-scope-exec-v1-015.json",
+          "sha256": "68ab04a696b91ea80462d19c8a527a84c774f9f3bcab74a736800fc0bcec4db2",
+          "bytes": 1471
+        },
+        {
+          "locator": "attempts/necessity-scope-exec-v1-015/attempt-01/raw-response.bin",
+          "sha256": "ec5fc2ce679591dc24f6f5d028c9656d67c03c4e31f73af8092a540f3a62d5e1",
+          "bytes": 571
+        },
+        {
+          "locator": "attempts/necessity-scope-exec-v1-015/attempt-01/route-attestation.bin",
+          "sha256": "c35d055147e8b1a5b84a8e6d1b33a6c27f1e20fb6711b25e764d339aacd59a9f",
+          "bytes": 396
+        },
+        {
+          "locator": "adapter-attempts/necessity-scope-exec-v1-015/attempt-01/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "ec5fc2ce679591dc24f6f5d028c9656d67c03c4e31f73af8092a540f3a62d5e1",
+          "bytes": 571
+        },
+        {
+          "locator": "executor-dry/rendered-prompts/necessity-scope-exec-v1-015.txt",
+          "sha256": "fddd5e83a2b02f0ae1a5860d83779da0762e117d4cfa10d820dc44571d1dcdba",
+          "bytes": 4593
+        },
+        {
+          "locator": "executor-dry/inputs/necessity-scope-exec-v1-015.txt",
+          "sha256": "26039987033322fad06809866841c6ae9088089083268bca2b08bb31bfbf3a58",
+          "bytes": 98
+        },
+        {
+          "locator": "claims/necessity-scope-exec-v1-016.json",
+          "sha256": "27874cbf786af2ca6f4bdc06bf2e6c568d6c6207887837890f94bf299842760a",
+          "bytes": 286
+        },
+        {
+          "locator": "terminals/necessity-scope-exec-v1-016.json",
+          "sha256": "94280a4859357f092ce64415324b900ca149ab4a27ccb41ce9d2fbb03de0051e",
+          "bytes": 1443
+        },
+        {
+          "locator": "attempts/necessity-scope-exec-v1-016/attempt-01/raw-response.bin",
+          "sha256": "4d57b43edccce1e82621a59fd365e722ea18a68e339ec58c69d8f379931d35f6",
+          "bytes": 553
+        },
+        {
+          "locator": "attempts/necessity-scope-exec-v1-016/attempt-01/route-attestation.bin",
+          "sha256": "7d02c08e12e8049408521e3fc157a695e51324b3116381592bb734252252b3c1",
+          "bytes": 396
+        },
+        {
+          "locator": "adapter-attempts/necessity-scope-exec-v1-016/attempt-01/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "4d57b43edccce1e82621a59fd365e722ea18a68e339ec58c69d8f379931d35f6",
+          "bytes": 553
+        },
+        {
+          "locator": "executor-dry/rendered-prompts/necessity-scope-exec-v1-016.txt",
+          "sha256": "08d176668020dc87d3504896aee709843cdfefeaea7ff428cafb6f29b8056378",
+          "bytes": 4572
+        },
+        {
+          "locator": "executor-dry/inputs/necessity-scope-exec-v1-016.txt",
+          "sha256": "26039987033322fad06809866841c6ae9088089083268bca2b08bb31bfbf3a58",
+          "bytes": 98
+        },
+        {
+          "locator": "claims/necessity-scope-exec-v1-017.json",
+          "sha256": "7252c5da82bc0ddb528211df9d5440d2de5061f36b2a9918807a07277635f69c",
+          "bytes": 286
+        },
+        {
+          "locator": "terminals/necessity-scope-exec-v1-017.json",
+          "sha256": "7e76808194ff7fe37014ccea4c30e88731c96fe15e9793213ff1838eec9b1de0",
+          "bytes": 1401
+        },
+        {
+          "locator": "attempts/necessity-scope-exec-v1-017/attempt-01/raw-response.bin",
+          "sha256": "d88e72452d0610e27a6dcea1a9f9ed8c34cd2fe04e5f924a15c0ef59f0a496a3",
+          "bytes": 511
+        },
+        {
+          "locator": "attempts/necessity-scope-exec-v1-017/attempt-01/route-attestation.bin",
+          "sha256": "b615e1253d64ecc788b87ab16138c786c0803c40f62f66a9583d0a2c2829d7f1",
+          "bytes": 396
+        },
+        {
+          "locator": "adapter-attempts/necessity-scope-exec-v1-017/attempt-01/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "d88e72452d0610e27a6dcea1a9f9ed8c34cd2fe04e5f924a15c0ef59f0a496a3",
+          "bytes": 511
+        },
+        {
+          "locator": "executor-dry/rendered-prompts/necessity-scope-exec-v1-017.txt",
+          "sha256": "08d176668020dc87d3504896aee709843cdfefeaea7ff428cafb6f29b8056378",
+          "bytes": 4572
+        },
+        {
+          "locator": "executor-dry/inputs/necessity-scope-exec-v1-017.txt",
+          "sha256": "26039987033322fad06809866841c6ae9088089083268bca2b08bb31bfbf3a58",
+          "bytes": 98
+        },
+        {
+          "locator": "claims/necessity-scope-exec-v1-018.json",
+          "sha256": "a18bfeba616ef7e756c6decc312e321c8c1133bfa7ac435d98ea9a1840c79ee5",
+          "bytes": 286
+        },
+        {
+          "locator": "terminals/necessity-scope-exec-v1-018.json",
+          "sha256": "26e9bf9b3f7f604eac6510775b65c48691c6c3cf029f7aef030211495635f6b1",
+          "bytes": 1373
+        },
+        {
+          "locator": "attempts/necessity-scope-exec-v1-018/attempt-01/raw-response.bin",
+          "sha256": "5e9c57fa79e6f514df11b60c4a99c4740f810168b3db2eeb71bedd37743205ba",
+          "bytes": 483
+        },
+        {
+          "locator": "attempts/necessity-scope-exec-v1-018/attempt-01/route-attestation.bin",
+          "sha256": "d2220d47a8b61c67df304d6696051ee12c6c53cd1ca8b2c8f7d95718df6ee032",
+          "bytes": 396
+        },
+        {
+          "locator": "adapter-attempts/necessity-scope-exec-v1-018/attempt-01/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "5e9c57fa79e6f514df11b60c4a99c4740f810168b3db2eeb71bedd37743205ba",
+          "bytes": 483
+        },
+        {
+          "locator": "executor-dry/rendered-prompts/necessity-scope-exec-v1-018.txt",
+          "sha256": "08d176668020dc87d3504896aee709843cdfefeaea7ff428cafb6f29b8056378",
+          "bytes": 4572
+        },
+        {
+          "locator": "executor-dry/inputs/necessity-scope-exec-v1-018.txt",
+          "sha256": "26039987033322fad06809866841c6ae9088089083268bca2b08bb31bfbf3a58",
+          "bytes": 98
+        },
+        {
+          "locator": "claims/necessity-scope-exec-v1-019.json",
+          "sha256": "7dc81533736d20414ec17609e090e20fb1cfd80ab226a013753975c05668f1ff",
+          "bytes": 286
+        },
+        {
+          "locator": "terminals/necessity-scope-exec-v1-019.json",
+          "sha256": "8877641d434d5d68b5fb0f78808ae940863311eff3a26e62923d8924cf20d37a",
+          "bytes": 1333
+        },
+        {
+          "locator": "attempts/necessity-scope-exec-v1-019/attempt-01/raw-response.bin",
+          "sha256": "6a53e746940216a4186bd05de86a271493398173dd85c13589ce4fb58bf96255",
+          "bytes": 435
+        },
+        {
+          "locator": "attempts/necessity-scope-exec-v1-019/attempt-01/route-attestation.bin",
+          "sha256": "a3b3108a32c69ae59125e8abb50bee8415183cb7f6baeed2dd2d55015cb95d13",
+          "bytes": 396
+        },
+        {
+          "locator": "adapter-attempts/necessity-scope-exec-v1-019/attempt-01/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "6a53e746940216a4186bd05de86a271493398173dd85c13589ce4fb58bf96255",
+          "bytes": 435
+        },
+        {
+          "locator": "executor-dry/rendered-prompts/necessity-scope-exec-v1-019.txt",
+          "sha256": "24f2da41f4abff4a363022e45e2c587737e8195afedfc282f55e8f4ac700a0e3",
+          "bytes": 4529
+        },
+        {
+          "locator": "executor-dry/inputs/necessity-scope-exec-v1-019.txt",
+          "sha256": "085f0d286817d41b517f790eb51ea86d12f7c88b67b020feaf2254e5a07d1e65",
+          "bytes": 36
+        },
+        {
+          "locator": "claims/necessity-scope-exec-v1-020.json",
+          "sha256": "a5ccec33f3e71ea4db6bee294f76ad99cd917a1b329714491a975920cc13cfd0",
+          "bytes": 286
+        },
+        {
+          "locator": "terminals/necessity-scope-exec-v1-020.json",
+          "sha256": "797040bfae01d18c3552e2957d94e25e780496eb14c69555b52b56563b29a663",
+          "bytes": 1312
+        },
+        {
+          "locator": "attempts/necessity-scope-exec-v1-020/attempt-01/raw-response.bin",
+          "sha256": "5843c3a405cc7ccfa63cd66c70e566acf72780c10e8f5a10b9d98f71a35c35c2",
+          "bytes": 414
+        },
+        {
+          "locator": "attempts/necessity-scope-exec-v1-020/attempt-01/route-attestation.bin",
+          "sha256": "01372d5a04f48803c908f7de2e08ad6b48acc3a0279048033bb421f99c9c7447",
+          "bytes": 396
+        },
+        {
+          "locator": "adapter-attempts/necessity-scope-exec-v1-020/attempt-01/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "5843c3a405cc7ccfa63cd66c70e566acf72780c10e8f5a10b9d98f71a35c35c2",
+          "bytes": 414
+        },
+        {
+          "locator": "executor-dry/rendered-prompts/necessity-scope-exec-v1-020.txt",
+          "sha256": "24f2da41f4abff4a363022e45e2c587737e8195afedfc282f55e8f4ac700a0e3",
+          "bytes": 4529
+        },
+        {
+          "locator": "executor-dry/inputs/necessity-scope-exec-v1-020.txt",
+          "sha256": "085f0d286817d41b517f790eb51ea86d12f7c88b67b020feaf2254e5a07d1e65",
+          "bytes": 36
+        },
+        {
+          "locator": "claims/necessity-scope-exec-v1-021.json",
+          "sha256": "520b141a7d7ce450b1252dbb9453979f6f111bfb930055883f7405d6674ce0ba",
+          "bytes": 286
+        },
+        {
+          "locator": "terminals/necessity-scope-exec-v1-021.json",
+          "sha256": "75afcccbe9a568b711c627418702c8406087c4c6f185a818f1a971e2aad9d4d2",
+          "bytes": 1323
+        },
+        {
+          "locator": "attempts/necessity-scope-exec-v1-021/attempt-01/raw-response.bin",
+          "sha256": "d30dd34c9e2d399857e51c32731b3b68a574d9ecf64f0c47df1168f4269288cf",
+          "bytes": 425
+        },
+        {
+          "locator": "attempts/necessity-scope-exec-v1-021/attempt-01/route-attestation.bin",
+          "sha256": "25ac9550e95122e7f44589b0bd6655a870c0a311567f6ef466dffafd3989197b",
+          "bytes": 396
+        },
+        {
+          "locator": "adapter-attempts/necessity-scope-exec-v1-021/attempt-01/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "d30dd34c9e2d399857e51c32731b3b68a574d9ecf64f0c47df1168f4269288cf",
+          "bytes": 425
+        },
+        {
+          "locator": "executor-dry/rendered-prompts/necessity-scope-exec-v1-021.txt",
+          "sha256": "24f2da41f4abff4a363022e45e2c587737e8195afedfc282f55e8f4ac700a0e3",
+          "bytes": 4529
+        },
+        {
+          "locator": "executor-dry/inputs/necessity-scope-exec-v1-021.txt",
+          "sha256": "085f0d286817d41b517f790eb51ea86d12f7c88b67b020feaf2254e5a07d1e65",
+          "bytes": 36
+        },
+        {
+          "locator": "claims/necessity-scope-exec-v1-022.json",
+          "sha256": "469be61e290c4db6526c669acb5036f0948bd25f5a57e2e514f81a1dda0d961e",
+          "bytes": 286
+        },
+        {
+          "locator": "terminals/necessity-scope-exec-v1-022.json",
+          "sha256": "09a0bdce7e822dad5cd2e954a55da8e8372a9119a5e6c151442dc7df7d8ecd8f",
+          "bytes": 1307
+        },
+        {
+          "locator": "attempts/necessity-scope-exec-v1-022/attempt-01/raw-response.bin",
+          "sha256": "c0a4fd23672afc21153debe1595e21708355b9fc9b120fe3a1abee41d07065e2",
+          "bytes": 419
+        },
+        {
+          "locator": "attempts/necessity-scope-exec-v1-022/attempt-01/route-attestation.bin",
+          "sha256": "4d09c17836fdeae44484215677daabe0a71d28ed8ca897f1d91ee6d2df148b3a",
+          "bytes": 396
+        },
+        {
+          "locator": "adapter-attempts/necessity-scope-exec-v1-022/attempt-01/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "c0a4fd23672afc21153debe1595e21708355b9fc9b120fe3a1abee41d07065e2",
+          "bytes": 419
+        },
+        {
+          "locator": "executor-dry/rendered-prompts/necessity-scope-exec-v1-022.txt",
+          "sha256": "e8714c1405ddd91141b1884f20e2f5f4db52ebad5a4d086287398549a544e5bb",
+          "bytes": 4508
+        },
+        {
+          "locator": "executor-dry/inputs/necessity-scope-exec-v1-022.txt",
+          "sha256": "085f0d286817d41b517f790eb51ea86d12f7c88b67b020feaf2254e5a07d1e65",
+          "bytes": 36
+        },
+        {
+          "locator": "claims/necessity-scope-exec-v1-023.json",
+          "sha256": "d0aa1ac2ab70448851287b9a36b1df847f8a36242ae2cd28583f50c4c84762bd",
+          "bytes": 286
+        },
+        {
+          "locator": "terminals/necessity-scope-exec-v1-023.json",
+          "sha256": "72631e83206bc893da4605d345d639249f437c32a0434b56549bba2546a25750",
+          "bytes": 1305
+        },
+        {
+          "locator": "attempts/necessity-scope-exec-v1-023/attempt-01/raw-response.bin",
+          "sha256": "8a90e5d2b5c0a200bc21af83c431a92fb089db7955ac54018b0bdb6ae6363a93",
+          "bytes": 417
+        },
+        {
+          "locator": "attempts/necessity-scope-exec-v1-023/attempt-01/route-attestation.bin",
+          "sha256": "bcb06acd2a9acd2aa08aa6a070452a129cd7a7a5570b860155ad81c0eac83f65",
+          "bytes": 396
+        },
+        {
+          "locator": "adapter-attempts/necessity-scope-exec-v1-023/attempt-01/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "8a90e5d2b5c0a200bc21af83c431a92fb089db7955ac54018b0bdb6ae6363a93",
+          "bytes": 417
+        },
+        {
+          "locator": "executor-dry/rendered-prompts/necessity-scope-exec-v1-023.txt",
+          "sha256": "e8714c1405ddd91141b1884f20e2f5f4db52ebad5a4d086287398549a544e5bb",
+          "bytes": 4508
+        },
+        {
+          "locator": "executor-dry/inputs/necessity-scope-exec-v1-023.txt",
+          "sha256": "085f0d286817d41b517f790eb51ea86d12f7c88b67b020feaf2254e5a07d1e65",
+          "bytes": 36
+        },
+        {
+          "locator": "claims/necessity-scope-exec-v1-024.json",
+          "sha256": "8c015de6f83abe6905e41326a8916f0f7712b61d400efe5e08faa4bcea81ecdf",
+          "bytes": 286
+        },
+        {
+          "locator": "terminals/necessity-scope-exec-v1-024.json",
+          "sha256": "6621273a159e7fdddddb0c6691a9b17fa058a5b6f53990be0d7458ea8696d828",
+          "bytes": 1294
+        },
+        {
+          "locator": "attempts/necessity-scope-exec-v1-024/attempt-01/raw-response.bin",
+          "sha256": "40099211a739bfc3027fc67fd7b4d480f65aee93a74b1cffc64f0ab032e35976",
+          "bytes": 406
+        },
+        {
+          "locator": "attempts/necessity-scope-exec-v1-024/attempt-01/route-attestation.bin",
+          "sha256": "dd985daa6cafbb7ef3fc7db37aab56bd24bbac0a2de68271e051768cd7f22247",
+          "bytes": 396
+        },
+        {
+          "locator": "adapter-attempts/necessity-scope-exec-v1-024/attempt-01/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "40099211a739bfc3027fc67fd7b4d480f65aee93a74b1cffc64f0ab032e35976",
+          "bytes": 406
+        },
+        {
+          "locator": "executor-dry/rendered-prompts/necessity-scope-exec-v1-024.txt",
+          "sha256": "e8714c1405ddd91141b1884f20e2f5f4db52ebad5a4d086287398549a544e5bb",
+          "bytes": 4508
+        },
+        {
+          "locator": "executor-dry/inputs/necessity-scope-exec-v1-024.txt",
+          "sha256": "085f0d286817d41b517f790eb51ea86d12f7c88b67b020feaf2254e5a07d1e65",
+          "bytes": 36
+        },
+        {
+          "locator": "claims/necessity-scope-exec-v1-025.json",
+          "sha256": "251d1c6669e54c2ff6ed9a574df8f7cb1b59fb64a907d8d4083aeb0ee28a51cb",
+          "bytes": 286
+        },
+        {
+          "locator": "terminals/necessity-scope-exec-v1-025.json",
+          "sha256": "064f4a07814c8d081e7103228ff11fab43f511d843720e11d8184a51163880b0",
+          "bytes": 1348
+        },
+        {
+          "locator": "attempts/necessity-scope-exec-v1-025/attempt-01/raw-response.bin",
+          "sha256": "2645bde4b9c639a99f479161e625bd130c356d38ff4be529c3efa589d0c34d4d",
+          "bytes": 441
+        },
+        {
+          "locator": "attempts/necessity-scope-exec-v1-025/attempt-01/route-attestation.bin",
+          "sha256": "cdcf607bcda109f22825b0ddcf5134e7b82f4a64255d6b2ecb07b1ef57926466",
+          "bytes": 396
+        },
+        {
+          "locator": "adapter-attempts/necessity-scope-exec-v1-025/attempt-01/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "2645bde4b9c639a99f479161e625bd130c356d38ff4be529c3efa589d0c34d4d",
+          "bytes": 441
+        },
+        {
+          "locator": "executor-dry/rendered-prompts/necessity-scope-exec-v1-025.txt",
+          "sha256": "08b1818a907554b76e3158ac9ee77dbc860cb8b074d7c2b44bf487986f97cfbf",
+          "bytes": 4562
+        },
+        {
+          "locator": "executor-dry/inputs/necessity-scope-exec-v1-025.txt",
+          "sha256": "a735ba74eb3e43dcd87ce932320efd192b61373968903f48b78322c0a57a2c70",
+          "bytes": 69
+        },
+        {
+          "locator": "claims/necessity-scope-exec-v1-026.json",
+          "sha256": "5768b6ea39e61b74b0c0da34cf406108dfcfd485ddb98b75f5bd4a2e3517cdc9",
+          "bytes": 286
+        },
+        {
+          "locator": "terminals/necessity-scope-exec-v1-026.json",
+          "sha256": "9f1a7cd9ea5d90645ef1351f40c669ae54f0e1c01d2f06d0d3230b135cf354c1",
+          "bytes": 1375
+        },
+        {
+          "locator": "attempts/necessity-scope-exec-v1-026/attempt-01/raw-response.bin",
+          "sha256": "918f80becb54f39865faa8d93eb6335ac0bb2b8c265e91a865d8583ee8884bc8",
+          "bytes": 468
+        },
+        {
+          "locator": "attempts/necessity-scope-exec-v1-026/attempt-01/route-attestation.bin",
+          "sha256": "26539938180aa637a8553b1d95669b7a3fa0f883dcf452bc10c394fb55c36701",
+          "bytes": 396
+        },
+        {
+          "locator": "adapter-attempts/necessity-scope-exec-v1-026/attempt-01/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "918f80becb54f39865faa8d93eb6335ac0bb2b8c265e91a865d8583ee8884bc8",
+          "bytes": 468
+        },
+        {
+          "locator": "executor-dry/rendered-prompts/necessity-scope-exec-v1-026.txt",
+          "sha256": "08b1818a907554b76e3158ac9ee77dbc860cb8b074d7c2b44bf487986f97cfbf",
+          "bytes": 4562
+        },
+        {
+          "locator": "executor-dry/inputs/necessity-scope-exec-v1-026.txt",
+          "sha256": "a735ba74eb3e43dcd87ce932320efd192b61373968903f48b78322c0a57a2c70",
+          "bytes": 69
+        },
+        {
+          "locator": "claims/necessity-scope-exec-v1-027.json",
+          "sha256": "580fc2050c533e374a3288521aaf44478ee4457c33e88ee322cf08ad3a576bcf",
+          "bytes": 286
+        },
+        {
+          "locator": "terminals/necessity-scope-exec-v1-027.json",
+          "sha256": "cfbd6af2c79bb904f8097eca35ea7fdb4c5fffa011a96e5b8a9ebe7c5130e24f",
+          "bytes": 1353
+        },
+        {
+          "locator": "attempts/necessity-scope-exec-v1-027/attempt-01/raw-response.bin",
+          "sha256": "3135833817db3c3c374633b1a1ea4405611c06b5274ce427bb823706d6a1e710",
+          "bytes": 446
+        },
+        {
+          "locator": "attempts/necessity-scope-exec-v1-027/attempt-01/route-attestation.bin",
+          "sha256": "47679d69d34fd41346010d18c0a1d77c0545c10410eaa6e66f58fcfb397b1bb0",
+          "bytes": 396
+        },
+        {
+          "locator": "adapter-attempts/necessity-scope-exec-v1-027/attempt-01/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "3135833817db3c3c374633b1a1ea4405611c06b5274ce427bb823706d6a1e710",
+          "bytes": 446
+        },
+        {
+          "locator": "executor-dry/rendered-prompts/necessity-scope-exec-v1-027.txt",
+          "sha256": "08b1818a907554b76e3158ac9ee77dbc860cb8b074d7c2b44bf487986f97cfbf",
+          "bytes": 4562
+        },
+        {
+          "locator": "executor-dry/inputs/necessity-scope-exec-v1-027.txt",
+          "sha256": "a735ba74eb3e43dcd87ce932320efd192b61373968903f48b78322c0a57a2c70",
+          "bytes": 69
+        },
+        {
+          "locator": "claims/necessity-scope-exec-v1-028.json",
+          "sha256": "bcc6757a9c7f6e77109254382ac63a2c9efae191f4eeed2b61f0fac5acff995b",
+          "bytes": 286
+        },
+        {
+          "locator": "terminals/necessity-scope-exec-v1-028.json",
+          "sha256": "670da7814a9225c28d49ed63b306706a0b1e3cac3f0696b1b652ed1598162e91",
+          "bytes": 1321
+        },
+        {
+          "locator": "attempts/necessity-scope-exec-v1-028/attempt-01/raw-response.bin",
+          "sha256": "23e5af77b6b4dc78b03d0dabfb8feb5fc202d5ab74bbbd9a4cc54e77f2039353",
+          "bytes": 424
+        },
+        {
+          "locator": "attempts/necessity-scope-exec-v1-028/attempt-01/route-attestation.bin",
+          "sha256": "1f674a9edf06558e34fda4269f6979b10a7c5c3c975cf3ea38148e8aa6e77917",
+          "bytes": 396
+        },
+        {
+          "locator": "adapter-attempts/necessity-scope-exec-v1-028/attempt-01/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "23e5af77b6b4dc78b03d0dabfb8feb5fc202d5ab74bbbd9a4cc54e77f2039353",
+          "bytes": 424
+        },
+        {
+          "locator": "executor-dry/rendered-prompts/necessity-scope-exec-v1-028.txt",
+          "sha256": "b30eb7cf555bf59f998e2f3b6ad2b57a356652966518d90c76d8d99a1e290af3",
+          "bytes": 4541
+        },
+        {
+          "locator": "executor-dry/inputs/necessity-scope-exec-v1-028.txt",
+          "sha256": "a735ba74eb3e43dcd87ce932320efd192b61373968903f48b78322c0a57a2c70",
+          "bytes": 69
+        },
+        {
+          "locator": "claims/necessity-scope-exec-v1-029.json",
+          "sha256": "a69c105972c13c52671cf7cb283e7b89e3e220faf8ede44f7c7bea3fab67389e",
+          "bytes": 286
+        },
+        {
+          "locator": "terminals/necessity-scope-exec-v1-029.json",
+          "sha256": "7d25baac74e1005bbc108b91411682fdac88c573f967c7d640faa8cdd3f73029",
+          "bytes": 1340
+        },
+        {
+          "locator": "attempts/necessity-scope-exec-v1-029/attempt-01/raw-response.bin",
+          "sha256": "a18c186d04b2a5c75fa00884dff6439e0011e457094a9a031b9c9d924d1ce467",
+          "bytes": 443
+        },
+        {
+          "locator": "attempts/necessity-scope-exec-v1-029/attempt-01/route-attestation.bin",
+          "sha256": "2032a48ff44af482b17768d566999a319bbff9886293f816e7690318856d00c3",
+          "bytes": 396
+        },
+        {
+          "locator": "adapter-attempts/necessity-scope-exec-v1-029/attempt-01/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "a18c186d04b2a5c75fa00884dff6439e0011e457094a9a031b9c9d924d1ce467",
+          "bytes": 443
+        },
+        {
+          "locator": "executor-dry/rendered-prompts/necessity-scope-exec-v1-029.txt",
+          "sha256": "b30eb7cf555bf59f998e2f3b6ad2b57a356652966518d90c76d8d99a1e290af3",
+          "bytes": 4541
+        },
+        {
+          "locator": "executor-dry/inputs/necessity-scope-exec-v1-029.txt",
+          "sha256": "a735ba74eb3e43dcd87ce932320efd192b61373968903f48b78322c0a57a2c70",
+          "bytes": 69
+        },
+        {
+          "locator": "claims/necessity-scope-exec-v1-030.json",
+          "sha256": "007658d333f101ab68f68e3eb55bf18af8cc6b01ec8682b1482b245d5b358eb3",
+          "bytes": 286
+        },
+        {
+          "locator": "terminals/necessity-scope-exec-v1-030.json",
+          "sha256": "fc4006949b373badf066a9426cc9a72a7b0a8e3166084ad0daa6ad80fb12c7c5",
+          "bytes": 1379
+        },
+        {
+          "locator": "attempts/necessity-scope-exec-v1-030/attempt-01/raw-response.bin",
+          "sha256": "fea7d1601aee8e3e937dd957bcd136650a5a89fd48b97614241fd55f36513f24",
+          "bytes": 482
+        },
+        {
+          "locator": "attempts/necessity-scope-exec-v1-030/attempt-01/route-attestation.bin",
+          "sha256": "8860ef4a7eb86e7d98e1aebdc8c60b7509f2bb6a594b96e2cfda22db0275836c",
+          "bytes": 396
+        },
+        {
+          "locator": "adapter-attempts/necessity-scope-exec-v1-030/attempt-01/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "fea7d1601aee8e3e937dd957bcd136650a5a89fd48b97614241fd55f36513f24",
+          "bytes": 482
+        },
+        {
+          "locator": "executor-dry/rendered-prompts/necessity-scope-exec-v1-030.txt",
+          "sha256": "b30eb7cf555bf59f998e2f3b6ad2b57a356652966518d90c76d8d99a1e290af3",
+          "bytes": 4541
+        },
+        {
+          "locator": "executor-dry/inputs/necessity-scope-exec-v1-030.txt",
+          "sha256": "a735ba74eb3e43dcd87ce932320efd192b61373968903f48b78322c0a57a2c70",
+          "bytes": 69
+        },
+        {
+          "locator": "claims/necessity-scope-exec-v1-031.json",
+          "sha256": "667e22ba3366fa8b732fecb40c8696b58ee6f0df57ee5f9d73c71b38a6357f97",
+          "bytes": 286
+        },
+        {
+          "locator": "terminals/necessity-scope-exec-v1-031.json",
+          "sha256": "f36abf5780de03009626c8b0f9fb27a27d42570a678e820355b297b53b18102b",
+          "bytes": 1337
+        },
+        {
+          "locator": "attempts/necessity-scope-exec-v1-031/attempt-01/raw-response.bin",
+          "sha256": "2e3fa92c8682713218e85487ec908049ba0939dd1d222f926e58fcbeefb57a21",
+          "bytes": 426
+        },
+        {
+          "locator": "attempts/necessity-scope-exec-v1-031/attempt-01/route-attestation.bin",
+          "sha256": "a0c42a35d03dfe95c9118ce2bd9122978337bf9dff9f6c503e72b2a487c4845b",
+          "bytes": 396
+        },
+        {
+          "locator": "adapter-attempts/necessity-scope-exec-v1-031/attempt-01/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "2e3fa92c8682713218e85487ec908049ba0939dd1d222f926e58fcbeefb57a21",
+          "bytes": 426
+        },
+        {
+          "locator": "executor-dry/rendered-prompts/necessity-scope-exec-v1-031.txt",
+          "sha256": "5cde661876d95c2f7ad3254a05f6c781f2f6573765b2765007bbeff3e6e2e6e7",
+          "bytes": 4563
+        },
+        {
+          "locator": "executor-dry/inputs/necessity-scope-exec-v1-031.txt",
+          "sha256": "609b81539ba178dbf53df13385b7cfe59d75984cd1555d811c824f38a7604fd7",
+          "bytes": 63
+        },
+        {
+          "locator": "claims/necessity-scope-exec-v1-032.json",
+          "sha256": "e04713b77b34bc6d82b218074819d36d1ddbb985d9e0b6b0c27c0c0af97a5128",
+          "bytes": 286
+        },
+        {
+          "locator": "terminals/necessity-scope-exec-v1-032.json",
+          "sha256": "bb50f51608acfb624af66a000da85408dc8d907fa26f5028143575a5ae074dd4",
+          "bytes": 1317
+        },
+        {
+          "locator": "attempts/necessity-scope-exec-v1-032/attempt-01/raw-response.bin",
+          "sha256": "5b6faa2376f59460da3d7cfd3411fc7b5dbb1c6a1859783d1e9fe90bc87b114e",
+          "bytes": 406
+        },
+        {
+          "locator": "attempts/necessity-scope-exec-v1-032/attempt-01/route-attestation.bin",
+          "sha256": "76d7e3d9a31a5d9607157f72113f6dab85f55cd95086f6e1f31ac0db86e78bfe",
+          "bytes": 396
+        },
+        {
+          "locator": "adapter-attempts/necessity-scope-exec-v1-032/attempt-01/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "5b6faa2376f59460da3d7cfd3411fc7b5dbb1c6a1859783d1e9fe90bc87b114e",
+          "bytes": 406
+        },
+        {
+          "locator": "executor-dry/rendered-prompts/necessity-scope-exec-v1-032.txt",
+          "sha256": "5cde661876d95c2f7ad3254a05f6c781f2f6573765b2765007bbeff3e6e2e6e7",
+          "bytes": 4563
+        },
+        {
+          "locator": "executor-dry/inputs/necessity-scope-exec-v1-032.txt",
+          "sha256": "609b81539ba178dbf53df13385b7cfe59d75984cd1555d811c824f38a7604fd7",
+          "bytes": 63
+        },
+        {
+          "locator": "claims/necessity-scope-exec-v1-033.json",
+          "sha256": "36f6c35800b369abb7acd7eb917d457e9679e359bb5ad61c974728d22e69c0e5",
+          "bytes": 286
+        },
+        {
+          "locator": "terminals/necessity-scope-exec-v1-033.json",
+          "sha256": "30ddcf534ff084e87fe33a6ebb0b3bd67286f5be6f59acde9b650f42e58fb5f7",
+          "bytes": 1305
+        },
+        {
+          "locator": "attempts/necessity-scope-exec-v1-033/attempt-01/raw-response.bin",
+          "sha256": "bc2f9be64642242e6ab49ef0aa804aef2ba11c1071455df8ddc1896accccddba",
+          "bytes": 394
+        },
+        {
+          "locator": "attempts/necessity-scope-exec-v1-033/attempt-01/route-attestation.bin",
+          "sha256": "7f589c379179cb99afc9f94d937f12de18536e6a36b34095692aed88677da9fd",
+          "bytes": 396
+        },
+        {
+          "locator": "adapter-attempts/necessity-scope-exec-v1-033/attempt-01/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "bc2f9be64642242e6ab49ef0aa804aef2ba11c1071455df8ddc1896accccddba",
+          "bytes": 394
+        },
+        {
+          "locator": "executor-dry/rendered-prompts/necessity-scope-exec-v1-033.txt",
+          "sha256": "5cde661876d95c2f7ad3254a05f6c781f2f6573765b2765007bbeff3e6e2e6e7",
+          "bytes": 4563
+        },
+        {
+          "locator": "executor-dry/inputs/necessity-scope-exec-v1-033.txt",
+          "sha256": "609b81539ba178dbf53df13385b7cfe59d75984cd1555d811c824f38a7604fd7",
+          "bytes": 63
+        },
+        {
+          "locator": "claims/necessity-scope-exec-v1-034.json",
+          "sha256": "00d5657ca75c4b1453f2ca9a7e7e2b5fefdb6994c5017645fde5ae3a984148af",
+          "bytes": 286
+        },
+        {
+          "locator": "terminals/necessity-scope-exec-v1-034.json",
+          "sha256": "78acb8d61da156b61e5271fc78269c95fb7f4d950d551873c00fa53494ad03f4",
+          "bytes": 1288
+        },
+        {
+          "locator": "attempts/necessity-scope-exec-v1-034/attempt-01/raw-response.bin",
+          "sha256": "9fe0c9a63b8d8bfa2ac4fa9ec1dfed38bd5b21b815509a47699e57b311874115",
+          "bytes": 387
+        },
+        {
+          "locator": "attempts/necessity-scope-exec-v1-034/attempt-01/route-attestation.bin",
+          "sha256": "cd7b3d0f15271ceef18d9f7a076cfb02bf9be83387daee54937ab357a9eece49",
+          "bytes": 396
+        },
+        {
+          "locator": "adapter-attempts/necessity-scope-exec-v1-034/attempt-01/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "9fe0c9a63b8d8bfa2ac4fa9ec1dfed38bd5b21b815509a47699e57b311874115",
+          "bytes": 387
+        },
+        {
+          "locator": "executor-dry/rendered-prompts/necessity-scope-exec-v1-034.txt",
+          "sha256": "2e0f214054b744a7b8d13a0d4da76482c4886f15cabc213892ab33f46e43be05",
+          "bytes": 4542
+        },
+        {
+          "locator": "executor-dry/inputs/necessity-scope-exec-v1-034.txt",
+          "sha256": "609b81539ba178dbf53df13385b7cfe59d75984cd1555d811c824f38a7604fd7",
+          "bytes": 63
+        },
+        {
+          "locator": "claims/necessity-scope-exec-v1-035.json",
+          "sha256": "61858215890be49cd674f1cc15f9ed7a6dc16fdf29687501fd5fb2541e2668a8",
+          "bytes": 286
+        },
+        {
+          "locator": "terminals/necessity-scope-exec-v1-035.json",
+          "sha256": "e1f8b69ecac10ae7ee2d5f99ffbe1c06ac11a8ffe8151475ad31ff7d371ad153",
+          "bytes": 1335
+        },
+        {
+          "locator": "attempts/necessity-scope-exec-v1-035/attempt-01/raw-response.bin",
+          "sha256": "2c5c648d96ed930c49b36879e72f8ac8839e6de510f8f4deeec5203787616165",
+          "bytes": 434
+        },
+        {
+          "locator": "attempts/necessity-scope-exec-v1-035/attempt-01/route-attestation.bin",
+          "sha256": "58058b6b162823f1a5cbaf3ab45639c91aa853a40cb12f8693508284fc6bbb8e",
+          "bytes": 396
+        },
+        {
+          "locator": "adapter-attempts/necessity-scope-exec-v1-035/attempt-01/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "2c5c648d96ed930c49b36879e72f8ac8839e6de510f8f4deeec5203787616165",
+          "bytes": 434
+        },
+        {
+          "locator": "executor-dry/rendered-prompts/necessity-scope-exec-v1-035.txt",
+          "sha256": "2e0f214054b744a7b8d13a0d4da76482c4886f15cabc213892ab33f46e43be05",
+          "bytes": 4542
+        },
+        {
+          "locator": "executor-dry/inputs/necessity-scope-exec-v1-035.txt",
+          "sha256": "609b81539ba178dbf53df13385b7cfe59d75984cd1555d811c824f38a7604fd7",
+          "bytes": 63
+        },
+        {
+          "locator": "claims/necessity-scope-exec-v1-036.json",
+          "sha256": "d32c66020b7992b3dfac1fbcb8a95900077a9019946a0a9c66d5168b0ea44f1a",
+          "bytes": 286
+        },
+        {
+          "locator": "terminals/necessity-scope-exec-v1-036.json",
+          "sha256": "7cad442e1db2e446d22b750ae00e17c9ce8e0b3bf4f7b0bcc49d17dc8ae3fcfa",
+          "bytes": 1337
+        },
+        {
+          "locator": "attempts/necessity-scope-exec-v1-036/attempt-01/raw-response.bin",
+          "sha256": "9a1367a893743e34785e1ec3ab319666d996bf2f3e962cf0d3f17039dd752f06",
+          "bytes": 436
+        },
+        {
+          "locator": "attempts/necessity-scope-exec-v1-036/attempt-01/route-attestation.bin",
+          "sha256": "e67c5d30371c0122b108bac54e56bd9177fbaaece774d88a4aaec31df673be6d",
+          "bytes": 396
+        },
+        {
+          "locator": "adapter-attempts/necessity-scope-exec-v1-036/attempt-01/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "9a1367a893743e34785e1ec3ab319666d996bf2f3e962cf0d3f17039dd752f06",
+          "bytes": 436
+        },
+        {
+          "locator": "executor-dry/rendered-prompts/necessity-scope-exec-v1-036.txt",
+          "sha256": "2e0f214054b744a7b8d13a0d4da76482c4886f15cabc213892ab33f46e43be05",
+          "bytes": 4542
+        },
+        {
+          "locator": "executor-dry/inputs/necessity-scope-exec-v1-036.txt",
+          "sha256": "609b81539ba178dbf53df13385b7cfe59d75984cd1555d811c824f38a7604fd7",
+          "bytes": 63
+        }
+      ]
+    },
+    {
+      "locator": "cwr-hbq-poetry-whole-poem-architecture-dspy-compile-v6-4ce1204-20260825",
+      "files": [
+        {
+          "locator": "dspy-compile-settlement.json",
+          "sha256": "71472f4adab07c679752a6c54d9fe7886d25da7b5c7bf7020d93f607e7897af7",
+          "bytes": 487
+        },
+        {
+          "locator": "compiled-static-export.txt",
+          "sha256": "6c1ae8681ffc44f5be677f442ab0c3a35a712a604b3a69939d1e5467a38fe373",
+          "bytes": 80
+        },
+        {
+          "locator": "precontact-v6.json",
+          "sha256": "e75eeae95ddcecd6056bd23888da81a1bdc07f473ddf7adbd115697b07e3d3ad",
+          "bytes": 3151
+        },
+        {
+          "locator": "engine.py",
+          "sha256": "bf3529de5d6335053c6193338c78031747021a9b434c27c3964266815c35e170",
+          "bytes": 13340
+        },
+        {
+          "locator": "responses/batch-0001.attempt-0001.message.json",
+          "sha256": "7172b970c3108b693bd191a2c5cc5743454db36bc108563e0be36d2f78f25049",
+          "bytes": 1031
+        },
+        {
+          "locator": "responses/batch-0002.attempt-0001.message.json",
+          "sha256": "aa240f5656fa0d4f8c79c82894f27145362844bdf8b4c6a4898fb346c6bb68cc",
+          "bytes": 1277
+        },
+        {
+          "locator": "responses/batch-0003.attempt-0001.message.json",
+          "sha256": "9d25946942fd9c7b8e73bd1fc16a139848b71887f70569ab8f39d30d1ced1a66",
+          "bytes": 1043
+        },
+        {
+          "locator": "responses/batch-0004.attempt-0001.message.json",
+          "sha256": "f1bec4e621db5902a424e977f689e718a6f93a7462541d2aa3756f8dd4e33747",
+          "bytes": 1497
+        },
+        {
+          "locator": "responses/batch-0005.attempt-0001.message.json",
+          "sha256": "6c1e4be3f14419b97df7e58c0fd85cbff7f6826dc6adf3c21c48bf0ae81bffa2",
+          "bytes": 363
+        },
+        {
+          "locator": "responses/batch-0006.attempt-0001.message.json",
+          "sha256": "c964730b935bd162133327ada235cbfc55143ae64563d12e050f025a39301d62",
+          "bytes": 382
+        },
+        {
+          "locator": "responses/batch-0007.attempt-0001.message.json",
+          "sha256": "fb215df9171e0daf0eb65cb8ea75d6ef075f44e84aae205d3862e64bc2efdafd",
+          "bytes": 400
+        },
+        {
+          "locator": "responses/batch-0008.attempt-0001.message.json",
+          "sha256": "8ee24189456a4f8303ed704cf54360c4e4e3007c12b903879d43e9a8cb52583d",
+          "bytes": 343
+        },
+        {
+          "locator": "responses/batch-0009.attempt-0001.message.json",
+          "sha256": "0e51722ac4f59977c0d25cef428d72c1e8fad569341c8a4d5cb38d7ba36d05f4",
+          "bytes": 384
+        },
+        {
+          "locator": "responses/batch-0010.attempt-0001.message.json",
+          "sha256": "3ea1501af7e5541c92515356c752e7f6a8e95172c073b4697e528cf9026f002b",
+          "bytes": 338
+        },
+        {
+          "locator": "responses/batch-0011.attempt-0001.message.json",
+          "sha256": "48b5c27c366b31100645810b4c90d5a501ae95ebdcd5c0c4b4f7f611a2b1605c",
+          "bytes": 374
+        },
+        {
+          "locator": "responses/batch-0012.attempt-0001.message.json",
+          "sha256": "42f3a70b83ab26ece68c949651d03fedef9d3f5cb787ce7c4f09b5ca7db4abe0",
+          "bytes": 235
+        },
+        {
+          "locator": "responses/batch-0013.attempt-0001.message.json",
+          "sha256": "b266340d5bec56f2cc5af1223f7431896798092e60f8db3d5bf7a26121863387",
+          "bytes": 398
+        },
+        {
+          "locator": "responses/batch-0014.attempt-0001.message.json",
+          "sha256": "3e576f5d05067b1e020208126295d89ac9f35c662be2ce2340b3d482df58acea",
+          "bytes": 418
+        },
+        {
+          "locator": "responses/batch-0015.attempt-0001.message.json",
+          "sha256": "1d8c2d872555b6b120fe174bff74906ebe9e6b1f44a0800d769c4bd3f8612627",
+          "bytes": 369
+        },
+        {
+          "locator": "responses/batch-0016.attempt-0001.message.json",
+          "sha256": "2a4b332e9b2c6456822b530fe7674ff508f56e568e3e8c350bdb67887a048242",
+          "bytes": 410
+        },
+        {
+          "locator": "responses/batch-0017.attempt-0001.message.json",
+          "sha256": "3c4acc8a52d9e28a1558f2d798d1e2c47aba9453436370a4c62aa6c52b09c3c9",
+          "bytes": 496
+        },
+        {
+          "locator": "responses/batch-0018.attempt-0001.message.json",
+          "sha256": "37ef41f68f2a68e78b02794bbbd4ae8b40e8f66c0dc6906a92332c79553c0cf9",
+          "bytes": 431
+        },
+        {
+          "locator": "responses/batch-0019.attempt-0001.message.json",
+          "sha256": "b527d899527e9ed3c688cc1378d098d110da2f24ec38f4378bd53ed6a5632fe3",
+          "bytes": 393
+        },
+        {
+          "locator": "responses/batch-0020.attempt-0001.message.json",
+          "sha256": "e7d4fd9f2d717b7b9bf86ef126258e3811c21feaaa5d12d955ca6af705b1b781",
+          "bytes": 337
+        },
+        {
+          "locator": "responses/batch-0021.attempt-0001.message.json",
+          "sha256": "40587e33ff51104e78c56bbc7d96d78dec9cf318e3ac190617c6ec9ba9a6efff",
+          "bytes": 443
+        },
+        {
+          "locator": "responses/batch-0022.attempt-0001.message.json",
+          "sha256": "dddf0c4bddc3afa3b0cea639d0e07ebcacbad695430d628f9fc25acd22ac185f",
+          "bytes": 513
+        },
+        {
+          "locator": "responses/batch-0023.attempt-0001.message.json",
+          "sha256": "b7d7d147197b58118e8c1cd513e9b38591c3c50b62bb792813eb35bcbc70fed9",
+          "bytes": 384
+        },
+        {
+          "locator": "responses/batch-0024.attempt-0001.message.json",
+          "sha256": "17c6b0622b488edd58701d72381320c328fb732a8e87a9d48395ff0124375312",
+          "bytes": 396
+        },
+        {
+          "locator": "responses/batch-0025.attempt-0001.message.json",
+          "sha256": "5ca95f8f86c62b6fbe93a1a071faa95c7631d58c433084aec3d5c7fd9a75a90d",
+          "bytes": 481
+        },
+        {
+          "locator": "responses/batch-0026.attempt-0001.message.json",
+          "sha256": "e98e7033d8309093686219feb45369cd81b858ab7ed10ad5ddbbcf4da8a0cf27",
+          "bytes": 430
+        },
+        {
+          "locator": "responses/batch-0027.attempt-0001.message.json",
+          "sha256": "51a6b429c741e54601aed33c1a75fa5599cfa53f447cf984e2a22601b8edd141",
+          "bytes": 380
+        },
+        {
+          "locator": "responses/batch-0028.attempt-0001.message.json",
+          "sha256": "0799eeb8add5987b7b860e0024017b2bb6151dba5ee1b3e73187f4f151ca6321",
+          "bytes": 399
+        },
+        {
+          "locator": "responses/batch-0029.attempt-0001.message.json",
+          "sha256": "85b1d44f9f9ee6412b3c085827fa0dc75ef9e46addec0a609a05a914887866d2",
+          "bytes": 401
+        },
+        {
+          "locator": "responses/batch-0030.attempt-0001.message.json",
+          "sha256": "9c6b1d731c66c8bcfe2e233242fdf6981f41d6ed401ce31213571b1c41a2000d",
+          "bytes": 414
+        },
+        {
+          "locator": "responses/batch-0031.attempt-0001.message.json",
+          "sha256": "fd5a9044ee424f81500aff19d38b020eb0ffe115a2059c8795b8d2fb2b7d8a31",
+          "bytes": 321
+        },
+        {
+          "locator": "responses/batch-0032.attempt-0001.message.json",
+          "sha256": "7ac4c61e4cb576e3a12e4cc7eca6e7db1fd2928ba6a07592e9417c1c1a7349d0",
+          "bytes": 420
+        },
+        {
+          "locator": "responses/batch-0033.attempt-0001.message.json",
+          "sha256": "225db0313c5528c9575ea939f7e2d4a10acd88ed345052b3ab2c1932f13fde10",
+          "bytes": 504
+        },
+        {
+          "locator": "responses/batch-0034.attempt-0001.message.json",
+          "sha256": "6f52bc52e5d679ed123044432e93f86bc5f3cdb1af0083571fb62ce6c82c1190",
+          "bytes": 463
+        },
+        {
+          "locator": "responses/batch-0035.attempt-0001.message.json",
+          "sha256": "3c5e678aa4078431fdc013d7e1bb77c5351f9f23ffb47c84a2da053a5d7e59e2",
+          "bytes": 277
+        },
+        {
+          "locator": "responses/batch-0036.attempt-0001.message.json",
+          "sha256": "66094dae8acee6ec95583cdb0eacbc853a208972f757174daf056de600cf6871",
+          "bytes": 347
+        },
+        {
+          "locator": "responses/batch-0037.attempt-0001.message.json",
+          "sha256": "03c3d7d8d0c18e52c841ff55277c6b9df7ad658ea3c6e6fa4e77190d8b70f279",
+          "bytes": 629
+        },
+        {
+          "locator": "responses/batch-0038.attempt-0001.message.json",
+          "sha256": "a80be7a7bd122d9d373f3d9d660ab5935bf9e515ffb08b2fa2f62065360abe2c",
+          "bytes": 653
+        },
+        {
+          "locator": "responses/batch-0039.attempt-0001.message.json",
+          "sha256": "552c805546768caa8d978903ebc5f455eb917de4517401948ef22c4eaf5f0b11",
+          "bytes": 524
+        },
+        {
+          "locator": "responses/batch-0040.attempt-0001.message.json",
+          "sha256": "e97e74cb3d405abae65882eb3002899eedb884abf63db222962df304875cde76",
+          "bytes": 448
+        },
+        {
+          "locator": "responses/batch-0041.attempt-0001.message.json",
+          "sha256": "4fb969b27ebfc278ee8120e2779d60433b1373c6b7bad1a853b8dd81fdd02690",
+          "bytes": 448
+        },
+        {
+          "locator": "responses/batch-0042.attempt-0001.message.json",
+          "sha256": "e6d3610e14eec8b8390273dc671faa491b2bb5fa80a0f6b802506182470dcbc4",
+          "bytes": 510
+        },
+        {
+          "locator": "responses/batch-0043.attempt-0001.message.json",
+          "sha256": "f2df7d739bbfd6d7ce09b9049189303f4c2016123e23171c90444b9cdbd1be9e",
+          "bytes": 490
+        },
+        {
+          "locator": "responses/batch-0044.attempt-0001.message.json",
+          "sha256": "a498285b34695b11d528e62e1373b3ad1d517ef7123a34e5216a2d82ac4731e8",
+          "bytes": 453
+        }
+      ]
+    }
+  ],
+  "public_artifacts": [
+    {
+      "locator": "evaluation-results/hbq-free-verse-necessity-scope-ablation-v1-public-result-v1/aggregate.v1.json",
+      "sha256": "7b21d67529a86313f3b1d4a62c90b22960ac47ec4a57cbb9d49ac05b11c12911",
+      "bytes": 944
+    },
+    {
+      "locator": "evaluation-results/hbq-poetry-whole-poem-architecture-dspy-v1-public-result-v1/aggregate.v1.json",
+      "sha256": "125d3666ce5176636dec524a5d52ff9abff7458c068d171d50e4b1e6109f53fc",
+      "bytes": 1773
+    }
+  ],
+  "ablation": {
+    "root": "cwr-hbq-free-verse-necessity-scope-live-v1-4ce1204-20260825",
+    "public_locator": "evaluation-results/hbq-free-verse-necessity-scope-ablation-v1-public-result-v1/aggregate.v1.json",
+    "slot_ids": [
+      "necessity-scope-exec-v1-001",
+      "necessity-scope-exec-v1-002",
+      "necessity-scope-exec-v1-003",
+      "necessity-scope-exec-v1-004",
+      "necessity-scope-exec-v1-005",
+      "necessity-scope-exec-v1-006",
+      "necessity-scope-exec-v1-007",
+      "necessity-scope-exec-v1-008",
+      "necessity-scope-exec-v1-009",
+      "necessity-scope-exec-v1-010",
+      "necessity-scope-exec-v1-011",
+      "necessity-scope-exec-v1-012",
+      "necessity-scope-exec-v1-013",
+      "necessity-scope-exec-v1-014",
+      "necessity-scope-exec-v1-015",
+      "necessity-scope-exec-v1-016",
+      "necessity-scope-exec-v1-017",
+      "necessity-scope-exec-v1-018",
+      "necessity-scope-exec-v1-019",
+      "necessity-scope-exec-v1-020",
+      "necessity-scope-exec-v1-021",
+      "necessity-scope-exec-v1-022",
+      "necessity-scope-exec-v1-023",
+      "necessity-scope-exec-v1-024",
+      "necessity-scope-exec-v1-025",
+      "necessity-scope-exec-v1-026",
+      "necessity-scope-exec-v1-027",
+      "necessity-scope-exec-v1-028",
+      "necessity-scope-exec-v1-029",
+      "necessity-scope-exec-v1-030",
+      "necessity-scope-exec-v1-031",
+      "necessity-scope-exec-v1-032",
+      "necessity-scope-exec-v1-033",
+      "necessity-scope-exec-v1-034",
+      "necessity-scope-exec-v1-035",
+      "necessity-scope-exec-v1-036"
+    ],
+    "expected": {
+      "slots": 36,
+      "cases": 6,
+      "repeats": 3,
+      "criterion_positions": {
+        "form.poetry.free_verse.necessity": 18,
+        "scope.poetry_poem.form": 18
+      }
+    },
+    "source_controller_declared_sha256": "82e77196a9d3b2eabacbac8d01dd6569ff849ea4d1bbb8062364f5700f680d68"
+  },
+  "dspy": {
+    "root": "cwr-hbq-poetry-whole-poem-architecture-dspy-compile-v6-4ce1204-20260825",
+    "public_locator": "evaluation-results/hbq-poetry-whole-poem-architecture-dspy-v1-public-result-v1/aggregate.v1.json",
+    "message_paths": [
+      "responses/batch-0001.attempt-0001.message.json",
+      "responses/batch-0002.attempt-0001.message.json",
+      "responses/batch-0003.attempt-0001.message.json",
+      "responses/batch-0004.attempt-0001.message.json",
+      "responses/batch-0005.attempt-0001.message.json",
+      "responses/batch-0006.attempt-0001.message.json",
+      "responses/batch-0007.attempt-0001.message.json",
+      "responses/batch-0008.attempt-0001.message.json",
+      "responses/batch-0009.attempt-0001.message.json",
+      "responses/batch-0010.attempt-0001.message.json",
+      "responses/batch-0011.attempt-0001.message.json",
+      "responses/batch-0012.attempt-0001.message.json",
+      "responses/batch-0013.attempt-0001.message.json",
+      "responses/batch-0014.attempt-0001.message.json",
+      "responses/batch-0015.attempt-0001.message.json",
+      "responses/batch-0016.attempt-0001.message.json",
+      "responses/batch-0017.attempt-0001.message.json",
+      "responses/batch-0018.attempt-0001.message.json",
+      "responses/batch-0019.attempt-0001.message.json",
+      "responses/batch-0020.attempt-0001.message.json",
+      "responses/batch-0021.attempt-0001.message.json",
+      "responses/batch-0022.attempt-0001.message.json",
+      "responses/batch-0023.attempt-0001.message.json",
+      "responses/batch-0024.attempt-0001.message.json",
+      "responses/batch-0025.attempt-0001.message.json",
+      "responses/batch-0026.attempt-0001.message.json",
+      "responses/batch-0027.attempt-0001.message.json",
+      "responses/batch-0028.attempt-0001.message.json",
+      "responses/batch-0029.attempt-0001.message.json",
+      "responses/batch-0030.attempt-0001.message.json",
+      "responses/batch-0031.attempt-0001.message.json",
+      "responses/batch-0032.attempt-0001.message.json",
+      "responses/batch-0033.attempt-0001.message.json",
+      "responses/batch-0034.attempt-0001.message.json",
+      "responses/batch-0035.attempt-0001.message.json",
+      "responses/batch-0036.attempt-0001.message.json",
+      "responses/batch-0037.attempt-0001.message.json",
+      "responses/batch-0038.attempt-0001.message.json",
+      "responses/batch-0039.attempt-0001.message.json",
+      "responses/batch-0040.attempt-0001.message.json",
+      "responses/batch-0041.attempt-0001.message.json",
+      "responses/batch-0042.attempt-0001.message.json",
+      "responses/batch-0043.attempt-0001.message.json",
+      "responses/batch-0044.attempt-0001.message.json"
+    ],
+    "expected_retained_messages": 44,
+    "declared_proposal_responses": 4,
+    "declared_task_responses": 40
+  },
+  "hash_only": [
+    "settlement.v1.json",
+    "executor-dry/terminal-settlement-plan.v1.json",
+    "dspy-compile-settlement.json",
+    "compiled-static-export.txt",
+    "precontact-v6.json",
+    "engine.py"
+  ],
+  "excluded_ancestors": [
+    "ablation predecessor ancestors",
+    "dspy predecessor compile roots"
+  ]
+}

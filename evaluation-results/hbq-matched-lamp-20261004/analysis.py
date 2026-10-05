@@ -25,6 +25,129 @@ DECODE_READER_SHA = 'f285d228607c26cca0009d17626e7d6915f3d715e3b29f02784a25c682f
 SLOT5_READER_SHA = 'fe04fb5b85b41ba236bdf577deeaf4c8862f4df54bffe00369a57410a64fc055'
 ADOPTION_POLICY = 'matched_lamp_analysis_effective_decode_adoption_v1'
 EFFECTIVE_GATE_POLICY = 'matched_lamp_all17808_effective_complete_terminal_explicit_release_v1'
+SAVED_V2_COLLECTOR_SHA = '6ece7e7f867ec87c3d47bd2daee7e437335cca07c82ada0d7d8ae4111d9e6d76'
+SAVED_V2_PREFIX_SHA = 'f3d3473263e1c3310186f0803b8f52593b1c855f01ff6eec3797ca651e4f2f9c'
+SAVED_V2_JOB_SHA = 'fac974ba29adc5fe8aefd3bda35397f2f26076b47f6737af5b7507069bfbb527'
+SOL_JOB_SHA = '28c0d9a9979a607d4c19fab543f11a5a17d6f3531d07bd3aea3d422ed511a5c7'
+SAVED_V2_ADOPTION_POLICY = 'matched_lamp_analysis_frozen122_saved_prefix_adoption_v2'
+
+
+def saved_v2_implementation():
+    path = HERE / 'collector_saved_prefix_v2.py'
+    c.p.checked(path, SAVED_V2_COLLECTOR_SHA)
+    return c.p.load('lamp_analysis_saved_prefix_v2', path)
+
+
+def saved_v2_metadata(module, outputs, prefix_root, prefix_sha, job_sha, sol_job_sha, route_root, route_sha):
+    c.require(outputs['grok'].resolve() == module.TARGET.resolve()
+              and outputs['sol'].resolve() == (module.PROGRAM / 'lamp-reference/judging-sol-parallel-001').resolve()
+              and prefix_root.resolve() == (module.PROGRAM / 'lamp-reference/saved-prefix-v2-001').resolve()
+              and prefix_sha == SAVED_V2_PREFIX_SHA and job_sha == SAVED_V2_JOB_SHA and sol_job_sha == SOL_JOB_SHA
+              and route_root.resolve() == module.ROUTE_ROOT.resolve() and len(route_sha) == 64
+              and all(ch in '0123456789abcdef' for ch in route_sha), 'Named saved-prefix-v2 bindings differ')
+    return {'policy': SAVED_V2_ADOPTION_POLICY, 'collector_sha256': SAVED_V2_COLLECTOR_SHA,
+            'prefix_sha256': prefix_sha, 'requested_job_sha256': job_sha, 'requested_sol_job_sha256': sol_job_sha,
+            'requested_route_sha256': route_sha, 'reserved': 122, 'untouched_at_freeze': 8782,
+            'frozen_prefix_states': {'accepted': 117, 'semantic_rejected': 5}, 'new_votes': 0,
+            'strict_v5_reinterpretation': False, 'native_jobs_or_projections_replayed': False,
+            'human_gate_policy': EFFECTIVE_GATE_POLICY}
+
+
+def outer_terminal_binding(output, endpoint, binding, terminal_path, terminal_sha):
+    c.require(terminal_path is not None and terminal_sha is not None,
+              'Saved-prefix-v2 full replay requires both actual true outer terminal pins')
+    terminal = json.loads(c.p.checked(terminal_path, terminal_sha))
+    handle_path, invocation_path = terminal_path.parent / 'handle.json', terminal_path.parent / 'invocation.json'
+    handle = json.loads(handle_path.read_bytes())
+    invocation_sha = terminal.get('invocation_sha256') or handle.get('invocation_sha256')
+    c.require(invocation_sha is not None and all(value == invocation_sha for value in
+              (terminal.get('invocation_sha256', invocation_sha), handle.get('invocation_sha256', invocation_sha))),
+              'True outer terminal lacks its saved invocation binding')
+    invocation_raw = c.p.checked(invocation_path, invocation_sha)
+    invocation = json.loads(invocation_raw)
+    argv = invocation['argv']
+    c.require(terminal_path.name == 'terminal.json' and terminal['no_resend'] is True
+              and type(terminal['exit_code']) is int and terminal['exit_code'] in (0, 3) and terminal['time']
+              and handle.get('endpoint', endpoint) == endpoint and handle['workers'] == binding['workers']
+              and Path(handle['native_job']).resolve() == (output / 'job.json').resolve()
+              and c.execution_workers(argv) == binding['workers']
+              and argv.count('--results-dir') == 1
+              and Path(argv[argv.index('--results-dir') + 1]).resolve() == output.resolve()
+              and invocation['collector_sha256'] == binding['collector_sha256']
+              and invocation['manifest_sha256'] == binding['manifest_sha256'],
+              'True outer terminal handle/invocation does not bind the selected native job')
+    return {'terminal_sha256': terminal_sha, 'handle_sha256': c.digest(handle_path.read_bytes()),
+            'invocation_sha256': c.digest(invocation_raw), 'outer_exit_code': terminal['exit_code'],
+            'native_child_quiescence_proven': False, 'provider_quiescence_proven': False}
+
+
+def load_saved_v2_adoption(manifest, root, tools, outputs, subset, validator, receipts, *, prefix_root,
+                          prefix_sha, job_sha, sol_job_sha, route_root, route_sha, outer_pins):
+    module = saved_v2_implementation()
+    provenance = saved_v2_metadata(module, outputs, prefix_root, prefix_sha, job_sha, sol_job_sha, route_root, route_sha)
+    c.require(set(outer_pins) == set(c.p.ENDPOINTS) and all(all(pin is not None for pin in outer_pins[ep])
+              for ep in c.p.ENDPOINTS), 'Saved-prefix-v2 full replay requires both actual true outer terminal pins')
+    binding = json.loads(c.p.checked(outputs['grok'] / 'job.json', job_sha))
+    sol_binding = json.loads(c.p.checked(outputs['sol'] / 'job.json', sol_job_sha))
+    outer = {ep: outer_terminal_binding(outputs[ep], ep, binding if ep == 'grok' else sol_binding,
+                                       *outer_pins[ep]) for ep in c.p.ENDPOINTS}
+    c.require(c.digest(c.canonical(binding['route']).rstrip(b'\n')) == route_sha
+              and binding == module.job_binding(manifest, binding['route'], binding['workers'], prefix_sha, SAVED_V2_COLLECTOR_SHA)
+              and (outputs['grok'] / 'frozen-prefix.json').read_bytes() == c.p.checked(prefix_root / 'prefix.json', prefix_sha)
+              and (outputs['grok'] / 'frozen-manifest.json').read_bytes() == (root / 'manifest.json').read_bytes()
+              and sol_binding == c.verify_job_binding(outputs['sol'], manifest, root, c.MANIFEST_SHA, 'sol', tools),
+              'Saved-prefix-v2 job, route, prefix or Sol binding differs')
+    answers = {}
+    def capture(row, terminal, answer):
+        key = row['request_sha256']
+        c.require(key not in answers, 'Reserved prefix response replayed more than once')
+        answers[key] = (terminal, answer if terminal['state'] == 'accepted' else None)
+    original_replay, original_implementation = module.d.effective_replay, module.implementation
+    def replay(sample, row, *args, **kwargs):
+        terminal, answer = original_replay(sample, row, *args, **kwargs)
+        capture(row, terminal, answer); return terminal, answer
+    def implementation(key):
+        reader = original_implementation(key)
+        if key in ('fixed5', 'fixed120121'):
+            verify = reader.verify
+            def verified(*args, **kwargs):
+                result = verify(*args, **kwargs)
+                for entry in result['observations'] if key == 'fixed120121' else [result]:
+                    capture(entry, entry['effective_terminal'], entry['response'])
+                return result
+            reader.verify = verified
+        return reader
+    # Capture answers during the existing immutable prefix proof, avoiding a second source replay.
+    module.d.effective_replay, module.implementation = replay, implementation
+    try: prefix = module.verify_prefix(prefix_root / 'prefix.json', prefix_sha, (manifest, subset, validator, receipts))
+    finally: module.d.effective_replay, module.implementation = original_replay, original_implementation
+    c.require(prefix['reserved_through'] == 122 and prefix['unresolved_source_observations'] == []
+              and prefix['states'] == {'accepted': 117, 'semantic_rejected': 5}
+              and len(answers) == 122 and set(answers) == {entry['request_sha256'] for entry in prefix['entries']},
+              'Complete once-only verified saved prefix differs')
+    for entry in prefix['entries']:
+        c.require(answers[entry['request_sha256']][0] == entry['effective_terminal'], 'Verified prefix terminal changed')
+    provenance.update(native_jobs_or_projections_replayed=True, outer_terminals=outer,
+                      original_profiles_and_failures_preserved=True, exact_original_outbound_bytes_proven=False)
+    return {'kind': 'saved_prefix_v2', 'module': module, 'binding': binding, 'prefix': prefix,
+            'prefix_answers': answers, 'route_root': route_root, 'provenance': provenance}
+
+
+def saved_v2_replay(sample, row, adoption, manifest, root, receipts, subset, validator, output):
+    module = adoption['module']
+    if row['endpoint_ordinal'] <= 122:
+        entry = adoption['prefix']['entries'][row['endpoint_ordinal'] - 1]
+        c.require(entry['ordinal'] == row['endpoint_ordinal'] and entry['request_sha256'] == row['request_sha256']
+                  and entry['logical_sample_id'] == row['logical_sample_id'], 'Reserved v2 request descriptor differs')
+        return adoption['prefix_answers'][row['request_sha256']]
+    path = module.d.receipt_path(output, row)
+    if path.exists():
+        saved = json.loads(path.read_bytes()); module.d.verify_artifacts(sample, saved['source_artifacts'])
+        actual, _ = module.project(sample, row, manifest, adoption['binding'], subset, validator, adoption['route_root'],
+                snapshot=output / ('decode-snapshot-' + sample.name), commitments=saved['history_commitments'])
+        c.require(saved == actual, 'Qualified v2 suffix receipt replay differs')
+        return saved['effective_terminal'], saved['response'] if saved['acceptance']['accepted'] else None
+    return c.replay(sample, row, manifest, adoption['binding'], root, receipts, subset, validator)
 
 
 def fraction(a, b):
@@ -170,7 +293,7 @@ def collect_evidence(manifest, manifest_sha, root, tools, outputs, subset, valid
         elif output.exists(): binding = c.verify_job_binding(output, manifest, root, manifest_sha, endpoint, tools)
         for row in (r for r in manifest['requests'] if r['endpoint'] == endpoint):
             sample = c.sample_path(output, row)
-            imported_slot = adopted and row['endpoint_ordinal'] <= 5
+            imported_slot = adopted and row['endpoint_ordinal'] <= (122 if adopted.get('kind') == 'saved_prefix_v2' else 5)
             if imported_slot: c.require(not sample.exists(), 'Imported source prefix cannot also occupy the continuation')
             if not imported_slot and not sample.exists():
                 states['untouched'] += 1; observe(row, 'untouched'); continue
@@ -181,10 +304,13 @@ def collect_evidence(manifest, manifest_sha, root, tools, outputs, subset, valid
                 states[state] += 1; observe(row, state)
                 continue
             if adopted:
-                terminal, answer = adopted['module'].effective_replay(sample, row, manifest, binding, root, receipts, subset, validator,
-                    output=output, reader=adopted['reader'], route_root=adopted['route_root'], imported=adopted['imported'])
-                if row['endpoint_ordinal'] == 5 and adopted['overlay'] is not None:
-                    terminal, answer = adopt_slot5(row, terminal, adopted['overlay'], adopted)
+                if adopted.get('kind') == 'saved_prefix_v2':
+                    terminal, answer = saved_v2_replay(sample, row, adopted, manifest, root, receipts, subset, validator, output)
+                else:
+                    terminal, answer = adopted['module'].effective_replay(sample, row, manifest, binding, root, receipts, subset, validator,
+                        output=output, reader=adopted['reader'], route_root=adopted['route_root'], imported=adopted['imported'])
+                    if row['endpoint_ordinal'] == 5 and adopted['overlay'] is not None:
+                        terminal, answer = adopt_slot5(row, terminal, adopted['overlay'], adopted)
             else: terminal, answer = c.replay(sample, row, manifest, binding, root, receipts, subset, validator)
             states[terminal['state']] += 1
             identity = terminal.get('native_thread_id')
@@ -678,10 +804,33 @@ def main():
     parser.add_argument('--grok-decode-job-sha256')
     parser.add_argument('--grok-decode-route-root', type=Path); parser.add_argument('--grok-decode-route-sha256')
     parser.add_argument('--slot5-final-stream-receipt', type=Path); parser.add_argument('--slot5-final-stream-receipt-sha256')
+    parser.add_argument('--adopt-grok-saved-prefix-v2', action='store_true')
+    parser.add_argument('--grok-saved-prefix-root', type=Path); parser.add_argument('--grok-saved-prefix-sha256')
+    parser.add_argument('--grok-saved-job-sha256'); parser.add_argument('--sol-job-sha256')
+    parser.add_argument('--grok-saved-route-root', type=Path); parser.add_argument('--grok-saved-route-sha256')
+    for endpoint in c.p.ENDPOINTS:
+        parser.add_argument('--' + endpoint + '-outer-terminal', type=Path)
+        parser.add_argument('--' + endpoint + '-outer-terminal-sha256')
     parser.add_argument('--bootstrap-reps', type=int, default=2000)
     parser.add_argument('--explicit-postprediction-release', action='store_true')
     args = parser.parse_args(); c.require(1 <= args.bootstrap_reps <= 2000, 'Finite bootstrap repetitions must be 1..2000')
     decode_args = (args.grok_decode_job_sha256, args.grok_decode_route_root, args.grok_decode_route_sha256)
+    saved_args = (args.grok_saved_prefix_root, args.grok_saved_prefix_sha256, args.grok_saved_job_sha256,
+                  args.sol_job_sha256, args.grok_saved_route_root, args.grok_saved_route_sha256)
+    outer_pins = {ep: (getattr(args, ep + '_outer_terminal'), getattr(args, ep + '_outer_terminal_sha256'))
+                  for ep in c.p.ENDPOINTS}
+    c.require(not (args.adopt_grok_decode_v1 and args.adopt_grok_saved_prefix_v2), 'Choose one named Grok adoption policy')
+    if args.adopt_grok_saved_prefix_v2:
+        c.require(all(value is not None for value in (*saved_args, args.sol_results_dir, args.grok_results_dir)),
+                  'Named saved-prefix-v2 adoption requires both results, exact jobs, prefix and route bindings')
+        for pins in outer_pins.values():
+            c.require((pins[0] is None) == (pins[1] is None), 'Actual outer terminal path and pin are required together')
+        if not args.human_profile_only:
+            c.require(all(all(pin is not None for pin in pins) for pins in outer_pins.values()),
+                      'Saved-prefix-v2 full replay requires both actual true outer terminal pins')
+    else:
+        c.require(all(value is None for value in (*saved_args, *(value for pins in outer_pins.values() for value in pins))),
+                  'Saved prefix and outer bindings require named --adopt-grok-saved-prefix-v2')
     if args.adopt_grok_decode_v1:
         c.require(all(v is not None for v in decode_args) and args.grok_results_dir is not None,
                   'Explicit decode adoption requires result, job and route bindings')
@@ -698,6 +847,7 @@ def main():
                   == manifest['manifest_content_sha256'], 'Frozen manifest metadata commitment differs')
         load_human_profile(manifest)
         adoption_pins = None
+        saved_adoption_pins = None
         if args.adopt_grok_decode_v1:
             decode_implementation()
             if args.slot5_final_stream_receipt is not None:
@@ -707,11 +857,16 @@ def main():
                 'requested_route_sha256': args.grok_decode_route_sha256, 'slot5_reader_sha256': SLOT5_READER_SHA if args.slot5_final_stream_receipt else None,
                 'requested_slot5_receipt_sha256': args.slot5_final_stream_receipt_sha256,
                 'native_jobs_or_projections_replayed': False, 'human_gate_policy': EFFECTIVE_GATE_POLICY}
+        if args.adopt_grok_saved_prefix_v2:
+            module = saved_v2_implementation()
+            saved_adoption_pins = saved_v2_metadata(module, {'sol': args.sol_results_dir, 'grok': args.grok_results_dir},
+                                                  *saved_args)
         print(json.dumps({'policy': 'matched_lamp_human_profile_metadata_only_v1', 'manifest_sha256': args.manifest_sha256,
             'human_profile_sha256': HUMAN_PROFILE_SHA, 'planned_requests': 17808, 'admitted_groups': 94,
             'prospective_rank_orders': 282, 'prospective_correlated_pair_ballots': 846,
             'human_targets_opened': False, 'labels_read': False, 'provider_calls': 0,
-            'actual_human_id_joins_and_metrics_verified': False, 'decode_adoption': adoption_pins}, sort_keys=True)); return 0
+            'actual_human_id_joins_and_metrics_verified': False, 'decode_adoption': adoption_pins,
+            'saved_prefix_v2_adoption': saved_adoption_pins}, sort_keys=True)); return 0
     manifest, root, subset, validator, receipts, hbq = load_manifest(args.manifest, args.manifest_sha256, args.tools_root)
     load_human_profile(manifest)
     outputs = {ep: (getattr(args, ep + '_results_dir') or root.parent / (ep + '-001')).resolve() for ep in c.p.ENDPOINTS}
@@ -721,6 +876,12 @@ def main():
         adoption = load_decode_adoption(manifest, root, args.tools_root, outputs['grok'], args.grok_decode_job_sha256,
             args.grok_decode_route_root, args.grok_decode_route_sha256, slot5_receipt=args.slot5_final_stream_receipt,
             slot5_receipt_sha=args.slot5_final_stream_receipt_sha256)
+        effective_proof = []
+    if args.adopt_grok_saved_prefix_v2:
+        adoption = load_saved_v2_adoption(manifest, root, args.tools_root, outputs, subset, validator, receipts,
+            prefix_root=args.grok_saved_prefix_root, prefix_sha=args.grok_saved_prefix_sha256,
+            job_sha=args.grok_saved_job_sha256, sol_job_sha=args.sol_job_sha256,
+            route_root=args.grok_saved_route_root, route_sha=args.grok_saved_route_sha256, outer_pins=outer_pins)
         effective_proof = []
     records, states = collect_evidence(manifest, args.manifest_sha256, root, args.tools_root, outputs, subset, validator, receipts,
         adoption=adoption, proof=effective_proof)
@@ -735,7 +896,9 @@ def main():
         'scalars': scalar_diagnostics(manifest, banks), 'pairwise': pair_diagnostics(manifest, records),
         'paired_endpoints': endpoint_diagnostics(manifest, banks, args.bootstrap_reps),
         'decode_adoption': ({**adoption['provenance'], 'effective_label_gate': effective_label_release_gate(manifest, effective_proof,
-            args.explicit_postprediction_release)} if adoption else None),
+            args.explicit_postprediction_release)} if adoption and adoption.get('kind') != 'saved_prefix_v2' else None),
+        'saved_prefix_v2_adoption': ({**adoption['provenance'], 'effective_label_gate': effective_label_release_gate(manifest,
+            effective_proof, args.explicit_postprediction_release)} if adoption and adoption.get('kind') == 'saved_prefix_v2' else None),
         'human_alignment': alignment,
         'provider_calls': 0, 'human_targets_opened': alignment['human_targets_opened'], 'labels_read': alignment['human_targets_opened'],
         'limits': ['Already development-exposed 94 triplets; no unused or general expert claim.',

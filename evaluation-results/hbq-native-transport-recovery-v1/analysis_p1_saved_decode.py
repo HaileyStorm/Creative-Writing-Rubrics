@@ -19,6 +19,18 @@ CODE = {
     'sol': ('continue_failed_transport.py', 'c9079969a868f0800ef22e681d4304424af9c738ed514755f3a3aaf968fa243e'),
     'grok': ('continue_saved_decode.py', '993ef94ac1f032fd44d880fc953238a4653d6777f9fba964bbb73aa1c12ff7d2'),
     'reader': ('reconcile_failed_suffix.py', 'f285d228607c26cca0009d17626e7d6915f3d715e3b29f02784a25c682f4be68')}
+ORDINARY209_CODE = ('reconcile_p1_ordinary_completion.py', 'c86b0895e21a94be435b96faf17aa052fd2b1ea99ce76829bd82cae1c56a3b3e')
+ORDINARY209_POLICY = 'qualified_fixed_p1_grok209_ordinary_adoption_v1'
+ORDINARY209_RECEIPT_SHA = 'a4babf3ee0413ca2ba7803f7128bf31cc2642074fdc5c7dc4fb43cba3d1a8579'
+ORDINARY209_LOGICAL = 'a76bd1eec6bfe42548b4e292787b22e8f254f6879a08ac1cdf534898bd95ae11'
+ORDINARY209_REQUEST = '83aa9dc38a9976feca2d97ec0a924933ccad53b48b96513bcf1448475d66da59'
+ORDINARY209_NATIVE = '40f1d5ba-d36b-4c22-8316-614017f315d3'
+ORDINARY209_TERMINAL = 'c3b9bed8ad817b7bbd7ebd8e3fe966a23c79b0575e62d921b0429808e9b4f1f2'
+TERMINAL_SOURCES = {
+    'sol': {'job': 'e7c0e127d3276dbfa3662b559b477ba158094de27465c194e9a9bf3606f725f7',
+            'lifecycle': '49f760f9d88405251fc18a8bb5960cf8a63e1e06b2b8ac94aeeae0e1b6551fce', 'exit_code': 0},
+    'grok': {'job': 'b667fa6c7a5dd1893cc5e7b73b647a427945a3665c685064960d6dffda5da58b',
+             'lifecycle': '7d226e3867e5a134f2f37eff42907d6d64ea9cc832e67b9cd08aa0c184521409', 'exit_code': 3}}
 STATES = {'accepted', 'semantic_rejected', 'ambiguous', 'unadmitted_no_resend', 'definitely_not_contacted',
           'unavailable', 'started_unresolved', 'untouched'}
 TOKEN_FIELDS = ('input_tokens', 'cached_input_tokens', 'output_tokens', 'latency_seconds')
@@ -63,6 +75,8 @@ def join_once(manifest, observations):
     """Validated observations occupy original descriptors; absent slots stay missing."""
     expected = {identity(row): row for row in manifest['requests']}
     require(len(expected) == len(manifest['requests']), 'Duplicate original planned descriptor')
+    require(len({row['request_sha256'] for row in manifest['requests']}) == len(expected),
+            'Duplicate original request commitment')
     seen, native_ids, records, inventory, commitments = set(), set(), [], [], []
     observed = {}
     for item in observations:
@@ -231,6 +245,66 @@ def lifecycle_pin(path, sha):
     return {'terminal_sha256': sha, 'exit_code': terminal['exit_code']}
 
 
+def ordinary209_arguments(metadata_only, receipt_path, receipt_sha):
+    require((receipt_path is None) == (receipt_sha is None), 'Fixed209 adoption needs both path and exact receipt SHA')
+    require(not metadata_only or receipt_path is None, 'Sealed metadata mode cannot open a fixed observation receipt')
+    require(receipt_sha is None or receipt_sha == ORDINARY209_RECEIPT_SHA, 'Unsupported fixed209 receipt pin')
+
+
+def adopt_ordinary209(observations, receipt, raw_response):
+    """Replace one replayed failure disposition; preserve its source proof and UUID."""
+    matches = [item for item in observations if item['request']['endpoint'] == 'grok'
+               and item['request']['endpoint_ordinal'] == 209]
+    require(len(matches) == 1, 'Fixed209 requires exactly one replayed original observation')
+    item = matches[0]
+    require(item['request']['logical_sample_id'] == receipt['logical_sample_id'] == ORDINARY209_LOGICAL
+            and item['request']['request_sha256'] == receipt['request_sha256'] == ORDINARY209_REQUEST
+            and item['state'] == receipt['original_state'] == 'ambiguous' and item['response'] is None
+            and item['native_identity'] == receipt['native']['saved_history']['session_id'] == ORDINARY209_NATIVE
+            and item['proof']['source_job_sha256'] == receipt['source_job_sha256'] == TERMINAL_SOURCES['grok']['job']
+            and item['proof']['source_terminal_sha256'] == receipt['source_terminal_sha256'] == ORDINARY209_TERMINAL
+            and item['proof']['original_state'] == 'ambiguous', 'Fixed209 original source/native identity differs')
+    require(receipt['policy'] == 'fixed_p1_grok209_ordinary_completed_history_v1'
+            and receipt['manifest_sha256'] == MANIFEST_SHA and receipt['plan_sha256'] == PLAN_PINS['grok']
+            and receipt['source_lifecycle_sha256'] == TERMINAL_SOURCES['grok']['lifecycle']
+            and receipt['full_planned_denominators'] == {'sol': 792, 'grok': 792, 'matched': 1584}
+            and receipt['endpoint'] == 'grok' and receipt['endpoint_ordinal'] == 209
+            and receipt['same_original_observation_only'] is True and receipt['new_votes'] == 0
+            and receipt['no_resend'] is True and receipt['human_labels_opened'] is False
+            and receipt['original_strict_v5_admission_satisfied'] is False
+            and receipt['implementation_sha256'] == ORDINARY209_CODE[1]
+            and digest(raw_response) == receipt['response_sha256']
+            and digest(canonical(receipt['admission'])) == receipt['acceptance_sha256'],
+            'Fixed209 qualified policy/response/admission commitment differs')
+    accepted = receipt['admission']['accepted']
+    require(type(accepted) is bool and receipt['state'] == ('accepted' if accepted else 'semantic_rejected'),
+            'Fixed209 semantic disposition differs')
+    projected = dict(item, state=receipt['state'], response=json.loads(raw_response) if accepted else None,
+                     admission_basis=ORDINARY209_POLICY, new_votes=0)
+    projected['proof'] = {**item['proof'], 'qualified_adoption_policy': ORDINARY209_POLICY,
+                          'fixed_receipt_sha256': ORDINARY209_RECEIPT_SHA,
+                          'fixed_reader_sha256': ORDINARY209_CODE[1],
+                          'saved_response_sha256': receipt['response_sha256'],
+                          'saved_acceptance_sha256': receipt['acceptance_sha256'],
+                          'fixed_source_commitments_sha256': digest(canonical(receipt['source_commitments'])),
+                          'original_strict_v5_admission_satisfied': False,
+                          'effective_response_sha256': digest(canonical(projected['response'])) if accepted else None}
+    return [projected if original is item else original for original in observations]
+
+
+def verified_ordinary209(observations, receipt_path, receipt_sha):
+    relative, sha = ORDINARY209_CODE
+    path = HERE / relative
+    pinned_raw(path, sha)
+    spec = importlib.util.spec_from_file_location('p1_chain_private_ordinary209', path)
+    reader = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = reader
+    spec.loader.exec_module(reader)
+    receipt = reader.verify(receipt_path, receipt_sha)
+    raw_response = (receipt_path.parent / 'response.json').read_bytes()
+    return adopt_ordinary209(observations, receipt, raw_response)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__, allow_abbrev=False)
     parser.add_argument('--manifest', type=Path, default=PROGRAM / 'semantic-crossform/matched-frozen-002/manifest.json')
@@ -239,12 +313,15 @@ def main():
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument('--metadata-only', action='store_true')
     mode.add_argument('--replay-terminal-sources', action='store_true')
+    parser.add_argument('--ordinary209-receipt', type=Path)
+    parser.add_argument('--ordinary209-receipt-sha256')
     for endpoint in ('sol', 'grok'):
         parser.add_argument('--' + endpoint + '-results', type=Path)
         parser.add_argument('--' + endpoint + '-job-sha256')
         parser.add_argument('--' + endpoint + '-lifecycle-terminal', type=Path)
         parser.add_argument('--' + endpoint + '-lifecycle-sha256')
     args = parser.parse_args()
+    ordinary209_arguments(args.metadata_only, args.ordinary209_receipt, args.ordinary209_receipt_sha256)
     manifest, previous = metadata_contract(args.manifest.resolve(), args.sol_plan.resolve(), args.grok_plan.resolve())
     provenance = {'analysis_policy': POLICY, 'analysis_sha256': digest(Path(__file__).read_bytes()),
                   'predecessor_analysis_sha256': CODE['analysis'][1], 'manifest_sha256': MANIFEST_SHA,
@@ -266,7 +343,12 @@ def main():
         require(all(getattr(args, endpoint + '_' + field) is not None
                     for field in ('results', 'job_sha256', 'lifecycle_terminal', 'lifecycle_sha256')),
                 'Post-terminal replay requires both exact jobs and lifecycle terminal pins')
+        require(getattr(args, endpoint + '_job_sha256') == TERMINAL_SOURCES[endpoint]['job']
+                and getattr(args, endpoint + '_lifecycle_sha256') == TERMINAL_SOURCES[endpoint]['lifecycle'],
+                'Full replay requires the exact current terminal source job/lifecycle pins')
         lifecycle[endpoint] = lifecycle_pin(getattr(args, endpoint + '_lifecycle_terminal'), getattr(args, endpoint + '_lifecycle_sha256'))
+        require(lifecycle[endpoint]['exit_code'] == TERMINAL_SOURCES[endpoint]['exit_code'],
+                'True outer terminal exit differs')
     observations = []
     context = None
     for endpoint in ('sol', 'grok'):
@@ -278,6 +360,8 @@ def main():
         observations.extend(suffix_observations(plan, ctx, executor, previous, getattr(args, endpoint + '_results').resolve(),
                                                 getattr(args, endpoint + '_job_sha256')))
         context = ctx
+    if args.ordinary209_receipt is not None:
+        observations = verified_ordinary209(observations, args.ordinary209_receipt.resolve(), args.ordinary209_receipt_sha256)
     records, inventory, commitments = join_once(manifest, observations)
     result = previous.analyze(manifest, records, inventory, previous.load_hbq(manifest, context['root']), context['root'])
     result.update(provenance, source_lifecycle_commitments=lifecycle,
@@ -285,6 +369,10 @@ def main():
                   admission_bases=dict(Counter(item['admission_basis'] for item in inventory)),
                   native_sources_replayed=True, original_unresolved_grok148_reserved=True,
                   human_release_eligible=False)
+    if args.ordinary209_receipt is not None:
+        result['qualified_fixed209_adoption'] = {'policy': ORDINARY209_POLICY, 'reader_sha256': ORDINARY209_CODE[1],
+                                                'receipt_sha256': args.ordinary209_receipt_sha256,
+                                                'same_original_observation_only': True, 'new_votes': 0}
     print(json.dumps(result, sort_keys=True, allow_nan=False))
     return 0
 
