@@ -1,0 +1,1228 @@
+{
+  "schema_version": 1,
+  "policy": "pass_b_finite_metadata_root_dispositions_v1",
+  "common_sha256": "42415af5418ae32303bfa7933712b2ad398c0ed66df32a7553a9e3d55f5de49b",
+  "prior_censuses": [
+    {
+      "id": "A",
+      "root": "control",
+      "locator": "successor-program-20261004/census-a/run-001/census.json",
+      "sha256": "9e6717ab70bacfe9b3a0bcb41d17b427449fb3f5db2791bffbbf24ac1207776f",
+      "bytes": 22354,
+      "counts": {}
+    },
+    {
+      "id": "B",
+      "root": "repository",
+      "locator": "evaluation-results/hbq-evidence-census-pass-b-v1/observed-summary-001.json",
+      "sha256": "3b01c6b90732586d11f6218c00f3c0f6eaa27a757265a02033d5df78d4bb521a",
+      "bytes": 5072,
+      "counts": {
+        "inherited_accepted_request_native_joins": "observed.accepted_request_native_joins",
+        "inherited_native_leaf_rows": "observed.normalized_native_verdict_rows"
+      }
+    },
+    {
+      "id": "C",
+      "root": "repository",
+      "locator": "evaluation-results/hbq-evidence-census-pass-c-v1/observed-summary-001.json",
+      "sha256": "480d8bc239bef2c21b2a481af4ca2369c96f9e68688607724d6696032564448b",
+      "bytes": 12118,
+      "counts": {
+        "inherited_accepted_native_identities": "observed.accepted_native_identities",
+        "inherited_main_native_leaves": "observed.main_native_leaves",
+        "inherited_repeat_native_leaves": "observed.repeat_native_leaves"
+      }
+    },
+    {
+      "id": "D",
+      "root": "repository",
+      "locator": "evaluation-results/hbq-census-native-d-v1/census.json",
+      "sha256": "4af5b9f4dcc859ba3b3e6dcb025397b35b5d63156010fff4ddce54fd0cd122c6",
+      "bytes": 5504,
+      "counts": {
+        "inherited_accepted_packets": "observed.accepted_packets",
+        "inherited_native_leaf_rows": "observed.native_leaf_rows"
+      }
+    },
+    {
+      "id": "E",
+      "root": "repository",
+      "locator": "evaluation-results/hbq-census-native-e-v1/run-001-summary.json",
+      "sha256": "24ea85de38e539db5b9bbcb3f24e9e5ac93d6dd01e06eb8d8ed61d677147aae9",
+      "bytes": 1797,
+      "counts": {
+        "inherited_accepted_logical_cells": "observed.accepted_logical_cells",
+        "inherited_accepted_units": "observed.accepted_units",
+        "inherited_native_leaf_rows": "observed.native_leaf_rows",
+        "inherited_rejected_attempts": "observed.rejected_attempts",
+        "inherited_sessions": "observed.unique_observed_sessions_bounded_lineage"
+      }
+    },
+    {
+      "id": "F",
+      "root": "repository",
+      "locator": "evaluation-results/hbq-census-native-f-v1/count-summary-001.json",
+      "sha256": "000e9e8935c55700d6e777f49b04d8f2fadadeb8f4618acd140a13376e34dd75",
+      "bytes": 3391,
+      "counts": {
+        "inherited_logical_positions": "observed.logical_positions",
+        "inherited_native_leaf_rows": "observed.criterion_leaves"
+      }
+    },
+    {
+      "id": "F-prefix",
+      "root": "repository",
+      "locator": "evaluation-results/hbq-census-native-f-v1/prefix-count-summary-001.json",
+      "sha256": "5253e22958dbffc6c6c0f34f9089e2e5846ef49395f07ba110237074f7f92cb9",
+      "bytes": 2119,
+      "counts": {
+        "existing_positions_joined_not_added": "observed.existing_positions_joined",
+        "inherited_native_prefix_positions": "observed.native_prefix_positions",
+        "inherited_native_old_v5_positions": "observed.native_old_v5_positions"
+      }
+    }
+  ],
+  "records": [
+    {
+      "id": "fullbook-v2",
+      "family": "fullbook",
+      "root": "source",
+      "locator": "cwr-gray-blood-full-book-qpc24-rebaseline-v2-4ce1204-20260825",
+      "disposition": "superseded_ancestor",
+      "basis": "Historical preparation ancestor; census D pending-freeze declaration is not the latest evidence.",
+      "declared": {},
+      "declared_basis": null,
+      "parent": null,
+      "artifacts": [
+        {
+          "locator": "freeze-manifest.json",
+          "sha256": "8a346b1dad8153a2bb6f0347c4268aedbe9d573fa0a0280eb3fafacc47e6fe06",
+          "bytes": 1028
+        },
+        {
+          "locator": "plan.json",
+          "sha256": "6f56a9d62bfaaf85c3ea05e3e8b50181416401ac2d056f466191ce62a5591f5d",
+          "bytes": 9086
+        },
+        {
+          "locator": "deterministic-bindings.json",
+          "sha256": "595c9283e60904943ca2f18113064030c26d7fa8b1971580d3b80f2191f0eb61",
+          "bytes": 1915
+        }
+      ]
+    },
+    {
+      "id": "fullbook-v9",
+      "family": "fullbook",
+      "root": "source",
+      "locator": "cwr-gray-blood-full-book-qpc24-rebaseline-v9-56b0175-20260826",
+      "disposition": "verified_historical_metadata",
+      "basis": "Exact historical freeze metadata; private run/controller and score chains not replayed.",
+      "declared": {
+        "binary_calls": 150,
+        "verdict_positions": 3406
+      },
+      "declared_basis": "fullbook-public-v9",
+      "parent": "fullbook-v2",
+      "artifacts": [
+        {
+          "locator": "freeze-manifest.json",
+          "sha256": "e6fd66e1d3c1623135b582b3106cc372f26c48bd7116adeef8af3e5906c46048",
+          "bytes": 659
+        },
+        {
+          "locator": "plan.json",
+          "sha256": "0761561b7a3fb02909d90b927830b2f3255edcdcfc666a9a39824d225a486241",
+          "bytes": 7976
+        }
+      ]
+    },
+    {
+      "id": "fullbook-public-v9",
+      "family": "fullbook",
+      "root": "repository",
+      "locator": "evaluation-results/hbq-gray-blood-full-book-qpc24-rebaseline-v9-public-result-v1",
+      "disposition": "declaration_only",
+      "basis": "Public aggregate is hashed without outcome decoding; historical binary calls are not modern canonical full-bank imports.",
+      "declared": {},
+      "declared_basis": null,
+      "parent": null,
+      "artifacts": [
+        {
+          "locator": "aggregate.v1.json",
+          "sha256": "4aa31d84d0fb362b250414f26701cb03a8d66c55191709422099fccab58ede90",
+          "bytes": 2307
+        },
+        {
+          "locator": "verify_output.py",
+          "sha256": "9d396472b48318d6ac02d78b2c8a39048ea55f27893d64e30205338d0a6ac64d",
+          "bytes": 6279
+        }
+      ]
+    },
+    {
+      "id": "qpc24-v1",
+      "family": "qpc24",
+      "root": "source",
+      "locator": "cwr-qpc24-two-pass-product-confirmation-v1-4ce1204-20260825",
+      "disposition": "superseded_ancestor",
+      "basis": "Preparation/recovery lineage; inherited accepted contributions retained, never added as independent studies.",
+      "declared": {},
+      "declared_basis": null,
+      "parent": null,
+      "artifacts": [
+        {
+          "locator": "private-freeze.v1.json",
+          "sha256": "366753e72d6bc5a19ad6d43eef72fe71a4261d035de090573659c7d0ac95e22f",
+          "bytes": 32332
+        },
+        {
+          "locator": "live-controller-binding.v1.json",
+          "sha256": "c13ef9c1f87ed782dc1ece1ff94745be3afdbcb563cb887dbc58443833b162a9",
+          "bytes": 1112
+        }
+      ]
+    },
+    {
+      "id": "qpc24-v2",
+      "family": "qpc24",
+      "root": "source",
+      "locator": "cwr-qpc24-two-pass-product-confirmation-v2-4ce1204-20260825",
+      "disposition": "superseded_ancestor",
+      "basis": "Preparation/recovery lineage; inherited accepted contributions retained, never added as independent studies.",
+      "declared": {},
+      "declared_basis": null,
+      "parent": "qpc24-v1",
+      "artifacts": [
+        {
+          "locator": "private-freeze.v1.json",
+          "sha256": "c2f55d9a9dddf5dfc34922c8fcb990e099b0f6c5f61c66643f03bef8494df93f",
+          "bytes": 23015
+        },
+        {
+          "locator": "live-controller-binding.v1.json",
+          "sha256": "1a8f96dfccffaf8a82288641bb8582b1ed6e4f45c9824363fe1a663a32d127c5",
+          "bytes": 1274
+        }
+      ]
+    },
+    {
+      "id": "qpc24-v3",
+      "family": "qpc24",
+      "root": "source",
+      "locator": "cwr-qpc24-two-pass-product-confirmation-v3-4ce1204-20260825",
+      "disposition": "superseded_ancestor",
+      "basis": "Preparation/recovery lineage; inherited accepted contributions retained, never added as independent studies.",
+      "declared": {},
+      "declared_basis": null,
+      "parent": "qpc24-v2",
+      "artifacts": [
+        {
+          "locator": "private-freeze.v1.json",
+          "sha256": "1add9610503cc33bba0e92175c16d648ef3fba84fbec516b403b8d3b97cf32ce",
+          "bytes": 27412
+        },
+        {
+          "locator": "live-controller-binding.v1.json",
+          "sha256": "540f5b9725db7d5c7e8ee0060901582503533c1f874efbc0e28874796333f764",
+          "bytes": 1017
+        }
+      ]
+    },
+    {
+      "id": "qpc24-v4",
+      "family": "qpc24",
+      "root": "source",
+      "locator": "cwr-qpc24-two-pass-product-confirmation-v4-4ce1204-20260825",
+      "disposition": "superseded_ancestor",
+      "basis": "Preparation/recovery lineage; inherited accepted contributions retained, never added as independent studies.",
+      "declared": {},
+      "declared_basis": null,
+      "parent": "qpc24-v3",
+      "artifacts": [
+        {
+          "locator": "private-freeze.v1.json",
+          "sha256": "2a94a74a39cf81677ea5775b0f969e40799297f820abc45683efab886c41e36a",
+          "bytes": 35941
+        },
+        {
+          "locator": "live-controller-binding.v1.json",
+          "sha256": "06ba34d6a90a530c98bc60256133af66e2d656ee0dec35327ab29489ff60acb1",
+          "bytes": 838
+        }
+      ]
+    },
+    {
+      "id": "qpc24-v5",
+      "family": "qpc24",
+      "root": "source",
+      "locator": "cwr-qpc24-two-pass-product-confirmation-v5-4ce1204-20260825",
+      "disposition": "verified_historical_metadata",
+      "basis": "Settlement bytes match public commitment; receipt and native leaf chains not replayed.",
+      "declared": {
+        "receipt_chains": 60,
+        "complete_passes": 6,
+        "verdict_positions": 1326
+      },
+      "declared_basis": "qpc24-public-v5",
+      "parent": "qpc24-v4",
+      "artifacts": [
+        {
+          "locator": "private-freeze.v1.json",
+          "sha256": "bb18cd4b87a37c034f282a604f706076b3553cf95e736f58660278faa43ca686",
+          "bytes": 59893
+        },
+        {
+          "locator": "live-controller-binding.v1.json",
+          "sha256": "01692b23901ac19890a11560c829e4a8dfe4f774921ddf35c2e5ae17a4628034",
+          "bytes": 1017
+        },
+        {
+          "locator": "settlement.v1.json",
+          "sha256": "80d3e7af8eaa75a05157eb40d706f7238e0dc44f741cafc53ebcc2e35aba765a",
+          "bytes": 6794
+        },
+        {
+          "locator": "settlement.v2.json",
+          "sha256": "6e4f1654b4d5493eeb3a99fcebd4b110fe68790a9011440784551e94e151b74e",
+          "bytes": 1474
+        }
+      ]
+    },
+    {
+      "id": "qpc24-control-r2-excluded",
+      "family": "qpc24",
+      "root": "source",
+      "locator": "cwr-qpc24-two-pass-product-confirmation-v5-4ce1204-20260825",
+      "disposition": "excluded_attempt",
+      "basis": "Published final settlement excludes the incomplete control-r2 pass; this record verifies settlement bytes, not its failed native attempt.",
+      "declared": {
+        "excluded_incomplete_passes": 1
+      },
+      "declared_basis": "qpc24-public-v5",
+      "parent": "qpc24-v3",
+      "artifacts": [
+        {
+          "locator": "settlement.v2.json",
+          "sha256": "6e4f1654b4d5493eeb3a99fcebd4b110fe68790a9011440784551e94e151b74e",
+          "bytes": 1474
+        }
+      ]
+    },
+    {
+      "id": "qpc24-public-v5",
+      "family": "qpc24",
+      "root": "repository",
+      "locator": "evaluation-results/hbq-qpc24-two-pass-product-confirmation-v5-public-result-v1",
+      "disposition": "declaration_only",
+      "basis": "Public declarations are hashed; no state outcomes are decoded.",
+      "declared": {},
+      "declared_basis": null,
+      "parent": null,
+      "artifacts": [
+        {
+          "locator": "aggregate.v1.json",
+          "sha256": "189444cc0bd32a7bd90a7744a0a017e7ff71e266d0bf13bab455495f7dfd59da",
+          "bytes": 2625
+        },
+        {
+          "locator": "verify_output.py",
+          "sha256": "96fce447d25f2dae86a091f1ee52aedfa85850fbd6d7014a36a662de99407785",
+          "bytes": 6063
+        }
+      ]
+    },
+    {
+      "id": "poetry-v2-original",
+      "family": "poetry",
+      "root": "source",
+      "locator": "cwr-hbq-poetry-whole-poem-architecture-treatment-v2-execution-v1-4ce1204-20260825",
+      "disposition": "superseded_ancestor",
+      "basis": "Historical preparation lineage; sealed candidate ledger is excluded; terminals are hashed only, no target/verdict decoding.",
+      "declared": {},
+      "declared_basis": null,
+      "parent": null,
+      "artifacts": [
+        {
+          "locator": "controller-manifest.json",
+          "sha256": "eb80e7a16890124fd795752e85b58d7b42885628abbedc7949cd3a0a59ff5438",
+          "bytes": 14518
+        },
+        {
+          "locator": "controller-binding.v1.json",
+          "sha256": "bcd6d2fb3ca52e28c2bdc6a73db731c6e8c5ef7559e05e41c9aa9481be1de8a2",
+          "bytes": 445
+        },
+        {
+          "locator": "settlement-plan.v1.json",
+          "sha256": "14841fa9a335f289e2d78f4f8fc73e338dcd3ce6c8112c655054fc60285f1e38",
+          "bytes": 196
+        }
+      ]
+    },
+    {
+      "id": "poetry-v2-r2",
+      "family": "poetry",
+      "root": "source",
+      "locator": "cwr-hbq-poetry-whole-poem-architecture-treatment-v2-execution-v1-4ce1204-20260825-lineage-r2",
+      "disposition": "superseded_ancestor",
+      "basis": "Historical preparation lineage; sealed candidate ledger is excluded; terminals are hashed only, no target/verdict decoding.",
+      "declared": {},
+      "declared_basis": null,
+      "parent": "poetry-v2-original",
+      "artifacts": [
+        {
+          "locator": "controller-manifest.json",
+          "sha256": "fcf15c14e7cf9a3eadd2851d4a4331b9f949883bbf167d604e22b71182ac1684",
+          "bytes": 14518
+        },
+        {
+          "locator": "controller-binding.v1.json",
+          "sha256": "88cb9fb3a7efccf160847680388d0446c153715c27e7c99382a8f6b2c11692a7",
+          "bytes": 445
+        },
+        {
+          "locator": "settlement-plan.v1.json",
+          "sha256": "14841fa9a335f289e2d78f4f8fc73e338dcd3ce6c8112c655054fc60285f1e38",
+          "bytes": 196
+        }
+      ]
+    },
+    {
+      "id": "poetry-v2-r3",
+      "family": "poetry",
+      "root": "source",
+      "locator": "cwr-hbq-poetry-whole-poem-architecture-treatment-v2-execution-v1-4ce1204-20260825-lineage-r3",
+      "disposition": "verified_historical_metadata",
+      "basis": "Historical preparation lineage; sealed candidate ledger is excluded; terminals are hashed only, no target/verdict decoding.",
+      "declared": {
+        "planned_calls": 42
+      },
+      "declared_basis": "poetry-public-v2",
+      "parent": "poetry-v2-r2",
+      "artifacts": [
+        {
+          "locator": "controller-manifest.json",
+          "sha256": "f36b34a041cb26c385dfeb74e39f9ec365659638dbf6c47dffd5cbf774f4bbe1",
+          "bytes": 14518
+        },
+        {
+          "locator": "controller-binding.v1.json",
+          "sha256": "876c8aee2c629394ede2f8ea6469b8e0248eed26f3ec8cb8a36dd5dc25ebb351",
+          "bytes": 445
+        },
+        {
+          "locator": "settlement-plan.v1.json",
+          "sha256": "14841fa9a335f289e2d78f4f8fc73e338dcd3ce6c8112c655054fc60285f1e38",
+          "bytes": 196
+        },
+        {
+          "locator": "settlement.v1.json",
+          "sha256": "75351b53d49ebed043d0d0bf1aabddf17cc07687594df4d945a7074a9199e16a",
+          "bytes": 303
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-001.json",
+          "sha256": "92d7ff1e32a6da87a032b9001937a777283c0eb7ae6bb9b493f2dc6f3b19cce8",
+          "bytes": 1889
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-002.json",
+          "sha256": "064266c892d62d9a580baac67fe3e9130dc8012424cc02ff91868818c4aff9c6",
+          "bytes": 1985
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-003.json",
+          "sha256": "855b47fb2f06468e24d492ada68606b1c123d066d4cc8d2e5221cc7cf4ef3a08",
+          "bytes": 1821
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-004.json",
+          "sha256": "0944c20f5dc84d7dbf828c42c2950d865ca652f7340d0e5c45be04a5450ab405",
+          "bytes": 1421
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-005.json",
+          "sha256": "6fcd44b43d8c03f945d1a88b13f746f51c7309b47f412e8489e088d6ce44d321",
+          "bytes": 1909
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-006.json",
+          "sha256": "23fe1ec5e202d2022efcfa072928f6d5407f954aaf184267b6a554888bf00a35",
+          "bytes": 1391
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-007.json",
+          "sha256": "87e13206721f3b778fe0806d71ecf2f4e3fee012bf7900b65e6a82d7447fc7af",
+          "bytes": 1415
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-008.json",
+          "sha256": "d53687c2c08407e39ae273faeb9fe25217de6ee8e2fcde85c4f9d6d79e2c1e21",
+          "bytes": 1409
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-009.json",
+          "sha256": "7525c5ce6ecb9d5ae4c004bc8f1e179d4ec0f567ecca38f2d198932d17342877",
+          "bytes": 1349
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-010.json",
+          "sha256": "556d7402d7d9903e7caa80fdba35ba4ef49d938378f0cbefb288c7eaa1e15a4a",
+          "bytes": 1467
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-011.json",
+          "sha256": "4025ff9cab78f61ff6fb55fba6739e28d5f39066d7db658fe3b1f9562790a959",
+          "bytes": 1845
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-012.json",
+          "sha256": "433fd5a3f83a4aa4e78f01b757d963f8263de44546dfd5d1579f029cf2c48a35",
+          "bytes": 1507
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-013.json",
+          "sha256": "edfea883a52deff73bb827323cea0f317ad1ba8aa56b4da905e6bc7f31443c71",
+          "bytes": 1333
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-014.json",
+          "sha256": "b6a0ee60e584ee8655aca78426c600f239abf96948245f9d7adfa09046b3f4e0",
+          "bytes": 1261
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-015.json",
+          "sha256": "6c540f5e122434067a4de363fcd916dcd0019c18f87f4dfbcef4305434016986",
+          "bytes": 1379
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-016.json",
+          "sha256": "c5f63adc998746f4fb608baebd1e99f27e9d15fef78f56a37e5f19136c3fb995",
+          "bytes": 1293
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-017.json",
+          "sha256": "9d6f68b982d73d384d0bd71fa5b2b4756d6163461ce70f912cb47427c36912c6",
+          "bytes": 1481
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-018.json",
+          "sha256": "861c17fb94d63d06769098e4fa74002642706aa8d864c5f7a8519e48fec9e4ad",
+          "bytes": 1245
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-019.json",
+          "sha256": "677df5419f563e39a896abbfd28c0b7bb2232611f1f734a417694a85f2effc8f",
+          "bytes": 1233
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-020.json",
+          "sha256": "a6deabb62a74e56f8a5b0640e054d5d45b15dc8ddaa70ec0551da763009b389a",
+          "bytes": 1265
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-021.json",
+          "sha256": "d699d57a848d1a4690d25f3d8f6e316e15ffce5769650395c125a194e0b3ea8b",
+          "bytes": 1261
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-022.json",
+          "sha256": "7b2114945e7c7e932b3407bae55472711177ca686da09e35cb44586858405d51",
+          "bytes": 2269
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-023.json",
+          "sha256": "68dd20c7b0c319b97167c189a7fcc1b01292ac43e9e59cc7609b00ef0268d266",
+          "bytes": 2169
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-024.json",
+          "sha256": "50822f39df2e3af71cb134f5db292b133383399ba395a5573633b4f3c1890a7e",
+          "bytes": 2167
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-025.json",
+          "sha256": "cf82d04e53cfc020aaa236ef20b269208fec2f48f3c658510b8c05915a7373ec",
+          "bytes": 1555
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-026.json",
+          "sha256": "781e4ca5801a5914adaf0fb78c66fa13e1130941795a5497c68f1f4123b74ac2",
+          "bytes": 1405
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-027.json",
+          "sha256": "151bb67fbeaeb4e4ae08ca1ec6636ed3adb64f4244d62c1844677944448301e1",
+          "bytes": 1513
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-028.json",
+          "sha256": "31dc026a1eb258cb8ed9fe3b5627ed1ff766592690f3302add4b26a977b91167",
+          "bytes": 1491
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-029.json",
+          "sha256": "2e4d890bfd8d85c0c5679433221b78373cae2dd388ce9a38c14da2444a440437",
+          "bytes": 1765
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-030.json",
+          "sha256": "33cb95f26efbe496a1f16d2c786845f0c67ea7c7008b3e678cf8cdb669d0f448",
+          "bytes": 1553
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-031.json",
+          "sha256": "0f26d1da6d1177e0a3b4729dd181d9aa404995fda167bbd1515548fd574ca40e",
+          "bytes": 2121
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-032.json",
+          "sha256": "436ba4244cdffbb223977243b26b1ff87a859bfbe5b812fca109278ae5d5fded",
+          "bytes": 2121
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-033.json",
+          "sha256": "ff95473bc5c5712067f9fd44104f4f4c688f2454b38a38d07f5a4b945e01e3ad",
+          "bytes": 2125
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-034.json",
+          "sha256": "94ffc17d5ddee2bab9ed449e86b7b5b2142b4374815d4b28dd6e9c2b230e166d",
+          "bytes": 1353
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-035.json",
+          "sha256": "59a484357daecdd18c61c9e35aa2b76cf0a66dcecfd7439df019360924972421",
+          "bytes": 1337
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-036.json",
+          "sha256": "cdf9d1b0ff32e715290431e7fa51ff70ca0d17a14ec44ac7b67edf8bc1a9f047",
+          "bytes": 1419
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-037.json",
+          "sha256": "21d612f574dd54f9749612584524a402f39202041e957d20d697615dec0bbc38",
+          "bytes": 1235
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-038.json",
+          "sha256": "429273c66310cc02df10d1b51b9960c19b54496ca099a3315a409629532eb06c",
+          "bytes": 1319
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-039.json",
+          "sha256": "6ea56a13deb382ef0548f43226a38210f2fa726aee639989733417a9aaefb8d2",
+          "bytes": 1199
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-040.json",
+          "sha256": "9b13e78252c6ab7b7afa67f21cd8b79022ac3b8820a2afb69ea304cef80420aa",
+          "bytes": 1181
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-041.json",
+          "sha256": "f8ba85b3a6625f4158b2bb2b9c15ccefe4837ca129db99f323d5c0131c495f86",
+          "bytes": 1185
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-042.json",
+          "sha256": "705aa765d661faeaa95019cec2c8f83570fe8d1d0e67321fc6523ca047fde1cf",
+          "bytes": 1181
+        }
+      ]
+    },
+    {
+      "id": "poetry-public-v2",
+      "family": "poetry",
+      "root": "repository",
+      "locator": "evaluation-results/hbq-poetry-whole-poem-architecture-treatment-v2-public-result-v1",
+      "disposition": "declaration_only",
+      "basis": "Public aggregate is hashed without semantic outcomes; other historical poetry treatments remain outside this allowlist.",
+      "declared": {},
+      "declared_basis": null,
+      "parent": null,
+      "artifacts": [
+        {
+          "locator": "aggregate.v1.json",
+          "sha256": "f7ed8775a975d0f42630eba313d5e27c8596416988c9ed957c2fa43799b11afb",
+          "bytes": 1655
+        },
+        {
+          "locator": "verify_output.py",
+          "sha256": "8b3e58e5163dd43d962332068c4ff78ffc920dff445517ce5752557aedcd94d0",
+          "bytes": 3749
+        }
+      ]
+    },
+    {
+      "id": "revision-v2",
+      "family": "revision",
+      "root": "source",
+      "locator": "cwr-revision-gain-v2-live-run-9bb20be-20260830a",
+      "disposition": "unresolved_join",
+      "basis": "Exact metadata/receipt bytes retained; preparation histories and replacement/endpoint lineage are not yet joined into independent logical cells.",
+      "declared": {},
+      "declared_basis": null,
+      "parent": null,
+      "artifacts": [
+        {
+          "locator": "frozen-inputs.json",
+          "sha256": "b73dd663a1d440705a63b5e47ea94bf0ff034a127610a0507bf25e69ed82d999",
+          "bytes": 1212
+        }
+      ]
+    },
+    {
+      "id": "revision-v3",
+      "family": "revision",
+      "root": "source",
+      "locator": "cwr-revision-gain-v3-live-8d6cce1-20260830a",
+      "disposition": "unresolved_join",
+      "basis": "Exact metadata/receipt bytes retained; preparation histories and replacement/endpoint lineage are not yet joined into independent logical cells.",
+      "declared": {},
+      "declared_basis": null,
+      "parent": null,
+      "artifacts": [
+        {
+          "locator": "frozen-inputs.json",
+          "sha256": "b73dd663a1d440705a63b5e47ea94bf0ff034a127610a0507bf25e69ed82d999",
+          "bytes": 1212
+        }
+      ]
+    },
+    {
+      "id": "revision-v5",
+      "family": "revision",
+      "root": "source",
+      "locator": "cwr-revision-gain-v5-live-1e97a19-20260831a",
+      "disposition": "unresolved_join",
+      "basis": "Exact metadata/receipt bytes retained; preparation histories and replacement/endpoint lineage are not yet joined into independent logical cells.",
+      "declared": {},
+      "declared_basis": null,
+      "parent": null,
+      "artifacts": [
+        {
+          "locator": "frozen-inputs.json",
+          "sha256": "b73dd663a1d440705a63b5e47ea94bf0ff034a127610a0507bf25e69ed82d999",
+          "bytes": 1212
+        }
+      ]
+    },
+    {
+      "id": "revision-v6",
+      "family": "revision",
+      "root": "source",
+      "locator": "cwr-revision-gain-v6-replacement-c24a9ec-20260831a",
+      "disposition": "unresolved_join",
+      "basis": "Exact metadata/receipt bytes retained; preparation histories and replacement/endpoint lineage are not yet joined into independent logical cells.",
+      "declared": {},
+      "declared_basis": null,
+      "parent": null,
+      "artifacts": [
+        {
+          "locator": "frozen-inputs.json",
+          "sha256": "b73dd663a1d440705a63b5e47ea94bf0ff034a127610a0507bf25e69ed82d999",
+          "bytes": 1212
+        }
+      ]
+    },
+    {
+      "id": "revision-v7a",
+      "family": "revision",
+      "root": "source",
+      "locator": "cwr-revision-gain-v7-endpoints-1affc2c-20260831a",
+      "disposition": "unresolved_join",
+      "basis": "Exact metadata/receipt bytes retained; preparation histories and replacement/endpoint lineage are not yet joined into independent logical cells.",
+      "declared": {},
+      "declared_basis": null,
+      "parent": null,
+      "artifacts": [
+        {
+          "locator": "immutable-inputs.json",
+          "sha256": "862a92f17e951c27fbb241837c11aeb9bdeebf5c0b95648efd2366a5efbf95d3",
+          "bytes": 1249
+        },
+        {
+          "locator": "prepared-index.json",
+          "sha256": "c5f2ed2a0ef8a9ccb919eac53ea213ca2125cba31fef6baee5a6b72094544ef0",
+          "bytes": 8576
+        }
+      ]
+    },
+    {
+      "id": "revision-v7b",
+      "family": "revision",
+      "root": "source",
+      "locator": "cwr-revision-gain-v7-endpoints-1affc2c-20260831b",
+      "disposition": "unresolved_join",
+      "basis": "Exact metadata/receipt bytes retained; preparation histories and replacement/endpoint lineage are not yet joined into independent logical cells.",
+      "declared": {},
+      "declared_basis": null,
+      "parent": null,
+      "artifacts": [
+        {
+          "locator": "immutable-inputs.json",
+          "sha256": "862a92f17e951c27fbb241837c11aeb9bdeebf5c0b95648efd2366a5efbf95d3",
+          "bytes": 1249
+        },
+        {
+          "locator": "prepared-index.json",
+          "sha256": "e9bf22e28516b198846200de92bc1ca92424265640a58b95691be94b067ec087",
+          "bytes": 8576
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-baseline-hanna-1035-compact-gpt-5.6-sol-high/prepared-cell.json",
+          "sha256": "7d36bf9913b92e814b9700c5d67cfc08febc4a5dbecb367fc1cca24775ee5654",
+          "bytes": 1309
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-baseline-hanna-1035-compact-gpt-5.6-sol-high/verified-receipt.json",
+          "sha256": "78f05aef0a66788c6e005dfd107a76d641ec190b733e9ba64170f9a2f9c7fa94",
+          "bytes": 1884
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-baseline-hanna-1035-compact-grok-4.6-high/prepared-cell.json",
+          "sha256": "fbe5bba0a60f1ce2158a5a6f42194e232cf3a5f88765c6effd1f7cf6f141f239",
+          "bytes": 1303
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-baseline-hanna-1035-compact-grok-4.6-high/verified-receipt.json",
+          "sha256": "0819ae86852b16a6d7e161acd938e72577296d8956bfd974c3249f1fdcc3f0b9",
+          "bytes": 2906
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-baseline-hanna-1035-holistic-gpt-5.6-sol-high/prepared-cell.json",
+          "sha256": "97af0fd84ece6d2279335ff83e6f53a7b8004e38d6bc7a7be1ff03c4e690269b",
+          "bytes": 1310
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-baseline-hanna-1035-holistic-gpt-5.6-sol-high/verified-receipt.json",
+          "sha256": "967fcea5ddbefb322533b713dc852afef28b738b7b6beb956e8e1a358549bc27",
+          "bytes": 1845
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-baseline-hanna-1035-holistic-grok-4.6-high/prepared-cell.json",
+          "sha256": "b1d1a033c88cb14e4e83507c23878880d2f0179431825493ff9c2c3802a29947",
+          "bytes": 1304
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-baseline-hanna-1035-holistic-grok-4.6-high/verified-receipt.json",
+          "sha256": "b6a8aa2c8774b4974f505ddfb0dff53d67954db68f21c1440b73ec62aaa1409c",
+          "bytes": 2862
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-baseline-hanna-178-compact-gpt-5.6-sol-high/prepared-cell.json",
+          "sha256": "902eac8e2f0529b045bf06e7bbc2f24302455545ebc7d2b9bd3424b8c8494476",
+          "bytes": 1305
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-baseline-hanna-178-compact-gpt-5.6-sol-high/verified-receipt.json",
+          "sha256": "65c33beb76743ffcc25003b4ef3f447b7297642727b83ce4b4bac5ede5d1a0c8",
+          "bytes": 1822
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-baseline-hanna-178-compact-grok-4.6-high/prepared-cell.json",
+          "sha256": "8e03f8973aec066cc5e29e699c5f295db2055f32770020b312d5ca090f74704e",
+          "bytes": 1299
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-baseline-hanna-178-compact-grok-4.6-high/verified-receipt.json",
+          "sha256": "a0808a5cd74536ab07e54b948839f8809a56b146f13e7282f478e8423aa2cbf9",
+          "bytes": 3043
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-baseline-hanna-178-holistic-gpt-5.6-sol-high/prepared-cell.json",
+          "sha256": "73463731e5c4c1cd21ace41cd138efb1cf64963164c90d7450b5ebd7015273fc",
+          "bytes": 1306
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-baseline-hanna-178-holistic-gpt-5.6-sol-high/verified-receipt.json",
+          "sha256": "89e12d32fe662de1121f9aa011a3490c1a54bc5c542ff2c2fcbe30123eec61ab",
+          "bytes": 1872
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-baseline-hanna-178-holistic-grok-4.6-high/prepared-cell.json",
+          "sha256": "23ca577c862924ab0ed0eea1985ed58191ae48003f065a1cb5519ebb64d31c48",
+          "bytes": 1300
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-baseline-hanna-178-holistic-grok-4.6-high/verified-receipt.json",
+          "sha256": "bfe28655c5bed7f92cf95e00ddd6fa1e6f5726b090c4dbed5b0dfd687bf6831f",
+          "bytes": 2914
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-revision-v2-c1-hanna-1035-grok-4.6-cwr_guided-compact-gpt-5.6-sol-high/prepared-cell.json",
+          "sha256": "2bcbb3740db0e4b9de8c4ab4a988ef0d97a028bf123cfd9097cd549315310b7a",
+          "bytes": 1387
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-revision-v2-c1-hanna-1035-grok-4.6-cwr_guided-compact-gpt-5.6-sol-high/verified-receipt.json",
+          "sha256": "404f1122aafc557f78a40a186d9729544d7b12933664ae078d34fbf6e9d2e0d9",
+          "bytes": 2080
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-revision-v2-c1-hanna-1035-grok-4.6-cwr_guided-compact-grok-4.6-high/prepared-cell.json",
+          "sha256": "32bbb102b23f10dc22e2113db30ecc31198f7e40aae271cf294eb45b3f27f6cf",
+          "bytes": 1381
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-revision-v2-c1-hanna-1035-grok-4.6-cwr_guided-compact-grok-4.6-high/verified-receipt.json",
+          "sha256": "c3170e70c832b90d191c4dab1a622952b050ddce518ad89e16791ae9e76c8d8b",
+          "bytes": 3117
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-revision-v2-c1-hanna-1035-grok-4.6-cwr_guided-holistic-gpt-5.6-sol-high/prepared-cell.json",
+          "sha256": "e8009eb421b5830540cbc3eb031901aea20cc6efaa9ff1f1e7908d0c16ab564a",
+          "bytes": 1388
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-revision-v2-c1-hanna-1035-grok-4.6-cwr_guided-holistic-gpt-5.6-sol-high/verified-receipt.json",
+          "sha256": "173aeb9bda059ac76dc84e3a703d173b787022a974b47e60ea7f3bed02e8a831",
+          "bytes": 2139
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-revision-v2-c1-hanna-1035-grok-4.6-cwr_guided-holistic-grok-4.6-high/prepared-cell.json",
+          "sha256": "935e5ed1c86f88ef25b7a1d538eb56982efa96b2edf8e5577b05cbc51050f54a",
+          "bytes": 1382
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-revision-v2-c1-hanna-1035-grok-4.6-cwr_guided-holistic-grok-4.6-high/verified-receipt.json",
+          "sha256": "5ba0af00d69394fcacf90728ce9ce9408d80386a99096068e0a5e72f243ce524",
+          "bytes": 3037
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-revision-v2-c1-hanna-1035-grok-4.6-generic_no_feedback-compact-gpt-5.6-sol-high/prepared-cell.json",
+          "sha256": "fb646d5b4253d56a7d0d99736eece2aacaf49fc3e6c71340dee39b90872ecf20",
+          "bytes": 1414
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-revision-v2-c1-hanna-1035-grok-4.6-generic_no_feedback-compact-gpt-5.6-sol-high/verified-receipt.json",
+          "sha256": "18c10c40fe863d450158ea78db559077b93536f499087cd0b15696e20065e146",
+          "bytes": 1942
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-revision-v2-c1-hanna-1035-grok-4.6-generic_no_feedback-compact-grok-4.6-high/prepared-cell.json",
+          "sha256": "e93b78a807f13dadd3e1f4a0e0173beaa2a5126277ea1e89779f738f9edf1ce5",
+          "bytes": 1408
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-revision-v2-c1-hanna-1035-grok-4.6-generic_no_feedback-compact-grok-4.6-high/verified-receipt.json",
+          "sha256": "13355a3eed60385f24a9a34fd92fb7a4c26b8ebca54d8ea23b8d8b34c6a3a8e4",
+          "bytes": 3312
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-revision-v2-c1-hanna-1035-grok-4.6-generic_no_feedback-holistic-gpt-5.6-sol-high/prepared-cell.json",
+          "sha256": "58c68953fba72de60ac3c3bdc1d0526374bedd1cc1412472660b1eb3fdad619b",
+          "bytes": 1415
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-revision-v2-c1-hanna-1035-grok-4.6-generic_no_feedback-holistic-gpt-5.6-sol-high/verified-receipt.json",
+          "sha256": "3f16bada6b958ab4a125d4768be5b68f37debf3a1007cb203fc38d6e8e98c46b",
+          "bytes": 1885
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-revision-v2-c1-hanna-1035-grok-4.6-generic_no_feedback-holistic-grok-4.6-high/prepared-cell.json",
+          "sha256": "9c82b936f5207137c61ff7d82b4ee11dd089f6c1f553790edf4c2fef245f6e86",
+          "bytes": 1409
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-revision-v2-c1-hanna-1035-grok-4.6-generic_no_feedback-holistic-grok-4.6-high/verified-receipt.json",
+          "sha256": "f968d51a70638826dcefd0e0aec7ff7c4b536f547a1811a04fe1daf03b76a86e",
+          "bytes": 3187
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-revision-v2-c1-hanna-178-grok-4.6-cwr_guided-compact-gpt-5.6-sol-high/prepared-cell.json",
+          "sha256": "a453e45e1f711f0e9a0281a6dfefc9b11bfb73214cd86d93ee43fad5616fdc4e",
+          "bytes": 1383
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-revision-v2-c1-hanna-178-grok-4.6-cwr_guided-compact-gpt-5.6-sol-high/verified-receipt.json",
+          "sha256": "5a120c0ffebefa4021bc3916b57f0b733ca4957fbc7572cf73b5e994fb4ed977",
+          "bytes": 2052
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-revision-v2-c1-hanna-178-grok-4.6-cwr_guided-compact-grok-4.6-high/prepared-cell.json",
+          "sha256": "7e370b0371272cad2dc850ed5a00c9fffac38601729563d548bba43589249a74",
+          "bytes": 1377
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-revision-v2-c1-hanna-178-grok-4.6-cwr_guided-compact-grok-4.6-high/verified-receipt.json",
+          "sha256": "8b0fbb669fc72761a4aa45b285cc376320c50ed7431cbc85afd29aa149f1f7fe",
+          "bytes": 3225
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-revision-v2-c1-hanna-178-grok-4.6-cwr_guided-holistic-gpt-5.6-sol-high/prepared-cell.json",
+          "sha256": "ed0a5e0d641ebf61d63fe6bd4bbbb3215e7859798b5cbbb905817d757b02b3c8",
+          "bytes": 1384
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-revision-v2-c1-hanna-178-grok-4.6-cwr_guided-holistic-gpt-5.6-sol-high/verified-receipt.json",
+          "sha256": "53000ada33e1a2832024d060d45b2c8b63152f7ed8e9ea393d8913b267f47b09",
+          "bytes": 2061
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-revision-v2-c1-hanna-178-grok-4.6-cwr_guided-holistic-grok-4.6-high/prepared-cell.json",
+          "sha256": "95d62867dc2b209c1ca07dd3048463f754479d09eff83cd26c3b784df81fa8f0",
+          "bytes": 1378
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-revision-v2-c1-hanna-178-grok-4.6-cwr_guided-holistic-grok-4.6-high/verified-receipt.json",
+          "sha256": "a6153cfbad72dff9288b08c6fc545000d8e407ce103fe94b9ebece09312702e5",
+          "bytes": 3364
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-revision-v2-c1-hanna-178-grok-4.6-generic_no_feedback-compact-gpt-5.6-sol-high/prepared-cell.json",
+          "sha256": "56bbfad3edb72d7abc6330a1958ad329213cee5ffcf86ba2099fe6103766d8b0",
+          "bytes": 1410
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-revision-v2-c1-hanna-178-grok-4.6-generic_no_feedback-compact-gpt-5.6-sol-high/verified-receipt.json",
+          "sha256": "f24260c827a290b598f533584aae17757c06d93391de957a7612b924c6346428",
+          "bytes": 1876
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-revision-v2-c1-hanna-178-grok-4.6-generic_no_feedback-compact-grok-4.6-high/prepared-cell.json",
+          "sha256": "5d6ea699832c0c9da4f66057dae19b84128cb2799bcd7215bb4b7dda108da618",
+          "bytes": 1404
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-revision-v2-c1-hanna-178-grok-4.6-generic_no_feedback-compact-grok-4.6-high/verified-receipt.json",
+          "sha256": "338e6065a4ea872eed561aa0bfcf9baae190d6c66a8d1d4f0f412617fc5b9a90",
+          "bytes": 3023
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-revision-v2-c1-hanna-178-grok-4.6-generic_no_feedback-holistic-gpt-5.6-sol-high/prepared-cell.json",
+          "sha256": "2dcf7577a729cfca481a9ab92092e8b8a057428249fa796c98615fcb9659684b",
+          "bytes": 1411
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-revision-v2-c1-hanna-178-grok-4.6-generic_no_feedback-holistic-gpt-5.6-sol-high/verified-receipt.json",
+          "sha256": "329b5f35ae8f19f20768c4e9bac163bf81c4b228546a0869fb86dee6b136839c",
+          "bytes": 1940
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-revision-v2-c1-hanna-178-grok-4.6-generic_no_feedback-holistic-grok-4.6-high/prepared-cell.json",
+          "sha256": "39322252626495eed7ee384de19fc951b6e0c7831a06cd97dbff0e10d118cae3",
+          "bytes": 1405
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-revision-v2-c1-hanna-178-grok-4.6-generic_no_feedback-holistic-grok-4.6-high/verified-receipt.json",
+          "sha256": "22a647e80357fc423f000ec6c165f847d5bb1f10610a2699c447744fa37dc97c",
+          "bytes": 3030
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-revision-v2-c2-hanna-1035-grok-4.6-cwr_guided-compact-gpt-5.6-sol-high/prepared-cell.json",
+          "sha256": "4e4b125c6d16713521cc0f938ae6c1d34782ddacddec04af167df3172b53bbd7",
+          "bytes": 1387
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-revision-v2-c2-hanna-1035-grok-4.6-cwr_guided-compact-gpt-5.6-sol-high/verified-receipt.json",
+          "sha256": "e3d0989dd06fc031f9fd01325f7d873300913df757732bdc104570604b7a9b59",
+          "bytes": 1975
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-revision-v2-c2-hanna-1035-grok-4.6-cwr_guided-compact-grok-4.6-high/prepared-cell.json",
+          "sha256": "c9d9df439951596b18ac5cd7d592d58335d19462659b7a402a3d71a4ba830688",
+          "bytes": 1381
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-revision-v2-c2-hanna-1035-grok-4.6-cwr_guided-compact-grok-4.6-high/verified-receipt.json",
+          "sha256": "b702b57a59b709810bc2a27ddd4b0fe5784c237d0d3d538fabd361610eadf622",
+          "bytes": 3070
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-revision-v2-c2-hanna-1035-grok-4.6-cwr_guided-holistic-gpt-5.6-sol-high/prepared-cell.json",
+          "sha256": "f1bfe707b4cff9bb80d11b7cdd081552e884a6c14bdf71af8b99c1c7567667c6",
+          "bytes": 1388
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-revision-v2-c2-hanna-1035-grok-4.6-cwr_guided-holistic-gpt-5.6-sol-high/verified-receipt.json",
+          "sha256": "6417a7a8958708aa40e9e5cf708532f8ba67c462e78204e5d454fff50f837f9d",
+          "bytes": 1963
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-revision-v2-c2-hanna-1035-grok-4.6-cwr_guided-holistic-grok-4.6-high/prepared-cell.json",
+          "sha256": "8637f6933af84f2c5bf5cd978211609ab8c2cc60733bd58c70bf75e6589c2f59",
+          "bytes": 1382
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-revision-v2-c2-hanna-1035-grok-4.6-cwr_guided-holistic-grok-4.6-high/verified-receipt.json",
+          "sha256": "20f4d8a946d249caa790c6bd74c735a666bd2e735d35abe7eb2c832a79ce8f24",
+          "bytes": 3272
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-revision-v2-c2-hanna-1035-grok-4.6-generic_no_feedback-compact-gpt-5.6-sol-high/prepared-cell.json",
+          "sha256": "420c64a1b1e165cd94233a81824d1cd16eedd220ef49e0030f80b9ec32b64398",
+          "bytes": 1413
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-revision-v2-c2-hanna-1035-grok-4.6-generic_no_feedback-compact-gpt-5.6-sol-high/verified-receipt.json",
+          "sha256": "a4410ca46f3135d1fca194040d56a7991b4d362050e4d30d40ec33580ef75255",
+          "bytes": 2037
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-revision-v2-c2-hanna-1035-grok-4.6-generic_no_feedback-compact-grok-4.6-high/prepared-cell.json",
+          "sha256": "6881533a3da231848d4519a1054ffffe3d5eb64f8f7a27415b016c3619408f3c",
+          "bytes": 1407
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-revision-v2-c2-hanna-1035-grok-4.6-generic_no_feedback-compact-grok-4.6-high/verified-receipt.json",
+          "sha256": "e2c2065207cfcc05d553de665b7c2c97ab1e7003de9ed73e7c844a42c0fb46fd",
+          "bytes": 3130
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-revision-v2-c2-hanna-1035-grok-4.6-generic_no_feedback-holistic-gpt-5.6-sol-high/prepared-cell.json",
+          "sha256": "7393c6969eb3f69418895641f39474e20f899498c4559b3a64c854d195ef0072",
+          "bytes": 1414
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-revision-v2-c2-hanna-1035-grok-4.6-generic_no_feedback-holistic-gpt-5.6-sol-high/verified-receipt.json",
+          "sha256": "68deece6b1d28a8eda2c03abd613e16a167f2d2c2a2c939e9438cf87f704b522",
+          "bytes": 2048
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-revision-v2-c2-hanna-1035-grok-4.6-generic_no_feedback-holistic-grok-4.6-high/prepared-cell.json",
+          "sha256": "0137b95c6cb15912e8acf67573c8e17c6e4cd7360c12cb34afaedc5a1ce148c1",
+          "bytes": 1408
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-revision-v2-c2-hanna-1035-grok-4.6-generic_no_feedback-holistic-grok-4.6-high/verified-receipt.json",
+          "sha256": "63462f2618389d576017d8af1fa6026e52994f0e6426a4de14d56bedab073414",
+          "bytes": 3215
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-revision-v2-c2-hanna-178-grok-4.6-cwr_guided-compact-gpt-5.6-sol-high/prepared-cell.json",
+          "sha256": "5e5fe18e55da7a2eb5be304ad6d9862b1a93a790f4fc0d50e88cd4b0b470017e",
+          "bytes": 1383
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-revision-v2-c2-hanna-178-grok-4.6-cwr_guided-compact-gpt-5.6-sol-high/verified-receipt.json",
+          "sha256": "4dfbf184e4c3888fdce2b7153c8b56e0d7596244af6b7194d1a081adb6e3ec56",
+          "bytes": 1982
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-revision-v2-c2-hanna-178-grok-4.6-cwr_guided-compact-grok-4.6-high/prepared-cell.json",
+          "sha256": "6c33de47ac98431f29d81148ae2932cebdd87934b8b18c83302d04fc5d34d944",
+          "bytes": 1377
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-revision-v2-c2-hanna-178-grok-4.6-cwr_guided-compact-grok-4.6-high/verified-receipt.json",
+          "sha256": "007eaef38112d99183fde051873dcceff81dfee7e2c3adf56796abf272b47760",
+          "bytes": 3250
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-revision-v2-c2-hanna-178-grok-4.6-cwr_guided-holistic-gpt-5.6-sol-high/prepared-cell.json",
+          "sha256": "c1e94ca1d0dc7624390feaf23712259a3dde92ae45a81c395039480cc9602240",
+          "bytes": 1384
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-revision-v2-c2-hanna-178-grok-4.6-cwr_guided-holistic-gpt-5.6-sol-high/verified-receipt.json",
+          "sha256": "fe63fdbff59e7c51339acce6ee08cbb286e3c4085888f92a3f993ef1d29bc7f0",
+          "bytes": 1964
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-revision-v2-c2-hanna-178-grok-4.6-cwr_guided-holistic-grok-4.6-high/prepared-cell.json",
+          "sha256": "fa20dac61df8b71647561f43a34a9325de5346cbfc6a801cf5942f477353a668",
+          "bytes": 1378
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-revision-v2-c2-hanna-178-grok-4.6-cwr_guided-holistic-grok-4.6-high/verified-receipt.json",
+          "sha256": "9c731abb94317cfe60309c26223e691fa109ffdc72a3a5c2e70d6c3440948615",
+          "bytes": 3177
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-revision-v2-c2-hanna-178-grok-4.6-generic_no_feedback-compact-gpt-5.6-sol-high/prepared-cell.json",
+          "sha256": "e06279f161a9c225bb69348cb22e0bb45e589cd2b5a4bc3096c99187aeac3b18",
+          "bytes": 1411
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-revision-v2-c2-hanna-178-grok-4.6-generic_no_feedback-compact-gpt-5.6-sol-high/verified-receipt.json",
+          "sha256": "1e155371a4a41a2785bc5807162c77367a86cc0095600c9e809b817382b3af4b",
+          "bytes": 1956
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-revision-v2-c2-hanna-178-grok-4.6-generic_no_feedback-compact-grok-4.6-high/prepared-cell.json",
+          "sha256": "37dccc666a0750af970b3433a41c025534652165637058be7ef93fb1df5b6278",
+          "bytes": 1405
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-revision-v2-c2-hanna-178-grok-4.6-generic_no_feedback-compact-grok-4.6-high/verified-receipt.json",
+          "sha256": "6af8f40696a1b48e876759462e2743f43e66a965d46bc066da809a59c272adeb",
+          "bytes": 3199
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-revision-v2-c2-hanna-178-grok-4.6-generic_no_feedback-holistic-gpt-5.6-sol-high/prepared-cell.json",
+          "sha256": "4f9192cb1fec82b5f7390d305ba5ab739ec17ca10b31e8279971415536a0b06e",
+          "bytes": 1412
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-revision-v2-c2-hanna-178-grok-4.6-generic_no_feedback-holistic-gpt-5.6-sol-high/verified-receipt.json",
+          "sha256": "e90d6649d87f2345fdbd2340a6ff7bec57377a2025ceb308dde9474c73ccf921",
+          "bytes": 1861
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-revision-v2-c2-hanna-178-grok-4.6-generic_no_feedback-holistic-grok-4.6-high/prepared-cell.json",
+          "sha256": "47694a612fc3769c5d3a51d09bc0c5297926b5c65caeeaac152b936bb861e481",
+          "bytes": 1406
+        },
+        {
+          "locator": "cells/endpoint-v2-target-v2-revision-v2-c2-hanna-178-grok-4.6-generic_no_feedback-holistic-grok-4.6-high/verified-receipt.json",
+          "sha256": "686828b1ea36ccf49527f0b828a2a7eca46ff4c40f14a20ec60e5c316128ffe5",
+          "bytes": 3144
+        }
+      ]
+    },
+    {
+      "id": "revision-public-heldout",
+      "family": "revision",
+      "root": "repository",
+      "locator": "evaluation-results/cwr-guided-revision-gain-v6-heldout-result-v1",
+      "disposition": "declaration_only",
+      "basis": "Public four-item aggregate is hashed without quality outcomes; 48 endpoint receipts require the separate immutable lineage join.",
+      "declared": {
+        "items": 4,
+        "feedback_receipts": 4,
+        "revision_receipts": 8,
+        "endpoint_receipts": 48
+      },
+      "declared_basis": null,
+      "parent": null,
+      "artifacts": [
+        {
+          "locator": "result.json",
+          "sha256": "f7c9f1cc9c100aeda8d90e6566ad499c3f992c751a66c907bf787325fc554ddb",
+          "bytes": 1564
+        }
+      ]
+    },
+    {
+      "id": "multisample-consolidated",
+      "family": "multisample",
+      "root": "source",
+      "locator": "cwr-multisample-repeatability-v1-consolidated-330-b8bbca10-20260904-r1",
+      "disposition": "verified_historical_metadata",
+      "basis": "Existing census E supplies bounded native join counts; no recount or new study.",
+      "declared": {
+        "logical_cells": 330
+      },
+      "declared_basis": "prior-census-E",
+      "parent": null,
+      "artifacts": [
+        {
+          "locator": "manifest.json",
+          "sha256": "635684e3875456e76d6bff529b2971be40a606b2bbdad1c742cc6818f106ff0d",
+          "bytes": 380
+        },
+        {
+          "locator": "consolidation-provenance.json",
+          "sha256": "cc7d765690f3d092b53a4d6d6272753c66d603e23afe26c5e3af4427da7f3eda",
+          "bytes": 319710
+        }
+      ]
+    }
+  ],
+  "coverage_boundary": "Selected exact production root lineages only. Other fullbook controllers, poetry treatments, revision records, LAMP and every other declared empirical root remain outside this bounded slice."
+}
