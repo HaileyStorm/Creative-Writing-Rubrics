@@ -1,0 +1,1158 @@
+{
+  "schema_version": 1,
+  "policy": "poetry_v2_r3_historical_singleton_metadata_join_v1",
+  "helper_pins": {
+    "common": "42415af5418ae32303bfa7933712b2ad398c0ed66df32a7553a9e3d55f5de49b",
+    "selective": "2d82e4959c3296ccaa6e6521adb46f85588427d429a544b36a2891ebaea8c7b0"
+  },
+  "prior_dispositions_recipe_sha256": "7159b3d9d5d70246a539345b57436bb41dc495095c90c594d70c07a22815144f",
+  "source_root": "cwr-hbq-poetry-whole-poem-architecture-treatment-v2-execution-v1-4ce1204-20260825-lineage-r3",
+  "neutral_root": "cwr-hbq-poetry-whole-poem-architecture-treatment-v2-execution-v1-4ce1204-20260825-lineage-r3-neutral-work",
+  "roots": [
+    {
+      "locator": "cwr-hbq-poetry-whole-poem-architecture-treatment-v2-execution-v1-4ce1204-20260825-lineage-r3",
+      "files": [
+        {
+          "locator": "controller-manifest.json",
+          "sha256": "f36b34a041cb26c385dfeb74e39f9ec365659638dbf6c47dffd5cbf774f4bbe1",
+          "bytes": 14518
+        },
+        {
+          "locator": "controller-binding.v1.json",
+          "sha256": "876c8aee2c629394ede2f8ea6469b8e0248eed26f3ec8cb8a36dd5dc25ebb351",
+          "bytes": 445
+        },
+        {
+          "locator": "settlement-plan.v1.json",
+          "sha256": "14841fa9a335f289e2d78f4f8fc73e338dcd3ce6c8112c655054fc60285f1e38",
+          "bytes": 196
+        },
+        {
+          "locator": "settlement.v1.json",
+          "sha256": "75351b53d49ebed043d0d0bf1aabddf17cc07687594df4d945a7074a9199e16a",
+          "bytes": 303
+        },
+        {
+          "locator": "controller.py",
+          "sha256": "cd92cc2ef892a59aa0324a50cc139fc88611260aa3d84663298f8f17b29ed15f",
+          "bytes": 5488
+        },
+        {
+          "locator": "inputs/whole-poem-architecture-exec-v2-001.txt",
+          "sha256": "bfac4dcbcba1467378c02118d06c868047038eff1e827b3bfa4853342791797d",
+          "bytes": 174
+        },
+        {
+          "locator": "rendered-prompts/whole-poem-architecture-exec-v2-001.txt",
+          "sha256": "f9a4a00ec224f4c19e25afdfd90502247c6d77961f0aa3af4db8623c2d886322",
+          "bytes": 597
+        },
+        {
+          "locator": "claims/whole-poem-architecture-exec-v2-001.json",
+          "sha256": "2240d84aaf13fe238ffd56e8cea083d0081d475a0246ac6eda1bcf2cc991adc7",
+          "bytes": 411
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-001.json",
+          "sha256": "92d7ff1e32a6da87a032b9001937a777283c0eb7ae6bb9b493f2dc6f3b19cce8",
+          "bytes": 1889
+        },
+        {
+          "locator": "inputs/whole-poem-architecture-exec-v2-002.txt",
+          "sha256": "bfac4dcbcba1467378c02118d06c868047038eff1e827b3bfa4853342791797d",
+          "bytes": 174
+        },
+        {
+          "locator": "rendered-prompts/whole-poem-architecture-exec-v2-002.txt",
+          "sha256": "f9a4a00ec224f4c19e25afdfd90502247c6d77961f0aa3af4db8623c2d886322",
+          "bytes": 597
+        },
+        {
+          "locator": "claims/whole-poem-architecture-exec-v2-002.json",
+          "sha256": "3c98e24c4d4d76ba78f6c6454484c152c6bb1b8da7922a7c0527bf4ac597adcc",
+          "bytes": 411
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-002.json",
+          "sha256": "064266c892d62d9a580baac67fe3e9130dc8012424cc02ff91868818c4aff9c6",
+          "bytes": 1985
+        },
+        {
+          "locator": "inputs/whole-poem-architecture-exec-v2-003.txt",
+          "sha256": "bfac4dcbcba1467378c02118d06c868047038eff1e827b3bfa4853342791797d",
+          "bytes": 174
+        },
+        {
+          "locator": "rendered-prompts/whole-poem-architecture-exec-v2-003.txt",
+          "sha256": "f9a4a00ec224f4c19e25afdfd90502247c6d77961f0aa3af4db8623c2d886322",
+          "bytes": 597
+        },
+        {
+          "locator": "claims/whole-poem-architecture-exec-v2-003.json",
+          "sha256": "3030b3434094844bd47fa3b0eee96474fdd0d4da13485b0606f2144f25f12022",
+          "bytes": 411
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-003.json",
+          "sha256": "855b47fb2f06468e24d492ada68606b1c123d066d4cc8d2e5221cc7cf4ef3a08",
+          "bytes": 1821
+        },
+        {
+          "locator": "inputs/whole-poem-architecture-exec-v2-004.txt",
+          "sha256": "b543d8d19dd5bb0b74d2a1a31e413829f2598c3bbc895a526ebb5c4c7c711938",
+          "bytes": 97
+        },
+        {
+          "locator": "rendered-prompts/whole-poem-architecture-exec-v2-004.txt",
+          "sha256": "5dd021a37a8819cd63f17ff40b200647079d56f3e5d64cdf30f46124a2e0e4f6",
+          "bytes": 520
+        },
+        {
+          "locator": "claims/whole-poem-architecture-exec-v2-004.json",
+          "sha256": "2690e1131c5ab55d2d49941cd97351c40e70afc602036a1b40a12b0383794f37",
+          "bytes": 411
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-004.json",
+          "sha256": "0944c20f5dc84d7dbf828c42c2950d865ca652f7340d0e5c45be04a5450ab405",
+          "bytes": 1421
+        },
+        {
+          "locator": "inputs/whole-poem-architecture-exec-v2-005.txt",
+          "sha256": "b543d8d19dd5bb0b74d2a1a31e413829f2598c3bbc895a526ebb5c4c7c711938",
+          "bytes": 97
+        },
+        {
+          "locator": "rendered-prompts/whole-poem-architecture-exec-v2-005.txt",
+          "sha256": "5dd021a37a8819cd63f17ff40b200647079d56f3e5d64cdf30f46124a2e0e4f6",
+          "bytes": 520
+        },
+        {
+          "locator": "claims/whole-poem-architecture-exec-v2-005.json",
+          "sha256": "e4267d0080843c691d72e2da1ff399126101323cb61777c0714fdac133b359e5",
+          "bytes": 411
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-005.json",
+          "sha256": "6fcd44b43d8c03f945d1a88b13f746f51c7309b47f412e8489e088d6ce44d321",
+          "bytes": 1909
+        },
+        {
+          "locator": "inputs/whole-poem-architecture-exec-v2-006.txt",
+          "sha256": "b543d8d19dd5bb0b74d2a1a31e413829f2598c3bbc895a526ebb5c4c7c711938",
+          "bytes": 97
+        },
+        {
+          "locator": "rendered-prompts/whole-poem-architecture-exec-v2-006.txt",
+          "sha256": "5dd021a37a8819cd63f17ff40b200647079d56f3e5d64cdf30f46124a2e0e4f6",
+          "bytes": 520
+        },
+        {
+          "locator": "claims/whole-poem-architecture-exec-v2-006.json",
+          "sha256": "7396ddcb7c64f73dbc2cf7d10bb0c28cb4eae85a084ee6eed176dff262dd5150",
+          "bytes": 411
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-006.json",
+          "sha256": "23fe1ec5e202d2022efcfa072928f6d5407f954aaf184267b6a554888bf00a35",
+          "bytes": 1391
+        },
+        {
+          "locator": "inputs/whole-poem-architecture-exec-v2-007.txt",
+          "sha256": "61d80017d02048e2c99557a47499408ecd511cfef6e470d447489c3c7b6780c4",
+          "bytes": 91
+        },
+        {
+          "locator": "rendered-prompts/whole-poem-architecture-exec-v2-007.txt",
+          "sha256": "a2c6c34c695b495b4111f4b70fb6d44b8cecf843d9d4056deaa39da5d1b21325",
+          "bytes": 514
+        },
+        {
+          "locator": "claims/whole-poem-architecture-exec-v2-007.json",
+          "sha256": "5f61ef89aa67e6b1f82fceace08e28dd6db50bc468dad31a146cafdac4bf5095",
+          "bytes": 411
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-007.json",
+          "sha256": "87e13206721f3b778fe0806d71ecf2f4e3fee012bf7900b65e6a82d7447fc7af",
+          "bytes": 1415
+        },
+        {
+          "locator": "inputs/whole-poem-architecture-exec-v2-008.txt",
+          "sha256": "61d80017d02048e2c99557a47499408ecd511cfef6e470d447489c3c7b6780c4",
+          "bytes": 91
+        },
+        {
+          "locator": "rendered-prompts/whole-poem-architecture-exec-v2-008.txt",
+          "sha256": "a2c6c34c695b495b4111f4b70fb6d44b8cecf843d9d4056deaa39da5d1b21325",
+          "bytes": 514
+        },
+        {
+          "locator": "claims/whole-poem-architecture-exec-v2-008.json",
+          "sha256": "51753928a2e93831729314102094550a36eb52178bdbff02ca18b9e39d97e285",
+          "bytes": 411
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-008.json",
+          "sha256": "d53687c2c08407e39ae273faeb9fe25217de6ee8e2fcde85c4f9d6d79e2c1e21",
+          "bytes": 1409
+        },
+        {
+          "locator": "inputs/whole-poem-architecture-exec-v2-009.txt",
+          "sha256": "61d80017d02048e2c99557a47499408ecd511cfef6e470d447489c3c7b6780c4",
+          "bytes": 91
+        },
+        {
+          "locator": "rendered-prompts/whole-poem-architecture-exec-v2-009.txt",
+          "sha256": "a2c6c34c695b495b4111f4b70fb6d44b8cecf843d9d4056deaa39da5d1b21325",
+          "bytes": 514
+        },
+        {
+          "locator": "claims/whole-poem-architecture-exec-v2-009.json",
+          "sha256": "6b00cf540fadcf3c4633e4d50d1a6641ffe894aaf08f2e0f3aa3e68d5dabd64e",
+          "bytes": 411
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-009.json",
+          "sha256": "7525c5ce6ecb9d5ae4c004bc8f1e179d4ec0f567ecca38f2d198932d17342877",
+          "bytes": 1349
+        },
+        {
+          "locator": "inputs/whole-poem-architecture-exec-v2-010.txt",
+          "sha256": "2e0cf1600035c397e5fac5a5ec86568d9a36dca63f62c118435b083280d6bd18",
+          "bytes": 144
+        },
+        {
+          "locator": "rendered-prompts/whole-poem-architecture-exec-v2-010.txt",
+          "sha256": "9bbea04fe03d4d5e3b012aabf21e55bb3f5a0337da1e2b31f84170a5624a1f24",
+          "bytes": 567
+        },
+        {
+          "locator": "claims/whole-poem-architecture-exec-v2-010.json",
+          "sha256": "be5a76e8e9be7e709b52656e3d78ecdd002c85484001493fa3a0ba3ec5c03a0c",
+          "bytes": 411
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-010.json",
+          "sha256": "556d7402d7d9903e7caa80fdba35ba4ef49d938378f0cbefb288c7eaa1e15a4a",
+          "bytes": 1467
+        },
+        {
+          "locator": "inputs/whole-poem-architecture-exec-v2-011.txt",
+          "sha256": "2e0cf1600035c397e5fac5a5ec86568d9a36dca63f62c118435b083280d6bd18",
+          "bytes": 144
+        },
+        {
+          "locator": "rendered-prompts/whole-poem-architecture-exec-v2-011.txt",
+          "sha256": "9bbea04fe03d4d5e3b012aabf21e55bb3f5a0337da1e2b31f84170a5624a1f24",
+          "bytes": 567
+        },
+        {
+          "locator": "claims/whole-poem-architecture-exec-v2-011.json",
+          "sha256": "a7c5267c891613139490d6a085690a44bcda43241fe665e0b1068dec76e31634",
+          "bytes": 411
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-011.json",
+          "sha256": "4025ff9cab78f61ff6fb55fba6739e28d5f39066d7db658fe3b1f9562790a959",
+          "bytes": 1845
+        },
+        {
+          "locator": "inputs/whole-poem-architecture-exec-v2-012.txt",
+          "sha256": "2e0cf1600035c397e5fac5a5ec86568d9a36dca63f62c118435b083280d6bd18",
+          "bytes": 144
+        },
+        {
+          "locator": "rendered-prompts/whole-poem-architecture-exec-v2-012.txt",
+          "sha256": "9bbea04fe03d4d5e3b012aabf21e55bb3f5a0337da1e2b31f84170a5624a1f24",
+          "bytes": 567
+        },
+        {
+          "locator": "claims/whole-poem-architecture-exec-v2-012.json",
+          "sha256": "abbe4f292b1b19ce4acf9d082decd4c3abe44b12a75e60e1665812ee3314475c",
+          "bytes": 411
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-012.json",
+          "sha256": "433fd5a3f83a4aa4e78f01b757d963f8263de44546dfd5d1579f029cf2c48a35",
+          "bytes": 1507
+        },
+        {
+          "locator": "inputs/whole-poem-architecture-exec-v2-013.txt",
+          "sha256": "527855ccbb875a6b23ebdcfa90426f87c4816611e746e354f31fc39b39329b49",
+          "bytes": 57
+        },
+        {
+          "locator": "rendered-prompts/whole-poem-architecture-exec-v2-013.txt",
+          "sha256": "d8fe6a44f23cc3cba26981f090e648dc711a14ffd3e952d9fb51de3bba59763d",
+          "bytes": 479
+        },
+        {
+          "locator": "claims/whole-poem-architecture-exec-v2-013.json",
+          "sha256": "4bf86c541df2cb7f3e6ea4fa9ce34b0c4c47938492cf8dd6b6e9e8a38c26c0f8",
+          "bytes": 411
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-013.json",
+          "sha256": "edfea883a52deff73bb827323cea0f317ad1ba8aa56b4da905e6bc7f31443c71",
+          "bytes": 1333
+        },
+        {
+          "locator": "inputs/whole-poem-architecture-exec-v2-014.txt",
+          "sha256": "527855ccbb875a6b23ebdcfa90426f87c4816611e746e354f31fc39b39329b49",
+          "bytes": 57
+        },
+        {
+          "locator": "rendered-prompts/whole-poem-architecture-exec-v2-014.txt",
+          "sha256": "d8fe6a44f23cc3cba26981f090e648dc711a14ffd3e952d9fb51de3bba59763d",
+          "bytes": 479
+        },
+        {
+          "locator": "claims/whole-poem-architecture-exec-v2-014.json",
+          "sha256": "5f5f3684d3e0ed18cd3aee674f3ac962f58db6bd9e229d635d926457d948036d",
+          "bytes": 411
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-014.json",
+          "sha256": "b6a0ee60e584ee8655aca78426c600f239abf96948245f9d7adfa09046b3f4e0",
+          "bytes": 1261
+        },
+        {
+          "locator": "inputs/whole-poem-architecture-exec-v2-015.txt",
+          "sha256": "527855ccbb875a6b23ebdcfa90426f87c4816611e746e354f31fc39b39329b49",
+          "bytes": 57
+        },
+        {
+          "locator": "rendered-prompts/whole-poem-architecture-exec-v2-015.txt",
+          "sha256": "d8fe6a44f23cc3cba26981f090e648dc711a14ffd3e952d9fb51de3bba59763d",
+          "bytes": 479
+        },
+        {
+          "locator": "claims/whole-poem-architecture-exec-v2-015.json",
+          "sha256": "43685edb74764de2f5b6d14240b05c94606d58236a9731aaae400c7408191b7f",
+          "bytes": 411
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-015.json",
+          "sha256": "6c540f5e122434067a4de363fcd916dcd0019c18f87f4dfbcef4305434016986",
+          "bytes": 1379
+        },
+        {
+          "locator": "inputs/whole-poem-architecture-exec-v2-016.txt",
+          "sha256": "e5199ae0905da6fed9be0f76d43c4acbe72c13753abdda0f7b42aa4fc0d16672",
+          "bytes": 51
+        },
+        {
+          "locator": "rendered-prompts/whole-poem-architecture-exec-v2-016.txt",
+          "sha256": "36ec43e724c5848c87532b1c5da5d7cf00e4d360400413b538e471f86d3a162f",
+          "bytes": 474
+        },
+        {
+          "locator": "claims/whole-poem-architecture-exec-v2-016.json",
+          "sha256": "1d896e795556e239011e223f259e5b94e19fb2fff20d58cec1c8401287028e98",
+          "bytes": 411
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-016.json",
+          "sha256": "c5f63adc998746f4fb608baebd1e99f27e9d15fef78f56a37e5f19136c3fb995",
+          "bytes": 1293
+        },
+        {
+          "locator": "inputs/whole-poem-architecture-exec-v2-017.txt",
+          "sha256": "e5199ae0905da6fed9be0f76d43c4acbe72c13753abdda0f7b42aa4fc0d16672",
+          "bytes": 51
+        },
+        {
+          "locator": "rendered-prompts/whole-poem-architecture-exec-v2-017.txt",
+          "sha256": "36ec43e724c5848c87532b1c5da5d7cf00e4d360400413b538e471f86d3a162f",
+          "bytes": 474
+        },
+        {
+          "locator": "claims/whole-poem-architecture-exec-v2-017.json",
+          "sha256": "d016b877fe6e8e522b2bedd0c4ca7fb143064758e42b06edfde5ab28b09d35c5",
+          "bytes": 411
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-017.json",
+          "sha256": "9d6f68b982d73d384d0bd71fa5b2b4756d6163461ce70f912cb47427c36912c6",
+          "bytes": 1481
+        },
+        {
+          "locator": "inputs/whole-poem-architecture-exec-v2-018.txt",
+          "sha256": "e5199ae0905da6fed9be0f76d43c4acbe72c13753abdda0f7b42aa4fc0d16672",
+          "bytes": 51
+        },
+        {
+          "locator": "rendered-prompts/whole-poem-architecture-exec-v2-018.txt",
+          "sha256": "36ec43e724c5848c87532b1c5da5d7cf00e4d360400413b538e471f86d3a162f",
+          "bytes": 474
+        },
+        {
+          "locator": "claims/whole-poem-architecture-exec-v2-018.json",
+          "sha256": "7a4d7e71e42381be7e6b4c46b5c38b59d0e74a75a22a07234c529193951ad58f",
+          "bytes": 411
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-018.json",
+          "sha256": "861c17fb94d63d06769098e4fa74002642706aa8d864c5f7a8519e48fec9e4ad",
+          "bytes": 1245
+        },
+        {
+          "locator": "inputs/whole-poem-architecture-exec-v2-019.txt",
+          "sha256": "8d85daba163bdabab3c69f2a0b52b5a5b30275481c9c587f49f19308cb2e3adc",
+          "bytes": 65
+        },
+        {
+          "locator": "rendered-prompts/whole-poem-architecture-exec-v2-019.txt",
+          "sha256": "9a27176d709dc33e770dd75831934fdd8e626d6a979b226618135c261dc3707d",
+          "bytes": 489
+        },
+        {
+          "locator": "claims/whole-poem-architecture-exec-v2-019.json",
+          "sha256": "86cf0f999e0eadb59621fffe09a71692866914cfd3818dcf3a3a2c7ff7b9c326",
+          "bytes": 411
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-019.json",
+          "sha256": "677df5419f563e39a896abbfd28c0b7bb2232611f1f734a417694a85f2effc8f",
+          "bytes": 1233
+        },
+        {
+          "locator": "inputs/whole-poem-architecture-exec-v2-020.txt",
+          "sha256": "8d85daba163bdabab3c69f2a0b52b5a5b30275481c9c587f49f19308cb2e3adc",
+          "bytes": 65
+        },
+        {
+          "locator": "rendered-prompts/whole-poem-architecture-exec-v2-020.txt",
+          "sha256": "9a27176d709dc33e770dd75831934fdd8e626d6a979b226618135c261dc3707d",
+          "bytes": 489
+        },
+        {
+          "locator": "claims/whole-poem-architecture-exec-v2-020.json",
+          "sha256": "b3e258608e2cae063970447b5c3f56f061383f0782c6ca14f28c76127b8a2af6",
+          "bytes": 411
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-020.json",
+          "sha256": "a6deabb62a74e56f8a5b0640e054d5d45b15dc8ddaa70ec0551da763009b389a",
+          "bytes": 1265
+        },
+        {
+          "locator": "inputs/whole-poem-architecture-exec-v2-021.txt",
+          "sha256": "8d85daba163bdabab3c69f2a0b52b5a5b30275481c9c587f49f19308cb2e3adc",
+          "bytes": 65
+        },
+        {
+          "locator": "rendered-prompts/whole-poem-architecture-exec-v2-021.txt",
+          "sha256": "9a27176d709dc33e770dd75831934fdd8e626d6a979b226618135c261dc3707d",
+          "bytes": 489
+        },
+        {
+          "locator": "claims/whole-poem-architecture-exec-v2-021.json",
+          "sha256": "38048ade01916568378ec2abaecf3e04b2dcce4b82c77c5ba1d485085f0b98e7",
+          "bytes": 411
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-021.json",
+          "sha256": "d699d57a848d1a4690d25f3d8f6e316e15ffce5769650395c125a194e0b3ea8b",
+          "bytes": 1261
+        },
+        {
+          "locator": "inputs/whole-poem-architecture-exec-v2-022.txt",
+          "sha256": "bfac4dcbcba1467378c02118d06c868047038eff1e827b3bfa4853342791797d",
+          "bytes": 174
+        },
+        {
+          "locator": "rendered-prompts/whole-poem-architecture-exec-v2-022.txt",
+          "sha256": "e2069710602c95e7b82f554690ea0e34e6ffc171230e11ecfcae357a941a0b46",
+          "bytes": 1459
+        },
+        {
+          "locator": "claims/whole-poem-architecture-exec-v2-022.json",
+          "sha256": "8f8227f5f01fbeb20e2c184a1f1c57f09f6f83c5f1d495c210dc8b8ffed992f3",
+          "bytes": 411
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-022.json",
+          "sha256": "7b2114945e7c7e932b3407bae55472711177ca686da09e35cb44586858405d51",
+          "bytes": 2269
+        },
+        {
+          "locator": "inputs/whole-poem-architecture-exec-v2-023.txt",
+          "sha256": "bfac4dcbcba1467378c02118d06c868047038eff1e827b3bfa4853342791797d",
+          "bytes": 174
+        },
+        {
+          "locator": "rendered-prompts/whole-poem-architecture-exec-v2-023.txt",
+          "sha256": "e2069710602c95e7b82f554690ea0e34e6ffc171230e11ecfcae357a941a0b46",
+          "bytes": 1459
+        },
+        {
+          "locator": "claims/whole-poem-architecture-exec-v2-023.json",
+          "sha256": "b6abfcdf9d16c22a559177f1e7e05cd12db481b0019ecc390cb846c656700056",
+          "bytes": 411
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-023.json",
+          "sha256": "68dd20c7b0c319b97167c189a7fcc1b01292ac43e9e59cc7609b00ef0268d266",
+          "bytes": 2169
+        },
+        {
+          "locator": "inputs/whole-poem-architecture-exec-v2-024.txt",
+          "sha256": "bfac4dcbcba1467378c02118d06c868047038eff1e827b3bfa4853342791797d",
+          "bytes": 174
+        },
+        {
+          "locator": "rendered-prompts/whole-poem-architecture-exec-v2-024.txt",
+          "sha256": "e2069710602c95e7b82f554690ea0e34e6ffc171230e11ecfcae357a941a0b46",
+          "bytes": 1459
+        },
+        {
+          "locator": "claims/whole-poem-architecture-exec-v2-024.json",
+          "sha256": "314ef072bb76f7efd01957529a5615b6dbb1a0c8480e8f8d8df7240106dbe57a",
+          "bytes": 411
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-024.json",
+          "sha256": "50822f39df2e3af71cb134f5db292b133383399ba395a5573633b4f3c1890a7e",
+          "bytes": 2167
+        },
+        {
+          "locator": "inputs/whole-poem-architecture-exec-v2-025.txt",
+          "sha256": "b543d8d19dd5bb0b74d2a1a31e413829f2598c3bbc895a526ebb5c4c7c711938",
+          "bytes": 97
+        },
+        {
+          "locator": "rendered-prompts/whole-poem-architecture-exec-v2-025.txt",
+          "sha256": "efd8f4569e3f52d128a1e5ab88fbd047a6d176959d2be2f300a14163d32ecded",
+          "bytes": 1382
+        },
+        {
+          "locator": "claims/whole-poem-architecture-exec-v2-025.json",
+          "sha256": "c4daba7adc12ea99eb7e59376d407e58a909c8795f34ed20bc4f7defd4726255",
+          "bytes": 411
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-025.json",
+          "sha256": "cf82d04e53cfc020aaa236ef20b269208fec2f48f3c658510b8c05915a7373ec",
+          "bytes": 1555
+        },
+        {
+          "locator": "inputs/whole-poem-architecture-exec-v2-026.txt",
+          "sha256": "b543d8d19dd5bb0b74d2a1a31e413829f2598c3bbc895a526ebb5c4c7c711938",
+          "bytes": 97
+        },
+        {
+          "locator": "rendered-prompts/whole-poem-architecture-exec-v2-026.txt",
+          "sha256": "efd8f4569e3f52d128a1e5ab88fbd047a6d176959d2be2f300a14163d32ecded",
+          "bytes": 1382
+        },
+        {
+          "locator": "claims/whole-poem-architecture-exec-v2-026.json",
+          "sha256": "6c5b4fb1f240b9323bbea0c7c687ff8a8952116fe111ecb04592ae09f426c8bd",
+          "bytes": 411
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-026.json",
+          "sha256": "781e4ca5801a5914adaf0fb78c66fa13e1130941795a5497c68f1f4123b74ac2",
+          "bytes": 1405
+        },
+        {
+          "locator": "inputs/whole-poem-architecture-exec-v2-027.txt",
+          "sha256": "b543d8d19dd5bb0b74d2a1a31e413829f2598c3bbc895a526ebb5c4c7c711938",
+          "bytes": 97
+        },
+        {
+          "locator": "rendered-prompts/whole-poem-architecture-exec-v2-027.txt",
+          "sha256": "efd8f4569e3f52d128a1e5ab88fbd047a6d176959d2be2f300a14163d32ecded",
+          "bytes": 1382
+        },
+        {
+          "locator": "claims/whole-poem-architecture-exec-v2-027.json",
+          "sha256": "d55d3ae58306bbe3cf7eeae078e7a9941dc880bf808a55693b7cfa9584a4a951",
+          "bytes": 411
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-027.json",
+          "sha256": "151bb67fbeaeb4e4ae08ca1ec6636ed3adb64f4244d62c1844677944448301e1",
+          "bytes": 1513
+        },
+        {
+          "locator": "inputs/whole-poem-architecture-exec-v2-028.txt",
+          "sha256": "61d80017d02048e2c99557a47499408ecd511cfef6e470d447489c3c7b6780c4",
+          "bytes": 91
+        },
+        {
+          "locator": "rendered-prompts/whole-poem-architecture-exec-v2-028.txt",
+          "sha256": "fecf2da1e92cb97b8473d701065d0ba2f4be074b32941f167a77cab7a4457942",
+          "bytes": 1376
+        },
+        {
+          "locator": "claims/whole-poem-architecture-exec-v2-028.json",
+          "sha256": "883ceebebd5df5657dae76e2a3c2a5ae08d497aaf1dd03ef2549cd72864c1fd2",
+          "bytes": 411
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-028.json",
+          "sha256": "31dc026a1eb258cb8ed9fe3b5627ed1ff766592690f3302add4b26a977b91167",
+          "bytes": 1491
+        },
+        {
+          "locator": "inputs/whole-poem-architecture-exec-v2-029.txt",
+          "sha256": "61d80017d02048e2c99557a47499408ecd511cfef6e470d447489c3c7b6780c4",
+          "bytes": 91
+        },
+        {
+          "locator": "rendered-prompts/whole-poem-architecture-exec-v2-029.txt",
+          "sha256": "fecf2da1e92cb97b8473d701065d0ba2f4be074b32941f167a77cab7a4457942",
+          "bytes": 1376
+        },
+        {
+          "locator": "claims/whole-poem-architecture-exec-v2-029.json",
+          "sha256": "f20f4b6317449060592ed8433c53b483eb4443a1536d5512ff1a5bcf6a5e5812",
+          "bytes": 411
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-029.json",
+          "sha256": "2e4d890bfd8d85c0c5679433221b78373cae2dd388ce9a38c14da2444a440437",
+          "bytes": 1765
+        },
+        {
+          "locator": "inputs/whole-poem-architecture-exec-v2-030.txt",
+          "sha256": "61d80017d02048e2c99557a47499408ecd511cfef6e470d447489c3c7b6780c4",
+          "bytes": 91
+        },
+        {
+          "locator": "rendered-prompts/whole-poem-architecture-exec-v2-030.txt",
+          "sha256": "fecf2da1e92cb97b8473d701065d0ba2f4be074b32941f167a77cab7a4457942",
+          "bytes": 1376
+        },
+        {
+          "locator": "claims/whole-poem-architecture-exec-v2-030.json",
+          "sha256": "69845e3e3cbec6bff72c4d610e9c377e58762a64aaad801158b8eb2bb91f138d",
+          "bytes": 411
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-030.json",
+          "sha256": "33cb95f26efbe496a1f16d2c786845f0c67ea7c7008b3e678cf8cdb669d0f448",
+          "bytes": 1553
+        },
+        {
+          "locator": "inputs/whole-poem-architecture-exec-v2-031.txt",
+          "sha256": "2e0cf1600035c397e5fac5a5ec86568d9a36dca63f62c118435b083280d6bd18",
+          "bytes": 144
+        },
+        {
+          "locator": "rendered-prompts/whole-poem-architecture-exec-v2-031.txt",
+          "sha256": "b3b76025054d225b3b775fc0ad7948d517a4b89bbfe5779f7c3a851c522eee3f",
+          "bytes": 1429
+        },
+        {
+          "locator": "claims/whole-poem-architecture-exec-v2-031.json",
+          "sha256": "1a375dd0fd7aa671127d07accd0094ddcdee20f6f51c3b1023dba8ece10bb7fa",
+          "bytes": 411
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-031.json",
+          "sha256": "0f26d1da6d1177e0a3b4729dd181d9aa404995fda167bbd1515548fd574ca40e",
+          "bytes": 2121
+        },
+        {
+          "locator": "inputs/whole-poem-architecture-exec-v2-032.txt",
+          "sha256": "2e0cf1600035c397e5fac5a5ec86568d9a36dca63f62c118435b083280d6bd18",
+          "bytes": 144
+        },
+        {
+          "locator": "rendered-prompts/whole-poem-architecture-exec-v2-032.txt",
+          "sha256": "b3b76025054d225b3b775fc0ad7948d517a4b89bbfe5779f7c3a851c522eee3f",
+          "bytes": 1429
+        },
+        {
+          "locator": "claims/whole-poem-architecture-exec-v2-032.json",
+          "sha256": "9be57fd8605edcc7e6c777bcda44f96e065f19169f4db0371f1b42823c9fd986",
+          "bytes": 411
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-032.json",
+          "sha256": "436ba4244cdffbb223977243b26b1ff87a859bfbe5b812fca109278ae5d5fded",
+          "bytes": 2121
+        },
+        {
+          "locator": "inputs/whole-poem-architecture-exec-v2-033.txt",
+          "sha256": "2e0cf1600035c397e5fac5a5ec86568d9a36dca63f62c118435b083280d6bd18",
+          "bytes": 144
+        },
+        {
+          "locator": "rendered-prompts/whole-poem-architecture-exec-v2-033.txt",
+          "sha256": "b3b76025054d225b3b775fc0ad7948d517a4b89bbfe5779f7c3a851c522eee3f",
+          "bytes": 1429
+        },
+        {
+          "locator": "claims/whole-poem-architecture-exec-v2-033.json",
+          "sha256": "56472cc26d51088dba8837078547c64a342e01ecb6bb03f25e48b9f342c5cf01",
+          "bytes": 411
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-033.json",
+          "sha256": "ff95473bc5c5712067f9fd44104f4f4c688f2454b38a38d07f5a4b945e01e3ad",
+          "bytes": 2125
+        },
+        {
+          "locator": "inputs/whole-poem-architecture-exec-v2-034.txt",
+          "sha256": "527855ccbb875a6b23ebdcfa90426f87c4816611e746e354f31fc39b39329b49",
+          "bytes": 57
+        },
+        {
+          "locator": "rendered-prompts/whole-poem-architecture-exec-v2-034.txt",
+          "sha256": "935cc13edafcdb76ff00640ffae625c775ee6932c4b850a855fb676efef0896c",
+          "bytes": 1341
+        },
+        {
+          "locator": "claims/whole-poem-architecture-exec-v2-034.json",
+          "sha256": "144de970b47845d2feb1d7452b9e0ac195d575c86a69910e57aaf2e5ba64c0df",
+          "bytes": 411
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-034.json",
+          "sha256": "94ffc17d5ddee2bab9ed449e86b7b5b2142b4374815d4b28dd6e9c2b230e166d",
+          "bytes": 1353
+        },
+        {
+          "locator": "inputs/whole-poem-architecture-exec-v2-035.txt",
+          "sha256": "527855ccbb875a6b23ebdcfa90426f87c4816611e746e354f31fc39b39329b49",
+          "bytes": 57
+        },
+        {
+          "locator": "rendered-prompts/whole-poem-architecture-exec-v2-035.txt",
+          "sha256": "935cc13edafcdb76ff00640ffae625c775ee6932c4b850a855fb676efef0896c",
+          "bytes": 1341
+        },
+        {
+          "locator": "claims/whole-poem-architecture-exec-v2-035.json",
+          "sha256": "27751c56d15b13bed47b4088d19a41a95cb69b479266ebd37990b755956f15c3",
+          "bytes": 411
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-035.json",
+          "sha256": "59a484357daecdd18c61c9e35aa2b76cf0a66dcecfd7439df019360924972421",
+          "bytes": 1337
+        },
+        {
+          "locator": "inputs/whole-poem-architecture-exec-v2-036.txt",
+          "sha256": "527855ccbb875a6b23ebdcfa90426f87c4816611e746e354f31fc39b39329b49",
+          "bytes": 57
+        },
+        {
+          "locator": "rendered-prompts/whole-poem-architecture-exec-v2-036.txt",
+          "sha256": "935cc13edafcdb76ff00640ffae625c775ee6932c4b850a855fb676efef0896c",
+          "bytes": 1341
+        },
+        {
+          "locator": "claims/whole-poem-architecture-exec-v2-036.json",
+          "sha256": "8240b9ddca08605ea1c446efc3c49bd3fd8b6c8d0be57ff58f30e313574c261c",
+          "bytes": 411
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-036.json",
+          "sha256": "cdf9d1b0ff32e715290431e7fa51ff70ca0d17a14ec44ac7b67edf8bc1a9f047",
+          "bytes": 1419
+        },
+        {
+          "locator": "inputs/whole-poem-architecture-exec-v2-037.txt",
+          "sha256": "e5199ae0905da6fed9be0f76d43c4acbe72c13753abdda0f7b42aa4fc0d16672",
+          "bytes": 51
+        },
+        {
+          "locator": "rendered-prompts/whole-poem-architecture-exec-v2-037.txt",
+          "sha256": "aabf8be5d0727de2b5fcb7c85a05768d4a284ab5007906f0114e5851b51872a7",
+          "bytes": 1336
+        },
+        {
+          "locator": "claims/whole-poem-architecture-exec-v2-037.json",
+          "sha256": "1bc3decee6c84d3a07e0419bad09e359b06494ed60d482b17d60cf6584054e54",
+          "bytes": 411
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-037.json",
+          "sha256": "21d612f574dd54f9749612584524a402f39202041e957d20d697615dec0bbc38",
+          "bytes": 1235
+        },
+        {
+          "locator": "inputs/whole-poem-architecture-exec-v2-038.txt",
+          "sha256": "e5199ae0905da6fed9be0f76d43c4acbe72c13753abdda0f7b42aa4fc0d16672",
+          "bytes": 51
+        },
+        {
+          "locator": "rendered-prompts/whole-poem-architecture-exec-v2-038.txt",
+          "sha256": "aabf8be5d0727de2b5fcb7c85a05768d4a284ab5007906f0114e5851b51872a7",
+          "bytes": 1336
+        },
+        {
+          "locator": "claims/whole-poem-architecture-exec-v2-038.json",
+          "sha256": "153bb3aaa877df2ef49f4ada58f44743e332eb85dd36f6bd74522745a908bb39",
+          "bytes": 411
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-038.json",
+          "sha256": "429273c66310cc02df10d1b51b9960c19b54496ca099a3315a409629532eb06c",
+          "bytes": 1319
+        },
+        {
+          "locator": "inputs/whole-poem-architecture-exec-v2-039.txt",
+          "sha256": "e5199ae0905da6fed9be0f76d43c4acbe72c13753abdda0f7b42aa4fc0d16672",
+          "bytes": 51
+        },
+        {
+          "locator": "rendered-prompts/whole-poem-architecture-exec-v2-039.txt",
+          "sha256": "aabf8be5d0727de2b5fcb7c85a05768d4a284ab5007906f0114e5851b51872a7",
+          "bytes": 1336
+        },
+        {
+          "locator": "claims/whole-poem-architecture-exec-v2-039.json",
+          "sha256": "75cf94f27badc839950a46e6161f9990dd15e1cf747e8d81503aec93138b7efb",
+          "bytes": 411
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-039.json",
+          "sha256": "6ea56a13deb382ef0548f43226a38210f2fa726aee639989733417a9aaefb8d2",
+          "bytes": 1199
+        },
+        {
+          "locator": "inputs/whole-poem-architecture-exec-v2-040.txt",
+          "sha256": "8d85daba163bdabab3c69f2a0b52b5a5b30275481c9c587f49f19308cb2e3adc",
+          "bytes": 65
+        },
+        {
+          "locator": "rendered-prompts/whole-poem-architecture-exec-v2-040.txt",
+          "sha256": "793d41998c9e9f0635cbb8c3e48c31008ffc210c3bf8ca5b5a1d4733da198595",
+          "bytes": 1351
+        },
+        {
+          "locator": "claims/whole-poem-architecture-exec-v2-040.json",
+          "sha256": "2ec005acd6e49ce9a9c8b71ac7009b588e9da05ec776c613475a697627ba45d1",
+          "bytes": 411
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-040.json",
+          "sha256": "9b13e78252c6ab7b7afa67f21cd8b79022ac3b8820a2afb69ea304cef80420aa",
+          "bytes": 1181
+        },
+        {
+          "locator": "inputs/whole-poem-architecture-exec-v2-041.txt",
+          "sha256": "8d85daba163bdabab3c69f2a0b52b5a5b30275481c9c587f49f19308cb2e3adc",
+          "bytes": 65
+        },
+        {
+          "locator": "rendered-prompts/whole-poem-architecture-exec-v2-041.txt",
+          "sha256": "793d41998c9e9f0635cbb8c3e48c31008ffc210c3bf8ca5b5a1d4733da198595",
+          "bytes": 1351
+        },
+        {
+          "locator": "claims/whole-poem-architecture-exec-v2-041.json",
+          "sha256": "82cb7dff1e9f540c4490eaa84ba81abf81f1bb62a4e7601d3b889e1b6dd00b34",
+          "bytes": 411
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-041.json",
+          "sha256": "f8ba85b3a6625f4158b2bb2b9c15ccefe4837ca129db99f323d5c0131c495f86",
+          "bytes": 1185
+        },
+        {
+          "locator": "inputs/whole-poem-architecture-exec-v2-042.txt",
+          "sha256": "8d85daba163bdabab3c69f2a0b52b5a5b30275481c9c587f49f19308cb2e3adc",
+          "bytes": 65
+        },
+        {
+          "locator": "rendered-prompts/whole-poem-architecture-exec-v2-042.txt",
+          "sha256": "793d41998c9e9f0635cbb8c3e48c31008ffc210c3bf8ca5b5a1d4733da198595",
+          "bytes": 1351
+        },
+        {
+          "locator": "claims/whole-poem-architecture-exec-v2-042.json",
+          "sha256": "101174e6ee6ab042ae826c082b7a75d007dc283ec11018c6b47df030db43c673",
+          "bytes": 411
+        },
+        {
+          "locator": "terminals/whole-poem-architecture-exec-v2-042.json",
+          "sha256": "705aa765d661faeaa95019cec2c8f83570fe8d1d0e67321fc6523ca047fde1cf",
+          "bytes": 1181
+        }
+      ]
+    },
+    {
+      "locator": "cwr-hbq-poetry-whole-poem-architecture-treatment-v2-execution-v1-4ce1204-20260825-lineage-r3-neutral-work",
+      "files": [
+        {
+          "locator": "whole-poem-architecture-exec-v2-001/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "f00960cd75d367770b6860711f8e04b8d54962084d7aeef2ffd891c1e4f5879a",
+          "bytes": 691
+        },
+        {
+          "locator": "whole-poem-architecture-exec-v2-002/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "a0e9c84a057862f67ff8d9bf698ecf5c1bccaab18b734d8470791368c8ffd0a1",
+          "bytes": 739
+        },
+        {
+          "locator": "whole-poem-architecture-exec-v2-003/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "40a229c3226aa5d95faf21e9e7b6c0b626a8a3f2738b1b914d1b44c0797ad870",
+          "bytes": 657
+        },
+        {
+          "locator": "whole-poem-architecture-exec-v2-004/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "e5f7e6cf1be2dbc25c72102e276ce1cfb6f68530dc2f66c2ea407369e7c67296",
+          "bytes": 457
+        },
+        {
+          "locator": "whole-poem-architecture-exec-v2-005/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "9fb24fd9476d183680060bcc5aacf0e0b1b729628c8c634607203a28564c9421",
+          "bytes": 701
+        },
+        {
+          "locator": "whole-poem-architecture-exec-v2-006/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "6c5a7a32b79e5c8897726942a6493fe9fe637cd9f4ef621a51737818507f894b",
+          "bytes": 442
+        },
+        {
+          "locator": "whole-poem-architecture-exec-v2-007/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "b19d988fb7bd084cb9f5547e06b75fdc9d10a9d5264d344d446ee18573959e3d",
+          "bytes": 454
+        },
+        {
+          "locator": "whole-poem-architecture-exec-v2-008/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "990c946bb0d90b099a1cf677397e39204fa8374feefc02887ced212dbef8cdbe",
+          "bytes": 451
+        },
+        {
+          "locator": "whole-poem-architecture-exec-v2-009/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "cd0f1ab753695e0b318d9d8c3275fc5103e73c42a138cb12f4ba979d497c9872",
+          "bytes": 421
+        },
+        {
+          "locator": "whole-poem-architecture-exec-v2-010/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "971676e456b12ea6eadb64a8bfecfceee4c80729a6fe168306a48c9ed4141b19",
+          "bytes": 480
+        },
+        {
+          "locator": "whole-poem-architecture-exec-v2-011/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "e49294464f90746c8afe0dd72f5c68393218813348d84c1670af0ce31c25f8d3",
+          "bytes": 669
+        },
+        {
+          "locator": "whole-poem-architecture-exec-v2-012/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "58a799cf61425d7e80e99bc7cb32f224a354b9fa1867c16aeee60978cb299174",
+          "bytes": 500
+        },
+        {
+          "locator": "whole-poem-architecture-exec-v2-013/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "abfdfdf2184be9c9a435ea33e1ed4df26863f787c35bc2f34ff271451c6bffab",
+          "bytes": 413
+        },
+        {
+          "locator": "whole-poem-architecture-exec-v2-014/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "cb6a4a33fa17793d5b44eac232d3e5789766387f6f2ce573a7cff942db4cc4c1",
+          "bytes": 377
+        },
+        {
+          "locator": "whole-poem-architecture-exec-v2-015/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "09fea726f1a0e6267266b0dc886ca8f5bd57c7975310663cb9ad67fcaf81222a",
+          "bytes": 436
+        },
+        {
+          "locator": "whole-poem-architecture-exec-v2-016/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "a443217c8fe0da7740317b16f40460304678ac05f00d7ba03013a605e7a0e111",
+          "bytes": 393
+        },
+        {
+          "locator": "whole-poem-architecture-exec-v2-017/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "9005c0096462ea07895d08bf764441a0116db2d1621b6b9e9faf7e86f1e276c7",
+          "bytes": 487
+        },
+        {
+          "locator": "whole-poem-architecture-exec-v2-018/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "d132f60832d13cf2c2ce7f50a6826c63cbd7954b30fea48c0db6af1ffb10accd",
+          "bytes": 369
+        },
+        {
+          "locator": "whole-poem-architecture-exec-v2-019/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "5651aab0ee5c5da75bb9bb4cd698de9f064d0f8481abc07d75f164d1c859fff8",
+          "bytes": 363
+        },
+        {
+          "locator": "whole-poem-architecture-exec-v2-020/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "79323e4abf21467e900e12d7532e35277860d00c1da265341072e499939e4389",
+          "bytes": 379
+        },
+        {
+          "locator": "whole-poem-architecture-exec-v2-021/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "590c8987793beed76a92189e866b9207e4eda18e2d2a336a17d7e282438a8d16",
+          "bytes": 377
+        },
+        {
+          "locator": "whole-poem-architecture-exec-v2-022/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "1ca2e4398870e7edcabd6549d9ed8ef563c358417a279d71f861d48e418df645",
+          "bytes": 881
+        },
+        {
+          "locator": "whole-poem-architecture-exec-v2-023/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "187797a46af4fecf80cf6c5c2c66f443d2e41fa58b732068f17744bb0b782e0f",
+          "bytes": 831
+        },
+        {
+          "locator": "whole-poem-architecture-exec-v2-024/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "7ee7abbcdf8bd6d54b24ff11fb1c8716c6ca7b61ca9d20e1082a8896a457a91c",
+          "bytes": 830
+        },
+        {
+          "locator": "whole-poem-architecture-exec-v2-025/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "bfc165b3465c2638150a636c045ab6510dd2b5748354b1f6644bfa683ca6c6a2",
+          "bytes": 524
+        },
+        {
+          "locator": "whole-poem-architecture-exec-v2-026/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "8c0a29d13139d9715bd5bfbdeebae8a9eddf7f617bef4e8c22d7d998d1de9cdd",
+          "bytes": 449
+        },
+        {
+          "locator": "whole-poem-architecture-exec-v2-027/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "33abca07e5ecb5f24d2d3b11bd78394c24b8b36ef444ae21ae18053b39371acf",
+          "bytes": 503
+        },
+        {
+          "locator": "whole-poem-architecture-exec-v2-028/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "7761b6e5476d4cfefb007be0252b68b83cfae1b2658b68fd7057211758821614",
+          "bytes": 492
+        },
+        {
+          "locator": "whole-poem-architecture-exec-v2-029/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "c07437af5986cf05670869983cb29ab240b3ee79f3a763eda99e0b7e39b3f163",
+          "bytes": 629
+        },
+        {
+          "locator": "whole-poem-architecture-exec-v2-030/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "8e9e9cc0e948abed71786cc1c42f90b9a84f91dddcd44e38a3419015cae18890",
+          "bytes": 523
+        },
+        {
+          "locator": "whole-poem-architecture-exec-v2-031/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "e8996ffa45816fb7a15e7bb7ca2e41487c12102c53179e7450289912b292a941",
+          "bytes": 807
+        },
+        {
+          "locator": "whole-poem-architecture-exec-v2-032/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "e3e4a4aa5b39723f2c842b05f1d78777de0504e00655ebca096299b2927371c6",
+          "bytes": 807
+        },
+        {
+          "locator": "whole-poem-architecture-exec-v2-033/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "5a5e258d58af46e6c7058c6bc0dc7e8c846a8aa3987b2f7531db7c363b600a1e",
+          "bytes": 809
+        },
+        {
+          "locator": "whole-poem-architecture-exec-v2-034/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "4a0aab8121bc5efd90253f08e6593db392491dce020b5b4eba6d4bc01e590184",
+          "bytes": 423
+        },
+        {
+          "locator": "whole-poem-architecture-exec-v2-035/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "0b2e45a81fe57cd3c2abf81c17a776f87c1b3680ac693eb6aa15330d7fbd8ac9",
+          "bytes": 415
+        },
+        {
+          "locator": "whole-poem-architecture-exec-v2-036/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "ab4c65e86b357c5c4a2df51f68d31ddf346fc7f7e932ac4b449788f8d90916df",
+          "bytes": 456
+        },
+        {
+          "locator": "whole-poem-architecture-exec-v2-037/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "afef6402dc6f3fa4849ed8c29780f79790561bfe0310e049249a32b460fbdef0",
+          "bytes": 364
+        },
+        {
+          "locator": "whole-poem-architecture-exec-v2-038/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "f62cbb03b2fd671edb7d3442d569d7ecfa7e3c9e119558dbcc07438f26258684",
+          "bytes": 406
+        },
+        {
+          "locator": "whole-poem-architecture-exec-v2-039/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "1a96c1ffd50e6b18531a2c8d63d18838253e16ee670a069ed0c4dd1a6490a93e",
+          "bytes": 346
+        },
+        {
+          "locator": "whole-poem-architecture-exec-v2-040/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "4b986f5b55eaf920442b38eaee2fb41331902d556e6c0a59ec6938c1bb03fef1",
+          "bytes": 337
+        },
+        {
+          "locator": "whole-poem-architecture-exec-v2-041/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "8f850b299677b9b557c2851ee499b6fc62e5466f67e7bb1a660c1bb4d91d673e",
+          "bytes": 339
+        },
+        {
+          "locator": "whole-poem-architecture-exec-v2-042/responses/batch-0001.attempt-0001.message.json",
+          "sha256": "4b986f5b55eaf920442b38eaee2fb41331902d556e6c0a59ec6938c1bb03fef1",
+          "bytes": 337
+        }
+      ]
+    }
+  ],
+  "slot_ids": [
+    "whole-poem-architecture-exec-v2-001",
+    "whole-poem-architecture-exec-v2-002",
+    "whole-poem-architecture-exec-v2-003",
+    "whole-poem-architecture-exec-v2-004",
+    "whole-poem-architecture-exec-v2-005",
+    "whole-poem-architecture-exec-v2-006",
+    "whole-poem-architecture-exec-v2-007",
+    "whole-poem-architecture-exec-v2-008",
+    "whole-poem-architecture-exec-v2-009",
+    "whole-poem-architecture-exec-v2-010",
+    "whole-poem-architecture-exec-v2-011",
+    "whole-poem-architecture-exec-v2-012",
+    "whole-poem-architecture-exec-v2-013",
+    "whole-poem-architecture-exec-v2-014",
+    "whole-poem-architecture-exec-v2-015",
+    "whole-poem-architecture-exec-v2-016",
+    "whole-poem-architecture-exec-v2-017",
+    "whole-poem-architecture-exec-v2-018",
+    "whole-poem-architecture-exec-v2-019",
+    "whole-poem-architecture-exec-v2-020",
+    "whole-poem-architecture-exec-v2-021",
+    "whole-poem-architecture-exec-v2-022",
+    "whole-poem-architecture-exec-v2-023",
+    "whole-poem-architecture-exec-v2-024",
+    "whole-poem-architecture-exec-v2-025",
+    "whole-poem-architecture-exec-v2-026",
+    "whole-poem-architecture-exec-v2-027",
+    "whole-poem-architecture-exec-v2-028",
+    "whole-poem-architecture-exec-v2-029",
+    "whole-poem-architecture-exec-v2-030",
+    "whole-poem-architecture-exec-v2-031",
+    "whole-poem-architecture-exec-v2-032",
+    "whole-poem-architecture-exec-v2-033",
+    "whole-poem-architecture-exec-v2-034",
+    "whole-poem-architecture-exec-v2-035",
+    "whole-poem-architecture-exec-v2-036",
+    "whole-poem-architecture-exec-v2-037",
+    "whole-poem-architecture-exec-v2-038",
+    "whole-poem-architecture-exec-v2-039",
+    "whole-poem-architecture-exec-v2-040",
+    "whole-poem-architecture-exec-v2-041",
+    "whole-poem-architecture-exec-v2-042"
+  ],
+  "expected": {
+    "slots": 42,
+    "fixtures": 7,
+    "arms": 2,
+    "repeats": 3,
+    "prompt_hashes": 14
+  },
+  "question_id": "scope.poetry_poem.form",
+  "historical_study_source": {
+    "locator": "evaluation-results/hbq-poetry-whole-poem-architecture-treatment-v2-execution-v1/study.py",
+    "sha256": "ca54ccdd6d6c1842cd0930f198cd5ba0101495421a35f8fd5c3b4b627b29836e"
+  },
+  "excluded_ancestors": [
+    "original",
+    "lineage-r2"
+  ]
+}
