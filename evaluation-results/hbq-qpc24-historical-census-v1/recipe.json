@@ -1,0 +1,1785 @@
+{
+  "policy": "qpc24_historical_receipt_id_state_join_v1",
+  "helper_pins": {
+    "common": "42415af5418ae32303bfa7933712b2ad398c0ed66df32a7553a9e3d55f5de49b",
+    "selective": "2d82e4959c3296ccaa6e6521adb46f85588427d429a544b36a2891ebaea8c7b0"
+  },
+  "roots": [
+    {
+      "locator": "cwr-qpc24-two-pass-product-confirmation-v2-4ce1204-20260825",
+      "files": [
+        {
+          "locator": "private-freeze.v3.json",
+          "sha256": "7146d4d467e5b35fd7ab07dc7b0230e3069f9266ff8d604bfdf6d34d9f6735ed",
+          "bytes": 23015
+        },
+        {
+          "locator": "live-approval.v3.json",
+          "sha256": "fdc58c492a71cbb4586e3bc8e01de67ef8e6e1ca4bb37ae5dff96372f88e338c",
+          "bytes": 1729
+        },
+        {
+          "locator": "live-controller-binding.v3.json",
+          "sha256": "64daaa7db60bfb7d611c634986c6ce38f0300d497ef5b0cf90c4480057754dec",
+          "bytes": 1274
+        },
+        {
+          "locator": "freeze.py",
+          "sha256": "6800cbc1d6be5dc3a7173e0587dc988da482084e017f1097fff0d358572cf38b",
+          "bytes": 9478
+        },
+        {
+          "locator": "scheduler-state/claims/author_original-r4-b01.claim.v1.json",
+          "sha256": "cdfaebb5f4ed2dce4361f926e48788d26c14ef1b27760a587d95432766edc784",
+          "bytes": 197
+        },
+        {
+          "locator": "scheduler-state/terminals/author_original-r4-b01.terminal.v1.json",
+          "sha256": "90923f2d35205b562a64e139f801a6a0f616019762a1b5e5e6295d06a60563b6",
+          "bytes": 216
+        },
+        {
+          "locator": "scheduler-state/call-receipts/author_original-r4-b01.v1.json",
+          "sha256": "7f001abd3af611eab7c7dc53ecdff29577d083363ed43d42e37af290eee016ac",
+          "bytes": 1088
+        },
+        {
+          "locator": "scheduler-state/reported-identity-receipts/author_original-r4-b01.v1.json",
+          "sha256": "005c940b19a61a083feaec11c3e598c77770ef4f9a3a7f2baa553d1abe74ef5d",
+          "bytes": 412
+        },
+        {
+          "locator": "scheduler-state/claims/author_original-r4-b02.claim.v1.json",
+          "sha256": "63bc178ea276a39c4b36ee85d379b3b5e4e9364e2bcc1df2e07a592ff63d38af",
+          "bytes": 197
+        },
+        {
+          "locator": "scheduler-state/terminals/author_original-r4-b02.terminal.v1.json",
+          "sha256": "ae07bd7f775728d423d04ced35a70039e63d0800f8dcad608bc762347f81ff0f",
+          "bytes": 216
+        },
+        {
+          "locator": "scheduler-state/call-receipts/author_original-r4-b02.v1.json",
+          "sha256": "28ee33ff73204381b76f25b0f526508dd10fbe29e43c9f7a289216989312447c",
+          "bytes": 1088
+        },
+        {
+          "locator": "scheduler-state/reported-identity-receipts/author_original-r4-b02.v1.json",
+          "sha256": "314c912ee65d1113ff844ff85c52623836a96d72572585956258b106ed04157d",
+          "bytes": 412
+        },
+        {
+          "locator": "scheduler-state/claims/author_original-r4-b03.claim.v1.json",
+          "sha256": "1f99ccea7687b8e00c92335e08f524000155bd77097515091eaeb177e4ba462b",
+          "bytes": 197
+        },
+        {
+          "locator": "scheduler-state/terminals/author_original-r4-b03.terminal.v1.json",
+          "sha256": "fcef3f41cec54b86a28136bcb9abf31b41487544cea70cdb6af12df4f7fe04ab",
+          "bytes": 216
+        },
+        {
+          "locator": "scheduler-state/call-receipts/author_original-r4-b03.v1.json",
+          "sha256": "57be903ad3b0929cdba35ea6c10db18725aa3c6fa77e9807073a0fcaad6ec9a9",
+          "bytes": 1088
+        },
+        {
+          "locator": "scheduler-state/reported-identity-receipts/author_original-r4-b03.v1.json",
+          "sha256": "e332d59b13abe0c40ecc40bf2006ad36a1c8ac62fec46504a5227af8166a6e3d",
+          "bytes": 412
+        },
+        {
+          "locator": "scheduler-state/claims/author_original-r4-b04.claim.v1.json",
+          "sha256": "9d42ebfe4d54af061d948ecc7b27660551a39ca035f6fb4c6a87655750bd0899",
+          "bytes": 197
+        },
+        {
+          "locator": "scheduler-state/terminals/author_original-r4-b04.terminal.v1.json",
+          "sha256": "7ff177d395a5d531c87050f584f272b0c7847f7595a5475158be9ea6cd2c236d",
+          "bytes": 216
+        },
+        {
+          "locator": "scheduler-state/call-receipts/author_original-r4-b04.v1.json",
+          "sha256": "94eab9dea9d88d23191a92e5a96e57a9ad455a6285eca412cdac46a72df9c439",
+          "bytes": 1088
+        },
+        {
+          "locator": "scheduler-state/reported-identity-receipts/author_original-r4-b04.v1.json",
+          "sha256": "d6f42f85483820b24dd6825fe9c6334b956da238bc119e74beccc3cd074fe1c7",
+          "bytes": 412
+        },
+        {
+          "locator": "scheduler-state/claims/author_original-r4-b05.claim.v1.json",
+          "sha256": "194a76941d771dd165d569a285e79b0bdeeddf9c5163987bf35969393ddae35a",
+          "bytes": 197
+        },
+        {
+          "locator": "scheduler-state/terminals/author_original-r4-b05.terminal.v1.json",
+          "sha256": "d85203ef1b31918b852036854777a0f0f7850b9e93023cd8f284cb1df8ca8fbf",
+          "bytes": 216
+        },
+        {
+          "locator": "scheduler-state/call-receipts/author_original-r4-b05.v1.json",
+          "sha256": "1fe5128bece9e845e95a5394942dbaeaf729ca9104c1f904af5247a93e90db26",
+          "bytes": 1088
+        },
+        {
+          "locator": "scheduler-state/reported-identity-receipts/author_original-r4-b05.v1.json",
+          "sha256": "fc0f966a5905ca10445c5b4fb0925c3afe0fe3bfd554a6b2be49e445c04a4e9e",
+          "bytes": 412
+        },
+        {
+          "locator": "scheduler-state/claims/author_original-r4-b06.claim.v1.json",
+          "sha256": "1311ab05353e59e74be30288bc231e28c9d0af5503bff6f5925cece961135a7d",
+          "bytes": 197
+        },
+        {
+          "locator": "scheduler-state/terminals/author_original-r4-b06.terminal.v1.json",
+          "sha256": "dd6c19536308cad5ca35fdaf5f9ce725720ce5db43e17ecadcf54cb482de80ed",
+          "bytes": 216
+        },
+        {
+          "locator": "scheduler-state/call-receipts/author_original-r4-b06.v1.json",
+          "sha256": "b3ea252db6a0636cfb327183fb8b9720c354cd7699c72549d3c597d75b124a49",
+          "bytes": 1088
+        },
+        {
+          "locator": "scheduler-state/reported-identity-receipts/author_original-r4-b06.v1.json",
+          "sha256": "52b6ea21a87f1d1f89b8572b5a25a8c4b3545876bc47b4b4dd0f19ab28083180",
+          "bytes": 412
+        },
+        {
+          "locator": "scheduler-state/claims/author_original-r4-b07.claim.v1.json",
+          "sha256": "21ec73123909fcbbe8b97e154bb4ec8738b1338dde1d0480b268654f558f4cd8",
+          "bytes": 197
+        },
+        {
+          "locator": "scheduler-state/terminals/author_original-r4-b07.terminal.v1.json",
+          "sha256": "65dc2b2c573a0486879e4af0be93482235145d3904e12f645fb931b8408ea201",
+          "bytes": 216
+        },
+        {
+          "locator": "scheduler-state/call-receipts/author_original-r4-b07.v1.json",
+          "sha256": "010a5abbeca69d09237a3cf61c0396011de26907ae796a953e2c54af030915f5",
+          "bytes": 1088
+        },
+        {
+          "locator": "scheduler-state/reported-identity-receipts/author_original-r4-b07.v1.json",
+          "sha256": "5ffcfa609730621098de63db8bfe660141227729756df31cbdb8e011aff61b85",
+          "bytes": 412
+        },
+        {
+          "locator": "scheduler-state/claims/author_original-r4-b08.claim.v1.json",
+          "sha256": "e9595d9b5449cd960c5c4f18d534d4933a7bd6a6c998f550b6f1b89edbf7748f",
+          "bytes": 197
+        },
+        {
+          "locator": "scheduler-state/terminals/author_original-r4-b08.terminal.v1.json",
+          "sha256": "bc3b72f20b894633b01be2c8b294d66681d85ccb6ae2d7f514d755e9b0698bc9",
+          "bytes": 216
+        },
+        {
+          "locator": "scheduler-state/call-receipts/author_original-r4-b08.v1.json",
+          "sha256": "04d59b1dc5b3cc2b2eb10f90e3a417e8080aa3942a46c1bba1902cfb0a015595",
+          "bytes": 1088
+        },
+        {
+          "locator": "scheduler-state/reported-identity-receipts/author_original-r4-b08.v1.json",
+          "sha256": "16c750b89768d1b4106e5d40c0aa6c34ea713f7006e862feffd4ba33ea1b383b",
+          "bytes": 412
+        },
+        {
+          "locator": "scheduler-state/claims/author_original-r4-b09.claim.v1.json",
+          "sha256": "0a8a428a80bdc7356f15cf4d7c6d37ce19c286b48402e42349ca1fe13b1dd212",
+          "bytes": 197
+        },
+        {
+          "locator": "scheduler-state/terminals/author_original-r4-b09.terminal.v1.json",
+          "sha256": "c6cf9c2bc234b1bb7a18b52d006519aa9322a74ec56a32ecc0239ccefe7119fe",
+          "bytes": 216
+        },
+        {
+          "locator": "scheduler-state/call-receipts/author_original-r4-b09.v1.json",
+          "sha256": "5abad1b3e1c750e4ae00836abc0eca984c80c037ba0541a66e318282c9974170",
+          "bytes": 1088
+        },
+        {
+          "locator": "scheduler-state/reported-identity-receipts/author_original-r4-b09.v1.json",
+          "sha256": "ef55c44b17cd5989dfd5ddbda8918fbe02830a71b33d713f01e5679ef737c2ef",
+          "bytes": 412
+        },
+        {
+          "locator": "scheduler-state/claims/author_original-r4-b10.claim.v1.json",
+          "sha256": "3ef1e7668734732eb96825ac2e40fc0f966e586d495a4776e37698d30745a9ac",
+          "bytes": 197
+        },
+        {
+          "locator": "scheduler-state/terminals/author_original-r4-b10.terminal.v1.json",
+          "sha256": "50dee7cbba19952a6a4940426a2fee765df9135ce6ae4a9e2a8a58191e52ee73",
+          "bytes": 216
+        },
+        {
+          "locator": "scheduler-state/call-receipts/author_original-r4-b10.v1.json",
+          "sha256": "e25e45dbf6e2c477bb093f615558c3d83ef0be54c9af6f19981763ed29c159c8",
+          "bytes": 1088
+        },
+        {
+          "locator": "scheduler-state/reported-identity-receipts/author_original-r4-b10.v1.json",
+          "sha256": "113e959555ac31ed850ebea2a716eac09c0bf635dabfcc36d79c2e6afb2bc341",
+          "bytes": 412
+        },
+        {
+          "locator": "scheduler-state/claims/author_original-r5-b01.claim.v1.json",
+          "sha256": "1eeef526749b8081ea7ff99a7e2e7ca42812948711e51ed849d59cb7386ec6f1",
+          "bytes": 197
+        },
+        {
+          "locator": "scheduler-state/terminals/author_original-r5-b01.terminal.v1.json",
+          "sha256": "bde9aeaf8da2bc2d5edaa88aa6954230db4891a5b838585925a6aa2a1fe13f7c",
+          "bytes": 216
+        },
+        {
+          "locator": "scheduler-state/call-receipts/author_original-r5-b01.v1.json",
+          "sha256": "7556ab42bcc3409d2bb18f6d102fa826d654dfe0a33051d1920c6001eefcf6bb",
+          "bytes": 1088
+        },
+        {
+          "locator": "scheduler-state/reported-identity-receipts/author_original-r5-b01.v1.json",
+          "sha256": "b5f83d3078e5597b4a6ecd8d0e3eafdaaa36fd59f001ad95003a51c584c392f5",
+          "bytes": 412
+        },
+        {
+          "locator": "scheduler-state/claims/author_original-r5-b02.claim.v1.json",
+          "sha256": "8431cb44f9f69d9e14c2d3dad740646f6ffd4d50615c5f31b3141bbbe0c0b3b4",
+          "bytes": 197
+        },
+        {
+          "locator": "scheduler-state/terminals/author_original-r5-b02.terminal.v1.json",
+          "sha256": "6cd0ac9395d253180702409ba21f98c552499f16add0c9eab5a1e27d00f4b423",
+          "bytes": 216
+        },
+        {
+          "locator": "scheduler-state/call-receipts/author_original-r5-b02.v1.json",
+          "sha256": "338710813044eb53cc8b3bf05620112ad39b5422cfc31c6047d57445e9640544",
+          "bytes": 1088
+        },
+        {
+          "locator": "scheduler-state/reported-identity-receipts/author_original-r5-b02.v1.json",
+          "sha256": "bde712fe33fc354583685d748c3ffb0ff5a110ffdd4f6686af52080503423bd7",
+          "bytes": 412
+        },
+        {
+          "locator": "scheduler-state/claims/author_original-r5-b03.claim.v1.json",
+          "sha256": "9357e16766c6d3565927937333d50c82bc4719bd4727b6b63bdfb841d9e920b9",
+          "bytes": 197
+        },
+        {
+          "locator": "scheduler-state/terminals/author_original-r5-b03.terminal.v1.json",
+          "sha256": "03f1546a90ddbc3503c842018c866c7347814580b9efc9d07310cc8e40a0a53e",
+          "bytes": 216
+        },
+        {
+          "locator": "scheduler-state/call-receipts/author_original-r5-b03.v1.json",
+          "sha256": "fb00414d64996c79d8dad43a854fc51c62a16ccecfacddf22ed80798831a6207",
+          "bytes": 1088
+        },
+        {
+          "locator": "scheduler-state/reported-identity-receipts/author_original-r5-b03.v1.json",
+          "sha256": "29017c29e4f8975df531d39e2401f4bf3453b21a2875d98fb3747f3c8995152b",
+          "bytes": 412
+        },
+        {
+          "locator": "scheduler-state/claims/author_original-r5-b04.claim.v1.json",
+          "sha256": "3e6c6d003fdfd610a16ff62d347ad7abfd72ff46cb500a0bc144f6471b96a1a3",
+          "bytes": 197
+        },
+        {
+          "locator": "scheduler-state/terminals/author_original-r5-b04.terminal.v1.json",
+          "sha256": "6e0c1f04d8771f77810470dbcc054b00ca251fb0d33da38a625a894f7557f956",
+          "bytes": 216
+        },
+        {
+          "locator": "scheduler-state/call-receipts/author_original-r5-b04.v1.json",
+          "sha256": "f351c8ee9b5b009942491eb7d55bddecb4fa8f62cf02f0d289156f4ca01c9439",
+          "bytes": 1088
+        },
+        {
+          "locator": "scheduler-state/reported-identity-receipts/author_original-r5-b04.v1.json",
+          "sha256": "cc5e277608e8a1d070bd5e98bf1df13857b49d587ea12a17a886063773d695e4",
+          "bytes": 412
+        },
+        {
+          "locator": "scheduler-state/claims/author_original-r5-b05.claim.v1.json",
+          "sha256": "dd87542081373b70e5c5e064de0581870e194979dce74d9100ffb192d48300f1",
+          "bytes": 197
+        },
+        {
+          "locator": "scheduler-state/terminals/author_original-r5-b05.terminal.v1.json",
+          "sha256": "9cb3f0583f8557c142b5ea33b9c589593219444b5e4976116c8ab4c681008fb2",
+          "bytes": 216
+        },
+        {
+          "locator": "scheduler-state/call-receipts/author_original-r5-b05.v1.json",
+          "sha256": "bf12769ef60911534b8ae88496c7e3ff6ddbe7d549da401715fd9db823a374a5",
+          "bytes": 1088
+        },
+        {
+          "locator": "scheduler-state/reported-identity-receipts/author_original-r5-b05.v1.json",
+          "sha256": "b761358b57872d985653b9e2f7b67a640a5a2ff4f464f72bc028cd21e886e376",
+          "bytes": 412
+        },
+        {
+          "locator": "scheduler-state/claims/author_original-r5-b06.claim.v1.json",
+          "sha256": "2cf24f4efa14b90f1fa0b4e2e2e2417be4513da7cbd2de420a74e4dd92eb44e6",
+          "bytes": 197
+        },
+        {
+          "locator": "scheduler-state/terminals/author_original-r5-b06.terminal.v1.json",
+          "sha256": "4a5d52767985bab701ded3a3bbc5ae8abb4d5a0a6fb04c701f51e7015731f331",
+          "bytes": 216
+        },
+        {
+          "locator": "scheduler-state/call-receipts/author_original-r5-b06.v1.json",
+          "sha256": "84665bb5312a6a7631957235ff9607f79dca9d08cc3f158726c5075715587e56",
+          "bytes": 1088
+        },
+        {
+          "locator": "scheduler-state/reported-identity-receipts/author_original-r5-b06.v1.json",
+          "sha256": "b464155bd5eebcdcc8f6b0721a7684ce9723553f5a16675c373d27e49bd14593",
+          "bytes": 412
+        },
+        {
+          "locator": "scheduler-state/claims/author_original-r5-b07.claim.v1.json",
+          "sha256": "41c74528addd966ebe6b09e4dca6929e2f70d0974d169a9d68dbb33b97ec5247",
+          "bytes": 197
+        },
+        {
+          "locator": "scheduler-state/terminals/author_original-r5-b07.terminal.v1.json",
+          "sha256": "a954d5934b9891438ab1d3297015400af195a7554f4f9120e681541ef052daff",
+          "bytes": 216
+        },
+        {
+          "locator": "scheduler-state/call-receipts/author_original-r5-b07.v1.json",
+          "sha256": "155fd1b16eaf140f5c38a12e44069c3a0593b28aaa4fe42903aacb6339e66e0d",
+          "bytes": 1088
+        },
+        {
+          "locator": "scheduler-state/reported-identity-receipts/author_original-r5-b07.v1.json",
+          "sha256": "f08d675de4d0d9b73c90c9d32b4d2dc97538b7048fbf043e7793a6b7e22083aa",
+          "bytes": 412
+        },
+        {
+          "locator": "scheduler-state/claims/author_original-r5-b08.claim.v1.json",
+          "sha256": "9eb48eb2517312b503d1a4231ea3c8469d3f5c1b556ba8e58e8ca74a6ee5aab3",
+          "bytes": 197
+        },
+        {
+          "locator": "scheduler-state/terminals/author_original-r5-b08.terminal.v1.json",
+          "sha256": "94f1310c498ce960ffe97c364b7b96ab4d344165afcccd4a65b7ba24e4836fa3",
+          "bytes": 216
+        },
+        {
+          "locator": "scheduler-state/call-receipts/author_original-r5-b08.v1.json",
+          "sha256": "54b93b663f7286e64d094787a4520ded0d0e21752b57ea38be3704e9e09eb222",
+          "bytes": 1088
+        },
+        {
+          "locator": "scheduler-state/reported-identity-receipts/author_original-r5-b08.v1.json",
+          "sha256": "0244678d4f98022183bbe4dd625a71744cd5649c0477485ab769ee4476bfcf14",
+          "bytes": 412
+        },
+        {
+          "locator": "scheduler-state/claims/author_original-r5-b09.claim.v1.json",
+          "sha256": "615312a9ba3f769ee446d0154aff251fad0a3db61e8c2da4b56b1c5b635a2ad3",
+          "bytes": 197
+        },
+        {
+          "locator": "scheduler-state/terminals/author_original-r5-b09.terminal.v1.json",
+          "sha256": "e997b2b0cfddf1e44fdcd70532b70a8798bcfc203f6915b47c7069ac3b78d048",
+          "bytes": 216
+        },
+        {
+          "locator": "scheduler-state/call-receipts/author_original-r5-b09.v1.json",
+          "sha256": "70a352dcb4dcce8e6ecf28332efebdb3535c40380cd1366664ab56c9d2818c91",
+          "bytes": 1088
+        },
+        {
+          "locator": "scheduler-state/reported-identity-receipts/author_original-r5-b09.v1.json",
+          "sha256": "82a198717a6e12309318ca192185380769cc2bd84a9f36a7ef29af9e7cf5c2c1",
+          "bytes": 412
+        },
+        {
+          "locator": "scheduler-state/claims/author_original-r5-b10.claim.v1.json",
+          "sha256": "8b38f87d6ff33eb69287dc490d931d8f56059d640960ede608ff666ae7e64a39",
+          "bytes": 197
+        },
+        {
+          "locator": "scheduler-state/terminals/author_original-r5-b10.terminal.v1.json",
+          "sha256": "a2aebc69d2c29005e14b411c3211ccb483cefca9ce3dd1c2beaacef63aee5241",
+          "bytes": 216
+        },
+        {
+          "locator": "scheduler-state/call-receipts/author_original-r5-b10.v1.json",
+          "sha256": "38aab0a06c54333064d26046b8afecedcb22f9988890e51936412072a9efadb2",
+          "bytes": 1088
+        },
+        {
+          "locator": "scheduler-state/reported-identity-receipts/author_original-r5-b10.v1.json",
+          "sha256": "589931d51a2fffff1e731ba90012f286aebebadd991380c85eded0f9fc8e1a76",
+          "bytes": 412
+        },
+        {
+          "locator": "scheduler-state/claims/gpt_5_6_pro_rewrite-r1-b01.claim.v1.json",
+          "sha256": "12d62a6398e3ccea20212176c833c03d871b6c28d0eb8b418eba73d1ee8655d4",
+          "bytes": 201
+        },
+        {
+          "locator": "scheduler-state/terminals/gpt_5_6_pro_rewrite-r1-b01.terminal.v1.json",
+          "sha256": "e2cd0fa0519b49a4d27265a452f03d236a5734bbf402eb39bd983f1952b2f402",
+          "bytes": 220
+        },
+        {
+          "locator": "scheduler-state/call-receipts/gpt_5_6_pro_rewrite-r1-b01.v1.json",
+          "sha256": "d7df8c8e8bd559e800c891197df5e0efcb7f561ce74a217b3e1aa82d01205479",
+          "bytes": 1092
+        },
+        {
+          "locator": "scheduler-state/reported-identity-receipts/gpt_5_6_pro_rewrite-r1-b01.v1.json",
+          "sha256": "5c7f675995443b4c9fcf04d5a74a4389684927612ffb50f8092907e436caa034",
+          "bytes": 416
+        },
+        {
+          "locator": "scheduler-state/claims/gpt_5_6_pro_rewrite-r1-b02.claim.v1.json",
+          "sha256": "89d231792c030651e18a787f86a2b1a8f74e68b4bceb2c72a2fee9d177e5028a",
+          "bytes": 201
+        },
+        {
+          "locator": "scheduler-state/terminals/gpt_5_6_pro_rewrite-r1-b02.terminal.v1.json",
+          "sha256": "949cfd664b061bce2698a2b536ed877c82516efddce14b36455c71bfc662076d",
+          "bytes": 220
+        },
+        {
+          "locator": "scheduler-state/call-receipts/gpt_5_6_pro_rewrite-r1-b02.v1.json",
+          "sha256": "b022fd3b092869cf335106565a53c7c8c292668e11c399c97c4fd3adab1e03a6",
+          "bytes": 1092
+        },
+        {
+          "locator": "scheduler-state/reported-identity-receipts/gpt_5_6_pro_rewrite-r1-b02.v1.json",
+          "sha256": "74eee8902997a004d3e0a3be549f750a8f3e6549bc52c75af568a963e518cfd4",
+          "bytes": 416
+        },
+        {
+          "locator": "scheduler-state/claims/gpt_5_6_pro_rewrite-r1-b03.claim.v1.json",
+          "sha256": "d6fdf8f9b74213059052ed95e69cc0cd43ab2f43c119948f6772b409efa5df5e",
+          "bytes": 201
+        },
+        {
+          "locator": "scheduler-state/terminals/gpt_5_6_pro_rewrite-r1-b03.terminal.v1.json",
+          "sha256": "423103b72620a0df0532a512052f756ce96f0cde11586d7d8a824f24bbb52cf0",
+          "bytes": 220
+        },
+        {
+          "locator": "scheduler-state/call-receipts/gpt_5_6_pro_rewrite-r1-b03.v1.json",
+          "sha256": "52d933d9d3868ed2890dd91353b3073fb2ee355372b0f646d59e2ffbff635ae3",
+          "bytes": 1092
+        },
+        {
+          "locator": "scheduler-state/reported-identity-receipts/gpt_5_6_pro_rewrite-r1-b03.v1.json",
+          "sha256": "aa005cdee3e1287e45a7ef800fff861b6ac2e295dc5bd9737b19f2fc297c6114",
+          "bytes": 416
+        },
+        {
+          "locator": "scheduler-state/claims/gpt_5_6_pro_rewrite-r1-b04.claim.v1.json",
+          "sha256": "a1ff03e9376d2586717c6530145d5aa0ff559d18343497b87367a2751f71d242",
+          "bytes": 201
+        },
+        {
+          "locator": "scheduler-state/terminals/gpt_5_6_pro_rewrite-r1-b04.terminal.v1.json",
+          "sha256": "f5a42b8681fb0e30426edc036c8f2525de47510b467b4596335fc395b2b43d59",
+          "bytes": 220
+        },
+        {
+          "locator": "scheduler-state/call-receipts/gpt_5_6_pro_rewrite-r1-b04.v1.json",
+          "sha256": "13632b22fea3f3db81dfe499c0c8bac5fc3285265baa4884ba382262cc85a83d",
+          "bytes": 1092
+        },
+        {
+          "locator": "scheduler-state/reported-identity-receipts/gpt_5_6_pro_rewrite-r1-b04.v1.json",
+          "sha256": "f5b3158e1830d5e7e98a584a4a5b33432cc7f3c1b3f616d756ca274a1ce7b6e4",
+          "bytes": 416
+        },
+        {
+          "locator": "scheduler-state/claims/gpt_5_6_pro_rewrite-r1-b05.claim.v1.json",
+          "sha256": "d585ddfc05ed5de1a910aa2a49d5bb7500baecfd51a69c19949b1066ee6b4fdd",
+          "bytes": 201
+        },
+        {
+          "locator": "scheduler-state/terminals/gpt_5_6_pro_rewrite-r1-b05.terminal.v1.json",
+          "sha256": "87d7608202decbee5a573f234e686f714eee003d4f97149c60d7444a6b4d1517",
+          "bytes": 220
+        },
+        {
+          "locator": "scheduler-state/call-receipts/gpt_5_6_pro_rewrite-r1-b05.v1.json",
+          "sha256": "48964562b252eedcb9792ff4fc1f38f6b1dff69f9b23892ffd46b752ecd27590",
+          "bytes": 1092
+        },
+        {
+          "locator": "scheduler-state/reported-identity-receipts/gpt_5_6_pro_rewrite-r1-b05.v1.json",
+          "sha256": "adb07b7914dcaeea7f4a6cd898ef21a81a9eba6c14f0dfecb96765bc9507347d",
+          "bytes": 416
+        },
+        {
+          "locator": "scheduler-state/claims/gpt_5_6_pro_rewrite-r1-b06.claim.v1.json",
+          "sha256": "374fa850901fa4f9079a55f47260610d36608bd5c7ee8ad83c470c1c681b321b",
+          "bytes": 201
+        },
+        {
+          "locator": "scheduler-state/terminals/gpt_5_6_pro_rewrite-r1-b06.terminal.v1.json",
+          "sha256": "a6f441fc6c4c9fa9c9efb07a99a11371319f94a2d6ba37ba0aa364942c7a6527",
+          "bytes": 220
+        },
+        {
+          "locator": "scheduler-state/call-receipts/gpt_5_6_pro_rewrite-r1-b06.v1.json",
+          "sha256": "70c91d5581fac4c90b4c187872563eb15471efdf3eba387848a27070063f4c6f",
+          "bytes": 1092
+        },
+        {
+          "locator": "scheduler-state/reported-identity-receipts/gpt_5_6_pro_rewrite-r1-b06.v1.json",
+          "sha256": "3dc7e17664efd7bcfda7af335eebbf26bc0cf439dc724f3715cf20db81d856c6",
+          "bytes": 416
+        },
+        {
+          "locator": "scheduler-state/claims/gpt_5_6_pro_rewrite-r1-b07.claim.v1.json",
+          "sha256": "ba4b082549af37485ef2a1960cf2784de604ec197967e60dbea8a2a273bbc9e6",
+          "bytes": 201
+        },
+        {
+          "locator": "scheduler-state/terminals/gpt_5_6_pro_rewrite-r1-b07.terminal.v1.json",
+          "sha256": "14a32fa6f7e05a9b927bc04f6a46d6c53dbe270aa7fa43f96a04fb406d71c7b4",
+          "bytes": 220
+        },
+        {
+          "locator": "scheduler-state/call-receipts/gpt_5_6_pro_rewrite-r1-b07.v1.json",
+          "sha256": "244a524987c56e39cfa8237fa0c3caf5f5b6f45b5d31506430ab070715c50dc8",
+          "bytes": 1092
+        },
+        {
+          "locator": "scheduler-state/reported-identity-receipts/gpt_5_6_pro_rewrite-r1-b07.v1.json",
+          "sha256": "4a90f698567a0eb304d9a88edae85c3d55944e770f52e25e822867660085b166",
+          "bytes": 416
+        },
+        {
+          "locator": "scheduler-state/claims/gpt_5_6_pro_rewrite-r1-b08.claim.v1.json",
+          "sha256": "171d90e310bbf234f6e0553b9765aaedffe0af014a8a17827cddc5882975d0a7",
+          "bytes": 201
+        },
+        {
+          "locator": "scheduler-state/terminals/gpt_5_6_pro_rewrite-r1-b08.terminal.v1.json",
+          "sha256": "7990400f2516a3cff9d0906304aadd4d212ec106ff4edb4547c06e2c701ea2e1",
+          "bytes": 220
+        },
+        {
+          "locator": "scheduler-state/call-receipts/gpt_5_6_pro_rewrite-r1-b08.v1.json",
+          "sha256": "8919faa288f2c38a82ac8fc5b09415c04df046dff32355450e667073268250ff",
+          "bytes": 1092
+        },
+        {
+          "locator": "scheduler-state/reported-identity-receipts/gpt_5_6_pro_rewrite-r1-b08.v1.json",
+          "sha256": "d23e337f4c0c1e974c904abb471b168f587736a9a4ae914f915298f35d92eabb",
+          "bytes": 416
+        },
+        {
+          "locator": "scheduler-state/claims/gpt_5_6_pro_rewrite-r1-b09.claim.v1.json",
+          "sha256": "8e817d5868bc7b7a9ce10cc6786673a660f0700d6933c796545725d33883d94a",
+          "bytes": 201
+        },
+        {
+          "locator": "scheduler-state/terminals/gpt_5_6_pro_rewrite-r1-b09.terminal.v1.json",
+          "sha256": "79a8429fef6a09e2439161afd42d5008c22908e9c35c3288b114771b9b724cd4",
+          "bytes": 220
+        },
+        {
+          "locator": "scheduler-state/call-receipts/gpt_5_6_pro_rewrite-r1-b09.v1.json",
+          "sha256": "f10c809980f8d63ee58d15a701f663ae99d6e72d4957f23582b8ec6f294f791f",
+          "bytes": 1092
+        },
+        {
+          "locator": "scheduler-state/reported-identity-receipts/gpt_5_6_pro_rewrite-r1-b09.v1.json",
+          "sha256": "4e8e8517bfe05a8f295ca89c10909f1d12b1e8d4c9890184f108824ded592eeb",
+          "bytes": 416
+        },
+        {
+          "locator": "scheduler-state/claims/gpt_5_6_pro_rewrite-r1-b10.claim.v1.json",
+          "sha256": "86fceea794b8d73077e6715587f748691c13a0602dd78f5d5f5f5a2caf03969f",
+          "bytes": 201
+        },
+        {
+          "locator": "scheduler-state/terminals/gpt_5_6_pro_rewrite-r1-b10.terminal.v1.json",
+          "sha256": "1db8e6e74d5762f6bb10a63a45b3131d3f8cc0cb5458032c0877a9a6333af2ca",
+          "bytes": 220
+        },
+        {
+          "locator": "scheduler-state/call-receipts/gpt_5_6_pro_rewrite-r1-b10.v1.json",
+          "sha256": "3dc81caf8202f826077b5a9df2232a8eee4e317b8eae5bbe883258dc960b3fea",
+          "bytes": 1092
+        },
+        {
+          "locator": "scheduler-state/reported-identity-receipts/gpt_5_6_pro_rewrite-r1-b10.v1.json",
+          "sha256": "d62a11eddd0482d0e7b248eec3ad6afaa59bacf951199f4a9028830bce98aa5c",
+          "bytes": 416
+        }
+      ]
+    },
+    {
+      "locator": "cwr-qpc24-two-pass-live-work-v2-4ce1204-20260825",
+      "files": [
+        {
+          "locator": "slot-0031/responses/batch-0031.attempt-0001.message.json",
+          "sha256": "8c2db2440ec494b4f19f57b4fd4b7edf52817968b7ff2e69bd87d86102776d8a",
+          "bytes": 12286
+        },
+        {
+          "locator": "slot-0032/responses/batch-0032.attempt-0001.message.json",
+          "sha256": "c2a4c5161bb712686c4925b4771c59e645f9eb6b2530126319115f94aae908c8",
+          "bytes": 13677
+        },
+        {
+          "locator": "slot-0033/responses/batch-0033.attempt-0001.message.json",
+          "sha256": "02e4f202551f4de9262cf94d177d61793692c31abe4554fd3c932044709d9b5c",
+          "bytes": 13838
+        },
+        {
+          "locator": "slot-0034/responses/batch-0034.attempt-0001.message.json",
+          "sha256": "5aa0bad94e3542d23f83dd6b565cf12558ec0e3bacd9e1765cda3bf5e54a1b68",
+          "bytes": 15426
+        },
+        {
+          "locator": "slot-0035/responses/batch-0035.attempt-0001.message.json",
+          "sha256": "5c2ea647cd8dc159af03fb013ea73201f2d678a16c97a1ba44fe9bb68aead7bd",
+          "bytes": 14233
+        },
+        {
+          "locator": "slot-0036/responses/batch-0036.attempt-0001.message.json",
+          "sha256": "a6c4aaa82e78188ce016228d1eceb917919ba5bdf142efa2e6c1c1675cab4c9d",
+          "bytes": 14711
+        },
+        {
+          "locator": "slot-0037/responses/batch-0037.attempt-0001.message.json",
+          "sha256": "55296ef5191ba4284cee2c2f224a783f8237716e5d810d58eb4eab7da2c82b30",
+          "bytes": 11816
+        },
+        {
+          "locator": "slot-0038/responses/batch-0038.attempt-0001.message.json",
+          "sha256": "286528637ae5df8775561e9128a5c9d7dcfd56b893c9356c19d4c6bf032fe9eb",
+          "bytes": 12196
+        },
+        {
+          "locator": "slot-0039/responses/batch-0039.attempt-0001.message.json",
+          "sha256": "e0bc724218488c75c5b825b96a890f1de286532b48157d3f12d090603898f165",
+          "bytes": 12543
+        },
+        {
+          "locator": "slot-0040/responses/batch-0040.attempt-0001.message.json",
+          "sha256": "c5e7d43f76b5c95a992aa65066df9e50e7e5fde7db5cade5bf99fa4a7eb28f24",
+          "bytes": 2816
+        },
+        {
+          "locator": "slot-0041/responses/batch-0041.attempt-0001.message.json",
+          "sha256": "36434b9c6136bd670b9b5f2886c5c29d46684e73ff8d42eac04f1fd3c0eba2b4",
+          "bytes": 12990
+        },
+        {
+          "locator": "slot-0042/responses/batch-0042.attempt-0001.message.json",
+          "sha256": "2b068889d7ce3cb86c6c58b554d4e60d2f7ef694543381414408d43541d0b4a4",
+          "bytes": 15754
+        },
+        {
+          "locator": "slot-0043/responses/batch-0043.attempt-0001.message.json",
+          "sha256": "653aa4b04161dfa1b80ae074e9534150abbf8889bdb2605fd2eb02c474d333fa",
+          "bytes": 12237
+        },
+        {
+          "locator": "slot-0044/responses/batch-0044.attempt-0001.message.json",
+          "sha256": "574caedfe96ad469b1a00f42bb8bd5f1a9420005b22c357c5abc7ae2b43235ab",
+          "bytes": 11412
+        },
+        {
+          "locator": "slot-0045/responses/batch-0045.attempt-0001.message.json",
+          "sha256": "b5309a2dd390e563e418727d15097d392d21a8e12771f461397fb65f1c49f181",
+          "bytes": 15679
+        },
+        {
+          "locator": "slot-0046/responses/batch-0046.attempt-0001.message.json",
+          "sha256": "e52267adca9be2fd0a75c78febd5a9dc33c9460982dde8d19c782c96a7469309",
+          "bytes": 11099
+        },
+        {
+          "locator": "slot-0047/responses/batch-0047.attempt-0001.message.json",
+          "sha256": "ece20bbb65450d84cd0765945bfcf7995be1abea76a92c8b4e11d2b8b6e60c05",
+          "bytes": 11660
+        },
+        {
+          "locator": "slot-0048/responses/batch-0048.attempt-0001.message.json",
+          "sha256": "194edf09c0e608716cc68b6bccd9748204ebdf83005b94a9b549b31109eac651",
+          "bytes": 12891
+        },
+        {
+          "locator": "slot-0049/responses/batch-0049.attempt-0001.message.json",
+          "sha256": "562a1c48ecff9b0088bbc9ff675817c056619c8815746cf664055b8c2d95f1f9",
+          "bytes": 14198
+        },
+        {
+          "locator": "slot-0050/responses/batch-0050.attempt-0001.message.json",
+          "sha256": "0ad9879f55c89ba6d8fcd2398668bf4cfef11e48063aece24f9ee0697c57d559",
+          "bytes": 3136
+        },
+        {
+          "locator": "slot-0051/responses/batch-0051.attempt-0001.message.json",
+          "sha256": "24f950b0fe2f551271b59b6de05d896009856bcdb26c1b3e3f8409c4c647de3a",
+          "bytes": 12660
+        },
+        {
+          "locator": "slot-0052/responses/batch-0052.attempt-0001.message.json",
+          "sha256": "7efa739644f20b4b1fff66822da5667960e9c60e2f0c72e49c71da93d00b333f",
+          "bytes": 14896
+        },
+        {
+          "locator": "slot-0053/responses/batch-0053.attempt-0001.message.json",
+          "sha256": "7d8dbab861cf235f01bc0c8cca7d7cff0ac6ff4f55328d968aeb17e40a04bc08",
+          "bytes": 13365
+        },
+        {
+          "locator": "slot-0054/responses/batch-0054.attempt-0001.message.json",
+          "sha256": "370d2c0fb97421e849b0a2444a9c9e5f16077d9ea3acd24a850278f4698bd5f6",
+          "bytes": 14567
+        },
+        {
+          "locator": "slot-0055/responses/batch-0055.attempt-0001.message.json",
+          "sha256": "7a4a2013a52d055d2027953f4af9b5cf8cb66246c9a8e70af290d3969b826a82",
+          "bytes": 15629
+        },
+        {
+          "locator": "slot-0056/responses/batch-0056.attempt-0001.message.json",
+          "sha256": "74bcc933f9bce1e856e822ed1e5b0877419a42000adb86ff9b335c7a574639b5",
+          "bytes": 12408
+        },
+        {
+          "locator": "slot-0057/responses/batch-0057.attempt-0001.message.json",
+          "sha256": "27fc61ad3f1e22b14eb20b5797204ae097ee3f55f8e907fe5552f61256cd4444",
+          "bytes": 13457
+        },
+        {
+          "locator": "slot-0058/responses/batch-0058.attempt-0001.message.json",
+          "sha256": "ad73e3979ec584b25893219219c32392895fb8257e3d549a42f540e8d60d2632",
+          "bytes": 13207
+        },
+        {
+          "locator": "slot-0059/responses/batch-0059.attempt-0001.message.json",
+          "sha256": "93f151e18a0dcf1cbd987fca2d0880e23d275f9f1802cbfb1ec2cc4e2bd8c1c3",
+          "bytes": 12743
+        },
+        {
+          "locator": "slot-0060/responses/batch-0060.attempt-0001.message.json",
+          "sha256": "856d6510cd5f8569184f98fec507da01630175d8569845fd86d3e6f4ada08d95",
+          "bytes": 2879
+        }
+      ]
+    },
+    {
+      "locator": "cwr-qpc24-two-pass-product-confirmation-v3-4ce1204-20260825",
+      "files": [
+        {
+          "locator": "private-freeze.v3.json",
+          "sha256": "790f70deb1f850ab4a668ad1f3e5057eecc11f9641067abd6494f8a95d966001",
+          "bytes": 27385
+        },
+        {
+          "locator": "live-approval.v3.json",
+          "sha256": "15ccd91708cfc7446be596a73d564a90a1cee088c8b1f3146c239f85c3566c94",
+          "bytes": 1583
+        },
+        {
+          "locator": "live-controller-binding.v3.json",
+          "sha256": "4090b58f5ceb8e0f55dd71b815245226c55ff18cb884391c8b2ac8692d63d96d",
+          "bytes": 1017
+        },
+        {
+          "locator": "freeze.py",
+          "sha256": "6df4406c790ca01c30319555a7ecae21abba510e56e00cb150236c3c71c4f443",
+          "bytes": 10181
+        },
+        {
+          "locator": "scheduler-state/claims/gpt_5_6_pro_rewrite-r3-b01.claim.v1.json",
+          "sha256": "5b53aca29c485ebed3925397501a807c14a67f68ef1ce522e4917245ec19d39a",
+          "bytes": 201
+        },
+        {
+          "locator": "scheduler-state/terminals/gpt_5_6_pro_rewrite-r3-b01.terminal.v1.json",
+          "sha256": "b5259a2ce1827c3f12186c9a595f2a47f964dacd069ebff66b6076dc9c2245df",
+          "bytes": 220
+        },
+        {
+          "locator": "scheduler-state/call-receipts/gpt_5_6_pro_rewrite-r3-b01.v1.json",
+          "sha256": "2113f8ab4a234c728a56e0c235b23de75ae8906d769d56a3bbde8dff0aae5f52",
+          "bytes": 913
+        },
+        {
+          "locator": "scheduler-state/reported-identity-receipts/gpt_5_6_pro_rewrite-r3-b01.v1.json",
+          "sha256": "c549d06150b4668ece329a70838066203186740146c46eb9ae29435951887280",
+          "bytes": 416
+        },
+        {
+          "locator": "scheduler-state/claims/gpt_5_6_pro_rewrite-r3-b02.claim.v1.json",
+          "sha256": "ef83654c130d6c335e7fd1ff719e0bff5364695f6cad853537ba10b7fdc16bef",
+          "bytes": 201
+        },
+        {
+          "locator": "scheduler-state/terminals/gpt_5_6_pro_rewrite-r3-b02.terminal.v1.json",
+          "sha256": "c6c29c828cd90167537c0f5a59d8c40daa3ef96ac70253ce6959ba1db50186af",
+          "bytes": 220
+        },
+        {
+          "locator": "scheduler-state/call-receipts/gpt_5_6_pro_rewrite-r3-b02.v1.json",
+          "sha256": "7dca414f78519e91cb53759b15b8e985d98341f7239b1575240de21f2432d947",
+          "bytes": 913
+        },
+        {
+          "locator": "scheduler-state/reported-identity-receipts/gpt_5_6_pro_rewrite-r3-b02.v1.json",
+          "sha256": "a660cb17e7a23c862fa66d57ecfe2a2d7e4ee43631aae4999a8815101f0ff43a",
+          "bytes": 416
+        },
+        {
+          "locator": "scheduler-state/claims/gpt_5_6_pro_rewrite-r3-b03.claim.v1.json",
+          "sha256": "0b0af6de80de077dfebb66b6bb6b17178728411edb9beeab046fdf56dc226f90",
+          "bytes": 201
+        },
+        {
+          "locator": "scheduler-state/terminals/gpt_5_6_pro_rewrite-r3-b03.terminal.v1.json",
+          "sha256": "82461bf119a9df4c1065a9dad5039533cda279014621b4b74fefad6e37abfeab",
+          "bytes": 220
+        },
+        {
+          "locator": "scheduler-state/call-receipts/gpt_5_6_pro_rewrite-r3-b03.v1.json",
+          "sha256": "310da09f6b7c288a77c711dc21b0787c321c42af1ee949c3f252b0a79a25aa7d",
+          "bytes": 913
+        },
+        {
+          "locator": "scheduler-state/reported-identity-receipts/gpt_5_6_pro_rewrite-r3-b03.v1.json",
+          "sha256": "a5833d4c9b723184bf17a70ee91208b98056dbb73fc6c46ed77c9316818d90cd",
+          "bytes": 416
+        },
+        {
+          "locator": "scheduler-state/claims/gpt_5_6_pro_rewrite-r3-b04.claim.v1.json",
+          "sha256": "7fde93c4520e3c621a8ea69dba6ebc4cf0358331aba563a6b6d648dc792f2874",
+          "bytes": 201
+        },
+        {
+          "locator": "scheduler-state/terminals/gpt_5_6_pro_rewrite-r3-b04.terminal.v1.json",
+          "sha256": "73ceff1f19629ee9093e271629784a7eb7557c937a5e2d0e169d84330df4ba96",
+          "bytes": 220
+        },
+        {
+          "locator": "scheduler-state/call-receipts/gpt_5_6_pro_rewrite-r3-b04.v1.json",
+          "sha256": "751d87433237618b3a302465ca383ac1d4c011298531c6a3a89890c10a752ecf",
+          "bytes": 913
+        },
+        {
+          "locator": "scheduler-state/reported-identity-receipts/gpt_5_6_pro_rewrite-r3-b04.v1.json",
+          "sha256": "9aa0d4c3ccd397e4e818ba2089ad0a500461a89a77e4c22974e73f3a03918cf6",
+          "bytes": 416
+        },
+        {
+          "locator": "scheduler-state/claims/gpt_5_6_pro_rewrite-r3-b05.claim.v1.json",
+          "sha256": "f7bc09629ed6562740055bc670a40e18cc4431408a791dd2a07a60a5a61e930c",
+          "bytes": 201
+        },
+        {
+          "locator": "scheduler-state/terminals/gpt_5_6_pro_rewrite-r3-b05.terminal.v1.json",
+          "sha256": "fec4ff655b0f05123a54a2ee86e71be7097cd64d24cdfdaec028589e77b8d2bc",
+          "bytes": 220
+        },
+        {
+          "locator": "scheduler-state/call-receipts/gpt_5_6_pro_rewrite-r3-b05.v1.json",
+          "sha256": "beb4f65d6c9ba273db49ba50a98efbeb0de947d3b15034cf773a2927db0e6af8",
+          "bytes": 913
+        },
+        {
+          "locator": "scheduler-state/reported-identity-receipts/gpt_5_6_pro_rewrite-r3-b05.v1.json",
+          "sha256": "3984a7e09b917005980f2ce3df37d0127d476f5e69ddf31e97a3992de54b0b67",
+          "bytes": 416
+        },
+        {
+          "locator": "scheduler-state/claims/gpt_5_6_pro_rewrite-r3-b06.claim.v1.json",
+          "sha256": "80d25f20ee836f2f50735a6fe4b7001ca8ec806c5c6af4f25ed1f7abf558e8e7",
+          "bytes": 201
+        },
+        {
+          "locator": "scheduler-state/terminals/gpt_5_6_pro_rewrite-r3-b06.terminal.v1.json",
+          "sha256": "506f7f32bfedc4e94fb2be5f518ff88761104f01e0d93d50268a651dab4370ca",
+          "bytes": 220
+        },
+        {
+          "locator": "scheduler-state/call-receipts/gpt_5_6_pro_rewrite-r3-b06.v1.json",
+          "sha256": "d46d4fbbd25b2dc2a3beeb4db77693c7bac62a0a74fc803ae5a8be373f37c939",
+          "bytes": 913
+        },
+        {
+          "locator": "scheduler-state/reported-identity-receipts/gpt_5_6_pro_rewrite-r3-b06.v1.json",
+          "sha256": "2a62924ae7110a63c10daf2f83181fe783a46eb066c8f069ffd803d1737d61a3",
+          "bytes": 416
+        },
+        {
+          "locator": "scheduler-state/claims/gpt_5_6_pro_rewrite-r3-b07.claim.v1.json",
+          "sha256": "69db8ce052bc7e25753dbe0528a92ab16a418bc3fa855d7580a53ee25d9031f1",
+          "bytes": 201
+        },
+        {
+          "locator": "scheduler-state/terminals/gpt_5_6_pro_rewrite-r3-b07.terminal.v1.json",
+          "sha256": "7a9c98a927f58cc3eeda4639228fee3dc80347fa137f8c4f0b879d8a42c9c5dd",
+          "bytes": 220
+        },
+        {
+          "locator": "scheduler-state/call-receipts/gpt_5_6_pro_rewrite-r3-b07.v1.json",
+          "sha256": "8bb5668ef0f708c19893fcbe97d9171880943175b8edd80523e0bda14a6b9cce",
+          "bytes": 913
+        },
+        {
+          "locator": "scheduler-state/reported-identity-receipts/gpt_5_6_pro_rewrite-r3-b07.v1.json",
+          "sha256": "228bf75de66cdd10d06ef649dd65e6cfecba01848677b228754154aa19b5e0ac",
+          "bytes": 416
+        },
+        {
+          "locator": "scheduler-state/claims/gpt_5_6_pro_rewrite-r3-b08.claim.v1.json",
+          "sha256": "c29e109fb2f5e848564dc09226f1389044ab45264e500329c7908688ee0722b0",
+          "bytes": 201
+        },
+        {
+          "locator": "scheduler-state/terminals/gpt_5_6_pro_rewrite-r3-b08.terminal.v1.json",
+          "sha256": "95eb5c6a6b84dc3e243591395fc5c62acd676ef35b1c3579ff88e54a1ee60c80",
+          "bytes": 220
+        },
+        {
+          "locator": "scheduler-state/call-receipts/gpt_5_6_pro_rewrite-r3-b08.v1.json",
+          "sha256": "3b0ecda4e14113fc7d4785d586da489fb5b65c32c8e9454b03f2ed96a04f42bc",
+          "bytes": 913
+        },
+        {
+          "locator": "scheduler-state/reported-identity-receipts/gpt_5_6_pro_rewrite-r3-b08.v1.json",
+          "sha256": "59f163ac22d746c29aa19b9564a847441d084173542820b83481b1b3b6a22099",
+          "bytes": 416
+        },
+        {
+          "locator": "scheduler-state/claims/gpt_5_6_pro_rewrite-r3-b09.claim.v1.json",
+          "sha256": "f498ebf94fbb42ae87d98157d0dd9ee75ae093c5283362c60208abcc0f59a5b9",
+          "bytes": 201
+        },
+        {
+          "locator": "scheduler-state/terminals/gpt_5_6_pro_rewrite-r3-b09.terminal.v1.json",
+          "sha256": "88c53b9b3f65362c3c33b92a0f5a6e7de0c7045b9a1d3bfa7f41dbc1a4c542f5",
+          "bytes": 220
+        },
+        {
+          "locator": "scheduler-state/call-receipts/gpt_5_6_pro_rewrite-r3-b09.v1.json",
+          "sha256": "66bdd63ef9ecb9a6e7d042eb979ded7e9c3c5235243b470b9a622585dbec30a3",
+          "bytes": 913
+        },
+        {
+          "locator": "scheduler-state/reported-identity-receipts/gpt_5_6_pro_rewrite-r3-b09.v1.json",
+          "sha256": "08daeb63eb5f7725ec58b0bda554f6cd2c384828f928f1b5fcb53e383b12a15c",
+          "bytes": 416
+        },
+        {
+          "locator": "scheduler-state/claims/gpt_5_6_pro_rewrite-r3-b10.claim.v1.json",
+          "sha256": "295853b6817e5970c0f83a8db229a315283f185f655dd7b2b74abcc354e7840a",
+          "bytes": 201
+        },
+        {
+          "locator": "scheduler-state/terminals/gpt_5_6_pro_rewrite-r3-b10.terminal.v1.json",
+          "sha256": "b5989fd74bb09c55c1b2af3999013b71a67df1583116b899ae2d2fee42b9bc23",
+          "bytes": 220
+        },
+        {
+          "locator": "scheduler-state/call-receipts/gpt_5_6_pro_rewrite-r3-b10.v1.json",
+          "sha256": "d846630f90406c5d6940f8333453ca916b5cf49579e4d6c912a756ecbf94fee3",
+          "bytes": 913
+        },
+        {
+          "locator": "scheduler-state/reported-identity-receipts/gpt_5_6_pro_rewrite-r3-b10.v1.json",
+          "sha256": "7bad47c6189fbc7179cf2fb66a59cb0764fff9c92299dcebdb5247fe8ac74fd6",
+          "bytes": 416
+        },
+        {
+          "locator": "scheduler-state/claims/public_control_story-r1-b01.claim.v1.json",
+          "sha256": "2cc109f2e5a6a3375ebf520072d81fcd59df7d545c266d132350108323057fe5",
+          "bytes": 203
+        },
+        {
+          "locator": "scheduler-state/terminals/public_control_story-r1-b01.terminal.v1.json",
+          "sha256": "e63424cef8caa8e2e39b0477d3e7e9d4f74288792a55291c6088be833b7b32ab",
+          "bytes": 221
+        },
+        {
+          "locator": "scheduler-state/call-receipts/public_control_story-r1-b01.v1.json",
+          "sha256": "bfee89887ab39068a3bf86aadfd541ed33c222e8f7b5e14267a0a1e3a95fb2a0",
+          "bytes": 914
+        },
+        {
+          "locator": "scheduler-state/reported-identity-receipts/public_control_story-r1-b01.v1.json",
+          "sha256": "26d6539b273e8d6d9fb7c655c6a7395d95b5bd97021056d6b75abca8384c8590",
+          "bytes": 417
+        },
+        {
+          "locator": "scheduler-state/claims/public_control_story-r1-b02.claim.v1.json",
+          "sha256": "b796c58cadf47bf2a3e10473b6976fab95da4754992581831eb557e1569d1ee1",
+          "bytes": 203
+        },
+        {
+          "locator": "scheduler-state/terminals/public_control_story-r1-b02.terminal.v1.json",
+          "sha256": "2a3855b70c5cff9a78bae162ca913a3c8bcf66f30500cccf105c79f43a4ff1be",
+          "bytes": 221
+        },
+        {
+          "locator": "scheduler-state/call-receipts/public_control_story-r1-b02.v1.json",
+          "sha256": "d1aa0b0f26568abd158de4202245ffc3cb78be3d464a727e46664398393e527d",
+          "bytes": 914
+        },
+        {
+          "locator": "scheduler-state/reported-identity-receipts/public_control_story-r1-b02.v1.json",
+          "sha256": "7c6f959d9354a7c5e79c758de6e7954845daedb485123aa660f5b41e9c39bda8",
+          "bytes": 417
+        },
+        {
+          "locator": "scheduler-state/claims/public_control_story-r1-b03.claim.v1.json",
+          "sha256": "5332e63c430113a8ed79ff7c72601b9962d64e44c5cabb6b737d3dc369c35b3f",
+          "bytes": 203
+        },
+        {
+          "locator": "scheduler-state/terminals/public_control_story-r1-b03.terminal.v1.json",
+          "sha256": "f13de575788538818bb76e1eeac8c9c4a0798f7a8a252f73b7cfaf1318dccc73",
+          "bytes": 221
+        },
+        {
+          "locator": "scheduler-state/call-receipts/public_control_story-r1-b03.v1.json",
+          "sha256": "26cc09f6b392b397b4dd1d4a46d70cbd93672ff0a8341b83b5d6aa64924a56cc",
+          "bytes": 914
+        },
+        {
+          "locator": "scheduler-state/reported-identity-receipts/public_control_story-r1-b03.v1.json",
+          "sha256": "5bb6a434d84487a18a0dda6ad489a8040a1da7af06aafd52bea95edc0b7cc1d7",
+          "bytes": 417
+        },
+        {
+          "locator": "scheduler-state/claims/public_control_story-r1-b04.claim.v1.json",
+          "sha256": "1b61812501d466e448dc89d111a7aa5467709f3df7cc09624f3515672f98d0a6",
+          "bytes": 203
+        },
+        {
+          "locator": "scheduler-state/terminals/public_control_story-r1-b04.terminal.v1.json",
+          "sha256": "0965c5ca98ef8773451104f35fb89612caff0dbea33801c187de0007eae414e7",
+          "bytes": 221
+        },
+        {
+          "locator": "scheduler-state/call-receipts/public_control_story-r1-b04.v1.json",
+          "sha256": "97b997f384acfd6eb1d19cf142ccf8361d004448aff410372d64219533f2f6cc",
+          "bytes": 914
+        },
+        {
+          "locator": "scheduler-state/reported-identity-receipts/public_control_story-r1-b04.v1.json",
+          "sha256": "b385e36afcdab7cb1eee60399c75a76c51fa0ccd1463b6a36bd2941f25881631",
+          "bytes": 417
+        },
+        {
+          "locator": "scheduler-state/claims/public_control_story-r1-b05.claim.v1.json",
+          "sha256": "2e75d4304fc449ae68b1e4bf0ddbb544f06ae6af33e2491b2102a9472d5269c8",
+          "bytes": 203
+        },
+        {
+          "locator": "scheduler-state/terminals/public_control_story-r1-b05.terminal.v1.json",
+          "sha256": "5da58697a3ddd5b68fd4ffc1565ad09813000fcfded6a0baf59f1674bd24fd77",
+          "bytes": 221
+        },
+        {
+          "locator": "scheduler-state/call-receipts/public_control_story-r1-b05.v1.json",
+          "sha256": "e3dd311b9d789da946e99a52110b9f4317fec2aec20d6ded8ad1d53a7cd8c840",
+          "bytes": 914
+        },
+        {
+          "locator": "scheduler-state/reported-identity-receipts/public_control_story-r1-b05.v1.json",
+          "sha256": "7e003e6a8a85a138a0187589ad8e305f822eedafbe52c5378b4fa4a0dae92d62",
+          "bytes": 417
+        },
+        {
+          "locator": "scheduler-state/claims/public_control_story-r1-b06.claim.v1.json",
+          "sha256": "2f54a72bcdded62aea9a3806ab04c07e275b5d2c55d52c7827be9caf8a2dc597",
+          "bytes": 203
+        },
+        {
+          "locator": "scheduler-state/terminals/public_control_story-r1-b06.terminal.v1.json",
+          "sha256": "adcf05400b8c190bed594391e93707781ba6e773f73c868eb32317c889f91553",
+          "bytes": 221
+        },
+        {
+          "locator": "scheduler-state/call-receipts/public_control_story-r1-b06.v1.json",
+          "sha256": "866952f647c6284bf6334c2de9d5496eb0da21786b5b999cae15f2cb1ee22509",
+          "bytes": 914
+        },
+        {
+          "locator": "scheduler-state/reported-identity-receipts/public_control_story-r1-b06.v1.json",
+          "sha256": "75284cf672abf92ef7ca5f45895686d6a563d205d691d21200db661c9b10bd04",
+          "bytes": 417
+        },
+        {
+          "locator": "scheduler-state/claims/public_control_story-r1-b07.claim.v1.json",
+          "sha256": "b16db07643e988d857c1ac9f1ef865ebd6d3d334a586a5b178312200188ad717",
+          "bytes": 203
+        },
+        {
+          "locator": "scheduler-state/terminals/public_control_story-r1-b07.terminal.v1.json",
+          "sha256": "ddc50198f0b04fdf76fcfae06df9ed7196ea148b9cc845597b08514d8359ba3a",
+          "bytes": 221
+        },
+        {
+          "locator": "scheduler-state/call-receipts/public_control_story-r1-b07.v1.json",
+          "sha256": "da7e139ba1e1cad79af6e5eca5c937ec0cd14451e83fc329e4e7de1a7a7f94f8",
+          "bytes": 914
+        },
+        {
+          "locator": "scheduler-state/reported-identity-receipts/public_control_story-r1-b07.v1.json",
+          "sha256": "8652912fc4dc7e1f9767ab4385b1e3f0fc1c01de271f653305dd32261b79299b",
+          "bytes": 417
+        },
+        {
+          "locator": "scheduler-state/claims/public_control_story-r1-b08.claim.v1.json",
+          "sha256": "a86a534cf9e72023a43bdedfc04e7c1b0b516cea2c5e4e08813a5756242a872e",
+          "bytes": 203
+        },
+        {
+          "locator": "scheduler-state/terminals/public_control_story-r1-b08.terminal.v1.json",
+          "sha256": "4f400a50c119518020d70e2d550ceb1ab610ea62c42754aed9a9b81e14c475ec",
+          "bytes": 221
+        },
+        {
+          "locator": "scheduler-state/call-receipts/public_control_story-r1-b08.v1.json",
+          "sha256": "7ca0113dad5e11109d8715ada2834b40fd62bab8349b19ec44f96ddf7f6d252d",
+          "bytes": 914
+        },
+        {
+          "locator": "scheduler-state/reported-identity-receipts/public_control_story-r1-b08.v1.json",
+          "sha256": "7c7fca96bf45f3ab71368efd13cd4b56ac154ba01841648a399fbe655ea6f0f9",
+          "bytes": 417
+        },
+        {
+          "locator": "scheduler-state/claims/public_control_story-r1-b09.claim.v1.json",
+          "sha256": "707241be70b8da362976ae136eeb0813218b0587abfa45644a826749ee27feca",
+          "bytes": 203
+        },
+        {
+          "locator": "scheduler-state/terminals/public_control_story-r1-b09.terminal.v1.json",
+          "sha256": "293b68e89e030c35854b60c55f25d27364d79e394fe5050bdacd1c6544dd3b91",
+          "bytes": 221
+        },
+        {
+          "locator": "scheduler-state/call-receipts/public_control_story-r1-b09.v1.json",
+          "sha256": "6dda7a5c86fc65d49909f4a272f1e198fae3927da734f2535211053e2a6f3f68",
+          "bytes": 914
+        },
+        {
+          "locator": "scheduler-state/reported-identity-receipts/public_control_story-r1-b09.v1.json",
+          "sha256": "fc462fecf820e72b2a22db06f79dc3f203153928970e27b4bc284bfa64b04769",
+          "bytes": 417
+        },
+        {
+          "locator": "scheduler-state/claims/public_control_story-r1-b10.claim.v1.json",
+          "sha256": "dbfc31a8a4e201af005ca2d61997bd7bfb42b2e11a886d42b4650c4ef7346d68",
+          "bytes": 203
+        },
+        {
+          "locator": "scheduler-state/terminals/public_control_story-r1-b10.terminal.v1.json",
+          "sha256": "081ace66196e0d5e876df23af2cc61dec1c8f4c74ae7f13d182113aadc21a11d",
+          "bytes": 221
+        },
+        {
+          "locator": "scheduler-state/call-receipts/public_control_story-r1-b10.v1.json",
+          "sha256": "5321d307434e1ba70f83369b0df505b753c6500b177f7fb01ffb2abc2fb8a48a",
+          "bytes": 914
+        },
+        {
+          "locator": "scheduler-state/reported-identity-receipts/public_control_story-r1-b10.v1.json",
+          "sha256": "beb17aed5e1c6fc009fa7c317826129687d9cf8595d68154def7d15801283fb9",
+          "bytes": 417
+        },
+        {
+          "locator": "scheduler-state/claims/public_control_story-r2-b01.claim.v1.json",
+          "sha256": "09c2a347e65255ab3c7d05d48bf7b9c27058cd79b9682ba1193fedb49e01cdfa",
+          "bytes": 203
+        },
+        {
+          "locator": "scheduler-state/terminals/public_control_story-r2-b01.terminal.v1.json",
+          "sha256": "dc9bbb9d736c2c944d66d2d2dd9c7d76489e3b0a72c525b9d847407335d7afb2",
+          "bytes": 221
+        },
+        {
+          "locator": "scheduler-state/call-receipts/public_control_story-r2-b01.v1.json",
+          "sha256": "39a85ccfa9a07f538d07cac6e89a2dc46573a0fdc869dd642402428c3f15bc68",
+          "bytes": 914
+        },
+        {
+          "locator": "scheduler-state/reported-identity-receipts/public_control_story-r2-b01.v1.json",
+          "sha256": "aacd9ea956e51759235cf8cd21782e1e11b89641fca85938ae0e7c9ca3f4ecac",
+          "bytes": 417
+        },
+        {
+          "locator": "scheduler-state/claims/public_control_story-r2-b02.claim.v1.json",
+          "sha256": "247ee88fb2b347690e18c9d0b2814141003c507b4178b0b94bb11b3d54075679",
+          "bytes": 203
+        }
+      ]
+    },
+    {
+      "locator": "cwr-qpc24-two-pass-live-work-v3-4ce1204-20260825",
+      "files": [
+        {
+          "locator": "slot-0071/responses/batch-0071.attempt-0001.message.json",
+          "sha256": "dc93d1a55f1957d1c787075ea2bbeea0303c21e584358c417527cb6852213805",
+          "bytes": 15019
+        },
+        {
+          "locator": "slot-0072/responses/batch-0072.attempt-0001.message.json",
+          "sha256": "4dafad95a1e7335690f4a7f9d9220ef78084bb8be77dc14e35c420d985302cd4",
+          "bytes": 16428
+        },
+        {
+          "locator": "slot-0073/responses/batch-0073.attempt-0001.message.json",
+          "sha256": "ef996bebe3abc021a87205e6c20533edaf9dd651177c03f4522c4ff58badb3a8",
+          "bytes": 14643
+        },
+        {
+          "locator": "slot-0074/responses/batch-0074.attempt-0001.message.json",
+          "sha256": "3211e1163a37cfec5a5fc17875e371df0e8f2aedc8eee21df2f1b0aacdce63c1",
+          "bytes": 15363
+        },
+        {
+          "locator": "slot-0075/responses/batch-0075.attempt-0001.message.json",
+          "sha256": "d69eff9ef51754b2ea7ff00e27a297ca1c601beaefda4583fe4b519799781ff2",
+          "bytes": 14359
+        },
+        {
+          "locator": "slot-0076/responses/batch-0076.attempt-0001.message.json",
+          "sha256": "be09fd6932103001a7915f0dc7015b05a499faaf57eabd6227203b30c3ff9885",
+          "bytes": 15351
+        },
+        {
+          "locator": "slot-0077/responses/batch-0077.attempt-0001.message.json",
+          "sha256": "428294c368e32b2438be275a5e501d7a40c9175dbb8935cd79c893921dcb04de",
+          "bytes": 15367
+        },
+        {
+          "locator": "slot-0078/responses/batch-0078.attempt-0001.message.json",
+          "sha256": "335f929532a0cf2acc1550d21bed9b5d8d5da76c1b288b1aa25eaa944db35f10",
+          "bytes": 13266
+        },
+        {
+          "locator": "slot-0079/responses/batch-0079.attempt-0001.message.json",
+          "sha256": "6f633a04d2766407c8a2215dbba1338fe2e07f2548b9092e40df20f5265b0a1d",
+          "bytes": 11614
+        },
+        {
+          "locator": "slot-0080/responses/batch-0080.attempt-0001.message.json",
+          "sha256": "93bc16bdb0b94da1998dc7417203de9764b9e4d73755d336e610ac10e882a3d3",
+          "bytes": 2928
+        },
+        {
+          "locator": "slot-0101/responses/batch-0101.attempt-0001.message.json",
+          "sha256": "640dcb2149716dafe531ff2ce008319250b3fa38eaa4923c3c59d53e77bc214c",
+          "bytes": 12054
+        },
+        {
+          "locator": "slot-0102/responses/batch-0102.attempt-0001.message.json",
+          "sha256": "2a8811669d29ee8bf2ef46b2bc02c81e47eab447c57c3476efe8206f0f406bc4",
+          "bytes": 16658
+        },
+        {
+          "locator": "slot-0103/responses/batch-0103.attempt-0001.message.json",
+          "sha256": "89a0b8b63e7d03a521861779975cc0106b3e10b18fc1160397dd0d465c25abd6",
+          "bytes": 12713
+        },
+        {
+          "locator": "slot-0104/responses/batch-0104.attempt-0001.message.json",
+          "sha256": "27df15d1a1ca622c2957ecba5d2b9d7f9fbd935747f431c11c5f981f5d99a2e4",
+          "bytes": 14236
+        },
+        {
+          "locator": "slot-0105/responses/batch-0105.attempt-0001.message.json",
+          "sha256": "80e8c131efe9b7573d1e7cdcb30d1eca8a283045582d1ab47bd4b1db1aae1a67",
+          "bytes": 14982
+        },
+        {
+          "locator": "slot-0106/responses/batch-0106.attempt-0001.message.json",
+          "sha256": "1f77c024d7b5b05700e03547123a14c6f1e2b07e1416d6810ebd8fffb4792414",
+          "bytes": 13466
+        },
+        {
+          "locator": "slot-0107/responses/batch-0107.attempt-0001.message.json",
+          "sha256": "09669d0b41b0fe4406adc5cbff8176c1cfa3b65392b6ff884ca9c3f7f2dbf4af",
+          "bytes": 10968
+        },
+        {
+          "locator": "slot-0108/responses/batch-0108.attempt-0001.message.json",
+          "sha256": "2d5e5c6e38017e7a7a77c5b5bf8b0b5a168ca76a7efbb2729600518aa9d1c006",
+          "bytes": 12307
+        },
+        {
+          "locator": "slot-0109/responses/batch-0109.attempt-0001.message.json",
+          "sha256": "85e1901f03244818cc7caeb4283888795dcc31ddc1b7932066ac3f8be2b4ca50",
+          "bytes": 12839
+        },
+        {
+          "locator": "slot-0110/responses/batch-0110.attempt-0001.message.json",
+          "sha256": "8be91ed8495a8cb6e590390058fe29e0365f80842c45a649f35e7535299e9424",
+          "bytes": 3119
+        },
+        {
+          "locator": "slot-0111/responses/batch-0111.attempt-0001.message.json",
+          "sha256": "934f8c1fdf789fb5eff0af855701b3610423d9f29ff6747d044445d8bb1969e6",
+          "bytes": 11665
+        }
+      ]
+    },
+    {
+      "locator": "cwr-qpc24-two-pass-product-confirmation-v5-4ce1204-20260825",
+      "files": [
+        {
+          "locator": "private-freeze.v1.json",
+          "sha256": "bb18cd4b87a37c034f282a604f706076b3553cf95e736f58660278faa43ca686",
+          "bytes": 59893
+        },
+        {
+          "locator": "live-approval.v1.json",
+          "sha256": "fed36fc6b910366a256f57d5089ed68c211ede48ea6e96ede5d5e0f4e6a86804",
+          "bytes": 1379
+        },
+        {
+          "locator": "live-controller-binding.v1.json",
+          "sha256": "01692b23901ac19890a11560c829e4a8dfe4f774921ddf35c2e5ae17a4628034",
+          "bytes": 1017
+        },
+        {
+          "locator": "freeze.py",
+          "sha256": "2b3a5a247064cc6515aaeed164dadd1c11e623ab974e180d561a238b7209a294",
+          "bytes": 11515
+        },
+        {
+          "locator": "settlement.v1.json",
+          "sha256": "80d3e7af8eaa75a05157eb40d706f7238e0dc44f741cafc53ebcc2e35aba765a",
+          "bytes": 6794
+        },
+        {
+          "locator": "settlement.v2.json",
+          "sha256": "6e4f1654b4d5493eeb3a99fcebd4b110fe68790a9011440784551e94e151b74e",
+          "bytes": 1474
+        },
+        {
+          "locator": "settle.py",
+          "sha256": "2f302b310476d765bc3914b8cf5c73634c2f634c2cadf5341061b086d8d7a90a",
+          "bytes": 9714
+        },
+        {
+          "locator": "settle_v2.py",
+          "sha256": "ebaeb7a9ce6c8ac016e0880618fe728e01436439750fe8c4e1e35d546dc1b7d5",
+          "bytes": 8627
+        },
+        {
+          "locator": "scheduler-state/claims/public_control_story-r3-b01.claim.v1.json",
+          "sha256": "04feeedea35907809bb28d8139b1231e948187ee6b0a1712de3a9bf20a092e6e",
+          "bytes": 203
+        },
+        {
+          "locator": "scheduler-state/terminals/public_control_story-r3-b01.terminal.v1.json",
+          "sha256": "80072aac71293bbf61614584034d29e77e3398aa857795c37c701c9e86a95f14",
+          "bytes": 221
+        },
+        {
+          "locator": "scheduler-state/call-receipts/public_control_story-r3-b01.v1.json",
+          "sha256": "4bae26072643e3827bd8db94ad127fc93c7f76d9996101734adca47fe058adbd",
+          "bytes": 914
+        },
+        {
+          "locator": "scheduler-state/reported-identity-receipts/public_control_story-r3-b01.v1.json",
+          "sha256": "9f01ea1385f0b7e3217788a6643f1de4d9b97f5715dc3f8b2b697c948643b733",
+          "bytes": 417
+        },
+        {
+          "locator": "scheduler-state/claims/public_control_story-r3-b02.claim.v1.json",
+          "sha256": "45c123f367a6d696fedb59288384299278306cde7b28c93c33e090bd2bad039f",
+          "bytes": 203
+        },
+        {
+          "locator": "scheduler-state/terminals/public_control_story-r3-b02.terminal.v1.json",
+          "sha256": "a600d113fe3581d5087fcd263642b732a888126e68ddd7b4357107af68161f21",
+          "bytes": 221
+        },
+        {
+          "locator": "scheduler-state/call-receipts/public_control_story-r3-b02.v1.json",
+          "sha256": "b9c232d018876d7018b9905e2a4f111667bf09d61f6ebb4644fad3e981c56741",
+          "bytes": 914
+        },
+        {
+          "locator": "scheduler-state/reported-identity-receipts/public_control_story-r3-b02.v1.json",
+          "sha256": "9e3f2d1da4a4abb297c9633510ba9569e8ad2013b0ceb56b81291d6164b2e6fc",
+          "bytes": 417
+        },
+        {
+          "locator": "scheduler-state/claims/public_control_story-r3-b03.claim.v1.json",
+          "sha256": "0a7f6520870ac30e19aaf5555f0afe78c1184440422d01464a2a80f0b7850315",
+          "bytes": 203
+        },
+        {
+          "locator": "scheduler-state/terminals/public_control_story-r3-b03.terminal.v1.json",
+          "sha256": "aaacf90e485400417730876dacb6d455e24b9a07c083aa6eced64fa059b02696",
+          "bytes": 221
+        },
+        {
+          "locator": "scheduler-state/call-receipts/public_control_story-r3-b03.v1.json",
+          "sha256": "bc271142cd50daecad42f2decf868fdcd9cc6fda82ceecad289c6ef7bd91a5b1",
+          "bytes": 914
+        },
+        {
+          "locator": "scheduler-state/reported-identity-receipts/public_control_story-r3-b03.v1.json",
+          "sha256": "47bc40d17633aba8b327dfd4b99ce86b3211b4e764b82a4e5477d2a63fa3c9d2",
+          "bytes": 417
+        },
+        {
+          "locator": "scheduler-state/claims/public_control_story-r3-b04.claim.v1.json",
+          "sha256": "86bdf2f08bb76db0a9a9193a35c42c23a85d77cfd58aa50a5896470a09fe4c6e",
+          "bytes": 203
+        },
+        {
+          "locator": "scheduler-state/terminals/public_control_story-r3-b04.terminal.v1.json",
+          "sha256": "7f3549e15a4887f04065a78b325965f8d9aa709e80a74cf055653d099104cff4",
+          "bytes": 221
+        },
+        {
+          "locator": "scheduler-state/call-receipts/public_control_story-r3-b04.v1.json",
+          "sha256": "9cf8d2fc501328c762048a2019acb9e006604a0efda69f113122e2c893bb814a",
+          "bytes": 914
+        },
+        {
+          "locator": "scheduler-state/reported-identity-receipts/public_control_story-r3-b04.v1.json",
+          "sha256": "b049ffd5c4b11bf57013444e515eb5aa063f53af1743362e354ed96a584511fd",
+          "bytes": 417
+        },
+        {
+          "locator": "scheduler-state/claims/public_control_story-r3-b05.claim.v1.json",
+          "sha256": "90582c70c0f6782ad0982990cba38283cd226cfc017f453b5fc8dcaa846f65de",
+          "bytes": 203
+        },
+        {
+          "locator": "scheduler-state/terminals/public_control_story-r3-b05.terminal.v1.json",
+          "sha256": "76d2470a309b4e858596f84c0c856a52b009eb08dfb70a3698f7b2c385b835b7",
+          "bytes": 221
+        },
+        {
+          "locator": "scheduler-state/call-receipts/public_control_story-r3-b05.v1.json",
+          "sha256": "afff9149b56dec282b0ae28d6b01382ec2a72999d215c2928c57be1cc5075c21",
+          "bytes": 914
+        },
+        {
+          "locator": "scheduler-state/reported-identity-receipts/public_control_story-r3-b05.v1.json",
+          "sha256": "65c51adf83d7b60ab538856f1ac6de91ae2f643b9d49174c29fcd5eb102cba1d",
+          "bytes": 417
+        },
+        {
+          "locator": "scheduler-state/claims/public_control_story-r3-b06.claim.v1.json",
+          "sha256": "d5a090a490b2755c6012c7aba7fbc6a35525cecb180ef513ba5c134fe3c3a4e9",
+          "bytes": 203
+        },
+        {
+          "locator": "scheduler-state/terminals/public_control_story-r3-b06.terminal.v1.json",
+          "sha256": "656f975f9a38345062e3333451a5e41fa1bb952ae018a1df84566bc94c006363",
+          "bytes": 221
+        },
+        {
+          "locator": "scheduler-state/call-receipts/public_control_story-r3-b06.v1.json",
+          "sha256": "dc6db811d3466eb6def32503b45404bd799750f476b61049ae82a3264b460c79",
+          "bytes": 914
+        },
+        {
+          "locator": "scheduler-state/reported-identity-receipts/public_control_story-r3-b06.v1.json",
+          "sha256": "d0e1fcdde7db837d576bc36eb0bda2485bd2348d26dc069a14aade8fa62a2ef2",
+          "bytes": 417
+        },
+        {
+          "locator": "scheduler-state/claims/public_control_story-r3-b07.claim.v1.json",
+          "sha256": "6000f846e285e45c3c394ceef58152498b5920503b7dcf9c4935d4d9ae8bfe40",
+          "bytes": 203
+        },
+        {
+          "locator": "scheduler-state/terminals/public_control_story-r3-b07.terminal.v1.json",
+          "sha256": "54c29bc7216e67cd51a3cec4158753eee1d05760473aaf359dc060b2e4537e80",
+          "bytes": 221
+        },
+        {
+          "locator": "scheduler-state/call-receipts/public_control_story-r3-b07.v1.json",
+          "sha256": "3ec2375140c654a39ffa68162429e4ee9ee45f32d304eb842aafa74a30ef87ca",
+          "bytes": 914
+        },
+        {
+          "locator": "scheduler-state/reported-identity-receipts/public_control_story-r3-b07.v1.json",
+          "sha256": "682d97b0b9bf2da8c6e895cbe3409e3e6803e72412bcd9bb6de6813b2febed8e",
+          "bytes": 417
+        },
+        {
+          "locator": "scheduler-state/claims/public_control_story-r3-b08.claim.v1.json",
+          "sha256": "683bbf78229ee8813f84744c66481d78f7e85f00daf7811efbd8f8596ece57de",
+          "bytes": 203
+        },
+        {
+          "locator": "scheduler-state/terminals/public_control_story-r3-b08.terminal.v1.json",
+          "sha256": "cc73d511c18cbd8d6f55b0be38f58e9cd64a8d8090719ef859a93f35feaec75d",
+          "bytes": 221
+        },
+        {
+          "locator": "scheduler-state/call-receipts/public_control_story-r3-b08.v1.json",
+          "sha256": "2cc35dc3827c8ff1d90ad8b2c7e86972a60a9ffe7a22f50b2029151cb4411d1c",
+          "bytes": 914
+        },
+        {
+          "locator": "scheduler-state/reported-identity-receipts/public_control_story-r3-b08.v1.json",
+          "sha256": "2580d79c79ad2826c1c630bcbeba536362bcda153f9d3dbf3e93c9b51608adf8",
+          "bytes": 417
+        },
+        {
+          "locator": "scheduler-state/claims/public_control_story-r3-b09.claim.v1.json",
+          "sha256": "abcc16db4075e6b538408d84a24253cfe987b6cc6128c11d598aae28e0d287f2",
+          "bytes": 203
+        },
+        {
+          "locator": "scheduler-state/terminals/public_control_story-r3-b09.terminal.v1.json",
+          "sha256": "c03ba8e09fb6d364943b278322cc194dc802f59645020a8b0bd9a335a6e08f9e",
+          "bytes": 221
+        },
+        {
+          "locator": "scheduler-state/call-receipts/public_control_story-r3-b09.v1.json",
+          "sha256": "3b278e36ebb0cd0371bf4db8a4b2c03c5cf04e1a20e08c92d0140e5462e6481c",
+          "bytes": 914
+        },
+        {
+          "locator": "scheduler-state/reported-identity-receipts/public_control_story-r3-b09.v1.json",
+          "sha256": "adb63ad7cffd771ce3deabcb1878c053bab7cc2ea2fa3785567f85b0607d4648",
+          "bytes": 417
+        },
+        {
+          "locator": "scheduler-state/claims/public_control_story-r3-b10.claim.v1.json",
+          "sha256": "c3c36687dcedaa31d6237948f5c8310f265020056e0bc5aa8bb6632ce8e7e6ce",
+          "bytes": 203
+        },
+        {
+          "locator": "scheduler-state/terminals/public_control_story-r3-b10.terminal.v1.json",
+          "sha256": "f71cabc6cc24f81bb535a270dc284c74fc5477ad14bc7c71797a1a7f35b28699",
+          "bytes": 221
+        },
+        {
+          "locator": "scheduler-state/call-receipts/public_control_story-r3-b10.v1.json",
+          "sha256": "b558ee0e8bdb814700167b706cc2b947bd275e8ed6470fac86fdd1a83feee456",
+          "bytes": 914
+        },
+        {
+          "locator": "scheduler-state/reported-identity-receipts/public_control_story-r3-b10.v1.json",
+          "sha256": "bd6684fe2c1a8670df8c41462b42f655fd179af085a723f87df9d151a623fc71",
+          "bytes": 417
+        }
+      ]
+    },
+    {
+      "locator": "cwr-qpc24-two-pass-live-work-v5-4ce1204-20260825",
+      "files": [
+        {
+          "locator": "slot-0121/responses/batch-0121.attempt-0001.message.json",
+          "sha256": "8cd4bf1b1e7ec188a86ad0cc7c9e22cdac068d810c6618633b745540971e6e26",
+          "bytes": 11416
+        },
+        {
+          "locator": "slot-0122/responses/batch-0122.attempt-0001.message.json",
+          "sha256": "5a9f90419b4470833165c85ca18a809f93f523b9bd90ad8ac6b48a75285b5d6e",
+          "bytes": 13844
+        },
+        {
+          "locator": "slot-0123/responses/batch-0123.attempt-0001.message.json",
+          "sha256": "c5a9121a24eee02adc24fd00d5ae4a5e35e1c6965b691251ffbbd4c64147a9f8",
+          "bytes": 15962
+        },
+        {
+          "locator": "slot-0124/responses/batch-0124.attempt-0001.message.json",
+          "sha256": "c645c929076e5bb9828f61201cbc2cc76bac4adc8525f5e044f81ca0bf77f93f",
+          "bytes": 14762
+        },
+        {
+          "locator": "slot-0125/responses/batch-0125.attempt-0001.message.json",
+          "sha256": "c65c48b8cef7117961e8db8db4edccaac8b5605b925afbd2db3c5c6747b8dacf",
+          "bytes": 12157
+        },
+        {
+          "locator": "slot-0126/responses/batch-0126.attempt-0001.message.json",
+          "sha256": "0726c20c0366c68279f5db0a04ae20f3cd86cdc35b6638f2551ef2cd2c4f7589",
+          "bytes": 14918
+        },
+        {
+          "locator": "slot-0127/responses/batch-0127.attempt-0001.message.json",
+          "sha256": "6218f3a5577f809fc3a38d7bface6051fe7462e336345b9cc1a7dff70c8d2585",
+          "bytes": 15094
+        },
+        {
+          "locator": "slot-0128/responses/batch-0128.attempt-0001.message.json",
+          "sha256": "0042586b226068ade1b8ab24e8b35d3a759438fd1d40d7437842003ebda2475e",
+          "bytes": 12298
+        },
+        {
+          "locator": "slot-0129/responses/batch-0129.attempt-0001.message.json",
+          "sha256": "43aae3427eb4b6c92fea508dd895b5c9caf536e7f8c173c866858a4e03e45ceb",
+          "bytes": 13030
+        },
+        {
+          "locator": "slot-0130/responses/batch-0130.attempt-0001.message.json",
+          "sha256": "e607e22ccc4f58d4898d085c6c3f8be1da81d9144ebd70d93a914103ff122b59",
+          "bytes": 2813
+        }
+      ]
+    },
+    {
+      "locator": "cwr-qpc24-exact-head-controller-4ce1204-20260825",
+      "files": [
+        {
+          "locator": "qpc24-private-controller.v1.json",
+          "sha256": "182698bcd0615b9ec13309a9745e86e13d37c8c4803ef6152e154c7bcf4942f9",
+          "bytes": 2735
+        },
+        {
+          "locator": "qpc24-private-binding.v1.json",
+          "sha256": "1f769960213062de0709d6c2f483567c40cdea1239ca54420dfa77ef322384fd",
+          "bytes": 25761
+        },
+        {
+          "locator": "qpc24-private-executor-binding.v4.json",
+          "sha256": "135aa2412a6a3068b370fbddce93327372ed1dcd9430ac8048df8a79c1544845",
+          "bytes": 412
+        },
+        {
+          "locator": "private_executor.py",
+          "sha256": "18d94e987ecd7f6b4db7da4d7834377e7cba8d2bb4071fbb03db6e72e8a78dc7",
+          "bytes": 15617
+        }
+      ]
+    }
+  ],
+  "packages": {
+    "v2": {
+      "root": "cwr-qpc24-two-pass-product-confirmation-v2-4ce1204-20260825",
+      "neutral_root": "cwr-qpc24-two-pass-live-work-v2-4ce1204-20260825",
+      "freeze": "private-freeze.v3.json",
+      "approval": "live-approval.v3.json"
+    },
+    "v3": {
+      "root": "cwr-qpc24-two-pass-product-confirmation-v3-4ce1204-20260825",
+      "neutral_root": "cwr-qpc24-two-pass-live-work-v3-4ce1204-20260825",
+      "freeze": "private-freeze.v3.json",
+      "approval": "live-approval.v3.json"
+    },
+    "v5": {
+      "root": "cwr-qpc24-two-pass-product-confirmation-v5-4ce1204-20260825",
+      "neutral_root": "cwr-qpc24-two-pass-live-work-v5-4ce1204-20260825",
+      "freeze": "private-freeze.v1.json",
+      "approval": "live-approval.v1.json"
+    }
+  },
+  "controller_root": "cwr-qpc24-exact-head-controller-4ce1204-20260825",
+  "membership": {
+    "v2": [
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44,
+      45,
+      46,
+      47,
+      48,
+      49,
+      50,
+      51,
+      52,
+      53,
+      54,
+      55,
+      56,
+      57,
+      58,
+      59,
+      60
+    ],
+    "v3": [
+      71,
+      72,
+      73,
+      74,
+      75,
+      76,
+      77,
+      78,
+      79,
+      80,
+      101,
+      102,
+      103,
+      104,
+      105,
+      106,
+      107,
+      108,
+      109,
+      110
+    ],
+    "v5": [
+      121,
+      122,
+      123,
+      124,
+      125,
+      126,
+      127,
+      128,
+      129,
+      130
+    ]
+  },
+  "excluded_indexes": [
+    111
+  ],
+  "expected": {
+    "requests": 60,
+    "positions": 1326,
+    "chains_by_origin": {
+      "v2": 30,
+      "v3": 20,
+      "v5": 10
+    },
+    "positions_per_pass": 221,
+    "batches_per_pass": 10
+  },
+  "question_sequence_sha256": "22c7c011189072b746eef4cd6aaf0b4da8cb21fd4786e9920593a4e9828602ce",
+  "question_sequence_representation": "canonical compact JSON UTF8 plus LF",
+  "sequence_source": {
+    "locator": "evaluation-results/hbq-qpc24-exact-head-successor-v1/study.py",
+    "sha256": "2c0c774467201a0fdd3e7c535cfdda4442d840e38a4431dd5f1552e4daa4515a",
+    "field": "QUESTION_SEQUENCE_SHA256"
+  },
+  "outbound_prompt_snapshots": "not independently verified; inherited commitments only"
+}
