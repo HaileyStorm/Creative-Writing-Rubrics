@@ -20,6 +20,11 @@ c = importlib.util.module_from_spec(spec); spec.loader.exec_module(c)
 RANGES = {'hbq': (0, 100), 'ttcw14': (0, 1), 'holistic': (1, 7), 'compact': (1, 5), 'oregon': (6, 36)}
 STATES = ('YES', 'NO', 'NOT_APPLICABLE', 'CANNOT_ASSESS')
 HUMAN_PROFILE_SHA = 'cd90bc17ae1ea1e0f2113f7c2b497eb47c59962a8891a91c1883bb3865b121e5'
+DECODE_COLLECTOR_SHA = 'f9bd97b14220e50c174930d0938f540e4f566022be786a4f3a4f24d0b568e30a'
+DECODE_READER_SHA = 'f285d228607c26cca0009d17626e7d6915f3d715e3b29f02784a25c682f4be68'
+SLOT5_READER_SHA = 'fe04fb5b85b41ba236bdf577deeaf4c8862f4df54bffe00369a57410a64fc055'
+ADOPTION_POLICY = 'matched_lamp_analysis_effective_decode_adoption_v1'
+EFFECTIVE_GATE_POLICY = 'matched_lamp_all17808_effective_complete_terminal_explicit_release_v1'
 
 
 def fraction(a, b):
@@ -62,24 +67,130 @@ def load_manifest(path, expected_sha, tools):
     return manifest, root, subset, validator, receipts, hbq
 
 
-def collect_evidence(manifest, manifest_sha, root, tools, outputs, subset, validator, receipts):
+def decode_implementation():
+    c.p.checked(HERE / 'collector_decode.py', DECODE_COLLECTOR_SHA)
+    module = c.p.load('lamp_analysis_decode_collection', HERE / 'collector_decode.py')
+    return module, module.implementation(DECODE_READER_SHA)
+
+
+def load_decode_adoption(manifest, root, tools, output, expected_job_sha, route_root, route_sha,
+                         *, slot5_receipt=None, slot5_receipt_sha=None):
+    d, reader = decode_implementation()
+    c.require(output.resolve() == d.TARGET.resolve(), 'Named decode continuation output differs')
+    c.require(route_root.resolve() == Path(r'C:\Users\Haile\.codex\state\model-work-queue-cwr-placeholder-r31').resolve(), 'Decode route root differs')
+    binding = json.loads(c.p.checked(output / 'job.json', expected_job_sha))
+    imported_raw = (output / 'imported-prefix.json').read_bytes(); imported = json.loads(imported_raw)
+    c.require(imported['policy'] == d.POLICY and imported['source_job_sha256'] == d.SOURCE_JOB_SHA
+              and Path(imported['source_root_local_only']).resolve() == d.SOURCE.resolve()
+              and imported['reserved_through'] == 5 and len(imported['entries']) == len(imported['native_ids']) == 5
+              and len(set(imported['native_ids'])) == 5, 'Decode source prefix provenance differs')
+    route = binding['route']
+    c.require(c.digest(c.canonical(route).rstrip(b'\n')) == route_sha, 'Frozen decode route pin differs')
+    expected = d.job_binding(manifest, root, tools, route, binding['workers'], DECODE_COLLECTOR_SHA, DECODE_READER_SHA, imported)
+    c.require(binding == expected and (output / 'frozen-manifest.json').read_bytes() == (root / 'manifest.json').read_bytes(),
+              'Decode job or raw frozen manifest binding differs')
+    overlay = None
+    c.require((slot5_receipt is None) == (slot5_receipt_sha is None), 'Slot5 requires an explicit receipt and hash together')
+    if slot5_receipt is not None:
+        path = HERE.parent / 'hbq-native-transport-recovery-v1/reconcile_lamp_final_stream.py'
+        c.p.checked(path, SLOT5_READER_SHA)
+        verifier = c.p.load('lamp_analysis_slot5_final_stream', path)
+        overlay = verifier.verify(slot5_receipt, slot5_receipt_sha)
+        c.require(overlay['implementation_sha256'] == SLOT5_READER_SHA, 'Slot5 implementation pin differs')
+    return {'module': d, 'reader': reader, 'binding': binding, 'imported': imported, 'route_root': route_root,
+            'overlay': overlay, 'provenance': {'policy': ADOPTION_POLICY, 'collector_sha256': DECODE_COLLECTOR_SHA,
+                'reader_sha256': DECODE_READER_SHA, 'job_sha256': expected_job_sha,
+                'imported_prefix_sha256': c.digest(imported_raw), 'route_sha256': route_sha,
+                'route_root_locator_sha256': c.digest(str(route_root.resolve()).encode()),
+                'slot5_receipt_sha256': slot5_receipt_sha, 'slot5_reader_sha256': SLOT5_READER_SHA if overlay else None,
+                'original_prefix_preserved': True, 'new_votes': 0, 'strict_v5_reinterpretation': False}}
+
+
+def adopt_slot5(row, terminal, overlay, adoption):
+    d = adoption['module']; imported = adoption['imported']; effective = overlay['effective_terminal']
+    entry = imported['entries'][4]
+    c.require(row['endpoint'] == 'grok' and row['endpoint_ordinal'] == 5 and terminal['state'] == 'ambiguous'
+              and entry['policy'] == d.INCOMPLETE_PREFIX_POLICY and entry['effective_terminal'] == terminal,
+              'Slot5 overlay requires its original reserved ambiguity')
+    c.require(overlay['policy'] == 'saved_canonical_final_stream_projection_v1'
+              and overlay['source_job_sha256'] == d.SOURCE_JOB_SHA
+              and overlay['request_sha256'] == row['request_sha256']
+              and Path(overlay['source_sample_local_only']).resolve() == Path(entry['source_sample_local_only']).resolve()
+              and overlay['source_artifacts'] == entry['source_artifacts']
+              and effective['logical_sample_id'] == terminal['logical_sample_id'] == row['logical_sample_id']
+              and effective['native_thread_id'] == terminal['native_thread_id'] == imported['native_ids'][4]
+              and effective['job_sha256'] == terminal['job_sha256'] == d.SOURCE_JOB_SHA
+              and effective['manifest_sha256'] == terminal['manifest_sha256'] == c.MANIFEST_SHA
+              and effective['attempt_id'] == terminal['attempt_id'] and effective['no_resend'] is True
+              and effective['original_terminal_state'] == 'ambiguous' and effective['strict_v5_satisfied'] is False
+              and effective['admission_basis'] == overlay['policy']
+              and effective['state'] in c.SETTLED
+              and effective['accepted'] == overlay['acceptance']['accepted'] == (effective['state'] == 'accepted')
+              and overlay['same_original_observation_only'] is True and overlay['new_votes'] == 0,
+              'Slot5 overlay changes the original request, job, native identity or admission')
+    return effective, overlay['response'] if effective['accepted'] else None
+
+
+def effective_label_release_gate(manifest, proof, explicit_release):
+    """Use the replay ledger from collect_evidence and the exact geometry-verified frozen manifest."""
+    c.require(c.digest(c.canonical(manifest)) == c.MANIFEST_SHA, 'Effective gate frozen manifest differs')
+    planned = {(r['endpoint'], r['endpoint_ordinal']): c.digest(c.canonical(r)) for r in manifest['requests']}
+    c.require(len(planned) == len(manifest['requests']) == 17808
+              and Counter(r['endpoint'] for r in manifest['requests']) == Counter({'sol': 8904, 'grok': 8904}),
+              'Effective gate requires all17808 original descriptors')
+    observed = {}; identities = set(); complete = 0
+    for entry in proof:
+        key = (entry['endpoint'], entry['endpoint_ordinal'])
+        c.require(key in planned and key not in observed and entry['descriptor_sha256'] == planned[key],
+                  'Effective gate has a duplicate, foreign or changed original descriptor')
+        observed[key] = entry
+        if entry['replayed'] and entry['state'] in c.SETTLED and entry['native_thread_id']:
+            c.require(entry['native_thread_id'] not in identities, 'Effective native identity reused across slots')
+            identities.add(entry['native_thread_id']); complete += 1
+    ready = len(observed) == complete == 17808
+    return {'policy': EFFECTIVE_GATE_POLICY, 'planned': 17808, 'verified_complete_terminal': complete,
+            'unresolved_or_unexamined': 17808-complete, 'all_planned_verified_terminal': ready,
+            'explicit_postprediction_release': explicit_release, 'human_release_eligible': ready and explicit_release,
+            'human_targets_opened': False, 'provider_calls': 0, 'strict_v5_reinterpretation': False,
+            'verified_descriptor_ledger_sha256': c.digest(c.canonical(proof))}
+
+
+def collect_evidence(manifest, manifest_sha, root, tools, outputs, subset, validator, receipts,
+                     *, adoption=None, proof=None):
     records = []; statuses = {}; identities = set()
+    def observe(row, state, identity=None, replayed=False):
+        if proof is not None:
+            proof.append({'endpoint': row['endpoint'], 'endpoint_ordinal': row['endpoint_ordinal'],
+                          'descriptor_sha256': c.digest(c.canonical(row)), 'state': state,
+                          'native_thread_id': identity, 'replayed': replayed})
     for endpoint in c.p.ENDPOINTS:
         output = outputs[endpoint]; states = Counter(); binding = None
-        if output.exists(): binding = c.verify_job_binding(output, manifest, root, manifest_sha, endpoint, tools)
+        adopted = adoption if endpoint == 'grok' else None
+        if adopted: binding = adopted['binding']
+        elif output.exists(): binding = c.verify_job_binding(output, manifest, root, manifest_sha, endpoint, tools)
         for row in (r for r in manifest['requests'] if r['endpoint'] == endpoint):
             sample = c.sample_path(output, row)
-            if not sample.exists(): states['untouched'] += 1; continue
-            if not (sample / 'terminal.json').exists():
+            imported_slot = adopted and row['endpoint_ordinal'] <= 5
+            if imported_slot: c.require(not sample.exists(), 'Imported source prefix cannot also occupy the continuation')
+            if not imported_slot and not sample.exists():
+                states['untouched'] += 1; observe(row, 'untouched'); continue
+            if not imported_slot and not (sample / 'terminal.json').exists():
                 if (sample / 'condition.json').exists():
                     c.require(json.loads((sample / 'condition.json').read_bytes()) == row, 'Reserved condition differs')
-                states['started_unresolved' if (sample / 'attempt-started.json').exists() else 'reserved_unresolved'] += 1
+                state = 'started_unresolved' if (sample / 'attempt-started.json').exists() else 'reserved_unresolved'
+                states[state] += 1; observe(row, state)
                 continue
-            terminal, answer = c.replay(sample, row, manifest, binding, root, receipts, subset, validator)
+            if adopted:
+                terminal, answer = adopted['module'].effective_replay(sample, row, manifest, binding, root, receipts, subset, validator,
+                    output=output, reader=adopted['reader'], route_root=adopted['route_root'], imported=adopted['imported'])
+                if row['endpoint_ordinal'] == 5 and adopted['overlay'] is not None:
+                    terminal, answer = adopt_slot5(row, terminal, adopted['overlay'], adopted)
+            else: terminal, answer = c.replay(sample, row, manifest, binding, root, receipts, subset, validator)
             states[terminal['state']] += 1
             identity = terminal.get('native_thread_id')
             if identity:
                 c.require(identity not in identities, 'Native identity reused across logical samples'); identities.add(identity)
+            observe(row, terminal['state'], identity, True)
             if answer is not None: records.append({'request': row, 'response': answer})
         c.require(sum(states.values()) == 8904, 'Endpoint denominator differs')
         statuses[endpoint] = {'planned': 8904, 'states': dict(states),
@@ -540,12 +651,13 @@ def human_metrics(manifest, orders, banks, records, reps):
 
 
 def human_alignment(manifest, root, manifest_sha, tools, outputs, receipts, subset, validator, explicit_release,
-                    *, control=None, banks=None, records=None, reps=2000):
+                    *, control=None, banks=None, records=None, reps=2000, effective_proof=None):
     if not explicit_release:
         return {'state': 'sealed_skipped_before_decode', 'human_targets_opened': False, 'explicit_postprediction_release': False,
                 'human_profile_sha256': HUMAN_PROFILE_SHA, 'actual_human_id_joins_and_metrics_verified': False}
-    gate = c.label_release_gate(manifest, root, manifest_sha, tools, outputs, receipts, subset, validator, True)
-    c.require(gate['human_release_eligible'], 'Unchanged collector gate requires all17808 verified original terminals before label decode')
+    gate = (c.label_release_gate(manifest, root, manifest_sha, tools, outputs, receipts, subset, validator, True)
+            if effective_proof is None else effective_label_release_gate(manifest, effective_proof, True))
+    c.require(gate['human_release_eligible'], 'Selected admission gate requires all17808 verified original terminals before label decode')
     c.require(control is not None and banks is not None and records is not None, 'Postprediction release requires exact control root and replayed predictions')
     profile = load_human_profile(manifest)
     orders = load_human_orders(manifest, root, control.resolve(), profile)
@@ -562,35 +674,68 @@ def main():
     parser.add_argument('--control-root', type=Path, help='Required only after explicit successful label release')
     parser.add_argument('--human-profile-only', action='store_true', help='Check pinned metadata readiness without opening results, lineage or human targets')
     parser.add_argument('--sol-results-dir', type=Path); parser.add_argument('--grok-results-dir', type=Path)
+    parser.add_argument('--adopt-grok-decode-v1', action='store_true')
+    parser.add_argument('--grok-decode-job-sha256')
+    parser.add_argument('--grok-decode-route-root', type=Path); parser.add_argument('--grok-decode-route-sha256')
+    parser.add_argument('--slot5-final-stream-receipt', type=Path); parser.add_argument('--slot5-final-stream-receipt-sha256')
     parser.add_argument('--bootstrap-reps', type=int, default=2000)
     parser.add_argument('--explicit-postprediction-release', action='store_true')
     args = parser.parse_args(); c.require(1 <= args.bootstrap_reps <= 2000, 'Finite bootstrap repetitions must be 1..2000')
+    decode_args = (args.grok_decode_job_sha256, args.grok_decode_route_root, args.grok_decode_route_sha256)
+    if args.adopt_grok_decode_v1:
+        c.require(all(v is not None for v in decode_args) and args.grok_results_dir is not None,
+                  'Explicit decode adoption requires result, job and route bindings')
+        c.require((args.slot5_final_stream_receipt is None) == (args.slot5_final_stream_receipt_sha256 is None),
+                  'Slot5 adoption requires receipt and hash together')
+    else:
+        c.require(all(v is None for v in (*decode_args, args.slot5_final_stream_receipt, args.slot5_final_stream_receipt_sha256)),
+                  'Decode bindings require named --adopt-grok-decode-v1')
     if args.human_profile_only:
         c.require(not args.explicit_postprediction_release, 'Metadata-only check cannot release human ranks')
         manifest = json.loads(c.p.checked(args.manifest, args.manifest_sha256))
-        c.require(args.manifest_sha256 == c.MANIFEST_SHA
+        c.require(args.manifest_sha256 == c.MANIFEST_SHA and c.digest(c.canonical(manifest)) == c.MANIFEST_SHA
                   and c.digest(c.canonical({k: v for k, v in manifest.items() if k != 'manifest_content_sha256'}))
                   == manifest['manifest_content_sha256'], 'Frozen manifest metadata commitment differs')
         load_human_profile(manifest)
+        adoption_pins = None
+        if args.adopt_grok_decode_v1:
+            decode_implementation()
+            if args.slot5_final_stream_receipt is not None:
+                c.p.checked(HERE.parent / 'hbq-native-transport-recovery-v1/reconcile_lamp_final_stream.py', SLOT5_READER_SHA)
+            adoption_pins = {'policy': ADOPTION_POLICY, 'collector_sha256': DECODE_COLLECTOR_SHA,
+                'reader_sha256': DECODE_READER_SHA, 'requested_job_sha256': args.grok_decode_job_sha256,
+                'requested_route_sha256': args.grok_decode_route_sha256, 'slot5_reader_sha256': SLOT5_READER_SHA if args.slot5_final_stream_receipt else None,
+                'requested_slot5_receipt_sha256': args.slot5_final_stream_receipt_sha256,
+                'native_jobs_or_projections_replayed': False, 'human_gate_policy': EFFECTIVE_GATE_POLICY}
         print(json.dumps({'policy': 'matched_lamp_human_profile_metadata_only_v1', 'manifest_sha256': args.manifest_sha256,
             'human_profile_sha256': HUMAN_PROFILE_SHA, 'planned_requests': 17808, 'admitted_groups': 94,
             'prospective_rank_orders': 282, 'prospective_correlated_pair_ballots': 846,
             'human_targets_opened': False, 'labels_read': False, 'provider_calls': 0,
-            'actual_human_id_joins_and_metrics_verified': False}, sort_keys=True)); return 0
+            'actual_human_id_joins_and_metrics_verified': False, 'decode_adoption': adoption_pins}, sort_keys=True)); return 0
     manifest, root, subset, validator, receipts, hbq = load_manifest(args.manifest, args.manifest_sha256, args.tools_root)
     load_human_profile(manifest)
     outputs = {ep: (getattr(args, ep + '_results_dir') or root.parent / (ep + '-001')).resolve() for ep in c.p.ENDPOINTS}
     for output in outputs.values(): c.output_preflight(output, root)
-    records, states = collect_evidence(manifest, args.manifest_sha256, root, args.tools_root, outputs, subset, validator, receipts)
+    adoption = None; effective_proof = None
+    if args.adopt_grok_decode_v1:
+        adoption = load_decode_adoption(manifest, root, args.tools_root, outputs['grok'], args.grok_decode_job_sha256,
+            args.grok_decode_route_root, args.grok_decode_route_sha256, slot5_receipt=args.slot5_final_stream_receipt,
+            slot5_receipt_sha=args.slot5_final_stream_receipt_sha256)
+        effective_proof = []
+    records, states = collect_evidence(manifest, args.manifest_sha256, root, args.tools_root, outputs, subset, validator, receipts,
+        adoption=adoption, proof=effective_proof)
     banks = profiles(manifest, records, hbq, root)
     alignment = human_alignment(manifest, root, args.manifest_sha256, args.tools_root, outputs, receipts, subset, validator,
-        args.explicit_postprediction_release, control=args.control_root, banks=banks, records=records, reps=args.bootstrap_reps)
+        args.explicit_postprediction_release, control=args.control_root, banks=banks, records=records, reps=args.bootstrap_reps,
+        effective_proof=effective_proof)
     report = {'policy': 'matched_lamp_triplet_analysis_with_gated_human_ranks_v1', 'manifest_sha256': args.manifest_sha256,
         'analysis_sha256': c.digest(Path(__file__).read_bytes()), 'collector_sha256': COLLECTOR_SHA,
         'score_report_v2_schema_sha256': c.digest((c.p.REPO / 'schema/hbq_score_report.v2.schema.json').read_bytes()),
         'counts': manifest['counts'], 'planned_requests': 17808, 'endpoint_states': states,
         'scalars': scalar_diagnostics(manifest, banks), 'pairwise': pair_diagnostics(manifest, records),
         'paired_endpoints': endpoint_diagnostics(manifest, banks, args.bootstrap_reps),
+        'decode_adoption': ({**adoption['provenance'], 'effective_label_gate': effective_label_release_gate(manifest, effective_proof,
+            args.explicit_postprediction_release)} if adoption else None),
         'human_alignment': alignment,
         'provider_calls': 0, 'human_targets_opened': alignment['human_targets_opened'], 'labels_read': alignment['human_targets_opened'],
         'limits': ['Already development-exposed 94 triplets; no unused or general expert claim.',

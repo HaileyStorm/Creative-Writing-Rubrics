@@ -5,6 +5,7 @@ from pathlib import Path
 import sys
 import tempfile
 import unittest
+from types import SimpleNamespace
 from unittest.mock import patch
 
 REPO = Path(__file__).resolve().parents[1]
@@ -198,6 +199,101 @@ class LampAnalysisTests(unittest.TestCase):
         self.assertEqual(cross['AB_BA_consensus']['exact_agreements'], 1)
         self.assertEqual(cross['AB_BA_consensus']['equal_consensus_with_any_order_conflict'], 1)
         self.assertEqual(cross['AB_BA_consensus']['both_endpoints_two_native_ties'], 0)
+
+
+class LampDecodeAdoptionTests(unittest.TestCase):
+    @staticmethod
+    def manifest():
+        return {'requests': [{'endpoint': ep, 'endpoint_ordinal': n, 'logical_sample_id': ep+'-'+str(n),
+                              'request_sha256': 'request-'+ep+'-'+str(n)}
+                             for ep in ('sol', 'grok') for n in range(1, 8905)]}
+
+    def test_imported_prefix_replayed_once_and_unresolved_slot_never_counted_as_complete(self):
+        manifest = self.manifest(); calls = []
+        def replay(sample, row, *args, **kwargs):
+            n = row['endpoint_ordinal']; calls.append(n)
+            return {'state': 'ambiguous' if n == 5 else 'accepted', 'native_thread_id': 'native-'+str(n)}, None if n == 5 else {'synthetic': n}
+        adoption = {'binding': {}, 'module': SimpleNamespace(effective_replay=replay), 'reader': None,
+                    'route_root': Path('unused'), 'imported': {}, 'overlay': None}
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory); outputs = {ep: root/ep for ep in ('sol', 'grok')}; proof = []
+            def sample(output, row): return output/str(row['endpoint_ordinal'])
+            with patch.object(a.c, 'sample_path', side_effect=sample):
+                records, states = a.collect_evidence(manifest, 'synthetic', root, root, outputs, None, None, None,
+                                                    adoption=adoption, proof=proof)
+                self.assertEqual(calls, [1, 2, 3, 4, 5]); self.assertEqual(len(records), 4)
+                self.assertEqual(states['grok']['states'], {'accepted': 4, 'ambiguous': 1, 'untouched': 8899})
+                with patch.object(a.c, 'MANIFEST_SHA', a.c.digest(a.c.canonical(manifest))):
+                    gate = a.effective_label_release_gate(manifest, proof, True)
+                self.assertFalse(gate['human_release_eligible']); self.assertEqual(gate['verified_complete_terminal'], 4)
+                (outputs['grok']/'1').mkdir(parents=True)
+                with self.assertRaisesRegex(ValueError, 'cannot also occupy'):
+                    a.collect_evidence(manifest, 'synthetic', root, root, outputs, None, None, None, adoption=adoption)
+
+    def test_effective_gate_requires_exact_all_planned_proof_explicit_release_and_unique_native_ids(self):
+        manifest = self.manifest()
+        proof = [{'endpoint': row['endpoint'], 'endpoint_ordinal': row['endpoint_ordinal'],
+                  'descriptor_sha256': a.c.digest(a.c.canonical(row)), 'state': 'accepted',
+                  'native_thread_id': row['logical_sample_id'], 'replayed': True} for row in manifest['requests']]
+        with patch.object(a.c, 'MANIFEST_SHA', a.c.digest(a.c.canonical(manifest))):
+            self.assertFalse(a.effective_label_release_gate(manifest, proof, False)['human_release_eligible'])
+            self.assertTrue(a.effective_label_release_gate(manifest, proof, True)['human_release_eligible'])
+            with self.assertRaisesRegex(ValueError, 'duplicate, foreign or changed'):
+                a.effective_label_release_gate(manifest, proof+[proof[0]], True)
+            proof[-1]['native_thread_id'] = proof[0]['native_thread_id']
+            with self.assertRaisesRegex(ValueError, 'identity reused'): a.effective_label_release_gate(manifest, proof, True)
+            proof[-1]['state'] = 'ambiguous'
+            with patch.object(a, 'load_human_orders', side_effect=AssertionError('Unresolved ranks opened')), \
+                 patch.object(a.c, 'label_release_gate', side_effect=AssertionError('Wrong original-policy gate')):
+                with self.assertRaisesRegex(ValueError, 'all17808'):
+                    a.human_alignment(manifest, Path('unused'), 'synthetic', Path('unused'), {}, None, None, None, True,
+                                      effective_proof=proof)
+
+    def test_slot5_overlay_preserves_the_exact_original_identity_and_no_new_vote(self):
+        row = {'endpoint': 'grok', 'endpoint_ordinal': 5, 'logical_sample_id': 'logical5', 'request_sha256': 'request5'}
+        terminal = {'state': 'ambiguous', 'logical_sample_id': 'logical5', 'native_thread_id': 'native5',
+                    'job_sha256': 'job', 'manifest_sha256': a.c.MANIFEST_SHA, 'attempt_id': 'attempt', 'no_resend': True}
+        entry = {'policy': 'incomplete', 'effective_terminal': terminal, 'source_sample_local_only': 'synthetic-source5',
+                 'source_artifacts': {'terminal.json': {'sha256': 'source-terminal'}}}
+        adoption = {'module': SimpleNamespace(INCOMPLETE_PREFIX_POLICY='incomplete', SOURCE_JOB_SHA='job'),
+                    'imported': {'entries': [None]*4+[entry], 'native_ids': ['n1', 'n2', 'n3', 'n4', 'native5']}}
+        policy = 'saved_canonical_final_stream_projection_v1'
+        overlay = {'policy': policy, 'source_job_sha256': 'job', 'request_sha256': 'request5',
+                   'source_sample_local_only': 'synthetic-source5', 'source_artifacts': entry['source_artifacts'],
+                   'effective_terminal': {**terminal, 'state': 'accepted', 'accepted': True,
+                       'original_terminal_state': 'ambiguous', 'strict_v5_satisfied': False, 'admission_basis': policy},
+                   'acceptance': {'accepted': True}, 'response': {'synthetic': True},
+                   'same_original_observation_only': True, 'new_votes': 0}
+        original = copy.deepcopy(terminal)
+        effective, answer = a.adopt_slot5(row, terminal, overlay, adoption)
+        self.assertEqual(terminal, original); self.assertEqual(effective['state'], 'accepted'); self.assertTrue(answer['synthetic'])
+        for key, wrong in [('native_thread_id', 'foreign'), ('logical_sample_id', 'another'), ('job_sha256', 'foreign-job')]:
+            invalid = copy.deepcopy(overlay); invalid['effective_terminal'][key] = wrong
+            with self.assertRaisesRegex(ValueError, 'changes the original'): a.adopt_slot5(row, terminal, invalid, adoption)
+        invalid = copy.deepcopy(overlay); invalid['new_votes'] = 1
+        with self.assertRaisesRegex(ValueError, 'changes the original'): a.adopt_slot5(row, terminal, invalid, adoption)
+
+    def test_stale_imported_projection_cannot_rebind_the_frozen_continuation_job(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)/'frozen'; root.mkdir(); output = Path(directory)/'decode'; output.mkdir()
+            manifest_raw = a.c.canonical({'synthetic': True})
+            (root/'manifest.json').write_bytes(manifest_raw); (output/'frozen-manifest.json').write_bytes(manifest_raw)
+            source = Path(directory)/'source'
+            imported = {'policy': 'decode-policy', 'source_job_sha256': 'source-job', 'source_root_local_only': str(source.resolve()),
+                        'reserved_through': 5, 'entries': [{'synthetic_projection': n} for n in range(5)],
+                        'native_ids': ['n'+str(n) for n in range(5)]}
+            def binding(manifest, root, tools, route, workers, collector, reader, incoming):
+                return {'route': route, 'workers': workers, 'imported_prefix_sha256': a.c.digest(a.c.canonical(incoming))}
+            job = binding(None, None, None, {}, 1, None, None, imported); raw = a.c.canonical(job)
+            (output/'job.json').write_bytes(raw); (output/'imported-prefix.json').write_bytes(a.c.canonical(imported))
+            module = SimpleNamespace(TARGET=output, SOURCE=source, SOURCE_JOB_SHA='source-job', POLICY='decode-policy', job_binding=binding)
+            route_root = Path(r'C:\Users\Haile\.codex\state\model-work-queue-cwr-placeholder-r31')
+            args = ({}, root, Path('unused'), output, a.c.digest(raw), route_root, a.c.digest(b'{}'))
+            with patch.object(a, 'decode_implementation', return_value=(module, None)):
+                self.assertEqual(a.load_decode_adoption(*args)['binding'], job)
+                imported['entries'][0]['synthetic_projection'] = 'stale'
+                (output/'imported-prefix.json').write_bytes(a.c.canonical(imported))
+                with self.assertRaisesRegex(ValueError, 'binding differs'): a.load_decode_adoption(*args)
 
 
 if __name__ == '__main__': unittest.main()
