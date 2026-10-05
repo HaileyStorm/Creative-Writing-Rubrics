@@ -1,0 +1,37 @@
+{
+  "base_private_ledger_sha256": "0cf77dfd06ab5217370e14acec5a9ecf41c986b55ce68af4b70ce1ddfdbfc8e3",
+  "base_report_sha256": "5fb1f1918b55b3bede55894aaa435604cf237b867b479ed76ceb9f643a3a0e2c",
+  "implementation_sha256": "62e6709715b4aea3ce0fdb3462477a00fd28ff1e51ab25ae5b411df787921042",
+  "limitations": [
+    "Separate descendant; published Census F files and output remain immutable",
+    "Exact retained identity/state bindings do not establish modern native attestation, provider/model/runtime provenance or full physical-contact dispositions",
+    "Historical evidence/quote normalization is not reexecuted; full modern semantic admission and score replay remain unverified",
+    "Ordinal70 is an adopted nonnative projection; no fabricated request identity, new contact, vote or independent work",
+    "Discovery previously displayed model verdict/recovery text; this lineage is not claimed outcome-blind; no human labels or semantic authority used"
+  ],
+  "new_votes_added": 0,
+  "observed": {
+    "existing_positions_joined": 90,
+    "historical_exclusions_unchanged": 33,
+    "native_old_v5_positions": 10,
+    "native_prefix_positions": 79,
+    "nonnative_adopted_positions": 1,
+    "ordered_adopted_leaves": 8,
+    "ordered_native_leaves": 694,
+    "remaining_static_position_joins": 0,
+    "total_leaves_unchanged": 17800,
+    "total_native_witnesses_after_join": 2297,
+    "total_positions_unchanged": 2300
+  },
+  "prefix_join_sha256": "1181923863c4b68036749f938dd472171914c59cb2f7835ac07c1a7f45d74fe8",
+  "provider_calls_made": 0,
+  "recipe_source_sha256": "6135ff0068d36b4931fd7da93b5b1244be73a96720caa553dc0d07f2a6701c6a",
+  "schema_version": 1,
+  "scope": "retained_native_prefix_descendant_v1",
+  "verified_artifact_count": 955,
+  "verified_artifact_index_sha256": "d7390a78d7a391d61ccc859bcc72f4b665e8793c1231177e7fb93f1da7951006",
+  "report_sha256": "b1119bac39a1b7ebeade2f74069700ff40107af75b8fdd991b8a24245a8a99e0",
+  "private_ledger_sha256": "990718c83cc5c1e01af27ca757506dd09b5c0d319df3a6dc17ddd0eb9f971032",
+  "status": "completed_static_prefix_join_only",
+  "full_program_complete": false
+}
