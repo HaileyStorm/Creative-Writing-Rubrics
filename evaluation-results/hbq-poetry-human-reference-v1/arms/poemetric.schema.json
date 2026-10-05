@@ -1,0 +1,37 @@
+{
+  "type":"object","additionalProperties":false,
+  "required":["status","result","abstention_reason"],
+  "properties":{
+    "status":{"enum":["SCORED","CANNOT_ASSESS"]},
+    "abstention_reason":{"type":["string","null"],"maxLength":1600},
+    "result":{"type":["object","null"],"additionalProperties":false,
+      "required":["method","diagnostics","literary_devices_comment","overall_quality","quality_comment"],
+      "properties":{
+        "method":{"enum":["poemetric_unspecified_form_descendant_v1"]},
+        "diagnostics":{"type":"array","minItems":8,"maxItems":8,"items":{
+          "type":"object","additionalProperties":false,"required":["item_id","status","score","rationale","evidence"],
+          "properties":{
+            "item_id":{"type":"integer","enum":[1,2,3,4,5,6,7,8]},
+            "status":{"enum":["SCORED","CANNOT_ASSESS"]},
+            "score":{"type":["integer","null"],"minimum":0,"maximum":5},
+            "rationale":{"type":"string","minLength":1,"maxLength":1600},
+            "evidence":{"type":"array","maxItems":3,"items":{"type":"object","additionalProperties":false,
+              "required":["quote","explanation"],"properties":{"quote":{"type":"string","minLength":1,"maxLength":500},
+                "explanation":{"type":"string","minLength":1,"maxLength":1600}}}}
+          }}},
+        "literary_devices_comment":{"type":"object","additionalProperties":false,"required":["comment","evidence"],
+          "properties":{"comment":{"type":"string","minLength":1,"maxLength":1600},"evidence":{"type":"array","maxItems":3,
+            "items":{"type":"object","additionalProperties":false,"required":["quote","explanation"],
+              "properties":{"quote":{"type":"string","minLength":1,"maxLength":500},"explanation":{"type":"string","minLength":1,"maxLength":1600}}}}}},
+        "overall_quality":{"type":"object","additionalProperties":false,"required":["item_id","score","rationale","evidence"],
+          "properties":{"item_id":{"type":"integer","enum":[10]},"score":{"type":"integer","minimum":1,"maximum":5},
+            "rationale":{"type":"string","minLength":1,"maxLength":1600},"evidence":{"type":"array","minItems":2,"maxItems":5,
+              "items":{"type":"object","additionalProperties":false,"required":["quote","explanation"],
+                "properties":{"quote":{"type":"string","minLength":1,"maxLength":500},"explanation":{"type":"string","minLength":1,"maxLength":1600}}}}}},
+        "quality_comment":{"type":"object","additionalProperties":false,"required":["comment","evidence"],
+          "properties":{"comment":{"type":"string","minLength":1,"maxLength":1600},"evidence":{"type":"array","minItems":1,"maxItems":3,
+            "items":{"type":"object","additionalProperties":false,"required":["quote","explanation"],
+              "properties":{"quote":{"type":"string","minLength":1,"maxLength":500},"explanation":{"type":"string","minLength":1,"maxLength":1600}}}}}}
+      }}
+  }
+}

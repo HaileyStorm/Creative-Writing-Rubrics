@@ -30,7 +30,8 @@ def require(value, message):
 
 def modules():
     names = ("prepare", "validate_response", "collector_v2", "analysis", "continue_manifest",
-             "continue_chain", "continue_sol", "continue_sol_chain", "reconcile_history", "reconcile_sol_transport")
+             "continue_chain", "continue_sol", "continue_sol_chain", "reconcile_history", "reconcile_sol_transport",
+             "reconcile_sol_workspace_routing")
     previous, paths = {name: sys.modules.get(name) for name in names}, list(sys.path)
     result = {}
     try:
@@ -191,7 +192,9 @@ def apply_reconciliation(specification, joined, source_specs, artifacts, loaded,
     require(saved.get("no_resend") is True, "Reconciliation lacks no-resend binding")
     sid = saved["logical_sample_id"]
     identity = (saved.get("endpoint", "grok"), sid)
-    transport_profile = saved.get("policy") == loaded["reconcile_sol_transport"].POLICY
+    recipient = next((loaded[name] for name in ("reconcile_sol_transport", "reconcile_sol_workspace_routing")
+                      if saved.get("policy") == loaded[name].POLICY), None)
+    transport_profile = recipient is not None
     expected_state = "unadmitted_no_resend" if transport_profile else "ambiguous"
     require(identity in joined and joined[identity]["state"] == expected_state, "Reconciliation must join one original failed slot")
     record, row = joined[identity], joined[identity]["request"]
@@ -201,7 +204,7 @@ def apply_reconciliation(specification, joined, source_specs, artifacts, loaded,
         require(identity[0] == source["endpoint"] == "sol" and saved["provider_calls_made"] == saved["new_logical_votes"] == 0
                 and saved["human_labels_released"] is False and saved["full_planned_denominator"] == DENOMINATOR
                 and saved["original_native_envelope_reconstructed"] is False
-                and saved["implementation_sha256"] == prepare.digest((HERE / "reconcile_sol_transport.py").read_bytes()),
+                and saved["implementation_sha256"] == prepare.digest(Path(recipient.__file__).read_bytes()),
                 "Saved Sol transport policy/implementation differs")
         commitments = saved["source_commitments"]
         require(commitments["manifest"]["sha256"] == source["manifest_sha256"]
@@ -209,8 +212,8 @@ def apply_reconciliation(specification, joined, source_specs, artifacts, loaded,
                 and commitments["terminal"]["sha256"] == record["terminal_sha256"]
                 and saved["endpoint_ordinal"] == row["endpoint_ordinal"]
                 and saved["request_sha256"] == row["request_sha256"], "Saved Sol transport original source lineage differs")
-        actual, response_raw, acceptance, inputs = loaded["reconcile_sol_transport"].reconcile(
-            Path(source["manifest_path"]), Path(source["results_root"]), sample.name, loaded["reconcile_sol_transport"].HOME,
+        actual, response_raw, acceptance, inputs = recipient.reconcile(
+            Path(source["manifest_path"]), Path(source["results_root"]), sample.name, recipient.HOME,
             Path(commitments["rollout"]["source_locator_local_only"]), snapshot=path.parent, commitments=commitments)
         require(actual == saved and prepare.checked(path.parent / "response.json", saved["response_sha256"]) == response_raw
                 and prepare.checked(path.parent / "acceptance.json", saved["acceptance_sha256"]) == prepare.canonical(acceptance),
