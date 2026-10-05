@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "policy": "p4_crlf_span_grounding_v1",
+  "evidence_class": "post_prefix_exploratory_source_grounding_descendant",
+  "manifest_sha256": "d0cb6589924a4900b123206f40595035a6d792c623bac1c8303de9d95bac1ac4",
+  "controller_decision_sha256": "9fc64d6beaffbbd2f3224942db139d70ecb4f6adc205ee128ac18026d5eaf822",
+  "report_sha256": "29e28a28ada88434ae06e540cb6757aed97d4b668f6b59e6d2b0aab88d521cf5",
+  "private_ledger_sha256": "7fd0a8d3905795612866b4bb06e5178f0ae65cbe9a2f27951e72c01416a7c0a4",
+  "planned": 464,
+  "strict_states": {
+    "accepted": 28,
+    "semantic_rejected": 24,
+    "definitely_not_contacted": 1,
+    "started_unresolved": 1,
+    "untouched": 410
+  },
+  "grounding_states": {
+    "strict_accepted_inherited": 28,
+    "projected_accepted": 22,
+    "descendant_rejected": 2,
+    "not_completed": 412
+  },
+  "quote_proof_states": {
+    "exact_inherited": 142,
+    "projected_exact_span": 76,
+    "unsupported_transformation_or_unavailable_source": 2
+  },
+  "admitted_existing_observations": 50,
+  "full_bank_scalars": 0,
+  "provider_calls": 0,
+  "new_votes": 0,
+  "historical_exact_quote_compliance_proven": false,
+  "human_alignment_eligible": false,
+  "promotion_authority": false,
+  "limitations": [
+    "Live collection prefix; later counts change.",
+    "Original native responses and strict rejections remain immutable.",
+    "Separate post-prefix projection, not prospective candidate confirmation.",
+    "Full unique raw-full bank still required for a scalar."
+  ]
+}
