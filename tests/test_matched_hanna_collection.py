@@ -229,3 +229,110 @@ def test_hanna_saved_fresh_output_never_overwrites_or_aliases_source(tmp_path):
     with pytest.raises(ValueError, match='locator'): r.reconcile(tmp_path / 'manifest.json', retained,
         '0007-cc2135de14f3', r.HOME, r.HOME / 'sessions/foreign-rollout.jsonl')
     assert marker.read_bytes() == b'immutable fixture'
+
+
+def test_hanna_interrupted_prefix_reserved_by_identity_not_admission():
+    r = load('hanna_interrupted_identity_test', REPO / 'evaluation-results/hbq-matched-hanna-20261004/continue_interrupted.py')
+    rows = []
+    for n in range(1, 5):
+        row = {'endpoint': 'sol', 'endpoint_ordinal': n, 'logical_sample_id': str(n) * 64,
+               'prompt_sha256': 'prompt', 'schema_sha256': 'schema'}
+        row['request_sha256'] = r.digest(r.canonical(row)); rows.append(row)
+    occupied = {f"{row['endpoint_ordinal']:04d}-{row['logical_sample_id'][:12]}" for row in rows[:3]}
+    assert r.suffix_rows({'requests': rows}, 'sol', 3, occupied) == [rows[3]]
+    plan = {'endpoint': 'sol', 'reserved_through': 3, 'source_geometry_sha256': r.digest(r.canonical(rows)),
+            'untouched_request_sha256s': [rows[3]['request_sha256']], 'untouched_endpoint_ordinals': [4]}
+    assert r.selected_rows(plan, {'requests': rows}) == [rows[3]]
+    bad = deepcopy(plan); bad['reserved_through'] = 2
+    with pytest.raises(ValueError, match='untouched selection'): r.selected_rows(bad, {'requests': rows})
+    with pytest.raises(ValueError, match='no prefix resend'):
+        r.suffix_rows({'requests': rows}, 'sol', 2, occupied)
+    job = {'endpoint': 'sol', 'attempts_per_logical_sample': 1, 'automatic_retries': 0, 'planned_study_requests': 6864}
+    row = rows[2]
+    started = {'logical_sample_id': row['logical_sample_id'], 'manifest_sha256': 'manifest', 'job_sha256': 'job',
+               'attempt': 1, 'no_resend': True, 'prompt_sha256': 'prompt', 'schema_sha256': 'schema', 'session_id': None}
+    identity = {'logical_sample_id': row['logical_sample_id'], 'session_id': None}
+    r.bind_prefix(row, row, started, identity, job, 'job', 'manifest')
+    identity['logical_sample_id'] = 'other'
+    with pytest.raises(ValueError, match='native identity'):
+        r.bind_prefix(row, row, started, identity, job, 'job', 'manifest')
+    gate = r.label_gate({}, verified_suffix_terminals=6850, explicit=True)
+    assert not gate['human_release_eligible'] and not gate['all_original_slots_verified_terminal']
+    assert gate['prefix_native_terminal_settlement_unproved'] == 4 and gate['planned'] == 6864
+
+
+def test_hanna_interrupted_execution_amendment_and_fresh_snapshot(tmp_path):
+    r = load('hanna_interrupted_binding_test', REPO / 'evaluation-results/hbq-matched-hanna-20261004/continue_interrupted.py')
+    route = {'model': 'grok-4.7', 'timeout_seconds': 900, 'cost_evidence': {'receipt': 'old'}, 'subscription_receipt_hash': 'old'}
+    plan = {'endpoint': 'grok', 'implementation_sha256': 'implementation', 'reserved_through': 5,
+            'untouched_request_sha256s': ['suffix'], 'source_binding': {'route': route, 'route_sha256': 'original',
+                'workers': 3, 'owner_execution_amendment': {'prepared_workers_initially': 1}}}
+    renewed = deepcopy(route); renewed.update(cost_evidence={'receipt': 'new'}, subscription_receipt_hash='new')
+    pin = r.digest(r.canonical(renewed).rstrip(b'\n'))
+    bound = r.execution_binding(plan, 'plan', 3, owner_global_headroom_verified=True, route=renewed, route_sha=pin)
+    assert bound['reserved_prefix'] == 5 and bound['source_route_sha256'] == 'original'
+    assert bound['human_label_gate_closed'] and not bound['prefix_native_terminal_settlement_proven']
+    assert plan['source_binding']['route'] == route and bound['owner_execution_amendment']['prepared_workers_initially'] == 1
+    with pytest.raises(ValueError, match='headroom'): r.execution_binding(plan, 'plan', 3)
+    renewed['timeout_seconds'] = 1000
+    with pytest.raises(ValueError, match='non-renewal'):
+        r.execution_binding(plan, 'plan', 3, owner_global_headroom_verified=True, route=renewed,
+                            route_sha=r.digest(r.canonical(renewed).rstrip(b'\n')))
+    h = tmp_path / 'hanna-reference'; source = h / 'judging-sol-parallel-001'; source.mkdir(parents=True)
+    with pytest.raises(ValueError, match='fresh'): r.fresh_output(source / 'descendant', tmp_path)
+    output = h / 'interrupted-plan'; assert r.fresh_output(output, tmp_path) == output.resolve()
+    output.mkdir()
+    with pytest.raises(ValueError, match='fresh'): r.fresh_output(output, tmp_path)
+
+
+def test_hanna_suffix_inventory_never_dispatches_prefix_or_failed_slot(tmp_path):
+    e = load('hanna_suffix_inventory_test', REPO / 'evaluation-results/hbq-matched-hanna-20261004/execute_interrupted.py')
+    row = {'endpoint_ordinal': 10, 'logical_sample_id': 'a' * 64}
+    plan = {'endpoint': 'sol', 'prefix': [{'endpoint': 'sol', 'native_identity': 'retained-native'}]}
+    plan_path = tmp_path / 'plan.json'; plan_path.write_bytes(b'{}')
+    output = tmp_path / 'suffix'; binding = {'endpoint': 'sol'}
+    module = SimpleNamespace(sample_path=c.sample_path, t=SimpleNamespace(account_receipt=lambda binding: {}),
+                             replay=lambda *args: ({'state': 'accepted', 'native_thread_id': 'retained-native'}, {}))
+    ctx = {'collector': module, 'binding': binding, 'rows': [row], 'plan': plan, 'plan_path': plan_path,
+           'manifest_raw': b'{}', 'manifest': {}, 'root': tmp_path, 'receipts': None, 'subset': None, 'validator': None}
+    pending, states, ids = e.inventory(ctx, output)
+    assert pending == [row] and states == [] and ids == {'retained-native'}
+    output.mkdir()
+    for name in ('job.json', 'frozen-manifest.json', 'frozen-plan.json', 'account-binding.json'):
+        (output / name).write_bytes(c.canonical(binding) if name == 'job.json' else b'{}')
+    reserved = output / '0001-prefix'; reserved.mkdir()
+    with pytest.raises(ValueError, match='Reserved prefix'): e.inventory(ctx, output)
+    reserved.rmdir(); c.sample_path(output, row).mkdir()
+    with pytest.raises(ValueError, match='retained own native identity'): e.inventory(ctx, output)
+    module.replay = lambda *args: ({'state': 'unadmitted_no_resend'}, None)
+    assert e.inventory(ctx, output)[1] == ['unadmitted_no_resend']
+    with pytest.raises(ValueError, match='no resend'): e.native_authority(True, True, ['unadmitted_no_resend'], c.SETTLED)
+    for execute, headroom in ((False, True), (True, False)):
+        with pytest.raises(ValueError, match='flags required'): e.native_authority(execute, headroom, [], c.SETTLED)
+
+
+def test_hanna_suffix_adapter_preserves_native_failure_stop_and_closed_gate(tmp_path, monkeypatch):
+    e = load('hanna_suffix_dispatch_test', REPO / 'evaluation-results/hbq-matched-hanna-20261004/execute_interrupted.py')
+    rows = [{'endpoint_ordinal': n, 'logical_sample_id': str(n) * 64, 'request_sha256': str(n)} for n in range(6, 10)]
+    output = tmp_path / 'suffix'; plan_path = tmp_path / 'plan.json'; plan_path.write_bytes(b'{}')
+    binding = {'workers': 1, 'route': {}, 'executor_sha256': 'fixture'}
+    seen = []; saved = {}
+    def collect_one(row, manifest, job, root, result, subset, validator, receipts, helper, call_codex, broker, commit):
+        assert job == binding and manifest == {'full_planned': 6864} and commit.native_ids == {'retained-native'}
+        assert row['endpoint_ordinal'] > 5
+        seen.append(row['endpoint_ordinal']); state = {6: 'semantic_rejected', 7: 'accepted', 8: 'unadmitted_no_resend'}[row['endpoint_ordinal']]
+        saved[row['endpoint_ordinal']] = state
+        if state not in c.SETTLED: commit.stop.set()
+        return state
+    module = SimpleNamespace(SETTLED=c.SETTLED, sample_path=c.sample_path, record=c.record, write_bytes=c.write_bytes,
+        grok_contact_allowed=lambda route: True, collect_one=collect_one, CommitState=c.CommitState, dispatch=c.dispatch,
+        replay=lambda sample, row, *args: ({'state': saved[row['endpoint_ordinal']]}, None))
+    monkeypatch.setitem(sys.modules, 'model_work_queue.broker', SimpleNamespace(Broker=lambda root: object()))
+    ctx = {'collector': module, 'binding': binding, 'plan': {'endpoint': 'grok', 'reserved_through': 5},
+           'plan_path': plan_path, 'plan_sha': 'fixture-plan', 'route_root': tmp_path, 'rows': rows,
+           'manifest_raw': b'{}', 'manifest': {'full_planned': 6864}, 'root': tmp_path, 'subset': None, 'validator': None, 'receipts': None}
+    assert e.collect(ctx, output, rows, [], {'retained-native'}, execute_native=True, owner_headroom=True) == 3
+    assert seen == [6, 7, 8]
+    terminal = json.loads(next(output.glob('dispatch-terminal-*.json')).read_bytes())
+    assert terminal['inflight_at_terminal'] == 0 and terminal['full_planned_denominator'] == 6864
+    assert not terminal['reserved_prefix_resent'] and not terminal['human_label_gate']['human_release_eligible']
