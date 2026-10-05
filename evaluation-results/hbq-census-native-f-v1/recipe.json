@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "scope": "dryad_grok_selected100_retained_terminal_join_v1",
+  "source_path_prefix": "C:/Users/Haile/Documents",
+  "common_census_sha256": "42415af5418ae32303bfa7933712b2ad398c0ed66df32a7553a9e3d55f5de49b",
+  "plan_root": "cwr-dryad-baseline8-plan-20260906-r1",
+  "historical_declared_collection_sha256": "2c5618dcfc2b03c9044bdc6dd8d4c7d73aeb8205f31aa7ffdb3be1df25bcf636",
+  "embedded_collection_sha256": "efa9bbbb303087161a83fbbbc550e8633a724dfc52fac2de36a4ca673c236b4c",
+  "native_identity_sha256": "2e0451978791ad524b952a22e2b48f7d67348f16f8c22320783d94e9a2bab7ee",
+  "recovered_ordinals": [
+    70,
+    254,
+    370
+  ],
+  "assets": {
+    "train": {
+      "locator": "cwr-resume-control-20260919-r1/dryad-final-analysis-r25/train.json",
+      "bytes": 18210523,
+      "sha256": "059bf0959d6abfc74106fd07f9caaaf13ba9303ba8fdedd6f2e564c3c246945d"
+    },
+    "plan": {
+      "locator": "cwr-dryad-baseline8-plan-20260906-r1/plan.json",
+      "bytes": 7361726,
+      "sha256": "edeadb93c485ba227153329b5ae420de1c9d08d95e920bac0635d197fd3dbd7f"
+    },
+    "schedule": {
+      "locator": "cwr-dryad-selected-schedule-100-20260909-r1/selected-schedule.json",
+      "bytes": 64875,
+      "sha256": "2836a81d26836274440318338b395a04dad51a80f7d339ca0612f8135dc0e82f"
+    },
+    "reader": {
+      "locator": "Creative-Writing-Rubrics-fresh-verify/evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/baseline_grok_successor_collection_replay_r16.py",
+      "bytes": 130691,
+      "sha256": "45eec936135b2f0774800431f5b5f029a036710fb0683a2d384af629f17bffb1"
+    },
+    "analysis": {
+      "locator": "Creative-Writing-Rubrics-fresh-verify/evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/baseline_grok_successor_analysis_r25.py",
+      "bytes": 88078,
+      "sha256": "0e4fb13fd90d2f78401aca4853d5f0156e59b0f16d3813d5cc1941abc5dff1c3"
+    }
+  },
+  "expected_counts": {
+    "story_pass_pairs": 100,
+    "logical_positions": 2300,
+    "ordinary_native_identities": 2297,
+    "criterion_leaves": 17800,
+    "historical_excluded_native_identities": 33,
+    "recovered_positions": 3,
+    "owner_entries": 2210,
+    "direct_native_terminal_witnesses": 2208,
+    "adopted_projections_directly_joined": 2,
+    "adopted_native_runtime_data_recoveries": 1,
+    "static_native_position_joins_pending": 90,
+    "parallel_prefix_descriptors": 18,
+    "historical_analysis_excluded_passes": 18
+  },
+  "input_roots": [
+    "Creative-Writing-Rubrics-fresh-verify",
+    "cwr-dryad-baseline8-plan-20260906-r1",
+    "cwr-dryad-selected-schedule-100-20260909-r1",
+    "cwr-resume-control-20260919-r1/dryad-final-analysis-r25",
+    "cwr-dryad-grok88-recovery-20260910-r1",
+    "cwr-dryad-grok-successor-post211-20260910-r1",
+    "cwr-dryad-grok-local254-continuation-20260910-r1",
+    "cwr-dryad-grok-renewed-successor-global-20260919-r1"
+  ],
+  "limitations": [
+    "This replaces Census A Dryad Grok projection; it adds no independent studies, votes or leaves",
+    "Collected100 passes differ from historical analysis82; neither epoch descriptors nor repeated identities establish independence",
+    "Ninety prefix/replacement positions retain exact collection states/commitments but direct native artifact joins remain pending; ordinal70 is one of these recovered positions",
+    "Retained terminal output and normalized states are joined; separately committed native envelope storage bytes and full transport/contact disposition closure remain unverified",
+    "Historical declared collection hash differs from the pinned embedded metadata projection hash; both commitments remain explicit without asserted equivalence",
+    "Historical controllers are hashed only, never imported/executed; modern strict import, provider/model/runtime attestation and full-score replay remain unverified",
+    "Only counts, hashes and source locators are released; creative prose, rationales and human labels are excluded",
+    "A bounded source inspection accidentally displayed terminal quote/rationale objects; no row selection, state normalization or missingness inference used that display"
+  ]
+}

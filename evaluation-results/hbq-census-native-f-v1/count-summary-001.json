@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "status": "partial_program_census",
+  "scope": "dryad_grok_selected100_retained_terminal_join_v1",
+  "replaces": "Census A Dryad Grok projection",
+  "observed": {
+    "adopted_native_runtime_data_recoveries": 1,
+    "adopted_projections_directly_joined": 2,
+    "criterion_leaves": 17800,
+    "direct_native_terminal_witnesses": 2208,
+    "historical_analysis_excluded_passes": 18,
+    "historical_excluded_native_identities": 33,
+    "logical_positions": 2300,
+    "native_state_counts": {
+      "CANNOT_ASSESS": 1935,
+      "NO": 7881,
+      "NOT_APPLICABLE": 2128,
+      "YES": 5856
+    },
+    "ordinary_native_identities": 2297,
+    "owner_entries": 2210,
+    "owner_kind_counts": {
+      "first_recovery": 111,
+      "local_schema_recovery": 1,
+      "parallel_local_recovery": 1,
+      "parallel_renewal_native": 1930,
+      "partial_predecessor_peer": 16,
+      "standing_v6_renewed_successor_native": 32,
+      "standing_v6_runtime_data_original_native": 17,
+      "standing_v6_runtime_data_recovered_native": 1,
+      "standing_v6_runtime_data_successor_native": 58,
+      "successor": 43
+    },
+    "parallel_prefix_descriptors": 18,
+    "recovered_positions": 3,
+    "static_native_position_joins_pending": 90,
+    "story_pass_pairs": 100
+  },
+  "verified_artifact_count": 6963,
+  "verified_artifact_bytes": 109165088,
+  "report_sha256": "5fb1f1918b55b3bede55894aaa435604cf237b867b479ed76ceb9f643a3a0e2c",
+  "private_ledger_sha256": "0cf77dfd06ab5217370e14acec5a9ecf41c986b55ce68af4b70ce1ddfdbfc8e3",
+  "implementation_sha256": "ea4af5aed3641d15886c701aa06adc832af8f20317d775fdd96c333173de2637",
+  "recipe_file_sha256": "bfbb1beb81500696942e4ab7e3def70a82e7c4c358f6894d59493169e570efa4",
+  "historical_declared_collection_sha256": "2c5618dcfc2b03c9044bdc6dd8d4c7d73aeb8205f31aa7ffdb3be1df25bcf636",
+  "embedded_collection_sha256": "efa9bbbb303087161a83fbbbc550e8633a724dfc52fac2de36a4ca673c236b4c",
+  "declared_and_embedded_collection_hash_match": false,
+  "native_identity_sha256": "2e0451978791ad524b952a22e2b48f7d67348f16f8c22320783d94e9a2bab7ee",
+  "new_provider_votes": 0,
+  "provider_calls_made": 0,
+  "limitations": [
+    "This replaces Census A Dryad Grok projection; it adds no independent studies, votes or leaves",
+    "Collected100 passes differ from historical analysis82; neither epoch descriptors nor repeated identities establish independence",
+    "Ninety prefix/replacement positions retain exact collection states/commitments but direct native artifact joins remain pending; ordinal70 is one of these recovered positions",
+    "Retained terminal output and normalized states are joined; separately committed native envelope storage bytes and full transport/contact disposition closure remain unverified",
+    "Historical declared collection hash differs from the pinned embedded metadata projection hash; both commitments remain explicit without asserted equivalence",
+    "Historical controllers are hashed only, never imported/executed; modern strict import, provider/model/runtime attestation and full-score replay remain unverified",
+    "Only counts, hashes and source locators are released; creative prose, rationales and human labels are excluded",
+    "A bounded source inspection accidentally displayed terminal quote/rationale objects; no row selection, state normalization or missingness inference used that display"
+  ]
+}
