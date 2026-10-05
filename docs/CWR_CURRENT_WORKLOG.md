@@ -1,6 +1,6 @@
 # CWR current worklog
 
-Updated 2026-10-05T03:57Z (October 4 Denver). This is the current operational view. Earlier full evidence and decisions remain in Git history through 7ce0a13 and immutable private outputs; this refresh does not supersede those receipts.
+Updated 2026-10-05T04:27Z (October 4 Denver). This is the current operational view. Earlier full evidence and decisions remain in Git history through c07bb652d92cc3d74e1d23f26e8f85f67f9718c2 and immutable private outputs; this refresh does not supersede those receipts.
 
 ## Objective and authority
 
@@ -14,7 +14,7 @@ Prefer secondary Sol Hailey2Collet@gmail.com. Finish new Grok contacts by Octobe
 
 Owner Haile/local, task and session01a10839-a735-7bf2-a05a-68afadb52755.
 
-CWR: C:\Users\Haile\Documents\Creative-Writing-Rubrics-fresh-verify, main/originHaileyStorm/Creative-Writing-Rubrics. Original basef4f5e332a1e0a199da5903304ea97d5986097579. Latest pushed7ce0a13 (isolated v6 transport); previous64a19036c491c5848ff4943c3b65a7970259fcc7 (F prefix),700bea927617ae7309417f09fa7058fae1358fae (P4 analysis),324e48226b5ec2de1373dc54059b1726b7173372 (F/P4 collector/TTCW analysis),3c0da75932386443e70f1bab2fb6f9fc3463e6f3 (transport/P4 summary/Solchain). Pushes verified upstream0/0. No worktrees or project-local tracker.
+CWR: C:\Users\Haile\Documents\Creative-Writing-Rubrics-fresh-verify, main/originHaileyStorm/Creative-Writing-Rubrics. Original basef4f5e332a1e0a199da5903304ea97d5986097579. Latest pushedc07bb652d92cc3d74e1d23f26e8f85f67f9718c2 (P4 grounding descendants); previous7ce0a13 (isolated v6 transport),64a19036c491c5848ff4943c3b65a7970259fcc7 (F prefix),700bea927617ae7309417f09fa7058fae1358fae (P4 analysis),324e48226b5ec2de1373dc54059b1726b7173372 (F/P4 collector/TTCW analysis),3c0da75932386443e70f1bab2fb6f9fc3463e6f3 (transport/P4 summary/Solchain). Pushes verified upstream0/0. No worktrees or project-local tracker. Current finished v6 continuation/Sol391/poetry-source projector publication is next; no unfinished worker files.
 
 CONTROL=C:\Users\Haile\Documents\cwr-resume-control-20260919-r1.
 PROGRAM=CONTROL/successor-program-20261004.
@@ -43,19 +43,19 @@ F prefix actual PROGRAM/census-f/prefix-run-001 completed/matched dry-run:79orig
 
 ## Current native collections
 
-All handles below lack outer terminals at the last03:56Z material observation. These are stdout metadata, not final native-replay study totals. Preserve exact handles; do not restart on PID absence or replay completed rows.
+All handles below lack outer terminals at the last04:21Z material observation. These are stdout metadata, not final native-replay study totals. Preserve exact handles; do not restart on PID absence or replay completed rows.
 
 | Study | Authoritative handle under PROGRAM | Results root | Observed progress |
 |---|---|---|---|
-| TTCW Sol | ttcw-phase1/sol-suffix-002/lifecycle/full-002 | ttcw-phase1/sol-suffix-002 (launcher binding authoritative) |121fresh terminal119accepted2semanticreject,2inflight|
-| TTCW Grok | ttcw-phase1/grok-suffix-005/lifecycle/full-001 | same suffix's bound results root |58fresh56accepted2reject,2inflight|
-| P1 Sol | semantic-crossform/transport-lifecycle/sol-001 | matched-transport-sol-001 |through81/latestaccepted|
-| P1 Grok | semantic-crossform/transport-lifecycle/grok-001 | matched-transport-grok-001 |through44/latestaccepted|
-| MFA Sol | mfa-canary/transport-lifecycle/sol-001 | transport-sol-001 |through110/latestaccepted|
-| MFA Grok | mfa-canary/transport-lifecycle/grok-001 | transport-grok-001 |through52/latestaccepted|
-| P4 Sol | longform-dependency/judging-lifecycle/sol-001 | judging-sol-001 |through42/latestaccepted|
+| TTCW Sol | ttcw-phase1/sol-suffix-002/lifecycle/full-002 | ttcw-phase1/sol-suffix-002 (launcher binding authoritative) |159fresh terminal157accepted2semanticreject,2inflight|
+| TTCW Grok | ttcw-phase1/grok-suffix-005/lifecycle/full-001 | same suffix's bound results root |76fresh73accepted3reject,2inflight|
+| P1 Sol | semantic-crossform/transport-lifecycle/sol-001 | matched-transport-sol-001 |through106/latestaccepted|
+| P1 Grok | semantic-crossform/transport-lifecycle/grok-001 | matched-transport-grok-001 |through59/latestaccepted|
+| MFA Sol | mfa-canary/transport-lifecycle/sol-001 | transport-sol-001 |through136/latestaccepted|
+| MFA Grok | mfa-canary/transport-lifecycle/grok-001 | transport-grok-001 |through62/latestaccepted|
+| P4 Sol | longform-dependency/judging-lifecycle/sol-001 | judging-sol-001 |through66/latestsemanticreject|
 
-Exact process creation/launcher bindings were verified at launch. Native metadata source is each handle's invocation/handle/stdout.log and final terminal when present. Next bounded observation near04:15Z or a real terminal event; no repeated healthy native audits.
+Exact process creation/launcher bindings were verified at launch. Native metadata source is each handle's invocation/handle/stdout.log and final terminal when present. Next bounded observation near04:45Z or a real terminal event; no repeated healthy native audits.
 
 TTCW original manifest rawb1868f8b6dee6daba3125b73628e6276b34f7049fad049f17262cbe3c859b7b7:36AIstories/12plots/1512expert ballots504cells,1554requests per endpoint3108total,1044initial510repeat. Full178bank and strong comparators; full denominators, >10%source-group loss inconclusive,12plot bootstrap2000/seed20261004, disconnected pairgraph has no globalrho. Labels sealed. Sol S002 rawe134d2b1dca17f884660076f39b246a25abc8d7636792bc48d9f1030e97f56cd covers untouched393..1554; original391/392 remain unadmitted. mfa_metadata_impl now read-only bounded391 saved-final feasibility;392 incomplete300timeout is not resend authority. Initial S002 full-001 EXIT2 omitted helper before provider/output; full-002 corrected distinct launch retains failure.
 
@@ -102,6 +102,12 @@ POEMetric arXiv2604.03695v1 April4 fixed-form professional/English-literature ju
 Porter–Machery primary Nature2024 Study2/OSFby4cg:696USlay participants/same10English poems/fivehuman+fiveAI/fourteen7-point quality dimensions/three authorship framing groups. Only told-nothing group matches blinded judging directly; nonexpert/small descriptive baseline, no powered confirmation claim. census_pass_a bounded outcome-blind OSF folder/schema discovery, max8requests/no poem or individual rating rows; file/poem links/forms/license/overlap need verification before freezing. Public showcase verse/aggregate result exposure disclosed. NarrativeWorldBench primary June16v1 reports12professional audio-drama writers/240trials, bounded search found no public usable label artifact; retain one access gap, no repeated bulk search.
 
 ## Next actions and closure
+
+Completed root actuals04:21–04:27Z: named P4 v6 plan judging-grok-v6-plan-001 rawe48b9ee182cf3e0b17ab9b55a0cdc9347d90ce5c324b0987a2dca8790b306cf9/content205d7646e696b3f9afdc60f7e111485f868006860c74fe2d9f6fcd14e80aa869; accepted original1 retained, positive-no-contact2 eligible plus230untouched,231continuation requests/full232endpoint464matched. Validation EXIT0/0calls, route pending/no arming. Collector8346f65731673b2a8008405012eefea835e8168ff887f6ee10799feafc82a55f/test36832aefa12f3697e1a33c68b3eaa1d65e005743b929e715a27e840938f1789a. Python3.12.12 CWRvenv path/version/executable bytes committed; global3.14 gives a different AST hash and is ineligible for this frozen profile. Full v6 receipt parser plus own-envelope/start/session/prompt/schema/job/profile bindings, trusted adapter history/tool attestation; raw account history not exported. Exact deadline/STOP/no-resend unchanged. Integrated v6 transport10+continuation9+Sol39110+chain11 checks40 passed.
+
+Sol391 actual sol-slot391-reconciliation-001 EXIT0 receipt10fd4df9a1fae6856f889b47dbb87ba18c912f5738e1e1c9e34e2f81f1e5ac29,19verifiedinputs/accepted true/abstentionfalse/0errors/0calls/0newvotes/full3108/labelsfalse. Wrapper7994fa6c0cfe74120f5c8e5add077943662f3935e6a6a3d8129a6f71a40bf8cb; narrow analysis_chain458547dfc5cdb5e72a56675c0d54cf1a78de61573f0f6aa59a1647d4cbd4e5b0/test5c2a0dd866b489e20e11d7c17abc43ca9af9013717abad99df88d137ee603bb2. Old failure/source snapshots retained; new explicit analysis-chain-config-002 raw1e09ee6566cec7bee3c0de4f3324e0c4311144ed5a8302486312c294c1d00094 contains same9jobs+original3Greceipts+oneS391 receipt, no healthy full-chain rerun. Original envelope/runtime/cardinality unproven;392 workspace-routing remains unknown/unadmitted/noresend.
+
+Poetry actual reference-frozen-001 EXIT0 rawmanifestf58a41dffdefb19fa61a45f39c6b0e2b0b51e93533f0fef7f55700324b0536f2,65artifacts3286403bytes/10linkedstimuli6960rows696ResponseIds(each10)/0repeatedresponse-targetpairs; nothing2300/human2290/AI2370. Prepare_sources1bee226769292c9e889621f942c81357728244965ad19c1fd03902b9380d9a1f/testea8f5e0025d1bde91f77ace935bf4d455d397cd044527ce1d5d18e5da0951b22/14focused passed. QSF LoopAndMerge slots, unique declared casefold-alphanumeric metadata or exact DOCX-body linkage (agree when both);8exact projected matches/two retained text differences/one catalogue mismatch each QSF/CSV and DOCX/CSV. QSF normal-flow HTML descendant is presented-survey stimulus, not proof of live historical rendering or complete original work. Source HTML/literal-node/DOCX/body/section/raw file commitments retained separately. Texts and unchanged human CSV sealed; no human outcome values/poem text displayed/no judging. Forms, generic-poetry scope review, rights, cross-study overlap and unused certification remain pending/unknown. Prediction preparation is next.
 
 1. Collect finished P4 grounding and v6 continuation owner packets; run root actual provider-free named outputs and relevant integrated checks. Publish only finished owned files; keep active frozen code untouched.
 2. Observe the seven authoritative handles at the next material window, approximately04:15Z. On actual STOP preserve prefix/failure/ambiguous evidence and use the smallest supported recovery. No repeated healthy full audits.

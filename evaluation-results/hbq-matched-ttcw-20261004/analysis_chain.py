@@ -30,7 +30,7 @@ def require(value, message):
 
 def modules():
     names = ("prepare", "validate_response", "collector_v2", "analysis", "continue_manifest",
-             "continue_chain", "continue_sol", "continue_sol_chain", "reconcile_history")
+             "continue_chain", "continue_sol", "continue_sol_chain", "reconcile_history", "reconcile_sol_transport")
     previous, paths = {name: sys.modules.get(name) for name in names}, list(sys.path)
     result = {}
     try:
@@ -191,12 +191,36 @@ def apply_reconciliation(specification, joined, source_specs, artifacts, loaded,
     require(saved.get("no_resend") is True, "Reconciliation lacks no-resend binding")
     sid = saved["logical_sample_id"]
     identity = (saved.get("endpoint", "grok"), sid)
-    require(identity in joined and joined[identity]["state"] == "ambiguous", "Reconciliation must join one original failed slot")
+    transport_profile = saved.get("policy") == loaded["reconcile_sol_transport"].POLICY
+    expected_state = "unadmitted_no_resend" if transport_profile else "ambiguous"
+    require(identity in joined and joined[identity]["state"] == expected_state, "Reconciliation must join one original failed slot")
     record, row = joined[identity], joined[identity]["request"]
-    require(identity[0] == "grok", "Only the retained named Grok reconciliation profiles are supported")
     source = source_specs[record["source_index"]]
     sample = Path(source["results_root"]) / f"{row['endpoint_ordinal']:04d}-{sid[:12]}"
-    if saved.get("evidence_class") == "saved_history_reconciliation_v1":
+    if transport_profile:
+        require(identity[0] == source["endpoint"] == "sol" and saved["provider_calls_made"] == saved["new_logical_votes"] == 0
+                and saved["human_labels_released"] is False and saved["full_planned_denominator"] == DENOMINATOR
+                and saved["original_native_envelope_reconstructed"] is False
+                and saved["implementation_sha256"] == prepare.digest((HERE / "reconcile_sol_transport.py").read_bytes()),
+                "Saved Sol transport policy/implementation differs")
+        commitments = saved["source_commitments"]
+        require(commitments["manifest"]["sha256"] == source["manifest_sha256"]
+                and commitments["job"]["sha256"] == source["job_sha256"]
+                and commitments["terminal"]["sha256"] == record["terminal_sha256"]
+                and saved["endpoint_ordinal"] == row["endpoint_ordinal"]
+                and saved["request_sha256"] == row["request_sha256"], "Saved Sol transport original source lineage differs")
+        actual, response_raw, acceptance, inputs = loaded["reconcile_sol_transport"].reconcile(
+            Path(source["manifest_path"]), Path(source["results_root"]), sample.name, loaded["reconcile_sol_transport"].HOME,
+            Path(commitments["rollout"]["source_locator_local_only"]), snapshot=path.parent, commitments=commitments)
+        require(actual == saved and prepare.checked(path.parent / "response.json", saved["response_sha256"]) == response_raw
+                and prepare.checked(path.parent / "acceptance.json", saved["acceptance_sha256"]) == prepare.canonical(acceptance),
+                "Saved Sol transport snapshot/descendant replay differs")
+        terminal = json.loads((path.parent / "terminal.json").read_bytes())
+        require(terminal["reconciliation_sha256"] == specification["sha256"] and terminal["state"] == saved["state"]
+                and terminal["no_resend"] is True, "Saved Sol transport descendant terminal differs")
+        state = "accepted" if acceptance["accepted"] else "semantic_rejected"
+    elif saved.get("evidence_class") == "saved_history_reconciliation_v1":
+        require(identity[0] == "grok", "Saved history requires the original Grok endpoint")
         require(saved["provider_calls_made"] == 0 and saved["original_native_envelope_reconstructed"] is False
                 and saved["implementation_sha256"] == prepare.digest((HERE / "reconcile_history.py").read_bytes()), "Saved-history policy/reader binding differs")
         commitments = saved["source_commitments"]
@@ -212,6 +236,7 @@ def apply_reconciliation(specification, joined, source_specs, artifacts, loaded,
         require(terminal["reconciliation_sha256"] == specification["sha256"] and terminal["state"] == saved["state"], "Saved-history descendant terminal differs")
         state = "accepted" if acceptance["accepted"] else "semantic_rejected"
     elif saved.get("policy") == "saved_schema_rejection_reconciliation_v1":
+        require(identity[0] == "grok", "Saved schema rejection requires the original Grok endpoint")
         require(saved["new_provider_calls"] == saved["new_votes"] == 0 and saved["accepted_vote"] is False
                 and saved["original_ambiguity_unchanged"] is True and saved["native_envelope_reconstructed"] is False
                 and saved["state"] == "completed_schema_rejected"
