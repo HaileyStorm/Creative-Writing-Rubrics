@@ -1,0 +1,22 @@
+{
+  "policy": "study2_poetry_descriptive_human_alignment_v1",
+  "primary_condition": "nothing",
+  "primary_target": "overall_quality",
+  "rating_fields": ["beautiful", "imagery", "inspiring", "lyrical", "meaningful", "mood_emotion", "moving", "original", "overall_quality", "profound", "rhythm", "sound", "theme", "witty"],
+  "rating_scale": [1, 7],
+  "rating_encoding": "finite decimal numeric source value equal to an integer from one through seven",
+  "missing_rating": "blank; exclude that cell and retain denominator",
+  "unknown_rating": "reject; no clipping or coercion",
+  "human_poem_summary": "arithmetic mean of observed primary-condition ratings by poem and field",
+  "prediction_poem_summary": "arithmetic mean only when all three same-arm cycles have admitted usable scalars",
+  "primary_comparison": "descriptive Spearman rank association with average ranks for ties, separately by endpoint and arm; at most ten poems",
+  "pair_comparison": "five frozen disjoint pairs; assessor-matched primary-condition overall_quality directions; ties retained, missing cells unresolved",
+  "pairwise_prediction": "all six AB/BA cycle observations must agree on canonical direction or native tie; conflicts/abstention/missing unresolved",
+  "other_dimensions": "separate human descriptive counts; no invented comparator crosswalk or composite",
+  "rhyme": "separate categorical field; missingness and distinct category count only, no quality aggregation",
+  "repeats_add_independent_poems": false,
+  "response_ids_prove_independent_people": false,
+  "population_inference": false,
+  "bootstrap": false,
+  "candidate": null
+}
