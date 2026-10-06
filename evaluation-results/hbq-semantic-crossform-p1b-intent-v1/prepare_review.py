@@ -17,6 +17,8 @@ canonical, digest, require = prepare.canonical, prepare.digest, prepare.require
 POLICY = 'blinded_independent_ai_fixture_intent_review_v1'
 STATES = ['supported', 'not_supported', 'uncertain']
 ROLE_MARKER = r'(?:target[ _-]+defect|legitimate[ _-]+style|target[ _-]+descendant)'
+ANCHOR_ROLE_MARKER = r'(?:' + ROLE_MARKER + r'|original[ _-]+(?:variant|version|descendant|control|draft))'
+ANCHOR_METADATA_FILTER_VERSION = 2
 BRIEF = ('Assess every variant independently against the supplied canonical criterion and neutral creative brief. '
          'Judge quality suitability within the declared form and supplied scope, brief suitability, and each proposed preservation anchor. '
          'The anchors are proposed review aids, not accepted facts; reject unsupported proposals. Role-bearing metadata sentences '
@@ -39,7 +41,8 @@ def blinded_packet(entries, source_manifest_sha256, total_families):
         for i, text in enumerate(answer['preservation_anchors']):
             anchor_id = 'anchor-' + digest(canonical([family_key, i, text]))[:20]
             sentences = re.split(r'(?<=[.!?])\s+', text)
-            removed = [sentence for sentence in sentences if re.search(r'\b(?:original|' + ROLE_MARKER + r')\b', sentence, re.IGNORECASE)
+            # "Original ledger leaf" identifies a physical document, not a variant.
+            removed = [sentence for sentence in sentences if re.search(r'\b' + ANCHOR_ROLE_MARKER + r'\b', sentence, re.IGNORECASE)
                        or any(value in sentence for value in row['family']['variant_ids'].values())]
             proposal = ' '.join(sentence for sentence in sentences if sentence not in removed)
             anchors.append({'anchor_id': anchor_id, 'proposal': proposal, 'proposal_available': bool(proposal.strip()),
@@ -75,8 +78,10 @@ def blinded_packet(entries, source_manifest_sha256, total_families):
                         'anchor_metadata_lineage': anchor_lineage,
                         'variants': roles, 'source_commitments': commitments})
     packet = {'schema_version': 1, 'policy': POLICY, 'review_brief': BRIEF, 'families': families,
+              'anchor_metadata_filter_version': ANCHOR_METADATA_FILTER_VERSION,
               'human_labels_supplied': 0, 'scoring_requested': False}
     private = {'schema_version': 1, 'policy': POLICY, 'source_manifest_sha256': source_manifest_sha256,
+               'anchor_metadata_filter_version': ANCHOR_METADATA_FILTER_VERSION,
                'review_packet_sha256': digest(canonical(packet)),
                'total_prospective_families': total_families, 'selected_prefix_families': len(entries),
                'families_outside_selected_prefix': total_families - len(entries), 'families': mapping}
@@ -115,6 +120,10 @@ def validate_review(packet, private_map, review, subset):
     """Validate exact source evidence, then expose disagreements without promotion."""
     require(subset.matches_schema(review, review_schema(digest(canonical(packet)))), 'Review schema/packet commitment differs')
     require(private_map['policy'] == packet['policy'] == POLICY, 'Review mapping policy differs')
+    filter_version = packet.get('anchor_metadata_filter_version', 1)
+    require(type(filter_version) is int and filter_version in (1, 2)
+            and private_map.get('anchor_metadata_filter_version', 1) == filter_version,
+            'Anchor metadata filter version differs')
     require(private_map['review_packet_sha256'] == digest(canonical(packet)), 'Private role map packet commitment differs')
     families = {f['family_id']: f for f in packet['families']}
     maps = {f['family_id']: f for f in private_map['families']}
@@ -180,7 +189,8 @@ def validate_review(packet, private_map, review, subset):
     global_block = bool(review['unresolved_disagreements']) or not review['reviewer_declaration']['independent_of_generator']
     if global_block:
         for family in family_results: family['oracle_admission_candidate'] = False
-    return {'policy': POLICY, 'review_sha256': digest(canonical(review)), 'families': family_results,
+    return {'policy': POLICY, 'anchor_metadata_filter_version': filter_version,
+            'review_sha256': digest(canonical(review)), 'families': family_results,
             'reviewer_declaration': review['reviewer_declaration'], 'unresolved_disagreements': review['unresolved_disagreements'],
             'independence_is_supplied_declaration': True, 'ai_review_is_human_label': False,
             'oracle_accepted': False, 'eligible_for_scoring': False,
@@ -229,6 +239,7 @@ def build(manifest_path, results, *, through_family, manifest_sha256):
              'reviewer/response-schema.json': canonical(schema),
              'private/role-map.json': canonical(private), 'implementation/prepare_review.py': Path(__file__).read_bytes()}
     summary = {'policy': POLICY, 'source_manifest_sha256': source_sha, 'through_family': through_family,
+               'anchor_metadata_filter_version': ANCHOR_METADATA_FILTER_VERSION,
                'selected_families': through_family, 'selected_variants': 3 * through_family,
                'prospective_generation_counts': manifest['counts'], 'selected_declared_comparisons': 2 * through_family,
                'total_prospective_families': manifest['counts']['families'], 'families_outside_selected_prefix': manifest['counts']['families'] - through_family,

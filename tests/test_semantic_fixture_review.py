@@ -202,6 +202,44 @@ def test_creative_role_heading_fails_without_changing_source(accepted_prefix):
     assert answer == snapshot
 
 
+def test_documentary_original_facts_survive_while_variant_aside_stays_private(accepted_prefix):
+    test = accepted_prefix
+    row = test.manifest['requests'][0]
+    answer = json.loads((fixture_generation.collect.sample_path(test.output, row) / 'response.json').read_bytes())
+    facts = [
+        'The unique original ledger leaf records payment for three hundred sacks of relief rye but the weighing of only one hundred and eighty; Soranzo countersigned both entries.',
+        "Valli examines the original leaf, gives Ada a receipt reading 'One leaf received,' and leaves with the evidence; the supplied segment establishes no later outcome.",
+    ]
+    aside = 'Only the original variant preserves every dependency.'
+    answer['preservation_anchors'][:2] = [facts[0] + ' ' + aside, facts[1]]
+    snapshot = copy.deepcopy(answer)
+    packet, mapping = reviewer.blinded_packet([(row, answer, json.loads(test.files[row['semantics_path']]), {})], test.manifest_sha, 8)
+    anchors = packet['families'][0]['proposed_preservation_anchors'][:2]
+    assert [a['proposal'] for a in anchors] == facts
+    assert all(a['proposal_available'] for a in anchors)
+    assert [a['source_metadata_filtered'] for a in anchors] == [True, False]
+    lineage = mapping['families'][0]['anchor_metadata_lineage'][:2]
+    assert lineage[0]['source_anchor'] == facts[0] + ' ' + aside
+    assert lineage[0]['removed_role_bearing_sentences'] == [aside]
+    assert lineage[1]['source_anchor'] == facts[1]
+    assert lineage[1]['removed_role_bearing_sentences'] == []
+    assert packet['anchor_metadata_filter_version'] == mapping['anchor_metadata_filter_version'] == 2
+    assert answer == snapshot
+
+
+def test_historical_filter_version_is_preserved_and_mismatch_rejected(review_inputs):
+    packet, mapping, review, subset = review_inputs
+    packet.pop('anchor_metadata_filter_version')
+    mapping.pop('anchor_metadata_filter_version')
+    mapping['review_packet_sha256'] = review['packet_sha256'] = reviewer.digest(reviewer.canonical(packet))
+    result = reviewer.validate_review(packet, mapping, review, subset)
+    assert result['anchor_metadata_filter_version'] == 1
+    assert not result['oracle_accepted']
+    mapping['anchor_metadata_filter_version'] = 2
+    with pytest.raises(ValueError, match='filter version'):
+        reviewer.validate_review(packet, mapping, review, subset)
+
+
 @pytest.mark.parametrize('label', ['target defect', 'legitimate style', 'target-defect', 'legitimate-style', 'target descendant'])
 def test_role_label_spellings_filter_metadata_and_reject_creative_leaks(accepted_prefix, label):
     test = accepted_prefix
