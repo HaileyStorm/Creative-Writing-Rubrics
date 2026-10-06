@@ -1,0 +1,19 @@
+{
+  "schema_version": 2,
+  "policy": "historical_cohort_count_regeneration_v2",
+  "predecessor": {
+    "implementation": {"root": "repository", "locator": "evaluation-results/hbq-census-pass-b-dispositions-v1/regenerate_v1.py", "bytes": 18217, "sha256": "c09d010829a1270be12b9c8f823f82096352251414f3a631fa9546182ba97b20"},
+    "recipe": {"root": "repository", "locator": "evaluation-results/hbq-census-pass-b-dispositions-v1/regenerate-v1.recipe.json", "bytes": 9625, "sha256": "6c95958202ade8b067473a08d6601e9d319b94733cb40380461e8e15620ab0e1"}
+  },
+  "registry": {"root": "control", "locator": "successor-program-20261004/ttcw-phase1/census-registry-v4-001/registry.json", "bytes": 153246, "sha256": "380cac27ca6994981721584f319becf189f265cd589ff21cdd0e482fa0f0902d"},
+  "registry_receipt": {"root": "control", "locator": "successor-program-20261004/ttcw-phase1/census-registry-v4-001/terminal.json", "bytes": 976, "sha256": "232d524e4703f2750fad3affd88f7855e3e0e66c15b1fec5308ac19b70c4d3ab"},
+  "registry_implementation": {"root": "repository", "locator": "evaluation-results/hbq-census-pass-b-dispositions-v1/registry_v4.py", "bytes": 9731, "sha256": "ef46d47a4f7e5ac1e665633d2a4242d772f48b142144a0d6b3a5dda72bcb5d8e"},
+  "registry_recipe": {"root": "repository", "locator": "evaluation-results/hbq-census-pass-b-dispositions-v1/registry-v4.recipe.json", "bytes": 3247, "sha256": "93db89035af792da5a608eb13e01dfb1725026a9c9a1c119d822c92f411ccf03"},
+  "cohort_authority": "The exact nine cohort descriptors are inherited unchanged from the pinned v1 recipe. Explicit saved reuse binds its checkpoint, recipe, full descriptor and cohort artifacts. Census E is an inherited original-reference join, not an additional regeneration cohort or vote.",
+  "historical_reuse_policy": "pinned_regeneration_v1_checkpoint_compatibility",
+  "limitations": [
+    "This is partial historical count regeneration, not program closure or current native admission.",
+    "Registry locator resolution, regeneration cohort membership and inherited reference joins are distinct inventories.",
+    "No independent vote total or physical contact cardinality is inferred. Current scientific attempts, raw model bodies and human labels remain unopened."
+  ]
+}
