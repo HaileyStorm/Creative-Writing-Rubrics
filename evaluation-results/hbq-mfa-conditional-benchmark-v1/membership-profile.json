@@ -1,0 +1,41 @@
+{
+  "policy": "mfa_conditional_outcome_blind_benchmark_v1",
+  "release": "author-style",
+  "task": "quality",
+  "partition": "confirmation",
+  "candidate_profile_sha256": "d526fbba30d9e864f71e198c6a179a7ce360f21118ca393d49189f290e07a1b6",
+  "candidate_profile_role": "frozen mechanism and analysis rules; separate cohort binding; no label release authority",
+  "ballot_field": "Preference",
+  "ballots_per_source_row": 1,
+  "fine_model_variant_identity": "UNKNOWN",
+  "six_variant_specific_claim": false,
+  "primary_repeat": 0,
+  "diagnostic_repeats": [1, 2],
+  "sentinel_rule": "minimum target hash in each fine/fewshot-only stratum; minimum candidate text hash for that target; minimum pair hash in fine condition for fine target and fewshot condition for fewshot-only target",
+  "expected": {"targets": 30, "fine_targets": 18, "unique_texts": 199, "pairs": 145, "evaluation_units": 289, "metadata_rows": 3276, "lay_only_pairs": 1, "bank_sentinels": 2, "pair_sentinels": 2, "canonical_leaves": 170, "canonical_packets": 22, "requests_per_endpoint": 5170, "requests_total": 10340},
+  "crossed_dependence": {"shared_development_raters_declared": 285, "shared_development_writers_declared": 5, "independent_humans_certified": false},
+  "unused_data_certified": "UNKNOWN",
+  "fresh_confirmation_claim": false,
+  "human_alignment_claim": false,
+  "candidate_promoted": false,
+  "execution_authority": false,
+  "source_pins": {
+    "private-metadata.json": "ba0b418384d55af5b3b97ca40acc67e82f71eebff3fc22d0011196d5870e600a",
+    "summary.json": "5a224007e7c7b264c464c47de0d8c8a1c529dc3913b5c32510fa2dd46373ed94",
+    "source-recipe.json": "74acddc9ac4c60d0ad813046ef33191e880365a3460c0e356475daf5a04abc77",
+    "private-membership.json": "202ec58ddc0e4cb103bbb62b31c250d92bd8d53bdee84d73f52d4bd1dc0cda6e",
+    "partition-summary.json": "e27a1ce3c90cde9719f2e7c186145247cae1fc12fc1ad8f17ae4fe12644bfa09",
+    "audit003.json": "d5937ad45561b4fd1f549acd127119422e751d4ad4597a3c1906d80c3bb99202",
+    "audit004.json": "3e54fe19f28d4304e7132159dc6567179c31ef281a3a7bb9446652385c61582a"
+  },
+  "source_files": {
+    "data/quality_fewshot_expert_anon.json": {"sha256": "84dc98276179578414eb6bfae44d61c53c23bfdfeb6fba2190df4707ef58d3f3", "bytes": 2043918, "git_blob_sha1": "f529644fd72ee400f3bc326400247df228412ec3", "record_envelope_length": 3},
+    "data/quality_finetuned_expert_anon.json": {"sha256": "9dbb9a3c33b028c122117dfcf1311a11d0b9147c0fd9e9d82f2a5f71b00f2e72", "bytes": 1216617, "git_blob_sha1": "d6c0ff45544f24911f5beac98aff56bc67cfcc5b", "record_envelope_length": 3},
+    "data/quality_fewshot_lay_anon.json": {"sha256": "09a62268ed213f4eb95aab5f3f480e81cf4f908930506f03add63debf7830b0b", "bytes": 12892544, "git_blob_sha1": "6b0d594b39c850045a7b517009d96d0443dde3ec", "record_envelope_length": 2},
+    "data/quality_finetuned_lay_anon.json": {"sha256": "b92214a8558f430de53dec1683ae018a69778a0785f14fee51194d47dccbb282", "bytes": 8403024, "git_blob_sha1": "f567134d9f32933d29261911b72494b640f5a8d7", "record_envelope_length": 2}
+  },
+  "source_key_audit": {"expert_rows": 432, "lay_rows": 2844, "Preference": "one scalar field in every selected row", "expert_rater": "judgment envelope position 1; record.user is not uniformly present", "lay_rater": "record.user in two-element envelope", "excluded_values": ["Preference", "win", "Reason", "key", "original", "unknown fields"], "source_values_decoded_in_audit": 0},
+  "recipe_file_sha256": "74acddc9ac4c60d0ad813046ef33191e880365a3460c0e356475daf5a04abc77",
+  "recipe_canonical_json_lf_sha256": "61bea810009347727c7b781085aea2189521e1944a76dcea59dd0ab8ad02245e",
+  "limitations": ["Exposure audit is incomplete and excludes later appends; nonuse and pretraining cleanliness unknown.", "GoodWriting is a related-release sensitivity cohort, not independent replication.", "One fewshot pair has lay membership only; no expert ballot is invented.", "Model-variant origin values remain unopened; no finer variant identity or pooling claim.", "Preparation is not native execution, admission, label release, or promotion authority."]
+}
