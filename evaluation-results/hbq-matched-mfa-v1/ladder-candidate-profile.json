@@ -1,0 +1,89 @@
+{
+  "schema_version": 1,
+  "candidate_id": "p0_uncertainty_preserving_ladder_prospective_002",
+  "frozen_component": "candidate_mechanism_and_decision_analysis_rules",
+  "owner_task_id": "01a10839-a735-7bf2-a05a-68afadb52755",
+  "plan_sha256": "2f1e328166d10a6e036f5bd00b2c3082667c773869bf3c7bbdefc762d75c5654",
+  "baseline_promotion": false,
+  "r391_promotion": false,
+  "r396_promotion": false,
+  "candidate_promotion": false,
+  "engineering_basis": "Existing deterministic P0 witnesses distinguish explicit lower NO from unavailable lower prerequisites. This candidate preserves raw records and historical scoring defaults; it is a hypothesis for decision utility, not a claimed human-alignment gain.",
+  "source_files_sha256": {
+    "src/hbqrs/core.py": "70b4cd16bd536f2f6ddb8e066f801090a037a39605652b14d6c7f6ff312446cb",
+    "src/hbqrs/scoring_v2.py": "1305f444aaa45a0f47cc38cab207e847ae2ca04142637e6ee765edc3f06960d6",
+    "src/hbqrs/ladder_uncertainty.py": "a0303eb0c4acc92288dbec9561ad026573f5b1520c5005eb0f27041d8f1e4527",
+    "src/hbqrs/decision_readiness.py": "ac17951e0ad894a6a4f5cc706d1bee984823e13056e876dbf853b84e14db2b27",
+    "evaluation-results/hbq-matched-mfa-v1/analysis.py": "92437ca2e399126238189189743511434bd5dbcfec9ffe6cf6fecd5901b34b24"
+  },
+  "execution": {
+    "entry_point": "hbqrs.ladder_uncertainty.score_bundle",
+    "input": "One exact verified native replay and normalized complete original verdict bank per artifact/endpoint/cycle, with its frozen modules, bundle and actual task contract.",
+    "admission_policy": "strict_import_v1",
+    "original_admission_count_per_bank": 1,
+    "historical_output": "historical_report",
+    "candidate_output": "candidate_report",
+    "candidate_policy": "uncertainty_preserving_ladder_v1",
+    "projection_admission": "Original admission copied; effective projected states receive no new semantic admission or native votes.",
+    "models_prompts_contexts_packets_weights_and_raw_states_changed": false,
+    "lower_explicit_no_then_higher_yes": "effective_NO",
+    "lower_ca_omitted_or_na_then_higher_yes_without_lower_no": "effective_CANNOT_ASSESS",
+    "unsupported_native_attempts_reused": false,
+    "provider_calls_for_projection": 0
+  },
+  "pair_decision": {
+    "policy": "matched_initial_observed_score_direction_same_rule_both_arms_v1",
+    "allowed_pairs": "Only source-registered quality pairs within the same target/task/reference-condition/fine-variant stratum, with preserved orientation and provenance; no global disconnected-graph ranking.",
+    "artifact_score": "Primary uses the single common registered initial cycle repeat0 observed score for each artifact; require a complete admitted bank and valid hard gates. Missing/unadmitted initial banks make that artifact prediction unavailable. Do not require or impute unplanned repeats.",
+    "direction": "Compare the two artifact means; positive difference selects the higher-scored artifact, exact zero is a predicted tie. No fitted tie epsilon or calibration.",
+    "tie_abstention_missing_and_invalid_prediction": "No correct decision in the primary all-planned binary-preference ballot denominator; report each category separately.",
+    "source_human_ties_unknowns_or_missing_labels": "Preserve source categories and planned IDs. Report separate counts and best/worst bounds; do not silently delete them or claim they are binary ground truth.",
+    "decision_coverage": "Directional usable predictions divided by all source-registered planned pairs, with complete-case coverage additionally reported.",
+    "primary_accuracy": "Correct binary quality decisions divided by all registered planned binary-preference ballots; missing predictions contribute zero correct decisions. Majority-pair agreement is reported separately.",
+    "readiness_bounds": "Descriptive rubric-sensitivity bounds and effective positive/penalty completeness, not statistical confidence or a primary strict-interval pair rule.",
+    "repeat_diagnostics": "Report registered repeat1/2 sentinel decisions separately with their actual planned denominators; do not average them into primary initial scores or count absent unplanned cycles as measurement loss."
+  },
+  "prospective_claim_rules": {
+    "separate_strata": [
+      "endpoint",
+      "quality_task",
+      "reference_condition",
+      "expert_or_lay_panel",
+      "fine_variant"
+    ],
+    "coverage_guard": "Candidate directional decision coverage must be at least baseline coverage in every claimed stratum; selective accuracy alone is insufficient.",
+    "expert_improvement": "Candidate all-planned accuracy point gain at least 0.05 and paired clustered 95-percent lower bound strictly above zero on each claimed endpoint; report effects and uncertainty even if the gate fails.",
+    "lay_noninferiority": "Report separately; paired clustered 95-percent lower bound at least -0.03 for a noninferiority claim. An improvement claim additionally requires positive all-planned point gain and lower bound above zero.",
+    "resampling": "Fixed seed20261004,1000 paired source-target cluster resamples; retain writer/rater reuse and crossed-rater sensitivity. Do not bootstrap correlated ballots as independent works.",
+    "attrition": "More than10percent source-group loss or material arm-dependent attrition makes the improvement claim inconclusive; report all-planned best/worst bounds.",
+    "style_claim": false,
+    "endpoint_averaging_for_primary_claim": false,
+    "sequential_target_peeking_or_tuning": false,
+    "precision_extension": "No automatic extension. If needed, freeze one independent extension and combined analysis before its labels.",
+    "negative_or_inconclusive_result": "Retain candidate and lineage without promotion; continue the baseline/comparator program and consider a distinct supported mechanism."
+  },
+  "cohorts": {
+    "mfa_quality_development_manifest_sha256": "ce8a735c40a18c676c82cc0585b36f91cbb6a9faa98ac2289f86fdfb52cadd80",
+    "development_scope": "Existing two-target canary:13artifacts,868planned requests,170leaf22packet short-form banks. This is development only; actual triggering patterns were not read for selection.",
+    "confirmation_lead": "Thirty source-disjoint Author-Style targets from the metadata partition; their quality-pair assignment, requests and planned ballot IDs are not yet frozen or verified by this profile.",
+    "confirmation_unused_certified": false,
+    "exposure_receipt_sha256": "3e54fe19f28d4304e7132159dc6567179c31ef281a3a7bb9446652385c61582a",
+    "label_release_prerequisites": "Exact outcome-blind source/pair/panel/condition/ballot membership and candidate/baseline/comparator request commitments; completed prediction dispositions and supported native replay; program-local eligibility decision; explicit postprediction label release. This profile does not authorize label opening.",
+    "if_unused_eligibility_cannot_be_established": "Record the exact eligibility limitation. Any later outcome-blind benchmark must be separately labeled as such and must not claim unused confirmation.",
+    "development_geometry": {
+      "initial_artifacts_per_endpoint": 13,
+      "bank_sentinels": 2,
+      "cycles_on_sentinels": 3,
+      "hbq_endpoint_artifact_cycle_banks": 34,
+      "primary_cycle": 0
+    }
+  },
+  "compatibility_limit": "Existing strict_interval_comparison_v1 rejects differing full successor scoring-context/task-contract commitments. Thirteen MFA artifacts have thirteen full task-contract hashes despite one rendered-context hash. A caller digest cannot override this; any future interval pair adapter requires a separately verified semantic-context contract preserving original hashes.",
+  "candidate_evaluated": false,
+  "native_or_human_acceptance_claimed": false,
+  "human_labels_opened_for_candidate_selection": false,
+  "provider_calls": 0,
+  "full_goal_complete": false,
+  "supersedes_profile_sha256": "37dd4a92856e016cb0c22bbb79d94c5cb08a01ca31fcbd952446cbd90cbd011f",
+  "prefreeze_geometry_correction": "Profile001 incorrectly assumed all artifacts had three planned cycles. Source manifest and existing analysis show13 initial artifacts per endpoint and two repeated bank sentinels only,34HBQ endpoint-artifact-cycle banks total. Corrected before any candidate predictions or labels were read; candidate mechanism/source pins unchanged."
+}
