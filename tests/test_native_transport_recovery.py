@@ -1,4 +1,4 @@
-"""Synthetic saved-native recovery witnesses; no provider or account proof."""
+"""Synthetic and fixed saved-native witnesses; no fresh provider contact."""
 from copy import deepcopy
 import importlib.util
 import json
@@ -119,6 +119,31 @@ def test_grok_retry_projection_is_separate_and_preserves_own_update_order():
     assert rows == before
     assert filtered == [rows[i] for i in [0, 3, 4, 5]]
     assert len(diagnostics) == 2
+
+
+def test_lamp_slot340_actual_two_stream_selection_is_exact_and_preserves_partial():
+    fixed = r.load('lamp_slot340_fixed_selection_test', REPO / 'evaluation-results/hbq-native-transport-recovery-v1/reconcile_lamp_slot340_final_stream.py')
+    if not fixed.SESSION_ROOT.exists() or not (fixed.SOURCE / fixed.SLOT).exists():
+        pytest.skip('Exact host-local saved slot340 evidence is unavailable')
+    raw = (fixed.SESSION_ROOT / 'updates.jsonl').read_bytes()
+    assert fixed.digest(raw) == fixed.NATIVE_PINS['updates']
+    updates = [json.loads(v) for v in raw.splitlines()]
+    summary = json.loads((fixed.SESSION_ROOT / 'summary.json').read_bytes())
+    chat = [json.loads(v) for v in (fixed.SESSION_ROOT / 'chat_history.jsonl').read_bytes().splitlines()]
+    prompt_raw = (fixed.SOURCE / fixed.SLOT / 'prompt.txt').read_bytes()
+    assert fixed.digest(prompt_raw) == fixed.SOURCE_PINS['prompt.txt']
+    before = deepcopy(updates)
+    selected, diagnostics = fixed.final_stream_projection(r.grok_projection, updates, summary, fixed.SESSION, prompt_raw.decode(), chat)
+    assert updates == before and (fixed.SESSION_ROOT / 'updates.jsonl').read_bytes() == raw
+    assert selected == [updates[n] for n in (0, 4, 5, 6)] and len(diagnostics) == 1
+    assert diagnostics[0]['attempt'] == 1 and diagnostics[0]['reason'] == fixed.DECODE
+    assistants = [v for v in chat if v.get('type') == 'assistant']
+    assert fixed.digest(selected[2]['params']['update']['content']['text'].encode()) == fixed.FINAL_SHA
+    assert selected[2]['params']['update']['content']['text'] == assistants[0]['content']
+    with pytest.raises(ValueError, match='missing or ambiguous'):
+        fixed.final_stream_projection(r.grok_projection, updates, summary, fixed.SESSION, prompt_raw.decode(), chat + assistants)
+    with pytest.raises(ValueError, match='generic native validation'):
+        fixed.final_stream_projection(r.grok_projection, updates, summary, fixed.SESSION, prompt_raw.decode() + ' ', chat)
 
 
 @pytest.mark.parametrize("damage", ["unknown_retry", "foreign_session", "late_retry", "tool", "duplicate_terminal", "wrong_prompt", "wrong_time", "wrong_effort"])
