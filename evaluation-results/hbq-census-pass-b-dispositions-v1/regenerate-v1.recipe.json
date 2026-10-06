@@ -1,0 +1,230 @@
+{
+  "schema_version": 1,
+  "policy": "historical_cohort_count_regeneration_v1",
+  "registry": {
+    "root": "control",
+    "locator": "successor-program-20261004/ttcw-phase1/census-registry-v3-001/registry.json",
+    "sha256": "6f06afb15593665811a5f6b7e381cb221562e2fffabde58849ccea71e637dee4",
+    "bytes": 149816
+  },
+  "cohorts": [
+    {
+      "id": "fullbook",
+      "implementation": {
+        "root": "repository",
+        "locator": "evaluation-results/hbq-fullbook-historical-census-v1/census.py",
+        "sha256": "2ace355e7d29609521528fc23bfaafded642349c0ef197177441f6ef31983aae",
+        "bytes": 14682
+      },
+      "recipe": {
+        "root": "repository",
+        "locator": "evaluation-results/hbq-fullbook-historical-census-v1/recipe.json",
+        "sha256": "1389bf2e5136d261f04c7148a5f2c98fb08f06b0e76478a8d9570c09e7fe32b5",
+        "bytes": 235456
+      },
+      "interface": "run",
+      "disposition": "historical_observation_owner"
+    },
+    {
+      "id": "qpc24",
+      "implementation": {
+        "root": "repository",
+        "locator": "evaluation-results/hbq-qpc24-historical-census-v1/census.py",
+        "sha256": "6e6638e640d1f0db50db0ec3b8bad70540d01f1b2c0f7405a8df1efa8bacb85b",
+        "bytes": 18533
+      },
+      "recipe": {
+        "root": "repository",
+        "locator": "evaluation-results/hbq-qpc24-historical-census-v1/recipe.json",
+        "sha256": "24851497ee206f6d2d7dc0f298cc582b1178b79d3714a86f51e995e3994d7ee4",
+        "bytes": 75001
+      },
+      "interface": "run",
+      "disposition": "historical_observation_owner"
+    },
+    {
+      "id": "poetryr3",
+      "implementation": {
+        "root": "repository",
+        "locator": "evaluation-results/hbq-poetry-v2-r3-historical-census-v1/census.py",
+        "sha256": "66056840d71ae40e9886bf8dfec8746e5f5c3ad900e7823712d4342c0115c76a",
+        "bytes": 12495
+      },
+      "recipe": {
+        "root": "repository",
+        "locator": "evaluation-results/hbq-poetry-v2-r3-historical-census-v1/recipe.json",
+        "sha256": "3bbcde0a20f960bdb766c0e0665f2001696f6dd96262a654acdd7eb2bef9e618",
+        "bytes": 48926
+      },
+      "interface": "run",
+      "disposition": "historical_observation_owner"
+    },
+    {
+      "id": "revision",
+      "implementation": {
+        "root": "repository",
+        "locator": "evaluation-results/hbq-revision-ledger-census-v1/census.py",
+        "sha256": "8c74477f4b4c495133d3b1a20d42c33bf6221d6838eff6be5a7270d54ed3135f",
+        "bytes": 14583
+      },
+      "recipe": {
+        "root": "repository",
+        "locator": "evaluation-results/hbq-revision-ledger-census-v1/recipe.json",
+        "sha256": "dcd91ab6acc1a563b8d8f08fc6d7b494651b3d37263b65672831cc4a4e765748",
+        "bytes": 352329
+      },
+      "interface": "run",
+      "disposition": "historical_observation_owner"
+    },
+    {
+      "id": "figurative",
+      "implementation": {
+        "root": "repository",
+        "locator": "evaluation-results/hbq-figurative-scope-historical-census-v1/census.py",
+        "sha256": "36357161b6ff6420d09da0ecea633223402090018c3100d2f39bded3fcc6b233",
+        "bytes": 18113
+      },
+      "recipe": {
+        "root": "repository",
+        "locator": "evaluation-results/hbq-figurative-scope-historical-census-v1/recipe.json",
+        "sha256": "3967987034b7307d8a8a4e1948c8e0624babc3906c38f84c71dd69cd91ac441b",
+        "bytes": 287543
+      },
+      "interface": "run",
+      "disposition": "historical_observation_owner"
+    },
+    {
+      "id": "architecture",
+      "implementation": {
+        "root": "repository",
+        "locator": "evaluation-results/hbq-poetry-architecture-historical-census-v1/census.py",
+        "sha256": "d8e9b2926123ac5c2470024caac974df9159ccafcbac7b95c3c6f2ef68b05bf1",
+        "bytes": 14939
+      },
+      "recipe": {
+        "root": "repository",
+        "locator": "evaluation-results/hbq-poetry-architecture-historical-census-v1/recipe.json",
+        "sha256": "b4b3215f45170b4cc4f97ee6c664b6b56237cb34f4832b6fafa581c971f06827",
+        "bytes": 71673
+      },
+      "interface": "run",
+      "disposition": "historical_observation_owner"
+    },
+    {
+      "id": "disjoint",
+      "implementation": {
+        "root": "repository",
+        "locator": "evaluation-results/hbq-disjoint-disposition-historical-census-v1/census.py",
+        "sha256": "76b5a347ef13d4c2627d93308bce5bdce87ff7e893309d4131335bbf8a8fa994",
+        "bytes": 20264
+      },
+      "recipe": {
+        "root": "repository",
+        "locator": "evaluation-results/hbq-disjoint-disposition-historical-census-v1/recipe.json",
+        "sha256": "553ef4e604fdcdf98b1407f3d12dc26c0bd992074879b07a4767fcf5c9162589",
+        "bytes": 13361
+      },
+      "interface": "disjoint",
+      "disposition": "historical_observation_owner"
+    },
+    {
+      "id": "scope_five_root_metadata",
+      "implementation": {
+        "root": "repository",
+        "locator": "evaluation-results/hbq-scope-five-root-metadata-census-v1/census.py",
+        "sha256": "5fa469f14c1622bc0236fa02991adebc225005561d14e65639d3b0a22a0df564",
+        "bytes": 13091
+      },
+      "recipe": {
+        "root": "repository",
+        "locator": "evaluation-results/hbq-scope-five-root-metadata-census-v1/recipe.json",
+        "sha256": "572f210742237f12078971dcc925948dcf099a267b5f52866225a7e5dfd0e15c",
+        "bytes": 6256
+      },
+      "interface": "five_root",
+      "disposition": "metadata_membership_only"
+    },
+    {
+      "id": "native_f",
+      "implementation": {
+        "root": "repository",
+        "locator": "evaluation-results/hbq-census-native-f-v1/census.py",
+        "sha256": "ea4af5aed3641d15886c701aa06adc832af8f20317d775fdd96c333173de2637",
+        "bytes": 21456
+      },
+      "recipe": {
+        "root": "repository",
+        "locator": "evaluation-results/hbq-census-native-f-v1/recipe.json",
+        "sha256": "bfbb1beb81500696942e4ab7e3def70a82e7c4c358f6894d59493169e570efa4",
+        "bytes": 4119
+      },
+      "interface": "retained_f",
+      "disposition": "retained_metadata_count_descendant",
+      "retained_metadata": {
+        "base_ledger": {
+          "root": "control",
+          "locator": "successor-program-20261004/census-f/run-001/private-slots.json",
+          "sha256": "082e7c336aa5702acc208d4fc30155c85906d781edfc0b1bebaa98fadd1a0593",
+          "bytes": 8571344
+        },
+        "base_report": {
+          "root": "control",
+          "locator": "successor-program-20261004/census-f/run-001/census.json",
+          "sha256": "08fc01e9f1d456f7870b06ef11932514d1b09d9405f6862a6ab918eaa73f5581",
+          "bytes": 3960
+        },
+        "base_terminal": {
+          "root": "control",
+          "locator": "successor-program-20261004/census-f/run-001/terminal.json",
+          "sha256": "8df6c54c871f4df2a9e04e026aff8bedbb8923a70d0786c0c41aaaae02147a46",
+          "bytes": 215
+        },
+        "prefix_ledger": {
+          "root": "control",
+          "locator": "successor-program-20261004/census-f/prefix-run-001/private-slots.json",
+          "sha256": "513c660faf57a7246fa7a3a89b7b4789eb35666794f9fd86b6377483fe389eff",
+          "bytes": 495302
+        },
+        "prefix_report": {
+          "root": "control",
+          "locator": "successor-program-20261004/census-f/prefix-run-001/census.json",
+          "sha256": "44cf4a6576666c8cd49c38d06cc12670b6afe65d46bdf8fdf6fad953819e6039",
+          "bytes": 1704
+        },
+        "prefix_terminal": {
+          "root": "control",
+          "locator": "successor-program-20261004/census-f/prefix-run-001/terminal.json",
+          "sha256": "9470b7f5c95970561b9416688a3cc3aacef9e480d1443fcc7228e03c7970dd69",
+          "bytes": 222
+        },
+        "prefix_writer": {
+          "root": "repository",
+          "locator": "evaluation-results/hbq-census-native-f-v1/join_prefix.py",
+          "sha256": "62e6709715b4aea3ce0fdb3462477a00fd28ff1e51ab25ae5b411df787921042",
+          "bytes": 23116
+        }
+      },
+      "terminal_states": {
+        "base": "completed_provider_free_join",
+        "prefix": "completed_provider_free_prefix_join"
+      },
+      "expected_counts": {
+        "logical_positions": 2300,
+        "ordered_metadata_leaves": 17800,
+        "native_identity_members": 2297,
+        "historical_excluded_identities": 33,
+        "previously_proof_null_positions_joined": 90,
+        "new_votes_from_prefix_join": 0
+      }
+    }
+  ],
+  "authority": "Each finite observation-owning cohort executes once; registry edges/ancestor declarations never add observations. Planned repeats remain source adapter positions, never deduplicated by text. Metadata-only membership and nonvoting dispositions add zero observed votes.",
+  "limitations": [
+    "This command regenerates bounded historical artifact/request/leaf metadata, not full program closure.",
+    "All 76 registry declaration packages are mapped to qualified cohort scope or explicitly unresolved; unmatched private roots are not guessed.",
+    "Historical accepted chains and four-state leaves remain distinct from ordered membership declarations, qualified recovery and current native/semantic admission.",
+    "Native F counts regenerate from retained generated metadata ledgers and hash-only source artifacts; original F/prefix raw-model/admission joins are not reexecuted. Other A-E references remain inherited pins, not freshly regenerated.",
+    "Scientific live-job attempts and postprediction labels are unopened. Frozen metadata declarations are not observations.",
+    "No global vote sum, ancestor request sum, physical contact/retry cardinality, current admission, or scoring is inferred."
+  ]
+}
