@@ -2,6 +2,7 @@
 import importlib.util
 from pathlib import Path
 from types import SimpleNamespace
+from threading import Event
 from unittest.mock import Mock
 
 import pytest
@@ -10,6 +11,31 @@ HERE = Path(__file__).resolve().parents[1] / "evaluation-results/hbq-matched-ttc
 spec = importlib.util.spec_from_file_location("ttcw_suffix_v4_test", HERE / "collector_suffix_v4.py")
 c = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(c)
+
+
+def test_low_disk_stops_actual_before_contact_callback_without_attempt_or_vote(tmp_path, monkeypatch):
+    output = tmp_path / "results"; output.mkdir()
+    c.record(output / "job.json", {"fixture": True})
+    row = {"endpoint": "grok", "endpoint_ordinal": 323, "logical_sample_id": "a" * 64}
+    binding = {"manifest_sha256": c.MANIFEST_SHA, "route": {"name": "synthetic"}, "route_sha256": "synthetic"}
+    monkeypatch.setattr(c.base, "inputs", lambda *args: (b"prompt", b"{}", {}, {}))
+    monkeypatch.setattr(c.shutil, "disk_usage", lambda path: SimpleNamespace(free=c.MINIMUM_FREE_DISK_BYTES - 1))
+    contacted = Mock()
+
+    def run_request(*args, **kwargs):
+        kwargs["before_contact"]()
+        contacted()
+        raise AssertionError("Low-space request contacted provider")
+
+    halt = Event()
+    state = c.base.collect_one(row, binding, tmp_path, output, None, None, halt,
+                             broker=SimpleNamespace(run_grok_native_request=run_request))
+    sample = c.base.sample_path(output, row)
+    terminal = c.base.json.loads((sample / "terminal.json").read_bytes())
+    assert state == "unadmitted_no_resend" and halt.is_set()
+    assert terminal["accepted"] is False and terminal["no_resend"] is True
+    assert not (sample / "attempt-started.json").exists() and not (sample / "native-result.json").exists()
+    contacted.assert_not_called()
 
 
 def test_008_job_geometry_and_retained_failure_do_not_alias_007_or_require_answer(tmp_path, monkeypatch):

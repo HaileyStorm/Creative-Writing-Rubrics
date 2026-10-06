@@ -10,12 +10,15 @@ import hashlib
 import importlib.util
 import json
 from pathlib import Path
+import shutil
 import sys
 from threading import Event
 
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[1]
 POLICY = "ttcw_untouched_suffix_execution_v4"
+PERSISTENCE_GUARD_POLICY = "free_disk_before_native_contact_v1"
+MINIMUM_FREE_DISK_BYTES = 256 * 1024 * 1024
 NATIVE_BASE_SHA = "bfa5f34895d1eaa76ed6d1f5aca39f2b76919c2fb97780e5ed3531d7814599be"
 MANIFEST_SHA = "cce67e7abb0d44ffb4c9cfd972d112c5fd8712b1732fe0071cd5aaccaf9aaf4c"
 CONTENT_SHA = "21ceae90ccadd02281b9ef359ee543d67a4a649222e4177a31da880e145d9b16"
@@ -56,6 +59,17 @@ def native_base():
 base = native_base()
 canonical, pinned, record = base.canonical, base.pinned, base.record
 ROUTE_SHA, TOOLS = base.ROUTE_SHA, base.TOOLS
+_native_guard = base.guard
+
+
+def guard(binding, output, halt, route_root=None, now=None):
+    require(shutil.disk_usage(output.parent).free >= MINIMUM_FREE_DISK_BYTES,
+            "At least256MiB free disk space required before native contact")
+    return _native_guard(binding, output, halt, route_root, now)
+
+
+# collect_one resolves this guard in its private v3 module immediately before contact.
+base.guard = guard
 
 
 def load_manifest(path, expected, endpoint):
@@ -131,6 +145,7 @@ def job_binding(manifest, endpoint, workers, headroom, route, *, owner_attestati
             and manifest["counts"]["requests_total"] == 1232, "008 execution geometry differs")
     binding = base.job_binding(manifest, endpoint, workers, headroom, route)
     binding.update(collector_policy=POLICY, collector_sha256=sha(Path(__file__).read_bytes()),
+        persistence_guard_policy=PERSISTENCE_GUARD_POLICY, minimum_free_disk_bytes=MINIMUM_FREE_DISK_BYTES,
         native_base_collector_sha256=NATIVE_BASE_SHA, native_base_policy="ttcw_untouched_suffix_execution_v3",
         manifest_sha256=MANIFEST_SHA, manifest_content_sha256=CONTENT_SHA, reserved_through_endpoint_ordinal=322,
         selected_requests_per_endpoint=1232, first_endpoint_ordinal=323, last_endpoint_ordinal=1554, original_stories=36,

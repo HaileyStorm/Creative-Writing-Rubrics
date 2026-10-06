@@ -15,7 +15,7 @@ from types import FunctionType, SimpleNamespace
 HERE = Path(__file__).resolve().parent
 POLICY = "matched_ttcw_chain_analysis_v4"
 PREDECESSOR_SHA = "c9faf4653cde6f5c272e4c0065270b73536e15dfe2c6e4f2c34a6d4c090bb088"
-COLLECTOR_SHA = "f0192d6f25e9206ab0412d781965d4267b5d855fe82e5ecd22d2b997a813a808"
+COLLECTOR_SHA = "c594953c0a9134c89ab60f28ae95143dcfef3d0594db0d7ae071184496d6ac20"
 COLLECTOR_POLICY = "ttcw_untouched_suffix_execution_v4"
 MANIFEST_SHA = "cce67e7abb0d44ffb4c9cfd972d112c5fd8712b1732fe0071cd5aaccaf9aaf4c"
 IDENTITY_SOURCE_PINS = {
