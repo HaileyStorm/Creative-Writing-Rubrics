@@ -1,0 +1,80 @@
+{
+  "schema_version": 4,
+  "policy": "historical_disposition_coverage_registry_v4",
+  "predecessor": {
+    "implementation": {
+      "root": "repository",
+      "locator": "evaluation-results/hbq-census-pass-b-dispositions-v1/registry_v3.py",
+      "sha256": "229a0edb42e52ba5f974f8630b58e78f4c1347d8500ef597b4e88ec4e5a55fd7",
+      "bytes": 10495
+    },
+    "recipe": {
+      "root": "repository",
+      "locator": "evaluation-results/hbq-census-pass-b-dispositions-v1/registry-v3.recipe.json",
+      "sha256": "c56241b19507421045c0847098130fc81ed43ecabd1ec842fd3e6870a6ddeb00",
+      "bytes": 2489
+    },
+    "report": {
+      "root": "control",
+      "locator": "successor-program-20261004/ttcw-phase1/census-registry-v3-001/registry.json",
+      "sha256": "6f06afb15593665811a5f6b7e381cb221562e2fffabde58849ccea71e637dee4",
+      "bytes": 149816
+    },
+    "receipt": {
+      "root": "control",
+      "locator": "successor-program-20261004/ttcw-phase1/census-registry-v3-001/terminal.json",
+      "sha256": "b4f88d1a2507de66943f9ac1d94fdae748d5fd5f22bb8f3742885a070f17cf48",
+      "bytes": 881
+    }
+  },
+  "census_e": {
+    "implementation": {
+      "root": "repository",
+      "locator": "evaluation-results/hbq-census-native-e-v1/census.py",
+      "sha256": "40e7cd74a5bd33a208a7c8fc8019473e88fd0971ee1972f5b8f5700d1993f0bf",
+      "bytes": 26991
+    },
+    "recipe": {
+      "root": "repository",
+      "locator": "evaluation-results/hbq-census-native-e-v1/recipe.json",
+      "sha256": "17a06b1cdf5a77fd9566026f0145eaefb20a9b19db2b575e6c1aa6448b8d120e",
+      "bytes": 5164
+    },
+    "summary": {
+      "root": "repository",
+      "locator": "evaluation-results/hbq-census-native-e-v1/run-001-summary.json",
+      "sha256": "24ea85de38e539db5b9bbcb3f24e9e5ac93d6dd01e06eb8d8ed61d677147aae9",
+      "bytes": 1797
+    },
+    "public_manifest": {
+      "root": "repository",
+      "locator": "evaluation-results/hbq-multisample-repeatability-v1-completed-result-v1/manifest.json",
+      "sha256": "38e6629930fb57654baa12bb9ba40a509c7bc1910aee66f31a39c9124be47751",
+      "bytes": 956
+    },
+    "source_summary": {
+      "root": "documents",
+      "locator": "cwr-multisample-repeatability-v1-consolidated-330-b8bbca10-20260904-r1/summary.json",
+      "sha256": "667d1af0d6886a235325eb017b67f902a172e9d30757f1e205d7499605581444",
+      "bytes": 168339
+    },
+    "source_provenance": {
+      "root": "documents",
+      "locator": "cwr-multisample-repeatability-v1-consolidated-330-b8bbca10-20260904-r1/consolidation-provenance.json",
+      "sha256": "cc7d765690f3d092b53a4d6d6272753c66d603e23afe26c5e3af4427da7f3eda",
+      "bytes": 319710
+    },
+    "private_manifest": {
+      "root": "documents",
+      "locator": "cwr-multisample-repeatability-v1-consolidated-330-b8bbca10-20260904-r1/manifest.json",
+      "sha256": "635684e3875456e76d6bff529b2971be40a606b2bbdad1c742cc6818f106ff0d",
+      "bytes": 380
+    }
+  },
+  "inherited_counts": {
+    "accepted_logical_cells": 330,
+    "accepted_units": 605,
+    "native_leaf_rows": 9845
+  },
+  "scope": "One public package joins existing original_reference:E by exact source commitments. Eight completed proofs and all observation counts remain inherited; no census execution or new votes."
+}
