@@ -1,0 +1,59 @@
+{
+  "schema_version": 3,
+  "policy": "historical_disposition_coverage_registry_v3",
+  "predecessor": {
+    "implementation": {
+      "root": "repository",
+      "locator": "evaluation-results/hbq-census-pass-b-dispositions-v1/registry_v2.py",
+      "sha256": "311d8f79f667cb4730af5045e1b2e936b7fb8c53a12fed3d9649beb9d8879940",
+      "bytes": 11417
+    },
+    "recipe": {
+      "root": "repository",
+      "locator": "evaluation-results/hbq-census-pass-b-dispositions-v1/registry-v2.recipe.json",
+      "sha256": "9e35ca2812332a319ca3001caa60ac62505c17324931bbd00d1a6cc6a6bf86bb",
+      "bytes": 121819
+    },
+    "report": {
+      "root": "control",
+      "locator": "successor-program-20261004/ttcw-phase1/census-registry-v2-002/registry.json",
+      "sha256": "fef03a88c5d7c69aea5d8b0dccb32edeadcda711af5ec856a8607ba28f682ceb",
+      "bytes": 144179
+    },
+    "receipt": {
+      "root": "control",
+      "locator": "successor-program-20261004/ttcw-phase1/census-registry-v2-002/terminal.json",
+      "sha256": "71fbe363c7c0384de91e404dad0b5fd96d33f89e524d7ad4ab8e81824a7e248d",
+      "bytes": 815
+    }
+  },
+  "metadata_census": {
+    "id": "scope_five_root_metadata",
+    "receipt_kind": "artifact_inventory_without_terminal",
+    "implementation": {
+      "root": "repository",
+      "locator": "evaluation-results/hbq-scope-five-root-metadata-census-v1/census.py",
+      "sha256": "5fa469f14c1622bc0236fa02991adebc225005561d14e65639d3b0a22a0df564",
+      "bytes": 13091
+    },
+    "recipe": {
+      "root": "control",
+      "locator": "successor-program-20261004/ttcw-phase1/scope-five-root-metadata-census-001/recipe.json",
+      "sha256": "572f210742237f12078971dcc925948dcf099a267b5f52866225a7e5dfd0e15c",
+      "bytes": 6256
+    },
+    "report": {
+      "root": "control",
+      "locator": "successor-program-20261004/ttcw-phase1/scope-five-root-metadata-census-001/report.json",
+      "sha256": "1fe179cf88337cd17ee92931bad597ea9c5cf5151960e306c7a6288330e026dc",
+      "bytes": 10089
+    },
+    "receipt": {
+      "root": "control",
+      "locator": "successor-program-20261004/ttcw-phase1/scope-five-root-metadata-census-001/artifact-ledger.json",
+      "sha256": "085a131143bbcfc2b474bdaa4e1390610da1bf0f12057a73ca0579877821e2c4",
+      "bytes": 3763
+    }
+  },
+  "scope": "Five current locator edges replaced by metadata_membership_only; predecessor edges retained as historical. No census reruns, observed-leaf totals, native admission, new votes or contact cardinality."
+}
