@@ -1,0 +1,176 @@
+{
+  "schema_version": 1,
+  "policy": "scope_five_root_frozen_metadata_v1",
+  "families": [
+    {
+      "id": "sentinel",
+      "root_relative_to_documents": "cwr-nonpoetry-scope-sentinel-v1-execution-v1-postcommit-a7e23b3-20260823",
+      "geometry": {
+        "planned_slots": 60,
+        "logical_id_mismatches": 60,
+        "reused_predecessor_declarations": 0
+      },
+      "source_files": [
+        {
+          "locator": "study-manifest.json",
+          "bytes": 47475,
+          "sha256": "f6c27d2cadfd4c7fbbe2f4e57d84c8a6c4b9d039196d342c1fc2f1e959615a1f",
+          "role": "manifest"
+        },
+        {
+          "locator": "runtime-schedule.json",
+          "bytes": 135507,
+          "sha256": "b62dff81b2f1cd530a42ab770798e92515d6077e2ae6d12fce6a77e7b3a59567",
+          "role": "runtime"
+        },
+        {
+          "locator": "settlement.json",
+          "bytes": 61095,
+          "sha256": "c4dc13e4b25d96dff8b2d185a6311a96f5fc6f1051812a17361e717d758bc573",
+          "role": "sealed_hash_only"
+        }
+      ],
+      "public_artifact": {
+        "locator": "evaluation-results/hbq-nonpoetry-scope-sentinel-v1-result-v1/s2-public-aggregate.v1.json",
+        "bytes": 2844,
+        "sha256": "49d6ef3843062580bbbda0b362756634f993613600269d4176be0bb157c9d453"
+      }
+    },
+    {
+      "id": "treatment",
+      "root_relative_to_documents": "cwr-s2-treatment-execution-v1-postcommit-2d5a20e-20260823",
+      "geometry": {
+        "planned_slots": 27,
+        "logical_id_mismatches": 27,
+        "reused_predecessor_declarations": 6
+      },
+      "source_files": [
+        {
+          "locator": "study-manifest.json",
+          "bytes": 15077,
+          "sha256": "fddd5ba5abc87822a489a15297a8a0b32af09ce525c3f4a5a1993cafe3a7a09a",
+          "role": "manifest"
+        },
+        {
+          "locator": "runtime-schedule.json",
+          "bytes": 76605,
+          "sha256": "a8eba3c0ae6c33826b9a4c6fb8d94e121539a3b99300187f4fd93405777b1f4b",
+          "role": "runtime"
+        },
+        {
+          "locator": "settlement.json",
+          "bytes": 35021,
+          "sha256": "6b048295ce0c931b139b405264a6dcef4cb2cdceddac60ccc3e981a3a26bf6b8",
+          "role": "sealed_hash_only"
+        }
+      ],
+      "public_artifact": {
+        "locator": "evaluation-results/hbq-nonpoetry-scope-treatment-v1-result-v1/s2-nonpoetry-scope-treatment-public-aggregate.v1.json",
+        "bytes": 2836,
+        "sha256": "9782f9565d995adaa61075d6b3fe3e98762455d486109566689f517a31951ca2"
+      }
+    },
+    {
+      "id": "semantic",
+      "root_relative_to_documents": "cwr-s2-semantic-boundary-successor-6ae9ee0-20260824/execution-v4-6ae9ee0-head-gated",
+      "geometry": {
+        "planned_slots": 6,
+        "logical_id_mismatches": 6,
+        "reused_predecessor_declarations": 0
+      },
+      "source_files": [
+        {
+          "locator": "study-manifest.json",
+          "bytes": 5156,
+          "sha256": "c4975d413d7a72dfa9d3590ea14451d57d6bee0d9b24287bec399db0849964be",
+          "role": "manifest"
+        },
+        {
+          "locator": "runtime-schedule.json",
+          "bytes": 9005,
+          "sha256": "1b6cbb58d9f97ce95225ccc4551c76176b27afab77800933e6731ff639bb2eae",
+          "role": "runtime"
+        },
+        {
+          "locator": "settlement.v1.json",
+          "bytes": 579,
+          "sha256": "d979d194d9f5b67e2c18e0827625f797abee5c38fe6b6e2409eb50a5fd36b0a1",
+          "role": "sealed_hash_only"
+        }
+      ],
+      "public_artifact": {
+        "locator": "evaluation-results/hbq-nonpoetry-scope-semantic-boundary-successor-v1-public-result-v1/public-result.json",
+        "bytes": 1108,
+        "sha256": "0825719ae2f88a51844d0ae0c6531bb8bf9d7d331df42ae420ddc7e695735aaf"
+      }
+    },
+    {
+      "id": "disjoint",
+      "root_relative_to_documents": "cwr-s2-disjoint-holdout-final-a771ce3-20260824/execution-v6-atomic-claim-review",
+      "geometry": {
+        "planned_slots": 48,
+        "logical_id_mismatches": 48,
+        "reused_predecessor_declarations": 0
+      },
+      "source_files": [
+        {
+          "locator": "study-manifest.json",
+          "bytes": 36130,
+          "sha256": "fd234bd6a04b02fa50f41791fa3c0de3d85cf34de0f04a25d027573f983ef976",
+          "role": "manifest"
+        },
+        {
+          "locator": "runtime-schedule.json",
+          "bytes": 88375,
+          "sha256": "6a8dbcb3e92086ba5ba0a275ca88b35f0881780ae515e0150fffd7fdf78608c4",
+          "role": "runtime"
+        },
+        {
+          "locator": "settlement.v1.json",
+          "bytes": 40055,
+          "sha256": "4ea1cf86d985eb0768fc773fa4fabd8f618b41a43c3f115ebb696ca81b279ec8",
+          "role": "sealed_hash_only"
+        }
+      ],
+      "public_artifact": {
+        "locator": "evaluation-results/hbq-nonpoetry-scope-disjoint-holdout-v1-execution-v1-public-result-v1/public-result.json",
+        "bytes": 1324,
+        "sha256": "50703b76ababa15bee4244e6b12dcce2f04b9e1ee4886c577184e7647a3c8ba8"
+      }
+    },
+    {
+      "id": "clean",
+      "root_relative_to_documents": "cwr-s1-clean-na-successor-execution-v1-6ae9ee0-20260824/execution-v1-terminal-sidecar-v1",
+      "geometry": {
+        "planned_slots": 3,
+        "logical_id_mismatches": null,
+        "reused_predecessor_declarations": 0
+      },
+      "source_files": [
+        {
+          "locator": "study-manifest.json",
+          "bytes": 3999,
+          "sha256": "4fa73f260a36740a0afedb7bf8c80407859b7187d9c937c9807caed4fcba2f34",
+          "role": "manifest"
+        },
+        {
+          "locator": "terminal-slot-records.v1.json",
+          "bytes": 622,
+          "sha256": "0c68ef9c09b364efd88663bae0d1aa24f75d24704082bc3b0aab95b511f9df1e",
+          "role": "terminal_opaque_membership"
+        },
+        {
+          "locator": "settlement.v1.json",
+          "bytes": 955,
+          "sha256": "6eb6bbb9ecd676076596376210499933f23cabe20555a179afc8d80a706984f4",
+          "role": "sealed_hash_only"
+        }
+      ],
+      "public_artifact": {
+        "locator": "evaluation-results/hbq-poetry-free-verse-repetition-clean-na-successor-v1-execution-v1-public-result-v1/public-result.json",
+        "bytes": 903,
+        "sha256": "703f74baf1a7570af27ab9ba031874e3836ad83e107ff67ad277f52b3e99ea3b"
+      }
+    }
+  ]
+}
