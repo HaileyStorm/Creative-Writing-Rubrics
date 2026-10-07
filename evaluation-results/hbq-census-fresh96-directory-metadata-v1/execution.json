@@ -1,0 +1,33 @@
+{
+  "actual_exit_code": 0,
+  "behavioral_guard_passed": true,
+  "evidence_class": "local_runtime_historical_schedule_directory_metadata_only",
+  "finished_utc": "2026-10-07T04:31:40.706743+00:00",
+  "independent_source_review": "accepted exact final source and recipe before execution",
+  "initial_synthetic_test": "invalid UTF8 failed before dataset access; retained; corrected to prove unselected JSON-value materialization boundary, with full UTF8 scanning explicitly acknowledged",
+  "native_admission": false,
+  "new_provider_votes": 0,
+  "platform": "Windows-11-10.0.26200-SP0",
+  "promotion": false,
+  "provider_calls": 0,
+  "python_version": "3.12.12 (main, Jan 14 2026, 19:30:21) [MSC v.1944 64 bit (AMD64)]",
+  "root_readback": {
+    "all_membership_commitments_verified": true,
+    "census_rerun": false,
+    "geometry_verified": true,
+    "missing_collector_and_zero_measurement_claims_verified": true,
+    "native_output_contents_opened": false,
+    "private_ledger_sha256": "7c8469b89724d86d4a735f9fc9f429c0a5ccc86c9a39d117afa6254adc0bae35",
+    "real_schedule_reread": false,
+    "report_sha256": "511ec660c73b7e85c6c38f251017a091bce28c868c0e8760b02880a810138f30",
+    "source_snapshots_and_namespace_verified": true
+  },
+  "schema_version": 1,
+  "scoring": false,
+  "source_pins": {
+    "census.py": "c391e6c76c4b1322720e939db9c5e091017e7ae4b681b0c055968d2c72d9e588",
+    "recipe.json": "a95297bec167770fd58654880ba95c980eed44134f1b04b5c05488ffbf7f622c",
+    "test_census.py": "bd6ab5ef682ec1860bdebc959b3983a24a14623e00388d6055dfb63611e6606a"
+  },
+  "started_utc": "2026-10-07T04:31:37.879100+00:00"
+}
