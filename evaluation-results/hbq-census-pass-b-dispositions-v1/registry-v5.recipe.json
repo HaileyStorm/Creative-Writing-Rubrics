@@ -1,0 +1,234 @@
+{
+  "historical_code": [
+    {
+      "commit": "c24a9eccaa5faea820f7a2b392e53293240792b1",
+      "git_blob_oid": "100c9e70ebe4d550249c47e5f775b30d4515361a",
+      "repository_path": "evaluation-results/cwr-guided-revision-gain-v2-live-exec-v6-single-replacement/executor.py",
+      "sha256": "e0f4181e4daed637b6c8e438e71b90129505bd2191202dd2ef43e0f7e406d172"
+    },
+    {
+      "commit": "1affc2c6d3b2ebaf28adecf14b489e3bd9e0baf2",
+      "repository_path": "evaluation-results/cwr-guided-revision-gain-v2-live-exec-v7-endpoint-continuation/executor.py",
+      "sha256": "f2e35ea8380fb50e5c657ecc4d9ecc47128d044a56d6e2ce5ca4ef0e58aa5865"
+    }
+  ],
+  "packages": [
+    {
+      "contract": {
+        "accepted_adapter_stdout_suffixes": [
+          "LF",
+          "CRLF"
+        ],
+        "disclosure": {
+          "no_remote_execution": true,
+          "no_source_root_in_public_result": true,
+          "provider_calls_made": 0
+        },
+        "format_version": 1,
+        "geometry": {
+          "arm_baseline_rows": 32,
+          "endpoint_receipts": 40,
+          "primary_guided_control_rows": 16
+        },
+        "mode": "provider_free_completed_v7_replay_only",
+        "pinned_v7_commit": "1affc2c6d3b2ebaf28adecf14b489e3bd9e0baf2",
+        "pinned_v7_executor_sha256": "f2e35ea8380fb50e5c657ecc4d9ecc47128d044a56d6e2ce5ca4ef0e58aa5865",
+        "rejected_adapter_stdout_suffixes": [
+          "none",
+          "CR",
+          "multiple_or_mixed"
+        ],
+        "source_root_input": "required_explicit_absolute_path",
+        "study_id": "cwr-guided-revision-gain-v2-live-exec-v8-crlf-replay-result-v1"
+      },
+      "id": "cwr-guided-revision-gain-v2-live-exec-v8-crlf-replay-result-v1",
+      "pins": {
+        "contract": {
+          "bytes": 671,
+          "locator": "evaluation-results/cwr-guided-revision-gain-v2-live-exec-v8-crlf-replay-result-v1/study-contract.json",
+          "root": "repository",
+          "sha256": "601d9129133c417740ca9d88d3f87f01998a08d698bda5a1d32a25a2c90cb2f8"
+        },
+        "executor": {
+          "bytes": 8771,
+          "locator": "evaluation-results/cwr-guided-revision-gain-v2-live-exec-v8-crlf-replay-result-v1/executor.py",
+          "root": "repository",
+          "sha256": "0d085a39d73d0a442f80a2b21bf328964be818c8347c8a359e1daa00b4ee0b8b"
+        },
+        "result": {
+          "bytes": 54706,
+          "locator": "evaluation-results/cwr-guided-revision-gain-v2-live-exec-v8-crlf-replay-result-v1/result.json",
+          "root": "repository",
+          "sha256": "4f880f050cc9b4dd395ee47de9204ce6b036b9131a7b879d38b11c437b237774"
+        }
+      },
+      "result_identity": {
+        "endpoint_results_are_not_pooled": true,
+        "format_version": 1,
+        "kind": "independently_recomputed_v8_crlf_tolerant_v7_endpoint_projection",
+        "pinned_v7_commit": "1affc2c6d3b2ebaf28adecf14b489e3bd9e0baf2",
+        "pinned_v7_executor_sha256": "f2e35ea8380fb50e5c657ecc4d9ecc47128d044a56d6e2ce5ca4ef0e58aa5865",
+        "provider_calls_made": 0,
+        "study_id": "cwr-guided-revision-gain-v2-live-exec-v8-crlf-replay-result-v1"
+      }
+    },
+    {
+      "contract": {
+        "accepted_adapter_stdout_suffixes": [
+          "LF",
+          "CRLF"
+        ],
+        "disclosure": {
+          "historical_development_evidence_only": true,
+          "no_remote_execution": true,
+          "no_source_root_in_public_result": true,
+          "provider_calls_made": 0
+        },
+        "format_version": 1,
+        "geometry": {
+          "arm_baseline_rows": 32,
+          "endpoint_receipts": 40,
+          "primary_guided_control_rows": 16
+        },
+        "historical_v6": {
+          "commit": "c24a9eccaa5faea820f7a2b392e53293240792b1",
+          "git_blob_oid": "100c9e70ebe4d550249c47e5f775b30d4515361a",
+          "repository_path": "evaluation-results/cwr-guided-revision-gain-v2-live-exec-v6-single-replacement/executor.py",
+          "sha256": "e0f4181e4daed637b6c8e438e71b90129505bd2191202dd2ef43e0f7e406d172"
+        },
+        "mode": "provider_free_completed_v7_replay_with_historical_v6_input",
+        "pinned_v7_commit": "1affc2c6d3b2ebaf28adecf14b489e3bd9e0baf2",
+        "pinned_v7_executor_sha256": "f2e35ea8380fb50e5c657ecc4d9ecc47128d044a56d6e2ce5ca4ef0e58aa5865",
+        "pinned_v8_projection_sha256": "e3ebd206b71ce20fa16e791af80221ce82237e7013ff413c3c425ecd7d9d88ce",
+        "rejected_adapter_stdout_suffixes": [
+          "none",
+          "CR",
+          "multiple_or_mixed"
+        ],
+        "source_root_input": "required_explicit_absolute_path",
+        "study_id": "cwr-guided-revision-gain-v2-live-exec-v9-historical-input-replay-result-v1"
+      },
+      "id": "cwr-guided-revision-gain-v2-live-exec-v9-historical-input-replay-result-v1",
+      "pins": {
+        "contract": {
+          "bytes": 1159,
+          "locator": "evaluation-results/cwr-guided-revision-gain-v2-live-exec-v9-historical-input-replay-result-v1/study-contract.json",
+          "root": "repository",
+          "sha256": "932198afea31e95274539a95c8397c40dfc1d703459b85c812d39dee835987da"
+        },
+        "executor": {
+          "bytes": 11715,
+          "locator": "evaluation-results/cwr-guided-revision-gain-v2-live-exec-v9-historical-input-replay-result-v1/executor.py",
+          "root": "repository",
+          "sha256": "c6c98b2fa5d4f8faaec2ce66ccdf846ac613e0ed535e93bec266cd3d143911a2"
+        },
+        "result": {
+          "bytes": 55380,
+          "locator": "evaluation-results/cwr-guided-revision-gain-v2-live-exec-v9-historical-input-replay-result-v1/result.json",
+          "root": "repository",
+          "sha256": "2111dd9166bff090ade3e27f518140f9295d265e5fce8b1be5df30921a4e22be"
+        }
+      },
+      "result_identity": {
+        "endpoint_results_are_not_pooled": true,
+        "format_version": 1,
+        "kind": "independently_recomputed_v9_historical_v6_input_v7_endpoint_projection",
+        "pinned_v7_commit": "1affc2c6d3b2ebaf28adecf14b489e3bd9e0baf2",
+        "pinned_v7_executor_sha256": "f2e35ea8380fb50e5c657ecc4d9ecc47128d044a56d6e2ce5ca4ef0e58aa5865",
+        "provider_calls_made": 0,
+        "study_id": "cwr-guided-revision-gain-v2-live-exec-v9-historical-input-replay-result-v1"
+      }
+    }
+  ],
+  "policy": "historical_disposition_coverage_registry_v5",
+  "predecessor": {
+    "implementation": {
+      "bytes": 9731,
+      "locator": "evaluation-results/hbq-census-pass-b-dispositions-v1/registry_v4.py",
+      "root": "repository",
+      "sha256": "ef46d47a4f7e5ac1e665633d2a4242d772f48b142144a0d6b3a5dda72bcb5d8e"
+    },
+    "receipt": {
+      "bytes": 976,
+      "locator": "successor-program-20261004/ttcw-phase1/census-registry-v4-001/terminal.json",
+      "root": "control",
+      "sha256": "232d524e4703f2750fad3affd88f7855e3e0e66c15b1fec5308ac19b70c4d3ab"
+    },
+    "recipe": {
+      "bytes": 3247,
+      "locator": "evaluation-results/hbq-census-pass-b-dispositions-v1/registry-v4.recipe.json",
+      "root": "repository",
+      "sha256": "93db89035af792da5a608eb13e01dfb1725026a9c9a1c119d822c92f411ccf03"
+    },
+    "report": {
+      "bytes": 153246,
+      "locator": "successor-program-20261004/ttcw-phase1/census-registry-v4-001/registry.json",
+      "root": "control",
+      "sha256": "380cac27ca6994981721584f319becf189f265cd589ff21cdd0e482fa0f0902d"
+    }
+  },
+  "revision": {
+    "cohort_commitments": {
+      "cohort_descriptor_sha256": "4eab639c323db70126b707f3fd7d8c82c63588219062e50410dee660688ffb22",
+      "implementation_sha256": "8c74477f4b4c495133d3b1a20d42c33bf6221d6838eff6be5a7270d54ed3135f",
+      "private_sha256": "5638504397e5db52b30b2b1b30a5bf0acbd276e4e7bbd7218c3206b9600a0810",
+      "recipe_sha256": "dcd91ab6acc1a563b8d8f08fc6d7b494651b3d37263b65672831cc4a4e765748",
+      "report_sha256": "43a4046fb3f67970f0f827a0c0f8575e62e8b63a515dc4989fab901e8728bfa5"
+    },
+    "inherited_counts": {
+      "committed_bytes": 3102606,
+      "committed_files": 902,
+      "distinct_metadata_joins_by_declared_provider_model": {
+        "gpt-5.6-sol": 24,
+        "grok-4.6": 28
+      },
+      "distinct_metadata_joins_by_phase": {
+        "blind_endpoint_judgment": 40,
+        "cwr_feedback": 4,
+        "revision_generation": 8
+      },
+      "distinct_native_response_metadata_joins": 52,
+      "failed_reserved_observations": 3,
+      "preparation_only_cells": 40,
+      "receipt_wrappers": 65,
+      "repeated_native_response_wrappers": 13,
+      "unresolved_local_commitments": 0,
+      "verified_metadata_hash_bindings": 185
+    },
+    "pins": {
+      "implementation": {
+        "bytes": 14583,
+        "locator": "evaluation-results/hbq-revision-ledger-census-v1/census.py",
+        "root": "repository",
+        "sha256": "8c74477f4b4c495133d3b1a20d42c33bf6221d6838eff6be5a7270d54ed3135f"
+      },
+      "private_ledger": {
+        "bytes": 476851,
+        "locator": "successor-program-20261004/ttcw-phase1/census-regeneration-v2-001/cohorts/revision/private.json",
+        "root": "control",
+        "sha256": "5638504397e5db52b30b2b1b30a5bf0acbd276e4e7bbd7218c3206b9600a0810"
+      },
+      "recipe": {
+        "bytes": 352329,
+        "locator": "evaluation-results/hbq-revision-ledger-census-v1/recipe.json",
+        "root": "repository",
+        "sha256": "dcd91ab6acc1a563b8d8f08fc6d7b494651b3d37263b65672831cc4a4e765748"
+      },
+      "regeneration_report": {
+        "bytes": 184673,
+        "locator": "successor-program-20261004/ttcw-phase1/census-regeneration-v2-001/report.json",
+        "root": "control",
+        "sha256": "2fb127a2ff42903e0153e4816228699a3289e3dd8ac6744f308854754358f6bb"
+      },
+      "report": {
+        "bytes": 3611,
+        "locator": "successor-program-20261004/ttcw-phase1/census-regeneration-v2-001/cohorts/revision/report.json",
+        "root": "control",
+        "sha256": "43a4046fb3f67970f0f827a0c0f8575e62e8b63a515dc4989fab901e8728bfa5"
+      }
+    },
+    "source_locator": "cwr-revision-gain-v7-endpoints-1affc2c-20260831b"
+  },
+  "schema_version": 5,
+  "scope": "Two public packages join existing completed_census:revision source commitments. Eight completed censuses, nine regeneration cohorts and all observation counts remain inherited; no source-body replay, scoring, native admission, provider calls or new votes."
+}
