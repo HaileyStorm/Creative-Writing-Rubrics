@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "policy": "historical_hanna_fixed_panel_leave_one_worker_id_v1",
+  "csv_sha256": "ef59054d27fa32def06cfdc57243b1dd09c7e71f40b6d9d43fecfbf60e59026b",
+  "frozen11_sha256": "5fb06e5a4775ecfe1cee10132e52100733c7e765e8eae9865374bb23f1addddd",
+  "identity_rows_sha256": "106396f16e69a9090e9dac82ddd5b0551b246f461596e7028a7483bdbcb1d3de",
+  "floor_source_sha256": "42ec14182a15cccd8e35502d2d3300d7714b13800a32d791d4cf29b07c8891c6",
+  "floor_profile_sha256": "88da3f3c9d2572957bfb512c4414587cdf7ce0796194eb42d45120e26a7a13f1",
+  "lexer_source_sha256": "58ec8ffa744035f897b3f9cedc7b1df130df8cfd9f098eb9bbb1240a0257658c",
+  "axes": ["Relevance", "Coherence", "Empathy", "Surprise", "Engagement", "Complexity"],
+  "sample_story_ids": ["178", "225", "817", "382", "523", "445", "907", "52", "594", "1035", "731"],
+  "omission": {
+    "unit": "one of the seven published Worker ID values, globally across all eleven selected stories",
+    "membership": "all seven identifiers bound by the identity_rows_sha256 file; sorted literal IDs; apply each to both fixed cohorts including explicit zero-effect states",
+    "assignments": "Assignment ID identifies a source annotation, not the global omission unit",
+    "coverage": "every selected story must have exactly three distinct nonempty Worker IDs initially and at least two complete six-axis ratings after each omission; never drop a story",
+    "model_scores": "unchanged exact five-repeat scalar means from the pinned 330-score floor preflight; six arms; original six-item and later five-item HBQ cohorts stay separate",
+    "human_scalar": "exact Fraction of summed six-axis integer ratings divided by six times surviving source rows",
+    "statistic": "Spearman with average ranks for exact ties; same omitted ID and unchanged item membership for every arm",
+    "undefined": "retain null correlation and null paired contrast when either arm is constant; do not replace, exclude or set to zero",
+    "summary": "baseline, all seven individual omission states, defined/undefined counts and descriptive min/max over defined states; affected-story and surviving-rating counts per state; paired comparator-minus-HBQ deltas"
+  },
+  "parent_target_check": "reconstruct legacy nested statistics.fmean from source integer ratings and require exact equality to each frozen human_overall; exact Fraction converted to float must agree within 1e-12; this tolerance is provenance only, never tie arithmetic",
+  "target_ties": "publish exact-versus-frozen-float pairwise tie/direction disagreements and both baseline target variants using the same fixed exact model means; not a literal legacy full-estimator replay",
+  "timing": "retrospective source/identity refinement; prior scalar results and identity coverage are known; freeze before decoding these selected individual ratings or executing omission metrics",
+  "scope": "only already-opened historical eleven-item development slice; decode six ratings plus identity only for those source IDs; route all other rows before rating decoding; skip prose, Prompt, Name and all contemporary target artifacts",
+  "interpretation": "fixed-panel Worker-ID influence sensitivity; unequal annotation coverage affects influence; overlapping omission states are not independent replicates, a confidence interval, population reliability or a significance test; identifiers do not certify natural-person identities or credentials",
+  "non_claims": {"new_human_votes": false, "provider_calls": false, "contemporary_model_performance": false, "human_alignment_improvement": false, "human_ceiling": false, "unused_confirmation": false, "promotion": false}
+}

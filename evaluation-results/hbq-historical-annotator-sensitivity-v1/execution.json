@@ -1,0 +1,43 @@
+{
+  "actual_exit_code": 0,
+  "behavioral_guards": {
+    "failed": 0,
+    "passed": 2
+  },
+  "contemporary_performance": false,
+  "evidence_class": "local_runtime_existing_human_historical_fixed_panel_worker_id_sensitivity",
+  "finished_utc": "2026-10-07T04:15:51.108493+00:00",
+  "independent_source_review": "accepted corrected source before selected ratings decode and measurement",
+  "legacy_human_scalar_reconstructed_exactly": true,
+  "new_human_votes": 0,
+  "platform": "Windows-11-10.0.26200-SP0",
+  "private_selected_annotations_sha256": "ae162603a8e9f593fcd9ca502e6ecb1014463be361f354bfdb7dd2de9d02cab0",
+  "promotion": false,
+  "provider_calls": 0,
+  "python_version": "3.12.12 (main, Jan 14 2026, 19:30:21) [MSC v.1944 64 bit (AMD64)]",
+  "report_sha256": "6b44ec16b65f847731924cf55d400496c42ad22e96a484e31fe1e90c0cbf44d9",
+  "root_readback": {
+    "all_10_paired_summaries_verified": true,
+    "all_12_arm_summaries_verified": true,
+    "all_14_states_and_zero_effect_states_verified": true,
+    "arm_states": 84,
+    "csv_or_private_ratings_reread": false,
+    "defined_arm_states": 70,
+    "defined_paired_states": 56,
+    "estimator_rerun": false,
+    "exact_and_frozen_target_baselines_equal": true,
+    "field_accounting_verified": true,
+    "geometry_verified": true,
+    "paired_states": 70,
+    "report_sha256": "6b44ec16b65f847731924cf55d400496c42ad22e96a484e31fe1e90c0cbf44d9",
+    "source_snapshots_match": true
+  },
+  "schema_version": 1,
+  "source_pins": {
+    "profile.json": "91c1751d2d6070b795990db9c7278d22bb68eaae3d9239478f009055210d451b",
+    "source.py": "dda12ef63496590e41dc029622b4ac5228f2a8ecd90d80ebd07831e5b7efb2a1",
+    "test_source.py": "a095d66190a034d2a57e39b9645c184e996bfea8e30d2c13c759ed7467d619b9"
+  },
+  "started_utc": "2026-10-07T04:15:43.731407+00:00",
+  "unused_confirmation": false
+}
