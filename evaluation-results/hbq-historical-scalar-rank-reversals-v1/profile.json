@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "policy": "historical_matched_scalar_repeat_pair_reversals_v1",
+  "floor_source_sha256": "42ec14182a15cccd8e35502d2d3300d7714b13800a32d791d4cf29b07c8891c6",
+  "floor_profile_sha256": "88da3f3c9d2572957bfb512c4414587cdf7ce0796194eb42d45120e26a7a13f1",
+  "inputs": "Reuse only the pinned floor preflight's eleven matched historical items, six scalar arms and five native-scale repeat values. No floor bootstrap, human target, band, prose, rationale, native or judge rerun.",
+  "timing": "Retrospective diagnostic; prior variation, rank correlation, floor/tie, scalar-direction, rater sensitivity and calibration results known before this profile; freeze before these new explicit reversal counts.",
+  "cohorts": "Original six items/six prompts and later five items/four prompts remain separate; all six arms share cohort membership; never pool HBQ versions or estimate a version effect.",
+  "arithmetic": "Exact Fraction conversion of inherited JSON decimal score tokens; compare signs with no rounding, epsilon, mean aggregation, normalization or clipping.",
+  "repeat_index": "Positions one through five of the frozen saved score arrays. Index alignment is the registered repeat position, not synchronized wall-clock judging or independent provider control attestation.",
+  "pair_orientation": "Lexicographically sorted item IDs within each cohort; sign of first-item score minus second-item score at each registered repeat. Swapping orientation swaps positive/negative but preserves pair categories and disagreement rates.",
+  "categories": {
+    "strict_reversal": "At least one positive and one negative sign among five repeats, with or without ties",
+    "stable_strict": "All five signs are positive or all five negative",
+    "always_tied": "All five signs are zero",
+    "tie_changing_no_reversal": "At least one zero and exactly one nonzero sign direction; ties change but no strict reversal"
+  },
+  "metrics": {
+    "primary": "Number of item pairs with any strict reversal, out of all 15 original or 10 later pairs per arm; four mutually exclusive exhaustive categories",
+    "secondary": "Three-by-three sign cross-tab over each pair's ten registered repeat-index combinations, earlier index rows/later index columns in order negative, tie, positive. This is not temporal causality or packet-order perturbation.",
+    "strict_flip_rate": "Opposite nonzero sign comparison count divided by all pair-repeat comparisons, 150 original or 100 later per arm",
+    "conditional_strict_flip_rate": "Opposite nonzero sign comparisons divided by comparisons where both signs are nonzero; undefined null at zero denominator, not zero reliability error",
+    "tie_change_comparisons": "Exactly one sign is zero; separate from strict flips and equal signs",
+    "prompt_strata": "Report same-prompt and different-prompt item pairs separately as descriptive inventories; original has zero same-prompt pairs, later one. Do not interpret different-prompt ordering as validated quality ranking."
+  },
+  "planned": {"arms": 6, "items": 11, "prompt_groups": 10, "repeats": 5, "scores": 330, "arm_cohort_rows": 12, "item_pairs_per_arm_original": 15, "item_pairs_per_arm_later": 10, "pair_signs": 750, "pair_repeat_index_comparisons": 1500},
+  "missingness": "Fail closed on changed pins, missing score or unmatched arm/item/repeat/cohort; no complete-case omission.",
+  "publication": "Aggregate counts, exact rates, cohort/source commitments only; exact pair membership, score vectors and sign sequences remain private.",
+  "interpretation": "Tiny previously opened dependent historical panel. Item pairs share works/prompts and repeat-index comparisons share scores. No CI, significance, independent trial, leaf/chance-adjusted agreement, interendpoint result, human alignment, contemporary tools-disabled qualification, version causality or promotion. Stable all-tied scores are not discrimination."
+}

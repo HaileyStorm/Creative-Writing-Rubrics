@@ -1,0 +1,42 @@
+{
+  "actual_exit_code": 0,
+  "aggregate_review": "/root/wpb_census_writer aggregate-only acceptance after once-run",
+  "behavioral_guards": {
+    "failed": 0,
+    "passed": 1
+  },
+  "contemporary_tools_disabled_qualification": false,
+  "evidence_class": "local_runtime_historical_scalar_pair_repeat_order",
+  "finished_utc": "2026-10-07T05:16:56.382891+00:00",
+  "human_targets_materialized": false,
+  "interendpoint_measured": false,
+  "leaf_chance_adjusted_agreement_measured": false,
+  "new_native_admission": false,
+  "platform": "Windows-11-10.0.26200-SP0",
+  "private_pairs_sha256": "6b89ccbfa6fdf7a56796f8803c5fb0fd509b41cd2e90758c90f064b5b55c9444",
+  "promotion": false,
+  "provider_calls": 0,
+  "python_version": "3.12.12 (main, Jan 14 2026, 19:30:21) [MSC v.1944 64 bit (AMD64)]",
+  "report_sha256": "02fd1366ef05491a2ece439d07fb26fd49501de77316a374523e3827d474b475",
+  "root_saved_pair_readback": {
+    "all_12_rows_and_36_prompt_stratum_summaries_verified": true,
+    "all_categories_cross_tabs_rates_and_undefined_denominators_verified": true,
+    "analysis_or_native_replay_rerun": false,
+    "complete_pair_membership_and_exact_saved_score_signs_verified": true,
+    "pair_signs": 750,
+    "private_pair_units": 150,
+    "private_pairs_sha256": "6b89ccbfa6fdf7a56796f8803c5fb0fd509b41cd2e90758c90f064b5b55c9444",
+    "repeat_index_comparisons": 1500,
+    "report_sha256": "02fd1366ef05491a2ece439d07fb26fd49501de77316a374523e3827d474b475",
+    "source_panel_or_human_target_reread": false,
+    "source_snapshots_match": true
+  },
+  "schema_version": 1,
+  "source_pins": {
+    "profile.json": "24fc9488ba452c405d5efa429078ca4dffbdd74809009c7ad5378feb122fcd4b",
+    "source.py": "66a9c86732f75a4e9068a1d8e8257bd44c2d8ed11d0517c6f3f1c1abe28b0a99",
+    "test_source.py": "3622c06fc2527c392c7880d209a625b678e98c0371a33f2df3c53454b385d2a1"
+  },
+  "source_review": "/root/wpb_census_writer accepted exact source/profile/test before once-run",
+  "started_utc": "2026-10-07T05:16:55.447619+00:00"
+}
