@@ -1,0 +1,135 @@
+{
+  "arithmetic": "JSON decimal tokens parsed as Decimal; all score, mean, equality, threshold and tie arithmetic uses Fraction; no epsilon or clipping",
+  "bootstrap": {
+    "contrast": "comparator_minus_hbq",
+    "draws": 1000,
+    "estimand": "equal-item mean extreme rate; raw-repeat rates first average five repeats per item; separately item-mean extreme rates",
+    "interval": "descriptive 95% percentile, exact linear interpolation at (draws-1)*p",
+    "metrics": [
+      "exact_minimum",
+      "exact_maximum",
+      "near_minimum",
+      "near_maximum"
+    ],
+    "paired_draws_all_arms": true,
+    "quality_or_multiplicity_claim": false,
+    "seed": 560820,
+    "unit": "prompt cluster within each fixed cohort"
+  },
+  "cohorts": {
+    "original_rubric_v1_0_0": {
+      "planned_items": 6,
+      "planned_prompt_clusters": 6,
+      "planned_scores_per_arm": 30,
+      "sorted_membership_sha256": "f811685211a5ae6a441cad3a4b1a5d8ff83395654577d5acf4d4f277bb3db1a6"
+    },
+    "v8_rubric_v1_2_1": {
+      "planned_items": 5,
+      "planned_prompt_clusters": 4,
+      "planned_scores_per_arm": 25,
+      "sorted_membership_sha256": "52712e14ff772d18cab254dad36c63187d05fd56d0b01d56a10175f0ad411ad9"
+    }
+  },
+  "exposure": "Already-frozen deterministic one-development-item-per-model HANNA v3 repeatability slice; scalar projections only; no human target/band/cutpoint, prose, rationale, response or native replay",
+  "interpretation": {
+    "calibrated_absolute_quality": false,
+    "contemporary_model_acceptance": false,
+    "hbq_versions_pooled_primary": false,
+    "historical_development": true,
+    "human_alignment_improvement": false,
+    "native_source_claims": "inherited saved projection, not freshly replayed",
+    "physical_contact_cardinality": null,
+    "provider_attested": false,
+    "rubric_version_causal_effect": false
+  },
+  "missingness": "fail closed for any missing arm/item/repetition, invalid value, changed commitment or cohort mismatch; never omit affected observations",
+  "native_ranges": {
+    "cambridge_igcse_0500_p2_mj_2024": [
+      0,
+      40
+    ],
+    "compact_analytic": [
+      1,
+      5
+    ],
+    "hbq_short_story_batch32": [
+      0,
+      100
+    ],
+    "holistic_anchored": [
+      1,
+      7
+    ],
+    "naplan_narrative_2022": [
+      0,
+      47
+    ],
+    "oregon_narrative_2017": [
+      6,
+      36
+    ]
+  },
+  "planned": {
+    "arm_cohort_rows": 12,
+    "arms": 6,
+    "item_repeat_means": 66,
+    "items": 11,
+    "later_cohort_raw_scores": 150,
+    "original_cohort_raw_scores": 180,
+    "prompt_clusters": 10,
+    "raw_scores": 330,
+    "repetitions": 5
+  },
+  "policy": "historical_multisample_matched_floor_discrimination_v1",
+  "repository_pins": {
+    "completed_public_manifest": {
+      "bytes": 956,
+      "locator": "evaluation-results/hbq-multisample-repeatability-v1-completed-result-v1/manifest.json",
+      "sha256": "38e6629930fb57654baa12bb9ba40a509c7bc1910aee66f31a39c9124be47751"
+    },
+    "consolidation_source": {
+      "bytes": 82387,
+      "locator": "evaluation-results/hbq-multisample-repeatability-v1/consolidate_v8.py",
+      "sha256": "b8bbca107e36149b94109e405831851c04535e1794f753a5d47c20e03d54a2f4"
+    },
+    "exposure_contract": {
+      "bytes": 6092,
+      "locator": "evaluation-results/hbq-multisample-repeatability-v1/study-contract.json",
+      "sha256": "23f88d0e26fcbb68c1dad2fb0c46960ff2da02769ecb4f316985902393313074"
+    },
+    "lexical_reader": {
+      "bytes": 31867,
+      "locator": "evaluation-results/hbq-matched-hanna-20261004/prepare.py",
+      "sha256": "2d82e4959c3296ccaa6e6521adb46f85588427d429a544b36a2891ebaea8c7b0"
+    },
+    "scale_source": {
+      "bytes": 43579,
+      "locator": "evaluation-results/hbq-multisample-repeatability-v1/analyze_study.py",
+      "sha256": "65b049c3afd02aef0bd758093510f4ce6294dd14187f534a03943365c7d7751b"
+    }
+  },
+  "schema_version": 1,
+  "source_pins": {
+    "consolidation-provenance.json": {
+      "bytes": 319710,
+      "locator": "consolidation-provenance.json",
+      "sha256": "cc7d765690f3d092b53a4d6d6272753c66d603e23afe26c5e3af4427da7f3eda"
+    },
+    "manifest.json": {
+      "bytes": 380,
+      "locator": "manifest.json",
+      "sha256": "635684e3875456e76d6bff529b2971be40a606b2bbdad1c742cc6818f106ff0d"
+    },
+    "summary.json": {
+      "bytes": 168339,
+      "locator": "summary.json",
+      "sha256": "667d1af0d6886a235325eb017b67f902a172e9d30757f1e205d7499605581444"
+    }
+  },
+  "thresholds": {
+    "exact_maximum": "native_upper_bound",
+    "exact_minimum": "native_lower_bound",
+    "near_maximum_affine_percent_gte": 90,
+    "near_minimum_affine_percent_lte": 10
+  }
+}
