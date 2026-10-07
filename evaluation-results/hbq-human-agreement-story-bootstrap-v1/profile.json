@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "policy": "dryad_fixed_half_conditional_story_bootstrap_v1",
+  "parent_source_sha256": "de21884862ac28dbeba840b28aede1ba38ab9245f9557b11a47ad93d22e730fd",
+  "parent_result_sha256": "3fa987d0defb319fb4950003163fea26360fab40eb249d8d4866db135726d32f",
+  "parent_contract_sha256": "4f9b01f93e54c8b5a6f518aea8d7fbbe1e11646f46edd661f51d9d1336b99442",
+  "ratings_sha256": "e391d638f04eac7a9632811922d0c4fed4e95dd6613f07311d8513b9a52e128b",
+  "split_manifest_sha256": "2e2314b283bc7a3b5653cbd98951ecb85612c0a5f3b4d2a4b31324bc89342521",
+  "bootstrap": {
+    "draws_per_partition": 5000,
+    "seed": "dryad-fixed-half-story-bootstrap-v1-20261007",
+    "generator": "Python random.Random seeded by big-endian SHA256(seed + NUL + partition); sorted eligible source story IDs; N randrange(N) draws per replicate",
+    "unit": "eligible story, jointly carrying both evaluator-half means and all twelve axes",
+    "interval": "pointwise conditional 95% percentile interval, linear interpolation at (B-1)*p for p=.025 and .975",
+    "undefined": "retain each undefined draw without replacement; withhold interval for an axis if any draw is undefined",
+    "coverage": "parent minimum two ratings in each half; require identical eligible story membership across all axes within a partition"
+  },
+  "interpretation": {
+    "scope": "Descriptive story-resampling uncertainty conditional on the observed ratings, evaluator pool and fixed split. Story exchangeability is an assumption, not certified by this run.",
+    "timing": "Retrospective extension of already-published point estimates; this method and seed are frozen before the new bootstrap execution. Not a prospective confirmation protocol.",
+    "excluded_uncertainty": "No evaluator resampling, alternate-split variability, shared-rater dependence inference, topic/condition clustering, new human votes, simultaneous family coverage, human-ceiling certification, model alignment or promotion.",
+    "confirmation": "Decode only source_story_id and partition from the source manifest; CSV lexical scanning may visit every byte, but confirmation ratings and story prose are never field-decoded or converted. Evaluator IDs from every partition define the unchanged global split."
+  }
+}
