@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "purpose": "Descriptive held-out isotonic forecast and human-reference bin means, separate historical cohorts and six matched scalar arms",
+  "result_sha256": "1fc84dbce62ec26e7f4990273e9740132af25da11a111e4bff44500f3cd3d88d",
+  "plot_source_sha256": "a9cdcfe7357387968d8088483613c0c37543c995d27632eec85437a4bfb2bc0d",
+  "png_sha256": "d487faa60c7a29b9cdc3f9e89159a2a59a2122fb5ce20f1c60b5207c2fddfb48",
+  "renderer": "installed Microsoft .NET Framework Windows Forms DataVisualization Chart.SaveImage",
+  "renderer_documentation": "https://learn.microsoft.com/en-us/dotnet/api/system.windows.forms.datavisualization.charting.chart.saveimage?view=netframework-4.8.1",
+  "render_finished_utc": "2026-10-07T05:01:40.616580+00:00",
+  "render_exit_code": 0,
+  "dimensions_pixels": [1800, 1120],
+  "axes": {"x": "mean held-out isotonic prediction, original rating units 1 to 5", "y": "mean human overall, original rating units 1 to 5"},
+  "cohorts": {"original": {"items": 6, "prompts": 6, "marker": "blue circle"}, "later": {"items": 5, "prompts": 4, "marker": "orange diamond"}},
+  "uncertainty": "No CI or significance; known tiny development panels, shared annotators, overlapping training fits; points do not define a deployment map",
+  "visual_inspection": {"performed": true, "tool": "view_image", "result": "six labelled panels, common scale, readable axes/point counts/source and limitations, no clipping; source values checked in exact fold readback"},
+  "recovery": "First rendering attempt failed before output because Get-FileHash was unavailable in the native PowerShell environment; replaced with installed .NET SHA256 API. Failed invocation and previous script retained privately. No estimator rerun.",
+  "package_installation": false,
+  "visible_ui_requested": false,
+  "private_individual_targets_published": false
+}

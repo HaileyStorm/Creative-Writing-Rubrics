@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "policy": "historical_hanna_matched_scalar_prompt_crossfit_calibration_v1",
+  "floor_source_sha256": "42ec14182a15cccd8e35502d2d3300d7714b13800a32d791d4cf29b07c8891c6",
+  "floor_profile_sha256": "88da3f3c9d2572957bfb512c4414587cdf7ce0796194eb42d45120e26a7a13f1",
+  "lexer_source_sha256": "58ec8ffa744035f897b3f9cedc7b1df130df8cfd9f098eb9bbb1240a0257658c",
+  "parent_spearman_source_sha256": "de21884862ac28dbeba840b28aede1ba38ab9245f9557b11a47ad93d22e730fd",
+  "selected_annotations_sha256": "ae162603a8e9f593fcd9ca502e6ecb1014463be361f354bfdb7dd2de9d02cab0",
+  "selected_annotation_parent_report_sha256": "6b44ec16b65f847731924cf55d400496c42ad22e96a484e31fe1e90c0cbf44d9",
+  "sample_story_ids": ["178", "225", "817", "382", "523", "445", "907", "52", "594", "1035", "731"],
+  "cohorts": "unchanged original six-item/six-prompt HBQ v1.0.0 and later five-item/four-prompt v1.2.1; all six arms on matched fixed five-repeat means; never pool versions",
+  "reference": "exact arithmetic mean of all six integer axes across the three retained source annotations per story, range 1 to 5; published Worker IDs and prose remain unmaterialized",
+  "fit": {
+    "folds": "leave each entire prompt group out once within each fixed cohort; deterministic prompt-hash sort; all held-out labels excluded from every fit",
+    "weights": "training item weight inverse number of training items in its prompt; each training prompt total weight one",
+    "direction": "increasing fixed before this analysis, no learned or selected reversal",
+    "method": "weighted least-squares isotonic PAVA; group identical exact model means before fitting; weighted target means, adjacent violation pooling",
+    "prediction": "piecewise linear interpolation between distinct exact-score fitted knots; clamp outside training-score range; single knot gives constant fit",
+    "baseline_median": "training prompt-balanced weighted median; midpoint of adjacent targets when cumulative weight equals half; constant for every held-out item",
+    "baseline_mean": "training prompt-balanced weighted arithmetic mean; constant for every held-out item",
+    "baseline_affine": "fixed 1+4*(score-native_min)/(native_max-native_min); unit-display baseline, not learned calibration"
+  },
+  "metrics": {
+    "primary": "held-out absolute error in original 1-to-5 reference units, mean within prompt then equal mean across prompts; isotonic-minus-training-median paired loss",
+    "secondary": "group-equal mean squared error in squared reference units; isotonic-minus-training-mean paired loss",
+    "rank": "raw-score and pooled out-of-fold prediction average-tie Spearman, descriptive only; fold-specific maps need not preserve pooled rank; undefined is null",
+    "curves": "held-out isotonic predictions only; at most two bins per arm/cohort, split nearest item-count midpoint among distinct prediction boundaries leaving at least two items per bin; otherwise one bin. Ties never split. Reference/prediction means use inverse full-cohort prompt-size weights. Show item/prompt counts; no CI or significance claim",
+    "private": "retain every fold's exact fit knots, train/held IDs, forecasts, references and paired errors for readback; publish only cohort aggregates and bins with at least two items"
+  },
+  "timing": "retrospective; prior scalar results, rater influence and prior larger dimension-calibration studies known; freeze before this new matched six-arm crossfit execution",
+  "scope": "reuse only pinned historical330-score preflight and previously selected33 human annotation vectors; no original CSV reread, contemporary targets, native scoring, bootstrap, model calls or new human votes",
+  "interpretation": "tiny known development panel, training folds only three to five items; overlapping training sets and shared annotators remain dependent. Postprocessing diagnostic, not judge training, population generalization, a deployable absolute-quality map, unused confirmation or version causality",
+  "prior_work": "preserve larger TRAIN48/24prompt and child20 TRAIN44/22prompt six-dimension calibration as separate historical evidence, including learned no-feature mean/median baselines; this study adds matched six scalar arms, not a claim those baselines were missing",
+  "non_claims": {"contemporary_endpoint_acceptance": false, "human_alignment_improvement": false, "absolute_quality_interpretation": false, "unused_confirmation": false, "promotion": false, "model_or_rubric_changed": false}
+}

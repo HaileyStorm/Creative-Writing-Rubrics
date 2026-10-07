@@ -1,0 +1,62 @@
+{
+  "actual_exit_code": 0,
+  "behavioral_guards": {
+    "failed": 0,
+    "passed": 2
+  },
+  "contemporary_acceptance": false,
+  "evidence_class": "local_runtime_historical_matched_scalar_prompt_crossfit",
+  "finished_utc": "2026-10-07T04:51:24.578399+00:00",
+  "independent_source_and_aggregate_review": "/root/p5_successor_worker exact source accepted before once-run; aggregate accepted after exact hash correction; no private data opened by reviewer",
+  "new_human_votes": 0,
+  "platform": "Windows-11-10.0.26200-SP0",
+  "private_folds_sha256": "22bd95985573c767f12d07361c65b7d9fc3605293acc83f24a27c990e1fa1649",
+  "promotion": false,
+  "provider_calls": 0,
+  "python_version": "3.12.12 (main, Jan 14 2026, 19:30:21) [MSC v.1944 64 bit (AMD64)]",
+  "report_sha256": "1fc84dbce62ec26e7f4990273e9740132af25da11a111e4bff44500f3cd3d88d",
+  "root_saved_fold_readback": {
+    "all_saved_group_errors_paired_losses_and_bin_means_verified": true,
+    "entire_prompt_disjoint_and_unique_holdout_verified": true,
+    "exact_isotonic_training_mean_equal": [
+      {
+        "arm": "compact_analytic",
+        "cohort": "v8_rubric_v1_2_1",
+        "item_forecasts_equal": true
+      },
+      {
+        "arm": "hbq_short_story_batch32",
+        "cohort": "v8_rubric_v1_2_1",
+        "item_forecasts_equal": true
+      },
+      {
+        "arm": "holistic_anchored",
+        "cohort": "v8_rubric_v1_2_1",
+        "item_forecasts_equal": true
+      },
+      {
+        "arm": "oregon_narrative_2017",
+        "cohort": "v8_rubric_v1_2_1",
+        "item_forecasts_equal": true
+      }
+    ],
+    "exact_prompt_weights_knots_baselines_verified": true,
+    "fitting_or_collection_rerun": false,
+    "folds": 60,
+    "geometry_verified": true,
+    "heldout_item_arm_units": 66,
+    "original_csv_or_selected_annotation_or_panel_reread": false,
+    "private_folds_sha256": "22bd95985573c767f12d07361c65b7d9fc3605293acc83f24a27c990e1fa1649",
+    "rank_range_and_undefined_checked_not_reestimated": true,
+    "report_sha256": "1fc84dbce62ec26e7f4990273e9740132af25da11a111e4bff44500f3cd3d88d",
+    "source_snapshots_match": true
+  },
+  "schema_version": 1,
+  "source_pins": {
+    "profile.json": "784f61c5889b5d95a13b363ba680887bd7ff980e9f2db6c0c47c59ae0f752e69",
+    "source.py": "ca3328f35fc1fc562ef08f2aecb64cd3ea4864f8e73fe8a1c5424ea56f9e2d5d",
+    "test_source.py": "61435ef1f7c47467d09a151bb3918df80a2fd993b34bdb1813682866b2d4d13f"
+  },
+  "started_utc": "2026-10-07T04:51:23.110612+00:00",
+  "unused_confirmation": false
+}
