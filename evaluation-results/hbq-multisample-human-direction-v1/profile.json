@@ -1,0 +1,96 @@
+{
+  "analysis_registration": "Retrospective secondary diagnostic frozen before this diagnostic execution; not precollection preregistration.",
+  "arithmetic": "Selected JSON decimal tokens parsed as Decimal and converted to Fraction; exact saved scalar signs/equality and five-repeat means; no epsilon, clipping or target rounding.",
+  "base_helper": {
+    "bytes": 16494,
+    "locator": "evaluation-results/hbq-multisample-floor-discrimination-v1/analyze.py",
+    "sha256": "42ec14182a15cccd8e35502d2d3300d7714b13800a32d791d4cf29b07c8891c6"
+  },
+  "base_profile": {
+    "bytes": 4650,
+    "locator": "evaluation-results/hbq-multisample-floor-discrimination-v1/profile.json",
+    "sha256": "88da3f3c9d2572957bfb512c4414587cdf7ce0796194eb42d45120e26a7a13f1"
+  },
+  "cohorts": {
+    "original_rubric_v1_0_0": {
+      "planned_items": 6,
+      "planned_pairs": 15,
+      "planned_prompt_clusters": 6,
+      "planned_scores_per_arm": 30,
+      "same_prompt_pairs": 0,
+      "sorted_membership_sha256": "f811685211a5ae6a441cad3a4b1a5d8ff83395654577d5acf4d4f277bb3db1a6"
+    },
+    "v8_rubric_v1_2_1": {
+      "planned_items": 5,
+      "planned_pairs": 10,
+      "planned_prompt_clusters": 4,
+      "planned_scores_per_arm": 25,
+      "same_prompt_pairs": 1,
+      "sorted_membership_sha256": "52712e14ff772d18cab254dad36c63187d05fd56d0b01d56a10175f0ad411ad9"
+    }
+  },
+  "frozen_contract": {
+    "bytes": 123496,
+    "sha256": "5fb06e5a4775ecfe1cee10132e52100733c7e765e8eae9865374bb23f1addddd"
+  },
+  "interpretation": {
+    "across_prompt_limit": "Most pairs compare different originating prompts. This follows the historical across-item rank-sensitivity basis, not a controlled same-prompt preference task.",
+    "cohort_limit": "Items and HBQ rubric version change jointly between cohorts; no pooled primary HBQ estimate or causal version effect.",
+    "contemporary_native_or_provider_acceptance": false,
+    "dependence_limit": "Pairs share items/prompts; repetitions are logical schedule indices, not independent human judges. Leave-cluster-out ranges describe sensitivity, not sampling confidence.",
+    "genre_limit": "Historical compact/holistic speculative-fiction anchors have an established applicability mismatch with some general-fiction originating prompts; this analysis cannot repair it.",
+    "historical_opened_development": true,
+    "human_preference_ballot_measurement": false,
+    "human_reference": "Published HANNA human_overall: mean of six dimension means from three ratings each. Scalar ordering and ties refer to the retained aggregate convention, not human indifference.",
+    "inherited_provenance": "Saved scalar/reference bindings reused; no source prose, raw-rating, response, native or semantic replay; historical tool declarations remain uncertified.",
+    "new_human_labels": false,
+    "quality_winner_or_promotion": false,
+    "unused_confirmation": false
+  },
+  "missingness": "Fail closed on any missing/duplicate arm, item, repetition, changed commitment, reference disagreement, or cohort mismatch; never filter pairs by observed outcome.",
+  "pair_convention": "Every unordered pair uses lexically sorted fixed item identities; signs are left-minus-right. Input order cannot change the table. Correct/wrong classifications compare signs; no outcome-based pair selection.",
+  "planned": {
+    "arms": 6,
+    "items": 11,
+    "later_pairs_per_view": 10,
+    "native_scores": 330,
+    "original_pairs_per_view": 15,
+    "repetitions": 5,
+    "same_prompt_pairs_per_later_view": 1,
+    "same_prompt_pairs_per_original_view": 0,
+    "views_per_arm_cohort": 6
+  },
+  "planned_pair_comparisons": 900,
+  "planned_rows": 72,
+  "policy": "historical_multisample_human_direction_v1",
+  "privacy": "Aggregate report only: no item identifiers, per-item scores/human targets, prompt hashes, private locators or case response bodies.",
+  "rates": "Correct and wrong rates use all strict-reference pairs, including model ties; strict-reference directional coverage counts correct+wrong. All-pair directional coverage additionally counts model directions on human-tied pairs. Zero denominators are null; ties are never correct or human indifference.",
+  "schema_version": 1,
+  "sensitivity": {
+    "bootstrap_draws": 0,
+    "confidence_interval": false,
+    "denominators": "Recalculate remaining pair and strict-reference denominators for each omission; retain same/across-prompt splits and undefined rates.",
+    "method": "leave_one_prompt_cluster_out",
+    "omission_identity": "Ordinal in sorted opaque prompt-hash order; no hashes or item IDs emitted.",
+    "pair_iid": false,
+    "paired_across_arms": true,
+    "within_fixed_cohort": true
+  },
+  "source_pins": {
+    "consolidation-provenance.json": {
+      "bytes": 319710,
+      "locator": "consolidation-provenance.json",
+      "sha256": "cc7d765690f3d092b53a4d6d6272753c66d603e23afe26c5e3af4427da7f3eda"
+    },
+    "manifest.json": {
+      "bytes": 380,
+      "locator": "manifest.json",
+      "sha256": "635684e3875456e76d6bff529b2971be40a606b2bbdad1c742cc6818f106ff0d"
+    },
+    "summary.json": {
+      "bytes": 168339,
+      "locator": "summary.json",
+      "sha256": "667d1af0d6886a235325eb017b67f902a172e9d30757f1e205d7499605581444"
+    }
+  }
+}
