@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "policy": "historical_four_state_repeat_agreement_v1",
+  "timing": "Retrospective extension. Prior scalar variation, rank, floor, human-rater influence, calibration and reversal results known. Complete 55 historical run-tree byte commitments verified before this method. Freeze source/profile and independent review before new raw-label projections.",
+  "evidence_pins": {
+    "source.py": {"bytes": 17925, "sha256": "e5395c9754c3aa8e2e33d5dbf2cfc333c6d94db8180df2d7bb2da5ff407d0ec8"},
+    "selected-cells.json": {"bytes": 30775, "sha256": "bc6ba664feb8c5ccb7adf5798394a0bbf45ce29f35232cb297c68283e23dfff4"},
+    "verified-tree-descriptors.json": {"bytes": 248238, "sha256": "dd4ec13809c21b922c171a81d56a656f19fe5b1f4c983b30df6ea94326e2bcf8"},
+    "terminal.json": {"bytes": 583, "sha256": "2028e322fb16874cbbfb9f4002619e725cafdf5fe546408b342f9b670d0f42da"}
+  },
+  "lexical_reader_pin": {"locator": "evaluation-results/hbq-matched-hanna-20261004/prepare.py", "bytes": 31867, "sha256": "2d82e4959c3296ccaa6e6521adb46f85588427d429a544b36a2891ebaea8c7b0"},
+  "contract_pin": {"locator": "evaluation-results/hbq-multisample-repeatability-v1/study-contract.json", "bytes": 6092, "sha256": "23f88d0e26fcbb68c1dad2fb0c46960ff2da02769ecb4f316985902393313074"},
+  "cohorts": {
+    "original_rubric_v1_0_0": {"items": 6, "prompt_groups": 6, "membership_sha256": "f811685211a5ae6a441cad3a4b1a5d8ff83395654577d5acf4d4f277bb3db1a6"},
+    "v8_rubric_v1_2_1": {"items": 5, "prompt_groups": 4, "membership_sha256": "52712e14ff772d18cab254dad36c63187d05fd56d0b01d56a10175f0ad411ad9"}
+  },
+  "planned": {"items": 11, "repetitions": 5, "runs": 55, "question_positions_per_run": 179, "item_question_subjects": 1969, "raw_labels": 9845, "repeat_index_pair_comparisons": 19690},
+  "states": ["YES", "NO", "NOT_APPLICABLE", "CANNOT_ASSESS"],
+  "inputs": "Recheck every exact registered run.json and verdicts.jsonl byte descriptor before any selected label parsing. Run manifest projection: configuration.question_ids only. Each JSONL row projection: question_id and verdict only; lexical UTF8 scanning skips remaining JSON fields without materializing their values. No confidence, note, rationale, input prose, native/session response, human target, scorer or provider replay.",
+  "missingness": "Fail closed on any changed hash, reparse path, absent cell, partial JSONL tail, malformed/unknown label, duplicate question, differing repeat question order or count other than 179. Preserve the full registered cohort; no dropping rare states or failed runs.",
+  "subject": "An item-question position with five registered repeated outputs. Questions and items are heterogeneous and dependent; repeated outputs are not five independent human raters. Per-item and separate-cohort diagnostics only; never pool rubric versions.",
+  "categories": "Four stable-state categories, changing_with_yes_and_no (both present, optionally other states), changing_without_yes_and_no (other changing sequences). Mutually exclusive/exhaustive; raw label changes are not canonical score-effective ladder changes.",
+  "agreement": "Each subject supplies ten unordered repeat-index pairs. Observed nominal agreement Po is equal-subject mean pairwise equal-label fraction. Marginal category probabilities pj use all five outputs per subject in that item or cohort. Pe=sum(pj^2); Fleiss-form descriptive kappa=(Po-Pe)/(1-Pe), null when Pe=1. Exact Fraction arithmetic; no rounding/epsilon or confidence/severity weights. Cohort Po weights items equally because every item has 179 positions. Cohort kappa is not the mean of item kappas.",
+  "transition_table": "4x4 cross-tab with earlier registered repeat index on rows, later on columns. Index order is not synchronized wall-clock time, a causal transition or an experimentally changed packet order. Report same-label, YES/NO, assessed-vs-other and NOT_APPLICABLE-vs-CANNOT_ASSESS pair counts as an exhaustive partition.",
+  "publication": "Aggregate cohort counts/rates and anonymous per-item ordinal rows. Exact item IDs, question IDs and label sequences remain in private evidence. No public rationale, native identity or source-root locator.",
+  "method_reference": "https://www.statsmodels.org/stable/_modules/statsmodels/stats/inter_rater.html",
+  "interpretation": "Prevalence-dependent descriptive nominal repeated-output agreement; chance is a marginal-frequency convention, not a measured random mechanism. Heterogeneous leaf meanings and item/prompt reuse limit interpretation. Different works and rubric versions prevent version causality. No CI, significance, human reliability/correctness, current tools-disabled acceptance, interendpoint comparison, contemporary repeatability qualification or candidate promotion. No judge training or deployed calibration."
+}
