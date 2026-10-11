@@ -16,3 +16,9 @@ Technique-specific model-build modules (for example speculation/MTP
 equivalence, pruning non-inferiority, or refusal-behavior checks) are optional
 overlays. They are not required to judge prose, poetry, drama, or other
 literary artifacts.
+
+Licensing transition: HBQ-RS itself remains Apache License 2.0. New original
+CWR application content in the paths designated by LICENSE is offered under
+the CWR Community License 1.0. Earlier Apache permissions and separately
+licensed sources remain intact. This notice neither asserts ownership of
+third-party material nor withdraws an earlier grant. See docs/LICENSING.md.

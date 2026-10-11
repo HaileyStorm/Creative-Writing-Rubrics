@@ -8,7 +8,8 @@ version = "1.2.3"
 description = "HBQ-RS creative-writing rubrics: compile bundles, score binary verdicts, and render judge prompts."
 readme = "README.md"
 requires-python = ">=3.10"
-license = { text = "Apache-2.0" }
+license = { text = "Mixed: Apache-2.0 and LicenseRef-CWR-Community-1.0; see LICENSE" }
+license-files = ["LICENSE", "NOTICE", "licenses/*.txt"]
 authors = [{ name = "Hailey Collet" }]
 keywords = [
   "creative-writing",
@@ -21,7 +22,6 @@ classifiers = [
   "Development Status :: 4 - Beta",
   "Intended Audience :: Developers",
   "Intended Audience :: Science/Research",
-  "License :: OSI Approved :: Apache Software License",
   "Programming Language :: Python :: 3",
   "Topic :: Scientific/Engineering :: Artificial Intelligence",
   "Topic :: Text Processing",
@@ -55,6 +55,7 @@ include = [
   "docs",
   "sources",
   "LICENSE",
+  "licenses",
   "NOTICE",
   "README.md",
   "CITATION.cff",
@@ -73,6 +74,11 @@ packages = ["src/hbqrs"]
 "docs" = "hbqrs/book/docs"
 "sources" = "hbqrs/book/sources"
 "manifest.json" = "hbqrs/book/manifest.json"
+
+# Both component licenses and their scope travel with packaged CWR content.
+"licenses" = "hbqrs/book/licenses"
+"LICENSE" = "hbqrs/book/LICENSE"
+"NOTICE" = "hbqrs/book/NOTICE"
 
 [tool.pytest.ini_options]
 # No routine unit/integration discovery. Retained studies are historical sources,

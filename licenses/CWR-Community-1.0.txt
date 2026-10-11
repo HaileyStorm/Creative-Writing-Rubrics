@@ -1,0 +1,162 @@
+CWR Community License 1.0
+License identifier: LicenseRef-CWR-Community-1.0
+
+Copyright holders: the identified copyright owners of the Covered Material.
+For original CWR material authored by Hailey Collet: Copyright 2026 Hailey Collet.
+
+1. Scope and definitions
+
+"Covered Material" means original, copyrightable CWR material that its copyright
+holder expressly offers under this license. It includes protected portions of
+modifications and derivatives of that material. It excludes HBQ-RS itself,
+materials separately licensed under Apache License 2.0, third-party materials,
+and rights or material not owned or licensable by the granting copyright holder.
+The accompanying licensing map identifies the repository's intended scope.
+
+"Company Group" means a for-profit business and all entities it controls, that
+control it, or that are under common control with it. "Control" means ownership
+of more than half of the voting rights or the power to direct management.
+A passive minority investment alone does not create control.
+
+"Annual Revenue" means consolidated worldwide gross revenue from all business
+activities for the most recently completed fiscal year, before expenses, with
+transactions within the Company Group eliminated to avoid double counting.
+A business without a completed fiscal year uses its actual revenue since
+formation; projections, capital raised, asset value, and profit are not revenue.
+Non-USD revenue is converted using the fiscal period's average exchange rate
+published by the relevant central bank or another consistently used reputable
+financial source.
+
+A "Large Company" is a Company Group with Annual Revenue of at least
+US $10,000,000. The threshold is fixed in USD, without an employee-count test
+or automatic inflation adjustment.
+
+2. Free permission
+
+Subject to these terms, each granting copyright holder gives you a worldwide,
+nonexclusive, royalty-free permission to use, reproduce, modify, prepare
+derivatives of, display, perform, and distribute its Covered Material, including
+commercial distribution, resale, and use in proprietary products.
+
+This permission is available to individuals acting on their own behalf,
+nonprofit organizations, educational institutions, public bodies, and Company
+Groups below the Large Company threshold. It is unavailable for activities
+conducted by or on behalf of a Large Company, except as expressly permitted
+below or under a separate written license.
+
+There is no requirement to publish your source, modifications, accounts,
+revenue statements, or prices; pay royalties; give the copyright holder rights
+to your additions; or screen the size of every recipient before distribution.
+You must determine your own eligibility honestly.
+
+3. Large Company permission and transition
+
+A Large Company must obtain a separate written license from the relevant
+copyright holder before exercising rights to Covered Material that are not
+otherwise available to it. Negotiated fees and terms are set by that separate
+agreement; this license promises neither a price nor an agreement.
+
+A Company Group that first becomes a Large Company because of a completed
+fiscal year may continue its existing permitted activities for 90 days after
+that fiscal year ends while arranging a separate license. A group newly joining
+an already Large Company through acquisition or a control change has the same
+90-day transition from that event. During the transition it may maintain those
+activities but may not launch new products containing Covered Material.
+Afterward, it must obtain permission or stop the activities requiring it.
+Remaining below the threshold does not require annual renewal or registration.
+
+Employees, subsidiaries, contractors, and agents cannot use their own size to
+avoid the Large Company's licensing requirement when they exercise rights to
+Covered Material on that company's behalf.
+
+4. Distribution, derivatives, services, and outputs
+
+You may distribute or sell Covered Material and derivatives to anyone. Retain
+applicable copyright notices, include this license and the licensing scope,
+identify material modifications, and make clear that recipients' rights to the
+Covered Material depend on their own eligibility or a separate license.
+Recipients obtain permission directly from its granting copyright holders,
+not a sublicense that removes the Large Company condition. You may not offer
+the Covered Material itself under terms that erase that condition.
+
+You own your independently created additions. You may license those additions
+and separable software under terms of your choice. These terms do not require
+them to be publicly disclosed or licensed under this license. A recipient's
+license to your additions does not enlarge its rights to the Covered Material.
+A negotiated license to upstream CWR does not automatically license additions
+owned by someone else.
+
+A small provider may use Covered Material internally to create independent
+stories, reports, assessments, or other outputs for customers of any size.
+A customer's receipt and use of outputs alone does not require a CWR license.
+If the outputs reproduce protected Covered Material, that material retains its
+own licensing terms.
+
+When a provider gives a Large Company self-service access to CWR evaluation
+functionality in a hosted product or service, that access requires the Large
+Company's separate license. Self-service access means the company, its agents,
+or its automated systems directly operate or invoke that functionality through
+a product interface or API, including batch or scheduled evaluation. Commissioning
+a provider-produced finished assessment, giving the provider instructions, or
+submitting material for that assessment alone is not self-service access.
+Delivering independent finished outputs, general hosting, and mere distribution
+of copies do not by themselves make a small provider a Large Company. Routing
+Large Company access through an affiliate or small provider does not remove
+the Large Company's requirement.
+
+Independent software, ordinary creative outputs, and materials merely linked
+with or interoperating with CWR are not Covered Material solely because of
+that relationship. These terms assert no ownership of ideas, facts, scoring
+methods, standards, or other subject matter outside the granting holder's
+exclusive rights. Statutory exceptions and rights are unaffected.
+
+5. Prior and separate grants; HBQ-RS
+
+This license does not revoke, replace, or narrow an earlier Apache 2.0 or other
+valid grant. Material available under an earlier grant remains usable under
+that grant, including by Large Companies. New protectable expression added
+under this license does not acquire the earlier grant merely by being combined
+with older material.
+
+HBQ-RS itself remains Apache License 2.0. The HBQ-RS standard, generic schemas,
+and engine implementation are excluded from Covered Material. Third-party
+sources, datasets, papers, creative works, and frozen historical packages
+retain their existing licensing and provenance. A copyright holder grants
+only rights it actually owns or is authorized to grant.
+
+6. Patents and trademarks
+
+Each granting copyright holder also grants a worldwide, nonexclusive,
+royalty-free patent permission, subject to the same eligibility and conditions,
+for claims it controls that are necessarily infringed by its Covered Material
+alone or as originally supplied. This grants no rights to unrelated patent
+claims or third-party patents.
+
+If you bring a patent claim alleging that the Covered Material infringes a
+patent, your patent permission under this license ends when you bring that claim.
+No trademark or endorsement permission is granted, except reasonable use
+needed to identify origin and reproduce required notices.
+
+7. Compliance, duration, and termination
+
+Permission continues while you satisfy the eligibility and conditions.
+Permission terminates upon breach and is reinstated only as provided below.
+For a first breach, if you cure it within 30 days after receiving written notice,
+permission is reinstated automatically. Repeated or uncured breaches require
+a written reinstatement from the relevant copyright holder. The cure provision
+does not extend the Large Company transition or create an enterprise license.
+
+Termination of your permission does not terminate permissions independently
+granted to compliant recipients. It does not require destruction of material
+you may lawfully retain or cessation of activities authorized by another grant.
+Compliance with this license does not authorize the holder to revoke permission
+at will, change these terms retroactively, or demand an unagreed fee.
+
+8. No warranty or liability
+
+To the extent permitted by applicable law, the Covered Material is supplied
+AS IS, without any express or implied warranty, including merchantability,
+fitness for a particular purpose, title, or noninfringement. Each granting holder
+disclaims liability for damages arising from its use, distribution, or inability
+to use it, whether under contract, tort, or another theory. Mandatory legal
+rights and liabilities remain unaffected.

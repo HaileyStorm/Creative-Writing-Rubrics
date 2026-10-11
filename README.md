@@ -294,6 +294,10 @@ distributed. The wheel smoke test reuses installed third-party dependencies;
 it is not clean-machine proof. See [focused local checks](docs/LOCAL_VALIDATION.md)
 for the separate core, package, and historical-study commands.
 
-This project is Apache-2.0 licensed; see [LICENSE](LICENSE) and [NOTICE](NOTICE).
+HBQ-RS remains Apache-2.0. New original CWR application content uses the
+CWR Community License: free commercial use and resale below US $10 million
+in consolidated annual gross revenue, with separately negotiated permission
+for larger company groups. Earlier Apache grants remain valid. See
+[LICENSE](LICENSE), [licensing scope](docs/LICENSING.md), and [NOTICE](NOTICE).
 Optional donations and their safety notes are documented in
 [docs/DONATIONS.md](docs/DONATIONS.md).
