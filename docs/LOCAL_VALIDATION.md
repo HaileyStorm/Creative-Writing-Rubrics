@@ -1,30 +1,47 @@
-# Focused local validation
+# Local acceptance
 
-Use the local runner for small engineering checks. It deliberately runs every selected test module in a fresh pytest process, so a study-specific failure remains isolated and its pytest output is forwarded directly.
+There is no routine unit or integration suite. Ordinary pytest discovery is
+disabled, and pytest is no longer a development dependency. The old `core`,
+`registry`, `package`, `publications` and `--study` runner lanes are retired.
+Do not replace them with a renamed scenario matrix or require a test count.
 
-Prepare the active interpreter once when the package is not already installed:
-
-```powershell
-.venv\Scripts\python.exe -m pip install -e ".[dev]"
-```
-
-List the maintained lanes, then run only the one that applies to the change:
-
-```powershell
-.venv\Scripts\python.exe scripts\check_local.py --list
-.venv\Scripts\python.exe scripts\check_local.py --lane core
-```
-
-`core` runs release identity, CLI, batch, verification, runner, longform, scoring, and weights modules. `package` runs the separate, slower public-surface module:
+When a change affects local execution, exercise the affected shipped command
+once. This optional, provider-free CLI journey compiles a real bundle, renders
+its prompt for the included scene, and scores the included historical verdicts:
 
 ```powershell
-.venv\Scripts\python.exe scripts\check_local.py --lane package
+$acceptanceDir = Join-Path $env:TEMP ("cwr-acceptance-" + [guid]::NewGuid())
+New-Item -ItemType Directory -Path $acceptanceDir | Out-Null
+.venv\Scripts\python.exe -m hbqrs compile prose.scene -o "$acceptanceDir\packet.json"
+.venv\Scripts\python.exe -m hbqrs render-judge --bundle prose.scene --artifact examples/sample_scene.md -o "$acceptanceDir\judge.md"
+.venv\Scripts\python.exe -m hbqrs score prose.scene examples/verdicts_example.jsonl --admission-policy historical_permissive_v1 -o "$acceptanceDir\score.json"
 ```
 
-For a study-specific gate, request its explicit module. Multiple `--study` values are allowed; each is a fresh pytest process.
+Inspect the relevant output for the changed behavior. This exercises the actual
+local application and its included example; it does not establish strict-import,
+provider, resume, human-alignment or every scoring-boundary behavior. Obtain
+additional actual evidence only for an unresolved claim affected by the change.
+Do not rerun this journey for documentation-only changes.
 
-```powershell
-.venv\Scripts\python.exe scripts\check_local.py --study tests\test_hbq_human_alignment_optimizer_v17_comparative_native_v1.py
-```
+For authored registry changes, `python -m hbqrs pack` rebuilds the production
+aggregates and `python -m hbqrs validate` applies the runtime schema validator.
+There is no additional count/parity/all-bundle test sweep. Build and inspect the
+distribution when packaging inputs change or a release is being prepared;
+ordinary edits do not require a package build or a publication hash sweep.
 
-These are focused engineering checks, not release proof. Each study still requires its own frozen-data, provenance, and acceptance gates. Local results do not establish native Linux, provider-contact, endpoint-parity, or deployment proof. The runner intentionally has no default all-history sweep and does not invoke hosted CI.
+The removed default smoke suites tested hard-coded release/inventory values
+and a synthetic loopback provider. The CLI journey makes no claim to replace
+their individual assertions. Runtime ownership, stop, no-resend, resource,
+schema, semantic admission and frozen-source controls remain in production.
+Research eligibility and prospective evidence requirements remain unchanged.
+
+Retained study modules, fixtures and public-result verifiers are dormant
+historical/provenance support. Reproduce a named obligation from its recorded
+source and environment, with an explicitly installed historical test runner
+if required. Current ordinary discovery is not historical reproduction.
+`artifact-receipts/pytest-regenerable-output.v1.json` and
+`artifact-receipts/large-final-regenerable-output.v1.json` retain their original
+BLOCKED full-replacement obligations at source `e363d645`; this cleanup neither
+runs nor settles those gates. Other frozen inputs, receipts, source hashes and
+formal or scientific claims are unchanged. Previously uncommitted publication
+test cleanup remains separate from this audit.
