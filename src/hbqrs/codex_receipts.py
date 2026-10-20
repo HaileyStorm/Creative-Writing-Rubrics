@@ -9,6 +9,10 @@ from typing import Any
 import uuid
 
 POLICY = "codex_native_rollout_v1"
+# This reader's unchanged historical projection also supports the preceding reader.
+COMPATIBLE_READER_SHA256 = frozenset({
+    "5d1c7af681e881a77201dee7cece4a14fa11cadc86d119714766492e547e1116",
+})
 MAX_BYTES = 16 * 1024 * 1024
 MAX_LINE_BYTES = 8 * 1024 * 1024
 STARTUP_DIAGNOSTIC = (
@@ -115,6 +119,9 @@ def project(rollout_raw: bytes, events_raw: bytes, final_raw: bytes, *, prompt: 
     contexts = [(line, r["payload"]) for line, r in rows if r.get("type") == "turn_context"]
     if len(starts) != 1 or len(completes) != 1 or len(contexts) != 1:
         raise ValueError("Native rollout requires one own started, contextualized and completed turn")
+    if sum(r.get("type") == "event_msg" and r["payload"].get("type") == "thread_settings_applied"
+           for _, r in rows) > 1:
+        raise ValueError("Native rollout contains repeated applied settings")
     turn_id = _uuid(starts[0][1].get("turn_id"))
     context = contexts[0][1]
     if (context.get("turn_id") != turn_id or completes[0][1].get("turn_id") != turn_id
@@ -137,7 +144,15 @@ def project(rollout_raw: bytes, events_raw: bytes, final_raw: bytes, *, prompt: 
         if payload.get("thread_id", thread_id) != thread_id:
             raise ValueError("Native rollout contains a foreign thread")
         if kind == "event_msg":
-            if payload.get("type") not in {"task_started", "task_complete", "token_count",
+            if payload.get("type") == "thread_settings_applied":
+                settings = payload.get("thread_settings")
+                if (not isinstance(settings, dict) or payload.get("thread_id") != thread_id
+                        or settings.get("model") != model or settings.get("model_provider_id") != "openai"
+                        or settings.get("reasoning_effort") != reasoning
+                        or not isinstance(settings.get("cwd"), str) or not settings["cwd"]
+                        or Path(settings["cwd"]).resolve() != cwd.resolve()):
+                    raise ValueError("Native applied settings differ from the execution contract")
+            elif payload.get("type") not in {"task_started", "task_complete", "token_count",
                                            "item_started", "item_updated", "item_completed"}:
                 raise ValueError("Native rollout contains an error or unsupported event")
             if "item" in payload and (not isinstance(payload["item"], dict) or
@@ -248,6 +263,14 @@ def verify(output_dir: Path, provider: dict, *, prompt: str, model: str, reasoni
                        prompt=prompt, model=model, reasoning=reasoning, cwd=output_dir)
     if final_raw is not None and final_raw != raw["codex_message"]:
         raise ValueError("Native final message differs from the accepted response")
-    expected["reader_sha256"] = binding()["reader_sha256"]
-    if json.loads(raw["codex_receipt"]) != expected or provider.get("reported") != expected["reported"]:
+    retained = json.loads(raw["codex_receipt"])
+    reader = retained.get("reader_sha256") if isinstance(retained, dict) else None
+    if not isinstance(reader, str) or reader not in COMPATIBLE_READER_SHA256 | {binding()["reader_sha256"]}:
+        raise ValueError("Native execution receipt reader is unsupported")
+    if reader in COMPATIBLE_READER_SHA256 and any(
+            r.get("type") == "event_msg" and r["payload"].get("type") == "thread_settings_applied"
+            for _, r in _rows(raw["codex_rollout"])):
+        raise ValueError("Historical receipt reader does not support applied settings")
+    expected["reader_sha256"] = reader
+    if retained != expected or provider.get("reported") != expected["reported"]:
         raise ValueError("Native execution receipt is not replayable")
