@@ -1,0 +1,1075 @@
+{
+  "all_five_shared_numeric_works": 0,
+  "analysis_provider_calls": 0,
+  "bootstrap_resamples_executed": 0,
+  "candidate_promoted": false,
+  "canonical_scorer_calls": 0,
+  "condition": {
+    "cohort": "36 AI-written stories in 12 plot groups",
+    "collection_model_tools_disabled": true,
+    "human_reference": "existing three-expert, fourteen-test ballots per story",
+    "requested_effort": "high",
+    "requested_model": "gpt-6.1-sol"
+  },
+  "coverage": {
+    "compact": {
+      "accepted_requests": 15,
+      "accepted_requests_marked_abstention": 0,
+      "accepted_requests_marked_nonabstention": 15,
+      "accepted_requests_without_abstention_flag": 0,
+      "cached_native_cli_version_fields": {
+        "0.163.0": 8,
+        "not_enumerated_in_cached_record": 7
+      },
+      "expected_requests": 36,
+      "expected_works": 36,
+      "missing_numeric_works": 21,
+      "numeric_works": 15,
+      "represented_nonnumeric_works": 0,
+      "represented_works": 15,
+      "unrepresented_requests": 21,
+      "unrepresented_works": 21
+    },
+    "hbq": {
+      "accepted_requests": 244,
+      "accepted_requests_marked_abstention": 6,
+      "accepted_requests_marked_nonabstention": 238,
+      "accepted_requests_without_abstention_flag": 0,
+      "cached_native_cli_version_fields": {
+        "0.163.0": 106,
+        "not_enumerated_in_cached_record": 138
+      },
+      "complete_banks": 7,
+      "expected_leaves_per_complete_bank": 178,
+      "expected_requests": 828,
+      "expected_works": 36,
+      "missing_numeric_works": 29,
+      "numeric_works": 7,
+      "packet_abstention_flags_are_not_whole_work_abstentions": true,
+      "packets_per_complete_bank": 23,
+      "raw_returned_leaf_states": {
+        "CANNOT_ASSESS": 12,
+        "NO": 753,
+        "NOT_APPLICABLE": 171,
+        "YES": 962
+      },
+      "raw_returned_leaves": 1898,
+      "represented_incomplete_banks": 4,
+      "represented_nonnumeric_works": 4,
+      "represented_works": 11,
+      "unrepresented_requests": 584,
+      "unrepresented_works": 25
+    },
+    "holistic": {
+      "accepted_requests": 11,
+      "accepted_requests_marked_abstention": 0,
+      "accepted_requests_marked_nonabstention": 11,
+      "accepted_requests_without_abstention_flag": 0,
+      "cached_native_cli_version_fields": {
+        "0.163.0": 3,
+        "not_enumerated_in_cached_record": 8
+      },
+      "expected_requests": 36,
+      "expected_works": 36,
+      "missing_numeric_works": 25,
+      "numeric_works": 11,
+      "represented_nonnumeric_works": 0,
+      "represented_works": 11,
+      "unrepresented_requests": 25,
+      "unrepresented_works": 25
+    },
+    "oregon": {
+      "accepted_requests": 13,
+      "accepted_requests_marked_abstention": 0,
+      "accepted_requests_marked_nonabstention": 13,
+      "accepted_requests_without_abstention_flag": 0,
+      "cached_native_cli_version_fields": {
+        "0.163.0": 6,
+        "not_enumerated_in_cached_record": 7
+      },
+      "expected_requests": 36,
+      "expected_works": 36,
+      "missing_numeric_works": 23,
+      "numeric_works": 13,
+      "represented_nonnumeric_works": 0,
+      "represented_works": 13,
+      "unrepresented_requests": 23,
+      "unrepresented_works": 23
+    },
+    "pairwise": {
+      "accepted_requests": 30,
+      "accepted_requests_marked_abstention": 0,
+      "accepted_requests_marked_nonabstention": 30,
+      "accepted_requests_without_abstention_flag": 0,
+      "both_orders_pairs": 5,
+      "cached_native_cli_version_fields": {
+        "0.163.0": 14,
+        "not_enumerated_in_cached_record": 16
+      },
+      "expected_pairs": 36,
+      "expected_requests": 72,
+      "numeric_work_statistic_applicable": false,
+      "represented_pairs": 25,
+      "single_order_pairs": 20,
+      "unrepresented_pairs": 11,
+      "unrepresented_requests": 42
+    },
+    "ttcw14": {
+      "accepted_requests": 15,
+      "accepted_requests_marked_abstention": 0,
+      "accepted_requests_marked_nonabstention": 15,
+      "accepted_requests_without_abstention_flag": 0,
+      "cached_native_cli_version_fields": {
+        "0.163.0": 7,
+        "not_enumerated_in_cached_record": 8
+      },
+      "expected_requests": 36,
+      "expected_works": 36,
+      "missing_numeric_works": 21,
+      "numeric_works": 15,
+      "represented_nonnumeric_works": 0,
+      "represented_works": 15,
+      "unrepresented_requests": 21,
+      "unrepresented_works": 21
+    }
+  },
+  "full_goal_complete": false,
+  "limitations": [
+    "328 accepted of1044 planned requests;5occupied/unadmitted and711untouched. Campaign stopped on secondary-account usage limit.",
+    "Availability-selected small and unequal method denominators;do not rank correlations across unmatched subsets or select a winning method.",
+    "Seven complete23packet/178leaf HBQ banks only;four represented incomplete HBQ banks excluded from scalar association.",
+    "Compact overall scores are constant on its15observed works;undefined correlation is retained as null.",
+    "No confidence intervals,power,prospective confirmation,broad human validity or nonexpert inference.",
+    "Human pair preference here is derived from existing mean expert test scores;not new direct preference ballots.",
+    "Pair orders include differing native CLI versions;no causal pure-order/backend/sampler equivalence claim.",
+    "Further frozen suffix collection after this exposure is development continuation,not a fresh blinded holdout.",
+    "Request/packet counts differ from whole-work counts. Six HBQ acceptance flags are packet-level markers, not six whole-story abstentions.",
+    "Missing native_cli_version fields are reported as not enumerated;no runtime version is guessed.",
+    "The independent review did not separately revalidate ordinal1 historical source join;prior saved admission and qualification limits remain inherited."
+  ],
+  "methods": {
+    "compact": {
+      "association": {
+        "bootstrap": {
+          "reason": "Incomplete cohort; missing over ten percent",
+          "state": "not_estimated"
+        },
+        "expected_works": 36,
+        "missing_works": 21,
+        "rho": null,
+        "state": "inconclusive_missing_over_10_percent",
+        "undefined_reason": "Too few paired works or a constant rank vector",
+        "unobserved_outcome_bounds": [
+          -1,
+          1
+        ],
+        "works": 15
+      },
+      "distribution": {
+        "ceiling_count": 0,
+        "distinct_scores": 1,
+        "floor_count": 0,
+        "items_in_ties": 15,
+        "maximum": 2,
+        "mean": 2,
+        "minimum": 2,
+        "n": 15,
+        "native_range": [
+          1,
+          5
+        ],
+        "tied_score_groups": 1,
+        "tied_unordered_pairs": 105
+      },
+      "represented_plot_clusters": 9,
+      "within_plot_expert_derived_pair_agreement": {
+        "assessed_denominator": 7,
+        "bootstrap": {
+          "reason": "Incomplete informative pairs",
+          "state": "not_estimated"
+        },
+        "expected_denominator": 36,
+        "expert_ties_excluded": 0,
+        "fraction": 0.5,
+        "full_denominator_bounds": [
+          0.09722222222222222,
+          0.9027777777777778
+        ],
+        "matches": 3.5,
+        "predicted_ties": 7,
+        "state": "inconclusive_missing_over_10_percent",
+        "unassessed": 29,
+        "unordered_pairs": 36
+      }
+    },
+    "hbq": {
+      "association": {
+        "bootstrap": {
+          "reason": "Incomplete cohort; missing over ten percent",
+          "state": "not_estimated"
+        },
+        "expected_works": 36,
+        "missing_works": 29,
+        "rho": 0.6071428571428571,
+        "state": "inconclusive_missing_over_10_percent",
+        "undefined_reason": null,
+        "unobserved_outcome_bounds": [
+          -1,
+          1
+        ],
+        "works": 7
+      },
+      "distribution": {
+        "at_or_above_90": 0,
+        "at_or_below_10": 0,
+        "ceiling_count": 0,
+        "distinct_scores": 7,
+        "floor_count": 0,
+        "items_in_ties": 0,
+        "maximum": 52.428,
+        "mean": 45.374514285714284,
+        "minimum": 39.1308,
+        "n": 7,
+        "native_range": [
+          0,
+          100
+        ],
+        "tied_score_groups": 0,
+        "tied_unordered_pairs": 0
+      },
+      "represented_plot_clusters": 5,
+      "within_plot_expert_derived_pair_agreement": {
+        "assessed_denominator": 2,
+        "bootstrap": {
+          "reason": "Incomplete informative pairs",
+          "state": "not_estimated"
+        },
+        "expected_denominator": 36,
+        "expert_ties_excluded": 0,
+        "fraction": 1.0,
+        "full_denominator_bounds": [
+          0.05555555555555555,
+          1.0
+        ],
+        "matches": 2.0,
+        "predicted_ties": 0,
+        "state": "inconclusive_missing_over_10_percent",
+        "unassessed": 34,
+        "unordered_pairs": 36
+      }
+    },
+    "holistic": {
+      "association": {
+        "bootstrap": {
+          "reason": "Incomplete cohort; missing over ten percent",
+          "state": "not_estimated"
+        },
+        "expected_works": 36,
+        "missing_works": 25,
+        "rho": 0.40462443108709856,
+        "state": "inconclusive_missing_over_10_percent",
+        "undefined_reason": null,
+        "unobserved_outcome_bounds": [
+          -1,
+          1
+        ],
+        "works": 11
+      },
+      "distribution": {
+        "ceiling_count": 0,
+        "distinct_scores": 2,
+        "floor_count": 0,
+        "items_in_ties": 10,
+        "maximum": 3,
+        "mean": 2.090909090909091,
+        "minimum": 2,
+        "n": 11,
+        "native_range": [
+          1,
+          7
+        ],
+        "tied_score_groups": 1,
+        "tied_unordered_pairs": 45
+      },
+      "represented_plot_clusters": 8,
+      "within_plot_expert_derived_pair_agreement": {
+        "assessed_denominator": 3,
+        "bootstrap": {
+          "reason": "Incomplete informative pairs",
+          "state": "not_estimated"
+        },
+        "expected_denominator": 36,
+        "expert_ties_excluded": 0,
+        "fraction": 0.6666666666666666,
+        "full_denominator_bounds": [
+          0.05555555555555555,
+          0.9722222222222222
+        ],
+        "matches": 2.0,
+        "predicted_ties": 2,
+        "state": "inconclusive_missing_over_10_percent",
+        "unassessed": 33,
+        "unordered_pairs": 36
+      }
+    },
+    "oregon": {
+      "association": {
+        "bootstrap": {
+          "reason": "Incomplete cohort; missing over ten percent",
+          "state": "not_estimated"
+        },
+        "expected_works": 36,
+        "missing_works": 23,
+        "rho": 0.037382414427399945,
+        "state": "inconclusive_missing_over_10_percent",
+        "undefined_reason": null,
+        "unobserved_outcome_bounds": [
+          -1,
+          1
+        ],
+        "works": 13
+      },
+      "distribution": {
+        "ceiling_count": 0,
+        "distinct_scores": 4,
+        "floor_count": 0,
+        "items_in_ties": 13,
+        "maximum": 23,
+        "mean": 20.46153846153846,
+        "minimum": 19,
+        "n": 13,
+        "native_range": [
+          6,
+          36
+        ],
+        "tied_score_groups": 4,
+        "tied_unordered_pairs": 17
+      },
+      "represented_plot_clusters": 10,
+      "within_plot_expert_derived_pair_agreement": {
+        "assessed_denominator": 3,
+        "bootstrap": {
+          "reason": "Incomplete informative pairs",
+          "state": "not_estimated"
+        },
+        "expected_denominator": 36,
+        "expert_ties_excluded": 0,
+        "fraction": 0.16666666666666666,
+        "full_denominator_bounds": [
+          0.013888888888888888,
+          0.9305555555555556
+        ],
+        "matches": 0.5,
+        "predicted_ties": 1,
+        "state": "inconclusive_missing_over_10_percent",
+        "unassessed": 33,
+        "unordered_pairs": 36
+      }
+    },
+    "ttcw14": {
+      "association": {
+        "bootstrap": {
+          "reason": "Incomplete cohort; missing over ten percent",
+          "state": "not_estimated"
+        },
+        "expected_works": 36,
+        "missing_works": 21,
+        "rho": 0.400524085562093,
+        "state": "inconclusive_missing_over_10_percent",
+        "undefined_reason": null,
+        "unobserved_outcome_bounds": [
+          -1,
+          1
+        ],
+        "works": 15
+      },
+      "distribution": {
+        "ceiling_count": 0,
+        "distinct_scores": 6,
+        "floor_count": 0,
+        "items_in_ties": 12,
+        "maximum": 0.5714285714285714,
+        "mean": 0.35238095238095235,
+        "minimum": 0.21428571428571427,
+        "n": 15,
+        "native_range": [
+          0,
+          1
+        ],
+        "tied_score_groups": 3,
+        "tied_unordered_pairs": 22
+      },
+      "represented_plot_clusters": 9,
+      "within_plot_expert_derived_pair_agreement": {
+        "assessed_denominator": 6,
+        "bootstrap": {
+          "reason": "Incomplete informative pairs",
+          "state": "not_estimated"
+        },
+        "expected_denominator": 36,
+        "expert_ties_excluded": 0,
+        "fraction": 0.6666666666666666,
+        "full_denominator_bounds": [
+          0.1111111111111111,
+          0.9444444444444444
+        ],
+        "matches": 4.0,
+        "predicted_ties": 0,
+        "state": "inconclusive_missing_over_10_percent",
+        "unassessed": 30,
+        "unordered_pairs": 36
+      }
+    }
+  },
+  "paired_method_comparisons": {
+    "compact__oregon": {
+      "bootstrap": {
+        "reason": "Incomplete shared denominator",
+        "replicates": 0,
+        "state": "not_estimated"
+      },
+      "delta_rho": null,
+      "expected_works": 36,
+      "left_rho_same_works": null,
+      "right_rho_same_works": 0.029821603968282907,
+      "state": "inconclusive_missing_over_10_percent",
+      "undefined_reason": "Too few paired works or constant rank vector",
+      "unobserved_outcome_bounds": [
+        -2,
+        2
+      ],
+      "works": 7
+    },
+    "hbq__compact": {
+      "bootstrap": {
+        "reason": "Incomplete shared denominator",
+        "replicates": 0,
+        "state": "not_estimated"
+      },
+      "delta_rho": null,
+      "expected_works": 36,
+      "left_rho_same_works": 1.0,
+      "right_rho_same_works": null,
+      "state": "inconclusive_missing_over_10_percent",
+      "undefined_reason": "Too few paired works or constant rank vector",
+      "unobserved_outcome_bounds": [
+        -2,
+        2
+      ],
+      "works": 2
+    },
+    "hbq__holistic": {
+      "bootstrap": {
+        "reason": "Incomplete shared denominator",
+        "replicates": 0,
+        "state": "not_estimated"
+      },
+      "delta_rho": null,
+      "expected_works": 36,
+      "left_rho_same_works": 1.0,
+      "right_rho_same_works": null,
+      "state": "inconclusive_missing_over_10_percent",
+      "undefined_reason": "Too few paired works or constant rank vector",
+      "unobserved_outcome_bounds": [
+        -2,
+        2
+      ],
+      "works": 2
+    },
+    "hbq__oregon": {
+      "bootstrap": {
+        "reason": "Incomplete shared denominator",
+        "replicates": 0,
+        "state": "not_estimated"
+      },
+      "delta_rho": 0.0,
+      "expected_works": 36,
+      "left_rho_same_works": -1.0,
+      "right_rho_same_works": -1.0,
+      "state": "inconclusive_missing_over_10_percent",
+      "undefined_reason": null,
+      "unobserved_outcome_bounds": [
+        -2,
+        2
+      ],
+      "works": 2
+    },
+    "hbq__ttcw14": {
+      "bootstrap": {
+        "reason": "Incomplete shared denominator",
+        "replicates": 0,
+        "state": "not_estimated"
+      },
+      "delta_rho": 1.0,
+      "expected_works": 36,
+      "left_rho_same_works": 1.0,
+      "right_rho_same_works": 0.0,
+      "state": "inconclusive_missing_over_10_percent",
+      "undefined_reason": null,
+      "unobserved_outcome_bounds": [
+        -2,
+        2
+      ],
+      "works": 3
+    },
+    "holistic__compact": {
+      "bootstrap": {
+        "reason": "Incomplete shared denominator",
+        "replicates": 0,
+        "state": "not_estimated"
+      },
+      "delta_rho": null,
+      "expected_works": 36,
+      "left_rho_same_works": null,
+      "right_rho_same_works": null,
+      "state": "inconclusive_missing_over_10_percent",
+      "undefined_reason": "Too few paired works or constant rank vector",
+      "unobserved_outcome_bounds": [
+        -2,
+        2
+      ],
+      "works": 5
+    },
+    "holistic__oregon": {
+      "bootstrap": {
+        "reason": "Incomplete shared denominator",
+        "replicates": 0,
+        "state": "not_estimated"
+      },
+      "delta_rho": null,
+      "expected_works": 36,
+      "left_rho_same_works": null,
+      "right_rho_same_works": -0.27774602993176545,
+      "state": "inconclusive_missing_over_10_percent",
+      "undefined_reason": "Too few paired works or constant rank vector",
+      "unobserved_outcome_bounds": [
+        -2,
+        2
+      ],
+      "works": 6
+    },
+    "ttcw14__compact": {
+      "bootstrap": {
+        "reason": "Incomplete shared denominator",
+        "replicates": 0,
+        "state": "not_estimated"
+      },
+      "delta_rho": null,
+      "expected_works": 36,
+      "left_rho_same_works": 0.4553825555391872,
+      "right_rho_same_works": null,
+      "state": "inconclusive_missing_over_10_percent",
+      "undefined_reason": "Too few paired works or constant rank vector",
+      "unobserved_outcome_bounds": [
+        -2,
+        2
+      ],
+      "works": 6
+    },
+    "ttcw14__holistic": {
+      "bootstrap": {
+        "reason": "Incomplete shared denominator",
+        "replicates": 0,
+        "state": "not_estimated"
+      },
+      "delta_rho": -0.31992269728310535,
+      "expected_works": 36,
+      "left_rho_same_works": 0.40555355282690636,
+      "right_rho_same_works": 0.7254762501100117,
+      "state": "inconclusive_missing_over_10_percent",
+      "undefined_reason": null,
+      "unobserved_outcome_bounds": [
+        -2,
+        2
+      ],
+      "works": 5
+    },
+    "ttcw14__oregon": {
+      "bootstrap": {
+        "reason": "Incomplete shared denominator",
+        "replicates": 0,
+        "state": "not_estimated"
+      },
+      "delta_rho": null,
+      "expected_works": 36,
+      "left_rho_same_works": 1.0,
+      "right_rho_same_works": null,
+      "state": "inconclusive_missing_over_10_percent",
+      "undefined_reason": "Too few paired works or constant rank vector",
+      "unobserved_outcome_bounds": [
+        -2,
+        2
+      ],
+      "works": 2
+    }
+  },
+  "pairwise_expert_derived_agreement": {
+    "all_collection_explicit_abstentions": 0,
+    "each_order_against_expert": {
+      "assessed_denominator": 30,
+      "expected_denominator": 72,
+      "fraction": 0.8333333333333334,
+      "full_denominator_bounds": [
+        0.3472222222222222,
+        0.9305555555555556
+      ],
+      "matches": 25,
+      "state": "inconclusive_missing_over_10_percent",
+      "unassessed": 42
+    },
+    "global_rho": null,
+    "global_rho_reason": "Twelve disconnected three-story graphs; no global rank inference",
+    "initial_assessed_orders": 30,
+    "initial_expected_orders": 72,
+    "mean_absolute_canonical_order_gap": 0.0,
+    "order_averaged_within_plot_agreement": {
+      "assessed_denominator": 5,
+      "bootstrap": {
+        "reason": "Incomplete informative pairs",
+        "state": "not_estimated"
+      },
+      "consensus_ties": 0,
+      "expected_denominator": 36,
+      "expert_ties_excluded": 0,
+      "fraction": 0.8,
+      "full_denominator_bounds": [
+        0.1111111111111111,
+        0.9722222222222222
+      ],
+      "matches": 4.0,
+      "state": "inconclusive_missing_over_10_percent",
+      "unassessed": 31
+    },
+    "paired_order_complete_pairs": 5,
+    "paired_order_disagreements": 0,
+    "paired_order_opposite_direction_pairs": 0,
+    "repeat_same_order_agreement": {
+      "assessed_denominator": 0,
+      "expected_denominator": 24,
+      "fraction": null,
+      "full_denominator_bounds": [
+        0.0,
+        1.0
+      ],
+      "matches": 0,
+      "state": "inconclusive_missing_over_10_percent",
+      "unassessed": 24
+    },
+    "state": "inconclusive_missing_over_10_percent",
+    "unordered_pairs": 36
+  },
+  "request_census": {
+    "accepted": 328,
+    "occupied_or_unadmitted": 5,
+    "planned": 1044,
+    "untouched": 711
+  },
+  "schema_version": 1,
+  "source_sha256": {
+    "analysis": "6eb5ae1f72aeab87c63bd0fab6ccb094974c585491c06219ac4ae32028de21a9",
+    "coverage": "5b38ec2cc65234d3ddf494ba2ac6f9613718887353d6b47d5b1bf55784d4098e",
+    "seal": "01822fd3df6b57dcb7e0093cb4f1ba3a5cb515eb5581abd46d72c6dbcf1c02c8"
+  },
+  "state": "INCONCLUSIVE_STOPPED_PARTIAL_DEVELOPMENT_COMPARISON",
+  "study": "cwr-sol-ttcw-stopped-development-20261020",
+  "ttcw14_expert_test_agreement": {
+    "by_test": {
+      "1": {
+        "individual_ballots": {
+          "assessed_denominator": 45,
+          "expected_denominator": 108,
+          "fraction": 0.5777777777777777,
+          "full_denominator_bounds": [
+            0.24074074074074073,
+            0.8240740740740741
+          ],
+          "matches": 26,
+          "state": "inconclusive_missing_over_10_percent",
+          "unassessed": 63
+        },
+        "majority": {
+          "assessed_denominator": 15,
+          "expected_denominator": 36,
+          "fraction": 0.5333333333333333,
+          "full_denominator_bounds": [
+            0.2222222222222222,
+            0.8055555555555556
+          ],
+          "matches": 8,
+          "state": "inconclusive_missing_over_10_percent",
+          "unassessed": 21
+        }
+      },
+      "10": {
+        "individual_ballots": {
+          "assessed_denominator": 45,
+          "expected_denominator": 108,
+          "fraction": 0.9111111111111111,
+          "full_denominator_bounds": [
+            0.37962962962962965,
+            0.9629629629629629
+          ],
+          "matches": 41,
+          "state": "inconclusive_missing_over_10_percent",
+          "unassessed": 63
+        },
+        "majority": {
+          "assessed_denominator": 15,
+          "expected_denominator": 36,
+          "fraction": 0.9333333333333333,
+          "full_denominator_bounds": [
+            0.3888888888888889,
+            0.9722222222222222
+          ],
+          "matches": 14,
+          "state": "inconclusive_missing_over_10_percent",
+          "unassessed": 21
+        }
+      },
+      "11": {
+        "individual_ballots": {
+          "assessed_denominator": 45,
+          "expected_denominator": 108,
+          "fraction": 0.7777777777777778,
+          "full_denominator_bounds": [
+            0.32407407407407407,
+            0.9074074074074074
+          ],
+          "matches": 35,
+          "state": "inconclusive_missing_over_10_percent",
+          "unassessed": 63
+        },
+        "majority": {
+          "assessed_denominator": 15,
+          "expected_denominator": 36,
+          "fraction": 0.8,
+          "full_denominator_bounds": [
+            0.3333333333333333,
+            0.9166666666666666
+          ],
+          "matches": 12,
+          "state": "inconclusive_missing_over_10_percent",
+          "unassessed": 21
+        }
+      },
+      "12": {
+        "individual_ballots": {
+          "assessed_denominator": 45,
+          "expected_denominator": 108,
+          "fraction": 0.17777777777777778,
+          "full_denominator_bounds": [
+            0.07407407407407407,
+            0.6574074074074074
+          ],
+          "matches": 8,
+          "state": "inconclusive_missing_over_10_percent",
+          "unassessed": 63
+        },
+        "majority": {
+          "assessed_denominator": 15,
+          "expected_denominator": 36,
+          "fraction": 0.13333333333333333,
+          "full_denominator_bounds": [
+            0.05555555555555555,
+            0.6388888888888888
+          ],
+          "matches": 2,
+          "state": "inconclusive_missing_over_10_percent",
+          "unassessed": 21
+        }
+      },
+      "13": {
+        "individual_ballots": {
+          "assessed_denominator": 45,
+          "expected_denominator": 108,
+          "fraction": 0.4444444444444444,
+          "full_denominator_bounds": [
+            0.18518518518518517,
+            0.7685185185185185
+          ],
+          "matches": 20,
+          "state": "inconclusive_missing_over_10_percent",
+          "unassessed": 63
+        },
+        "majority": {
+          "assessed_denominator": 15,
+          "expected_denominator": 36,
+          "fraction": 0.4,
+          "full_denominator_bounds": [
+            0.16666666666666666,
+            0.75
+          ],
+          "matches": 6,
+          "state": "inconclusive_missing_over_10_percent",
+          "unassessed": 21
+        }
+      },
+      "14": {
+        "individual_ballots": {
+          "assessed_denominator": 45,
+          "expected_denominator": 108,
+          "fraction": 0.7333333333333333,
+          "full_denominator_bounds": [
+            0.3055555555555556,
+            0.8888888888888888
+          ],
+          "matches": 33,
+          "state": "inconclusive_missing_over_10_percent",
+          "unassessed": 63
+        },
+        "majority": {
+          "assessed_denominator": 15,
+          "expected_denominator": 36,
+          "fraction": 0.8666666666666667,
+          "full_denominator_bounds": [
+            0.3611111111111111,
+            0.9444444444444444
+          ],
+          "matches": 13,
+          "state": "inconclusive_missing_over_10_percent",
+          "unassessed": 21
+        }
+      },
+      "2": {
+        "individual_ballots": {
+          "assessed_denominator": 45,
+          "expected_denominator": 108,
+          "fraction": 0.6222222222222222,
+          "full_denominator_bounds": [
+            0.25925925925925924,
+            0.8425925925925926
+          ],
+          "matches": 28,
+          "state": "inconclusive_missing_over_10_percent",
+          "unassessed": 63
+        },
+        "majority": {
+          "assessed_denominator": 15,
+          "expected_denominator": 36,
+          "fraction": 0.6666666666666666,
+          "full_denominator_bounds": [
+            0.2777777777777778,
+            0.8611111111111112
+          ],
+          "matches": 10,
+          "state": "inconclusive_missing_over_10_percent",
+          "unassessed": 21
+        }
+      },
+      "3": {
+        "individual_ballots": {
+          "assessed_denominator": 45,
+          "expected_denominator": 108,
+          "fraction": 0.6,
+          "full_denominator_bounds": [
+            0.25,
+            0.8333333333333334
+          ],
+          "matches": 27,
+          "state": "inconclusive_missing_over_10_percent",
+          "unassessed": 63
+        },
+        "majority": {
+          "assessed_denominator": 15,
+          "expected_denominator": 36,
+          "fraction": 0.6,
+          "full_denominator_bounds": [
+            0.25,
+            0.8333333333333334
+          ],
+          "matches": 9,
+          "state": "inconclusive_missing_over_10_percent",
+          "unassessed": 21
+        }
+      },
+      "4": {
+        "individual_ballots": {
+          "assessed_denominator": 45,
+          "expected_denominator": 108,
+          "fraction": 0.6,
+          "full_denominator_bounds": [
+            0.25,
+            0.8333333333333334
+          ],
+          "matches": 27,
+          "state": "inconclusive_missing_over_10_percent",
+          "unassessed": 63
+        },
+        "majority": {
+          "assessed_denominator": 15,
+          "expected_denominator": 36,
+          "fraction": 0.6,
+          "full_denominator_bounds": [
+            0.25,
+            0.8333333333333334
+          ],
+          "matches": 9,
+          "state": "inconclusive_missing_over_10_percent",
+          "unassessed": 21
+        }
+      },
+      "5": {
+        "individual_ballots": {
+          "assessed_denominator": 45,
+          "expected_denominator": 108,
+          "fraction": 0.7333333333333333,
+          "full_denominator_bounds": [
+            0.3055555555555556,
+            0.8888888888888888
+          ],
+          "matches": 33,
+          "state": "inconclusive_missing_over_10_percent",
+          "unassessed": 63
+        },
+        "majority": {
+          "assessed_denominator": 15,
+          "expected_denominator": 36,
+          "fraction": 0.7333333333333333,
+          "full_denominator_bounds": [
+            0.3055555555555556,
+            0.8888888888888888
+          ],
+          "matches": 11,
+          "state": "inconclusive_missing_over_10_percent",
+          "unassessed": 21
+        }
+      },
+      "6": {
+        "individual_ballots": {
+          "assessed_denominator": 45,
+          "expected_denominator": 108,
+          "fraction": 0.4222222222222222,
+          "full_denominator_bounds": [
+            0.17592592592592593,
+            0.7592592592592593
+          ],
+          "matches": 19,
+          "state": "inconclusive_missing_over_10_percent",
+          "unassessed": 63
+        },
+        "majority": {
+          "assessed_denominator": 15,
+          "expected_denominator": 36,
+          "fraction": 0.4,
+          "full_denominator_bounds": [
+            0.16666666666666666,
+            0.75
+          ],
+          "matches": 6,
+          "state": "inconclusive_missing_over_10_percent",
+          "unassessed": 21
+        }
+      },
+      "7": {
+        "individual_ballots": {
+          "assessed_denominator": 45,
+          "expected_denominator": 108,
+          "fraction": 0.6444444444444445,
+          "full_denominator_bounds": [
+            0.26851851851851855,
+            0.8518518518518519
+          ],
+          "matches": 29,
+          "state": "inconclusive_missing_over_10_percent",
+          "unassessed": 63
+        },
+        "majority": {
+          "assessed_denominator": 15,
+          "expected_denominator": 36,
+          "fraction": 0.6666666666666666,
+          "full_denominator_bounds": [
+            0.2777777777777778,
+            0.8611111111111112
+          ],
+          "matches": 10,
+          "state": "inconclusive_missing_over_10_percent",
+          "unassessed": 21
+        }
+      },
+      "8": {
+        "individual_ballots": {
+          "assessed_denominator": 45,
+          "expected_denominator": 108,
+          "fraction": 0.6444444444444445,
+          "full_denominator_bounds": [
+            0.26851851851851855,
+            0.8518518518518519
+          ],
+          "matches": 29,
+          "state": "inconclusive_missing_over_10_percent",
+          "unassessed": 63
+        },
+        "majority": {
+          "assessed_denominator": 15,
+          "expected_denominator": 36,
+          "fraction": 0.7333333333333333,
+          "full_denominator_bounds": [
+            0.3055555555555556,
+            0.8888888888888888
+          ],
+          "matches": 11,
+          "state": "inconclusive_missing_over_10_percent",
+          "unassessed": 21
+        }
+      },
+      "9": {
+        "individual_ballots": {
+          "assessed_denominator": 45,
+          "expected_denominator": 108,
+          "fraction": 0.8444444444444444,
+          "full_denominator_bounds": [
+            0.35185185185185186,
+            0.9351851851851852
+          ],
+          "matches": 38,
+          "state": "inconclusive_missing_over_10_percent",
+          "unassessed": 63
+        },
+        "majority": {
+          "assessed_denominator": 15,
+          "expected_denominator": 36,
+          "fraction": 1.0,
+          "full_denominator_bounds": [
+            0.4166666666666667,
+            1.0
+          ],
+          "matches": 15,
+          "state": "inconclusive_missing_over_10_percent",
+          "unassessed": 21
+        }
+      }
+    },
+    "expert_majority": {
+      "assessed_denominator": 210,
+      "bootstrap": {
+        "reason": "Incomplete assessed test/story cells",
+        "state": "not_estimated"
+      },
+      "expected_denominator": 504,
+      "fraction": 0.6476190476190476,
+      "full_denominator_bounds": [
+        0.2698412698412698,
+        0.8531746031746031
+      ],
+      "matches": 136,
+      "state": "inconclusive_missing_over_10_percent",
+      "unassessed": 294
+    },
+    "individual_ballots": {
+      "assessed_denominator": 630,
+      "bootstrap": {
+        "reason": "Incomplete assessed test/story cells",
+        "state": "not_estimated"
+      },
+      "expected_denominator": 1512,
+      "fraction": 0.6238095238095238,
+      "full_denominator_bounds": [
+        0.25992063492063494,
+        0.8432539682539683
+      ],
+      "matches": 393,
+      "state": "inconclusive_missing_over_10_percent",
+      "unassessed": 882
+    }
+  }
+}
