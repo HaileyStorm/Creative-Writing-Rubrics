@@ -1,0 +1,2611 @@
+{
+  "always_not_applicable": [
+    "core.economy_and_relevance.digression",
+    "core.length_and_scope_fit.explicit",
+    "core.task_and_brief_fidelity.exclusions",
+    "core.task_and_brief_fidelity.length_hard",
+    "core.task_and_brief_fidelity.tense",
+    "core.voice_and_stylistic_identity.project_fidelity",
+    "form.prose.general_prose_fiction.completion",
+    "penalty.repetition.long_range",
+    "penalty.unflagged_incomplete.unit"
+  ],
+  "analysis_source_sha256": "1b74fd57a15b90c35ab2e52c08da9c8df750c7a651c25feb57ee8870c4f722e3",
+  "banks": 38,
+  "banks_with_cannot_assess": 32,
+  "candidate_promoted": false,
+  "criteria": 170,
+  "criteria_with_cannot_assess": 18,
+  "criterion_counts": [
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 0,
+        "NOT_APPLICABLE": 0,
+        "YES": 38
+      },
+      "criterion_id": "core.audience_and_purpose_fit.complexity",
+      "module_id": "core.audience_and_purpose_fit",
+      "role": "domain",
+      "text": "Is conceptual and structural complexity appropriate for the intended audience?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 3,
+        "NOT_APPLICABLE": 0,
+        "YES": 35
+      },
+      "criterion_id": "core.audience_and_purpose_fit.explanation",
+      "module_id": "core.audience_and_purpose_fit",
+      "role": "domain",
+      "text": "Is the amount of explanation appropriate for what the intended reader is expected to know?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 0,
+        "NOT_APPLICABLE": 0,
+        "YES": 38
+      },
+      "criterion_id": "core.audience_and_purpose_fit.genre_signals",
+      "module_id": "core.audience_and_purpose_fit",
+      "role": "domain",
+      "text": "Does the artifact signal and fulfill the relevant genre or mode promises for its target audience?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 0,
+        "NOT_APPLICABLE": 0,
+        "YES": 38
+      },
+      "criterion_id": "core.audience_and_purpose_fit.intensity",
+      "module_id": "core.audience_and_purpose_fit",
+      "role": "domain",
+      "text": "Is emotional, violent, frightening, sexual, or comic intensity appropriate to the specified audience and purpose?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 0,
+        "NOT_APPLICABLE": 0,
+        "YES": 38
+      },
+      "criterion_id": "core.audience_and_purpose_fit.length",
+      "module_id": "core.audience_and_purpose_fit",
+      "role": "domain",
+      "text": "Is length appropriate for the delivery context and reader commitment?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 0,
+        "NOT_APPLICABLE": 0,
+        "YES": 38
+      },
+      "criterion_id": "core.audience_and_purpose_fit.tone",
+      "module_id": "core.audience_and_purpose_fit",
+      "role": "domain",
+      "text": "Is tone appropriate for the intended audience, venue, and purpose?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 34,
+      "counts": {
+        "CANNOT_ASSESS": 4,
+        "NO": 1,
+        "NOT_APPLICABLE": 0,
+        "YES": 33
+      },
+      "criterion_id": "core.audience_and_purpose_fit.use_context",
+      "module_id": "core.audience_and_purpose_fit",
+      "role": "domain",
+      "text": "Does it fit its intended use, such as private exploration, publication, performance, gameplay, reference, or revision support?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 2,
+        "NOT_APPLICABLE": 0,
+        "YES": 36
+      },
+      "criterion_id": "core.audience_and_purpose_fit.vocabulary",
+      "module_id": "core.audience_and_purpose_fit",
+      "role": "domain",
+      "text": "Is vocabulary appropriate without condescension, needless opacity, or accidental register mismatch?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 0,
+        "NOT_APPLICABLE": 0,
+        "YES": 38
+      },
+      "criterion_id": "core.economy_and_relevance.detail_relevance",
+      "module_id": "core.economy_and_relevance",
+      "role": "domain",
+      "text": "Are details relevant to character, setting, action, atmosphere, theme, or the requested operation?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 0,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 0,
+        "NOT_APPLICABLE": 38,
+        "YES": 0
+      },
+      "criterion_id": "core.economy_and_relevance.digression",
+      "module_id": "core.economy_and_relevance",
+      "role": "domain",
+      "text": "When the work digresses, does the digression create an intended structural, tonal, or thematic benefit?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 30,
+        "NOT_APPLICABLE": 0,
+        "YES": 8
+      },
+      "criterion_id": "core.economy_and_relevance.earns_place",
+      "module_id": "core.economy_and_relevance",
+      "role": "domain",
+      "text": "Does each substantial passage, beat, image, line, or detail perform a useful function?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 29,
+        "NOT_APPLICABLE": 0,
+        "YES": 9
+      },
+      "criterion_id": "core.economy_and_relevance.functional_repetition",
+      "module_id": "core.economy_and_relevance",
+      "role": "domain",
+      "text": "When material repeats, does the recurrence alter meaning, rhythm, pressure, or expectation?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 1,
+        "NOT_APPLICABLE": 0,
+        "YES": 37
+      },
+      "criterion_id": "core.economy_and_relevance.length_fit",
+      "module_id": "core.economy_and_relevance",
+      "role": "domain",
+      "text": "Is the artifact's length proportionate to its form, scope, purpose, and stage of development?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 35,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 0,
+        "NOT_APPLICABLE": 3,
+        "YES": 35
+      },
+      "criterion_id": "core.economy_and_relevance.no_flattening",
+      "module_id": "core.economy_and_relevance",
+      "role": "domain",
+      "text": "Does economy avoid flattening deliberate lyricism, maximalism, recurrence, or contemplative pace?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 33,
+        "NOT_APPLICABLE": 0,
+        "YES": 5
+      },
+      "criterion_id": "core.economy_and_relevance.no_restatement",
+      "module_id": "core.economy_and_relevance",
+      "role": "domain",
+      "text": "Does the artifact avoid restating the same information, image, or emotional conclusion without added force or development?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 30,
+        "NOT_APPLICABLE": 0,
+        "YES": 8
+      },
+      "criterion_id": "core.emotional_and_intellectual_effect.aftermath",
+      "module_id": "core.emotional_and_intellectual_effect",
+      "role": "domain",
+      "text": "Does the effect persist or meaningfully resolve after the immediate beat, image, or ending?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 15,
+        "NOT_APPLICABLE": 0,
+        "YES": 23
+      },
+      "criterion_id": "core.emotional_and_intellectual_effect.conceptual_interest",
+      "module_id": "core.emotional_and_intellectual_effect",
+      "role": "domain",
+      "text": "Does the artifact create a substantive idea, question, perception, or tension for the reader to engage with?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 11,
+        "NOT_APPLICABLE": 0,
+        "YES": 27
+      },
+      "criterion_id": "core.emotional_and_intellectual_effect.earned_emotion",
+      "module_id": "core.emotional_and_intellectual_effect",
+      "role": "domain",
+      "text": "Is the emotional response prepared by situation, image, action, voice, or structure?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 9,
+        "NOT_APPLICABLE": 0,
+        "YES": 29
+      },
+      "criterion_id": "core.emotional_and_intellectual_effect.intended_effect",
+      "module_id": "core.emotional_and_intellectual_effect",
+      "role": "domain",
+      "text": "Does the artifact actually produce the principal intended effect rather than merely announce it?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 5,
+        "NOT_APPLICABLE": 0,
+        "YES": 33
+      },
+      "criterion_id": "core.emotional_and_intellectual_effect.modulation",
+      "module_id": "core.emotional_and_intellectual_effect",
+      "role": "domain",
+      "text": "Does the effect develop or modulate rather than remaining at one undifferentiated intensity?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 36,
+        "NOT_APPLICABLE": 0,
+        "YES": 2
+      },
+      "criterion_id": "core.emotional_and_intellectual_effect.restraint",
+      "module_id": "core.emotional_and_intellectual_effect",
+      "role": "domain",
+      "text": "Does the work trust the reader enough to avoid unnecessary emotional or interpretive instruction?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 38,
+        "NOT_APPLICABLE": 0,
+        "YES": 0
+      },
+      "criterion_id": "core.freshness_and_non_genericness.no_cliche",
+      "module_id": "core.freshness_and_non_genericness",
+      "role": "domain",
+      "text": "Does the artifact avoid unrenewed verbal, imagistic, emotional, and situational clich\u00e9s?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 35,
+        "NOT_APPLICABLE": 0,
+        "YES": 3
+      },
+      "criterion_id": "core.freshness_and_non_genericness.no_default_metaphors",
+      "module_id": "core.freshness_and_non_genericness",
+      "role": "domain",
+      "text": "Does it avoid default metaphors and personifications that add no specific perception?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 37,
+        "NOT_APPLICABLE": 0,
+        "YES": 1
+      },
+      "criterion_id": "core.freshness_and_non_genericness.no_emotion_summary",
+      "module_id": "core.freshness_and_non_genericness",
+      "role": "domain",
+      "text": "Does it avoid generic emotional summaries that substitute labels for lived or dramatized experience?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 3,
+        "NOT_APPLICABLE": 0,
+        "YES": 35
+      },
+      "criterion_id": "core.freshness_and_non_genericness.no_forced_novelty",
+      "module_id": "core.freshness_and_non_genericness",
+      "role": "domain",
+      "text": "Does it avoid novelty-seeking that sacrifices clarity, plausibility, tone, or purpose?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 38,
+        "NOT_APPLICABLE": 0,
+        "YES": 0
+      },
+      "criterion_id": "core.freshness_and_non_genericness.no_llm_phrasing",
+      "module_id": "core.freshness_and_non_genericness",
+      "role": "domain",
+      "text": "Does it avoid generic LLM phrasing, rhetorical templates, and overfamiliar contrast constructions?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 0,
+        "NOT_APPLICABLE": 0,
+        "YES": 38
+      },
+      "criterion_id": "core.freshness_and_non_genericness.no_rare_word_chasing",
+      "module_id": "core.freshness_and_non_genericness",
+      "role": "domain",
+      "text": "Does it avoid conspicuous rare-word or thesaurus chasing unsupported by voice and context?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 37,
+        "NOT_APPLICABLE": 0,
+        "YES": 1
+      },
+      "criterion_id": "core.freshness_and_non_genericness.no_stock_beats",
+      "module_id": "core.freshness_and_non_genericness",
+      "role": "domain",
+      "text": "Does it avoid relying on stock beats whose sequence and treatment are interchangeable with many other outputs?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 30,
+        "NOT_APPLICABLE": 0,
+        "YES": 8
+      },
+      "criterion_id": "core.freshness_and_non_genericness.unpredictable_specificity",
+      "module_id": "core.freshness_and_non_genericness",
+      "role": "domain",
+      "text": "Does it contain apt particulars, turns, or associations that could not be freely swapped into an unrelated piece?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 0,
+        "NOT_APPLICABLE": 0,
+        "YES": 38
+      },
+      "criterion_id": "core.holistic_artistic_success.threshold_1_functional",
+      "module_id": "core.holistic_artistic_success",
+      "role": "domain",
+      "text": "On an honest cold read, does the artifact work at all as the kind of creative object it claims to be?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 34,
+        "NOT_APPLICABLE": 0,
+        "YES": 4
+      },
+      "criterion_id": "core.holistic_artistic_success.threshold_2_effective",
+      "module_id": "core.holistic_artistic_success",
+      "role": "domain",
+      "text": "Is the artifact genuinely effective rather than merely compliant, fluent, or technically competent?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 37,
+        "NOT_APPLICABLE": 0,
+        "YES": 1
+      },
+      "criterion_id": "core.holistic_artistic_success.threshold_3_keepworthy",
+      "module_id": "core.holistic_artistic_success",
+      "role": "domain",
+      "text": "Would a demanding intended reader, editor, or creator regard the artifact as worth keeping, using, revisiting, or developing?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 38,
+        "NOT_APPLICABLE": 0,
+        "YES": 0
+      },
+      "criterion_id": "core.holistic_artistic_success.threshold_4_exceptional",
+      "module_id": "core.holistic_artistic_success",
+      "role": "domain",
+      "text": "Is the artifact exceptional for its form, purpose, stage, and comparison set rather than merely strong?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 4,
+        "NOT_APPLICABLE": 0,
+        "YES": 34
+      },
+      "criterion_id": "core.language_craft.cadence",
+      "module_id": "core.language_craft",
+      "role": "domain",
+      "text": "Does cadence support meaning, emphasis, and mood?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 30,
+        "NOT_APPLICABLE": 0,
+        "YES": 8
+      },
+      "criterion_id": "core.language_craft.diction",
+      "module_id": "core.language_craft",
+      "role": "domain",
+      "text": "Are the chosen words precise, apt, and proportionate to the intended effect?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 6,
+        "NOT_APPLICABLE": 0,
+        "YES": 32
+      },
+      "criterion_id": "core.language_craft.emphasis",
+      "module_id": "core.language_craft",
+      "role": "domain",
+      "text": "Does the language place emphasis on the elements that deserve it?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 12,
+        "NOT_APPLICABLE": 0,
+        "YES": 26
+      },
+      "criterion_id": "core.language_craft.images",
+      "module_id": "core.language_craft",
+      "role": "domain",
+      "text": "Are images constructed clearly enough to be apprehended and specifically enough to matter?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 27,
+        "NOT_APPLICABLE": 0,
+        "YES": 11
+      },
+      "criterion_id": "core.language_craft.no_awkwardness",
+      "module_id": "core.language_craft",
+      "role": "domain",
+      "text": "Is the language free of conspicuous awkwardness that interrupts the intended experience?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 4,
+        "NOT_APPLICABLE": 0,
+        "YES": 34
+      },
+      "criterion_id": "core.language_craft.paragraph_movement",
+      "module_id": "core.language_craft",
+      "role": "domain",
+      "text": "Do paragraphs, stanzas, or comparable units move and turn at effective points?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 36,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 4,
+        "NOT_APPLICABLE": 2,
+        "YES": 32
+      },
+      "criterion_id": "core.language_craft.sound",
+      "module_id": "core.language_craft",
+      "role": "domain",
+      "text": "Where sound is relevant, are sonic effects controlled and useful rather than accidental ornament?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 4,
+        "NOT_APPLICABLE": 0,
+        "YES": 34
+      },
+      "criterion_id": "core.language_craft.syntax",
+      "module_id": "core.language_craft",
+      "role": "domain",
+      "text": "Are sentence or line structures controlled rather than accidentally tangled, monotonous, or fragmentary?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 6,
+        "NOT_APPLICABLE": 0,
+        "YES": 32
+      },
+      "criterion_id": "core.language_craft.variation",
+      "module_id": "core.language_craft",
+      "role": "domain",
+      "text": "Is syntactic and rhythmic variation purposeful rather than mechanically repetitive?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 7,
+        "NOT_APPLICABLE": 0,
+        "YES": 31
+      },
+      "criterion_id": "core.length_and_scope_fit.density",
+      "module_id": "core.length_and_scope_fit",
+      "role": "domain",
+      "text": "Is information and experience density appropriate rather than padded or crushed?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 2,
+        "NOT_APPLICABLE": 0,
+        "YES": 36
+      },
+      "criterion_id": "core.length_and_scope_fit.development",
+      "module_id": "core.length_and_scope_fit",
+      "role": "domain",
+      "text": "Does the length provide enough space for the artifact's actual cast, ideas, events, images, or obligations?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 0,
+        "NOT_APPLICABLE": 0,
+        "YES": 38
+      },
+      "criterion_id": "core.length_and_scope_fit.ending",
+      "module_id": "core.length_and_scope_fit",
+      "role": "domain",
+      "text": "Does the artifact end when its governing movement is complete rather than at an arbitrary token boundary?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 0,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 0,
+        "NOT_APPLICABLE": 38,
+        "YES": 0
+      },
+      "criterion_id": "core.length_and_scope_fit.explicit",
+      "module_id": "core.length_and_scope_fit",
+      "role": "supplemental",
+      "text": "Does the artifact satisfy every explicit exact, minimum, or maximum length constraint?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 0,
+        "NOT_APPLICABLE": 0,
+        "YES": 38
+      },
+      "criterion_id": "core.length_and_scope_fit.form",
+      "module_id": "core.length_and_scope_fit",
+      "role": "domain",
+      "text": "Is the artifact's length appropriate to the selected form or artifact type?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 2,
+        "NOT_APPLICABLE": 0,
+        "YES": 36
+      },
+      "criterion_id": "core.length_and_scope_fit.no_padding",
+      "module_id": "core.length_and_scope_fit",
+      "role": "domain",
+      "text": "Does it avoid material included chiefly to reach a target length?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 4,
+        "NOT_APPLICABLE": 0,
+        "YES": 34
+      },
+      "criterion_id": "core.length_and_scope_fit.no_underbuild",
+      "module_id": "core.length_and_scope_fit",
+      "role": "domain",
+      "text": "Does it avoid underdevelopment caused by treating brevity as an automatic virtue?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 1,
+        "NOT_APPLICABLE": 0,
+        "YES": 37
+      },
+      "criterion_id": "core.length_and_scope_fit.operation",
+      "module_id": "core.length_and_scope_fit",
+      "role": "domain",
+      "text": "Is its length appropriate to the requested operation and workflow stage?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 0,
+        "NOT_APPLICABLE": 0,
+        "YES": 38
+      },
+      "criterion_id": "core.mechanics_and_presentation.cleanliness",
+      "module_id": "core.mechanics_and_presentation",
+      "role": "domain",
+      "text": "Is the deliverable free of stray markup, generation artifacts, duplicated text, and truncation?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 3,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 1,
+        "NOT_APPLICABLE": 35,
+        "YES": 2
+      },
+      "criterion_id": "core.mechanics_and_presentation.dialogue_mechanics",
+      "module_id": "core.mechanics_and_presentation",
+      "role": "domain",
+      "text": "Where dialogue appears, are quotation, paragraphing, speaker changes, and tags mechanically clear?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 4,
+        "NOT_APPLICABLE": 0,
+        "YES": 34
+      },
+      "criterion_id": "core.mechanics_and_presentation.formatting",
+      "module_id": "core.mechanics_and_presentation",
+      "role": "domain",
+      "text": "Is the required form-specific formatting correct and legible?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 7,
+        "NOT_APPLICABLE": 0,
+        "YES": 31
+      },
+      "criterion_id": "core.mechanics_and_presentation.grammar",
+      "module_id": "core.mechanics_and_presentation",
+      "role": "domain",
+      "text": "Is the artifact free of unintended grammatical errors that impede or distract?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 11,
+        "NOT_APPLICABLE": 0,
+        "YES": 27
+      },
+      "criterion_id": "core.mechanics_and_presentation.punctuation",
+      "module_id": "core.mechanics_and_presentation",
+      "role": "domain",
+      "text": "Is punctuation correct or deliberately unconventional in a controlled way?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 1,
+        "NOT_APPLICABLE": 0,
+        "YES": 37
+      },
+      "criterion_id": "core.mechanics_and_presentation.spelling",
+      "module_id": "core.mechanics_and_presentation",
+      "role": "domain",
+      "text": "Is spelling correct and consistent for the selected language, dialect, and house style?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 11,
+        "NOT_APPLICABLE": 0,
+        "YES": 27
+      },
+      "criterion_id": "core.mechanics_and_presentation.typography",
+      "module_id": "core.mechanics_and_presentation",
+      "role": "domain",
+      "text": "Are typography, spacing, headings, and special marks internally consistent?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 11,
+        "NOT_APPLICABLE": 0,
+        "YES": 27
+      },
+      "criterion_id": "core.specificity_and_embodiment.abstract_support",
+      "module_id": "core.specificity_and_embodiment",
+      "role": "domain",
+      "text": "Are thematic or emotional abstractions supported by observable material, pattern, or consequence?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 22,
+        "NOT_APPLICABLE": 0,
+        "YES": 16
+      },
+      "criterion_id": "core.specificity_and_embodiment.character_particularity",
+      "module_id": "core.specificity_and_embodiment",
+      "role": "domain",
+      "text": "Do character details imply an individual rather than a role label?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 11,
+        "NOT_APPLICABLE": 0,
+        "YES": 27
+      },
+      "criterion_id": "core.specificity_and_embodiment.concrete_detail",
+      "module_id": "core.specificity_and_embodiment",
+      "role": "domain",
+      "text": "Does the artifact use concrete detail where abstraction alone would leave the experience thin?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 37,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 10,
+        "NOT_APPLICABLE": 1,
+        "YES": 27
+      },
+      "criterion_id": "core.specificity_and_embodiment.grounded_thought",
+      "module_id": "core.specificity_and_embodiment",
+      "role": "domain",
+      "text": "Are thoughts grounded in the speaker's or character's particular situation, language, and attention?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 37,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 13,
+        "NOT_APPLICABLE": 1,
+        "YES": 24
+      },
+      "criterion_id": "core.specificity_and_embodiment.physical_action",
+      "module_id": "core.specificity_and_embodiment",
+      "role": "domain",
+      "text": "Are bodies, objects, and physical actions present enough for the reader to inhabit the moment?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 37,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 9,
+        "NOT_APPLICABLE": 1,
+        "YES": 28
+      },
+      "criterion_id": "core.specificity_and_embodiment.sensory_presence",
+      "module_id": "core.specificity_and_embodiment",
+      "role": "domain",
+      "text": "Are relevant sensory channels used selectively and specifically?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 34,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 24,
+        "NOT_APPLICABLE": 4,
+        "YES": 10
+      },
+      "criterion_id": "core.specificity_and_embodiment.setting_particularity",
+      "module_id": "core.specificity_and_embodiment",
+      "role": "domain",
+      "text": "Does the setting contain distinguishing features rather than generic inventory?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 4,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 0,
+        "NOT_APPLICABLE": 34,
+        "YES": 4
+      },
+      "criterion_id": "core.task_and_brief_fidelity.completion_flag",
+      "module_id": "core.task_and_brief_fidelity",
+      "role": "domain",
+      "text": "Is an excerpt, fragment, partial draft, or intentionally unfinished artifact clearly identified as such?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 0,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 0,
+        "NOT_APPLICABLE": 38,
+        "YES": 0
+      },
+      "criterion_id": "core.task_and_brief_fidelity.exclusions",
+      "module_id": "core.task_and_brief_fidelity",
+      "role": "supplemental",
+      "text": "Does the output omit every explicitly forbidden element?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 9,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 0,
+        "NOT_APPLICABLE": 29,
+        "YES": 9
+      },
+      "criterion_id": "core.task_and_brief_fidelity.format",
+      "module_id": "core.task_and_brief_fidelity",
+      "role": "supplemental",
+      "text": "Does the output follow the requested delivery format?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 2,
+        "NOT_APPLICABLE": 0,
+        "YES": 36
+      },
+      "criterion_id": "core.task_and_brief_fidelity.inclusions",
+      "module_id": "core.task_and_brief_fidelity",
+      "role": "supplemental",
+      "text": "Does the output include every explicitly required element?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 28,
+      "counts": {
+        "CANNOT_ASSESS": 10,
+        "NO": 1,
+        "NOT_APPLICABLE": 0,
+        "YES": 27
+      },
+      "criterion_id": "core.task_and_brief_fidelity.intervention",
+      "module_id": "core.task_and_brief_fidelity",
+      "role": "domain",
+      "text": "Does the degree of invention or alteration stay within the authorization given by the user?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 0,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 0,
+        "NOT_APPLICABLE": 38,
+        "YES": 0
+      },
+      "criterion_id": "core.task_and_brief_fidelity.length_hard",
+      "module_id": "core.task_and_brief_fidelity",
+      "role": "supplemental",
+      "text": "Does the output satisfy any explicit exact or bounded length requirement?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 0,
+        "NOT_APPLICABLE": 0,
+        "YES": 38
+      },
+      "criterion_id": "core.task_and_brief_fidelity.no_meta_substitution",
+      "module_id": "core.task_and_brief_fidelity",
+      "role": "domain",
+      "text": "Does the output provide the requested artifact without replacing it with process talk, disclaimers, or an explanation of what could have been produced?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 0,
+        "NOT_APPLICABLE": 0,
+        "YES": 38
+      },
+      "criterion_id": "core.task_and_brief_fidelity.operation",
+      "module_id": "core.task_and_brief_fidelity",
+      "role": "supplemental",
+      "text": "Does the output perform the requested operation rather than a neighboring or substituted task?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 2,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 0,
+        "NOT_APPLICABLE": 36,
+        "YES": 2
+      },
+      "criterion_id": "core.task_and_brief_fidelity.pov",
+      "module_id": "core.task_and_brief_fidelity",
+      "role": "supplemental",
+      "text": "Does the output use the requested point of view where one was specified?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 0,
+      "counts": {
+        "CANNOT_ASSESS": 1,
+        "NO": 0,
+        "NOT_APPLICABLE": 37,
+        "YES": 0
+      },
+      "criterion_id": "core.task_and_brief_fidelity.sources",
+      "module_id": "core.task_and_brief_fidelity",
+      "role": "supplemental",
+      "text": "Does the output use every source or reference that the brief makes mandatory?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 2,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 0,
+        "NOT_APPLICABLE": 36,
+        "YES": 2
+      },
+      "criterion_id": "core.task_and_brief_fidelity.structure",
+      "module_id": "core.task_and_brief_fidelity",
+      "role": "supplemental",
+      "text": "Does the output follow the requested structure or organization?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 0,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 0,
+        "NOT_APPLICABLE": 38,
+        "YES": 0
+      },
+      "criterion_id": "core.task_and_brief_fidelity.tense",
+      "module_id": "core.task_and_brief_fidelity",
+      "role": "supplemental",
+      "text": "Does the output use the requested tense where one was specified?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 38,
+        "NOT_APPLICABLE": 0,
+        "YES": 0
+      },
+      "criterion_id": "core.voice_and_stylistic_identity.distinctive",
+      "module_id": "core.voice_and_stylistic_identity",
+      "role": "domain",
+      "text": "Does the artifact possess a discernible stylistic identity rather than interchangeable competent prose?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 37,
+        "NOT_APPLICABLE": 0,
+        "YES": 1
+      },
+      "criterion_id": "core.voice_and_stylistic_identity.ownership",
+      "module_id": "core.voice_and_stylistic_identity",
+      "role": "domain",
+      "text": "Does the language sound owned by this narrator, speaker, character, or project rather than by a generic assistant?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 0,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 0,
+        "NOT_APPLICABLE": 38,
+        "YES": 0
+      },
+      "criterion_id": "core.voice_and_stylistic_identity.project_fidelity",
+      "module_id": "core.voice_and_stylistic_identity",
+      "role": "domain",
+      "text": "When an established project voice is supplied, does the artifact preserve its salient features?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 2,
+        "NOT_APPLICABLE": 0,
+        "YES": 36
+      },
+      "criterion_id": "core.voice_and_stylistic_identity.shift_control",
+      "module_id": "core.voice_and_stylistic_identity",
+      "role": "domain",
+      "text": "Are changes in register, distance, diction, or tone motivated rather than accidental?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 0,
+        "NOT_APPLICABLE": 0,
+        "YES": 38
+      },
+      "criterion_id": "core.voice_and_stylistic_identity.suitable",
+      "module_id": "core.voice_and_stylistic_identity",
+      "role": "domain",
+      "text": "Is the voice suitable for the form, subject, narrator, audience, and intended effect?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 2,
+        "NOT_APPLICABLE": 0,
+        "YES": 36
+      },
+      "criterion_id": "core.voice_and_stylistic_identity.sustained",
+      "module_id": "core.voice_and_stylistic_identity",
+      "role": "domain",
+      "text": "Is the voice sustained across the evaluated scope?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 27,
+      "counts": {
+        "CANNOT_ASSESS": 6,
+        "NO": 3,
+        "NOT_APPLICABLE": 5,
+        "YES": 24
+      },
+      "criterion_id": "craft.narrative.characterization.agency",
+      "module_id": "craft.narrative.characterization",
+      "role": "domain",
+      "text": "Do important characters make consequential choices rather than functioning only as plot furniture?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 0,
+        "NOT_APPLICABLE": 0,
+        "YES": 38
+      },
+      "criterion_id": "craft.narrative.characterization.behavior",
+      "module_id": "craft.narrative.characterization",
+      "role": "domain",
+      "text": "Are characters revealed through specific behavior, choices, attention, language, or relationships?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 0,
+      "counts": {
+        "CANNOT_ASSESS": 10,
+        "NO": 0,
+        "NOT_APPLICABLE": 28,
+        "YES": 0
+      },
+      "criterion_id": "craft.narrative.characterization.canon",
+      "module_id": "craft.narrative.characterization",
+      "role": "domain",
+      "text": "Do character actions and voices remain faithful to supplied sheets and prior behavior unless change is earned?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 22,
+      "counts": {
+        "CANNOT_ASSESS": 1,
+        "NO": 0,
+        "NOT_APPLICABLE": 15,
+        "YES": 22
+      },
+      "criterion_id": "craft.narrative.characterization.contradiction",
+      "module_id": "craft.narrative.characterization",
+      "role": "domain",
+      "text": "Do contradictions or mixed motives add credible complexity rather than random inconsistency?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 1,
+        "NOT_APPLICABLE": 0,
+        "YES": 37
+      },
+      "criterion_id": "craft.narrative.characterization.development",
+      "module_id": "craft.narrative.characterization",
+      "role": "domain",
+      "text": "At the available scope, is new character information, pressure, or change meaningfully developed?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 37,
+      "counts": {
+        "CANNOT_ASSESS": 1,
+        "NO": 2,
+        "NOT_APPLICABLE": 0,
+        "YES": 35
+      },
+      "criterion_id": "craft.narrative.characterization.dimensionality",
+      "module_id": "craft.narrative.characterization",
+      "role": "domain",
+      "text": "Do major characters possess multiple relevant traits, motives, pressures, or loyalties?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 28,
+      "counts": {
+        "CANNOT_ASSESS": 2,
+        "NO": 7,
+        "NOT_APPLICABLE": 8,
+        "YES": 21
+      },
+      "criterion_id": "craft.narrative.characterization.distinction",
+      "module_id": "craft.narrative.characterization",
+      "role": "domain",
+      "text": "Can characters be distinguished by more than names, labels, and superficial quirks?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 37,
+      "counts": {
+        "CANNOT_ASSESS": 1,
+        "NO": 4,
+        "NOT_APPLICABLE": 0,
+        "YES": 33
+      },
+      "criterion_id": "craft.narrative.characterization.motives",
+      "module_id": "craft.narrative.characterization",
+      "role": "domain",
+      "text": "Are motives legible enough to make choices meaningful without being overexplained?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 11,
+        "NOT_APPLICABLE": 0,
+        "YES": 27
+      },
+      "criterion_id": "craft.narrative.characterization.no_trait_labels",
+      "module_id": "craft.narrative.characterization",
+      "role": "domain",
+      "text": "Does the text avoid relying on direct trait labels where dramatized evidence is needed?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 5,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 0,
+        "NOT_APPLICABLE": 33,
+        "YES": 5
+      },
+      "criterion_id": "craft.narrative.dialogue.action_balance",
+      "module_id": "craft.narrative.dialogue",
+      "role": "domain",
+      "text": "Is dialogue integrated with action, perception, and silence rather than floating in a vacuum?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 1,
+      "counts": {
+        "CANNOT_ASSESS": 3,
+        "NO": 0,
+        "NOT_APPLICABLE": 34,
+        "YES": 1
+      },
+      "criterion_id": "craft.narrative.dialogue.listening",
+      "module_id": "craft.narrative.dialogue",
+      "role": "domain",
+      "text": "Do speakers respond to what was actually said or implied rather than delivering adjacent prepared speeches?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 5,
+      "counts": {
+        "CANNOT_ASSESS": 1,
+        "NO": 0,
+        "NOT_APPLICABLE": 32,
+        "YES": 5
+      },
+      "criterion_id": "craft.narrative.dialogue.naturalness",
+      "module_id": "craft.narrative.dialogue",
+      "role": "domain",
+      "text": "Does dialogue sound behaviorally credible for these speakers and circumstances without merely transcribing real-world filler?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 5,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 0,
+        "NOT_APPLICABLE": 33,
+        "YES": 5
+      },
+      "criterion_id": "craft.narrative.dialogue.no_exposition",
+      "module_id": "craft.narrative.dialogue",
+      "role": "domain",
+      "text": "Does the dialogue avoid implausible exposition, 'as you know' statements, and on-the-nose emotional explanation?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 5,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 0,
+        "NOT_APPLICABLE": 33,
+        "YES": 5
+      },
+      "criterion_id": "craft.narrative.dialogue.purpose",
+      "module_id": "craft.narrative.dialogue",
+      "role": "domain",
+      "text": "Does each substantial exchange perform dramatic, relational, informational, or tonal work?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 2,
+      "counts": {
+        "CANNOT_ASSESS": 3,
+        "NO": 0,
+        "NOT_APPLICABLE": 33,
+        "YES": 2
+      },
+      "criterion_id": "craft.narrative.dialogue.rhythm",
+      "module_id": "craft.narrative.dialogue",
+      "role": "domain",
+      "text": "Do turn length, interruption, silence, overlap, and response timing support the scene?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 4,
+      "counts": {
+        "CANNOT_ASSESS": 1,
+        "NO": 0,
+        "NOT_APPLICABLE": 33,
+        "YES": 4
+      },
+      "criterion_id": "craft.narrative.dialogue.subtext",
+      "module_id": "craft.narrative.dialogue",
+      "role": "domain",
+      "text": "Does dialogue carry implication, pressure, or withheld meaning where the scene calls for it?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 0,
+      "counts": {
+        "CANNOT_ASSESS": 4,
+        "NO": 0,
+        "NOT_APPLICABLE": 34,
+        "YES": 0
+      },
+      "criterion_id": "craft.narrative.dialogue.voice_distinction",
+      "module_id": "craft.narrative.dialogue",
+      "role": "domain",
+      "text": "Can speakers be distinguished by syntax, diction, assumptions, rhythm, and aims rather than tags alone?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 3,
+        "NOT_APPLICABLE": 0,
+        "YES": 35
+      },
+      "criterion_id": "craft.narrative.narrative_momentum.commitment",
+      "module_id": "craft.narrative.narrative_momentum",
+      "role": "domain",
+      "text": "Does the prose commit to concrete developments rather than indefinitely preserving optionality?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 6,
+        "NOT_APPLICABLE": 0,
+        "YES": 32
+      },
+      "criterion_id": "craft.narrative.narrative_momentum.concept_pull",
+      "module_id": "craft.narrative.narrative_momentum",
+      "role": "domain",
+      "text": "Does conceptual, thematic, or world interest remain active?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 14,
+        "NOT_APPLICABLE": 0,
+        "YES": 24
+      },
+      "criterion_id": "craft.narrative.narrative_momentum.consequence",
+      "module_id": "craft.narrative.narrative_momentum",
+      "role": "domain",
+      "text": "Does it create, increase, or clarify consequences that matter beyond the immediate beat?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 15,
+        "NOT_APPLICABLE": 0,
+        "YES": 23
+      },
+      "criterion_id": "craft.narrative.narrative_momentum.curiosity",
+      "module_id": "craft.narrative.narrative_momentum",
+      "role": "domain",
+      "text": "Does the unit sustain a live question, uncertainty, or desire to know what follows?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 3,
+        "NOT_APPLICABLE": 0,
+        "YES": 35
+      },
+      "criterion_id": "craft.narrative.narrative_momentum.investment",
+      "module_id": "craft.narrative.narrative_momentum",
+      "role": "domain",
+      "text": "Does it deepen emotional or relational investment?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 3,
+        "NOT_APPLICABLE": 0,
+        "YES": 35
+      },
+      "criterion_id": "craft.narrative.narrative_momentum.no_false_hook",
+      "module_id": "craft.narrative.narrative_momentum",
+      "role": "domain",
+      "text": "Does it avoid substituting arbitrary cliffhangers or withheld basics for earned momentum?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 3,
+        "NOT_APPLICABLE": 0,
+        "YES": 35
+      },
+      "criterion_id": "craft.narrative.narrative_momentum.progress",
+      "module_id": "craft.narrative.narrative_momentum",
+      "role": "domain",
+      "text": "Does the narrative make meaningful progress rather than only defer?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 34,
+        "NOT_APPLICABLE": 0,
+        "YES": 4
+      },
+      "criterion_id": "craft.narrative.narrative_momentum.voice_pull",
+      "module_id": "craft.narrative.narrative_momentum",
+      "role": "domain",
+      "text": "Does voice or language itself provide a reason to continue?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 35,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 0,
+        "NOT_APPLICABLE": 3,
+        "YES": 35
+      },
+      "criterion_id": "craft.narrative.plot_and_causality.causal_chain",
+      "module_id": "craft.narrative.plot_and_causality",
+      "role": "domain",
+      "text": "Does each major event arise from prior conditions, choices, or consequences?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 19,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 5,
+        "NOT_APPLICABLE": 19,
+        "YES": 14
+      },
+      "criterion_id": "craft.narrative.plot_and_causality.complication",
+      "module_id": "craft.narrative.plot_and_causality",
+      "role": "domain",
+      "text": "Do complications force new choices or understanding rather than delay the same beat?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 27,
+      "counts": {
+        "CANNOT_ASSESS": 3,
+        "NO": 0,
+        "NOT_APPLICABLE": 8,
+        "YES": 27
+      },
+      "criterion_id": "craft.narrative.plot_and_causality.consequence",
+      "module_id": "craft.narrative.plot_and_causality",
+      "role": "domain",
+      "text": "Are consequential actions followed through rather than reset or forgotten?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 22,
+      "counts": {
+        "CANNOT_ASSESS": 4,
+        "NO": 2,
+        "NOT_APPLICABLE": 12,
+        "YES": 20
+      },
+      "criterion_id": "craft.narrative.plot_and_causality.decision",
+      "module_id": "craft.narrative.plot_and_causality",
+      "role": "domain",
+      "text": "Do character decisions materially alter what happens next?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 24,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 2,
+        "NOT_APPLICABLE": 14,
+        "YES": 22
+      },
+      "criterion_id": "craft.narrative.plot_and_causality.escalation",
+      "module_id": "craft.narrative.plot_and_causality",
+      "role": "domain",
+      "text": "Does pressure change in kind, intensity, or implication rather than merely repeat?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 33,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 1,
+        "NOT_APPLICABLE": 5,
+        "YES": 32
+      },
+      "criterion_id": "craft.narrative.plot_and_causality.no_convenience",
+      "module_id": "craft.narrative.plot_and_causality",
+      "role": "domain",
+      "text": "Does the plot avoid coincidence, withheld competence, or arbitrary behavior used chiefly to force an outcome?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 7,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 0,
+        "NOT_APPLICABLE": 31,
+        "YES": 7
+      },
+      "criterion_id": "craft.narrative.plot_and_causality.reversal",
+      "module_id": "craft.narrative.plot_and_causality",
+      "role": "domain",
+      "text": "Are reversals both surprising enough to matter and supported enough to accept?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 36,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 0,
+        "NOT_APPLICABLE": 2,
+        "YES": 36
+      },
+      "criterion_id": "craft.narrative.plot_and_causality.setup",
+      "module_id": "craft.narrative.plot_and_causality",
+      "role": "domain",
+      "text": "Are important developments prepared enough to feel intelligible rather than arbitrary?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 1,
+        "NOT_APPLICABLE": 0,
+        "YES": 37
+      },
+      "criterion_id": "craft.narrative.point_of_view_and_focalization.access",
+      "module_id": "craft.narrative.point_of_view_and_focalization",
+      "role": "domain",
+      "text": "Does the narration reveal only information available under the selected viewpoint rules?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 0,
+        "NOT_APPLICABLE": 0,
+        "YES": 38
+      },
+      "criterion_id": "craft.narrative.point_of_view_and_focalization.distance",
+      "module_id": "craft.narrative.point_of_view_and_focalization",
+      "role": "domain",
+      "text": "Is psychic distance controlled and appropriate to the intended effect?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 1,
+        "NOT_APPLICABLE": 0,
+        "YES": 37
+      },
+      "criterion_id": "craft.narrative.point_of_view_and_focalization.head_hopping",
+      "module_id": "craft.narrative.point_of_view_and_focalization",
+      "role": "domain",
+      "text": "Does the text avoid accidental shifts into another character's private knowledge?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 0,
+        "NOT_APPLICABLE": 0,
+        "YES": 38
+      },
+      "criterion_id": "craft.narrative.point_of_view_and_focalization.ownership",
+      "module_id": "craft.narrative.point_of_view_and_focalization",
+      "role": "domain",
+      "text": "Do perceptions, judgments, and metaphors belong plausibly to the focalizer or narrator?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 28,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 0,
+        "NOT_APPLICABLE": 10,
+        "YES": 28
+      },
+      "criterion_id": "craft.narrative.point_of_view_and_focalization.reliability",
+      "module_id": "craft.narrative.point_of_view_and_focalization",
+      "role": "domain",
+      "text": "If the narrator is limited or unreliable, is that limitation coherent and artistically legible?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 1,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 0,
+        "NOT_APPLICABLE": 37,
+        "YES": 1
+      },
+      "criterion_id": "craft.narrative.point_of_view_and_focalization.shift_intent",
+      "module_id": "craft.narrative.point_of_view_and_focalization",
+      "role": "domain",
+      "text": "Are viewpoint shifts clearly signaled and artistically justified?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 0,
+        "NOT_APPLICABLE": 0,
+        "YES": 38
+      },
+      "criterion_id": "craft.narrative.point_of_view_and_focalization.viewpoint",
+      "module_id": "craft.narrative.point_of_view_and_focalization",
+      "role": "domain",
+      "text": "Is the controlling viewpoint identifiable at each moment where clarity is required?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 36,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 9,
+        "NOT_APPLICABLE": 2,
+        "YES": 27
+      },
+      "criterion_id": "craft.narrative.scene_construction.changed_state",
+      "module_id": "craft.narrative.scene_construction",
+      "role": "domain",
+      "text": "Is the end state meaningfully different from the beginning state?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 0,
+      "counts": {
+        "CANNOT_ASSESS": 3,
+        "NO": 0,
+        "NOT_APPLICABLE": 35,
+        "YES": 0
+      },
+      "criterion_id": "craft.narrative.scene_construction.context_fit",
+      "module_id": "craft.narrative.scene_construction",
+      "role": "domain",
+      "text": "Does the scene connect coherently to the preceding and following units when those are supplied?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 0,
+        "NOT_APPLICABLE": 0,
+        "YES": 38
+      },
+      "criterion_id": "craft.narrative.scene_construction.entry",
+      "module_id": "craft.narrative.scene_construction",
+      "role": "domain",
+      "text": "Does the scene enter at a point that avoids unnecessary preamble while preserving needed orientation?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 2,
+        "NOT_APPLICABLE": 0,
+        "YES": 36
+      },
+      "criterion_id": "craft.narrative.scene_construction.exit",
+      "module_id": "craft.narrative.scene_construction",
+      "role": "domain",
+      "text": "Does the exit place emphasis effectively and create an appropriate relation to what follows?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 0,
+        "NOT_APPLICABLE": 0,
+        "YES": 38
+      },
+      "criterion_id": "craft.narrative.scene_construction.objective",
+      "module_id": "craft.narrative.scene_construction",
+      "role": "domain",
+      "text": "Is there a local want, task, question, pressure, or focus that organizes the scene?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 0,
+        "NOT_APPLICABLE": 0,
+        "YES": 38
+      },
+      "criterion_id": "craft.narrative.scene_construction.pressure",
+      "module_id": "craft.narrative.scene_construction",
+      "role": "domain",
+      "text": "Does something complicate, resist, expose, or deepen the scene's local movement?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 3,
+        "NOT_APPLICABLE": 0,
+        "YES": 35
+      },
+      "criterion_id": "craft.narrative.scene_construction.progression",
+      "module_id": "craft.narrative.scene_construction",
+      "role": "domain",
+      "text": "Do beats build on one another rather than circle or reset?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 0,
+        "NOT_APPLICABLE": 0,
+        "YES": 38
+      },
+      "criterion_id": "craft.narrative.scene_construction.purpose",
+      "module_id": "craft.narrative.scene_construction",
+      "role": "domain",
+      "text": "Does the scene perform a discernible narrative, character, relational, atmospheric, or thematic function?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 4,
+        "NOT_APPLICABLE": 0,
+        "YES": 34
+      },
+      "criterion_id": "craft.narrative.scene_construction.turn",
+      "module_id": "craft.narrative.scene_construction",
+      "role": "domain",
+      "text": "Does the scene contain a meaningful change of information, decision, relationship, condition, perception, or possibility?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 37,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 0,
+        "NOT_APPLICABLE": 1,
+        "YES": 37
+      },
+      "criterion_id": "craft.narrative.setting_and_atmosphere.atmosphere",
+      "module_id": "craft.narrative.setting_and_atmosphere",
+      "role": "domain",
+      "text": "Does atmosphere emerge from concrete conditions, language, and character perception?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 36,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 1,
+        "NOT_APPLICABLE": 2,
+        "YES": 35
+      },
+      "criterion_id": "craft.narrative.setting_and_atmosphere.function",
+      "module_id": "craft.narrative.setting_and_atmosphere",
+      "role": "domain",
+      "text": "Does setting constrain, enable, pressure, reveal, or transform something in the narrative?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 36,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 11,
+        "NOT_APPLICABLE": 2,
+        "YES": 25
+      },
+      "criterion_id": "craft.narrative.setting_and_atmosphere.identity",
+      "module_id": "craft.narrative.setting_and_atmosphere",
+      "role": "domain",
+      "text": "Does the place have distinguishing material, social, historical, or emotional characteristics?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 36,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 5,
+        "NOT_APPLICABLE": 2,
+        "YES": 31
+      },
+      "criterion_id": "craft.narrative.setting_and_atmosphere.interaction",
+      "module_id": "craft.narrative.setting_and_atmosphere",
+      "role": "domain",
+      "text": "Do characters and events materially interact with the setting?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 0,
+        "NOT_APPLICABLE": 0,
+        "YES": 38
+      },
+      "criterion_id": "craft.narrative.setting_and_atmosphere.no_inventory",
+      "module_id": "craft.narrative.setting_and_atmosphere",
+      "role": "domain",
+      "text": "Does the text avoid pausing for decorative setting inventory that has no current function?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 36,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 7,
+        "NOT_APPLICABLE": 2,
+        "YES": 29
+      },
+      "criterion_id": "craft.narrative.setting_and_atmosphere.sensory",
+      "module_id": "craft.narrative.setting_and_atmosphere",
+      "role": "domain",
+      "text": "Does the setting possess selective sensory presence rather than detached inventory?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 32,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 0,
+        "NOT_APPLICABLE": 6,
+        "YES": 32
+      },
+      "criterion_id": "craft.narrative.setting_and_atmosphere.spatial",
+      "module_id": "craft.narrative.setting_and_atmosphere",
+      "role": "domain",
+      "text": "Can the reader understand the spatial relationships necessary for action and attention?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 27,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 3,
+        "NOT_APPLICABLE": 11,
+        "YES": 24
+      },
+      "criterion_id": "craft.narrative.theme_and_subtext.counterpoint",
+      "module_id": "craft.narrative.theme_and_subtext",
+      "role": "domain",
+      "text": "Where appropriate, does the work permit competing values, interpretations, or contradictions?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 20,
+        "NOT_APPLICABLE": 0,
+        "YES": 18
+      },
+      "criterion_id": "craft.narrative.theme_and_subtext.development",
+      "module_id": "craft.narrative.theme_and_subtext",
+      "role": "domain",
+      "text": "Does the work test, complicate, or transform its central ideas rather than repeat a thesis?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 2,
+        "NOT_APPLICABLE": 0,
+        "YES": 36
+      },
+      "criterion_id": "craft.narrative.theme_and_subtext.emergence",
+      "module_id": "craft.narrative.theme_and_subtext",
+      "role": "domain",
+      "text": "Does thematic meaning emerge through action, image, structure, character, or pattern?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 3,
+        "NOT_APPLICABLE": 0,
+        "YES": 35
+      },
+      "criterion_id": "craft.narrative.theme_and_subtext.integration",
+      "module_id": "craft.narrative.theme_and_subtext",
+      "role": "domain",
+      "text": "Are thematic concerns integrated with the artifact's concrete dramatic or lyric material?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 22,
+        "NOT_APPLICABLE": 0,
+        "YES": 16
+      },
+      "criterion_id": "craft.narrative.theme_and_subtext.no_moral",
+      "module_id": "craft.narrative.theme_and_subtext",
+      "role": "domain",
+      "text": "Does the work avoid reducing theme to a stated moral, lesson, or explanatory conclusion?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 19,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 3,
+        "NOT_APPLICABLE": 19,
+        "YES": 16
+      },
+      "criterion_id": "craft.narrative.theme_and_subtext.open_questions",
+      "module_id": "craft.narrative.theme_and_subtext",
+      "role": "domain",
+      "text": "When themes remain unresolved, does the unresolved state feel intentional and generative?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 11,
+        "NOT_APPLICABLE": 0,
+        "YES": 27
+      },
+      "criterion_id": "craft.narrative.theme_and_subtext.subtext",
+      "module_id": "craft.narrative.theme_and_subtext",
+      "role": "domain",
+      "text": "Is important meaning carried through implication as well as explicit statement?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 0,
+        "NOT_APPLICABLE": 0,
+        "YES": 38
+      },
+      "criterion_id": "form.prose.general_prose_fiction.character_action",
+      "module_id": "form.prose.general_prose_fiction",
+      "role": "supplemental",
+      "text": "Are character, action, setting, and narration integrated rather than presented as separate inventories?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 0,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 0,
+        "NOT_APPLICABLE": 38,
+        "YES": 0
+      },
+      "criterion_id": "form.prose.general_prose_fiction.completion",
+      "module_id": "form.prose.general_prose_fiction",
+      "role": "supplemental",
+      "text": "If presented as complete, does the work achieve form-appropriate closure rather than accidental truncation?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 1,
+        "NOT_APPLICABLE": 0,
+        "YES": 37
+      },
+      "criterion_id": "form.prose.general_prose_fiction.mode_control",
+      "module_id": "form.prose.general_prose_fiction",
+      "role": "supplemental",
+      "text": "Are scene, summary, exposition, and reflection used deliberately?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 2,
+        "NOT_APPLICABLE": 0,
+        "YES": 36
+      },
+      "criterion_id": "form.prose.general_prose_fiction.movement",
+      "module_id": "form.prose.general_prose_fiction",
+      "role": "supplemental",
+      "text": "Does the artifact create meaningful movement in event, relationship, perception, knowledge, or pressure?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 13,
+        "NOT_APPLICABLE": 0,
+        "YES": 25
+      },
+      "criterion_id": "form.prose.general_prose_fiction.narrative_experience",
+      "module_id": "form.prose.general_prose_fiction",
+      "role": "supplemental",
+      "text": "Does the prose create a sustained fictional experience rather than merely summarize a premise?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 2,
+        "NOT_APPLICABLE": 0,
+        "YES": 36
+      },
+      "criterion_id": "form.prose.general_prose_fiction.proportion",
+      "module_id": "form.prose.general_prose_fiction",
+      "role": "supplemental",
+      "text": "Is the balance among narration, action, dialogue, description, and interiority appropriate to this work?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 0,
+        "NOT_APPLICABLE": 0,
+        "YES": 38
+      },
+      "criterion_id": "form.prose.general_prose_fiction.reader_orientation",
+      "module_id": "form.prose.general_prose_fiction",
+      "role": "supplemental",
+      "text": "Does the reader receive enough orientation to follow the intended experience?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 6,
+        "NOT_APPLICABLE": 0,
+        "YES": 32
+      },
+      "criterion_id": "penalty.purple_prose.attention",
+      "module_id": "penalty.purple_prose",
+      "role": "penalty",
+      "text": "Does the language direct attention toward the artifact's subject rather than mainly toward its own fanciness?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 0,
+        "NOT_APPLICABLE": 0,
+        "YES": 38
+      },
+      "criterion_id": "penalty.purple_prose.clarity",
+      "module_id": "penalty.purple_prose",
+      "role": "penalty",
+      "text": "Can the reader recover the central action, perception, thought, or emotion without fighting ornamental language?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 6,
+        "NOT_APPLICABLE": 0,
+        "YES": 32
+      },
+      "criterion_id": "penalty.purple_prose.fatigue",
+      "module_id": "penalty.purple_prose",
+      "role": "penalty",
+      "text": "Across the evaluated scope, does lyrical intensity vary enough to avoid cumulative fatigue?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 3,
+        "NOT_APPLICABLE": 0,
+        "YES": 35
+      },
+      "criterion_id": "penalty.purple_prose.metaphor",
+      "module_id": "penalty.purple_prose",
+      "role": "penalty",
+      "text": "Inspect linked material metaphors or images in the declared scope. Return YES when their implications are compatible and jointly clarify the supplied passage. If linked images carry opposing implications, return YES only when the artifact supplies an additional concrete semantic hinge that relates, reconciles, or distinguishes those implications, such as a demonstrated causal, temporal, role, perspective, or double-meaning relation. Punctuation, an explicit connective, or a bare assertion that images coexist is not itself that hinge. Sharing a subject, pairing opposite labels, or restating them with opposite verbs is not an additional hinge; the artifact must supply a relation beyond the coexistence itself. Return NO when opposing implications merely occur together without an additional artifact-grounded hinge. Do not judge familiarity/defaultness or figurative density; cite the linked spans and the compatibility or hinge, or the absence of one. Do metaphors and images cooperate rather than stack, mix, or compete?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 14,
+        "NOT_APPLICABLE": 0,
+        "YES": 24
+      },
+      "criterion_id": "penalty.purple_prose.proportion",
+      "module_id": "penalty.purple_prose",
+      "role": "penalty",
+      "text": "Are figurative layers, modifiers, and elevated diction proportionate to the material being carried?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 27,
+        "NOT_APPLICABLE": 0,
+        "YES": 11
+      },
+      "criterion_id": "penalty.purple_prose.specificity",
+      "module_id": "penalty.purple_prose",
+      "role": "penalty",
+      "text": "Does ornate language remain specific rather than replacing perception with generalized grandeur or abstraction?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 1,
+        "NOT_APPLICABLE": 0,
+        "YES": 37
+      },
+      "criterion_id": "penalty.purple_prose.tone",
+      "module_id": "penalty.purple_prose",
+      "role": "penalty",
+      "text": "Does stylistic lushness fit the speaker, project, scene intensity, genre, and form?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 1,
+        "NOT_APPLICABLE": 0,
+        "YES": 37
+      },
+      "criterion_id": "penalty.repetition.beat",
+      "module_id": "penalty.repetition",
+      "role": "penalty",
+      "text": "Does the artifact avoid repeating equivalent scene beats, actions, conflicts, and reactions?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 17,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 0,
+        "NOT_APPLICABLE": 21,
+        "YES": 17
+      },
+      "criterion_id": "penalty.repetition.dialogue",
+      "module_id": "penalty.repetition",
+      "role": "penalty",
+      "text": "Do dialogue and internal monologue avoid circular loops that reproduce already established positions?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 35,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 22,
+        "NOT_APPLICABLE": 3,
+        "YES": 13
+      },
+      "criterion_id": "penalty.repetition.explanation",
+      "module_id": "penalty.repetition",
+      "role": "penalty",
+      "text": "Does the artifact avoid explaining a concrete moment again after its meaning is already legible?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 32,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 4,
+        "NOT_APPLICABLE": 6,
+        "YES": 28
+      },
+      "criterion_id": "penalty.repetition.image",
+      "module_id": "penalty.repetition",
+      "role": "penalty",
+      "text": "Do recurring images and motifs return with changed context or meaning?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 11,
+        "NOT_APPLICABLE": 0,
+        "YES": 27
+      },
+      "criterion_id": "penalty.repetition.lexical",
+      "module_id": "penalty.repetition",
+      "role": "penalty",
+      "text": "Are repeated words and phrases either unobtrusive or functionally transformed?"
+    },
+    {
+      "applies_when": "The evaluated scope is chapter, sequence, act, manuscript, series, collection, or long-form audio.",
+      "assessed_binary": 0,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 0,
+        "NOT_APPLICABLE": 38,
+        "YES": 0
+      },
+      "criterion_id": "penalty.repetition.long_range",
+      "module_id": "penalty.repetition",
+      "role": "penalty",
+      "text": "At long scope, do chapters, sections, or episodes avoid repeatedly resetting and re-establishing the same narrative state?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 27,
+        "NOT_APPLICABLE": 0,
+        "YES": 11
+      },
+      "criterion_id": "penalty.repetition.semantic",
+      "module_id": "penalty.repetition",
+      "role": "penalty",
+      "text": "Does the artifact avoid restating the same proposition, emotion, or interpretation without adding pressure or information?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 3,
+        "NOT_APPLICABLE": 0,
+        "YES": 35
+      },
+      "criterion_id": "penalty.repetition.syntax",
+      "module_id": "penalty.repetition",
+      "role": "penalty",
+      "text": "Do sentence and paragraph openings, lengths, and syntactic shapes vary enough for the intended style?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 30,
+      "counts": {
+        "CANNOT_ASSESS": 8,
+        "NO": 0,
+        "NOT_APPLICABLE": 0,
+        "YES": 30
+      },
+      "criterion_id": "penalty.unflagged_incomplete.status",
+      "module_id": "penalty.unflagged_incomplete",
+      "role": "penalty",
+      "text": "If the artifact is an excerpt, fragment, sample, partial draft, or intentionally unfinished, is that status supplied to the judge?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 38,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 1,
+        "NOT_APPLICABLE": 0,
+        "YES": 37
+      },
+      "criterion_id": "penalty.unflagged_incomplete.truncation",
+      "module_id": "penalty.unflagged_incomplete",
+      "role": "penalty",
+      "text": "Is the artifact free of accidental truncation, unresolved syntax, dropped sections, and abrupt stopping caused by generation limits?"
+    },
+    {
+      "applies_when": "The criterion is relevant to the requested artifact, scope, and operation.",
+      "assessed_binary": 0,
+      "counts": {
+        "CANNOT_ASSESS": 0,
+        "NO": 0,
+        "NOT_APPLICABLE": 38,
+        "YES": 0
+      },
+      "criterion_id": "penalty.unflagged_incomplete.unit",
+      "module_id": "penalty.unflagged_incomplete",
+      "role": "penalty",
+      "text": "If presented as complete, does the requested unit reach the minimum closure or changed state promised by its form and operation?"
+    }
+  ],
+  "human_labels_opened": false,
+  "input_sha256": {
+    "compiled": "fdb8d9f49bdc9183db0783c461f2e58d044fd088a7e3cfaea7bb95af501e93a4",
+    "profiles": "aa6a9e809f53e6640497e7fa3d5efe6f583426b794a90f031832562cb7354a69"
+  },
+  "leaf_cells": 6460,
+  "limitations": [
+    "Raw state counts are unweighted and are not canonical weighted coverage.",
+    "Persistent NOT_APPLICABLE may correctly reflect passage scope; counts alone do not establish a rubric or judge defect.",
+    "CANNOT_ASSESS identifies saved unassessability, not its cause or correctness.",
+    "Banks are availability-selected, dependent initial paragraphs rather than a representative population or repeatability panel.",
+    "Historical collection tool controls remain unqualified; do not pool with the contemporary tools-disabled Sol condition.",
+    "No human alignment, ground-truth, semantic grounding, causal effect, current-model or full-system validity claim."
+  ],
+  "modules": {
+    "core.audience_and_purpose_fit": {
+      "CANNOT_ASSESS": 4,
+      "NO": 6,
+      "NOT_APPLICABLE": 0,
+      "YES": 294,
+      "criteria": 8
+    },
+    "core.economy_and_relevance": {
+      "CANNOT_ASSESS": 0,
+      "NO": 93,
+      "NOT_APPLICABLE": 41,
+      "YES": 132,
+      "criteria": 7
+    },
+    "core.emotional_and_intellectual_effect": {
+      "CANNOT_ASSESS": 0,
+      "NO": 106,
+      "NOT_APPLICABLE": 0,
+      "YES": 122,
+      "criteria": 6
+    },
+    "core.freshness_and_non_genericness": {
+      "CANNOT_ASSESS": 0,
+      "NO": 218,
+      "NOT_APPLICABLE": 0,
+      "YES": 86,
+      "criteria": 8
+    },
+    "core.holistic_artistic_success": {
+      "CANNOT_ASSESS": 0,
+      "NO": 109,
+      "NOT_APPLICABLE": 0,
+      "YES": 43,
+      "criteria": 4
+    },
+    "core.language_craft": {
+      "CANNOT_ASSESS": 0,
+      "NO": 97,
+      "NOT_APPLICABLE": 2,
+      "YES": 243,
+      "criteria": 9
+    },
+    "core.length_and_scope_fit": {
+      "CANNOT_ASSESS": 0,
+      "NO": 16,
+      "NOT_APPLICABLE": 38,
+      "YES": 250,
+      "criteria": 8
+    },
+    "core.mechanics_and_presentation": {
+      "CANNOT_ASSESS": 0,
+      "NO": 35,
+      "NOT_APPLICABLE": 35,
+      "YES": 196,
+      "criteria": 7
+    },
+    "core.specificity_and_embodiment": {
+      "CANNOT_ASSESS": 0,
+      "NO": 100,
+      "NOT_APPLICABLE": 7,
+      "YES": 159,
+      "criteria": 7
+    },
+    "core.task_and_brief_fidelity": {
+      "CANNOT_ASSESS": 11,
+      "NO": 3,
+      "NOT_APPLICABLE": 286,
+      "YES": 156,
+      "criteria": 12
+    },
+    "core.voice_and_stylistic_identity": {
+      "CANNOT_ASSESS": 0,
+      "NO": 79,
+      "NOT_APPLICABLE": 38,
+      "YES": 111,
+      "criteria": 6
+    },
+    "craft.narrative.characterization": {
+      "CANNOT_ASSESS": 21,
+      "NO": 28,
+      "NOT_APPLICABLE": 56,
+      "YES": 237,
+      "criteria": 9
+    },
+    "craft.narrative.dialogue": {
+      "CANNOT_ASSESS": 12,
+      "NO": 0,
+      "NOT_APPLICABLE": 265,
+      "YES": 27,
+      "criteria": 8
+    },
+    "craft.narrative.narrative_momentum": {
+      "CANNOT_ASSESS": 0,
+      "NO": 81,
+      "NOT_APPLICABLE": 0,
+      "YES": 223,
+      "criteria": 8
+    },
+    "craft.narrative.plot_and_causality": {
+      "CANNOT_ASSESS": 7,
+      "NO": 10,
+      "NOT_APPLICABLE": 94,
+      "YES": 193,
+      "criteria": 8
+    },
+    "craft.narrative.point_of_view_and_focalization": {
+      "CANNOT_ASSESS": 0,
+      "NO": 2,
+      "NOT_APPLICABLE": 47,
+      "YES": 217,
+      "criteria": 7
+    },
+    "craft.narrative.scene_construction": {
+      "CANNOT_ASSESS": 3,
+      "NO": 18,
+      "NOT_APPLICABLE": 37,
+      "YES": 284,
+      "criteria": 9
+    },
+    "craft.narrative.setting_and_atmosphere": {
+      "CANNOT_ASSESS": 0,
+      "NO": 24,
+      "NOT_APPLICABLE": 15,
+      "YES": 227,
+      "criteria": 7
+    },
+    "craft.narrative.theme_and_subtext": {
+      "CANNOT_ASSESS": 0,
+      "NO": 64,
+      "NOT_APPLICABLE": 30,
+      "YES": 172,
+      "criteria": 7
+    },
+    "form.prose.general_prose_fiction": {
+      "CANNOT_ASSESS": 0,
+      "NO": 18,
+      "NOT_APPLICABLE": 38,
+      "YES": 210,
+      "criteria": 7
+    },
+    "penalty.purple_prose": {
+      "CANNOT_ASSESS": 0,
+      "NO": 57,
+      "NOT_APPLICABLE": 0,
+      "YES": 209,
+      "criteria": 7
+    },
+    "penalty.repetition": {
+      "CANNOT_ASSESS": 0,
+      "NO": 68,
+      "NOT_APPLICABLE": 68,
+      "YES": 168,
+      "criteria": 8
+    },
+    "penalty.unflagged_incomplete": {
+      "CANNOT_ASSESS": 8,
+      "NO": 1,
+      "NOT_APPLICABLE": 38,
+      "YES": 67,
+      "criteria": 3
+    }
+  },
+  "never_binary_assessed": [
+    "core.economy_and_relevance.digression",
+    "core.length_and_scope_fit.explicit",
+    "core.task_and_brief_fidelity.exclusions",
+    "core.task_and_brief_fidelity.length_hard",
+    "core.task_and_brief_fidelity.sources",
+    "core.task_and_brief_fidelity.tense",
+    "core.voice_and_stylistic_identity.project_fidelity",
+    "craft.narrative.characterization.canon",
+    "craft.narrative.dialogue.voice_distinction",
+    "craft.narrative.scene_construction.context_fit",
+    "form.prose.general_prose_fiction.completion",
+    "penalty.repetition.long_range",
+    "penalty.unflagged_incomplete.unit"
+  ],
+  "provider_calls": 0,
+  "saved_canonical_weighted_coverage": {
+    "maximum": 1.0,
+    "mean": 0.9868894736842106,
+    "minimum": 0.9561
+  },
+  "schema_version": 1,
+  "scorer_calls": 0,
+  "selection": "All 38 Sol HBQ SCORED initial banks in the retained 032 profile file; incomplete banks excluded.",
+  "semantic_or_native_replays": 0,
+  "state": "RETROSPECTIVE_AVAILABILITY_SELECTED_COVERAGE_DIAGNOSTIC",
+  "state_counts": {
+    "CANNOT_ASSESS": 66,
+    "NO": 1233,
+    "NOT_APPLICABLE": 1135,
+    "YES": 4026
+  },
+  "study": "lamp-retained-applicability-development-20261020"
+}

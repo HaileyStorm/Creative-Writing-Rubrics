@@ -1,0 +1,171 @@
+criterion_id,module_id,role,YES,NO,NOT_APPLICABLE,CANNOT_ASSESS,assessed_binary,question
+core.audience_and_purpose_fit.complexity,core.audience_and_purpose_fit,domain,38,0,0,0,38,Is conceptual and structural complexity appropriate for the intended audience?
+core.audience_and_purpose_fit.explanation,core.audience_and_purpose_fit,domain,35,3,0,0,38,Is the amount of explanation appropriate for what the intended reader is expected to know?
+core.audience_and_purpose_fit.genre_signals,core.audience_and_purpose_fit,domain,38,0,0,0,38,Does the artifact signal and fulfill the relevant genre or mode promises for its target audience?
+core.audience_and_purpose_fit.intensity,core.audience_and_purpose_fit,domain,38,0,0,0,38,"Is emotional, violent, frightening, sexual, or comic intensity appropriate to the specified audience and purpose?"
+core.audience_and_purpose_fit.length,core.audience_and_purpose_fit,domain,38,0,0,0,38,Is length appropriate for the delivery context and reader commitment?
+core.audience_and_purpose_fit.tone,core.audience_and_purpose_fit,domain,38,0,0,0,38,"Is tone appropriate for the intended audience, venue, and purpose?"
+core.audience_and_purpose_fit.use_context,core.audience_and_purpose_fit,domain,33,1,0,4,34,"Does it fit its intended use, such as private exploration, publication, performance, gameplay, reference, or revision support?"
+core.audience_and_purpose_fit.vocabulary,core.audience_and_purpose_fit,domain,36,2,0,0,38,"Is vocabulary appropriate without condescension, needless opacity, or accidental register mismatch?"
+core.economy_and_relevance.detail_relevance,core.economy_and_relevance,domain,38,0,0,0,38,"Are details relevant to character, setting, action, atmosphere, theme, or the requested operation?"
+core.economy_and_relevance.digression,core.economy_and_relevance,domain,0,0,38,0,0,"When the work digresses, does the digression create an intended structural, tonal, or thematic benefit?"
+core.economy_and_relevance.earns_place,core.economy_and_relevance,domain,8,30,0,0,38,"Does each substantial passage, beat, image, line, or detail perform a useful function?"
+core.economy_and_relevance.functional_repetition,core.economy_and_relevance,domain,9,29,0,0,38,"When material repeats, does the recurrence alter meaning, rhythm, pressure, or expectation?"
+core.economy_and_relevance.length_fit,core.economy_and_relevance,domain,37,1,0,0,38,"Is the artifact's length proportionate to its form, scope, purpose, and stage of development?"
+core.economy_and_relevance.no_flattening,core.economy_and_relevance,domain,35,0,3,0,35,"Does economy avoid flattening deliberate lyricism, maximalism, recurrence, or contemplative pace?"
+core.economy_and_relevance.no_restatement,core.economy_and_relevance,domain,5,33,0,0,38,"Does the artifact avoid restating the same information, image, or emotional conclusion without added force or development?"
+core.emotional_and_intellectual_effect.aftermath,core.emotional_and_intellectual_effect,domain,8,30,0,0,38,"Does the effect persist or meaningfully resolve after the immediate beat, image, or ending?"
+core.emotional_and_intellectual_effect.conceptual_interest,core.emotional_and_intellectual_effect,domain,23,15,0,0,38,"Does the artifact create a substantive idea, question, perception, or tension for the reader to engage with?"
+core.emotional_and_intellectual_effect.earned_emotion,core.emotional_and_intellectual_effect,domain,27,11,0,0,38,"Is the emotional response prepared by situation, image, action, voice, or structure?"
+core.emotional_and_intellectual_effect.intended_effect,core.emotional_and_intellectual_effect,domain,29,9,0,0,38,Does the artifact actually produce the principal intended effect rather than merely announce it?
+core.emotional_and_intellectual_effect.modulation,core.emotional_and_intellectual_effect,domain,33,5,0,0,38,Does the effect develop or modulate rather than remaining at one undifferentiated intensity?
+core.emotional_and_intellectual_effect.restraint,core.emotional_and_intellectual_effect,domain,2,36,0,0,38,Does the work trust the reader enough to avoid unnecessary emotional or interpretive instruction?
+core.freshness_and_non_genericness.no_cliche,core.freshness_and_non_genericness,domain,0,38,0,0,38,"Does the artifact avoid unrenewed verbal, imagistic, emotional, and situational clichés?"
+core.freshness_and_non_genericness.no_default_metaphors,core.freshness_and_non_genericness,domain,3,35,0,0,38,Does it avoid default metaphors and personifications that add no specific perception?
+core.freshness_and_non_genericness.no_emotion_summary,core.freshness_and_non_genericness,domain,1,37,0,0,38,Does it avoid generic emotional summaries that substitute labels for lived or dramatized experience?
+core.freshness_and_non_genericness.no_forced_novelty,core.freshness_and_non_genericness,domain,35,3,0,0,38,"Does it avoid novelty-seeking that sacrifices clarity, plausibility, tone, or purpose?"
+core.freshness_and_non_genericness.no_llm_phrasing,core.freshness_and_non_genericness,domain,0,38,0,0,38,"Does it avoid generic LLM phrasing, rhetorical templates, and overfamiliar contrast constructions?"
+core.freshness_and_non_genericness.no_rare_word_chasing,core.freshness_and_non_genericness,domain,38,0,0,0,38,Does it avoid conspicuous rare-word or thesaurus chasing unsupported by voice and context?
+core.freshness_and_non_genericness.no_stock_beats,core.freshness_and_non_genericness,domain,1,37,0,0,38,Does it avoid relying on stock beats whose sequence and treatment are interchangeable with many other outputs?
+core.freshness_and_non_genericness.unpredictable_specificity,core.freshness_and_non_genericness,domain,8,30,0,0,38,"Does it contain apt particulars, turns, or associations that could not be freely swapped into an unrelated piece?"
+core.holistic_artistic_success.threshold_1_functional,core.holistic_artistic_success,domain,38,0,0,0,38,"On an honest cold read, does the artifact work at all as the kind of creative object it claims to be?"
+core.holistic_artistic_success.threshold_2_effective,core.holistic_artistic_success,domain,4,34,0,0,38,"Is the artifact genuinely effective rather than merely compliant, fluent, or technically competent?"
+core.holistic_artistic_success.threshold_3_keepworthy,core.holistic_artistic_success,domain,1,37,0,0,38,"Would a demanding intended reader, editor, or creator regard the artifact as worth keeping, using, revisiting, or developing?"
+core.holistic_artistic_success.threshold_4_exceptional,core.holistic_artistic_success,domain,0,38,0,0,38,"Is the artifact exceptional for its form, purpose, stage, and comparison set rather than merely strong?"
+core.language_craft.cadence,core.language_craft,domain,34,4,0,0,38,"Does cadence support meaning, emphasis, and mood?"
+core.language_craft.diction,core.language_craft,domain,8,30,0,0,38,"Are the chosen words precise, apt, and proportionate to the intended effect?"
+core.language_craft.emphasis,core.language_craft,domain,32,6,0,0,38,Does the language place emphasis on the elements that deserve it?
+core.language_craft.images,core.language_craft,domain,26,12,0,0,38,Are images constructed clearly enough to be apprehended and specifically enough to matter?
+core.language_craft.no_awkwardness,core.language_craft,domain,11,27,0,0,38,Is the language free of conspicuous awkwardness that interrupts the intended experience?
+core.language_craft.paragraph_movement,core.language_craft,domain,34,4,0,0,38,"Do paragraphs, stanzas, or comparable units move and turn at effective points?"
+core.language_craft.sound,core.language_craft,domain,32,4,2,0,36,"Where sound is relevant, are sonic effects controlled and useful rather than accidental ornament?"
+core.language_craft.syntax,core.language_craft,domain,34,4,0,0,38,"Are sentence or line structures controlled rather than accidentally tangled, monotonous, or fragmentary?"
+core.language_craft.variation,core.language_craft,domain,32,6,0,0,38,Is syntactic and rhythmic variation purposeful rather than mechanically repetitive?
+core.length_and_scope_fit.density,core.length_and_scope_fit,domain,31,7,0,0,38,Is information and experience density appropriate rather than padded or crushed?
+core.length_and_scope_fit.development,core.length_and_scope_fit,domain,36,2,0,0,38,"Does the length provide enough space for the artifact's actual cast, ideas, events, images, or obligations?"
+core.length_and_scope_fit.ending,core.length_and_scope_fit,domain,38,0,0,0,38,Does the artifact end when its governing movement is complete rather than at an arbitrary token boundary?
+core.length_and_scope_fit.explicit,core.length_and_scope_fit,supplemental,0,0,38,0,0,"Does the artifact satisfy every explicit exact, minimum, or maximum length constraint?"
+core.length_and_scope_fit.form,core.length_and_scope_fit,domain,38,0,0,0,38,Is the artifact's length appropriate to the selected form or artifact type?
+core.length_and_scope_fit.no_padding,core.length_and_scope_fit,domain,36,2,0,0,38,Does it avoid material included chiefly to reach a target length?
+core.length_and_scope_fit.no_underbuild,core.length_and_scope_fit,domain,34,4,0,0,38,Does it avoid underdevelopment caused by treating brevity as an automatic virtue?
+core.length_and_scope_fit.operation,core.length_and_scope_fit,domain,37,1,0,0,38,Is its length appropriate to the requested operation and workflow stage?
+core.mechanics_and_presentation.cleanliness,core.mechanics_and_presentation,domain,38,0,0,0,38,"Is the deliverable free of stray markup, generation artifacts, duplicated text, and truncation?"
+core.mechanics_and_presentation.dialogue_mechanics,core.mechanics_and_presentation,domain,2,1,35,0,3,"Where dialogue appears, are quotation, paragraphing, speaker changes, and tags mechanically clear?"
+core.mechanics_and_presentation.formatting,core.mechanics_and_presentation,domain,34,4,0,0,38,Is the required form-specific formatting correct and legible?
+core.mechanics_and_presentation.grammar,core.mechanics_and_presentation,domain,31,7,0,0,38,Is the artifact free of unintended grammatical errors that impede or distract?
+core.mechanics_and_presentation.punctuation,core.mechanics_and_presentation,domain,27,11,0,0,38,Is punctuation correct or deliberately unconventional in a controlled way?
+core.mechanics_and_presentation.spelling,core.mechanics_and_presentation,domain,37,1,0,0,38,"Is spelling correct and consistent for the selected language, dialect, and house style?"
+core.mechanics_and_presentation.typography,core.mechanics_and_presentation,domain,27,11,0,0,38,"Are typography, spacing, headings, and special marks internally consistent?"
+core.specificity_and_embodiment.abstract_support,core.specificity_and_embodiment,domain,27,11,0,0,38,"Are thematic or emotional abstractions supported by observable material, pattern, or consequence?"
+core.specificity_and_embodiment.character_particularity,core.specificity_and_embodiment,domain,16,22,0,0,38,Do character details imply an individual rather than a role label?
+core.specificity_and_embodiment.concrete_detail,core.specificity_and_embodiment,domain,27,11,0,0,38,Does the artifact use concrete detail where abstraction alone would leave the experience thin?
+core.specificity_and_embodiment.grounded_thought,core.specificity_and_embodiment,domain,27,10,1,0,37,"Are thoughts grounded in the speaker's or character's particular situation, language, and attention?"
+core.specificity_and_embodiment.physical_action,core.specificity_and_embodiment,domain,24,13,1,0,37,"Are bodies, objects, and physical actions present enough for the reader to inhabit the moment?"
+core.specificity_and_embodiment.sensory_presence,core.specificity_and_embodiment,domain,28,9,1,0,37,Are relevant sensory channels used selectively and specifically?
+core.specificity_and_embodiment.setting_particularity,core.specificity_and_embodiment,domain,10,24,4,0,34,Does the setting contain distinguishing features rather than generic inventory?
+core.task_and_brief_fidelity.completion_flag,core.task_and_brief_fidelity,domain,4,0,34,0,4,"Is an excerpt, fragment, partial draft, or intentionally unfinished artifact clearly identified as such?"
+core.task_and_brief_fidelity.exclusions,core.task_and_brief_fidelity,supplemental,0,0,38,0,0,Does the output omit every explicitly forbidden element?
+core.task_and_brief_fidelity.format,core.task_and_brief_fidelity,supplemental,9,0,29,0,9,Does the output follow the requested delivery format?
+core.task_and_brief_fidelity.inclusions,core.task_and_brief_fidelity,supplemental,36,2,0,0,38,Does the output include every explicitly required element?
+core.task_and_brief_fidelity.intervention,core.task_and_brief_fidelity,domain,27,1,0,10,28,Does the degree of invention or alteration stay within the authorization given by the user?
+core.task_and_brief_fidelity.length_hard,core.task_and_brief_fidelity,supplemental,0,0,38,0,0,Does the output satisfy any explicit exact or bounded length requirement?
+core.task_and_brief_fidelity.no_meta_substitution,core.task_and_brief_fidelity,domain,38,0,0,0,38,"Does the output provide the requested artifact without replacing it with process talk, disclaimers, or an explanation of what could have been produced?"
+core.task_and_brief_fidelity.operation,core.task_and_brief_fidelity,supplemental,38,0,0,0,38,Does the output perform the requested operation rather than a neighboring or substituted task?
+core.task_and_brief_fidelity.pov,core.task_and_brief_fidelity,supplemental,2,0,36,0,2,Does the output use the requested point of view where one was specified?
+core.task_and_brief_fidelity.sources,core.task_and_brief_fidelity,supplemental,0,0,37,1,0,Does the output use every source or reference that the brief makes mandatory?
+core.task_and_brief_fidelity.structure,core.task_and_brief_fidelity,supplemental,2,0,36,0,2,Does the output follow the requested structure or organization?
+core.task_and_brief_fidelity.tense,core.task_and_brief_fidelity,supplemental,0,0,38,0,0,Does the output use the requested tense where one was specified?
+core.voice_and_stylistic_identity.distinctive,core.voice_and_stylistic_identity,domain,0,38,0,0,38,Does the artifact possess a discernible stylistic identity rather than interchangeable competent prose?
+core.voice_and_stylistic_identity.ownership,core.voice_and_stylistic_identity,domain,1,37,0,0,38,"Does the language sound owned by this narrator, speaker, character, or project rather than by a generic assistant?"
+core.voice_and_stylistic_identity.project_fidelity,core.voice_and_stylistic_identity,domain,0,0,38,0,0,"When an established project voice is supplied, does the artifact preserve its salient features?"
+core.voice_and_stylistic_identity.shift_control,core.voice_and_stylistic_identity,domain,36,2,0,0,38,"Are changes in register, distance, diction, or tone motivated rather than accidental?"
+core.voice_and_stylistic_identity.suitable,core.voice_and_stylistic_identity,domain,38,0,0,0,38,"Is the voice suitable for the form, subject, narrator, audience, and intended effect?"
+core.voice_and_stylistic_identity.sustained,core.voice_and_stylistic_identity,domain,36,2,0,0,38,Is the voice sustained across the evaluated scope?
+craft.narrative.characterization.agency,craft.narrative.characterization,domain,24,3,5,6,27,Do important characters make consequential choices rather than functioning only as plot furniture?
+craft.narrative.characterization.behavior,craft.narrative.characterization,domain,38,0,0,0,38,"Are characters revealed through specific behavior, choices, attention, language, or relationships?"
+craft.narrative.characterization.canon,craft.narrative.characterization,domain,0,0,28,10,0,Do character actions and voices remain faithful to supplied sheets and prior behavior unless change is earned?
+craft.narrative.characterization.contradiction,craft.narrative.characterization,domain,22,0,15,1,22,Do contradictions or mixed motives add credible complexity rather than random inconsistency?
+craft.narrative.characterization.development,craft.narrative.characterization,domain,37,1,0,0,38,"At the available scope, is new character information, pressure, or change meaningfully developed?"
+craft.narrative.characterization.dimensionality,craft.narrative.characterization,domain,35,2,0,1,37,"Do major characters possess multiple relevant traits, motives, pressures, or loyalties?"
+craft.narrative.characterization.distinction,craft.narrative.characterization,domain,21,7,8,2,28,"Can characters be distinguished by more than names, labels, and superficial quirks?"
+craft.narrative.characterization.motives,craft.narrative.characterization,domain,33,4,0,1,37,Are motives legible enough to make choices meaningful without being overexplained?
+craft.narrative.characterization.no_trait_labels,craft.narrative.characterization,domain,27,11,0,0,38,Does the text avoid relying on direct trait labels where dramatized evidence is needed?
+craft.narrative.dialogue.action_balance,craft.narrative.dialogue,domain,5,0,33,0,5,"Is dialogue integrated with action, perception, and silence rather than floating in a vacuum?"
+craft.narrative.dialogue.listening,craft.narrative.dialogue,domain,1,0,34,3,1,Do speakers respond to what was actually said or implied rather than delivering adjacent prepared speeches?
+craft.narrative.dialogue.naturalness,craft.narrative.dialogue,domain,5,0,32,1,5,Does dialogue sound behaviorally credible for these speakers and circumstances without merely transcribing real-world filler?
+craft.narrative.dialogue.no_exposition,craft.narrative.dialogue,domain,5,0,33,0,5,"Does the dialogue avoid implausible exposition, 'as you know' statements, and on-the-nose emotional explanation?"
+craft.narrative.dialogue.purpose,craft.narrative.dialogue,domain,5,0,33,0,5,"Does each substantial exchange perform dramatic, relational, informational, or tonal work?"
+craft.narrative.dialogue.rhythm,craft.narrative.dialogue,domain,2,0,33,3,2,"Do turn length, interruption, silence, overlap, and response timing support the scene?"
+craft.narrative.dialogue.subtext,craft.narrative.dialogue,domain,4,0,33,1,4,"Does dialogue carry implication, pressure, or withheld meaning where the scene calls for it?"
+craft.narrative.dialogue.voice_distinction,craft.narrative.dialogue,domain,0,0,34,4,0,"Can speakers be distinguished by syntax, diction, assumptions, rhythm, and aims rather than tags alone?"
+craft.narrative.narrative_momentum.commitment,craft.narrative.narrative_momentum,domain,35,3,0,0,38,Does the prose commit to concrete developments rather than indefinitely preserving optionality?
+craft.narrative.narrative_momentum.concept_pull,craft.narrative.narrative_momentum,domain,32,6,0,0,38,"Does conceptual, thematic, or world interest remain active?"
+craft.narrative.narrative_momentum.consequence,craft.narrative.narrative_momentum,domain,24,14,0,0,38,"Does it create, increase, or clarify consequences that matter beyond the immediate beat?"
+craft.narrative.narrative_momentum.curiosity,craft.narrative.narrative_momentum,domain,23,15,0,0,38,"Does the unit sustain a live question, uncertainty, or desire to know what follows?"
+craft.narrative.narrative_momentum.investment,craft.narrative.narrative_momentum,domain,35,3,0,0,38,Does it deepen emotional or relational investment?
+craft.narrative.narrative_momentum.no_false_hook,craft.narrative.narrative_momentum,domain,35,3,0,0,38,Does it avoid substituting arbitrary cliffhangers or withheld basics for earned momentum?
+craft.narrative.narrative_momentum.progress,craft.narrative.narrative_momentum,domain,35,3,0,0,38,Does the narrative make meaningful progress rather than only defer?
+craft.narrative.narrative_momentum.voice_pull,craft.narrative.narrative_momentum,domain,4,34,0,0,38,Does voice or language itself provide a reason to continue?
+craft.narrative.plot_and_causality.causal_chain,craft.narrative.plot_and_causality,domain,35,0,3,0,35,"Does each major event arise from prior conditions, choices, or consequences?"
+craft.narrative.plot_and_causality.complication,craft.narrative.plot_and_causality,domain,14,5,19,0,19,Do complications force new choices or understanding rather than delay the same beat?
+craft.narrative.plot_and_causality.consequence,craft.narrative.plot_and_causality,domain,27,0,8,3,27,Are consequential actions followed through rather than reset or forgotten?
+craft.narrative.plot_and_causality.decision,craft.narrative.plot_and_causality,domain,20,2,12,4,22,Do character decisions materially alter what happens next?
+craft.narrative.plot_and_causality.escalation,craft.narrative.plot_and_causality,domain,22,2,14,0,24,"Does pressure change in kind, intensity, or implication rather than merely repeat?"
+craft.narrative.plot_and_causality.no_convenience,craft.narrative.plot_and_causality,domain,32,1,5,0,33,"Does the plot avoid coincidence, withheld competence, or arbitrary behavior used chiefly to force an outcome?"
+craft.narrative.plot_and_causality.reversal,craft.narrative.plot_and_causality,domain,7,0,31,0,7,Are reversals both surprising enough to matter and supported enough to accept?
+craft.narrative.plot_and_causality.setup,craft.narrative.plot_and_causality,domain,36,0,2,0,36,Are important developments prepared enough to feel intelligible rather than arbitrary?
+craft.narrative.point_of_view_and_focalization.access,craft.narrative.point_of_view_and_focalization,domain,37,1,0,0,38,Does the narration reveal only information available under the selected viewpoint rules?
+craft.narrative.point_of_view_and_focalization.distance,craft.narrative.point_of_view_and_focalization,domain,38,0,0,0,38,Is psychic distance controlled and appropriate to the intended effect?
+craft.narrative.point_of_view_and_focalization.head_hopping,craft.narrative.point_of_view_and_focalization,domain,37,1,0,0,38,Does the text avoid accidental shifts into another character's private knowledge?
+craft.narrative.point_of_view_and_focalization.ownership,craft.narrative.point_of_view_and_focalization,domain,38,0,0,0,38,"Do perceptions, judgments, and metaphors belong plausibly to the focalizer or narrator?"
+craft.narrative.point_of_view_and_focalization.reliability,craft.narrative.point_of_view_and_focalization,domain,28,0,10,0,28,"If the narrator is limited or unreliable, is that limitation coherent and artistically legible?"
+craft.narrative.point_of_view_and_focalization.shift_intent,craft.narrative.point_of_view_and_focalization,domain,1,0,37,0,1,Are viewpoint shifts clearly signaled and artistically justified?
+craft.narrative.point_of_view_and_focalization.viewpoint,craft.narrative.point_of_view_and_focalization,domain,38,0,0,0,38,Is the controlling viewpoint identifiable at each moment where clarity is required?
+craft.narrative.scene_construction.changed_state,craft.narrative.scene_construction,domain,27,9,2,0,36,Is the end state meaningfully different from the beginning state?
+craft.narrative.scene_construction.context_fit,craft.narrative.scene_construction,domain,0,0,35,3,0,Does the scene connect coherently to the preceding and following units when those are supplied?
+craft.narrative.scene_construction.entry,craft.narrative.scene_construction,domain,38,0,0,0,38,Does the scene enter at a point that avoids unnecessary preamble while preserving needed orientation?
+craft.narrative.scene_construction.exit,craft.narrative.scene_construction,domain,36,2,0,0,38,Does the exit place emphasis effectively and create an appropriate relation to what follows?
+craft.narrative.scene_construction.objective,craft.narrative.scene_construction,domain,38,0,0,0,38,"Is there a local want, task, question, pressure, or focus that organizes the scene?"
+craft.narrative.scene_construction.pressure,craft.narrative.scene_construction,domain,38,0,0,0,38,"Does something complicate, resist, expose, or deepen the scene's local movement?"
+craft.narrative.scene_construction.progression,craft.narrative.scene_construction,domain,35,3,0,0,38,Do beats build on one another rather than circle or reset?
+craft.narrative.scene_construction.purpose,craft.narrative.scene_construction,domain,38,0,0,0,38,"Does the scene perform a discernible narrative, character, relational, atmospheric, or thematic function?"
+craft.narrative.scene_construction.turn,craft.narrative.scene_construction,domain,34,4,0,0,38,"Does the scene contain a meaningful change of information, decision, relationship, condition, perception, or possibility?"
+craft.narrative.setting_and_atmosphere.atmosphere,craft.narrative.setting_and_atmosphere,domain,37,0,1,0,37,"Does atmosphere emerge from concrete conditions, language, and character perception?"
+craft.narrative.setting_and_atmosphere.function,craft.narrative.setting_and_atmosphere,domain,35,1,2,0,36,"Does setting constrain, enable, pressure, reveal, or transform something in the narrative?"
+craft.narrative.setting_and_atmosphere.identity,craft.narrative.setting_and_atmosphere,domain,25,11,2,0,36,"Does the place have distinguishing material, social, historical, or emotional characteristics?"
+craft.narrative.setting_and_atmosphere.interaction,craft.narrative.setting_and_atmosphere,domain,31,5,2,0,36,Do characters and events materially interact with the setting?
+craft.narrative.setting_and_atmosphere.no_inventory,craft.narrative.setting_and_atmosphere,domain,38,0,0,0,38,Does the text avoid pausing for decorative setting inventory that has no current function?
+craft.narrative.setting_and_atmosphere.sensory,craft.narrative.setting_and_atmosphere,domain,29,7,2,0,36,Does the setting possess selective sensory presence rather than detached inventory?
+craft.narrative.setting_and_atmosphere.spatial,craft.narrative.setting_and_atmosphere,domain,32,0,6,0,32,Can the reader understand the spatial relationships necessary for action and attention?
+craft.narrative.theme_and_subtext.counterpoint,craft.narrative.theme_and_subtext,domain,24,3,11,0,27,"Where appropriate, does the work permit competing values, interpretations, or contradictions?"
+craft.narrative.theme_and_subtext.development,craft.narrative.theme_and_subtext,domain,18,20,0,0,38,"Does the work test, complicate, or transform its central ideas rather than repeat a thesis?"
+craft.narrative.theme_and_subtext.emergence,craft.narrative.theme_and_subtext,domain,36,2,0,0,38,"Does thematic meaning emerge through action, image, structure, character, or pattern?"
+craft.narrative.theme_and_subtext.integration,craft.narrative.theme_and_subtext,domain,35,3,0,0,38,Are thematic concerns integrated with the artifact's concrete dramatic or lyric material?
+craft.narrative.theme_and_subtext.no_moral,craft.narrative.theme_and_subtext,domain,16,22,0,0,38,"Does the work avoid reducing theme to a stated moral, lesson, or explanatory conclusion?"
+craft.narrative.theme_and_subtext.open_questions,craft.narrative.theme_and_subtext,domain,16,3,19,0,19,"When themes remain unresolved, does the unresolved state feel intentional and generative?"
+craft.narrative.theme_and_subtext.subtext,craft.narrative.theme_and_subtext,domain,27,11,0,0,38,Is important meaning carried through implication as well as explicit statement?
+form.prose.general_prose_fiction.character_action,form.prose.general_prose_fiction,supplemental,38,0,0,0,38,"Are character, action, setting, and narration integrated rather than presented as separate inventories?"
+form.prose.general_prose_fiction.completion,form.prose.general_prose_fiction,supplemental,0,0,38,0,0,"If presented as complete, does the work achieve form-appropriate closure rather than accidental truncation?"
+form.prose.general_prose_fiction.mode_control,form.prose.general_prose_fiction,supplemental,37,1,0,0,38,"Are scene, summary, exposition, and reflection used deliberately?"
+form.prose.general_prose_fiction.movement,form.prose.general_prose_fiction,supplemental,36,2,0,0,38,"Does the artifact create meaningful movement in event, relationship, perception, knowledge, or pressure?"
+form.prose.general_prose_fiction.narrative_experience,form.prose.general_prose_fiction,supplemental,25,13,0,0,38,Does the prose create a sustained fictional experience rather than merely summarize a premise?
+form.prose.general_prose_fiction.proportion,form.prose.general_prose_fiction,supplemental,36,2,0,0,38,"Is the balance among narration, action, dialogue, description, and interiority appropriate to this work?"
+form.prose.general_prose_fiction.reader_orientation,form.prose.general_prose_fiction,supplemental,38,0,0,0,38,Does the reader receive enough orientation to follow the intended experience?
+penalty.purple_prose.attention,penalty.purple_prose,penalty,32,6,0,0,38,Does the language direct attention toward the artifact's subject rather than mainly toward its own fanciness?
+penalty.purple_prose.clarity,penalty.purple_prose,penalty,38,0,0,0,38,"Can the reader recover the central action, perception, thought, or emotion without fighting ornamental language?"
+penalty.purple_prose.fatigue,penalty.purple_prose,penalty,32,6,0,0,38,"Across the evaluated scope, does lyrical intensity vary enough to avoid cumulative fatigue?"
+penalty.purple_prose.metaphor,penalty.purple_prose,penalty,35,3,0,0,38,"Inspect linked material metaphors or images in the declared scope. Return YES when their implications are compatible and jointly clarify the supplied passage. If linked images carry opposing implications, return YES only when the artifact supplies an additional concrete semantic hinge that relates, reconciles, or distinguishes those implications, such as a demonstrated causal, temporal, role, perspective, or double-meaning relation. Punctuation, an explicit connective, or a bare assertion that images coexist is not itself that hinge. Sharing a subject, pairing opposite labels, or restating them with opposite verbs is not an additional hinge; the artifact must supply a relation beyond the coexistence itself. Return NO when opposing implications merely occur together without an additional artifact-grounded hinge. Do not judge familiarity/defaultness or figurative density; cite the linked spans and the compatibility or hinge, or the absence of one. Do metaphors and images cooperate rather than stack, mix, or compete?"
+penalty.purple_prose.proportion,penalty.purple_prose,penalty,24,14,0,0,38,"Are figurative layers, modifiers, and elevated diction proportionate to the material being carried?"
+penalty.purple_prose.specificity,penalty.purple_prose,penalty,11,27,0,0,38,Does ornate language remain specific rather than replacing perception with generalized grandeur or abstraction?
+penalty.purple_prose.tone,penalty.purple_prose,penalty,37,1,0,0,38,"Does stylistic lushness fit the speaker, project, scene intensity, genre, and form?"
+penalty.repetition.beat,penalty.repetition,penalty,37,1,0,0,38,"Does the artifact avoid repeating equivalent scene beats, actions, conflicts, and reactions?"
+penalty.repetition.dialogue,penalty.repetition,penalty,17,0,21,0,17,Do dialogue and internal monologue avoid circular loops that reproduce already established positions?
+penalty.repetition.explanation,penalty.repetition,penalty,13,22,3,0,35,Does the artifact avoid explaining a concrete moment again after its meaning is already legible?
+penalty.repetition.image,penalty.repetition,penalty,28,4,6,0,32,Do recurring images and motifs return with changed context or meaning?
+penalty.repetition.lexical,penalty.repetition,penalty,27,11,0,0,38,Are repeated words and phrases either unobtrusive or functionally transformed?
+penalty.repetition.long_range,penalty.repetition,penalty,0,0,38,0,0,"At long scope, do chapters, sections, or episodes avoid repeatedly resetting and re-establishing the same narrative state?"
+penalty.repetition.semantic,penalty.repetition,penalty,11,27,0,0,38,"Does the artifact avoid restating the same proposition, emotion, or interpretation without adding pressure or information?"
+penalty.repetition.syntax,penalty.repetition,penalty,35,3,0,0,38,"Do sentence and paragraph openings, lengths, and syntactic shapes vary enough for the intended style?"
+penalty.unflagged_incomplete.status,penalty.unflagged_incomplete,penalty,30,0,0,8,30,"If the artifact is an excerpt, fragment, sample, partial draft, or intentionally unfinished, is that status supplied to the judge?"
+penalty.unflagged_incomplete.truncation,penalty.unflagged_incomplete,penalty,37,1,0,0,38,"Is the artifact free of accidental truncation, unresolved syntax, dropped sections, and abrupt stopping caused by generation limits?"
+penalty.unflagged_incomplete.unit,penalty.unflagged_incomplete,penalty,0,0,38,0,0,"If presented as complete, does the requested unit reach the minimum closure or changed state promised by its form and operation?"

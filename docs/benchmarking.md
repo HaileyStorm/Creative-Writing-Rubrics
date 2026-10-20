@@ -89,6 +89,8 @@ For worked public examples, see the [established-rubric repeatability study](htt
 
 The [QPC24 V9 full-book rebaseline aggregate](https://github.com/HaileyStorm/Creative-Writing-Rubrics/tree/b4ba4c5d2963040ffc6f26010de089e21331a0b4/evaluation-results/hbq-gray-blood-full-book-qpc24-rebaseline-v9-public-result-v1) is work in progress: it reports all selected units without sampling, keeps bounds non-statistical, and makes no rubric promotion.
 
+The [stopped Sol/TTCW development comparison](../evaluation-results/hbq-sol-ttcw-stopped-development-20261020/README.md) reports actual method coverage and existing expert-reference agreement. Its unequal, incomplete subsets cannot select a winning method. The [retained LAMP applicability diagnostic](../evaluation-results/hbq-lamp-applicability-development-20261020/README.md) separates complete response membership from binary assessment, inapplicability and unassessability; persistent NA alone does not establish a rubric defect.
+
 ## Bias controls
 
 Hide author and model identity. Shuffle candidate order. Do not reward length or rhetorical confidence unless a leaf asks for it. Keep user-taste overlays out of the craft total.
